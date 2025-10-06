@@ -288,12 +288,12 @@
       autocomplete={autocomplete}
       bind:value={value}
       placeholder={placeholder}
-      on:input={handleInput}
-      on:focus={handleFocus}
-      on:blur={handleBlur}
-      on:mouseenter={handleHover}
+      oninput={handleInput}
+      onfocus={handleFocus}
+      onblur={handleBlur}
+      onmouseenter={handleHover}
       on:mouseleave={handleUnhover}
-      on:keydown={handleKeyDown}
+      onkeydown={handleKeyDown}
       class={`n64-input ${materialType} mesh-${meshComplexity} ${getTextureFilteringClasses()}`}
       style={`
         --material-bg: ${materialStyles.background};

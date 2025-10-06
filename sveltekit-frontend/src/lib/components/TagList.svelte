@@ -313,7 +313,7 @@
     cursor: pointer;
   }
   .suggestion:hover,
-  .suggestion:focus {
+  .suggestionfocus{
     background-color: #eff6ff;
     outline: none;
   }

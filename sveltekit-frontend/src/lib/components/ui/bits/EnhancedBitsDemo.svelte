@@ -204,7 +204,7 @@ Low Priority
             <div class="space-y-4">
               <Input
                 variant="search"
-                placeholder="Search legal precedents...";
+                placeholder="Search legal precedents..."
                 bind:value={searchQuery}
                 evidenceSearch
                 legal

@@ -292,7 +292,7 @@ await initializePhase8System();
     <div class="webgl-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">WebGL2 Rendering</h3>
       <div class="canvas-container relative bg-black border border-gray-700 rounded">
-        <canvas ; bind:this={canvas as any} width="600" height="400" class="w-full h-auto"></canvas>
+  <canvas bind:this={canvas as any} width="600" height="400" class="w-full h-auto"></canvas>
         <div class="overlay absolute top-2 left-2 text-xs text-green-400 font-mono">
           LOD System Active | Cubic Filter Blending | AI-Aware Rendering
         </div>

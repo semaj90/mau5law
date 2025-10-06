@@ -163,9 +163,9 @@
   {formtarget}
   {name}
   {value}
-  on:click={handleClick}
-  on:mouseenter={handleHover}
-  on:focus={handleFocus}
+  onclick={handleClick}
+  onmouseenter={handleHover}
+  onfocus={handleFocus}
   class={`nes-8bit-button nes-btn ${nesVariant} ${className}`}
   style={`--button-color: ${variantColor}; --button-padding: ${sizeStyles.padding}; --button-font-size: ${sizeStyles.fontSize}; --button-min-height: ${sizeStyles.minHeight}; --press-transform: ${pressTransform};`}
 >

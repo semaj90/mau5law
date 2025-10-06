@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
         <option value="analyze">Legal Analysis</option>
         <option value="vectorize">Vectorization Only</option>
       </select>
-      <input type="range" ; bind:value={priority} min="1" max="10" class="priority-slider" />
+  <input type="range" bind:value={priority} min="1" max="10" class="priority-slider" />
       <span class="priority-label">Priority: {priority}</span>
     </div>
     <button class="btn nes-btn is-primary" onclick={addDocument} disabled={!newDocumentContent.trim()}>

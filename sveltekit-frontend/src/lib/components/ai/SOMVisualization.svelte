@@ -470,7 +470,7 @@ await initializeSOMSystem();
       </div>
     </div>
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
-      <canvas ; bind:this={canvas as any} {width} {height} class="w-full h-auto"></canvas>
+  <canvas bind:this={canvas as any} {width} {height} class="w-full h-auto"></canvas>
       {#if !isInitialized}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">

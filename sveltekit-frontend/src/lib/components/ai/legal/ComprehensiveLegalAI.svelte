@@ -309,7 +309,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium mb-2">Case ID</label>
-          <input type="text" ; bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
+          <input type="text" bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Document Type</label>

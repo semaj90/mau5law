@@ -537,7 +537,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={() => showTimeline = false}
+                  onclick={() => showTimeline = false}
                   class="nes-btn bits-btn"
                 >
                   {#snippet children()}
@@ -706,7 +706,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={checkSystemStatus}
+                  onclick={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
@@ -721,7 +721,7 @@
                   class="bits-btn w-full justify-start"
                   variant="ghost"
                   size="sm"
-                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -745,7 +745,7 @@
               </h3>
               <div class="space-y-2">
                 <Button class="nes-btn is-primary w-full justify-start bits-btn"
-                 on:click={analyzePersonsOfInterest}
+                 onclick={analyzePersonsOfInterest}
                   disabled={timelineLoading}
                   fullWidth={true}
                 >
@@ -765,7 +765,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                 on:click={generateUserActivityTimeline}
+                 onclick={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
@@ -948,7 +948,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={closePOIDetails}
+            onclick={closePOIDetails}
             class="bits-btn"
           >
             Close

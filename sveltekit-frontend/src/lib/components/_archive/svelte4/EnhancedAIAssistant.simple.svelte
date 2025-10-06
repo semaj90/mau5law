@@ -12,12 +12,23 @@ https://svelte.dev/e/props_duplicate -->
     Settings,
     Trash2,
   } from "lucide-svelte";
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined
-  export const evidenceIds: string[] = [];
-  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Ask AI about this case..."
-  let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px"
-  let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true
-  export const enableVoiceInput = false;
+  let {
+    caseId = $bindable(),
+    evidenceIds = [],
+    placeholder = $bindable("Ask AI about this case..."),
+    maxHeight = $bindable("400px"),
+    showReferences = $bindable(true),
+    enableVoiceInput = false,
+    ondispatch,
+  }: {
+    caseId?: string;
+    evidenceIds?: string[];
+    placeholder?: string;
+    maxHeight?: string;
+    showReferences?: boolean;
+    enableVoiceInput?: boolean;
+    ondispatch?: (citation: string) => void;
+  } = $props();
   // State
   let query = $state("");
   let isLoading = $state(false);
@@ -31,7 +42,8 @@ https://svelte.dev/e/props_duplicate -->
   let temperature = $state(0.7);
   let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
   // Mock AI response
-  async function handleSubmit() {
+  async function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
     const userMessage = { role: "user", content: query }
@@ -80,42 +92,42 @@ https://svelte.dev/e/props_duplicate -->
   }
 </script>
 
-<div class="container mx-auto px-4">
+<div class="ai-assistant-container">
   <!-- Main Chat Interface -->
-  <div class="container mx-auto px-4" style="max-height: {maxHeight}">
+  <div style="max-height: {maxHeight}; display: flex; flex-direction: column; height: 100%;">
     <!-- Header -->
-    <div class="container mx-auto px-4">
-      <div class="container mx-auto px-4">
-        <Brain class="container mx-auto px-4" />
-        <h3 class="container mx-auto px-4">Legal AI Assistant</h3>
+    <div class="chat-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <Brain />
+        <h3>Legal AI Assistant</h3>
         {#if caseId}
-          <span class="container mx-auto px-4">Case: {caseId}</span>
+          <span>Case: {caseId}</span>
         {/if}
       </div>
-      <div class="container mx-auto px-4">
-        <button class="container mx-auto px-4" onclick={() => (showSettings = !showSettings)} title="Settings">
-          <Settings class="container mx-auto px-4" />
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-icon" onclick={() => (showSettings = !showSettings)} title="Settings">
+          <Settings />
         </button>
-        <button class="container mx-auto px-4" onclick={() => clearMessages()} title="Clear conversation">
-          <Trash2 class="container mx-auto px-4" />
+        <button class="btn-icon" onclick={() => clearMessages()} title="Clear conversation">
+          <Trash2 />
         </button>
       </div>
     </div>
     <!-- Messages -->
-    <div class="container mx-auto px-4">
+    <div class="messages-container">
       {#each messages as message}
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">
+        <div class="message {message.role}">
+          <div class="message-content">
             {message.content}
           </div>
           {#if message.references && showReferences}
-            <div class="container mx-auto px-4">
-              <h4 class="container mx-auto px-4">References:</h4>
+            <div class="references">
+              <h4 class="references-title">References:</h4>
               {#each message.references as reference}
-                <button class="container mx-auto px-4" onclick={() => handleReferenceClick(reference)}>
-                  <Quote class="container mx-auto px-4" />
-                  <span class="container mx-auto px-4">{reference.title}</span>
-                  <span class="container mx-auto px-4">{reference.citation}</span>
+                <button class="reference-item" onclick={() => handleReferenceClick(reference)}>
+                  <Quote />
+                  <span class="reference-title">{reference.title}</span>
+                  <span class="reference-citation">{reference.citation}</span>
                 </button>
               {/each}
             </div>
@@ -123,33 +135,33 @@ https://svelte.dev/e/props_duplicate -->
         </div>
       {/each}
       {#if isLoading}
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">
-            <Loader2 class="container mx-auto px-4" />
+        <div class="message assistant">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <Loader2 class="animate-spin" />
             Analyzing your query...
           </div>
         </div>
       {/if}
     </div>
     <!-- Input -->
-    <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
-      <div class="container mx-auto px-4">
-        <input type="text" bind:value={query} {placeholder} disabled={isLoading} class="container mx-auto px-4" />
-        <button type="submit" disabled={!query.trim() || isLoading} class="container mx-auto px-4">
-          <Search class="container mx-auto px-4" />
+    <form class="chat-input" onsubmit={handleSubmit}>
+      <div class="input-container">
+        <input type="text" bind:value={query} {placeholder} disabled={isLoading} class="chat-input-field" />
+        <button type="submit" disabled={!query.trim() || isLoading} class="chat-submit-btn">
+          <Search />
         </button>
       </div>
     </form>
   </div>
   <!-- Settings Panel -->
   {#if showSettings}
-    <div class="container mx-auto px-4">
-      <div class="container mx-auto px-4">
-        <h4 class="container mx-auto px-4">AI Assistant Settings</h4>
-        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}>×</button>
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h4 class="settings-title">AI Assistant Settings</h4>
+        <button class="btn-close" onclick={() => (showSettings = false)}>×</button>
       </div>
-      <div class="container mx-auto px-4">
-        <div class="container mx-auto px-4">
+      <div class="settings-content">
+        <div class="setting-group">
           <label for="model-select">Model:</label>
           <select id="model-select" bind:value={selectedModel}>
             <option value="gpt-4">GPT-4</option>
@@ -157,17 +169,17 @@ https://svelte.dev/e/props_duplicate -->
             <option value="claude-3">Claude 3</option>
           </select>
         </div>
-        <div class="container mx-auto px-4">
+        <div class="setting-group">
           <label for="temperature-range">Temperature: {temperature}</label>
           <input id="temperature-range" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
         </div>
-        <div class="container mx-auto px-4">
+        <div class="setting-group">
           <label for="threshold-range">Search Threshold: {searchThreshold}</label>
           <input id="threshold-range" type="range" min="0" max="1" step="0.1" bind:value={searchThreshold} />
         </div>
-        <div class="container mx-auto px-4">
+        <div class="setting-group">
           <label for="max-results">Max Results:</label>
-          <input id="max-results" type="number" min="1" max="20" ; bind:value={maxResults} />
+          <input id="max-results" type="number" min="1" max="20" bind:value={maxResults} />
         </div>
       </div>
     </div>
@@ -175,9 +187,9 @@ https://svelte.dev/e/props_duplicate -->
   <!-- Citation Dialog -->
   {#if showCitationDialog}
     <div
-      class="container mx-auto px-4"
+      class="dialog-overlay"
       onclick={() => (showCitationDialog = false)}
-      keydown={e => {
+      onkeydown={e => {
         if (e.key === 'Escape') {
           showCitationDialog = false;
         }
@@ -185,28 +197,27 @@ https://svelte.dev/e/props_duplicate -->
       role="dialog"
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
-      tabindex={-1}
     >
-      <div class="container mx-auto px-4" role="document">
-        <div class="container mx-auto px-4">
-          <h4 class="container mx-auto px-4" id="citation-dialog-title">
-            <Quote class="container mx-auto px-4" />
+      <div class="dialog-content" role="document" on:click|stopPropagation>
+        <div class="dialog-header">
+          <h4 class="dialog-title" id="citation-dialog-title">
+            <Quote />
             Legal Citation
           </h4>
         </div>
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">
+        <div class="dialog-body">
+          <div class="citation-display">
             <p>{selectedCitation}</p>
           </div>
-          <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" onclick={() => insertCitation()}> Insert Citation </button>
-            <button class="container mx-auto px-4" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
+          <div class="dialog-actions">
+            <button class="btn-primary" onclick={() => insertCitation()}> Insert Citation </button>
+            <button class="btn-secondary" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy to Clipboard
             </button>
           </div>
         </div>
-        <div class="container mx-auto px-4">
-          <button class="container mx-auto px-4" onclick={() => (showCitationDialog = false)}> Close </button>
+        <div class="dialog-footer">
+          <button class="btn-close" onclick={() => (showCitationDialog = false)}> Close </button>
         </div>
       </div>
     </div>
@@ -225,7 +236,7 @@ https://svelte.dev/e/props_duplicate -->
 }
 .chat-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -243,7 +254,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 8px;
 }
   .message.user {
-    background: #dbeaf;
+    background: #dbeafe;
     margin-left: 20%;
     text-align: right;
 }
@@ -276,7 +287,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
     width: 100%;
     text-align: left;
 }
@@ -306,7 +317,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     outline: none;
-    transition: border-color 0.2;
+    transition: border-color 0.2s;
 }
   .chat-input-field:focus {
     border-color: #3b82f6;
@@ -319,9 +330,9 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2;
+    transition: background 0.2s;
 }
-  .chat-submit-btn:hover:not(:disabled) {,
+  .chat-submit-btn:hover:not(:disabled) {
     background: #2563eb;
 }
   .chat-submit-btn:disabled {
@@ -335,7 +346,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 4px;
     cursor: pointer;
     color: #6b7280;
-    transition: all 0.2;
+    transition: all 0.2s;
 }
   .btn-icon:hover {
     background: #f3f4f6;
@@ -354,7 +365,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .settings-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -396,7 +407,6 @@ https://svelte.dev/e/props_duplicate -->
 }
   .dialog-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     width: 100%;
@@ -407,6 +417,13 @@ d;
     justify-content: center;
     z-index: 1000;
 }
+  .dialog-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+  }
 .dialog-header {
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;

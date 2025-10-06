@@ -22,7 +22,6 @@
       name="name"
       type="text"
       placeholder="Full Name"
-      ;
       bind:value={$form.name}
       aria-invalid={$errors.name ? 'true' : undefined}
       required

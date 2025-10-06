@@ -1,8 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
-  import { Button, Card } from '$lib/components/ui/enhanced-bits';
-  import { onMount } from 'svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import Card from '$lib/components/ui/enhanced-bits';
+
   let pageLoaded = $state(false);
   let showWelcome = $state(true);
   $effect(() => {
@@ -19,7 +20,7 @@
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
-      <div variant="evidence" hoverable fullWidth class="nes-container">
+      <Card variant="evidence" hoverable fullWidth class="nes-container">
         <div class="nier-bits-yorha-panel-header">
           <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
           <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
@@ -41,11 +42,11 @@
           </div>
         </div>
         <div class="nier-bits-yorha-panel-content">
-          <button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
+          <Button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
             Get Started →
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   {/if}
   {#if pageLoaded}

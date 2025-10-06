@@ -6,10 +6,12 @@
 // auth-critical tables are imported from this module.
 import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
-import { sql } from 'drizzle-orm';
+import { sql, relations } from 'drizzle-orm';
 // Users table with enhanced authentication fields
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   firstName: varchar('first_name', { length: 100 }),
@@ -28,30 +30,36 @@ export const users = pgTable('users', {
   profilePicture: text('profile_picture'),
   preferences: json('preferences').default(sql`'{}'::json`),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Sessions table for Lucia v3 compatibility
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 // User audit logs for security tracking
 export const userAuditLogs = pgTable('user_audit_logs', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id),
   action: varchar('action', { length: 100 }).notNull(), // login, logout, password_change, profile_update, etc.
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 // Cases table
 export const cases = pgTable('cases', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   status: varchar('status', { length: 50 }).default('active'), // active, closed, archived;
@@ -60,11 +68,13 @@ export const cases = pgTable('cases', {
   createdBy: uuid('created_by').references(() => users.id),
   assignedTo: uuid('assigned_to').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Documents table with vector embeddings
 export const documents = pgTable('documents', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
   title: varchar('title', { length: 255 }).notNull(),
   filename: varchar('filename', { length: 255 }),
@@ -79,11 +89,13 @@ export const documents = pgTable('documents', {
   source: varchar('source', { length: 100 }).default('upload'), // upload, scan, email, etc.
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Evidence table
 export const evidence = pgTable('evidence', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
   documentId: uuid('document_id').references(() => documents.id),
   title: varchar('title', { length: 255 }).notNull(),
@@ -97,11 +109,13 @@ export const evidence = pgTable('evidence', {
   aiAnalysis: json('ai_analysis'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // AI chat history and interactions
 export const aiInteractions = pgTable('ai_interactions', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id),
   caseId: uuid('case_id').references(() => cases.id),
   sessionId: varchar('session_id', { length: 255 }),
@@ -113,60 +127,69 @@ export const aiInteractions = pgTable('ai_interactions', {
   confidence: integer('confidence'), // 0-100
   feedback: json('feedback'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 // Search index for semantic search
 export const searchIndex = pgTable('search_index', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   entityType: varchar('entity_type', { length: 50 }).notNull(), // document, case, evidence, etc.
   entityId: uuid('entity_id').notNull(),
   content: text('content').notNull(),
   embedding: vector('embedding', { dimensions: 1536 }),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
-// Relations for type safety
-export const relations = {
-  users: {
-    sessions: sessions
-    auditLogs: userAuditLogs
-    createdCases: cases
-    assignedCases: cases
-    createdDocuments: documents
-    createdEvidence: evidence
-    aiInteractions: aiInteractions
-  },
-  sessions: {
-    user: users
-  },
-  userAuditLogs: {
-    user: users
-  },
-  cases: {
-    creator: users
-    assignee: users
-    documents: documents
-    evidence: evidence
-    aiInteractions: aiInteractions
-  },
-  documents: {
-    case: cases
-    creator: users
-    evidence: evidence
-  },
-  evidence: {
-    case: cases
-    document: documents
-    creator: users
-  },
-  aiInteractions: {
-    user: users;
-    case: cases
-  }
-}
+// Relations for type safety - use drizzle `relations()` helpers so codegen isn't
+// required for basic type relationships. These exports keep $inferSelect typings
+// unaffected while providing strongly-typed relationship helpers.
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  auditLogs: many(userAuditLogs),
+  createdCases: many(cases),
+  assignedCases: many(cases),
+  createdDocuments: many(documents),
+  createdEvidence: many(evidence),
+  aiInteractions: many(aiInteractions),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users),
+}));
+
+export const userAuditLogsRelations = relations(userAuditLogs, ({ one }) => ({
+  user: one(users),
+}));
+
+export const casesRelations = relations(cases, ({ one, many }) => ({
+  creator: one(users),
+  assignee: one(users),
+  documents: many(documents),
+  evidence: many(evidence),
+  aiInteractions: many(aiInteractions),
+}));
+
+export const documentsRelations = relations(documents, ({ one, many }) => ({
+  case: one(cases),
+  creator: one(users),
+  evidence: many(evidence),
+}));
+
+export const evidenceRelations = relations(evidence, ({ one }) => ({
+  case: one(cases),
+  document: one(documents),
+  creator: one(users),
+}));
+
+export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
+  user: one(users),
+  case: one(cases),
+}));
 // Runtime guard: flag unintended server-side auth imports of legacy schema
-const gAny = globalThis as any;
+// Use a safer typed cast to avoid `any` lint errors
+const gAny = globalThis as unknown as { __legacy_schema_warned?: boolean };
 if (!gAny.__legacy_schema_warned) {
   gAny.__legacy_schema_warned = true;
   console.log('[LEGACY-SCHEMA] Loaded legacy $lib/database/schema (avoid for auth)');

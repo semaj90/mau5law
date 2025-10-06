@@ -69,7 +69,7 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if $$slots.trigger}
   <!-- accessible trigger: use native button (keyboard support + role handled) -->
@@ -78,7 +78,7 @@
     class="inline-block"
     aria-expanded={open}
     aria-controls={dialogId}
-    on:click={() => (open = !open)}
+    onclick={() => (open = !open)}
   >
     <slot name="trigger" />
   </button>
@@ -96,8 +96,8 @@
       role="button"
       tabindex="0"
       aria-label="Close dialog"
-      on:click={handleOutsideClick}
-      on:keydown={handleOverlayKeydown}
+      onclick={handleOutsideClick}
+      onkeydown={handleOverlayKeydown}
     ></div>
 
     <!-- content -->
@@ -110,7 +110,7 @@
       aria-describedby={description ? "dialog-desc" : undefined}
       tabindex="0"
       on:click|stopPropagation
-      on:keydown={handleContentKeydown}
+      onkeydown={handleContentKeydown}
       transition:scale={{ duration: 180, start: 0.96 }}
     >
       <!-- header -->
@@ -133,7 +133,7 @@
           <button
             type="button"
             class="ml-4 inline-flex items-center justify-center rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
-            on:click={close}
+            onclick={close}
             aria-label="Close dialog"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

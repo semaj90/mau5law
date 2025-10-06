@@ -268,7 +268,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showArchitecture = !showArchitecture)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showArchitecture = !showArchitecture)}>
             {showArchitecture ? 'Hide' : 'Show'} Details
           </Button>
         </h3>
@@ -320,7 +320,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showIntegration = !showIntegration)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showIntegration = !showIntegration)}>
             {showIntegration ? 'Hide' : 'Show'} Examples
           </Button>
         </h3>

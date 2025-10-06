@@ -195,7 +195,7 @@
           id="email"
           name="email"
           type="email"
-          placeholder="john.smith@prosecutor.gov";
+          placeholder="john.smith@prosecutor.gov"
           bind:value={formData.email}
           disabled={isLoading}
           required
@@ -228,7 +228,7 @@
             id="badgeNumber"
             name="badgeNumber"
             type="text"
-            placeholder="12345";
+            placeholder="12345"
             bind:value={formData.badgeNumber}
             disabled={isLoading}
             class="mt-1"

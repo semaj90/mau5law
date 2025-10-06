@@ -358,7 +358,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleGlobalKeydown} />
+<svelte:window onkeydown={handleGlobalKeydown} />
 
 <div class="w-full h-full min-h-screen bg-background detective-board p-4">
 	<Card class="mb-6">
@@ -383,10 +383,10 @@
 								<span class="mr-2">🎨</span> Canvas
 							</ToggleGroup.Item>
 						</ToggleGroup.Root>
-						<Button variant={showAIAssistant ? 'default' : 'ghost'} on:click={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
+						<Button variant={showAIAssistant ? 'default' : 'ghost'} onclick={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
 							AI Assistant
 						</Button>
-						<Button size="sm" variant="secondary" on:click={() => analyzeSelectedEvidence()}>
+						<Button size="sm" variant="secondary" onclick={() => analyzeSelectedEvidence()}>
 							<span class="mr-2">🤖</span> Analyze Selected
 						</Button>
 					</div>
@@ -409,7 +409,7 @@
 						</div>
 					{/if}
 
-					<Button size="sm" on:click={() => { /* new case */ }}>
+					<Button size="sm" onclick={() => { /* new case */ }}>
 						<span class="mr-2">➕</span> New Case
 					</Button>
 				</div>
@@ -456,8 +456,8 @@
 													class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
 													class:highlighted={aiHighlightedEvidence.includes(item.id)}
 													class:selected={selectedEvidenceIds.includes(item.id)}
-													on:click={() => handleEvidenceSelect(item.id)}
-													on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
+													onclick={() => handleEvidenceSelect(item.id)}
+													onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
 													role="button"
 													tabindex="0"
 												>
@@ -465,15 +465,15 @@
 												</div>
 											</ContextMenu.Trigger>
 											<ContextMenu.Content>
-												<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
-												<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+												<ContextMenu.Item onclick={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+												<ContextMenu.Item onclick={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
 												<ContextMenu.Separator />
 												<ContextMenu.Sub>
 													<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
 													<ContextMenu.SubContent>
 														<Tooltip.Root>
 															<Tooltip.Trigger asChild let:trigger>
-																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+																<ContextMenu.Item {...triggerProps} onclick={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
 															</Tooltip.Trigger>
 															<Tooltip.Content>
 																<p>Save this evidence to your personal citations list.</p>
@@ -481,7 +481,7 @@
 														</Tooltip.Root>
 														<Tooltip.Root>
 															<Tooltip.Trigger asChild let:trigger>
-																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+																<ContextMenu.Item {...triggerProps} onclick={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
 															</Tooltip.Trigger>
 															<Tooltip.Content>
 																<p>Add this evidence to the MCP context for the AI assistant.</p>
@@ -491,9 +491,9 @@
 												</ContextMenu.Sub>
 												<ContextMenu.Separator />
 												<Dialog.Trigger asChild let:trigger>
-													<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+													<ContextMenu.Item {...triggerProps} onclick={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
 												</Dialog.Trigger>
-												<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+												<ContextMenu.Item onclick={() => analyzeSelectedEvidence()}>
 													<span class="mr-2">🤖</span> Ask AI About This
 												</ContextMenu.Item>
 											</ContextMenu.Content>
@@ -549,8 +549,8 @@
 																<span class="nes-text is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
 															</div>
 															<div class="flex gap-2">
-																<Button size="sm" variant="ghost" on:click={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
-																<Button size="sm" variant="secondary" on:click={() => {}}><span class="mr-1">⋯</span></Button>
+																<Button size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
+																<Button size="sm" variant="secondary" onclick={() => {}}><span class="mr-1">⋯</span></Button>
 															</div>
 														</div>
 													</CardContent>
@@ -559,15 +559,15 @@
 										</div>
 									</ContextMenu.Trigger>
 									<ContextMenu.Content>
-										<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
-										<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+										<ContextMenu.Item onclick={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+										<ContextMenu.Item onclick={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
 										<ContextMenu.Separator />
 										<ContextMenu.Sub>
 											<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
 											<ContextMenu.SubContent>
 												<Tooltip.Root>
 													<Tooltip.Trigger asChild let:trigger>
-														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+														<ContextMenu.Item {...triggerProps} onclick={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
 													</Tooltip.Trigger>
 													<Tooltip.Content>
 														<p>Save this evidence to your personal citations list.</p>
@@ -575,7 +575,7 @@
 												</Tooltip.Root>
 												<Tooltip.Root>
 													<Tooltip.Trigger asChild let:trigger>
-														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+														<ContextMenu.Item {...triggerProps} onclick={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
 													</Tooltip.Trigger>
 													<Tooltip.Content>
 														<p>Add this evidence to the MCP context for the AI assistant.</p>
@@ -585,9 +585,9 @@
 										</ContextMenu.Sub>
 										<ContextMenu.Separator />
 										<Dialog.Trigger asChild let:trigger>
-											<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+											<ContextMenu.Item {...triggerProps} onclick={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
 										</Dialog.Trigger>
-										<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+										<ContextMenu.Item onclick={() => analyzeSelectedEvidence()}>
 											<span class="mr-2">🤖</span> Ask AI About This
 										</ContextMenu.Item>
 									</ContextMenu.Content>
@@ -641,9 +641,9 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<div class="flex flex-col gap-4">
-			<Input type="text" bind:value={findModal.query} placeholder="Enter keywords or question..." on:keydown={(e) => { if (e.key === 'Enter') runFindSearch(null); }} />
+			<Input type="text" bind:value={findModal.query} placeholder="Enter keywords or question..." onkeydown={(e) => { if (e.key === 'Enter') runFindSearch(null); }} />
 			<div class="flex gap-2">
-				<Button on:click={() => runFindSearch(null)} disabled={findModal.loading}>
+				<Button onclick={() => runFindSearch(null)} disabled={findModal.loading}>
 					{#if findModal.loading}
 						Searching...
 					{:else}
@@ -668,7 +668,7 @@
 			{/if}
 		</div>
 		<Dialog.Footer>
-			<Button variant="secondary" on:click={closeFindModal}>Close</Button>
+			<Button variant="secondary" onclick={closeFindModal}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

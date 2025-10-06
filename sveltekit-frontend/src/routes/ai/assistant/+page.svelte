@@ -895,14 +895,14 @@ $effect(() => {
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <Button
         variant="secondary"
-        on:click={closePOIDetails}
+        onclick={closePOIDetails}
         class="bits-btn"
         ariaLabel="Close person of interest details"
       >
         Close
       </Button>
       <Button
-        on:click={() => {
+        onclick={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}

@@ -55,14 +55,14 @@
   }
 </script>
 <!-- keyboard handling on window for accessibility -->
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 <!-- optional trigger -->
 {@render trigger?.()}
 {#if open}
   <!-- overlay -->
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-    on:click={handleOutsideClick}
+    onclick={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
   >
@@ -77,8 +77,8 @@
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
       tabindex={0}
-      on:click={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.key === 'Escape' ? close() : null}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.key === 'Escape' ? close() : null}
     >
       <!-- header -->
       <div class="flex items-start justify-between gap-4">
@@ -98,7 +98,7 @@
           <button
             type="button"
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-            on:click={close}
+            onclick={close}
             aria-label="Close dialog"
           >
             <X size="20" />

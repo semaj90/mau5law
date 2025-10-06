@@ -194,7 +194,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     <!-- Header Controls -->
     <div class="modal-header">
       <div class="search-controls">
-        <input type="text" placeholder="Filter searches..." ; bind:value={searchFilter} class="search-input" />
+  <input type="text" placeholder="Filter searches..." bind:value={searchFilter} class="search-input" />
         <select bind:value={typeFilter} class="type-filter">
           <option value="all">All Types</option>
           <option value="cases">Cases</option>

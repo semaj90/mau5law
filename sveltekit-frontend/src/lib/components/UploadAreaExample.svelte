@@ -70,7 +70,7 @@
             <div class="space-y-4">
               <div class="space-y-4">
                 <label for="maxFiles" class="space-y-4">Max Files:</label>
-                <input type="number" class="space-y-4" id="maxFiles" ; bind:value={maxFiles} min="1" max="20" />
+                <input type="number" class="space-y-4" id="maxFiles" bind:value={maxFiles} min="1" max="20" />
               </div>
               <div class="space-y-4">
                 <label for="maxSize" class="space-y-4">Max Size (MB):</label>

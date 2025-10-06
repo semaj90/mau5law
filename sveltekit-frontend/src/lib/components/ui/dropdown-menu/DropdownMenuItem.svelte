@@ -55,7 +55,7 @@
     <button
       type="button"
       class="flex w-full items-center gap-2 text-left"
-      on:click={handleClick}
+      onclick={handleClick}
       disabled={disabled}
     >
       <slot />
