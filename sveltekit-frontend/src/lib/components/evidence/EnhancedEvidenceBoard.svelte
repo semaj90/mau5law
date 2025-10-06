@@ -30,12 +30,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         bucket?: string;
         key?: string;
         url?: string;
-      }
+      };
       unifiedInsights?: unknown;
-    }
-    position: ;
-{ x: number; y: number }
-  previewUrl?: string;
+    };
+    position: { x: number; y: number };
+    previewUrl?: string;
   }
   interface SearchSuggestion {
     text: string;
@@ -91,36 +90,35 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   );
   $effect(() => {
     (async () => {
-await loadExistingEvidence();
-  await loadBuckets();
-  await checkServiceStatus();
-  startRealTimeUpdates();
-  // fetch current user info for namespacing uploads
-  try {
-    const me = await fetch('/api/v1/storage/me', { credentials: 'include';
+      try {
+        await loadExistingEvidence();
+        await loadBuckets();
+        await checkServiceStatus();
+        startRealTimeUpdates();
+        // fetch current user info for namespacing uploads
+        const meResp = await fetch('/api/v1/storage/me', { credentials: 'include' });
+        if (meResp.ok) {
+          const j = await meResp.json();
+          (window as any).__CURRENT_USER_ID__ = j.userId || (window as any).__CURRENT_USER_ID__;
+        }
+      } catch (e) {
+        // ignore
+        console.warn('startup error', e);
+      }
     })();
-  });
-    if (me.ok) {
-      const j = await me.json();
-      // store current user id in a local variable for signed url namespacing
-      (window as any).__CURRENT_USER_ID__ = j.userId || (window as any).__CURRENT_USER_ID__;
-    }
-  } catch (e) {
-    // ignore
-  }
   });
   // Service health checks
   async function checkServiceStatus() {
     try {
-      // Check Ollama connection
+      // Check Ollama connection (send a small health payload)
       const ollamaResponse = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           evidenceId: 'health-check',
           filename: 'test.txt',
           content: 'health check',
-          type: 'document';
+          type: 'document'
         })
       });
       ollamaConnected = ollamaResponse.status !== 500;
@@ -145,11 +143,10 @@ await loadExistingEvidence();
       const resp = await fetch('/api/v1/storage/buckets');
       if (resp.ok) {
         const data = await resp.json();
-        buckets = ((data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).buckets || []).map((b: unknown) => b.name);
+        buckets = ((data as any).buckets || []).map((b: any) => b.name);
         if ((!currentBucket || currentBucket === '') && buckets.length > 0) {
           currentBucket = buckets[0];
         }
-        // mark connected if buckets available
         minioConnected = buckets.length > 0 || minioConnected;
       } else {
         buckets = [];
@@ -162,10 +159,10 @@ await loadExistingEvidence();
   // Load existing evidence
   async function loadExistingEvidence() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        evidenceItems = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data || [];
+      const response = await fetch('/api/v1/evidence/list');
+      if (response.ok) {
+        const data = await response.json();
+        evidenceItems = (data as any).data || [];
         filterEvidence();
       }
     } catch (error) {
@@ -174,16 +171,18 @@ await loadExistingEvidence();
   }
   // Filter evidence based on search and filters
   function filterEvidence() {
-    let filtered = evidenceItem;
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(item => item.filename).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.relevantLaws?.some.includes(searchQuery.toLowerCase())
-        )
-      );
+    let filtered = evidenceItems.slice();
+    const q = (searchQuery || '').toString().trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter((item) => {
+        const filename = (item.filename || '').toLowerCase();
+        const summary = ((item as any).aiAnalysis?.summary || '').toLowerCase();
+        const laws = ((item as any).aiAnalysis?.relevantLaws || []).join(' ').toLowerCase();
+        return filename.includes(q) || summary.includes(q) || laws.includes(q);
+      });
     }
-    if (selectedFilter !== 'all') {
-      filtered = filtered.filter(item => item.type) === selectedFilter);
+    if (selectedFilter && selectedFilter !== 'all') {
+      filtered = filtered.filter(item => item.type === (selectedFilter as EvidenceItem['type']));
     }
     filteredEvidence = filtered;
   }
@@ -201,12 +200,12 @@ await loadExistingEvidence();
         body: JSON.stringify({
           query,
           type: 'legal',
-          limit: 5;
+          limit: 5
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        searchSuggestions = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data.suggestion;
+      if (response.ok) {
+        const data = await response.json();
+        searchSuggestions = (data as any).data?.suggestion || [];
         showSuggestions = true;
       }
     } catch (error) {
@@ -250,6 +249,7 @@ await loadExistingEvidence();
     e.preventDefault();
     e.dataTransfer!.dropEffect = 'copy';
   }
+  // Handle drop position
   async function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -260,48 +260,42 @@ await loadExistingEvidence();
     const rect = dropZone.getBoundingClientRect();
     const position = {
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top;
-    }
+      y: e.clientY - rect.top
+    };
     await uploadFiles(files, position);
   }
   // File upload with AI processing
-  async function uploadFiles(files: File[], position: ;
-{ x: number; y: number }) {
+  async function uploadFiles(files: File[], position: { x: number; y: number }) {
     isUploading = true;
     processingStatus = 'processing';
     for (const file of files) {
       try {
-        // Create evidence item immediately for UI feedback
         const evidenceId = crypto.randomUUID();
         const newEvidence: EvidenceItem = {
-          id: evidenceId
+          id: evidenceId,
           filename: file.name,
           type: detectFileType(file.type),
           uploadedAt: new Date().toISOString(),
           status: 'uploading',
           size: file.size,
           mimeType: file.type,
-          position: ;
-{
+          position: {
             x: position.x + (evidenceItems.length * 20),
-            y: position.y + (evidenceItems.length * 20);
+            y: position.y + (evidenceItems.length * 20)
           }
-        }
-        // Add preview URL for images
+        };
         if (file.type.startsWith('image/')) {
           (newEvidence as any).previewUrl = URL.createObjectURL(file);
         }
         evidenceItems = [...evidenceItems, newEvidence];
-        // Upload file to MinIO
         const formData = new FormData();
         formData.append('file', file);
         formData.append('position', JSON.stringify(newEvidence.position));
         formData.append('bucket', currentBucket);
         formData.append('useMinIO', uploadToMinIO.toString());
-        // Upload to MinIO if configured, using signed URL (recommended)
+
         if (uploadToMinIO) {
-            try {
-            // Request signed URL (server will enforce session and namespace)
+          try {
             const keyCandidate = `${(window as any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
             const signedResp = await fetch('/api/v1/storage/signed-url', {
               method: 'POST',
@@ -313,57 +307,49 @@ await loadExistingEvidence();
               const signedJson = await signedResp.json();
               const uploadUrl = signedJson.url;
               const namespacedKey = signedJson.key;
-              // Upload directly to MinIO via PUT
               const putResp = await fetch(uploadUrl, { method: 'PUT', body: file });
               if (putResp.ok) {
-                // Update status to processing and store storage metadata
-                evidenceItems = evidenceItems.map.id === evidenceId ? ({
-                    ...item,
-                    status: 'processing',
-                    aiAnalysis: {
-                      ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ),
-                      storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
-                    }
-                  } as EvidenceItem) : item
-                );
+                // update item safely
+                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? ({
+                  ...item,
+                  status: 'processing',
+                  aiAnalysis: {
+                    ...((item as any).aiAnalysis || {}),
+                    storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
+                  }
+                }) : item);
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
-                setTimeout(() => { showToast = false, }, 4000);
-                // Trigger AI analysis
+                setTimeout(() => { showToast = false; }, 4000);
                 await analyzeEvidence(evidenceId, file);
               } else {
                 console.error('Direct PUT failed:', await putResp.text());
-                evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
-                );
+                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
               }
             } else {
-              // Signed URL request failed - fall back to server upload
+              // fallback to server upload
               console.warn('Signed URL request failed, falling back to server upload');
               const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include', body: formData });
               if (uploadResp.ok) {
                 const uploadJson = await uploadResp.json();
-                evidenceItems = evidenceItems.map.id === evidenceId ? ({
-                    ...item,
-                    status: 'processing',
-                    aiAnalysis: { ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
-                  } as EvidenceItem) : item
-                );
+                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? ({
+                  ...item,
+                  status: 'processing',
+                  aiAnalysis: { ...((item as any).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
+                }) : item);
                 await analyzeEvidence(evidenceId, file);
               } else {
-                evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
-                );
+                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
               }
             }
           } catch (err) {
             console.error('Upload exception:', err);
-            evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
-            );
+            evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
           }
         } else {
-          // Fallback/demo mode: simulate upload and trigger AI analysis
+          // Fallback/demo mode
           setTimeout(async () => {
-            evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'processing' } : item
-            );
+            evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing' } : item);
             await analyzeEvidence(evidenceId, file);
           }, 1000);
         }
@@ -377,42 +363,35 @@ await loadExistingEvidence();
   // AI analysis of evidence
   async function analyzeEvidence(evidenceId: string, file: File) {
     try {
-      // Extract text content for analysis (simplified)
       let content = '';
       if (file.type.startsWith('text/')) {
         content = await file.text();
       } else if (file.type === 'application/pdf') {
-        content = `PDF document: ${file.name}`; // In production, extract PDF text
+        content = `PDF document: ${file.name}`;
       }
-      // Call AI analysis API
       const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
           filename: file.name,
-          content: content.substring(0, 2000), // Limit content length;
-          type: detectFileType(file.type);
+          content: content.substring(0, 2000),
+          type: detectFileType(file.type)
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const analysisResult = await (response as { ok?: unknown; json?: unknown }).json();
-        // Update evidence with AI analysis
-        evidenceItems = evidenceItems.map.id === evidenceId ? {
-            ...item,
-            status: 'ready',
-            aiAnalysis: analysisResult.data.analysi;
-          } : item
-        );
+      if (response.ok) {
+        const analysisResult = await response.json();
+        evidenceItems = evidenceItems.map(item => item.id === evidenceId ? {
+          ...item,
+          status: 'ready',
+          aiAnalysis: analysisResult.data?.analysis || analysisResult.data || {}
+        } : item);
       } else {
-        // Mark as error if analysis fails
-        evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
-        );
+        evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
       }
     } catch (error) {
       console.error('AI analysis failed:', error);
-      evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
-      );
+      evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
     }
     filterEvidence();
   }
@@ -430,7 +409,7 @@ await loadExistingEvidence();
       image: '🖼️',
       video: '🎥',
       audio: '🎵',
-      other: '📎';
+      other: '📎',
     }
     return icons[type];
   }
@@ -461,7 +440,7 @@ await loadExistingEvidence();
           method: 'DELETE',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
-          body: JSON.stringify(aiAnalysis).storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
+          body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket, key: item.aiAnalysis.storage.key })
         });
         const txt = await resp.text();
         if (!resp.ok) {
@@ -469,19 +448,19 @@ await loadExistingEvidence();
           console.warn('Remote delete failed:', txt);
           toastMessage = `Remote delete failed: ${txt}`;
           showToast = true;
-          setTimeout(() => { showToast = false, }, 4000);
+          setTimeout(() => { showToast = false; }, 4000);
         }
       } catch (err) {
         remoteOk = false;
         console.warn('Remote delete exception:', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
-        setTimeout(() => { showToast = false, }, 4000);
+        setTimeout(() => { showToast = false; }, 4000);
       }
     }
     // Only remove locally if remote deletion succeeded (or there was nothing remote)
     if (remoteOk) {
-      if (item && (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
+      if (item?.previewUrl) revokePreview(item.previewUrl);
       evidenceItems = evidenceItems.filter(it => it.id !== id);
       selectedEvidence = selectedEvidence.filter(sid => sid !== id);
       pendingDeleteId = null;
@@ -495,16 +474,17 @@ await loadExistingEvidence();
   }
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
-    evidenceItems.forEach.previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
+    evidenceItems.forEach((item) => {
+      if ((item as any).previewUrl) revokePreview((item as any).previewUrl);
     });
   });
   function getStatusIcon(status: EvidenceItem['status']): string {
-    const icons = {
+    const icons: Record<EvidenceItem['status'], string> = {
       uploading: '⬆️',
       processing: '🔄',
       ready: '✅',
-      error: '❌';
-    }
+      error: '❌'
+    };
     return icons[status];
   }
   function getScoreColor(score: number): string {
@@ -515,22 +495,23 @@ await loadExistingEvidence();
   // Real-time updates (simulate with timer)
   function startRealTimeUpdates() {
     setInterval(() => {
-      // Simulate processing completion
-      evidenceItems = evidenceItems.map.status === 'processing' && Math.random() > 0.8) {
+      evidenceItems = evidenceItems.map(item => {
+        if (item.status === 'processing' && Math.random() > 0.8) {
           return {
             ...item,
             status: 'ready',
             aiAnalysis: {
-              summary: `AI analysis complete for ${(item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).filename}`,
+              ...(item as any).aiAnalysis || {},
+              summary: `AI analysis complete for ${(item as any).filename}`,
               confidence: Math.random() * 0.4 + 0.6,
               relevantLaws: ['Sample Law 1', 'Sample Law 2'],
               suggestedTags: ['evidence', 'legal'],
               prosecutionScore: Math.random() * 0.5 + 0.5,
               legalRelevance: 'High - Contains relevant legal information',
               keyFindings: ['Key finding 1', 'Key finding 2'],
-              recommendations: ['Recommendation 1', 'Recommendation 2'];
+              recommendations: ['Recommendation 1', 'Recommendation 2']
             }
-          }
+          } as EvidenceItem;
         }
         return item;
       });
@@ -547,12 +528,12 @@ await loadExistingEvidence();
       const response = await fetch('/api/v1/evidence/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          evidenceIds: selectedEvidence
+        body: JSON.stringify({
+          evidenceIds: selectedEvidence,
           analysisScope: {
-            vectorSimilarity: true
-            strategyRecommendations: true
-            wasmProcessing: false, // Enable for deep document analysis
+            vectorSimilarity: true,
+            strategyRecommendations: true,
+            wasmProcessing: false,
             correlationAnalysis: true
           },
           parameters: {
@@ -563,42 +544,38 @@ await loadExistingEvidence();
           },
           context: {
             caseType: 'commercial',
-            urgency: 'medium';
+            urgency: 'medium'
           }
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const analysis = await (response as { ok?: unknown; json?: unknown }).json();
-        aiAnalysisResults = analysi;
-        // Update evidence with comprehensive AI insights
-        evidenceItems = evidenceItems.map.id)) {
-            // Enhance evidence with unified analysis results
-            const correlations = (analysis.correlationAnalysis?.correlations || []).filter((c: unknown) =>
-              c.evidenceA === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id || c.evidenceB === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id
-            );
-            const vectorGroup = (analysis.vectorAnalysis?.similarityGroups || []).find((g: unknown) =>
-              Array.isArray(g.evidenceIds) && g.evidenceIds.includes.id)
-            );
-            const recs = (analysis.unifiedInsights?.recommendations || []).filter((r: unknown) =>
-              String(r.action || '').toLowerCase().includes-filename.toLowerCase())
-            );
-            return {
-              ...item,
-              aiAnalysis: {
-                ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ),
-                unifiedInsights: {
-                  correlations,
-                  vectorGroup,
-                  strategicImportance: analysis.strategyAnalysis?.primaryStrategy,
-                  recommendations: rec;
-                }
+      if (response.ok) {
+        const analysis = await response.json();
+        aiAnalysisResults = (analysis as any);
+        evidenceItems = evidenceItems.map(item => {
+          const id = item.id;
+          const correlations = ((analysis as any).correlationAnalysis?.correlations || []).filter((c: any) =>
+            c.evidenceA === id || c.evidenceB === id
+          );
+          const vectorGroup = ((analysis as any).vectorAnalysis?.similarityGroups || []).find((g: any) =>
+            Array.isArray(g.evidenceIds) && g.evidenceIds.includes(id)
+          );
+          const recs = ((analysis as any).unifiedInsights?.recommendations || []).filter((r: any) =>
+            String(r.action || '').toLowerCase().includes(((item as any).filename || '').toLowerCase())
+          );
+          return {
+            ...item,
+            aiAnalysis: {
+              ...((item as any).aiAnalysis || {}),
+              unifiedInsights: {
+                correlations,
+                vectorGroup,
+                strategicImportance: (analysis as any).strategyAnalysis?.primaryStrategy,
+                recommendations: recs
               }
-            } as EvidenceItem;
-          }
-          return item;
+            }
+          } as EvidenceItem;
         });
         showAnalysisModal = true;
-        // Update search suggestions based on analysis
         updateSearchSuggestions(analysis);
       } else {
         console.error('Advanced analysis failed');
@@ -612,40 +589,30 @@ await loadExistingEvidence();
     }
   }
   // Update search suggestions based on unified analysis
-  function updateSearchSuggestions(analysis: unknown) {
+  function updateSearchSuggestions(analysis: any) {
     const newSuggestions: SearchSuggestion[] = [];
-    // Add correlation-based suggestions
-    if (analysis.correlationAnalysis?.patterns) {
-      (analysis.correlationAnalysis.patterns || []).forEach((pattern: unknown) => {
+    if (analysis?.correlationAnalysis?.patterns) {
+      (analysis.correlationAnalysis.patterns || []).forEach((pattern: any) => {
         newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6, source: 'correlation' });
       });
     }
-    // Add vector similarity suggestions
-    if (analysis.vectorAnalysis?.similarityGroups) {
-      (analysis.vectorAnalysis?.similarityGroups || []).forEach((group: unknown) => {
-        (group.keyThemes || []).forEach((theme: unknown) => {
+    if (analysis?.vectorAnalysis?.similarityGroups) {
+      (analysis.vectorAnalysis.similarityGroups || []).forEach((group: any) => {
+        (group.keyThemes || []).forEach((theme: any) => {
           newSuggestions.push({ text: `theme:${theme}`, type: 'precedent', confidence: 0.5, source: 'vector' });
         });
       });
     }
-    // Add strategy-based suggestions
-    if (analysis.strategyAnalysis?.primaryStrategy) {
+    if (analysis?.strategyAnalysis?.primaryStrategy) {
       newSuggestions.push({ text: `strategy:${analysis.strategyAnalysis.primaryStrategy}`, type: 'case', confidence: 0.6, source: 'strategy' });
     }
-  // Update suggestions (limit to top 10)
-  const merged = [...searchSuggestions, ...newSuggestions];
-  // Dedupe by text
-  const dedup = Array.from(new Map(merged.map(s => [s.text, s])).values());
-  searchSuggestions = dedup.slice(0, 10);
+    const merged = [...searchSuggestions, ...newSuggestions];
+    const dedup = Array.from(new Map(merged.map(s => [s.text, s])).values());
+    searchSuggestions = dedup.slice(0, 10);
   }
   // Fabric.js Canvas Event Handlers
-  function handleEvidenceMove(evidenceId: string, position: ;
-{ x: number; y: number }) {
-    // Update evidence position in our data
-    evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, position } : item
-    );
-    // Optionally save to backend
-    // updateEvidencePosition(evidenceId, position)
+  function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
+    evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, position } : item);
   }
   function handleEvidenceSelect(evidenceId: string | null) {
     if (evidenceId) {
@@ -653,17 +620,12 @@ await loadExistingEvidence();
         selectedEvidence = [...selectedEvidence, evidenceId];
       }
     }
-    // Optional: update UI based on selection
   }
   function handleCanvasDropZone(data: { x: number; y: number; files?: File[] }) {
-    if ((data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).files && (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).files.length > 0) {
-      // Handle file drop with specific position
-      uploadFiles((data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).files, { x: (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).x, y: (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).y });
+    if (data.files && data.files.length > 0) {
+      uploadFiles(data.files, { x: data.x, y: data.y });
     } else {
-      // Handle empty area click - could trigger file picker
       console.log('Canvas drop zone clicked at:', data);
-      // Optional: trigger file picker dialog
-      // triggerFilePicker()
     }
   }
 </script>
@@ -761,7 +723,7 @@ await loadExistingEvidence();
               type="text"
               class="nes-input"
               id="search-input"
-              placeholder="Search evidence, laws, cases...";
+              placeholder="Search evidence, laws, cases..."
               bind:value={searchQuery}
               oninput={handleSearchInput}
             />
@@ -879,7 +841,7 @@ await loadExistingEvidence();
       <div
         bind:this={dropZone}
         role="list"
-        class="evidence-drop-zone min-h-96 p-6 transition-all duration-300";
+        class="evidence-drop-zone min-h-96 p-6 transition-all duration-300"
         class:n64-depth={gamingMode}
         class:yorha-glow={dragActive}
         ondragenter={handleDragEnter}
@@ -979,8 +941,8 @@ await loadExistingEvidence();
                       class="nes-checkbox"
                       checked={selectedEvidence.includes(evidence.id)}
                       onchange={(e: Event) => {
-                        // removed unused target assignment
-                        if (target && target.checked) {
+                        const checkbox = e.target as HTMLInputElement;
+                        if (checkbox && checkbox.checked) {
                           selectedEvidence = [...selectedEvidence, evidence.id];
                         } else {
                           selectedEvidence = selectedEvidence.filter(id => id !== evidence.id);
@@ -1115,8 +1077,8 @@ await loadExistingEvidence();
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   .evidence-thumb {
     width: 40px;
@@ -1164,11 +1126,11 @@ await loadExistingEvidence();
       inset 0 0 0 1px rgba(255 255 255 / 0.12),
       inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
     animation: canvasGlow 3.4s ease-in-out infinite alternate;
-    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400m;
+    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400ms;
     will-change: box-shadow, transform;
   }
   /* Pixel / scanline / chromatic edge layering */
-  :global(.retro-glow) .evidence-canvas-container:: after
+  :global(.retro-glow) .evidence-canvas-container::after,
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
@@ -1224,8 +1186,8 @@ await loadExistingEvidence();
   /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
   :global(.yorha-glow) .evidence-canvas-container {
     outline: 2px solid rgba(var(--accent-c) / 0.8);
-    animation: canvasGlow 2.1s ease-in-out infinite alternatee,
-               pulseRing 1.8s ease-in-out infinite;
+    animation: canvasGlow 2.1s ease-in-out infinite alternate,
+             pulseRing 1.8s ease-in-out infinite;
   }
   /* Reduce intensity in retro terminal mode */
   :global(.retro-terminal) .evidence-canvas-container,
@@ -1240,24 +1202,24 @@ await loadExistingEvidence();
   /* Accessibility: respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :global(.retro-glow) .evidence-canvas-container,
-    :global(.retro-glow) .evidence-canvas-container:: before
+    :global(.retro-glow) .evidence-canvas-container::before,
     :global(.retro-glow) .evidence-canvas-container::after {
       animation: none !important;
     }
   }
   @keyframes scanDrift {
-    0% { transform: translateY(0); opacity: 0.55, }
-    50% { transform: translateY(-6px); opacity: 0.42, }
-    100% { transform: translateY(0); opacity: 0.55, }
+    0% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(-6px); opacity: 0.42; }
+    100% { transform: translateY(0); opacity: 0.55; }
   }
   @keyframes hueShift {
-    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg), }
-    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg), }
-    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg), }
+    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
+    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg); }
+    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
   }
   @keyframes pulseRing {
-    0% { outline-offset: 0, }
-    100% { outline-offset: 4px, }
+    0% { outline-offset: 0; }
+    100% { outline-offset: 4px; }
   }
   @keyframes canvasGlow {
     0% {

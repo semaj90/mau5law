@@ -88,8 +88,8 @@
 <div class="enhanced-rag-interface nes-container">
   <div class="search-bar bits-row">
     <Input bind:value={searchQuery} placeholder="Ask about case documents..." class="bits-input" />
-    <Button on:click={handleSearch} disabled={isLoading} class="bits-btn ml-2">{isLoading ? 'Searching...' : 'Search'}</Button>
-    <Button on:click={handleOptimize} class="bits-btn ml-2">Optimize</Button>
+    <Button onclick={handleSearch} disabled={isLoading} class="bits-btn ml-2">{isLoading ? 'Searching...' : 'Search'}</Button>
+    <Button onclick={handleOptimize} class="bits-btn ml-2">Optimize</Button>
   </div>
 
   <div class="meta mt-3"><small>Last search time: {searchDuration}ms</small></div>
@@ -99,7 +99,7 @@
       <div class="mb-2"><strong>Suggestions</strong></div>
       <div class="suggestions">
         {#each intelligentSuggestions as s}
-          <Button on:click={() => { searchQuery = s; handleSearch(); }} class="bits-chip mr-2">{s}</Button>
+          <Button onclick={() => { searchQuery = s; handleSearch(); }} class="bits-chip mr-2">{s}</Button>
         {/each}
       </div>
     </div>

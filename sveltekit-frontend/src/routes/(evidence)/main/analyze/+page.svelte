@@ -2,23 +2,25 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-  } from '$lib/components/ui/dialog';
+  // Use the correct casing that exists in the repo
+  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
+  import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
+  import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
+  import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
+  import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
+  import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
   import { Progress } from '$lib/components/ui/progress';
-  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  // Import explicit Svelte components to avoid resolving to select.ts (not a module)
+  import SelectContent from '$lib/components/ui/select/SelectContent.svelte';
+  import SelectItem from '$lib/components/ui/select/SelectItem.svelte';
+  import SelectRoot from '$lib/components/ui/select/SelectRoot.svelte';
+  import SelectTrigger from '$lib/components/ui/select/SelectTrigger.svelte';
+  import SelectValue from '$lib/components/ui/select/SelectValue.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);
@@ -93,22 +95,28 @@ https://svelte.dev/e/js_parse_error -->
     },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-100 text-red-800' },
   ];
-  // Current step tracking
-  let currentStep = $derived(
-    steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25),
-  );
+  // Current step tracking (Svelte 5 runes)
+  // compute currentStep from progress and clamp to valid index using $derived
+  // provide an explicit getter so the runtime knows we depend on `progress`
+  let currentStep = $derived(() => {
+    const total = steps.length || 1; // guard against division by zero
+    const perStep = 100 / total;
+    // use the reactive value by reading progress here
+    const p = progress;
+    return Math.max(0, Math.min(total - 1, Math.floor(p / perStep)));
+  });
+
   // File upload handler
-  function handleFileUpload(event) {
-    // removed unused target assignment
-    if (target.files && target.files.length > 0) {
-      evidenceFile = target.files[0];
-      // Read file content
-      const reader = new FileReader();
-      reader.onload = e => {
-        evidenceContent = e.target?.result as string;
-      }
-      reader.readAsText(evidenceFile);
-    }
+  function handleFileUpload(event: Event) {
+    const input = event.target as HTMLInputElement | null;
+    if (!input || !input.files || input.files.length === 0) return;
+    evidenceFile = input.files[0];
+    // Read file content (plain text fallback)
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      evidenceContent = String(e.target?.result ?? '');
+    };
+    reader.readAsText(evidenceFile);
   }
   // Start analysis
   async function startAnalysis() {
@@ -239,7 +247,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Case ID -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
-          <Input id="caseId" ; bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
+          <Input id="caseId" bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
         </div>
         <!-- Evidence Type -->
         <div class="space-y-2">
@@ -310,12 +318,13 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-    <CardFooter class="flex justify-between">
+    <!-- Replaced CardFooter with a semantic footer div to avoid Svelte typing/constructor issues -->
+    <footer class="flex justify-between items-center p-4 border-t">
       <div class="flex items-center gap-2">
         {#if priority !== 'low'}
-          <Badge class={priorityOptions.find(p => p.value === priority)?.color}>
+          <span class="px-2 py-1 rounded text-xs font-medium {priorityOptions.find(p => p.value === priority)?.color}">
             {priorityOptions.find(p => p.value === priority)?.label}
-          </Badge>
+          </span>
         {/if}
         {#if evidenceType !== 'other'}
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
@@ -329,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
-    </CardFooter>
+    </footer>
   </div>
   <!-- Error Display -->
   {#if error}
@@ -397,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
                           >Processing</span
                         >
                       {:else if isCompleted}
-                        <Badge class="bg-green-100 text-green-800">Completed</Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Completed</span>
                       {:else}
                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Pending</span>
                       {/if}
@@ -432,28 +441,28 @@ https://svelte.dev/e/js_parse_error -->
           <DialogDescription>Multi-agent pipeline analysis completed successfully</DialogDescription>
         </DialogHeader>
         <div class="space-y-4">
-          {#each Object.entries(results.outputs) as [key, data]}
+          {#each Object.entries(results.analysisResults ?? {}) as [key, data]}
             <div class="nes-container">
               <div class="yorha-panel-header">
                 <h3 class="nes-text is-primary text-lg">
                   {steps.find(s => s.key === key)?.icon || '📄'}
-                  {key.replace.replace(/\b\w/g, l => l.toUpperCase())}
+                  {String(key).replace(/\b\w/g, l => l.toUpperCase())}
                 </h3>
               </div>
               <div class="yorha-panel-content">
                 <div class="bg-muted p-4 rounded-lg">
                   <pre class="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
 										{JSON.stringify(data, null, 2)}
-									</pre>
+ 									</pre>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  class="mt-2 bits-btn bits-btn"
-                  onclick={() => viewDetailedResults(data)}
-                >
-                  View Details →
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="mt-2 bits-btn bits-btn"
+                    onclick={() => viewDetailedResults(data)}
+                  >
+                    View Details →
+                  </Button>
               </div>
             </div>
           {/each}

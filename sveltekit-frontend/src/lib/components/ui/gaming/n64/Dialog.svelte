@@ -625,7 +625,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
   }
-  .dialog-close-button:focus {
+  .dialog-close-buttonfocus{
     outline: 2px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px;
   }

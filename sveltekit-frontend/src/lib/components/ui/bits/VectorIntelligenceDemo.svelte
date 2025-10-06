@@ -243,7 +243,7 @@
     <div class="flex gap-3 mb-4">
       <Input
         variant="search"
-        placeholder="Enter legal query or document content...";
+  placeholder="Enter legal query or document content..."
         bind:value={searchQuery}
         evidenceSearch
         legal

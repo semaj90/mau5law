@@ -439,7 +439,7 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="flex items-center">
-              <input type="checkbox" ; bind:checked={enableSelfPrompting} disabled={$isRunning} class="mr-2" />
+              <input type="checkbox" bind:checked={enableSelfPrompting} disabled={$isRunning} class="mr-2" />
               <span class="text-sm">Enable Self-Prompting</span>
             </label>
           </div>

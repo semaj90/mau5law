@@ -237,10 +237,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="space-y-2">
         <Label for="tags">Tags (comma-separated)</Label>
-        <Input id="tags" ; bind:value={tags} placeholder="contract, fraud, witness, DNA" />
+  <Input id="tags" bind:value={tags} placeholder="contract, fraud, witness, DNA" />
       </div>
       <div class="flex items-center space-x-2">
-        <input type="checkbox" id="admissible" ; bind:checked={isAdmissible} class="w-4 h-4" />
+  <input type="checkbox" id="admissible" bind:checked={isAdmissible} class="w-4 h-4" />
         <Label for="admissible">Evidence is admissible in court</Label>
       </div>
     </div>

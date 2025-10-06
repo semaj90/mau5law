@@ -243,6 +243,31 @@ export async function withApiHandler<T>(
   const requestId = generateRequestId();
   // Add request ID to locals for tracking
   (event.locals as { requestId?: string }).requestId = requestId;
+  // Development auth bypass: when enabled, inject a demo user into locals
+  try {
+    const metaEnv = import.meta as unknown as { env?: Record<string, string | undefined> };
+    const devBypass = process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.env?.DEV_BYPASS_AUTH === 'true';
+    if (devBypass && process.env.NODE_ENV !== 'production') {
+      // Only inject a minimal demo user suitable for development
+      const demoUser: Record<string, unknown> = {
+        id: 'dev-bypass-user',
+        email: 'dev@local',
+        name: 'Dev User',
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      (event.locals as Record<string, unknown>).user = demoUser;
+      // Optionally inject a minimal session if consumers expect it
+      (event.locals as Record<string, unknown>).session = {
+        userId: 'dev-bypass-user',
+        expires: new Date(Date.now() + 3600 * 1000),
+      };
+      console.warn('[DEV_BYPASS_AUTH] Injected development demo user into event.locals');
+    }
+  } catch (e) {
+    // Non-fatal: proceed without bypass if env access fails
+  }
   try {
     const result = await handler(event);
     const processingTime = Date.now() - startTime;

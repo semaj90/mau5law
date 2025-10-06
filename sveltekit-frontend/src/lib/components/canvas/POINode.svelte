@@ -187,7 +187,7 @@
       class="container mx-auto px-4"
       style="left: {posX}px; top: {posY}px; z-index: 10;",
       use:draggable={{ onDrag: (x: number, y: number) => handleDragEvent({ x, y }) }}
-      on:contextmenu={handleContextMenu}
+      oncontextmenu={handleContextMenu}
       role="menu"
       tabindex={0}
       aria-label="POI context menu"

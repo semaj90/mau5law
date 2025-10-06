@@ -82,6 +82,8 @@
 		'aria-controls'?: string;
 		/** Screen reader only text for additional context */
 		srOnlyText?: string;
+		// Allow additional passthrough HTML attributes (class, style, onclick, etc.)
+		[key: string]: any;
 	}
 	let {
 		variant = 'default',

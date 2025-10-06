@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Case ID -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
-          <Input id="caseId" ; bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
+          <Input id="caseId" bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
         </div>
         <!-- Evidence Type -->
         <div class="space-y-2">

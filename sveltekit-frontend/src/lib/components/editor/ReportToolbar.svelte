@@ -67,21 +67,21 @@
         <button class="menu-trigger nes-btn">File</button>
       </DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem on:click={() => handleSave()}>
+        <DropdownItem onclick={() => handleSave()}>
           <Save size={16} /> Save Report <span class="shortcut">Ctrl+S</span>
         </DropdownItem>
-        <DropdownItem on:click={() => { /* new */ }}>
+        <DropdownItem onclick={() => { /* new */ }}>
           <FileText size={16} /> New Report <span class="shortcut">Ctrl+N</span>
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem on:click={() => { /* import */ }}>
+        <DropdownItem onclick={() => { /* import */ }}>
           <Upload size={16} /> Import
         </DropdownItem>
-        <DropdownItem on:click={() => handleExport()}>
+        <DropdownItem onclick={() => handleExport()}>
           <Download size={16} /> Export
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem on:click={() => handlePreview()}>
+        <DropdownItem onclick={() => handlePreview()}>
           <Eye size={16} /> Preview
         </DropdownItem>
       </DropdownContent>
@@ -91,17 +91,17 @@
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem on:click={() => { /* undo */ }}>
+        <DropdownItem onclick={() => { /* undo */ }}>
           <Undo size={16} /> Undo <span class="shortcut">Ctrl+Z</span>
         </DropdownItem>
-        <DropdownItem on:click={() => { /* redo */ }}>
+        <DropdownItem onclick={() => { /* redo */ }}>
           <Redo size={16} /> Redo <span class="shortcut">Ctrl+Y</span>
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem on:click={() => { /* find */ }}>
+        <DropdownItem onclick={() => { /* find */ }}>
           <Search size={16} /> Find <span class="shortcut">Ctrl+F</span>
         </DropdownItem>
-        <DropdownItem on:click={() => { /* replace */ }}>
+        <DropdownItem onclick={() => { /* replace */ }}>
           <Replace size={16} /> Replace <span class="shortcut">Ctrl+H</span>
         </DropdownItem>
       </DropdownContent>
@@ -111,13 +111,13 @@
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">View</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem on:click={() => toggleSidebar()}>
+        <DropdownItem onclick={() => toggleSidebar()}>
           <Sidebar size={16} /> Toggle Sidebar <span class="shortcut">Ctrl+B</span>
         </DropdownItem>
-        <DropdownItem on:click={() => toggleLayout()}>
+        <DropdownItem onclick={() => toggleLayout()}>
           <Layout size={16} /> Switch Layout ({$report.settings.layout})
         </DropdownItem>
-        <DropdownItem on:click={() => toggleFullscreen()}>
+        <DropdownItem onclick={() => toggleFullscreen()}>
           {#if $reportUI.fullscreen}
             <Minimize size={16} /> Exit Fullscreen
           {:else}
@@ -134,7 +134,7 @@
     <button
       class="action-button nes-btn"
       class:unsaved={$editorState.hasUnsavedChanges}
-      on:click={handleSave}
+      onclick={handleSave}
       title="Save Report"
     >
       <Save size={16} />
@@ -142,14 +142,14 @@
     <div class="separator"></div>
     <button
       class="action-button nes-btn"
-      on:click={toggleSidebar}
+      onclick={toggleSidebar}
       title="Toggle Sidebar"
     >
       <Sidebar size={16} />
     </button>
     <button
       class="action-button nes-btn"
-      on:click={toggleLayout}
+      onclick={toggleLayout}
       title="Switch Layout"
     >
       <Layout size={16} />
@@ -157,7 +157,7 @@
     <div class="separator"></div>
     <button
       class="action-button nes-btn"
-      on:click={handlePreview}
+      onclick={handlePreview}
       title="Preview Report"
     >
       <Eye size={16} />

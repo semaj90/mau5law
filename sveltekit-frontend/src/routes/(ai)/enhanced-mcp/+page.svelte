@@ -283,8 +283,8 @@ let passedTests = 0;
       </div>
     </div>
     <div class="action-buttons">
-      <button on:click={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
-      <button on:click={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
+      <button onclick={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
+      <button onclick={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
     </div>
   </div>
   <div class="main-integration">

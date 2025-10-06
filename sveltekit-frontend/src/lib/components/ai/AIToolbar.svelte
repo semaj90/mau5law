@@ -326,7 +326,7 @@
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Textarea
-            placeholder="Paste legal text to summarize...";
+            placeholder="Paste legal text to summarize..."
             bind:value={summarizeText}
             {disabled}
             rows="2"

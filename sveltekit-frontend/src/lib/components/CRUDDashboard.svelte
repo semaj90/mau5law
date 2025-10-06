@@ -23,12 +23,12 @@
   let users_list = $state<any[] >([]);
   // Loading states
   let loading = $state({
-    cases: false
-    evidence: false
-    reports: false
-    criminals: false
-    activities: false;
-    users: false;
+    cases: false,   // <-- added missing comma here
+    evidence: false,
+    reports: false,
+    criminals: false,
+    activities: false,
+    users: false,
   });
   // Statistics
   let stats = $state({
@@ -46,6 +46,7 @@
     reports: "",
     criminals: "",
     activities: "",
+    users: "" // <-- added missing 'users' property so searchTerms.users is valid
   });
   let refreshing = $state(false);
   // Fetch all data
@@ -162,11 +163,13 @@
   async function fetchUsers() {
     loading.users = true;
     try {
-      // removed unused response assignment
+      const response = await fetch(
+        `/api/users?limit=10&search=${searchTerms.users || ""}`
+      );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        users_list = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).users || data;
-  }
+        users_list = (data as { users?: any }).users || data;
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -231,15 +234,15 @@
 </script>
 <div class="crud-dashboard container mx-auto px-4">
   <!-- Header -->
-  <div class="space-y-4">
+  <div class="dashboard-header space-y-4">
     <div class="space-y-4">
-      <div class="space-y-4">
+      <div class="title-section">
         <h1>CRUD Dashboard</h1>
         <p>Comprehensive view of all database entities and operations</p>
       </div>
-      <div class="space-y-4">
+      <div class="header-content">
         <button
-          class="space-y-4"
+          class="refresh-btn"
           onclick={() => fetchAllData()}
           disabled={refreshing}
           title="Refresh all data"
@@ -294,7 +297,7 @@
     </div>
   </div>
   <!-- Main Content Grid -->
-  <div class="space-y-4">
+  <div class="content-grid space-y-4">
     <!-- Cases Section -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -302,8 +305,8 @@
           <FileText size={20} />
           Cases
         </h2>
-        <div class="space-y-4">
-          <div class="space-y-4">
+        <div class="header-content">
+          <div class="search-box">
             <Search size={16} />
             <input
               type="text"
@@ -311,9 +314,11 @@
               bind:value={searchTerms.cases} oninput={() => handleSearch("cases")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("cases")}>
-            <Plus size={16} />
-          </button>
+          <div class="section-actions">
+            <button class="refresh-btn" onclick={() => createNew("cases")}>
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
       </div>
       <div class="space-y-4">
@@ -354,18 +359,20 @@
           <Camera size={20} />
           Evidence
         </h2>
-        <div class="space-y-4">
-          <div class="space-y-4">
+        <div class="header-content">
+          <div class="search-box">
             <Search size={16} />
             <input
               type="text"
-              placeholder="Search evidence...";
+              placeholder="Search evidence..."
               bind:value={searchTerms.evidence} oninput={() => handleSearch("evidence")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("evidence")}>
-            <Plus size={16} />
-          </button>
+          <div class="section-actions">
+            <button class="refresh-btn" onclick={() => createNew("evidence")}>
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
       </div>
       <div class="space-y-4">
@@ -377,21 +384,20 @@
           {#each evidence as item}
             <div class="space-y-4">
               <div class="space-y-4">
-                <span class="space-y-4">{(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).title}</span>
-                <span class="space-y-4"
-                  >{(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).evidenceType}</span
-                >
+                <span class="space-y-4">{item.title}</span>
+                <span class="space-y-4">{item.evidenceType}</span>
               </div>
               <div class="space-y-4">
-                <span class="space-y-4">Type: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || "N/A"}</span>
-                <span class="space-y-4"
-                  >Size: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize
-                    ? `${Math.round.fileSize / 1024)}KB`
-                    : "N/A"}</span
-                >
-                <span class="space-y-4"
-                  >Uploaded: {formatDate((item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).uploadedAt)}</span
-                >
+                <span class="space-y-4">Type: {item.fileType || "N/A"}</span>
+                <span class="space-y-4">
+                  Size:
+                  {#if item.fileSize}
+                    {`${Math.round(item.fileSize / 1024)}KB`}
+                  {:else}
+                    N/A
+                  {/if}
+                </span>
+                <span class="space-y-4">Uploaded: {formatDate(item.uploadedAt)}</span>
               </div>
             </div>
           {/each}
@@ -410,8 +416,8 @@
           <FileText size={20} />
           Reports
         </h2>
-        <div class="space-y-4">
-          <div class="space-y-4">
+        <div class="header-content">
+          <div class="search-box">
             <Search size={16} />
             <input
               type="text"
@@ -419,9 +425,11 @@
               bind:value={searchTerms.reports} oninput={() => handleSearch("reports")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("reports")}>
-            <Plus size={16} />
-          </button>
+          <div class="section-actions">
+            <button class="refresh-btn" onclick={() => createNew("reports")}>
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
       </div>
       <div class="space-y-4">
@@ -464,8 +472,8 @@
           <Activity size={20} />
           Activities
         </h2>
-        <div class="space-y-4">
-          <div class="space-y-4">
+        <div class="header-content">
+          <div class="search-box">
             <Search size={16} />
             <input
               type="text"
@@ -473,9 +481,11 @@
               bind:value={searchTerms.activities} oninput={() => handleSearch("activities")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("activities")}>
-            <Plus size={16} />
-          </button>
+          <div class="section-actions">
+            <button class="refresh-btn" onclick={() => createNew("activities")}>
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
       </div>
       <div class="space-y-4">
@@ -517,24 +527,24 @@
           Quick Actions
         </h2>
       </div>
-      <div class="space-y-4">
-        <button class="space-y-4" onclick={() => createNew("cases")}>
-          <FileText size={24} />
-          <span>New Case</span>
-        </button>
-        <button class="space-y-4" onclick={() => createNew("evidence")}>
-          <Camera size={24} />
-          <span>Add Evidence</span>
-        </button>
-        <button class="space-y-4" onclick={() => createNew("reports")}>
-          <FileText size={24} />
-          <span>Create Report</span>
-        </button>
-        <button class="space-y-4" onclick={() => viewAll("activities")}>
-          <Clock size={24} />
-          <span>View Tasks</span>
-        </button>
-      </div>
+      <div class="actions-grid space-y-4">
+        <button class="refresh-btn" onclick={() => createNew("cases")}>
+           <FileText size={24} />
+           <span>New Case</span>
+         </button>
+        <button class="refresh-btn" onclick={() => createNew("evidence")}>
+           <Camera size={24} />
+           <span>Add Evidence</span>
+         </button>
+        <button class="refresh-btn" onclick={() => createNew("reports")}>
+           <FileText size={24} />
+           <span>Create Report</span>
+         </button>
+        <button class="refresh-btn" onclick={() => viewAll("activities")}>
+           <Clock size={24} />
+           <span>View Tasks</span>
+         </button>
+       </div>
       <!-- System Status -->
       <div class="space-y-4">
         <h3>System Status</h3>

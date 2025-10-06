@@ -22,23 +22,25 @@
   import { validateSecurity } from '$lib/clients/securityOrchestrator';
   import { z } from 'zod';
   // Enhanced registration schema for legal professionals
-  const registerSchema = z.object.email('Please enter a valid email address'),
-    firstName: z.string.min(2, 'First name must be at least 2 characters'),
-    lastName: z.string.min(2, 'Last name must be at least 2 characters'),
-    password: z.string.min(12, 'Password must be at least 12 characters')
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-        'Password must include uppercase, lowercase, number, and special character'),
+  const registerSchema = z.object({
+    email: z.string().email('Please enter a valid email address'),
+    firstName: z.string().min(2, 'First name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+    password: z.string().min(12, 'Password must be at least 12 characters').regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
+      'Password must include uppercase, lowercase, number, and special character'
+    ),
     confirmPassword: z.string(),
     role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
-    department: z.string.min(2, 'Department is required'),
-    jurisdiction: z.string.min(2, 'Jurisdiction is required'),
+    department: z.string().min(2, 'Department is required'),
+    jurisdiction: z.string().min(2, 'Jurisdiction is required'),
     badgeNumber: z.string().optional(),
-    agreeToTerms: z.boolean.refine(val => val === true, 'You must agree to the terms'),
-    agreeToPrivacy: z.boolean.refine(val => val === true, 'You must agree to privacy policy'),
-    enableTwoFactor: z.boolean.default(false);
-  }).refine((data) => (data as { password?: any; confirmPassword?: any }).password === (data as { password?: any; confirmPassword?: any }).confirmPassword, {
+    agreeToTerms: z.boolean().refine((val) => val === true, { message: 'You must agree to the terms' }),
+    agreeToPrivacy: z.boolean().refine((val) => val === true, { message: 'You must agree to privacy policy' }),
+    enableTwoFactor: z.boolean().default(false)
+  }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ['confirmPassword']
   });
   interface Props {
     data: any;
@@ -73,7 +75,7 @@
   // Superform setup
   const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {
     validators: zod(registerSchema),
-    resetForm: false
+    resetForm: false,
     delayMs: 300,
     timeoutMs: 15000,
     onSubmit: async ({ formData, cancel }) => {
@@ -94,19 +96,19 @@
             task: 'security_validation',
             fingerprint: fingerprint.raw, // send structured raw fingerprint object;
             user: {
-              email: userEmail;
+              email: userEmail,
               username: `${firstName}.${lastName}`.toLowerCase(),
-              requestedRole: role;
+              requestedRole: role,
               department: formData.get('department'),
               jurisdiction: formData.get('jurisdiction'),
-              badgeNumber: formData.get('badgeNumber');
+              badgeNumber: formData.get('badgeNumber'),
             },
             context: {
               action: 'registration_attempt',
-              enhancedValidation: true
-              legalProfessionalCheck: true
+              enhancedValidation: true,
+              legalProfessionalCheck: true,
               clientTimestamp: new Date().toISOString(),
-              userAgent: navigator.userAgent;
+              userAgent: navigator.userAgent,
             }
           });
           securityScore = validationResponse.securityScore || 0;
@@ -142,8 +144,8 @@
             userAgent: navigator.userAgent,
             platform: navigator.platform,
             language: navigator.language,
-            timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
-            securityScor;
+            timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
+            securityScore: securityScore
           }
         }
       });
@@ -173,7 +175,7 @@
   }
   // Enhanced device fingerprinting for registration
   // Updated to return structured raw data plus encoded string for future auditing
-  async function generateRegistrationFingerprint(): Promise {
+  async function generateRegistrationFingerprint(): Promise<any> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -188,12 +190,12 @@
       platform: navigator.platform,
       screenResolution: `${screen.width}x${screen.height}`,
       colorDepth: screen.colorDepth,
-      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
+      timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
       canvas: canvas.toDataURL(),
       cookieEnabled: navigator.cookieEnabled,
       onlineStatus: navigator.onLine,
       doNotTrack: navigator.doNotTrack,
-      hardwareConcurrency: navigator.hardwareConcurrency;
+      hardwareConcurrency: navigator.hardwareConcurrency,
     }
     return { raw, encoded: btoa(JSON.stringify(raw)) }
   }
@@ -361,7 +363,7 @@
         line-height: 1.1rem;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsi;
+        text-overflow: ellipsis;
       }
       :global(.nes-retro-panel .line.status) {
         color: #2563eb;
@@ -383,7 +385,7 @@
             id="firstName"
             name="firstName"
             type="text"
-            placeholder="John";
+            placeholder="John"
             bind:value={$form.firstName}
             disabled={isLoading}
             class="input"
@@ -436,7 +438,7 @@
             id="badgeNumber"
             name="badgeNumber"
             type="text"
-            placeholder="12345";
+            placeholder="12345"
             bind:value={$form.badgeNumber}
             disabled={isLoading}
             class="input"
@@ -452,7 +454,7 @@
             id="department"
             name="department"
             type="text"
-            placeholder="District Attorney's Office";
+            placeholder="District Attorney's Office"
             bind:value={$form.department}
             disabled={isLoading}
             class="input"
@@ -548,7 +550,7 @@
         <label class="flex items-center space-x-2 text-sm">
           <Checkbox
             id="enableTwoFactor"
-            name="enableTwoFactor";
+            name="enableTwoFactor"
             bind:checked={$form.enableTwoFactor}
             disabled={isLoading}
           />
@@ -564,7 +566,7 @@
         <label class="flex items-center space-x-2 text-sm">
           <Checkbox
             id="agreeToPrivacy"
-            name="agreeToPrivacy";
+            name="agreeToPrivacy"
             bind:checked={$form.agreeToPrivacy}
             disabled={isLoading}
           />
@@ -580,7 +582,6 @@
           ? 'Creating your legal professional account, please wait'
           : 'Create legal professional account'}
         aria-describedby="submit-button-help"
-        role="button"
         tabindex={isLoading || $submitting ? -1 : 0}
         data-loading={isLoading || $submitting}
         data-nes-theme="legal-priority"
@@ -632,7 +633,10 @@
     font-family: 'Courier New', monospace;
     padding: 8px;
   }
-  :global($1) {
+  /* focus styles for inputs/selects/textarea */
+  :global(.nes-legal-register-form input:focus,
+          .nes-legal-register-form textarea:focus,
+          .nes-legal-register-form select:focus) {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 100, 200, 0.3);
   }
@@ -647,15 +651,16 @@
     transition: all 0.1s ease;
     text-transform: uppercase;
   }
-  :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {,
+  :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
   }
-  :global(.nes-legal-register-form .nes-btn:active:not(:disabled)) {,
+  :global(.nes-legal-register-form .nes-btn:active:not(:disabled)) {
     transform: translate(4px, 4px);
     box-shadow: none;
   }
-  :global($1) {
+  /* disabled button state */
+  :global(.nes-legal-register-form .nes-btn:disabled) {
     opacity: 0.6;
     cursor: not-allowed;
   }
@@ -666,7 +671,7 @@
     border-color: #1e40af;
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
   }
-  :global(.nes-legal-register-form .nes-legal-priority-medium:hover:not(:disabled)) {,
+  :global(.nes-legal-register-form .nes-legal-priority-medium:hover:not(:disabled)) {
     background: #2563eb;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
@@ -696,7 +701,8 @@
     border: 1px solid transparent;
     font-family: 'Courier New', monospace;
   }
-  :global($1) {
+  /* hover state for role option */
+  :global(.nes-legal-register-form .role-option:hover) {
     background: #f3f4f6;
     border-color: #000;
   }
@@ -718,4 +724,18 @@
     border-color: #dc2626;
     background: linear-gradient(45deg, #fef2f2, #fee2e2);
   }
+
+  /* NES retro panel fixes */
+  :global(.nes-retro-panel .panel-body) {
+    padding: 10px 14px 14px;
+    background: repeating-linear-gradient(0deg, #f8f8f8 0 22px, #f1f1f1 22px 44px);
+  }
+  :global(.nes-retro-panel .line) {
+    font-size: 0.75rem;
+    line-height: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
+

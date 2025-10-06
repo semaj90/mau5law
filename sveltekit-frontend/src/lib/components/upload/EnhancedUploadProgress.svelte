@@ -214,7 +214,7 @@
                 <h3 class="font-medium text-sm">{stage.name}</h3>
                 <Badge variant={
                   status === 'completed' ? 'default' :
-                  status === 'current' ? 'secondary' :
+                  status === 'current' ? 'info' :
                   status === 'error' ? 'destructive' :
                   'outline'
                 }>
@@ -287,7 +287,7 @@
                 <Badge variant="outline" class="text-xs">{node}</Badge>
               {/each}
               {#if uploadState.context.results.neo4jNodes.length > 5}
-                <Badge variant="secondary" class="text-xs">
+                <Badge variant="info" class="text-xs">
                   +{uploadState.context.results.neo4jNodes.length - 5} more
                 </Badge>
               {/if}
@@ -326,7 +326,7 @@
             <span class="font-medium">Status:</span>
             <Badge class="ml-2" variant={
               uploadState.context.rabbitMQ.processingStatus === 'completed' ? 'default' :
-              uploadState.context.rabbitMQ.processingStatus === 'processing' ? 'secondary' :
+              uploadState.context.rabbitMQ.processingStatus === 'processing' ? 'info' :
               uploadState.context.rabbitMQ.processingStatus === 'failed' ? 'destructive' :
               'outline'
             }>
