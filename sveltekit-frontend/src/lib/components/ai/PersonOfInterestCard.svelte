@@ -105,39 +105,39 @@
   </div>
   <div class="yorha-panel-content space-y-4">
     <!-- Basic Details -->
-    {#if person.details}
+    {#if pe(rson as CustomEvent).details}
       <div>
         <h4 class="font-medium text-sm text-gray-700 mb-2">Details</h4>
         <div class="grid grid-cols-2 gap-2 text-sm">
-          {#if person.details.age}
+          {#if pe(rson as CustomEvent).details.age}
             <div>
               <span class="text-gray-500">Age:</span>
-              <span class="ml-1 font-medium">{person.details.age}</span>
+              <span class="ml-1 font-medium">{pe(rson as CustomEvent).details.age}</span>
             </div>
           {/if}
-          {#if person.details.occupation}
+          {#if pe(rson as CustomEvent).details.occupation}
             <div class="col-span-2">
               <span class="text-gray-500">Occupation:</span>
-              <span class="ml-1 font-medium">{person.details.occupation}</span>
+              <span class="ml-1 font-medium">{pe(rson as CustomEvent).details.occupation}</span>
             </div>
           {/if}
-          {#if person.details.phone}
+          {#if pe(rson as CustomEvent).details.phone}
             <div class="col-span-2">
               <span class="text-gray-500">Phone:</span>
-              <span class="ml-1 font-mono text-sm">{person.details.phone}</span>
+              <span class="ml-1 font-mono text-sm">{pe(rson as CustomEvent).details.phone}</span>
             </div>
           {/if}
-          {#if person.details.address && showFullDetails}
+          {#if pe(rson as CustomEvent).details.address && showFullDetails}
             <div class="col-span-2">
               <span class="text-gray-500">Address:</span>
-              <span class="ml-1">{person.details.address}</span>
+              <span class="ml-1">{pe(rson as CustomEvent).details.address}</span>
             </div>
           {/if}
-          {#if person.details.aliases && person.details.aliases.length > 0}
+          {#if pe(rson as CustomEvent).details.aliases && pe(rson as CustomEvent).details.aliases.length > 0}
             <div class="col-span-2">
               <span class="text-gray-500">Aliases:</span>
               <div class="mt-1 flex flex-wrap gap-1">
-                {#each person.details.aliases as alias}
+                {#each pe(rson as CustomEvent).details.aliases as alias}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{alias}</span>
                 {/each}
               </div>

@@ -101,7 +101,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   // Handle citation save
   function handleCitationSave(_event: CustomEvent<Citation>) {
-    const citation = event.detail;
+    const citation = e(vent as CustomEvent).detail;
     if (editMode === 'create') {
       citations.update(items => [citation, ...items]);
     } else {
@@ -115,7 +115,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   // Handle citation deletion
   function handleCitationDelete(_event: CustomEvent<string>) {
-    const citationId = event.detail;
+    const citationId = e(vent as CustomEvent).detail;
     citations.update.id !== citationId));
     applyClientSideSort();
     showEditor = false;

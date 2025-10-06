@@ -19,8 +19,8 @@
   }
 
   function handleAIRequest(event: CustomEvent<any>) {
-    // event.detail contains the payload from the Dialog custom event
-    const payload = event.detail;
+    // e(vent as CustomEvent).detail contains the payload from the Dialog custom event
+    const payload = e(vent as CustomEvent).detail;
     // forward or handle payload via the store
     aiStore.update((state) => ({ ...state, lastRequest: payload }));
   }

@@ -150,7 +150,7 @@
   }
 
   function handleCaseCreated(event: CaseCreatedEvent) {
-    const newCase = event.detail.ca;
+    const newCase = e(vent as CustomEvent).detail.ca;
     showCaseModal = false;
     // Update recent activity
     recentActivity = [
@@ -167,7 +167,7 @@
     systemData.activeCases = systemData.activeCases + 1;
   }
   function handleCaseError(event: CustomEvent<{ message: string }>) {
-    console.error('Case creation error:', event.detail.message);
+    console.error('Case creation error:', e(vent as CustomEvent).detail.message);
     // You could add a notification system here
   }
 
@@ -225,7 +225,7 @@
       recentActivity = [{
         id: Date.now(),
         action: 'Search Query Executed',
-        target: `"${e.detail.title}"`,
+        target: `"${(e as CustomEvent).detail.title}"`,
         time: 'just now',
         type: 'ai'
       }, ...recentActivity.slice(0, 4)];

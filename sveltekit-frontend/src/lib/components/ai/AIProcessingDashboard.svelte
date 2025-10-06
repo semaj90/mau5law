@@ -51,10 +51,10 @@ https://svelte.dev/e/js_parse_error -->
   	];
   	// Event handlers
   	const handleProviderSelected = (_event: CustomEvent) => {
-  		selectedProvider = event.detail.provider;
+  		selectedProvider = e(vent as CustomEvent).detail.provider;
   	}
   	const handleStatusChanged = (_event: CustomEvent) => {
-  		console.log(`Provider ${event.detail.provider.name} status changed to ${event.detail.status}`);
+  		console.log(`Provider ${e(vent as CustomEvent).detail.provider.name} status changed to ${e(vent as CustomEvent).detail.status}`);
   	}
   	// Process single task
   	const processTask = async (taskTemplate: typeof demoTasks[0]) => {

@@ -111,7 +111,7 @@
 >
   <div class="flex items-start gap-3">
     <div class="flex-shrink-0">
-      <svelte:component this={evidenceIcon} class="h-6 w-6 text-gray-600" />
+      <evidenceIcon class="h-6 w-6 text-gray-600" />
     </div>
     <div class="flex-1 min-w-0">
       <h4 class="text-sm font-medium text-gray-900 truncate">

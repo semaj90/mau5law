@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import YoRHaHarvardButton from '$lib/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
   import YoRHaHarvardCard from '$lib/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
 </script>

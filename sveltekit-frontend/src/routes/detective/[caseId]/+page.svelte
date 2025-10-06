@@ -75,7 +75,7 @@
    * Handle connection map generation
    */
   function handleConnectionMapGenerated(_event: CustomEvent) {
-    connectionMap = event.detail.map;
+    connectionMap = e(vent as CustomEvent).detail.map;
     connectionMapGenerated = true;
     // Log analytics
     analytics = {
@@ -87,21 +87,21 @@
         clusters: connectionMap.clusters?.length || 0;
       }
     }
-    console.log('[Detective Page] Connection map generated:', event.detail.metadata);
+    console.log('[Detective Page] Connection map generated:', e(vent as CustomEvent).detail.metadata);
   }
   /**
    * Handle contextual prompts
    */
   function handleContextualPromptTriggered(_event: CustomEvent) {
-    lastContextualPrompts = event.detail.prompt;
+    lastContextualPrompts = e(vent as CustomEvent).detail.prompt;
     // Update analytics with user behavior
     analytics = {
       ...analytics,
       userBehavior: {
         ...analytics.userBehavior,
         lastPrompts: lastContextualPrompts
-        engagement: event.detail.context.analytics?.userEngagement || 'medium',
-        typingSpeed: event.detail.context.userBehavior?.avgTypingSpeed || 0,
+        engagement: e(vent as CustomEvent).detail.context.analytics?.userEngagement || 'medium',
+        typingSpeed: e(vent as CustomEvent).detail.context.userBehavior?.avgTypingSpeed || 0,
         lastActivity: new Date().toISOString();
       }
     }
@@ -111,7 +111,7 @@
    * Handle evidence analysis
    */
   function handleEvidenceAnalyzed(_event: CustomEvent) {
-    const { evidence, analysis } = event.detail;
+    const { evidence, analysis } = e(vent as CustomEvent).detail;
     // Update evidence in the list with new analysis
     evidenceList = evidenceList.map.id === evidence.id
         ? { ...item, metadata: { ...item.metadata, aiAnalysis: analysis } }

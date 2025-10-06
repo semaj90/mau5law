@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <style>
 	.llm-provider-selector {
-		@apply relative;
+/* @apply relative; */
 	}
 	/* Scan line animation for cyberpunk theme */
 	@keyframes scan {

@@ -40,7 +40,8 @@ $effect(() => {
   let timelineLoading = $state(false);
   let showTimeline = $state(false);
   let evidenceReports = $state<any[]>([]);
-  let ragAnalysisResults = $state<any[]>([]);
+  // ragAnalysisResults comes back as an object with a 'persons' array; type as any (not any[])
+  let ragAnalysisResults = $state<any>({});
 
   // User Activity Timeline State
   let userActivityTimeline = $state<any[]>([]);
@@ -102,8 +103,8 @@ $effect(() => {
     error = '';
 
     try {
-      // Use proper Server-Sent Events (SSE) endpoint
-      const eventSource = new EventSource('/api/ai/chat-sse');
+      // removed unused EventSource to avoid unused variable and confusion
+      // const eventSource = new EventSource('/api/ai/chat-sse');
 
       // Send message data via POST first to initiate the stream
       const initResponse = await fetch('/api/ai/chat-sse', {
@@ -389,42 +390,30 @@ $effect(() => {
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button
-            class="bits-btn justify-start"
-            variant="secondary"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+          <button
+            class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
-            ariaLabel="Explain contract formation requirements"
-          >
-            Contract Law
-          </Button>
-          <Button
-            class="bits-btn justify-start"
-            variant="secondary"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            aria-label="Explain contract formation requirements"
+          >Contract Law</button>
+          <button
+            class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
-            ariaLabel="What is the chain of custody for evidence?"
-          >
-            Evidence Rules
-          </Button>
-          <Button
-            class="bits-btn justify-start"
-            variant="secondary"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            aria-label="What is the chain of custody for evidence?"
+          >Evidence Rules</button>
+          <button
+            class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
-            ariaLabel="Explain liability limitations in contracts"
-          >
-            Liability
-          </Button>
-          <Button
-            class="bits-btn justify-start"
-            variant="secondary"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            aria-label="Explain liability limitations in contracts"
+          >Liability</button>
+          <button
+            class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
-            ariaLabel="What are the elements of negligence?"
-          >
-            Tort Law
-          </Button>
+            aria-label="What are the elements of negligence?"
+          >Tort Law</button>
         </div>
       </CardContent>
     </Card>
@@ -439,9 +428,12 @@ $effect(() => {
               <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                 {isStreaming ? 'Streaming...' : 'Ready'}
               </span>
-              <Button variant="secondary" class="bits-btn bits-nes-btn" onclick={clearChat} disabled={isStreaming} ariaLabel="Clear chat">
-                Clear
-              </Button>
+              <button
+                class="bits-btn bits-nes-btn px-3 py-1 rounded-md text-sm"
+                on:click={clearChat}
+                disabled={isStreaming}
+                aria-label="Clear chat"
+              >Clear</button>
             </div>
           </CardHeader>
           <CardContent class="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 border rounded-lg p-4">
@@ -493,11 +485,11 @@ $effect(() => {
                 class="flex-1 p-2 border rounded-md"
                 placeholder="Ask a legal question..."
               />
-              <Button
-                onclick={sendMessage}
+              <button
+                on:click={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
-                class="px-6 bits-btn"
-                ariaLabel="Send message"
+                class="px-6 bits-btn rounded-md"
+                aria-label="Send message"
               >
                 {#if isStreaming}
                   <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -506,7 +498,7 @@ $effect(() => {
                 {:else}
                   Send
                 {/if}
-              </Button>
+              </button>
             </div>
           </div>
         </Card>
@@ -519,16 +511,15 @@ $effect(() => {
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Persons of Interest Timeline
               </CardTitle>
-              <Button
-                variant="secondary"
-                onclick={() => showTimeline = false}
-                class="nes-btn bits-btn"
-                ariaLabel="Close timeline"
+              <button
+                on:click={() => showTimeline = false}
+                class="nes-btn bits-btn px-2 py-1 rounded-md"
+                aria-label="Close timeline"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-              </Button>
+              </button>
             </CardHeader>
             <CardContent class="space-y-4">
               {#each poiTimelineData as poi}
@@ -542,14 +533,11 @@ $effect(() => {
                         </span>
                       </div>
                     </div>
-                    <Button
-                      variant="secondary"
-                      onclick={() => selectPOI(poi)}
-                      class="nes-btn bits-btn"
-                      ariaLabel={`View details for ${poi.name}`}
-                    >
-                      View Details
-                    </Button>
+                    <button
+                      on:click={() => selectPOI(poi)}
+                      class="nes-btn bits-btn px-2 py-1 rounded-md"
+                      aria-label={`View details for ${poi.name}`}
+                    >View Details</button>
 
                   {#if poi.activities && poi.activities.length > 0}
                     <div class="space-y-2">
@@ -613,7 +601,8 @@ $effect(() => {
                   <div class="flex-1">
                     <div class="font-medium">{activity.action}</div>
                     <div class="text-sm text-gray-600">
-                      {activity.description || activity.details}
+                      <!-- fixed broken expression and safely access description/details -->
+                      {activity.description ?? activity.details ?? ''}
                     </div>
                   </div>
                   <div class="text-xs text-gray-500">
@@ -687,64 +676,65 @@ $effect(() => {
               <CardTitle class="font-semibold mb-3">Controls</CardTitle>
             </CardHeader>
             <CardContent class="space-y-3">
-              <Button
-            <CardContent class="space-y-3">
-              <Button
-                variant="secondary"
-                onclick={checkSystemStatus}
-                class="w-full justify-start bits-btn"
+              <button
+                on:click={checkSystemStatus}
+                class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Refresh system status"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
                 Refresh Status
-              </Button>
-              <Button
-                class="bits-btn w-full justify-start"
-                variant="secondary"
-                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+              </button>
+
+              <button
+                class="bits-btn w-full justify-start px-3 py-2 rounded-md text-sm"
+                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
                 </svg>
                 Health Report
-              </Button>
-              <Button
-                variant="secondary"
-                class="w-full justify-start bits-btn"
-                onclick={analyzePersonsOfInterest}
+              </button>
+
+              <button
+                class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
+                on:click={analyzePersonsOfInterest}
                 disabled={timelineLoading}
-                ariaLabel="Analyze evidence"
+                aria-label="Analyze evidence"
               >
                 {#if timelineLoading}
                   <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                   </svg>
+                  Analyzing...
                 {:else}
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                   </svg>
+                  Analyze Evidence
                 {/if}
-                Analyze Evidence
-              </Button>
-              <Button
-                variant="secondary"
-                onclick={generateUserActivityTimeline}
+              </button>
+
+              <button
+                on:click={generateUserActivityTimeline}
                 disabled={activityLoading}
-                class="w-full justify-start bits-btn"
-                ariaLabel="Generate user activity timeline"
+                class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
+                aria-label="Generate user activity timeline"
               >
+                {#if activityLoading}
+                  <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                   </svg>
+                  Generating...
                 {:else}
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                   </svg>
+                  User Activity
                 {/if}
-                User Activity
-              </Button>
+              </button>
             </CardContent>
           </Card>
 
@@ -795,22 +785,25 @@ $effect(() => {
             {selectedPOI.type}
           </span>
           <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-            Confidence: {Math.round(selectedPOI.confidence * 100)}%
+            Confidence: {Math.round((selectedPOI.confidence ?? 0) * 100)}%
           </span>
         </div>
       </div>
-      <Button
-        variant="secondary"
-        size="sm"
-        onclick={closePOIDetails}
-        </div>
+
+      <!-- corrected Close button markup -->
+      <div>
+        <button
+          class="px-2 py-1 rounded-md text-sm"
+          on:click={closePOIDetails}
+          aria-label="Close dialog"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
       </div>
-      <Button
-        variant="secondary"
-        onclick={closePOIDetails}
-        class="bits-btn"
-        ariaLabel="Close person of interest details"
-      >
+    </div>
+
     <!-- Modal Body -->
     <div class="space-y-6">
       <!-- Activity Timeline -->
@@ -893,6 +886,23 @@ $effect(() => {
 
     <!-- Modal Footer -->
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+      <button
+        on:click={closePOIDetails}
+        class="bits-btn px-3 py-2 rounded-md"
+        aria-label="Close person of interest details"
+      >Close</button>
+      <button
+        on:click={() => {
+          handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
+          closePOIDetails();
+        }}
+        disabled={isStreaming}
+        class="nes-btn is-primary bits-btn px-3 py-2 rounded-md"
+        aria-label="Ask AI about this person"
+      >Ask AI About This Person</button>
+    </div>
+  </Dialog>
+{/if}
       <Button
         variant="secondary"
         onclick={closePOIDetails}

@@ -92,7 +92,7 @@
   }
 
   function handleSearch(_event: CustomEvent) {
-    searchQuery = _event.detail.query;
+    searchQuery = _e(vent as CustomEvent).detail.query;
   }
 
   function handleItemClick(item: unknown) {

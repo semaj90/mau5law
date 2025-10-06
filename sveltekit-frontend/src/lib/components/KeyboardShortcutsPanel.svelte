@@ -278,6 +278,6 @@ $remoteCommands.length && remoteCommands.set([])}>
 {/if}
 <style>
   kbd {
-    @apply inline-block px-1 py-0.5 text-xs font-mono bg-gray-800 border border-gray-600 rounded;
+/* @apply inline-block px-1 py-0.5 text-xs font-mono bg-gray-800 border border-gray-600 rounded; */
   }
 </style>

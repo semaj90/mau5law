@@ -104,7 +104,7 @@
   }
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
-    const { file, position } = event.detail;
+    const { file, position } = e(vent as CustomEvent).detail;
     console.log('🔍 Evidence uploaded:', file.name, 'at position:', position);
     const newEvidence: EvidenceItem = {
       id: `evidence-${Date.now()}`,
@@ -120,7 +120,7 @@
     addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
   }
   function handleAnalysisComplete(_event: CustomEvent) {
-    const { fileId, analysis, confidence } = event.detail;
+    const { fileId, analysis, confidence } = e(vent as CustomEvent).detail;
     console.log('🧠 Analysis complete:', analysis);
     // Update evidence with analysis
     evidence = evidence.map((item) => {
@@ -138,7 +138,7 @@
     addChatMessage('assistant', `Analysis completed for ${fileId}: ${analysis.summary || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
   function handleDetectiveInsights(_event: CustomEvent) {
-    const { patterns, conflicts, relevance } = event.detail;
+    const { patterns, conflicts, relevance } = e(vent as CustomEvent).detail;
     console.log('🕵️ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
       addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis');

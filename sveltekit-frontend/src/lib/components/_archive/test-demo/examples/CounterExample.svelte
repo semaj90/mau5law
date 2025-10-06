@@ -1,6 +1,6 @@
 <!-- Example: Svelte 4 Style (Before Migration) -->
 <!--
-<script>
+<script lang="ts">
   // Svelte 5 runes are auto-imported
   // Svelte 4 reactive variables
   let { initialCount = 0 } = $props();

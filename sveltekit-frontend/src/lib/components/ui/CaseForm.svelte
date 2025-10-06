@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   let isFormDirty = $state(false);
   // Handle form changes
   function handleFormChange(_event: CustomEvent) {
-    const { values } = event.detail;
+    const { values } = e(vent as CustomEvent).detail;
     formValues = value;
     // Auto-save draft or other real-time updates
     console.log("Form values changed:", values);
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     // You can access formApi methods here if needed
   }
   async function handleSubmit(_event: CustomEvent) {
-    const { values, isValid } = event.detail
+    const { values, isValid } = e(vent as CustomEvent).detail
     if (!isValid) {
       return;
   }

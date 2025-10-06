@@ -5,7 +5,7 @@
  * Author: Claude Code Integration
  */
 export type SupportedArrayTypes = ArrayBuffer | Float32Array | Float64Array | Uint8Array | Int8Array | Uint16Array | Int16Array;
-}
+
 export interface QuantizationConfig {
   precision: 'fp32' | 'fp16' | 'int8' | 'uint8';
   scale?: number;
@@ -23,8 +23,7 @@ export interface ArrayConversionResult {
 /**
  * Ensures consistent Float32Array format for WebGPU operations
  * Fixes the common ArrayBuffer vs Float32Array mismatch issue
- */;
-export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
+ */ export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
   if (input instanceof Float32Array) {
     return input;
   }
@@ -57,42 +56,38 @@ export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
 /**
  * Quantizes Float32Array to FP16 (half precision) using Uint16Array storage
  * Reduces memory usage by 50% with minimal accuracy loss for AI models
- */;
-export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
+ */ export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
   const fp16Data = new Uint16Array(input.length);
   for (let i = 0; i < input.length; i++) {
     fp16Data[i] = floatToHalf(input[i]);
   }
   return {
-    data: fp16Data
+    data: fp16Data,
     originalSize: input.length * 4, // 32-bit floats
     compressedSize: fp16Data.length * 2, // 16-bit values
     compressionRatio: 2.0,
-    quantizationConfig: { precision: 'fp16' }
-  }
+    quantizationConfig: { precision: 'fp16' },
+  };
 }
 /**
  * Quantizes Float32Array to INT8 with dynamic range calculation
  * Reduces memory usage by 75% - ideal for embeddings and activations
  */
-export function quantizeToINT8(
-  input: Float32Array
-  config?: Partial<QuantizationConfig>;
-): ArrayConversionResult {
+export function quantizeToINT8(input: Float32Array, config?: Partial<QuantizationConfig>): ArrayConversionResult {
   // Calculate dynamic range if not provided
   let minVal = config?.minValue ?? Math.min(...input);
   let maxVal = config?.maxValue ?? Math.max(...input);
   // Avoid division by zero
   const range = Math.max(maxVal - minVal, 1e-8);
-  const scale = config?.scale ?? (254.0 / range); // Leave room for -127 to 127
+  const scale = config?.scale ?? 254.0 / range; // Leave room for -127 to 127
   const zeroPoint = config?.zeroPoint ?? Math.round(-minVal * scale - 127);
   const int8Data = new Int8Array(input.length);
   for (let i = 0; i < input.length; i++) {
     const quantized = Math.round(input[i] * scale + zeroPoint);
-    int8Data[i] = Math.max(-127, Math.min(127, quantized);
+    int8Data[i] = Math.max(-127, Math.min(127, quantized));
   }
   return {
-    data: int8Data
+    data: int8Data,
     originalSize: input.length * 4,
     compressedSize: int8Data.length * 1,
     compressionRatio: 4.0,
@@ -100,18 +95,15 @@ export function quantizeToINT8(
       precision: 'int8',
       scale,
       zeroPoint,
-      minValue: minVal
-      maxValue: maxVal
-    }
-  }
+      minValue: minVal,
+      maxValue: maxVal,
+    },
+  };
 }
 /**
  * Dequantizes INT8 back to Float32Array using stored quantization parameters
  */
-export function dequantizeINT8(
-  quantizedData: Int8Array
-  config: QuantizationConfig;
-): Float32Array {
+export function dequantizeINT8(quantizedData: Int8Array, config: QuantizationConfig): Float32Array {
   if (!config.scale) {
     throw new Error('Scale parameter required for INT8 dequantization');
   }
@@ -138,10 +130,10 @@ export function dequantizeFP16(fp16Data: Uint16Array): Float32Array {
  * Handles the common use case of preparing data for GPU upload
  */
 export function createWebGPUBuffer(
-  device: GPUDevice
-  data: SupportedArrayTypes;
-  usage: GPUBufferUsageFlags
-  quantization?: QuantizationConfig;
+  device: GPUDevice,
+  data: SupportedArrayTypes,
+  usage: GPUBufferUsageFlags,
+  quantization?: QuantizationConfig
 ): { buffer: GPUBuffer; conversionResult?: ArrayConversionResult } {
   let processedData: Float32Array | Int8Array | Uint8Array | Uint16Array;
   let conversionResult: ArrayConversionResult | undefined;
@@ -165,12 +157,12 @@ export function createWebGPUBuffer(
           processedData[i] = Math.round(Math.max(0, Math.min(1, float32Data[i])) * 255);
         }
         conversionResult = {
-          data: processedData
+          data: processedData,
           originalSize: float32Data.length * 4,
           compressedSize: processedData.length * 1,
           compressionRatio: 4.0,
-          quantizationConfig: quantization
-        }
+          quantizationConfig: quantization,
+        };
         break;
       default:
         processedData = float32Data;
@@ -182,7 +174,7 @@ export function createWebGPUBuffer(
   const buffer = device.createBuffer({
     size: processedData.byteLength,
     usage,
-    mappedAtCreation: true
+    mappedAtCreation: true,
   });
   // Copy data to buffer based on type
   const mappedRange = buffer.getMappedRange();
@@ -196,16 +188,16 @@ export function createWebGPUBuffer(
     new Uint16Array(mappedRange).set(processedData);
   }
   buffer.unmap();
-  return { buffer, conversionResult }
+  return { buffer, conversionResult };
 }
 /**
  * Batch processor for multiple arrays with consistent quantization
  * Useful for model weights, embeddings, and activation tensors
  */
 export function batchProcessArrays(
-  device: GPUDevice;
+  device: GPUDevice,
   arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
-  quantization?: QuantizationConfig;
+  quantization?: QuantizationConfig
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
   const results = new Map();
   for (const { name, data, usage } of arrays) {
@@ -218,7 +210,7 @@ export function batchProcessArrays(
 function floatToHalf(_value: number): number {
   const floatView = new Float32Array(1);
   const int32View = new Int32Array(floatView.buffer);
-  floatView[0] = value;
+  floatView[0] = _value;
   const x = int32View[0];
   let bits = (x >> 16) & 0x8000; // Sign bit
   let m = (x >> 12) & 0x07ff; // Mantissa
@@ -226,7 +218,7 @@ function floatToHalf(_value: number): number {
   if (e < 103) return bits;
   if (e > 142) {
     bits |= 0x7c00;
-    bits |= ((e == 255) ? 0 : 1) && (x & 0x007fffff);
+    bits |= (e == 255 ? 0 : 1) && x & 0x007fffff;
     return bits;
   }
   if (e < 113) {
@@ -239,28 +231,33 @@ function floatToHalf(_value: number): number {
   return bits;
 }
 function halfToFloat(_value: number): number {
-  const s = (value & 0x8000) >> 15;
-  const e = (value & 0x7c00) >> 10;
-  const f = value & 0x03ff;
+  const s = (_value & 0x8000) >> 15;
+  const e = (_value & 0x7c00) >> 10;
+  const f = _value & 0x03ff;
   if (e == 0) {
-    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10);
+    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10));
   } else if (e == 0x1f) {
-    return f ? NaN : ((s ? -1 : 1) * Infinity);
+    return f ? NaN : (s ? -1 : 1) * Infinity;
   }
-  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + (f / Math.pow(2, 10));
+  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10));
 }
 /**
  * Memory usage analyzer for optimization decisions
  */
 export function analyzeMemoryUsage(
-  original: SupportedArrayTypes;
+  original: SupportedArrayTypes,
   quantizations: QuantizationConfig[] = [
     { precision: 'fp32' },
     { precision: 'fp16' },
-    { precision: 'int8' },)
-    { precision: 'uint8' }
-  ];
-): Array< {
+    { precision: 'int8' },
+    { precision: 'uint8' },
+  ]
+): Array<{
+  precision: 'fp32' | 'fp16' | 'int8' | 'uint8';
+  sizeBytes: number;
+  compressionRatio: number;
+  estimatedAccuracyLoss: number;
+}> {
   const float32Data = ensureFloat32Array(original);
   const originalSize = float32Data.length * 4;
   return quantizations.map(config => {
@@ -288,7 +285,7 @@ export function analyzeMemoryUsage(
       precision: config.precision,
       sizeBytes,
       compressionRatio: originalSize / sizeBytes,
-      estimatedAccuracyLoss
-    }
+      estimatedAccuracyLoss,
+    };
   });
 }

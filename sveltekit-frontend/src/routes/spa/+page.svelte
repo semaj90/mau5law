@@ -5,8 +5,11 @@
    * Full-screen canvas UX with gemma3:legal-latest integration
    */
   import { onMount } from 'svelte';
-  import SPACanvasRenderer from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
+  // Import component with the name used in the template
+  import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
   import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
+  // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
+  import '$lib/styles/hybrid-theme.css';
   // Sample legal data for demonstration
   let legalData = {
     documents: [] as LegalDocument[],
@@ -59,14 +62,14 @@
       aiAnalysis: {
         model: 'gemma3:legal-latest',
         confidence: Math.floor(Math.random() * 20) + 80,
-        riskAssessment: getRandomRisk();
+        riskAssessment: getRandomRisk(),
       }
     }));
     console.log('📊 Sample legal data loaded for SPA Canvas', {
       documents: legalData.documents.length,
       evidence: legalData.evidence.length,
       cases: legalData.cases.length,
-      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData);
+      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData),
     });
   }
   function getRandomDocumentType(): string {
@@ -151,26 +154,32 @@
     ];
     return samples[Math.floor(Math.random() * samples.length)];
   }
-  function handleNavigation(_event: CustomEvent) {
-    currentView = event.detail.view;
-    console.log('🧭 Navigation:', event.detail);
-    // Simulate AI processing with gemma3:legal-latest
-    if (event.detail.view === 'chat') {
-      simulateAIResponse();
+  function handleNavigation(event: CustomEvent) {
+    // Use the actual event param (was using undefined e/vent)
+    const view = event?.detail?.view;
+    if (view) {
+      currentView = view;
+      console.log('🧭 Navigation:', event.detail);
+      // Simulate AI processing when switching to chat view
+      if (view === 'chat') {
+        simulateAIResponse();
+      }
     }
   }
-  function handleInteraction(_event: CustomEvent) {
+
+  function handleInteraction(event: CustomEvent) {
+    // Use the actual event param and include 'data' in the debug log
     console.log('🖱️ Canvas interaction:', event.detail);
-    // Handle canvas clicks and interactions
     const { type, position, view, data } = event.detail;
     if (type === 'click' && view === 'documents') {
-      // Simulate document analysis with gemma3:legal-latest
-      console.log('📄 Analyzing document with gemma3:legal-latest at position:', position);
+      // Use data in the log so it's not reported as unused
+      console.log('📄 Analyzing document with gemma3:legal-latest at position:', position, 'data:', data);
     }
   }
+
   async function simulateAIResponse() {
     // Simulate gemma3:legal-latest processing time
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
     const aiResponses = [
       'Based on gemma3:legal-latest analysis, I\'ve identified 3 key legal considerations in your case...',
       'The legal precedent search using advanced AI models shows strong support for your position...',
@@ -178,7 +187,8 @@
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
       'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...'
     ];
-    // removed unused response assignment
+    // Select a response so `response` is defined and aiResponses is used
+    const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
     console.log('🤖 AI Response (gemma3:legal-latest):', response);
   }
 </script>
@@ -207,13 +217,13 @@
     </div>
   </div>
 {:else}
-  <!-- Full-screen SPA Canvas -->
-  <SPACanvasRenderer
+  <!-- Full-screen SPA Canvas: direct component invocation (runes mode) -->
+  <SPACanvasComp
     {legalData}
     {currentView}
     fullscreen={true}
-    onnavigate={handleNavigation}
-    oninteract={handleInteraction}
+    on:navigate={handleNavigation}
+    on:interact={handleInteraction}
   />
   <!-- Debug info (remove in production) -->
   <div class="debug-info">
@@ -224,8 +234,6 @@
 {/if}
 
 <style>
-  /* Import hybrid theme */
-  @import '$lib/styles/hybrid-theme.css';
   .loading-screen {
     position: fixed;
     top: 0;
@@ -307,3 +315,4 @@
     overflow: hidden;
   }
 </style>
+

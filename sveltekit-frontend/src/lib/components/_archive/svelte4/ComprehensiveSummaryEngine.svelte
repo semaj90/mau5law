@@ -598,7 +598,7 @@ await initializeServiceWorker();
                 <div class="source-type">{source.type}</div>
                 <div class="source-contribution">{Math.round(source.contribution * 100)}%</div>
                 <div class="source-details">
-                  {#each Object.entries(source.details) as [key, value]}
+                  {#each Object.entries(so(urce as CustomEvent).details) as [key, value]}
                     <span>{key}: {value}</span>
                   {/each}
                 </div>
@@ -638,182 +638,182 @@ await initializeServiceWorker();
 
 <style>
   .comprehensive-summary-engine {
-    @apply max-w-6xl mx-auto p-6 space-y-6;
+/* @apply max-w-6xl mx-auto p-6 space-y-6; */
   }
   .engine-header {
-    @apply flex justify-between items-start pb-6 border-b border-gray-200;
+/* @apply flex justify-between items-start pb-6 border-b border-gray-200; */
   }
   .header-info h2 {
-    @apply text-2xl font-bold text-gray-900;
+/* @apply text-2xl font-bold text-gray-900; */
   }
   .btn-advanced {
-    @apply flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-color;
+/* @apply flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-color; */
   }
   .btn-advanced.active {
-    @apply bg-purple-100 text-purple-700;
+/* @apply bg-purple-100 text-purple-700; */
   }
   .advanced-panel {
-    @apply bg-gray-50 rounded-lg p-6 border border-gray-200;
+/* @apply bg-gray-50 rounded-lg p-6 border border-gray-200; */
   }
   .config-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+/* @apply grid grid-cols-1 md:grid-cols-3 gap-6; */
   }
   .config-group {
-    @apply flex flex-col gap-2;
+/* @apply flex flex-col gap-2; */
   }
   .config-group label {
-    @apply text-sm font-medium text-gray-700;
+/* @apply text-sm font-medium text-gray-700; */
   }
   .config-group input[type='number'],
   .config-group input[type='range'] {
-    @apply px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+/* @apply px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent; */
   }
   .config-toggles {
-    @apply flex flex-col gap-3;
+/* @apply flex flex-col gap-3; */
   }
   .config-toggles label {
-    @apply flex items-center gap-2 text-sm;
+/* @apply flex items-center gap-2 text-sm; */
   }
   .processing-status {
-    @apply bg-white rounded-lg border border-gray-200 p-6;
+/* @apply bg-white rounded-lg border border-gray-200 p-6; */
   }
   .status-header {
-    @apply flex justify-between items-center mb-4;
+/* @apply flex justify-between items-center mb-4; */
   }
   .current-step {
-    @apply text-lg font-medium text-gray-900 mb-2;
+/* @apply text-lg font-medium text-gray-900 mb-2; */
   }
   .progress-bar {
-    @apply w-full bg-gray-200 rounded-full h-2 mb-2;
+/* @apply w-full bg-gray-200 rounded-full h-2 mb-2; */
   }
   .progress-fill {
-    @apply bg-purple-600 h-2 rounded-full transition-all duration-300;
+/* @apply bg-purple-600 h-2 rounded-full transition-all duration-300; */
   }
   .progress-text {
-    @apply text-sm text-gray-600;
+/* @apply text-sm text-gray-600; */
   }
   .processing-controls {
-    @apply flex gap-2;
+/* @apply flex gap-2; */
   }
   .btn-primary {
-    @apply flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-color;
+/* @apply flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-color; */
   }
   .btn-secondary {
-    @apply flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-color;
+/* @apply flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-color; */
   }
   .btn-danger {
-    @apply flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-color;
+/* @apply flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-color; */
   }
   .error-message {
-    @apply flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700;
+/* @apply flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700; */
   }
   .pipeline-indicators {
-    @apply flex flex-wrap gap-4 mt-6;
+/* @apply flex flex-wrap gap-4 mt-6; */
   }
   .pipeline-step {
-    @apply flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-gray-600 transition-all;
+/* @apply flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-gray-600 transition-all; */
   }
   .pipeline-step.active {
-    @apply bg-green-100 text-green-700;
+/* @apply bg-green-100 text-green-700; */
   }
   .streaming-output {
-    @apply bg-gray-900 text-green-400 rounded-lg p-4;
+/* @apply bg-gray-900 text-green-400 rounded-lg p-4; */
   }
   .streaming-output h3 {
-    @apply text-white mb-4;
+/* @apply text-white mb-4; */
   }
   .streaming-content {
-    @apply max-h-96 overflow-y-auto space-y-2;
+/* @apply max-h-96 overflow-y-auto space-y-2; */
   }
   .stream-chunk {
-    @apply border-l-2 border-green-400 pl-4;
+/* @apply border-l-2 border-green-400 pl-4; */
   }
   .stream-chunk.llm {
-    @apply border-l-2 border-blue-400;
+/* @apply border-l-2 border-blue-400; */
   }
   .chunk-meta {
-    @apply flex gap-4 text-xs opacity-75 mb-1;
+/* @apply flex gap-4 text-xs opacity-75 mb-1; */
   }
   .synthesis-results {
-    @apply bg-white rounded-lg border border-gray-200 p-6;
+/* @apply bg-white rounded-lg border border-gray-200 p-6; */
   }
   .results-header {
-    @apply flex justify-between items-center mb-6 pb-4 border-b border-gray-200;
+/* @apply flex justify-between items-center mb-6 pb-4 border-b border-gray-200; */
   }
   .results-header h3 {
-    @apply text-xl font-bold text-gray-900;
+/* @apply text-xl font-bold text-gray-900; */
   }
   .results-actions {
-    @apply flex items-center gap-2;
+/* @apply flex items-center gap-2; */
   }
   .btn-export,
   .btn-share {
-    @apply flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-color;
+/* @apply flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-color; */
   }
   .results-content {
-    @apply space-y-6;
+/* @apply space-y-6; */
   }
   .summary-section,
   .insights-section,
   .actions-section,
   .nextsteps-section,
   .sources-section {
-    @apply space-y-3;
+/* @apply space-y-3; */
   }
   .summary-section h4,
   .insights-section h4,
   .actions-section h4,
   .nextsteps-section h4,
   .sources-section h4 {
-    @apply text-lg font-semibold text-gray-900;
+/* @apply text-lg font-semibold text-gray-900; */
   }
   .summary-text {
-    @apply text-gray-700 leading-relaxed;
+/* @apply text-gray-700 leading-relaxed; */
   }
   .confidence-indicator {
-    @apply inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium;
+/* @apply inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium; */
   }
   .insights-list,
   .actions-list,
   .nextsteps-list {
-    @apply space-y-2;
+/* @apply space-y-2; */
   }
   .insights-list li,
   .actions-list li,
   .nextsteps-list li {
-    @apply text-gray-700 leading-relaxed;
+/* @apply text-gray-700 leading-relaxed; */
   }
   .sources-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+/* @apply grid grid-cols-1 md:grid-cols-3 gap-4; */
   }
   .source-item {
-    @apply bg-gray-50 rounded-lg p-4;
+/* @apply bg-gray-50 rounded-lg p-4; */
   }
   .source-type {
-    @apply font-semibold text-gray-900 capitaliz;
+/* @apply font-semibold text-gray-900 capitaliz; */
   }
   .source-contribution {
-    @apply text-2xl font-bold text-purple-600;
+/* @apply text-2xl font-bold text-purple-600; */
   }
   .source-details {
-    @apply text-sm text-gray-600 space-y-1;
+/* @apply text-sm text-gray-600 space-y-1; */
   }
   .metrics-panel {
-    @apply bg-white rounded-lg border border-gray-200 p-6;
+/* @apply bg-white rounded-lg border border-gray-200 p-6; */
   }
   .metrics-panel h3 {
-    @apply text-lg font-semibold text-gray-900 mb-4;
+/* @apply text-lg font-semibold text-gray-900 mb-4; */
   }
   .metrics-grid {
-    @apply grid grid-cols-2 md:grid-cols-4 gap-4;
+/* @apply grid grid-cols-2 md:grid-cols-4 gap-4; */
   }
   .metric {
-    @apply text-center;
+/* @apply text-center; */
   }
   .metric-label {
-    @apply text-sm text-gray-600 mb-1;
+/* @apply text-sm text-gray-600 mb-1; */
   }
   .metric-value {
-    @apply text-2xl font-bold text-gray-900;
+/* @apply text-2xl font-bold text-gray-900; */
   }
 </style>

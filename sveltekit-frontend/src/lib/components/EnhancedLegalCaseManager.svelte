@@ -539,7 +539,7 @@ https://svelte.dev/e/js_parse_error -->
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-onclick={(e) => jumpToStep(e.detail)}
+        step-onclick={(e) => jumpToStep((e as CustomEvent).detail)}
     />
     <!-- Processing queue indicator -->
     {#if processingQueue.length > 0}

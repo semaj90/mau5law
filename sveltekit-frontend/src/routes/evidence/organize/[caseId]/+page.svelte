@@ -69,7 +69,7 @@ if (!caseId) {
    * Handle evidence reorganization
    */
   function handleEvidenceReorganized(_event: CustomEvent) {
-    const { evidence, organization } = event.detail;
+    const { evidence, organization } = e(vent as CustomEvent).detail;
     // Add to organization history
     organizationHistory = [{
       timestamp: new Date().toISOString(),
@@ -83,7 +83,7 @@ if (!caseId) {
    * Handle evidence selection
    */
   function handleEvidenceSelected(_event: CustomEvent) {
-    const { evidence, context } = event.detail;
+    const { evidence, context } = e(vent as CustomEvent).detail;
     if (selectedEvidence.find(e => e.id === evidence.id)) {
       selectedEvidence = selectedEvidence.filter(e => e.id !== evidence.id);
     } else {
@@ -95,7 +95,7 @@ if (!caseId) {
    * Handle organization mode changes
    */
   function handleOrganizationChanged(_event: CustomEvent) {
-    const { mode, structure } = event.detail;
+    const { mode, structure } = e(vent as CustomEvent).detail;
     // Update organization stats
     organizationStats = {
       ...organizationStats,

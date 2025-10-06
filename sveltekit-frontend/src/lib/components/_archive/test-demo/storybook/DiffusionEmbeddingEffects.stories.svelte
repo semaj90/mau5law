@@ -1,298 +1,335 @@
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
-<script>
-  // Svelte 5 runes are auto-imported
-</script>
-	import { onMount } from 'svelte';
-	import '../yorha/ps1.css';
-	let canva;
-	let webgpuDevice = null;
-	let diffusionPipeline = null;
-	let embeddingTexture = null;
-	let isWebGPUSupported = false;
-	let currentEffect = 'nomic-diffusion';
-	let intensity = 0.7;
-	let nomicEmbeddings = [];
-	let animationFrame = 0;
-	// Feature flags for experimental effects
-	let featureFlags = {
-		ps1FX: true
-		hybridMode: false
-		subsampleAA: true
-		dynamicParallax: true
-		anisotropicSim: false
-		webgpuAccel: false
-	}
-	// LOD system
-	let lodLevel = 'medium'; // low, medium, high
-	let deviceCapabilities = {
-		memory: navigator.deviceMemory || 4,
-		cores: navigator.hardwareConcurrency || 4,
-		gpu: 'unknown';
-	}
-	$effect(() => {
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import '../yorha/ps1.css';
+
+  // Consolidated script and fixes
+  let canva: HTMLCanvasElement | null = null;
+  let webgpuDevice: GPUDevice | null = null;
+  let diffusionPipeline: GPUComputePipeline | null = null;
+  let embeddingTexture: any = null;
+  let isWebGPUSupported = false;
+  let currentEffect = 'nomic-diffusion';
+  let intensity = 0.7;
+  let nomicEmbeddings: Array<{ id: number; vector: Float32Array; cluster: number; similarity: number }> = [];
+  let animationFrame = 0;
+  // Feature flags for experimental effects
+  let featureFlags = {
+    ps1FX: true,
+    hybridMode: false,
+    subsampleAA: true,
+    dynamicParallax: true,
+    anisotropicSim: false,
+    webgpuAccel: false
+  };
+  // LOD system
+  let lodLevel = 'medium'; // low, medium, high
+  let deviceCapabilities = {
+    memory: (navigator as any).deviceMemory || 4,
+    cores: navigator.hardwareConcurrency || 4,
+    gpu: 'unknown'
+  };
+
+  // Svelte effect (Svelte 5 rune-style)
+  $effect(() => {
     (async () => {
-await detectCapabilities();
-		await initWebGPU();
-		generateNomicEmbeddings();
-		startDiffusionLoop();
-		applyLODSettings();
+      await detectCapabilities();
+      await initWebGPU();
+      generateNomicEmbeddings();
+      startDiffusionLoop();
+      applyLODSettings();
     })();
   });
-	async function detectCapabilities() {
-		// Detect device capabilities for automatic LOD
-		const memory = deviceCapabilities.memory;
-		const cores = deviceCapabilities.core;
-		if (memory >= 8 && cores >= 8) {
-			lodLevel = 'high';
-		} else if (memory >= 4 && cores >= 4) {
-			lodLevel = 'medium';
-		} else {
-			lodLevel = 'low';
-		}
-		// Apply to HTML for CSS targeting
-		document.documentElement.setAttribute('data-hybrid-lod', lodLevel);
-		console.log(`🎯 Auto-detected LOD: ${lodLevel} (${memory}GB RAM, ${cores} cores)`);
-	}
-	async function initWebGPU() {
-		try {
-			if (!navigator.gpu) {
-				console.log('WebGPU not supported');
-				return;
-			}
-			const adapter = await navigator.gpu.requestAdapter({
-				powerPreference: 'high-performance'
-			});
-			if (!adapter) {
-				console.log('WebGPU adapter not available');
-				return;
-			}
-			webgpuDevice = await adapter.requestDevice({
-				requiredFeatures: [],
-				requiredLimits: });
-			isWebGPUSupported = true;
-			featureFlags.webgpuAccel = true;
-			deviceCapabilities.gpu = adapter.info?.description || 'WebGPU';
-			console.log('✅ WebGPU initialized:', adapter.info);
-			// Initialize diffusion pipeline
-			await createDiffusionPipeline();
-		} catch (error) {
-			console.warn('WebGPU initialization failed:', error);
-			isWebGPUSupported = false;
-		}
-	}
-	async function createDiffusionPipeline() {
-		if (!webgpuDevice) return;
-		// Create compute shader for nomic-embed-text style diffusion
-		const shaderCode = `
-			@group(0) @binding(0) var<storage, read_write> embeddings: array<f32>;
-			@group(0) @binding(1) var<uniform> params: vec4<f32>; // time, intensity, width, height
-			@compute @workgroup_size(8, 8)
-			fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
-				let index = global_id.x + global_id.y * u32(params.z);
-				if (index >= arrayLength(&embeddings)) { return, }
-				let time = params.x;
-				let intensity = params.y;
-				// Nomic-embed-text style: high-dimensional semantic diffusion
-				let embedding = embeddings[index];
-				let noise = sin(f32(index) * 0.1 + time) * 0.1;
-				let diffusion = cos(embedding * 3.14159 + time * 0.5) * intensity;
-				embeddings[index] = embedding + noise + diffusion * 0.05;
-			}
-		`;
-		const shaderModule = webgpuDevice.createShaderModule({
-			code: shaderCod;
-		});
-		diffusionPipeline = webgpuDevice.createComputePipeline({
-			layout: 'auto',
-			compute: {
-				module: shaderModule
-				entryPoint: 'main';
-			}
-		});
-		console.log('🧠 Diffusion pipeline created');
-	}
-	function generateNomicEmbeddings() {
-		// Generate pseudo nomic-embed-text embeddings (384D)
-		const numEmbeddings = 1000;
-		const dimensions = 384; // Nomic embed dimension
-		nomicEmbeddings = [];
-		for (let i = 0; i < numEmbeddings; i++) {
-			const embedding = new Float32Array(dimensions);
-			// Create semantic clusters (simulating real text embeddings)
-			const cluster = i % 5; // 5 semantic clusters
-			const baseValue = (cluster - 2) * 0.5; // Center around different values
-			for (let j = 0; j < dimensions; j++) {
-				// Add structured semantic information
-				const semanticWeight = Math.sin((j / dimensions) * Math.PI * 2) * 0.3;
-				const clusterNoise = (Math.random() - 0.5) * 0.2;
-				const globalNoise = (Math.random() - 0.5) * 0.1;
-				embedding[j] = baseValue + semanticWeight + clusterNoise + globalNoi;
-			}
-			nomicEmbeddings.push({
-				id: i
-				vector: embedding;
-				cluster: cluster;
-				similarity: Math.random();
-			});
-		}
-		console.log(`📊 Generated ${numEmbeddings} nomic-style embeddings`);
-	}
-	async function runWebGPUDiffusion() {
-		if (!diffusionPipeline || !webgpuDevice) return;
-		// Create buffer for embeddings
-		const embeddingData = new Float32Array(nomicEmbeddings.length * 384);
-		nomicEmbeddings.forEach((embed, i) => {
-			embeddingData.set(embed.vector, i * 384);
-		});
-		const embeddingBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true;
-		});
-		new Float32Array(embeddingBuffer.getMappedRange()).set(embeddingData);
-		embeddingBuffer.unmap();
-		// Parameters buffer
-		const paramsData = new Float32Array([
-			performance.now() / 1000, // time
-			intensity,                // intensity
-			Math.sqrt(nomicEmbeddings.length), // width
-			Math.sqrt(nomicEmbeddings.length)  // height
-		]);
-		const paramsBuffer = webgpuDevice.createBuffer({
-			size: paramsData.byteLength,
-			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-			mappedAtCreation: true;
-		});
-		new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
-		paramsBuffer.unmap();
-		// Create bind group
-		const bindGroup = webgpuDevice.createBindGroup({
-			layout: diffusionPipeline.getBindGroupLayout(0),
-			entries: [
-				{ binding: 0, resource: { buffer: embeddingBuffer } },
-				{ binding: 1, resource: { buffer: paramsBuffer } }
-			]
-		});
-		// Execute compute shader
-		const commandEncoder = webgpuDevice.createCommandEncoder();
-		const computePass = commandEncoder.beginComputePass();
-		computePass.setPipeline(diffusionPipeline);
-		computePass.setBindGroup(0, bindGroup);
-		computePass.dispatchWorkgroups(
-			Math.ceil(Math.sqrt(nomicEmbeddings.length) / 8),
-			Math.ceil(Math.sqrt(nomicEmbeddings.length) / 8)
-		);
-		computePass.end();
-		webgpuDevice.queue.submit([commandEncoder.finish()]);
-		// Read back results (for visualization)
-		const readBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ;
-		});
-		const copyEncoder = webgpuDevice.createCommandEncoder();
-		copyEncoder.copyBufferToBuffer(embeddingBuffer, 0, readBuffer, 0, embeddingData.byteLength);
-		webgpuDevice.queue.submit([copyEncoder.finish()]);
-		// Update embeddings with diffused values
-		await readBuffer.mapAsync(GPUMapMode.READ);
-		const resultData = new Float32Array(readBuffer.getMappedRange());
-		nomicEmbeddings.forEach((embed, i) => {
-			embed.vector = resultData.slice(i * 384, (i + 1) * 384);
-		});
-		readBuffer.unmap();
-		// Cleanup
-		embeddingBuffer.destroy();
-		paramsBuffer.destroy();
-		readBuffer.destroy();
-	}
-	function runCPUDiffusion() {
-		// Fallback CPU implementation
-		const time = performance.now() / 1000;
-		nomicEmbeddings.forEach((embed, i) => {
-			for (let j = 0; j < embed.vector.length; j++) {
-				const noise = Math.sin(i * 0.1 + time) * 0.1;
-				const diffusion = Math.cos(embed.vector[j] * 3.14159 + time * 0.5) * intensity;
-				embed.vector[j] += (noise + diffusion * 0.05) * 0.1;
-			}
-		});
-	}
-	function startDiffusionLoop() {
-		function animate() {
-			animationFrame++;
-			if (featureFlags.webgpuAccel && webgpuDevice) {
-				runWebGPUDiffusion();
-			} else {
-				runCPUDiffusion();
-			}
-			// Update visual effects every few frames
-			if (animationFrame % 3 === 0) {
-				updateVisualEffects();
-			}
-			requestAnimationFrame(animate);
-		}
-		animate();
-	}
-	function updateVisualEffects() {
-		// Apply PS1-style effects based on feature flags
-		const container = document.querySelector('.diffusion-container');
-		if (!container) return;
-		// Dynamic parallax
-		if (featureFlags.dynamicParallax) {
-			const scrollY = window.scrollY || 0;
-			const parallaxLayers = container.querySelectorAll('[data-parallax]');
-			parallaxLayers.forEach((layer, i) => {
-				const depth = parseFloat(layer.dataset.parallax) || (i + 1) * 0.1;
-				const transform = `translateY(${scrollY * depth}px) translateZ(${depth * 10}px)`;
-				layer.style.transform = transform;
-			});
-		}
-		// Anisotropic filtering simulation
-		if (featureFlags.anisotropicSim) {
-			container.style.filter = `blur(${0.5 + Math.sin(animationFrame * 0.1) * 0.2}px)`;
-		}
-		// Update embedding visualization
-		updateEmbeddingVisualization();
-	}
-	function updateEmbeddingVisualization() {/* JSX syntax converted to Svelte */}
-		viz.innerHTML = html;
-	}
-	function applyLODSettings() {
-		const root = document.documentElement;
-		// Apply LOD-specific settings
-		switch (lodLevel) {
-			case 'high':
-				featureFlags.ps1FX = true;
-				featureFlags.subsampleAA = true;
-				featureFlags.dynamicParallax = true;
-				featureFlags.anisotropicSim = true;
-				break;
-			case 'medium':
-				featureFlags.ps1FX = true;
-				featureFlags.subsampleAA = true;
-				featureFlags.dynamicParallax = true;
-				featureFlags.anisotropicSim = false;
-				break;
-			case 'low':
-				featureFlags.ps1FX = true;
-				featureFlags.subsampleAA = false;
-				featureFlags.dynamicParallax = false;
-				featureFlags.anisotropicSim = false;
-				break;
-		}
-		// Apply CSS classes based on flags
-		Object.entries.forEach(([flag, enabled]) => {
-			if (enabled) {
-				root.classList.add(`fx-${flag.replace(/([A-Z])/g, '-$1').toLowerCase()}`);
-			}
-		});
-	}
-	function toggleFeatureFlag(flag) {
-		featureFlags[flag] = !featureFlags[flag];
-		applyLODSettings();
-		console.log(`🎛️ Toggled ${flag}:`, featureFlags[flag]);
-	}
+
+  async function detectCapabilities() {
+    // Detect device capabilities for automatic LOD
+    const memory = deviceCapabilities.memory;
+    const cores = deviceCapabilities.cores;
+    if (memory >= 8 && cores >= 8) {
+      lodLevel = 'high';
+    } else if (memory >= 4 && cores >= 4) {
+      lodLevel = 'medium';
+    } else {
+      lodLevel = 'low';
+    }
+    // Apply to HTML for CSS targeting
+    document.documentElement.setAttribute('data-hybrid-lod', lodLevel);
+    console.log(`🎯 Auto-detected LOD: ${lodLevel} (${memory}GB RAM, ${cores} cores)`);
+  }
+
+  async function initWebGPU() {
+    try {
+      if (!(navigator as any).gpu) {
+        console.log('WebGPU not supported');
+        return;
+      }
+      const adapter = await (navigator as any).gpu.requestAdapter({
+        powerPreference: 'high-performance'
+      });
+      if (!adapter) {
+        console.log('WebGPU adapter not available');
+        return;
+      }
+      webgpuDevice = await adapter.requestDevice({
+        requiredFeatures: [],
+        requiredLimits: {}
+      });
+      isWebGPUSupported = true;
+      featureFlags.webgpuAccel = true;
+      deviceCapabilities.gpu = adapter?.name || 'WebGPU';
+      console.log('✅ WebGPU initialized:', adapter);
+      // Initialize diffusion pipeline
+      await createDiffusionPipeline();
+    } catch (error) {
+      console.warn('WebGPU initialization failed:', error);
+      isWebGPUSupported = false;
+    }
+  }
+
+  async function createDiffusionPipeline() {
+    if (!webgpuDevice) return;
+    // Create compute shader for nomic-embed-text style diffusion (WGSL)
+    const shaderCode = `
+      struct Params { time: f32; intensity: f32; width: f32; height: f32; };
+      @group(0) @binding(0) var<storage, read_write> embeddings: array<f32>;
+      @group(0) @binding(1) var<uniform> params: Params;
+      @compute @workgroup_size(8, 8)
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let width = u32(params.width);
+        let height = u32(params.height);
+        let index = global_id.x + global_id.y * width;
+        if (index >= width * height) { return; }
+        let time = params.time;
+        let intensity = params.intensity;
+        let embedding = embeddings[index];
+        let noise = sin(f32(index) * 0.1 + time) * 0.1;
+        let diffusion = cos(embedding * 3.14159 + time * 0.5) * intensity;
+        embeddings[index] = embedding + noise + diffusion * 0.05;
+      }
+    `;
+    const shaderModule = webgpuDevice.createShaderModule({
+      code: shaderCode
+    });
+    diffusionPipeline = webgpuDevice.createComputePipeline({
+      layout: 'auto',
+      compute: {
+        module: shaderModule,
+        entryPoint: 'main'
+      }
+    });
+    console.log('🧠 Diffusion pipeline created');
+  }
+
+  function generateNomicEmbeddings() {
+    // Generate pseudo nomic-embed-text embeddings (384D)
+    const numEmbeddings = 1000;
+    const dimensions = 384; // Nomic embed dimension
+    nomicEmbeddings = [];
+    for (let i = 0; i < numEmbeddings; i++) {
+      const embedding = new Float32Array(dimensions);
+      // Create semantic clusters (simulating real text embeddings)
+      const cluster = i % 5; // 5 semantic clusters
+      const baseValue = (cluster - 2) * 0.5; // Center around different values
+      for (let j = 0; j < dimensions; j++) {
+        // Add structured semantic information
+        const semanticWeight = Math.sin((j / dimensions) * Math.PI * 2) * 0.3;
+        const clusterNoise = (Math.random() - 0.5) * 0.2;
+        const globalNoise = (Math.random() - 0.5) * 0.1;
+        embedding[j] = baseValue + semanticWeight + clusterNoise + globalNoise;
+      }
+      nomicEmbeddings.push({
+        id: i,
+        vector: embedding,
+        cluster,
+        similarity: Math.random()
+      });
+    }
+    console.log(`📊 Generated ${numEmbeddings} nomic-style embeddings`);
+  }
+
+  async function runWebGPUDiffusion() {
+    if (!diffusionPipeline || !webgpuDevice) return;
+    // Create buffer for embeddings
+    const embeddingData = new Float32Array(nomicEmbeddings.length * 384);
+    nomicEmbeddings.forEach((embed, i) => {
+      embeddingData.set(embed.vector, i * 384);
+    });
+    const embeddingBuffer = webgpuDevice.createBuffer({
+      size: embeddingData.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+      mappedAtCreation: true
+    });
+    new Float32Array(embeddingBuffer.getMappedRange()).set(embeddingData);
+    embeddingBuffer.unmap();
+    // Parameters buffer (time, intensity, width, height)
+    const side = Math.ceil(Math.sqrt(nomicEmbeddings.length));
+    const paramsData = new Float32Array([
+      performance.now() / 1000, // time
+      intensity,                // intensity
+      side,                     // width
+      side                      // height
+    ]);
+    const paramsBuffer = webgpuDevice.createBuffer({
+      size: paramsData.byteLength,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true
+    });
+    new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
+    paramsBuffer.unmap();
+    // Create bind group
+    const bindGroup = webgpuDevice.createBindGroup({
+      layout: diffusionPipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: embeddingBuffer } },
+        { binding: 1, resource: { buffer: paramsBuffer } }
+      ]
+    });
+    // Execute compute shader
+    const commandEncoder = webgpuDevice.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+    computePass.setPipeline(diffusionPipeline);
+    computePass.setBindGroup(0, bindGroup);
+    computePass.dispatchWorkgroups(
+      Math.ceil(side / 8),
+      Math.ceil(side / 8)
+    );
+    computePass.end();
+    webgpuDevice.queue.submit([commandEncoder.finish()]);
+    // Read back results (for visualization)
+    const readBuffer = webgpuDevice.createBuffer({
+      size: embeddingData.byteLength,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+    });
+    const copyEncoder = webgpuDevice.createCommandEncoder();
+    copyEncoder.copyBufferToBuffer(embeddingBuffer, 0, readBuffer, 0, embeddingData.byteLength);
+    webgpuDevice.queue.submit([copyEncoder.finish()]);
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const resultData = new Float32Array(readBuffer.getMappedRange().slice(0));
+    nomicEmbeddings.forEach((embed, i) => {
+      embed.vector = resultData.slice(i * 384, (i + 1) * 384);
+    });
+    readBuffer.unmap();
+    // Cleanup
+    embeddingBuffer.destroy();
+    paramsBuffer.destroy();
+    readBuffer.destroy();
+  }
+
+  function runCPUDiffusion() {
+    // Fallback CPU implementation
+    const time = performance.now() / 1000;
+    nomicEmbeddings.forEach((embed, i) => {
+      for (let j = 0; j < embed.vector.length; j++) {
+        const noise = Math.sin(i * 0.1 + time) * 0.1;
+        const diffusion = Math.cos(embed.vector[j] * 3.14159 + time * 0.5) * intensity;
+        embed.vector[j] += (noise + diffusion * 0.05) * 0.1;
+      }
+    });
+  }
+
+  function startDiffusionLoop() {
+    function animate() {
+      animationFrame++;
+      if (featureFlags.webgpuAccel && webgpuDevice) {
+        runWebGPUDiffusion();
+      } else {
+        runCPUDiffusion();
+      }
+      // Update visual effects every few frames
+      if (animationFrame % 3 === 0) {
+        updateVisualEffects();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  function updateVisualEffects() {
+    // Apply PS1-style effects based on feature flags
+    const container = document.querySelector('.diffusion-container');
+    if (!container) return;
+    // Dynamic parallax
+    if (featureFlags.dynamicParallax) {
+      const scrollY = window.scrollY || 0;
+      const parallaxLayers = container.querySelectorAll('[data-parallax]');
+      parallaxLayers.forEach((layer, i) => {
+        const depth = parseFloat((layer as HTMLElement).dataset.parallax || '') || (i + 1) * 0.1;
+        const transform = `translateY(${scrollY * depth}px) translateZ(${depth * 10}px)`;
+        (layer as HTMLElement).style.transform = transform;
+      });
+    }
+    // Anisotropic filtering simulation
+    if (featureFlags.anisotropicSim) {
+      (container as HTMLElement).style.filter = `blur(${0.5 + Math.sin(animationFrame * 0.1) * 0.2}px)`;
+    }
+    // Update embedding visualization
+    updateEmbeddingVisualization();
+  }
+
+  function updateEmbeddingVisualization() {
+    const viz = document.querySelector('.embedding-viz') as HTMLElement | null;
+    if (!viz) return;
+    // Simple visualization: render a subset of embedding points
+    viz.innerHTML = '';
+    const count = Math.min(200, nomicEmbeddings.length);
+    for (let i = 0; i < count; i++) {
+      const e = nomicEmbeddings[i];
+      const el = document.createElement('div');
+      el.className = 'embed-point';
+      // Map some vector values to X/Y for demo
+      const x = ((e.vector[0] || 0) + 1) * 50 + (i % 20) * 6;
+      const y = ((e.vector[1] || 0) + 1) * 50 + Math.floor(i / 20) * 6;
+      el.style.left = `${x % viz.clientWidth}px`;
+      el.style.top = `${y % viz.clientHeight}px`;
+      el.style.background = `rgba(${Math.floor(50 + (e.cluster / 5) * 200)}, ${Math.floor(150 - (e.cluster / 5) * 100)}, 255, 0.9)`;
+      viz.appendChild(el);
+    }
+  }
+
+  function applyLODSettings() {
+    const root = document.documentElement;
+    // Apply LOD-specific settings
+    switch (lodLevel) {
+      case 'high':
+        featureFlags.ps1FX = true;
+        featureFlags.subsampleAA = true;
+        featureFlags.dynamicParallax = true;
+        featureFlags.anisotropicSim = true;
+        break;
+      case 'medium':
+        featureFlags.ps1FX = true;
+        featureFlags.subsampleAA = true;
+        featureFlags.dynamicParallax = true;
+        featureFlags.anisotropicSim = false;
+        break;
+      case 'low':
+        featureFlags.ps1FX = true;
+        featureFlags.subsampleAA = false;
+        featureFlags.dynamicParallax = false;
+        featureFlags.anisotropicSim = false;
+        break;
+    }
+    // Apply CSS classes based on flags
+    Object.entries(featureFlags).forEach(([flag, enabled]) => {
+      const className = `fx-${flag.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+      if (enabled) {
+        root.classList.add(className);
+      } else {
+        root.classList.remove(className);
+      }
+    });
+  }
+
+  function toggleFeatureFlag(flag: string) {
+    // @ts-ignore
+    featureFlags[flag] = !featureFlags[flag];
+    applyLODSettings();
+    console.log(`🎛️ Toggled ${flag}:`, (featureFlags as any)[flag]);
+  }
 </script>
+
 <div class="diffusion-container ps1-scene" class:ps1-aa-soft={featureFlags.subsampleAA}>
 	<div class="story-header ps1-scanlines">
 		<h1 class="ps1-text-glow">🌊 Nomic Diffusion Effects</h1>
@@ -500,12 +537,12 @@ await detectCapabilities();
 		background: radial-gradient(ellipse at center, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 80%);
 		animation: pulse 3s ease-in-out infinite;
 	}
-	.ps1-layer-1 { animation-delay: 0s, }
-	.ps1-layer-2 { animation-delay: 1s, }
-	.ps1-layer-3 { animation-delay: 2s, }
+	.ps1-layer-1 { animation-delay: 0s; }
+	.ps1-layer-2 { animation-delay: 1s; }
+	.ps1-layer-3 { animation-delay: 2s; }
 	@keyframes pulse {
-		0%, 100% { opacity: 0.1; transform: scale(1), }
-		50% { opacity: 0.3; transform: scale(1.05), }
+		0%, 100% { opacity: 0.1; transform: scale(1); }
+		50% { opacity: 0.3; transform: scale(1.05); }
 	}
 	.stats-overlay {
 		position: absolute;

@@ -487,7 +487,7 @@ await initializeWebGPU();
               <h4 class="font-medium text-gray-800 mb-2">{(result as { step?: any; details?: any }).step}</h4>
               {#if typeof (result as { step?: any; details?: any }).details === 'string'}
                 <p class="text-sm text-gray-600">{(result as { step?: any; details?: any }).details}</p>
-              {:else if Array.isArray.details)}
+              {:else if Array.isA(rray as CustomEvent).details)}
                 <div class="space-y-2">
                   {#each (result as { step?: any; details?: any }).details as item}
                     <div class="text-sm bg-white p-2 rounded border">
@@ -502,7 +502,7 @@ await initializeWebGPU();
                 </div>
               {:else}
                 <div class="text-sm space-y-1">
-                  {#each Object.entries.details) as [key, value]}
+                  {#each Object.ent(ries as CustomEvent).details) as [key, value]}
                     <div class="flex justify-between">
                       <span class="font-medium text-gray-700">{key}:</span>
                       <span class="text-gray-600">

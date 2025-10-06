@@ -394,7 +394,7 @@ await embeddingsService.initialize();
 </div>
 <style>
   .evidence-canvas-container {
-    @apply w-full h-full;
+/* @apply w-full h-full; */
   }
   .bg-grid-pattern {
     background-image:

@@ -102,7 +102,7 @@
     mounted = true;
   });
   function handleCaseFormSuccess(_event: CustomEvent) {
-    console.log('Case created/updated:', event.detail);
+    console.log('Case created/updated:', e(vent as CustomEvent).detail);
     currentView = 'board';
   }
   function handleCaseFormCancel() {

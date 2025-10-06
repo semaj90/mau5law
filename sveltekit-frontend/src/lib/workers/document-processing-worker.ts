@@ -5,7 +5,6 @@ import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import fs from "fs";
 const schemaAny = schema as any;
-}
 export interface DocumentProcessingJob {
   documentId: string | number;
   s3Key: string;
@@ -35,7 +34,7 @@ export interface DocumentChunk {
     startPosition: number;
     endPosition: number;
     wordCount: number;
-  }
+  };
 }
 export interface EmbeddingResult {
   chunkId: string;
@@ -64,8 +63,9 @@ class DocumentProcessingWorker {
       await rabbitMQService.connect();
       // Start consuming jobs from the document processing queue (polling)
       this.startConsuming();
-    } catch (error: any) {
-      console.error('Failed to start document processing worker:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Failed to start document processing worker:', message);
       this.isRunning = false;
       throw error;
     }
@@ -90,15 +90,17 @@ class DocumentProcessingWorker {
         return;
       }
       try {
-        const queuedRecords = await db.select()
+        const queuedRecords = await db
+          .select()
           .from(schemaAny.document_processing)
-          .where(eq(schemaAny.document_processing.status, 'queued')
+          .where(eq(schemaAny.document_processing.status, 'queued'))
           .limit(5);
         for (const record of queuedRecords) {
           await this.processDocumentFromDB(record);
         }
-      } catch (error: any) {
-        console.error('Error checking for jobs:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Error checking for jobs:', message);
       }
     }, 5000);
   }
@@ -108,9 +110,10 @@ class DocumentProcessingWorker {
       return;
     }
     // Fetch document details
-    const docs = await db.select()
+    const docs = await db
+      .select()
       .from(schemaAny.documents)
-      .where(eq(schemaAny.documents.id, processingRecord.document_id)
+      .where(eq(schemaAny.documents.id, processingRecord.document_id))
       .limit(1);
     const document = docs && docs.length > 0 ? docs[0] : null;
     if (!document) {
@@ -131,12 +134,12 @@ class DocumentProcessingWorker {
       userId: document.user_id,
       processingType: 'full_analysis',
       priority: 5,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
     await this.processJob(job);
   }
   private async processJob(job: DocumentProcessingJob): Promise<void> {
-    const context: ProcessingContext = { job }
+    const context: ProcessingContext = { job };
     try {
       console.log(`📄 Processing document: ${job.documentId} (${job.originalName})`);
       // Update status to processing
@@ -157,13 +160,10 @@ class DocumentProcessingWorker {
       await this.updateProcessingStatus(job.documentId, 'completed', 'Document processing completed successfully');
       this.processedCount++;
       console.log(`✅ Successfully processed document: ${job.documentId}`);
-    } catch (error: any) {
-      console.error(`❌ Error processing document ${job.documentId}:`, error);
-      await this.updateProcessingStatus(
-        job.documentId,
-        'failed',
-        `Processing failed: ${error?.message ?? String(error)}`
-      );
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Error processing document ${job.documentId}:`, message);
+      await this.updateProcessingStatus(job.documentId, 'failed', `Processing failed: ${message}`);
       this.failedCount++;
     } finally {
       // Cleanup temp files
@@ -179,7 +179,9 @@ class DocumentProcessingWorker {
   private async downloadDocument(context: ProcessingContext): Promise<void> {
     console.log(`⬇️  Downloading document from S3: ${context.job.s3Key}`);
     // Simulate S3 download - in production, implement actual MinIO/S3 client
-    const response = await (globalThis as any).fetch(`http://localhost:9000/${context.job.s3Bucket}/${context.job.s3Key}`)
+    const response = await (globalThis as any).fetch(
+      `http://localhost:9000/${context.job.s3Bucket}/${context.job.s3Key}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to download document: ${response.statusText}`);
     }
@@ -234,18 +236,18 @@ class DocumentProcessingWorker {
     const chunkSize = 1000; // characters
     const overlap = 200;
     const chunks: DocumentChunk[] = [];
-    for (let i = 0; i < extractedText.length; i += (chunkSize - overlap)) {
+    for (let i = 0; i < extractedText.length; i += chunkSize - overlap) {
       const chunkContent = extractedText.slice(i, i + chunkSize);
       const chunkId = uuidv4();
       chunks.push({
-        id: chunkId
-        content: chunkContent;
+        id: chunkId,
+        content: chunkContent,
         metadata: {
           chunkIndex: chunks.length,
-          startPosition: i
+          startPosition: i,
           endPosition: Math.min(i + chunkSize, extractedText.length),
-          wordCount: chunkContent.split(/\s+/).filter(item => item.length)
-        }
+          wordCount: chunkContent.split(/\s+/).filter(item => item.length).length,
+        },
       });
     }
     context.chunks = chunks;
@@ -261,12 +263,12 @@ class DocumentProcessingWorker {
         const embeddingResponse = await (globalThis as any).fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: chunk.content
-          })
+            prompt: chunk.content,
+          }),
         });
         if (!embeddingResponse.ok) {
           console.warn(`Failed to generate embedding for chunk ${chunk.id}`);
@@ -276,7 +278,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text'
+          model: 'nomic-embed-text',
         });
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
@@ -299,11 +301,11 @@ class DocumentProcessingWorker {
         start_position: chunk.metadata.startPosition,
         end_position: chunk.metadata.endPosition,
         word_count: chunk.metadata.wordCount,
-        embedding: embedding ? embedding.embedding: null
-        embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null
+        embedding: embedding ? embedding.embedding : null,
+        embedding_model: embedding ? embedding?.model || 'unknown' : null,
         created_at: new Date(),
-        updated_at: new Date()
-      }
+        updated_at: new Date(),
+      };
       try {
         await db.insert(schemaAny.document_chunks).values(values);
       } catch (err) {
@@ -320,18 +322,18 @@ class DocumentProcessingWorker {
       const summaryResponse = await (globalThis as any).fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: `Please provide a comprehensive legal analysis and summary of the following document:\n\n${extractedText.slice(0, 4000)}`,
-          stream: false
+          stream: false,
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            max_tokens: 1000
-          }
-        })
+            max_tokens: 1000,
+          },
+        }),
       });
       if (!summaryResponse.ok) {
         throw new Error(`Failed to generate summary: ${summaryResponse.statusText}`);
@@ -346,7 +348,7 @@ class DocumentProcessingWorker {
         model_used: 'gemma3-legal',
         confidence_score: 0.85, // Mock confidence
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       });
     } catch (err) {
       console.warn('Summary generation failed:', err);
@@ -356,20 +358,22 @@ class DocumentProcessingWorker {
   }
   private async updateProcessingStatus(documentId: string | number, status: string, message?: string): Promise<void> {
     try {
-      await db.update(schemaAny.document_processing);
+      await db
+        .update(schemaAny.document_processing)
         .set({
           status,
-          status_message: message
-          updated_at: new Date()
+          status_message: message,
+          updated_at: new Date(),
         })
-        .where(eq(schemaAny.document_processing.document_id, documentId);
+        .where(eq(schemaAny.document_processing.document_id, documentId));
       // Also update main document status
-      await db.update(schemaAny.documents);
+      await db
+        .update(schemaAny.documents)
         .set({
-          status: status === 'completed' ? 'processed' : status
-          updated_at: new Date()
+          status: status === 'completed' ? 'processed' : status,
+          updated_at: new Date(),
         })
-        .where(eq(schemaAny.documents.id, documentId);
+        .where(eq(schemaAny.documents.id, documentId));
     } catch (err) {
       console.warn('Failed to update processing status:', err);
     }

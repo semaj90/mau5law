@@ -86,7 +86,7 @@
     }
   }
   function handleValueChange(_event: CustomEvent<string>) {
-    updateValue(event.detail);
+    updateValue(e(vent as CustomEvent).detail);
   }
 </script>
 

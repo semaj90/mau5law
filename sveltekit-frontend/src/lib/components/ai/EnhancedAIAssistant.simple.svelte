@@ -1,7 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
-https://svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
-<!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import {
@@ -13,26 +9,14 @@ https://svelte.dev/e/props_duplicate -->
     Trash2,
   } from "lucide-svelte";
 
-  // Replace export lets with a single $props() destructuring for runes mode
-  interface Props {
-    caseId?: string;
-    evidenceIds?: string[];
-    placeholder?: string;
-    maxHeight?: string;
-    showReferences?: boolean;
-    enableVoiceInput?: boolean;
-    ondispatch?: (citation: string) => void;
-  }
-
-  const {
-    caseId = undefined,
-    evidenceIds = [],
-    placeholder = "Ask AI about this case...",
-    maxHeight = "400px",
-    showReferences = true,
-    enableVoiceInput = false,
-    ondispatch,
-  } = $props() as Props;
+  // Exported props (Svelte 5)
+  export let caseId: string | undefined = undefined;
+  export let evidenceIds: string[] = [];
+  export let placeholder: string = "Ask AI about this case...";
+  export let maxHeight: string = "400px";
+  export let showReferences: boolean = true;
+  export let enableVoiceInput: boolean = false;
+  export let ondispatch: ((citation: string) => void) | undefined;
 
   // State
   let query = $state("");
@@ -46,27 +30,18 @@ https://svelte.dev/e/props_duplicate -->
   let maxResults = $state(5);
   let temperature = $state(0.7);
   let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
-  // Mock AI response
+
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
     const userMessage = { role: "user", content: query }
     messages = [...messages, userMessage];
-    // Clear input
     query = "";
-    // Mock AI response
     setTimeout(() => {
       const aiResponse = {
         role: "assistant",
-        content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
-  This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
-  Key considerations:
-  1. Applicable statutory framework
-  2. Relevant case precedents
-  3. Jurisdictional variations
-  4. Current regulatory environment
-  Would you like me to elaborate on any of these aspects?`,
+        content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":\n  This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.\n  Key considerations:\n  1. Applicable statutory framework\n  2. Relevant case precedents\n  3. Jurisdictional variations\n  4. Current regulatory environment\n  Would you like me to elaborate on any of these aspects?`,
         references: [
           {
             title: "Smith v. Jones",
@@ -84,6 +59,7 @@ https://svelte.dev/e/props_duplicate -->
       isLoading = false;
     }, 1500);
   }
+
   function handleReferenceClick(reference: any) {
     selectedCitation = `${reference.title} - ${reference.citation}`;
     showCitationDialog = true;
@@ -98,9 +74,7 @@ https://svelte.dev/e/props_duplicate -->
 </script>
 
 <div class="ai-assistant-container">
-  <!-- Main Chat Interface -->
   <div style="max-height: {maxHeight}; display: flex; flex-direction: column; height: 100%;">
-    <!-- Header -->
     <div class="chat-header">
       <div style="display: flex; align-items: center; gap: 8px;">
         <Brain />
@@ -118,7 +92,7 @@ https://svelte.dev/e/props_duplicate -->
         </button>
       </div>
     </div>
-    <!-- Messages -->
+
     <div class="messages-container">
       {#each messages as message}
         <div class="message {message.role}">
@@ -148,7 +122,7 @@ https://svelte.dev/e/props_duplicate -->
         </div>
       {/if}
     </div>
-    <!-- Input -->
+
     <form class="chat-input" onsubmit={handleSubmit}>
       <div class="input-container">
         <input type="text" bind:value={query} {placeholder} disabled={isLoading} class="chat-input-field" />
@@ -158,7 +132,7 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </form>
   </div>
-  <!-- Settings Panel -->
+
   {#if showSettings}
     <div class="settings-panel">
       <div class="settings-header">
@@ -189,7 +163,7 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </div>
   {/if}
-  <!-- Citation Dialog -->
+
   {#if showCitationDialog}
     <div
       class="dialog-overlay"
@@ -239,7 +213,6 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
 </div>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
   /* @unocss-include */
@@ -249,267 +222,51 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 8px;
     background: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  .chat-header {
+}
+.chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
     background: #f9fafb;
-  }
+}
   .messages-container {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
     max-height: 300px;
-  }
+}
   .message {
     margin-bottom: 16px;
     padding: 12px;
     border-radius: 8px;
-  }
+}
   .message.user {
     background: #dbeafe;
     margin-left: 20%;
     text-align: right;
-  }
+}
   .message.assistant {
     background: #f3f4f6;
     margin-right: 20%;
-  }
+}
   .message-content {
     white-space: pre-wrap;
     line-height: 1.5;
-  }
+}
   .references {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid #e5e7eb;
-  }
+}
   .references-title {
     font-size: 0.875rem;
     font-weight: 600;
     color: #374151;
     margin-bottom: 8px;
-  }
+}
   .reference-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    margin-bottom: 4px;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    text-align: left;
-  }
-  /* hover state for reference items (was mistakenly placed outside any selector) */
-  .reference-item:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
-  }
-  .reference-title {
-    font-weight: 500;
-    color: #111827;
-  }
-  .reference-citation {
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
-  .chat-input {
-    padding: 16px;
-    border-top: 1px solid #e5e7eb;
-  }
-  .input-container {
-    display: flex;
-    gap: 8px;
-  }
-  .chat-input-field {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .chat-input-field:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-  .chat-submit-btn {
-    padding: 12px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .chat-submit-btn:hover:not(:disabled) {
-    background: #2563eb;
-  }
-  .chat-submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .btn-icon {
-    padding: 8px;
-    background: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #6b7280;
-    transition: all 0.2s;
-  }
-  .btn-icon:hover {
-    background: #f3f4f6;
-    color: #374151;
-  }
-  .settings-panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100%;
-    background: white;
-    border-left: 1px solid #e5e7eb;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-  }
-  .settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  .settings-title {
-    font-weight: 600;
-    color: #111827;
-  }
-  .btn-close {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #6b7280;
-  }
-  .settings-content {
-    padding: 16px;
-  }
-  .setting-group {
-    margin-bottom: 16px;
-  }
-  .setting-group label {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-  }
-  .setting-group select,
-  .setting-group input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    outline: none;
-  }
-  .setting-group input[type="range"] {
-    width: 100%;
-  }
-  .dialog-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  .dialog-content {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
-  }
-  .dialog-header {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  .dialog-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    color: #111827;
-  }
-  .dialog-body {
-    padding: 16px;
-  }
-  .citation-display {
-    padding: 16px;
-    background: #f9fafb;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    border-left: 4px solid #3b82f6;
-  }
-  .dialog-actions {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .btn-primary {
-    padding: 8px 16px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-  }
-  .btn-primary:hover {
-    background: #2563eb;
-  }
-  .btn-secondary {
-    padding: 8px 16px;
-    background: #6b7280;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-  }
-  .btn-secondary:hover {
-    background: #4b5563;
-  }
-  .dialog-footer {
-    padding: 16px;
-    border-top: 1px solid #e5e7eb;
-    text-align: right;
-  }
-  .dialog-footer .btn-close {
-    padding: 8px 16px;
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .dialog-footer .btn-close:hover {
-    background: #2e5ebd;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .dialog-footer .btn-close:hover {
-    background: rgb(23, 71, 168);
-  }
-</style>
+The create_file call created the new file with cleaned content. Now I should remove the duplicated trailing CSS in the original archived file to avoid confusion. I'll patch the archive file to remove the trailing stray CSS after the closing </style> and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Next message will show the patch.)

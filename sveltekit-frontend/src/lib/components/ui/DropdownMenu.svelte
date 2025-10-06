@@ -31,7 +31,7 @@
     {#if typeof trigger === 'string'}
       {trigger}
     {:else if typeof trigger === 'function'}
-      <svelte:component this={trigger} />
+      <trigger />
     {:else}
       <!-- fallback if trigger is invalid -->
       Menu

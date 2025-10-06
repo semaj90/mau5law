@@ -203,7 +203,7 @@
     <CardHeader class="pb-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2 drag-handle cursor-grab active:cursor-grabbing">
-          <svelte:component this={iconComponent} class="w-4 h-4" />
+          <iconComponent class="w-4 h-4" />
           <CardTitle class="text-sm truncate">{evidence.title}</CardTitle>
         </div>
         <div class="flex items-center gap-1">
@@ -304,34 +304,34 @@
 </div>
 <style>
   .evidence-node {
-    @apply absolute cursor-pointer select-none;
+/* @apply absolute cursor-pointer select-none; */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .evidence-node:hover {
     transform: scale(1.02);
   }
   .evidence-node.selected {
-    @apply ring-2 ring-primary ring-opacity-75;
+/* @apply ring-2 ring-primary ring-opacity-75; */
   }
   .evidence-node.highlighted {
-    @apply ring-2 ring-yellow-400 ring-opacity-75;
+/* @apply ring-2 ring-yellow-400 ring-opacity-75; */
     animation: pulse-glow 1.5s ease-in-out infinite;
   }
   .evidence-node.dragging {
-    @apply z-50 rotate-2 scale-105;
+/* @apply z-50 rotate-2 scale-105; */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
   .evidence-node.document {
-    @apply border-l-4 border-l-blue-500;
+/* @apply border-l-4 border-l-blue-500; */
   }
   .evidence-node.image {
-    @apply border-l-4 border-l-green-500;
+/* @apply border-l-4 border-l-green-500; */
   }
   .evidence-node.video {
-    @apply border-l-4 border-l-purple-500;
+/* @apply border-l-4 border-l-purple-500; */
   }
   .evidence-node.audio {
-    @apply border-l-4 border-l-orange-500;
+/* @apply border-l-4 border-l-orange-500; */
   }
   @keyframes pulse-glow {
     0%, 100% {

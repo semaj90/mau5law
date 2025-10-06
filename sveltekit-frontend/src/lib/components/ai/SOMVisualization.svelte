@@ -500,10 +500,10 @@ await initializeSOMSystem();
 <style>
   /* @unocss-include */
   .som-visualization {
-    @apply max-w-6xl mx-auto p-6;
+/* @apply max-w-6xl mx-auto p-6; */
   }
   .loading-spinner {
-    @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spi;
+/* @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spi; */
   }
   .canvas-wrapper canvas {
     display: block;

@@ -1,5 +1,10 @@
 import crypto from "crypto";
-import type { Evidence } from '$lib/types';
+// TODO: Replace with proper import once types file is restored.
+// Temporary minimal Evidence shape to satisfy references below.
+export interface Evidence {
+	id: string;
+	[key: string]: any;
+}
 // ======================================================================
 // ENHANCED STATE MACHINES FOR LEGAL AI SYSTEM - FIXED VERSION
 // Building on existing autoTaggingMachine with advanced capabilities
@@ -7,11 +12,9 @@ import type { Evidence } from '$lib/types';
 import { assign, setup, fromPromise, createActor } from 'xstate';
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
-// Orphaned content: import type { Database, Evidence
 // ======================================================================
 // ENHANCED TYPES
 // ======================================================================
-}
 export interface EnhancedAIContext {
   // Core evidence processing
   selectedEvidence: Evidence | null;
@@ -114,8 +117,8 @@ type EvidenceEvent =
 // ======================================================================
 export const evidenceProcessingMachine = setup({
   types: {
-    context: { [key: string]: any } as EnhancedAIContext,
-    events: { [key: string]: any } as EvidenceEvent
+    context: {} as EnhancedAIContext,
+    events: {} as EvidenceEvent,
   },
   actors: {
     // Enhanced AI processing with multiple models
@@ -128,42 +131,38 @@ export const evidenceProcessingMachine = setup({
           fetch('/api/ai/embedding', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               content: input.evidence.description || input.evidence.title,
-              model: 'nomic-embed-text'
-            })
-          }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
+              model: 'nomic-embed-text',
+            }),
+          }).then((r: Response) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
           // AI tagging with enhanced context
           fetch('/api/ai/tag', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               evidence: input.evidence,
               context: 'legal_investigation',
-              enhance_tags: true
-            })
-          }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Tagging failed')))),
+              enhance_tags: true,
+            }),
+          }).then((r: Response) => (r.ok ? r.json() : Promise.reject(new Error('Tagging failed')))),
           // Deep AI analysis using local LLM
           fetch('/api/ai/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               evidence: input.evidence,
               analysis_type: 'comprehensive',
-              model: 'gemma3-legal'
-            })
-          }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Analysis failed'))))
+              model: 'gemma3-legal',
+            }),
+          }).then((r: Response) => (r.ok ? r.json() : Promise.reject(new Error('Analysis failed')))),
         ]);
         // Extract results, handling potential failures
         const embeddings =
-          embeddingResponse.status === 'fulfilled'
-            ? embeddingResponse.value:  { vector: [], confidence: 0 }
-        const tags =
-          taggingResponse.status === 'fulfilled'
-            ? taggingResponse.value:  { tags: [], confidence: 0 }
+          embeddingResponse.status === 'fulfilled' ? embeddingResponse.value : { vector: [], confidence: 0 };
+        const tags = taggingResponse.status === 'fulfilled' ? taggingResponse.value : { tags: [], confidence: 0 };
         const analysis =
-          analysisResponse.status === 'fulfilled'
-            ? analysisResponse.value:  { analysis: { [key: string]: any }, confidence: 0 }
+          analysisResponse.status === 'fulfilled' ? analysisResponse.value : { analysis: {}, confidence: 0 };
         const processingTime = Date.now() - startTime;
         return {
           evidenceId: input.evidence.id,
@@ -171,94 +170,79 @@ export const evidenceProcessingMachine = setup({
           tags: tags.tags || [],
           analysis: analysis.analysis || {},
           processingTime,
-          confidence: Math.min(
-            embeddings.confidence || 0,
-            tags.confidence || 0,
-            analysis.confidence || 0
-          ),
-          timestamp: new Date()
-        }
-      } catch (error: any) {
+          confidence: Math.min(embeddings.confidence || 0, tags.confidence || 0, analysis.confidence || 0),
+          timestamp: new Date(),
+        };
+      } catch (error: unknown) {
         throw new Error(`AI processing failed: ${(error as Error).message}`);
       }
     }),
     // Vector similarity search
     searchSimilarEvidence: fromPromise(async ({ input }: { input: { embeddings: number[]; limit?: number } }) => {
-        try {
-          const response = await fetch('/api/vector/search', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
-              vector: input.embeddings,
-              limit: input.limit || 10,
-              threshold: 0.7
-            })
-          });
-          if (!(response as { ok?: any; json?: any }).ok) throw new Error('Vector search failed');
-          return await (response as { ok?: any; json?: any }).json();
-        } catch (error: any) {
-          // Return empty results on failure
-          return { matches: [] }
-        }
+      try {
+        const response = await fetch('/api/vector/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vector: input.embeddings,
+            limit: input.limit || 10,
+            threshold: 0.7,
+          }),
+        });
+        if (!response.ok) throw new Error('Vector search failed');
+        return await response.json();
+      } catch (error: unknown) {
+        // Return empty results on failure
+        return { matches: [] };
       }
-    ),
+    }),
     // Graph relationship discovery
     discoverRelationships: fromPromise(async ({ input }: { input: { evidenceId: string } }) => {
       try {
         const response = await fetch(`/api/graph/discover/${input.evidenceId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             depth: 3,
-            relationship_types: ['references', 'involves', 'located_at', 'connected_to']
-          })
+            relationship_types: ['references', 'involves', 'located_at', 'connected_to'],
+          }),
         });
-        if (!(response as { ok?: any; json?: any }).ok) throw new Error('Relationship discovery failed');
-        return await (response as { ok?: any; json?: any }).json();
-      } catch (error: any) {
+        if (!response.ok) throw new Error('Relationship discovery failed');
+        return await response.json();
+      } catch (error: unknown) {
         // Return empty relationships on failure
-        return { nodes: [], connections: [] }
+        return { nodes: [], connections: [] };
       }
     }),
     // Health monitoring
     systemHealthCheck: fromPromise(async () => {
       try {
         const checks = await Promise.allSettled([
-          fetch('/api/ai/health/local')
-            .then((r) => r.json()
-            .catch(() => ({ status: 'down' })),
-          fetch('/api/vector/health')
-            .then((r) => r.json()
-            .catch(() => ({ status: 'down' })),
-          fetch('/api/graph/health')
-            .then((r) => r.json()
-            .catch(() => ({ status: 'down' })),
-          fetch('/api/cache/health')
-            .then((r) => r.json()
-            .catch(() => ({ status: 'down' }))
+          fetch('/api/ai/health/local').then(r => r.json().catch(() => ({ status: 'down' }))),
+          fetch('/api/vector/health').then(r => r.json().catch(() => ({ status: 'down' }))),
+          fetch('/api/graph/health').then(r => r.json().catch(() => ({ status: 'down' }))),
+          fetch('/api/cache/health').then(r => r.json().catch(() => ({ status: 'down' }))),
         ]);
-        const healthStatus = checks.every(
-          (check) => check.status === 'fulfilled' && check.value.status === 'healthy'
-        )
+        const healthStatus = checks.every(check => check.status === 'fulfilled' && check.value.status === 'healthy')
           ? 'healthy'
-          : checks.some((check) => check.status === 'fulfilled' && check.value.status === 'healthy')
+          : checks.some(check => check.status === 'fulfilled' && check.value.status === 'healthy')
             ? 'degraded'
             : 'critical';
-        return { health: healthStatus, details: checks }
-      } catch (error: any) {
-        return { health: 'critical', details: [], error: (error as Error).message }
+        return { health: healthStatus, details: checks };
+      } catch (error: unknown) {
+        return { health: 'critical', details: [], error: (error as Error).message };
       }
     }),
     syncCache: fromPromise(async () => {
       try {
-        // removed unused response assignment
-        if (!(response as { ok?: any; json?: any }).ok) throw new Error('Cache sync failed');
-        const result = await (response as { ok?: any; json?: any }).json();
-        return { cacheOperations: (result as { operations?: any }).operations || 0 }
-      } catch (error: any) {
-        return { cacheOperations: 0, error: (error as Error).message }
+        const response = await fetch('/api/cache/sync', { method: 'POST' });
+        if (!response.ok) throw new Error('Cache sync failed');
+        const result = await response.json();
+        return { cacheOperations: (result as { operations?: number }).operations || 0 };
+      } catch (error: unknown) {
+        return { cacheOperations: 0, error: (error as Error).message };
       }
-    })
+    }),
   },
   guards: {
     hasQueuedEvidence: ({ context }) => context.evidenceQueue.length > 0,
@@ -272,13 +256,13 @@ export const evidenceProcessingMachine = setup({
       if (!context.lastSync) return true;
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       return context.lastSync < fiveMinutesAgo;
-    }
-  }
+    },
+  },
 }).createMachine({
   id: 'evidenceProcessing',
   initial: 'idle',
   context: {
-    selectedEvidence: null
+    selectedEvidence: null,
     evidenceQueue: [],
     processingResults: new Map(),
     embeddings: new Map(),
@@ -287,7 +271,7 @@ export const evidenceProcessingMachine = setup({
     aiAnalysis: new Map(),
     graphRelationships: [],
     connectionStrength: new Map(),
-    streamingActive: false
+    streamingActive: false,
     liveUpdates: [],
     cacheHits: 0,
     processingTime: new Map(),
@@ -295,7 +279,7 @@ export const evidenceProcessingMachine = setup({
     retryAttempts: 0,
     retryQueue: [],
     systemHealth: 'healthy',
-    lastSync: null
+    lastSync: null,
   },
   states: {
     idle: {
@@ -304,20 +288,20 @@ export const evidenceProcessingMachine = setup({
           target: 'queueing',
           actions: assign({
             evidenceQueue: ({ context, event }) => [...context.evidenceQueue, event.evidence],
-            selectedEvidence: ({ event }) => event.evidence
-          })
+            selectedEvidence: ({ event }) => event.evidence,
+          }),
         },
         HEALTH_CHECK: {
-          target: 'monitoring'
+          target: 'monitoring',
         },
         SYNC_CACHE: {
           target: 'syncing',
-          guard: 'needsCacheSync'
-        }
-      }
+          guard: 'needsCacheSync',
+        },
+      },
     },
     queueing: {
-      always: [{ target: 'processing', guard: 'hasQueuedEvidence' }, { target: 'idle' }]
+      always: [{ target: 'processing', guard: 'hasQueuedEvidence' }, { target: 'idle' }],
     },
     processing: {
       initial: 'aiProcessing',
@@ -339,7 +323,7 @@ export const evidenceProcessingMachine = setup({
                     result: event.output,
                     confidence: event.output.confidence,
                     processingTime: event.output.processingTime,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                   });
                   return newResults;
                 },
@@ -362,8 +346,8 @@ export const evidenceProcessingMachine = setup({
                   const newTimes = new Map(context.processingTime);
                   newTimes.set(event.output.evidenceId, event.output.processingTime);
                   return newTimes;
-                }
-              })
+                },
+              }),
             },
             onError: {
               target: 'error',
@@ -377,13 +361,13 @@ export const evidenceProcessingMachine = setup({
                     message: (event.error as Error)?.message || 'Unknown error',
                     details: event.error,
                     timestamp: new Date(),
-                    resolved: false
-                    retryable: true
-                  }
-                ]
-              })
-            }
-          }
+                    resolved: false,
+                    retryable: true,
+                  },
+                ],
+              }),
+            },
+          },
         },
         vectorSearch: {
           invoke: {
@@ -392,18 +376,18 @@ export const evidenceProcessingMachine = setup({
               const currentEvidence = context.evidenceQueue[0];
               return {
                 embeddings: context.embeddings.get(currentEvidence.id) || [],
-                limit: 15
-              }
+                limit: 15,
+              };
             },
             onDone: {
               target: 'relationshipDiscovery',
               actions: assign({
-                vectorMatches: ({ event }) =>;
-                  (event.output.matches || []).map((match: any, index: number) => ({
+                vectorMatches: ({ event }) =>
+                  (event.output.matches || []).map((match: Omit<VectorMatch, 'rank'>, index: number) => ({
                     ...match,
-                    rank: index + 1
-                  }))
-              })
+                    rank: index + 1,
+                  })),
+              }),
             },
             onError: {
               target: 'relationshipDiscovery',
@@ -417,19 +401,19 @@ export const evidenceProcessingMachine = setup({
                     message: (event.error as Error)?.message || 'Unknown error',
                     details: event.error,
                     timestamp: new Date(),
-                    resolved: false
-                    retryable: true
-                  }
-                ]
-              })
-            }
-          }
+                    resolved: false,
+                    retryable: true,
+                  },
+                ],
+              }),
+            },
+          },
         },
         relationshipDiscovery: {
           invoke: {
             src: 'discoverRelationships',
             input: ({ context }) => ({
-              evidenceId: context.evidenceQueue[0].id
+              evidenceId: context.evidenceQueue[0].id,
             }),
             onDone: {
               target: 'complete',
@@ -437,12 +421,12 @@ export const evidenceProcessingMachine = setup({
                 graphRelationships: ({ event }) => event.output.nodes || [],
                 connectionStrength: ({ event }) => {
                   const strengthMap = new Map();
-                  (event.output.connections || []).forEach((conn: any) => {
+                  (event.output.connections || []).forEach((conn: GraphConnection & { from: string }) => {
                     strengthMap.set(`${conn.from}-${conn.to}`, conn.strength);
                   });
                   return strengthMap;
-                }
-              })
+                },
+              }),
             },
             onError: {
               target: 'complete',
@@ -456,13 +440,13 @@ export const evidenceProcessingMachine = setup({
                     message: (event.error as Error)?.message || 'Unknown error',
                     details: event.error,
                     timestamp: new Date(),
-                    resolved: false
-                    retryable: true
-                  }
-                ]
-              })
-            }
-          }
+                    resolved: false,
+                    retryable: true,
+                  },
+                ],
+              }),
+            },
+          },
         },
         complete: {
           always: [
@@ -470,10 +454,10 @@ export const evidenceProcessingMachine = setup({
               target: '#evidenceProcessing.queueing',
               actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
-                retryAttempts: 0
-              })
-            }
-          ]
+                retryAttempts: 0,
+              }),
+            },
+          ],
         },
         error: {
           on: {
@@ -481,19 +465,19 @@ export const evidenceProcessingMachine = setup({
               target: 'aiProcessing',
               guard: 'canRetry',
               actions: assign({
-                retryAttempts: ({ context }) => context.retryAttempts + 1
-              })
+                retryAttempts: ({ context }) => context.retryAttempts + 1,
+              }),
             },
             PROCESS_NEXT: {
               target: 'complete',
               actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
-                retryAttempts: 0
-              })
-            }
-          }
-        }
-      }
+                retryAttempts: 0,
+              }),
+            },
+          },
+        },
+      },
     },
     monitoring: {
       invoke: {
@@ -501,8 +485,8 @@ export const evidenceProcessingMachine = setup({
         onDone: {
           target: 'idle',
           actions: assign({
-            systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical'
-          })
+            systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical',
+          }),
         },
         onError: {
           target: 'idle',
@@ -516,13 +500,13 @@ export const evidenceProcessingMachine = setup({
                 message: 'Health check failed',
                 details: event.error,
                 timestamp: new Date(),
-                resolved: false
-                retryable: true
-              }
-            ]
-          })
-        }
-      }
+                resolved: false,
+                retryable: true,
+              },
+            ],
+          }),
+        },
+      },
     },
     syncing: {
       invoke: {
@@ -531,9 +515,8 @@ export const evidenceProcessingMachine = setup({
           target: 'idle',
           actions: assign({
             lastSync: new Date(),
-            cacheHits: ({ context, event }) =>
-              context.cacheHits + (event.output.cacheOperations || 0)
-          })
+            cacheHits: ({ context, event }) => context.cacheHits + (event.output.cacheOperations || 0),
+          }),
         },
         onError: {
           target: 'idle',
@@ -546,80 +529,77 @@ export const evidenceProcessingMachine = setup({
                 message: 'Cache sync failed',
                 details: event.error,
                 timestamp: new Date(),
-                resolved: false
-                retryable: true
-              }
-            ]
-          })
-        }
-      }
-    }
+                resolved: false,
+                retryable: true,
+              },
+            ],
+          }),
+        },
+      },
+    },
   },
   on: {
     CLEAR_ERRORS: {
       actions: assign({
-        errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true }))
-      })
+        errors: ({ context }) => context.errors.map(error => ({ ...error, resolved: true })),
+      }),
     },
     STREAM_RESULTS: {
       actions: assign({
         liveUpdates: ({ context, event }) => [...context.liveUpdates, ...event.updates],
-        streamingActive: true
-      })
-    }
-  }
+        streamingActive: true,
+      }),
+    },
+  },
 });
 // ======================================================================
 // SVELTE STORE INTEGRATIONS
 // ======================================================================
 export const evidenceProcessingStore = writable({
-  machine: null as any
+  machine: null as any,
   state: 'idle',
-  context: null as EnhancedAIContext | null
+  context: null as EnhancedAIContext | null,
 });
 // Derived stores for easy component access
 export const currentlyProcessingStore = derived(
   evidenceProcessingStore,
-  ($store) => $store.context?.evidenceQueue[0] || null
+  $store => $store.context?.evidenceQueue[0] || null
 );
-export const processingResultsStore = derived(evidenceProcessingStore, ($store) =>
+export const processingResultsStore = derived(evidenceProcessingStore, $store =>
   Array.from($store.context?.processingResults?.values?.() || [])
 );
-export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) => {
+export const aiRecommendationsStore = derived(evidenceProcessingStore, $store => {
   const analysis = $store.context?.aiAnalysis;
   if (!analysis) return [];
   return Array.from(analysis.values()).flatMap(
-    (a: any) =>;
-      a.suggestedActions?.map((action: string) => ({,
+    (a: any) =>
+      a.suggestedActions?.map((action: string) => ({
         id: crypto.randomUUID(),
         type: 'suggested_action',
-        content: action
+        content: action,
         confidence: a.confidenceScore,
-        source: a.processingModel
+        source: a.processingModel,
       })) || []
   );
 });
-export const vectorSimilarityStore = derived(
-  evidenceProcessingStore,
-  ($store) => $store.context?.vectorMatches || []
-);
+export const vectorSimilarityStore = derived(evidenceProcessingStore, $store => $store.context?.vectorMatches || []);
 export const graphRelationshipsStore = derived(
   evidenceProcessingStore,
-  ($store) => $store.context?.graphRelationships || []
+  $store => $store.context?.graphRelationships || []
 );
-export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
+export const systemHealthStore = derived(evidenceProcessingStore, $store => ({
   health: $store.context?.systemHealth || 'unknown',
   errors: $store.context?.errors?.filter((e: any) => !e.resolved) || [],
   cacheHits: $store.context?.cacheHits || 0,
-  lastSync: $store.context?.lastSync
-});
+  lastSync: $store.context?.lastSync,
+}));
 // Streaming store for real-time updates
 export const streamingStore = writable({
-  isStreaming: false
-  streamType: null as string | null
+  isStreaming: false,
+  streamType: null as string | null,
   progress: 0,
-  data: null as any;
-  error: null as string | null
+  data: null as any,
+  error: null as string | null,
 });
 // ======================================================================
 // INITIALIZATION HELPERS
@@ -632,17 +612,17 @@ export async function initializeEnhancedMachines(): Promise<any> {
     // Subscribe to state changes
     evidenceActor.subscribe((state: any) => {
       evidenceProcessingStore.set({
-        machine: evidenceActor
+        machine: evidenceActor,
         state: (state as any).value as string,
-        context: (state as any).context
+        context: (state as any).context,
       });
     });
     // Start machines
     evidenceActor.start();
     return {
-      evidenceActor
-    }
-  } catch (error: any) {
+      evidenceActor,
+    };
+  } catch (error: unknown) {
     console.error('Failed to initialize enhanced machines:', error);
     throw error;
   }

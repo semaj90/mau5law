@@ -109,17 +109,17 @@
     showAnalysis = true;
   }
   function handleSearch(_event: CustomEvent) {
-    console.log('Search performed:', event.detail);
-    searchResults = event.detail.result;
+    console.log('Search performed:', e(vent as CustomEvent).detail);
+    searchResults = e(vent as CustomEvent).detail.result;
   }
   function handleSearchSelect(_event: CustomEvent<VectorSearchResult>) {
-    console.log('Search result selected:', event.detail);
+    console.log('Search result selected:', e(vent as CustomEvent).detail);
   }
   function handleBoardItemMove(_event: CustomEvent) {
-    console.log('Board item moved:', event.detail);
+    console.log('Board item moved:', e(vent as CustomEvent).detail);
   }
   function handleBoardSave(_event: CustomEvent) {
-    console.log('Board saved:', event.detail);
+    console.log('Board saved:', e(vent as CustomEvent).detail);
   }
 </script>
 

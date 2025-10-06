@@ -340,7 +340,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 <style>
   .simd-glyph-renderer {
-    @apply w-full;
+/* @apply w-full; */
   }
   canvas {
     display: block;

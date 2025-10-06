@@ -1,16 +1,32 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '$lib/components/ui/enhanced-bits';
-  import { Input } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
+  // enhanced-bits exports components as default exports — import only what's used.
+  // Remove problematic Input import (it exposed an object/instance type that TypeScript rejected).
+  // import Input from '$lib/components/ui/enhanced-bits';
+
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
-  import { onMount } from 'svelte';
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
-  const { data } = $props() as { data: unknown }
+  // Provide a typed shape for data so quickLinks is iterable and its fields are known.
+  type QuickLink = {
+    title: string;
+    description?: string;
+    jurisdiction?: string;
+    category?: string;
+    url: string;
+  };
+  type PageData = {
+    quickLinks?: QuickLink[];
+    // ...other page data fields if any...
+  };
+
+  const { data } = $props() as { data: PageData };
+
   let EnhancedFuseSearch = $state<any>(null);
   $effect(() => {
     (async () => {
-      EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
+      // Support both module formats (with or without `default`) to avoid TS error
+      const mod = await import('$lib/components/search/EnhancedFuseSearch.svelte');
+      EnhancedFuseSearch = (mod as any).default ?? mod;
     })();
   });
   // Simple search state
@@ -27,9 +43,14 @@
         category: 'all',
       });
       const response = await fetch(`/api/laws/search?${params}`);
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; laws?: unknown; error?: unknown }).success) {
-        searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
+      // Narrow JSON type so TypeScript knows 'laws' is an array
+      const result = (await response.json()) as {
+        success?: boolean;
+        laws?: any[];
+        error?: unknown;
+      };
+      if (result.success) {
+        searchResults = result.laws ?? [];
       } else {
         searchResults = [];
         console.error('Search failed:', result);
@@ -47,12 +68,6 @@
     }
   }
   // AI toolbar event handlers (typed)
-  function handleAISearchResult(result: unknown) {
-    console.log('AI Search Result:', result);
-    if (result?.laws) {
-      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
-    }
-  }
   function handleAIChatResult(result: unknown) {
     console.log('AI Chat Result:', result);
   }
@@ -82,7 +97,7 @@
       bind:results={searchResults}
       class="mb-4"
       onselect={(e: CustomEvent) => {
-        const selected = e.detail;
+        const selected = (e as CustomEvent).detail;
         if (selected?.title) {
           searchQuery = selected.title;
         }
@@ -99,11 +114,12 @@
     </div>
     <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
-        <Input
+        <!-- Replace the problematic Input component with a native input element -->
+        <input
           placeholder="Search laws, codes, regulations..."
           bind:value={searchQuery}
           onkeydown={handleKeydown}
-          class="flex-1"
+          class="flex-1 rounded-md border px-3 py-2"
         />
         <button
           onclick={performSearch}
@@ -127,7 +143,7 @@
       Quick Access
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each (data as { quickLinks?: unknown }).quickLinks as link}
+      {#each data.quickLinks ?? [] as link}
         <div class="hover:shadow-lg transition-all duration-200 nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary text-lg">{link.title}</h3>

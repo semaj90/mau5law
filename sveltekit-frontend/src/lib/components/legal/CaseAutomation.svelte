@@ -201,7 +201,7 @@
               label={option.label}
               checked={selectedProcessingOptions.has(option.value)}
               onchange={e => {
-                if (e.detail) {
+                if ((e as CustomEvent).detail) {
                   selectedProcessingOptions.add(option.value);
                 } else {
                   selectedProcessingOptions.delete(option.value);

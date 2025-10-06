@@ -80,10 +80,10 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
-    items = e.detail.item;
+    items = (e as CustomEvent).detail.item;
   }
   const handleDndFinalize = (e: CustomEvent) => {
-    items = e.detail.item;
+    items = (e as CustomEvent).detail.item;
     // Trigger layout update after reordering
     setTimeout(() => {
       masonry?.layout();

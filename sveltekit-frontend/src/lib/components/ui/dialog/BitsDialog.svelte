@@ -100,18 +100,18 @@
 
 <style>/* Legal AI App Specific Styling */ {}
   :global(.legal-dialog) {
-    @apply border-yorha-border bg-yorha-bg-secondary;
+/* @apply border-yorha-border bg-yorha-bg-secondary; */
   }
   :global(.legal-dialog-title) {
-    @apply text-yorha-text-primary font-monone;
+/* @apply text-yorha-text-primary font-monone; */
   }
   :global(.legal-dialog-description) {
-    @apply text-yorha-text-secondary font-mono text-x;
+/* @apply text-yorha-text-secondary font-mono text-x; */
   }
   :global(.legal-dialog-content) {
-    @apply text-yorha-text-primary;
+/* @apply text-yorha-text-primary; */
   }
   :global(.legal-dialog-footer) {
-    @apply border-t border-yorha-border pt-4;
+/* @apply border-t border-yorha-border pt-4; */
   }
 </style>

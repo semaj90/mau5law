@@ -114,7 +114,7 @@ https: //svelte.dev/e/block_unexpected_character -->
       class:border-indigo-200={ evidence.evidenceType === 'link' || evidence.type === 'link' }
       data-type={ evidence.evidenceType || evidence.type }
     >
-      <svelte:component this={ IconComponent } size={ 16 } />
+      <IconComponent size={ 16 } />
       <span>{ evidence.evidenceType || evidence.type }</span>
     </div>
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

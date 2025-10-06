@@ -721,13 +721,13 @@ https://svelte.dev/e/expected_token -->
     uploadProgress.set(progress.filename, progress);
   }
   function handleUploadComplete(_event: CustomEvent) {
-    console.log(`✅ Upload completed: ${event.detail.file.filename}`);
-    uploadProgress.delete(event.detail.file.filename);
+    console.log(`✅ Upload completed: ${e(vent as CustomEvent).detail.file.filename}`);
+    uploadProgress.delete(e(vent as CustomEvent).detail.file.filename);
   }
   function handleUploadError(_event: CustomEvent) {
-    console.error(`❌ Upload error: ${event.detail.error}`, event.detail.file?.name);
-    if (event.detail.file) {
-      uploadProgress.delete(event.detail.file.name);
+    console.error(`❌ Upload error: ${e(vent as CustomEvent).detail.error}`, e(vent as CustomEvent).detail.file?.name);
+    if (e(vent as CustomEvent).detail.file) {
+      uploadProgress.delete(e(vent as CustomEvent).detail.file.name);
     }
   }
   // High-Performance Render Loop with NES Integration
@@ -1262,12 +1262,12 @@ const success = await initializeGPU();
     priority={200}
     autoUpload={false}
     {autoProcessUploads}
-    onfiles-selected={(e) => console.log('Files selected:', e.detail.files)}
-    onupload-start={(e) => console.log('Upload started:', e.detail.files)}
+    onfiles-selected={(e) => console.log('Files selected:', (e as CustomEvent).detail.files)}
+    onupload-start={(e) => console.log('Upload started:', (e as CustomEvent).detail.files)}
     onupload-progress={handleUploadProgress}
     onupload-complete={handleUploadComplete}
     onupload-error={handleUploadError}
-    onall-uploads-complete={(e) => handleFileUpload(e.detail.files)}
+    onall-uploads-complete={(e) => handleFileUpload((e as CustomEvent).detail.files)}
   >
     {#snippet children({ selectFiles, uploadFiles, getUploadStats })}
       <!-- Slot content for custom upload UI -->

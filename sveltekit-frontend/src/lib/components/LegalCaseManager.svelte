@@ -325,7 +325,7 @@ https: //svelte.dev/e/js_parse_error -->
       currentStep={$currentStep}
       {totalSteps}
       stepTitles={['Case Information', 'Document Upload', 'Evidence Analysis', 'AI Analysis', 'Review & Submit']}
-      stepclick={e => goToStep(e.detail)}
+      stepclick={e => goToStep((e as CustomEvent).detail)}
     />
   </div>
   <!-- Loading Overlay -->
@@ -345,7 +345,7 @@ https: //svelte.dev/e/js_parse_error -->
       <div transitislide={{ duration: 300, easing: cubicOut }}>
         <DocumentUploadForm
           bind:data={$formData.documents}
-          process={e => processDocuments(e.detail)}
+          process={e => processDocuments((e as CustomEvent).detail)}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}

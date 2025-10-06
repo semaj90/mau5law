@@ -437,10 +437,10 @@ https://svelte.dev/e/js_parse_error -->
                 <p><span class="font-medium">Response:</span> {formatResponseTime(service.responseTime)}</p>
               {/if}
               <p class="text-xs opacity-75">Last check: {formatTimestamp(service.lastCheck)}</p>
-              {#if service.details && typeof service.details === 'object'}
+              {#if ser(vice as CustomEvent).details && typeof ser(vice as CustomEvent).details === 'object'}
                 <details class="mt-2">
                   <summary class="cursor-pointer text-xs opacity-75">Details</summary>
-                  <pre class="text-xs mt-1 opacity-60 overflow-x-auto">{JSON.stringify(service.details, null, 2)}</pre>
+                  <pre class="text-xs mt-1 opacity-60 overflow-x-auto">{JSON.stringify(ser(vice as CustomEvent).details, null, 2)}</pre>
                 </details>
               {/if}
             </div>

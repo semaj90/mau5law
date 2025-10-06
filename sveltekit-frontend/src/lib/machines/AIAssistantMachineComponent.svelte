@@ -116,13 +116,13 @@
   }
   // Handle suggestion selection
   function handleSuggestionSelect(_event: CustomEvent) {
-    const { suggestion } = event.detail;
+    const { suggestion } = e(vent as CustomEvent).detail;
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
     showSuggestions = false;
   }
   // Handle task selection
   function handleTaskSelect(_event: CustomEvent) {
-    const { task } = event.detail;
+    const { task } = e(vent as CustomEvent).detail;
     queryInput = task.task;
     showSuggestions = false;
   }

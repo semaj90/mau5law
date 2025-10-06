@@ -12,7 +12,7 @@
   let searchQuery = $state('');
   let userMenuOpen = $state(false);
   function handleSearch(_event: CustomEvent) {
-    searchQuery = event.detail.query;
+    searchQuery = e(vent as CustomEvent).detail.query;
     // Handle global search
     console.log('Global search:', searchQuery);
   }

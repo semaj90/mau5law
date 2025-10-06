@@ -311,7 +311,7 @@
           </div>
           <button
             type="button"
-            on:click={testSIMDPerformance}
+            onclick={testSIMDPerformance}
             class="w-full text-xs py-1 rounded mt-2 border bg-gray-100"
           >
             Benchmark
@@ -370,7 +370,7 @@
             type="file"
             multiple
             accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
-            on:change={handleFileSelect}
+            onchange={handleFileSelect}
             class="w-full p-2 border rounded"
           />
         </div>
@@ -378,7 +378,7 @@
       <div class="w-full">
         <button
           type="button"
-          on:click={handleFileUpload}
+          onclick={handleFileUpload}
           disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing}
           class="w-full p-2 rounded flex items-center justify-center gap-2 bg-blue-600 text-white disabled:opacity-50"
         >
@@ -396,7 +396,7 @@
   <!-- Processing Progress -->
   {#if isProcessing}
     {#if EnhancedUploadProgress}
-      <svelte:component this={EnhancedUploadProgress} />
+      <EnhancedUploadProgress />
     {:else}
       <!-- Fallback minimal progress UI while component is unavailable -->
       <div class="p-3 border rounded text-sm">Processing... (progress component loading)</div>

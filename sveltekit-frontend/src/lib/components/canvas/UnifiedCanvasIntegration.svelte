@@ -88,31 +88,31 @@
   }
   // Event handlers
   function handleEvidenceUploaded(_event: CustomEvent) {
-    console.log('📁 Evidence uploaded:', event.detail);
+    console.log('📁 Evidence uploaded:', e(vent as CustomEvent).detail);
     // Sync canvases after evidence upload
     setTimeout(syncCanvasBoards, 500);
-    ondispatch?.(event.detail);
+    ondispatch?.(e(vent as CustomEvent).detail);
   }
   function handleAnalysisComplete(_event: CustomEvent) {
-    console.log('🔍 Analysis complete:', event.detail);
+    console.log('🔍 Analysis complete:', e(vent as CustomEvent).detail);
     // Update canvas state with analysis results
     canvasState.update(state => ({
       ...state,
-      analysisResults: event.detail
+      analysisResults: e(vent as CustomEvent).detail
     }));
-    ondispatch?.(event.detail);
+    ondispatch?.(e(vent as CustomEvent).detail);
   }
   function handleYoRHaDrawing(_event: CustomEvent) {
-    console.log('🎨 YoRHa drawing update:', event.detail);
+    console.log('🎨 YoRHa drawing update:', e(vent as CustomEvent).detail);
     // Sync canvases after drawing
     if (syncCanvases) {
       setTimeout(syncCanvasBoards, 100);
     }
-    ondispatch?.(event.detail);
+    ondispatch?.(e(vent as CustomEvent).detail);
   }
   function handleNeuralEngineReady(_event: CustomEvent) {
-    console.log('🧠 Neural engine ready:', event.detail);
-    ondispatch?.(event.detail);
+    console.log('🧠 Neural engine ready:', e(vent as CustomEvent).detail);
+    ondispatch?.(e(vent as CustomEvent).detail);
   }
   // Canvas operations
   function clearAllCanvases() {

@@ -373,6 +373,6 @@ handleSuggestionClick(suggestion}>
 </Dialog.Root>
 <style>
   :global(.prose p) {
-    @apply text-sm leading-relaxed mb-2 last:mb-0;
+/* @apply text-sm leading-relaxed mb-2 last:mb-0; */
   }
 </style>

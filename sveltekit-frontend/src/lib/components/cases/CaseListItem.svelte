@@ -87,7 +87,7 @@ import type {Case} from '$lib/types';
     <div class="space-y-4">
       <!-- Case Title and Number -->
       <div class="space-y-4">
-        <svelte:component this={statusIcon} class="space-y-4" />
+        <statusIcon class="space-y-4" />
         <h3 class="space-y-4">
           {caseData.title}
         </h3>

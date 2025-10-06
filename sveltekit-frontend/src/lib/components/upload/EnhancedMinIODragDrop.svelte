@@ -492,27 +492,27 @@
 </div>
 <style>
   .drop-zone {
-    @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48;
+/* @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48; */
   }
   .drop-zone.drag-over {
-    @apply border-blue-400 bg-blue-50;
+/* @apply border-blue-400 bg-blue-50; */
   }
   .drop-zone.disabled {
-    @apply opacity-50 cursor-not-allowed;
+/* @apply opacity-50 cursor-not-allowed; */
   }
   .drop-zone.uploading {
-    @apply border-blue-300 bg-blue-25;
+/* @apply border-blue-300 bg-blue-25; */
   }
   .drop-overlay {
     z-index: 10;
   }
   .file-item {
-    @apply transition-all duration-200;
+/* @apply transition-all duration-200; */
   }
   .file-item:hover {
-    @apply shadow-sm border-gray-300;
+/* @apply shadow-sm border-gray-300; */
   }
   .performance-stats {
-    @apply transition-all duration-300;
+/* @apply transition-all duration-300; */
   }
 </style>

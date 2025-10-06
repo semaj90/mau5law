@@ -43,8 +43,7 @@
 
 <!-- Render the imported constructor via svelte:component and use a slot for children -->
 {#if ContentComponent}
-  <svelte:component
-    this={ContentComponent}
+  <ContentComponent
     class={contentClasses}
     {side}
     {align}

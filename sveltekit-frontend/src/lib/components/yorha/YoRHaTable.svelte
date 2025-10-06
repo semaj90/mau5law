@@ -331,7 +331,7 @@
 </div>
 <style>
   .yorha-table-container {
-    @apply bg-black border border-amber-400 relative overflow-hidden;
+/* @apply bg-black border border-amber-400 relative overflow-hidden; */
     font-family: 'Courier New', monospace;
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
   }
@@ -360,146 +360,146 @@
     100% { transform: translateX(100%), }
   }
   .yorha-table-header {
-    @apply flex items-center justify-between p-3 bg-gray-900 border-b border-amber-400;
+/* @apply flex items-center justify-between p-3 bg-gray-900 border-b border-amber-400; */
   }
   .yorha-table-search {
-    @apply relative flex-1 max-w-md;
+/* @apply relative flex-1 max-w-md; */
   }
   .yorha-search-input {
-    @apply w-full bg-black border border-amber-400 text-amber-400 px-3 py-2 pr-10 font-mono text-sm;
-    @apply focus:outline-none focus:border-amber-300 focus:shadow-0 focus:shadow-amber-400;
+/* @apply w-full bg-black border border-amber-400 text-amber-400 px-3 py-2 pr-10 font-mono text-sm; */
+/* @apply focus:outline-none focus:border-amber-300 focus:shadow-0 focus:shadow-amber-400; */
   }
   .yorha-search-icon {
-    @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400;
+/* @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400; */
   }
   .yorha-table-actions {
-    @apply flex items-center gap-3 text-amber-400 font-mono text-sm;
+/* @apply flex items-center gap-3 text-amber-400 font-mono text-sm; */
   }
   .yorha-action-btn {
-    @apply bg-amber-400 text-black px-3 py-1 font-mono text-xs hover: bg-amber-300 transition-color;
+/* @apply bg-amber-400 text-black px-3 py-1 font-mono text-xs hover: bg-amber-300 transition-color; */
     border: 1px solid #ffbf00;
   }
   .yorha-table-wrapper {
-    @apply overflow-auto max-h-96;
+/* @apply overflow-auto max-h-96; */
   }
   .yorha-table {
-    @apply w-full text-amber-400 font-mono text-sm;
+/* @apply w-full text-amber-400 font-mono text-sm; */
     border-collapse: separat;
     border-spacing: 0;
   }
   .yorha-table-striped .yorha-row-even {
-    @apply bg-gray-900;
+/* @apply bg-gray-900; */
   }
   .yorha-table-striped .yorha-row-odd {
-    @apply bg-black;
+/* @apply bg-black; */
   }
   .yorha-table-hover .yorha-table-row:hover {
-    @apply bg-amber-900 bg-opacity-20;
+/* @apply bg-amber-900 bg-opacity-20; */
   }
   .yorha-table-bordered .yorha-table-cell {
-    @apply border-r border-amber-400 border-opacity-30;
+/* @apply border-r border-amber-400 border-opacity-30; */
   }
   .yorha-table-dense .yorha-table-cell {
-    @apply py-1 px-2;
+/* @apply py-1 px-2; */
   }
   .yorha-table-head {
-    @apply bg-amber-400 text-black;
+/* @apply bg-amber-400 text-black; */
   }
   .yorha-table-head-row {
-    @apply border-b-2 border-amber-400;
+/* @apply border-b-2 border-amber-400; */
   }
   .yorha-table-header-cell {
-    @apply font-bold uppercase tracking-wider py-3 px-4;
+/* @apply font-bold uppercase tracking-wider py-3 px-4; */
     background: linear-gradient(45deg, #ffbf00, #ffd700);
   }
   .yorha-sortable {
-    @apply cursor-pointer hover:bg-amber-300 transition-color;
+/* @apply cursor-pointer hover:bg-amber-300 transition-color; */
   }
   .yorha-sorted-asc, .yorha-sorted-desc {
-    @apply bg-amber-300;
+/* @apply bg-amber-300; */
   }
   .yorha-header-content {
-    @apply flex items-center justify-betwee;
+/* @apply flex items-center justify-betwee; */
   }
   .yorha-sort-indicator {
-    @apply text-xs ml-2;
+/* @apply text-xs ml-2; */
   }
   .yorha-table-cell {
-    @apply py-2 px-4 border-b border-amber-400 border-opacity-20;
+/* @apply py-2 px-4 border-b border-amber-400 border-opacity-20; */
   }
   .yorha-select-cell {
-    @apply w-12 text-center;
+/* @apply w-12 text-center; */
   }
   .yorha-checkbox {
-    @apply w-4 h-4 bg-black border border-amber-400 text-amber-400;
+/* @apply w-4 h-4 bg-black border border-amber-400 text-amber-400; */
     accent-color: #ffbf00;
   }
   .yorha-row-selected {
-    @apply bg-amber-400 bg-opacity-10;
+/* @apply bg-amber-400 bg-opacity-10; */
   }
   .yorha-status {
-    @apply inline-block px-2 py-1 text-xs font-mono rounded border;
+/* @apply inline-block px-2 py-1 text-xs font-mono rounded border; */
   }
   .yorha-status-active, .yorha-status-online, .yorha-status-success {
-    @apply bg-green-600 text-green-100 border-green-400;
+/* @apply bg-green-600 text-green-100 border-green-400; */
   }
   .yorha-status-inactive, .yorha-status-offline, .yorha-status-failed {
-    @apply bg-red-600 text-red-100 border-red-400;
+/* @apply bg-red-600 text-red-100 border-red-400; */
   }
   .yorha-status-pending, .yorha-status-processing {
-    @apply bg-yellow-600 text-yellow-100 border-yellow-400;
+/* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */
     animation: pulse 1.5s infinite;
   }
   .yorha-status-warning {
-    @apply bg-orange-600 text-orange-100 border-orange-400;
+/* @apply bg-orange-600 text-orange-100 border-orange-400; */
   }
   .yorha-status-completed {
-    @apply bg-blue-600 text-blue-100 border-blue-400;
+/* @apply bg-blue-600 text-blue-100 border-blue-400; */
   }
   .yorha-status-default {
-    @apply bg-gray-600 text-gray-100 border-gray-400;
+/* @apply bg-gray-600 text-gray-100 border-gray-400; */
   }
   .yorha-action-buttons {
-    @apply flex gap-2;
+/* @apply flex gap-2; */
   }
   .yorha-action-btn-sm {
-    @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover: bg-amber-300 transition-color;
+/* @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover: bg-amber-300 transition-color; */
     border: 1px solid #ffbf00;
   }
   .yorha-loading-row, .yorha-empty-row {
-    @apply border-none;
+/* @apply border-none; */
   }
   .yorha-loading-cell, .yorha-empty-cell {
-    @apply py-8 text-center border-none;
+/* @apply py-8 text-center border-none; */
   }
   .yorha-loading-spinner {
-    @apply flex flex-col items-center gap-3 text-amber-400;
+/* @apply flex flex-col items-center gap-3 text-amber-400; */
   }
   .yorha-spinner {
-    @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
+/* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
     animation: spin 1s linear infinite;
   }
   .yorha-empty-state {
-    @apply flex flex-col items-center gap-3 text-amber-400;
+/* @apply flex flex-col items-center gap-3 text-amber-400; */
   }
   .yorha-empty-icon {
-    @apply text-2xl;
+/* @apply text-2xl; */
   }
   .yorha-table-pagination {
-    @apply flex items-center justify-between p-3 bg-gray-900 border-t border-amber-400;
+/* @apply flex items-center justify-between p-3 bg-gray-900 border-t border-amber-400; */
   }
   .yorha-pagination-info {
-    @apply text-amber-400 font-mono text-sm;
+/* @apply text-amber-400 font-mono text-sm; */
   }
   .yorha-pagination-controls {
-    @apply flex items-center gap-2;
+/* @apply flex items-center gap-2; */
   }
   .yorha-pagination-btn {
-    @apply bg-black border border-amber-400 text-amber-400 px-3 py-1 font-mono text-sm;
-    @apply hover:bg-amber-400 hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+/* @apply bg-black border border-amber-400 text-amber-400 px-3 py-1 font-mono text-sm; */
+/* @apply hover:bg-amber-400 hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed; */
   }
   .yorha-page-info {
-    @apply text-amber-400 font-mono text-sm mx-3;
+/* @apply text-amber-400 font-mono text-sm mx-3; */
   }
   @keyframes spin {
     to { transform: rotate(360deg), }

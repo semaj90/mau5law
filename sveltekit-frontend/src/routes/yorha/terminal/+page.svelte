@@ -347,104 +347,104 @@
 
 <style>
   .yorha-terminal-page {
-    @apply min-h-scree;
+/* @apply min-h-scree; */
   }
   /* Page Header */
   .yorha-page-header {
-    @apply py-12 px-6 border-b border-amber-400 border-opacity-30;
+/* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-header-content {
-    @apply max-w-6xl mx-auto text-center;
+/* @apply max-w-6xl mx-auto text-center; */
   }
   .yorha-header-title h1 {
-    @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4;
+/* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4; */
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
-    @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2;
+/* @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2; */
   }
   /* Terminal Section */
   .yorha-terminal-section {
-    @apply p-6 max-w-6xl mx-auto space-y-6;
+/* @apply p-6 max-w-6xl mx-auto space-y-6; */
   }
   .yorha-terminal-container {
-    @apply bg-black border-2 border-amber-400 border-opacity-60;
+/* @apply bg-black border-2 border-amber-400 border-opacity-60; */
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
   }
   /* Terminal Header */
   .yorha-terminal-header {
-    @apply flex items-center justify-between px-4 py-2 bg-amber-400 text-black;
+/* @apply flex items-center justify-between px-4 py-2 bg-amber-400 text-black; */
   }
   .yorha-terminal-title {
-    @apply flex items-center gap-2 font-mono text-sm font-bold;
+/* @apply flex items-center gap-2 font-mono text-sm font-bold; */
   }
   .yorha-terminal-controls {
-    @apply flex items-center gap-2;
+/* @apply flex items-center gap-2; */
   }
   .yorha-terminal-control {
-    @apply p-1 hover:bg-black hover:bg-opacity-20 transition-color;
+/* @apply p-1 hover:bg-black hover:bg-opacity-20 transition-color; */
   }
   /* Terminal Output */
   .yorha-terminal-output {
-    @apply p-4 h-96 overflow-y-auto font-mono text-sm;
+/* @apply p-4 h-96 overflow-y-auto font-mono text-sm; */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.02) 100%);
   }
   .yorha-terminal-line {
-    @apply flex gap-2 mb-1;
+/* @apply flex gap-2 mb-1; */
   }
   .yorha-terminal-timestamp {
-    @apply text-amber-400 opacity-60 text-x;
+/* @apply text-amber-400 opacity-60 text-x; */
   }
   .yorha-terminal-text {
-    @apply flex-1;
+/* @apply flex-1; */
   }
   .yorha-line-system {
-    @apply text-amber-400;
+/* @apply text-amber-400; */
   }
   .yorha-line-user {
-    @apply text-green-400;
+/* @apply text-green-400; */
   }
   .yorha-line-success {
-    @apply text-green-400;
+/* @apply text-green-400; */
   }
   .yorha-line-error {
-    @apply text-red-400;
+/* @apply text-red-400; */
   }
   .yorha-line-info {
-    @apply text-amber-300;
+/* @apply text-amber-300; */
   }
   .yorha-terminal-spinner {
-    @apply inline-block;
+/* @apply inline-block; */
     animation: spin 1s linear infinite;
   }
   /* Terminal Input */
   .yorha-terminal-input-container {
-    @apply flex items-center border-t border-amber-400 border-opacity-30 bg-black bg-opacity-50;
+/* @apply flex items-center border-t border-amber-400 border-opacity-30 bg-black bg-opacity-50; */
   }
   .yorha-terminal-prompt {
-    @apply px-4 py-3 text-amber-400 font-mono text-sm flex items-center gap-2;
+/* @apply px-4 py-3 text-amber-400 font-mono text-sm flex items-center gap-2; */
   }
   .yorha-terminal-input {
-    @apply flex-1 px-2 py-3 bg-transparent text-amber-300 font-mono text-sm;
-    @apply focus:outline-none placeholder-amber-400 placeholder-opacity-50;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+/* @apply flex-1 px-2 py-3 bg-transparent text-amber-300 font-mono text-sm; */
+/* @apply focus:outline-none placeholder-amber-400 placeholder-opacity-50; */
+/* @apply disabled:opacity-50 disabled:cursor-not-allowed; */
   }
   /* Command Reference */
   .yorha-command-reference {
-    @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6;
+/* @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6; */
   }
   .yorha-command-reference h3 {
-    @apply text-lg font-bold text-amber-400 mb-4 tracking-wider;
+/* @apply text-lg font-bold text-amber-400 mb-4 tracking-wider; */
   }
   .yorha-command-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3;
+/* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3; */
   }
   .yorha-command-item {
-    @apply text-amber-300 text-sm font-monone;
+/* @apply text-amber-300 text-sm font-monone; */
   }
   .yorha-command-item strong {
-    @apply text-amber-400;
+/* @apply text-amber-400; */
   }
   @keyframes spin {
     0% {
@@ -478,13 +478,13 @@
   /* Responsive */
   @media (max-width: 768px) {
     .yorha-header-title h1 {
-      @apply text-2xl flex-col;
+/* @apply text-2xl flex-col; */
     }
     .yorha-terminal-output {
-      @apply h-64;
+/* @apply h-64; */
     }
     .yorha-command-grid {
-      @apply grid-cols-1 gap-2;
+/* @apply grid-cols-1 gap-2; */
     }
   }
 </style>

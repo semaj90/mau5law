@@ -241,23 +241,23 @@
 </Command.Root>
 <style>
   :global(.modular-command-palette) {
-    @apply bg-yorha-bg-primary border border-yorha-border shadow-xl;
+/* @apply bg-yorha-bg-primary border border-yorha-border shadow-xl; */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
   :global(.modular-command-header) {
-    @apply border-yorha-border bg-yorha-bg-secondary;
+/* @apply border-yorha-border bg-yorha-bg-secondary; */
   }
   :global(.modular-command-list) {
-    @apply bg-yorha-bg-primary;
+/* @apply bg-yorha-bg-primary; */
   }
   :global(.modular-command-group) {
-    @apply border-yorha-border;
+/* @apply border-yorha-border; */
   }
   :global(.modular-command-item) {
-    @apply hover:bg-yorha-bg-hover text-yorha-text-primary;
-    @apply transition-colors duration-150;
+/* @apply hover:bg-yorha-bg-hover text-yorha-text-primary; */
+/* @apply transition-colors duration-150; */
   }
   :global(.modular-command-item[aria-selected="true"]) {
-    @apply bg-yorha-accent text-yorha-text-accent;
+/* @apply bg-yorha-accent text-yorha-text-accent; */
   }
 </style>

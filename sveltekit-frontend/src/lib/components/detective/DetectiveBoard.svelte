@@ -154,13 +154,13 @@
 
 	function handleDndConsider(e: any, _columnId: string) {
 		// dnd consider event
-		// use event.detail for positions if needed
+		// use e(vent as CustomEvent).detail for positions if needed
 		// console.log('dnd consider', e);
 	}
 
 	function handleDndFinalize(e: any, columnId: string) {
 		// finalize - update order in the specific column
-		const { items } = e.detail ?? {};
+		const { items } = (e as CustomEvent).detail ?? {};
 		if (Array.isArray(items)) {
 			columns = columns.map((col) => (col.id === columnId ? { ...col, items } : col));
 		}
@@ -437,8 +437,8 @@
 								{#if column.id === 'new'}
 									<!-- typed event handlers to satisfy TS for custom events -->
 									<UploadZone
-										on:upload={(e: CustomEvent<any>) => handleFileUpload(e.detail, column.id)}
-										on:uploadError={(e: CustomEvent<string>) => handleUploadError(e.detail, column.id)}
+										on:upload={(e: CustomEvent<any>) => handleFileUpload((e as CustomEvent).detail, column.id)}
+										on:uploadError={(e: CustomEvent<string>) => handleUploadError((e as CustomEvent).detail, column.id)}
 										caseId={caseId}
 									/>
 								{/if}
@@ -622,9 +622,9 @@
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
-					on:evidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect(e.detail.evidenceId)}
-					on:evidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
-					on:actionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger(e.detail)}
+					on:evidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect((e as CustomEvent).detail.evidenceId)}
+					on:evidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight((e as CustomEvent).detail.evidenceIds)}
+					on:actionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger((e as CustomEvent).detail)}
 				/>
 			</div>
 		{/if}

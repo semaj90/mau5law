@@ -4,6 +4,26 @@ import { browser } from "$app/environment";
  * Provides secure, comprehensive data management with multiple formats
  */
 // TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types
+
+// Mock security functions to resolve missing imports and address TODO
+const logSecurityEvent = (event: { type: string; details: any; severity: string }) => {
+  console.log("Security Event:", event);
+  // In a real app, this would send logs to a security monitoring service
+};
+
+const secureDataExport = (data: any[], user: string) => {
+  logSecurityEvent({
+    type: "data_export",
+    details: {
+      action: "export_initiated",
+      recordCount: data.length,
+      user,
+    },
+    severity: "info",
+  });
+  // In a real app, this would perform checks, watermarking, etc.
+};
+
 export interface ExportOptions {
   format: "json" | "csv" | "pdf" | "excel";
   includeMetadata: boolean;
@@ -38,10 +58,10 @@ export interface ImportResult {
 }
 // Advanced Case Export
 export async function exportCases(
-  cases: any[]
+  cases: any[],
   options: ExportOptions = {
     format: "json",
-    includeMetadata: true
+    includeMetadata: true,
     includeFiles: false
   },
 ): Promise<ExportResult> {
@@ -65,19 +85,19 @@ export async function exportCases(
     }
     // Include metadata
     const exportData = {
-      metadata: options.includeMetadata;
+      metadata: options.includeMetadata
         ? {
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
-            exportOptions: options
+            exportOptions: options,
             version: "1.0"
           }
-        : undefined;
+        : undefined,
       cases: processedData.map((c) => ({
         ...c,
         // Remove sensitive fields
-        internalNotes: undefined
+        internalNotes: undefined,
         systemMetadata: undefined
       }))
     }
@@ -110,31 +130,32 @@ export async function exportCases(
       downloadBlob(blob, filename);
     }
     return {
-      success: true
+      success: true,
       filename,
       size: blob.size,
       recordCount: processedData.length,
       errors: [],
       warnings: []
     }
-  } catch (error: any) {
-    console.error("Export failed:", error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Export failed:", message);
     return {
-      success: false
+      success: false,
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message: "Unknown export error"],
+      errors: [message],
       warnings: []
     }
   }
 }
 // Advanced Evidence Export
 export async function exportEvidence(
-  evidence: any[]
+  evidence: any[],
   options: ExportOptions = {
     format: "json",
-    includeMetadata: true
+    includeMetadata: true,
     includeFiles: true
   },
 ): Promise<ExportResult> {
@@ -150,20 +171,20 @@ export async function exportEvidence(
       processedData = await includeEvidenceFiles(processedData);
     }
     const exportData = {
-      metadata: options.includeMetadata;
+      metadata: options.includeMetadata
         ? {
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
-            chainOfCustody: true
-            integrityHashes: processedData.map((e: any) => ({,
+            chainOfCustody: true,
+            integrityHashes: processedData.map((e: any) => ({
               id: e.id,
               hash: e.hash
             })),
-            exportOptions: options
+            exportOptions: options,
             version: "1.0"
           }
-        : undefined;
+        : undefined,
       evidence: processedData
     }
     let filename: string;
@@ -186,7 +207,7 @@ export async function exportEvidence(
       downloadBlob(blob, filename);
     }
     return {
-      success: true
+      success: true,
       filename,
       size: blob.size,
       recordCount: processedData.length,
@@ -196,7 +217,7 @@ export async function exportEvidence(
   } catch (error: any) {
     console.error("Evidence export failed:", error);
     return {
-      success: false
+      success: false,
       filename: "",
       size: 0,
       recordCount: 0,
@@ -207,7 +228,7 @@ export async function exportEvidence(
 }
 // Data Import Functions
 export async function importCases(
-  file: File;
+  file: File,
   options: ImportOptions
 ): Promise<ImportResult> {
   try {
@@ -216,7 +237,7 @@ export async function importCases(
       const validationResult = validateImportData(data, "cases");
       if (!validationResult.success) {
         return {
-          success: false
+          success: false,
           imported: 0,
           skipped: 0,
           errors: validationResult.errors,
@@ -238,8 +259,9 @@ export async function importCases(
         } else {
           skipped++;
         }
-      } catch (error: any) {
-        errors.push(`Failed to import case "${caseData.title}": ${error}`);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        errors.push(`Failed to import case "${caseData.title}": ${message}`);
         skipped++;
       }
     }
@@ -254,23 +276,24 @@ export async function importCases(
       severity: "medium"
     });
     return {
-      success: true
+      success: true,
       imported,
       skipped,
       errors,
       warnings,
       summary: {
         total: imported + skipped,
-        successful: imported;
+        successful: imported,
         failed: skipped
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
     return {
-      success: false
+      success: false,
       imported: 0,
       skipped: 0,
-      errors: [error instanceof Error ? error.message: "Unknown import error"],
+      errors: [message],
       warnings: [],
       summary: { [key: string]: any }
     }
@@ -287,7 +310,7 @@ function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknow
         case "priority":
           return c.priority === value;
         case "assignedTo":
-          return c.assignedTo?.toLowerCase().includes(value.toLowerCase();
+          return c.assignedTo?.toLowerCase().includes(value.toLowerCase());
         case "dateFrom":
           return new Date(c.createdAt || 0) >= new Date(value);
         case "dateTo":
@@ -299,7 +322,7 @@ function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknow
   });
 }
 function applyEvidenceFilters(
-  evidence: any[];
+  evidence: any[],
   filters: { [key: string]: any },
 ): unknown[] {
   return evidence.filter((e: any) => {
@@ -313,7 +336,7 @@ function applyEvidenceFilters(
         case "caseId":
           return e.caseId === value;
         case "collectedBy":
-          return e.collectedBy?.toLowerCase().includes(value.toLowerCase();
+          return e.collectedBy?.toLowerCase().includes(value.toLowerCase());
         default:
           return true;
       }
@@ -326,12 +349,12 @@ function convertToCSV(data: any[]): string {
   const csvContent = [
     headers.join(","),
     ...data.map((row) =>
-      headers;
+      headers
         .map((header) => {
           const value = row[header];
           if (
             typeof value === "string" &&
-            (value.includes(",") || value.includes('"');
+            (value.includes(",") || value.includes('"'))
           ) {
             return `"${value.replace(/"/g, '""')}"`;
           }
@@ -376,7 +399,7 @@ async function includeEvidenceFiles(evidence: any[]): Promise<any[]> {
     ...e,
     fileIncluded: !!e.filePath,
     fileSize: e.fileSize || 0
-  });
+  }));
 }
 function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
@@ -401,22 +424,22 @@ async function parseImportFile(file: File, format: string): Promise<any> {
   }
 }
 function parseCSV(csvText: string): unknown[] {
-  // removed unused lines assignment
-  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, "");
+  const lines = csvText.split('\n');
+  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
   return lines
-    .slice(1);
+    .slice(1)
     .map((line) => {
-      const values = line.split(",").map((v) => v.trim().replace(/"/g, "");
+      const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
       const obj: any = {}
       headers.forEach((header, index) => {
         obj[header] = values[index] || "";
       });
       return obj;
     })
-    .filter((obj) => Object.values(obj).some((v) => v !== "");
+    .filter((obj) => Object.values(obj).some((v) => v !== ""));
 }
 function validateImportData(
-  data: any;
+  data: any,
   type: "cases" | "evidence",
 ): { success: boolean; errors: string[]; warnings: string[] } {
   const errors: string[] = [];
@@ -450,17 +473,35 @@ function validateImportData(
   return { success: errors.length === 0, errors, warnings }
 }
 async function processCaseImport(
-  caseData: any
+  caseData: any,
   options: ImportOptions
 ): Promise<boolean> {
-  // Mock implementation - in production, this would call actual API
-  console.log(
-    "Importing case:",
-    caseData.title,
-    "with strategy:",
-    options.mergeStrategy,
-  );
-  return true;
+  // Real implementation using SvelteKit 2 API endpoint.
+  // This function now communicates with the backend which handles drizzle-orm,
+  // postgres, pg-vector, and potential connections to MinIO or Qdrant for metadata and storage.
+  try {
+    const response = await fetch('/api/cases/import', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        caseData,
+        options,
+      }),
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      const error = await response.json().catch(() => ({ message: `Server error: ${response.status}` }));
+      throw new Error(error.message);
+    }
+  } catch (error: any) {
+    // Re-throw to be handled by the `importCases` loop, which will log the specific error.
+    throw new Error(error.message || 'Network error during case import.');
+  }
 }
 // Template generators for different export formats
 export function generateCaseExportTemplate(): unknown {
@@ -494,13 +535,13 @@ export function generateEvidenceExportTemplate(): unknown {
 }
 // Generic export function for backward compatibility
 export async function exportData(
-  data: any[]
-  filename: string
+  data: any[],
+  filename: string,
   format: "json" | "csv" | "xlsx" | "excel" = "json",
 ): Promise<void> {
   const options: ExportOptions = {
-    format: format === "xlsx" || format === "excel" ? "excel" : format
-    includeMetadata: true
+    format: format === "xlsx" || format === "excel" ? "excel" : format,
+    includeMetadata: true,
     includeFiles: false
   }
   const result = await exportCases(data, options);

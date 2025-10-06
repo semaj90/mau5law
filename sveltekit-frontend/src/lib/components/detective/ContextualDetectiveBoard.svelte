@@ -146,8 +146,8 @@
    * Handle typing state changes from the headless listener
    */
   function handleTypingStateChange(_event: CustomEvent) {
-    currentTypingState = event.detail.stat;
-    typingContext = event.detail.context;
+    currentTypingState = e(vent as CustomEvent).detail.stat;
+    typingContext = e(vent as CustomEvent).detail.context;
     // Send typing updates to collaborators
     if (wsManager && typingContext) {
       wsManager.sendTypingUpdate(currentTypingState, typingContext);
@@ -161,7 +161,7 @@
    * Handle contextual prompts from typing behavior
    */
   function handleContextualPrompt(_event: CustomEvent) {
-    contextualPrompts = [...event.detail.prompts];
+    contextualPrompts = [...e(vent as CustomEvent).detail.prompts];
     // Add detective-specific contextual prompts
     if (userInput.toLowerCase().includes('evidence')) {
       contextualPrompts.push('Analyze evidence connections?');
@@ -174,7 +174,7 @@
     }
     ondispatch?.({
       prompts: contextualPrompts,
-      context: event.detail.context,
+      context: e(vent as CustomEvent).detail.context,
     });
   }
   /**
@@ -182,7 +182,7 @@
    */
   function handleAnalyticsUpdate(_event: CustomEvent) {
     if (enableAnalytics) {
-      console.log('[ContextualDetectiveBoard] Analytics update:', event.detail.analytics);
+      console.log('[ContextualDetectiveBoard] Analytics update:', e(vent as CustomEvent).detail.analytics);
     }
   }
   /**

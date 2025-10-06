@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function handleThinkingToggle(_event: CustomEvent) {
-    thinkingStyleEnabled = event.detail.enabled;
+    thinkingStyleEnabled = e(vent as CustomEvent).detail.enabled;
     // Add a system message to indicate the change
     const message = thinkingStyleEnabled
       ? "🧠 Thinking Style enabled. AI will now show detailed reasoning process."
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function handleKeyDown(_event: CustomEvent<KeyboardEvent>) {
-    const keyEvent = event.detail;
+    const keyEvent = e(vent as CustomEvent).detail;
     if (keyEvent.key === "Enter" && !keyEvent.shiftKey) {
       event.preventDefault();
       sendMessage();

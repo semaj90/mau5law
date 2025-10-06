@@ -1,34 +1,37 @@
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
-<script>
-  // Svelte 5 runes are auto-imported
-</script>
+<script lang="ts">
+	// Svelte 5 runes are auto-imported
 	import { onMount, onDestroy } from 'svelte';
 	import '../yorha/ps1.css';
-	let container;
-	let gyroscope = { x: 0, y: 0, z: 0 }
-	let pointer = { x: 0, y: 0 }
+
+	let container: HTMLElement | null;
+	let gyroscope = { x: 0, y: 0, z: 0 };
+	let pointer = { x: 0, y: 0 };
 	let isGyroscopeAvailable = false;
 	let isMobile = false;
-	let parallaxLayers = [];
-	let animationId = null;
+	let parallaxLayers: Array<any> = [];
+	let animationId: number | null = null;
+
 	// Parallax configuration
 	let parallaxConfig = {
 		mouseSensitivity: 0.02,
 		gyroSensitivity: 0.5,
 		maxOffset: 100,
 		smoothing: 0.1,
-		enableAutoRotate: true
-		autoRotateSpeed: 0.001;
-	}
+		enableAutoRotate: true,
+		autoRotateSpeed: 0.001
+	};
+
 	// Performance monitoring
 	let perfStats = {
 		fps: 0,
 		frameTime: 0,
-		lastFrameTime: 0;
-	}
-	$effect(() => {
+		lastFrameTime: performance.now()
+	};
+
+	onMount(() => {
 		detectDeviceCapabilities();
 		initializeParallaxLayers();
 		requestGyroscopePermission();
@@ -38,25 +41,28 @@ https://svelte.dev/e/expected_token -->
 		window.addEventListener('deviceorientation', handleGyroscope);
 		window.addEventListener('resize', handleResize);
 	});
+
 	onDestroy(() => {
 		if (animationId) cancelAnimationFrame(animationId);
 		window.removeEventListener('mousemove', handleMouseMove);
 		window.removeEventListener('deviceorientation', handleGyroscope);
 		window.removeEventListener('resize', handleResize);
 	});
+
 	function detectDeviceCapabilities() {
 		isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 		// Check for gyroscope support
-		if (window.DeviceOrientationEvent) {
+		if ((window as any).DeviceOrientationEvent) {
 			isGyroscopeAvailable = true;
 		}
 		console.log(`📱 Device: ${isMobile ? 'Mobile' : 'Desktop'}, Gyroscope: ${isGyroscopeAvailable}`);
 	}
+
 	async function requestGyroscopePermission() {
 		if (!isGyroscopeAvailable || !isMobile) return;
 		try {
-			if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-				const permission = await DeviceOrientationEvent.requestPermission();
+			if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+				const permission = await (DeviceOrientationEvent as any).requestPermission();
 				if (permission === 'granted') {
 					console.log('✅ Gyroscope permission granted');
 				} else {
@@ -69,67 +75,72 @@ https://svelte.dev/e/expected_token -->
 			isGyroscopeAvailable = false;
 		}
 	}
+
 	function initializeParallaxLayers() {
 		parallaxLayers = [
 			{
 				id: 'background',
 				depth: 0.1,
-				element: null
+				element: null,
 				currentOffset: { x: 0, y: 0 },
 				targetOffset: { x: 0, y: 0 }
 			},
 			{
 				id: 'midground-1',
 				depth: 0.3,
-				element: null
+				element: null,
 				currentOffset: { x: 0, y: 0 },
 				targetOffset: { x: 0, y: 0 }
 			},
 			{
 				id: 'midground-2',
 				depth: 0.5,
-				element: null
+				element: null,
 				currentOffset: { x: 0, y: 0 },
 				targetOffset: { x: 0, y: 0 }
 			},
 			{
 				id: 'foreground',
 				depth: 0.8,
-				element: null
+				element: null,
 				currentOffset: { x: 0, y: 0 },
 				targetOffset: { x: 0, y: 0 }
 			}
 		];
 		// Find elements after DOM is ready
 		setTimeout(() => {
-			parallaxLayers.forEach(layer => {
+			parallaxLayers.forEach((layer) => {
 				layer.element = document.querySelector(`[data-parallax-id="${layer.id}"]`);
 			});
 		}, 100);
 	}
-	function handleMouseMove(event) {
+
+	function handleMouseMove(event: MouseEvent) {
 		if (isMobile && isGyroscopeAvailable) return; // Prefer gyroscope on mobile
 		const centerX = window.innerWidth / 2;
 		const centerY = window.innerHeight / 2;
 		pointer.x = (event.clientX - centerX) * parallaxConfig.mouseSensitivity;
 		pointer.y = (event.clientY - centerY) * parallaxConfig.mouseSensitivity;
 	}
-	function handleGyroscope(event) {
+
+	function handleGyroscope(event: DeviceOrientationEvent) {
 		if (!isGyroscopeAvailable || !isMobile) return;
 		// Convert device orientation to parallax offset
-		const beta = event.beta || 0;   // Front-to-back tilt (-180 to 180)
-		const gamma = event.gamma || 0; // Left-to-right tilt (-90 to 90)
+		const beta = (event.beta as number) || 0; // Front-to-back tilt (-180 to 180)
+		const gamma = (event.gamma as number) || 0; // Left-to-right tilt (-90 to 90)
 		gyroscope.x = (gamma / 90) * parallaxConfig.gyroSensitivity * parallaxConfig.maxOffset;
 		gyroscope.y = (beta / 180) * parallaxConfig.gyroSensitivity * parallaxConfig.maxOffset;
 	}
+
 	function handleResize() {
 		// Recalculate parallax boundaries on resize
 		updateParallaxTargets();
 	}
+
 	function updateParallaxTargets() {
 		const currentTime = performance.now();
 		// Choose input source
-		let inputX, inputY;
+		let inputX = 0, inputY = 0;
 		if (isMobile && isGyroscopeAvailable) {
 			inputX = gyroscope.x;
 			inputY = gyroscope.y;
@@ -148,13 +159,14 @@ https://svelte.dev/e/expected_token -->
 		inputX = Math.max(-parallaxConfig.maxOffset, Math.min(parallaxConfig.maxOffset, inputX));
 		inputY = Math.max(-parallaxConfig.maxOffset, Math.min(parallaxConfig.maxOffset, inputY));
 		// Update target offsets for each layer
-		parallaxLayers.forEach(layer => {
+		parallaxLayers.forEach((layer) => {
 			layer.targetOffset.x = inputX * layer.depth;
 			layer.targetOffset.y = inputY * layer.depth;
 		});
 	}
+
 	function updateParallaxElements() {
-		parallaxLayers.forEach(layer => {
+		parallaxLayers.forEach((layer) => {
 			if (!layer.element) return;
 			// Smooth interpolation to target
 			layer.currentOffset.x += (layer.targetOffset.x - layer.currentOffset.x) * parallaxConfig.smoothing;
@@ -169,12 +181,14 @@ https://svelte.dev/e/expected_token -->
 				`rotateY(${transformX * 0.02}deg)`;
 		});
 	}
+
 	function updatePerformanceStats() {
 		const currentTime = performance.now();
-		perfStats.frameTime = currentTime - perfStats.lastFrameTim;
-		perfStats.fps = Math.round(1000 / perfStats.frameTime);
-		perfStats.lastFrameTime = currentTim;
+		perfStats.frameTime = currentTime - perfStats.lastFrameTime;
+		perfStats.fps = Math.round(1000 / Math.max(1, perfStats.frameTime));
+		perfStats.lastFrameTime = currentTime;
 	}
+
 	function startParallaxLoop() {
 		function animate() {
 			updatePerformanceStats();
@@ -184,19 +198,22 @@ https://svelte.dev/e/expected_token -->
 		}
 		animate();
 	}
+
 	// Control functions
 	function resetParallax() {
-		parallaxLayers.forEach(layer => {
-			layer.currentOffset = { x: 0, y: 0 }
-			layer.targetOffset = { x: 0, y: 0 }
+		parallaxLayers.forEach((layer) => {
+			layer.currentOffset = { x: 0, y: 0 };
+			layer.targetOffset = { x: 0, y: 0 };
 		});
-		pointer = { x: 0, y: 0 }
-		gyroscope = { x: 0, y: 0, z: 0 }
+		pointer = { x: 0, y: 0 };
+		gyroscope = { x: 0, y: 0, z: 0 };
 	}
+
 	function toggleAutoRotate() {
-		parallaxConfig.enableAutoRotate = !parallaxConfig.enableAutoRotat;
+		parallaxConfig.enableAutoRotate = !parallaxConfig.enableAutoRotate;
 	}
 </script>
+
 <div class="ps1-parallax-container" bind:this={container}>
 	<div class="story-header ps1-scanlines">
 		<h1 class="ps1-text-glow">🎮 PS1 Dynamic Parallax</h1>
@@ -229,7 +246,7 @@ https://svelte.dev/e/expected_token -->
 		</div>
 		<div class="control-row">
 			<label for="max-offset">Max Offset:</label><input id="max-offset"
-				type="range";
+				type="range"
 				bind:value={parallaxConfig.maxOffset}
 				min="20"
 				max="200"
@@ -240,7 +257,7 @@ https://svelte.dev/e/expected_token -->
 		</div>
 		<div class="control-row">
 			<label for="smoothing">Smoothing:</label><input id="smoothing"
-				type="range" ;
+				type="range"
 				bind:value={parallaxConfig.smoothing}
 				min="0.01"
 				max="0.5"
@@ -474,8 +491,8 @@ https://svelte.dev/e/expected_token -->
 		font-size: 12px;
 		color: #aaa;
 	}
-	.status-.status-ok { color: #00ff88, }
-	.status-.status-warn { color: #ffaa00, }
+	.status-ok { color: #00ff88; }
+	.status-warn { color: #ffaa00; }
 	.parallax-viewport {
 		position: relative;
 		height: 60vh;
@@ -562,12 +579,12 @@ https://svelte.dev/e/expected_token -->
 		border: 1px solid #ff4400;
 		background: rgba(255, 68, 0, 0.1);
 	}
-	.cube-face.front { transform: translateZ(15px), }
-	.cube-face.back { transform: translateZ(-15px) rotateY(180deg), }
-	.cube-face.left { transform: rotateY(-90deg) translateZ(15px), }
-	.cube-face.right { transform: rotateY(90deg) translateZ(15px), }
-	.cube-face.top { transform: rotateX(90deg) translateZ(15px), }
-	.cube-face.bottom { transform: rotateX(-90deg) translateZ(15px), }
+	.cube-face.front { transform: translateZ(15px); }
+	.cube-face.back { transform: translateZ(-15px) rotateY(180deg); }
+	.cube-face.left { transform: rotateY(-90deg) translateZ(15px); }
+	.cube-face.right { transform: rotateY(90deg) translateZ(15px); }
+	.cube-face.top { transform: rotateX(90deg) translateZ(15px); }
+	.cube-face.bottom { transform: rotateX(-90deg) translateZ(15px); }
 	.layer-foreground {
 		z-index: 4;
 		pointer-events: none;
@@ -632,7 +649,7 @@ https://svelte.dev/e/expected_token -->
 		border: 2px solid #ffff00;
 		border-radius: 50%;
 	}
-	.crosshair:: before
+	.crosshair::before,
 	.crosshair::after {
 		content: '';
 		position: absolute;
@@ -673,7 +690,7 @@ https://svelte.dev/e/expected_token -->
 		height: 20px;
 		position: relative;
 	}
-	.reference-cross:: before
+	.reference-cross::before,
 	.reference-cross::after {
 		content: '';
 		position: absolute;
@@ -725,25 +742,25 @@ https://svelte.dev/e/expected_token -->
 	}
 	/* Animations */
 	@keyframes pulse {
-		0%, 100% { opacity: 0.3; transform: scale(1), }
-		50% { opacity: 1; transform: scale(1.2), }
+		0%, 100% { opacity: 0.3; transform: scale(1); }
+		50% { opacity: 1; transform: scale(1.2); }
 	}
 	@keyframes float {
-		0%, 100% { transform: translateY(0px) rotate(0deg), }
-		50% { transform: translateY(-10px) rotate(180deg), }
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-10px) rotate(180deg); }
 	}
 	@keyframes rotate3d {
-		0% { transform: rotateX(0deg) rotateY(0deg), }
-		100% { transform: rotateX(360deg) rotateY(360deg), }
+		0% { transform: rotateX(0deg) rotateY(0deg); }
+		100% { transform: rotateX(360deg) rotateY(360deg); }
 	}
 	@keyframes scan {
-		0% { transform: translateX(-10px); opacity: 0, }
-		50% { opacity: 1, }
-		100% { transform: translateX(70px); opacity: 0, }
+		0% { transform: translateX(-10px); opacity: 0; }
+		50% { opacity: 1; }
+		100% { transform: translateX(70px); opacity: 0; }
 	}
 	@keyframes blink {
-		0%, 50% { opacity: 1, }
-		51%, 100% { opacity: 0.3, }
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0.3; }
 	}
 	/* PS1 Effects */
 	.ps1-scanlines::before {
