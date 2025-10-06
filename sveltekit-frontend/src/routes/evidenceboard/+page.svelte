@@ -1,15 +1,60 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import SimpleEvidenceBoard from '$lib/components/evidence/SimpleEvidenceBoard.svelte';
-  import { Button, Card } from '$lib/components/ui/enhanced-bits';
-  import { onMount } from 'svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Corrected import
+  // Ensure Card.svelte is a Svelte 5 component using runes (e.g., $props()) to resolve type issues.
+  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';     // Corrected import
+  import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
+  import { submitWithProgress } from '$lib/api/submitWithProgress';
+  import { isAuthenticated, currentUser } from '$lib/stores/authStore';
+  import unsyncedUploads from '$lib/services/unsynced-uploads';
+
   let pageLoaded = $state(false);
   let showWelcome = $state(true);
+  let savedLocally = $state(false);
+
   $effect(() => {
     pageLoaded = true;
     // Auto-hide welcome after 3 seconds
     setTimeout(() => (showWelcome = false), 3000);
   });
+
+  function handleUploadDone(detail: any) {
+    // If backend returns metadata or fileId, try to persist
+    console.log('Upload done:', detail);
+    // Expecting { success, fileId, originalFilename, storedFilename, filePath, size }
+    if (detail?.success && detail?.storedFilename) {
+      const payload = {
+        caseId: '7d897d59-9832-45c1-87e6-9c5a04745119',
+        originalFilename: detail.originalFilename,
+        storedFilename: detail.storedFilename,
+        mimeType: detail.mimeType ?? null,
+        fileSize: detail.size ?? null,
+        storagePath: detail.filePath ?? null,
+        metadata: {},
+      };
+
+      // If authenticated, send to server; otherwise persist locally to sync later
+      const auth = get(isAuthenticated);
+      const user = get(currentUser);
+      if (auth) {
+        submitWithProgress('/api/metadata/save', payload)
+          .then((res) => console.log('Metadata saved', res))
+          .catch((err) => console.warn('Metadata save failed', err));
+      } else {
+        // Save unsynced upload metadata to localStorage
+        try {
+          unsyncedUploads.saveLocalUpload({ ...payload, userId: user?.id ?? null });
+          savedLocally = true;
+          // Clear notification after 6 seconds
+          setTimeout(() => (savedLocally = false), 6000);
+          console.log('Saved upload metadata locally (unauthenticated).', payload.originalFilename);
+        } catch (e) {
+          console.warn('Failed to save upload metadata to localStorage', e);
+        }
+      }
+    }
+  }
 </script>
 
 <svelte:head>
@@ -19,7 +64,7 @@
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
-      <div variant="evidence" hoverable fullWidth class="nes-container">
+      <Card variant="evidence" hoverable fullWidth class="nes-container"> <!-- Changed to Card component -->
         <div class="nier-bits-yorha-panel-header">
           <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
           <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
@@ -41,14 +86,22 @@
           </div>
         </div>
         <div class="nier-bits-yorha-panel-content">
-          <button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
+          <Button variant="ghost" size="sm" onclick={() => (showWelcome = false)} class="nes-btn"> <!-- Changed to Button component -->
             Get Started →
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card> <!-- Changed to Card component -->
     </div>
   {/if}
   {#if pageLoaded}
+    <section class="dev-upload-panel" style="margin-bottom:1.5rem;">
+      <h3 style="margin:0 0 8px 0">Upload evidence (dev)</h3>
+      <UploadProgress uploadUrl="/api/upload" fieldName="file" maxBytes={200 * 1024 * 1024} on:done={(e) => handleUploadDone(e.detail)} />
+      {#if savedLocally}
+        <div class="local-save-notice">Saved locally — will sync when you log in</div>
+      {/if}
+    </section>
+
     <SimpleEvidenceBoard caseId="7d897d59-9832-45c1-87e6-9c5a04745119" />
   {:else}
     <div class="loading-screen">
@@ -139,5 +192,14 @@
     100% {
       transform: rotate(360deg);
     }
+  }
+  .local-save-notice {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #fff7cc;
+    border: 1px solid #ffe58f;
+    color: #8a6d00;
+    border-radius: 6px;
+    font-size: 13px;
   }
 </style>

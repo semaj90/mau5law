@@ -109,7 +109,7 @@
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-desc" : undefined}
       tabindex="0"
-      on:click|stopPropagation
+      onclick={(event) => event.stopPropagation()}
       onkeydown={handleContentKeydown}
       transition:scale={{ duration: 180, start: 0.96 }}
     >

@@ -323,7 +323,7 @@ showNewPersonModal = true}>
                </div>
                <div class="person-cases">
                  {#each person.cases as caseId}
-                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
+                   <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
                  {/each}
                </div>
             </Card.Content>
@@ -562,245 +562,255 @@ showNewPersonModal = true}>
     display: flex;
     align-items: center;
   }
-  .search-icon {
+  /* classes applied to component instances (Search, Input, Card.*) use :global()
+     so Svelte's unused-css checker does not report false positives */
+  :global(.search-icon) {
     position: absolute;
     left: 10px;
     color: #666;
   }
-  .search-input {
+  :global(.search-input) {
     padding-left: 35px !important;
     background: #1a1a1a !important;
     border: 1px solid #555 !important;
     color: #d4af37 !important;
     min-width: 300px;
   }
-  .threat-filter {
-    background: #1a1a1a;
-    border: 1px solid #555;
-    color: #d4af37;
-    padding: 6px 12px;
-    font-family: inherit;
-    font-size: 11px;
-  }
-  .stats-section {
-    display: flex;
-    gap: 20px;
-  }
-  .stat-item {
-    text-align: center;
-  }
-  .stat-number {
-    display: block;
-    font-size: 18px;
-    font-weight: bold;
-    color: #d4af37;
-  }
-  .stat-label {
-    display: block;
-    font-size: 10px;
-    color: #888;
-  }
-  /* fix stat selectors to match markup: <div class="stat-item critical"> */
-  .stat-item.critical .stat-number {
-    color: #ef4444;
-  }
-  .stat-item.high .stat-number {
-    color: #f97316;
-  }
-  .persons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  .person-card {
-    background: #1a1a1a !important;
-    border: 1px solid #3a3a3a !important;
-    color: #d4af37 !important;
-  }
-  .person-header {
-    display: flex;
-    gap: 15px;
-    align-items: flex-start;
-  }
-  .person-photo {
-    width: 60px;
-    height: 60px;
-    border-radius: 4px;
-    overflow: hidden;
-    background: #2a2a2a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .photo-placeholder {
-    color: #666;
-  }
-  .person-basic-info {
-    flex: 1;
-  }
-  .person-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #d4af37;
-    margin-bottom: 2px;
-  }
-  .person-alias.person-id {
-    font-size: 10px;
-    color: #666;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .person-badges {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .person-details {
-    margin: 15px 0;
-  }
-  .detail-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 11px;
-  }
-  .detail-label {
-    color: #888;
-  }
-  .detail-value {
-    color: #d4af37;
-  }
-  .person-description {
-    font-size: 11px;
-    color: #ccc;
-    line-height: 1.4;
-    margin: 15px 0;
-  }
-  .person-cases {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin: 10px 0;
-  }
-  .case-badge {
-    font-size: 9px !important;
-    padding: 2px 6px !important;
-  }
-  .person-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-  }
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    color: #666;
-    text-align: center;
-  }
-  .empty-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-  }
-  .empty-title {
-    font-size: 18px;
-    color: #888;
-    margin-bottom: 10px;
-  }
-  .empty-subtitle {
-    font-size: 12px;
-  }
-  /* Error and Loading States */
-  .error-banner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: #4a1a1a;
-    border: 1px solid #ef4444;
-    color: #fca5a5;
-    font-size: 12px;
-    margin: 15px 20px;
-    border-radius: 4px;
-  }
-  .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    color: #888;
-  }
-  .loading-spinner {
-    width: 32px;
-    height: 32px;
-    border: 2px solid #3a3a3a;
-    border-top: 2px solid #d4af37;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .loading-text {
-    font-size: 14px;
-    color: #666;
-  }
-  /* Modal Styles */
-  .yorha-modal {
-    background: #2a2a2a !important;
-    border: 2px solid #d4af37 !important;
-    color: #d4af37 !important;
-  }
-  .modal-form {
-    padding: 20px 0;
-  }
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-  }
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .form-field-full {
-    grid-column: 1 / -1;
-  }
-  .form-label {
-    font-size: 11px;
-    font-weight: bold;
-    color: #d4af37;
-    text-transform: uppercase;
-  }
-  .yorha-input {
-    background: #1a1a1a !important;
-    border: 1px solid #555 !important;
-    color: #d4af37 !important;
-    font-family: inherit !important;
-  }
-  .yorha-select {
-    background: #1a1a1a;
-    border: 1px solid #555;
-    color: #d4af37;
-    padding: 6px 12px;
-    font-family: inherit;
-    font-size: 12px;
-  }
-  .yorha-textarea {
-    background: #1a1a1a;
-    border: 1px solid #555;
-    color: #d4af37;
-    padding: 8px 12px;
-    font-family: inherit;
-    font-size: 12px;
-    resize: vertical;
-  }
+   .threat-filter {
+     background: #1a1a1a;
+     border: 1px solid #555;
+     color: #d4af37;
+     padding: 6px 12px;
+     font-family: inherit;
+     font-size: 11px;
+   }
+   .stats-section {
+     display: flex;
+     gap: 20px;
+   }
+   .stat-item {
+     text-align: center;
+   }
+   .stat-number {
+     display: block;
+     font-size: 18px;
+     font-weight: bold;
+     color: #d4af37;
+   }
+   .stat-label {
+     display: block;
+     font-size: 10px;
+     color: #888;
+   }
+   /* fix stat selectors to match markup: <div class="stat-item critical"> */
+   .stat-item.critical .stat-number {
+     color: #ef4444;
+   }
+   .stat-item.high .stat-number {
+     color: #f97316;
+   }
+   .persons-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+     gap: 20px;
+     padding: 20px;
+     overflow-y: auto;
+     flex: 1;
+   }
+   /* Card.Root is rendered via a component; target the actual class used on it via :global() */
+   :global(.person-nier-bits-card),
+   :global(.person-card) {
+     background: #1a1a1a !important;
+     border: 1px solid #3a3a3a !important;
+     color: #d4af37 !important;
+   }
+   /* Card.Header is a component: use :global() so Svelte recognizes the usage */
+   :global(.person-header) {
+     display: flex;
+     gap: 15px;
+     align-items: flex-start;
+   }
+
+   .person-photo {
+     width: 60px;
+     height: 60px;
+     border-radius: 4px;
+     overflow: hidden;
+     background: #2a2a2a;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+   }
+   .photo-placeholder {
+     color: #666;
+   }
+   .person-basic-info {
+     flex: 1;
+   }
+   .person-name {
+     font-size: 16px;
+     font-weight: bold;
+     color: #d4af37;
+     margin-bottom: 2px;
+   }
+   /* fix: separate selectors to match the actual markup (two separate elements) */
+   .person-alias,
+   .person-id {
+     font-size: 10px;
+     color: #666;
+     font-family: 'JetBrains Mono', monospace;
+   }
+
+   .person-badges {
+     display: flex;
+     flex-direction: column;
+     gap: 4px;
+   }
+   .person-details {
+     margin: 15px 0;
+   }
+   .detail-row {
+     display: flex;
+     justify-content: space-between;
+     margin-bottom: 5px;
+     font-size: 11px;
+   }
+   .detail-label {
+     color: #888;
+   }
+   .detail-value {
+     color: #d4af37;
+   }
+   .person-description {
+     font-size: 11px;
+     color: #ccc;
+     line-height: 1.4;
+     margin: 15px 0;
+   }
+   .person-cases {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 5px;
+     margin: 10px 0;
+   }
+   .case-badge {
+     font-size: 9px !important;
+     padding: 2px 6px !important;
+   }
+
+   .person-actions {
+     display: flex;
+     gap: 8px;
+     justify-content: flex-end;
+   }
+   .empty-state {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     flex: 1;
+     color: #666;
+     text-align: center;
+   }
+   .empty-icon {
+     font-size: 48px;
+     margin-bottom: 15px;
+   }
+   .empty-title {
+     font-size: 18px;
+     color: #888;
+     margin-bottom: 10px;
+   }
+   .empty-subtitle {
+     font-size: 12px;
+   }
+   /* Error and Loading States */
+   .error-banner {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     padding: 12px 20px;
+     background: #4a1a1a;
+     border: 1px solid #ef4444;
+     color: #fca5a5;
+     font-size: 12px;
+     margin: 15px 20px;
+     border-radius: 4px;
+   }
+   .loading-state {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     padding: 60px 20px;
+     color: #888;
+   }
+   .loading-spinner {
+     width: 32px;
+     height: 32px;
+     border: 2px solid #3a3a3a;
+     border-top: 2px solid #d4af37;
+     border-radius: 50%;
+     animation: spin 1s linear infinite;
+     margin-bottom: 15px;
+   }
+   @keyframes spin {
+     0% { transform: rotate(0deg); }
+     100% { transform: rotate(360deg); }
+   }
+   .loading-text {
+     font-size: 14px;
+     color: #666;
+   }
+   /* Modal Styles */
+   :global(.yorha-modal) {
+     background: #2a2a2a !important;
+     border: 2px solid #d4af37 !important;
+     color: #d4af37 !important;
+   }
+   .modal-form {
+     padding: 20px 0;
+   }
+   .form-grid {
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     gap: 15px;
+   }
+   .form-field {
+     display: flex;
+     flex-direction: column;
+     gap: 5px;
+   }
+   .form-field-full {
+     grid-column: 1 / -1;
+   }
+   .form-label {
+     font-size: 11px;
+     font-weight: bold;
+     color: #d4af37;
+     text-transform: uppercase;
+   }
+   :global(.yorha-input) {
+     background: #1a1a1a !important;
+     border: 1px solid #555 !important;
+     color: #d4af37 !important;
+     font-family: inherit !important;
+   }
+   .yorha-select {
+     background: #1a1a1a;
+     border: 1px solid #555;
+     color: #d4af37;
+     padding: 6px 12px;
+     font-family: inherit;
+     font-size: 12px;
+   }
+   .yorha-textarea {
+     background: #1a1a1a;
+     border: 1px solid #555;
+     color: #d4af37;
+     padding: 8px 12px;
+     font-family: inherit;
+     font-size: 12px;
+     resize: vertical;
+   }
 </style>

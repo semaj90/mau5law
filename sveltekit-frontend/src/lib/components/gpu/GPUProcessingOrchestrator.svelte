@@ -7,8 +7,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  const { documents: DocumentInput[] = [], autoStart: boolean = false, maxConcurrent: number = 5 } = $props();
-  import { onMount, onDestroy } from 'svelte';
+  const { documents = [], autoStart = false, maxConcurrent = 5 } = $props<{ documents?: DocumentInput[]; autoStart?: boolean; maxConcurrent?: number }>();
+  import { onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { fade, fly } from 'svelte/transition';
   // Props
@@ -58,15 +58,15 @@ https://svelte.dev/e/js_parse_error -->
   function addDocument() {
     if (!newDocumentContent.trim()) return;
     const document: DocumentInput = {
-      documentId: `doc_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-      content: newDocumentContent;
-      title: newDocumentTitle || undefined;
+      documentId: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+      content: newDocumentContent,
+      title: newDocumentTitle || undefined,
       options: {
-        processType: processType as any
+        processType: processType as any,
         priority,
         timeout: 30000,
         retries: 3,
-        batchSize: 1;
+        batchSize: 1,
       }
     }
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
@@ -248,53 +248,21 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
     {#if selectedTab === 'completed'}
       <div class="document-list">
-        {#each completedDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
+        {#each completedDocuments as result (result.documentId)}
           <div class="document-item completed" in:fade={{ duration: 300 }}>
             <div class="document-info">
               <h4>Document Completed</h4>
               <div class="result-summary">
-                ✅ Processed in {(
-                  result as {
-                    documentId?: unknown;
-                    processingTime?: unknown;
-                    result?: unknown;
-                    timestamp?: unknown;
-                    error?: unknown;
-                  }
-                ).processingTime}ms
-                {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.extractedText}
-                  <br />📄 Extracted {(
-                    result as {
-                      documentId?: unknown;
-                      processingTime?: unknown;
-                      result?: unknown;
-                      timestamp?: unknown;
-                      error?: unknown;
-                    }
-                  ).result.extractedText.length} characters
+                ✅ Processed in {result.processingTime}ms
+                {#if result.result?.extractedText}
+                  <br />📄 Extracted {result.result.extractedText.length} characters
                 {/if}
-                {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.embeddings}
-                  <br />🔢 Generated {(
-                    result as {
-                      documentId?: unknown;
-                      processingTime?: unknown;
-                      result?: unknown;
-                      timestamp?: unknown;
-                      error?: unknown;
-                    }
-                  ).result.embeddings.length} embeddings
+                {#if result.result?.embeddings}
+                  <br />🔢 Generated {result.result.embeddings.length} embeddings
                 {/if}
               </div>
               <div class="timestamp">
-                Completed: {(
-                  result as {
-                    documentId?: unknown;
-                    processingTime?: unknown;
-                    result?: unknown;
-                    timestamp?: unknown;
-                    error?: unknown;
-                  }
-                ).timestamp.toLocaleString()}
+                Completed: {result.timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -309,31 +277,15 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
     {#if selectedTab === 'errors'}
       <div class="document-list">
-        {#each errorDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
+        {#each errorDocuments as result (result.documentId)}
           <div class="document-item error" in:fade={{ duration: 300 }}>
             <div class="document-info">
               <h4>Processing Failed</h4>
               <p class="error-message">
-                ❌ {(
-                  result as {
-                    documentId?: unknown;
-                    processingTime?: unknown;
-                    result?: unknown;
-                    timestamp?: unknown;
-                    error?: unknown;
-                  }
-                ).error}
+                ❌ {result.error}
               </p>
               <div class="timestamp">
-                Failed: {(
-                  result as {
-                    documentId?: unknown;
-                    processingTime?: unknown;
-                    result?: unknown;
-                    timestamp?: unknown;
-                    error?: unknown;
-                  }
-                ).timestamp.toLocaleString()}
+                Failed: {result.timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -557,15 +509,15 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
   }
-  .document-.processing {
+  .document-item.processing {
     border-color: #ffc107;
     background: #fffbf0;
   }
-  .document-.completed {
+  .document-item.completed {
     border-color: #28a745;
     background: #f8fff9;
   }
-  .document-.error {
+  .document-item.error {
     border-color: #dc3545;
     background: #fff5f5;
   }
@@ -634,6 +586,54 @@ https://svelte.dev/e/js_parse_error -->
   .status-badge.processing {
     background: #fff3cd;
     color: #856404;
+  }
+  .status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+  }
+  .status-badge.error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  .empty-state {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+  /* Responsive */
+  @media (max-width: 768px) {
+    .gpu-orchestrator {
+      padding: 1rem;
+    }
+    .orchestrator-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .status-indicators {
+      flex-wrap: wrap;
+    }
+    .control-group {
+      flex-direction: column;
+    }
+    .form-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .tabs {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+    .document-item {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+  }
+</style>
   }
   .status-badge.completed {
     background: #d4edda;

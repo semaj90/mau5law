@@ -17,6 +17,7 @@
     type LegalNote,
     type NoteFilters
   } from '$lib/stores/enhanced-saved-notes';
+  import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import { Input } from '$lib/components/ui/input';
@@ -43,33 +44,41 @@
     X
   } from 'lucide-svelte';
   // Component state
-  let searchQuery = $state('');
-  let selectedNoteType = $state('');
-  let selectedRiskLevel = $state('');
-  let showFilters = $state(false);
-  let showCreateNote = $state(false);
-  let editingNote = $state<LegalNote | null>(null);
-  let semanticResults = $state<LegalNote[]>([]);
-  let showSemanticSearch = $state(false);
+  let searchQuery: string = '';
+  let selectedNoteType: string = '';
+  let selectedRiskLevel: string = '';
+  let showFilters: boolean = false;
+  let showCreateNote: boolean = false;
+  let editingNote: LegalNote | null = null;
+  let semanticResults: LegalNote[] = [];
+  let showSemanticSearch: boolean = false;
   // New note form
-  let newNote = $state({
+  let newNote: {
+    title: string;
+    content: string;
+    noteType: 'general' | 'legal_analysis' | 'case_note' | 'evidence_note' | 'research' | 'todo';
+    tags: string[];
+    caseId: string;
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  } = {
     title: '',
     content: '',
-    noteType: 'general' as const,
-    tags: [] as string[],
+    noteType: 'general',
+    tags: [],
     caseId: '',
-    priority: 'medium' as const,
-    riskLevel: 'low' as const
-  });
+    priority: 'medium',
+    riskLevel: 'low'
+  };
   // Stats and filters reactive
-  let stats = $state<any>({});
-  let notes = $state<LegalNote[]>([]);
-  let currentFilters = $state<NoteFilters>({
+  let stats: any = {};
+  let notes: LegalNote[] = [];
+  let currentFilters: NoteFilters = {
     search: '',
     noteType: '',
     tags: [],
     caseId: undefined
-  });
+  };
   onMount(() => {
     // call async loader but don't make the onMount callback async (so we can return a cleanup)
     loadLegalNotes().catch((err) => {
@@ -111,6 +120,12 @@
   // Note creation
   async function createNote() {
     if (!newNote.title.trim() || !newNote.content.trim()) return;
+
+    // Safely obtain the XState global state
+    const globalState = xstateIntegration.globalState;
+    // Read user id from the plain object (avoid using $store auto-subscription)
+    const userId = globalState?.context?.auth?.user?.id ?? 'anonymous';
+
     const noteId = `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tags = newNote.tags.length > 0 ? newNote.tags : [newNote.noteType];
     const note: Omit<LegalNote, 'savedAt' | 'updatedAt'> = {
@@ -123,7 +138,7 @@
       noteType: newNote.noteType,
       tags,
       caseId: newNote.caseId || undefined,
-      userId: 'current-user', // TODO: Get from auth
+      userId: userId, // Replaced 'current-user' with dynamic userId
       metadata: {
         priority: newNote.priority,
         riskLevel: newNote.riskLevel,
@@ -654,6 +669,9 @@
           {/if}
         </CardContent>
       </Card>
+    {/if}
+  </div> <!-- end .space-y-4 (notes list) -->
+</div> <!-- end .space-y-6 p-6 (main container) -->
     {/if}
   </div> <!-- end .space-y-4 (notes list) -->
 </div> <!-- end .space-y-6 p-6 (main container) -->

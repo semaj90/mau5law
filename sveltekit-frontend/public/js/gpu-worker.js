@@ -300,7 +300,7 @@ class RTXGPUWorker {
                     outputLength: options.outputLength
                 };
 
-            case 'reconstruct':
+            case 'reconstruct': {
                 const encoded = this.autoencoder.encode(data);
                 const decoded = this.autoencoder.decode(encoded, options.outputLength || data.length);
                 return {
@@ -309,6 +309,7 @@ class RTXGPUWorker {
                     latent: encoded,
                     fidelity: this.calculateFidelity(data, decoded)
                 };
+            }
 
             default:
                 throw new Error(`Unknown autoencoder operation: ${operation}`);
@@ -316,7 +317,7 @@ class RTXGPUWorker {
     }
 
     async processShaderCompilation(taskData) {
-        const { shaderSource, shaderType, target = 'webgpu' } = taskData;
+        const { shaderSource, target = 'webgpu' } = taskData;
 
         // For WebGPU shaders
         if (target === 'webgpu' && this.webgpuDevice) {
@@ -348,52 +349,105 @@ class RTXGPUWorker {
     }
 
     async processNeuralPrediction(taskData) {
-        const { inputPattern, contextData, predictionType = 'next_action' } = taskData;
+      const { contextData, predictionType = 'next_action' } = taskData;
 
-        GitHub Copilot
+      // This is a mock implementation of a simple neural network for demonstration.
+      // In a real application, you would use a library like TensorFlow.js or ONNX Runtime Web.
+      // The weights and biases would be pre-trained.
+      const mockModel = {
+        // Simulate a simple 2-layer MLP for 'next_action' prediction
+        next_action: {
+          weights1: [
+            [0.1, -0.2, 0.3],
+            [0.4, 0.5, -0.6],
+          ], // Input features -> hidden layer
+          biases1: [0.1, 0.2, 0.3],
+          weights2: [
+            [0.7, -0.8],
+            [-0.9, 1.0],
+            [1.1, -1.2],
+          ], // Hidden layer -> output classes
+          biases2: [0.1, -0.1],
+          classes: ['render_frame', 'update_buffer'],
+        },
+        // Simulate a simple linear regression for resource usage
+        resource_usage: {
+          weights: [0.8, 1.2], // e.g., for avg_latency, total_processed
+          bias: 50, // base usage
+        },
+      };
 
-        Short answer: it depends on the prediction task. Recommended models by use-case and integration notes:
+      let predictions = [];
+      let confidence = 0.0;
 
-        - Next-action in a rendering pipeline (sequence → classification):
-            - Model: small Transformer (distilled), GRU/LSTM, or 1D Temporal Convolutional Network (TCN).
-            - Training: sequences of past actions as input, label = next action.
-            - Integration: quantize and run as ONNX/TensorFlow.js in the worker or call your tensor service.
+      try {
+        if (predictionType === 'next_action') {
+          if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
+            throw new Error('Invalid contextData for next_action prediction. Expected array of at least 2 numbers.');
+          }
+          const model = mockModel.next_action;
+          const input = contextData.slice(0, 2); // Use first 2 features
 
-        - Resource-usage forecasting (continuous time-series):
-            - Model: LSTM / GRU / TCN, or Transformer-based time-series model, or classical models (ARIMA, Prophet) for simple trends.
-            - Training: historical GPU metrics (memory, util, cache hits) with timestamps.
-            - Integration: run lightweight model locally or on the tensor service for low-latency predictions.
+          // Simple forward pass simulation
+          // Hidden layer (ReLU activation)
+          const hidden = model.weights1[0].map((_, i) => {
+            const sum = input[0] * model.weights1[0][i] + input[1] * model.weights1[1][i] + model.biases1[i];
+            return Math.max(0, sum); // ReLU
+          });
 
-        - Binary/multi-class shader success or compilation failure:
-            - Model: MLP / Random Forest / Gradient Boosted Trees on shader features (size, ops, loops).
-            - Training: labeled compilation logs → success/fail, errors categories.
+          // Output layer
+          let output = model.weights2[0].map((_, i) => {
+            const sum =
+              hidden[0] * model.weights2[0][i] +
+              hidden[1] * model.weights2[1][i] +
+              hidden[2] * model.weights2[2][i] +
+              model.biases2[i];
+            return sum;
+          });
 
-        - Similarity / embedding-based predictions:
-            - Model: Siamese/metric-learning network (triplet loss) or contrastive embedding model.
-            - Training: pairs/triplets of vectors labeled similar/dissimilar.
+          // Softmax for probabilities
+          const maxLogit = Math.max(...output);
+          const exps = output.map(o => Math.exp(o - maxLogit));
+          const sumExps = exps.reduce((a, b) => a + b, 0);
+          const probabilities = exps.map(e => e / sumExps);
 
-        - Autoencoder / anomaly detection:
-            - Model: Variational Autoencoder or simple dense autoencoder for detecting anomalous kernel behavior or outlier frames.
-            - Training: normal-operation data.
-
-        - Policy optimization (optimizing render decisions):
-            - Model: Reinforcement Learning (PPO/A2C) trained in simulation to maximize throughput / minimize latency.
-
-        Practical constraints and tips:
-        - For in-worker inference prefer small, quantized models (int8/float16) for latency and memory; export to ONNX or TF.js.
-        - Use your existing tensor service (gRPC/HTTP) for larger models and for leveraging GPU acceleration off-worker.
-        - Start simple (MLP/LSTM) for a baseline, evaluate, then move to Transformer or RL if you need sequence/context power.
-        - Features matter: include recent action history, resource metrics, scene complexity, shader metadata, and timing info.
-
-        If you want, I can suggest a specific model architecture (layers, sizes) and show code to run an ONNX or TF.js model inside this worker.
+          confidence = Math.max(...probabilities);
+          predictions = model.classes
+            .map((className, i) => ({
+              action: className,
+              probability: probabilities[i],
+            }))
+            .sort((a, b) => b.probability - a.probability);
+        } else if (predictionType === 'resource_usage') {
+          if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
+            throw new Error('Invalid contextData for resource_usage prediction. Expected array of at least 2 numbers.');
+          }
+          const model = mockModel.resource_usage;
+          const input = contextData.slice(0, 2);
+          const prediction = input[0] * model.weights[0] + input[1] * model.weights[1] + model.bias;
+          predictions.push({ usage_mb: prediction });
+          confidence = 0.85; // Fixed confidence for this mock
+        } else {
+          // Fallback for unknown prediction types
+          predictions.push({ action: 'idle', probability: 0.9 });
+          confidence = 0.9;
+        }
 
         return {
-            success: true,
-            predictions,
-            predictionType,
-            confidence: 0.78,
-            contextUsed: !!contextData
+          success: true,
+          predictions,
+          predictionType,
+          confidence,
+          contextUsed: !!contextData,
         };
+      } catch (error) {
+        console.error(`Neural prediction failed for type "${predictionType}":`, error);
+        return {
+          success: false,
+          error: error.message,
+          predictionType,
+        };
+      }
     }
 
     async quantizeOnGPU(data) {
@@ -440,7 +494,7 @@ class RTXGPUWorker {
         return data.map(v => Math.round(v * 127) / 127); // Simulated quantization
     }
 
-    computeSimilarityCP(queryVector, databaseVectors, threshold) {
+    computeSimilarityCPU(queryVector, databaseVectors, threshold) {
         const similarities = [];
 
         for (let i = 0; i < databaseVectors.length; i++) {

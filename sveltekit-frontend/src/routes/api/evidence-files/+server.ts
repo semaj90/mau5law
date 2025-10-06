@@ -62,11 +62,11 @@ export const GET: RequestHandler = async ({ url }) => {
         evidenceType: evidence.evidenceType,
         fileSize: evidence.fileSize,
         mimeType: evidence.mimeType,
-        uploadedAt: evidence.createdAt
+        uploadedAt: evidence.createdAt,
       })
       .from(evidence)
-      .orderBy(desc(evidence.createdAt)
-      .limit(limit)
+      .orderBy(desc(evidence.createdAt))
+      .limit(limit);
     return json({ success: true, items: results })
   } catch (error) {
     console.error('List evidence error:', error)
@@ -89,8 +89,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const existingEvidence = await db
       .select({ id: evidence.id })
       .from(evidence)
-      .where(eq(evidence.hash, checksum)
-      .limit(1)
+      .where(eq(evidence.hash, checksum))
+      .limit(1);
     if (existingEvidence.length) {
       return json({ success: true, duplicate: true, id: existingEvidence[0].id })
     }
@@ -101,29 +101,29 @@ export const POST: RequestHandler = async ({ request }) => {
     const newEvidence = await db
       .insert(evidence)
       .values({
-        caseId: caseId || null
+        caseId: caseId || null,
         title,
-        description: null
+        description: null,
         evidenceType,
         fileType: upload.metadata.fileType || null,
         fileUrl: upload.metadata.url || null,
         fileName: upload.metadata.fileName,
         fileSize: upload.metadata.fileSize || null,
         mimeType: upload.metadata.mimeType || null,
-        hash: checksum
+        hash: checksum,
         tags: [],
         chainOfCustody: [],
-        labAnalysis: { [key: string]: any },
-        aiAnalysis: { [key: string]: any },
+        labAnalysis: {},
+        aiAnalysis: {},
         aiTags: [],
-        isAdmissible: true
+        isAdmissible: true,
         confidentialityLevel: 'standard',
-        canvasPosition: { [key: string]: any },
+        canvasPosition: {},
         uploadedBy: null, // TODO: Get from session
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       })
-      .returning({ id: evidence.id, createdAt: evidence.createdAt })
+      .returning({ id: evidence.id, createdAt: evidence.createdAt });
     return json({ success: true, record: newEvidence[0], upload })
   } catch (error) {
     console.error('Upload error:', error)
@@ -138,19 +138,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const evidenceToDelete = await db
       .select({
         fileName: evidence.fileName,
-        fileUrl: evidence.fileUrl
+        fileUrl: evidence.fileUrl,
       })
       .from(evidence)
-      .where(eq(evidence.id, id)
-      .limit(1)
+      .where(eq(evidence.id, id))
+      .limit(1);
     if (!evidenceToDelete.length) {
       return json({ success: false, error: 'Not found' }, { status: 404 })
     }
     // Delete from database
-    const deletedEvidence = await db
-      .delete(evidence)
-      .where(eq(evidence.id, id)
-      .returning({ id: evidence.id })
+    const deletedEvidence = await db.delete(evidence).where(eq(evidence.id, id)).returning({ id: evidence.id });
     if (!deletedEvidence.length) {
       return json({ success: false, error: 'Failed to delete from database' }, { status: 500 })
     }

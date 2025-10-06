@@ -239,27 +239,27 @@
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
-    if (effectiveRenderOptions.textureQuality === 'ultra') {
+    if ((effectiveRenderOptions as any).textureQuality === 'ultra') {
       classes.push('texture-ultra');
     }
-    if (effectiveRenderOptions.enableBilinearFiltering) {
+    if ((effectiveRenderOptions as any).enableBilinearFiltering) {
       classes.push('filtering-bilinear');
     }
-    if (effectiveRenderOptions.enableTrilinearFiltering) {
+    if ((effectiveRenderOptions as any).enableTrilinearFiltering) {
       classes.push('filtering-trilinear');
     }
-    const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
-  let sizeStyles = $derived(getSizeStyles(size));
-  let materialStyles = $derived(getMaterialStyles(variant, materialType));
-  let dynamicRotationX = $derived(rotationX + (isFocused ? -2 : 0) + (isHovered ? 1 : 0));
-      classes.push('anisotropic-8x'),
+    const anisotropicLevel = (effectiveRenderOptions as any).anisotropicLevel || 1;
+    if (anisotropicLevel >= 8) {
+      classes.push('anisotropic-8x');
     } else if (anisotropicLevel >= 4) {
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  }
+  };
+
+  // Derived state (single, correct definitions)
   let sizeStyles = $derived(getSizeStyles(size));
-  let materialStyles = $derived(getMaterialStyles(variant, materialType, isFocused ? 'focused' : 'default'));
+  let materialStyles = $derived(getMaterialStyles(variant, materialType));
   let dynamicRotationX = $derived(rotationX + (isFocused ? -2 : 0) + (isHovered ? 1 : 0));
   let dynamicScale = $derived(isFocused ? 1.02 : isHovered ? 1.01 : 1);
   let transform3D = $derived(`
@@ -292,7 +292,7 @@
       onfocus={handleFocus}
       onblur={handleBlur}
       onmouseenter={handleHover}
-      on:mouseleave={handleUnhover}
+      onmouseleave={handleUnhover}
       onkeydown={handleKeyDown}
       class={`n64-input ${materialType} mesh-${meshComplexity} ${getTextureFilteringClasses()}`}
       style={`

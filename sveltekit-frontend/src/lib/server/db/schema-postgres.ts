@@ -19,8 +19,6 @@ import {
 } from 'drizzle-orm/pg-core';
 // Note: vector type is handled via sql`` template in table definitions
 import { sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 // === ENUMS FOR LEGAL AI APPLICATION ===
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
 export const caseStatusEnum = pgEnum('case_status', ['open', 'in_progress', 'pending_review', 'closed', 'archived']);
@@ -94,7 +92,7 @@ export const users = pgTable(
       index('users_active_idx').on(table.isActive),
       index('users_created_at_idx').on(table.createdAt),
     ],
-  }),
+  })
 );
 // === LUCIA v3 AUTHENTICATION TABLES ===
 export const sessions = pgTable(
@@ -112,7 +110,7 @@ export const sessions = pgTable(
         name: 'sessions_user_id_users_id_fk',
       }).onDelete('cascade'),
     ],
-  }),
+  })
 );
 export const emailVerificationCodes = pgTable(
   'email_verification_codes',
@@ -120,6 +118,7 @@ export const emailVerificationCodes = pgTable(
     id: serial('id').primaryKey().notNull(),
     userId: uuid('user_id').notNull(),
     email: varchar('email', { length: 255 }).notNull(),
+
     code: varchar('code', { length: 8 }).notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
@@ -132,7 +131,7 @@ export const emailVerificationCodes = pgTable(
       }).onDelete('cascade'),
     ],
     uniqueConstraints: [unique('email_verification_codes_user_id_unique').on(table.userId)],
-  }),
+  })
 );
 export const passwordResetTokens = pgTable(
   'password_reset_tokens',
@@ -1236,9 +1235,6 @@ export const autoTagsRelations = relations(autoTags, ({ one }) => ({
   }),
 }));
 // === DATABASE CONNECTION & HELPERS ===
-// Database connection
-const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
-const client = postgres(connectionString);
 // Export helpers for query building
 export const helpers = { eq }
 // Export all tables for easy access

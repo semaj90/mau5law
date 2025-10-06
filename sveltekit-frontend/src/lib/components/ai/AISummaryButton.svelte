@@ -1,4 +1,3 @@
-
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
@@ -11,45 +10,42 @@
   let { text = "", onsummary }: Props = $props();
   let summary = $state("");
   let errorMessage = $state('');
-  let isLoading = $state(false);
   let loading = $state(false);
   async function getSummary(input: string) {
     if (!input) return;
+    loading = true;
+    errorMessage = '';
+    summary = '';
     try {
-      loading = true;
-      try {
-    const res = await fetch("/api/ai/ollama-gemma3", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: `Summarize: ${input}` }));
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  }
+      const res = await fetch('/api/ai/ollama-gemma3', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: `Summarize: ${input}` })
       });
-      const data = awaitawait (async () => {
-      try {
-        return await  res.json());
-      } catch (error) {
-        console.error('JSON parsing failed:', error);
-        throw new Error('Invalid JSON response');
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    })();
-      summary = data.response ?? "";
+
+      const data = await res.json();
+      summary = data.response ?? '';
       onsummary?.();
     } catch (e) {
-      console.error("Summary failed", e);
+      console.error('Summary failed', e);
+      if (e instanceof Error) {
+        errorMessage = e.message;
+      } else {
+        errorMessage = 'An unknown error occurred.';
+      }
     } finally {
       loading = false;
     }
   }
 </script>
-<button aria-label="Action button"
+<button
+  aria-label="Action button"
   class="space-y-4"
-  onclick={(_event: MouseEvent) => ) => getSummary(text}
+  onclick={() => getSummary(text)}
   disabled={loading}
 >
   {#if loading}

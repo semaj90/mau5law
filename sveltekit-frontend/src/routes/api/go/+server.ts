@@ -1,324 +1,578 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit'; // Added json and error imports
 /*
  * Go Microservices Proxy API
  * Handles routing between SvelteKit and Go services with JSON/Protocol Buffer support
  * POST /api/go - Route requests to appropriate Go microservice
  */
-import { ensureError } from '$lib/utils/ensure-error'
-import { dev } from '$app/environment'
+import { ensureError } from '$lib/utils/ensure-error';
+import { dev } from '$app/environment';
+
+type Protocol = 'http' | 'quic' | 'grpc' | 'websocket'; // Defined Protocol type
+
 // Go microservices configuration (37 services from ecosystem summary)
-const GO_SERVICES = {
+const GO_SERVICES: Record<
+  string,
+  {
+    baseUrl: string;
+    healthPath: string;
+    protocols: readonly Protocol[]; // Used Protocol type
+    capabilities: readonly string[];
+  }
+> = {
   // Tier 1: Core Services (Always Running)
   'enhanced-rag': {
     baseUrl: 'http://localhost:8094',
     healthPath: '/api/health',
     protocols: ['http', 'quic'],
-    capabilities: ['ai', 'rag', 'gpu', 'som', 'xstate']
+    capabilities: ['ai', 'rag', 'gpu', 'som', 'xstate'],
   },
   'upload-service': {
     baseUrl: 'http://localhost:8093',
     healthPath: '/health',
     protocols: ['http'],
-    capabilities: ['file-upload', 'storage', 'processing']
+    capabilities: ['file-upload', 'storage', 'processing'],
   },
   'kratos-server': {
     baseUrl: 'http://localhost:50051',
     healthPath: '/health',
     protocols: ['grpc'],
-    capabilities: ['legal-grpc', 'gpu-compute', 'search']
+    capabilities: ['legal-grpc', 'gpu-compute', 'search'],
   },
   // Tier 2: Advanced Services (New Implementations)
   'advanced-cuda': {
     baseUrl: 'http://localhost:8095',
     healthPath: '/health',
     protocols: ['http', 'quic', 'grpc'],
-    capabilities: ['kernel-splicing', 'attention', 'flash-attention', 'cuda-direct']
+    capabilities: ['kernel-splicing', 'attention', 'flash-attention', 'cuda-direct'],
   },
   'dimensional-cache': {
     baseUrl: 'http://localhost:8097',
     healthPath: '/health',
     protocols: ['http', 'quic'],
-    capabilities: ['multi-dimensional-cache', 'lru-eviction', 'vector-storage']
+    capabilities: ['multi-dimensional-cache', 'lru-eviction', 'vector-storage'],
   },
   'xstate-manager': {
     baseUrl: 'http://localhost:8098',
     healthPath: '/health',
     protocols: ['http', 'websocket'],
-    capabilities: ['idle-detection', 'state-management', 'rabbitmq-queue']
+    capabilities: ['idle-detection', 'state-management', 'rabbitmq-queue'],
   },
   'module-manager': {
     baseUrl: 'http://localhost:8099',
     healthPath: '/health',
     protocols: ['http', 'grpc'],
-    capabilities: ['hot-swap', 'module-loading', 'a-b-testing']
+    capabilities: ['hot-swap', 'module-loading', 'a-b-testing'],
   },
   'recommendation-engine': {
     baseUrl: 'http://localhost:8100',
     healthPath: '/health',
     protocols: ['http', 'websocket'],
-    capabilities: ['ai-recommendations', 'user-patterns', 'self-prompting']
+    capabilities: ['ai-recommendations', 'user-patterns', 'self-prompting'],
   },
   // Additional microservices (8101-8136 covering 37 total services)
-  'vector-service': { baseUrl: 'http://localhost:8101', healthPath: '/health', protocols: ['http', 'grpc'], capabilities: ['vector-search', 'similarity'] },
-  'load-balancer': { baseUrl: 'http://localhost:8102', healthPath: '/health', protocols: ['http', 'quic'], capabilities: ['load-balancing', 'failover'] },
-  'cluster-manager': { baseUrl: 'http://localhost:8103', healthPath: '/health', protocols: ['http', 'grpc'], capabilities: ['service-discovery', 'health-monitoring'] },
-  'gpu-indexer': { baseUrl: 'http://localhost:8104', healthPath: '/health', protocols: ['http'], capabilities: ['gpu-indexing', 'texture-processing'] },
-  'context7-error': { baseUrl: 'http://localhost:8105', healthPath: '/health', protocols: ['http'], capabilities: ['error-analysis', 'auto-fix'] },
-  'quic-gateway': { baseUrl: 'http://localhost:8106', healthPath: '/health', protocols: ['quic'], capabilities: ['quic-protocol', 'gateway'] },
-  'cuda-worker': { baseUrl: 'http://localhost:8107', healthPath: '/health', protocols: ['http'], capabilities: ['cuda-computation', 'worker-pool'] },
-  'vector-consumer': { baseUrl: 'http://localhost:8108', healthPath: '/health', protocols: ['http'], capabilities: ['vector-consumption', 'batch-processing'] },
-  'gin-upload': { baseUrl: 'http://localhost:8109', healthPath: '/health', protocols: ['http'], capabilities: ['gin-framework', 'file-upload'] },
-  'ingest-service': { baseUrl: 'http://localhost:8110', healthPath: '/health', protocols: ['http'], capabilities: ['data-ingestion', 'pipeline'] },
-  'vector-redis': { baseUrl: 'http://localhost:8111', healthPath: '/health', protocols: ['http'], capabilities: ['redis-vectors', 'caching'] },
-  'enhanced-rag-go125': { baseUrl: 'http://localhost:8112', healthPath: '/health', protocols: ['http', 'quic'], capabilities: ['go1.25', 'enhanced-rag', 'greenteagc'] },
-  'upload-service-go125': { baseUrl: 'http://localhost:8113', healthPath: '/health', protocols: ['http'], capabilities: ['go1.25', 'upload', 'optimized'] },
-  'cuda-ai-service': { baseUrl: 'http://localhost:8114', healthPath: '/health', protocols: ['http'], capabilities: ['cuda-ai', 'gpu-acceleration'] },
-  'vector-service-go125': { baseUrl: 'http://localhost:8115', healthPath: '/health', protocols: ['http'], capabilities: ['go1.25', 'vectors'] },
-  'load-balancer-go125': { baseUrl: 'http://localhost:8116', healthPath: '/health', protocols: ['http'], capabilities: ['go1.25', 'load-balancing'] },
-  'grpc-server-go125': { baseUrl: 'http://localhost:8117', healthPath: '/health', protocols: ['grpc'], capabilities: ['go1.25', 'grpc-optimized'] },
-  'rag-quic-go125': { baseUrl: 'http://localhost:8118', healthPath: '/health', protocols: ['quic'], capabilities: ['go1.25', 'quic-rag'] },
+  'vector-service': {
+    baseUrl: 'http://localhost:8101',
+    healthPath: '/health',
+    protocols: ['http', 'grpc'],
+    capabilities: ['vector-search', 'similarity'],
+  },
+  'load-balancer': {
+    baseUrl: 'http://localhost:8102',
+    healthPath: '/health',
+    protocols: ['http', 'quic'],
+    capabilities: ['load-balancing', 'failover'],
+  },
+  'cluster-manager': {
+    baseUrl: 'http://localhost:8103',
+    healthPath: '/health',
+    protocols: ['http', 'grpc'],
+    capabilities: ['service-discovery', 'health-monitoring'],
+  },
+  'gpu-indexer': {
+    baseUrl: 'http://localhost:8104',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['gpu-indexing', 'texture-processing'],
+  },
+  'context7-error': {
+    baseUrl: 'http://localhost:8105',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['error-analysis', 'auto-fix'],
+  },
+  'quic-gateway': {
+    baseUrl: 'http://localhost:8106',
+    healthPath: '/health',
+    protocols: ['quic'],
+    capabilities: ['quic-protocol', 'gateway'],
+  },
+  'cuda-worker': {
+    baseUrl: 'http://localhost:8107',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['cuda-computation', 'worker-pool'],
+  },
+  'vector-consumer': {
+    baseUrl: 'http://localhost:8108',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['vector-consumption', 'batch-processing'],
+  },
+  'gin-upload': {
+    baseUrl: 'http://localhost:8109',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['gin-framework', 'file-upload'],
+  },
+  'ingest-service': {
+    baseUrl: 'http://localhost:8110',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['data-ingestion', 'pipeline'],
+  },
+  'vector-redis': {
+    baseUrl: 'http://localhost:8111',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['redis-vectors', 'caching'],
+  },
+  'enhanced-rag-go125': {
+    baseUrl: 'http://localhost:8112',
+    healthPath: '/health',
+    protocols: ['http', 'quic'],
+    capabilities: ['go1.25', 'enhanced-rag', 'greenteagc'],
+  },
+  'upload-service-go125': {
+    baseUrl: 'http://localhost:8113',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['go1.25', 'upload', 'optimized'],
+  },
+  'cuda-ai-service': {
+    baseUrl: 'http://localhost:8114',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['cuda-ai', 'gpu-acceleration'],
+  },
+  'vector-service-go125': {
+    baseUrl: 'http://localhost:8115',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['go1.25', 'vectors'],
+  },
+  'load-balancer-go125': {
+    baseUrl: 'http://localhost:8116',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['go1.25', 'load-balancing'],
+  },
+  'grpc-server-go125': {
+    baseUrl: 'http://localhost:8117',
+    healthPath: '/health',
+    protocols: ['grpc'],
+    capabilities: ['go1.25', 'grpc-optimized'],
+  },
+  'rag-quic-go125': {
+    baseUrl: 'http://localhost:8118',
+    healthPath: '/health',
+    protocols: ['quic'],
+    capabilities: ['go1.25', 'quic-rag'],
+  },
   // Protocol-specific services
-  'http-gateway': { baseUrl: 'http://localhost:8119', healthPath: '/health', protocols: ['http'], capabilities: ['http-gateway', 'routing'] },
-  'grpc-gateway': { baseUrl: 'http://localhost:8120', healthPath: '/health', protocols: ['grpc'], capabilities: ['grpc-gateway', 'transcoding'] },
-  'websocket-service': { baseUrl: 'http://localhost:8121', healthPath: '/health', protocols: ['websocket'], capabilities: ['real-time', 'events'] },
+  'http-gateway': {
+    baseUrl: 'http://localhost:8119',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['http-gateway', 'routing'],
+  },
+  'grpc-gateway': {
+    baseUrl: 'http://localhost:8120',
+    healthPath: '/health',
+    protocols: ['grpc'],
+    capabilities: ['grpc-gateway', 'transcoding'],
+  },
+  'websocket-service': {
+    baseUrl: 'http://localhost:8121',
+    healthPath: '/health',
+    protocols: ['websocket'],
+    capabilities: ['real-time', 'events'],
+  },
   // AI/ML specialized services
-  't5-transformer': { baseUrl: 'http://localhost:8122', healthPath: '/health', protocols: ['http'], capabilities: ['t5-processing', 'seq2seq'] },
-  'live-agent': { baseUrl: 'http://localhost:8123', healthPath: '/health', protocols: ['http', 'websocket'], capabilities: ['live-processing', 'real-time-ai'] },
-  'legal-ai': { baseUrl: 'http://localhost:8124', healthPath: '/health', protocols: ['http'], capabilities: ['legal-analysis', 'document-processing'] },
-  'multi-core-ollama': { baseUrl: 'http://localhost:8125', healthPath: '/health', protocols: ['http'], capabilities: ['ollama-cluster', 'load-balancing'] },
+  't5-transformer': {
+    baseUrl: 'http://localhost:8122',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['t5-processing', 'seq2seq'],
+  },
+  'live-agent': {
+    baseUrl: 'http://localhost:8123',
+    healthPath: '/health',
+    protocols: ['http', 'websocket'],
+    capabilities: ['live-processing', 'real-time-ai'],
+  },
+  'legal-ai': {
+    baseUrl: 'http://localhost:8124',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['legal-analysis', 'document-processing'],
+  },
+  'multi-core-ollama': {
+    baseUrl: 'http://localhost:8125',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['ollama-cluster', 'load-balancing'],
+  },
   // Storage and data services
-  'minio-proxy': { baseUrl: 'http://localhost:8126', healthPath: '/health', protocols: ['http'], capabilities: ['object-storage', 'file-proxy'] },
-  'postgres-proxy': { baseUrl: 'http://localhost:8127', healthPath: '/health', protocols: ['http'], capabilities: ['database-proxy', 'connection-pooling'] },
-  'neo4j-proxy': { baseUrl: 'http://localhost:8128', healthPath: '/health', protocols: ['http'], capabilities: ['graph-database', 'cypher-queries'] },
-  'qdrant-proxy': { baseUrl: 'http://localhost:8129', healthPath: '/health', protocols: ['http'], capabilities: ['vector-database', 'similarity-search'] },
+  'minio-proxy': {
+    baseUrl: 'http://localhost:8126',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['object-storage', 'file-proxy'],
+  },
+  'postgres-proxy': {
+    baseUrl: 'http://localhost:8127',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['database-proxy', 'connection-pooling'],
+  },
+  'neo4j-proxy': {
+    baseUrl: 'http://localhost:8128',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['graph-database', 'cypher-queries'],
+  },
+  'qdrant-proxy': {
+    baseUrl: 'http://localhost:8129',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['vector-database', 'similarity-search'],
+  },
   // Monitoring and observability
-  'metrics-collector': { baseUrl: 'http://localhost:8130', healthPath: '/health', protocols: ['http'], capabilities: ['metrics', 'telemetry'] },
-  'log-aggregator': { baseUrl: 'http://localhost:8131', healthPath: '/health', protocols: ['http'], capabilities: ['logging', 'aggregation'] },
-  'health-monitor': { baseUrl: 'http://localhost:8132', healthPath: '/health', protocols: ['http'], capabilities: ['health-checks', 'monitoring'] },
-  'alert-manager': { baseUrl: 'http://localhost:8133', healthPath: '/health', protocols: ['http'], capabilities: ['alerting', 'notifications'] },
+  'metrics-collector': {
+    baseUrl: 'http://localhost:8130',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['metrics', 'telemetry'],
+  },
+  'log-aggregator': {
+    baseUrl: 'http://localhost:8131',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['logging', 'aggregation'],
+  },
+  'health-monitor': {
+    baseUrl: 'http://localhost:8132',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['health-checks', 'monitoring'],
+  },
+  'alert-manager': {
+    baseUrl: 'http://localhost:8133',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['alerting', 'notifications'],
+  },
   // Security and auth
-  'auth-service': { baseUrl: 'http://localhost:8134', healthPath: '/health', protocols: ['http'], capabilities: ['authentication', 'authorization'] },
-  'security-scanner': { baseUrl: 'http://localhost:8135', healthPath: '/health', protocols: ['http'], capabilities: ['security-scanning', 'vulnerability-detection'] },
-  'rate-limiter': { baseUrl: 'http://localhost:8136', healthPath: '/health', protocols: ['http'], capabilities: ['rate-limiting', 'throttling'] }
-} as const
+  'auth-service': {
+    baseUrl: 'http://localhost:8134',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['authentication', 'authorization'],
+  },
+  'security-scanner': {
+    baseUrl: 'http://localhost:8135',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['security-scanning', 'vulnerability-detection'],
+  },
+  'rate-limiter': {
+    baseUrl: 'http://localhost:8136',
+    healthPath: '/health',
+    protocols: ['http'],
+    capabilities: ['rate-limiting', 'throttling'],
+  },
+} as const;
 // Request routing schema
 export interface GoServiceRequest {
-  service: keyof typeof GO_SERVICES
-  endpoint: string
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
-  data?: any
-  headers?: Record<string, string>
-  protocol?: 'http' | 'quic' | 'grpc'
-  timeout?: number
+  service: keyof typeof GO_SERVICES;
+  endpoint: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  data?: unknown; // Changed from any
+  headers?: Record<string, string>;
+  protocol?: Protocol; // Used Protocol type
+  timeout?: number;
 }
+
+// Define the expected structure of the response from makeServiceRequest
+interface ServiceResponse {
+  success: boolean;
+  status: number;
+  data: unknown; // Can be JSON object, string, etc.
+  headers: Record<string, string>;
+}
+
 // Helper to make HTTP requests to Go services
 async function makeServiceRequest(
-  serviceConfig: typeof GO_SERVICES[keyof typeof GO_SERVICES]
-  endpoint: string
+  serviceConfig: (typeof GO_SERVICES)[keyof typeof GO_SERVICES],
+  endpoint: string,
   method: string = 'GET',
-  data?: any
+  data?: unknown, // Changed from any
   headers: Record<string, string> = {},
   timeout: number = 30000
-): Promise<any> {
-  const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`
+): Promise<ServiceResponse> {
+  // Changed return type
+  const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   const requestConfig: RequestInit = {
     method,
     headers: {
       'Content-Type': 'application/json',
       'User-Agent': 'SvelteKit-Proxy/1.0.0',
-      ...headers
+      ...headers,
     },
-    signal: AbortSignal.timeout(timeout)
-  }
+    signal: AbortSignal.timeout(timeout),
+  };
   if (data && ['POST', 'PUT', 'PATCH'].includes(method)) {
-    requestConfig.body = JSON.stringify(data)
+    requestConfig.body = JSON.stringify(data);
   }
   try {
-    const response = await fetch(url, requestConfig)
-    const contentType = (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.get('content-type')
+    const response = await fetch(url, requestConfig);
+    const contentType = response.headers.get('content-type'); // Removed redundant cast
     const responseData = contentType?.includes('application/json')
-      ? await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).json()
-      : await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).text()
+      ? await response.json() // Removed redundant cast
+      : await response.text(); // Removed redundant cast
     return {
-      success: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).ok,
-      status: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).status,
-      data: responseData;
-      headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries())
-    }
-  } catch (err: any) {
-    console.error(`Go service request failed for ${url}:`, err)
-    throw new Error(`Service request failed: ${err.message}`)
+      success: response.ok, // Removed redundant cast
+      status: response.status, // Removed redundant cast
+      data: responseData,
+      headers: Object.fromEntries(response.headers.entries()), // Removed redundant cast
+    };
+  } catch (err: unknown) {
+    // Changed from any
+    console.error(`Go service request failed for ${url}:`, err);
+    const e = ensureError(err);
+    throw new Error(`Service request failed: ${e.message}`);
   }
 }
+
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     // Parse request body
-    const body = await request.json().catch(() => ({})
+    const body = await request.json().catch(() => ({})); // Fixed: Added closing parenthesis for json()
     const {
       service,
       endpoint,
       method = 'GET',
-      data,
+      data, // Type is now inferred as unknown from GoServiceRequest
       headers = {},
       protocol = 'http',
-      timeout = 30000
-    }: GoServiceRequest = body
+      timeout = 30000, // Fixed: Added comma
+    }: GoServiceRequest = body; // Fixed: Added semicolon
     // Validate service
     if (!service || !GO_SERVICES[service]) {
-      throw error(400, ensureError({
-        message: `Invalid service: ${service}. Available services: ${Object.keys(GO_SERVICES).join(', ')}`,
-        code: 'INVALID_SERVICE'
-      })
+      throw error(
+        400,
+        ensureError({
+          message: `Invalid service: ${service}. Available services: ${Object.keys(GO_SERVICES).join(', ')}`,
+          code: 'INVALID_SERVICE',
+        })
+      ); // Fixed: Added closing parenthesis
     }
     // Validate endpoint
     if (!endpoint) {
-      throw error(400, ensureError({
-        message: 'Endpoint is required',
-        code: 'MISSING_ENDPOINT'
-      })
+      throw error(
+        400,
+        ensureError({
+          message: 'Endpoint is required',
+          code: 'MISSING_ENDPOINT',
+        })
+      ); // Fixed: Added closing parenthesis
     }
-    const serviceConfig = GO_SERVICES[service]
+    const serviceConfig = GO_SERVICES[service];
     // Protocol validation
     if (!serviceConfig.protocols.includes(protocol)) {
-      throw error(400, ensureError({
-        message: `Service ${service} doesn't support protocol ${protocol}. Supported: ${serviceConfig.protocols.join(', ')}`,
-        code: 'UNSUPPORTED_PROTOCOL'
-      })
+      throw error(
+        400,
+        ensureError({
+          message: `Service ${service} doesn't support protocol ${protocol}. Supported: ${serviceConfig.protocols.join(', ')}`,
+          code: 'UNSUPPORTED_PROTOCOL',
+        })
+      ); // Fixed: Added closing parenthesis
     }
     // Add client information to headers for logging
     const clientHeaders = {
       'X-Client-IP': getClientAddress(),
       'X-Forwarded-By': 'SvelteKit-Proxy',
-      ...headers
-    }
+      ...headers,
+    };
     // Route request to appropriate Go service
-    const result = await makeServiceRequest(
+    const result: ServiceResponse = await makeServiceRequest(
       serviceConfig,
       endpoint,
       method,
       data,
       clientHeaders,
       timeout
-    )
+    );
     // Return the response from Go service
-    return json({
-      success: (result as { success?: any; data?: any; status?: any; headers?: any }).success,
-      message: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 'Request successful' : 'Request failed',
-      data: (result as { success?: any; data?: any; status?: any; headers?: any }).data,
-      meta: {
-        service,
-        endpoint,
-        method,
-        protocol,
-        status: (result as { success?: any; data?: any; status?: any; headers?: any }).status,
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
+    return json(
+      {
+        success: result.success, // Removed redundant cast
+        message: result.success ? 'Request successful' : 'Request failed',
+        data: result.data,
+        meta: {
+          service,
+          endpoint,
+          method,
+          protocol,
+          status: result.status,
+          timestamp: new Date().toISOString(),
+          version: '1.0.0',
+        },
+      },
+      {
+        status: result.success ? 200 : result.status || 500,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+          // Forward relevant headers from Go service
+          ...(result.headers['content-encoding'] && {
+            // Removed redundant cast
+            'Content-Encoding': result.headers['content-encoding'], // Removed redundant cast
+          }),
+        },
       }
-    }, {
-      status: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 200 : (result as { success?: any; data?: any; status?: any; headers?: any }).status || 500,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
-        // Forward relevant headers from Go service
-        ...((result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] })
+    ); // Fixed: Added closing parenthesis for json()
+  } catch (err: unknown) {
+    // Changed from any
+    console.error('Go services proxy error:', err);
+    const e = ensureError(err); // e is guaranteed to be an Error object
+
+    let statusCode = 500;
+    let message = e.message || 'Go service request failed';
+    let code = 'GO_SERVICE_ERROR';
+
+    // Check if the error is a SvelteKit HttpError to extract specific status and body
+    if (isSvelteKitHttpError(e)) {
+      statusCode = e.status;
+      message = e.body.message || message;
+      code = e.body.code || code;
+    }
+
+    return json(
+      {
+        success: false,
+        message,
+        code,
+        meta: {
+          timestamp: new Date().toISOString(),
+          version: '1.0.0',
+        },
+      },
+      {
+        status: statusCode, // Fixed: Added comma
+        headers: { 'Content-Type': 'application/json' },
       }
-    })
-  } catch (err: any) {
-    console.error('Go services proxy error:', err)
-    const statusCode = err.status || 500
-    const message = err.body?.message || err.message || 'Go service request failed'
-    return json({
-      success: false,
-      message,
-      code: err.body?.code || 'GO_SERVICE_ERROR',
-      meta: {
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
-      }
-    }, {
-      status: statusCode
-      headers: { 'Content-Type': 'application/json' }
-    })
+    ); // Fixed: Added closing parenthesis for json()
   }
-}
+};
 // GET - Service status and capabilities
 export const GET: RequestHandler = async () => {
   try {
     // Check health of all Go services
-    const serviceStatus = await Promise.all(Object.entries(GO_SERVICES).map(async ([name, config]) => {
+    const serviceStatus = await Promise.all(
+      Object.entries(GO_SERVICES).map(async ([name, config]) => {
         try {
-          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000))
+          const healthCheck: ServiceResponse = await makeServiceRequest(
+            // Explicitly type healthCheck
+            config,
+            config.healthPath || '/health',
+            'GET',
+            undefined,
+            {},
+            5000
+          ); // Fixed: Removed extra ')'
           return {
             name,
             status: healthCheck.success ? 'healthy' : 'unhealthy',
             config: {
               baseUrl: config.baseUrl,
               protocols: config.protocols,
-              capabilities: config.capabilities
+              capabilities: config.capabilities,
             },
-            response: healthCheck.data
-          }
-        } catch (err: any) {
+            response: healthCheck.data,
+          }; // Fixed: Added semicolon
+        } catch (err: unknown) {
+          // Changed from any
+          const e = ensureError(err);
           return {
             name,
             status: 'error',
             config: {
               baseUrl: config.baseUrl,
               protocols: config.protocols,
-              capabilities: config.capabilities
+              capabilities: config.capabilities,
             },
-            error: err.message
-          }
+            error: e.message,
+          }; // Fixed: Added semicolon
         }
       })
-    )
-    const healthyServices = serviceStatus.filter(item => item.length)
-    const totalServices = serviceStatus.length
-    return json({
-      success: true,
-      message: `Go services proxy - ${healthyServices}/${totalServices} services healthy`,
-      data: {
-        proxy: {
-          status: healthyServices === totalServices ? 'healthy' : 'degraded',
-          services: {
-            healthy: healthyServices
-            total: totalServices
-          }
+    ); // Fixed: Added semicolon
+    const healthyServicesCount = serviceStatus.filter(item => item.status === 'healthy').length; // Fixed: Changed item.length to item.status === 'healthy' and renamed variable
+    const totalServices = serviceStatus.length; // Fixed: Correctly scoped
+    return json(
+      {
+        success: true,
+        message: `Go services proxy - ${healthyServicesCount}/${totalServices} services healthy`,
+        data: {
+          proxy: {
+            status: healthyServicesCount === totalServices ? 'healthy' : 'degraded',
+            services: {
+              healthy: healthyServicesCount, // Fixed: Added comma
+              total: totalServices, // Fixed: Added comma
+            },
+          },
+          services: serviceStatus, // Fixed: Added comma
+          capabilities: {
+            routing: ['json', 'protobuffer'],
+            protocols: ['http', 'quic', 'grpc'],
+            features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc'],
+          },
         },
-        services: serviceStatus
-        capabilities: {
-          routing: ['json', 'protobuffer'],
-          protocols: ['http', 'quic', 'grpc'],
-          features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc']
-        }
+        meta: {
+          timestamp: new Date().toISOString(),
+          version: '1.0.0',
+        },
       },
-      meta: {
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
+      {
+        status: healthyServicesCount > 0 ? 200 : 503,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+        },
       }
-    }, {
-      status: healthyServices > 0 ? 200 : 503,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' })
+    ); // Fixed: Added closing parenthesis for json()
+  } catch (err: unknown) {
+    // Changed from any
+    console.error('Go services status check failed:', err);
+    const e = ensureError(err);
+    return json(
+      {
+        success: false,
+        message: e.message || 'Failed to check Go services status',
+        code: 'STATUS_CHECK_FAILED',
+        meta: {
+          timestamp: new Date().toISOString(),
+          version: '1.0.0',
+        },
+      },
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
       }
-    })
-  } catch (err: any) {
-    console.error('Go services status check failed:', err)
-    return json({
-      success: false,
-      message: 'Failed to check Go services status',
-      code: 'STATUS_CHECK_FAILED',
-      meta: {
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
-      }
-    }, {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    ); // Fixed: Added closing parenthesis for json()
   }
-}
+};
 // OPTIONS handler for CORS preflight requests
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
@@ -328,6 +582,32 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400', // 24 hours
-    }
-  })
+    },
+  });
+};
+
+// Define interfaces for SvelteKit's HttpError structure
+interface SvelteKitErrorBody {
+  message: string;
+  code?: string;
+}
+
+interface SvelteKitHttpError extends Error {
+  status: number;
+  body: SvelteKitErrorBody;
+}
+
+// Type guard to check if an error is a SvelteKit HttpError
+function isSvelteKitHttpError(err: unknown): err is SvelteKitHttpError {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'status' in err &&
+    typeof (err as SvelteKitHttpError).status === 'number' &&
+    'body' in err &&
+    typeof (err as SvelteKitHttpError).body === 'object' &&
+    (err as SvelteKitHttpError).body !== null &&
+    'message' in (err as SvelteKitHttpError).body &&
+    typeof ((err as SvelteKitHttpError).body as SvelteKitErrorBody).message === 'string'
+  );
 }

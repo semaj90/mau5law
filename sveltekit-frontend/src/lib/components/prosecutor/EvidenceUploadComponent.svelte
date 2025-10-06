@@ -61,11 +61,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   let isAdmissible = $state(true);
   // File type icons
   const getFileIcon = (mimeType: string) => {
-    if (mimeType.startsWith('image/')) return Imag;
+    if (mimeType.startsWith('image/')) return Image;
     if (mimeType.startsWith('video/')) return Film;
     if (mimeType.startsWith('audio/')) return Mic;
     if (mimeType.includes('pdf') || mimeType.startsWith('text/')) return FileText;
-    if (mimeType.includes('zip') || mimeType.includes('rar')) return Archiv;
+    if (mimeType.includes('zip') || mimeType.includes('rar')) return Archive;
     return FileText;
   }
   // Drag and drop handlers
