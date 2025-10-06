@@ -1,212 +1,167 @@
-
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Textarea } from '$lib/components/ui/textarea/index.js';
+  import { Input } from '$lib/components/ui/input/index.js';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
-  // Props
-  let { onAISearch = null,
-    onAIChat = null,
-    onAISummarize = null,
-    disabled = false,
-    compact = false,
-   }: { onAISearch = null,
-    onAIChat = null,
-    onAISummarize = null,
-    disabled = false,
-    compact = false,
-  : any } = $props();
-  // State
-  let aiSearchQuery = $state('');
-  let errorMessage = $state('');
-  let isLoading = $state(false);
-  let aiChatMessage = $state('');
-  let summarizeText = $state('');
-  let isAISearching = $state(false);
-  let isAIChatting = $state(false);
-  let isSummarizing = $state(false);
-  let aiSearchResults = $state([]);
-  let aiChatResponse = $state('');
-  let summaryResult = $state('');
+
+  // Exported props (clean, typed)
+  export let onAISearch: ((res: any) => void) | null = null;
+  export let onAIChat: ((res: any) => void) | null = null;
+  export let onAISummarize: ((res: any) => void) | null = null;
+  export let disabled: boolean = false;
+  export let compact: boolean = false;
+
+  // Local state
+  let aiSearchQuery: string = '';
+  let errorMessage: string = '';
+  let isLoading: boolean = false;
+  let aiChatMessage: string = '';
+  let summarizeText: string = '';
+  let isAISearching = false;
+  let isAIChatting = false;
+  let isSummarizing = false;
+  let aiSearchResults: any[] = [];
+  let aiChatResponse = '';
+  let summaryResult = '';
+
   // Enhanced AI Search with LangChain.js and vector similarity
   async function performAISearch() {
     if (!aiSearchQuery.trim() || isAISearching) return;
     isAISearching = true;
     aiSearchResults = [];
+    errorMessage = '';
     try {
-      try {
-    const response = await fetch('/api/ai/enhanced-legal-search', {
+      const payload = {
+        query: aiSearchQuery,
+        jurisdiction: 'all',
+        category: 'all',
+        maxResults: 10,
+        useAI: true,
+        advancedOptions: {
+          useVector: true,
+          similarityThreshold: 0.7
+        }
+      };
+      const response = await fetch('/api/ai/enhanced-legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: aiSearchQuery;
-          jurisdiction: 'all',
-          category: 'all',
-          maxResults: 10,
-          useAI: true
-          advancedOptions: {
-            useVector: true
-            similarityThreshold: 0.7,
-          },
-        }));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
+        body: JSON.stringify(payload)
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
-        aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).results || [];
-        console.log.searchTime}`
-        );
-        console.log.analytics);
-        if (onAISearch) {
-          onAISearch(result);
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      if (result?.success) {
+        aiSearchResults = result.results || [];
+        onAISearch?.(result);
+        // optional analytics logging if present
+        if (result.searchTime) console.log('AI search time:', result.searchTime);
+        if (result.analytics) console.debug('AI analytics:', result.analytics);
       } else {
-        console.error(error);
-        // Fallback to basic search
+        // fallback to simple search
         await performFallbackSearch();
       }
-    } catch (error) {
-      console.error('Enhanced AI search error:', error);
-      // Fallback to basic search
+    } catch (err) {
+      console.error('Enhanced AI search error:', err);
+      errorMessage = err instanceof Error ? err.message : String(err);
       await performFallbackSearch();
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+    } finally {
       isAISearching = false;
     }
   }
+
   // Fallback search method
   async function performFallbackSearch() {
     try {
-      try {
-    const response = await fetch('/api/ai/legal-search', {
+      const payload = { query: aiSearchQuery, jurisdiction: 'all', category: 'all', useAI: true };
+      const response = await fetch('/api/ai/legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: aiSearchQuery
-          jurisdiction: 'all',
-          category: 'all',
-          useAI: true;
-        }));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
+        body: JSON.stringify(payload)
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
-        aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).laws || [];
-        if (onAISearch) {
-          onAISearch(result);
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const result = await response.json();
+      aiSearchResults = result.laws || result.results || [];
+      onAISearch?.(result);
     } catch (fallbackError) {
       console.error('Fallback search also failed:', fallbackError);
+      // keep errorMessage for UI visibility
+      errorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
     }
   }
+
   // AI Chat
   async function performAIChat() {
     if (!aiChatMessage.trim() || isAIChatting) return;
     isAIChatting = true;
     aiChatResponse = '';
+    errorMessage = '';
     try {
-      try {
-    const response = await fetch('/api/ai/chat', {
+      const payload = { message: aiChatMessage, temperature: 0.7 };
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          message: aiChatMessage;
-          temperature: 0.7,
-        }));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
+        body: JSON.stringify(payload)
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).response) {
-        aiChatResponse = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).respon;
-        if (onAIChat) {
-          onAIChat(result);
-        }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      if (result?.response) {
+        aiChatResponse = result.response;
+        onAIChat?.(result);
       } else {
-        console.error(error);
+        errorMessage = 'No response from AI chat';
+        console.error('AI chat error: no response field', result);
       }
-    } catch (error) {
-      console.error('AI chat error:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+    } catch (err) {
+      console.error('AI chat error:', err);
+      errorMessage = err instanceof Error ? err.message : String(err);
+    } finally {
       isAIChatting = false;
     }
   }
+
   // AI Summarization
   async function performAISummarization() {
     if (!summarizeText.trim() || isSummarizing) return;
     isSummarizing = true;
     summaryResult = '';
+    errorMessage = '';
     try {
-      try {
-    const response = await fetch('/api/ai/summarize', {
+      const payload = { text: summarizeText, type: 'legal', options: { max_tokens: 500 } };
+      const response = await fetch('/api/ai/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          text: summarizeText;
-          type: 'legal',
-          options: { max_tokens: 500 },
-        }));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
+        body: JSON.stringify(payload)
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
-        summaryResult = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).summary;
-        if (onAISummarize) {
-          onAISummarize(result);
-        }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      if (result?.success) {
+        summaryResult = result.summary || '';
+        onAISummarize?.(result);
       } else {
-        console.error(error);
+        errorMessage = 'Summarization failed';
+        console.error('AI summarization error', result);
       }
-    } catch (error) {
-      console.error('AI summarization error:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+    } catch (err) {
+      console.error('AI summarization error:', err);
+      errorMessage = err instanceof Error ? err.message : String(err);
+    } finally {
       isSummarizing = false;
     }
   }
+
   // Keyboard handlers
-  function handleAISearchKeydown(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+  function handleAISearchKeydown(event: KeyboardEvent) {
+    if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
       performAISearch();
     }
   }
-  function handleAIChatKeydown(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+  function handleAIChatKeydown(event: KeyboardEvent) {
+    if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
       performAIChat();
     }
@@ -215,56 +170,61 @@
     aiSearchResults = [];
     aiChatResponse = '';
     summaryResult = '';
+    errorMessage = '';
   }
 </script>
+
 <div class="space-y-6">
   <div class="text-center">
     <h2 class="text-2xl font-bold flex items-center justify-center gap-2">
       <Sparkles class="h-6 w-6 text-primary" />
       AI Legal Assistant
-    </h2>
+            <Input
     <p class="nes-text is-disabled mt-2">
       Intelligent search, chat, and summarization powered by local AI
     </p>
   </div>
-  <div class="grid grid-cols-1 {compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6">
-    <!-- AI Search -->
-    <div class="border-primary/20 nes-container">
-      <div class="yorha-panel-header pb-3">
-        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
-          <Bot class="h-5 w-5 text-primary" />
-          AI Search
-        </h3>
-      </div>
-      <main>
-        <div class="flex gap-2">
+
+  <div class={ "grid grid-cols-1 " + (compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3') + " gap-6" }>
+          <Button type="button" class="bits-btn"
+            on:click={performAISearch}
+            disabled={disabled || isAISearching || !aiSearchQuery.trim()}
+            size="sm"
+            aria-label="Search AI">
+            {#if isAISearching}
+              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin" />
+            {:else}
+              <Search aria-hidden="true" class="h-4 w-4" />
+            {/if}
+          </Button>
           <div class="relative flex-1">
             <Bot class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
             <Input
               placeholder="Ask AI to find laws..."
               bind:value={aiSearchQuery}
-              keydown={handleAISearchKeydown}
+              on:keydown={handleAISearchKeydown}
               {disabled}
               class="pl-10" />
           </div>
-          <Button class="bits-btn"
-            onclick={(_event: MouseEvent) => performAISearch}
-            disabled={disabled || isAISearching || !aiSearchQuery.trim()}
-            size="sm">
-{#if isAISearching}
+          <button
+            type="button"
+            class="bits-btn text-sm px-2 py-1"
+            on:click={performAISearch}
+            disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
+            {#if isAISearching}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Search class="h-4 w-4" />
             {/if}
-</Button>
+          </button>
         </div>
+
         {#if aiSearchResults.length > 0}
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each aiSearchResults.slice(0, 3) as result}
-<!-- TODO: Consider virtual scrolling for large lists (aiSearchResults) -->
               <div class="p-2 bg-muted/50 rounded text-sm">
-                <div class="font-medium truncate">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).title}</div>
-                <div class="text-xs nes-text is-disabled">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).jurisdiction}</div>
+                <div class="font-medium truncate">{result?.title}</div>
+                <div class="text-xs nes-text is-disabled">{result?.jurisdiction}</div>
               </div>
             {/each}
             {#if aiSearchResults.length > 3}
@@ -272,8 +232,9 @@
             {/if}
           </div>
         {/if}
-      </div>
+      </main>
     </div>
+
     <!-- AI Chat -->
     <div class="border-green-500/20 nes-container">
       <div class="yorha-panel-header pb-3">
@@ -284,30 +245,36 @@
       </div>
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
-          <Textarea
-            placeholder="Ask a legal question..."
-            bind:value={aiChatMessage}
-            keydown={handleAIChatKeydown}
-            {disabled}
-            rows="2"
-            class="resize-none" />
-          <Button
-            onclick={(_event: MouseEvent) => performAIChat}
-            disabled={disabled || isAIChatting || !aiChatMessage.trim()}
-            size="sm"
-            class="w-full bits-btn bits-btn">
-{#if isAIChatting}
-              <Loader2 class="h-4 w-4 animate-spin mr-2" />
-              Thinking...
-            {:else}
-              <MessageSquare class="h-4 w-4 mr-2" />
-              Ask AI
-            {/if}
-</Button>
+          <!-- use a small form so submit behavior is explicit and accessible -->
+          <form on:submit|preventDefault={performAIChat} class="space-y-2">
+            <textarea
+              name="aiChat"
+              placeholder="Ask a legal question..."
+              bind:value={aiChatMessage}
+              on:keydown={(e) => handleAIChatKeydown(e as KeyboardEvent)}
+              disabled={disabled}
+              rows="2"
+              aria-label="Ask a legal question"
+              class="resize-none rounded border px-3 py-2 w-full"></textarea>
+
+            <button
+              type="submit"
+              on:click|preventDefault={() => {}}
+              disabled={disabled || isAIChatting || !aiChatMessage.trim()}
+              class="w-full bits-btn text-sm px-3 py-2">
+              {#if isAIChatting}
+                <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin mr-2" />
+                Thinking...
+              {:else}
+                <MessageSquare aria-hidden="true" class="h-4 w-4 mr-2" />
+                Ask AI
+              {/if}
+            </button>
+          </form>
         </div>
+
         {#if aiChatResponse}
-          <div
-            class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32 overflow-y-auto">
+          <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32 overflow-y-auto">
             <div class="prose prose-sm max-w-none">
               <p class="whitespace-pre-wrap">{aiChatResponse}</p>
             </div>
@@ -315,6 +282,7 @@
         {/if}
       </div>
     </div>
+
     <!-- AI Summarization -->
     <div class="border-blue-500/20 nes-container">
       <div class="yorha-panel-header pb-3">
@@ -325,26 +293,28 @@
       </div>
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
-          <Textarea
+          <!-- use native textarea for summarization to ensure keyboard events/props behave correctly -->
+          <textarea
             placeholder="Paste legal text to summarize..."
             bind:value={summarizeText}
-            {disabled}
-            rows="2"
-            class="resize-none" />
-          <Button
-            onclick={(_event: MouseEvent) => performAISummarization}
+            disabled={disabled}
+            rows={2}
+            class="resize-none rounded border px-3 py-2 w-full"></textarea>
+          <button
+            type="button"
+            on:click={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
-            size="sm"
-            class="w-full bits-btn bits-btn">
-{#if isSummarizing}
+            class="w-full bits-btn text-sm px-3 py-2">
+            {#if isSummarizing}
               <Loader2 class="h-4 w-4 animate-spin mr-2" />
               Summarizing...
             {:else}
               <Zap class="h-4 w-4 mr-2" />
               Summarize
             {/if}
-</Button>
+          </button>
         </div>
+
         {#if summaryResult}
           <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32 overflow-y-auto">
             <div class="prose prose-sm max-w-none">
@@ -355,56 +325,70 @@
       </div>
     </div>
   </div>
+
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults} size="sm">
-Clear All Results
-</Button>
+      <button type="button" class="bits-btn text-sm px-2 py-1" on:click={clearResults}>
+        Clear All Results
+      </button>
     </div>
   {/if}
+
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
-    <Button class="bits-btn"
-      variant="ghost"
-      size="sm"
-      onclick={(_event: MouseEvent) => ) =>
-{
-        aiSearchQuery = 'California murder laws';
-        performAISearch();
-      }}
+    <button type="button"
+      class="bits-btn text-sm px-2 py-1"
+      on:click={() => { aiSearchQuery = 'California murder laws'; performAISearch(); }}
       disabled={disabled || isAISearching}>
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
-</Button>
-    <Button class="bits-btn"
-      variant="ghost"
-      size="sm"
-      onclick={(_event: MouseEvent) => ) =>
-{
-        aiChatMessage = 'What are the elements of a valid contract?';
-        performAIChat();
-      }}
+    </button>
+
+    <button
+      type="button"
+      class="bits-btn text-sm px-2 py-1"
+      on:click={() => { aiChatMessage = 'What are the elements of a valid contract?'; performAIChat(); }}
       disabled={disabled || isAIChatting}>
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
-</Button>
-    <Button class="bits-btn"
-      variant="ghost"
-      size="sm"
-      onclick={(_event: MouseEvent) => ) =>
-{
-        aiSearchQuery = 'evidence admissibility rules';
-        performAISearch();
-      }}
+    </button>
+
+    <button
+      type="button"
+      class="bits-btn text-sm px-2 py-1"
+      on:click={() => { aiSearchQuery = 'evidence admissibility rules'; performAISearch(); }}
       disabled={disabled || isAISearching}>
       <Search class="h-3 w-3 mr-1" />
       Evidence Rules
-</Button>
+    </button>
   </div>
+
+  <!-- Optional error display -->
+  {#if errorMessage}
+    <div class="text-center text-sm text-red-600 mt-2">{errorMessage}</div>
+  {/if}
 </div>
-<style>
-  :global(.prose p) {
-/* @apply text-sm leading-relaxed mb-2 last:mb-0; */
-  }
-</style>
+
+          <Textarea
+            placeholder="Paste legal text to summarize..."
+            bind:value={summarizeText}
+            {disabled}
+            rows={2}
+            aria-label="Paste legal text to summarize"
+            class="resize-none" />
+          <Button
+            type="button"
+            on:click={performAISummarization}
+            disabled={disabled || isSummarizing || !summarizeText.trim()}
+            size="sm"
+            class="w-full bits-btn"
+            aria-label="Summarize text">
+            {#if isSummarizing}
+              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin mr-2" />
+              Summarizing...
+            {:else}
+              <Zap aria-hidden="true" class="h-4 w-4 mr-2" />
+              Summarize
+            {/if}
+          </Button>

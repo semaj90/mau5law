@@ -235,8 +235,10 @@ https://svelte.dev/e/expected_token -->
       onchange={handleFileInput}
     />
     <button
+      type="button"
       class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
       onclick={() => fileInput.click()}
+      aria-label="Select files to upload"
     >
       Select Files
     </button>
@@ -258,7 +260,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
         </div>
-        <button class="text-gray-400 hover:text-red-400 transition-colors" onclick={() => removeUpload(upload.id)}>
+        <button type="button" class="text-gray-400 hover:text-red-400 transition-colors" onclick={() => removeUpload(upload.id)} aria-label="Remove upload">
           ✕
         </button>
       </div>
@@ -313,8 +315,10 @@ https://svelte.dev/e/expected_token -->
           <!-- Actions -->
           <div class="flex space-x-3">
             <button
+              type="button"
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
               onclick={() => downloadProcessedData(upload)}
+              aria-label="Download processed JSON"
             >
               📥 Download JSON
             </button>

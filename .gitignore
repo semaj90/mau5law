@@ -398,6 +398,13 @@ FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
 .vscode/*
+
+# Ignore generated protobuf files (compiled outputs) - do not edit generated code
+src/proto/**
+*.proto.js
+*.pb.js
+*.proto.ts
+*.pb.ts
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json

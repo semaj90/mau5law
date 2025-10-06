@@ -84,11 +84,11 @@
         {/if}
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button class="btn-icon" onclick={() => (showSettings = !showSettings)} title="Settings">
-          <Settings />
+        <button type="button" class="btn-icon" onclick={() => (showSettings = !showSettings)} title="Settings" aria-label="Open settings">
+          <Settings aria-hidden="true" />
         </button>
-        <button class="btn-icon" onclick={() => clearMessages()} title="Clear conversation">
-          <Trash2 />
+        <button type="button" class="btn-icon" onclick={() => clearMessages()} title="Clear conversation" aria-label="Clear conversation">
+          <Trash2 aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -103,8 +103,8 @@
             <div class="references">
               <h4 class="references-title">References:</h4>
               {#each message.references as reference}
-                <button class="reference-item" onclick={() => handleReferenceClick(reference)}>
-                  <Quote />
+                <button type="button" class="reference-item" onclick={() => handleReferenceClick(reference)} aria-label={`Open reference ${reference.title}`}>
+                  <Quote aria-hidden="true" />
                   <span class="reference-title">{reference.title}</span>
                   <span class="reference-citation">{reference.citation}</span>
                 </button>
@@ -126,8 +126,8 @@
     <form class="chat-input" onsubmit={handleSubmit}>
       <div class="input-container">
         <input type="text" bind:value={query} {placeholder} disabled={isLoading} class="chat-input-field" />
-        <button type="submit" disabled={!query.trim() || isLoading} class="chat-submit-btn">
-          <Search />
+        <button type="submit" disabled={!query.trim() || isLoading} class="chat-submit-btn" aria-label="Send message">
+          <Search aria-hidden="true" />
         </button>
       </div>
     </form>
@@ -137,7 +137,7 @@
     <div class="settings-panel">
       <div class="settings-header">
         <h4 class="settings-title">AI Assistant Settings</h4>
-        <button class="btn-close" onclick={() => (showSettings = false)}>×</button>
+  <button type="button" class="btn-close" onclick={() => (showSettings = false)} aria-label="Close settings">×</button>
       </div>
       <div class="settings-content">
         <div class="setting-group">
@@ -188,7 +188,7 @@
             <Quote />
             Legal Citation
           </h4>
-          <button class="btn-close" onclick={() => (showCitationDialog = false)}>×</button>
+          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close citation dialog">×</button>
         </div>
 
         <div class="dialog-body">
@@ -196,10 +196,12 @@
             <p>{selectedCitation}</p>
           </div>
           <div class="dialog-actions">
-            <button class="btn-primary" onclick={() => insertCitation()}>Insert Citation</button>
+            <button type="button" class="btn-primary" onclick={() => insertCitation()} aria-label="Insert citation">Insert Citation</button>
             <button
+              type="button"
               class="btn-secondary"
               onclick={() => navigator.clipboard.writeText(selectedCitation)}
+              aria-label="Copy citation to clipboard"
             >
               Copy to Clipboard
             </button>
@@ -207,7 +209,7 @@
         </div>
 
         <div class="dialog-footer">
-          <button class="btn-close" onclick={() => (showCitationDialog = false)}>Close</button>
+          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close dialog">Close</button>
         </div>
       </div>
     </div>

@@ -34,7 +34,7 @@ services:
     depends_on:
       - neo4j
     environment:
-      - NEO4J_AUTH=neo4j/neo4j123
+      - NEO4J_AUTH=neo4j/newSecurePassword123.
     volumes:
       - neo4j_backup:/backup
       - ./backup-scripts:/scripts

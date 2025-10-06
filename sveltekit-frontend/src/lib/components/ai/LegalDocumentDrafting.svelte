@@ -326,10 +326,10 @@
     </div>
     <div class="header-actions">
       {#if currentDocument}
-        <button class="nes-btn" onclick={saveDocument}>Save Draft</button>
-        <button class="nes-btn btn-ghost" onclick={() => showPreview = true}>Preview</button>
+        <button type="button" class="nes-btn" onclick={saveDocument}>Save Draft</button>
+        <button type="button" class="nes-btn btn-ghost" onclick={() => showPreview = true}>Preview</button>
       {:else}
-        <button class="nes-btn"
+        <button type="button" class="nes-btn"
           onclick={startNewDocument}
           disabled={!selectedDocumentType || isDrafting}
         >

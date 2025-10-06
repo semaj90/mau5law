@@ -9,6 +9,22 @@ import { langChainOllamaService, type LangChainConfig, type ProcessingResult, ty
 import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
 import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
 
+// Add narrowly-scoped helper types (insert near top of file)
+type WebGPURendererLike = {
+  initialize?: () => Promise<boolean>;
+  getStats?: () => Record<string, unknown>;
+  renderTilesToComponents?: (tiles: unknown, opts?: Record<string, unknown>) => Promise<InstantUIComponent[]>;
+};
+
+type ProcessingMetadata = {
+  totalTokens?: number;
+  avgChunkSize?: number;
+  model?: string;
+  [k: string]: unknown;
+};
+
+type SourceItem = { content?: string; [k: string]: unknown };
+
 // Add narrowly-scoped types to replace `any`
 type ByteArrayLike = Uint8Array | number[];
 
@@ -72,6 +88,13 @@ export interface SIMDQueryResult extends QueryResult {
   };
 }
 
+// add near top with other narrow types
+const _simdTypes = ['general', 'legal', 'ocr', 'ui'] as const;
+type SIMDType = (typeof _simdTypes)[number];
+function isSIMDType(v: unknown): v is SIMDType {
+  return typeof v === 'string' && (_simdTypes as readonly string[]).includes(v);
+}
+
 export class LangChainSIMDBridge {
   private config: SIMDLangChainConfig;
   private processingQueue: DocumentInput[] = [];
@@ -127,7 +150,7 @@ export class LangChainSIMDBridge {
    */
   async processDocument(
     content: string,
-    metadata: { [key: string]: any } = {},
+    metadata: Record<string, unknown> = {},
     options: {
       skipLangChain?: boolean;
       directSIMD?: boolean;
@@ -135,7 +158,7 @@ export class LangChainSIMDBridge {
     } = {}
   ): Promise<SIMDProcessingResult> {
     const pipelineStartTime = Date.now();
-    const processingId = `simd-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const processingId = `simd-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`; // use slice instead of deprecated substr
     console.log(`🚀 SIMD Pipeline processing: ${content.length} chars (ID: ${processingId})`);
 
     // Phase 1: LangChain processing (unless skipped)
@@ -158,8 +181,10 @@ export class LangChainSIMDBridge {
 
     // Phase 2: SIMD compression with enhanced configuration
     const simdStart = Date.now();
+    // derive a safe SIMD type from metadata.type (metadata is Record<string, unknown>)
+    const simdType: SIMDType = isSIMDType(metadata.type) ? metadata.type : 'general';
     const simdResult = await simdTextTilingEngine.processText(content, {
-      type: metadata.type || 'general',
+      type: simdType,
       context: `langchain-${this.config?.model || 'unknown'}`,
       uiTarget: options.generateUI ? 'component' : undefined,
     });
@@ -171,19 +196,16 @@ export class LangChainSIMDBridge {
     if (this.config.enableInstantUI && options.generateUI !== false) {
       const uiStart = Date.now();
       try {
-        const initialized = await webgpuTextTileRenderer.initialize();
-        if (initialized) {
-          // cast to any to avoid strict typing issues if method is optional on renderer
-          instantComponents = await (webgpuTextTileRenderer as any).renderTilesToComponents(
-            simdResult.compressedTiles,
-            {
-              target: 'component-data',
-              instantMode: true,
-              qualityOverride: this.config.qualityTier,
-            }
-          );
+        const renderer = webgpuTextTileRenderer as unknown as WebGPURendererLike;
+        const initialized = await (renderer.initialize?.() ?? Promise.resolve(false));
+        if (initialized && typeof renderer.renderTilesToComponents === 'function') {
+          instantComponents = await renderer.renderTilesToComponents(simdResult.compressedTiles, {
+            target: 'component-data',
+            instantMode: true,
+            qualityOverride: this.config.qualityTier,
+          });
         } else {
-          console.warn('WebGPU not available, generating CPU-fallback components');
+          console.warn('WebGPU not available or renderer method missing, generating CPU-fallback components');
           instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
         }
       } catch (error) {
@@ -196,6 +218,7 @@ export class LangChainSIMDBridge {
     const totalPipelineTime = Date.now() - pipelineStartTime;
 
     // Combine results into enhanced processing result
+    const lcMeta = (langchainResult.metadata ?? {}) as ProcessingMetadata;
     const enhancedResult: SIMDProcessingResult = {
       // Standard LangChain fields
       documentId: langchainResult.documentId,
@@ -203,9 +226,9 @@ export class LangChainSIMDBridge {
       embeddings: langchainResult.embeddings,
       processingTime: totalPipelineTime,
       metadata: {
-        totalTokens: (langchainResult.metadata as any)?.totalTokens || 0,
-        avgChunkSize: (langchainResult.metadata as any)?.avgChunkSize || 0,
-        model: (langchainResult.metadata as any)?.model || 'unknown',
+        totalTokens: lcMeta.totalTokens || 0,
+        avgChunkSize: lcMeta.avgChunkSize || 0,
+        model: lcMeta.model || 'unknown',
       } as { totalTokens: number; avgChunkSize: number; model: string },
       // SIMD enhancement data
       simdData: {
@@ -268,26 +291,22 @@ export class LangChainSIMDBridge {
     if (options.generateInstantComponents !== false) {
       try {
         // Combine answer and source content for SIMD processing
-        const combinedContent = [
-          queryResult.answer,
-          ...((queryResult.sources || []) as any[]).map(s => s.content || ''),
-        ].join('\n\n---\n\n');
+        const sources = Array.isArray(queryResult.sources) ? (queryResult.sources as SourceItem[]) : [];
+        const combinedContent = [queryResult.answer, ...sources.map(s => s.content || '')].join('\n\n---\n\n');
         const simdResult = await simdTextTilingEngine.processText(combinedContent, {
           type: 'legal',
           context: `query-response-${question.substring(0, 20)}`,
           uiTarget: 'component',
         });
 
-        const initialized = await webgpuTextTileRenderer.initialize();
-        if (initialized) {
-          instantComponents = await (webgpuTextTileRenderer as any).renderTilesToComponents(
-            simdResult.compressedTiles,
-            {
-              target: 'component-data',
-              instantMode: true,
-              qualityOverride: this.config.qualityTier,
-            }
-          );
+        const renderer = webgpuTextTileRenderer as unknown as WebGPURendererLike;
+        const initialized = await (renderer.initialize?.() ?? Promise.resolve(false));
+        if (initialized && typeof renderer.renderTilesToComponents === 'function') {
+          instantComponents = await renderer.renderTilesToComponents(simdResult.compressedTiles, {
+            target: 'component-data',
+            instantMode: true,
+            qualityOverride: this.config.qualityTier,
+          });
         } else {
           instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
         }
@@ -422,12 +441,13 @@ export class LangChainSIMDBridge {
    * Get comprehensive system statistics
    */
   getSystemStats() {
+    const renderer = webgpuTextTileRenderer as unknown as WebGPURendererLike;
     return {
       config: this.config,
       performanceMetrics: this.performanceMetrics,
       langchainStats: langChainOllamaService.getStats?.() || {},
       simdEngineStats: simdTextTilingEngine.getStats?.() || {},
-      webgpuRendererStats: webgpuTextTileRenderer.getStats?.() || {},
+      webgpuRendererStats: renderer.getStats?.() || {},
       pipelineInfo: {
         activeProcessing: this.processingQueue.length,
         maxConcurrency: this.config.maxConcurrentProcessing,
@@ -456,7 +476,7 @@ export class LangChainSIMDBridge {
   /**
    * Test the complete pipeline with sample data
    */
-  async testPipeline(): Promise<any> {
+  async testPipeline(): Promise<Record<string, unknown>> {
     console.log('🧪 Testing SIMD-LangChain pipeline...');
     const testDocument = `
       Software License Agreement

@@ -66,15 +66,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const testResults = {
       testType,
       timestamp: new Date().toISOString(),
-      results: { [key: string]: any } as any,
+      // initialize results as an object rather than using a TS type expression at runtime
+      results: {} as Record<string, any>,
       metrics: {
         totalTests: 0,
         passedTests: 0,
         failedTests: 0,
-        executionTimeMs: 0
+        executionTimeMs: 0,
       },
-      errors: [] as string[]
-    }
+      errors: [] as string[],
+    };
     const startTime = Date.now()
     console.log(`🧪 Starting shader cache integration tests: ${testType}`)
     try {
@@ -124,13 +125,14 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     console.error('❌ Shader cache test endpoint error:', error)
-    return json({
+    return json(
+      {
         success: false,
         error: 'Test execution failed',
-        details: dev ? error.message: undefined
-      },)
+        details: dev ? error.message : undefined,
+      },
       { status: 500 }
-    )
+    );
   }
 }
 async function runComprehensiveTests(testResults: any): Promise<any> {
@@ -170,9 +172,9 @@ async function testColdPath(testResults: any): Promise<any> {
       testResults.results.coldPath.tests.push({
         shader: shader.key,
         success: true,
-        latency: latency
-        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions`
-      })
+        latency,
+        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions`,
+      });
       testResults.metrics.passedTests++
     } catch (error: any) {
       testResults.results.coldPath.tests.push({
@@ -202,20 +204,20 @@ async function testHotPath(testResults: any): Promise<any> {
         testResults.results.hotPath.tests.push({
           shader: shader.key,
           success: true,
-          latency: latency
-          fromCache: true
-          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}`
-        })
+          latency,
+          fromCache: true,
+          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}`,
+        });
         testResults.metrics.passedTests++
       } else {
         // Not in cache, which is expected if cold path wasn't run first
         testResults.results.hotPath.tests.push({
           shader: shader.key,
           success: true,
-          latency: latency
-          fromCache: false
-          details: `Shader not in cache (expected if cold path not run)`
-        })
+          latency,
+          fromCache: false,
+          details: `Shader not in cache (expected if cold path not run)`,
+        });
         testResults.metrics.passedTests++
       }
     } catch (error: any) {
@@ -394,16 +396,16 @@ function createMockWorkflowContext(step: string, docContext: any) {
   return {
     userId: 'test-user-' + Math.random().toString(36).substr(2, 9),
     sessionId: 'test-session-' + Date.now(),
-    currentStep: step
+    currentStep: step,
     previousSteps: ['login', 'dashboard'],
     documentContext: {
       documentType: docContext.documentType || 'contract',
       caseId: 'test-case-001',
       documentSize: 1024000,
-      complexity: docContext.complexity || 'medium'
+      complexity: docContext.complexity || 'medium',
     },
-    timestamp: new Date()
-  }
+    timestamp: new Date(),
+  };
 }
 async function simulateColdPath(shader: any, context: any): Promise<any> {
   // Simulate the cold path process without actual network fetch

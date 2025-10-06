@@ -332,7 +332,7 @@ const saved = localStorage.getItem('ai-search-history');
                 in:fly={{ y: -10, duration: 200 }}
               >
                 {#each suggestions as suggestion}
-                  <button
+                  <button type="button"
                     class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
                     onclick={() => selectSuggestion(suggestion)}
                   >
@@ -351,7 +351,7 @@ const saved = localStorage.getItem('ai-search-history');
               { value: 'evidence', label: 'EVIDENCE', icon: Users, color: 'green' },
               { value: 'documents', label: 'DOCUMENTS', icon: Calendar, color: 'purple' }
             ] as filter}
-              <button
+              <button type="button"
                 onclick={() => selectedType = filter.value}
                 class="nier-filter-btn {selectedType === filter.value ? 'active' : ''} {filter.color}"
                 in:scale={{ duration: 200, start: 0.9 }}
@@ -361,7 +361,7 @@ const saved = localStorage.getItem('ai-search-history');
               </button>
             {/each}
             <!-- Advanced Options Toggle -->
-            <button
+            <button type="button"
               onclick={() => showAdvanced = !showAdvanced}
               class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
             >
@@ -406,7 +406,7 @@ const saved = localStorage.getItem('ai-search-history');
                   <label class="text-yellow-400 font-mono text-sm">RECENT SEARCHES</label>
                   <div class="space-y-1 max-h-20 overflow-y-auto">
                     {#each searchHistory.slice(0, 3) as query}
-                      <button
+                      <button type="button"
                         class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
                         onclick={() => selectHistory(query)}
                       >
@@ -419,7 +419,7 @@ const saved = localStorage.getItem('ai-search-history');
             </div>
           {/if}
           <!-- AI Search Button -->
-          <button
+          <button type="button"
             onclick={performAISearch}
             disabled={isSearching || !searchQuery.trim()}
             class="nier-search-btn w-full py-4 bg-yellow-400 hover:bg-yellow-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-mono font-bold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"

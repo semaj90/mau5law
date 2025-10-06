@@ -119,11 +119,11 @@
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       rows={rows}
-      oninput={(_event: Event) => debounce(handleInput, 300}
+    oninput={(_event: Event) => debouncedHandleInput(_event)}
       onkeydown={handleKeydown}
       onfocus={handleFocus}
       onblur={handleBlur}
-      aria-label="Chat message input"
+    aria-label="Message input"
       spellcheck="true"
     ></textarea>
     <div class="input-actions">
@@ -136,14 +136,14 @@
           {characterCount}/{maxLength}
         </span>
       {/if}
-      <button aria-label="Button"
+      <button
         type="button"
         class="send-button"
         disabled={disabled}
-        class:has-content={value.trim.length > 0}
-        onclick={(_event: MouseEvent) => ) => handleSend(}
+        class:has-content={value.trim().length > 0}
+        on:click={handleSend}
         title="Send message (Enter)"
-        aria-label="Send message"
+         aria-label="Send message"
       >
         <svg
           width="20"
@@ -152,7 +152,7 @@
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-        >
+          aria-hidden="true">
           <line x1="22" y1="2" x2="11" y2="13" />
           <polygon points="22,2 15,22 11,13 2,9" />
         </svg>

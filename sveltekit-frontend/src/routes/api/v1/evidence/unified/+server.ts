@@ -91,6 +91,7 @@ interface UnifiedAnalysisResult {
       centralEvidence: string[]
       communities: Array<string[]>
       weakLinks: Array<any>
+    }
   }
   // Unified insights
   unifiedInsights: {
@@ -98,6 +99,7 @@ interface UnifiedAnalysisResult {
     criticalGaps: string[]
     recommendations: Array<any>
     visualizations: Array<any>
+  }
   // Performance metrics
   performance: {
     processingTimeMs: number
@@ -164,7 +166,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       analysisRequest.evidenceIds.includes(e.id)
     )
     if (evidence.length === 0) {
-      throw error(404, new Error('No evidence found for provided IDs')
+      throw error(404, new Error('No evidence found for provided IDs'))
     }
     const result: UnifiedAnalysisResult = {
       analysisId: `unified_${Date.now()}`,
@@ -189,21 +191,21 @@ export const POST: RequestHandler = async ({ params, request }) => {
         query: 'comprehensive evidence analysis',
         evidenceIds: analysisRequest.evidenceIds,
         algorithms: ['semantic', 'legal', 'temporal', 'contextual'],
-        clustering: true;
+        clustering: true,
         threshold: analysisRequest.parameters.similarityThreshold
       })
       // Process similarity results into groups
       const similarityGroups =
-        similarityResults.clusters?.map((cluster: any, index: number) => ({,
+        (similarityResults.clusters?.map((cluster: any, index: number) => ({
           groupId: `cluster_${index}`,
           evidenceIds: cluster.evidenceIds,
           averageSimilarity: cluster.coherenceScore,
           keyThemes: cluster.themes || []
-        })) || []
+        })) ) || []
       const outliers = evidence
-        .filter((e) => !similarityGroups.some((g: any) => (g?.evidenceIds || []).includes(e.id))
+        .filter((e) => !similarityGroups.some((g: any) => (g?.evidenceIds || []).includes(e.id)))
         .map((e) => e.id)
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis = {
+      (result as { vectorAnalysis?: any }).vectorAnalysis = {
         similarityGroups,
         outliers,
         recommendedActions: [
@@ -217,7 +219,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         ]
       }
       vectorSearchTime = Date.now() - vectorStart
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.vectorSearchMs = vectorSearchTime
+      (result as { performance?: any }).performance.vectorSearchMs = vectorSearchTime
     }
     // 2. Strategy Analysis
     if (analysisRequest.analysisScope.strategyRecommendations) {
@@ -226,10 +228,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
         evidenceIds: analysisRequest.evidenceIds,
         strategyType: analysisRequest.parameters.strategyType,
         caseContext: analysisRequest.context || {},
-        includeRiskAssessment: true
+        includeRiskAssessment: true,
         generateAlternatives: true
       })
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis = {
+      (result as { strategyAnalysis?: any }).strategyAnalysis = {
         primaryStrategy: strategyResults.primaryApproach?.name || '',
         alternativeStrategies: (strategyResults.alternativeApproaches || []).map(
           (a: any) => a?.name || ''
@@ -242,7 +244,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         outcomeProjections: strategyResults.outcomeProjections || []
       }
       strategyTime = Date.now() - strategyStart
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.strategyAnalysisMs = strategyTime
+      (result as { performance?: any }).performance.strategyAnalysisMs = strategyTime
     }
     // 3. WASM Processing (optional - computationally expensive)
     if (analysisRequest.analysisScope.wasmProcessing) {
@@ -250,10 +252,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
       const wasmProcessor = new WasmLegalProcessor()
       await wasmProcessor.initialize()
       const processedResults: Array<any> = await Promise.all(evidence.map(async (e) => {
-          const analysis: any = await wasmProcessor.processDocument({,
+          const analysis: any = await wasmProcessor.processDocument({
             content: `Mock content for ${e.filename}`,
             metadata: { filename: e.filename, type: e.type }
-          } as any))
+          } as any)
           return {
             evidenceId: e.id,
             entities: (analysis?.entities as string[]) || [],
@@ -264,8 +266,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         })
       )
       // Calculate cross-document similarity
-      const crossSimilarity: Array<any> =
-        []
+      const crossSimilarity: Array<any> = []
       for (let i = 0; i < processedResults.length; i++) {
         for (let j = i + 1; j < processedResults.length; j++) {
           const simScore = await wasmProcessor.calculateSimilarity(
@@ -282,7 +283,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       // Quality metrics
       const readabilityScores = processedResults.map((r) => r.readabilityScore)
       const averageReadability =
-        readabilityScores.reduce((sum, score) => sum + score, 0) / readabilityScores.length
+        readabilityScores.reduce((sum, score) => sum + score, 0) / Math.max(1, readabilityScores.length)
       // Detect duplicates (similarity > 0.9)
       const duplicateGroups: string[][] = []
       const processed = new Set()
@@ -297,9 +298,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
           processed.add((sim as any).evidenceB)
         }
       })
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).wasmAnalysis = {
-        processedEvidence: processedResults
-        crossDocumentSimilarity: crossSimilarity
+      (result as { wasmAnalysis?: any }).wasmAnalysis = {
+        processedEvidence: processedResults,
+        crossDocumentSimilarity: crossSimilarity,
         qualityMetrics: {
           averageReadability,
           uniqueDocuments: evidence.length - duplicateGroups.length,
@@ -307,7 +308,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
       }
       wasmTime = Date.now() - wasmStart
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.wasmProcessingMs = wasmTime
+      (result as { performance?: any }).performance.wasmProcessingMs = wasmTime
     }
     // 4. Correlation Analysis
     if (analysisRequest.analysisScope.correlationAnalysis) {
@@ -330,21 +331,21 @@ export const POST: RequestHandler = async ({ params, request }) => {
       )
       // Identify weak links (low correlation evidence)
       const weakLinks = evidence
-        .filter(e => !correlations.some(c => c.evidenceA === e.id || c.evidenceB === e.id)
+        .filter(e => !correlations.some(c => c.evidenceA === e.id || c.evidenceB === e.id))
         .map(e => ({
           evidenceA: e.id,
           evidenceB: 'isolated',
           reason: 'No significant correlations found with other evidence'
-        })
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis = {
-        correlations: correlations.map(c => ({,
+        }))
+      (result as { correlationAnalysis?: any }).correlationAnalysis = {
+        correlations: correlations.map((c: any) => ({
           evidenceA: c.evidenceA,
           evidenceB: c.evidenceB,
           type: c.correlationType,
           strength: c.strength,
-          legalImplication: c.implications[0] || 'Requires further analysis'
+          legalImplication: (c.implications && c.implications[0]) || 'Requires further analysis'
         })),
-        patterns: patterns.map(p => ({,
+        patterns: patterns.map((p: any) => ({
           type: p.patternType,
           description: p.description,
           significance: p.significance,
@@ -357,18 +358,18 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
       }
       correlationTime = Date.now() - correlationStart
-      (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.correlationAnalysisMs = correlationTime
+      (result as { performance?: any }).performance.correlationAnalysisMs = correlationTime
     }
     // Generate Unified Insights
-    const keyFindings = []
-    const criticalGaps = []
-    const recommendations = []
-    const visualizations = []
+    const keyFindings: string[] = []
+    const criticalGaps: string[] = []
+    const recommendations: any[] = []
+    const visualizations: any[] = []
     // Consolidate findings from all analyses
-    if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis) {
-      keyFindings.push(`Identified ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis.similarityGroups.length} distinct evidence themes`)
-      if (((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis.outliers || []).length > 0) {
-        criticalGaps.push(`${((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis.outliers || []).length} pieces of evidence lack thematic connection`)
+    if ((result as { vectorAnalysis?: any }).vectorAnalysis) {
+      keyFindings.push(`Identified ${(result as { vectorAnalysis?: any }).vectorAnalysis!.similarityGroups.length} distinct evidence themes`)
+      if (((result as { vectorAnalysis?: any }).vectorAnalysis!.outliers || []).length > 0) {
+        criticalGaps.push(`${((result as { vectorAnalysis?: any }).vectorAnalysis!.outliers || []).length} pieces of evidence lack thematic connection`)
       }
       // Timeline visualization
       visualizations.push({
@@ -379,18 +380,18 @@ export const POST: RequestHandler = async ({ params, request }) => {
             id: e.id,
             date: e.uploadedAt,
             title: e.filename,
-            cluster: (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).vectorAnalysis?.similarityGroups.find((g: any) => (g?.evidenceIds || []).includes(e.id))?.groupId
-          })
+            cluster: (result as { vectorAnalysis?: any }).vectorAnalysis?.similarityGroups.find((g: any) => (g?.evidenceIds || []).includes(e.id))?.groupId
+          }))
         },
         insights: ['Timeline shows evidence clustering patterns', 'Potential coordination of activities visible']
       })
     }
-    if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis) {
-      keyFindings.push(`Primary strategy recommendation: ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.primaryStrategy}`)
-      keyFindings.push(`Risk level assessed as: ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.riskAssessment.level}`)
+    if ((result as { strategyAnalysis?: any }).strategyAnalysis) {
+      keyFindings.push(`Primary strategy recommendation: ${(result as { strategyAnalysis?: any }).strategyAnalysis!.primaryStrategy}`)
+      keyFindings.push(`Risk level assessed as: ${(result as { strategyAnalysis?: any }).strategyAnalysis!.riskAssessment.level}`)
       recommendations.push({
         priority: 'high' as const,
-        action: `Implement ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.primaryStrategy} strategy`,
+        action: `Implement ${(result as { strategyAnalysis?: any }).strategyAnalysis!.primaryStrategy} strategy`,
         rationale: `Analysis shows this approach optimizes case strengths`,
         estimatedImpact: 'Significant improvement in case outcome probability'
       })
@@ -399,23 +400,23 @@ export const POST: RequestHandler = async ({ params, request }) => {
         type: 'strategy-tree' as const,
         title: 'Legal Strategy Decision Tree',
         data: {
-          primary: (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.primaryStrategy,
-          alternatives: (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.alternativeStrategies,
-          outcomes: (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.outcomeProjections
+          primary: (result as { strategyAnalysis?: any }).strategyAnalysis!.primaryStrategy,
+          alternatives: (result as { strategyAnalysis?: any }).strategyAnalysis!.alternativeStrategies,
+          outcomes: (result as { strategyAnalysis?: any }).strategyAnalysis!.outcomeProjections
         },
         insights: ['Multiple viable strategies identified', 'Risk mitigation options available']
       })
     }
-    if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).wasmAnalysis) {
-      keyFindings.push(`Document quality: ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).wasmAnalysis.qualityMetrics.averageReadability.toFixed(1)}/10 readability`)
-      if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).wasmAnalysis.qualityMetrics.duplicateGroups.length > 0) {
-        criticalGaps.push(`Duplicate documents detected: ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).wasmAnalysis.qualityMetrics.duplicateGroups.length} groups`)
+    if ((result as { wasmAnalysis?: any }).wasmAnalysis) {
+      keyFindings.push(`Document quality: ${(result as { wasmAnalysis?: any }).wasmAnalysis!.qualityMetrics.averageReadability.toFixed(1)}/10 readability`)
+      if ((result as { wasmAnalysis?: any }).wasmAnalysis!.qualityMetrics.duplicateGroups.length > 0) {
+        criticalGaps.push(`Duplicate documents detected: ${(result as { wasmAnalysis?: any }).wasmAnalysis!.qualityMetrics.duplicateGroups.length} groups`)
       }
     }
-    if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis) {
-      keyFindings.push(`Found ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis.correlations.length} significant evidence correlations`)
-      keyFindings.push(`Detected ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis.patterns.length} evidence patterns`)
-      if ((result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis.networkAnalysis.centralEvidence.length > 0) {
+    if ((result as { correlationAnalysis?: any }).correlationAnalysis) {
+      keyFindings.push(`Found ${(result as { correlationAnalysis?: any }).correlationAnalysis!.correlations.length} significant evidence correlations`)
+      keyFindings.push(`Detected ${(result as { correlationAnalysis?: any }).correlationAnalysis!.patterns.length} evidence patterns`)
+      if ((result as { correlationAnalysis?: any }).correlationAnalysis!.networkAnalysis.centralEvidence.length > 0) {
         recommendations.push({
           priority: 'high' as const,
           action: 'Focus case narrative on central evidence pieces',
@@ -429,12 +430,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
         title: 'Evidence Correlation Network',
         data: {
           nodes: evidence.map(e => ({ id: e.id, label: e.filename })),
-          edges: (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis.correlations.map(c => ({
+          edges: (result as { correlationAnalysis?: any }).correlationAnalysis!.correlations.map((c: any) => ({
             source: c.evidenceA,
             target: c.evidenceB,
             weight: c.strength,
             type: c.type
-          })
+          }))
         },
         insights: ['Evidence network shows connection patterns', 'Central nodes identified for case focus']
       })
@@ -450,7 +451,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         estimatedImpact: 'Enhanced case completeness and reduced vulnerability'
       })
     }
-    (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).unifiedInsights = {
+    (result as { unifiedInsights?: any }).unifiedInsights = {
       keyFindings,
       criticalGaps,
       recommendations: recommendations.sort((a, b) =>
@@ -460,42 +461,42 @@ export const POST: RequestHandler = async ({ params, request }) => {
     }
     // Calculate final performance metrics
     const totalTime = Date.now() - startTime
-    (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.processingTimeMs = totalTime
-    (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).performance.memoryUsageMb = process.memoryUsage().heapUsed / 1024 / 1024
+    (result as { performance?: any }).performance.processingTimeMs = totalTime
+    (result as { performance?: any }).performance.memoryUsageMb = process.memoryUsage().heapUsed / 1024 / 1024
     return json(result)
   } catch (err) {
     console.error('Unified analysis error:', err)
     if (err instanceof z.ZodError) {
-      throw error(400, new Error(JSON.stringify(makeErrorBody(err)))
+      throw error(400, new Error(JSON.stringify(makeErrorBody(err))))
     }
-    throw error(500, new Error(JSON.stringify(makeErrorBody(err)))
+    throw error(500, new Error(JSON.stringify(makeErrorBody(err))))
   }
 }
 // GET endpoint for analysis status and capabilities
 export const GET: RequestHandler = async ({ url }) => {
   const capabilities = {
     vectorSimilarity: {
-      available: true
+      available: true,
       algorithms: ['semantic', 'legal', 'temporal', 'contextual'],
       features: ['clustering', 'outlier-detection', 'multi-dimensional-scoring']
     },
     strategyRecommendations: {
-      available: true
+      available: true,
       types: ['evidence-driven', 'settlement', 'aggressive', 'comprehensive'],
       features: ['risk-assessment', 'outcome-projections', 'precedent-analysis']
     },
     wasmProcessing: {
-      available: true
+      available: true,
       features: ['document-extraction', 'entity-detection', 'citation-parsing', 'similarity-calculation'],
       performance: 'high-performance-client-side'
     },
     correlationAnalysis: {
-      available: true
+      available: true,
       types: ['temporal', 'semantic', 'entity', 'causal'],
       features: ['pattern-detection', 'network-analysis', 'anomaly-detection']
     },
     unifiedAnalysis: {
-      available: true
+      available: true,
       features: ['cross-feature-insights', 'comprehensive-recommendations', 'visualization-generation']
     }
   }

@@ -1,22 +1,24 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
-  import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
   import { FileText, Upload, Save, Loader, CheckCircle, AlertCircle } from 'lucide-svelte';
+
   // Props
-  interface Props {
-    caseId?: string;
-  }
-  let { caseId = 'demo-case-001' }: Props = $props();
+  export let caseId: string = 'demo-case-001';
+
   // Canvas and Fabric.js
-  let canvasEl: HTMLCanvasElement = $state();
-  let fabricCanvas: any;
-  let fileInput: HTMLInputElement = $state();
+  let canvasEl: HTMLCanvasElement | null = null;
+  let fabricCanvas: any = null;
+
+  // Add a module-scoped holder for the dynamically imported Fabric module
+  // so we don't rely on a UMD global and avoid TS errors.
+  let Fabric: any = null;
+
   // Analysis state
-  let analysisStatus: 'idle' | 'pending' | 'analyzing' | 'complete' | 'error' = $state('idle');
-  let analysisProgress = $state(0);
-  let error: string | null = $state(null);
+  let analysisStatus: 'idle' | 'pending' | 'analyzing' | 'complete' | 'error' = 'idle';
+  let analysisProgress = 0;
+  let error: string | null = null;
+
   // Enhanced result structure matching our API
   let analysisResult: {
     summary?: string;
@@ -27,63 +29,81 @@
     complianceStatus?: string;
     timeline?: Array<{ event: string; date: string; importance: string }>;
     processingTime?: number;
-  } | null = $state(null);
+  } | null = null;
+
   // Evidence upload state
-  let evidenceList: Array<{,
+  let evidenceList: Array<{
     id: string;
     name: string;
     type: string;
     uploadedAt: string;
     status: 'uploading' | 'uploaded' | 'failed';
-  }> = $state([]);
+  }> = [];
+
   // Canvas options
-  let options = $state({
-    analyze_layout: true
-    extract_entities: true
-    generate_summary: true
+  let options = {
+    analyze_layout: true,
+    extract_entities: true,
+    generate_summary: true,
     confidence_level: 0.8,
     context_window: 4096,
-  });
-  $effect(() => {
-    (async () => {
-const { fabric } = await import("fabric");
-    fabricCanvas = new fabric.Canvas(canvasEl, {
-      backgroundColor: '#ffffff',
-      selection: true
-      preserveObjectStacking: true;
-    })();
-  });
+  };
+
+  onMount(async () => {
+    // initialize fabric
+    try {
+      const mod = await import('fabric');
+      // support both ESM default/namespace shapes
+      Fabric = (mod as any).fabric ?? mod;
+      fabricCanvas = new Fabric.Canvas(canvasEl as HTMLCanvasElement, {
+        backgroundColor: '#ffffff',
+        selection: true,
+        preserveObjectStacking: true
+      });
+    } catch (err: unknown) {
+      // normalize unknown to Error before logging/using
+      const e = err instanceof Error ? err : new Error(String(err));
+      console.warn('Fabric failed to load:', e);
+    }
+
     // Register canvas with concurrency orchestrator
     const canvasId = `evidence-canvas-${Date.now()}`;
-    concurrencyOrchestrator.createCanvas(canvasId, canvasEl);
+    if (canvasEl) concurrencyOrchestrator.createCanvas(canvasId, canvasEl);
+
     // Load existing evidence for this case
     await loadCaseEvidence();
+
     // Add some default evidence items if none exist
     if (evidenceList.length === 0) {
       addDefaultEvidenceItems();
     }
   });
+
   async function loadCaseEvidence() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        evidenceList = ((data as { evidence?: any }).evidence || []).map((item: any) => ({
-          id: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).id || crypto.randomUUID(),
-          name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).title || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name || 'Evidence Item',
-          type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).evidenceType || 'document',
-          uploadedAt: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).createdAt || new Date().toISOString(),
-          status: 'uploaded' as const
-        }));
-        // Add visual representations to canvas
-        evidenceList.forEach((item, index) => {
-          addEvidenceToCanvas(item, index);
-        });
+      const res = await fetch(`/api/cases/${caseId}/evidence`);
+      if (!res.ok) {
+        console.warn('No evidence found or failed to fetch:', res.statusText);
+        return;
       }
-    } catch (error) {
-      console.warn('Could not load case evidence:', error);
+      const data = await res.json();
+      evidenceList = (data?.evidence || []).map((item: any) => ({
+        id: item?.id ?? crypto.randomUUID(),
+        name: item?.title ?? item?.name ?? 'Evidence Item',
+        type: item?.type ?? item?.evidenceType ?? 'document',
+        uploadedAt: item?.createdAt ?? new Date().toISOString(),
+        status: 'uploaded' as const
+      }));
+      // Add visual representations to canvas
+      evidenceList.forEach((item, index) => {
+        addEvidenceToCanvas(item, index);
+      });
+    } catch (err: unknown) {
+      const e = err instanceof Error ? err : new Error(String(err));
+      console.warn('Could not load case evidence:', e);
     }
   }
+
   function addDefaultEvidenceItems() {
     const defaultItems = [
       { name: 'Contract Document', type: 'document', color: '#3b82f6' },
@@ -94,22 +114,25 @@ const { fabric } = await import("fabric");
     defaultItems.forEach((item, index) => {
       const evidenceItem = {
         id: crypto.randomUUID(),
-        name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name,
-        type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type,
+        name: item.name,
+        type: item.type,
         uploadedAt: new Date().toISOString(),
         status: 'uploaded' as const
-      }
+      };
       evidenceList.push(evidenceItem);
-      addEvidenceToCanvas(evidenceItem, index, (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).color);
+      addEvidenceToCanvas(evidenceItem, index, item.color);
     });
   }
+
   function addEvidenceToCanvas(evidence: any, index: number, color?: string) {
+    if (!fabricCanvas || !Fabric) return;
     const x = 100 + (index % 3) * 250;
     const y = 100 + Math.floor(index / 3) * 150;
     // Add evidence box
-    const rect = new (fabricCanvas.constructor as any).Rect({
-      left: x
-      top: y
+    // Use Fabric's constructors (use module-scoped Fabric instead of UMD global)
+    const rect = new Fabric.Rect({
+      left: x,
+      top: y,
       fill: color || getEvidenceColor(evidence.type),
       width: 200,
       height: 120,
@@ -117,45 +140,48 @@ const { fabric } = await import("fabric");
       strokeWidth: 2,
       rx: 10,
       ry: 10,
-      selectable: true
-      evidenceId: evidence.id;
+      selectable: true,
     });
+    // Cast to any to set a custom property (TypeScript-safe)
+    (rect as any).set('evidenceId', evidence.id);
+
     // Add evidence label
-    const text = new (fabricCanvas.constructor as any).Text(evidence.name, {
+    const text = new Fabric.Text(evidence.name, {
       left: x + 10,
       top: y + 10,
       fontFamily: 'Arial',
       fontSize: 14,
       fill: '#ffffff',
       fontWeight: 'bold',
-      selectable: false;
-      evented: false;
+      selectable: false,
+      evented: false,
     });
+
     // Add type label
-    const typeText = new (fabricCanvas.constructor as any).Text(`Type: ${evidence.type}`, {
+    const typeText = new Fabric.Text(`Type: ${evidence.type}`, {
       left: x + 10,
       top: y + 35,
       fontFamily: 'Arial',
       fontSize: 12,
       fill: '#ffffff',
-      selectable: false;
-      evented: false;
+      selectable: false,
+      evented: false,
     });
+
     // Add status indicator
-    const statusText = new (fabricCanvas.constructor as any).Text(`Status: ${evidence.status}`, {
+    const statusText = new Fabric.Text(`Status: ${evidence.status}`, {
       left: x + 10,
       top: y + 55,
       fontFamily: 'Arial',
       fontSize: 10,
       fill: '#ffffff',
-      selectable: false;
-      evented: false;
+      selectable: false,
+      evented: false,
     });
-    fabricCanvas.add(rect);
-    fabricCanvas.add(text);
-    fabricCanvas.add(typeText);
-    fabricCanvas.add(statusText);
+
+    fabricCanvas.add(rect, text, typeText, statusText);
   }
+
   function getEvidenceColor(type: string): string {
     const colors: Record<string, string> = {
       document: '#3b82f6',
@@ -164,27 +190,30 @@ const { fabric } = await import("fabric");
       testimony: '#8b5cf6',
       physical: '#ef4444',
       digital: '#06b6d4',
-      default: '#6b7280';
-    }
+      default: '#6b7280'
+    };
     return colors[type] || colors.default;
   }
+
   function collectObjects() {
-    const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: any) => {
+    if (!fabricCanvas) return [];
+    const objs = (fabricCanvas.getObjects?.() ?? []).map((o: any) => {
       const type = o.type || "object";
-      const left = typeof o.left === "number" ? o.left: 0;
-      const top = typeof o.top === "number" ? o.top: 0;
-      const text = typeof o.text === "string" ? o.text: undefined;
-      const evidenceId = o.evidenceId;
-      return {
+      const left = typeof o.left === "number" ? o.left : 0;
+      const top = typeof o.top === "number" ? o.top : 0;
+      const text = typeof o.text === "string" ? o.text : undefined;
+      const evidenceId = o.evidenceId ?? o.get('evidenceId');
+      const out: any = {
         type,
-        position: ;
-{ x: left, y: top },
-        ...(text ? { text } : ),
-        ...(evidenceId ? { evidenceId } : )
-      }
+        position: { x: left, y: top },
+      };
+      if (text) out.text = text;
+      if (evidenceId) out.evidenceId = evidenceId;
+      return out;
     });
-    return obj;
+    return objs;
   }
+
   // Enhanced analysis function using our real API endpoint
   async function handleAnalysis() {
     if (!caseId) return;
@@ -202,31 +231,31 @@ const { fabric } = await import("fabric");
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           canvas_data: {
             objects: collectObjects(),
-            evidence_items: evidenceList
-            canvas_size: { width: canvasEl.width, height: canvasEl.height }
+            evidence_items: evidenceList,
+            canvas_size: { width: canvasEl?.width ?? 800, height: canvasEl?.height ?? 600 }
           },
           options
         })
       });
       clearInterval(progressInterval);
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        throw new Error(`Analysis failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-      if ((result as { success?: any; analysis?: any; metadata?: any; error?: any }).success && (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis) {
+      const result = await response.json();
+      if (result?.success && result?.analysis) {
         analysisResult = {
-          summary: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.summary,
-          riskLevel: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.riskLevel,
-          keyFindings: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.keyFindings,
-          recommendations: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.recommendations,
-          similarCases: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.similarCases,
-          complianceStatus: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.complianceStatus,
-          timeline: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.timeline,
-          processingTime: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).metadata?.processingTimeMs
-        }
+          summary: result.analysis.summary,
+          riskLevel: result.analysis.riskLevel,
+          keyFindings: result.analysis.keyFindings,
+          recommendations: result.analysis.recommendations,
+          similarCases: result.analysis.similarCases,
+          complianceStatus: result.analysis.complianceStatus,
+          timeline: result.analysis.timeline,
+          processingTime: result.metadata?.processingTimeMs
+        };
         analysisProgress = 100;
         analysisStatus = 'complete';
         // Auto-close after showing success
@@ -235,53 +264,71 @@ const { fabric } = await import("fabric");
           analysisProgress = 0;
         }, 5000);
       } else {
-        throw new Error((result as { success?: any; analysis?: any; metadata?: any; error?: any }).error || 'Analysis failed');
+        throw new Error(result?.error || 'Analysis failed');
       }
-    } catch (e: any) {
-      error = e instanceof Error ? e.message: String(e);
+    } catch (err: unknown) {
+      const e = err instanceof Error ? err : new Error(String(err));
+      error = e.message;
       analysisStatus = 'error';
       console.error('Analysis failed:', e);
     }
   }
+
+  // Add typed reference for the file input bound in markup
+  let fileInput: HTMLInputElement | null = null;
+
   // File upload function
-  async function handleFileUpload(_event: Event) {
-    // removed unused target assignment
-    const files = target.file;
-    if (!files || files.length === 0) return;
-    for (const file of Array.from(files)) {
-      const evidenceItem = {
+  async function handleFileUpload(event: Event) {
+    // Prefer the event's currentTarget (the input) but fallback to the bound fileInput
+    const inputEl = (event.currentTarget as HTMLInputElement | null) ?? fileInput;
+    const filesList: FileList | null | undefined = inputEl?.files ?? fileInput?.files;
+    if (!filesList || filesList.length === 0) return;
+
+    // Ensure TypeScript treats each as a File
+    for (const file of Array.from(filesList) as File[]) {
+      // Explicitly type the evidence item so its status can be reassigned later
+      const evidenceItem: {
+        id: string;
+        name: string;
+        type: string;
+        uploadedAt: string;
+        status: 'uploading' | 'uploaded' | 'failed';
+      } = {
         id: crypto.randomUUID(),
         name: file.name,
         type: getFileType(file.type),
         uploadedAt: new Date().toISOString(),
-        status: 'uploading' as const
-      }
+        status: 'uploading'
+      };
       evidenceList.push(evidenceItem);
       try {
         // Upload to MinIO or fallback endpoint
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file); // file is a File (Blob) now
         formData.append('caseId', caseId);
         formData.append('evidenceType', evidenceItem.type);
         const response = await fetch('/api/v1/minio/upload', {
           method: 'POST',
           body: formData
         });
-        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        if (response.ok) {
           evidenceItem.status = 'uploaded';
           addEvidenceToCanvas(evidenceItem, evidenceList.length - 1);
         } else {
           evidenceItem.status = 'failed';
         }
-      } catch (error) {
-        console.error('Upload failed:', error);
+      } catch (err: unknown) {
+        const e = err instanceof Error ? err : new Error(String(err));
+        console.error('Upload failed:', e);
         evidenceItem.status = 'failed';
       }
     }
     // Clear the input
-    target.value = '';
+    if (fileInput) fileInput.value = '';
   }
+
   function getFileType(mimeType: string): string {
+    if (!mimeType) return 'document';
     if (mimeType.startsWith('image/')) return 'digital';
     if (mimeType.includes('pdf')) return 'document';
     if (mimeType.includes('text')) return 'document';
@@ -289,18 +336,39 @@ const { fabric } = await import("fabric");
     if (mimeType.includes('audio')) return 'digital';
     return 'document';
   }
+
   function saveCanvas() {
+    if (!fabricCanvas) return;
     const canvasData = {
       version: fabricCanvas.version,
       objects: fabricCanvas.toJSON(),
-      evidence: evidenceList;
+      evidence: evidenceList,
       timestamp: new Date().toISOString(),
-      caseId;
-    }
+      caseId
+    };
     // Save to localStorage as backup
-    localStorage.setItem(`evidence-canvas-${caseId}`, JSON.stringify(canvasData));
+    try {
+      localStorage.setItem(`evidence-canvas-${caseId}`, JSON.stringify(canvasData));
+    } catch (err: unknown) {
+      const e = err instanceof Error ? err : new Error(String(err));
+      console.warn('Could not save canvas to localStorage:', e);
+    }
     // TODO: Save to backend
     console.log('Canvas saved:', canvasData);
+  }
+
+  // Add small helpers to safely access item fields in the template
+  function getItemName(item: any): string {
+    return item?.name ?? item?.title ?? 'Evidence Item';
+  }
+  function getItemStatus(item: any): string {
+    return item?.status ?? 'unknown';
+  }
+  function getItemType(item: any): string {
+    return item?.type ?? item?.evidenceType ?? 'document';
+  }
+  function getItemUploadedAt(item: any): string {
+    return item?.uploadedAt ?? item?.createdAt ?? new Date().toISOString();
   }
 </script>
 
@@ -321,12 +389,12 @@ const { fabric } = await import("fabric");
         style="display: none;"
       />
     </label>
-    <button
-      class="nes-btn {analysisStatus === 'idle'
+    <button type="button"
+      class={"nes-btn " + (analysisStatus === 'idle'
         ? 'is-primary'
         : analysisStatus === 'complete'
           ? 'is-success'
-          : 'is-warning'}"
+          : 'is-warning')}
       onclick={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
@@ -344,7 +412,7 @@ const { fabric } = await import("fabric");
         Analyze Evidence
       {/if}
     </button>
-    <button class="nes-btn" onclick={saveCanvas}>
+    <button type="button" class="nes-btn" onclick={saveCanvas}>
       <Save size={16} />
       Save Canvas
     </button>
@@ -352,13 +420,18 @@ const { fabric } = await import("fabric");
   <!-- Progress Bar -->
   {#if analysisStatus === 'pending' || analysisStatus === 'analyzing'}
     <div class="progress-section">
-      <label class="nes-text">Analysis Progress:</label>
+      <label for="analysis-progress" class="nes-text">Analysis Progress:</label>
       <progress
-        class="nes-progress {analysisStatus === 'analyzing' ? 'is-primary' : 'is-warning'}"
+        id="analysis-progress"
+        class={"nes-progress " + (analysisStatus === 'analyzing' ? 'is-primary' : 'is-warning')}
         value={analysisProgress}
         max="100"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={Math.round(analysisProgress)}
       ></progress>
-      <span class="progress-text">{Math.round(analysisProgress)}%</span>
+      <span class="progress-text" aria-live="polite">{Math.round(analysisProgress)}%</span>
     </div>
   {/if}
   <!-- Analysis Options -->
@@ -385,7 +458,6 @@ const { fabric } = await import("fabric");
         <input
           type="number"
           class="nes-input"
-          ;
           bind:value={options.context_window}
           min={512}
           max={16384}
@@ -423,123 +495,23 @@ const { fabric } = await import("fabric");
     <p class="title">Evidence Items ({evidenceList.length})</p>
     <div class="evidence-grid">
       {#each evidenceList as item}
-        <div
-          class="nes-container is-rounded evidence-item {(
-            item as {
-              id?: any;
-              title?: any;
-              name?: any;
-              type?: any;
-              evidenceType?: any;
-              createdAt?: any;
-              color?: any;
-              status?: any;
-              uploadedAt?: any;
-              uploading?: any;
-              uploaded?: any;
-              failed?: any;
-              high?: any;
-              medium?: any;
-              low?: any;
-            }
-          ).status}"
-        >
+        <div class={"nes-container is-rounded evidence-item " + getItemStatus(item)}>
           <div class="evidence-header">
-            <span class="evidence-name"
-              >{(
-                item as {
-                  id?: any;
-                  title?: any;
-                  name?: any;
-                  type?: any;
-                  evidenceType?: any;
-                  createdAt?: any;
-                  color?: any;
-                  status?: any;
-                  uploadedAt?: any;
-                  uploading?: any;
-                  uploaded?: any;
-                  failed?: any;
-                  high?: any;
-                  medium?: any;
-                  low?: any;
-                }
-              ).name}</span
-            >
+            <span class="evidence-name">{getItemName(item)}</span>
             <span class="evidence-status nes-badge">
-              {#if (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).status === 'uploaded'}
+              {#if getItemStatus(item) === 'uploaded'}
                 <CheckCircle size={14} />
-              {:else if (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).status === 'uploading'}
+              {:else if getItemStatus(item) === 'uploading'}
                 <Loader size={14} />
               {:else}
                 <AlertCircle size={14} />
               {/if}
-              {(
-                item as {
-                  id?: any;
-                  title?: any;
-                  name?: any;
-                  type?: any;
-                  evidenceType?: any;
-                  createdAt?: any;
-                  color?: any;
-                  status?: any;
-                  uploadedAt?: any;
-                  uploading?: any;
-                  uploaded?: any;
-                  failed?: any;
-                  high?: any;
-                  medium?: any;
-                  low?: any;
-                }
-              ).status}
+              {getItemStatus(item)}
             </span>
           </div>
           <div class="evidence-details">
-            <small
-              >Type: {(
-                item as {
-                  id?: any;
-                  title?: any;
-                  name?: any;
-                  type?: any;
-                  evidenceType?: any;
-                  createdAt?: any;
-                  color?: any;
-                  status?: any;
-                  uploadedAt?: any;
-                  uploading?: any;
-                  uploaded?: any;
-                  failed?: any;
-                  high?: any;
-                  medium?: any;
-                  low?: any;
-                }
-              ).type}</small
-            >
-            <small
-              >Added: {new Date(
-                (
-                  item as {
-                    id?: any;
-                    title?: any;
-                    name?: any;
-                    type?: any;
-                    evidenceType?: any;
-                    createdAt?: any;
-                    color?: any;
-                    status?: any;
-                    uploadedAt?: any;
-                    uploading?: any;
-                    uploaded?: any;
-                    failed?: any;
-                    high?: any;
-                    medium?: any;
-                    low?: any;
-                  }
-                ).uploadedAt,
-              ).toLocaleDateString()}</small
-            >
+            <small>Type: {getItemType(item)}</small>
+            <small>Added: {new Date(getItemUploadedAt(item)).toLocaleDateString()}</small>
           </div>
         </div>
       {/each}
@@ -557,11 +529,11 @@ const { fabric } = await import("fabric");
       {#if analysisResult.riskLevel}
         <div class="risk-indicator">
           <span
-            class="nes-badge {analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical'
+            class={"nes-badge " + (analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical'
               ? 'is-error'
               : analysisResult.riskLevel === 'medium'
                 ? 'is-warning'
-                : 'is-success'}"
+                : 'is-success')}
           >
             Risk Level: {analysisResult.riskLevel.toUpperCase()}
           </span>
@@ -617,15 +589,15 @@ const { fabric } = await import("fabric");
         <h4 class="nes-text">Case Timeline</h4>
         <div class="timeline-list">
           {#each analysisResult.timeline as event}
-            <div class="nes-container is-rounded timeline-item {event.importance}">
+            <div class={"nes-container is-rounded timeline-item " + event.importance}>
               <div class="timeline-header">
                 <span class="timeline-date">{new Date(event.date).toLocaleDateString()}</span>
                 <span
-                  class="nes-badge {event.importance === 'high'
+                  class={"nes-badge " + (event.importance === 'high'
                     ? 'is-error'
                     : event.importance === 'medium'
                       ? 'is-warning'
-                      : 'is-success'}"
+                      : 'is-success')}
                 >
                   {event.importance}
                 </span>
@@ -642,11 +614,11 @@ const { fabric } = await import("fabric");
         <h4 class="nes-text">Compliance Status</h4>
         <div class="compliance-status">
           <span
-            class="nes-badge {analysisResult.complianceStatus.toLowerCase().includes('compliant')
+            class={"nes-badge " + (analysisResult.complianceStatus.toLowerCase().includes('compliant')
               ? 'is-success'
               : analysisResult.complianceStatus.toLowerCase().includes('violation')
                 ? 'is-error'
-                : 'is-warning'}"
+                : 'is-warning')}
           >
             {analysisResult.complianceStatus}
           </span>
@@ -775,11 +747,11 @@ const { fabric } = await import("fabric");
   }
   .evidence-item.failed {
     border-color: #dc3545;
-    background-color: #ffebe;
+    background-color: #ffebee;
   }
   .evidence-header {
     display: flex;
-    justify-content: betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -826,7 +798,7 @@ const { fabric } = await import("fabric");
     justify-content: center;
     margin-top: 1rem;
   }
-  /* Findings */
+  /* Findings / recommendations / other cards */
   .findings-card,
   .recommendations-card,
   .similar-cases-card,
@@ -856,7 +828,7 @@ const { fabric } = await import("fabric");
   /* Similar cases */
   .case-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -871,7 +843,7 @@ const { fabric } = await import("fabric");
   /* Timeline */
   .timeline-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -883,13 +855,13 @@ const { fabric } = await import("fabric");
     font-size: 13px;
     line-height: 1.4;
   }
-  .timeline-.high {
+  .timeline-item.high {
     border-color: #dc3545;
   }
-  .timeline-.medium {
+  .timeline-item.medium {
     border-color: #ffc107;
   }
-  .timeline-.low {
+  .timeline-item.low {
     border-color: #28a745;
   }
   /* Compliance status */
@@ -907,7 +879,77 @@ const { fabric } = await import("fabric");
   }
   .metadata-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    font-size: 12px;
+  }
+  .metadata-label {
+    font-weight: bold;
+  }
+  .metadata-value {
+    font-family: monospace;
+  }
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .upload-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .settings-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .evidence-grid {
+      grid-template-columns: 1fr;
+    }
+    .case-header,
+    .timeline-header {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+    .metadata-grid {
+      grid-template-columns: 1fr;
+      font-size: 12px;
+  }
+  /* Main toolbar styling */
+.evidence-toolbar {
+    margin-bottom: 2rem;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .timeline-event {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .timeline-item.high {
+    border-color: #dc3545;
+  }
+  .timeline-item.medium {
+    border-color: #ffc107;
+  }
+  .timeline-item.low {
+    border-color: #28a745;
+  }
+  /* Compliance status */
+  .compliance-status {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  /* Metadata */
+  .metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .metadata-item {
+    display: flex;
+    justify-content: space-between;
     padding: 0.5rem;
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -942,4 +984,5 @@ const { fabric } = await import("fabric");
       grid-template-columns: 1fr;
     }
   }
+}
 </style>

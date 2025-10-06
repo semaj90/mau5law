@@ -8,16 +8,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Props } from "$lib/types/global";
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  // Use concrete component modules used elsewhere in the project
+  import Button from '$lib/components/ui/button';
+  import Input from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
@@ -85,21 +78,21 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   }
   // File selection handlers
   const handleFileSelect = (e: Event) => {
-    // removed unused target assignment
-    const files = Array.from(target.files || []);
+    const input = e.currentTarget as HTMLInputElement;
+    const files = Array.from(input.files || []);
     addFiles(files);
   }
   const addFiles = (files: File[]) => {
     const newFiles = files.filter(file => {
       // Check file type
-      const isAllowed = allowedTypes.some(type =>
-        type === '*/*' ||
-        type.endsWith('/*') ? file.type.startsWith(type.replace('/*', '/')) :
-        file.type === type
-      );
+      const isAllowed = allowedTypes.some(type => {
+        if (type === '*/*') return true;
+        if (type.endsWith('/*')) return file.type.startsWith(type.replace('/*', '/'));
+        return file.type === type;
+      });
       // Check if not already selected
       const notDuplicate = !selectedFiles.some(f => f.name === file.name && f.size === file.size);
-      return isAllowed && notDuplicat;
+      return isAllowed && notDuplicate;
     });
     if (selectedFiles.length + newFiles.length > maxFiles) {
       alert(`Maximum ${maxFiles} files allowed`);
@@ -108,6 +101,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     selectedFiles = [...selectedFiles, ...newFiles];
   }
   const removeFile = (_index: number) => {
+    const index = _index;
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
   }
   // Upload process with WebGPU acceleration
@@ -124,7 +118,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       if (enableWebGPU && selectedFiles.length > 1) {
         console.log('🚀 Using WebGPU batch processing');
         const batchResults = await webGPUProcessor.batchProcessEvidence(selectedFiles, caseId);
-        uploadResults = batchResult;
+        uploadResults = batchResults;
         uploadProgress = 100;
       } else {
         // Process files individually
@@ -136,24 +130,18 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           formData.append('title', `${evidenceTitle} - ${file.name}`);
           formData.append('description', evidenceDescription);
           formData.append('type', evidenceType);
-          formData.append.map(t => t.trim()).filter(Boolean)));
+          // append tags as repeated fields
+          tags.split(',').map(t => t.trim()).filter(Boolean).forEach(t => formData.append('tags[]', t));
           formData.append('collectedBy', collectedBy);
           formData.append('location', location);
           formData.append('isAdmissible', isAdmissible.toString());
-  let response = $state<Responsetry {
-          response  | null>(null); const data = await fetch('/api/evidence/upload', {
-            method: 'POST',
-            body: formData
-          }));
-          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+          // perform fetch and handle response
+          const resp = await fetch('/api/evidence/upload', { method: 'POST', body: formData });
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
           }
-        } catch (error) {
-          console.error('Fetch failed:', error);
-          throw error;
-        }
-          const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-          uploadResults.push({ file: file.name, ...result });
+          const result = await resp.json();
+          uploadResults.push({ fileName: file.name, ...result });
           uploadProgress = ((i + 1) / selectedFiles.length) * 100;
         }
       }
@@ -176,7 +164,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     return {
       objects: ['person', 'document', 'weapon'],
       confidence: 0.92,
-      boundingBoxes: [];
+      boundingBoxes: []
     }
   }
 </script>
@@ -201,7 +189,6 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <Label for="evidence-title">Evidence Title *</Label>
         <Input
           id="evidence-title"
-          ;
           bind:value={evidenceTitle}
           placeholder="e.g., Contract Agreement, Crime Scene Photo"
         />
@@ -228,7 +215,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     <div class="space-y-2">
       <Label for="description">Description</Label>
       <Textarea
-        id="description";
+        id="description"
         bind:value={evidenceDescription}
         placeholder="Detailed description of the evidence"
         rows={3}
@@ -246,9 +233,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     </div>
     <!-- File Upload Area -->
     <div
-      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragActive
-        ? 'border-blue-500 bg-blue-50'
-        : 'border-gray-300'}"
+      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors"
+      class:drag-active={dragActive}
       ondragover={handleDragOver as any}
       ondragleave={handleDragLeave as any}
       role="region"
@@ -463,6 +449,20 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
               {#if enableWebGPU}
                 <li>• WebGPU acceleration for vector operations</li>
               {/if}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>
+
+<style>
+  .drag-active {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+  }
+</style>
             </ul>
           </div>
         </div>

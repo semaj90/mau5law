@@ -160,8 +160,8 @@ https://svelte.dev/e/js_parse_error -->
           <div class="bg-gray-50 p-3 rounded text-sm">
             <p class="text-gray-700">{doc.content.slice(0, 200)}{doc.content.length > 200 ? '...' : ''}</p>
           </div>
-          <div class="mt-3 flex justify-end">
-            <button
+            <div class="mt-3 flex justify-end">
+              <button type="button"
               onclick={() => (selectedDocument = doc)}
               class="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >

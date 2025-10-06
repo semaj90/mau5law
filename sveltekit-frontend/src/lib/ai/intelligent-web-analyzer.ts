@@ -5,11 +5,10 @@
  *
  * Flow: DOM Analysis → Text Extraction → Tensor Processing → User Context → Cache
  */
-import { extractTextFromImage, type ImageSource, type OCRResult } from '$lib/ocr/ocr-client.js';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
+import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
 import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
 import { browser } from '$app/environment';
-}
+
 export interface WebElement {
   id: string;
   tagName: string;
@@ -21,17 +20,23 @@ export interface WebElement {
     importance: 'high' | 'medium' | 'low';
     elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
-    lastInteraction?: number;
-  }
+    lastInteraction?: number; // optional: can be populated for richer analytics
+  };
 }
 export interface PageChunk {
   id: string;
   content: string;
   elements: WebElement[];
-  position: { start: number; end: number }
+  position: { start: number; end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
+}
+export interface ClickPoint {
+  x: number;
+  y: number;
+  count: number;
+  timestamp?: number; // optional: can be populated for richer analytics
 }
 export interface UserAnalytics {
   userId: string;
@@ -40,30 +45,37 @@ export interface UserAnalytics {
     avgSpeed: number; // WPM
     commonWords: string[];
     specialization: string[]; // legal, technical, etc.
-  }
+  };
   interactionPatterns: {
-    clickHeatmap: Array<any>;
-    scrollBehavior: { depth: number; speed: number }
+    clickHeatmap: ClickPoint[]; // typed instead of Array<any>
+    scrollBehavior: { depth: number; speed: number };
     focusAreas: string[]; // element selectors
-  }
+  };
   caseContext: {
     activeCases: string[];
     currentTask: string;
     relevantDocuments: string[];
-  }
+  };
 }
+export type TrainingChunk = {
+  input_text: string;
+  embeddings: number[]; // serialized embeddings for transport/storage
+  context: UserAnalytics;
+  importance_weight: number;
+  created_at: number;
+};
 export interface QLoRATrainingData {
   user_id: string;
-  chunks: Array<any>;
+  chunks: TrainingChunk[]; // typed training chunk array
   metadata: {
     page_url: string;
     session_data: UserAnalytics;
     distilled_size: number;
     training_ready: boolean;
-  }
+  };
 }
 export class IntelligentWebAnalyzer {
-  private worker?: Worker;
+  private worker?: ServiceWorker;
   private mutationObserver?: MutationObserver;
   private userAnalytics: UserAnalytics;
   private pageElements = new Map<string, WebElement>();
@@ -77,26 +89,25 @@ export class IntelligentWebAnalyzer {
         avgSpeed: 0,
         commonWords: [],
         specialization: [],
-        ...initialAnalytics.typingPatterns
+        ...initialAnalytics.typingPatterns,
       },
       interactionPatterns: {
         clickHeatmap: [],
         scrollBehavior: { depth: 0, speed: 0 },
         focusAreas: [],
-        ...initialAnalytics.interactionPatterns
+        ...initialAnalytics.interactionPatterns,
       },
       caseContext: {
         activeCases: [],
         currentTask: '',
         relevantDocuments: [],
-        ...initialAnalytics.caseContext
-      }
-    }
+        ...initialAnalytics.caseContext,
+      },
+    };
   }
   /**
    * Initialize the intelligent web analyzer
-   */;
-  async initialize(): Promise<void> {
+   */ async initialize(): Promise<void> {
     if (!browser) return;
     try {
       // Initialize Service Worker for background processing
@@ -114,15 +125,11 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Initialize Service Worker for background tensor processing
-   */;
-  private async initializeWorker(): Promise<void> {
+   */ private async initializeWorker(): Promise<void> {
     if (!('serviceWorker' in navigator)) return;
     try {
-      const registration = await navigator.serviceWorker.register(
-        '/intelligent-web-worker.js',)
-        { scope: '/' }
-      );
-      this.worker = (registration.active || registration.installing || registration.waiting) as any;
+      const registration = await navigator.serviceWorker.register('/intelligent-web-worker.js', { scope: '/' });
+      this.worker = (registration.active || registration.installing || registration.waiting) ?? undefined;
       console.log('🧠 Intelligent Web Worker initialized');
     } catch (error) {
       console.warn('Service Worker initialization failed:', error);
@@ -130,9 +137,8 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Set up DOM mutation observer for real-time page changes
-   */;
-  private setupDOMObserver(): void {
-    this.mutationObserver = new MutationObserver((mutations) => {
+   */ private setupDOMObserver(): void {
+    this.mutationObserver = new MutationObserver(mutations => {
       let hasSignificantChanges = false;
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
@@ -147,42 +153,40 @@ export class IntelligentWebAnalyzer {
       }
     });
     this.mutationObserver.observe(document.body, {
-      childList: true
-      subtree: true
-      characterData: true;
-      attributes: false // Skip attribute changes for performance
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: false, // Skip attribute changes for performance
     });
   }
   /**
    * Set up user interaction tracking for context-aware AI
-   */;
-  private setupUserTracking(): void {
+   */ private setupUserTracking(): void {
     let typingBuffer: string[] = [];
     let lastKeyTime = 0;
     // Typing pattern analysis
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       const currentTime = performance.now();
       if (lastKeyTime > 0) {
         const timeDiff = currentTime - lastKeyTime;
         const wpm = 60000 / (timeDiff * 5); // Approximate WPM calculation
-        this.userAnalytics.typingPatterns.avgSpeed =
-          (this.userAnalytics.typingPatterns.avgSpeed + wpm) / 2;
+        this.userAnalytics.typingPatterns.avgSpeed = (this.userAnalytics.typingPatterns.avgSpeed + wpm) / 2;
       }
       lastKeyTime = currentTime;
       if (e.key.length === 1) {
         typingBuffer.push(e.key);
         if (typingBuffer.length > 50) {
-          this.analyzeTypingPatterns(typingBuffer.join('');
+          this.analyzeTypingPatterns(typingBuffer.join(''));
           typingBuffer = [];
         }
       }
     });
     // Click heatmap tracking
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       this.userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
         y: e.clientY,
-        count: 1
+        count: 1,
       });
       // Update element interaction count
       const elementId = this.getElementId(e.target as Element);
@@ -194,7 +198,7 @@ export class IntelligentWebAnalyzer {
       }
     });
     // Focus area tracking
-    document.addEventListener('focusin', (e) => {
+    document.addEventListener('focusin', e => {
       const selector = this.getElementSelector(e.target as Element);
       if (!this.userAnalytics.interactionPatterns.focusAreas.includes(selector)) {
         this.userAnalytics.interactionPatterns.focusAreas.push(selector);
@@ -209,23 +213,22 @@ export class IntelligentWebAnalyzer {
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         this.userAnalytics.interactionPatterns.scrollBehavior = {
           depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
-          speed: scrollSpeed
-        }
+          speed: scrollSpeed,
+        };
       }
       lastScrollTime = currentTime;
     });
   }
   /**
    * Analyze current page content with chunking and streaming
-   */;
-  async analyzeCurrentPage(): Promise<QLoRATrainingData> {
+   */ async analyzeCurrentPage(): Promise<QLoRATrainingData> {
     console.log('🔍 Starting intelligent page analysis...');
     // 1. Extract all meaningful elements
     const elements = await this.extractPageElements();
     // 2. Process images with OCR
-    await this.processImages(elements.filter(e => e.metadata.elementType === 'image');
-    // 3. Create semantic chunks (2-5k characters each)
-    const chunks = this.createSemanticChunks(elements);
+    await this.processImages(elements.filter(e => e.metadata.elementType === 'image'));
+    // 3. Create semantic chunks (using LangChain splitter)
+    const chunks = await this.createSemanticChunks(elements);
     // 4. Stream chunks for embedding generation
     const processedChunks = await this.streamChunksForProcessing(chunks);
     // 5. Generate QLoRA training data
@@ -237,8 +240,7 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Extract all meaningful elements from the page
-   */;
-  private async extractPageElements(): Promise<WebElement[]> {
+   */ private async extractPageElements(): Promise<WebElement[]> {
     const elements: WebElement[] = [];
     // Select meaningful elements (avoid scripts, styles, etc.)
     const meaningfulElements = document.querySelectorAll(`
@@ -246,7 +248,8 @@ export class IntelligentWebAnalyzer {
       input, textarea, button, a, img, video, canvas,
       td, th, li, label, legend, figcaption
     `);
-    meaningfulElements.forEach((el, index) => {
+    // remove unused 'index' parameter to satisfy lint rules
+    meaningfulElements.forEach(el => {
       const rect = el.getBoundingClientRect();
       // Skip elements that are not visible or too small
       if (rect.width < 10 || rect.height < 10 || rect.top < 0) return;
@@ -255,18 +258,18 @@ export class IntelligentWebAnalyzer {
       // Skip elements with no meaningful content
       if (textContent.length < 3 && el.tagName !== 'IMG') return;
       const webElement: WebElement = {
-        id: elementId
+        id: elementId,
         tagName: el.tagName.toLowerCase(),
         textContent,
         innerHTML: el.innerHTML.slice(0, 1000), // Limit size
-        boundingBox: rect
+        boundingBox: rect,
         attributes: this.getElementAttributes(el),
         metadata: {
           importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
-          interactionCount: 0
-        }
-      }
+          interactionCount: 0,
+        },
+      };
       elements.push(webElement);
       this.pageElements.set(elementId, webElement);
     });
@@ -274,9 +277,8 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Process images with OCR for text extraction
-   */;
-  private async processImages(imageElements: WebElement[]): Promise<void> {
-    const imagePromises = imageElements.map(async (element) => {
+   */ private async processImages(imageElements: WebElement[]): Promise<void> {
+    const imagePromises = imageElements.map(async element => {
       try {
         const imgEl = document.getElementById(element.id) as HTMLImageElement;
         if (!imgEl || !imgEl.src) return;
@@ -302,54 +304,59 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Create semantic chunks from page elements
-   */;
-  private createSemanticChunks(elements: WebElement[]): PageChunk[] {
-    const chunks: PageChunk[] = [];
-    const CHUNK_SIZE = 3000; // ~3k characters per chunk for optimal embedding
-    let currentChunk = '';
-    let currentElements: WebElement[] = [];
-    let chunkStart = 0;
-    elements.forEach((element, index) => {
-      const content = `${element.tagName}: ${element.textContent}\n`;
-      if (currentChunk.length + content.length > CHUNK_SIZE && currentChunk.length > 0) {
-        // Create chunk
-        chunks.push({
-          id: `chunk_${chunks.length}`,
-          content: currentChunk.trim(),
-          elements: [...currentElements],
-          position: { start: chunkStart, end: chunkStart + currentChunk.length },
-          confidence: this.calculateChunkConfidence(currentElements)
-        });
-        // Reset for next chunk
-        currentChunk = content;
-        currentElements = [element];
-        chunkStart += currentChunk.length;
-      } else {
-        currentChunk += content;
-        currentElements.push(element);
-      }
+   */ private async createSemanticChunks(elements: WebElement[]): Promise<PageChunk[]> {
+    // Build a single text with markers so we can map resulting chunks back to elements
+    const markers = elements.map((el, idx) => `[[elem_${idx}]]`);
+    const pieces = elements.map((el, idx) => `${markers[idx]} ${el.tagName}: ${el.textContent}`);
+    const fullText = pieces.join('\n\n');
+
+    // Dynamic import to avoid bundling issues in environments that don't need the splitter
+    const { RecursiveCharacterTextSplitter } = await import('langchain/text_splitter');
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 750,
+      chunkOverlap: 100,
     });
-    // Add final chunk
-    if (currentChunk.length > 0) {
+
+    const texts = await splitter.splitText(fullText);
+    const chunks: PageChunk[] = [];
+
+    for (let i = 0; i < texts.length; i++) {
+      const txt = texts[i].trim();
+      // Find markers inside chunk to determine which elements are present
+      const markerRegex = /\[\[elem_(\d+)\]\]/g;
+      const matchedIndices: number[] = [];
+      let m: RegExpExecArray | null;
+      while ((m = markerRegex.exec(txt)) !== null) {
+        const idx = Number(m[1]);
+        if (!Number.isNaN(idx)) matchedIndices.push(idx);
+      }
+      const includedElements = Array.from(new Set(matchedIndices))
+        .map(idx => elements[idx])
+        .filter(Boolean);
+
+      // Determine position by searching in fullText (best-effort)
+      const start = fullText.indexOf(txt);
+      const posStart = start >= 0 ? start : 0;
+      const posEnd = posStart + txt.length;
+
       chunks.push({
         id: `chunk_${chunks.length}`,
-        content: currentChunk.trim(),
-        elements: currentElements
-        position: { start: chunkStart, end: chunkStart + currentChunk.length },
-        confidence: this.calculateChunkConfidence(currentElements)
+        content: txt,
+        elements: includedElements,
+        position: { start: posStart, end: posEnd },
+        confidence: this.calculateChunkConfidence(includedElements),
       });
     }
     return chunks;
   }
   /**
    * Stream chunks for processing with minimal CPU/GPU usage
-   */;
-  private async streamChunksForProcessing(chunks: PageChunk[]): Promise<PageChunk[]> {
+   */ private async streamChunksForProcessing(chunks: PageChunk[]): Promise<PageChunk[]> {
     const BATCH_SIZE = 3; // Process 3 chunks at a time to avoid overwhelming
     const processedChunks: PageChunk[] = [];
     for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
       const batch = chunks.slice(i, i + BATCH_SIZE);
-      const batchPromises = batch.map(async (chunk) => {
+      const batchPromises = batch.map(async chunk => {
         try {
           // Check embedding cache
           const cachedEmbedding = await getCachedEmbedding(chunk.content, 'web-analysis');
@@ -360,17 +367,17 @@ export class IntelligentWebAnalyzer {
             const response = await fetch('/api/embeddings', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({,
+              body: JSON.stringify({
                 text: chunk.content,
                 model: 'nomic-text',
-                source: 'web-analysis'
-              })
+                source: 'web-analysis',
+              }),
             });
-            if ((response as { ok?: any; json?: any }).ok) {
-              const data = await (response as { ok?: any; json?: any }).json();
-              chunk.embeddings = new Float32Array((data as { interactionCount?: any; lastInteraction?: any; importance?: any; elementType?: any; embedding?: any }).embedding);
+            if (response.ok) {
+              const data = await response.json();
+              chunk.embeddings = new Float32Array(data.embedding);
               // Cache the embedding
-              await cacheEmbedding(chunk.content, (data as { interactionCount?: any; lastInteraction?: any; importance?: any; elementType?: any; embedding?: any }).embedding, 'web-analysis');
+              await cacheEmbedding(chunk.content, data.embedding, 'web-analysis');
             }
           }
           // Generate semantic meaning using LangExtract-style analysis
@@ -381,68 +388,70 @@ export class IntelligentWebAnalyzer {
           return chunk;
         }
       });
-      const batchResults = await Promise.allSettled(batchPromises);
-      batchResults.forEach((result) => {
-        if ((result as { status?: any; value?: any }).status === 'fulfilled') {
-          processedChunks.push((result as { status?: any; value?: any }).value);
+      const batchResults = await Promise.allSettled<PageChunk>(batchPromises);
+      for (const result of batchResults) {
+        if (result.status === 'fulfilled') {
+          processedChunks.push(result.value);
         }
-      });
+      }
       // Small delay between batches to prevent CPU/GPU spikes
-      await new Promise(resolve => setTimeout(resolve, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
     return processedChunks;
   }
   /**
    * Prepare QLoRA training data with user context
-   */;
-  private prepareQLoRATrainingData(chunks: PageChunk[]): QLoRATrainingData {
+   */ private prepareQLoRATrainingData(chunks: PageChunk[]): QLoRATrainingData {
     const trainingChunks = chunks.map(chunk => ({
       input_text: chunk.content,
       embeddings: chunk.embeddings ? Array.from(chunk.embeddings) : [],
       context: this.userAnalytics,
       importance_weight: this.calculateImportanceWeight(chunk),
-      created_at: Date.now()
-    });
+      created_at: Date.now(),
+    }));
     return {
       user_id: this.userAnalytics.userId,
-      chunks: trainingChunks;
+      chunks: trainingChunks,
       metadata: {
         page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
-        training_ready: true
-      }
-    }
+        training_ready: true,
+      },
+    };
   }
   /**
    * Cache analysis results for future use
-   */;
-  private async cacheAnalysisResults(qloraData: QLoRATrainingData): Promise<void> {
+   */ private async cacheAnalysisResults(qloraData: QLoRATrainingData): Promise<void> {
     try {
       // Store in cache with 1 hour TTL
       const cacheKey = `web_analysis:${this.userAnalytics.userId}:${window.location.pathname}`;
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          results: qloraData.chunks.map((chunk, index) => ({
-            text: chunk.input_text,
-            embeddings: chunk.embeddings,
-            dimensions: chunk.embeddings.length,
-            confidence: 0.9,
-            tensor_id: `web_${Date.now()}_${index}`,
-            search_index: chunk.embeddings.slice(0, 100) // Reduced for indexing
-          })),
+        body: JSON.stringify({
+          results: qloraData.chunks.map((chunk, index) => {
+            const embeddings = chunk.embeddings ?? [];
+            return {
+              text: chunk.input_text,
+              embeddings,
+              dimensions: embeddings.length,
+              confidence: 0.9,
+              tensor_id: `web_${Date.now()}_${index}`,
+              search_index: embeddings.slice(0, Math.min(100, embeddings.length)), // Reduced for indexing
+            };
+          }),
           metadata: {
             processed_at: Date.now(),
             batch_size: qloraData.chunks.length,
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
-            session_id: this.userAnalytics.sessionId
-          }
-        })
+            session_id: this.userAnalytics.sessionId,
+            cache_key: cacheKey, // use the cacheKey to avoid "assigned but never used"
+          },
+        }),
       });
-      if ((response as { ok?: any; json?: any }).ok) {
+      if (response.ok) {
         console.log('✅ Analysis results cached successfully');
       }
     } catch (error) {
@@ -453,15 +462,25 @@ export class IntelligentWebAnalyzer {
   private debouncePageAnalysis = this.debounce(() => {
     this.analyzeCurrentPage();
   }, 2000);
-  private debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
-    let timeout: NodeJS.Timeout;
-    return ((...args: any[]) => {
+  private debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>): void => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    }) as T;
+      timeout = setTimeout(() => {
+        // allow both sync and async functions; ignore return value
+        void func(...args);
+      }, wait);
+    };
   }
   private getElementId(element: Element): string {
-    return element.id || `el_${Array.from(element.parentNode?.childNodes || []).indexOf(element)}`;
+    if (element.id && element.id.trim().length > 0) return element.id;
+    // Try to build a stable id from sibling index, otherwise fallback to UUID
+    const parent = element.parentNode;
+    if (parent) {
+      const idx = Array.from(parent.childNodes || []).indexOf(element);
+      if (idx >= 0) return `el_${idx}_${(parent as Element).nodeName.toLowerCase()}`;
+    }
+    return `el_${crypto.randomUUID()}`;
   }
   private getElementSelector(element: Element): string {
     const path = [];
@@ -476,7 +495,7 @@ export class IntelligentWebAnalyzer {
     return path.join(' > ');
   }
   private getElementAttributes(element: Element): Record<string, string> {
-    const attrs: Record<string, string> = {}
+    const attrs: Record<string, string> = {};
     Array.from(element.attributes).forEach(attr => {
       attrs[attr.name] = attr.value;
     });
@@ -502,14 +521,17 @@ export class IntelligentWebAnalyzer {
     return 'text';
   }
   private calculateChunkConfidence(elements: WebElement[]): number {
-    const highImportanceCount = elements.filter(item => item.length);
+    if (!elements || elements.length === 0) return 0.5;
+    const highImportanceCount = elements.filter(item => item.metadata.importance === 'high').length;
     const totalElements = elements.length;
     return Math.min(0.9, 0.5 + (highImportanceCount / totalElements) * 0.4);
   }
   private calculateImportanceWeight(chunk: PageChunk): number {
-    const interactionWeight = chunk.elements.reduce((sum, el) => sum + el.metadata.interactionCount, 0) / chunk.elements.length;
-    const confidenceWeight = chunk.confidence;
-    return Math.min(1.0, (interactionWeight * 0.4 + confidenceWeight * 0.6);
+    if (!chunk || !chunk.elements || chunk.elements.length === 0) return chunk?.confidence ?? 0.5;
+    const interactionWeight =
+      chunk.elements.reduce((sum, el) => sum + (el.metadata.interactionCount || 0), 0) / chunk.elements.length;
+    const confidenceWeight = chunk.confidence ?? 0.5;
+    return Math.min(1.0, interactionWeight * 0.4 + confidenceWeight * 0.6);
   }
   private extractSemanticMeaning(chunk: PageChunk): string {
     const content = chunk.content.toLowerCase();
@@ -522,9 +544,12 @@ export class IntelligentWebAnalyzer {
     return 'general_content';
   }
   private analyzeTypingPatterns(text: string): void {
-    const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-    const newWords = words.filter(w => !this.userAnalytics.typingPatterns.commonWords.includes(w);
-    this.userAnalytics.typingPatterns.commonWords.push(...newWords.slice(0, 10);
+    const words = text
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(w => w.length > 2);
+    const newWords = words.filter(w => !this.userAnalytics.typingPatterns.commonWords.includes(w));
+    this.userAnalytics.typingPatterns.commonWords.push(...newWords.slice(0, 10));
     // Detect specialization based on vocabulary
     const legalTerms = ['contract', 'clause', 'plaintiff', 'defendant', 'court', 'legal'];
     const technicalTerms = ['api', 'database', 'function', 'variable', 'system'];
@@ -538,17 +563,15 @@ export class IntelligentWebAnalyzer {
   }
   /**
    * Update user context for better AI personalization
-   */;
-  updateUserContext(context: Partial<UserAnalytics>): void {
+   */ updateUserContext(context: Partial<UserAnalytics>): void {
     this.userAnalytics = {
       ...this.userAnalytics,
-      ...context
-    }
+      ...context,
+    };
   }
   /**
    * Get current analysis state for debugging
-   */;
-  getAnalysisState(): {
+   */ getAnalysisState(): {
     elementsCount: number;
     chunksInQueue: number;
     userAnalytics: UserAnalytics;
@@ -558,15 +581,25 @@ export class IntelligentWebAnalyzer {
       elementsCount: this.pageElements.size,
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
-      isProcessing: this.isProcessing
-    }
+      isProcessing: this.isProcessing,
+    };
   }
   /**
    * Clean up resources
-   */;
-  dispose(): void {
+   */ dispose(): void {
     this.mutationObserver?.disconnect();
-    this.worker?.terminate();
+    // ServiceWorker cannot be terminated directly. Try to unregister the worker script we registered.
+    if (this.worker && 'scriptURL' in this.worker) {
+      // Best-effort unregister for the worker script we registered earlier
+      try {
+        navigator.serviceWorker.getRegistration('/').then(reg => {
+          if (reg) reg.unregister().catch(() => {});
+        });
+      } catch {
+        // ignore
+      }
+    }
+    this.worker = undefined;
     this.pageElements.clear();
     this.processingQueue = [];
   }

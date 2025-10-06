@@ -122,35 +122,34 @@
         ></div>
       </div>
     {/if}
-    <button
-      bind:this={buttonElement}
-      type="button"
-      class="
-				{sizeClasses[size]}
-				{variantClasses[variant]}
-				relative overflow-hidden
-				border-2 rounded-full
-				font-mono font-semibold
-				text-yorha-bg-primary
-				shadow-lg
-				transition-all duration-300 ease-in-out
-				transform-gpu;
-				focus: outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary;
-				active:scale-95
-				group
-				{disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'}
-				{loading ? 'animate-pulse' : ''}
-			"
-      disabled={disabled}
-      onclick={handleClick}
-      onkeydown={handleKeydown}
-      onmouseenter={showTooltipHandler}
-      onmouseleave={hideTooltipHandler}
-      onfocus={showTooltipHandler}
-      onblur={hideTooltipHandler}
-      aria-label={tooltip}
-      in:fly={{ y: 100, duration: 500, easing: quintOut }}
-    >
+      <button type="button"
+        bind:this={buttonElement}
+        class="
+  				{sizeClasses[size]}
+  				{variantClasses[variant]}
+  				relative overflow-hidden
+  				border-2 rounded-full
+  				font-mono font-semibold
+  				text-yorha-bg-primary
+  				shadow-lg
+  				transition-all duration-300 ease-in-out
+  				transform-gpu;
+  				focus: outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary;
+  				active:scale-95
+  				group
+  				{disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'}
+  				{loading ? 'animate-pulse' : ''}
+  			"
+        disabled={disabled}
+        onclick={handleClick}
+        onkeydown={handleKeydown}
+        onmouseenter={showTooltipHandler}
+        onmouseleave={hideTooltipHandler}
+        onfocus={showTooltipHandler}
+        onblur={hideTooltipHandler}
+        aria-label={tooltip}
+        in:fly={{ y: 100, duration: 500, easing: quintOut }}
+      >
       <!-- Background Effects -->
       <div
         class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"

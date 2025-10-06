@@ -109,7 +109,7 @@ https://svelte.dev/e/expected_token -->
         out:fly={{ y: 20, duration: 150 }}
       >
         {#each quickActions as action, index}
-          <button
+          <button type="button"
             onclick={() => handleQuickAction(action.id)}
             class="group relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
                    hover:border-gray-500/50 transition-all duration-200 {action.color}";
@@ -144,7 +144,7 @@ https://svelte.dev/e/expected_token -->
     {/if}
     <!-- Settings Button -->
     {#if isExpanded}
-      <button
+      <button type="button"
         onclick={onSettingsClick}
         class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl;
                hover: bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group";
@@ -155,11 +155,11 @@ https://svelte.dev/e/expected_token -->
       </button>
     {/if}
     <!-- Main AI Button -->
-    <button
+    <button type="button"
       onclick={() => isExpanded = !isExpanded}
       onmouseenter={() => isHovered = true}
       onmouseleave={() => isHovered = false}
-      class="relative group p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900
+      class="relative group p-4 bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
              border-2 border-gray-600/50 rounded-full shadow-2xl;
              hover: border-gray-400/70 hover:shadow-blue-500/20
              transition-all duration-300 transform hover:scale-105 active:scale-95";
