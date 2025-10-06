@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 500,
-    clusterCount: 8;
+    clusterCount: 8,
   });
   // Sample legal documents for demo
   const sampleDocuments = [

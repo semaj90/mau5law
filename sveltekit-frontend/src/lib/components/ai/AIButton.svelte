@@ -145,7 +145,7 @@
       onclick={handleClick}
       onkeydown={handleKeydown}
       onmouseenter={showTooltipHandler}
-      on:mouseleave={hideTooltipHandler}
+      onmouseleave={hideTooltipHandler}
       onfocus={showTooltipHandler}
       onblur={hideTooltipHandler}
       aria-label={tooltip}

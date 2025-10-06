@@ -1,24 +1,37 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+
+// Add explicit types for the polyfill surface and init result
+type PerformanceStats = Record<string, unknown>;
+type WebGPUInitResult = { isWebGPUAvailable?: boolean } | null;
+
+interface WebGPUPolyfill {
+  init?: () => Promise<WebGPUInitResult>;
+  computeSimilarityWebGPU?: (a: number[], b: number[]) => Promise<number> | number;
+  computeSimilarityWebGL?: (a: number[], b: number[]) => Promise<number> | number;
+  computeSimilarityCPU?: (a: number[], b: number[]) => number;
+  computeSimilarity?: (a: number[], b: number[]) => Promise<number> | number;
+  getPerformanceStats?: () => PerformanceStats;
 }
+
 export interface VectorSimilarityRequest {
-  vector1: number[]
-  vector2: number[]
-  mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto'
-  returnDiagnostics?: boolean
+  vector1: number[];
+  vector2: number[];
+  mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto';
+  returnDiagnostics?: boolean;
 }
 export interface VectorSimilarityResponse {
-  similarity: number
-  mode: 'webgpu' | 'webgl' | 'cpu'
-  executionTimeMs: number
+  similarity: number;
+  mode: 'webgpu' | 'webgl' | 'cpu';
+  executionTimeMs: number;
   diagnostics?: {
-    webgpuAvailable: boolean
-    webglAvailable: boolean
-    vectorLength: number
-    performanceStats?: any
-  }
-  error?: string
+    webgpuAvailable: boolean;
+    webglAvailable: boolean;
+    vectorLength: number;
+    performanceStats?: any;
+  };
+  error?: string;
 }
 // GET endpoint for WebGPU capabilities info
 export const GET: RequestHandler = async () => {
@@ -32,125 +45,186 @@ export const GET: RequestHandler = async () => {
         vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
         mode: 'string (optional) - "webgpu", "webgl", "cpu", or "auto" (default)',
-        returnDiagnostics: 'boolean (optional) - Include performance diagnostics'
+        returnDiagnostics: 'boolean (optional) - Include performance diagnostics',
       },
       responseFormat: {
         similarity: 'number - Cosine similarity score (-1 to 1)',
         mode: 'string - Actual computation mode used',
         executionTimeMs: 'number - Execution time in milliseconds',
-        diagnostics: 'object (optional) - Performance and capability info'
+        diagnostics: 'object (optional) - Performance and capability info',
       },
       notes: [
         'Vectors must be the same length',
         'WebGPU provides fastest computation for large vectors (>256 dimensions)',
         'Automatically falls back to WebGL then CPU if WebGPU unavailable',
-        'Returns cosine similarity: 1 = identical, 0 = perpendicular, -1 = opposite'
-      ]
-    }
-    return json(capabilities)
+        'Returns cosine similarity: 1 = identical, 0 = perpendicular, -1 = opposite',
+      ],
+    };
+    return json(capabilities);
   } catch (error: any) {
-    return json({ error: 'Failed to get capabilities' }, { status: 500 })
+    return json({ error: 'Failed to get capabilities' }, { status: 500 });
   }
-}
+};
 // POST endpoint for vector similarity computation
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now()
+  // Use safe performance access
+  const hasPerf = typeof performance !== 'undefined' && typeof performance.now === 'function';
+  const startTime = hasPerf ? performance.now() : Date.now();
+
   try {
-    const body: VectorSimilarityRequest = await request.json()
-    // Validate input
+    const body = (await request.json()) as VectorSimilarityRequest;
+
+    // Basic validation
     if (!Array.isArray(body.vector1) || !Array.isArray(body.vector2)) {
-      return json({
-        error: 'Both vector1 and vector2 must be arrays of numbers'
-      } as VectorSimilarityResponse, { status: 400 })
+      return json({ error: 'Both vector1 and vector2 must be arrays of numbers' } as VectorSimilarityResponse, {
+        status: 400,
+      });
     }
     if (body.vector1.length !== body.vector2.length) {
-      return json({
-        error: `Vector length mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions`
-      } as VectorSimilarityResponse, { status: 400 })
+      return json(
+        {
+          error: `Vector length mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions`,
+        } as VectorSimilarityResponse,
+        { status: 400 }
+      );
     }
     if (body.vector1.length === 0) {
-      return json({
-        error: 'Vectors cannot be empty'
-      } as VectorSimilarityResponse, { status: 400 })
+      return json({ error: 'Vectors cannot be empty' } as VectorSimilarityResponse, { status: 400 });
     }
-    // Validate that all elements are numbers
-    const isValidVector = (vec: any[]): vec is number[] => {
-      return vec.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v)
-    }
-    if (!isValidVector(body.vector1) || !isValidVector(body.vector2)) {
-      return json({
-        error: 'All vector elements must be finite numbers'
-      } as VectorSimilarityResponse, { status: 400 })
-    }
-    const mode = body.mode || 'auto'
-    let similarity: number
-    let actualMode: 'webgpu' | 'webgl' | 'cpu'
-    let initResult = false
-    try {
-      // Initialize WebGPU polyfill if not already done
-      initResult = await webgpuPolyfill.initialize()
-      if (mode === 'webgpu' || mode === 'auto') {
-        // Try WebGPU first
-        try {
-          similarity = await webgpuPolyfill.computeSimilarity(body.vector1, body.vector2)
-          actualMode = 'webgpu'
-        } catch (webgpuError) {
-          if (mode === 'webgpu') {
-            throw webgpuError; // Explicit WebGPU mode should fail if WebGPU fails
-          }
-          // Fall back for auto mode
-          similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
-          actualMode = 'cpu'
-        }
-      } else if (mode === 'webgl') {
-        try {
-          similarity = await (webgpuPolyfill as any).computeSimilarityWebGL(body.vector1, body.vector2)
-          actualMode = 'webgl'
-        } catch (webglError) {
-          // Fall back to CPU for WebGL mode
-          similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
-          actualMode = 'cpu'
-        }
-      } else {
-        // CPU mode
-        similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
-        actualMode = 'cpu'
+    // Ensure elements are numbers
+    for (let i = 0; i < body.vector1.length; i++) {
+      if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number') {
+        return json({ error: 'All vector elements must be numbers' } as VectorSimilarityResponse, { status: 400 });
       }
-    } catch (error: any) {
-      // Ultimate fallback to CPU
-      console.warn('Vector similarity computation failed, falling back to CPU:', error)
-      similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
-      actualMode = 'cpu'
     }
-    const executionTime = performance.now() - startTime
+
+    const mode = body.mode ?? 'auto';
+    let actualMode: VectorSimilarityResponse['mode'] = 'cpu';
+    let similarity = 0;
+    let initResult: WebGPUInitResult = null;
+
+    // Narrow the imported polyfill to a typed variable
+    const polyfill = webgpuPolyfill as unknown as WebGPUPolyfill;
+
+    // helper to resolve value that may be sync or a Promise<number>
+    async function resolveNumberOrPromise(m: number | Promise<number>): Promise<number> {
+      // detect Promise by duck-typing .then
+      if (m && typeof (m as Promise<number>).then === 'function') {
+        return await (m as Promise<number>);
+      }
+      return m as number;
+    }
+
+    try {
+      // Try WebGPU for 'webgpu' or 'auto'
+      if (mode === 'webgpu' || mode === 'auto') {
+        try {
+          if (typeof polyfill.init === 'function') {
+            initResult = await polyfill.init();
+          }
+          const webgpuAvailable =
+            !!(initResult && initResult.isWebGPUAvailable) || (typeof navigator !== 'undefined' && 'gpu' in navigator);
+
+          if (webgpuAvailable) {
+            if (typeof polyfill.computeSimilarityWebGPU === 'function') {
+              similarity = await resolveNumberOrPromise(polyfill.computeSimilarityWebGPU(body.vector1, body.vector2));
+            } else if (typeof polyfill.computeSimilarity === 'function') {
+              similarity = await resolveNumberOrPromise(polyfill.computeSimilarity(body.vector1, body.vector2));
+            } else {
+              throw new Error('WebGPU compute function not available');
+            }
+            actualMode = 'webgpu';
+          } else if (mode === 'webgpu') {
+            // explicit failure if user requested webgpu only
+            throw new Error('WebGPU not available');
+          }
+        } catch (webgpuErr: unknown) {
+          // For auto, fall through to try webgl then CPU; for explicit webgpu, rethrow
+          if (mode === 'webgpu') throw webgpuErr;
+        }
+      }
+
+      // If still not computed and either mode is 'webgl' or auto fallback, try WebGL
+      if (actualMode !== 'webgpu' && (mode === 'webgl' || mode === 'auto')) {
+        try {
+          if (typeof polyfill.computeSimilarityWebGL === 'function') {
+            similarity = await resolveNumberOrPromise(polyfill.computeSimilarityWebGL(body.vector1, body.vector2));
+            actualMode = 'webgl';
+          } else {
+            throw new Error('WebGL compute function not available');
+          }
+        } catch (webglErr: unknown) {
+          if (mode === 'webgl') throw webglErr;
+        }
+      }
+
+      // Final fallback: CPU
+      if (actualMode !== 'webgpu' && actualMode !== 'webgl') {
+        if (typeof polyfill.computeSimilarityCPU === 'function') {
+          similarity = polyfill.computeSimilarityCPU(body.vector1, body.vector2);
+        } else if (typeof polyfill.computeSimilarity === 'function') {
+          similarity = await resolveNumberOrPromise(polyfill.computeSimilarity(body.vector1, body.vector2));
+        } else {
+          // Basic local CPU implementation (cosine similarity)
+          const dot = body.vector1.reduce((sum, v, i) => sum + v * body.vector2[i], 0);
+          const normA = Math.sqrt(body.vector1.reduce((s, v) => s + v * v, 0));
+          const normB = Math.sqrt(body.vector2.reduce((s, v) => s + v * v, 0));
+          similarity = normA === 0 || normB === 0 ? 0 : dot / (normA * normB);
+        }
+        actualMode = 'cpu';
+      }
+    } catch (computeError: unknown) {
+      // Ultimate fallback to CPU if anything unexpected happens
+      try {
+        if (typeof polyfill.computeSimilarityCPU === 'function') {
+          similarity = polyfill.computeSimilarityCPU(body.vector1, body.vector2);
+        } else {
+          const dot = body.vector1.reduce((sum, v, i) => sum + v * body.vector2[i], 0);
+          const normA = Math.sqrt(body.vector1.reduce((s, v) => s + v * v, 0));
+          const normB = Math.sqrt(body.vector2.reduce((s, v) => s + v * v, 0));
+          similarity = normA === 0 || normB === 0 ? 0 : dot / (normA * normB);
+        }
+        actualMode = 'cpu';
+      } catch {
+        // If even CPU fallback fails, rethrow original compute error
+        throw computeError;
+      }
+    }
+
+    const executionTime = hasPerf ? performance.now() - startTime : Date.now() - startTime;
     const response: VectorSimilarityResponse = {
       similarity,
-      mode: actualMode
-      executionTimeMs: executionTime
-    }
-    // Add diagnostics if requested
+      mode: actualMode,
+      executionTimeMs: executionTime,
+    };
+
+    // Diagnostics (best-effort)
     if (body.returnDiagnostics) {
-      const stats = webgpuPolyfill.getPerformanceStats()
+      const stats: PerformanceStats =
+        typeof polyfill.getPerformanceStats === 'function' ? (polyfill.getPerformanceStats() ?? {}) : {};
+      const hasWebGLFallback =
+        typeof stats === 'object' && stats !== null && Boolean((stats as Record<string, unknown>)['hasWebGLFallback']);
       response.diagnostics = {
-        webgpuAvailable: initResult && stats.isWebGPUAvailable,
-        webglAvailable: stats.hasWebGLFallback,
+        webgpuAvailable: Boolean(initResult?.isWebGPUAvailable),
+        webglAvailable: hasWebGLFallback,
         vectorLength: body.vector1.length,
-        performanceStats: {
-          operationsCompleted: stats.operationsCompleted,
-          averageProcessingTime: stats.averageProcessingTime,
-          webgpuPercentage: stats.webgpuPercentage,
-          webglPercentage: stats.webglPercentage
-        }
-      }
+        performanceStats: stats,
+      };
     }
-    return json(response)
-  } catch (error: any) {
-    const executionTime = performance.now() - startTime
-    return json({
-      similarity: 0,
-      mode: 'cpu' as const,
-      executionTimeMs: executionTime
-      error: `Vector similarity computation failed: ${error.message || error}`
-    } as VectorSimilarityResponse, { status: 500 })
+
+    return json(response);
+  } catch (error: unknown) {
+    const hasPerf = typeof performance !== 'undefined' && typeof performance.now === 'function';
+    const executionTime = hasPerf ? performance.now() - startTime : Date.now() - startTime;
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return json(
+      {
+        similarity: 0,
+        mode: 'cpu' as const,
+        executionTimeMs: executionTime,
+        error: `Vector similarity computation failed: ${errMsg}`,
+      } as VectorSimilarityResponse,
+      { status: 500 }
+    );
   }
-}
+};

@@ -3,9 +3,8 @@
  * Combines Redis caching with WebGPU compute shaders and SIMD JSON parsing
  * for ultimate performance in legal AI processing
  */
-import { WebGPUSOMCache, type IntelligentTodo, type NPMError } from '$lib/webgpu/som-webgpu-cache.js';
+import { WebGPUSOMCache, type IntelligentTodo } from '$lib/webgpu/som-webgpu-cache.js';
 import { simdJSONClient, parseJSONOffThread } from '$lib/simd/simd-json-worker-client.js';
-import { readBodyFastWithMetrics, getSIMDStatus } from '$lib/simd/simd-json-integration.js';
 import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
 // Redis connection configuration
 const REDIS_CONFIG = {
@@ -13,8 +12,8 @@ const REDIS_CONFIG = {
   port: 6379,
   db: 0,
   keyPrefix: 'legal_ai:',
-  defaultTTL: 3600 // 1 hour
-}
+  defaultTTL: 3600, // 1 hour
+};
 // Cache key patterns for different data types
 const CACHE_PATTERNS = {
   WEBGPU_COMPUTATION: 'webgpu:compute:{operation}:{hash}',
@@ -22,7 +21,7 @@ const CACHE_PATTERNS = {
   LEGAL_ANALYSIS: 'legal:analysis:{doc_hash}:{pipeline}',
   VECTOR_SIMILARITY: 'vector:sim:{query_hash}:{candidates_hash}',
   SOM_INTELLIGENCE: 'som:intel:{error_hash}:{timestamp}',
-  CROSS_USER_CACHE: 'global:{operation}:{content_hash}'
+  CROSS_USER_CACHE: 'global:{operation}:{content_hash}',
 } as const;
 interface RedisWebGPUConfig {
   enableWebGPU: boolean;
@@ -39,52 +38,154 @@ interface ProcessingMetrics {
   totalProcessingTime: number;
   cacheEfficiency: number;
 }
+
+// --- New Interfaces for Type Safety ---
+interface LegalDocumentData {
+  content: string;
+  [key: string]: unknown; // Allow other properties, but content is required
+}
+
+interface EntityResult {
+  entity: string;
+  confidence: number;
+}
+
+interface SimilarityResult {
+  id: string;
+  similarity: number;
+}
+
+interface RiskAssessmentResult {
+  risk_score: number;
+  factors: string[];
+}
+
+interface LegalDocumentAnalysis {
+  entities: EntityResult[];
+  sentiment: number;
+  embeddings: number[];
+  similarity: SimilarityResult[];
+  risk_assessment: RiskAssessmentResult;
+  webgpu_accelerated?: boolean;
+  cpu_processed?: boolean;
+  processing_time: number;
+}
+
+interface LegalDocumentProcessingResult {
+  analysis: LegalDocumentAnalysis;
+  processingPath: string[];
+  performance: {
+    totalTime: number;
+    cacheHit: boolean;
+    source: 'redis' | 'webgpu' | 'cpu';
+  };
+}
+
+interface VectorSimilarityResult {
+  similarities: number[];
+  processingPath: string[];
+  performance: {
+    totalTime: number;
+    cacheHit: boolean;
+    source: 'redis' | 'webgpu' | 'cpu';
+  };
+}
+
+interface IntelligentTodosResult {
+  todos: IntelligentTodo[];
+  processingPath: string[];
+  performance: {
+    totalTime: number;
+    cacheHit: boolean;
+    source: 'redis' | 'webgpu_som';
+  };
+}
+
+// Batch operation types
+interface LegalDocumentBatchOp {
+  type: 'legal_document';
+  data: string;
+  options?: { useCache?: boolean; pipeline?: JobType[]; priority?: number };
+  index: number;
+}
+
+interface VectorSimilarityBatchOp {
+  type: 'vector_similarity';
+  data: { query: number[]; candidates: number[][] };
+  options?: { algorithm?: 'cosine' | 'euclidean' | 'dot'; threshold?: number; useCache?: boolean };
+  index: number;
+}
+
+interface IntelligentTodosBatchOp {
+  type: 'intelligent_todos';
+  data: string;
+  options?: { useCache?: boolean; webgpuRanking?: boolean };
+  index: number;
+}
+
+type BatchOperation = LegalDocumentBatchOp | VectorSimilarityBatchOp | IntelligentTodosBatchOp;
+
+interface WarmVectorSimilarityPayload {
+  vectors: number[][];
+}
+
+// --- New Interfaces for Type Safety ---
+interface WarmLegalDocumentCachePayload {
+  documentType?: string;
+  content: string;
+}
+
+interface WarmSearchResultsPayload {
+  queries: Array<string | Record<string, unknown>>;
+  // optional metadata for warm-up runs
+  ttl?: number;
+  priority?: number;
+}
+// --- End New Interfaces ---
+
 export class RedisWebGPUSIMDIntegration {
   private webgpuCache: WebGPUSOMCache;
-  private redisClient: any = null; // Would be actual Redis client
+  private redisClient: unknown = null; // Changed from any to unknown
   private config: RedisWebGPUConfig;
   private metrics: ProcessingMetrics;
+  private cache = new Map<string, { value: unknown; expiry: number }>();
   constructor(config: Partial<RedisWebGPUConfig> = {}) {
     this.config = {
-      enableWebGPU: true
-      enableSIMD: true
-      enableCrossUserSharing: true
+      enableWebGPU: true,
+      enableSIMD: true,
+      enableCrossUserSharing: true,
       cacheStrategy: 'balanced',
       maxCacheSize: 1000, // 1GB
       defaultTTL: 3600, // 1 hour
-      ...config
-    }
+      ...config,
+    };
     this.metrics = {
       redisHits: 0,
       webgpuComputations: 0,
       simdParsing: 0,
       totalProcessingTime: 0,
-      cacheEfficiency: 0
-    }
+      cacheEfficiency: 0,
+    };
     this.webgpuCache = new WebGPUSOMCache();
   }
   /**
    * Initialize all systems: Redis, WebGPU, and SIMD
-   */;
+   */
   async initialize(): Promise<boolean> {
     console.log('🚀 Initializing Redis + WebGPU + SIMD Integration...');
     const results = await Promise.allSettled([
       this.initializeRedis(),
       this.webgpuCache.initializeWebGPU(),
       this.webgpuCache.initializeIndexDB(),
-      simdJSONClient.initialize()
+      simdJSONClient.initialize(),
     ]);
-    const [redisOK, webgpuOK, indexdbOK, simdOK] = results.map((r) =>
-      r.status === 'fulfilled' ? r.value: false
-    );
-    console.log(
-      `✅ Integration Status: Redis(${redisOK}) WebGPU(${webgpuOK}) IndexDB(${indexdbOK}) SIMD(${simdOK})`
-    );
+    const [redisOK, webgpuOK, indexdbOK, simdOK] = results.map(r => (r.status === 'fulfilled' ? r.value : false));
+    console.log(`✅ Integration Status: Redis(${redisOK}) WebGPU(${webgpuOK}) IndexDB(${indexdbOK}) SIMD(${simdOK})`);
     return redisOK || webgpuOK || simdOK; // At least one system must work
   }
   /**
    * Initialize Redis connection (mocked for now)
-   */;
+   */
   private async initializeRedis(): Promise<boolean> {
     try {
       // In production, use actual Redis client like ioredis
@@ -99,50 +200,51 @@ export class RedisWebGPUSIMDIntegration {
    * Process legal document with full optimization stack
    */
   async processLegalDocument(
-    documentJson: string
+    documentJson: string,
     options: {
       useCache?: boolean;
       pipeline?: JobType[];
       priority?: number;
     } = {}
-  ): Promise<any> {
+  ): Promise<LegalDocumentProcessingResult> {
+    // Changed return type
     const startTime = performance.now();
     const processingPath: string[] = [];
     try {
       // Step 1: Parse JSON with SIMD acceleration
-      let documentData: any;
+      let documentData: LegalDocumentData; // Changed type from any
       const docHash = await this.generateContentHash(documentJson);
       if (this.config.enableSIMD) {
-        documentData = await parseJSONOffThread(documentJson);
+        documentData = (await parseJSONOffThread(documentJson)) as LegalDocumentData; // Cast to LegalDocumentData
         processingPath.push('SIMD_JSON_PARSING');
         this.metrics.simdParsing++;
       } else {
-        documentData = JSON.parse(documentJson);
+        documentData = JSON.parse(documentJson) as LegalDocumentData; // Cast to LegalDocumentData
         processingPath.push('STANDARD_JSON_PARSING');
       }
       // Step 2: Check Redis cache for existing analysis
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.LEGAL_ANALYSIS, {
-        doc_hash: docHash
-        pipeline: (options.pipeline || []).join('|')
+        doc_hash: docHash,
+        pipeline: (options.pipeline || []).join('|'),
       });
       if (options.useCache !== false) {
-        const cachedResult = await this.getFromRedis(cacheKey);
+        const cachedResult = await this.getFromRedis<LegalDocumentAnalysis>(cacheKey); // Added generic type
         if (cachedResult) {
           processingPath.push('REDIS_CACHE_HIT');
           this.metrics.redisHits++;
           return {
-            analysis: cachedResult
+            analysis: cachedResult,
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true
-              source: 'redis'
-            }
-          }
+              cacheHit: true,
+              source: 'redis',
+            },
+          };
         }
       }
       // Step 3: Process with WebGPU if available
-      let analysis: any;
+      let analysis: LegalDocumentAnalysis; // Changed type from any
       if (this.config.enableWebGPU && this.shouldUseWebGPU(documentData)) {
         analysis = await this.processWithWebGPU(documentData, options.pipeline || []);
         processingPath.push('WEBGPU_COMPUTE');
@@ -159,7 +261,7 @@ export class RedisWebGPUSIMDIntegration {
         if (this.config.enableCrossUserSharing && !this.isSensitiveContent(documentData)) {
           const globalKey = this.buildCacheKey(CACHE_PATTERNS.CROSS_USER_CACHE, {
             operation: 'legal_analysis',
-            content_hash: docHash
+            content_hash: docHash,
           });
           await this.setInRedis(globalKey, analysis, this.config.defaultTTL * 24); // 24h TTL
           processingPath.push('GLOBAL_CACHED');
@@ -172,10 +274,10 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime,
-          cacheHit: false
-          source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu'
-        }
-      }
+          cacheHit: false,
+          source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu',
+        },
+      };
     } catch (error) {
       console.error('❌ Legal document processing failed:', error);
       throw error;
@@ -185,58 +287,51 @@ export class RedisWebGPUSIMDIntegration {
    * Process vector similarity with WebGPU + Redis caching
    */
   async processVectorSimilarity(
-    queryVector: number[]
-    candidateVectors: number[][]
+    queryVector: number[],
+    candidateVectors: number[][],
     options: {
       algorithm?: 'cosine' | 'euclidean' | 'dot';
       threshold?: number;
       useCache?: boolean;
     } = {}
-  ): Promise<any> {
+  ): Promise<VectorSimilarityResult> {
+    // Changed return type
     const startTime = performance.now();
     const processingPath: string[] = [];
     try {
       // Generate cache keys
       const queryHash = await this.generateArrayHash(queryVector);
-      const candidatesHash = await this.generateArrayHash(candidateVectors.flat();
+      const candidatesHash = await this.generateArrayHash(candidateVectors.flat());
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.VECTOR_SIMILARITY, {
-        query_hash: queryHash
-        candidates_hash: candidatesHash
+        query_hash: queryHash,
+        candidates_hash: candidatesHash,
       });
       // Check Redis cache first
       if (options.useCache !== false) {
-        const cachedSimilarities = await this.getFromRedis(cacheKey);
+        const cachedSimilarities = await this.getFromRedis<number[]>(cacheKey); // Added generic type
         if (cachedSimilarities) {
           processingPath.push('REDIS_CACHE_HIT');
           this.metrics.redisHits++;
           return {
-            similarities: cachedSimilarities
+            similarities: cachedSimilarities,
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true
-              source: 'redis'
-            }
-          }
+              cacheHit: true,
+              source: 'redis',
+            },
+          };
         }
       }
       // Process with WebGPU similarity shader
       let similarities: number[];
       if (this.config.enableWebGPU && candidateVectors.length > 10) {
         // WebGPU worth it for >10 vectors
-        similarities = await this.computeSimilarityWebGPU(
-          queryVector,
-          candidateVectors,
-          options.algorithm
-        );
+        similarities = await this.computeSimilarityWebGPU(queryVector, candidateVectors, options.algorithm);
         processingPath.push('WEBGPU_SIMILARITY');
         this.metrics.webgpuComputations++;
       } else {
-        similarities = await this.computeSimilarityCPU(
-          queryVector,
-          candidateVectors,
-          options.algorithm
-        );
+        similarities = await this.computeSimilarityCPU(queryVector, candidateVectors, options.algorithm);
         processingPath.push('CPU_SIMILARITY');
       }
       // Cache results
@@ -249,10 +344,10 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime: performance.now() - startTime,
-          cacheHit: false
-          source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu'
-        }
-      }
+          cacheHit: false,
+          source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu',
+        },
+      };
     } catch (error) {
       console.error('❌ Vector similarity processing failed:', error);
       throw error;
@@ -262,36 +357,37 @@ export class RedisWebGPUSIMDIntegration {
    * Process intelligent todos with SOM analysis
    */
   async processIntelligentTodos(
-    npmOutput: string
+    npmOutput: string,
     options: {
       useCache?: boolean;
       webgpuRanking?: boolean;
     } = {}
-  ): Promise<any> {
+  ): Promise<IntelligentTodosResult> {
+    // Changed return type
     const startTime = performance.now();
     const processingPath: string[] = [];
     try {
       const errorHash = await this.generateContentHash(npmOutput);
       const timestamp = Math.floor(Date.now() / (5 * 60 * 1000)) * (5 * 60 * 1000); // 5-minute buckets
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.SOM_INTELLIGENCE, {
-        error_hash: errorHash
-        timestamp: timestamp.toString()
+        error_hash: errorHash,
+        timestamp: timestamp.toString(),
       });
       // Check cache
       if (options.useCache !== false) {
-        const cachedTodos = await this.getFromRedis(cacheKey);
+        const cachedTodos = await this.getFromRedis<IntelligentTodo[]>(cacheKey); // Added generic type
         if (cachedTodos) {
           processingPath.push('REDIS_CACHE_HIT');
           this.metrics.redisHits++;
           return {
-            todos: cachedTodos
+            todos: cachedTodos,
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true
-              source: 'redis'
-            }
-          }
+              cacheHit: true,
+              source: 'redis',
+            },
+          };
         }
       }
       // Process with WebGPU SOM cache
@@ -308,10 +404,10 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime: performance.now() - startTime,
-          cacheHit: false
-          source: 'webgpu_som'
-        }
-      }
+          cacheHit: false,
+          source: 'webgpu_som',
+        },
+      };
     } catch (error) {
       console.error('❌ Intelligent todos processing failed:', error);
       throw error;
@@ -321,39 +417,58 @@ export class RedisWebGPUSIMDIntegration {
    * Batch process multiple operations with intelligent caching
    */
   async batchProcess(
-    operations: Array<;
-  ): Promise<any> {
+    operations: BatchOperation[] // Changed type from Array<any>
+  ): Promise<{
+    results: (LegalDocumentProcessingResult | VectorSimilarityResult | IntelligentTodosResult)[];
+    performance: {
+      totalTime: number;
+      batchSize: number;
+      averageTimePerOp: number;
+    };
+    cacheStats: {
+      redisHits: number;
+      webgpuComputations: number;
+      simdParsing: number;
+    };
+  }> {
+    // Changed return type
     const startTime = performance.now();
-    const initialMetrics = { ...this.metrics }
+    const initialMetrics = { ...this.metrics };
     // Group operations by type for optimization
-    const groupedOps = operations.reduce((groups, op, index) => {
-      if (!groups[op.type]) groups[op.type] = [];
-      groups[op.type].push({ ...op, index });
-      return groups;
-    }, {} as any);
-    const results: any[] = new Array(operations.length);
+    const groupedOps = operations.reduce(
+      (groups, op, index) => {
+        if (!groups[op.type]) groups[op.type] = [];
+        groups[op.type].push({ ...op, index });
+        return groups;
+      },
+      {} as Record<string, BatchOperation[]>
+    ); // Changed type from any
+    const results: (LegalDocumentProcessingResult | VectorSimilarityResult | IntelligentTodosResult)[] = new Array(
+      operations.length
+    ); // Changed type
     // Process each type optimally
-    await Promise.all(Object.entries(groupedOps).map(async ([type, ops]: [string, any]) => {
+    await Promise.all(
+      Object.entries(groupedOps).map(async ([type, ops]) => {
+        // Removed generic type from ops
         switch (type) {
           case 'legal_document':
-            for (const op of ops) {
-              const result = await this.processLegalDocument(op.data, op.options));
+            for (const op of ops as LegalDocumentBatchOp[]) {
+              // Cast to specific batch op type
+              const result = await this.processLegalDocument(op.data, op.options);
               results[op.index] = result;
             }
             break;
           case 'vector_similarity':
             // Can potentially batch WebGPU similarity computations
-            for (const op of ops) {
-              const result = await this.processVectorSimilarity(
-                op.data.query,
-                op.data.candidates,
-                op.options
-              );
+            for (const op of ops as VectorSimilarityBatchOp[]) {
+              // Cast to specific batch op type
+              const result = await this.processVectorSimilarity(op.data.query, op.data.candidates, op.options);
               results[op.index] = result;
             }
             break;
           case 'intelligent_todos':
-            for (const op of ops) {
+            for (const op of ops as IntelligentTodosBatchOp[]) {
+              // Cast to specific batch op type
               const result = await this.processIntelligentTodos(op.data, op.options);
               results[op.index] = result;
             }
@@ -361,26 +476,30 @@ export class RedisWebGPUSIMDIntegration {
         }
       })
     );
-    const finalMetrics = { ...this.metrics }
+    const finalMetrics = { ...this.metrics };
     const deltaMetrics = {
       redisHits: finalMetrics.redisHits - initialMetrics.redisHits,
       webgpuComputations: finalMetrics.webgpuComputations - initialMetrics.webgpuComputations,
-      simdParsing: finalMetrics.simdParsing - initialMetrics.simdParsing
-    }
+      simdParsing: finalMetrics.simdParsing - initialMetrics.simdParsing,
+    };
     return {
       results,
       performance: {
         totalTime: performance.now() - startTime,
         batchSize: operations.length,
-        averageTimePerOp: (performance.now() - startTime) / operations.length
+        averageTimePerOp: (performance.now() - startTime) / operations.length,
       },
-      cacheStats: deltaMetrics
-    }
+      cacheStats: deltaMetrics,
+    };
   }
   /**
    * WebGPU processing for legal documents
-   */;
-  private async processWithWebGPU(documentData: any, pipeline: JobType[]): Promise<any> {
+   */
+  private async processWithWebGPU(
+    documentData: LegalDocumentData,
+    _pipeline: JobType[] // Renamed to _pipeline
+  ): Promise<LegalDocumentAnalysis> {
+    // Changed types
     // Use WebGPU compute shaders for intensive legal analysis
     const analysis = {
       entities: await this.extractEntitiesWebGPU(documentData.content),
@@ -388,15 +507,16 @@ export class RedisWebGPUSIMDIntegration {
       embeddings: await this.generateEmbeddingsWebGPU(documentData.content),
       similarity: await this.findSimilarDocumentsWebGPU(documentData),
       risk_assessment: await this.assessRiskWebGPU(documentData),
-      webgpu_accelerated: true
-      processing_time: performance.now()
-    }
+      webgpu_accelerated: true,
+      processing_time: performance.now(),
+    };
     return analysis;
   }
   /**
    * CPU fallback processing
-   */;
-  private async processWithCPU(documentData: any, pipeline: JobType[]): Promise<any> {
+   */
+  private async processWithCPU(documentData: LegalDocumentData, _pipeline: JobType[]): Promise<LegalDocumentAnalysis> {
+    // Changed types
     // Standard CPU processing
     return {
       entities: this.extractEntitiesCPU(documentData.content),
@@ -404,31 +524,31 @@ export class RedisWebGPUSIMDIntegration {
       embeddings: this.generateEmbeddingsCPU(documentData.content),
       similarity: await this.findSimilarDocumentsCPU(documentData),
       risk_assessment: this.assessRiskCPU(documentData),
-      cpu_processed: true
-      processing_time: performance.now()
-    }
+      cpu_processed: true,
+      processing_time: performance.now(),
+    };
   }
   /**
    * WebGPU similarity computation using existing shader
    */
   private async computeSimilarityWebGPU(
-    queryVector: number[]
-    candidateVectors: number[][]
-    algorithm?: string;
+    queryVector: number[],
+    candidateVectors: number[][],
+    _algorithm?: string // Marked as unused
   ): Promise<number[]> {
     // This would use the existing WebGPU similarity shader from som-webgpu-cache.ts
     // Implementation would utilize the existing similarityShader
-    return candidateVectors.map(() => Math.random(); // Mock for now
+    return candidateVectors.map(() => Math.random());
   }
   /**
    * CPU similarity computation fallback
    */
   private async computeSimilarityCPU(
-    queryVector: number[]
-    candidateVectors: number[][]
-    algorithm?: string;
+    queryVector: number[],
+    candidateVectors: number[][],
+    _algorithm?: string // Marked as unused
   ): Promise<number[]> {
-    return candidateVectors.map((candidate) => {
+    return candidateVectors.map(candidate => {
       // Simple cosine similarity
       let dotProduct = 0;
       let queryNorm = 0;
@@ -438,67 +558,79 @@ export class RedisWebGPUSIMDIntegration {
         queryNorm += queryVector[i] * queryVector[i];
         candidateNorm += candidate[i] * candidate[i];
       }
-      return dotProduct / (Math.sqrt(queryNorm) * Math.sqrt(candidateNorm);
+      return dotProduct / (Math.sqrt(queryNorm) * Math.sqrt(candidateNorm));
     });
   }
   /**
    * Utility functions for WebGPU processing (mocked)
-   */;
-  private async extractEntitiesWebGPU(content: string): Promise<any[]> {
+   */
+  private async extractEntitiesWebGPU(_content: string): Promise<EntityResult[]> {
+    // Marked as unused, changed return type
     // Would use WebGPU compute shader for entity extraction
     return [{ entity: 'mock_entity', confidence: 0.95 }];
   }
-  private async analyzeSentimentWebGPU(content: string): Promise<number> {
+  private async analyzeSentimentWebGPU(_content: string): Promise<number> {
+    // Marked as unused
     // WebGPU sentiment analysis
     return Math.random() * 2 - 1; // -1 to 1
   }
-  private async generateEmbeddingsWebGPU(content: string): Promise<number[]> {
+  private async generateEmbeddingsWebGPU(_content: string): Promise<number[]> {
+    // Marked as unused
     // WebGPU embedding generation
-    return Array.from({ length: 768 }, () => Math.random();
+    return Array.from({ length: 768 }, () => Math.random());
   }
-  private async findSimilarDocumentsWebGPU(documentData: any): Promise<any[]> {
+  private async findSimilarDocumentsWebGPU(_documentData: LegalDocumentData): Promise<SimilarityResult[]> {
+    // Marked as unused, changed type
     // WebGPU-accelerated document similarity search
     return [{ id: 'similar_doc_1', similarity: 0.85 }];
   }
-  private async assessRiskWebGPU(documentData: any): Promise<any> {
+  private async assessRiskWebGPU(_documentData: LegalDocumentData): Promise<RiskAssessmentResult> {
+    // Marked as unused, changed type
     // WebGPU risk assessment
-    return { risk_score: Math.random(), factors: ['example_factor'] }
+    return { risk_score: Math.random(), factors: ['example_factor'] };
   }
   /**
    * CPU fallback implementations
-   */;
-  private extractEntitiesCPU(content: string): any[] {
+   */
+  private extractEntitiesCPU(_content: string): EntityResult[] {
+    // Marked as unused, changed return type
     return [{ entity: 'cpu_entity', confidence: 0.85 }];
   }
-  private analyzeSentimentCPU(content: string): number {
+  private analyzeSentimentCPU(_content: string): number {
+    // Marked as unused
     return Math.random() * 2 - 1;
   }
-  private generateEmbeddingsCPU(content: string): number[] {
-    return Array.from({ length: 768 }, () => Math.random();
+  private generateEmbeddingsCPU(_content: string): number[] {
+    // Marked as unused
+    return Array.from({ length: 768 }, () => Math.random());
   }
-  private async findSimilarDocumentsCPU(documentData: any): Promise<any[]> {
+  private async findSimilarDocumentsCPU(_documentData: LegalDocumentData): Promise<SimilarityResult[]> {
+    // Marked as unused, changed type
     return [{ id: 'cpu_similar_doc_1', similarity: 0.8 }];
   }
-  private assessRiskCPU(documentData: any): any {
-    return { risk_score: Math.random(), factors: ['cpu_factor'] }
+  private assessRiskCPU(_documentData: LegalDocumentData): RiskAssessmentResult {
+    // Marked as unused, changed type
+    return { risk_score: Math.random(), factors: ['cpu_factor'] };
   }
   /**
    * Utility functions
-   */;
-  private shouldUseWebGPU(documentData: any): boolean {
+   */
+  private shouldUseWebGPU(documentData: LegalDocumentData): boolean {
+    // Changed type
     // Determine if document is complex enough to benefit from WebGPU
     const content = documentData.content || '';
     return content.length > 10000; // Use WebGPU for documents >10KB
   }
-  private isSensitiveContent(documentData: any): boolean {
+  private isSensitiveContent(documentData: LegalDocumentData): boolean {
+    // Changed type
     // Check if content contains sensitive information
     const sensitiveKeywords = ['confidential', 'private', 'ssn', 'social security'];
     const content = (documentData.content || '').toLowerCase();
-    return sensitiveKeywords.some((keyword) => content.includes(keyword);
+    return sensitiveKeywords.some(keyword => content.includes(keyword));
   }
   /**
    * Cache management functions
-   */;
+   */
   private buildCacheKey(pattern: string, params: Record<string, string>): string {
     let key = pattern;
     Object.entries(params).forEach(([param, value]) => {
@@ -510,9 +642,9 @@ export class RedisWebGPUSIMDIntegration {
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray
-      .map((b) => b.toString(16).padStart(2, '0')
+      .map(b => b.toString(16).padStart(2, '0'))
       .join('')
       .substring(0, 16);
   }
@@ -522,45 +654,80 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Redis operations (mocked for now)
-   */;
-  private async getFromRedis(_key: string): Promise<any> {
+   */
+  private async getFromRedis<T>(_key: string): Promise<T | null> {
+    // Added generic type, changed return type
     // Mock Redis get - would use actual Redis client
     return null; // Simulate cache miss for demo
   }
-  private async setInRedis(_key: string, value: any, ttl: number): Promise<void> {
+  private async setInRedis<T>(_key: string, value: T, ttl: number): Promise<void> {
+    // Added generic type
     // Mock Redis set - would use actual Redis client
-    console.log(`📦 Redis SET: ${key} (TTL: ${ttl}s)`);
-  }
-  /**
-   * Public method for CHR-ROM cache integration
-   */;
-  async getCachedResult(_key: string): Promise<any> {
-    return await this.getFromRedis(key);
+    console.log(`📦 Redis SET: ${_key} (TTL: ${ttl}s)`);
   }
   /**
    * Public method for CHR-ROM cache integration
    */
-  async cacheResult(_key: string
-    value: any
+  async getCachedResult<T>(_key: string): Promise<T | null> {
+    // Added generic type, changed return type
+    return await this.getFromRedis<T>(_key);
+  }
+  /**
+   * Public method for CHR-ROM cache integration
+   */
+  async cacheResult<T>( // Added generic type
+    _key: string,
+    value: T, // Changed type from any
     options: { ttl?: number; priority?: number } = {}
   ): Promise<void> {
     const ttl = options.ttl || this.config.defaultTTL;
-    await this.setInRedis(key, value, ttl);
+    await this.setInRedis(_key, value, ttl);
+  }
+  /**
+   * Simulates setting a value in Redis cache with an expiry.
+   * @param key The cache key.
+   * @param value The value to store.
+   * @param expirySeconds The time-to-live for the cache entry in seconds.
+   */
+  async set<T>(key: string, value: T, expirySeconds: number): Promise<void> {
+    const expiry = Date.now() + expirySeconds * 1000;
+    this.cache.set(key, { value, expiry });
+    // In a real application, this would interact with a Redis client.
+    console.log(`[SIMULATED CACHE] SET: ${key} (expires in ${expirySeconds}s)`);
+  }
+
+  /**
+   * Simulates getting a value from Redis cache.
+   * @param key The cache key.
+   * @returns The cached value, or null if not found or expired.
+   */
+  async get<T>(key: string): Promise<T | null> {
+    const item = this.cache.get(key);
+    if (item && item.expiry > Date.now()) {
+      console.log(`[SIMULATED CACHE] GET: ${key} (HIT)`);
+      return item.value as T;
+    }
+    if (item) {
+      this.cache.delete(key); // Remove expired item
+      console.log(`[SIMULATED CACHE] GET: ${key} (EXPIRED)`);
+    } else {
+      console.log(`[SIMULATED CACHE] GET: ${key} (MISS)`);
+    }
+    return null;
   }
   /**
    * Get performance metrics
-   */;
+   */
   getMetrics(): ProcessingMetrics & { efficiency: number } {
-    const totalOps =
-      this.metrics.redisHits + this.metrics.webgpuComputations + this.metrics.simdParsing;
+    const totalOps = this.metrics.redisHits + this.metrics.webgpuComputations + this.metrics.simdParsing;
     return {
       ...this.metrics,
-      efficiency: totalOps > 0 ? this.metrics.redisHits / totalOps : 0
-    }
+      efficiency: totalOps > 0 ? this.metrics.redisHits / totalOps : 0,
+    };
   }
   /**
    * Get system status
-   */;
+   */
   getSystemStatus(): {
     redis: boolean;
     webgpu: boolean;
@@ -572,11 +739,11 @@ export class RedisWebGPUSIMDIntegration {
       webgpu: this.config.enableWebGPU,
       simd: this.config.enableSIMD,
       som: true, // WebGPU SOM cache is initialized
-    }
+    };
   }
   /**
    * Get all cache keys from Redis
-   */;
+   */
   async getCacheKeys(): Promise<string[]> {
     try {
       // Would use Redis KEYS command in real implementation
@@ -584,7 +751,7 @@ export class RedisWebGPUSIMDIntegration {
       return [
         'legal_ai:webgpu:compute:similarity:abc123',
         'legal_ai:legal:analysis:doc456:standard',
-        'legal_ai:vector:sim:query789:candidates012'
+        'legal_ai:vector:sim:query789:candidates012',
       ];
     } catch (error) {
       console.error('❌ Failed to get cache keys:', error);
@@ -593,13 +760,13 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Warm up the legal document cache
-   */;
-  async warmLegalDocumentCache(payload: any): Promise<void> {
+   */
+  async warmLegalDocumentCache(payload: WarmLegalDocumentCachePayload): Promise<void> {
     try {
       console.log('🔥 Warming legal document cache with payload:', payload);
       // Pre-process common legal documents to cache results
       if (payload.documentType && payload.content) {
-        await this.processLegalDocument(JSON.stringify(payload.content);
+        await this.processLegalDocument(JSON.stringify(payload.content));
       }
     } catch (error) {
       console.error('❌ Failed to warm legal document cache:', error);
@@ -607,8 +774,8 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Warm up the vector similarity cache
-   */;
-  async warmVectorSimilarityCache(payload: any): Promise<void> {
+   */
+  async warmVectorSimilarityCache(payload: WarmVectorSimilarityPayload): Promise<void> {
     try {
       console.log('🔥 Warming vector similarity cache with payload:', payload);
       // Pre-compute common similarity comparisons
@@ -625,15 +792,18 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Warm up the search results cache
-   */;
-  async warmSearchResultsCache(payload: any): Promise<void> {
+   */
+  async warmSearchResultsCache(payload: WarmSearchResultsPayload): Promise<void> {
     try {
       console.log('🔥 Warming search results cache with payload:', payload);
       // Pre-cache common search queries and results
-      if (payload.queries && Array.isArray(payload.queries)) {
+      if (Array.isArray(payload.queries)) {
         for (const query of payload.queries) {
-          const cacheKey = `legal_ai:legal:analysis:${JSON.stringify(query)}:warmup`;
-          await this.getCachedResult(cacheKey); // Attempt to populate cache
+          // Support both plain string queries and structured query objects
+          const queryKeyPart = typeof query === 'string' ? query : JSON.stringify(query);
+          const cacheKey = `legal_ai:legal:analysis:${queryKeyPart}:warmup`;
+          // Use unknown instead of any for cached value typing
+          await this.getCachedResult<unknown>(cacheKey); // Attempt to populate cache
         }
       }
     } catch (error) {
@@ -642,13 +812,13 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Sync with distributed cache
-   */;
+   */
   async syncWithDistributedCache(): Promise<void> {
     try {
       console.log('🔄 Syncing with distributed cache...');
       // In real implementation, this would sync local cache with distributed Redis
       // For now, just log the operation
-      const stats = { cacheHits: 0, cacheMisses: 0, syncTime: Date.now() }
+      const stats = { cacheHits: 0, cacheMisses: 0, syncTime: Date.now() };
       console.log('📊 Cache sync stats:', stats);
     } catch (error) {
       console.error('❌ Failed to sync with distributed cache:', error);
@@ -656,7 +826,7 @@ export class RedisWebGPUSIMDIntegration {
   }
   /**
    * Clean up resources
-   */;
+   */
   dispose(): void {
     this.webgpuCache.dispose();
     simdJSONClient.terminate();
@@ -666,8 +836,8 @@ export class RedisWebGPUSIMDIntegration {
 // Export singleton instance for global use
 export const redisWebGPUIntegration = new RedisWebGPUSIMDIntegration({
   cacheStrategy: 'balanced',
-  enableCrossUserSharing: true
-  maxCacheSize: 2000 // 2GB
+  enableCrossUserSharing: true,
+  maxCacheSize: 2000, // 2GB
 });
 // Initialize on module load
 if (typeof window !== 'undefined') {
@@ -676,12 +846,25 @@ if (typeof window !== 'undefined') {
   });
 }
 // Convenience functions for common operations
-export async function processLegalDocumentOptimized(documentJson: string, options?: any) {
+export async function processLegalDocumentOptimized(
+  documentJson: string,
+  options?: Parameters<RedisWebGPUSIMDIntegration['processLegalDocument']>[1]
+) {
+  // Updated options type
   return redisWebGPUIntegration.processLegalDocument(documentJson, options);
 }
-export async function computeVectorSimilarityOptimized(query: number[], candidates: number[][], options?: any) {
+export async function computeVectorSimilarityOptimized(
+  query: number[],
+  candidates: number[][],
+  options?: Parameters<RedisWebGPUSIMDIntegration['processVectorSimilarity']>[2]
+) {
+  // Updated options type
   return redisWebGPUIntegration.processVectorSimilarity(query, candidates, options);
 }
-export async function generateIntelligentTodosOptimized(npmOutput: string, options?: any) {
+export async function generateIntelligentTodosOptimized(
+  npmOutput: string,
+  options?: Parameters<RedisWebGPUSIMDIntegration['processIntelligentTodos']>[1]
+) {
+  // Updated options type
   return redisWebGPUIntegration.processIntelligentTodos(npmOutput, options);
 }

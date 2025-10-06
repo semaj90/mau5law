@@ -4,9 +4,7 @@
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
-  import EnhancedUploadProgress from '$lib/components/upload/EnhancedUploadProgress.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -20,7 +18,7 @@
     Activity,
     Upload,
     MessageSquare,
-    BarChart3
+    BarChart
   } from 'lucide-svelte';
   // Component state
   let selectedFiles = $state<FileList | null>(null);
@@ -33,6 +31,8 @@
   // System components
   let workerPool: any = null;
   let simdCache: any = null;
+  // Add: declare the dynamic component reference so TS + Svelte know about it
+  let EnhancedUploadProgress: any = null;
   // Performance metrics
   let performanceMetrics = $state({
     totalProcessingTime: 0,
@@ -41,49 +41,67 @@
     workerUtilization: 0,
     simdPerformance: 0
   });
-  onMount(async () => {
-    // Initialize worker pool
-    const workerConfig: WorkerPoolConfig = {
-      maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
-      workerTimeout: 60000,
-      queueLimit: 100,
-      enableSIMD: true
-      redisCache: true
-      concurrencyLimit: 6
-    }
-    workerPool = createWorkerPool(workerConfig);
-    simdCache = createSIMDJSONCache({
-      defaultTTL: 3600,
-      compressionEnabled: true
-      enableMetrics: true
-    });
-    // Start recommendation session
-    recommendationStore.send({
-      type: 'START_SESSION',
-      userId: 'user_' + Date.now(),
-      caseId;
-    });
-    // Update system stats periodically
-    const statsInterval = setInterval(updateSystemStats, 2000);
+
+  // declare interval handle in outer scope so cleanup can synchronously access it
+  let statsInterval: ReturnType<typeof setInterval> | undefined;
+
+  onMount(() => {
+    (async () => {
+      // Initialize worker pool
+      const workerConfig: WorkerPoolConfig = {
+        maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
+        workerTimeout: 60000,
+        queueLimit: 100,
+        enableSIMD: true,
+        redisCache: true,
+        concurrencyLimit: 6
+      };
+      workerPool = createWorkerPool(workerConfig);
+      simdCache = createSIMDJSONCache({
+        defaultTTL: 3600,
+        compressionEnabled: true,
+        enableMetrics: true
+      });
+
+      // Dynamically import the upload progress component. Support both default and named exports.
+      try {
+        const mod = await import('$lib/components/upload/EnhancedUploadProgress.svelte');
+        // Use any-cast to avoid strict module typing issues (some builds don't expose .default in types)
+        EnhancedUploadProgress = (mod as any)?.default ?? (mod as any)?.EnhancedUploadProgress ?? (mod as any);
+      } catch (err) {
+        console.warn('Could not dynamically load EnhancedUploadProgress component:', err);
+        EnhancedUploadProgress = null;
+      }
+      // Start recommendation session
+      recommendationStore.send({
+        type: 'START_SESSION',
+        userId: 'user_' + Date.now(),
+        caseId,
+      });
+      // Update system stats periodically
+      statsInterval = setInterval(updateSystemStats, 2000);
+    })();
+
+    // synchronous cleanup function (no Promise returned)
     return () => {
-      clearInterval(statsInterval);
+      if (statsInterval) clearInterval(statsInterval);
       workerPool?.terminate();
-    }
+    };
   });
   function updateSystemStats() {
     if (workerPool) {
-      const workerStats = workerPool.getStats();
+      const workerStats = workerPool.getStats() || {};
       const cacheStats = simdCache?.getCacheStats() || {}
       const simdStatus = simdCache?.getSIMDStatus() || {}
       systemStats = {
-        workers: workerStats;
-        cache: cacheStats;
-        simd: simdStatu;
+        workers: workerStats,
+        cache: cacheStats,
+        simd: simdStatus,
       }
       performanceMetrics.workerUtilization = workerStats.totalWorkers > 0
         ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100
         : 0;
-      performanceMetrics.cacheHitRate = cacheStats.hitRate * 100 || 0;
+      performanceMetrics.cacheHitRate = (cacheStats.hitRate || 0) * 100;
     }
   }
   async function handleFileUpload() {
@@ -96,19 +114,24 @@
         type: 'UPLOAD_FILES',
         files: Array.from(selectedFiles),
         caseId,
-        documentTyp;
+        documentType,
       });
       // Subscribe to upload progress
-      const unsubscribe = enhancedUploadStore.subscribe(async (state) => {
-        if (state.matches('completed')) {
-          const endTime = performance.now();
-          performanceMetrics.totalProcessingTime = endTime - startTime;
-          // Process results with workers and SIMD
-          await processResults(state.context);
-          isProcessing = false;
-          unsubscribe();
-        } else if (state.matches('error')) {
-          console.error('Upload failed:', state.context.error);
+      let unsubscribe: () => void;
+      unsubscribe = enhancedUploadStore.subscribe((state) => {
+        // state comes from the store's actual type; adapt it to the small shape we use here
+        const s = state as unknown as UploadStateLike;
+        if (s.matches('completed')) {
+          (async () => {
+            const endTime = performance.now();
+            performanceMetrics.totalProcessingTime = endTime - startTime;
+            // Process results with workers and SIMD
+            await processResults(s.context);
+            isProcessing = false;
+            unsubscribe();
+          })();
+        } else if (s.matches('error')) {
+          console.error('Upload failed:', s.context?.error);
           isProcessing = false;
           unsubscribe();
         }
@@ -117,7 +140,7 @@
       recommendationStore.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc_' + Date.now(),
-        documentTyp;
+        documentType,
       });
     } catch (error) {
       console.error('Processing failed:', error);
@@ -135,7 +158,7 @@
         // Enhance OCR with worker pool
         const enhancedOCR = await workerPool.processOCR(ocrData, {
           language: 'eng+fra',
-          confidenceThreshold: 0.8;
+          confidenceThreshold: 0.8,
         });
         processedResults.enhancedOCR = enhancedOCR;
       }
@@ -146,7 +169,7 @@
           'embeddinggemma:latest',
           { normalize: true, chunkSize: 512 }
         );
-        processedResults.embeddings = embedding;
+        processedResults.embeddings = embeddings;
       }
       // Perform AI analysis
       if (context.results?.extractedText) {
@@ -155,30 +178,30 @@
           documentType,
           'gemma3:legal-latest'
         );
-        processedResults.aiAnalysis = analysi;
+        processedResults.aiAnalysis = analysis;
       }
       // Generate recommendations
       const recContext = {
         document: {
           text: context.results?.extractedText,
-          type: documentType
-          caseId;
+          type: documentType,
+          caseId,
         },
         user: { preferences: { priority: 'accuracy' } }
       }
       const recs = await workerPool.generateRecommendations(recContext);
       recommendations = recs.data?.recommendations || [];
       // Update performance metrics
-      const simdMetrics = simdCache.getMetrics();
-      performanceMetrics.simdPerformance = simdMetrics.averageParseTim;
-      performanceMetrics.averageSpeed = simdMetrics.totalDataProcessed / simdMetrics.totalParse;
+      const simdMetrics = simdCache.getMetrics ? simdCache.getMetrics() : {};
+      performanceMetrics.simdPerformance = simdMetrics.averageParseTime || 0;
+      performanceMetrics.averageSpeed = (simdMetrics.totalDataProcessed || 0) / Math.max(simdMetrics.totalParse || 1, 1);
     } catch (error) {
       console.error('Result processing failed:', error);
     }
   }
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    selectedFiles = target.file;
+  function handleFileSelect(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    selectedFiles = input.files;
   }
   async function testSIMDPerformance() {
     if (!simdCache) return;
@@ -187,7 +210,7 @@
         case: 'Test vs Example',
         parties: ['Plaintiff', 'Defendant'],
         evidence: Array.from({ length: 100 }, (_, i) => ({
-          id: i;
+          id: i,
           type: 'document',
           description: `Evidence item ${i} with detailed legal content and metadata`
         }))
@@ -202,7 +225,15 @@
     console.timeEnd('Native JSON Parse');
     updateSystemStats();
   }
+
+  // small inline type to satisfy the subscriber shape we rely on
+  type UploadStateLike = { matches: (s: string) => boolean; context?: any };
 </script>
+
+<!-- global style frameworks (UnoCSS / NES.css) -->
+<!-- adjust these paths if your project uses different import entry points -->
+<link rel="stylesheet" href="/src/lib/styles/uno.css">
+<link rel="stylesheet" href="/src/lib/styles/nes.css">
 
 <div class="space-y-6 p-6">
   <!-- Header -->
@@ -230,7 +261,10 @@
             <span>Active:</span>
             <span>{systemStats.workers?.activeWorkers || 0}/{systemStats.workers?.totalWorkers || 0}</span>
           </div>
-          <Progress value={performanceMetrics.workerUtilization} class="h-2" />
+          <div class="enhanced-progress">
+            <Progress value={performanceMetrics.workerUtilization} class="h-2" />
+            <progress class="nes-progress is-primary" value={performanceMetrics.workerUtilization} max="100" aria-label="worker-utilization"></progress>
+          </div>
           <div class="text-xs text-muted-foreground">
             Queue: {systemStats.workers?.queuedTasks || 0}
           </div>
@@ -250,7 +284,10 @@
             <span>Hit Rate:</span>
             <span>{performanceMetrics.cacheHitRate.toFixed(1)}%</span>
           </div>
-          <Progress value={performanceMetrics.cacheHitRate} class="h-2" />
+          <div class="enhanced-progress">
+            <Progress value={performanceMetrics.cacheHitRate} class="h-2" />
+            <progress class="nes-progress is-success" value={performanceMetrics.cacheHitRate} max="100" aria-label="cache-hit-rate"></progress>
+          </div>
           <div class="text-xs text-muted-foreground">
             Entries: {systemStats.cache?.memoryEntries || 0}
           </div>
@@ -266,20 +303,26 @@
       </CardHeader>
       <CardContent>
         <div class="space-y-2">
-          <Badge variant={systemStats.simd?.loaded ? 'default' : 'secondary'}>
+          <Badge variant={systemStats.simd?.loaded ? 'default' : 'outline'}>
             {systemStats.simd?.loaded ? 'Enabled' : 'Fallback'}
           </Badge>
           <div class="text-xs text-muted-foreground">
             {systemStats.simd?.performance || 'No data'}
           </div>
-          <Button onclick={testSIMDPerformance} size="sm" variant="outline" class="w-full text-xs">Benchmark</Button>
+          <button
+            type="button"
+            on:click={testSIMDPerformance}
+            class="w-full text-xs py-1 rounded mt-2 border bg-gray-100"
+          >
+            Benchmark
+          </button>
         </div>
       </CardContent>
     </Card>
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
-          <BarChart3 class="h-4 w-4" />
+          <BarChart class="h-4 w-4" />
           Performance
         </CardTitle>
       </CardHeader>
@@ -308,12 +351,12 @@
     <CardContent class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2">Case ID</label>
-          <input type="text" bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
+          <label for="caseIdInput" class="block text-sm font-medium mb-2">Case ID</label>
+          <input id="caseIdInput" type="text" bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-2">Document Type</label>
-          <select bind:value={documentType} class="w-full p-2 border rounded">
+          <label for="documentTypeSelect" class="block text-sm font-medium mb-2">Document Type</label>
+          <select id="documentTypeSelect" bind:value={documentType} class="w-full p-2 border rounded">
             <option value="evidence">Evidence</option>
             <option value="contract">Contract</option>
             <option value="brief">Legal Brief</option>
@@ -321,34 +364,43 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-2">Select Files</label>
+          <label for="fileInput" class="block text-sm font-medium mb-2">Select Files</label>
           <input
+            id="fileInput"
             type="file"
             multiple
             accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
-            onchange={handleFileSelect}
+            on:change={handleFileSelect}
             class="w-full p-2 border rounded"
           />
         </div>
       </div>
-      <Button
-        onclick={handleFileUpload}
-        disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing}
-        class="w-full"
-      >
-        {#if isProcessing}
-          <Activity class="h-4 w-4 mr-2 animate-spin" />
-          Processing...
-        {:else}
-          <Brain class="h-4 w-4 mr-2" />
-          Start Legal AI Processing
-        {/if}
-      </Button>
+      <div class="w-full">
+        <button
+          type="button"
+          on:click={handleFileUpload}
+          disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing}
+          class="w-full p-2 rounded flex items-center justify-center gap-2 bg-blue-600 text-white disabled:opacity-50"
+        >
+          {#if isProcessing}
+            <Activity class="h-4 w-4 mr-2 animate-spin" />
+            Processing...
+          {:else}
+            <Brain class="h-4 w-4 mr-2" />
+            Start Legal AI Processing
+          {/if}
+        </button>
+      </div>
     </CardContent>
   </Card>
   <!-- Processing Progress -->
   {#if isProcessing}
-    <EnhancedUploadProgress />
+    {#if EnhancedUploadProgress}
+      <svelte:component this={EnhancedUploadProgress} />
+    {:else}
+      <!-- Fallback minimal progress UI while component is unavailable -->
+      <div class="p-3 border rounded text-sm">Processing... (progress component loading)</div>
+    {/if}
   {/if}
   <!-- Results Dashboard -->
   {#if Object.keys(processedResults).length > 0}
@@ -366,7 +418,7 @@
             <div class="space-y-3">
               <div class="flex justify-between">
                 <span class="font-medium">Confidence:</span>
-                <Badge variant={processedResults.enhancedOCR.confidence > 0.8 ? 'default' : 'secondary'}>
+                <Badge variant={processedResults.enhancedOCR.confidence > 0.8 ? 'default' : 'outline'}>
                   {(processedResults.enhancedOCR.confidence * 100).toFixed(1)}%
                 </Badge>
               </div>
@@ -397,7 +449,7 @@
             <div class="space-y-3">
               <div class="flex justify-between">
                 <span class="font-medium">Confidence:</span>
-                <Badge variant={processedResults.aiAnalysis.confidence > 0.7 ? 'default' : 'secondary'}>
+                <Badge variant={processedResults.aiAnalysis.confidence > 0.7 ? 'default' : 'outline'}>
                   {(processedResults.aiAnalysis.confidence * 100).toFixed(1)}%
                 </Badge>
               </div>
@@ -445,7 +497,7 @@
                   variant={rec.priority === 'high'
                     ? 'destructive'
                     : rec.priority === 'medium'
-                      ? 'secondary'
+                      ? 'default'
                       : 'outline'}
                 >
                   {rec.priority || 'normal'}
@@ -456,7 +508,10 @@
               </p>
               {#if rec.confidence}
                 <div class="mt-2">
-                  <Progress value={rec.confidence * 100} class="h-1" />
+                  <div class="enhanced-progress small">
+                    <Progress value={rec.confidence * 100} class="h-1" />
+                    <progress class="nes-progress is-dark" value={rec.confidence * 100} max="100" aria-label="rec-confidence"></progress>
+                  </div>
                   <span class="text-xs text-muted-foreground">
                     Confidence: {(rec.confidence * 100).toFixed(1)}%
                   </span>
@@ -511,4 +566,24 @@
     </CardContent>
   </Card>
 </div>
-;
+
+<style>
+/* Minimal layout glue for the dual progress presentation */
+.enhanced-progress {
+  display: grid;
+  gap: 0.25rem;
+}
+.enhanced-progress.small {
+  gap: 0.15rem;
+}
+.enhanced-progress progress.nes-progress {
+  height: 0.6rem;
+}
+/* make sure NES progress fits within UI patterns */
+.enhanced-progress .nes-progress {
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+</style>

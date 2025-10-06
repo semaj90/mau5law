@@ -1,120 +1,186 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 
+// Define interfaces for the worker and service
+interface DocumentProcessingWorker {
+  getStats: () => { isRunning: boolean; processedCount: number; failedCount: number; successRate: number };
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+}
+
+// Define JSON-compatible types for flexible data structures
+type JsonPrimitive = string | number | boolean | null;
+interface JsonObject {
+  [key: string]: JsonValue;
+}
+interface JsonArray extends Array<JsonValue> {}
+type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+
+interface QueueDetailStats {
+  messages?: number;
+  consumers?: number;
+  memory?: number;
+  // Allow for additional, less critical properties with JsonValue
+  [key: string]: JsonValue;
+}
+
+interface QueueHealthDetail {
+  name: string;
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  messages?: number;
+  consumers?: number;
+  // Allow for additional, less critical properties with JsonValue
+  [key: string]: JsonValue;
+}
+
+interface RabbitMQService {
+  getQueueStats: () => Promise<Record<string, QueueDetailStats>>;
+  healthCheck: () => Promise<{ healthy: boolean; queues: QueueHealthDetail[] }>;
+}
+
 // Import worker and services with error handling
-let documentProcessingWorker: any
-let rabbitMQService: any
+let documentProcessingWorker: DocumentProcessingWorker;
+let rabbitMQService: RabbitMQService;
 try {
-  documentProcessingWorker = await import('$lib/workers/document-processing-worker').then(m => m.documentProcessingWorker)
+  documentProcessingWorker = (await import('$lib/workers/document-processing-worker'))
+    .documentProcessingWorker as DocumentProcessingWorker;
 } catch (error) {
-  console.warn('Document processing worker not available:', error)
+  console.warn('Document processing worker not available:', error);
   documentProcessingWorker = {
     getStats: () => ({ isRunning: false, processedCount: 0, failedCount: 0, successRate: 0 }),
     start: () => Promise.reject(new Error('Worker not available')),
-    stop: () => Promise.reject(new Error('Worker not available')
-  }
+    stop: () => Promise.reject(new Error('Worker not available')),
+  };
 }
 try {
-  rabbitMQService = await import('$lib/services/rabbitmq-service').then(m => m.rabbitMQService)
+  rabbitMQService = await import('$lib/services/rabbitmq-service').then(m => m.rabbitMQService);
 } catch (error) {
-  console.warn('RabbitMQ service not available:', error)
+  console.warn('RabbitMQ service not available:', error);
   rabbitMQService = {
     getQueueStats: () => Promise.resolve({}),
-    healthCheck: () => Promise.resolve({ healthy: false, queues: [] })
+    healthCheck: () => Promise.resolve({ healthy: false, queues: [] }),
+  };
+}
+
+// Helper to convert unknown errors to a string message
+function getErrorMessage(err: unknown): string {
+  // Prefer Error message when available
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unknown error';
   }
 }
+
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action')
+    const action = url.searchParams.get('action');
     switch (action) {
-      case 'status':
-        const workerStats = documentProcessingWorker.getStats()
-        const queueStats = await rabbitMQService.getQueueStats()
-        const healthCheck = await rabbitMQService.healthCheck()
+      case 'status': {
+        const workerStats = documentProcessingWorker.getStats();
+        const queueStats = await rabbitMQService.getQueueStats();
+        const healthCheck = await rabbitMQService.healthCheck();
         return json({
-          worker: workerStats
-          queues: queueStats
-          messaging: healthCheck
-          timestamp: new Date().toISOString()
-        })
-      case 'health':
-        const health = await rabbitMQService.healthCheck()
-        const stats = documentProcessingWorker.getStats()
+          worker: workerStats,
+          queues: queueStats,
+          messaging: healthCheck,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      case 'health': {
+        const health = await rabbitMQService.healthCheck();
+        const stats = documentProcessingWorker.getStats();
         return json({
           status: health.healthy && stats.isRunning ? 'healthy' : 'unhealthy',
           worker: {
             running: stats.isRunning,
             processed: stats.processedCount,
             failed: stats.failedCount,
-            successRate: stats.successRate
+            successRate: stats.successRate,
           },
           messaging: {
             connected: health.healthy,
-            queues: health.queues
-          }
-        })
+            queues: health.queues,
+          },
+        });
+      }
       default:
-        return json({,
-          error: 'Invalid action. Use ?action=status or ?action=health'
-        }, { status: 400 })
+        return json(
+          {
+            error: 'Invalid action. Use ?action=status or ?action=health',
+          },
+          { status: 400 }
+        );
     }
-  } catch (error: any) {
-    console.error('Worker API error:', error)
-    return json({
-      error: 'Failed to get worker status',
-      details: error.message
-    }, { status: 500 })
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    console.error('Worker API error:', msg);
+    return json(
+      {
+        error: 'Failed to get worker status',
+        details: msg,
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json()
+    const { action } = await request.json();
     switch (action) {
       case 'start':
         if (documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is already running',
-            status: 'running'
-          })
+            status: 'running',
+          });
         }
-        await documentProcessingWorker.start()
+        await documentProcessingWorker.start();
         return json({
           message: 'Document processing worker started successfully',
-          status: 'started'
-        })
+          status: 'started',
+        });
       case 'stop':
         if (!documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is not running',
-            status: 'stopped'
-          })
+            status: 'stopped',
+          });
         }
-        await documentProcessingWorker.stop()
+        await documentProcessingWorker.stop();
         return json({
           message: 'Document processing worker stopped successfully',
-          status: 'stopped'
-        })
+          status: 'stopped',
+        });
       case 'restart':
         if (documentProcessingWorker.getStats().isRunning) {
-          await documentProcessingWorker.stop()
+          await documentProcessingWorker.stop();
           // Wait a moment before restarting
-          await new Promise(resolve => setTimeout(resolve, 1000)
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
-        await documentProcessingWorker.start()
+        await documentProcessingWorker.start();
         return json({
           message: 'Document processing worker restarted successfully',
-          status: 'restarted'
-        })
+          status: 'restarted',
+        });
       default:
-        return json({,
-          error: 'Invalid action. Use start, stop, or restart'
-        }, { status: 400 })
+        return json(
+          {
+            error: 'Invalid action. Use start, stop, or restart',
+          },
+          { status: 400 }
+        );
     }
-  } catch (error: any) {
-    console.error('Worker control error:', error)
-    return json({
-      error: 'Failed to control worker',
-      details: error.message
-    }, { status: 500 })
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    console.error('Worker control error:', msg);
+    return json(
+      {
+        error: 'Failed to control worker',
+        details: msg,
+      },
+      { status: 500 }
+    );
   }
-}
+};

@@ -11,7 +11,9 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     class?: string;
   }
-  let { class = '' }: Props = $props();
+  // read typed props first, then safely rename the reserved "class" prop
+  const props = $props<Props>();
+  const className = props.class ?? '';
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler;
   let lodSystem: MatrixLODSystem;
@@ -35,14 +37,14 @@ https://svelte.dev/e/js_parse_error -->
       id: 'evidence-card-1',
       matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 50, 0, 1],
       styles: {
-        base: 'yorha-card p-6 bg-gray-900 border border-yellow-400';
+        base: 'yorha-card p-6 bg-gray-900 border border-yellow-400',
       },
       events: ['click', 'mouseover'],
       metadata: {
         priority: 'high',
         confidence: 95,
         evidenceType: 'forensic',
-        aiGenerated: true;
+        aiGenerated: true,
       }
     },
     {
@@ -50,13 +52,13 @@ https://svelte.dev/e/js_parse_error -->
       id: 'analyze-btn-1',
       matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 250, 150, 0, 1],
       styles: {
-        base: 'yorha-button px-4 py-2 bg-yellow-400 text-black';
+        base: 'yorha-button px-4 py-2 bg-yellow-400 text-black',
       },
       events: ['click'],
       metadata: {
         priority: 'critical',
         confidence: 88,
-        aiGenerated: false;
+        aiGenerated: false,
       }
     },
     {
@@ -64,14 +66,14 @@ https://svelte.dev/e/js_parse_error -->
       id: 'evidence-item-1',
       matrix: [0.8, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 1, 0, 400, 100, 0, 1],
       styles: {
-        base: 'yorha-evidence-item border-l-4 border-blue-400 pl-4';
+        base: 'yorha-evidence-item border-l-4 border-blue-400 pl-4',
       },
       events: ['click', 'dblclick'],
       metadata: {
         priority: 'medium',
         confidence: 72,
         evidenceType: 'digital',
-        aiGenerated: true;
+        aiGenerated: true,
       }
     }
   ];
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     currentCase: 'CASE-2024-001',
     recentActions: ['file_upload', 'view_document', 'apply_filter'],
     userRole: 'prosecutor',
-    workflowState: 'review';
+    workflowState: 'review',
   }
   $effect(() => {
     (async () => {
@@ -113,7 +115,8 @@ await initializePhase8System();
              0.5,  0.5, 0.0, 1.0, 1.0,
             -0.5,  0.5, 0.0, 0.0, 1.0
           ]);
-          lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || );
+          // provide a safe default for metadata
+          lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || {});
         }
       });
       // Render components to demo container
@@ -127,12 +130,12 @@ await initializePhase8System();
     }
   }
   function startDemoLoop(): void {
-  let frameCount = $state(0);
+    let frameCount = 0;
     const demoLoop = () => {
       frameCount++;
       // Update performance metrics
       const metrics = lodSystem.getPerformanceMetrics();
-      performanceMetrics.frameRate = metrics.frameRat;
+      performanceMetrics.frameRate = metrics.frameRate;
       // Simulate viewport focus changes
       if (frameCount % 120 === 0) { // Every 2 seconds at 60fps
         simulateViewportFocus();
@@ -151,7 +154,7 @@ await initializePhase8System();
       centerY: Math.random() * 600,
       radius: 200 + Math.random() * 100,
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
-      confidenceScore: 0.8 + Math.random() * 0.2;
+      confidenceScore: 0.8 + Math.random() * 0.2,
     }
     lodSystem.updateViewportFocus(focus);
   }
@@ -177,9 +180,23 @@ await initializePhase8System();
         }
       ];
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
-      performanceMetrics.aiBoosts = rerankedResults.filter(item => item.length);
-      // Simulate predictive prefetching
-      const intentPrediction = await prefetcher.predictIntent(sampleUserContext.context);
+      // assign number of boosts (length of results) instead of invalid filter usage
+      performanceMetrics.aiBoosts = rerankedResults.length;
+      // Simulate predictive prefetching - pass the context object (we have sampleUserContext)
+      // adapt sampleUserContext into the shape expected by PredictivePrefetcher
+      const predictiveContext = {
+        currentPage: 'evidence_view',
+        focusedElement: sampleUserContext.focusedElement,
+        recentActions: sampleUserContext.recentActions,
+        caseId: sampleUserContext.currentCase,
+        timeOnPage: 30, // safe default (seconds)
+        scrollPosition: 0, // safe default
+        // empty arrays cast to satisfy MouseEvent[] / KeyboardEvent[] without real events
+        mouseActivity: [] as unknown as MouseEvent[],
+        keyboardActivity: [] as unknown as KeyboardEvent[],
+        eyeTracking: [] // optional, default empty
+      };
+      const intentPrediction = await prefetcher.predictIntent(predictiveContext);
       if (intentPrediction) {
         await prefetcher.executePrefetch(intentPrediction);
         performanceMetrics.cacheHits++;
@@ -190,9 +207,9 @@ await initializePhase8System();
   }
   function switchDemo(demo: typeof currentDemo): void {
     currentDemo = demo;
-    // Reset visual indicators
-    document.querySelectorAll.forEach(el => {
-      el.classList.remove('demo-highlight', 'ai-enhanced', 'lod-demo');
+    // Reset visual indicators on rendered demo container elements (safe selection + typing)
+    demoContainer?.querySelectorAll('*').forEach((el: Element) => {
+      (el as HTMLElement).classList.remove('demo-highlight', 'ai-enhanced', 'lod-demo');
     });
     // Apply demo-specific styling
     switch (demo) {
@@ -203,8 +220,8 @@ await initializePhase8System();
         document.getElementById('analyze-btn-1')?.classList.add('ai-enhanced');
         break;
       case 'lod':
-        document.querySelectorAll.forEach(el => {
-          el.classList.add('lod-demo');
+        demoContainer?.querySelectorAll('*').forEach((el: Element) => {
+          (el as HTMLElement).classList.add('lod-demo');
         });
         break;
       case 'prefetch':
@@ -302,7 +319,6 @@ await initializePhase8System();
     <div class="ui-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Matrix UI Components</h3>
       <div
-        ;
         bind:this={demoContainer}
         class="ui-container relative h-96 bg-gray-900 border border-gray-700 rounded p-4 overflow-hidden"
       >
@@ -380,50 +396,83 @@ await initializePhase8System();
 </div>
 
 <style>
-  /* @unocss-include */
+  /* Replaced @apply usages with explicit CSS so component styles do not rely on @apply processing. */
+  /* @unocss-include (kept as a hint for UnoCSS but no @apply usage) */
+
   .phase8-demo {
-    @apply max-w-7xl mx-auto p-6;
+    max-width: 80rem; /* tailwind max-w-7xl */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.5rem; /* p-6 */
   }
+
   .indicator {
-    @apply w-2 h-2 rounded-full inline-block mr-2;
+    width: 0.5rem; /* w-2 */
+    height: 0.5rem; /* h-2 */
+    border-radius: 9999px; /* rounded-full */
+    display: inline-block;
+    margin-right: 0.5rem; /* mr-2 */
   }
+
   .status-item {
-    @apply flex items-center text-sm text-gray-300;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem; /* text-sm */
+    color: #D1D5DB; /* gray-300 */
   }
-  .tech-card {
-    @apply bg-gray-800 border border-gray-700;
+
+  /* Support both the original .tech-card name and the rendered .tech-nier-bits-card */
+  .tech-card,
+  .tech-nier-bits-card {
+    background-color: #1f2937; /* gray-800 */
+    border: 1px solid #374151; /* gray-700 */
   }
-  /* Demo-specific styling */
+
+  /* Demo-specific styling (replacing ring utilities with outline/box-shadow fallbacks) */
   :global(.demo-highlight) {
-    @apply ring-2 ring-yellow-400 ring-opacity-50 bg-yellow-400 bg-opacity-10;
+    /* emulate ring-2 ring-yellow-400 ring-opacity-50 + bg-yellow-400 bg-opacity-10 */
+    outline: 2px solid rgba(245, 158, 11, 0.5); /* yellow-400 at 50% */
+    background-color: rgba(245, 158, 11, 0.1); /* yellow-400 at 10% */
     animation: pulse 2s ease-in-out infinite;
   }
+
   :global(.ai-enhanced) {
-    @apply ring-2 ring-blue-400 ring-opacity-50;
+    /* emulate ring-2 ring-blue-400 ring-opacity-50 */
+    outline: 2px solid rgba(59, 130, 246, 0.5); /* blue-400 at 50% */
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
+
   :global(.lod-demo) {
     transition:
       transform 0.3s ease,
       opacity 0.3s ease;
   }
+
   :global(.lod-low) {
-    @apply opacity-60 scale-95;
+    opacity: 0.6; /* opacity-60 */
+    transform: scale(0.95); /* scale-95 */
   }
+
   :global(.lod-mid) {
-    @apply opacity-80 scale-95;
+    opacity: 0.8; /* opacity-80 */
+    transform: scale(0.95); /* scale-95 */
   }
+
   :global(.lod-high) {
-    @apply opacity-100 scale-100;
+    opacity: 1; /* opacity-100 */
+    transform: scale(1); /* scale-100 */
   }
+
   .canvas-container canvas {
     background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
   }
+
   .overlay {
     background: rgba(0, 0, 0, 0.7);
     padding: 4px 8px;
     border-radius: 4px;
   }
+
   @keyframes pulse {
     0%,
     100% {

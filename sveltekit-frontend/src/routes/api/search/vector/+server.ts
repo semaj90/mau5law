@@ -11,9 +11,58 @@ import {
 } from '$lib/services/semantic-search.js'
 import { performanceOptimizer } from '$lib/services/performance-optimizer.js'
 import { securityService } from '$lib/services/security.js'
+
+// Helper function to ensure the error is an Error object
+function ensureError(err: unknown): Error {
+  if (err instanceof Error) {
+    return err;
+  }
+  // Attempt to get a message from non-Error objects
+  if (typeof err === 'string') {
+    return new Error(err);
+  }
+  if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+    return new Error((err as { message: string }).message);
+  }
+  return new Error('An unknown error occurred');
+}
+
 // Simple in-memory cache for query results (fallback if Redis unavailable)
-const queryCache = new Map<string, { result: any; timestamp: number }>()
+const queryCache = new Map<string, { result: SemanticSearchResult; timestamp: number }>()
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Add small, safe JSON value types to avoid `any`
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
+
+// Assuming these are the types returned by semanticSearchService.search
+interface SemanticSearchAnalytics {
+  processingTime: number;
+  cacheHit: boolean;
+  searchStrategy: string;
+  queryComplexity: string;
+  semanticConcepts: string[];
+  dbOptimization?: string;
+  securityLevel?: string;
+  performanceFeatures?: string[];
+}
+
+// Define a more specific type for search results
+interface DocumentResult {
+  id: string;
+  title: string;
+  snippet: string; // A short excerpt of the document content
+  score: number; // Similarity score
+  metadata: Record<string, JsonValue>; // Replaced `any` with JsonValue for stricter typing
+  // Add other relevant fields like documentType, date, source, etc.
+}
+
+interface SemanticSearchResult {
+  results: DocumentResult[]; // Define a more specific type if known, e.g., DocumentResult[]
+  analytics?: SemanticSearchAnalytics; // Make analytics property optional
+  suggestions?: string[];
+}
+
 interface EnhancedSearchRequest {
   query: string
   limit?: number
@@ -36,7 +85,24 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     // Security check: Rate limiting
     const securityCheck = securityService.checkRateLimit(clientIP)
-    if (!securityCheck.allowed) {
+    // Define minimal typed shapes to avoid `any` casts while remaining tolerant
+    type RateLimitShape = {
+      remaining?: number | null
+      resetTime?: number | null
+    }
+    type SecurityCheckResult = {
+      allowed: boolean
+      remaining?: number | null
+      resetTime?: number | null
+      rateLimitInfo?: RateLimitShape
+      rateLimit?: RateLimitShape
+      [key: string]: unknown
+    }
+    const sc = securityCheck as SecurityCheckResult
+    // Tolerant extraction using typed fields
+    const remaining = sc.remaining ?? sc.rateLimitInfo?.remaining ?? sc.rateLimit?.remaining ?? null
+    const resetTime = sc.resetTime ?? sc.rateLimitInfo?.resetTime ?? sc.rateLimit?.resetTime ?? null
+    if (!sc.allowed) {
       securityService.logAuditEvent({
         action: 'semantic_search_rate_limited',
         resource: '/api/search/vector',
@@ -45,21 +111,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         errorMessage: 'Rate limit exceeded',
         metadata: {
-          remaining: securityCheck.rateLimitInfo.remaining,
-          resetTime: securityCheck.rateLimitInfo.resetTime
+          remaining,
+          resetTime
         }
       })
-      return json({
+      return json(
+        {
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
-          remaining: securityCheck.rateLimitInfo.remaining,
-          resetTime: securityCheck.rateLimitInfo.resetTime
-        },)
+          remaining,
+          resetTime,
+        },
         {
           status: 429,
-          headers: securityService.getSecurityHeaders()
+          headers: securityService.getSecurityHeaders(),
         }
-      )
+      );
     }
     const body = (await request.json()) as EnhancedSearchRequest
     const {
@@ -83,51 +150,55 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         errorMessage: 'Empty query provided'
       })
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Query is required and must not be empty'
-        },)
+          error: 'Query is required and must not be empty',
+        },
         {
           status: 400,
-          headers: securityService.getSecurityHeaders()
+          headers: securityService.getSecurityHeaders(),
         }
-      )
+      );
     }
     // Validate query length
     if (query.length > 500) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Query too long. Maximum 500 characters allowed.'
-        },)
+          error: 'Query too long. Maximum 500 characters allowed.',
+        },
         {
           status: 400,
-          headers: securityService.getSecurityHeaders()
+          headers: securityService.getSecurityHeaders(),
         }
-      )
+      );
     }
     // Validate limit bounds
     if (limit && (limit < 1 || limit > 50)) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Limit must be between 1 and 50'
-        },)
+          error: 'Limit must be between 1 and 50',
+        },
         {
           status: 400,
-          headers: securityService.getSecurityHeaders()
+          headers: securityService.getSecurityHeaders(),
         }
-      )
+      );
     }
     // Validate threshold bounds
     if (threshold && (threshold < 0.1 || threshold > 1.0)) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Threshold must be between 0.1 and 1.0'
-        },)
+          error: 'Threshold must be between 0.1 and 1.0',
+        },
         {
           status: 400,
-          headers: securityService.getSecurityHeaders()
+          headers: securityService.getSecurityHeaders(),
         }
-      )
+      );
     }
     // Prepare semantic search options
     const searchOptions: SemanticSearchOptions = {
@@ -139,15 +210,27 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       queryRewriting,
       filters: filters && {
         ...filters,
-        dateRange: filters.dateRange && {,
-          start: filters.dateRange.start ? new Date(filters.dateRange.start) : undefined
-          end: filters.dateRange.end ? new Date(filters.dateRange.end) : undefined
-        }
-      }
-    }
+        dateRange: filters.dateRange && {
+          start: filters.dateRange.start ? new Date(filters.dateRange.start) : undefined,
+          end: filters.dateRange.end ? new Date(filters.dateRange.end) : undefined,
+        },
+      },
+    };
     // Perform enhanced semantic search with AI-powered query understanding
-    const searchResult = await semanticSearchService.search(query.trim(), searchOptions)
+    const searchResult: SemanticSearchResult = await semanticSearchService.search(query.trim(), searchOptions);
     const responseTime = Date.now() - startTime
+
+    // Ensure analytics object exists before updating
+    if (!searchResult.analytics) {
+      searchResult.analytics = {
+        processingTime: 0, // Will be updated below
+        cacheHit: false, // Default value
+        searchStrategy: 'unknown', // Default value
+        queryComplexity: 'unknown', // Default value
+        semanticConcepts: [], // Default value
+      };
+    }
+
     // Update analytics with actual response time
     searchResult.analytics.processingTime = responseTime
     // Log successful search with detailed metrics
@@ -208,7 +291,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'X-Cache-Hit': searchResult.analytics.cacheHit.toString()
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) { // Changed from any
+    const e = ensureError(error);
     const responseTime = Date.now() - startTime
     // Enhanced error logging with context
     securityService.logAuditEvent({
@@ -217,35 +301,34 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       clientIP,
       userAgent: request.headers.get('user-agent') || 'unknown',
       success: false,
-      errorMessage: error.message,
+      errorMessage: e.message,
       metadata: {
         responseTime,
-        errorType: error.constructor.name,
-        stack: error.stack?.substring(0, 500), // Truncated stack trace
+        errorType: e.constructor.name,
+        stack: e.stack?.substring(0, 500), // Truncated stack trace
       }
     })
-    console.error('Enhanced semantic search error:', error)
-    return json()
+    console.error('Enhanced semantic search error:', e)
+    return json(
       {
         success: false,
         error: 'Semantic search failed. Please try again with a simpler query.',
         responseTime,
-        errorId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        errorId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       },
       {
         status: 500,
-        headers: securityService.getSecurityHeaders()
+        headers: securityService.getSecurityHeaders(),
       }
-    )
+    );
   }
 }
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
-  const clientIP = getClientAddress()
   const action = url.searchParams.get('action') || 'health'
   try {
     switch (action) {
       case 'health':
-        return json()
+        return json(
           {
             success: true,
             status: 'healthy',
@@ -259,46 +342,46 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
               'Enterprise security middleware',
               'Performance analytics',
               'Redis caching (when available)',
-              'SvelteKit 2 + TypeScript best practices'
+              'SvelteKit 2 + TypeScript best practices',
             ],
             endpoints: {
               search: 'POST /api/search/vector',
               health: 'GET /api/search/vector?action=health',
               cache: 'GET /api/search/vector?action=cache',
               performance: 'GET /api/search/vector?action=performance',
-              analytics: 'GET /api/search/vector?action=analytics'
-            }
+              analytics: 'GET /api/search/vector?action=analytics',
+            },
           },
           {
-            headers: securityService.getSecurityHeaders()
+            headers: securityService.getSecurityHeaders(),
           }
-        )
-      case 'cache':
+        );
+      case 'cache': {
         // Get cache statistics from both in-memory and Redis
         const memoryCacheStats = {
           entries: queryCache.size,
-          ttl: CACHE_TTL
-          active: Array.from(queryCache.entries()).filter(
-            ([_, entry]) => Date.now() - entry.timestamp < CACHE_TTL
-          ).length
-        }
-        return json()
+          ttl: CACHE_TTL,
+          active: Array.from(queryCache.entries()).filter(([_, entry]) => Date.now() - entry.timestamp < CACHE_TTL)
+            .length,
+        };
+        return json(
           {
             success: true,
             cache: {
-              memory: memoryCacheStats
+              memory: memoryCacheStats,
               redis: 'Available when configured',
-              strategy: 'Multi-tier caching with TTL'
+              strategy: 'Multi-tier caching with TTL',
             },
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           {
-            headers: securityService.getSecurityHeaders()
+            headers: securityService.getSecurityHeaders(),
           }
-        )
-      case 'performance':
+        );
+      }
+      case 'performance': {
         const analytics = await performanceOptimizer.getPerformanceAnalytics()
-        return json()
+        return json(
           {
             success: true,
             performance: {
@@ -306,22 +389,23 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
               database: {
                 type: 'PostgreSQL + pgvector',
                 indexing: 'IVFFLAT optimized for current dataset',
-                compatibility: '768D Gemma → 1536D pgvector storage'
+                compatibility: '768D Gemma → 1536D pgvector storage',
               },
               search: {
                 strategy: 'Advanced semantic search',
                 features: ['Query rewriting', 'Semantic expansion', 'Concept analysis'],
-                ai: 'Gemma embeddings with semantic understanding'
-              }
+                ai: 'Gemma embeddings with semantic understanding',
+              },
             },
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           {
-            headers: securityService.getSecurityHeaders()
+            headers: securityService.getSecurityHeaders(),
           }
-        )
+        );
+      }
       case 'analytics':
-        return json()
+        return json(
           {
             success: true,
             analytics: {
@@ -330,56 +414,70 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
                 'Legal domain concept extraction',
                 'Query complexity analysis',
                 'Automatic query rewriting',
-                'Multi-concept semantic expansion'
+                'Multi-concept semantic expansion',
               ],
               performance: [
                 'IVFFLAT index optimization',
                 'Parallel document processing',
                 'Multi-tier caching strategy',
-                'Real-time performance monitoring'
+                'Real-time performance monitoring',
               ],
               security: [
                 'Rate limiting (100 RPM)',
                 'Comprehensive audit logging',
                 'Input validation and sanitization',
-                'Enterprise-grade middleware'
+                'Enterprise-grade middleware',
               ],
               architecture: [
                 'SvelteKit 2 + TypeScript',
                 'Drizzle ORM integration',
                 'Barrel export patterns',
-                'Production best practices'
-              ]
+                'Production best practices',
+              ],
             },
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           {
-            headers: securityService.getSecurityHeaders()
+            headers: securityService.getSecurityHeaders(),
           }
-        )
+        );
       default:
-        return json({,
+        return json(
+          {
             success: false,
-            error: 'Invalid action. Available: health, cache, performance, analytics'
-          },)
+            error: 'Invalid action. Available: health, cache, performance, analytics',
+          },
           {
             status: 400,
-            headers: securityService.getSecurityHeaders()
+            headers: securityService.getSecurityHeaders(),
           }
-        )
+        );
     }
-  } catch (error: any) {
-    console.error('GET /api/search/vector error:', error)
-    return json()
+  } catch (error: unknown) { // Changed from any
+    const e = ensureError(error);
+    console.error('GET /api/search/vector error:', e)
+    securityService.logAuditEvent({
+      action: 'semantic_search_error',
+      resource: '/api/search/vector',
+      clientIP: getClientAddress(),
+      userAgent: url.searchParams.get('user-agent') || 'unknown',
+      success: false,
+      errorMessage: e.message,
+      metadata: {
+        errorType: e.constructor.name,
+        stack: e.stack?.substring(0, 500), // Truncated stack trace
+      }
+    })
+    return json(
       {
         success: false,
         error: 'Service temporarily unavailable',
-        timestamp: new Date().toISOString()
-      },>
+        timestamp: new Date().toISOString(),
+      },
       {
         status: 500,
-        headers: securityService.getSecurityHeaders()
+        headers: securityService.getSecurityHeaders(),
       }
-    )
+    );
   }
 }

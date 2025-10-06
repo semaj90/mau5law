@@ -1,3 +1,4 @@
+```svelte
 <!--
   Simplified Registration Form - Svelte 5 Compatible
   Basic registration without complex dependencies
@@ -6,14 +7,42 @@
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  // Ensure we import the component constructors (named exports) from enhanced-bits.
+  // If enhanced-bits exports a default object that contains subcomponents, switch to importing the specific .svelte files instead.
+  // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
+  import Input from '$lib/components/ui/input.svelte';
+  import Button from '$lib/components/ui/button.svelte';
   import { Label } from '$lib/components/ui/label';
-  import { Eye, EyeOff, Shield, Loader2, AlertCircle, UserPlus } from 'lucide-svelte';
+  import {
+    Shield,
+    UserPlus,
+    AlertCircle,
+    Eye,
+    EyeOff,
+    Loader2
+  } from 'lucide-svelte'; // Added icon imports
+  import {
+    FileText,
+    FileArchive,
+    Image as FileImage,
+    File as FileIconBase,
+    // FIX: Removed 'FileDigital' import as it was a typo and the corrected 'FileDigit' was unused.
+  } from 'lucide-svelte';
+  // Define the expected shape of the data prop for better type safety
+  interface RegisterFormData {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    password?: string;
+    confirmPassword?: string;
+    role?: string;
+   department?: string;
+jurisdiction?: string;
+agreeToTerms?: boolean;
+    enableTwoFactor?: boolean;
+  }
   interface Props {
-    data?: any;
+    data?: RegisterFormData;
     redirectTo?: string;
     showLogin?: boolean;
   }
@@ -39,9 +68,9 @@
     department: '',
     jurisdiction: '',
     badgeNumber: '',
-    agreeToTerms: false
-    agreeToPrivacy: false
-    enableTwoFactor: false;
+    agreeToTerms: false,
+    agreeToPrivacy: false,
+    enableTwoFactor: false,
   });
   // Role options
   const roleOptions = [
@@ -78,20 +107,182 @@
     showConfirmPassword = !showConfirmPassword;
   }
   // Password strength checker
-  let passwordStrength = $derived(calculatePasswordStrength(formData.password));
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
     if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' }
-  let score = $state(0);
+    let score = 0;
     if (password.length >= 8) score += 2;
     if (password.length >= 12) score += 1;
     if (/[a-z]/.test(password)) score += 1;
     if (/[A-Z]/.test(password)) score += 1;
     if (/\d/.test(password)) score += 1;
-    if (/[@$!%*?&]/.test(password)) score += 1;
+    if (/@$!%*?&/.test(password)) score += 1;
     if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' }
     if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' }
     if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' }
     return { score, feedback: 'Excellent', color: 'text-green-500' }
+  }
+
+  let passwordStrength = $derived(calculatePasswordStrength(formData.password));
+
+  // File upload UI state
+  interface FileEntry {
+    id: string;
+    file: File;
+    status: 'pending' | 'uploading' | 'success' | 'error';
+    progress: number; // 0-100
+    error?: string;
+  }
+
+  let fileInputEl: HTMLInputElement | null = null;
+  let files = $state([] as FileEntry[]);
+
+  // Persistence keys
+  const FILES_MANIFEST_KEY = 'registerForm_files_manifest_v1';
+
+  // Lightweight manifest type (since File objects are not serializable)
+  interface FileManifest {
+    id: string;
+    name: string;
+    size: number;
+    lastModified: number;
+    status: 'pending' | 'needs-attach' | 'success' | 'error';
+  }
+
+  function saveManifest() {
+    try {
+      const manifest: FileManifest[] = files.map((f) => ({ id: f.id, name: f.file.name, size: f.file.size, lastModified: f.file.lastModified, status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status }));
+      localStorage.setItem(FILES_MANIFEST_KEY, JSON.stringify(manifest));
+    } catch (e) {
+      // ignore storage errors
+      console.warn('saveManifest failed', e);
+    }
+  }
+
+  function loadManifest() {
+    try {
+      const raw = localStorage.getItem(FILES_MANIFEST_KEY);
+      if (!raw) return;
+      const manifest = JSON.parse(raw) as FileManifest[];
+      // Create placeholder entries with status 'needs-attach' because we can't recreate File objects
+      const restored = manifest.map((m) => ({ id: m.id, file: new File([], m.name, { lastModified: m.lastModified, type: '' }), status: m.status === 'pending' ? 'needs-attach' : m.status, progress: 0 } as FileEntry));
+      files = [...restored, ...files];
+    } catch (e) {
+      console.warn('loadManifest failed', e);
+    }
+  }
+
+  // Auto-save manifest whenever files changes
+  $effect(() => saveManifest());
+
+  // On mount, restore manifest
+  if (typeof window !== 'undefined') {
+    // defer to microtask
+    Promise.resolve().then(() => loadManifest());
+  }
+
+  function triggerFileInput() {
+    fileInputEl?.click();
+  }
+
+  function onFilesSelected(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (!input?.files) return;
+    const list = Array.from(input.files);
+    const newEntries = list.map((f) => ({
+      id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000),
+      file: f,
+      status: 'pending',
+      progress: 0
+    } as FileEntry));
+    files = [...files, ...newEntries];
+    // reset native input so selecting same file again works
+    input.value = '';
+  }
+
+  function removeFile(id: string) {
+    files = files.filter((f) => f.id !== id);
+  }
+
+  // Determine a small icon / color for file types
+  // Map file extensions to a Lucide icon component and color class
+  function fileTypeIcon(name: string) {
+    const ext = name.split('.').pop()?.toLowerCase() || '';
+    switch (ext) {
+      case 'pdf': return { Icon: FileText, color: 'text-red-600', bg: 'bg-red-100' };
+      case 'doc':
+      case 'docx': return { Icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
+      case 'png':
+      case 'jpg':
+      case 'jpeg': return { Icon: FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
+      case 'zip': return { Icon: FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
+      default: return { Icon: FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
+    }
+  }
+
+  function uploadFile(entry: FileEntry) {
+    entry.status = 'uploading';
+    const xhr = new XMLHttpRequest();
+  const url = '/api/evidence/upload';
+    xhr.open('POST', url, true);
+    xhr.upload.onprogress = (ev) => {
+      if (ev.lengthComputable) {
+        entry.progress = Math.round((ev.loaded / ev.total) * 100);
+        files = [...files];
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        entry.progress = 100;
+        entry.status = 'success';
+      } else {
+        entry.status = 'error';
+        entry.error = `Upload failed (${xhr.status})`;
+      }
+      files = [...files];
+    };
+    xhr.onerror = () => {
+      entry.status = 'error';
+      entry.error = 'Network error';
+      files = [...files];
+    };
+    const fd = new FormData();
+    fd.append('file', entry.file, entry.file.name);
+    // Hint server to run embeddings / ingest pipeline (Gemma) and AI analysis
+    const uploadData = {
+      enableEmbeddings: true,
+      enableAiAnalysis: true,
+      enableOcr: false,
+      title: entry.file.name
+    };
+    fd.append('uploadData', JSON.stringify(uploadData));
+    xhr.send(fd);
+  }
+
+  async function uploadAllPending() {
+    for (const entry of files.filter((f) => f.status === 'pending')) {
+      // don't block; start each upload concurrently but small delay to allow UI update
+      uploadFile(entry);
+    }
+  }
+
+  async function reattachFile(id: string) {
+    // Create a temporary input to let the user pick the file to reattach
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = () => {
+      if (!input.files || input.files.length === 0) return;
+      const picked = input.files[0];
+      // find entry
+      const idx = files.findIndex((x) => x.id === id);
+      if (idx === -1) return;
+      // replace placeholder file
+      files[idx].file = picked;
+      files[idx].status = 'pending';
+      files = [...files];
+      saveManifest();
+    };
+    // trigger
+    input.click();
   }
 </script>
 
@@ -166,7 +357,6 @@
             name="firstName"
             type="text"
             placeholder="John"
-            ;
             bind:value={formData.firstName}
             disabled={isLoading}
             required
@@ -210,7 +400,6 @@
           <select
             id="role"
             name="role"
-            ;
             bind:value={formData.role}
             disabled={isLoading}
             required
@@ -244,7 +433,6 @@
             name="department"
             type="text"
             placeholder="District Attorney's Office"
-            ;
             bind:value={formData.department}
             disabled={isLoading}
             required
@@ -306,7 +494,7 @@
                   style="width: {Math.min(100, (passwordStrength.score / 8) * 100)}%"
                 ></div>
               </div>
-              <span class="text-sm {passwordStrength.color}">{passwordStrength.feedback}</span>
+              <span class={"text-sm " + passwordStrength.color}>{passwordStrength.feedback}</span>
             </div>
           {/if}
         </div>
@@ -345,7 +533,7 @@
           <input
             type="checkbox"
             id="enableTwoFactor"
-            name="enableTwoFactor";
+            name="enableTwoFactor"
             bind:checked={formData.enableTwoFactor}
             disabled={isLoading}
             class="rounded border-border text-primary focus:ring-primary"
@@ -362,7 +550,6 @@
             type="checkbox"
             id="agreeToTerms"
             name="agreeToTerms"
-            ;
             bind:checked={formData.agreeToTerms}
             disabled={isLoading}
             required
@@ -377,7 +564,6 @@
             type="checkbox"
             id="agreeToPrivacy"
             name="agreeToPrivacy"
-            ;
             bind:checked={formData.agreeToPrivacy}
             disabled={isLoading}
             required
@@ -389,15 +575,66 @@
         </div>
       </div>
       <!-- Submit Button -->
-      <Button type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
-        {#if isLoading}
-          <Loader2 class="mr-2 h-4 w-4 animate-spin" />
-          Creating Account...
-        {:else}
-          <UserPlus class="mr-2 h-4 w-4" />
-          Create Legal Professional Account
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div class="flex-1">
+            <Button type="button" class="w-full sm:w-auto bits-btn bits-btn" onclick={triggerFileInput} disabled={isLoading}>
+              Upload Documents
+            </Button>
+            <input bind:this={fileInputEl} onchange={onFilesSelected} type="file" multiple class="hidden" />
+          </div>
+          <div class="flex-1">
+            <Button type="button" class="w-full sm:w-auto bits-btn bits-ghost" onclick={uploadAllPending} disabled={isLoading || files.length===0}>
+              Upload All Pending
+            </Button>
+          </div>
+        </div>
+
+        <!-- File list -->
+        {#if files.length > 0}
+          <div class="mt-2 grid gap-2">
+            {#each files as f (f.id)}
+              <div class="flex items-center justify-between p-3 rounded border border-border bg-card animate-fade-in">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 flex items-center justify-center rounded {fileTypeIcon(f.file.name).bg} {fileTypeIcon(f.file.name).color}">
+                    <svelte:component this={fileTypeIcon(f.file.name).Icon} class="h-6 w-6" />
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-medium truncate">{f.file.name}</div>
+                    <div class="text-xs text-muted truncate">{Math.round(f.file.size/1024)} KB</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  {#if f.status === 'uploading'}
+                    <div class="w-24 bg-muted h-2 rounded overflow-hidden">
+                      <div class="h-full bg-primary transition-all" style="width:{f.progress}%"></div>
+                    </div>
+                  {:else if f.status === 'success'}
+                    <div class="text-green-600">✓</div>
+                  {:else if f.status === 'error'}
+                    <div class="text-red-600" title={f.error}>⚠</div>
+                  {:else if f.status === 'needs-attach'}
+                    <div class="text-sm text-muted">File missing — please reattach</div>
+                    <Button type="button" class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => reattachFile(f.id)} disabled={isLoading}>Reattach</Button>
+                  {/if}
+                  <Button type="button" class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => removeFile(f.id)} disabled={isLoading}>Remove</Button>
+                </div>
+              </div>
+            {/each}
+          </div>
         {/if}
-      </Button>
+
+        <!-- Main Submit Button -->
+        <Button type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
+          {#if isLoading}
+            <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+            Creating Account...
+          {:else}
+            <UserPlus class="mr-2 h-4 w-4" />
+            Create Legal Professional Account
+          {/if}
+        </Button>
+      </div>
     </form>
     <!-- Login Link -->
     {#if showLogin}
@@ -412,4 +649,15 @@
     {/if}
   </div>
 </div>
-;
+
+<style>
+  .animate-fade-in { animation: fadeIn .18s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .bg-muted { background-color: var(--muted, #f3f4f6); }
+  .bg-card { background-color: var(--card, #ffffff); }
+  .bits-ghost { background: transparent; border: 1px solid var(--border, #e5e7eb); }
+  @media (max-width: 640px) {
+    .max-w-2xl { padding: 1rem; }
+  }
+</style>
+```

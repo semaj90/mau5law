@@ -1,0 +1,36 @@
+<script lang="ts">
+  import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
+  import { submitWithProgress } from '$lib/api/submitWithProgress';
+
+  let last = '';
+  let metadata = { title: 'My upload', tags: ['demo'] };
+
+  function onDone(e: CustomEvent) {
+    last = `Done: status=${e.detail.status}`;
+  }
+  function onProgress(e: CustomEvent) {
+    last = `Progress: ${e.detail.percent}%`;
+  }
+  function onError(e: CustomEvent) {
+    last = `Error: ${e.detail?.message ?? 'unknown'}`;
+  }
+
+  async function saveMetadata() {
+    last = 'Saving metadata...';
+    try {
+      const res = await submitWithProgress('/api/metadata/save', metadata);
+      last = `Metadata saved (status=${res.status})`;
+    } catch (err) {
+      last = `Save failed: ${String(err)}`;
+    }
+  }
+</script>
+
+<h2>Upload Demo</h2>
+<UploadProgress uploadUrl="/api/upload" on:progress={onProgress} on:done={onDone} on:error={onError} />
+<div class="mt-4">{last}</div>
+
+<hr />
+<h3>Save metadata (JSON example)</h3>
+<pre>{JSON.stringify(metadata, null, 2)}</pre>
+<button on:click={saveMetadata}>Save metadata</button>
