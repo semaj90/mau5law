@@ -9,14 +9,15 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   let { onsuccess, open = true }: Props = $props();
   // Bits UI dialog primitives
-  import * as Dialog from 'bits-ui';
+  import { Root, Content, Title, Portal, Overlay, Close } from '$lib/components/ui/dialog';
   // State (Svelte 5 runes)
   let email = $state('');
   let password = $state('');
   let confirmPassword = $state('');
   let loading = $state(false);
   let error = $state('');
-  async function handleRegister() {
+  async function handleRegister(event: Event) { // Added event parameter
+    event.preventDefault(); // Explicitly prevent default form submission
     loading = true;
     error = '';
     try {
@@ -37,14 +38,14 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
 </script>
 
-<Dialog.Root bind:open>
+<Root bind:open>
   <!-- Optional external trigger could go here -->
-  <Dialog.Portal>
-    <Dialog.Overlay class="overlay" />
-    <Dialog.Content class="content">
-      <Dialog.Title class="title">Register</Dialog.Title>
+  <Portal>
+    <Overlay class="overlay" />
+    <Content class="content">
+      <Title class="title">Register</Title>
       {#if error}<div class="error">{error}</div>{/if}
-      <form onsubmit|preventDefault={handleRegister} class="form">
+      <form onsubmit={handleRegister} class="form"> <!-- Changed to onsubmit -->
         <label>
           <span>Email</span>
           <input type="email" bind:value={email} required autocomplete="email" />
@@ -61,40 +62,14 @@ https://svelte.dev/e/attribute_invalid_name -->
           <button type="submit" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </button>
-          <Dialog.Close class="close-btn" type="button">Cancel</Dialog.Close>
+          <Close class="close-btn" type="button">Cancel</Close>
         </div>
       </form>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+    </Content>
+  </Portal>
+</Root>
 
 <style>
-  .overlay {
-    position: fixed;
-d;
-    inset: 0;
-    background: hsl(0 0% 0% / 0.5);
-  }
-  .content {
-    position: fixed;
-d;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    max-width: 26rem;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 40px -10px hsl(0 0% 0% / 0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
   .error {
     color: #b00020;
     font-size: 0.875rem;
@@ -127,8 +102,7 @@ d;
     gap: 0.75rem;
     justify-content: flex-end;
   }
-  button,
-  .close-btn {
+  button {
     appearance: none;
     border: none;
     border-radius: 0.45rem;

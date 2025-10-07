@@ -1,16 +1,5 @@
-/// <reference types="vite/client" />
+import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-/*
- * Evidence Upload API (Production Ready)
- * Responsibilities:
- *  - Accept multipart/form-data (files[] + optional flags)
- *  - Validate input (size, mime type, summaryType enum, feature flags)
- *  - Store original binary in MinIO (content-addressable via SHA-256)
- *  - Persist metadata & AI results to PostgreSQL (Drizzle schema)
- *  - Generate embeddings + upsert into Qdrant (normalized vectors)
- *  - Optional AI summarization with selectable summaryType
- *  - Return consistent JSON envelope (data, meta, error)
- */
 import { db } from '$lib/server/db'
 import { evidence, embeddingCache } from '$lib/server/db/schema-postgres-enhanced'
 import { mkdir } from 'fs/promises'
@@ -72,13 +61,15 @@ export interface AiAnalysisResult {
   processingTime: number
   model: string
 }
+// Fix: Minio client options must be comma-separated and keys correct
 const minioClient = new MinioClient({
   endPoint: 'localhost',
   port: 9000,
-  useSSL: false
+  useSSL: false,
   accessKey: 'minioadmin',
   secretKey: 'minioadmin'
 })
+
 // Redis client for publishing worker events
 let redisPublisher: ReturnType<typeof createClient> | null = null
 async function getRedisPublisher(): Promise<any> {
@@ -105,8 +96,8 @@ async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: 
   try {
     const redis = await getRedisPublisher()
     const eventData = {
-      type: eventType
-      id: targetId
+      type: eventType,
+      id: targetId,
       action: options.action || 'process',
       caseId: options.caseId || '',
       userId: options.userId || '',
@@ -114,12 +105,21 @@ async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: 
       priority: options.priority || 'medium',
       timestamp: new Date().toISOString()
     }
-    await redis.xAdd('autotag:requests', '*', eventData)
+    // node-redis has 'xAdd' in v4; attempt to call it safely
+    if (typeof (redis as any).xAdd === 'function') {
+      await (redis as any).xAdd('autotag:requests', '*', eventData)
+    } else if (typeof (redis as any).xadd === 'function') {
+      await (redis as any).xadd('autotag:requests', '*', eventData)
+    } else {
+      // fallback: push to a list
+      await redis.rPush('autotag:requests:list', JSON.stringify(eventData))
+    }
     console.log(`📡 Published ${eventType} event for ${targetId} to Redis stream`)
   } catch (error: any) {
-    console.warn('⚠️  Failed to publish worker event:', error.message)
+    console.warn('⚠️  Failed to publish worker event:', error?.message ?? error)
   }
 }
+
 // Send content to Go ingest service for embedding generation
 async function sendToIngestService(evidenceId: string, content: string, options: {
   caseId?: string
@@ -133,7 +133,7 @@ async function sendToIngestService(evidenceId: string, content: string, options:
       content: content.substring(0, 10000), // Limit content size
       case_id: options.caseId,
       metadata: {
-        evidence_id: evidenceId
+        evidence_id: evidenceId,
         source: 'evidence_upload',
         correlation_id: options.correlationId,
         timestamp: new Date().toISOString()
@@ -147,34 +147,35 @@ async function sendToIngestService(evidenceId: string, content: string, options:
       },
       body: JSON.stringify(payload)
     })
-    if ((response as { ok?: any; json?: any; status?: any }).ok) {
-      const result = await (response as { ok?: any; json?: any; status?: any }).json()
-      console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${(result as { document_id?: any; embedding?: any; response?: any }).document_id}`)
-      // Link the document to evidence in PostgreSQL
-      if ((result as { document_id?: any; embedding?: any; response?: any }).document_id) {
+    if ((response as { ok?: any }).ok) {
+      const result = await response.json()
+      console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${result?.document_id}`)
+      // Link the document to evidence in PostgreSQL if document_id provided
+      if (result?.document_id) {
         await db.update(documentMetadata)
           .set({ evidenceId: evidenceId })
-          .where(eq(documentMetadata.id, (result as { document_id?: any; embedding?: any; response?: any }).document_id)
+          .where(eq(documentMetadata.id, result.document_id))
       }
     } else {
-      console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, (response as { ok?: any; json?: any; status?: any }).status)
+      console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, (response as { status?: any }).status)
     }
   } catch (error: any) {
-    console.warn(`⚠️  Failed to send evidence ${evidenceId} to ingest service:`, error.message)
+    console.warn(`⚠️  Failed to send evidence ${evidenceId} to ingest service:`, error?.message ?? error)
   }
 }
+
 // WebGPU multi-core vector operations
 class GPUVectorProcessor {
   static async normalizeVectors(vectors: number[][]): Promise<number[][]> {
     // Normalize vectors once on server → cosine becomes dot product
     return vectors.map(vector => {
-      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0)
+      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0))
       return magnitude > 0 ? vector.map(val => val / magnitude) : vector
     })
   }
   static async batchEmbeddings(texts: string[]): Promise<number[][]> {
     // Batch embeddings for efficiency
-    const embeddings = []
+    const embeddings: number[][] = []
     for (const text of texts) {
       try {
         const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -185,8 +186,8 @@ class GPUVectorProcessor {
             prompt: text
           })
         })
-        const result = await (response as { ok?: any; json?: any; status?: any }).json()
-        embeddings.push((result as { document_id?: any; embedding?: any; response?: any }).embedding)
+        const result = await response.json()
+        embeddings.push(result?.embedding ?? [])
       } catch (error: any) {
         console.error('Embedding failed:', error)
         embeddings.push([])
@@ -205,7 +206,7 @@ class QdrantService {
         body: JSON.stringify({
           points: [{
             id,
-            vector: embedding
+            vector: embedding,
             payload: {
               ...metadata,
               tags: metadata.tags || [],
@@ -213,7 +214,7 @@ class QdrantService {
               evidence_type: metadata.type,
               // Payload filters for efficient search
               is_contract: metadata.tags?.includes('contract') || false,
-              is_admissible: metadata.isAdmissible || true,
+              is_admissible: metadata.isAdmissible ?? true,
               priority: metadata.priority || 'normal'
             }
           }]
@@ -230,13 +231,13 @@ class QdrantService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          vector: queryVector;
-          filter: filters
+          vector: queryVector,
+          filter: filters,
           limit,
           with_payload: true
         })
       })
-      return await (response as { ok?: any; json?: any; status?: any }).json()
+      return await response.json()
     } catch (error: any) {
       console.error('Qdrant search failed:', error)
       return { result: [] }
@@ -307,12 +308,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     logger.info('upload.begin', { phase: 'begin', distCount: dist.count, correlationId, userId })
     const contentType = request.headers.get('content-type') || ''
     if (!contentType.startsWith('multipart/form-data')) {
-  const r = fail(400, 'Content-Type must be multipart/form-data', { correlationId })
-  r.headers.set('x-correlation-id', correlationId)
-  return r
+      const r = fail(400, 'Content-Type must be multipart/form-data', { correlationId: uuidv4() })
+      return r
     }
-  const bb = Busboy({ headers: { 'content-type': contentType } })
-  const incomingFiles: { filename: string; mimeType: string; size: number; tempPath: string; hash: ReturnType<typeof createHash> }[] = []
+    // Use Busboy with request.headers for robust parsing
+    const bb = Busboy({ headers: Object.fromEntries(request.headers.entries()) as any })
+    const incomingFiles: { filename: string; mimeType: string; size: number; tempPath: string; hash: ReturnType<typeof createHash> }[] = []
     const fieldMap: Record<string, string> = {}
     const parsePromise = new Promise<void>((resolve, reject) => {
       bb.on('file', (_name, stream, info) => {
@@ -323,27 +324,32 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const hash = createHash('sha256')
         const writeStream = createWriteStream(tempPath)
         const rec = { filename, mimeType, size: 0, tempPath, hash }
-    stream.on('data', (chunk: Buffer) => {
+        stream.on('data', (chunk: Buffer) => {
           rec.size += chunk.length
           hash.update(chunk)
           if (rec.size > getMaxFileSize()) {
+            // stop processing this file
             stream.unpipe()
             writeStream.destroy()
-      logger.warn('upload.file.too_large', { file: filename, size: rec.size, correlationId, userId })
-      reject(new Error(`File ${filename} exceeds ${getMaxFileSize() / 1024 / 1024}MB limit`)
+            logger.warn('upload.file.too_large', { file: filename, size: rec.size })
+            reject(new Error(`File ${filename} exceeds ${getMaxFileSize() / 1024 / 1024}MB limit`))
             return
           }
         })
         stream.on('error', reject)
         writeStream.on('error', reject)
         stream.pipe(writeStream)
-  stream.on('end', () => { incomingFiles.push(rec); logger.debug('upload.file.end', { file: filename, size: rec.size, correlationId, userId }), })
+        stream.on('end', () => {
+          incomingFiles.push(rec)
+          logger.debug('upload.file.end', { file: filename, size: rec.size })
+        })
       })
-      bb.on('field', (name, val) => { fieldMap[name] = val, })
+      bb.on('field', (name, val) => { fieldMap[name] = String(val) })
       bb.on('error', reject)
       bb.on('finish', resolve)
     })
-    // Convert Web ReadableStream (Fetch API) to Node.js Readable for Busboy
+
+    // Convert Fetch ReadableStream to Node stream and pipe into Busboy
     const body: any = (request as any).body
     if (body) {
       if (typeof body.getReader === 'function') {
@@ -352,27 +358,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       } else if ((body as any).pipe && typeof (body as any).pipe === 'function') {
         (body as any).pipe(bb)
       } else {
-        // Fallback: accumulate and end
-        const reader = body.getReader?.()
-        if (reader) {
-          const pump = async (): Promise<any> => {
-            while (true) {
-              const { done, value } = await reader.read()
-              if (done) break
-              bb.write(value)
-            }
-            bb.end()
-          }
-          pump()
-        } else {
-          bb.end()
-        }
+        // Fallback: end busboy to trigger finish handlers
+        bb.end()
       }
     } else {
       bb.end()
     }
+
     await parsePromise
-  if (incomingFiles.length === 0) return fail(400, 'No files provided', { correlationId }, correlationId)
+
+    if (incomingFiles.length === 0) return fail(400, 'No files provided', { correlationId }, correlationId)
     // Unified flags from parsed fields
     const generateSummaryRaw = (fieldMap['generateSummary'] ?? fieldMap['summarizeWithAI']) || null
     const summaryTypeRaw = fieldMap['summaryType'] || null
@@ -385,11 +380,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       try { uploadData = JSON.parse(uploadDataStr), } catch (e: any) { console.warn('Failed to parse upload data', e), }
     }
     // Parse upload metadata
-  const coerceBool = (v: string | null | undefined) => (v === 'true' || v === '1')
-  uploadData.enableAiAnalysis = uploadData.enableAiAnalysis ?? coerceBool(enableAiAnalysisRaw)
-  uploadData.enableEmbeddings = uploadData.enableEmbeddings ?? coerceBool(enableEmbeddingsRaw) ?? true
-  uploadData.enableOcr = uploadData.enableOcr ?? coerceBool(enableOcrRaw)
-  const generateSummary = coerceBool(generateSummaryRaw) || !!summaryTypeRaw
+    const coerceBool = (v: string | null | undefined) => (v === 'true' || v === '1')
+    uploadData.enableAiAnalysis = uploadData.enableAiAnalysis ?? coerceBool(enableAiAnalysisRaw)
+    uploadData.enableEmbeddings = uploadData.enableEmbeddings ?? coerceBool(enableEmbeddingsRaw) ?? true
+    uploadData.enableOcr = uploadData.enableOcr ?? coerceBool(enableOcrRaw)
+    const generateSummary = coerceBool(generateSummaryRaw) || !!summaryTypeRaw
     // Summary type validation
     let summaryType: SummaryType | undefined
     if (summaryTypeRaw) {
@@ -404,11 +399,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       // Default gracefully
       summaryType = 'narrative'
     }
-  (uploadData as UploadAugment).summaryType = summaryType
+    (uploadData as UploadAugment).summaryType = summaryType
     if (generateSummary) uploadData.enableAiAnalysis = true
     // Add user ID from session
     (uploadData as any).userId = userId
-  const results: UploadResult[] = []
+    const results: UploadResult[] = []
     // Ensure upload directories exist
     await mkdir(UPLOAD_DIR, { recursive: true })
     await mkdir(THUMBNAIL_DIR, { recursive: true })
@@ -422,12 +417,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return created(results, { count: results.length, correlationId }, correlationId)
   } catch (err: any) {
     console.error('File upload error:', err)
-    if (err instanceof Response) throw err
     const correlationId = uuidv4()
     return json({
       success: false,
       error: 'failure default to mock',
-      data: [{,
+      data: [{
         id: 'mock-upload-evidence',
         fileName: 'mock_evidence_upload.pdf',
         originalName: 'evidence_document.pdf',
@@ -449,30 +443,35 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }, { status: 500 })
   }
 }
-}
+
+// StreamedFileMeta type (fix)
 export interface StreamedFileMeta { filename:string; mimeType:string; size:number; tempPath:string; hash: ReturnType<typeof createHash> }
-// Enhanced to accept correlation + user for structured logging and to cleanup tmp file
-async function processFileStreamed(;
-  meta: StreamedFileMeta
-  uploadData: Partial<FileUpload>
-  correlationId?: string
+
+// Fix: proper function signature and implementation for processing a streamed file
+async function processFileStreamed(
+  meta: StreamedFileMeta,
+  uploadData: Partial<FileUpload>,
+  correlationId?: string,
   userId?: string
 ): Promise<UploadResult> {
   const fileId = uuidv4()
   const fileExtension = meta.filename.split('.').pop() || ''
   const fileName = `${fileId}.${fileExtension}`
-  const minioPath = `evidence/${uploadData.caseId}/${fileName}`
+  const minioPath = `evidence/${uploadData.caseId || 'uncategorized'}/${fileName}`
   const hash = meta.hash.digest('hex')
   const fs = await import('fs')
   logger.debug('upload.file.minio_put.start', { file: meta.filename, size: meta.size, correlationId, userId })
+
+  // Minio putObject expects metadata as an object; use X-Amz-Meta-* keys or the object's meta parameter
   await minioClient.putObject('evidence', minioPath, fs.createReadStream(meta.tempPath), {
     'Content-Type': meta.mimeType,
-    'Original-Name': meta.filename,
-    'Case-ID': uploadData.caseId || '',
-    'Evidence-ID': fileId
-    'Hash': hash
-  })
+    'X-Amz-Meta-Original-Name': meta.filename,
+    'X-Amz-Meta-Case-Id': uploadData.caseId || '',
+    'X-Amz-Meta-Evidence-Id': fileId,
+    'X-Amz-Meta-Hash': hash
+  } as any)
   logger.debug('upload.file.minio_put.done', { file: meta.filename, correlationId, userId })
+
   let aiAnalysis: AiAnalysisResult | undefined
   let embedding: number[] | undefined
   let ocrText: string | undefined
@@ -487,24 +486,24 @@ async function processFileStreamed(;
     }
     // Only perform AI analysis if requested (no embedding generation here - let Go ingest service handle it)
     if (buffer && uploadData.enableAiAnalysis) {
-      // Node may not provide the browser File constructor; create a minimal file-like object instead
-      const fileLike: FileLike = { name: meta.filename, type: meta.mimeType }
+      const fileLike: any = { name: meta.filename, type: meta.mimeType }
       aiAnalysis = await performEnhancedAIAnalysis(fileLike, textContent, uploadData)
     }
+
     // Insert evidence into PostgreSQL (single source of truth)
     await db.insert(evidence).values({
-      id: fileId
+      id: fileId,
       userId: (uploadData as any).userId || 'system',
       caseId: uploadData.caseId as any,
       title: uploadData.title || meta.filename,
       description: uploadData.description,
       evidenceType: uploadData.evidenceType || 'document',
-      subType: null
+      subType: null,
       fileName: meta.filename,
       fileSize: meta.size as any,
       mimeType: meta.mimeType,
       hash,
-      storagePath: minioPath
+      storagePath: minioPath,
       storageBucket: 'evidence',
       tags: (uploadData.tags as any) || [],
       aiAnalysis: (aiAnalysis as any) || {},
@@ -512,19 +511,21 @@ async function processFileStreamed(;
       aiSummary: aiAnalysis?.summary || null,
       summary: aiAnalysis?.summary || null,
       summaryType: (uploadData as any).summaryType || null,
-      processingStatus: 'completed', // File upload completed
-      ingestStatus: 'pending', // Awaiting ingest service
+      processingStatus: 'completed',
+      ingestStatus: 'pending',
       isAdmissible: (uploadData as any).isAdmissible ?? true,
       confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal'
     } as any).returning()
+
     // Publish Redis event for worker processing (PostgreSQL-first approach)
     await publishWorkerEvent('evidence', fileId, {
       action: 'tag',
       caseId: uploadData.caseId,
       userId: (uploadData as any).userId,
-      correlationId: correlationId
+      correlationId: correlationId,
       priority: uploadData.enableAiAnalysis ? 'high' : 'medium'
     })
+
     // Send file to Go ingest service for embedding generation (if text content available)
     if (textContent && textContent.trim() && uploadData.enableEmbeddings !== false) {
       await sendToIngestService(fileId, textContent, {
@@ -533,19 +534,21 @@ async function processFileStreamed(;
         correlationId
       })
     }
+
     const presignedUrl = await minioClient.presignedGetObject('evidence', minioPath, 3600)
     // Temp file cleanup
     fs.promises.unlink(meta.tempPath).catch(()=>{})
     return { id: fileId, fileName, originalName: meta.filename, fileSize: meta.size, mimeType: meta.mimeType, url: presignedUrl, hash, aiAnalysis, embedding }
   } catch (err: any) {
-    logger.error('upload.file.error', { file: meta.filename, error: (err as any)?.message, correlationId, userId })
+    logger.error('upload.file.error', { file: meta.filename, error: err?.message ?? err, correlationId, userId })
+    // Attempt to record a minimal db row to signify failure
     await db.insert(evidence).values({
       userId: (uploadData as any).userId || 'system',
       caseId: uploadData.caseId as any,
       title: uploadData.title || meta.filename,
       description: uploadData.description,
       evidenceType: uploadData.evidenceType || 'document',
-      subType: null
+      subType: null,
       fileName: meta.filename,
       fileSize: meta.size as any,
       mimeType: meta.mimeType,
@@ -660,9 +663,9 @@ Provide structured JSON analysis:
   }
 }
 async function performAIAnalysis(
-  file: File;
-  buffer: Buffer
-  uploadData: Partial<FileUpload>
+  file: File,
+  buffer: Buffer,
+  uploadData: Partial<FileUpload>,
   ocrText?: string
 ): Promise<any> {
   try {
@@ -709,11 +712,9 @@ Format your response as JSON with the following structure:
           new SystemMessage('You are a legal AI assistant specializing in document analysis.'),
           new HumanMessage(analysisPrompt)
         ], {
-            temperature: 0.3,
-            maxTokens: 1000
-          }
-        )
-        // Parse AI response
+          temperature: 0.3,
+          maxTokens: 1000
+        })
         try {
           const parsedAnalysis = JSON.parse(analysisResult)
           results.analysis = {
@@ -725,9 +726,8 @@ Format your response as JSON with the following structure:
             model: ollamaCudaService.currentModel
           }
         } catch (parseError) {
-          // If JSON parsing fails, use the raw response as summary
           results.analysis = {
-            summary: analysisResult.substring(0, 500),
+            summary: String(analysisResult).substring(0, 500),
             keyPoints: [],
             categories: [],
             confidence: 0.5,
@@ -774,9 +774,9 @@ export const GET: RequestHandler = async ({ url }) => {
     const evidenceRecord = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, fileId)
+      .where(eq(evidence.id, fileId))
       .limit(1)
-    if (evidenceRecord.length === 0) {
+    if (!Array.isArray(evidenceRecord) || evidenceRecord.length === 0) {
       throw error(404, 'File not found')
     }
     const record = evidenceRecord[0]
@@ -784,11 +784,10 @@ export const GET: RequestHandler = async ({ url }) => {
       // TODO: Implement thumbnail serving when we have a thumbnail storage solution
       throw error(404, 'Thumbnail not found')
     } else {
-      // Serve original file
       const { readFile } = await import('fs/promises')
       const filePath = join(UPLOAD_DIR, record.fileName!)
-  const fileBuffer = await readFile(filePath)
-  const resp = new Response(fileBuffer as any as BodyInit, {
+      const fileBuffer = await readFile(filePath)
+      const resp = new Response(fileBuffer as any as BodyInit, {
         headers: {
           'Content-Type': record.mimeType!,
           'Content-Disposition': `inline; filename="${record.fileName}"`,
@@ -809,6 +808,8 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
+
+// DELETE handler fixes: balanced parentheses and safe deletes
 export const DELETE: RequestHandler = async ({ url }) => {
   const correlationId = uuidv4()
   const fileId = url.pathname.split('/').pop()
@@ -816,27 +817,25 @@ export const DELETE: RequestHandler = async ({ url }) => {
     throw error(404, 'File not found')
   }
   try {
-    // Delete from database
     const deleted = await db
       .delete(evidence)
-      .where(eq(evidence.id, fileId)
+      .where(eq(evidence.id, fileId))
       .returning()
-    if (deleted.length === 0) {
+    if (!Array.isArray(deleted) || deleted.length === 0) {
       throw error(404, 'File not found')
     }
-    // Delete physical files
     const record = deleted[0]
     try {
       const { unlink } = await import('fs/promises')
       const filePath = join(UPLOAD_DIR, record.fileName!)
-      await unlink(filePath)
+      await unlink(filePath).catch(()=>{})
       if (record && typeof record === 'object' && 'metadata' in record && record.metadata && typeof record.metadata === 'object' && 'thumbnailPath' in record.metadata) {
-        await unlink(record.metadata.thumbnailPath as string)
+        await unlink(record.metadata.thumbnailPath as string).catch(()=>{})
       }
     } catch (error: any) {
       console.warn('Failed to delete physical file:', error)
     }
-  return ok({ id: fileId }, { message: 'File deleted' }, correlationId)
+    return ok({ id: fileId }, { message: 'File deleted' }, correlationId)
   } catch (err: any) {
     console.error('File deletion error:', err)
     return json({

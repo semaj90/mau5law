@@ -10,11 +10,13 @@
   let {
     open = false,
     title = 'Sign in',
-    onClose = () => ,
-    onSubmit = () => }: Props = $props();
+    onClose = () => {}, // Corrected: added empty function body
+    onSubmit = () => {} // Corrected: added empty function body
+  }: Props = $props();
   let email = $state('');
   let password = $state('');
-  function submit() {
+  function submit(e?: Event) {
+    if (e) e.preventDefault();
     if (email && password) {
       onSubmit({ email, password });
       // Clear form after submission
@@ -23,10 +25,10 @@
     }
   }
 </script>
-
 {#if open}
   <div
-    class="fixed inset-0 z-50 grid place-items-center bg-black/50"
+    class="fixed inset-0 z-50 grid place-items-center"
+    style="background: var(--modal-bg);"
     role="dialog"
     aria-modal="true"
     tabindex="0"
@@ -37,13 +39,16 @@
       if (e.key === 'Escape') onClose();
     }}
   >
-    <div
+  >
+    <form
       class="w-[28rem] rounded-md border border-neutral-700 bg-neutral-900 p-4 text-neutral-100 shadow-xl"
       role="document"
+      onsubmit={submit}
       onclick={e => e.stopPropagation()}
       onkeydown={e => {
         if (e.key === 'Escape') onClose();
       }}
+      autocomplete="on"
     >
       <div class="mb-3 text-lg font-semibold">{title}</div>
       <div class="space-y-3">
@@ -61,10 +66,10 @@
         />
       </div>
       <div class="mt-4 flex justify-end gap-2">
-        <button class="rounded bg-neutral-700 px-3 py-1" onclick={onClose}>Cancel</button>
-        <button class="rounded bg-emerald-600 px-3 py-1" onclick={submit}>Sign in</button>
+        <button class="rounded bg-neutral-700 px-3 py-1" type="button" onclick={onClose}>Cancel</button>
+        <button class="rounded bg-emerald-600 px-3 py-1" type="submit">Sign in</button>
       </div>
-    </div>
+    </form>
   </div>
 {/if}
 
@@ -73,3 +78,4 @@
     --modal-bg: rgba(0, 0, 0, 0.5);
   }
 </style>
+

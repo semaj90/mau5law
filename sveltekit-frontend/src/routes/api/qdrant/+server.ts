@@ -4,6 +4,7 @@ import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimi
 import { productionLogger as logger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
 import type { RequestHandler } from './$types.js';
+import os from 'os'; // Import the 'os' module
 
 // Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.
 // Define a minimal local type for collection info to avoid the "Cannot use namespace as a type" error.
@@ -135,7 +136,7 @@ function getOptimizedQdrantConfig(vectorSize: number): QdrantCollectionConfigura
       m: 16,
       ef_construct: 128,
       full_scan_threshold: 10000,
-      max_indexing_threads: Math.max(1, Math.floor(require('os').cpus().length / 2)),
+      max_indexing_threads: Math.max(1, Math.floor(os.cpus().length / 2)),
     };
   }
   return config;

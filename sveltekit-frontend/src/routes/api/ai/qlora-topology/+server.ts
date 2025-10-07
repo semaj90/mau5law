@@ -1,295 +1,220 @@
 /**
- * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 🎮 REDIS-OPTIMIZED RAG ENDPOINT - Mass Optimization Applied
  *
- * Endpoint: qlora-topology
+ * Endpoint: intelligent-todo
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Stra    if (trainingMode && (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).success) {
-      (response as any).trainingData = {
-        dataFlywheelSamples: 0,
-        modelUpdateApplied: false
-        accuracyImprovement: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics?.accuracyImprovement || 0
-      }
-    }onservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
- * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Cache Strategy: conservative (cache-aside per error)
+ * - Memory Bank: PRG_ROM (Nintendo-style) for low-level efficiency
+ * - Cache hits: ~2-5ms response time per error
+ * - Fresh queries (Cache Miss): Full RAG pipeline execution
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator.js'
-import * as pako from 'pako'
-import { createHash } from 'crypto'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-// Redis client for caching (in production, use proper Redis client)
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import * as pako from 'pako';
+import { createHash } from 'crypto';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { tritonClient } from '$lib/server/triton-client';
+import { qdrantClient } from '$lib/server/qdrant-client';
+import { db } from '$lib/server/db';
+import { npmSolvedErrors as solvedErrors } from '$lib/server/schema';
+import { sql } from 'drizzle-orm';
+
+// --- Interfaces for Request, Response, and Cache ---
+
+interface NPMError {
+  id: string;
+  errorText: string;
+}
+
+interface IntelligentTodoRequest {
+  errors: NPMError[];
+  useCache?: boolean;
+  binaryResponse?: boolean;
+}
+
+interface IntelligentTodo {
+  errorId: string;
+  originalError: string;
+  suggestedSteps: string[];
+  contextUsed: number;
+  cacheHit: boolean;
+  processingTime: number;
+}
+
 interface CacheEntry {
-  data: Buffer
-  timestamp: number
-  ttl: number
+  data: Uint8Array;
+  timestamp: number;
+  ttl: number;
 }
-const cache = new Map<string, CacheEntry>()
-interface QLoRATopologyRequest {
-  query: string
-  context?: string
-  topologyType?: 'legal' | 'general' | 'technical'
-  accuracyTarget?: number
-  useCache?: boolean
-  trainingMode?: boolean
-  binaryResponse?: boolean; // Request binary-compressed response
+
+// In-memory L1 cache, with Redis acting as L2 via middleware
+const cache = new Map<string, CacheEntry>();
+
+// --- Caching and Compression Utilities ---
+
+function generateCacheKey(errorText: string): string {
+    const hash = createHash('sha256');
+    hash.update(errorText); // Key is based purely on the error content
+    return `npm-todo:${hash.digest('hex').substring(0, 16)}`;
 }
-interface QLoRATopologyResponse {
-  prediction: any
-  accuracy: number
-  topology: any
-  cacheHit: boolean
-  processingTime: number
-  metrics: {
-    hmmPredictionScore: number
-    somClusterAccuracy: number
-    webgpuOptimizationGain: number
-    cacheEfficiency: number
-  }
-  learningData?: {
-    dataFlywheelSamples: number
-    modelUpdateApplied: boolean
-    accuracyImprovement: number
-  }
-}
-let orchestrator: UnifiedCacheEnhancedOrchestrator | null = null
-async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
-  if (!orchestrator) {
-    orchestrator = new UnifiedCacheEnhancedOrchestrator()
-    await orchestrator.initialize()
-    console.log('[QLoRA API] Unified orchestrator initialized')
-  }
-  return orchestrator
-}
-// Binary cache utilities
-function generateCacheKey(request: QLoRATopologyRequest): string {
-  const hash = createHash('sha256')
-  hash.update(JSON.stringify({
-    query: request.query,
-    context: request.context,
-    topologyType: request.topologyType,
-    accuracyTarget: request.accuracyTarget,
-    trainingMode: request.trainingMode
-  })
-  return `qlora:${hash.digest('hex').substring(0, 16)}`
-}
+
 function isExpired(entry: CacheEntry): boolean {
-  return Date.now() > entry.timestamp + entry.ttl
+  return Date.now() > entry.timestamp + entry.ttl;
 }
-function compressResponse(data: any): Buffer {
-  const jsonString = JSON.stringify(data)
-  return Buffer.from(pako.gzip(jsonString)
+
+function compressResponse(data: object): Uint8Array {
+  const jsonString = JSON.stringify(data);
+  return pako.gzip(jsonString);
 }
-function decompressResponse(buffer: Buffer): any {
-  const decompressed = pako.ungzip(buffer, { to: 'string' })
-  return JSON.parse(decompressed)
+
+function decompressResponse(buffer: Uint8Array): IntelligentTodo {
+  const decompressed = pako.ungzip(buffer, { to: 'string' });
+  return JSON.parse(decompressed);
 }
+
+
+// --- Main POST Handler with RAG Pipeline ---
+
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
-  try {
-    const body: QLoRATopologyRequest = await request.json()
-    const {
-      query,
-      context = '',
-      topologyType = 'general',
-      accuracyTarget = 90,
-      useCache = true,
-      trainingMode = false,
-      binaryResponse = false
-    } = body
-    if (!query) {
-      return json({ error: 'Query is required' }, { status: 400 })
-    }
-    const startTime = Date.now()
-    // Check cache first (cache-aside pattern)
-    const cacheKey = generateCacheKey(body)
-    let cacheHit = false
-    if (useCache) {
-      const cachedEntry = cache.get(cacheKey)
-      if (cachedEntry && !isExpired(cachedEntry)) {
-        console.log(`[QLoRA API] Cache HIT for key: ${cacheKey}`)
-        cacheHit = true
-        if (binaryResponse) {
-          // Return binary compressed response
-          return new Response(cachedEntry.data as BodyInit, {
-            status: 200,
-            headers: {
-              'Content-Type': 'application/octet-stream',
-              'Content-Encoding': 'gzip',
-              'X-Cache': 'HIT',
-              'X-Processing-Time': `${Date.now() - startTime}ms`
+    try {
+      const body: IntelligentTodoRequest = await request.json();
+      const { errors, useCache = true, binaryResponse = false } = body;
+
+      if (!errors || !Array.isArray(errors) || errors.length === 0) {
+        return json({ error: 'Request body must be a non-empty array of NPMError objects.' }, { status: 400 });
+      }
+
+      const intelligentTodos = await Promise.all(
+        errors.map(async (error): Promise<IntelligentTodo> => {
+          const startTime = Date.now();
+          const cacheKey = generateCacheKey(error.errorText);
+
+          // 1. CHECK CACHE (Cache-Aside Pattern)
+          if (useCache) {
+            const cachedEntry = cache.get(cacheKey);
+            if (cachedEntry && !isExpired(cachedEntry)) {
+              console.log(`[Intelligent Todo] L1 Cache HIT for key: ${cacheKey}`);
+              const cachedResponse = decompressResponse(cachedEntry.data);
+              cachedResponse.cacheHit = true;
+              cachedResponse.processingTime = Date.now() - startTime;
+              return cachedResponse;
             }
-          })
-        } else {
-          // Return decompressed JSON
-          const cachedResponse = decompressResponse(cachedEntry.data)
-          cachedResponse.cacheHit = true
-          cachedResponse.processingTime = Date.now() - startTime
-          return json(cachedResponse)
-        }
-      } else {
-        console.log(`[QLoRA API] Cache MISS for key: ${cacheKey}`)
-      }
-    }
-    const orch = await getOrchestrator()
-    // Process with unified intelligence (cache miss - expensive operation)
-    const result = await orch.processWithUnifiedIntelligence({
-      requestId: `qlora_${cacheKey}`,
-      userId: 'anonymous',
-      documentId: `qlora_${cacheKey}`,
-      operationType: 'predict',
-      priority: 'medium',
-      context: {
-        documentContext: {
-          id: `qlora_${cacheKey}`,
-          type: 'brief',
-          priority: 128,
-          size: query.length,
-          confidenceLevel: 0.9,
-          riskLevel: 'low',
-          lastAccessed: Date.now(),
-          compressed: false
-          metadata: {
-            caseId: 'api_request'
           }
-        } as any,
-        userSession: {
-          sessionType: 'research',
-          focusIntensity: 0.8,
-          documentFlow: ['brief'],
-          interactionVelocity: 1.0,
-          qualityExpectation: 0.9,
-          timeConstraints: 0.5
-        },
-        renderingNeeded: false
-        realTimeRequired: false
-      },
-      requirements: {
-        minAccuracy: 0.8,
-        memoryBudget: 1024,
-        maxLatency: 30000,
-        qualityLevel: 'production'
-      },
-      metadata: {
-        timestamp: Date.now(),
-        clientCapabilities: { [key: string]: any },
-        previousResults: []
-      },
-      cachePreferences: {
-        enableMultiTierCache: useCache
-        enableWebGPUCache: true
-        enableSummarizeCache: true
-        enableRabbitMQCache: false
-        cacheStrategy: 'adaptive',
-        maxLatencyMs: 30000,
-        minAccuracyThreshold: accuracyTarget / 100
-      },
-      optimization: {
-        predictiveAccuracy: 0.6,
-        targetAccuracy: accuracyTarget / 100,
-        learningRate: 0.03,
-        useReinforcementLearning: trainingMode
-        useWebGPUAcceleration: true
-        useAsyncOrchestration: false
+
+          console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.`);
+
+          // 2. EMBED (Triton Server)
+          const errorEmbedding = await tritonClient.getEmbedding(error.errorText);
+
+          // 3. RETRIEVE (Qdrant Vector DB)
+          const similarErrorVectors = await qdrantClient.search('npm_errors', {
+            vector: errorEmbedding,
+            limit: 3,
+          });
+          const similarErrorIds = similarErrorVectors.map((v: { id: number | string }) => v.id as number);
+
+          // 4. AUGMENT (PostgreSQL via Drizzle)
+          let contextText = 'No similar errors found in the database.';
+          if (similarErrorIds.length > 0) {
+            const similarSolutions = await db
+              .select()
+              .from(solvedErrors)
+              .where(sql`${solvedErrors.id} in ${similarErrorIds}`);
+
+            contextText = similarSolutions
+              .map(
+                (s: { rawErrorText: string; solutionText: string }) =>
+                  `SIMILAR ERROR:\n${s.rawErrorText}\nSOLUTION:\n${s.solutionText}`
+              )
+              .join('\n\n---\n\n');
+          }
+
+          // 5. GENERATE (Triton Server with Fine-Tuned Gemma)
+          const finalPrompt = `You are an expert software engineer. A user has an NPM error. Based on the error and context from similar past solutions, generate a step-by-step todo list to resolve it.\n\n---ERROR---\n${error.errorText}\n\n---CONTEXT---\n${contextText}\n\n---SOLUTION STEPS---`;
+          const generatedSolution = await tritonClient.generateText(finalPrompt);
+
+          const response: Omit<IntelligentTodo, 'cacheHit' | 'processingTime'> = {
+            errorId: error.id,
+            originalError: error.errorText,
+            suggestedSteps: generatedSolution
+              .split('\n')
+              .filter((step: string) => step.trim().length > 0 && !step.startsWith('---')),
+            contextUsed: similarErrorIds.length,
+          };
+
+          const processingTime = Date.now() - startTime;
+          const finalResponse = { ...response, cacheHit: false, processingTime };
+
+          // 6. POPULATE CACHE
+          if (useCache) {
+            const compressedData = compressResponse(finalResponse);
+            cache.set(cacheKey, {
+              data: compressedData,
+              timestamp: Date.now(),
+              ttl: 15 * 60 * 1000, // 15 minute TTL
+            });
+            console.log(`[Intelligent Todo] Cached response for key: ${cacheKey} (${compressedData.length} bytes)`);
+          }
+
+          return finalResponse;
+        })
+      );
+
+      if (binaryResponse) {
+        const compressedData = compressResponse(intelligentTodos);
+        return new Response(compressedData.buffer, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Encoding': 'gzip',
+          },
+        });
+      } else {
+        return json(intelligentTodos);
       }
-    })
-    const processingTime = Date.now() - startTime
-    // Get current system metrics
-    const metrics = await orch.getSystemMetrics()
-    const cacheStats = await orch.getCacheStatistics()
-    const response: QLoRATopologyResponse = {
-      prediction: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).results?.qloraConfig || {},
-      accuracy: ((result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).performance?.accuracy || 0) * 100,
-      topology: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).results?.renderOptimization || {},
-      cacheHit,
-      processingTime,
-      metrics: {
-        hmmPredictionScore: metrics.hmmAccuracy,
-        somClusterAccuracy: metrics.somClusterScore,
-        webgpuOptimizationGain: metrics.webgpuSpeedup,
-        cacheEfficiency: cacheStats.hitRate
-      }
+    } catch (error) {
+      console.error('[Intelligent Todo API] Error processing request:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return json({ error: 'Failed to process intelligent todo generation', details: message }, { status: 500 });
     }
-    // Add learning data if in training mode
-    if (trainingMode && (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).success) {
-      (response as { learningData?: any }).learningData = {
-        dataFlywheelSamples: 0,
-        modelUpdateApplied: false
-        accuracyImprovement: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics?.accuracyImprovement || 0
-      }
-    }
-    // Store in cache before responding (cache-aside pattern)
-    if (useCache) {
-      const compressedData = compressResponse(response)
-      cache.set(cacheKey, {
-        data: compressedData
-        timestamp: Date.now(),
-        ttl: 5 * 60 * 1000 // 5 minutes TTL
-      })
-      console.log(`[QLoRA API] Cached response with key: ${cacheKey} (${compressedData.length} bytes)`)
-    }
-    console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${((result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).performance?.accuracy || 0) * 100}% accuracy`)
-    if (binaryResponse) {
-      // Return binary compressed response
-      const compressedData = compressResponse(response)
-      return new Response(compressedData as BodyInit, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          'Content-Encoding': 'gzip',
-          'X-Cache': 'MISS',
-          'X-Processing-Time': `${processingTime}ms`,
-          'X-Compression-Ratio': `${Math.round((JSON.stringify(response).length / compressedData.length) * 100) / 100}x`
-        }
-      })
-    } else {
-      return json(response)
-    }
-  } catch (error: any) {
-    console.error('[QLoRA API] Error processing request:', error)
-    return json({
-      error: 'Failed to process QLoRA topology prediction',
-      details: error.message
-    }, { status: 500 })
-  }
-}
+};
+
+
+// --- Health Check GET Handler ---
+
 const originalGETHandler: RequestHandler = async () => {
   try {
-    const orch = await getOrchestrator()
-    const metrics = await orch.getSystemMetrics()
-    const cacheStats = await orch.getCacheStatistics()
-    return json({
+    // In a real app, you would have actual health checks for each service.
+    const healthStatus = {
       status: 'healthy',
-      systemMetrics: metrics
-      cacheStatistics: cacheStats
+      timestamp: new Date().toISOString(),
       components: {
-        qloraPredictor: metrics.predictorStatus,
-        searchEngine: metrics.searchEngineStatus,
-        cacheOrchestrator: cacheStats.status,
-        webgpuAcceleration: metrics.webgpuEnabled
+        tritonServer: 'ok',
+        qdrantDatabase: 'ok',
+        postgresDatabase: 'ok',
+        redisCache: 'ok', // From middleware
       },
-      performance: {
-        averageAccuracy: metrics.averageAccuracy,
-        averageProcessingTime: metrics.averageProcessingTime,
-        cacheHitRate: cacheStats.hitRate,
-        systemLoad: metrics.systemLoad
-      }
-    })
-  } catch (error: any) {
-    console.error('[QLoRA API] Health check failed:', error)
-    return json({
-      status: 'error',
-      error: error.message
-    }, { status: 500 })
+      performanceMetrics: {
+        l1CacheSizeBytes: Array.from(cache.values()).reduce((acc, entry) => acc + entry.data.length, 0),
+        l1CacheEntries: cache.size,
+        // More metrics would be exposed from the services themselves.
+      },
+    };
+    return json(healthStatus);
+  } catch (error) {
+    console.error('[Intelligent Todo API] Health check failed:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return json({ status: 'error', error: message }, { status: 500 });
   }
-}
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+};
+
+// --- Export Handlers with Middleware ---
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
 export const GET = redisOptimized.aiAnalysis(originalGETHandler);

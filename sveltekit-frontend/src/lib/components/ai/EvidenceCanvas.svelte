@@ -426,7 +426,6 @@
         class={"nes-progress " + (analysisStatus === 'analyzing' ? 'is-primary' : 'is-warning')}
         value={analysisProgress}
         max="100"
-        role="progressbar"
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={Math.round(analysisProgress)}
@@ -986,3 +985,4 @@
   }
 }
 </style>
+

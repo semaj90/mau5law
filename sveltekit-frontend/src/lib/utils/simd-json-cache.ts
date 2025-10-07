@@ -4,10 +4,10 @@
  */
 // SIMD JSON Interface
 interface SIMDJSONModule {
-  parse(json: string): any;
+  parse(json: string): unknown;
   isValid(json: string): boolean;
   minify(json: string): string;
-  stringify(obj: any): string;
+  stringify(obj: unknown): string;
   getLastErrorMessage(): string;
 }
 // Cache Configuration
@@ -37,7 +37,7 @@ class SIMDJSONCache {
   private simdLoaded = false;
   private config: CacheConfig;
   private metrics: ParseMetrics;
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -45,8 +45,8 @@ class SIMDJSONCache {
       compressionEnabled: config.compressionEnabled !== false,
       compressionThreshold: config.compressionThreshold || 1024, // 1KB
       maxKeyLength: config.maxKeyLength || 250,
-      enableMetrics: config.enableMetrics !== false
-    }
+      enableMetrics: config.enableMetrics !== false,
+    };
     this.metrics = {
       totalParses: 0,
       simdParses: 0,
@@ -57,8 +57,8 @@ class SIMDJSONCache {
       averageSIMDTime: 0,
       averageNativeTime: 0,
       totalDataProcessed: 0,
-      compressionRatio: 0
-    }
+      compressionRatio: 0,
+    };
     this.initializeSIMD();
   }
   private async initializeSIMD(): Promise<void> {
@@ -85,9 +85,21 @@ class SIMDJSONCache {
     try {
       // Check if WebAssembly SIMD is supported
       const wasmBytes = new Uint8Array([
-        0x00, 0x61, 0x73, 0x6d, // WebAssembly magic
-        0x01, 0x00, 0x00, 0x00, // Version 1
-        0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b, // Type section with v128
+        0x00,
+        0x61,
+        0x73,
+        0x6d, // WebAssembly magic
+        0x01,
+        0x00,
+        0x00,
+        0x00, // Version 1
+        0x01,
+        0x05,
+        0x01,
+        0x60,
+        0x00,
+        0x01,
+        0x7b, // Type section with v128
       ]);
       await WebAssembly.instantiate(wasmBytes);
       return true;
@@ -100,16 +112,14 @@ class SIMDJSONCache {
     const hash = this.fastHash(data + operation);
     const key = `simd_json:${operation}:${hash}`;
     // Ensure key doesn't exceed Redis limits
-    return key.length > this.config.maxKeyLength
-      ? key.substring(0, this.config.maxKeyLength)
-      : key;
+    return key.length > this.config.maxKeyLength ? key.substring(0, this.config.maxKeyLength) : key;
   }
   private fastHash(str: string): string {
     let hash = 0;
     if (str.length === 0) return hash.toString(36);
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(36);
@@ -183,32 +193,32 @@ class SIMDJSONCache {
       return compressedData;
     }
   }
-  private async getFromCache(_key: string): Promise<any | null> {
+  private async getFromCache(_key: string): Promise<unknown | null> {
     try {
       // Check in-memory cache first
-      const memoryResult = this.cache.get(key);
-      if (memoryResult && Date.now() < memoryResult.timestamp + (memoryResult.ttl * 1000)) {
+      const memoryResult = this.cache.get(_key);
+      if (memoryResult && Date.now() < memoryResult.timestamp + memoryResult.ttl * 1000) {
         if (this.config.enableMetrics) this.metrics.cacheHits++;
         return memoryResult.data;
       } else if (memoryResult) {
-        this.cache.delete(key); // Remove expired entry
+        this.cache.delete(_key); // Remove expired entry
       }
       // Check Redis cache
       const response = await fetch('/api/cache/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key })
+        body: JSON.stringify({ key: _key }),
       });
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
           const decompressed = await this.decompressData(result.data);
-          const parsed = JSON.parse(decompressed);
+          const parsed = JSON.parse(decompressed) as unknown;
           // Store in memory cache
-          this.cache.set(key, {
-            data: parsed
+          this.cache.set(_key, {
+            data: parsed,
             timestamp: Date.now(),
-            ttl: this.config.defaultTTL
+            ttl: this.config.defaultTTL,
           });
           if (this.config.enableMetrics) this.metrics.cacheHits++;
           return parsed;
@@ -220,26 +230,26 @@ class SIMDJSONCache {
     if (this.config.enableMetrics) this.metrics.cacheMisses++;
     return null;
   }
-  private async setCache(_key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
+  private async setCache(_key: string, data: unknown, ttl: number = this.config.defaultTTL): Promise<void> {
     try {
       const serialized = JSON.stringify(data);
       const compressed = await this.compressData(serialized);
       // Store in memory cache
-      this.cache.set(key, {
+      this.cache.set(_key, {
         data,
         timestamp: Date.now(),
-        ttl
+        ttl,
       });
       // Store in Redis cache
       await fetch('/api/cache/set', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          key,
-          data: compressed
+          key: _key,
+          data: compressed,
           ttl,
-          compressed: this.config.compressionEnabled
-        })
+          compressed: this.config.compressionEnabled,
+        }),
       });
       // Update compression metrics
       if (this.config.enableMetrics && this.config.compressionEnabled) {
@@ -265,7 +275,7 @@ class SIMDJSONCache {
     this.metrics.averageParseTime = (this.metrics.averageParseTime + parseTime) / 2;
   }
   // Public API
-  public async parse(jsonString: string, useCache: boolean = true): Promise<any> {
+  public async parse(jsonString: string, useCache: boolean = true): Promise<unknown> {
     const startTime = performance.now();
     const cacheKey = useCache ? this.generateCacheKey(jsonString, 'parse') : '';
     // Check cache first
@@ -275,7 +285,7 @@ class SIMDJSONCache {
         return cached;
       }
     }
-    let result: any;
+    let result: unknown;
     let usedSIMD = false;
     try {
       if (this.simdLoaded && this.simdModule) {
@@ -284,7 +294,7 @@ class SIMDJSONCache {
         usedSIMD = true;
       } else {
         // Fallback to native JSON
-        result = JSON.parse(jsonString);
+        result = JSON.parse(jsonString) as unknown;
       }
       // Cache the result
       if (useCache) {
@@ -297,7 +307,7 @@ class SIMDJSONCache {
       // Try fallback if SIMD fails
       if (usedSIMD) {
         try {
-          result = JSON.parse(jsonString);
+          result = JSON.parse(jsonString) as unknown;
           const parseTime = performance.now() - startTime;
           this.updateMetrics('parse', parseTime, jsonString.length, false);
           if (useCache) {
@@ -311,7 +321,7 @@ class SIMDJSONCache {
       throw new Error(`JSON parsing failed: ${error}`);
     }
   }
-  public async stringify(obj: any, useCache: boolean = true): Promise<string> {
+  public async stringify(obj: unknown, useCache: boolean = true): Promise<string> {
     const startTime = performance.now();
     const objString = JSON.stringify(obj); // Quick serialization for cache key
     const cacheKey = useCache ? this.generateCacheKey(objString, 'stringify') : '';
@@ -319,7 +329,8 @@ class SIMDJSONCache {
     if (useCache) {
       const cached = await this.getFromCache(cacheKey);
       if (cached !== null) {
-        return cached;
+        // cached can be string or other stored value; coerce to string for stringify
+        return String(cached);
       }
     }
     let result: string;
@@ -356,17 +367,17 @@ class SIMDJSONCache {
         const valid = this.simdModule.isValid(jsonString);
         return {
           valid,
-          error: valid ? undefined : this.simdModule.getLastErrorMessage()
-        }
+          error: valid ? undefined : this.simdModule.getLastErrorMessage(),
+        };
       } else {
         JSON.parse(jsonString);
-        return { valid: true }
+        return { valid: true };
       }
     } catch (error) {
       return {
-        valid: false;
-        error: error instanceof Error ? error.message : 'Invalid JSON'
-      }
+        valid: false,
+        error: error instanceof Error ? error.message : 'Invalid JSON',
+      };
     }
   }
   public async minify(jsonString: string, useCache: boolean = true): Promise<string> {
@@ -374,7 +385,15 @@ class SIMDJSONCache {
     if (useCache) {
       const cached = await this.getFromCache(cacheKey);
       if (cached !== null) {
-        return cached;
+        // cached is unknown; coerce to string safely to satisfy return type
+        if (typeof cached === 'string') {
+          return cached;
+        }
+        try {
+          return JSON.stringify(cached);
+        } catch {
+          return String(cached);
+        }
       }
     }
     let result: string;
@@ -393,21 +412,22 @@ class SIMDJSONCache {
     }
   }
   public getMetrics(): ParseMetrics {
-    return { ...this.metrics }
+    return { ...this.metrics };
   }
   public getSIMDStatus(): {
     loaded: boolean;
     available: boolean;
     performance: string;
   } {
-    const simdPerformance = this.metrics.simdParses > 0 && this.metrics.nativeParses > 0
-      ? `${Math.round((this.metrics.averageNativeTime / this.metrics.averageSIMDTime) * 100) / 100}x faster`
-      : 'No comparison data';
+    const simdPerformance =
+      this.metrics.simdParses > 0 && this.metrics.nativeParses > 0
+        ? `${Math.round((this.metrics.averageNativeTime / this.metrics.averageSIMDTime) * 100) / 100}x faster`
+        : 'No comparison data';
     return {
       loaded: this.simdLoaded,
       available: this.simdModule !== null,
-      performance: simdPerformance
-    }
+      performance: simdPerformance,
+    };
   }
   public clearCache(): void {
     this.cache.clear();
@@ -417,14 +437,12 @@ class SIMDJSONCache {
     hitRate: number;
     compressionRatio: number;
   } {
-    const hitRate = this.metrics.totalParses > 0
-      ? this.metrics.cacheHits / this.metrics.totalParses
-      : 0;
+    const hitRate = this.metrics.totalParses > 0 ? this.metrics.cacheHits / this.metrics.totalParses : 0;
     return {
       memoryEntries: this.cache.size,
       hitRate: Math.round(hitRate * 100) / 100,
-      compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100
-    }
+      compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100,
+    };
   }
 }
 // Singleton instance
@@ -439,11 +457,11 @@ export function getSIMDJSONCache(): SIMDJSONCache | null {
   return simdJSONInstance;
 }
 // Convenience functions
-export async function fastParse(jsonString: string, useCache = true): Promise<any> {
+export async function fastParse(jsonString: string, useCache = true): Promise<unknown> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.parse(jsonString, useCache);
 }
-export async function fastStringify(obj: any, useCache = true): Promise<string> {
+export async function fastStringify(obj: unknown, useCache = true): Promise<string> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.stringify(obj, useCache);
 }

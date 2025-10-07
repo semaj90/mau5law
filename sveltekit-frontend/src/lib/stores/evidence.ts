@@ -138,12 +138,12 @@ const createEvidenceStore = () => {
   const { subscribe, set, update } = writable<EvidenceStoreState>({
     evidence: [],
     filtered_evidence: [],
-    current_filter: null
-    selected_evidence: null
-    isLoading: false
-    error: null
+    current_filter: null,
+    selected_evidence: null,
+    isLoading: false,
+    error: null,
     processing_queue: [],
-    stats: null
+    stats: null,
     chain_of_custody_log: [],
     security_alerts: [],
   });
@@ -152,12 +152,12 @@ const createEvidenceStore = () => {
       set({
         evidence: [],
         filtered_evidence: [],
-        current_filter: null
-        selected_evidence: null
-        isLoading: false
-        error: null
+        current_filter: null,
+        selected_evidence: null,
+        isLoading: false,
+        error: null,
         processing_queue: [],
-        stats: null
+        stats: null,
         chain_of_custody_log: [],
         security_alerts: [],
       });
@@ -178,18 +178,18 @@ const createEvidenceStore = () => {
       const evidenceData = (await response.json().catch(() => ({}))) as {
         evidence?: Evidence[];
         stats?: EvidenceStats | null;
-      }
+      };
       const evidenceList: Evidence[] = evidenceData.evidence || [];
-      const stats: EvidenceStats = evidenceData.stats || null;
+      const stats: EvidenceStats | null = evidenceData.stats || null;
       // Validate evidence integrity
       await validateEvidenceIntegrity(evidenceList);
       update(state => ({
         ...state,
-        evidence: evidenceList
-        filtered_evidence: evidenceList
+        evidence: evidenceList,
+        filtered_evidence: evidenceList,
         stats,
-        isLoading: false;
-        error: null
+        isLoading: false,
+        error: null,
       }));
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
@@ -200,11 +200,11 @@ const createEvidenceStore = () => {
         ...state,
         evidence: [],
         filtered_evidence: [],
-        isLoading: false;
-        error: message
+        isLoading: false,
+        error: message,
       }));
     }
-  }
+  };
   // QUIC tensor streaming for evidence embeddings (browser-only, no-SSR)
   type TensorEnvelope = {
     kind: 'embedding';
@@ -215,16 +215,15 @@ const createEvidenceStore = () => {
     vector: number[];
     // Optional metadata
     createdAt: string;
-  }
+  };
   class QUICTensorStream {
     private writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
     private connected = false;
     async connect(url: string): Promise<void> {
       if (typeof window === 'undefined') return;
-      // @ts-ignore WebTransport experimental
+      // If WebTransport is not available, return early
       if (!window.WebTransport) return;
       try {
-        // @ts-ignore WebTransport experimental
         const transport = new window.WebTransport(url);
         await transport.ready;
         const stream = await transport.createBidirectionalStream();
@@ -260,18 +259,18 @@ const createEvidenceStore = () => {
   const streamedEmbeddingIds = new Set<string>();
   async function ensureQuicConnected(): Promise<void> {
     if (typeof window === 'undefined') return;
-    // @ts-ignore WebTransport experimental
+    // If WebTransport is not available, return early
     if (!window.WebTransport) return;
     if (quicStream?.isConnected()) return;
     const url =
-      (window as any).__QUIC_TENSOR_URL__ ||
-      (import.meta as any)?.env?.VITE_QUIC_TENSOR_URL ||
-      'https://localhost:8447/legal-stream'
+      window.__QUIC_TENSOR_URL__ ||
+      (import.meta.env.VITE_QUIC_TENSOR_URL as string | undefined) ||
+      'https://localhost:8447/legal-stream';
     quicStream = new QUICTensorStream();
     await quicStream.connect(String(url));
   }
   // Stream embeddings when available (once per evidence)
-  const unsubscribeTensor = subscribe(async (state) => {
+  const unsubscribeTensor = subscribe(async state => {
     if (typeof window === 'undefined') return;
     // Try to connect once when evidence first appears
     if (!state.evidence.length) return;
@@ -285,11 +284,11 @@ const createEvidenceStore = () => {
       const envelope: TensorEnvelope = {
         kind: 'embedding',
         evidenceId: ev.id,
-        caseId,
+        caseId: caseId as string, // Explicitly cast caseId to string
         dim: ev.embedding.length,
         vector: ev.embedding,
         createdAt: new Date().toISOString(),
-      }
+      };
       streamedEmbeddingIds.add(ev.id);
       quicStream.sendEnvelope(envelope).catch(() => {
         // If send fails, allow retry later
@@ -311,9 +310,9 @@ const createEvidenceStore = () => {
     subscribe,
     fetchEvidence,
     // Add new evidence with comprehensive metadata
-    addEvidence: async (,
+    addEvidence: async (
       newEvidenceData: Omit<
-        Evidence
+        Evidence,
         'id' | 'x' | 'y' | 'caseId' | 'created_at' | 'updated_at' | 'chain_of_custody' | 'access_log'
       >
     ) => {
@@ -334,17 +333,17 @@ const createEvidenceStore = () => {
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
           notes: `Evidence "${newEvidenceData.title}" added to case system`,
-        }
+        };
         const evidencePayload = {
           ...newEvidenceData,
-          caseId: currentCaseId
+          caseId: currentCaseId,
           chain_of_custody: [initialChainEntry],
           access_log: [],
           x: Math.random() * 500, // Default canvas position;
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        }
+        };
         const response = await fetch('/api/evidence', {
           method: 'POST',
           headers: {
@@ -362,7 +361,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
-          isLoading: false
+          isLoading: false,
         }));
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
@@ -371,16 +370,16 @@ const createEvidenceStore = () => {
         const message = error instanceof Error ? error.message : String(error);
         update(state => ({
           ...state,
-          isLoading: false
-          error: message
+          isLoading: false,
+          error: message,
         }));
         console.error('Error adding evidence:', error);
         throw error;
       }
     },
     // Update evidence with optimistic updates and chain of custody
-    updateEvidence: async (,
-      evidenceId: string
+    updateEvidence: async (
+      evidenceId: string,
       updates: Partial<Omit<Evidence, 'id' | 'caseId' | 'created_at'>>,
       chainOfCustodyAction?: {
         action: ChainOfCustodyEntry['action'];
@@ -399,14 +398,14 @@ const createEvidenceStore = () => {
               ...item,
               ...updates,
               updated_at: new Date().toISOString(),
-            }
+            };
             // Add chain of custody entry if provided
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
                 id: `chain_${Date.now()}`,
                 timestamp: new Date().toISOString(),
                 ...chainOfCustodyAction,
-              }
+              };
               updated.chain_of_custody = [...updated.chain_of_custody, chainEntry];
             }
             return updated;
@@ -415,12 +414,12 @@ const createEvidenceStore = () => {
         });
         return {
           ...state,
-          evidence: updatedEvidence
+          evidence: updatedEvidence,
           filtered_evidence: applyFilter(updatedEvidence, state.current_filter),
-        }
+        };
       });
       try {
-        const payload: Record<string, unknown> = { ...updates }
+        const payload: Record<string, unknown> = { ...updates };
         if (chainOfCustodyAction) {
           payload.chain_of_custody_action = chainOfCustodyAction;
         }
@@ -465,9 +464,9 @@ const createEvidenceStore = () => {
         const newList = state.evidence.filter(item => item.id !== evidenceId);
         return {
           ...state,
-          evidence: newList
+          evidence: newList, // Added comma
           filtered_evidence: applyFilter(newList, state.current_filter),
-        }
+        };
       });
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -489,7 +488,7 @@ const createEvidenceStore = () => {
         // Revert optimistic update on failure
         update(state => ({
           ...state,
-          evidence: originalList
+          evidence: originalList, // Added comma
           filtered_evidence: applyFilter(originalList, state.current_filter),
           error: error instanceof Error ? error.message : String(error),
         }));
@@ -543,24 +542,27 @@ const createEvidenceStore = () => {
         const filtered = applyFilter(state.evidence, filter);
         return {
           ...state,
-          current_filter: filter
-          filtered_evidence: filtered
-        }
+          current_filter: filter, // Added comma
+          filtered_evidence: filtered,
+        };
       });
     },
     // Search evidence
-    searchEvidence: async (,
-      query: string
+    searchEvidence: async (
+      // Corrected function signature
+      query: string, // Added comma
       options?: {
         include_content?: boolean;
         include_notes?: boolean;
         case_sensitive?: boolean;
       }
     ) => {
-      const { include_content = true, include_notes = true, case_sensitive = false } = options || {}
-      update(state => {
+      const { include_content = true, include_notes = true, case_sensitive = false } = options || {};
+      update((state: EvidenceStoreState) => {
+        // Added type annotation for state
         const searchTerm = case_sensitive ? query : query.toLowerCase();
-        const filtered = state.evidence.filter(evidence => {
+        const filtered = state.evidence.filter((evidence: Evidence) => {
+          // Added type annotation for evidence
           const title = case_sensitive ? evidence.title : evidence.title.toLowerCase();
           const ocrText = evidence.ocr_text
             ? case_sensitive
@@ -568,7 +570,7 @@ const createEvidenceStore = () => {
               : evidence.ocr_text.toLowerCase()
             : '';
           const tags = evidence.tags?.join(' ') || '';
-          const notes = evidence.notes?.map(n => n.content).join(' ') || '';
+          const notes = evidence.notes?.map((n: EvidenceNote) => n.content).join(' ') || ''; // Added type annotation for n
           const searchIn = [
             title,
             evidence.evidence_tag,
@@ -580,23 +582,24 @@ const createEvidenceStore = () => {
         });
         return {
           ...state,
-          filtered_evidence: filtered
+          filtered_evidence: filtered,
           current_filter: { search_text: query },
-        }
-      });
-    },
+        };
+      }); // Correctly close the update call
+    }, // Correctly close the searchEvidence method and separate it from the next one
     // Select evidence for detailed view
     selectEvidence: (evidenceId: string | null) => {
-      update(state => {
-        const selected = evidenceId ? state.evidence.find(e => e.id === evidenceId) || null : null;
+      update((state: EvidenceStoreState) => {
+        // Added type annotation for state
+        const selected = evidenceId ? state.evidence.find((e: Evidence) => e.id === evidenceId) || null : null; // Added type annotation for e
         if (selected) {
           // Log evidence access
           logEvidenceAccess(evidenceId!, 'evidence_viewed');
         }
         return {
           ...state,
-          selected_evidence: selected
-        }
+          selected_evidence: selected, // Added comma
+        };
       });
     },
     // Chain of custody operations
@@ -615,7 +618,8 @@ const createEvidenceStore = () => {
           throw new Error(errorData.message || 'Failed to add chain of custody entry');
         }
         const updatedEvidence: Evidence = await response.json();
-        update(state => ({
+        update((state: EvidenceStoreState) => ({
+          // Added type annotation for state
           ...state,
           evidence: state.evidence.map(item => (item.id === evidenceId ? updatedEvidence : item)),
           filtered_evidence: applyFilter(
@@ -626,7 +630,7 @@ const createEvidenceStore = () => {
         return updatedEvidence;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        update(state => ({ ...state, error: message }));
+        update((state: EvidenceStoreState) => ({ ...state, error: message })); // Added type annotation for state
         throw err;
       }
     },
@@ -648,7 +652,7 @@ const createEvidenceStore = () => {
         return await response.blob(); // PDF or other report format
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        update(state => ({ ...state, error: message }));
+        update((state: EvidenceStoreState) => ({ ...state, error: message })); // Added type annotation for state
         throw err;
       }
     },
@@ -672,11 +676,11 @@ const createEvidenceStore = () => {
               {
                 id: `alert_${Date.now()}`,
                 type: 'integrity_check_failed',
-                evidence_id: evidenceId
+                evidence_id: evidenceId, // Added comma
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
                 severity: 'high',
-                resolved: false
+                resolved: false,
               },
             ],
           }));
@@ -695,7 +699,7 @@ const createEvidenceStore = () => {
     clearFilter: () => {
       update(state => ({
         ...state,
-        current_filter: null
+        current_filter: null, // Added comma
         filtered_evidence: state.evidence,
       }));
     },
@@ -736,8 +740,8 @@ const createEvidenceStore = () => {
         throw err;
       }
     },
-  }
-}
+  };
+};
 // Helper functions
 function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evidence[] {
   if (!filter) return evidence;
@@ -821,8 +825,8 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
         'Content-Type': 'application/json',
         'X-Legal-Request': 'true',
       },
-      body: JSON.stringify({,
-        evidence_id: evidenceId
+      body: JSON.stringify({
+        evidence_id: evidenceId, // Added comma
         action,
         timestamp: new Date().toISOString(),
         metadata,
@@ -858,7 +862,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     encrypted_count: 0,
     total_file_size: 0,
     average_relevance_score: 0,
-  }
+  };
   let totalRelevanceScore = 0;
   let relevanceScoreCount = 0;
   for (const item of evidence) {
@@ -883,7 +887,7 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean; is
   const chain = evidence.chain_of_custody;
   if (chain.length === 0) {
     issues.push('No chain of custody entries found');
-    return { valid: false, issues }
+    return { valid: false, issues };
   }
   for (let i = 1; i < chain.length; i++) {
     const prev = new Date(chain[i - 1].timestamp);
@@ -895,7 +899,14 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean; is
     if (!entry.person) issues.push(`Missing person information at entry ${i + 1}`);
     if (!entry.action) issues.push(`Missing action information at entry ${i + 1}`);
   }
-  return { valid: issues.length === 0, issues }
+  return { valid: issues.length === 0, issues };
 }
 // Default export retained for compatibility
 export default evidenceStore;
+
+declare global {
+  interface Window {
+    __QUIC_TENSOR_URL__?: string;
+    WebTransport?: typeof WebTransport; // Add WebTransport to Window if not already globally defined
+  }
+}

@@ -44,7 +44,7 @@ const QUIC_SERVICES_CONFIG = {
     features: ['Edge Caching', 'ETag Revalidation', 'Prometheus Metrics', 'JSON Optimization']
   }
 }
-}
+
 export interface QUICServiceStatus {
   name: string
   status: 'healthy' | 'fallback' | 'unhealthy' | 'error'
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (serviceName) {
       const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG]
       if (!serviceConfig) {
-        error(404, ensureError({ message: `Service '${serviceName}' not found` })
+        error(404, ensureError({ message: `Service '${serviceName}' not found` }));
       }
       const serviceStatus = await checkServiceHealth(serviceName, serviceConfig, includeMetrics, timeout)
       return json(serviceStatus)
@@ -137,72 +137,73 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     const clusterStatus: QUICClusterStatus = {
       totalServices: Object.keys(QUIC_SERVICES_CONFIG).length,
-      healthyServices: healthyCount
-      fallbackServices: fallbackCount
-      unhealthyServices: unhealthyCount
+      healthyServices: healthyCount,
+      fallbackServices: fallbackCount,
+      unhealthyServices: unhealthyCount,
       overallStatus,
       services,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
     return json(clusterStatus)
   } catch (err: any) {
     console.error('QUIC services status check failed:', err)
-    error(500, ensureError({
-      message: 'Failed to check QUIC services status',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    })
+    error(
+      500,
+      ensureError({
+        message: 'Failed to check QUIC services status',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 }
 /*
  * POST /api/v1/quic - Execute command across QUIC services
  */
-export const POST: RequestHandler = async ({ request, url }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { command, services, parameters } = await request.json()
-    const targetServices = services || Object.keys(QUIC_SERVICES_CONFIG)
+    const { command, services, parameters } = await request.json();
+    const targetServices = services || Object.keys(QUIC_SERVICES_CONFIG);
     // Validate command
-    const validCommands = ['restart', 'health-check', 'clear-cache', 'update-config']
+    const validCommands = ['restart', 'health-check', 'clear-cache', 'update-config'];
     if (!validCommands.includes(command)) {
-      error(400, ensureError({ message: `Invalid command. Valid commands: ${validCommands.join(', ')}` })
+      error(400, ensureError({ message: `Invalid command. Valid commands: ${validCommands.join(', ')}` }));
     }
-    const results: { [key: string]: any } = {}
+    const results: { [key: string]: any } = {};
     for (const serviceName of targetServices) {
-      const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG]
+      const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG];
       if (!serviceConfig) {
         results[serviceName] = {
           success: false,
-          error: `Service '${serviceName}' not found`
-        }
-        continue
+          error: `Service '${serviceName}' not found`,
+        };
+        continue;
       }
       try {
-        results[serviceName] = await executeServiceCommand(
-          serviceName,
-          serviceConfig,
-          command,
-          parameters
-        )
+        results[serviceName] = await executeServiceCommand(serviceName, serviceConfig, command, parameters);
       } catch (commandError) {
         results[serviceName] = {
           success: false,
-          error: commandError instanceof Error ? commandError.message: 'Unknown error'
-        }
+          error: commandError instanceof Error ? commandError.message : 'Unknown error',
+        };
       }
     }
     return json({
       command,
-      services: targetServices
+      services: targetServices,
       results,
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (err: any) {
-    console.error('QUIC services command execution failed:', err)
-    error(500, ensureError({
-      message: 'Command execution failed',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    })
+    console.error('QUIC services command execution failed:', err);
+    error(
+      500,
+      ensureError({
+        message: 'Command execution failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
-}
+};
 /*
  * PUT /api/v1/quic - Update QUIC services configuration
  */
@@ -210,11 +211,11 @@ export const PUT: RequestHandler = async ({ request }) => {
   try {
     const { service, configuration } = await request.json()
     if (!service || !configuration) {
-      error(400, ensureError({ message: 'Service name and configuration are required' })
+      error(400, ensureError({ message: 'Service name and configuration are required' }));
     }
     const serviceConfig = QUIC_SERVICES_CONFIG[service as keyof typeof QUIC_SERVICES_CONFIG]
     if (!serviceConfig) {
-      error(404, ensureError({ message: `Service '${service}' not found` })
+      error(404, ensureError({ message: `Service '${service}' not found` }));
     }
     // In a real implementation, this would update the service configuration
     // For now, we'll simulate the update
@@ -227,142 +228,145 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       service,
       message: `Configuration updated for ${serviceConfig.name}`,
-      configuration: updatedConfig
-      timestamp: new Date().toISOString()
-    })
+      configuration: updatedConfig,
+      timestamp: new Date().toISOString(),
+    });
   } catch (err: any) {
     console.error('QUIC configuration update failed:', err)
-    error(500, ensureError({
-      message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    })
+    error(
+      500,
+      ensureError({
+        message: 'Configuration update failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 }
 /*
  * Check health of individual QUIC service
  */
 async function checkServiceHealth(
-  serviceName: string
-  serviceConfig: any
-  includeMetrics: boolean
+  serviceName: string,
+  serviceConfig: any,
+  includeMetrics: boolean,
   timeout: number
 ): Promise<QUICServiceStatus> {
-  const startTime = Date.now()
-  let status: 'healthy' | 'fallback' | 'unhealthy' | 'error' = 'unhealthy'
-  let protocol = 'N/A'
-  let url = serviceConfig.baseUrl
-  let serviceError: string | undefined
-  let metrics: { [key: string]: any } | undefined
+  const startTime = Date.now();
+  let status: 'healthy' | 'fallback' | 'unhealthy' | 'error' = 'unhealthy';
+  let protocol = 'N/A';
+  let url = serviceConfig.baseUrl;
+  let serviceError: string | undefined;
+  let metrics: { [key: string]: any } | undefined;
   try {
     // Try primary QUIC endpoint first
     const primaryResponse = await fetch(`${serviceConfig.baseUrl}/health`, {
-      signal: AbortSignal.timeout(timeout)
-    })
+      signal: AbortSignal.timeout(timeout),
+    });
     if (primaryResponse.ok) {
-      status = 'healthy'
-      protocol = 'HTTP/3'
+      status = 'healthy';
+      protocol = 'HTTP/3';
       if (includeMetrics) {
         try {
-          const healthData = await primaryResponse.json()
-          metrics = healthData.metrics || {}
+          const healthData = await primaryResponse.json();
+          metrics = healthData.metrics || {};
         } catch (e: any) {
           // Metrics parsing failed, continue without metrics
         }
       }
     } else {
-      throw new Error(`Primary endpoint returned ${primaryResponse.status}`)
+      throw new Error(`Primary endpoint returned ${primaryResponse.status}`);
     }
   } catch (primaryError) {
     // Try fallback HTTP/2 endpoint
     try {
       const fallbackResponse = await fetch(`${serviceConfig.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(timeout)
-      })
+        signal: AbortSignal.timeout(timeout),
+      });
       if (fallbackResponse.ok) {
-        status = 'fallback'
-        protocol = 'HTTP/2'
-        url = serviceConfig.fallbackUrl
+        status = 'fallback';
+        protocol = 'HTTP/2';
+        url = serviceConfig.fallbackUrl;
         if (includeMetrics) {
           try {
-            const healthData = await fallbackResponse.json()
-            metrics = healthData.metrics || {}
+            const healthData = await fallbackResponse.json();
+            metrics = healthData.metrics || {};
           } catch (e: any) {
             // Metrics parsing failed, continue without metrics
           }
         }
       } else {
-        throw new Error(`Fallback endpoint returned ${fallbackResponse.status}`)
+        throw new Error(`Fallback endpoint returned ${fallbackResponse.status}`);
       }
     } catch (fallbackError) {
-      status = 'error'
-      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message: 'Unknown'}, Fallback: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown'}`
+      status = 'error';
+      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message : 'Unknown'}, Fallback: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown'}`;
     }
   }
-  const responseTime = Date.now() - startTime
+  const responseTime = Date.now() - startTime;
   return {
     name: serviceConfig.name,
     status,
     protocol,
     ports: {
       quic: serviceConfig.primaryPort,
-      fallback: serviceConfig.fallbackPort
+      fallback: serviceConfig.fallbackPort,
     },
     url,
     responseTime,
-    error: serviceError
+    error: serviceError,
     features: serviceConfig.features,
-    metrics
-  }
+    metrics,
+  };
 }
 /*
  * Execute command on specific service
  */
 async function executeServiceCommand(
-  serviceName: string
-  serviceConfig: any
-  command: string
+  serviceName: string,
+  serviceConfig: any,
+  command: string,
   parameters?: any
 ): Promise<any> {
-  const baseUrl = serviceConfig.baseUrl
+  const baseUrl = serviceConfig.baseUrl;
   switch (command) {
     case 'health-check':
-      const healthResponse = await fetch(`${baseUrl}/health`)
+      const healthResponse = await fetch(`${baseUrl}/health`);
       return {
         success: healthResponse.ok,
         status: healthResponse.status,
-        data: healthResponse.ok ? await healthResponse.json() : null
-      }
+        data: healthResponse.ok ? await healthResponse.json() : null,
+      };
     case 'clear-cache':
       const cacheResponse = await fetch(`${baseUrl}/cache`, {
-        method: 'DELETE'
-      })
+        method: 'DELETE',
+      });
       return {
         success: cacheResponse.ok,
         message: 'Cache cleared',
-        data: cacheResponse.ok ? await cacheResponse.json() : null
-      }
+        data: cacheResponse.ok ? await cacheResponse.json() : null,
+      };
     case 'update-config':
       if (!parameters) {
-        throw new Error('Parameters required for config update')
+        throw new Error('Parameters required for config update');
       }
       const configResponse = await fetch(`${baseUrl}/config`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parameters)
-      })
+        body: JSON.stringify(parameters),
+      });
       return {
         success: configResponse.ok,
         message: 'Configuration updated',
-        data: configResponse.ok ? await configResponse.json() : null
-      }
+        data: configResponse.ok ? await configResponse.json() : null,
+      };
     case 'restart':
       // In a real implementation, this would trigger a service restart
       return {
         success: true,
         message: `Restart signal sent to ${serviceConfig.name}`,
-        note: 'Restart functionality would be implemented based on deployment method'
-      }
+        note: 'Restart functionality would be implemented based on deployment method',
+      };
     default:
-      throw new Error(`Unknown command: ${command}`)
+      throw new Error(`Unknown command: ${command}`);
   }
 }

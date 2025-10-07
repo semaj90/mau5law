@@ -12,7 +12,7 @@
   // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
   import Input from '$lib/components/ui/input.svelte';
   import Button from '$lib/components/ui/button.svelte';
-  import { Label } from '$lib/components/ui/label';
+  import Label from '$lib/components/ui/label.svelte';
   import {
     Shield,
     UserPlus,
@@ -28,6 +28,8 @@
     File as FileIconBase,
     // FIX: Removed 'FileDigital' import as it was a typo and the corrected 'FileDigit' was unused.
   } from 'lucide-svelte';
+  import type { ComponentType } from 'svelte'; // Import ComponentType for Svelte 5 component constructors
+
   // Define the expected shape of the data prop for better type safety
   interface RegisterFormData {
     email?: string;
@@ -125,12 +127,19 @@ agreeToTerms?: boolean;
   let passwordStrength = $derived(calculatePasswordStrength(formData.password));
 
   // File upload UI state
+  interface FileTypeIconData {
+    Icon: ComponentType; // Type for Svelte component constructor
+    color: string;
+    bg: string;
+  }
+
   interface FileEntry {
     id: string;
     file: File;
-    status: 'pending' | 'uploading' | 'success' | 'error';
+    status: 'pending' | 'uploading' | 'success' | 'error' | 'needs-attach';
     progress: number; // 0-100
     error?: string;
+    iconData: FileTypeIconData; // Add iconData to FileEntry
   }
 
   let fileInputEl: HTMLInputElement | null = null;
@@ -164,7 +173,13 @@ agreeToTerms?: boolean;
       if (!raw) return;
       const manifest = JSON.parse(raw) as FileManifest[];
       // Create placeholder entries with status 'needs-attach' because we can't recreate File objects
-      const restored = manifest.map((m) => ({ id: m.id, file: new File([], m.name, { lastModified: m.lastModified, type: '' }), status: m.status === 'pending' ? 'needs-attach' : m.status, progress: 0 } as FileEntry));
+      const restored = manifest.map((m) => ({
+        id: m.id,
+        file: new File([], m.name, { lastModified: m.lastModified, type: '' }),
+        status: m.status === 'pending' ? 'needs-attach' : m.status,
+        progress: 0,
+        iconData: fileTypeIcon(m.name) // Calculate iconData for restored files
+      } as FileEntry));
       files = [...restored, ...files];
     } catch (e) {
       console.warn('loadManifest failed', e);
@@ -192,7 +207,8 @@ agreeToTerms?: boolean;
       id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000),
       file: f,
       status: 'pending',
-      progress: 0
+      progress: 0,
+      iconData: fileTypeIcon(f.name) // Calculate iconData when files are selected
     } as FileEntry));
     files = [...files, ...newEntries];
     // reset native input so selecting same file again works
@@ -205,7 +221,7 @@ agreeToTerms?: boolean;
 
   // Determine a small icon / color for file types
   // Map file extensions to a Lucide icon component and color class
-  function fileTypeIcon(name: string) {
+  function fileTypeIcon(name: string): FileTypeIconData {
     const ext = name.split('.').pop()?.toLowerCase() || '';
     switch (ext) {
       case 'pdf': return { Icon: FileText, color: 'text-red-600', bg: 'bg-red-100' };
@@ -278,6 +294,7 @@ agreeToTerms?: boolean;
       // replace placeholder file
       files[idx].file = picked;
       files[idx].status = 'pending';
+      files[idx].iconData = fileTypeIcon(picked.name); // Recalculate iconData on reattach
       files = [...files];
       saveManifest();
     };
@@ -351,7 +368,7 @@ agreeToTerms?: boolean;
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- First Name -->
         <div>
-          <Label for="firstName">First Name</Label>
+          <Label>First Name</Label>
           <Input
             id="firstName"
             name="firstName"
@@ -365,7 +382,7 @@ agreeToTerms?: boolean;
         </div>
         <!-- Last Name -->
         <div>
-          <Label for="lastName">Last Name</Label>
+          <Label>Last Name</Label>
           <Input
             id="lastName"
             name="lastName"
@@ -380,7 +397,7 @@ agreeToTerms?: boolean;
       </div>
       <!-- Email -->
       <div>
-        <Label for="email">Official Email Address</Label>
+        <Label>Official Email Address</Label>
         <Input
           id="email"
           name="email"
@@ -396,7 +413,7 @@ agreeToTerms?: boolean;
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Role -->
         <div>
-          <Label for="role">Professional Role</Label>
+          <Label>Professional Role</Label>
           <select
             id="role"
             name="role"
@@ -412,7 +429,7 @@ agreeToTerms?: boolean;
         </div>
         <!-- Badge Number -->
         <div>
-          <Label for="badgeNumber">Badge/ID Number (Optional)</Label>
+          <Label>Badge/ID Number (Optional)</Label>
           <Input
             id="badgeNumber"
             name="badgeNumber"
@@ -427,7 +444,7 @@ agreeToTerms?: boolean;
       <!-- Department & Jurisdiction -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label for="department">Department/Agency</Label>
+          <Label>Department/Agency</Label>
           <Input
             id="department"
             name="department"
@@ -440,7 +457,7 @@ agreeToTerms?: boolean;
           />
         </div>
         <div>
-          <Label for="jurisdiction">Jurisdiction</Label>
+          <Label>Jurisdiction</Label>
           <Input
             id="jurisdiction"
             name="jurisdiction"
@@ -457,7 +474,7 @@ agreeToTerms?: boolean;
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Password -->
         <div>
-          <Label for="password">Password</Label>
+          <Label>Password</Label>
           <div class="relative">
             <Input
               id="password"
@@ -500,7 +517,7 @@ agreeToTerms?: boolean;
         </div>
         <!-- Confirm Password -->
         <div>
-          <Label for="confirmPassword">Confirm Password</Label>
+          <Label>Confirm Password</Label>
           <div class="relative">
             <Input
               id="confirmPassword"
@@ -538,8 +555,10 @@ agreeToTerms?: boolean;
             disabled={isLoading}
             class="rounded border-border text-primary focus:ring-primary"
           />
-          <Label for="enableTwoFactor" class="text-sm">
-            Enable two-factor authentication (recommended for legal professionals)
+          <Label>
+            <span class="text-sm">
+              Enable two-factor authentication (recommended for legal professionals)
+            </span>
           </Label>
         </div>
       </div>
@@ -555,8 +574,10 @@ agreeToTerms?: boolean;
             required
             class="rounded border-border text-primary focus:ring-primary"
           />
-          <Label for="agreeToTerms" class="text-sm">
-            I agree to the <a href="/legal/terms" class="text-primary hover:underline">Terms of Service</a>
+          <Label>
+            <span class="text-sm">
+              I agree to the <a href="/legal/terms" class="text-primary hover:underline">Terms of Service</a>
+            </span>
           </Label>
         </div>
         <div class="flex items-center space-x-2">
@@ -569,8 +590,10 @@ agreeToTerms?: boolean;
             required
             class="rounded border-border text-primary focus:ring-primary"
           />
-          <Label for="agreeToPrivacy" class="text-sm">
-            I agree to the <a href="/legal/privacy" class="text-primary hover:underline">Privacy Policy</a>
+          <Label>
+            <span class="text-sm">
+              I agree to the <a href="/legal/privacy" class="text-primary hover:underline">Privacy Policy</a>
+            </span>
           </Label>
         </div>
       </div>
@@ -596,8 +619,9 @@ agreeToTerms?: boolean;
             {#each files as f (f.id)}
               <div class="flex items-center justify-between p-3 rounded border border-border bg-card animate-fade-in">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 flex items-center justify-center rounded {fileTypeIcon(f.file.name).bg} {fileTypeIcon(f.file.name).color}">
-                    <svelte:component this={fileTypeIcon(f.file.name).Icon} class="h-6 w-6" />
+                  <!-- Removed @const iconData = fileTypeIcon(f.file.name) -->
+                  <div class="w-10 h-10 flex items-center justify-center rounded {f.iconData.bg} {f.iconData.color}">
+                    <f.iconData.Icon class="h-6 w-6" />
                   </div>
                   <div class="min-w-0">
                     <div class="text-sm font-medium truncate">{f.file.name}</div>

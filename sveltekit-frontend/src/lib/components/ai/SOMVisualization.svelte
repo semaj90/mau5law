@@ -3,7 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { createSOMRAGSystem, type SOMConfig } from '$lib/ai/som-rag-system';
   import { createEnhancedIngestionPipeline, type IngestionStats } from '$lib/ai/enhanced-ingestion-pipeline';
   interface Props {
@@ -11,7 +10,14 @@ https://svelte.dev/e/js_parse_error -->
     width?: number;
     height?: number;
   }
-  let { class = '', width = 800, height = 600 }: Props = $props();
+  interface SOMNode {
+    position: { x: number; y: number };
+    cluster: number;
+    confidence: number;
+    documents: number;
+    evidenceType: string;
+  }
+  let { class: className = '', width = 800, height = 600 }: Props = $props();
   // SOM system components
   let somRAG: any;
   let ingestionPipeline: any;
@@ -20,20 +26,20 @@ https://svelte.dev/e/js_parse_error -->
   // Visualization state
   let isInitialized = $state(false);
   let isTraining = $state(false);
-  let visualizationData = $state<unknown[]>([]);
-  let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any }  | null>(null); const data = {
+  let visualizationData = $state<SOMNode[]>([]);
+  let stats = $state<(IngestionStats & { queue_size: number; is_processing: boolean; som_visualization: any[] })>({
     total_processed: 0,
     successful: 0,
     failed: 0,
     avg_processing_time: 0,
-    cluster_distribution: ,
-    evidence_type_distribution: ,
+    cluster_distribution: {},
+    evidence_type_distribution: {},
     queue_size: 0,
-    is_processing: false
-    som_visualization: [];
+    is_processing: false,
+    som_visualization: []
   });
   // Configuration
-  let somConfig: SOMConfig = $state({,
+  let somConfig: SOMConfig = $state({
     mapWidth: 20,
     mapHeight: 20,
     dimensions: 384,
@@ -53,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
         legal_category: 'physical-evidence',
         upload_timestamp: Date.now() - 86400000,
         file_size: 1024,
-        mime_type: 'application/pdf';
+        mime_type: 'application/pdf',
       }
     },
     {
@@ -65,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
         legal_category: 'witness-statement',
         upload_timestamp: Date.now() - 172800000,
         file_size: 512,
-        mime_type: 'application/msword';
+        mime_type: 'application/msword',
       }
     },
     {
@@ -77,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
         legal_category: 'digital-evidence',
         upload_timestamp: Date.now() - 259200000,
         file_size: 2048,
-        mime_type: 'text/plain';
+        mime_type: 'text/plain',
       }
     },
     {
@@ -89,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
         legal_category: 'physical-evidence',
         upload_timestamp: Date.now() - 345600000,
         file_size: 768,
-        mime_type: 'application/pdf';
+        mime_type: 'application/pdf',
       }
     }
   ];
@@ -208,14 +214,14 @@ await initializeSOMSystem();
     ctx.lineWidth = 2;
     ctx.globalAlpha = 0.7;
     // Group nodes by cluster and draw boundaries
-    const clusterNodes = new Map<number, Array>();
+    const clusterNodes = new Map<number, { x: number; y: number }[]>();
     visualizationData.forEach(node => {
       if (!clusterNodes.has(node.cluster)) {
         clusterNodes.set(node.cluster, []);
       }
       clusterNodes.get(node.cluster)!.push(node.position);
     });
-    clusterNodes.forEach((positions, cluster) => {
+    clusterNodes.forEach((positions, _cluster) => {
       if (positions.length < 2) return;
       // Simple convex hull approximation for cluster boundary
       const minX = Math.min(...positions.map(p => p.x));
@@ -257,7 +263,7 @@ await initializeSOMSystem();
       ctx.fillRect(legendX, y - 8, 12, 12);
       // Label
       ctx.fillStyle = '#ffffff';
-      ctx.fillText.label, legendX + 20, y);
+      ctx.fillText(item.label, legendX + 20, y);
     });
     // Cluster info
     ctx.fillStyle = '#cccccc';
@@ -281,7 +287,7 @@ await initializeSOMSystem();
         legal_category: 'forensic-analysis',
         upload_timestamp: Date.now(),
         file_size: 1024,
-        mime_type: 'application/pdf';
+        mime_type: 'application/pdf',
       }
     }
     try {
@@ -289,7 +295,7 @@ await initializeSOMSystem();
       // Update stats
       setTimeout(() => {
         stats = ingestionPipeline.getStats();
-        visualizationData = stats.som_visualizatio;
+        visualizationData = stats.som_visualization as SOMNode[];
       }, 1000);
     } catch (error) {
       console.error('Failed to process test document:', error);
@@ -324,7 +330,6 @@ await initializeSOMSystem();
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
             <input
-              ;
               bind:value={somConfig.mapWidth}
               onchange={updateSOMConfig}
               type="number"
@@ -371,7 +376,7 @@ await initializeSOMSystem();
         </div>
         <div>
           <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input
-            id="epochs";
+            id="epochs"
             bind:value={somConfig.maxEpochs}
             type="number"
             min="100"
@@ -413,7 +418,7 @@ await initializeSOMSystem();
           </span>
         </div>
       </div>
-      {#if Object.keys(errors).length > 0}
+      {#if stats.evidence_type_distribution && Object.keys(stats.evidence_type_distribution).length > 0}
         <div class="mt-4">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Evidence Types</h4>
           {#each Object.entries(stats.evidence_type_distribution) as [type, count]}
@@ -500,10 +505,10 @@ await initializeSOMSystem();
 <style>
   /* @unocss-include */
   .som-visualization {
-/* @apply max-w-6xl mx-auto p-6; */
+    @apply max-w-6xl mx-auto p-6;
   }
   .loading-spinner {
-/* @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spi; */
+    @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin;
   }
   .canvas-wrapper canvas {
     display: block;
