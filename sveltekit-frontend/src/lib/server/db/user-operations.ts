@@ -2,7 +2,7 @@
  * User Management Database Operations
  * Complete CRUD with PostgreSQL + pgvector + Drizzle ORM
  */
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { eq, and, isNull, count, sql, desc, cosineDistance } from 'drizzle-orm';
 import postgres from 'postgres';
 import bcrypt from 'bcryptjs';

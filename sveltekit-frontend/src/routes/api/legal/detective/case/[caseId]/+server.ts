@@ -1,17 +1,17 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 interface DetectiveCase {
-  id: string
-  title: string
-  status: 'ACTIVE' | 'PENDING' | 'CLOSED' | 'COLD',
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
-  suspects: Suspect[]
-  timeline: TimelineEvent[]
-  evidence: Evidence[]
-  location: string
-  assignedDetective: string
-  openedDate: string
-  lastUpdated: string
+  id: string;
+  title: string;
+  status: 'ACTIVE' | 'PENDING' | 'CLOSED' | 'COLD';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  suspects: Suspect[];
+  timeline: TimelineEvent[];
+  evidence: Evidence[];
+  location: string;
+  assignedDetective: string;
+  openedDate: string;
+  lastUpdated: string;
 }
 interface Suspect {
   id: string
@@ -40,6 +40,7 @@ interface Suspect {
     violentOffenses: boolean
   }
 }
+// add semicolons/commas in Suspect
 interface TimelineEvent {
   timestamp: string
   event: string
@@ -63,20 +64,14 @@ interface Evidence {
 }
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const caseId = params.caseId
+    const caseId = params.caseId;
     if (!caseId) {
-      return json(
-        { success: false, error: 'Case ID required' },)
-        { status: 400 }
-      )
+      return json({ success: false, error: 'Case ID required' }, { status: 400 });
     }
     // In production, this would query the database
-    const caseData = await getDetectiveCaseData(caseId)
+    const caseData = await getDetectiveCaseData(caseId);
     if (!caseData) {
-      return json(
-        { success: false, error: 'Case not found' },)
-        { status: 404 }
-      )
+      return json({ success: false, error: 'Case not found' }, { status: 404 });
     }
     return json({
       success: true,
@@ -88,49 +83,40 @@ export const GET: RequestHandler = async ({ params }) => {
         totalSuspects: caseData.suspects.length,
         totalEvidence: caseData.evidence.length,
         timelineSpan: calculateTimelineSpan(caseData.timeline),
-        riskLevel: calculateOverallRiskLevel(caseData.suspects)
-      }
-    })
+        riskLevel: calculateOverallRiskLevel(caseData.suspects),
+      },
+    });
   } catch (error) {
-    console.error('Detective case API error:', error)
-    return json(
-      { success: false, error: 'Failed to retrieve case data', case: null },)
-      { status: 500 }
-    )
+    console.error('Detective case API error:', error);
+    return json({ success: false, error: 'Failed to retrieve case data', case: null }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
-    const caseId = params.caseId
-    const updates = await request.json()
+    const caseId = params.caseId;
+    const updates = await request.json();
     if (!caseId) {
-      return json(
-        { success: false, error: 'Case ID required' },)
-        { status: 400 }
-      )
+      return json({ success: false, error: 'Case ID required' }, { status: 400 });
     }
     // In production, this would update the database
-    const updatedCase = await updateDetectiveCase(caseId, updates)
+    const updatedCase = await updateDetectiveCase(caseId, updates);
     return json({
       success: true,
-      case: updatedCase
-      message: 'Case updated successfully'
-    })
+      case: updatedCase,
+      message: 'Case updated successfully',
+    });
   } catch (error) {
-    console.error('Detective case update error:', error)
-    return json(
-      { success: false, error: 'Failed to update case data' },)
-      { status: 500 }
-    )
+    console.error('Detective case update error:', error);
+    return json({ success: false, error: 'Failed to update case data' }, { status: 500 });
   }
-}
+};
 async function getDetectiveCaseData(caseId: string): Promise<any> {
   // Mock implementation - in production, query database
   if (!caseId.startsWith('CASE-')) {
     return null
   }
   const mockCase: DetectiveCase = {
-    id: caseId
+    id: caseId,
     title: `Criminal Investigation - Case ${caseId}`,
     status: 'ACTIVE',
     priority: 'HIGH',
@@ -140,8 +126,8 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     location: 'Downtown District',
     assignedDetective: 'Det. Sarah Martinez',
     openedDate: '2024-01-15T09:00:00Z',
-    lastUpdated: new Date().toISOString()
-  }
+    lastUpdated: new Date().toISOString(),
+  };
   const mockSuspects: Suspect[] = [
     {
       id: 'SUSPECT-001',
@@ -373,11 +359,11 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     }
   ]
   return {
-    case: mockCase
-    suspects: mockSuspects
-    timeline: mockTimeline
-    evidence: mockEvidence
-  }
+    case: mockCase,
+    suspects: mockSuspects,
+    timeline: mockTimeline,
+    evidence: mockEvidence,
+  };
 }
 async function updateDetectiveCase(caseId: string, updates: any): Promise<DetectiveCase | null> {
   // Mock implementation - in production, update database
@@ -391,18 +377,20 @@ async function updateDetectiveCase(caseId: string, updates: any): Promise<Detect
 }
 function calculateTimelineSpan(timeline: TimelineEvent[]): string {
   if (timeline.length === 0) return 'No events'
-  const dates = timeline.map(event => new Date(event.timestamp)
-  const earliest = new Date(Math.min(...dates.map(d => d.getTime()))
-  const latest = new Date(Math.max(...dates.map(d => d.getTime()))
-  const diffMs = latest.getTime() - earliest.getTime()
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)
-  return `${diffDays} days`
+  const dates = timeline.map(event => new Date(event.timestamp));
+  const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
+  const latest = new Date(Math.max(...dates.map(d => d.getTime())));
+  const diffMs = latest.getTime() - earliest.getTime();
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  return `${diffDays} days`;
 }
 function calculateOverallRiskLevel(suspects: Suspect[]): string {
   if (suspects.length === 0) return 'UNKNOWN'
-  const highRiskCount = suspects.filter(item => item.length)
-  const totalSuspects = suspects.length
-  if (highRiskCount / totalSuspects >= 0.5) return 'HIGH'
-  if (highRiskCount > 0) return 'MEDIUM'
+  const highRiskCount = suspects.filter(
+    item => item.overallThreatLevel === 'HIGH' || item.overallThreatLevel === 'CRITICAL'
+  ).length;
+  const totalSuspects = suspects.length;
+  if (highRiskCount / totalSuspects >= 0.5) return 'HIGH';
+  if (highRiskCount > 0) return 'MEDIUM';
   return 'LOW'
 }

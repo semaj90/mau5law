@@ -2,7 +2,7 @@
  * MCP Tools Layer - Cases Management
  * Thin adapters wrapping Drizzle ORM queries for XState machine services
  */
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { Pool } from "pg";
 import { sql, eq, and, like, desc } from 'drizzle-orm';
 import * as schema from '../db/schema.js';

@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
         },
         configureServer(server) {
           // Log WebSocket errors
-          server.ws.on('error', (error) => {
+          server.ws.on('error', error => {
             const logPath = path.join(logsDir, 'hmr-errors.log');
             const timestamp = new Date().toISOString();
             const logEntry = `[${timestamp}] ❌ WebSocket error: ${error.message}\n${error.stack}\n\n`;
@@ -44,16 +44,16 @@ export default defineConfig(({ mode }) => {
           });
 
           // Log client connection issues
-          server.ws.on('connection', (socket) => {
-            socket.on('error', (error) => {
+          server.ws.on('connection', socket => {
+            socket.on('error', error => {
               const logPath = path.join(logsDir, 'hmr-errors.log');
               const timestamp = new Date().toISOString();
               const logEntry = `[${timestamp}] ❌ Client WebSocket error: ${error.message}\n`;
               fs.appendFileSync(logPath, logEntry);
             });
           });
-        }
-      }
+        },
+      },
     ],
     server: {
       port: 5173,
@@ -126,6 +126,8 @@ export default defineConfig(({ mode }) => {
       alias: {
         __SERVER__: serverInternals,
         __PUBLIC__: publicInternals,
+        // Shim node-postgres imports to use postgres-js adapter (conservative)
+        'drizzle-orm/node-postgres': path.resolve(__dirname, 'src/lib/shims/drizzle-node-postgres.ts'),
       },
       dedupe: ['svelte'],
     },

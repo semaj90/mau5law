@@ -23,7 +23,11 @@
     "isolatedModules": true,
     "sourceMap": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "drizzle-orm/node-postgres": ["src/lib/shims/drizzle-node-postgres.ts"]
+    }
   },
   "include": [
     "src",
@@ -52,7 +56,8 @@
     "src/lib/services/webgpu-texture-streaming.ts",
     "src/lib/services/chr-rom-mipmap-integration.ts",
     "src/lib/types/drizzle-enhanced.d.ts",
-    "src/lib/shims/**",
+    // keep other shims included for TS resolution
+    // shim files are referenced via paths mapping above
     "src/proto/**",
     "src/grpc/**",
     "src/flatbuf/**",

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool } from 'pg';
 import { document_chunks } from '$lib/db/schema';
 import { cache } from '$lib/server/cache/redis';

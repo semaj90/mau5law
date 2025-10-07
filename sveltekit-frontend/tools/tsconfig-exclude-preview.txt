@@ -1,0 +1,27 @@
+Preview patch: add exclude for .svelte.ts companions to sveltekit-frontend/tsconfig.json
+
+Change proposed (one-line patch):
+
+Add to `exclude` array:
+  "src/**/*.svelte.ts",
+
+Context (existing exclude array snippet):
+...
+    "src/lib/shims/**",
+    "src/proto/**",
+    "src/grpc/**",
+    "src/flatbuf/**",
+    "src/wasm/**",
+    "src/workers/**",
++   "src/**/*.svelte.ts",
+    "**/*.worker.ts",
+    "**/*.sw.ts",
+    "**/service-worker.ts"
+
+Rationale:
+- Prevents TypeScript from treating `.svelte.ts` companion files as independent compilation inputs.
+- Lets the Svelte compiler handle these files as component scripts (as intended by Svelte 5 runes).
+- Minimal, reversible change: can be removed if undesired.
+
+Next step after approval:
+- Apply a one-line edit to `sveltekit-frontend/tsconfig.json` and run a focused typecheck.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import pkg from 'pg';
 const { Pool } = pkg;
 import { hash } from '@node-rs/argon2';
@@ -8,9 +8,9 @@ import { hash } from '@node-rs/argon2';
 // Database connection - try different user credentials
 const dbConfigs = [
   'postgresql://postgres:123456@localhost:5432/legal_ai_db',
-  'postgresql://postgres:postgres@localhost:5432/legal_ai_db', 
+  'postgresql://postgres:postgres@localhost:5432/legal_ai_db',
   'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-  'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db'
+  'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db',
 ];
 
 let pool;
@@ -21,7 +21,7 @@ async function connectToDatabase() {
     try {
       pool = new Pool({ connectionString: config });
       db = drizzle(pool);
-      
+
       // Test the connection
       await pool.query('SELECT 1 as test');
       console.log('✅ Database connection successful with:', config.replace(/:[^:@]*@/, ':****@'));
@@ -82,7 +82,7 @@ async function seed() {
         isActive: true,
       },
       {
-        email: 'detective@legal.ai', 
+        email: 'detective@legal.ai',
         name: 'Jane Detective',
         firstName: 'Jane',
         lastName: 'Detective',
@@ -92,13 +92,13 @@ async function seed() {
       },
       {
         email: 'admin@legal.ai',
-        name: 'Admin User', 
+        name: 'Admin User',
         firstName: 'Admin',
         lastName: 'User',
         role: 'admin',
         hashedPassword: passwordHash,
         isActive: true,
-      }
+      },
     ];
 
     // Insert users with conflict handling
@@ -126,39 +126,45 @@ async function seed() {
       {
         caseNumber: 'CASE-2024-001',
         title: 'Financial Fraud Investigation',
-        description: 'Complex financial fraud case involving multiple entities and cryptocurrency transactions. Suspected money laundering through shell companies with international wire transfers exceeding $2.3M.',
+        description:
+          'Complex financial fraud case involving multiple entities and cryptocurrency transactions. Suspected money laundering through shell companies with international wire transfers exceeding $2.3M.',
         priority: 'high',
         status: 'open',
         category: 'financial_fraud',
         dangerScore: 75,
         createdBy: insertedUsers[0]?.id,
-        aiSummary: 'High-priority financial fraud case with strong evidence of money laundering. Key suspects identified through transaction pattern analysis.',
+        aiSummary:
+          'High-priority financial fraud case with strong evidence of money laundering. Key suspects identified through transaction pattern analysis.',
         aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value'],
       },
       {
         caseNumber: 'CASE-2024-002',
         title: 'Cybercrime Investigation',
-        description: 'Data breach and identity theft case with international connections. Over 100,000 personal records compromised including SSNs, credit card numbers, and personal identifying information.',
+        description:
+          'Data breach and identity theft case with international connections. Over 100,000 personal records compromised including SSNs, credit card numbers, and personal identifying information.',
         priority: 'medium',
         status: 'open',
-        category: 'cybercrime', 
+        category: 'cybercrime',
         dangerScore: 60,
         createdBy: insertedUsers[1]?.id,
-        aiSummary: 'Large-scale data breach affecting consumers across multiple states. Evidence suggests sophisticated APT group involvement.',
+        aiSummary:
+          'Large-scale data breach affecting consumers across multiple states. Evidence suggests sophisticated APT group involvement.',
         aiTags: ['data_breach', 'identity_theft', 'apt_group', 'consumer_harm'],
       },
       {
         caseNumber: 'CASE-2024-003',
         title: 'White Collar Crime',
-        description: 'Corporate embezzlement case with extensive document evidence. CFO suspected of diverting company funds to personal accounts over 3-year period.',
+        description:
+          'Corporate embezzlement case with extensive document evidence. CFO suspected of diverting company funds to personal accounts over 3-year period.',
         priority: 'high',
-        status: 'open', 
+        status: 'open',
         category: 'embezzlement',
         dangerScore: 45,
         createdBy: insertedUsers[0]?.id,
-        aiSummary: 'Clear evidence of systematic embezzlement through fraudulent invoicing and payment redirection. Total loss estimated at $1.8M.',
+        aiSummary:
+          'Clear evidence of systematic embezzlement through fraudulent invoicing and payment redirection. Total loss estimated at $1.8M.',
         aiTags: ['embezzlement', 'white_collar', 'corporate_fraud', 'systematic'],
-      }
+      },
     ];
 
     const insertedCases = [];
@@ -176,14 +182,15 @@ async function seed() {
       }
     }
 
-    // Seed evidence  
+    // Seed evidence
     console.log('🔍 Creating evidence...');
     if (insertedCases.length > 0) {
       const seedEvidence = [
         {
           caseId: insertedCases[0]?.id,
           title: 'Bank Transaction Records',
-          description: 'Suspicious transaction patterns showing money laundering activity. Records span 18 months and include wire transfers to offshore accounts.',
+          description:
+            'Suspicious transaction patterns showing money laundering activity. Records span 18 months and include wire transfers to offshore accounts.',
           evidenceType: 'financial_document',
           tags: ['transactions', 'banking', 'offshore'],
           uploadedBy: insertedUsers[0]?.id,
@@ -193,12 +200,14 @@ async function seed() {
             recommendations: ['Focus on accounts 4457 and 8821', 'Check international wire transfer compliance'],
           },
           aiTags: ['money_laundering', 'suspicious_patterns', 'high_confidence'],
-          aiSummary: 'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.',
+          aiSummary:
+            'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.',
         },
         {
           caseId: insertedCases[1]?.id,
-          title: 'Server Logs', 
-          description: 'Access logs showing unauthorized data access and exfiltration. Evidence of SQL injection attacks and privilege escalation.',
+          title: 'Server Logs',
+          description:
+            'Access logs showing unauthorized data access and exfiltration. Evidence of SQL injection attacks and privilege escalation.',
           evidenceType: 'digital_evidence',
           tags: ['logs', 'unauthorized_access', 'data_exfiltration'],
           uploadedBy: insertedUsers[1]?.id,
@@ -208,8 +217,9 @@ async function seed() {
             timeline: '2024-01-15 to 2024-03-20',
           },
           aiTags: ['cyberattack', 'technical_evidence', 'timeline_established'],
-          aiSummary: 'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.',
-        }
+          aiSummary:
+            'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.',
+        },
       ];
 
       for (const evidenceData of seedEvidence) {
@@ -229,8 +239,10 @@ async function seed() {
         title: 'Money Laundering Statute Reference',
         documentType: 'statute',
         jurisdiction: 'federal',
-        content: 'Federal money laundering statutes define the criminal offense of engaging in financial transactions with proceeds of unlawful activity...',
-        fullText: 'Complete statutory text would be here with full legal definitions, penalties, and procedural requirements.',
+        content:
+          'Federal money laundering statutes define the criminal offense of engaging in financial transactions with proceeds of unlawful activity...',
+        fullText:
+          'Complete statutory text would be here with full legal definitions, penalties, and procedural requirements.',
         embedding: generateSampleEmbedding(), // 768-dimensional vector
         keywords: ['money_laundering', 'financial_crimes', 'federal_statute'],
         topics: ['financial_crimes', 'money_laundering', 'criminal_law'],
@@ -253,7 +265,7 @@ async function seed() {
    📄 Legal Documents: Attempted with pgvector support
 
 🔐 Test Login Credentials:
-   prosecutor@legal.ai / password123  
+   prosecutor@legal.ai / password123
    detective@legal.ai / password123
    admin@legal.ai / password123
 
@@ -262,7 +274,6 @@ async function seed() {
    2. Test login at: http://localhost:5173/login
    3. Explore vector search capabilities
 `);
-
   } catch (error) {
     console.error('❌ Seed failed:', error);
     console.error('Full error:', error.stack);

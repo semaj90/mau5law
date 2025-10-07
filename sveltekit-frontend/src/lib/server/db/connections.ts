@@ -1,8 +1,8 @@
 // Database connection management with role separation
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool } from "pg";
 import * as schema from './schema-postgres.js';
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration
 const isDevelopment = process.env.NODE_ENV === "development";
 /**
@@ -21,29 +21,29 @@ const adminConnectionString =
   process.env.MIGRATION_DATABASE_URL ||
   "postgresql://legal_admin:123456@localhost:5434/legal_ai_db"
 // App connection pool (for normal operations)
-export const appPool = isDevelopment;
+export const appPool = isDevelopment
   ? new Pool({
-      connectionString: appConnectionString
+      connectionString: appConnectionString,
       max: 5, // Smaller pool for development
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000
-    });
+      connectionTimeoutMillis: 10000,
+    })
   : new Pool({
-      connectionString: appConnectionString
+      connectionString: appConnectionString,
       max: 20,
       idleTimeoutMillis: 60000,
-      connectionTimeoutMillis: 5000
+      connectionTimeoutMillis: 5000,
     });
 // Admin connection pool (for migrations/extensions)
 export const adminPool = new Pool({
-  connectionString: adminConnectionString
+  connectionString: adminConnectionString,
   max: 2, // Small pool since admin operations are infrequent
   idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 5000
+  connectionTimeoutMillis: 5000,
 });
 // Drizzle instances
-export const db: NodePgDatabase<typeof schema> = drizzle(appPool, { schema });
-export const adminDb: NodePgDatabase<typeof schema> = drizzle(adminPool, { schema });
+export const db: PostgresJsDatabase<typeof schema> = drizzle(appPool, { schema });
+export const adminDb: PostgresJsDatabase<typeof schema> = drizzle(adminPool, { schema });
 // Connection info for logging
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password

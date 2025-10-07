@@ -2,41 +2,55 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { BitsDemoProps } from '$lib/types/component-props.js';
-  // Component library choice - toggle between bits-ui and melt-ui
-  import { Dialog, Button, Select, AlertDialog } from 'bits-ui';
-  import MeltButton from '$lib/components/ui/bitsbutton.svelte';
-  import MeltDialog from '$lib/components/ui/MeltDialog.svelte';
-  import MeltSelect from '$lib/components/ui/MeltSelect.svelte';
-  import { fade } from 'svelte/transition';
+  // removed bits-ui compound imports because those are Svelte components,
+  // not objects with nested properties like Button.Root, Select.Trigger, etc.
+  import { onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { fly } from 'svelte/transition';
+  // Correctly define props using $props() rune with the BitsDemoProps type.
+  // Destructure directly from $props<BitsDemoProps>() and apply defaults.
+  // Rename 'class' to 'className' and 'data-testid' to 'testId' during destructuring.
   let {
-    caseTypes = [
-      { value: 'criminal', label: 'Criminal Cases' },
-      { value: 'civil', label: 'Civil Cases' },
-      { value: 'family', label: 'Family Law' },
-      { value: 'corporate', label: 'Corporate Law' }
-    ],
-    useLibrary = 'bits-ui',
-    class: className = '',
+    caseTypes: propCaseTypes, // Renamed to avoid conflict with derived 'caseTypes'
+    useLibrary = 'bits-ui', // Apply default directly, remove 'prop' prefix
+    class: className = '', // Rename 'class' to 'className' and apply default
     id,
-    'data-testid': testId;
-  }: BitsDemoProps = $props();
-  // Component selection based on library choice
-  let SelectedButton = $derived(useLibrary === 'melt-ui' ? MeltButton : Button);
-  let SelectedDialog = $derived(useLibrary === 'melt-ui' ? MeltDialog : Dialog);
-  let SelectedSelect = $derived(useLibrary === 'melt-ui' ? MeltSelect : Select);
+    'data-testid': testId, // Directly destructure and rename 'data-testid'
+  } = $props<BitsDemoProps>();
+
+  const _defaultCaseTypes = [
+    { value: 'criminal', label: 'Criminal Cases' },
+    { value: 'civil', label: 'Civil Cases' },
+    { value: 'family', label: 'Family Law' },
+    { value: 'corporate', label: 'Corporate Law' }
+  ];
+  // Apply default for caseTypes, which might be more complex than a simple literal
+  let caseTypes = $derived(propCaseTypes ?? _defaultCaseTypes);
+  // bound select value for practice area
+  let selectedPracticeArea: string = '';
   interface ToastData {
     title?: string;
     description?: string;
     color: string;
   }
-  let dialogOpen = $state(false);
-  let alertOpen = $state(false);
+  let dialogOpen = $state<boolean>(false);
+  let alertOpen = $state<boolean>(false);
+  let _hasMounted = $state<boolean>(false);
+  onMount(() => {
+    _hasMounted = true;
+  });
+  // reactive watcher: when dialogOpen becomes true, show info notification
+  $effect(() => {
+    if (dialogOpen && _hasMounted) {
+      // call async notifier when dialog opens after mount
+      // run without awaiting so UI isn't blocked; showInfoNotification handles errors/toasts
+      showInfoNotification();
+    }
+  });
   // Simple native toast system
-  let toasts = $state<any[]>([]);
+  let toasts = $state<Array<{ id: string; data: ToastData }>>([]);
   function addToast(toast: { data: ToastData }) {
-    const id = Date.now.toString();
+    const id = Date.now().toString();
     toasts = [...toasts, { id, data: toast.data }];
     // Auto-remove after 5 seconds
     setTimeout(() => {
@@ -64,7 +78,7 @@
         addToast({
           data: {
             title: 'Case Created Successfully',
-            description: `Case ${(result as { case?: any; system_overview?: any; p99?: any }).case?.caseNumber} created and saved to database.`,
+            description: `Case ${(result as { case?: any }).case?.caseNumber} created and saved to database.`,
             color: 'success',
           },
         });
@@ -91,7 +105,7 @@
         addToast({
           data: {
             title: 'System Status Check',
-            description: `Services: ${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.healthy_services || 0}/${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.total_services || 0} healthy`,
+            description: `Services: ${(result as { system_overview?: any }).system_overview?.healthy_services || 0}/${(result as { system_overview?: any }).system_overview?.total_services || 0} healthy`,
             color: 'warning',
           },
         });
@@ -110,7 +124,8 @@
   }
   async function showErrorNotification() {
     try {
-      // removed unused response assignment
+      // perform a real check for upload service health
+      const response = await fetch('/api/upload/health', { method: 'GET' });
       if ((response as { ok?: any; json?: any }).ok) {
         addToast({
           data: {
@@ -142,7 +157,7 @@
         addToast({
           data: {
             title: 'Multi-Protocol Check',
-            description: `QUIC metrics available. P99: ${(result as { case?: any; system_overview?: any; p99?: any }).p99 || 'N/A'}ms`,
+            description: `QUIC metrics available. P99: ${(result as { p99?: any }).p99 || 'N/A'}ms`,
             color: 'info',
           },
         });
@@ -166,63 +181,57 @@
     }
   }
 </script>
-<div class="mx-auto px-4 max-w-7xl">
+<div
+  class={"mx-auto px-4 max-w-7xl " + className}
+  id={id}
+  data-testid={testId}
+  data-use-library={useLibrary}
+>
   <h2 class="mx-auto px-4 max-w-7xl">Bits UI Components Demo</h2>
   <!-- Bits-UI Notification Demo Section -->
   <div class="mx-auto px-4 max-w-7xl">
     <h3 class="mx-auto px-4 max-w-7xl">Bits-UI Notifications Demo</h3>
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showSuccessNotification()}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showSuccessNotification}>
         Success Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showWarningNotification()}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showWarningNotification}>
         Warning Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showErrorNotification()}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}>
         Error Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showInfoNotification()}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showInfoNotification}>
         Info Notification
       </button>
     </div>
   </div>
-  <!-- Bits UI Button -->
-  <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={showSuccessNotification}>
-Create New Case
-  </Button.Root>
-  <!-- Bits UI Select -->
+  <!-- Bits UI Button (replaced Button.Root with native button) -->
+  <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={showSuccessNotification}>
+    Create New Case
+  </button>
+  <!-- Bits UI Select (replaced Select.* with native select/options) -->
   <div class="mx-auto px-4 max-w-7xl">
     <label class="mx-auto px-4 max-w-7xl" for="practice-area-select">Legal Practice Area</label>
-    <Select.Root>
-      <Select.Trigger class="mx-auto px-4 max-w-7xl" id="practice-area-select">
-        Select practice area...
-      </Select.Trigger>
-      <Select.Portal>
-        <Select.Content class="mx-auto px-4 max-w-7xl">
-          {#each caseTypes as type}
-            <Select.Item value={type.value} class="mx-auto px-4 max-w-7xl">
-              {type.label}
-            </Select.Item>
-          {/each}
-        </Select.Content>
-      </Select.Portal>
-    </Select.Root>
+    <select id="practice-area-select" class="mx-auto px-4 max-w-7xl" bind:value={selectedPracticeArea} aria-label="Select practice area">
+      <option value="" disabled>Select practice area...</option>
+      {#each caseTypes as type}
+        <option value={type.value}>{type.label}</option>
+      {/each}
+    </select>
   </div>
-  <!-- Bits UI Dialog -->
-  <Dialog.Root bind:open={dialogOpen} openchange={(open) => { if (open) showInfoNotification(), }}>
-    <Dialog.Trigger class="mx-auto px-4 max-w-7xl">
-      Case Management Options
-    </Dialog.Trigger>
-    <Dialog.Portal>
-      <Dialog.Overlay class="mx-auto px-4 max-w-7xl" />
-      <Dialog.Content class="mx-auto px-4 max-w-7xl">
-        <Dialog.Title class="mx-auto px-4 max-w-7xl">
-          Case Management System
-        </Dialog.Title>
-        <Dialog.Description class="mx-auto px-4 max-w-7xl">
+  <!-- Bits UI Dialog (replaced Dialog.* with simple conditional modal) -->
+  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = true)}>
+    Case Management Options
+  </button>
+  {#if dialogOpen}
+    <div class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="case-management-title">
+      <div class="dialog-content">
+        <h3 id="case-management-title" class="dialog-title">Case Management System</h3>
+        <p class="dialog-description">
           Manage your legal cases with our comprehensive case management system.
           Track evidence, deadlines, and case progress all in one place.
-        </Dialog.Description>
+        </p>
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h4>Evidence Management</h4>
@@ -237,42 +246,31 @@ Create New Case
             <p>Get AI-powered insights on your cases</p>
           </div>
         </div>
-        <div class="mx-auto px-4 max-w-7xl">
-          <Dialog.Close class="mx-auto px-4 max-w-7xl">
-            Close
-          </Dialog.Close>
-          <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn">
-            Get Started
-          </Button.Root>
+        <div class="dialog-actions mx-auto px-4 max-w-7xl">
+          <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = false)}>Close</button>
+          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={() => (dialogOpen = false)}>Get Started</button>
         </div>
-      </Dialog.Content>
-    </Dialog.Portal>
-  </Dialog.Root>
-  <!-- Bits UI Alert Dialog -->
-  <AlertDialog.Root bind:open={alertOpen}>
-    <AlertDialog.Trigger class="mx-auto px-4 max-w-7xl">
-      Delete Case
-    </AlertDialog.Trigger>
-    <AlertDialog.Portal>
-      <AlertDialog.Overlay class="mx-auto px-4 max-w-7xl" />
-      <AlertDialog.Content class="mx-auto px-4 max-w-7xl">
-        <AlertDialog.Title class="mx-auto px-4 max-w-7xl">
-          Delete Case Confirmation
-        </AlertDialog.Title>
-        <AlertDialog.Description class="mx-auto px-4 max-w-7xl">
+      </div>
+    </div>
+  {/if}
+  <!-- Bits UI Alert Dialog (replaced with native confirm-style modal) -->
+  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (alertOpen = true)}>Delete Case</button>
+  {#if alertOpen}
+    <div class="dialog-overlay" role="alertdialog" aria-modal="true" aria-labelledby="delete-case-title">
+      <div class="dialog-content">
+        <h3 id="delete-case-title" class="dialog-title">Delete Case Confirmation</h3>
+        <p class="dialog-description">
           Are you sure you want to delete this case? This action cannot be undone and will permanently remove all case data, evidence, and related documents.
-        </AlertDialog.Description>
-        <div class="mx-auto px-4 max-w-7xl">
-          <AlertDialog.Cancel class="mx-auto px-4 max-w-7xl">
-            Cancel
-          </AlertDialog.Cancel>
-          <AlertDialog.Action class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}>
+        </p>
+        <div class="alert-actions">
+          <button type="button" onclick={() => (alertOpen = false)}>Cancel</button>
+          <button type="button" class="text-danger" onclick={() => { showErrorNotification(); alertOpen = false; }}>
             Delete Permanently
-          </AlertDialog.Action>
+          </button>
         </div>
-      </AlertDialog.Content>
-    </AlertDialog.Portal>
-  </AlertDialog.Root>
+      </div>
+    </div>
+  {/if}
   <div class="mx-auto px-4 max-w-7xl">
     <p class="mx-auto px-4 max-w-7xl">
       <strong>Demo:</strong> Bits UI components provide accessible, unstyled components.
@@ -284,15 +282,15 @@ Create New Case
 <div class="toast-container">
   {#each toasts as { id, data } (id)}
     <div
-      class="toast toast-{(data as { color?: any; title?: any; description?: any }).color}"
+      class="toast toast-{(data as { color?: any; title?: any, description?: any }).color}"
       animate:flip={{ duration: 500 }}
       in:fly={{ duration: 150, x: '100%' }}
       out:fly={{ duration: 150, x: '100%' }}
     >
       <div class="toast-header">
-        {#if (data as { color?: any; title?: any; description?: any }).title}
+        {#if (data as { color?: any; title?: any, description?: any }).title}
           <div class="toast-title">
-            {(data as { color?: any; title?: any; description?: any }).title}
+            {(data as { color?: any, title?: any, description?: any }).title}
           </div>
         {/if}
         <button
@@ -303,9 +301,9 @@ Create New Case
           ✕
         </button>
       </div>
-      {#if (data as { color?: any; title?: any; description?: any }).description}
+      {#if (data as { color?: any; title?: any, description?: any }).description}
         <div class="toast-description">
-          {(data as { color?: any; title?: any; description?: any }).description}
+          {(data as { color?: any, title?: any, description?: any }).description}
         </div>
       {/if}
     </div>
@@ -441,6 +439,8 @@ Create New Case
     background-color: var(--color-surface);
     color: var(--color-text);
   }
+
+  /* Consolidated select styles (fixed duplicate + stray brace) */
   :global(.select-content) {
     background-color: var(--color-background);
     border: 1px solid var(--color-border);
@@ -464,6 +464,7 @@ Create New Case
   :global(.select-item[data-highlighted]) {
     background-color: var(--color-surface);
   }
+
   :global(.dialog-overlay) {
     position: fixed;
     inset: 0;

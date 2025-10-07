@@ -7,7 +7,7 @@
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { debounce } from 'lodash-es';
-  import { Command as CommandPrimitive } from '$lib/components/ui/command';
+  import * as CommandPrimitive from '$lib/components/ui/command';
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons

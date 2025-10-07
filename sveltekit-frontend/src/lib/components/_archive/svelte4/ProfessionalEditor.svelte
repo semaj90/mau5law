@@ -30,7 +30,8 @@ https://svelte.dev/e/js_parse_error -->
   let readingTime = $state(0);
   let hasUnsavedChanges = $state(false);
   // Auto-save functionality
-  let autoSaveTimer = $state<NodeJS.Timeout | null>(null);
+  // use a cross-environment compatible timer type
+  let autoSaveTimer: ReturnType<typeof setInterval> | null = null;
   function startAutoSave() {
     if (autoSaveTimer) clearInterval(autoSaveTimer);
     autoSaveTimer = setInterval(() => {
@@ -40,11 +41,13 @@ https://svelte.dev/e/js_parse_error -->
     }, autoSaveInterval);
   }
   function stopAutoSave() {
-    if (autoSaveTimer) clearInterval(autoSaveTimer);
+    if (autoSaveTimer) {
+      clearInterval(autoSaveTimer);
+      autoSaveTimer = null;
+    }
   }
   function saveDocument() {
     // dispatch save event hook if provided
-    // ondispatch variable was invalid; keep local save only for now
     hasUnsavedChanges = false;
     lastSaved = new Date();
   }
@@ -58,22 +61,22 @@ https://svelte.dev/e/js_parse_error -->
     hasUnsavedChanges = true;
   }
   // Keyboard shortcuts
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     const isCtrl = event.ctrlKey || event.metaKey;
     // Save (Ctrl+S)
-    if (isCtrl && event.key === 's') {
+    if (isCtrl && event.key.toLowerCase() === 's') {
       event.preventDefault();
       saveDocument();
       return;
     }
     // Bold (Ctrl+B)
-    if (isCtrl && event.key === 'b') {
+    if (isCtrl && event.key.toLowerCase() === 'b') {
       event.preventDefault();
       document.execCommand('bold');
       return;
     }
     // Italic (Ctrl+I)
-    if (isCtrl && event.key === 'i') {
+    if (isCtrl && event.key.toLowerCase() === 'i') {
       event.preventDefault();
       document.execCommand('italic');
       return;
@@ -81,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     // Show shortcuts (Ctrl+/)
     if (isCtrl && event.key === '/') {
       event.preventDefault();
-      showShortcuts = !showShortcut;
+      showShortcuts = !showShortcuts;
       return;
     }
     // Fullscreen (F11)
@@ -99,32 +102,35 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Fullscreen functionality
   function toggleFullscreen() {
-    isFullscreen = !isFullscree;
+    isFullscreen = !isFullscreen;
     if (isFullscreen) {
-      document.documentElement.requestFullscreen?.();
+      // prefer editor element if available
+      (editorElement ?? document.documentElement).requestFullscreen?.();
     } else {
       document.exitFullscreen?.();
     }
   }
   // Focus mode
   function toggleFocusMode() {
-    isFocusMode = !isFocusMod;
+    isFocusMode = !isFocusMode;
   }
   // Text formatting
   function formatText(command: string, value?: string) {
-    document.execCommand(command, false, value);
-    editorElement.focus();
+    document.execCommand(command, false, value ?? '');
+    editorElement?.focus();
     updateStatistics();
   }
   $effect(() => {
     if (autoSave) startAutoSave();
     // Listen for fullscreen changes
-    document.addEventListener('fullscreenchange', () => {
+    const onFullChange = () => {
       isFullscreen = !!document.fullscreenElement;
-    });
+    };
+    document.addEventListener('fullscreenchange', onFullChange);
     return () => {
       stopAutoSave();
-    }
+      document.removeEventListener('fullscreenchange', onFullChange);
+    };
   });
   // Shortcuts data
   const shortcuts = [
@@ -281,13 +287,13 @@ https://svelte.dev/e/js_parse_error -->
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
-  .professional-editor {
+  /* Cleaned and corrected CSS */
   .professional-editor {
     display: flex;
     flex-direction: column;
     height: 80vh;
     min-height: 600px;
-    background: #f4f1ease;
+    background: #f4f1ea;
     border: 1px solid #ada895;
     border-radius: 8px;
     overflow: hidden;
@@ -296,7 +302,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   .professional-editor.fullscreen {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -317,7 +322,7 @@ d;
   .editor-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem;
     background: #faf8f3;
     border-bottom: 1px solid #ada895;
@@ -383,7 +388,7 @@ d;
     flex: 1;
     overflow-y: auto;
     padding: 2rem;
-    background: #f4f1ease;
+    background: #f4f1ea;
   }
   .editor-content {
     min-height: 100%;
@@ -438,7 +443,7 @@ d;
   .status-bar {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.75rem 1rem;
     background: #faf8f3;
     border-top: 1px solid #ada895;
@@ -459,7 +464,6 @@ d;
   /* Shortcuts Modal */
   .shortcuts-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -471,7 +475,7 @@ d;
     z-index: 10000;
   }
   .shortcuts-modal {
-    background: #f4f1ease;
+    background: #f4f1ea;
     padding: 2rem;
     border-radius: 12px;
     max-width: 500px;
@@ -493,7 +497,7 @@ d;
   .shortcut-item {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(173, 168, 149, 0.3);
   }
@@ -538,8 +542,7 @@ d;
     }
   }
   /* Focus indicators for accessibility */
-  .action-btn: focus
-  .format-btn:focus {
+  .action-btn:focus, .format-btn:focus {
     outline: 2px solid #3a372f;
     outline-offset: 2px;
   }

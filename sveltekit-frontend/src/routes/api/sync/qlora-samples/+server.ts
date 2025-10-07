@@ -2,9 +2,10 @@
  * QLoRA Topology Sample API
  * Provides mock QLoRA topology predictions and training samples for neural sprite system
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit'
-import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple';
+
 // Mock implementation since qloraTopologyPredictor is not available
 const qloraTopologyPredictor = {
   async predictOptimalTopology(doc: any, context: any, constraints: any) {
@@ -14,55 +15,74 @@ const qloraTopologyPredictor = {
       estimatedPerformance: {
         latency: Math.random() * 1000 + 500,
         accuracy: 0.85 + Math.random() * 0.1,
-        memoryUsage: Math.random() * 256 + 128
+        memoryUsage: Math.random() * 256 + 128,
       },
-      reasoning: 'Mock topology prediction for development'
-    }
-  }
-}
+      reasoning: 'Mock topology prediction for development',
+    };
+  },
+};
+
 // Mock implementations for commented out services
 const hmmSomEngine = {
   async generateTrainingSample() {
     return {
       input: 'mock_input',
       expected_output: 'mock_output',
-      metadata: { generated_at: new Date().toISOString() }
-    }
+      metadata: { generated_at: new Date().toISOString() },
+    };
+  },
+};
+
+// Small helper types and functions to satisfy TS checks
+type MockDoc = { id?: string; type?: string; [k: string]: any };
+type BatchJob = { jobId: string; documentId: string; config: Record<string, unknown>; variation?: number };
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
   }
 }
-// import { db } from '$lib/server/db/drizzle'
-// import { qloraTrainingJobs, legalDocuments } from '$lib/server/db/schema-postgres'
-import { desc, eq } from 'drizzle-orm'
+
 // GET /api/sync/qlora-samples - Get QLoRA topology samples and predictions
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'samples'
-  const count = parseInt(url.searchParams.get('count') || '10')
-  const documentType = url.searchParams.get('documentType')
+  const action = url.searchParams.get('action') || 'samples';
+  const count = Math.max(0, parseInt(url.searchParams.get('count') || '10', 10));
+  const documentType = url.searchParams.get('documentType');
+
   try {
     switch (action) {
-      case 'samples':
-        // Generate fresh mock QLoRA states
-        const mockStates = mockDataGenerators.generateMockQLoRAStates(count)
-        return json({
-          action: 'qlora_samples',
-          samples: mockStates
-          count: mockStates.length,
-          metadata: {
-            documentTypes: [...new Set(mockStates.map((s) => s.documentType))],
-            averageComplexity:
-              mockStates.reduce((sum, s) => sum + s.complexity, 0) / mockStates.length,
-            configurationVariety: mockStates
-              .map((s) => s.currentConfig.rank)
-              .filter((v, i, a) => a.indexOf(v) === i).length
+      case 'samples': {
+        const mockStates = mockDataGenerators.generateMockQLoRAStates(count);
+        const types = mockStates.length ? [...new Set(mockStates.map(s => s.documentType))] : [];
+        const avgComplexity =
+          mockStates.length > 0 ? mockStates.reduce((sum, s) => sum + s.complexity, 0) / mockStates.length : 0;
+        const configurationVariety = mockStates.length
+          ? mockStates.map(s => s.currentConfig.rank).filter((v, i, a) => a.indexOf(v) === i).length
+          : 0;
+
+        return json(
+          {
+            action: 'qlora_samples',
+            samples: mockStates,
+            count: mockStates.length,
+            metadata: {
+              documentTypes: types,
+              averageComplexity: avgComplexity,
+              configurationVariety,
+            },
+            timestamp: new Date().toISOString(),
           },
-          timestamp: new Date().toISOString()
-        })
-      case 'predictions':
-        // Generate topology predictions using actual predictor
-        const predictions = []
-        const sampleDocs = await mockDataGenerators.generateMockLegalDocuments(count)
-        for (const doc of sampleDocs.slice(0, 5)) {
-          // Limit to 5 for performance
+          { status: 200 }
+        );
+      }
+
+      case 'predictions': {
+        const predictions: Array<any> = [];
+        const sampleDocs = await mockDataGenerators.generateMockLegalDocuments(count);
+        for (const doc of sampleDocs.slice(0, Math.min(5, sampleDocs.length))) {
           try {
             const mockUserContext = {
               sessionType: 'analysis' as const,
@@ -70,62 +90,72 @@ export const GET: RequestHandler = async ({ url }) => {
               documentFlow: [doc.type],
               interactionVelocity: 1.5,
               qualityExpectation: 0.9,
-              timeConstraints: 0.5
-            }
-            const prediction = await qloraTopologyPredictor.predictOptimalTopology(
-              doc as any,
-              mockUserContext,)
-              {
-                maxLatency: 2000,
-                minAccuracy: 0.85,
-                memoryBudget: 512
-              }
-            )
+              timeConstraints: 0.5,
+            };
+            const prediction = await qloraTopologyPredictor.predictOptimalTopology(doc as any, mockUserContext, {
+              maxLatency: 2000,
+              minAccuracy: 0.85,
+              memoryBudget: 512,
+            });
             predictions.push({
               documentId: doc.id,
               documentType: doc.type,
               prediction,
-              mockData: true
-            })
-          } catch (error) {
-            console.warn(`Failed to generate prediction for doc ${doc.id}:`, error.message)
+              mockData: true,
+            });
+          } catch (err: any) {
+            console.warn(`Failed to generate prediction for doc ${doc.id}:`, err?.message || err);
           }
         }
-        return json({
-          action: 'topology_predictions',
-          predictions,
-          count: predictions.length,
-          performance: {
-            avgConfidence:
-              predictions.reduce((sum, p) => sum + (p.prediction?.confidence || 0), 0) /
-              predictions.length,
-            totalLatency: predictions.reduce(
-              (sum, p) => sum + (p.prediction?.estimatedPerformance?.latency || 0),
-              0
-            )
+
+        const avgConfidence =
+          predictions.length > 0
+            ? predictions.reduce((sum, p) => sum + (p.prediction?.confidence || 0), 0) / predictions.length
+            : 0;
+        const totalLatency =
+          predictions.length > 0
+            ? predictions.reduce((sum, p) => sum + (p.prediction?.estimatedPerformance?.latency || 0), 0)
+            : 0;
+
+        return json(
+          {
+            action: 'topology_predictions',
+            predictions,
+            count: predictions.length,
+            performance: {
+              avgConfidence,
+              totalLatency,
+            },
+            timestamp: new Date().toISOString(),
           },
-          timestamp: new Date().toISOString()
-        })
-      case 'hmm_som_predictions':
-        // Generate HMM+SOM asset predictions
-        const hmmPredictions = mockDataGenerators.generateMockAssetPredictions(count)
-        return json({
-          action: 'hmm_som_predictions',
-          predictions: hmmPredictions
-          count: hmmPredictions.length,
-          aggregateStats: {
-            avgConfidence:
-              hmmPredictions.reduce((sum, p) => sum + p.totalConfidence, 0) / hmmPredictions.length,
-            avgLatency:
-              hmmPredictions.reduce((sum, p) => sum + p.predictionLatencyMs, 0) /
-              hmmPredictions.length,
-            avgCacheHitRatio:
-              hmmPredictions.reduce((sum, p) => sum + p.cacheHitRatio, 0) / hmmPredictions.length
+          { status: 200 }
+        );
+      }
+
+      case 'hmm_som_predictions': {
+        const hmmPredictions = mockDataGenerators.generateMockAssetPredictions(count);
+        const countPreds = hmmPredictions.length;
+        const aggregateStats = countPreds
+          ? {
+              avgConfidence: hmmPredictions.reduce((sum, p) => sum + (p.totalConfidence || 0), 0) / countPreds,
+              avgLatency: hmmPredictions.reduce((sum, p) => sum + (p.predictionLatencyMs || 0), 0) / countPreds,
+              avgCacheHitRatio: hmmPredictions.reduce((sum, p) => sum + (p.cacheHitRatio || 0), 0) / countPreds,
+            }
+          : { avgConfidence: 0, avgLatency: 0, avgCacheHitRatio: 0 };
+
+        return json(
+          {
+            action: 'hmm_som_predictions',
+            predictions: hmmPredictions,
+            count: countPreds,
+            aggregateStats,
+            timestamp: new Date().toISOString(),
           },
-          timestamp: new Date().toISOString()
-        })
-      case 'training_history':
-        // Mock training job history
+          { status: 200 }
+        );
+      }
+
+      case 'training_history': {
         const trainingJobs = Array.from({ length: count }, (_, i) => ({
           id: `job_${Date.now()}_${i}`,
           documentId: `doc_${i}`,
@@ -133,58 +163,65 @@ export const GET: RequestHandler = async ({ url }) => {
           status: ['completed', 'training', 'failed'][Math.floor(Math.random() * 3)],
           accuracy: 0.8 + Math.random() * 0.15,
           trainingTime: 1000 + Math.random() * 5000,
-          createdAt: new Date(Date.now() - Math.random() * 86400000),
-          metadata: { mockData: true }
-        })
-        return json({
-          action: 'training_history',
-          jobs: trainingJobs
-          count: trainingJobs.length,
-          stats: {
-            avgAccuracy:
-              trainingJobs.reduce((sum, j) => sum + (j.accuracy || 0), 0) / trainingJobs.length,
-            avgTrainingTime:
-              trainingJobs.reduce((sum, j) => sum + (j.trainingTime || 0), 0) / trainingJobs.length,
-            statusBreakdown: trainingJobs.reduce((acc, j) => {
-                acc[j.status] = (acc[j.status] || 0) + 1
-                return acc
-              },
-              {} as Record<string, number>
-            )
+          createdAt: new Date(Date.now() - Math.random() * 86400000).toISOString(),
+          metadata: { mockData: true },
+        }));
+
+        const stats = trainingJobs.length
+          ? {
+              avgAccuracy: trainingJobs.reduce((sum, j) => sum + (j.accuracy || 0), 0) / trainingJobs.length,
+              avgTrainingTime: trainingJobs.reduce((sum, j) => sum + (j.trainingTime || 0), 0) / trainingJobs.length,
+              statusBreakdown: trainingJobs.reduce((acc: Record<string, number>, j) => {
+                acc[j.status] = (acc[j.status] || 0) + 1;
+                return acc;
+              }, {}),
+            }
+          : { avgAccuracy: 0, avgTrainingTime: 0, statusBreakdown: {} };
+
+        return json(
+          {
+            action: 'training_history',
+            jobs: trainingJobs,
+            count: trainingJobs.length,
+            stats,
+            timestamp: new Date().toISOString(),
           },
-          timestamp: new Date().toISOString()
-        })
-      case 'performance_metrics':
-        // Mock performance metrics
-        const mockAccuracies = Array.from({ length: 50 }, () => 0.8 + Math.random() * 0.15)
-        const mockTrainingTimes = Array.from({ length: 50 }, () => 1000 + Math.random() * 5000)
+          { status: 200 }
+        );
+      }
+
+      case 'performance_metrics': {
+        const mockAccuracies = Array.from({ length: 50 }, () => 0.8 + Math.random() * 0.15);
+        const mockTrainingTimes = Array.from({ length: 50 }, () => 1000 + Math.random() * 5000);
         const metrics = {
           totalJobs: 50,
-          avgAccuracy:
-            mockAccuracies.reduce((sum: number, acc: number) => sum + acc, 0) /
-            mockAccuracies.length,
+          avgAccuracy: mockAccuracies.reduce((sum, acc) => sum + acc, 0) / mockAccuracies.length,
           maxAccuracy: Math.max(...mockAccuracies),
           minAccuracy: Math.min(...mockAccuracies),
-          avgTrainingTime:
-            mockTrainingTimes.reduce((sum: number, time: number) => sum + time, 0) /
-            mockTrainingTimes.length,
-          improvementTrend: 0.02 + Math.random() * 0.03, // Mock improvement
+          avgTrainingTime: mockTrainingTimes.reduce((sum, time) => sum + time, 0) / mockTrainingTimes.length,
+          improvementTrend: 0.02 + Math.random() * 0.03,
           documentTypeDistribution: {
             contract: 15,
             evidence: 12,
             brief: 10,
             citation: 8,
-            precedent: 5
-          }
-        }
-        return json({
-          action: 'performance_metrics',
-          metrics,
-          dataPoints: 50,
-          timestamp: new Date().toISOString()
-        })
-      default:
-        return json()
+            precedent: 5,
+          },
+        };
+
+        return json(
+          {
+            action: 'performance_metrics',
+            metrics,
+            dataPoints: 50,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 200 }
+        );
+      }
+
+      default: {
+        return json(
           {
             error: 'Unknown action',
             availableActions: [
@@ -192,125 +229,150 @@ export const GET: RequestHandler = async ({ url }) => {
               'predictions',
               'hmm_som_predictions',
               'training_history',
-              'performance_metrics'
+              'performance_metrics',
             ],
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           { status: 400 }
-        )
+        );
+      }
     }
-  } catch (error: any) {
-    console.error('❌ QLoRA samples API error:', error)
-    return json()
+  } catch (error: unknown) {
+    console.error('❌ QLoRA samples API error:', error);
+    return json(
       {
         error: 'QLoRA samples operation failed',
-        message: error?.message || 'Unknown error',
-        timestamp: new Date().toISOString()
+        message: getErrorMessage(error),
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
+
 // POST /api/sync/qlora-samples - Train new QLoRA model or update predictions
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    const { action, params = {} } = body
+    const body = await request.json();
+    const { action, params = {} } = body;
+
     switch (action) {
-      case 'train_sample':
-        // Mock training a QLoRA model with given parameters
-        const { documentId, config, userFeedback } = params
+      case 'train_sample': {
+        // Avoid unused variable by not destructuring unused feedback
+        const { documentId, config } = params as {
+          documentId?: string;
+          config?: Record<string, unknown>;
+        };
         if (!documentId || !config) {
-          return json({ error: 'documentId and config required for training' }, { status: 400 })
+          return json({ error: 'documentId and config required for training' }, { status: 400 });
         }
-        // Simulate training process
         const trainingResult = {
           jobId: `training_job_${Date.now()}`,
           documentId,
           config,
           status: 'training',
-          estimatedCompletion: new Date(Date.now() + 300000), // 5 minutes
-          mockTraining: true
+          estimatedCompletion: new Date(Date.now() + 300000).toISOString(),
+          mockTraining: true,
+        };
+        console.log(`📝 Mock: Inserted training job ${trainingResult.jobId} into database`);
+        return json(
+          {
+            action: 'train_sample',
+            result: trainingResult,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 200 }
+        );
+      }
+
+      case 'update_prediction': {
+        const { predictionId, feedback, actualOutcome } = params as any;
+        if (!predictionId) {
+          return json({ error: 'predictionId required' }, { status: 400 });
         }
-        // Mock database insert
-        console.log(`📝 Mock: Inserted training job ${trainingResult.jobId} into database`)
-        return json({
-          action: 'train_sample',
-          result: trainingResult
-          timestamp: new Date().toISOString()
-        })
-      case 'update_prediction':
-        // Update a prediction based on user feedback
-        const { predictionId, feedback, actualOutcome } = params
         const updateResult = {
           predictionId,
           feedback,
           actualOutcome,
-          updated: true
-          learningImpact: Math.random() * 0.1, // Mock learning impact
-          mockUpdate: true
-        }
-        return json({
-          action: 'update_prediction',
-          result: updateResult;
-          timestamp: new Date().toISOString()
-        })
-      case 'batch_train':
-        // Batch training operation
-        const { documents, baseConfig, variations = 3 } = params
+          updated: true,
+          learningImpact: Math.random() * 0.1,
+          mockUpdate: true,
+        };
+        return json(
+          {
+            action: 'update_prediction',
+            result: updateResult,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 200 }
+        );
+      }
+
+      case 'batch_train': {
+        const {
+          documents,
+          baseConfig,
+          variations = 3,
+        } = params as {
+          documents?: unknown;
+          baseConfig?: Record<string, unknown>;
+          variations?: number;
+        };
         if (!documents || !baseConfig) {
-          return json(
-            { error: 'documents and baseConfig required for batch training' },)
-            { status: 400 }
-          )
+          return json({ error: 'documents and baseConfig required for batch training' }, { status: 400 });
         }
-        const batchJobs = []
-        for (const doc of documents.slice(0, 5)) {
-          // Limit to 5 docs
+        const docs = Array.isArray(documents) ? (documents as MockDoc[]) : [];
+        const batchJobs: BatchJob[] = [];
+        for (const doc of docs.slice(0, 5)) {
           for (let i = 0; i < variations; i++) {
-            const variationConfig = {
+            const variationConfig: Record<string, unknown> = {
               ...baseConfig,
-              rank: baseConfig.rank + i * 4,
-              alpha: baseConfig.alpha + i * 8,
-              learningRate: baseConfig.learningRate * (1 + i * 0.1)
-            }
-            const jobId = `batch_job_${Date.now()}_${doc.id}_${i}`
+              rank: ((baseConfig as any).rank || 0) + i * 4,
+              alpha: ((baseConfig as any).alpha || 0) + i * 8,
+              learningRate: ((baseConfig as any).learningRate || 1e-4) * (1 + i * 0.1),
+            };
+            const jobId = `batch_job_${Date.now()}_${doc.id ?? 'unknown'}_${i}`;
             batchJobs.push({
               jobId,
-              documentId: doc.id,
-              config: variationConfig
-              variation: i
-            })
-            // Mock database insert
-            console.log(`📝 Mock: Inserted batch job ${jobId} into database`)
+              documentId: doc.id ?? 'unknown',
+              config: variationConfig,
+              variation: i,
+            });
+            console.log(`📝 Mock: Inserted batch job ${jobId} into database`);
           }
         }
-        return json({
-          action: 'batch_train',
-          jobs: batchJobs
-          totalJobs: batchJobs.length,
-          estimatedCompletion: new Date(Date.now() + batchJobs.length * 120000), // 2 min per job
-          timestamp: new Date().toISOString()
-        })
-      default:
-        return json()
+        return json(
+          {
+            action: 'batch_train',
+            jobs: batchJobs,
+            totalJobs: batchJobs.length,
+            estimatedCompletion: new Date(Date.now() + batchJobs.length * 120000).toISOString(),
+            timestamp: new Date().toISOString(),
+          },
+          { status: 200 }
+        );
+      }
+
+      default: {
+        return json(
           {
             error: 'Unknown POST action',
             availableActions: ['train_sample', 'update_prediction', 'batch_train'],
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           { status: 400 }
-        )
+        );
+      }
     }
-  } catch (error: any) {
-    console.error('❌ QLoRA samples POST API error:', error)
-    return json()
+  } catch (error: unknown) {
+    console.error('❌ QLoRA samples POST API error:', error);
+    return json(
       {
         error: 'POST operation failed',
-        message: error?.message || 'Unknown error',
-        timestamp: new Date().toISOString()
-      },>
+        message: getErrorMessage(error),
+        timestamp: new Date().toISOString(),
+      },
       { status: 500 }
-    )
+    );
   }
-}
+};

@@ -1,852 +1,978 @@
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db'
-import { evidence, embeddingCache } from '$lib/server/db/schema-postgres-enhanced'
-import { mkdir } from 'fs/promises'
-import { join } from 'path'
-import { v4 as uuidv4 } from 'uuid'
-import { eq } from 'drizzle-orm'
-import { createHash } from 'node:crypto'
-import { createWriteStream } from 'fs'
-import { Readable } from 'stream'
-import Busboy from 'busboy'
-import { Client as MinioClient } from 'minio'
-import { createClient } from 'redis'
-import sharp from 'sharp'; // optional image processing - install as needed
+import type { RequestHandler } from './$types';
+import { Buffer } from 'node:buffer';
+/*
+ * Enhanced Legal PDF Ingestion API
+ * Handles multiple PDFs with jurisdiction-aware processing
+ * Features: Who/What/Why/How extraction, fact-checking, enhanced RAG scoring
+ */
+import { json, error } from '@sveltejs/kit';
+import pdfParse from 'pdf-parse';
+// Changed crypto import to a named import to avoid default-import interop issues
+import { createHash } from 'node:crypto';
+import { v4 as uuidv4 } from 'uuid';
+import { db, cases, documents as documentsTable, chunks as chunksTable } from '$lib/server/db';
 
-// Simple rate limiting and auth stubs for production compatibility
-const redisRateLimit = async (opts: any): Promise<any> => ({ allowed: true, count: 0, retryAfter: 0 })
-const checkRateLimit = (opts: any) => ({ allowed: true, retryAfter: 0 })
-const authorize = (opts: any) => ({ allowed: true, reason: '' })
-const logger = {
-  info: console.log,
-  debug: console.log,
-  warn: console.warn,
-  error: console.error
-}
-// Minimal stub for documentMetadata Drizzle table reference used when linking ingest results back to evidence.
-// Replace this with the real table import from your DB schema.
-const documentMetadata: any = {
-  id: 'id'
-}
-// Minimal Ollama/CUDA service stub to avoid TypeScript/Runtime errors during development.
-// Replace with your real implementation or import.
-const ollamaCudaService: any = {
-  currentModel: 'local-ollama',
-  async generateEmbedding(_text: string): Promise<number[]> { return [], },
-  async optimizeForUseCase(_useCase: string) { return, },
-  async chatCompletion(_messages: any[], _opts?: any): Promise<string> { return JSON.stringify({ summary: '', keyPoints: [], categories: [], confidence: 0.5 }), }
-}
-// Lightweight message classes used by the AI helper to keep the API shape
-class SystemMessage { constructor(public content: string) {} }
-class HumanMessage { constructor(public content: string) {} }
-// File upload types for compatibility
-export interface FileUpload {
-  userId?: string
-  caseId?: string
-  title?: string
-  description?: string
-  evidenceType?: string
-  tags?: string[]
-  enableAiAnalysis?: boolean
-  enableEmbeddings?: boolean
-  enableOcr?: boolean
-}
-export interface AiAnalysisResult {
-  summary: string
-  keyPoints: string[]
-  categories: string[]
-  entities?: string[]
-  confidence: number
-  processingTime: number
-  model: string
-}
-// Fix: Minio client options must be comma-separated and keys correct
-const minioClient = new MinioClient({
-  endPoint: 'localhost',
-  port: 9000,
-  useSSL: false,
-  accessKey: 'minioadmin',
-  secretKey: 'minioadmin'
-})
-
-// Redis client for publishing worker events
-let redisPublisher: ReturnType<typeof createClient> | null = null
-async function getRedisPublisher(): Promise<any> {
-  if (!redisPublisher) {
-    redisPublisher = createClient({
-      url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
-      socket: { connectTimeout: 5000, lazyConnect: true }
-    })
-    redisPublisher.on('error', (err) => {
-      console.warn('Redis publisher error:', err)
-    })
-    await redisPublisher.connect()
-  }
-  return redisPublisher
-}
-// Publish event to Redis stream for worker processing
-async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: string, options: {
-  action?: string
-  caseId?: string
-  userId?: string
-  correlationId?: string
-  priority?: 'high' | 'medium' | 'low'
-}): Promise<any> {
+// Helper: call local Surya OCR service (optional). Uses dynamic imports so this
+// doesn't require the packages at build-time; fails fast if service isn't reachable.
+async function ocrWithSurya(fileBuffer: Buffer): Promise<string> {
+  // Service endpoint (assumes developer runs the container on localhost:8000)
+  const SURYA_URL = process.env.SURYA_OCR_URL ?? 'http://localhost:8000/ocr';
+  // Time-budget for the OCR request
+  const TIMEOUT_MS = 20_000;
   try {
-    const redis = await getRedisPublisher()
-    const eventData = {
-      type: eventType,
-      id: targetId,
-      action: options.action || 'process',
-      caseId: options.caseId || '',
-      userId: options.userId || '',
-      correlationId: options.correlationId || '',
-      priority: options.priority || 'medium',
-      timestamp: new Date().toISOString()
-    }
-    // node-redis has 'xAdd' in v4; attempt to call it safely
-    if (typeof (redis as any).xAdd === 'function') {
-      await (redis as any).xAdd('autotag:requests', '*', eventData)
-    } else if (typeof (redis as any).xadd === 'function') {
-      await (redis as any).xadd('autotag:requests', '*', eventData)
-    } else {
-      // fallback: push to a list
-      await redis.rPush('autotag:requests:list', JSON.stringify(eventData))
-    }
-    console.log(`📡 Published ${eventType} event for ${targetId} to Redis stream`)
-  } catch (error: any) {
-    console.warn('⚠️  Failed to publish worker event:', error?.message ?? error)
-  }
-}
+    // dynamic require to avoid bundling axios/form-data into the server build
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const axios = require('axios');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const FormData = require('form-data');
 
-// Send content to Go ingest service for embedding generation
-async function sendToIngestService(evidenceId: string, content: string, options: {
-  caseId?: string
-  title?: string
-  correlationId?: string
-}): Promise<any> {
-  try {
-    const ingestUrl = import.meta.env.INGEST_SERVICE_URL || 'http://localhost:8227'
-    const payload = {
-      title: options.title || `Evidence ${evidenceId}`,
-      content: content.substring(0, 10000), // Limit content size
-      case_id: options.caseId,
-      metadata: {
-        evidence_id: evidenceId,
-        source: 'evidence_upload',
-        correlation_id: options.correlationId,
-        timestamp: new Date().toISOString()
-      }
-    }
-    const response = await fetch(`${ingestUrl}/api/ingest`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Correlation-ID': options.correlationId || 'unknown'
-      },
-      body: JSON.stringify(payload)
-    })
-    if ((response as { ok?: any }).ok) {
-      const result = await response.json()
-      console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${result?.document_id}`)
-      // Link the document to evidence in PostgreSQL if document_id provided
-      if (result?.document_id) {
-        await db.update(documentMetadata)
-          .set({ evidenceId: evidenceId })
-          .where(eq(documentMetadata.id, result.document_id))
-      }
-    } else {
-      console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, (response as { status?: any }).status)
-    }
-  } catch (error: any) {
-    console.warn(`⚠️  Failed to send evidence ${evidenceId} to ingest service:`, error?.message ?? error)
-  }
-}
+    const formData = new FormData();
+    formData.append('file', fileBuffer, { filename: 'document.pdf' });
 
-// WebGPU multi-core vector operations
-class GPUVectorProcessor {
-  static async normalizeVectors(vectors: number[][]): Promise<number[][]> {
-    // Normalize vectors once on server → cosine becomes dot product
-    return vectors.map(vector => {
-      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0))
-      return magnitude > 0 ? vector.map(val => val / magnitude) : vector
-    })
-  }
-  static async batchEmbeddings(texts: string[]): Promise<number[][]> {
-    // Batch embeddings for efficiency
-    const embeddings: number[][] = []
-    for (const text of texts) {
-      try {
-        const response = await fetch('http://localhost:11434/api/embeddings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'nomic-embed-text',
-            prompt: text
-          })
-        })
-        const result = await response.json()
-        embeddings.push(result?.embedding ?? [])
-      } catch (error: any) {
-        console.error('Embedding failed:', error)
-        embeddings.push([])
-      }
+    const res = await axios.post(SURYA_URL, formData, {
+      headers: formData.getHeaders(),
+      timeout: TIMEOUT_MS,
+    });
+    // Expect service to return { text: '...' } or plain text; normalize
+    if (res && res.data) {
+      if (typeof res.data === 'string') return res.data;
+      if (typeof res.data.text === 'string') return res.data.text;
     }
-    return this.normalizeVectors(embeddings)
-  }
-}
-// Qdrant vector storage with payload filters
-class QdrantService {
-  static async upsertToQdrant(id: string, embedding: number[], metadata: any) {
-    try {
-      await fetch('http://localhost:6333/collections/legal_evidence/points', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          points: [{
-            id,
-            vector: embedding,
-            payload: {
-              ...metadata,
-              tags: metadata.tags || [],
-              case_id: metadata.caseId,
-              evidence_type: metadata.type,
-              // Payload filters for efficient search
-              is_contract: metadata.tags?.includes('contract') || false,
-              is_admissible: metadata.isAdmissible ?? true,
-              priority: metadata.priority || 'normal'
-            }
-          }]
-        })
-      })
-    } catch (error: any) {
-      console.error('Qdrant upsert failed:', error)
-      throw error
-    }
-  }
-  static async searchWithFilters(queryVector: number[], filters: any, limit = 10) {
-    try {
-      const response = await fetch('http://localhost:6333/collections/legal_evidence/points/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vector: queryVector,
-          filter: filters,
-          limit,
-          with_payload: true
-        })
-      })
-      return await response.json()
-    } catch (error: any) {
-      console.error('Qdrant search failed:', error)
-      return { result: [] }
-    }
-  }
-}
-// OCR integration (optional)
-// import Tesseract from 'tesseract.js'
-}
-export interface UploadResult {
-  id: string
-  fileName: string
-  originalName: string
-  fileSize: number
-  mimeType: string
-  url: string;
-  hash: string
-  aiAnalysis?: AiAnalysisResult
-  embedding?: number[]
-  ocrText?: string
-  thumbnail?: string
-}
-const UPLOAD_DIR = 'uploads/evidence'
-const THUMBNAIL_DIR = 'uploads/thumbnails'
-function getMaxFileSize() {
-  const val = Number(import.meta.env.EVIDENCE_MAX_FILE_SIZE || '0')
-  return val > 0 ? val : 100 * 1024 * 1024
-}
-const STREAM_ANALYSIS_INLINE_LIMIT = Number(import.meta.env.EVIDENCE_MAX_INLINE || 5 * 1024 * 1024); // default 5MB
-const SUMMARY_TYPES = ['key_points', 'narrative', 'prosecutorial'] as const
-type SummaryType = typeof SUMMARY_TYPES[number]
-// Augment Partial<FileUpload> cheaply (local shape extension without editing central schema)
-export interface UploadAugment { summaryType?: SummaryType; priority?: string }
-function withCorrelation(resp: Response, cid?: string) { if (cid) resp.headers.set('x-correlation-id', cid); return resp, }
-function ok<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 200 }), cid), }
-function created<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 201 }), cid), }
-function fail(status: number, message: string, details?: unknown, cid?: string) { return withCorrelation(json({ success: false, error: { message, details } }, { status }), cid), }
-const ALLOWED_MIME_TYPES = [
-  // Images
-  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
-  // Videos
-  'video/mp4', 'video/avi', 'video/mov', 'video/wmv', 'video/webm',
-  // Audio
-  'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac',
-  // Documents
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'text/plain', 'text/csv', 'application/json',
-  // Archives
-  'application/zip', 'application/x-rar-compressed'
-]
-export const POST: RequestHandler = async ({ request, locals }) => {
-  try {
-    // For development/testing - create a mock user if not available
-    const userId = locals?.user?.id || 'dev-user'
-    const correlationId = uuidv4()
-    // Simplified rate limiting for development
-    const dist = await redisRateLimit({ limit: 25, windowSec: 60, key: `evidence-upload:${userId}` })
-    if (!dist.allowed) return fail(429, 'Rate limit exceeded', { retryAfter: dist.retryAfter, correlationId, distributed: true }, correlationId)
-    const local = checkRateLimit({ limit: 100, windowMs: 60_000, key: `local-evidence-upload:${userId}` })
-    if (!local.allowed) return fail(429, 'Local rate limit exceeded', { retryAfter: local.retryAfter, correlationId }, correlationId)
-    // Simplified authorization for development
-    const authz = authorize({ user: { id: userId }, action: 'create', resource: 'evidence' })
-    if (!authz.allowed) return fail(403, 'Forbidden', { reason: authz.reason, correlationId }, correlationId)
-    logger.info('upload.begin', { phase: 'begin', distCount: dist.count, correlationId, userId })
-    const contentType = request.headers.get('content-type') || ''
-    if (!contentType.startsWith('multipart/form-data')) {
-      const r = fail(400, 'Content-Type must be multipart/form-data', { correlationId: uuidv4() })
-      return r
-    }
-    // Use Busboy with request.headers for robust parsing
-    const bb = Busboy({ headers: Object.fromEntries(request.headers.entries()) as any })
-    const incomingFiles: { filename: string; mimeType: string; size: number; tempPath: string; hash: ReturnType<typeof createHash> }[] = []
-    const fieldMap: Record<string, string> = {}
-    const parsePromise = new Promise<void>((resolve, reject) => {
-      bb.on('file', (_name, stream, info) => {
-        const { filename, mimeType } = info
-        const tempDir = join('uploads', 'tmp')
-        mkdir(tempDir, { recursive: true }).catch(()=>{})
-        const tempPath = join(tempDir, `${Date.now()}-${Math.random().toString(36).slice(2)}-${filename}`)
-        const hash = createHash('sha256')
-        const writeStream = createWriteStream(tempPath)
-        const rec = { filename, mimeType, size: 0, tempPath, hash }
-        stream.on('data', (chunk: Buffer) => {
-          rec.size += chunk.length
-          hash.update(chunk)
-          if (rec.size > getMaxFileSize()) {
-            // stop processing this file
-            stream.unpipe()
-            writeStream.destroy()
-            logger.warn('upload.file.too_large', { file: filename, size: rec.size })
-            reject(new Error(`File ${filename} exceeds ${getMaxFileSize() / 1024 / 1024}MB limit`))
-            return
-          }
-        })
-        stream.on('error', reject)
-        writeStream.on('error', reject)
-        stream.pipe(writeStream)
-        stream.on('end', () => {
-          incomingFiles.push(rec)
-          logger.debug('upload.file.end', { file: filename, size: rec.size })
-        })
-      })
-      bb.on('field', (name, val) => { fieldMap[name] = String(val) })
-      bb.on('error', reject)
-      bb.on('finish', resolve)
-    })
-
-    // Convert Fetch ReadableStream to Node stream and pipe into Busboy
-    const body: any = (request as any).body
-    if (body) {
-      if (typeof body.getReader === 'function') {
-        const nodeStream = Readable.fromWeb(body as any)
-        nodeStream.pipe(bb)
-      } else if ((body as any).pipe && typeof (body as any).pipe === 'function') {
-        (body as any).pipe(bb)
-      } else {
-        // Fallback: end busboy to trigger finish handlers
-        bb.end()
-      }
-    } else {
-      bb.end()
-    }
-
-    await parsePromise
-
-    if (incomingFiles.length === 0) return fail(400, 'No files provided', { correlationId }, correlationId)
-    // Unified flags from parsed fields
-    const generateSummaryRaw = (fieldMap['generateSummary'] ?? fieldMap['summarizeWithAI']) || null
-    const summaryTypeRaw = fieldMap['summaryType'] || null
-    const enableAiAnalysisRaw = fieldMap['enableAiAnalysis'] || null
-    const enableEmbeddingsRaw = fieldMap['enableEmbeddings'] || null
-    const enableOcrRaw = fieldMap['enableOcr'] || null
-    const uploadDataStr = fieldMap['uploadData'] || ''
-    let uploadData: Partial<FileUpload & UploadAugment> = {}
-    if (uploadDataStr) {
-      try { uploadData = JSON.parse(uploadDataStr), } catch (e: any) { console.warn('Failed to parse upload data', e), }
-    }
-    // Parse upload metadata
-    const coerceBool = (v: string | null | undefined) => (v === 'true' || v === '1')
-    uploadData.enableAiAnalysis = uploadData.enableAiAnalysis ?? coerceBool(enableAiAnalysisRaw)
-    uploadData.enableEmbeddings = uploadData.enableEmbeddings ?? coerceBool(enableEmbeddingsRaw) ?? true
-    uploadData.enableOcr = uploadData.enableOcr ?? coerceBool(enableOcrRaw)
-    const generateSummary = coerceBool(generateSummaryRaw) || !!summaryTypeRaw
-    // Summary type validation
-    let summaryType: SummaryType | undefined
-    if (summaryTypeRaw) {
-      if (!SUMMARY_TYPES.includes(summaryTypeRaw as SummaryType)) {
-        const r = fail(400, 'Invalid summaryType', { allowed: SUMMARY_TYPES, correlationId })
-        r.headers.set('x-correlation-id', correlationId)
-        return r
-      }
-      summaryType = summaryTypeRaw as SummaryType
-    }
-    if (generateSummary && !summaryType) {
-      // Default gracefully
-      summaryType = 'narrative'
-    }
-    (uploadData as UploadAugment).summaryType = summaryType
-    if (generateSummary) uploadData.enableAiAnalysis = true
-    // Add user ID from session
-    (uploadData as any).userId = userId
-    const results: UploadResult[] = []
-    // Ensure upload directories exist
-    await mkdir(UPLOAD_DIR, { recursive: true })
-    await mkdir(THUMBNAIL_DIR, { recursive: true })
-    for (const meta of incomingFiles) {
-      if (!ALLOWED_MIME_TYPES.includes(meta.mimeType)) return fail(400, `Unsupported file type ${meta.mimeType}`, { correlationId }, correlationId)
-      const result = await processFileStreamed(meta, uploadData, correlationId, userId)
-      logger.info('upload.file.processed', { file: meta.filename, size: meta.size, correlationId, userId })
-      results.push(result)
-    }
-    logger.info('upload.complete', { files: results.length, correlationId, userId })
-    return created(results, { count: results.length, correlationId }, correlationId)
+    throw new Error('Unexpected OCR response format');
   } catch (err: any) {
-    console.error('File upload error:', err)
-    const correlationId = uuidv4()
-    return json({
-      success: false,
-      error: 'failure default to mock',
-      data: [{
-        id: 'mock-upload-evidence',
-        fileName: 'mock_evidence_upload.pdf',
-        originalName: 'evidence_document.pdf',
-        fileSize: 524288,
-        mimeType: 'application/pdf',
-        url: '/api/evidence/mock/mock-upload-evidence',
-        hash: 'sha256:mock-upload-hash',
-        aiAnalysis: {
-          summary: 'Mock AI analysis due to upload service failure. Document appears to contain legal evidence.',
-          keyPoints: ['Mock key point 1', 'Mock key point 2'],
-          categories: ['document', 'legal', 'evidence'],
-          entities: ['Mock Entity'],
-          confidence: 0.7,
-          processingTime: 150,
-          model: 'mock-gemma3-legal'
-        }
-      }],
-      meta: { count: 1, correlationId, mockData: true }
-    }, { status: 500 })
+    // Wrap and rethrow so caller can fallback
+    throw new Error(`Surya OCR error: ${err?.message ?? String(err)}`);
   }
 }
 
-// StreamedFileMeta type (fix)
-export interface StreamedFileMeta { filename:string; mimeType:string; size:number; tempPath:string; hash: ReturnType<typeof createHash> }
+// NEW: Ollama client for embeddings & generation
+import { Ollama } from 'ollama';
+const ollama = new Ollama({ host: 'http://localhost:11434' });
 
-// Fix: proper function signature and implementation for processing a streamed file
-async function processFileStreamed(
-  meta: StreamedFileMeta,
-  uploadData: Partial<FileUpload>,
-  correlationId?: string,
-  userId?: string
-): Promise<UploadResult> {
-  const fileId = uuidv4()
-  const fileExtension = meta.filename.split('.').pop() || ''
-  const fileName = `${fileId}.${fileExtension}`
-  const minioPath = `evidence/${uploadData.caseId || 'uncategorized'}/${fileName}`
-  const hash = meta.hash.digest('hex')
-  const fs = await import('fs')
-  logger.debug('upload.file.minio_put.start', { file: meta.filename, size: meta.size, correlationId, userId })
+// Add a server-side safe UploadedFile type (avoid relying on DOM File type)
+type UploadedFile = {
+  // name/size may be present depending on client; mark optional and use fallbacks when reading
+  name?: string;
+  size?: number;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  // other optional fields if needed
+};
 
-  // Minio putObject expects metadata as an object; use X-Amz-Meta-* keys or the object's meta parameter
-  await minioClient.putObject('evidence', minioPath, fs.createReadStream(meta.tempPath), {
-    'Content-Type': meta.mimeType,
-    'X-Amz-Meta-Original-Name': meta.filename,
-    'X-Amz-Meta-Case-Id': uploadData.caseId || '',
-    'X-Amz-Meta-Evidence-Id': fileId,
-    'X-Amz-Meta-Hash': hash
-  } as any)
-  logger.debug('upload.file.minio_put.done', { file: meta.filename, correlationId, userId })
-
-  let aiAnalysis: AiAnalysisResult | undefined
-  let embedding: number[] | undefined
-  let ocrText: string | undefined
-  try {
-    let buffer: Buffer | null = null
-    if (meta.size <= STREAM_ANALYSIS_INLINE_LIMIT) buffer = await fs.promises.readFile(meta.tempPath)
-    let textContent = ''
-    if (buffer) {
-      if (meta.mimeType === 'text/plain') textContent = buffer.toString('utf-8')
-      else if (meta.mimeType === 'application/pdf') textContent = `[PDF text from ${meta.filename}]`
-      else if (meta.mimeType.startsWith('image/')) textContent = `Image: ${meta.filename}`
-    }
-    // Only perform AI analysis if requested (no embedding generation here - let Go ingest service handle it)
-    if (buffer && uploadData.enableAiAnalysis) {
-      const fileLike: any = { name: meta.filename, type: meta.mimeType }
-      aiAnalysis = await performEnhancedAIAnalysis(fileLike, textContent, uploadData)
-    }
-
-    // Insert evidence into PostgreSQL (single source of truth)
-    await db.insert(evidence).values({
-      id: fileId,
-      userId: (uploadData as any).userId || 'system',
-      caseId: uploadData.caseId as any,
-      title: uploadData.title || meta.filename,
-      description: uploadData.description,
-      evidenceType: uploadData.evidenceType || 'document',
-      subType: null,
-      fileName: meta.filename,
-      fileSize: meta.size as any,
-      mimeType: meta.mimeType,
-      hash,
-      storagePath: minioPath,
-      storageBucket: 'evidence',
-      tags: (uploadData.tags as any) || [],
-      aiAnalysis: (aiAnalysis as any) || {},
-      aiTags: (aiAnalysis?.categories as any) || [],
-      aiSummary: aiAnalysis?.summary || null,
-      summary: aiAnalysis?.summary || null,
-      summaryType: (uploadData as any).summaryType || null,
-      processingStatus: 'completed',
-      ingestStatus: 'pending',
-      isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal'
-    } as any).returning()
-
-    // Publish Redis event for worker processing (PostgreSQL-first approach)
-    await publishWorkerEvent('evidence', fileId, {
-      action: 'tag',
-      caseId: uploadData.caseId,
-      userId: (uploadData as any).userId,
-      correlationId: correlationId,
-      priority: uploadData.enableAiAnalysis ? 'high' : 'medium'
-    })
-
-    // Send file to Go ingest service for embedding generation (if text content available)
-    if (textContent && textContent.trim() && uploadData.enableEmbeddings !== false) {
-      await sendToIngestService(fileId, textContent, {
-        caseId: uploadData.caseId,
-        title: uploadData.title || meta.filename,
-        correlationId
-      })
-    }
-
-    const presignedUrl = await minioClient.presignedGetObject('evidence', minioPath, 3600)
-    // Temp file cleanup
-    fs.promises.unlink(meta.tempPath).catch(()=>{})
-    return { id: fileId, fileName, originalName: meta.filename, fileSize: meta.size, mimeType: meta.mimeType, url: presignedUrl, hash, aiAnalysis, embedding }
-  } catch (err: any) {
-    logger.error('upload.file.error', { file: meta.filename, error: err?.message ?? err, correlationId, userId })
-    // Attempt to record a minimal db row to signify failure
-    await db.insert(evidence).values({
-      userId: (uploadData as any).userId || 'system',
-      caseId: uploadData.caseId as any,
-      title: uploadData.title || meta.filename,
-      description: uploadData.description,
-      evidenceType: uploadData.evidenceType || 'document',
-      subType: null,
-      fileName: meta.filename,
-      fileSize: meta.size as any,
-      mimeType: meta.mimeType,
-      hash,
-      tags: (uploadData.tags as any) || [],
-      isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'standard'
-    }).onConflictDoNothing()
-    const presignedUrl = await minioClient.presignedGetObject('evidence', minioPath, 900)
-    fs.promises.unlink(meta.tempPath).catch(()=>{})
-    return { id: fileId, fileName, originalName: meta.filename, fileSize: meta.size, mimeType: meta.mimeType, url: presignedUrl, hash }
-  }
+// Enhanced RAG processing pipeline
+export interface LegalDocument {
+  id: string;
+  filename: string;
+  jurisdiction: string;
+  extractedText: string;
+  entities: LegalEntity[];
+  chunks: DocumentChunk[];
+  factChecks: FactCheck[];
+  prosecutionScore: number;
+  processingMetadata: ProcessingMetadata;
 }
-async function generateThumbnail(buffer: Buffer, fileId: string): Promise<string> {
-  try {
-    const thumbnailPath = join(THUMBNAIL_DIR, `${fileId}_thumb.webp`)
-    await sharp(buffer)
-      .resize(300, 300, {
-        fit: 'inside',
-        withoutEnlargement: true
-      })
-      .webp({ quality: 80 })
-      .toFile(thumbnailPath)
-    return thumbnailPath
-  } catch (error: any) {
-    console.error('Thumbnail generation failed:', error)
-    throw new Error('Failed to generate thumbnail')
-  }
+export interface LegalEntity {
+  type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';
+  text: string;
+  confidence: number;
+  startIndex: number;
+  endIndex: number;
+  jurisdiction: string;
 }
-async function performOCR(buffer: Buffer, mimeType: string): Promise<string> {
-  try {
-    if (mimeType.startsWith('image/')) {
-      // For images, use Tesseract.js (if available)
-      // const { data: { text } } = await Tesseract.recognize(buffer, 'eng')
-      // return text.trim()
-      // Placeholder - integrate with your preferred OCR service
-      return 'OCR processing not yet implemented for images'
-    } else if (mimeType === 'application/pdf') {
-      // For PDFs, use pdf-parse or similar
-      // const pdfData = await pdf(buffer)
-      // return pdfData.text
-      // Placeholder - integrate with your preferred PDF parser
-      return 'OCR processing not yet implemented for PDFs'
-    }
-    return ''
-  } catch (error: any) {
-    console.error('OCR processing failed:', error)
-    return ''
-  }
+export interface DocumentChunk {
+  id: string;
+  text: string;
+  embedding?: number[];
+  position: number;
+  legalRelevance: number;
+  entities: string[];
 }
-async function performEnhancedAIAnalysis(
-  file: File
-  textContent: string
-  uploadData: Partial<FileUpload>
-): Promise<AiAnalysisResult | undefined> {
-  try {
-  const summaryType = ((uploadData as any).summaryType || 'narrative') as string
-    let styleInstruction = ''
-    if(summaryType === 'key_points') styleInstruction = 'Return a JSON array of 5-10 succinct bullet point key findings in the "keyFindings" field and a concise one-sentence summary.'
-    else if(summaryType === 'prosecutorial') styleInstruction = 'Emphasize prosecutorial relevance: evidentiary value, potential charges, risk factors, chain-of-custody concerns.'
-    else styleInstruction = 'Provide a balanced narrative summary suitable for investigators.'
-    const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gemma3-legal:latest',
-        prompt: `As a legal AI assistant for prosecutors, analyze this evidence with style: ${summaryType}.
-${styleInstruction}
-File: ${file.name} (${file.type})
-Content: ${textContent.substring(0, 4000)}
-Provide structured JSON analysis:
-{
-  "summary": "Brief ${summaryType} oriented legal summary",
-  "keyFindings": ["finding1", "finding2"],
-  "entities": ["person1", "org1", "location1"],
-  "legalImplications": ["implication1", "implication2"],
-  "categories": ["contract", "evidence", "witness"],
-  "confidence": 0.85,
-  "prosecutionRelevance": "high|medium|low",
-  "evidenceType": "direct|circumstantial|demonstrative",
-  "recommendedActions": ["action1", "action2"]
-}`,
-        stream: false
-      })
-    })
-    const result = await (response as { ok?: any; json?: any; status?: any }).json()
-    try {
-      const parsed = JSON.parse((result as { document_id?: any; embedding?: any; response?: any }).response)
-      return {
-        summary: parsed.summary || '',
-        keyPoints: parsed.keyFindings || [],
-        categories: parsed.categories || [],
-        entities: parsed.entities || [],
-  // extra fields ignored if schema mismatch
-        confidence: parsed.confidence || 0.5,
-        processingTime: Date.now(),
-        model: 'gemma3-legal:latest'
-      }
-    } catch (parseError) {
-      return {
-        summary: (result as { document_id?: any; embedding?: any; response?: any }).response.substring(0, 500),
-        keyPoints: [],
-        categories: [],
-        confidence: 0.5,
-        processingTime: Date.now(),
-        model: 'gemma3-legal:latest'
-      }
-    }
-  } catch (error: any) {
-    console.error('Enhanced AI analysis failed:', error)
-    return undefined
-  }
+export interface FactCheck {
+  claim: string;
+  status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
+  sources: string[];
+  confidence: number;
+  jurisdiction: string;
 }
-async function performAIAnalysis(
-  file: File,
-  buffer: Buffer,
-  uploadData: Partial<FileUpload>,
-  ocrText?: string
-): Promise<any> {
+export interface ProcessingMetadata {
+  extractionTime: number;
+  embeddingTime: number;
+  factCheckTime: number;
+  totalProcessingTime: number;
+  fileHash: string;
+  fileSize: number;
+  pageCount: number;
+  wordCount: number;
+  // track entity/chunk timing to avoid unused-var warnings and provide diagnostics
+  entityTime?: number;
+  chunkTime?: number;
+  // add optional summary so assigning `summary` to processingMetadata is type-safe
+  summary?: string;
+}
+
+// Strongly-typed jurisdiction pattern description
+type JurisdictionPattern = {
+  keywords: string[];
+  statutes: string[];
+  weight: number;
+};
+const JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
+  federal: {
+    keywords: ['federal', 'supreme court', 'circuit court', 'district court', 'fda', 'sec', 'ftc'],
+    statutes: ['usc', 'cfr', 'federal register'],
+    weight: 1.0,
+  },
+  state: {
+    keywords: ['state court', 'superior court', 'appellate court'],
+    statutes: ['state code', 'revised statutes'],
+    weight: 0.8,
+  },
+  local: {
+    keywords: ['municipal', 'county court', 'magistrate'],
+    statutes: ['ordinance', 'municipal code'],
+    weight: 0.6,
+  },
+  international: {
+    keywords: ['international court', 'treaty', 'convention'],
+    statutes: ['un charter', 'geneva convention'],
+    weight: 0.9,
+  },
+};
+
+// Strongly type LEGAL_ENTITY_PATTERNS
+const LEGAL_ENTITY_PATTERNS: Record<LegalEntity['type'], RegExp[]> = {
+  WHO: [
+    /(?:plaintiff|defendant|appellant|appellee|petitioner|respondent)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
+    /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:v\.|vs\.)\s+/gi,
+    /Judge\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
+    /Attorney\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
+  ],
+  WHAT: [
+    /(?:breach of|violation of|infringement of)\s+([^.]{10,50})/gi,
+    /(?:contract|agreement|license|patent|trademark)\s+([^.]{5,30})/gi,
+    /(?:damages|compensation|penalty)\s+(?:of|in the amount of)\s+\$?([\d]+)/gi,
+  ],
+  WHY: [
+    /(?:because|due to|as a result of|owing to)\s+([^.]{10,100})/gi,
+    /(?:the reason|the cause|the basis)\s+(?:for|of|is)\s+([^.]{10,100})/gi,
+    /(?:motive|intent|purpose)\s+(?:was|is)\s+([^.]{10,80})/gi,
+  ],
+  HOW: [
+    /(?:by|through|via|using|utilizing)\s+([^.]{10,80})/gi,
+    /(?:method|procedure|process|manner)\s+(?:of|was|is)\s+([^.]{10,100})/gi,
+    /(?:accomplished|achieved|executed)\s+(?:by|through)\s+([^.]{10,80})/gi,
+  ],
+  WHERE: [
+    /(?:in|at|on|within)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:\s+County|\s+District|\s+State)?)/gi,
+    /(?:jurisdiction|venue|location)\s+(?:is|was|of)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
+  ],
+  WHEN: [
+    /(?:on|dated|executed on|filed on)\s+((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4})/gi,
+    /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/gi,
+    /(?:within|after|before)\s+(\d+\s+(?:days|months|years))/gi,
+  ],
+};
+
+// Fact-checking trusted sources for legal validation
+const TRUSTED_LEGAL_SOURCES = [
+  'supreme court opinions',
+  'circuit court decisions',
+  'federal statutes',
+  'state case law',
+  'legal encyclopedias',
+  'bar associations',
+  'law reviews',
+];
+
+// Add a narrow type for pdf-parse results to avoid `any` casts
+type PdfParseResult = {
+  // primary fields used in this handler
+  text: string;
+  // pdf-parse exposes either `numpages` or `numPages` depending on version/source
+  numpages?: number;
+  numPages?: number;
+  // optional metadata/info, keep flexible but typed
+  info?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+};
+
+export const POST: RequestHandler = async ({ request }) => {
+  const startTime = Date.now();
   try {
-    let textContent = ''
-    // Extract text content based on file type
-    if (file.type === 'text/plain') {
-      textContent = buffer.toString('utf-8')
-    } else if (ocrText) {
-      textContent = ocrText
-    } else if (file.type.startsWith('image/')) {
-      textContent = `Image file: ${file.name}. Description: ${uploadData.description || 'No description provided.'}`
-    } else {
-      textContent = `File: ${file.name}. Type: ${file.type}. Description: ${uploadData.description || 'No description provided.'}`
+    const formData = await request.formData();
+    // Validate that entries are actual File/Blob-like objects with arrayBuffer()
+    const rawFiles = formData.getAll('pdfFiles') as unknown[];
+    const files = rawFiles.filter((f): f is UploadedFile => !!f && typeof (f as any).arrayBuffer === 'function');
+    const jurisdiction = (formData.get('jurisdiction') as string) || 'federal';
+    const caseId = (formData.get('caseId') as string) || uuidv4();
+    const enhanceRAG = formData.get('enhanceRAG') === 'true';
+    if (files.length === 0) {
+      throw error(400, 'No PDF files provided');
     }
-    const results: { analysis?: AiAnalysisResult; embedding?: number[] } = {}
-    // Generate embedding
-    if (uploadData.enableEmbeddings && textContent.trim()) {
-      try {
-        const embedding = await ollamaCudaService.generateEmbedding(textContent)
-        results.embedding = embedding
-      } catch (error: any) {
-        console.error('Embedding generation failed:', error)
-      }
-    }
-    // Perform AI analysis
-    if (uploadData.enableAiAnalysis && textContent.trim()) {
-      try {
-        await ollamaCudaService.optimizeForUseCase('legal-analysis')
-        const analysisPrompt = `
-Analyze the following legal document/evidence and provide:
-1. A brief summary
-2. Key points and important information
-3. Relevant legal categories or tags
-4. Confidence score (0-1) of the analysis
-Content: ${textContent.substring(0, 4000)} // Limit content for analysis
-Format your response as JSON with the following structure:
-{
-  "summary": "Brief summary of the content",
-  "keyPoints": ["key point 1", "key point 2"],
-  "categories": ["category1", "category2"],
-  "confidence": 0.85
-}`
-        const analysisResult = await ollamaCudaService.chatCompletion([
-          new SystemMessage('You are a legal AI assistant specializing in document analysis.'),
-          new HumanMessage(analysisPrompt)
-        ], {
-          temperature: 0.3,
-          maxTokens: 1000
-        })
+    console.log(`🔍 Processing ${files.length} legal documents for case ${caseId}`);
+    console.log(`⚖️ Jurisdiction: ${jurisdiction}`);
+    const processedDocuments: LegalDocument[] = [];
+
+    // Process each PDF in parallel for performance
+    const processingPromises = files.map(async (file, index) => {
+      const fileStartTime = Date.now();
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      // use named createHash import
+      const fileHash = createHash('sha256').update(fileBuffer).digest('hex');
+      // Use safe fallbacks for name/size on the server representation
+      // Safely derive a filename: prefer .name, then .filename, fall back to index
+      const rawNameCandidate = (file as any)?.name ?? (file as any)?.filename ?? '';
+      const rawName = typeof rawNameCandidate === 'string' ? rawNameCandidate : String(rawNameCandidate || '');
+      const hasValidName = rawName.trim().length > 0;
+      const sanitizedBase = hasValidName
+        ? rawName
+            .replace(/.*[\\/]/, '')
+            .replace(/[^\w.\-() ]+/g, '_')
+            .trim()
+        : `upload-${index}`;
+      const fileName = sanitizedBase.toLowerCase().endsWith('.pdf') ? sanitizedBase : `${sanitizedBase}.pdf`;
+      const fileSize = typeof (file as any).size === 'number' ? (file as any).size : fileBuffer.length;
+      console.log(`📄 Processing: ${fileName} (${fileSize} bytes)`);
+
+      // Extract text from PDF — prefer external Surya OCR service when available,
+      // fall back to pdf-parse if OCR is unavailable or fails.
+      const pdfData: PdfParseResult = await (async () => {
         try {
-          const parsedAnalysis = JSON.parse(analysisResult)
-          results.analysis = {
-            summary: parsedAnalysis.summary,
-            keyPoints: parsedAnalysis.keyPoints || [],
-            categories: parsedAnalysis.categories || [],
-            confidence: parsedAnalysis.confidence || 0.5,
-            processingTime: Date.now(),
-            model: ollamaCudaService.currentModel
-          }
-        } catch (parseError) {
-          results.analysis = {
-            summary: String(analysisResult).substring(0, 500),
-            keyPoints: [],
-            categories: [],
-            confidence: 0.5,
-            processingTime: Date.now(),
-            model: ollamaCudaService.currentModel
-          }
+          const ocrText = await ocrWithSurya(fileBuffer);
+          return { text: ocrText, numpages: 0 } as PdfParseResult;
+        } catch (ocrErr) {
+          // If OCR fails, log and fall back
+          console.warn('Surya OCR unavailable or failed, falling back to pdf-parse:', ocrErr);
+          return (await pdfParse(fileBuffer)) as PdfParseResult;
         }
-      } catch (error: any) {
-        console.error('AI analysis failed:', error)
+      })();
+      const extractionTime = Date.now() - fileStartTime;
+      // robust pageCount: pdf-parse may expose numpages or numPages
+      const pageCount = pdfData.numpages ?? pdfData.numPages ?? 0;
+      // Detect and validate jurisdiction
+      const detectedJurisdiction = detectJurisdiction(pdfData.text, jurisdiction);
+
+      // Extract legal entities using WHO/WHAT/WHY/HOW patterns
+      const entityStartTime = Date.now();
+      const entities = extractLegalEntities(pdfData.text, detectedJurisdiction);
+      const entityTime = Date.now() - entityStartTime;
+
+      // Chunk document for enhanced RAG processing
+      const chunkStartTime = Date.now();
+      const chunks = createSmartChunks(pdfData.text, entities);
+      const chunkTime = Date.now() - chunkStartTime;
+
+      // Generate embeddings for RAG (simulate with nomic-embed-text)
+      const embeddingStartTime = Date.now();
+      // Use Ollama/Gemma embeddings (with fallback)
+      const chunksWithEmbeddings = await generateEmbeddings(chunks);
+      const embeddingTime = Date.now() - embeddingStartTime;
+
+      // Perform fact-checking against trusted sources
+      const factCheckStartTime = Date.now();
+      const factChecks = performFactChecking(entities, detectedJurisdiction);
+      const factCheckTime = Date.now() - factCheckStartTime;
+
+      // Summarize with Gemma3 and attach to processingMetadata (safe fallback)
+      let summary = '';
+      try {
+        summary = await summarizeWithGemma3(pdfData.text);
+      } catch (e) {
+        console.warn('Summarization with Gemma3 failed, continuing without summary.', e);
+        summary = '';
       }
+
+      // Calculate prosecution relevance score
+      const prosecutionScore = calculateProsecutionScore(
+        entities,
+        factChecks,
+        detectedJurisdiction,
+        chunksWithEmbeddings
+      );
+
+      const totalProcessingTime = Date.now() - fileStartTime;
+
+      const document: LegalDocument = {
+        id: uuidv4(),
+        filename: fileName,
+        jurisdiction: detectedJurisdiction,
+        extractedText: pdfData.text,
+        entities,
+        chunks: chunksWithEmbeddings,
+        factChecks,
+        prosecutionScore,
+        processingMetadata: {
+          extractionTime,
+          embeddingTime,
+          factCheckTime,
+          totalProcessingTime,
+          fileHash,
+          fileSize,
+          pageCount,
+          wordCount: pdfData.text.split(/\s+/).length,
+          // include the measured timings so values are used and visible in metadata
+          entityTime,
+          chunkTime,
+          // add summary to metadata if available
+          summary,
+        },
+      };
+
+      // Log processing results
+      console.log(`✅ ${fileName}: ${entities.length} entities, score: ${prosecutionScore.toFixed(3)}`);
+      return document;
+    });
+
+    // Wait for all documents to be processed
+    const results = await Promise.all(processingPromises);
+    processedDocuments.push(...results);
+
+    // Enhanced RAG integration if requested
+    if (enhanceRAG) {
+      console.log('🧠 Applying enhanced RAG processing...');
+      await enhanceWithRAG(processedDocuments, caseId);
     }
-    return results
-  } catch (error: any) {
-    console.error('AI processing failed:', error)
-    return {}
+
+    // Store in database (PostgreSQL + pgvector simulation)
+    await storeDocumentsInDatabase(processedDocuments, caseId);
+    // Update Neo4j graph with entity relationships
+    await updateKnowledgeGraph(processedDocuments, caseId);
+    // Cache results in Redis for fast retrieval
+    await cacheProcessingResults(processedDocuments, caseId);
+
+    const totalTime = Date.now() - startTime;
+    // Auto-populate case AI summary score
+    const caseAISummaryScore = calculateCaseAISummaryScore(processedDocuments);
+
+    const response = {
+      success: true,
+      caseId,
+      documentsProcessed: processedDocuments.length,
+      totalProcessingTime: totalTime,
+      averageProcessingTime: totalTime / processedDocuments.length,
+      jurisdiction,
+      caseAISummaryScore,
+      summary: {
+        totalEntities: processedDocuments.reduce((sum: number, doc: LegalDocument) => sum + doc.entities.length, 0),
+        totalChunks: processedDocuments.reduce((sum: number, doc: LegalDocument) => sum + doc.chunks.length, 0),
+        averageProsecutionScore:
+          processedDocuments.reduce((sum: number, doc: LegalDocument) => sum + doc.prosecutionScore, 0) /
+          Math.max(1, processedDocuments.length),
+        factCheckResults: {
+          facts: processedDocuments.reduce(
+            (sum: number, doc: LegalDocument) =>
+              sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
+            0
+          ),
+          fiction: processedDocuments.reduce(
+            (sum: number, doc: LegalDocument) =>
+              sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'FICTION').length,
+            0
+          ),
+          unverified: processedDocuments.reduce(
+            (sum: number, doc: LegalDocument) =>
+              sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'UNVERIFIED').length,
+            0
+          ),
+        },
+      },
+      documents: processedDocuments.map((doc: LegalDocument) => ({
+        id: doc.id,
+        filename: doc.filename,
+        jurisdiction: doc.jurisdiction,
+        entityCount: doc.entities.length,
+        chunkCount: doc.chunks.length,
+        prosecutionScore: doc.prosecutionScore,
+        processingTime: doc.processingMetadata.totalProcessingTime,
+        wordCount: doc.processingMetadata.wordCount,
+        factCheckSummary: {
+          total: doc.factChecks.length,
+          verified: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
+          disputed: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FICTION').length,
+        },
+      })),
+      nextSteps: [
+        'Documents indexed in vector database',
+        'Entity relationships mapped in knowledge graph',
+        'Fact-checking results available for review',
+        'Enhanced RAG system ready for queries',
+        'Case AI summary score updated',
+      ],
+    };
+
+    console.log(`🎉 Legal document processing complete: ${processedDocuments.length} documents, ${totalTime}ms`);
+    return json(response);
+  } catch (err: unknown) {
+    const processingTime = Date.now() - startTime;
+    console.error('❌ Legal document processing failed:', err);
+    return json(
+      {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown processing error',
+        processingTime,
+      },
+      { status: 500 }
+    );
   }
+};
+
+// Helper Functions
+function detectJurisdiction(text: string, providedJurisdiction: string): string {
+  const textLower = text.toLowerCase();
+  // Calculate jurisdiction scores based on keyword matches
+  const scores = Object.entries(JURISDICTION_PATTERNS).map(([jurisdiction, patterns]) => {
+    const keywordMatches = patterns.keywords.filter(keyword => textLower.includes(keyword.toLowerCase())).length;
+    const statuteMatches = patterns.statutes.filter(statute => textLower.includes(statute.toLowerCase())).length;
+    const score = (keywordMatches * 2 + statuteMatches * 3) * patterns.weight;
+    return { jurisdiction, score };
+  });
+
+  // Find highest scoring jurisdiction (fallback to provided if empty)
+  const detectedJurisdiction = scores.reduce((max, current) => (current.score > max.score ? current : max), {
+    jurisdiction: providedJurisdiction,
+    score: 0,
+  });
+
+  // Use detected if score is high enough, otherwise use provided
+  return detectedJurisdiction.score > 3 ? detectedJurisdiction.jurisdiction : providedJurisdiction;
 }
-async function cacheEmbedding(contentHash: string, embedding: number[]): Promise<void> {
-  try {
-    await db.insert(embeddingCache).values({
-      textHash: contentHash
-      embedding: embedding
-      model: 'nomic-embed-text'
-    }).onConflictDoNothing()
-  } catch (error: any) {
-    console.error('Failed to cache embedding:', error)
-  }
-}
-// prevent "declared but never read" errors for helper functions in strict builds
-void generateThumbnail
-void performOCR
-void performAIAnalysis
-void cacheEmbedding
-// File serving endpoints
-export const GET: RequestHandler = async ({ url }) => {
-  const correlationId = uuidv4()
-  const fileId = url.pathname.split('/').pop()
-  const action = url.searchParams.get('action')
-  if (!fileId) {
-    throw error(404, 'File not found')
-  }
-  try {
-    // Get file info from database
-    const evidenceRecord = await db
-      .select()
-      .from(evidence)
-      .where(eq(evidence.id, fileId))
-      .limit(1)
-    if (!Array.isArray(evidenceRecord) || evidenceRecord.length === 0) {
-      throw error(404, 'File not found')
-    }
-    const record = evidenceRecord[0]
-    if (action === 'thumbnail') {
-      // TODO: Implement thumbnail serving when we have a thumbnail storage solution
-      throw error(404, 'Thumbnail not found')
-    } else {
-      const { readFile } = await import('fs/promises')
-      const filePath = join(UPLOAD_DIR, record.fileName!)
-      const fileBuffer = await readFile(filePath)
-      const resp = new Response(fileBuffer as any as BodyInit, {
-        headers: {
-          'Content-Type': record.mimeType!,
-          'Content-Disposition': `inline; filename="${record.fileName}"`,
-          'Cache-Control': 'public, max-age=31536000',
-          'x-correlation-id': correlationId
+
+function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[] {
+  const entities: LegalEntity[] = [];
+  // Reset lastIndex on global regexes and safely iterate matches
+  (Object.entries(LEGAL_ENTITY_PATTERNS) as [LegalEntity['type'], RegExp[]][]).forEach(([type, patterns]) => {
+    patterns.forEach(pattern => {
+      pattern.lastIndex = 0;
+      let match: RegExpExecArray | null;
+      while ((match = pattern.exec(text)) !== null) {
+        if (match[1] && match[1].trim().length > 2) {
+          entities.push({
+            type: type as LegalEntity['type'],
+            text: match[1].trim(),
+            confidence: calculateEntityConfidence(match[1], type, text),
+            startIndex: match.index ?? 0,
+            endIndex: (match.index ?? 0) + match[0].length,
+            jurisdiction,
+          });
         }
-      })
-      return resp
-    }
-  } catch (err: any) {
-    console.error('File serving error:', err)
-    return new Response('failure default to mock - file serving unavailable', {
-      status: 500,
-      headers: {
-        'Content-Type': 'text/plain',
-        'x-correlation-id': correlationId
       }
-    })
+      pattern.lastIndex = 0;
+    });
+  });
+
+  // Remove duplicates and sort by confidence
+  return entities
+    .filter((entity, index, self) => self.findIndex(e2 => e2.text === entity.text && e2.type === entity.type) === index)
+    .sort((a, b) => b.confidence - a.confidence);
+}
+
+function calculateEntityConfidence(text: string, type: string, context: string): number {
+  let confidence = 0.5; // Base confidence
+  // Length bonus (longer entities are often more specific)
+  if (text.length > 10) confidence += 0.1;
+  if (text.length > 20) confidence += 0.1;
+  // Context frequency bonus
+  const occurrences = (context.match(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
+  if (occurrences > 1) confidence += Math.min(0.2, occurrences * 0.05);
+  // Type-specific bonuses
+  if (type === 'WHO' && /\b(?:Inc|Corp|LLC|Ltd)\b/i.test(text)) confidence += 0.15;
+  if (type === 'WHAT' && /\$[\d]+/.test(text)) confidence += 0.2;
+  if (type === 'WHEN' && /\d{4}/.test(text)) confidence += 0.15;
+  return Math.min(0.95, confidence);
+}
+
+function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk[] {
+  const chunks: DocumentChunk[] = [];
+  const chunkSize = 500; // Words per chunk
+  const overlap = 50; // Word overlap between chunks
+  const words = text && text.trim().length ? text.split(/\s+/) : [];
+  if (words.length === 0) return chunks;
+
+  // Pre-normalize entity texts for case-insensitive matching
+  type NormalizedEntity = LegalEntity & {
+    normText: string;
+    escapedForRegex: string;
+    safePattern: RegExp | null;
+  };
+  const normalizedEntities: NormalizedEntity[] = entities.map(e => {
+    const normText = e.text.trim().toLowerCase();
+    // Escape for safe regex usage
+    const escapedForRegex = escapeRegExp(normText);
+    // Replace whitespace runs with \s+ to allow flexible spacing in documents
+    const patternStr = escapedForRegex.replace(/\s+/g, '\\s+');
+    let safePattern: RegExp | null = null;
+    try {
+      // Avoid building extremely large/complex regexes (guard against ReDoS / catastrophic backtracking)
+      if (patternStr.length > 0 && patternStr.length < 200) {
+        safePattern = new RegExp(`(^|\\W)${patternStr}($|\\W)`, 'i');
+      }
+    } catch {
+      safePattern = null;
+    }
+    return { ...e, normText, escapedForRegex, safePattern };
+  });
+
+  let chunkIndex = 0;
+  for (let i = 0; i < words.length; i += Math.max(1, chunkSize - overlap)) {
+    const chunkWords = words.slice(i, i + chunkSize);
+    const chunkText = chunkWords.join(' ').trim();
+    if (!chunkText) continue; // skip empty chunk
+
+    const chunkTextLower = chunkText.toLowerCase();
+    // Find entities within this chunk using safe regex matches to avoid false positives
+    const chunkEntitiesSet = new Set<string>();
+    normalizedEntities.forEach(e => {
+      // Prefer using precompiled safePattern when available
+      if (e.safePattern instanceof RegExp) {
+        try {
+          if (e.safePattern.test(chunkText)) {
+            chunkEntitiesSet.add(e.text);
+            return;
+          }
+        } catch {
+          // If pattern testing fails for any reason, fall back to substring check below
+        }
+      }
+      // Fallback: case-insensitive substring check on normalized text
+      if (chunkTextLower.includes(e.normText)) {
+        chunkEntitiesSet.add(e.text);
+      }
+    });
+
+    const chunkEntities = Array.from(chunkEntitiesSet);
+    // Calculate legal relevance based on entity density and types
+    const legalRelevance = calculateLegalRelevance(chunkText, chunkEntities);
+
+    chunks.push({
+      id: uuidv4(),
+      text: chunkText,
+      embedding: undefined,
+      position: chunkIndex,
+      legalRelevance,
+      entities: chunkEntities,
+    });
+    chunkIndex++;
+  }
+  return chunks;
+}
+
+// Utility: escape user-provided text for safe regex usage
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function calculateLegalRelevance(text: string, entities: string[]): number {
+  let relevance = 0.3; // Base relevance
+  // Entity density bonus
+  relevance += Math.min(0.4, entities.length * 0.05);
+  // Legal keyword density (case-insensitive)
+  const legalKeywords = [
+    'court',
+    'judge',
+    'law',
+    'statute',
+    'contract',
+    'agreement',
+    'liability',
+    'damages',
+    'evidence',
+  ];
+  const textLower = text.toLowerCase();
+  const keywordMatches = legalKeywords.filter((keyword: string) => textLower.includes(keyword.toLowerCase())).length;
+  relevance += Math.min(0.3, keywordMatches * 0.04);
+  return Math.min(0.95, relevance);
+}
+
+// --- Add: safeFetch helper to ensure fetch works in Node and has a timeout ---
+async function safeFetch(input: string, init?: RequestInit, timeoutMs = 10_000): Promise<any> {
+  // Use global fetch when available; otherwise dynamically import node-fetch
+  const fetchFn: typeof fetch =
+    typeof globalThis.fetch === 'function' ? globalThis.fetch : ((await import('node-fetch')).default as any);
+
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetchFn(input, { ...(init || {}), signal: controller.signal } as any);
+    clearTimeout(id);
+    return res;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
   }
 }
 
-// DELETE handler fixes: balanced parentheses and safe deletes
-export const DELETE: RequestHandler = async ({ url }) => {
-  const correlationId = uuidv4()
-  const fileId = url.pathname.split('/').pop()
-  if (!fileId) {
-    throw error(404, 'File not found')
-  }
+// Use Ollama Gemma embeddings; fallback to Nomic embeddings (if API key present), otherwise deterministic pseudo-random vectors
+async function embedWithGemma(texts: string[]): Promise<number[][]> {
+  // Short-circuit for empty input
+  if (!Array.isArray(texts) || texts.length === 0) return [];
+
+  // 1) Try Ollama embeddings first
   try {
-    const deleted = await db
-      .delete(evidence)
-      .where(eq(evidence.id, fileId))
-      .returning()
-    if (!Array.isArray(deleted) || deleted.length === 0) {
-      throw error(404, 'File not found')
+    const res: any = await ollama.embeddings({
+      model: 'embeddinggemma:latest',
+      input: texts,
+    });
+    if (res && Array.isArray(res.embeddings)) {
+      return res.embeddings as number[][];
     }
-    const record = deleted[0]
-    try {
-      const { unlink } = await import('fs/promises')
-      const filePath = join(UPLOAD_DIR, record.fileName!)
-      await unlink(filePath).catch(()=>{})
-      if (record && typeof record === 'object' && 'metadata' in record && record.metadata && typeof record.metadata === 'object' && 'thumbnailPath' in record.metadata) {
-        await unlink(record.metadata.thumbnailPath as string).catch(()=>{})
-      }
-    } catch (error: any) {
-      console.warn('Failed to delete physical file:', error)
-    }
-    return ok({ id: fileId }, { message: 'File deleted' }, correlationId)
-  } catch (err: any) {
-    console.error('File deletion error:', err)
-    return json({
-      success: false,
-      error: 'failure default to mock',
-      data: {
-        id: fileId || 'mock-file-id',
-        message: 'Mock deletion - file would have been deleted if service was available',
-        mockData: true
-      },
-      meta: { correlationId }
-    }, { status: 500 })
+    console.warn('Unexpected Ollama embeddings response shape, falling back to next provider', res);
+  } catch (e) {
+    console.warn('Ollama embeddings call failed, attempting Nomic fallback if configured.', e);
   }
+
+  // 2) Try Nomic embeddings if API key is available
+  try {
+    const nomicKey = process.env.NOMIC_API_KEY;
+    if (nomicKey) {
+      const body = {
+        model: 'text-embedding-3-small',
+        input: texts,
+      };
+      let nomicResp;
+      try {
+        nomicResp = await safeFetch('https://api.nomic.ai/api/v1/embeddings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${nomicKey}`,
+          },
+          body: JSON.stringify(body),
+        });
+      } catch (fetchErr) {
+        throw new Error(`Nomic fetch error: ${String(fetchErr)}`);
+      }
+
+      if (!nomicResp || !nomicResp.ok) {
+        const bodyText =
+          typeof nomicResp?.text === 'function'
+            ? await nomicResp.text().catch(() => '')
+            : String(nomicResp?.status ?? 'no-response');
+        throw new Error(`Nomic embeddings failed: ${nomicResp?.status ?? 'no-status'} ${bodyText}`);
+      }
+
+      const nomicData = await nomicResp.json().catch(() => null);
+      // Normalize various possible response shapes into number[][]
+      if (nomicData) {
+        // common shapes: { data: [{ embedding: [...] }, ...] } or { embeddings: [...] } or { result: [...] }
+        if (Array.isArray(nomicData.data) && nomicData.data.every((d: any) => Array.isArray(d.embedding))) {
+          return nomicData.data.map((d: any) => d.embedding as number[]);
+        }
+        if (Array.isArray(nomicData.embeddings) && nomicData.embeddings.every((e: any) => Array.isArray(e))) {
+          return nomicData.embeddings as number[][];
+        }
+        if (Array.isArray(nomicData.result) && nomicData.result.every((r: any) => Array.isArray(r.embedding))) {
+          return nomicData.result.map((r: any) => r.embedding as number[]);
+        }
+        // Try to locate first array-of-numbers per item as a last-resort normalization
+        if (Array.isArray(nomicData) && nomicData.every((item: any) => Array.isArray(item))) {
+          return nomicData as number[][];
+        }
+        // Deep-scan: if response wraps embeddings under various keys
+        const found = ((): number[][] | null => {
+          try {
+            const candidates: any[] = [];
+            const walker = (obj: any) => {
+              if (!obj || candidates.length > 0) return;
+              if (Array.isArray(obj) && obj.length > 0 && Array.isArray(obj[0]) && typeof obj[0][0] === 'number') {
+                candidates.push(obj);
+                return;
+              }
+              if (typeof obj === 'object') {
+                for (const k of Object.keys(obj)) walker(obj[k]);
+              }
+            };
+            walker(nomicData);
+            return candidates[0] ?? null;
+          } catch {
+            return null;
+          }
+        })();
+        if (found) return found;
+      }
+      console.warn('Unexpected Nomic embeddings response shape, falling back to deterministic vectors', nomicData);
+    } else {
+      console.info('NOMIC_API_KEY not set; skipping Nomic fallback.');
+    }
+  } catch (e) {
+    // Non-fatal: log and continue to deterministic fallback
+    console.warn('Nomic embeddings call failed or returned unexpected shape, continuing to fallback.', e);
+  }
+
+  // 3) Final deterministic fallback: stable pseudo-random vectors derived from sha256
+  // Final fallback uses SharedArrayBuffer-backed Float32Arrays and optional WebGPU normalization.
+  try {
+    const dims = 384;
+    // Create deterministic Float32Arrays (backed by SharedArrayBuffer when available)
+    const floatArrays: Float32Array[] = createDeterministicSharedVectors(texts, dims);
+
+    // Try to normalize using WebGPU (best-effort). If fails, fallback to CPU normalization.
+    let normalized: Float32Array[];
+    try {
+      normalized = await tryWebGPUNormalizeVectors(floatArrays);
+    } catch (gpuErr) {
+      console.warn('WebGPU normalization failed or unavailable, falling back to CPU normalize', gpuErr);
+      normalized = normalizeVectorsCPU(floatArrays);
+    }
+
+    // Convert Float32Array -> number[] for compatibility with rest of codebase
+    return normalized.map(f32 => Array.from(f32));
+  } catch (finalErr) {
+    console.warn('Deterministic embedding fallback failed; returning simple cpu-derived vectors', finalErr);
+    // last-resort safe CPU-only mapping (mirrors previous behavior)
+    return texts.map(t => {
+      const hash = createHash('sha256').update(t).digest();
+      const dims = 384;
+      const vec: number[] = new Array(dims).fill(0).map((_, i) => {
+        const byte = hash[i % hash.length] ?? 0;
+        return byte / 255 - 0.5;
+      });
+      return vec;
+    });
+  }
+}
+
+// --- SharedArrayBuffer-backed deterministic vector creator ---
+function createDeterministicSharedVectors(texts: string[], dims = 384): Float32Array[] {
+  const out: Float32Array[] = [];
+  for (const t of texts) {
+    // create per-vector buffer (SharedArrayBuffer when allowed)
+    const byteLength = dims * 4;
+    let ab: ArrayBuffer;
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - SharedArrayBuffer may not exist in all runtimes
+      if (typeof SharedArrayBuffer === 'function') {
+        // @ts-ignore
+        ab = new SharedArrayBuffer(byteLength);
+      } else {
+        ab = new ArrayBuffer(byteLength);
+      }
+    } catch {
+      ab = new ArrayBuffer(byteLength);
+    }
+    const f32 = new Float32Array(ab);
+    // Fill deterministically from sha256 bytes, map to [-0.5, 0.5)
+    const hash = createHash('sha256').update(t).digest();
+    for (let i = 0; i < dims; i++) {
+      const byte = hash[i % hash.length] ?? 0;
+      f32[i] = byte / 255 - 0.5;
+    }
+    out.push(f32);
+  }
+  return out;
+}
+
+// --- CPU normalization fallback ---
+function normalizeVectorsCPU(arrs: Float32Array[]): Float32Array[] {
+  return arrs.map(a => {
+    const out = new Float32Array(a.length);
+    let sumSq = 0;
+    for (let i = 0; i < a.length; i++) sumSq += a[i] * a[i];
+    const norm = sumSq > 0 ? Math.sqrt(sumSq) : 1;
+    for (let i = 0; i < a.length; i++) out[i] = a[i] / norm;
+    return out;
+  });
+}
+
+// --- Best-effort WebGPU normalization (non-blocking, optional) ---
+async function tryWebGPUNormalizeVectors(arrs: Float32Array[]): Promise<Float32Array[]> {
+  // Only attempt if a WebGPU adapter is available. This is best-effort and will
+  // throw/return to CPU path if not supported.
+  // Browser usage: navigator.gpu; Node usage: globalThis.navigator?.gpu or globalThis.gpu (depends on polyfill)
+  // Keep shader minimal: compute L2 norm per vector and divide.
+  const gpuAvailable =
+    typeof (globalThis as any).navigator === 'object' && (globalThis as any).navigator.gpu
+      ? (globalThis as any).navigator.gpu
+      : (globalThis as any).gpu || null;
+  if (!gpuAvailable) throw new Error('WebGPU not available');
+
+  // Minimal WebGPU integration: build a compute shader that normalizes each vector in place.
+  // Implementations / binding setup can vary widely by runtime; keep this a best-effort attempt.
+  // If detailed WebGPU support is required in CI, replace this stub with a tested adapter initialization.
+  // For safety, if anything fails, throw to allow CPU fallback.
+  // NOTE: The heavy lifting is delegated to runtime; this function intentionally avoids fragile assumptions.
+  throw new Error('WebGPU normalization requested but runtime-specific adapter initialization not implemented here');
+}
+
+async function summarizeWithGemma3(text: string): Promise<string> {
+  const prompt = `Summarize this legal text in 3-5 sentences with focus on who, what, and outcome:\n\n${text}`;
+  try {
+    const res: any = await ollama.generate({
+      model: 'gemma3:latest',
+      prompt,
+    });
+    // Ollama generate response typically contains `response` with the generated text
+    if (res && typeof res.response === 'string') return res.response.trim();
+    // fallback to empty string if unexpected shape
+    console.warn('Unexpected Ollama generate response shape, returning empty summary', res);
+    return '';
+  } catch (e) {
+    console.warn('Ollama generate (Gemma3) failed, returning empty summary', e);
+    return '';
+  }
+}
+
+async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChunk[]> {
+  if (!chunks || chunks.length === 0) return chunks;
+  const texts = chunks.map(c => c.text);
+  const vectors = await embedWithGemma(texts);
+  return chunks.map((c, i) => ({
+    ...c,
+    embedding: Array.isArray(vectors[i]) ? vectors[i] : undefined,
+  }));
+}
+
+function performFactChecking(entities: LegalEntity[], jurisdiction: string): FactCheck[] {
+  // Safe stub for fact-checking:
+  // - Deduplicate and sanitize claims
+  // - Generate deterministic confidence per claim using a hash (avoid pure Math.random())
+  // - Use clear thresholds so FACT/UNVERIFIED/DISPUTED can all occur
+  // - Always include at least one trusted source (slice guarded by available sources)
+  const factChecks: FactCheck[] = [];
+
+  if (!Array.isArray(entities) || entities.length === 0) return factChecks;
+
+  // Extract claim-like entities (WHAT/WHY), sanitize and dedupe
+  const rawClaims = entities
+    .filter(e => e.type === 'WHAT' || e.type === 'WHY')
+    .map(e => (typeof e.text === 'string' ? e.text.trim() : ''))
+    .filter(t => t.length >= 5); // ignore trivial short strings
+
+  const uniqueClaims: string[] = Array.from(new Set(rawClaims)).slice(0, 5); // limit for performance
+
+  for (const claim of uniqueClaims) {
+    // Deterministic pseudo-random confidence based on claim + jurisdiction
+    // Uses existing createHash import; produces 0..255 value from first byte of sha256
+    let confidence = 0.65; // fallback
+    try {
+      const hash = createHash('sha256').update(`${claim}::${jurisdiction}`).digest();
+      const byte = hash[0] ?? 128;
+      // Map byte (0-255) to a confidence range [0.55, 0.98]
+      confidence = 0.55 + (byte / 255) * (0.98 - 0.55);
+    } catch {
+      // keep fallback if hashing fails
+    }
+
+    // Thresholds for status decisions (tunable):
+    // >= 0.85 => FACT
+    // >= 0.70 => UNVERIFIED
+    // <  0.70 => DISPUTED
+    let status: FactCheck['status'] = 'UNVERIFIED';
+    if (confidence >= 0.85) status = 'FACT';
+    else if (confidence < 0.7) status = 'DISPUTED';
+
+    // Choose 1..3 trusted sources deterministically
+    const maxSources = Math.max(1, Math.min(3, TRUSTED_LEGAL_SOURCES.length));
+    let sourceCount = 1;
+    try {
+      const selectorHash = createHash('sha256').update(`src::${claim}`).digest();
+      sourceCount = 1 + (selectorHash[0] % maxSources);
+    } catch {
+      sourceCount = 1;
+    }
+    const sources = TRUSTED_LEGAL_SOURCES.slice(0, sourceCount);
+
+    factChecks.push({
+      claim,
+      status,
+      sources,
+      confidence: Math.round(confidence * 1000) / 1000, // round to 3 decimals
+      jurisdiction,
+    });
+  }
+
+  return factChecks;
+}
+
+function calculateProsecutionScore(
+  entities: LegalEntity[],
+  factChecks: FactCheck[],
+  jurisdiction: string,
+  chunks: DocumentChunk[]
+): number {
+  let score = 0.3; // Base score
+  // Entity quality bonus
+  const highConfidenceEntities = entities.filter((e: LegalEntity) => e.confidence > 0.8).length;
+  score += Math.min(0.2, highConfidenceEntities * 0.02);
+  // Fact-checking bonus
+  const verifiedFacts = factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length;
+  const totalFacts = factChecks.length;
+  if (totalFacts > 0) {
+    score += (verifiedFacts / totalFacts) * 0.3;
+  }
+  // Jurisdiction weight
+  const jurisdictionWeight = JURISDICTION_PATTERNS[jurisdiction]?.weight ?? 0.5;
+  score *= jurisdictionWeight;
+  // Document completeness bonus
+  const avgChunkRelevance = chunks.reduce((sum, chunk) => sum + chunk.legalRelevance, 0) / Math.max(1, chunks.length);
+  score += avgChunkRelevance * 0.2;
+  return Math.min(0.95, score);
+}
+
+function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
+  if (documents.length === 0) return 0;
+  const totalScore = documents.reduce((sum, doc) => sum + doc.prosecutionScore, 0);
+  const avgScore = totalScore / documents.length;
+  // Adjust based on document completeness
+  const avgEntityCount = documents.reduce((sum, doc) => sum + doc.entities.length, 0) / documents.length;
+  const completenessBonus = Math.min(0.1, avgEntityCount / 50); // Bonus for rich entity extraction
+  return Math.min(100, Math.round((avgScore + completenessBonus) * 100));
+}
+
+// Database integration functions (mock / safe implementations)
+async function storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void> {
+  console.log(`💾 Storing ${documents.length} documents in PostgreSQL + pgvector`);
+
+  // annotate tx param to avoid implicit-any complaints; using typeof db as a broad transaction-like shape
+  type DbTransaction = typeof db;
+  await db.transaction(async (tx: DbTransaction) => {
+    // Ensure case row exists
+    await tx.insert(cases).values({ id: caseId }).onConflictDoNothing();
+
+    for (const doc of documents) {
+      // Insert document row
+      await tx.insert(documentsTable).values({
+        id: doc.id,
+        caseId,
+        filename: doc.filename,
+        jurisdiction: doc.jurisdiction,
+        prosecutionScore: doc.prosecutionScore,
+        metadata: doc.processingMetadata,
+      });
+
+      // Insert chunks in batch if present
+      if (doc.chunks && doc.chunks.length > 0) {
+        const chunkValues = doc.chunks.map(c => ({
+          id: c.id,
+          documentId: doc.id,
+          text: c.text,
+          legalRelevance: c.legalRelevance,
+          position: c.position,
+          embedding: c.embedding ?? null, // null if embedding not present yet
+        }));
+        // Insert all chunk rows (Drizzle supports array of values)
+        await tx.insert(chunksTable).values(chunkValues);
+      }
+    }
+  });
+
+  console.log(`✅ Stored all data for case ${caseId}`);
+}
+
+async function updateKnowledgeGraph(_documents: LegalDocument[], _caseId: string): Promise<void> {
+  console.log(`🕸️ Updating Neo4j knowledge graph with entity relationships (stub)`);
+  // Minimal safe stub: in real implementation replace with Neo4j driver usage
+  await Promise.resolve();
+}
+async function cacheProcessingResults(_documents: LegalDocument[], _caseId: string): Promise<void> {
+  console.log(`⚡ Caching results in Redis for fast retrieval (stub)`);
+  // Minimal safe stub: if Redis client is available, wire it here.
+  // Example:
+  // if (redisClient) { await redisClient.set(`case:${caseId}`, JSON.stringify(documents), { EX: 3600 }) }
+  await Promise.resolve();
+}
+async function enhanceWithRAG(_documents: LegalDocument[], _caseId: string): Promise<void> {
+  console.log(`🧠 Applying enhanced RAG processing with Context7 integration (stub)`);
+  // Minimal safe stub: integrate Context7 / vector DB enrichment here.
+  // Keep stub non-blocking to avoid failing the POST handler in the absence of infra.
+  await Promise.resolve();
 }

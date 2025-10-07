@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 // Automatic vector synchronization to Qdrant after CUDA processing
 // Triggered by Go microservice after successful vector generation
 import { json } from '@sveltejs/kit';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { createRedisInstance } from '$lib/server/redis';
 import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';

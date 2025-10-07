@@ -2,18 +2,17 @@
  * Centralized Database Connection Manager
  * Handles all database connections with connection pooling and error recovery
  */
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool, type PoolClient } from 'pg';
 import postgres from 'postgres';
 import { getDatabaseConfig, getPoolConfig, getConnectionString, validateDatabaseConfig } from '$lib/config/database.js';
 import * as schema from './schema-postgres.js';
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Global connection instances
 let appPool: Pool | null = null;
 let adminPool: Pool | null = null;
 let postgresJsClient: postgres.Sql | null = null;
-let drizzleDb: NodePgDatabase<typeof schema> | null = null;
+let drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
 let postgresjsDb: PostgresJsDatabase<typeof schema> | null = null;
 /**
  * Initialize application database pool
@@ -81,7 +80,7 @@ export function getPostgresJsClient(): postgres.Sql {
 /**
  * Get Drizzle database instance (node-postgres adapter)
  */;
-export function getDrizzleDb(): NodePgDatabase<typeof schema> {
+export function getDrizzleDb(): PostgresJsDatabase<typeof schema> {
   if (!drizzleDb) {
     const pool = getAppPool();
     drizzleDb = drizzle(pool, { schema });

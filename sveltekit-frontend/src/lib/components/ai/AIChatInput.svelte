@@ -1,51 +1,44 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { debounce } from '$lib/utils/debounce';
   import { browser } from "$app/environment";
-  import { onMount  } from "svelte";
-  // Props using Svelte 5 syntax
-  interface Props {
-    placeholder?: string;
-    disabled?: boolean;
-    autoFocus?: boolean;
-    value?: string;
-    maxLength?: number;
-    rows?: number;
-    maxRows?: number;
-  }
-  let {
-    placeholder = "Type your message...",
-    disabled = false,
-    autoFocus = false,
-    value = $bindable(""),
-    maxLength = 2000,
-    rows = 1,
-    maxRows = 6
-  }: Props = $props();
-  // Event dispatcher
+  import { onMount } from "svelte";
+
+  // Props (exported for Svelte)
+  export let placeholder: string = "Type your message...";
+  export let disabled: boolean = false;
+  export let autoFocus: boolean = false;
+  export let value: string = "";
+  export let maxLength: number = 2000;
+  export let rows: number = 1;
+  export let maxRows: number = 6;
+  export let ondispatch: ((value: string) => void) | undefined;
+
   // Elements / state
   let textarea: HTMLTextAreaElement | null = null;
-  let isMultiline = false;
+  let isMultiline: boolean = false;
+
   // Debounced input handler
-  const debouncedHandleInput = debounce((_event: Event) => handleInput(event), 300);
-  // Auto-focus on mount
-  $effect(() => {
+  const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
+
+  // Auto-focus on mount and initialize textarea height
+  onMount(() => {
     if (browser && autoFocus && textarea) {
       setTimeout(() => textarea?.focus(), 100);
     }
-    // initialize textarea height
     resetTextareaHeight();
   });
+
   // Handle input changes
-  function handleInput(_event: Event) {
-    // removed unused target assignment
-    value = target.valu;
+  function handleInput(event: Event) {
+    const tgt = event.target as HTMLTextAreaElement;
+    value = tgt?.value ?? "";
     ondispatch?.(value);
     adjustTextareaHeight();
   }
+
   // Handle key press
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
       if (event.shiftKey) {
         // Shift+Enter: new line
@@ -57,6 +50,7 @@
       }
     }
   }
+
   // Send message
   function handleSend() {
     const trimmedValue = value.trim();
@@ -65,12 +59,11 @@
     value = "";
     resetTextareaHeight();
   }
+
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
-    // Reset height to calculate scroll height
     textarea.style.height = "auto";
-    // Calculate number of lines safely
     const computed = getComputedStyle(textarea);
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight =
@@ -83,6 +76,7 @@
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
   }
+
   // Reset textarea height
   function resetTextareaHeight() {
     if (!textarea) return;
@@ -94,18 +88,17 @@
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
     isMultiline = false;
   }
-  // Handle focus/blur events
-  function handleFocus() {
-    // ondispatch removed;
-  }
-  function handleBlur() {
-    // ondispatch removed;
-  }
-  // Character count reactive values
-  const characterCount = $derived(value ? value.length: 0);
-  const isNearLimit = $derived(characterCount > maxLength * 0.8);
-  const isAtLimit = $derived(characterCount >= maxLength);
+
+  // Handle focus/blur events (placeholders if needed)
+  function handleFocus() { /* no-op for now */ }
+  function handleBlur() { /* no-op for now */ }
+
+  // Reactive character count and limit flags
+  $: characterCount = value ? value.length : 0;
+  $: isNearLimit = characterCount > maxLength * 0.8;
+  $: isAtLimit = characterCount >= maxLength;
 </script>
+
 <div class="chat-input-wrapper" class:multiline={isMultiline}>
   <div class="input-container">
     <textarea
@@ -119,11 +112,11 @@
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       rows={rows}
-    oninput={(_event: Event) => debouncedHandleInput(_event)}
-      onkeydown={handleKeydown}
-      onfocus={handleFocus}
-      onblur={handleBlur}
-    aria-label="Message input"
+      on:input={debouncedHandleInput}
+      on:keydown={handleKeydown}
+      on:focus={handleFocus}
+      on:blur={handleBlur}
+      aria-label="Message input"
       spellcheck="true"
     ></textarea>
     <div class="input-actions">
@@ -143,7 +136,7 @@
         class:has-content={value.trim().length > 0}
         on:click={handleSend}
         title="Send message (Enter)"
-         aria-label="Send message"
+        aria-label="Send message"
       >
         <svg
           width="20"
@@ -167,6 +160,7 @@
     </div>
   {/if}
 </div>
+
 <style>
 .chat-input-wrapper {
   position: relative;
@@ -203,7 +197,7 @@
     line-height: 1.5;
     color: var(--text-primary, #1e293b);
     overflow-y: auto;
-    scrollbar-width: thi;
+    scrollbar-width: thin;
 }
   .chat-input::placeholder {
     color: var(--text-placeholder, #94a3b8);
@@ -249,7 +243,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-  .send-button:hover:not(:disabled) {,
+  .send-button:hover:not(:disabled) {
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
 }
@@ -257,7 +251,7 @@
     background: var(--accent-color, #3b82f6);
     color: white;
 }
-  .send-button.has-content:hover:not(:disabled) {,
+  .send-button.has-content:hover:not(:disabled) {
     background: var(--accent-hover, #2563eb);
 }
   .send-button:disabled {
@@ -308,7 +302,7 @@
       background: var(--bg-muted, #334155);
       color: var(--text-muted, #94a3b8);
     }
-    .send-button:hover:not(:disabled) {,
+    .send-button:hover:not(:disabled) {
       background: var(--bg-hover, #475569);
       color: var(--text-primary, #f8fafc);
     }

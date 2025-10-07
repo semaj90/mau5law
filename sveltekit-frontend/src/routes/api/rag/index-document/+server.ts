@@ -10,117 +10,179 @@
  * @route POST /api/rag/index-document
  */
 import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline'
-import { db } from '$lib/server/db/drizzle'
-import { sql } from 'drizzle-orm'
-import * as schema from '$lib/server/db/schema-postgres'
+import type { RequestHandler } from './$types';
+import { randomUUID } from 'crypto';
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
+import * as schema from '$lib/server/db/schema-postgres';
 import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+
 // Define document interfaces locally since schema doesn't export them
 interface LegalDocumentData {
-  id?: string
-  title: string
-  documentType: string
-  jurisdiction?: string
-  court?: string
-  citation?: string
-  fullCitation?: string
-  docketNumber?: string
-  dateDecided?: string
-  datePublished?: string
-  fullText?: string
-  content: string
-  summary?: string
-  headnotes?: string
-  keywords?: string[]
-  topics?: string[]
-  parties?: any
-  judges?: string[]
-  attorneys?: any
-  metadata?: any
+  id?: string;
+  title: string;
+  documentType: string;
+  jurisdiction?: string;
+  court?: string;
+  citation?: string;
+  fullCitation?: string;
+  docketNumber?: string;
+  dateDecided?: string;
+  datePublished?: string;
+  fullText?: string;
+  content: string;
+  summary?: string;
+  headnotes?: string;
+  keywords?: string[];
+  topics?: string[];
+  parties?: any;
+  judges?: string[];
+  attorneys?: any;
+  metadata?: any;
+  outcome?: string;
+  precedentialValue?: string;
+  url?: string;
+  pdfUrl?: string;
+  westlawId?: string;
+  lexisId?: string;
+  caseId?: string;
+  evidenceId?: string;
 }
+
+interface NewLegalDocument extends LegalDocumentData {
+  isActive?: boolean;
+  isDirty?: boolean;
+  createdBy?: string;
+  embedding?: any;
+}
+
+interface LegalDocument extends NewLegalDocument {
+  id: string;
+  updatedAt?: string;
+}
+
+/**
+ * Index documents for RAG pipeline
+ */
 export const POST: RequestHandler = async ({ request, cookies }) => {
-  const startTime = Date.now()
+  const startTime = Date.now();
   try {
     // Authentication required for document indexing
-    const { user } = await requireAuth({ cookies } as any)
+    const { user } = await requireAuth({ cookies } as any);
     if (!user) {
-      return json({
-        success: false;
-        error: 'Authentication required'
-      }, { status: 401 })
+      return json(
+        {
+          success: false,
+          error: 'Authentication required',
+        },
+        { status: 401 }
+      );
     }
-    const requestData = await request.json()
-    const { documents, mode = 'single' } = requestData
-    // Handle both single document and bulk processing
-    const documentsToProcess = mode === 'bulk' && Array.isArray(documents)
-      ? documents
-      : [requestData]
-    const results = []
-    let totalChunks = 0
-    let successCount = 0
-    let failureCount = 0
+
+    // Robust request parsing: accept
+    // - { document: {...} }
+    // - { documents: [...] , mode: 'bulk' }
+    // - direct document body
+    const requestData = await request.json();
+    const inferredMode = requestData?.mode ?? (Array.isArray(requestData?.documents) ? 'bulk' : 'single');
+
+    let documentsToProcess: any[] = [];
+    if (String(inferredMode).toLowerCase() === 'bulk') {
+      documentsToProcess = Array.isArray(requestData.documents)
+        ? requestData.documents
+        : Array.isArray(requestData)
+          ? requestData
+          : [];
+    } else {
+      // single doc: prefer "document" field, then first of "documents", then whole body
+      const singleDoc =
+        requestData?.document ??
+        (Array.isArray(requestData.documents) ? requestData.documents[0] : undefined) ??
+        requestData;
+      documentsToProcess = singleDoc ? [singleDoc] : [];
+    }
+
+    if (documentsToProcess.length === 0) {
+      return json({ success: false, error: 'No document(s) provided' }, { status: 400 });
+    }
+
+    const mode = inferredMode;
+
+    const results: any[] = [];
+    let totalChunks = 0;
+    let successCount = 0;
+    let failureCount = 0;
+
     for (const docData of documentsToProcess) {
       try {
-        const result = await processDocument(docData, user.id)
-        results.push(result)
+        const result = await processDocument(docData, user.id);
+        results.push(result);
         if ((result as { success?: any; chunksCreated?: any }).success) {
-          totalChunks += (result as { success?: any; chunksCreated?: any }).chunksCreated
-          successCount++
+          totalChunks += Number((result as { chunksCreated?: any }).chunksCreated || 0);
+          successCount++;
         } else {
-          failureCount++
+          failureCount++;
         }
       } catch (error: any) {
         results.push({
           success: false,
           documentId: docData.id || 'unknown',
-          error: error.message,
-          chunksCreated: 0
-        })
-        failureCount++
+          error: error?.message ?? String(error),
+          chunksCreated: 0,
+        });
+        failureCount++;
       }
     }
+
     const summary = {
       totalDocuments: documentsToProcess.length,
       successCount,
       failureCount,
-      totalChunksCreated: totalChunks
-      processingTime: Date.now() - startTime
-    }
-    console.log(`📚 Document indexing completed:`, summary)
+      totalChunksCreated: totalChunks,
+      processingTime: Date.now() - startTime,
+    };
+
+    console.log(`📚 Document indexing completed:`, summary);
     return json({
       success: failureCount === 0,
       mode,
       summary,
-      results: mode === 'single' ? results[0] : results
-    })
+      results: mode === 'single' ? results[0] : results,
+    });
   } catch (error: any) {
-    console.error('Document Indexing API Error:', error)
-    return json({
-      success: false,
-      error: 'Failed to process document indexing request',
-      processingTime: Date.now() - startTime
-    }, { status: 500 })
+    console.error('Document Indexing API Error:', error);
+    return json(
+      {
+        success: false,
+        error: 'Failed to process document indexing request',
+        processingTime: Date.now() - startTime,
+      },
+      { status: 500 }
+    );
   }
-}
+};
 /**
  * Process a single document for indexing
  */
 async function processDocument(docData: any, userId: string): Promise<any> {
   // Input validation
-  const requiredFields = ['title', 'documentType', 'content']
+  const requiredFields = ['title', 'documentType', 'content'];
   for (const field of requiredFields) {
     if (!docData[field]) {
-      throw new Error(`Missing required field: ${field}`)
+      throw new Error(`Missing required field: ${field}`);
     }
   }
-  // Validate document type
-  const validTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation', 'case_law']
-  if (!validTypes.includes(docData.documentType)) {
-    throw new Error(`Invalid document type: ${docData.documentType}. Valid types: ${validTypes.join(', ')}`)
+  // Validate document type (case-insensitive)
+  const validTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation', 'case_law'];
+  const docType = String(docData.documentType || '').toLowerCase();
+  if (!validTypes.includes(docType)) {
+    throw new Error(`Invalid document type: ${docData.documentType}. Valid types: ${validTypes.join(', ')}`);
   }
-  let documentId = docData.id
-  let document: LegalDocument
+
+  let documentId = docData.id;
+  let document: LegalDocument;
+
   // If document ID provided, update existing document, otherwise create new one
   if (documentId) {
     // Update existing document
@@ -128,13 +190,15 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       .select()
       .from(schema.legalDocuments)
       .where(sql`id = ${documentId}`)
-      .limit(1)
+      .limit(1);
+
     if (existingDoc.length === 0) {
-      throw new Error(`Document with ID ${documentId} not found`)
+      throw new Error(`Document with ID ${documentId} not found`);
     }
+
     const updateData: Partial<NewLegalDocument> = {
       title: docData.title,
-      documentType: docData.documentType,
+      documentType: docType,
       jurisdiction: docData.jurisdiction,
       court: docData.court,
       citation: docData.citation,
@@ -142,7 +206,6 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       docketNumber: docData.docketNumber,
       dateDecided: docData.dateDecided,
       datePublished: docData.datePublished,
-      fullText: docData.content,
       content: docData.content,
       summary: docData.summary,
       headnotes: docData.headnotes,
@@ -159,29 +222,34 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       lexisId: docData.lexisId,
       caseId: docData.caseId,
       evidenceId: docData.evidenceId,
-      updatedAt: new Date().toISOString()
-    }
+      updatedAt: new Date().toISOString(),
+    };
+
     await db
       .update(schema.legalDocuments)
       .set(updateData)
-      .where(sql`id = ${documentId}`)
-    document = { ...existingDoc[0], ...updateData } as LegalDocument
-    // Delete existing chunks to avoid duplicates
-    await db
-      .delete(schema.documentChunks)
-      .where(sql`document_id = ${documentId}`)
+      .where(sql`id = ${documentId}`);
+
+    document = { ...(existingDoc[0] as any), ...updateData, id: documentId } as LegalDocument;
+
+    // Delete existing chunks to avoid duplicates (non-fatal)
+    try {
+      await db.delete(schema.documentChunks).where(sql`document_id = ${documentId}`);
+    } catch (e) {
+      console.warn('Warning: failed to delete existing chunks for document', documentId, (e as Error).message);
+    }
   } else {
     // Create new document
-    const newDocData: LegalDocumentData = {
+    const newDocData: NewLegalDocument = {
       title: docData.title,
-      documentType: docData.documentType,
+      documentType: docType,
       jurisdiction: docData.jurisdiction,
       court: docData.court,
       citation: docData.citation,
       fullCitation: docData.fullCitation,
       docketNumber: docData.docketNumber,
-      dateDecided: docData.dateDecided ? new Date(docData.dateDecided).toISOString() : undefined
-      datePublished: docData.datePublished ? new Date(docData.datePublished).toISOString() : undefined
+      dateDecided: docData.dateDecided ? new Date(docData.dateDecided).toISOString() : undefined,
+      datePublished: docData.datePublished ? new Date(docData.datePublished).toISOString() : undefined,
       fullText: docData.content,
       content: docData.content,
       summary: docData.summary,
@@ -199,122 +267,171 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       lexisId: docData.lexisId,
       caseId: docData.caseId,
       evidenceId: docData.evidenceId,
-      isActive: true
-      isDirty: false
-      createdBy: userId
-      embedding: null // Will be generated during chunking
-    }
+      isActive: true,
+      isDirty: false,
+      createdBy: userId,
+      embedding: null,
+    };
+
     const insertedDocs = await db
       .insert(schema.legalDocuments)
       .values(newDocData)
-      .returning({ id: schema.legalDocuments.id })
-    documentId = insertedDocs[0].id
-    document = { ...newDocData, id: documentId } as LegalDocument
+      .returning({ id: schema.legalDocuments.id });
+
+    // Defensive: some drivers may not return id; fallback to generated UUID
+    documentId =
+      insertedDocs && insertedDocs[0] && (insertedDocs[0] as any).id ? (insertedDocs[0] as any).id : randomUUID();
+    document = { ...newDocData, id: documentId } as LegalDocument;
   }
+
   // Index the document using the RAG pipeline
-  const indexResult = await enhancedRAGPipeline.indexDocument(document)
-  if (!indexResult.success) {
-    throw new Error(indexResult.error || 'Failed to index document')
+  const indexResult = await enhancedRAGPipeline.indexDocument(document);
+  if (!indexResult || !indexResult.success) {
+    throw new Error(indexResult?.error || 'Failed to index document');
   }
+
+  // Persist indexing metadata (updatedAt and embedding if available)
+  try {
+    await db
+      .update(schema.legalDocuments)
+      .set({
+        updatedAt: new Date().toISOString(),
+        ...(indexResult.embedding ? { embedding: indexResult.embedding } : {}),
+      })
+      .where(sql`id = ${documentId}`);
+  } catch (e) {
+    // Non-fatal: indexing succeeded but persistence failed - log and continue
+    console.warn('Failed to persist indexing metadata for document', documentId, (e as Error).message);
+  }
+
   return {
     success: true,
     documentId,
-    chunksCreated: indexResult.chunksCreated
-  }
+    chunksCreated: indexResult.chunksCreated || 0,
+  };
 }
 // GET endpoint for indexing status and statistics
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const documentId = url.searchParams.get('documentId')
+    const documentId = url.searchParams.get('documentId');
     if (documentId) {
       // Get indexing status for specific document
       const chunks = await db
         .select({
           count: sql`COUNT(*)`,
           totalSize: sql`SUM(LENGTH(content))`,
-          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`
+          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`,
         })
         .from(schema.documentChunks)
-        .where(sql`document_id = ${documentId}`)
+        .where(sql`document_id = ${documentId}`);
+
       const document = await db
         .select()
         .from(schema.legalDocuments)
         .where(sql`id = ${documentId}`)
-        .limit(1)
+        .limit(1);
+
       if (document.length === 0) {
-        return json({
-          success: false,
-          error: 'Document not found'
-        }, { status: 404 })
+        return json(
+          {
+            success: false,
+            error: 'Document not found',
+          },
+          { status: 404 }
+        );
       }
+
+      // Defensive parsing for aggregate row (drivers may return strings or nulls)
+      const agg = chunks && chunks[0] ? (chunks[0] as any) : { count: '0', totalSize: '0', avgRelevance: null };
+      const chunkCount = Number(agg.count ?? 0) || 0;
+      const totalContentSize = Number(agg.totalSize ?? 0) || 0;
+      const averageRelevance =
+        typeof agg.avgRelevance === 'string' || typeof agg.avgRelevance === 'number' ? Number(agg.avgRelevance) : 0;
+
       return json({
         success: true,
         document: {
           id: document[0].id,
           title: document[0].title,
           documentType: document[0].documentType,
-          jurisdiction: document[0].jurisdiction
+          jurisdiction: document[0].jurisdiction,
         },
         indexingStatus: {
-          isIndexed: Number(chunks[0].count) > 0,
-          chunkCount: Number(chunks[0].count) || 0,
-          totalContentSize: Number(chunks[0].totalSize) || 0,
-          averageRelevance: Number(chunks[0].avgRelevance) || 0,
-          lastIndexed: document[0].updatedAt
-        }
-      })
+          isIndexed: chunkCount > 0,
+          chunkCount,
+          totalContentSize,
+          averageRelevance,
+          lastIndexed: document[0].updatedAt,
+        },
+      });
     } else {
       // Get overall indexing statistics
-      const stats = await enhancedRAGPipeline.getSystemStats()
+      const stats = await enhancedRAGPipeline.getSystemStats();
       return json({
         success: true,
-        systemStats: stats
-      })
+        systemStats: stats,
+      });
     }
   } catch (error: any) {
-    return json({
-      success: false,
-      error: error.message
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error?.message ?? String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // DELETE endpoint for removing document from index
 export const DELETE: RequestHandler = async ({ request, cookies }) => {
   try {
-    const user = await authenticate(cookies)
+    const { user } = await requireAuth({ cookies } as any);
     if (!user) {
-      return json({
-        success: false,
-        error: 'Authentication required'
-      }, { status: 401 })
+      return json(
+        {
+          success: false,
+          error: 'Authentication required',
+        },
+        { status: 401 }
+      );
     }
-    const { documentId } = await request.json()
+
+    const { documentId } = await request.json();
     if (!documentId) {
-      return json({
-        success: false,
-        error: 'Document ID is required'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Document ID is required',
+        },
+        { status: 400 }
+      );
     }
+
     // Delete document chunks
     const deletedChunks = await db
       .delete(schema.documentChunks)
       .where(sql`document_id = ${documentId}`)
-      .returning({ id: schema.documentChunks.id })
+      .returning({ id: schema.documentChunks.id });
+
     // Mark document as inactive (soft delete)
     await db
       .update(schema.legalDocuments)
       .set({ isActive: false, updatedAt: new Date().toISOString() })
-      .where(sql`id = ${documentId}`)
+      .where(sql`id = ${documentId}`);
+
     return json({
       success: true,
       documentId,
-      chunksRemoved: deletedChunks.length,
-      message: 'Document removed from search index'
-    })
+      chunksRemoved: Array.isArray(deletedChunks) ? deletedChunks.length : 0,
+      message: 'Document removed from search index',
+    });
   } catch (error: any) {
-    return json({
-      success: false,
-      error: error.message
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error?.message ?? String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};

@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import * as schema from './src/lib/server/db/unified-schema.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';

@@ -6,11 +6,12 @@
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
 
   // Exported props (clean, typed)
-  export let onAISearch: ((res: any) => void) | null = null;
-  export let onAIChat: ((res: any) => void) | null = null;
-  export let onAISummarize: ((res: any) => void) | null = null;
-  export let disabled: boolean = false;
-  export let compact: boolean = false;
+  // Use runes for props in Svelte 5
+  let onAISearch: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
+  let onAIChat: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
+  let onAISummarize: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
+  let disabled: boolean = $props<boolean>(false);
+  let compact: boolean = $props<boolean>(false);
 
   // Local state
   let aiSearchQuery: string = '';
@@ -180,26 +181,6 @@
       <Sparkles class="h-6 w-6 text-primary" />
       AI Legal Assistant
             <Input
-    <p class="nes-text is-disabled mt-2">
-      Intelligent search, chat, and summarization powered by local AI
-    </p>
-  </div>
-
-  <div class={ "grid grid-cols-1 " + (compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3') + " gap-6" }>
-          <Button type="button" class="bits-btn"
-            on:click={performAISearch}
-            disabled={disabled || isAISearching || !aiSearchQuery.trim()}
-            size="sm"
-            aria-label="Search AI">
-            {#if isAISearching}
-              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin" />
-            {:else}
-              <Search aria-hidden="true" class="h-4 w-4" />
-            {/if}
-          </Button>
-          <div class="relative flex-1">
-            <Bot class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
-            <Input
               placeholder="Ask AI to find laws..."
               bind:value={aiSearchQuery}
               on:keydown={handleAISearchKeydown}
@@ -232,7 +213,7 @@
             {/if}
           </div>
         {/if}
-      </main>
+      </div>
     </div>
 
     <!-- AI Chat -->

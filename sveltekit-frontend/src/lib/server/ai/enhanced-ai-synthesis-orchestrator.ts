@@ -3,7 +3,7 @@
 // TypeScript-safe implementation with MCP Context7 best practices
 import { logger } from '../logger.js';
 import postgres from "postgres";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { createMachine, createActor, fromPromise } from "xstate";
 import { OllamaEmbeddings, ChatOllama } from "@langchain/ollama";
 import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";

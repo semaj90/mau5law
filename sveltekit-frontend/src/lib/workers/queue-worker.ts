@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool } from 'pg';
 import { document_chunks } from '$lib/db/schema';
 import { cache } from '$lib/server/cache/redis';
@@ -11,7 +11,8 @@ import { redis } from '$lib/server/redis';
 import { closeRabbitMQ } from '$lib/server/rabbitmq';
 import { emitCacheEvent } from '$lib/server/cache/cache-events';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-// removed unused db assignment
+// Initialize drizzle DB instance
+const db = drizzle(pool);
 let shuttingDown = false;
 // Wire globalLoki to Redis client if available
 (async () => {
@@ -29,7 +30,7 @@ let shuttingDown = false;
 async function ensureDbIndexes() {
   try {
     await db.execute(
-      sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId');`
+      sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId'));`
     );
     console.log('🧱 Ensured unique index document_chunks_jobid_uidx');
   } catch (e: any) {
@@ -54,8 +55,8 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     let locked: any = null;
     try {
       locked = await (redis as any).set(`job:processed:${job.id}`, '1', {
-        NX: true
-        EX: 24 * 60 * 60
+        NX: true,
+        EX: 24 * 60 * 60,
       });
     } catch {
       // older ioredis style
@@ -73,33 +74,33 @@ async function processJob(job: { id: string; text: string; model?: string }) {
   } catch (e) {
     console.warn('⚠️ NX dedupe lock failed (continuing):', (e as Error).message || e);
   }
-  await jobMachine.createJob(job.id, { model: job?.model || "unknown" // @ts-ignore - Model property access })
+  await jobMachine.createJob(job.id, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
   try {
-    await globalLoki.startJob({ id: job.id, model: job?.model || "unknown" // @ts-ignore - Model property access, text: job.text })
+    await globalLoki.startJob({ id: job.id, model: job?.model || "unknown", text: job.text }); // @ts-ignore - Model property access
   } catch (error) {}
   const started = await jobMachine.startJob(job.id);
   if (!started) {
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
   }
   try {
-    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" // @ts-ignore - Model property access })
+  const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`)
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
     let inserted = false;
     await db
-      .insert(document_chunks);
+      .insert(document_chunks)
       .values({
         chunk_text: job.text,
         chunk_index: 0,
-        embedding: emb as unknown as any
+        embedding: emb as unknown as any,
         metadata: {
           source: 'pipeline',
           jobId: job.id,
-          model: result?.model || "unknown" // @ts-ignore - Model property access,
-          backend: (result as { embedding?: any; backend?: any }).backend
-        } as any
+          model: result?.model || "unknown", // @ts-ignore - Model property access
+          backend: (result as { embedding?: any; backend?: any }).backend,
+        } as any,
       } as any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as any });
     // We can't directly know if inserted; do a cheap existence check
@@ -117,21 +118,26 @@ async function processJob(job: { id: string; text: string; model?: string }) {
       emitCacheEvent({
         type: 'embedding_created',
         jobId: job.id,
-        model: result?.model || "unknown" // @ts-ignore - Model property access,
+        model: result?.model || "unknown", // @ts-ignore - Model property access
         backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
-        inserted
+        inserted,
       });
     } catch (error) {}
     try {
-      await redis.setex(`jobs:done:${job.id}`, 7 * 24 * 3600, '1');
+      // ioredis and node-redis expose slightly different APIs
+      if ((redis as any).setex) {
+        await (redis as any).setex(`jobs:done:${job.id}`, 7 * 24 * 3600, '1');
+      } else {
+        await (redis as any).set(`jobs:done:${job.id}`, '1', 'EX', 7 * 24 * 3600);
+      }
     } catch (error) {}
     console.log('✅ Stored embedding for', job.id);
   } catch (err: any) {
     console.error('❌ Job failed:', err?.message || err);
     await jobMachine.failJob(job.id, err, false);
     try {
-      await globalLoki.failJob(job.id, err?.message || String(err);
+      await globalLoki.failJob(job.id, err?.message || String(err));
     } catch (error) {}
     // Allow retry by clearing in-flight lock
     try {
@@ -169,7 +175,7 @@ async function runRedisLoop() {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-      const job = JSON.parse(raw) as { id: string; text: string; model?: string }
+  const job = JSON.parse(raw) as { id: string; text: string; model?: string };
       try {
         await processJob(job);
       } catch (err: any) {
@@ -177,7 +183,7 @@ async function runRedisLoop() {
       }
     } catch (e: any) {
       console.error('❌ Worker error (redis loop):', e?.message || e);
-      await new Promise((r) => setTimeout(r, 500);
+  await new Promise((r) => setTimeout(r, 500));
     }
   }
 }

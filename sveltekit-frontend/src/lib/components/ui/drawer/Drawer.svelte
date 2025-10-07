@@ -4,7 +4,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <script lang="ts">
   import { X } from 'lucide-svelte';
   import { onMount } from 'svelte';
-  import type { Snippet } from 'svelte';
 
   interface Props {
     open?: boolean;
@@ -12,7 +11,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     description?: string;
     side?: 'left' | 'right' | 'top' | 'bottom';
     size?: 'sm' | 'md' | 'lg' | 'xl';
-    children?: Snippet;
   }
 
   let {
@@ -21,7 +19,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     description = '',
     side = 'right',
     size = 'md',
-    children
   }: Props = $props();
 
   let dialogEl: HTMLElement | null = null;
@@ -93,7 +90,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         </button>
       </div>
       <div class="drawer-body">
-        {@render children()}
+        <slot />
       </div>
     </div>
   </div>

@@ -10,49 +10,116 @@ import { dbClient } from '$lib/server/db/drizzle-config'
 import { evidence, analysisResults } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
 const analyzer = new AdvancedEvidenceAnalyzer()
+
+// Add typed request/row shapes to avoid `any`
+type GetAnalysisRequest = {
+	evidenceId?: string;
+	analysisId?: string;
+};
+
+type AnalysisResultRow = {
+	analysisId: string;
+	evidenceId: string;
+	results: string | Record<string, unknown>;
+	createdAt: Date;
+	analysisTypes: string | string[];
+};
+
+type SynthesisRequest = {
+	evidenceIds: string[];
+	caseId?: string;
+	synthesisType?: string;
+	options?: Record<string, unknown>;
+};
+
+// Add lightweight request/progress/result types to replace `any`
+type AnalyzeRequest = {
+  evidenceId: string;
+  analysisTypes?: string[] | string;
+  caseId?: string;
+  options?: Record<string, unknown>;
+};
+
+type BatchAnalyzeRequest = {
+  evidenceIds: string[];
+  analysisTypes?: string[] | string;
+  caseId?: string;
+  options?: Record<string, unknown>;
+};
+
+type RealTimeRequest = {
+  evidenceId: string;
+  caseId: string;
+  analysisTypes?: string[] | string;
+};
+
+type ProgressUpdate = {
+  percentage: number;
+  task?: string;
+};
+
+type BatchResultItem = {
+  evidenceId: string;
+  analysisId: string;
+  results: unknown;
+  success: boolean;
+};
+
+type BatchErrorItem = {
+  evidenceId: string;
+  error: string;
+};
+
+// New: typed analyzer output to avoid `any` casts when reading fields
+type AnalyzerOutput = {
+  analysisTypes?: string[] | string;
+  overallConfidence?: number;
+  totalTime?: number;
+  [key: string]: unknown;
+};
+
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const action = url.searchParams.get('action') || 'analyze'
-    const data = await request.json()
+    const action = url.searchParams.get('action') || 'analyze';
+    const data = await request.json();
     switch (action) {
       case 'analyze':
-        return await handleAnalyzeEvidence(data)
+        return await handleAnalyzeEvidence(data);
       case 'batch_analyze':
-        return await handleBatchAnalyze(data)
+        return await handleBatchAnalyze(data);
       case 'get_analysis':
-        return await handleGetAnalysis(data)
+        return await handleGetAnalysis(data);
       case 'synthesis':
-        return await handleSynthesis(data)
+        return await handleSynthesis(data);
       case 'real_time':
-        return await handleRealTimeAnalysis(data)
+        return await handleRealTimeAnalysis(data);
       default:
-        return json({ error: 'Invalid action' }, { status: 400 })
+        return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Advanced evidence analysis error:', error)
-    return json({
-      error: 'Analysis failed',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+    console.error('Advanced evidence analysis error:', error);
+    return json(
+      {
+        error: 'Analysis failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
-}
-async function handleAnalyzeEvidence(data: any) {
-  const { evidenceId, analysisTypes, caseId, options = {} } = data
+};
+async function handleAnalyzeEvidence(data: AnalyzeRequest) {
+  const { evidenceId, analysisTypes, caseId, options = {} } = data as AnalyzeRequest;
   if (!evidenceId) {
-    return json({ error: 'Evidence ID required' }, { status: 400 })
+    return json({ error: 'Evidence ID required' }, { status: 400 });
   }
   // Get evidence from database
-  const evidenceRecord = await dbClient
-    .select()
-    .from(evidence)
-    .where(eq(evidence.id, evidenceId)
-    .limit(1)
+  const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 })
+    return json({ error: 'Evidence not found' }, { status: 404 });
   }
-  const evidenceData = evidenceRecord[0]
+  const evidenceData = evidenceRecord[0];
   // Start analysis with progress tracking
-  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   // Broadcast analysis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -61,35 +128,31 @@ async function handleAnalyzeEvidence(data: any) {
         analysisId,
         evidenceId,
         analysisTypes: analysisTypes || ['all'],
-        timestamp: new Date().toISOString()
-      }
-    })
+        timestamp: new Date().toISOString(),
+      },
+    });
   }
   try {
     // Run analysis
-    const analysisResult = await analyzer.analyzeEvidence(
-      evidenceData,
-      analysisTypes || ['all'],)
-      {
-        ...options,
-        onProgress: (progress) => {
-          if (caseId) {
-            websocketBroadcast(caseId, {
-              type: 'analysis_progress',
-              data: {
-                analysisId,
-                evidenceId,
-                progress: progress.percentage,
-                currentTask: progress.task,
-                timestamp: new Date().toISOString()
-              }
-            })
-          }
+    const analysisResult = await analyzer.analyzeEvidence(evidenceData, analysisTypes || ['all'], {
+      ...options,
+      onProgress: (progress: ProgressUpdate) => {
+        if (caseId) {
+          websocketBroadcast(caseId, {
+            type: 'analysis_progress',
+            data: {
+              analysisId,
+              evidenceId,
+              progress: progress.percentage,
+              currentTask: progress.task,
+              timestamp: new Date().toISOString(),
+            },
+          });
         }
-      }
-    )
+      },
+    });
     // Store analysis results in database
-    await storeAnalysisResult(evidenceId, analysisResult, analysisId)
+    await storeAnalysisResult(evidenceId, analysisResult, analysisId);
     // Broadcast completion
     if (caseId) {
       websocketBroadcast(caseId, {
@@ -97,18 +160,18 @@ async function handleAnalyzeEvidence(data: any) {
         data: {
           analysisId,
           evidenceId,
-          results: analysisResult
-          timestamp: new Date().toISOString()
-        }
-      })
+          results: analysisResult,
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
     return json({
       success: true,
       analysisId,
-      results: analysisResult
+      results: analysisResult,
       evidenceId,
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     // Broadcast error
     if (caseId) {
@@ -117,22 +180,22 @@ async function handleAnalyzeEvidence(data: any) {
         data: {
           analysisId,
           evidenceId,
-          error: error instanceof Error ? error.message: 'Analysis failed',
-          timestamp: new Date().toISOString()
-        }
-      })
+          error: error instanceof Error ? error.message : 'Analysis failed',
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
-    throw error
+    throw error;
   }
 }
-async function handleBatchAnalyze(data: any) {
-  const { evidenceIds, analysisTypes, caseId, options = {} } = data
+async function handleBatchAnalyze(data: BatchAnalyzeRequest) {
+  const { evidenceIds, analysisTypes, caseId, options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 })
+    return json({ error: 'Evidence IDs array required' }, { status: 400 });
   }
-  const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-  const results = []
-  const errors = []
+  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const results: BatchResultItem[] = [];
+  const errors: BatchErrorItem[] = [];
   // Broadcast batch start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -142,79 +205,71 @@ async function handleBatchAnalyze(data: any) {
         evidenceIds,
         total: evidenceIds.length,
         analysisTypes: analysisTypes || ['all'],
-        timestamp: new Date().toISOString()
-      }
-    })
+        timestamp: new Date().toISOString(),
+      },
+    });
   }
   for (let i = 0; i < evidenceIds.length; i++) {
-    const evidenceId = evidenceIds[i]
+    const evidenceId = evidenceIds[i];
     try {
       // Get evidence from database
-      const evidenceRecord = await dbClient
-        .select()
-        .from(evidence)
-        .where(eq(evidence.id, evidenceId)
-        .limit(1)
+      const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
       if (evidenceRecord.length === 0) {
-        errors.push({ evidenceId, error: 'Evidence not found' })
-        continue
+        errors.push({ evidenceId, error: 'Evidence not found' });
+        continue;
       }
-      const evidenceData = evidenceRecord[0]
+      const evidenceData = evidenceRecord[0];
       // Run analysis
-      const analysisResult = await analyzer.analyzeEvidence(
-        evidenceData,
-        analysisTypes || ['all'],)>
-        {
-          ...options,
-          onProgress: (progress) => {
-            if (caseId) {
-              websocketBroadcast(caseId, {
-                type: 'batch_analysis_progress',
-                data: {
-                  batchId,
-                  evidenceId,
-                  itemProgress: progress.percentage,
-                  currentTask: progress.task,
-                  overallProgress: ((i / evidenceIds.length) * 100).toFixed(1),
-                  completedItems: i
-                  totalItems: evidenceIds.length,
-                  timestamp: new Date().toISOString()
-                }
-              })
-            }
+      const analysisResult = await analyzer.analyzeEvidence(evidenceData, analysisTypes || ['all'], {
+        ...options,
+        onProgress: (progress: ProgressUpdate) => {
+          if (caseId) {
+            websocketBroadcast(caseId, {
+              type: 'batch_analysis_progress',
+              data: {
+                batchId,
+                evidenceId,
+                itemProgress: progress.percentage,
+                currentTask: progress.task,
+                overallProgress: (((i + 1) / evidenceIds.length) * 100).toFixed(1),
+                completedItems: i,
+                totalItems: evidenceIds.length,
+                timestamp: new Date().toISOString(),
+              },
+            });
           }
-        }
-      )
+        },
+      });
       // Store analysis results
-      const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      await storeAnalysisResult(evidenceId, analysisResult, analysisId)
+      const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+      await storeAnalysisResult(evidenceId, analysisResult, analysisId);
       results.push({
         evidenceId,
         analysisId,
-        results: analysisResult
+        results: analysisResult,
         success: true,
-      })
+      });
     } catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message: 'Analysis failed'
-      })
+        error: error instanceof Error ? error.message : 'Analysis failed',
+      });
     }
   }
-  // Broadcast batch completion
+  // Broadcast batch completion (rename count to avoid duplicate property name)
   if (caseId) {
     websocketBroadcast(caseId, {
       type: 'batch_analysis_completed',
       data: {
         batchId,
         completed: results.length,
-        errors: errors.length,
+        errorCount: errors.length,
         total: evidenceIds.length,
         results,
         errors,
-        timestamp: new Date().toISOString()
-      }
-    })
+        timestamp: new Date().toISOString(),
+      },
+    });
   }
   return json({
     success: true,
@@ -225,40 +280,51 @@ async function handleBatchAnalyze(data: any) {
       total: evidenceIds.length,
       successful: results.length,
       failed: errors.length,
-      successRate: ((results.length / evidenceIds.length) * 100).toFixed(1)
+      successRate: ((results.length / evidenceIds.length) * 100).toFixed(1),
     },
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }
-async function handleGetAnalysis(data: any) {
-  const { evidenceId, analysisId } = data
+async function handleGetAnalysis(data: GetAnalysisRequest) {
+  const { evidenceId, analysisId } = data;
   if (!evidenceId && !analysisId) {
-    return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 })
+    return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 });
   }
-  let query = dbClient.select().from(analysisResults)
+  let query = dbClient.select().from(analysisResults);
   if (analysisId) {
-    query = query.where(eq(analysisResults.analysisId, analysisId)
+    query = query.where(eq(analysisResults.analysisId, analysisId));
   } else if (evidenceId) {
-    query = query.where(eq(analysisResults.evidenceId, evidenceId)
+    query = query.where(eq(analysisResults.evidenceId, evidenceId));
   }
-  const results = await query.limit(10)
+  const results = await query.limit(10);
   return json({
     success: true,
-    results: results.map(result => ({,
-      analysisId: result.analysisId,
-      evidenceId: result.evidenceId,
-      results: result.results,
-      createdAt: result.createdAt,
-      analysisTypes: result.analysisTypes
-    })
-  })
+    results: results.map((result: AnalysisResultRow) => {
+      // results and analysisTypes may be stored as JSON strings; normalize to parsed value
+      const parsedResults =
+        typeof result.results === 'string'
+          ? safeJsonParse(result.results, {})
+          : (result.results as Record<string, unknown>);
+      const parsedAnalysisTypes =
+        typeof result.analysisTypes === 'string'
+          ? safeJsonParse(result.analysisTypes, [])
+          : (result.analysisTypes as string[]);
+      return {
+        analysisId: result.analysisId,
+        evidenceId: result.evidenceId,
+        results: parsedResults,
+        createdAt: result.createdAt,
+        analysisTypes: parsedAnalysisTypes,
+      };
+    }),
+  });
 }
-async function handleSynthesis(data: any) {
-  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data
+async function handleSynthesis(data: SynthesisRequest) {
+  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 })
+    return json({ error: 'Evidence IDs array required' }, { status: 400 });
   }
-  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   // Broadcast synthesis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -267,59 +333,68 @@ async function handleSynthesis(data: any) {
         synthesisId,
         evidenceIds,
         synthesisType,
-        timestamp: new Date().toISOString()
-      }
-    })
+        timestamp: new Date().toISOString(),
+      },
+    });
   }
   try {
-    // Get all analysis results for the evidence
-    const analysisRecords = await dbClient
-      .select()
-      .from(analysisResults)
-      .where(eq(analysisResults.evidenceId, evidenceIds[0]); // This would need a proper IN query
-    const analysisData = analysisRecords.map(record => ({
-      evidenceId: record.evidenceId,
-      results: record.results
-    })
-    // Run synthesis
-    const synthesisResult = await analyzer.synthesizeAnalyses(
-      analysisData,
-      synthesisType,)
-      {
-        ...options,
-        onProgress: (progress) => {
-          if (caseId) {
-            websocketBroadcast(caseId, {
-              type: 'synthesis_progress',
-              data: {
-                synthesisId,
-                progress: progress.percentage,
-                currentTask: progress.task,
-                timestamp: new Date().toISOString()
-              }
-            })
-          }
+    // Get all analysis results for the evidence (safe per-id retrieval)
+    const analysisRecords: Array<{ evidenceId: string; results: string | Record<string, unknown> }> = [];
+    for (const id of evidenceIds) {
+      // cast DB query to a typed row array instead of `any`
+      const recs = (await dbClient
+        .select()
+        .from(analysisResults)
+        .where(eq(analysisResults.evidenceId, id))) as AnalysisResultRow[];
+      if (recs && recs.length) {
+        // push only the fields we need, preserving types
+        for (const r of recs) {
+          analysisRecords.push({
+            evidenceId: r.evidenceId,
+            results: r.results,
+          });
         }
       }
-    )
+    }
+    const analysisData = analysisRecords.map(record => ({
+      evidenceId: record.evidenceId,
+      results: record.results,
+    }));
+    // Run synthesis
+    const synthesisResult = await analyzer.synthesizeAnalyses(analysisData, synthesisType, {
+      ...options,
+      onProgress: (progress: ProgressUpdate) => {
+        if (caseId) {
+          websocketBroadcast(caseId, {
+            type: 'synthesis_progress',
+            data: {
+              synthesisId,
+              progress: progress.percentage,
+              currentTask: progress.task,
+              timestamp: new Date().toISOString(),
+            },
+          });
+        }
+      },
+    });
     // Broadcast completion
     if (caseId) {
       websocketBroadcast(caseId, {
         type: 'synthesis_completed',
         data: {
           synthesisId,
-          results: synthesisResult
-          timestamp: new Date().toISOString()
-        }
-      })
+          results: synthesisResult,
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
     return json({
       success: true,
       synthesisId,
-      results: synthesisResult
+      results: synthesisResult,
       evidenceIds,
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     // Broadcast error
     if (caseId) {
@@ -327,86 +402,89 @@ async function handleSynthesis(data: any) {
         type: 'synthesis_error',
         data: {
           synthesisId,
-          error: error instanceof Error ? error.message: 'Synthesis failed',
-          timestamp: new Date().toISOString()
-        }
-      })
+          error: error instanceof Error ? error.message : 'Synthesis failed',
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
-    throw error
+    throw error;
   }
 }
-async function handleRealTimeAnalysis(data: any) {
-  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data
+async function handleRealTimeAnalysis(data: RealTimeRequest) {
+  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data;
   if (!evidenceId || !caseId) {
-    return json({ error: 'Evidence ID and Case ID required' }, { status: 400 })
+    return json({ error: 'Evidence ID and Case ID required' }, { status: 400 });
   }
   // Get evidence from database
-  const evidenceRecord = await dbClient
-    .select()
-    .from(evidence)
-    .where(eq(evidence.id, evidenceId)
-    .limit(1)
+  const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 })
+    return json({ error: 'Evidence not found' }, { status: 404 });
   }
-  const evidenceData = evidenceRecord[0]
+  const evidenceData = evidenceRecord[0];
   // Run quick analysis for real-time display
-  const quickAnalysis = await analyzer.analyzeEvidence(
-    evidenceData,
-    analysisTypes,)
-    {
-      realTime: true
-      maxProcessingTime: 5000, // 5 seconds max for real-time
-      onProgress: (progress) => {
-        websocketBroadcast(caseId, {
-          type: 'real_time_analysis_progress',
-          data: {
-            evidenceId,
-            progress: progress.percentage,
-            task: progress.task,
-            timestamp: new Date().toISOString()
-          }
-        })
-      }
-    }
-  )
+  const quickAnalysis = await analyzer.analyzeEvidence(evidenceData, analysisTypes, {
+    realTime: true,
+    maxProcessingTime: 5000, // 5 seconds max for real-time
+    onProgress: (progress: ProgressUpdate) => {
+      websocketBroadcast(caseId, {
+        type: 'real_time_analysis_progress',
+        data: {
+          evidenceId,
+          progress: progress.percentage,
+          task: progress.task,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    },
+  });
   // Broadcast real-time results
   websocketBroadcast(caseId, {
     type: 'real_time_analysis_completed',
     data: {
       evidenceId,
-      results: quickAnalysis
-      timestamp: new Date().toISOString()
-    }
-  })
+      results: quickAnalysis,
+      timestamp: new Date().toISOString(),
+    },
+  });
   return json({
     success: true,
     evidenceId,
-    results: quickAnalysis
-    realTime: true
-    timestamp: new Date().toISOString()
-  })
+    results: quickAnalysis,
+    realTime: true,
+    timestamp: new Date().toISOString(),
+  });
 }
-async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string) {
+async function storeAnalysisResult(evidenceId: string, results: unknown, analysisId: string) {
   try {
+    // Safely treat results as AnalyzerOutput when extracting expected fields
+    const res = (results as AnalyzerOutput) || {};
+    const normalizedAnalysisTypes = Array.isArray(res.analysisTypes)
+      ? res.analysisTypes
+      : typeof res.analysisTypes === 'string'
+        ? [res.analysisTypes]
+        : [];
+
+    const confidence = typeof res.overallConfidence === 'number' ? res.overallConfidence : 0;
+    const processingTime = typeof res.totalTime === 'number' ? res.totalTime : 0;
+
     await dbClient.insert(analysisResults).values({
       analysisId,
       evidenceId,
       results: JSON.stringify(results),
-      analysisTypes: JSON.stringify(results.analysisTypes || []),
-      confidence: results.overallConfidence || 0,
-      processingTime: results.totalTime || 0,
+      analysisTypes: JSON.stringify(normalizedAnalysisTypes),
+      confidence,
+      processingTime,
       createdAt: new Date(),
-      updatedAt: new Date()
-    })
+      updatedAt: new Date(),
+    });
   } catch (error) {
-    console.error('Failed to store analysis result:', error)
+    console.error('Failed to store analysis result:', error);
     // Don't throw - analysis succeeded even if storage failed
   }
 }
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'status'
+    const action = url.searchParams.get('action') || 'status';
     switch (action) {
       case 'status':
         return json({
@@ -419,37 +497,42 @@ export const GET: RequestHandler = async ({ url }) => {
             'real_time_analysis',
             'synthesis',
             'progress_tracking',
-            'websocket_integration'
+            'websocket_integration',
           ],
-          analysisTypes: [
-            'ocr',
-            'sentiment',
-            'entities',
-            'patterns',
-            'precedents',
-            'summary',
-            'timeline',
-            'all'
-          ],
-          timestamp: new Date().toISOString()
-        })
+          analysisTypes: ['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline', 'all'],
+          timestamp: new Date().toISOString(),
+        });
       case 'models':
         return json({
           availableModels: analyzer.getAvailableModels(),
           defaultModel: analyzer.getDefaultModel(),
-          modelCapabilities: analyzer.getModelCapabilities()
-        })
-      case 'health':
-        const healthCheck = await analyzer.healthCheck()
-        return json(healthCheck)
+          modelCapabilities: analyzer.getModelCapabilities(),
+        });
+      case 'health': {
+        // scope lexical declaration to avoid "Unexpected lexical declaration in case block"
+        const healthCheck = await analyzer.healthCheck();
+        return json(healthCheck);
+      }
       default:
-        return json({ error: 'Invalid action' }, { status: 400 })
+        return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Advanced evidence analysis API error:', error)
-    return json({
-      error: 'Service error',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+    console.error('Advanced evidence analysis API error:', error);
+    return json(
+      {
+        error: 'Service error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+};
+
+// Helper: small safe JSON parse to avoid throwing on invalid DB content
+function safeJsonParse<T>(input: string, fallback: T): T {
+  try {
+    return JSON.parse(input) as T;
+  } catch {
+    return fallback;
   }
 }

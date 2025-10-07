@@ -64,7 +64,7 @@ export interface DocumentRecommendation {
   documentType: string;
   similarity: number;
   excerpt: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
 }
 export interface ActionRecommendation {
   id: string;
@@ -95,465 +95,496 @@ type RecommendationEvent =
   | { type: 'PROCESSING_COMPLETE'; result: any }
   | { type: 'ERROR_OCCURRED'; error: string }
   | { type: 'RETRY' }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Smart routing recommendation engine with RabbitMQ
-export const recommendationRoutingMachine = createMachine({
-  id: 'recommendation-routing',
-  types: {} as {
-    context: RecommendationContext;
-    events: RecommendationEvent;
-  },
-  initial: 'idle',
-  context: {
-    sessionId: '',
-    userId: '',
-    rabbitMQRouting: {
-      exchange: 'legal-ai-exchange',
-      routingKeys: [],
-      queues: {
-        highPriority: 'legal.priority.high',
-        standardPriority: 'legal.priority.standard',
-        backgroundProcessing: 'legal.background',
-        aiAnalysis: 'legal.ai.analysis',
-        recommendations: 'legal.recommendations'
-      }
+export const recommendationRoutingMachine = createMachine(
+  {
+    id: 'recommendation-routing',
+    types: {} as {
+      context: RecommendationContext;
+      events: RecommendationEvent;
     },
-    recommendations: {
-      legal: [],
-      documents: [],
-      actions: [],
-      risks: []
-    },
-    aiModels: {
-      primary: 'gemma3:legal-latest',
-      fallback: ['ollama:latest', 'openai:gpt-4'],
-      confidence: 0
-    },
-    processingMetrics: {
-      averageLatency: 0,
-      queueDepth: 0,
-      throughput: 0,
-      errorRate: 0
-    },
-    cache: {
-      redisKeys: [],
-      hitRate: 0,
-      lastUpdate: new Date()
-    }
-  },
-  states: {
-    idle: {
-      on: {
-        START_SESSION: {
-          target: 'session_active',
-          actions: assign({
-            sessionId: ({ event }) => `session_${Date.now()}`,
-            userId: ({ event }) => event.userId,
-            caseId: ({ event }) => event.caseId
-          })
-        }
-      }
-    },
-    session_active: {
-      initial: 'waiting_for_input',
-      states: {
-        waiting_for_input: {
-          on: {
-            ANALYZE_DOCUMENT: {
-              target: 'routing_analysis',
-              actions: assign({
-                currentDocument: ({ event }) => ({
-                  id: event.documentId,
-                  type: event.documentType as any,
-                  confidence: 0
-                })
-              })
-            },
-            REQUEST_RECOMMENDATIONS: {
-              target: 'routing_analysis'
-            }
-          }
+    initial: 'idle',
+    context: {
+      sessionId: '',
+      userId: '',
+      rabbitMQRouting: {
+        exchange: 'legal-ai-exchange',
+        routingKeys: [],
+        queues: {
+          highPriority: 'legal.priority.high',
+          standardPriority: 'legal.priority.standard',
+          backgroundProcessing: 'legal.background',
+          aiAnalysis: 'legal.ai.analysis',
+          recommendations: 'legal.recommendations',
         },
-        routing_analysis: {
-          invoke: {
-            id: 'analyzeRouting',
-            src: 'analyzeRoutingRequirements',
-            input: ({ context }) => ({
-              sessionId: context.sessionId,
-              userId: context.userId,
-              caseId: context.caseId,
-              currentDocument: context.currentDocument,
-              processingMetrics: context.processingMetrics
+      },
+      recommendations: {
+        legal: [],
+        documents: [],
+        actions: [],
+        risks: [],
+      },
+      aiModels: {
+        primary: 'gemma3:legal-latest',
+        fallback: ['ollama:latest', 'openai:gpt-4'],
+        confidence: 0,
+      },
+      processingMetrics: {
+        averageLatency: 0,
+        queueDepth: 0,
+        throughput: 0,
+        errorRate: 0,
+      },
+      cache: {
+        redisKeys: [],
+        hitRate: 0,
+        lastUpdate: new Date(),
+      },
+      error: undefined, // Fix: Changed from 'error?: string;' to 'error: undefined,'
+    },
+    states: {
+      idle: {
+        on: {
+          START_SESSION: {
+            target: 'session_active',
+            actions: assign({
+              sessionId: ({ event }) => `session_${Date.now()}`,
+              userId: ({ event }) => event.userId,
+              caseId: ({ event }) => event.caseId,
             }),
-            onDone: {
-              target: 'rabbitmq_routing',
-              actions: assign({
-                rabbitMQRouting: ({ context, event }) => ({
-                  ...context.rabbitMQRouting,
-                  routingKeys: event.output.routingKeys,
-                  currentQueue: event.output.recommendedQueue
-                }),
-                aiModels: ({ context, event }) => ({
-                  ...context.aiModels,
-                  currentModel: event.output.recommendedModel
-                })
-              })
-            },
-            onError: {
-              target: '#recommendation-routing.error',
-              actions: assign({
-                error: ({ event }) => `Routing analysis failed: ${(event.error as any)?.message}`
-              })
-            }
-          }
+          },
         },
-        rabbitmq_routing: {
-          invoke: {
-            id: 'routeToRabbitMQ',
-            src: 'routeMessageToQueue',
-            input: ({ context }) => ({
-              exchange: context.rabbitMQRouting.exchange,
-              routingKey: context.rabbitMQRouting.currentQueue,
-              message: {
+      },
+      session_active: {
+        initial: 'waiting_for_input',
+        states: {
+          waiting_for_input: {
+            on: {
+              ANALYZE_DOCUMENT: {
+                target: 'routing_analysis',
+                actions: assign({
+                  currentDocument: ({ event }) => ({
+                    id: event.documentId,
+                    type: event.documentType as any,
+                    confidence: 0,
+                  }),
+                }),
+              },
+              REQUEST_RECOMMENDATIONS: {
+                target: 'routing_analysis',
+              },
+            },
+          },
+          routing_analysis: {
+            invoke: {
+              id: 'analyzeRouting',
+              src: 'analyzeRoutingRequirements',
+              input: ({ context }) => ({
+                sessionId: context.sessionId,
+                userId: context.userId,
+                caseId: context.caseId,
+                currentDocument: context.currentDocument,
+                processingMetrics: context.processingMetrics,
+              }),
+              onDone: {
+                target: 'rabbitmq_routing',
+                actions: assign({
+                  rabbitMQRouting: ({ context, event }) => ({
+                    ...context.rabbitMQRouting,
+                    routingKeys: event.output.routingKeys,
+                    currentQueue: event.output.recommendedQueue,
+                  }),
+                  aiModels: ({ context, event }) => ({
+                    ...context.aiModels,
+                    currentModel: event.output.recommendedModel,
+                  }),
+                }),
+              },
+              onError: {
+                target: '#recommendation-routing.error',
+                actions: assign({
+                  error: ({ event }) => `Routing analysis failed: ${(event.error as any)?.message}`,
+                }),
+              },
+            },
+          },
+          rabbitmq_routing: {
+            invoke: {
+              id: 'routeToRabbitMQ',
+              src: 'routeMessageToQueue',
+              input: ({ context }) => ({
+                exchange: context.rabbitMQRouting.exchange,
+                routingKey: context.rabbitMQRouting.currentQueue,
+                message: {
+                  sessionId: context.sessionId,
+                  userId: context.userId,
+                  caseId: context.caseId,
+                  document: context.currentDocument,
+                  timestamp: new Date().toISOString(),
+                  priority: determinePriority(context.currentDocument?.type),
+                  requestedModel: context.aiModels.currentModel,
+                },
+              }),
+              onDone: {
+                target: 'cache_check',
+                actions: assign({
+                  rabbitMQRouting: ({ context, event }) => ({
+                    ...context.rabbitMQRouting,
+                    messageId: event.output.messageId,
+                  }),
+                }),
+              },
+              onError: {
+                target: '#recommendation-routing.error',
+                actions: assign({
+                  error: ({ event }) => `RabbitMQ routing failed: ${(event.error as any)?.message}`,
+                }),
+              },
+            },
+          },
+          cache_check: {
+            invoke: {
+              id: 'checkRedisCache',
+              src: 'checkRecommendationCache',
+              input: ({ context }) => ({
+                sessionId: context.sessionId,
+                documentId: context.currentDocument?.id,
+                caseId: context.caseId,
+                cacheKeys: generateCacheKeys(context),
+              }),
+              onDone: [
+                {
+                  target: 'serving_cached_recommendations',
+                  guard: ({ event }) => event.output.cacheHit,
+                  actions: assign({
+                    recommendations: ({ event }) => event.output.cachedData,
+                    cache: ({ context, event }) => ({
+                      ...context.cache,
+                      hitRate: event.output.hitRate,
+                      redisKeys: event.output.keys,
+                      lastUpdate: new Date(),
+                    }),
+                  }),
+                },
+                {
+                  target: 'processing_recommendations',
+                  actions: assign({
+                    cache: ({ context, event }) => ({
+                      ...context.cache,
+                      hitRate: event.output.hitRate,
+                      lastUpdate: new Date(),
+                    }),
+                  }),
+                },
+              ],
+              onError: {
+                target: 'processing_recommendations',
+              },
+            },
+          },
+          serving_cached_recommendations: {
+            invoke: {
+              id: 'serveCachedRecommendations',
+              src: 'serveCachedData',
+              input: ({ context }) => ({
+                recommendations: context.recommendations,
+                sessionId: context.sessionId,
+              }),
+              onDone: {
+                target: 'recommendations_ready',
+              },
+            },
+          },
+          processing_recommendations: {
+            invoke: {
+              id: 'processRecommendations',
+              src: 'generateRecommendations',
+              input: ({ context }) => ({
                 sessionId: context.sessionId,
                 userId: context.userId,
                 caseId: context.caseId,
                 document: context.currentDocument,
-                timestamp: new Date().toISOString(),
-                priority: determinePriority(context.currentDocument?.type),
-                requestedModel: context.aiModels.currentModel
-              }
-            }),
-            onDone: {
-              target: 'cache_check',
-              actions: assign({
-                rabbitMQRouting: ({ context, event }) => ({
-                  ...context.rabbitMQRouting,
-                  messageId: event.output.messageId
-                })
-              })
-            },
-            onError: {
-              target: '#recommendation-routing.error',
-              actions: assign({
-                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as any)?.message}`
-              })
-            }
-          }
-        },
-        cache_check: {
-          invoke: {
-            id: 'checkRedisCache',
-            src: 'checkRecommendationCache',
-            input: ({ context }) => ({
-              sessionId: context.sessionId,
-              documentId: context.currentDocument?.id,
-              caseId: context.caseId,
-              cacheKeys: generateCacheKeys(context)
-            }),
-            onDone: [
-              {
-                target: 'serving_cached_recommendations',
-                guard: ({ event }) => event.output.cacheHit,
+                model: context.aiModels.currentModel,
+                messageId: context.rabbitMQRouting.messageId,
+                queue: context.rabbitMQRouting.currentQueue,
+              }),
+              onDone: {
+                target: 'caching_results',
                 actions: assign({
-                  recommendations: ({ event }) => event.output.cachedData,
-                  cache: ({ context, event }) => ({
-                    ...context.cache,
-                    hitRate: event.output.hitRate,
-                    redisKeys: event.output.keys,
-                    lastUpdate: new Date()
-                  })
-                })
+                  recommendations: ({ event }) => event.output.recommendations,
+                  processingMetrics: ({ context, event }) => ({
+                    ...context.processingMetrics,
+                    averageLatency: event.output.metrics.latency,
+                    throughput: event.output.metrics.throughput,
+                  }),
+                }),
               },
-              {
-                target: 'processing_recommendations',
+              onError: {
+                target: '#recommendation-routing.error',
+                actions: assign({
+                  error: ({ event }) => `Recommendation processing failed: ${(event.error as any)?.message}`,
+                }),
+              },
+            },
+          },
+          caching_results: {
+            invoke: {
+              id: 'cacheResults',
+              src: 'cacheRecommendations',
+              input: ({ context }) => ({
+                recommendations: context.recommendations,
+                cacheKeys: generateCacheKeys(context),
+                ttl: 3600, // 1 hour cache
+              }),
+              onDone: {
+                target: 'recommendations_ready',
                 actions: assign({
                   cache: ({ context, event }) => ({
                     ...context.cache,
-                    hitRate: event.output.hitRate,
-                    lastUpdate: new Date()
-                  })
-                })
-              }
-            ],
-            onError: {
-              target: 'processing_recommendations'
-            }
-          }
-        },
-        serving_cached_recommendations: {
-          invoke: {
-            id: 'serveCachedRecommendations',
-            src: 'serveCachedData',
-            input: ({ context }) => ({
-              recommendations: context.recommendations,
-              sessionId: context.sessionId
-            }),
-            onDone: {
-              target: 'recommendations_ready'
-            }
-          }
-        },
-        processing_recommendations: {
-          invoke: {
-            id: 'processRecommendations',
-            src: 'generateRecommendations',
-            input: ({ context }) => ({
-              sessionId: context.sessionId,
-              userId: context.userId,
-              caseId: context.caseId,
-              document: context.currentDocument,
-              model: context.aiModels.currentModel,
-              messageId: context.rabbitMQRouting.messageId,
-              queue: context.rabbitMQRouting.currentQueue
-            }),
-            onDone: {
-              target: 'caching_results',
-              actions: assign({
-                recommendations: ({ event }) => event.output.recommendations,
-                processingMetrics: ({ context, event }) => ({
-                  ...context.processingMetrics,
-                  averageLatency: event.output.metrics.latency,
-                  throughput: event.output.metrics.throughput
-                })
-              })
+                    redisKeys: [...context.cache.redisKeys, ...event.output.newKeys],
+                    lastUpdate: new Date(),
+                  }),
+                }),
+              },
+              onError: {
+                target: 'recommendations_ready', // Continue even if caching fails
+              },
             },
-            onError: {
-              target: '#recommendation-routing.error',
-              actions: assign({
-                error: ({ event }) => `Recommendation processing failed: ${(event.error as any)?.message}`
-              })
-            }
-          }
-        },
-        caching_results: {
-          invoke: {
-            id: 'cacheResults',
-            src: 'cacheRecommendations',
-            input: ({ context }) => ({
-              recommendations: context.recommendations,
-              cacheKeys: generateCacheKeys(context),
-              ttl: 3600 // 1 hour cache
-            }),
-            onDone: {
-              target: 'recommendations_ready',
-              actions: assign({
-                cache: ({ context, event }) => ({
-                  ...context.cache,
-                  redisKeys: [...context.cache.redisKeys, ...event.output.newKeys],
-                  lastUpdate: new Date()
-                })
-              })
+          },
+          recommendations_ready: {
+            type: 'final',
+            entry: () => {
+              console.log('✅ Recommendations ready and served');
             },
-            onError: {
-              target: 'recommendations_ready' // Continue even if caching fails
-            }
-          }
+          },
         },
-        recommendations_ready: {
-          type: 'final',
-          entry: () => {
-            console.log('✅ Recommendations ready and served');
-          }
-        }
+        on: {
+          ANALYZE_DOCUMENT: {
+            target: '.routing_analysis',
+            actions: assign({
+              currentDocument: ({ event }) => ({
+                id: event.documentId,
+                type: event.documentType as any,
+                confidence: 0,
+              }),
+            }),
+          },
+        },
       },
-      on: {
-        ANALYZE_DOCUMENT: {
-          target: '.routing_analysis',
-          actions: assign({
-            currentDocument: ({ event }) => ({
-              id: event.documentId,
-              type: event.documentType as any,
-              confidence: 0
-            })
-          })
-        }
-      }
-    },
-    error: {
-      on: {
-        RETRY: {
-          target: 'session_active.routing_analysis',
-          actions: assign({
-            error: undefined
-          })
+      error: {
+        on: {
+          RETRY: {
+            target: 'session_active.routing_analysis',
+            actions: assign({
+              error: undefined,
+            }),
+          },
+          RESET: {
+            target: 'idle',
+            actions: assign({
+              sessionId: '',
+              userId: '',
+              caseId: undefined, // Added comma here
+              currentDocument: undefined,
+              recommendations: {
+                legal: [],
+                documents: [],
+                actions: [],
+                risks: [],
+              },
+              error: undefined,
+            }),
+          },
         },
-        RESET: {
-          target: 'idle',
-          actions: assign({
-            sessionId: '',
-            userId: '',
-            caseId: undefined
-            currentDocument: undefined
-            recommendations: {
-              legal: [],
-              documents: [],
-              actions: [],
-              risks: []
-            },
-            error: undefined
-          })
+      },
+    },
+  },
+  {
+    actors: {
+      // Analyze routing requirements based on document type and system load
+      analyzeRoutingRequirements: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            sessionId: string;
+            userId: string;
+            caseId?: string;
+            currentDocument?: any;
+            processingMetrics: any;
+          };
+        }) => {
+          const { currentDocument, processingMetrics } = input;
+          // Determine routing based on document type and system load
+          const routingAnalysis = await fetch('/api/routing/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              // Removed leading comma
+              document: currentDocument, // Changed semicolon to comma
+              metrics: processingMetrics, // Changed semicolon to comma
+              timestamp: new Date().toISOString(),
+            }),
+          });
+          if (!routingAnalysis.ok) {
+            throw new Error(`Routing analysis failed: ${routingAnalysis.statusText}`);
+          }
+          return await routingAnalysis.json();
         }
-      }
-    }
-  }
-}, {
-  actors: {
-    // Analyze routing requirements based on document type and system load
-    analyzeRoutingRequirements: fromPromise(async ({ input }: {
-      input: {
-        sessionId: string;
-        userId: string;
-        caseId?: string;
-        currentDocument?: any;
-        processingMetrics: any;
-      }
-    }) => {
-      const { currentDocument, processingMetrics } = input;
-      // Determine routing based on document type and system load
-      const routingAnalysis = await fetch('/api/routing/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          document: currentDocument
-          metrics: processingMetrics;
-          timestamp: new Date().toISOString()
-        })
-      });
-      if (!routingAnalysis.ok) {
-        throw new Error(`Routing analysis failed: ${routingAnalysis.statusText}`);
-      }
-      return await routingAnalysis.json();
-    }),
-    // Route message to appropriate RabbitMQ queue
-    routeMessageToQueue: fromPromise(async ({ input }: {
-      input: {
-        exchange: string;
-        routingKey: string;
-        message: any;
-      }
-    }) => {
-      const { exchange, routingKey, message } = input;
-      const response = await fetch('/api/queue/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          exchange,
-          routingKey,
-          message,
-          options: {
-            persistent: true;
-            timestamp: Date.now(),
-            messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      ),
+      // Route message to appropriate RabbitMQ queue
+      routeMessageToQueue: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            exchange: string;
+            routingKey: string;
+            message: any;
+          };
+        }) => {
+          const { exchange, routingKey, message } = input;
+          const response = await fetch('/api/queue/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              exchange,
+              routingKey,
+              message,
+              options: {
+                persistent: true, // Changed semicolon to comma
+                timestamp: Date.now(),
+                messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+              },
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Queue routing failed: ${response.statusText}`);
           }
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`Queue routing failed: ${response.statusText}`);
-      }
-      return await response.json();
-    }),
-    // Check Redis cache for existing recommendations
-    checkRecommendationCache: fromPromise(async ({ input }: {
-      input: {
-        sessionId: string;
-        documentId?: string;
-        caseId?: string;
-        cacheKeys: string[];
-      }
-    }) => {
-      const { cacheKeys } = input;
-      const response = await fetch('/api/cache/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          keys: cacheKeys;
-          operation: 'mget' // Multi-get for efficiency
-        })
-      });
-      if (!response.ok) {
-        return { cacheHit: false, hitRate: 0 }
-      }
-      return await response.json();
-    }),
-    // Serve cached recommendations
-    serveCachedData: fromPromise(async ({ input }: {
-      input: {
-        recommendations: any;
-        sessionId: string;
-      }
-    }) => {
-      // Optionally enrich cached data or perform additional processing
-      return {
-        served: true
-        timestamp: new Date().toISOString(),
-        source: 'cache'
-      }
-    }),
-    // Generate new recommendations using AI models
-    generateRecommendations: fromPromise(async ({ input }: {
-      input: {
-        sessionId: string;
-        userId: string;
-        caseId?: string;
-        document?: any;
-        model: string;
-        messageId: string;
-        queue: string;
-      }
-    }) => {
-      const { sessionId, userId, caseId, document, model, messageId } = input;
-      const response = await fetch('/api/recommendations/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          userId,
-          caseId,
-          document,
-          model,
-          messageId,
-          options: {
-            includeLegal: true
-            includeDocuments: true
-            includeActions: true
-            includeRisks: true
-            maxRecommendations: 10,
-            confidenceThreshold: 0.7
+          return await response.json();
+        }
+      ),
+      // Check Redis cache for existing recommendations
+      checkRecommendationCache: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            sessionId: string;
+            documentId?: string;
+            caseId?: string;
+            cacheKeys: string[];
+          };
+        }) => {
+          const { cacheKeys } = input;
+          const response = await fetch('/api/cache/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              // Removed leading comma
+              keys: cacheKeys, // Changed semicolon to comma
+              operation: 'mget', // Multi-get for efficiency
+            }),
+          });
+          if (!response.ok) {
+            return { cacheHit: false, hitRate: 0 };
           }
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`Recommendation generation failed: ${response.statusText}`);
-      }
-      return await response.json();
-    }),
-    // Cache recommendations in Redis
-    cacheRecommendations: fromPromise(async ({ input }: {
-      input: {
-        recommendations: any;
-        cacheKeys: string[];
-        ttl: number;
-      }
-    }) => {
-      const { recommendations, cacheKeys, ttl } = input;
-      const response = await fetch('/api/cache/store', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          data: recommendations
-          keys: cacheKeys
-          ttl,
-          compression: true // SIMD JSON compression
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`Caching failed: ${response.statusText}`);
-      }
-      return await response.json();
-    })
+          return await response.json();
+        }
+      ),
+      // Serve cached recommendations
+      serveCachedData: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            recommendations: any;
+            sessionId: string;
+          };
+        }) => {
+          // Optionally enrich cached data or perform additional processing
+          return {
+            served: true, // Added comma
+            timestamp: new Date().toISOString(),
+            source: 'cache',
+          };
+        }
+      ),
+      // Generate new recommendations using AI models
+      generateRecommendations: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            sessionId: string;
+            userId: string;
+            caseId?: string;
+            document?: any;
+            model: string;
+            messageId: string;
+            queue: string;
+          };
+        }) => {
+          const { sessionId, userId, caseId, document, model, messageId } = input;
+          const response = await fetch('/api/recommendations/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId,
+              userId,
+              caseId,
+              document,
+              model,
+              messageId,
+              options: {
+                includeLegal: true, // Changed semicolon to comma
+                includeDocuments: true, // Changed semicolon to comma
+                includeActions: true, // Changed semicolon to comma
+                includeRisks: true, // Changed semicolon to comma
+                maxRecommendations: 10,
+                confidenceThreshold: 0.7,
+              },
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Recommendation generation failed: ${response.statusText}`);
+          }
+          return await response.json();
+        }
+      ),
+      // Cache recommendations in Redis
+      cacheRecommendations: fromPromise(
+        async ({
+          input,
+        }: {
+          input: {
+            recommendations: any;
+            cacheKeys: string[];
+            ttl: number;
+          };
+        }) => {
+          const { recommendations, cacheKeys, ttl } = input;
+          const response = await fetch('/api/cache/store', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              // Removed leading comma
+              data: recommendations, // Changed semicolon to comma
+              keys: cacheKeys, // Changed semicolon to comma
+              ttl,
+              compression: true, // SIMD JSON compression
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Caching failed: ${response.statusText}`);
+          }
+          return await response.json();
+        }
+      ),
+    },
   }
-});
+);
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
