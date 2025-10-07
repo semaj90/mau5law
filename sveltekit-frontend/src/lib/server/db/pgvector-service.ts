@@ -3,7 +3,7 @@
  * Best Practices Implementation for Vector Similarity Search
  */
 import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
 import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres.js';
 // Production PostgreSQL Configuration

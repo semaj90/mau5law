@@ -4,8 +4,8 @@
  */
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-}
-export interface ApiResponse<T = any> {
+
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -16,21 +16,17 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 /**
  * Create a successful API response
  */
-export function apiSuccess<T>(
-  data: T
-  message?: string
-  requestId?: string;
-) {
+export function apiSuccess<T>(data: T, message?: string, requestId?: string) {
   const response: ApiResponse<T> = {
-    success: true
+    success: true,
     data,
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  };
   if (message) response.message = message;
   if (requestId) response.requestId = requestId;
   return json(response);
@@ -38,36 +34,28 @@ export function apiSuccess<T>(
 /**
  * Create an error API response
  */
-export function apiError(
-  message: string;
-  status: number = 400,
-  code?: string
-  details?: any
-  requestId?: string;
-) {
+export function apiError(message: string, status: number = 400, code?: string, details?: unknown, requestId?: string) {
   const response: ApiResponse = {
-    success: false
-    error: message;
-    timestamp: new Date().toISOString()
-  }
+    success: false,
+    error: message,
+    timestamp: new Date().toISOString(),
+  };
   if (requestId) response.requestId = requestId;
   if (code || details) {
-    response.data = { code, details }
+    response.data = { code, details };
   }
   return json(response, { status });
 }
 /**
  * Validate request body against required fields
  */
-export function validateRequest(
-  body: any
-  requiredFields: string[];
-): string | null {
-  if (!body || typeof body !== 'object') {
+export function validateRequest(body: unknown, requiredFields: string[]): string | null {
+  if (typeof body !== 'object' || body === null) {
     return 'Invalid request body';
   }
+  const bodyAsRecord = body as Record<string, unknown>; // Cast for property access after type guard
   for (const field of requiredFields) {
-    if (!(field in body) || body[field] === null || body[field] === undefined) {
+    if (!(field in bodyAsRecord) || bodyAsRecord[field] === null || bodyAsRecord[field] === undefined) {
       return `Missing required field: ${field}`;
     }
   }
@@ -75,44 +63,53 @@ export function validateRequest(
 }
 /**
  * Get request ID from locals (set by hooks.server.ts)
- */;
-export function getRequestId(_event: RequestEvent): string {
-  return (event.locals as any).requestId || `req_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+ */ export function getRequestId(_event: RequestEvent): string {
+  // Assuming _event.locals is typed correctly, e.g., via src/app.d.ts
+  // If 'requestId' is not part of App.Locals, you might need to augment App.Locals in src/app.d.ts
+  return _event.locals.requestId || `req_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 /**
  * Create standardized cache headers
- */;
+ */
 export function getCacheHeaders(maxAge: number = 0) {
   if (maxAge === 0) {
     return {
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0'
-    }
+      'Expires': '0',
+    };
   }
   return {
-    'Cache-Control': `public, max-age=${maxAge}`
-  }
+    'Cache-Control': `public, max-age=${maxAge}`,
+  };
 }
 /**
  * Standardized API handler wrapper with error catching
  */
-export function withErrorHandling<T extends RequestEvent>(
-  handler: (_event: T) => Promise<Response>;
-) {
+export function withErrorHandling<T extends RequestEvent>(handler: (_event: T) => Promise<Response>) {
   return async (_event: T): Promise<Response> => {
-    const requestId = getRequestId(event);
+    const requestId = getRequestId(_event);
     try {
-      return await handler(event);
-    } catch (error: any) {
+      return await handler(_event);
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      // Safely extract 'code' if it exists and is a string
+      const errorCode =
+        error instanceof Object && 'code' in error && typeof (error as { code: unknown }).code === 'string'
+          ? (error as { code: string }).code
+          : 'INTERNAL_ERROR';
+      // Only include stack in development mode for Error instances
+      const errorStack = error instanceof Error && process.env.NODE_ENV === 'development' ? error.stack : undefined;
+
       console.error(`API Error [${requestId}]:`, error);
       return apiError(
-        error.message || 'Internal server error',
+        errorMessage,
         500,
-        error.code || 'INTERNAL_ERROR',
-        process.env.NODE_ENV === 'development' ? error.stack: undefined
+        errorCode,
+        errorStack, // Pass stack as details in dev mode
         requestId
       );
     }
-  }
+  };
 }

@@ -1,11 +1,12 @@
 // @ts-nocheck
 import { building } from '$app/environment';
 import * as schema from '$lib/server/db/schema-postgres';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool } from 'pg';
-let _db: ReturnType<typeof drizzle> | null = null;
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+let _db: PostgresJsDatabase<typeof schema> | null = null;
 let _pool: Pool | null = null;
-export function getPostgreSQLDatabase() {
+export function getPostgreSQLDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build
   if (building) {
     console.log('Skipping database initialization during build');

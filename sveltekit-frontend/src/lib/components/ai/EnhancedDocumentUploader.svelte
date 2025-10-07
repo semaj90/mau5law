@@ -2,7 +2,7 @@
 <script lang="ts">
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select';
+  import * as Select from '$lib/components/ui/Select';
   import Badge from '$lib/components/ui/Badge.svelte';
   import Progress from '$lib/components/ui/Progress.svelte';
   import {

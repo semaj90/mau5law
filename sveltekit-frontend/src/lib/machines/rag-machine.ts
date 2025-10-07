@@ -1,157 +1,171 @@
-
 /**
  * RAG State Machine - XState Implementation
  * Manages complex RAG system states and transitions
  */
-import { createMachine, assign } from "xstate";
+import { createMachine, assign } from 'xstate';
+
+export interface RAGResult {
+  id: string;
+  score: number;
+  source: string;
+  content: string;
+  metadata?: Record<string, any>;
 }
+
 export interface RAGContext {
   query: string;
-  results: any[];
+  results: RAGResult[];
+
   error: string | null;
   retryCount: number;
   searchStartTime: number;
-  cacheStatus: "miss" | "hit" | "partial";
-  optimizationLevel: "basic" | "enhanced" | "neural";
+  cacheStatus: 'miss' | 'hit' | 'partial';
+  optimizationLevel: 'basic' | 'enhanced' | 'neural';
 }
 export type RAGEvent =
-  | { type: "SEARCH_START"; query: string }
-  | { type: "SEARCH_SUCCESS"; results: any[] }
-  | { type: "SEARCH_ERROR"; error: string }
-  | { type: "RETRY" }
-  | { type: "OPTIMIZE" }
-  | { type: "CACHE_HIT"; results: any[] }
-  | { type: "RESET" }
+  | { type: 'SEARCH_START'; query: string }
+  | { type: 'SEARCH_SUCCESS'; results: RAGResult[]; cacheStatus?: 'miss' | 'hit' | 'partial' } // Added cacheStatus to event
+  | { type: 'SEARCH_ERROR'; error: string }
+  | { type: 'RETRY' }
+  | { type: 'OPTIMIZE' }
+  | { type: 'CACHE_HIT'; results: RAGResult[] }
+  | { type: 'RESET' };
+
+const initialRAGContext: RAGContext = {
+  query: '',
+  results: [],
+  error: null,
+  retryCount: 0,
+  searchStartTime: 0,
+  cacheStatus: 'miss',
+  optimizationLevel: 'basic',
+};
+
+// Helper to determine the next optimization level in the upgrade path
+function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAGContext['optimizationLevel'] {
+  switch (current) {
+    case 'basic':
+      return 'enhanced';
+    case 'enhanced':
+      return 'neural';
+    default:
+      return 'neural';
+  }
+}
+
 export const ragStateMachine = createMachine({
-  id: "ragSystem",
-  initial: "idle",
-  context: {
-    query: "",
-    results: [],
-    error: null
-    retryCount: 0,
-    searchStartTime: 0,
-    cacheStatus: "miss",
-    optimizationLevel: "basic"
+  id: 'ragSystem',
+  types: {} as {
+    context: RAGContext;
+    events: RAGEvent;
   },
-  states: {
+  initial: 'idle',
+  context: initialRAGContext,
+  states: { // Correctly define the 'states' object
     idle: {
       on: {
         SEARCH_START: {
-          target: "searching",
+          target: 'searching',
           actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null
-          })
-        }
-      }
+            error: null,
+          }),
+        },
+      },
     },
     searching: {
       on: {
         SEARCH_SUCCESS: {
-          target: "success",
+          target: 'success',
           actions: assign({
             results: ({ event }) => event.results,
-            cacheStatus: "miss"
-          })
+            cacheStatus: ({ event }) => event.cacheStatus ?? 'miss', // Default to 'miss' if not provided
+          }),
         },
         SEARCH_ERROR: {
-          target: "error",
+          target: 'error',
           actions: assign({
-            error: ({ event }) => event.error
-          })
+            error: ({ event }) => event.error,
+          }),
         },
         CACHE_HIT: {
-          target: "success",
+          target: 'success',
           actions: assign({
             results: ({ event }) => event.results,
-            cacheStatus: "hit"
-          })
-        }
-      }
+            cacheStatus: 'hit',
+          }),
+        },
+      },
     },
     success: {
       on: {
         SEARCH_START: {
-          target: "searching",
+          target: 'searching',
           actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null
-          })
+            error: null,
+          }),
         },
         OPTIMIZE: {
-          target: "optimizing"
+          target: 'optimizing',
         },
         RESET: {
-          target: "idle",
-          actions: assign({
-            query: "",
-            results: [],
-            error: null
-            retryCount: 0
-          })
-        }
-      }
+          target: 'idle',
+          actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
+        },
+      },
     },
     error: {
       on: {
-        RETRY: {
-          target: "searching",
-          guard: ({ context }) => context.retryCount < 3,
-          actions: assign({
-            retryCount: ({ context }) => context.retryCount + 1,
-            error: null
-          })
+        RESET: {
+          target: 'idle',
+          actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
         },
-        SEARCH_START: {
-          target: "searching",
+        RETRY: {
+          target: 'searching',
+          cond: ({ context }) => context.retryCount < 3, // Correct context access for guard
+          actions: assign({
+            retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
+            error: null,
+          }),
+        },
+        SEARCH_START: { // Allow starting a new search from error state
+          target: 'searching',
           actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null
-          })
+            error: null,
+          }),
         },
-        RESET: {
-          target: "idle",
-          actions: assign({
-            query: "",
-            results: [],
-            error: null
-            retryCount: 0
-          })
-        }
-      }
+      },
     },
     optimizing: {
       after: {
         2000: {
-          target: "success",
+          target: 'success',
           actions: assign({
-            optimizationLevel: ({ context }) =>
-              context.optimizationLevel === "basic"
-                ? "enhanced"
-                : context.optimizationLevel === "enhanced"
-                  ? "neural"
-                  : "neural"
-          })
-        }
+            // Upgrade optimization level: basic -> enhanced -> neural
+            optimizationLevel: ({ context }) => getNextOptimizationLevel(context.optimizationLevel),
+          }),
+        },
       },
       on: {
         SEARCH_START: {
-          target: "searching",
+          target: 'searching',
           actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null
-          })
-        }
-      }
-    }
-  }
+            error: null,
+          }),
+        },
+      },
+    },
+  },
+});
 });

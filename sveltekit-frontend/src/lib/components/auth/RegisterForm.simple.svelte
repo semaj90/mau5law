@@ -10,8 +10,8 @@
   // Ensure we import the component constructors (named exports) from enhanced-bits.
   // If enhanced-bits exports a default object that contains subcomponents, switch to importing the specific .svelte files instead.
   // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
-  import Input from '$lib/components/ui/input.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import Label from '$lib/components/ui/label.svelte';
   import {
     Shield,

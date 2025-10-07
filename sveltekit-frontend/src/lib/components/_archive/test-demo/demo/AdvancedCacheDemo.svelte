@@ -372,7 +372,7 @@
 
 <style>
   /* Import advanced interactions first */
-  @import '../../../lib/styles/advanced-interactions.css';
+  @import '$lib/styles/advanced-interactions.css';
   .advanced-cache-demo {
     font-family: 'Inter', system-ui, sans-serif;
   }

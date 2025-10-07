@@ -1,37 +1,46 @@
 /*
   Consolidated Drizzle DB client and helper exports.
-  This file provides a single `db` export and common helpers/aliases
-  to prevent duplicate export errors during builds.
-  It prefers `DATABASE_URL` env var. If not present, `db` will be null
-  and routes that depend on DB should guard accordingly.
+  Creates a single `db` export using postgres + drizzle and re-exports
+  common helpers and schema exports for downstream modules.
 */
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { sql } from 'drizzle-orm';
-import { eq, and, or, ilike, like, desc, asc, count } from 'drizzle-orm';
-// Re-export commonly used pg-core helpers for schema files that import from $lib/server/db
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { sql } from 'drizzle-orm/sql';
+import { eq, and, or, ilike, like } from 'drizzle-orm/sql/expressions/conditions';
+import { count } from 'drizzle-orm/sql/functions/aggregate';
+
+// Provide local ordering helpers
+const desc = (col: any) => sql`${col} desc`;
+const asc = (col: any) => sql`${col} asc`;
+
+// Re-export commonly used pg-core helpers for schema files
 export { pgTable, serial, text, integer, timestamp, boolean, json, index } from 'drizzle-orm/pg-core';
-// Load schema pieces (many routes import tables directly from these)
-import * as pgSchema from './db/schema-postgres.js';
-import * as domainSchema from './schema.js';
-const CONNECTION = process.env.DATABASE_URL || '';
-let db: ReturnType<typeof drizzle> | null = null;
-if (CONNECTION) {
-  const pool = new Pool({ connectionString: CONNECTION });
-  // Combine schemas so Drizzle has knowledge of both sets
-  const combinedSchema = {
-    ...(pgSchema as Record<string, unknown>),
-    ...(domainSchema as Record<string, unknown>),
-  }
-  db = drizzle(pool, { schema: combinedSchema });
+
+// Central schema import (consumer files import tables from $lib/server/db or ./schema)
+import * as schema from './schema';
+
+// Ensure DATABASE_URL is present (fail fast in dev/CI to avoid confusing SSR errors)
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error('The DATABASE_URL environment variable is not set. Set it (e.g. via .env.development) before starting the app.');
 }
-export { db }
-// Re-export sql/helpers for convenience
-export { sql, eq, and, or, ilike, like, desc, asc, count }
-// Provide a helpers bag for consumers
+
+// Create the postgres client and Drizzle instance
+const client = postgres(connectionString, {
+  max: 5,
+  // Use undefined when not in production to match expected types (object | undefined)
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+});
+
+export const db = drizzle(client, { schema });
+export default db;
+export type DB = typeof db;
+
+// Re-export sql/helpers for convenience in other modules
+export { sql, eq, and, or, ilike, like, desc, asc, count };
+
+// Provide a helpers object for code that expects a bag of helpers
 export const helpers = { eq, and, or, ilike, like, desc, asc, count } as const;
-// Re-export commonly referenced tables to preserve existing import sites
-export { users, cases, evidence, legalDocuments, personsOfInterest } from './db/schema-postgres.js';
-export { legalDocuments as legal_documents } from './db/schema-postgres.js';
-export { legalDocuments as legal_documents_v2 } from './schema.js';
-export * as legacySchema from './schema.js';
+
+// Re-export all schema exports to preserve existing import sites
+export * from './schema';

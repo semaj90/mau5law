@@ -1,5 +1,5 @@
 // Enhanced database client for embeddings with pgvector
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { Pool } from "pg";
 import { embeddings, legalDocumentEmbeddings, searchQueries } from "./schema-embeddings";
 import { sql, eq, desc, asc } from "drizzle-orm";
@@ -15,13 +15,14 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
 });
-export // removed unused db assignment
+// Initialize drizzle db using postgres-js client
+const db = drizzle(pool);
+// removed unused db assignment
 // Utility functions for embedding operations
 export class EmbeddingsService {
   /**
    * Insert a new embedding with content
-   */;
-  static async insertEmbedding(data: NewEmbedding): Promise<Embedding> {
+   */ static async insertEmbedding(data: NewEmbedding): Promise<Embedding> {
     const [result] = await db.insert(embeddings).values(data).returning();
     return result;
   }
@@ -29,10 +30,10 @@ export class EmbeddingsService {
    * Search for similar embeddings using cosine similarity
    */
   static async searchSimilar(
-    queryEmbedding: number[]
+    queryEmbedding: number[],
     limit: number = 5,
-    threshold: number = 0.7;
-  ): Promise<Array<Embedding & { similarity: number }> {
+    threshold: number = 0.7
+  ): Promise<Array<Embedding & { similarity: number }>> {
     // Convert number array to proper format for pgvector
     const embeddingVector = `[${queryEmbedding.join(',')}]`;
     const results = await db.execute(
@@ -60,42 +61,33 @@ export class EmbeddingsService {
       source: row.source,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      similarity: parseFloat(row.similarity)
-    });
+      similarity: parseFloat(row.similarity),
+    }));
   }
   /**
    * Get recent embeddings for display
-   */;
-  static async getRecentEmbeddings(limit: number = 10): Promise<Embedding[]> {
-    return await db
-      .select()
-      .from(embeddings)
-      .orderBy(desc(embeddings.createdAt)
-      .limit(limit);
+   */ static async getRecentEmbeddings(limit: number = 10): Promise<Embedding[]> {
+    return await db.select().from(embeddings).orderBy(desc(embeddings.createdAt)).limit(limit);
   }
   /**
    * Log search query for analytics
-   */;
-  static async logSearchQuery(data: NewSearchQuery): Promise<void> {
+   */ static async logSearchQuery(data: NewSearchQuery): Promise<void> {
     await db.insert(searchQueries).values(data);
   }
   /**
    * Generate mock embedding (replace with actual Gemma embedding service)
-   */;
-  static generateMockEmbedding(dimensions: number = 512): number[] {
+   */ static generateMockEmbedding(dimensions: number = 512): number[] {
     return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
   }
   /**
    * Normalize embedding vector to unit length
-   */;
-  static normalizeEmbedding(embedding: number[]): number[] {
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+   */ static normalizeEmbedding(embedding: number[]): number[] {
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return embedding.map(val => val / magnitude);
   }
   /**
    * Health check for database connection
-   */;
-  static async healthCheck(): Promise<boolean> {
+   */ static async healthCheck(): Promise<boolean> {
     try {
       await db.execute(sql`SELECT 1`);
       return true;
@@ -106,4 +98,4 @@ export class EmbeddingsService {
   }
 }
 // Export the database instance for other uses
-export { db as embeddingsDb }
+export { db as embeddingsDb };

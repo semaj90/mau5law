@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
   interface Props {
     class?: string;
-    children?: import('svelte').Snippet;
   }
   import { Button, Dialog, Select, Input, Card } from './index';
   import type { SelectOption } from './index';
@@ -14,7 +13,7 @@
   let dialogOpen = $state(false);
   let evidenceDialogOpen = $state(false);
   let currentTab = $state('buttons');
-  let selectedEvidenceCard = $state<string | null>(null);
+  let selectedEvidenceCard = $state(null);
   let aiAnalysisLoading = $state(false);
   let evidenceUploadProgress = $state(0);
   // Mock data for demos
@@ -40,7 +39,7 @@
       type: 'document',
       priority: 'critical' as const,
       confidence: 'high' as const,
-      description: 'Modified terms regarding liability clauses';
+      description: 'Modified terms regarding liability clauses'
     },
     {
       id: '2',
@@ -48,7 +47,7 @@
       type: 'video',
       priority: 'high' as const,
       confidence: 'medium' as const,
-      description: 'Incident recording from 2024-01-15';
+      description: 'Incident recording from 2024-01-15'
     },
     {
       id: '3',
@@ -56,7 +55,7 @@
       type: 'document',
       priority: 'medium' as const,
       confidence: 'high' as const,
-      description: 'Technical analysis by Dr. Smith';
+      description: 'Technical analysis by Dr. Smith'
     }
   ];
   // Demo functions
@@ -86,7 +85,7 @@
       'px-4 py-2 text-sm font-medium border-b-2 transition-colors',
       {
         'border-nier-border-primary text-nier-text-primary bg-nier-bg-tertiary': currentTab === tab,
-        'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary': currentTab !== tab;
+        'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary': currentTab !== tab
       }
     );
   }
@@ -113,7 +112,7 @@
       {#each demoSections as section (section.id)}
         <button
           class={tabClasses(section.id)}
-          onclick={() => currentTab = section.id}
+          on:click={() => currentTab = section.id}
         >
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
@@ -273,15 +272,13 @@ Low Priority
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn" variant="yorha" legal onclick={() =>
-dialogOpen = true}>
+          <Button class="bits-btn" variant="yorha" legal on:click={() => dialogOpen = true}>
             Case Management
 </Button>
-          <Button class="bits-btn" variant="primary" legal onclick={() =>
-evidenceDialogOpen = true}>
+          <Button class="bits-btn" variant="primary" legal on:click={() => evidenceDialogOpen = true}>
             Evidence Upload
 </Button>
-          <Button class="bits-btn" variant="ghost" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="ghost" legal on:click={runAIAnalysis} loading={aiAnalysisLoading}>
 {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -290,122 +287,105 @@ evidenceDialogOpen = true}>
 </Button>
         </div>
         <!-- Case Management Dialog -->
-        <Dialog;
-          bind:open={dialogOpen}
-          size="lg"
-          legal
-          caseManagement
-        >
-          {#snippet content()}
-                            <div >
-              <div class="yorha-panel-header">
-                <h2 class="text-xl font-gothic text-nier-text-primary">Case Management System</h2>
-                <p class="text-nier-text-secondary mt-2">
-                  Comprehensive case tracking and evidence management for legal professionals.
-                </p>
+        <Dialog bind:open={dialogOpen} size="lg" legal caseManagement>
+          <div>
+            <div class="yorha-panel-header">
+              <h2 class="text-xl font-gothic text-nier-text-primary">Case Management System</h2>
+              <p class="text-nier-text-secondary mt-2">
+                Comprehensive case tracking and evidence management for legal professionals.
+              </p>
+            </div>
+            <div class="yorha-panel-content space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Select
+                  bind:value={selectedCaseType}
+                  options={caseTypes}
+                  placeholder="Select case type..."
+                  legal
+                  caseType
+                  label="Case Category"
+                />
+                <Input
+                  variant="legal"
+                  placeholder="Enter case title..."
+                  label="Case Title"
+                  required
+                  legal
+                />
               </div>
-              <div class="yorha-panel-content space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select;
-                    bind:value={selectedCaseType}
-                    options={caseTypes}
-                    placeholder="Select case type..."
-                    legal
-                    caseType
-                    label="Case Category"
-                  />
-                  <Input
-                    variant="legal"
-                    placeholder="Enter case title..."
-                    label="Case Title"
-                    required
-                    legal
-                  />
-                </div>
-                <div class="agent-nier-bits-card p-4">
-                  <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
-                  <ul class="space-y-2 text-sm text-nier-text-secondary">
-                    <li class="flex items-center gap-2">
-                      <div class="ai-status-indicator ai-status-online w-2 h-2"></div>
-                      Configure evidence collection strategy
-                    </li>
-                    <li class="flex items-center gap-2">
-                      <div class="ai-status-indicator ai-status-online w-2 h-2"></div>
-                      Set up automated document review
-                    </li>
-                    <li class="flex items-center gap-2">
-                      <div class="ai-status-indicator ai-status-processing w-2 h-2"></div>
-                      Schedule precedent research
-                    </li>
-                  </ul>
-                </div>
+              <div class="agent-nier-bits-card p-4">
+                <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
+                <ul class="space-y-2 text-sm text-nier-text-secondary">
+                  <li class="flex items-center gap-2">
+                    <div class="ai-status-indicator ai-status-online w-2 h-2"></div>
+                    Configure evidence collection strategy
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <div class="ai-status-indicator ai-status-online w-2 h-2"></div>
+                    Set up automated document review
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <div class="ai-status-indicator ai-status-processing w-2 h-2"></div>
+                    Schedule precedent research
+                  </li>
+                </ul>
               </div>
-              <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="ghost" onclick={() =>
-dialogOpen = false}>
-                  Cancel
+            </div>
+            <div class="bits-dialog-footer">
+              <Button class="bits-btn" variant="ghost" on:click={() => dialogOpen = false}>
+                Cancel
 </Button>
-                <Button class="bits-btn" variant="primary" legal>
+              <Button class="bits-btn" variant="primary" legal>
 Create Case
 </Button>
-              </div>
             </div>
-                          {/snippet}
+          </div>
         </Dialog>
         <!-- Evidence Upload Dialog -->
-        <Dialog;
-          bind:open={evidenceDialogOpen}
-          size="md"
-          legal
-          evidenceAnalysis
-        >
-          {#snippet content()}
-                            <div >
-              <div class="yorha-panel-header">
-                <h2 class="text-xl font-gothic text-nier-text-primary">Evidence Upload</h2>
-                <p class="text-nier-text-secondary mt-2">
-                  Upload and categorize evidence with AI-powered analysis.
-                </p>
-              </div>
-              <div class="yorha-panel-content space-y-4">
-                <Select
-                  options={evidenceCategories}
-                  placeholder="Select evidence category..."
-                  legal
-                  evidenceCategory
-                  label="Evidence Type"
-                />
-                {#if evidenceUploadProgress > 0}
-                  <div class="processing-bar">
-                    <div
-                      class="processing-indicator"
-                      style="width: {evidenceUploadProgress}%"
-                    ></div>
-                  </div>
-                  <p class="text-sm text-nier-text-secondary text-center">
-                    Processing evidence... {evidenceUploadProgress}%
-                  </p>
-                {:else}
-                  <div class="yorha-drop-zone p-8 text-center">
-                    <FileText class="w-12 h-12 mx-auto mb-4 text-nier-text-muted" />
-                    <p class="text-nier-text-secondary">
-                      Drop files here or click to browse
-                    </p>
-                  </div>
-                {/if}
-              </div>
-              <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="ghost" onclick={() =>
-evidenceDialogOpen = false}>
-                  Cancel
-</Button>
-                <Button class="bits-btn" variant="primary" legal onclick={uploadEvidence} disabled={evidenceUploadProgress >
-0}>
-                  Upload Evidence
-</Button>
-              </div>
+        <Dialog bind:open={evidenceDialogOpen} size="md" legal evidenceAnalysis>
+          <div>
+            <div class="yorha-panel-header">
+              <h2 class="text-xl font-gothic text-nier-text-primary">Evidence Upload</h2>
+              <p class="text-nier-text-secondary mt-2">
+                Upload and categorize evidence with AI-powered analysis.
+              </p>
             </div>
-                          {/snippet}
+            <div class="yorha-panel-content space-y-4">
+              <Select
+                options={evidenceCategories}
+                placeholder="Select evidence category..."
+                legal
+                evidenceCategory
+                label="Evidence Type"
+              />
+              {#if evidenceUploadProgress > 0}
+                <div class="processing-bar">
+                  <div
+                    class="processing-indicator"
+                    style="width: {evidenceUploadProgress}%"
+                  ></div>
+                </div>
+                <p class="text-sm text-nier-text-secondary text-center">
+                  Processing evidence... {evidenceUploadProgress}%
+                </p>
+              {:else}
+                <div class="yorha-drop-zone p-8 text-center">
+                  <FileText class="w-12 h-12 mx-auto mb-4 text-nier-text-muted" />
+                  <p class="text-nier-text-secondary">
+                    Drop files here or click to browse
+                  </p>
+                </div>
+              {/if}
+            </div>
+            <div class="bits-dialog-footer">
+              <Button class="bits-btn" variant="ghost" on:click={() => evidenceDialogOpen = false}>
+                Cancel
+</Button>
+              <Button class="bits-btn" variant="primary" legal on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+                Upload Evidence
+</Button>
+            </div>
+          </div>
         </Dialog>
       </div>
     {:else if currentTab === 'cards'}
@@ -418,10 +398,10 @@ evidenceDialogOpen = false}>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {#each mockEvidenceItems as item (item.id)}
             <div
-              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover: shadow-lg";
+              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg"
               class:ring-2={selectedEvidenceCard === item.id}
               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
-              onclick={() => selectEvidenceCard(item.id)}
+              on:click={() => selectEvidenceCard(item.id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
@@ -525,8 +505,8 @@ Generate Report
       transform: translateY(0);
     }
   }
-  /* Interactive demo enhancements */
-  :global($1) {
+  /* Hover/card elevation fix (replaced invalid :global($1)) */
+  :global(.yorha-nier-bits-card:hover) {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }

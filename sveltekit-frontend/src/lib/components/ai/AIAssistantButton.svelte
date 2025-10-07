@@ -24,8 +24,9 @@
     disabled = false,
     voiceEnabled = true,
     class: className = '',
-    onclick;
+    onclick
   }: Props = $props();
+
   // AI Assistant state
   let isActive = $state(false);
   let isListening = $state(false);
@@ -39,28 +40,28 @@
   // const trigger = tooltipBuilder?.elements.trigger
   // const tooltipContent = tooltipBuilder?.elements.content
   // const open = tooltipBuilder?.states.ope
-  // Dynamic classes
-  let buttonClasses = $derived(() => {
+  // Dynamic classes (computed reactively)
+  const buttonClasses = $derived(() => {
     const base = 'ai-assistant-btn transition-all duration-300 font-mono';
     const variants = {
       floating: 'fixed z-50 rounded-full shadow-2xl hover:shadow-yorha-accent/20 border-2',
       inline: 'relative rounded-lg shadow-md hover:shadow-lg border',
       compact: 'relative rounded-md shadow-sm hover:shadow-md border',
-      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4';
-    }
+      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4'
+    };
     const positions = {
       'bottom-right': 'bottom-6 right-6',
       'bottom-left': 'bottom-6 left-6',
       'top-right': 'top-6 right-6',
       'top-left': 'top-6 left-6'
-    }
+    };
     const statusColors = {
       idle: 'bg-yorha-bg-secondary border-yorha-border-primary text-yorha-text-primary',
       processing: 'bg-yorha-primary/10 border-yorha-primary text-yorha-primary animate-pulse',
       listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',
-      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold';
-    }
-  let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
+      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold'
+    };
+    let classes = `${base} ${variants[variant]} ${statusColors[aiStatus]}`;
     if (variant === 'floating') {
       classes += ` ${positions[position]}`;
     }
@@ -99,8 +100,8 @@
     const config = statusConfig[aiStatus];
     return {
       class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse' : ''}`,
-      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1);
-    }
+      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1)
+    };
   }
 </script>
 

@@ -5,7 +5,7 @@
  */
 
 import { Pool, type PoolClient } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { eq, sql, and, or, desc } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import * as schema from './db/schema-postgres.js';
@@ -20,7 +20,7 @@ interface JsonbDocument {
     accessCount: number;
     gpuProcessed: boolean;
     threadId?: string;
-  }
+  };
 }
 
 // Thread-safe connection pool configuration
@@ -32,12 +32,12 @@ const pool = new Pool({
   database: 'legal_ai_db',
   // Enhanced for concurrent operations
   max: 20, // Maximum connections;
-  min: 5,  // Minimum connections
+  min: 5, // Minimum connections
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
   // Enable thread-safe operations
   statement_timeout: 30000,
-  query_timeout: 30000
+  query_timeout: 30000,
 });
 
 export // removed unused db assignment
@@ -77,14 +77,14 @@ export class ThreadSafePostgres {
 
       const tryAcquire = () => {
         let lock = queryLocks.get(queryId);
-        
+
         if (!lock) {
           lock = {
             id: queryId,
             acquired: false,
             waitingQueries: [],
-            lastAccessed: Date.now()
-          }
+            lastAccessed: Date.now(),
+          };
           queryLocks.set(queryId, lock);
         }
 
@@ -92,7 +92,7 @@ export class ThreadSafePostgres {
           lock.acquired = true;
           lock.lastAccessed = Date.now();
           clearTimeout(timeout);
-          
+
           const release = () => {
             lock.acquired = false;
             const next = lock.waitingQueries.shift();
@@ -104,13 +104,13 @@ export class ThreadSafePostgres {
                 queryLocks.delete(queryId);
               }
             }
-          }
-          
+          };
+
           resolve(release);
         } else {
           lock.waitingQueries.push(tryAcquire);
         }
-      }
+      };
 
       tryAcquire();
     });
@@ -135,11 +135,7 @@ export class ThreadSafePostgres {
     try {
       // Store in cognitive cache first for performance
       if (options.cacheKey) {
-        await cognitiveCache.storeJsonbDocument(
-          options.cacheKey, 
-          document, 
-          options.metadata
-        );
+        await cognitiveCache.storeJsonbDocument(options.cacheKey, document, options.metadata);
       }
 
       // Thread-safe database operation
@@ -153,18 +149,14 @@ export class ThreadSafePostgres {
         const query = `
           INSERT INTO ${table} (id, content, metadata, created_at, updated_at)
           VALUES ($1, $2, $3, NOW(), NOW())
-          ON CONFLICT (id) 
-          DO UPDATE SET 
+          ON CONFLICT (id)
+          DO UPDATE SET
             content = EXCLUDED.content,
             metadata = EXCLUDED.metadata,
             updated_at = NOW()
         `;
 
-        await client.query(query, [
-          id,
-          JSON.stringify(document),
-          JSON.stringify(options.metadata || {})
-        ]);
+        await client.query(query, [id, JSON.stringify(document), JSON.stringify(options.metadata || {})]);
 
         await client.query('COMMIT');
         return true;
@@ -228,7 +220,7 @@ export class ThreadSafePostgres {
         if (jsonbQuery.path && jsonbQuery.value !== undefined) {
           const operator = jsonbQuery.operator || '@>';
           params.push(JSON.stringify(jsonbQuery.value));
-          
+
           if (operator === '@>') {
             conditions.push(`content @> $${params.length}`);
           } else if (operator === '@?') {
@@ -286,7 +278,7 @@ export class ThreadSafePostgres {
           await cognitiveCache.storeJsonbDocument(cacheKey, results, {
             queryType: 'jsonb_search',
             resultCount: results.length,
-            gpuProcessed: options.useGPU || false
+            gpuProcessed: options.useGPU || false,
           });
         }
 
@@ -317,9 +309,10 @@ export class ThreadSafePostgres {
       const serialized = results.map(r => JSON.stringify(r));
       const totalSize = serialized.reduce((sum, s) => sum + s.length, 0);
 
-      if (totalSize > 10240) { // Only use GPU for large datasets (10KB+)
+      if (totalSize > 10240) {
+        // Only use GPU for large datasets (10KB+)
         console.log(`🎯 GPU processing ${results.length} results for query ${queryId}`);
-        
+
         // Mark as GPU processed in cognitive cache
         const cacheDoc = await cognitiveCache.retrieveJsonbDocument(queryId);
         if (cacheDoc) {
@@ -345,13 +338,7 @@ export class ThreadSafePostgres {
       filterBy?: Record<string, any>;
     } = {}
   ): Promise<Array<any>> {
-    const {
-      table = 'document_chunks',
-      limit = 10,
-      threshold = 0.7,
-      includeMetadata = true,
-      filterBy = {}
-    } = options;
+    const { table = 'document_chunks', limit = 10, threshold = 0.7, includeMetadata = true, filterBy = {} } = options;
 
     const queryId = `vector_search_${table}_${embedding.slice(0, 3).join('_')}`;
     const release = await this.acquireQueryLock(queryId);
@@ -363,7 +350,7 @@ export class ThreadSafePostgres {
       try {
         const params: any[] = [JSON.stringify(embedding), threshold, limit];
         let query = `
-          SELECT 
+          SELECT
             id,
             1 - (embedding <=> $1::vector) as similarity
             ${includeMetadata ? ', content, metadata' : ''}
@@ -376,7 +363,7 @@ export class ThreadSafePostgres {
         for (const [key, value] of Object.entries(filterBy)) {
           paramIndex++;
           params.push(JSON.stringify(value));
-          
+
           if (key.startsWith('metadata.')) {
             query += ` AND metadata @> $${paramIndex}`;
           } else {
@@ -442,7 +429,7 @@ export class ThreadSafePostgres {
 
             case 'update':
               query = `
-                UPDATE ${op.table} 
+                UPDATE ${op.table}
                 SET content = $2, updated_at = NOW()
                 WHERE id = $1
               `;
@@ -491,10 +478,10 @@ export class ThreadSafePostgres {
   async healthCheck(): Promise<any> {
     try {
       const client = await pool.connect();
-      
+
       try {
         const result = await client.query('SELECT NOW() as timestamp');
-        
+
         return {
           connected: true,
           activeConnections: pool.totalCount,
@@ -502,9 +489,9 @@ export class ThreadSafePostgres {
           activeTransactions: activeTxs.size,
           performance: {
             avgQueryTime: 0, // Could be enhanced with metrics
-            totalQueries: 0
-          }
-        }
+            totalQueries: 0,
+          },
+        };
       } finally {
         client.release();
       }
@@ -516,9 +503,9 @@ export class ThreadSafePostgres {
         activeTransactions: activeTxs.size,
         performance: {
           avgQueryTime: 0,
-          totalQueries: 0
-        }
-      }
+          totalQueries: 0,
+        },
+      };
     }
   }
 
@@ -627,8 +614,8 @@ export async function searchLegalDocuments(
     includeEmbeddings?: boolean;
   } = {}
 ): Promise<any[]> {
-  const conditions: Record<string, any> = {}
-  
+  const conditions: Record<string, any> = {};
+
   if (params.caseId) conditions.case_id = params.caseId;
   if (params.jurisdiction) conditions.jurisdiction = params.jurisdiction;
   if (params.court) conditions.court = params.court;
@@ -639,25 +626,22 @@ export async function searchLegalDocuments(
     path: 'topics',
     operator: '@>' as const,
     value: params.practiceArea ? [params.practiceArea] : undefined,
-    conditions
-  }
+    conditions,
+  };
 
-  return await safeJsonbQuery(
-    'legal_documents',
-    jsonbQuery,
-    {
-      limit: options.limit || 50,
-      orderBy: 'relevance',
-      useGPU: options.useGPU,
-      cacheResults: true
-    }
-  );
+  return await safeJsonbQuery('legal_documents', jsonbQuery, {
+    limit: options.limit || 50,
+    orderBy: 'relevance',
+    useGPU: options.useGPU,
+    cacheResults: true,
+  });
 }
 
 /**
  * Store legal document with thread-safe JSONB operations
  */
-export async function storeLegalDocument(_document: any,
+export async function storeLegalDocument(
+  _document: any,
   options: {
     generateEmbedding?: boolean;
     gpuAccelerated?: boolean;
@@ -665,20 +649,15 @@ export async function storeLegalDocument(_document: any,
   } = {}
 ): Promise<boolean> {
   const cacheKey = `legal_doc_${document.id}`;
-  
-  return await safeJsonbStore(
-    'legal_documents',
-    document.id,
-    document,
-    {
-      cacheKey: options.cacheForSearch ? cacheKey : undefined,
-      gpuAccelerated: options.gpuAccelerated,
-      metadata: {
-        documentType: 'legal',
-        indexed: true,
-        searchable: true,
-        hasEmbedding: options.generateEmbedding || false
-      }
-    }
-  );
+
+  return await safeJsonbStore('legal_documents', document.id, document, {
+    cacheKey: options.cacheForSearch ? cacheKey : undefined,
+    gpuAccelerated: options.gpuAccelerated,
+    metadata: {
+      documentType: 'legal',
+      indexed: true,
+      searchable: true,
+      hasEmbedding: options.generateEmbedding || false,
+    },
+  });
 }

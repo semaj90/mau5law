@@ -1,11 +1,11 @@
 // @ts-nocheck
 import { building } from '$app/environment';
 import * as schema from '$lib/server/db/schema-postgres';
-import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Pool } from 'pg';
-let _db: NodePgDatabase<typeof schema> | null = null;
+let _db: PostgresJsDatabase<typeof schema> | null = null;
 let _pool: Pool | null = null;
-function initializeDatabase(): NodePgDatabase<typeof schema> | null {
+function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   if (building) {
     console.log('Skipping database initialization during build');
     return null;
@@ -20,7 +20,7 @@ function initializeDatabase(): NodePgDatabase<typeof schema> | null {
   console.log('✅ PostgreSQL database connected successfully');
   return _db;
 }
-export const db: NodePgDatabase<typeof schema> = new Proxy({} as any, {
+export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
     if (!database) {

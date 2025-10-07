@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const assetPredictions = mockDataGenerators.generateMockAssetPredictions(count)
         return json({
           action: 'neural_assets',
-          assets: assetPredictions
+          assets: assetPredictions,
           count: assetPredictions.length,
           aggregateMetrics: {
             avgConfidence:
@@ -57,11 +57,11 @@ export const GET: RequestHandler = async ({ url }) => {
           predictiveScore: Math.random(),
           lastAccessed: new Date(Date.now() - Math.random() * 86400000).toISOString(),
           hitCount: Math.floor(Math.random() * 1000),
-          mockData: true
+          mockData: true,
         })
         return json({
           action: 'bitmap_sprites',
-          sprites: bitmapSprites
+          sprites: bitmapSprites,
           count: bitmapSprites.length,
           cacheStats: {
             totalHits: bitmapSprites.reduce((sum, s) => sum + s.hitCount, 0),

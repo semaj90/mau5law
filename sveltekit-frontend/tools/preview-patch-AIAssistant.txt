@@ -1,0 +1,44 @@
+Preview patch for AIAssistant companion move (preview only)
+
+*** Move ***
+- Delete: src/lib/components/AIAssistant.svelte.ts
++ Add:    src/lib/helpers/headless/AIAssistant.svelte.ts
++ Add:    src/lib/components/AIAssistant.svelte.ts (shim)
+
+--- src/lib/helpers/headless/AIAssistant.svelte.ts (new file)
+import { writable } from "svelte/store";
+export class AIAssistant {
+  private isLoading = writable(false);
+  private response = writable("");
+  async queryOllama(prompt: string) {
+    this.isLoading.set(true);
+    try {
+      const response = await fetch("http://localhost:11434/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gemma3-legal:latest",
+          prompt,
+          stream: false
+        })
+      });
+      const data = await response.json();
+      this.response.set(data.response);
+    } catch (error: any) {
+      this.response.set("Error connecting to AI");
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+  getStores() {
+    return { isLoading: this.isLoading, response: this.response }
+  }
+}
+
+--- src/lib/components/AIAssistant.svelte.ts (shim)
+export * from '$lib/helpers/headless/AIAssistant.svelte.ts';
+
+Notes:
+- The shim re-exports preserve existing import paths.
+- This preview does not alter any .svelte files.
+- If you approve, I can apply this move for a small set of files first.

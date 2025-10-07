@@ -2,14 +2,17 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
+  // Avoid hard dependency on bits-ui in this demo — use native <button> fallback.
+  // If the library requires importing the Svelte file directly, use:
+  // import Button from 'bits-ui/components/Button.svelte';
+  import { commonMCPQueries } from '$lib/utils/mcp-helpers';
   import {
     copilotOrchestrator,
     generateMCPPrompt,
-    commonMCPQueries,
     formatMCPResponse,
     type OrchestrationOptions,
     type AgentResult
-  } from '$lib/utils/mcp-helpers';
+  } from '$lib/utils/mcp-helpers'; // Named imports
 
   // Types
   type AgentStatus = {
@@ -152,9 +155,11 @@
       };
       const results = await copilotOrchestrator(currentPrompt, orchestrationOptions);
 
-      // Update agent results store
+      // Update agent results store (defensive: ensure agentResults is iterable)
       if (results?.agentResults) {
-        agentResults.update((prev) => [...prev, ...results.agentResults]);
+        const incoming =
+          Array.isArray(results.agentResults) ? results.agentResults : [results.agentResults];
+        agentResults.update((prev) => [...prev, ...incoming]);
       }
 
       // Phase 4: Self-Prompting Generation
@@ -352,6 +357,30 @@
     }
   }
 
+  // Helper: compute classes for agent status dot
+  function statusDotClass(status: string) {
+    const base = 'w-3 h-3 rounded-full';
+    if (status === 'processing') return `${base} bg-blue-500 animate-pulse`;
+    if (status === 'completed') return `${base} bg-green-500`;
+    if (status === 'error') return `${base} bg-red-500`;
+    return `${base} bg-gray-400`;
+  }
+
+  // Helper: compute classes for orchestration log entry container
+  function logEntryClasses(phase: string) {
+    if (phase === 'error') return 'border-l-4 pl-4 py-2 border-red-500 bg-red-50';
+    if (phase === 'final-report') return 'border-l-4 pl-4 py-2 border-green-500 bg-green-50';
+    if (phase === 'self-prompting') return 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50';
+    return 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50';
+  }
+
+  // Helper: compute badge class for agent communications
+  function commBadgeClass(type: string) {
+    if (type === 'prompt') return 'text-sm px-2 py-1 rounded text-white bg-blue-500';
+    if (type === 'result') return 'text-sm px-2 py-1 rounded text-white bg-green-500';
+    return 'text-sm px-2 py-1 rounded text-white bg-purple-500';
+  }
+
   // Utility functions (fixed)
   function addLogEntry(phase: string, agent: string, prompt: string, result: any) {
     orchestrationLog.update((prev) => [
@@ -491,7 +520,7 @@
       </div>
       <div class="flex gap-3 mt-6">
         <button
-          onclick={executeWorkflow}
+          on:click={executeWorkflow}
           disabled={$isRunning}
           class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -505,12 +534,12 @@
           {/if}
         </button>
         {#if $isRunning}
-          <button onclick={stopWorkflow} class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+          <button on:click={stopWorkflow} class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
             Stop
           </button>
         {/if}
         <button
-          onclick={clearLogs}
+          on:click={clearLogs}
           disabled={$isRunning}
           class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
         >
@@ -525,137 +554,113 @@
         {#each Object.entries($agentStatus) as [agent, status]}
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div class="flex items-center gap-3">
-              <div
-                class="w-3 h-3 rounded-full {status.status === 'processing'
-                  ? 'bg-blue-500 animate-pulse'
-                  : status.status === 'completed'
-                    ? 'bg-green-500'
-                    : status.status === 'error'
-                      ? 'bg-red-500'
-                      : 'bg-gray-400'}"
-              ></div>
-              <div>
-                <div class="font-medium">{agent}</div>
-                <div class="text-sm text-gray-600">{status.currentTask}</div>
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="text-sm font-medium">{status.status}</div>
-              <div class="text-xs text-gray-500">{status.progress}%</div>
-            </div>
-          </div>
-        {/each}
-      </div>
-      <div class="mt-4 pt-4 border-t border-gray-200">
+              <div class={statusDotClass(status.status)}></div>
+               <div>
+                 <div class="font-medium">{agent}</div>
+                 <div class="text-sm text-gray-600">{status.currentTask}</div>
+               </div>
+             </div>
+             <div class="text-right">
+               <div class="text-sm font-medium">{status.status}</div>
+               <div class="text-xs text-gray-500">{status.progress}%</div>
+             </div>
+           </div>
+         {/each}
+       </div>
+       <div class="mt-4 pt-4 border-t border-gray-200">
+        <!-- Fallback native button to avoid external dependency in demo -->
         <button
-          onclick={demonstrateContext7Integration}
+          on:click={demonstrateContext7Integration}
           disabled={$isRunning}
           class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
         >
           Demo Context7 MCP Integration
         </button>
-      </div>
-    </div>
-  </div>
-  <!-- Real-time Orchestration Log -->
-  <div class="bg-white border border-gray-200 rounded-lg p-6">
-    <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
-    <div class="max-h-96 overflow-y-auto space-y-3">
-      {#each $orchestrationLog as entry}
-        <div
-          class="border-l-4 pl-4 py-2 {entry.phase === 'error'
-            ? 'border-red-500 bg-red-50'
-            : entry.phase === 'final-report'
-              ? 'border-green-500 bg-green-50'
-              : entry.phase === 'self-prompting'
-                ? 'border-purple-500 bg-purple-50'
-                : 'border-blue-500 bg-blue-50'}"
-        >
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-sm font-medium">
-              {entry.phase}
-              {entry.agent ? `(${entry.agent})` : ''}
-            </span>
-            <span class="text-xs text-gray-500">
-              {new Date(entry.timestamp).toLocaleTimeString()}
-            </span>
-          </div>
-          <div class="text-sm text-gray-700 mb-1">{entry.prompt}</div>
-          {#if entry.result && Object.keys(entry.result).length > 0}
-            <details class="text-xs">
-              <summary class="cursor-pointer text-blue-600 hover:text-blue-800">View Details</summary>
-              <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(
-                  entry.result,
-                  null,
-                  2,
-                )}</pre>
-            </details>
-          {/if}
-        </div>
-      {/each}
-      {#if $orchestrationLog.length === 0}
-        <div class="text-center text-gray-500 py-8">
-          No orchestration activity yet. Click "Execute Workflow" to begin.
-        </div>
-      {/if}
-    </div>
-  </div>
-  <!-- Agent Communication Visualization -->
-  {#if $agentCommunications.length > 0}
-    <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 class="text-lg font-semibold mb-4">Agent Communication Network</h3>
-      <div class="space-y-2">
-        {#each $agentCommunications as comm}
-          <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-            <div class="flex items-center gap-2">
-              <span class="font-medium text-blue-600">{comm.from}</span>
-              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-              <span class="font-medium text-green-600">{comm.to}</span>
-            </div>
-            <div class="flex-1">
-              <span
-                class="text-sm px-2 py-1 rounded text-white {comm.type === 'prompt'
-                  ? 'bg-blue-500'
-                  : comm.type === 'result'
-                    ? 'bg-green-500'
-                    : 'bg-purple-500'}">{comm.type}</span
-              >
-              <span class="ml-2 text-sm text-gray-600">{comm.message}</span>
-            </div>
-            <span class="text-xs text-gray-500">
-              {new Date(comm.timestamp).toLocaleTimeString()}
-            </span>
-          </div>
-        {/each}
-      </div>
-    </div>
-  {/if}
-  <!-- Workflow Results Summary -->
-  {#if $agentResults.length > 0}
-    <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 class="text-lg font-semibold mb-4">Agent Results Summary</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each $agentResults as result}
-          <div class="border border-gray-200 rounded-lg p-4">
-            <h4 class="font-medium text-gray-900 mb-2">
-              {(result as { selfPrompt?: any; agent?: any; result?: any }).agent}
-            </h4>
-            <div class="text-sm text-gray-600 mb-2">
-              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string'
-                ? (result as { selfPrompt?: any; agent?: any; result?: any }).result
-                : JSON.stringify(result).substring(0, 100) + '...'}
-            </div>
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-green-600">Completed</span>
-              <span class="text-gray-500">Agent Result</span>
-            </div>
-          </div>
-        {/each}
-      </div>
-    </div>
-  {/if}
+       </div>
+     </div>
+   </div>
+   <!-- Real-time Orchestration Log -->
+   <div class="bg-white border border-gray-200 rounded-lg p-6">
+     <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
+     <div class="max-h-96 overflow-y-auto space-y-3">
+       {#each $orchestrationLog as entry}
+        <div class={logEntryClasses(entry.phase)}>
+           <div class="flex items-center justify-between mb-1">
+             <span class="text-sm font-medium">
+               {entry.phase}
+               {entry.agent ? `(${entry.agent})` : ''}
+             </span>
+             <span class="text-xs text-gray-500">
+               {new Date(entry.timestamp).toLocaleTimeString()}
+             </span>
+           </div>
+           <div class="text-sm text-gray-700 mb-1">{entry.prompt}</div>
+           {#if entry.result && Object.keys(entry.result).length > 0}
+             <details class="text-xs">
+               <summary class="cursor-pointer text-blue-600 hover:text-blue-800">View Details</summary>
+              <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(entry.result, null, 2)}</pre>
+             </details>
+           {/if}
+         </div>
+       {/each}
+       {#if $orchestrationLog.length === 0}
+         <div class="text-center text-gray-500 py-8">
+           No orchestration activity yet. Click "Execute Workflow" to begin.
+         </div>
+       {/if}
+     </div>
+   </div>
+
+   <!-- Agent Communication Visualization -->
+   {#if $agentCommunications.length > 0}
+     <div class="bg-white border border-gray-200 rounded-lg p-6">
+       <h3 class="text-lg font-semibold mb-4">Agent Communication Network</h3>
+       <div class="space-y-2">
+         {#each $agentCommunications as comm}
+           <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+             <div class="flex items-center gap-2">
+               <span class="font-medium text-blue-600">{comm.from}</span>
+               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+               </svg>
+               <span class="font-medium text-green-600">{comm.to}</span>
+             </div>
+             <div class="flex-1">
+              <span class={commBadgeClass(comm.type)}>{comm.type}</span>
+               <span class="ml-2 text-sm text-gray-600">{comm.message}</span>
+             </div>
+             <span class="text-xs text-gray-500">
+               {new Date(comm.timestamp).toLocaleTimeString()}
+             </span>
+           </div>
+         {/each}
+       </div>
+     </div>
+   {/if}
+
+   <!-- Workflow Results Summary -->
+   {#if $agentResults.length > 0}
+     <div class="bg-white border border-gray-200 rounded-lg p-6">
+       <h3 class="text-lg font-semibold mb-4">Agent Results Summary</h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+         {#each $agentResults as result}
+           <div class="border border-gray-200 rounded-lg p-4">
+             <h4 class="font-medium text-gray-900 mb-2">
+              {result.agent ?? 'Agent'}
+             </h4>
+             <div class="text-sm text-gray-600 mb-2">
+              {typeof result.result === 'string' ? result.result : (JSON.stringify(result).substring(0, 100) + '...')}
+             </div>
+             <div class="flex items-center justify-between text-xs">
+               <span class="text-green-600">Completed</span>
+               <span class="text-gray-500">Agent Result</span>
+             </div>
+           </div>
+         {/each}
+       </div>
+     </div>
+   {/if}
+
   <!-- Usage Guide -->
   <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Demo Features & Usage</h3>
@@ -733,4 +738,5 @@
   }
 </style>
   }
+</style>
 

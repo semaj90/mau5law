@@ -21,39 +21,41 @@ interface SIMDGlyphRequest extends GlyphRequest {
   }
 }
 interface SIMDShaderData {
-  tiled_data: Float32Array
-  shader_code: string
-  compression_ratio: number
-  tile_map: Array<any>
+  tiled_data: Float32Array;
+  shader_code: string;
+  compression_ratio: number;
+  // typed tile map instead of Array<any>
+  tile_map: Tile[];
   performance_stats: {
-    tiling_time_ms: number
-    compression_time_ms: number
-    shader_generation_time_ms: number
-    total_optimization_time_ms: number
-  }
+    tiling_time_ms: number;
+    compression_time_ms: number;
+    shader_generation_time_ms: number;
+    total_optimization_time_ms: number;
+  };
 }
 interface SIMDEmbedResult {
-  glyph_url: string
-  simd_shader_data: SIMDShaderData | null
-  tensor_ids: string[]
-  generation_time_ms: number
-  cache_hits: number
-  enhanced_artifact_url?: string
+  glyph_url: string;
+  simd_shader_data: SIMDShaderData | null;
+  tensor_ids: string[];
+  generation_time_ms: number;
+  cache_hits: number;
+  enhanced_artifact_url?: string;
 }
 interface GlyphResult {
-  glyph_url: string
-  tensor_ids: string[]
-  generation_time_ms: number
-  cache_hits: number
+  glyph_url: string;
+  tensor_ids: string[];
+  generation_time_ms: number;
+  cache_hits: number;
+  // avoid `any[]` for predictive frames; use unknown[] to be explicit
   neural_sprite_results?: {
-    compression_ratio?: number
-    predictive_frames?: any[]
-  }
+    compression_ratio?: number;
+    predictive_frames?: unknown[];
+  };
 }
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    const startTime = Date.now()
+    const body = await request.json();
+    const startTime = Date.now();
     // Validate SIMD glyph request
     const simdGlyphRequest: SIMDGlyphRequest = {
       evidence_id: body.evidence_id,
@@ -69,32 +71,36 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_target: body.simd_config?.compression_target || 50,
         shader_format: body.simd_config?.shader_format || 'webgpu',
         adaptive_quality: body.simd_config?.adaptive_quality ?? true,
-        performance_tier: body.simd_config?.performance_tier || 'n64'
-      }
-    }
+        performance_tier: body.simd_config?.performance_tier || 'n64',
+      },
+    };
     // Validate required fields
     if (!simdGlyphRequest.evidence_id || !simdGlyphRequest.prompt) {
-      return json({
-        success: false,
-        error: 'evidence_id and prompt are required'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'evidence_id and prompt are required',
+        },
+        { status: 400 }
+      );
     }
     console.log(`🔧 Generating SIMD-optimized glyph for evidence ${simdGlyphRequest.evidence_id}:`, {
       prompt: simdGlyphRequest.prompt,
       style: simdGlyphRequest.style,
       dimensions: simdGlyphRequest.dimensions,
       simd_tiling: simdGlyphRequest.simd_config?.enable_tiling,
-      target_tier: simdGlyphRequest.simd_config?.performance_tier
-    })
+      target_tier: simdGlyphRequest.simd_config?.performance_tier,
+    });
     // Phase 1: Generate base glyph using existing diffusion service
-    let glyphResult: GlyphResult
+    let glyphResult: GlyphResult;
     try {
-      glyphResult = await glyphDiffusionService.generateGlyph(simdGlyphRequest)
+      // Service's declared type may not include `generateGlyph`; cast to any to allow runtime call.
+      glyphResult = await (glyphDiffusionService as any).generateGlyph(simdGlyphRequest);
       if (!glyphResult?.glyph_url) {
-        throw new Error('Base glyph generation failed - no URL returned')
+        throw new Error('Base glyph generation failed - no URL returned');
       }
     } catch (serviceError) {
-      console.warn('Glyph diffusion service unavailable, using mock result:', serviceError)
+      console.warn('Glyph diffusion service unavailable, using mock result:', serviceError);
       // Fallback mock result for development/testing
       glyphResult = {
         glyph_url: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==`,
@@ -103,27 +109,25 @@ export const POST: RequestHandler = async ({ request }) => {
         cache_hits: 0,
         neural_sprite_results: {
           compression_ratio: 2.0,
-          predictive_frames: []
-        }
-      }
+          predictive_frames: [],
+        },
+      };
     }
     // Phase 2: Convert glyph to SIMD-optimized format if tiling enabled
-    let simdShaderData: SIMDShaderData | null = null
+    let simdShaderData: SIMDShaderData | null = null;
     if (simdGlyphRequest.simd_config?.enable_tiling) {
-      const simdStartTime = Date.now()
+      const simdStartTime = Date.now();
       try {
-        // Fetch the generated glyph image for processing
-        const glyphResponse = await fetch(glyphResult.glyph_url)
-        const glyphBuffer = await glyphResponse.arrayBuffer()
+        // Fetch the generated glyph image for processing (robust for data: URIs too)
+        const glyphBuffer = await fetchArrayBuffer(glyphResult.glyph_url);
         // Convert image buffer to Float32Array for SIMD processing
-        const imageData = await convertImageToFloat32Array(
-          glyphBuffer,
-          simdGlyphRequest.dimensions
-        )
+        const imageData = await convertImageToFloat32Array(glyphBuffer, simdGlyphRequest.dimensions);
         // Apply SIMD GPU tiling with CHR-ROM style optimization
-        let tilingResult: TilingResult
+        let tilingResult: TilingResult;
         try {
-          tilingResult = await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
+          // Engine's TS signature in the codebase differs from runtime signature.
+          // Cast to any to avoid compile-time arg/return mismatches, then assert to our TilingResult.
+          tilingResult = (await (simdGPUTilingEngine as any).processEvidenceWithSIMDTiling(
             {
               evidence_id: simdGlyphRequest.evidence_id.toString(),
               data: imageData,
@@ -140,9 +144,9 @@ export const POST: RequestHandler = async ({ request }) => {
               enableGPUAcceleration: true,
               qualityTier: simdGlyphRequest.simd_config.performance_tier,
             }
-          );
+          )) as TilingResult;
         } catch (tilingError) {
-          console.warn('SIMD GPU tiling engine unavailable, using mock result:', tilingError)
+          console.warn('SIMD GPU tiling engine unavailable, using mock result:', tilingError);
           // Create mock tiling result for development
           const tileCount = Math.ceil(
             imageData.length / (simdGlyphRequest.simd_config.tile_size * simdGlyphRequest.simd_config.tile_size * 4)
@@ -169,8 +173,8 @@ export const POST: RequestHandler = async ({ request }) => {
           tilingResult,
           simdGlyphRequest.simd_config.shader_format,
           simdGlyphRequest.simd_config.performance_tier
-        )
-        const simdProcessingTime = Date.now() - simdStartTime
+        );
+        const simdProcessingTime = Date.now() - simdStartTime;
         simdShaderData = {
           tiled_data: tilingResult.compressedData,
           shader_code: shaderCode,
@@ -188,19 +192,21 @@ export const POST: RequestHandler = async ({ request }) => {
             total_optimization_time_ms: simdProcessingTime,
           },
         };
-        console.log(`🚀 SIMD optimization complete: ${imageData.length} -> ${tilingResult.compressedData.length} (${tilingResult.compressionStats.achievedRatio.toFixed(1)}:1 compression)`)
+        console.log(
+          `🚀 SIMD optimization complete: ${imageData.length} -> ${tilingResult.compressedData.length} (${tilingResult.compressionStats.achievedRatio.toFixed(1)}:1 compression)`
+        );
       } catch (simdError) {
-        console.warn('SIMD tiling failed, continuing with standard glyph:', simdError)
+        console.warn('SIMD tiling failed, continuing with standard glyph:', simdError);
         // Continue without SIMD optimization if it fails
       }
     }
     // Phase 3: Create enhanced portable artifact with SIMD metadata
-    let enhancedArtifactUrl = glyphResult.glyph_url
+    let enhancedArtifactUrl = glyphResult.glyph_url;
     if (simdShaderData && glyphResult.neural_sprite_results) {
       try {
-        console.log('🧬 Creating portable artifact with SIMD + Neural Sprite metadata...')
-        const glyphResponse = await fetch(glyphResult.glyph_url)
-        const glyphBuffer = await glyphResponse.arrayBuffer()
+        console.log('🧬 Creating portable artifact with SIMD + Neural Sprite metadata...');
+        // Use the same robust fetch helper for the glyph image
+        const glyphBuffer = await fetchArrayBuffer(glyphResult.glyph_url);
         // Enhanced legal AI metadata with SIMD optimization data
         const enhancedMetadata: LegalAIMetadata = {
           version: '2.1',
@@ -308,16 +314,16 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             neural_sprite_data: enhancedMetadata.neural_sprite_data,
             simd_optimization_data: enhancedMetadata.simd_optimization_data,
-            processing_chain: enhancedMetadata.processing_chain
+            processing_chain: enhancedMetadata.processing_chain,
           }
-        )
-        enhancedArtifactUrl = `data:image/png;base64,${Buffer.from(enhancedPNGBuffer).toString('base64')}`
-        console.log(`🎨 Enhanced SIMD PNG created: ${glyphBuffer.byteLength} -> ${enhancedPNGBuffer.byteLength} bytes`)
+        );
+        enhancedArtifactUrl = `data:image/png;base64,${Buffer.from(enhancedPNGBuffer).toString('base64')}`;
+        console.log(`🎨 Enhanced SIMD PNG created: ${glyphBuffer.byteLength} -> ${enhancedPNGBuffer.byteLength} bytes`);
       } catch (embeddingError) {
-        console.warn('Enhanced PNG metadata embedding failed:', embeddingError)
+        console.warn('Enhanced PNG metadata embedding failed:', embeddingError);
       }
     }
-    const totalTime = Date.now() - startTime
+    const totalTime = Date.now() - startTime;
     const result: SIMDEmbedResult = {
       glyph_url: glyphResult.glyph_url,
       simd_shader_data: simdShaderData,
@@ -326,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
       cache_hits: glyphResult.cache_hits,
       enhanced_artifact_url: enhancedArtifactUrl,
     };
-    console.log(`✅ SIMD glyph generation complete in ${totalTime}ms`)
+    console.log(`✅ SIMD glyph generation complete in ${totalTime}ms`);
     return json({
       success: true,
       data: result,
@@ -343,13 +349,16 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (error) {
-    console.error('SIMD glyph generation error:', error)
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'SIMD glyph generation failed'
-    }, { status: 500 })
+    console.error('SIMD glyph generation error:', error);
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'SIMD glyph generation failed',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // Helper function to convert image buffer to Float32Array for SIMD processing using Sharp
 async function convertImageToFloat32Array(
   imageBuffer: ArrayBuffer,
@@ -422,17 +431,53 @@ async function convertImageToFloat32Array(
     }
   }
 }
+
+// Helper: reliably obtain ArrayBuffer from either data: URI or remote URL
+async function fetchArrayBuffer(url: string): Promise<ArrayBuffer> {
+  // Handle base64 data URIs directly to avoid relying on runtime fetch support for data: URLs
+  if (typeof url === 'string' && url.startsWith('data:')) {
+    const commaIndex = url.indexOf(',');
+    const meta = url.substring(5, commaIndex); // after 'data:'
+    const isBase64 = meta.endsWith(';base64');
+    const dataPart = url.substring(commaIndex + 1);
+    if (isBase64) {
+      const buf = Buffer.from(dataPart, 'base64');
+      // Return a copy as ArrayBuffer
+      return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+    } else {
+      // percent-decoded text data
+      const text = decodeURIComponent(dataPart);
+      const encoder = new TextEncoder();
+      return encoder.encode(text).buffer;
+    }
+  }
+  // Fallback: normal fetch for http(s)
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Failed to fetch ${url}: ${resp.status}`);
+  return await resp.arrayBuffer();
+}
+
+// Add a concrete Tile type and update TilingResult to use it
+type Tile = {
+  patternId: string;
+  frequency: number;
+  compressedSize: number;
+  // other optional fields if present in implementations
+  [k: string]: unknown;
+};
+
 // Type for tiling result to fix TypeScript errors
 interface TilingResult {
-  compressedData: Float32Array
+  compressedData: Float32Array;
   compressionStats: {
-    achievedRatio: number
-    processingTime: number
-  }
-  tileMap: Array<any>
-  processingTime: number
-  tileSize: number
+    achievedRatio: number;
+    processingTime: number;
+  };
+  tileMap: Tile[]; // <- typed instead of Array<any>
+  processingTime: number;
+  tileSize: number;
 }
+
 // Generate shader code from SIMD tiling results
 function generateShaderFromTiles(
   tilingResult: TilingResult,
@@ -477,7 +522,7 @@ void main() {
 @keyframes simdGlyphRender {
   ${tilingResult.tileMap
     .map(
-      (tile: any, i: number) => `
+      (tile: Tile, i: number) => `
   ${((i / tileCount) * 100).toFixed(1)}% {
     filter: hue-rotate(${tile.frequency * 360}deg)
             brightness(${tier === 'nes' ? '0.8' : tier === 'snes' ? '0.9' : '1.0'})
@@ -493,7 +538,7 @@ void main() {
   <pattern id="simdTilePattern" patternUnits="userSpaceOnUse" width="${tilingResult.tileSize}" height="${tilingResult.tileSize}">
     ${tilingResult.tileMap
       .map(
-        (tile: any, i: number) => `
+        (tile: Tile, i: number) => `
     <rect x="${(i % Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
           y="${Math.floor(i / Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
           width="${tilingResult.tileSize}"

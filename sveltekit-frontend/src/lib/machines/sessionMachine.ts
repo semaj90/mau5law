@@ -131,8 +131,10 @@ export const sessionMachine = createMachine({
       initial: 'active',
       entry: ['logSessionStart'],
       on: {
-        LOGOUT: 'logging_out',
-        SESSION_EXPIRED: 'expired',
+        // Target top-level sibling states using absolute machine id to avoid
+        // resolving them as children of `authenticated` (which caused runtime errors).
+        LOGOUT: '#sessionManager.logging_out',
+        SESSION_EXPIRED: '#sessionManager.expired',
         SECURITY_CHECK: '.security_validation',
         HEALTH_CHECK: '.health_checking',
       },
@@ -289,7 +291,8 @@ export const sessionMachine = createMachine({
         security_compromised: {
           entry: ['alertSecurityBreach'],
           after: {
-            5000: 'logging_out',
+            // After a delay, move to the top-level logging_out state
+            5000: '#sessionManager.logging_out',
           },
         },
         health_checking: {
