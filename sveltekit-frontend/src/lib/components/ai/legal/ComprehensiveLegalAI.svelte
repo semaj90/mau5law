@@ -32,7 +32,7 @@
   let workerPool: any = null;
   let simdCache: any = null;
   // Add: declare the dynamic component reference so TS + Svelte know about it
-  let EnhancedUploadProgress: any = null;
+  let EnhancedUploadProgress = $state<any>(null);
   // Performance metrics
   let performanceMetrics = $state({
     totalProcessingTime: 0,

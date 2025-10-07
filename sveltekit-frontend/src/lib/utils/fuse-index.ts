@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js';
 export function createFuseIndex<T extends { [key: string]: any }(items: T[], keys: (keyof T | string)[]) {
   const fuse = new Fuse(items, {
-    includeScore: true
+    includeScore: true,
     threshold: 0.35,
     keys: keys as any
   });

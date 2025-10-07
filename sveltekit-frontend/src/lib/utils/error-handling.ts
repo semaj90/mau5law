@@ -1,11 +1,10 @@
-
 /**
  * Error handling utilities for Svelte 5 components
  */
 export class ComponentError extends Error {
   constructor(
-    message: string
-    public readonly component: string
+    message: string,
+    public readonly component: string,
     public readonly context?: Record<string, unknown>
   ) {
     super(message);
@@ -14,8 +13,8 @@ export class ComponentError extends Error {
 }
 export class ApiError extends Error {
   constructor(
-    message: string
-    public readonly status: number
+    message: string,
+    public readonly status: number,
     public readonly endpoint: string
   ) {
     super(message);
@@ -24,8 +23,8 @@ export class ApiError extends Error {
 }
 export class ValidationError extends Error {
   constructor(
-    message: string
-    public readonly field: string
+    message: string,
+    public readonly field: string,
     public readonly value: unknown
   ) {
     super(message);
@@ -34,38 +33,35 @@ export class ValidationError extends Error {
 }
 // Safe fetch wrapper with error handling
 export async function safeFetch<T = unknown>(
-  url: string
+  url: string,
   options?: RequestInit
 ): Promise<{ data?: T; error?: string; success: boolean }> {
   try {
-    // removed unused response assignment
+    const response = await fetch(url, options);
     if (!response.ok) {
       throw new ApiError(`HTTP error! status: ${response.status}`, response.status, url);
     }
-    const data = await response.json();
-    return { data, success: true }
+    const data = (await response.json()) as T;
+    return { data, success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('API call failed:', error);
-    return { error: errorMessage, success: false }
+    return { error: errorMessage, success: false };
   }
 }
 // Safe JSON parsing
-export function safeJsonParse<T = unknown>(
-  json: string
-  fallback?: T
-): { data?: T; error?: string; success: boolean } {
+export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?: T; error?: string; success: boolean } {
   try {
     const data = JSON.parse(json) as T;
-    return { data, success: true }
+    return { data, success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'JSON parsing failed';
     console.error('JSON parsing error:', error);
     return {
-      data: fallback
-      error: errorMessage;
-      success: false
-    }
+      data: fallback,
+      error: errorMessage,
+      success: false,
+    };
   }
 }
 // Error boundary hook for Svelte 5
@@ -81,22 +77,24 @@ export function createErrorBoundary() {
     errorMessage = '';
     hasError = false;
   }
-  function withErrorBoundary<T extends (...args: any[]) => any>(fn: T, context?: string): T {
-    return ((...args: Parameters<T>) => {
+  function withErrorBoundary<T extends (...args: readonly unknown[]) => unknown>(fn: T, context?: string): T {
+    const wrapper = (...args: Parameters<T>): ReturnType<T> => {
       try {
         const result = fn(...args);
-        if (result instanceof Promise) {
-          return result.catch((error) => {
-            captureError(error, context);
+        // detect Promise-like objects without using `any`
+        if (result && typeof (result as { then?: unknown }).then === 'function') {
+          return (result as Promise<unknown>).catch((error: unknown) => {
+            captureError(error instanceof Error ? error : new Error(String(error)), context);
             throw error;
-          });
+          }) as ReturnType<T>;
         }
-        return result;
-      } catch (error) {
+        return result as ReturnType<T>;
+      } catch (error: unknown) {
         captureError(error instanceof Error ? error : new Error(String(error)), context);
         throw error;
       }
-    }) as T;
+    };
+    return wrapper as T;
   }
   return {
     get errorMessage() {
@@ -108,11 +106,11 @@ export function createErrorBoundary() {
     captureError,
     clearError,
     withErrorBoundary,
-  }
+  };
 }
 // Validation helpers
-export function validateRequired<T>(_value: T, fieldName: string): T {
-  if (value === null || value === undefined || value === '') {
+export function validateRequired<T>(value: T, fieldName: string): T {
+  if (value === null || value === undefined || (typeof value === 'string' && value === '')) {
     throw new ValidationError(`${fieldName} is required`, fieldName, value);
   }
   return value;
@@ -124,22 +122,33 @@ export function validateEmail(email: string): string {
   }
   return email;
 }
-export function validateType<T>(_value: unknown, type: string, fieldName: string): T {
+export function validateType<T>(value: unknown, type: string, fieldName: string): T {
   if (typeof value !== type) {
     throw new ValidationError(`${fieldName} must be of type ${type}`, fieldName, value);
   }
   return value as T;
 }
 // Canvas error handling
+export function safeGetContext(canvas: HTMLCanvasElement, contextType: '2d'): CanvasRenderingContext2D;
+export function safeGetContext(canvas: HTMLCanvasElement, contextType: 'webgl'): WebGLRenderingContext;
+export function safeGetContext(canvas: HTMLCanvasElement, contextType: 'webgl2'): WebGL2RenderingContext;
 export function safeGetContext(
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
   contextType: '2d' | 'webgl' | 'webgl2'
 ): CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext {
+  // Call getContext without an any cast and narrow the returned union based on contextType
   const context = canvas.getContext(contextType);
   if (!context) {
     throw new ComponentError(`Could not get ${contextType} context`, 'Canvas', { contextType });
   }
-  return context;
+
+  if (contextType === '2d') {
+    return context as CanvasRenderingContext2D;
+  } else if (contextType === 'webgl') {
+    return context as WebGLRenderingContext;
+  } else {
+    return context as WebGL2RenderingContext;
+  }
 }
 // WebGL error checking
 export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingContext): void {
@@ -169,10 +178,7 @@ export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingConte
   }
 }
 // Async operation wrapper
-export async function withLoading<T>(
-  operation: () => Promise<T>,
-  loadingState: { value: boolean }
-): Promise<T> {
+export async function withLoading<T>(operation: () => Promise<T>, loadingState: { value: boolean }): Promise<T> {
   loadingState.value = true;
   try {
     return await operation();
@@ -195,7 +201,7 @@ export async function withRetry<T>(
       if (i === maxRetries) {
         throw lastError;
       }
-      await new Promise((resolve) => setTimeout(resolve, delay * Math.pow(2, i)));
+      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
     }
   }
   throw lastError!;

@@ -1,8 +1,7 @@
 /**
  * ONNX API Client
  * Provides a simple interface to test and interact with the Legal-BERT ONNX endpoints
- */;
-}
+ */
 export interface ONNXApiOptions {
   timeout?: number;
   retries?: number;
@@ -11,55 +10,61 @@ export interface ONNXApiOptions {
 export class ONNXApiClient {
   private baseUrl: string;
   private defaultOptions: ONNXApiOptions;
-  constructor(_options: ONNXApiOptions = {}) {
+
+  constructor(options: ONNXApiOptions = {}) {
     this.baseUrl = options.baseUrl || '';
     this.defaultOptions = {
       timeout: 30000,
       retries: 2,
-      ...options
-    }
+      ...options,
+    };
   }
+
   /**
    * Extract legal entities from text
-   */;
+   */
   async extractEntities(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/extract-entities', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options },
     });
   }
+
   /**
    * Classify legal document
-   */;
+   */
   async classifyDocument(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/classify-document', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options },
     });
   }
+
   /**
    * Generate embeddings for legal text
-   */;
+   */
   async generateEmbeddings(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/generate-embeddings', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options },
     });
   }
+
   /**
    * Process multiple tasks in batch
-   */;
+   */
   async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options },
     });
   }
+
   /**
    * Process multiple requests in parallel
-   */;
+   */
   async parallelProcess(requests: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
-    const promises = requests.map(async (req) => {
+    const promises = requests.map(async req => {
       switch (req.type) {
         case 'extract-entities':
           return this.extractEntities(req.payload.text, options);
@@ -75,57 +80,49 @@ export class ONNXApiClient {
     const results = await Promise.allSettled(promises);
     const totalTime = Date.now() - startTime;
     return {
-      success: true
+      success: true,
       results: results.map((r, i) => ({
-        requestId: requests[i].id,
+        requestId: requests[i]?.id ?? i,
         success: r.status === 'fulfilled',
-        result: r.status === 'fulfilled' ? r.value: null;
-        error: r.status === 'rejected' ? r.reason?.message : null
+        result: r.status === 'fulfilled' ? (r as PromiseFulfilledResult<any>).value : null,
+        error: r.status === 'rejected' ? (r as PromiseRejectedResult).reason : null,
       })),
       totalTime,
-      parallelExecution: true
-    }
+      parallelExecution: true,
+    };
   }
+
   /**
    * Test all ONNX endpoints with sample data
-   */;
+   */
   async runTests(): Promise<any> {
     const testData = {
-      contractText: "This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.",
-      courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",
-      legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes..."
-    }
-    const tests = [
-      {
-        name: 'Entity Extraction - Contract',
-        test: () => this.extractEntities(testData.contractText)
-      },
-      {
-        name: 'Entity Extraction - Court Decision',
-        test: () => this.extractEntities(testData.courtDecision)
-      },
-      {
-        name: 'Document Classification - Contract',
-        test: () => this.classifyDocument(testData.contractText)
-      },
-      {
-        name: 'Document Classification - Court Decision',
-        test: () => this.classifyDocument(testData.courtDecision)
-      },
-      {
-        name: 'Embeddings Generation - Legal Brief',
-        test: () => this.generateEmbeddings(testData.legalBrief)
-      },
+      contractText:
+        'This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.',
+      courtDecision:
+        'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.',
+      legalBrief:
+        'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...',
+    };
+
+    const tests: Array<{ name: string; test: () => Promise<any> }> = [
+      { name: 'Entity Extraction - Contract', test: () => this.extractEntities(testData.contractText) },
+      { name: 'Entity Extraction - Court Decision', test: () => this.extractEntities(testData.courtDecision) },
+      { name: 'Document Classification - Contract', test: () => this.classifyDocument(testData.contractText) },
+      { name: 'Document Classification - Court Decision', test: () => this.classifyDocument(testData.courtDecision) },
+      { name: 'Embeddings Generation - Legal Brief', test: () => this.generateEmbeddings(testData.legalBrief) },
       {
         name: 'Batch Processing',
-        test: () => this.batchProcess([
-          { id: 'task1', type: 'extract-entities', text: testData.contractText },
-          { id: 'task2', type: 'classify-document', text: testData.courtDecision },)
-          { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief }
-        ])
-      }
+        test: () =>
+          this.batchProcess([
+            { id: 'task1', type: 'extract-entities', text: testData.contractText },
+            { id: 'task2', type: 'classify-document', text: testData.courtDecision },
+            { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief },
+          ]),
+      },
     ];
-    const results = [];
+
+    const results: Array<any> = [];
     let successCount = 0;
     const startTime = Date.now();
     console.log('🧪 Running ONNX API tests...');
@@ -137,132 +134,130 @@ export class ONNXApiClient {
         const testTime = Date.now() - testStartTime;
         results.push({
           name: test.name,
-          success: true
+          success: true,
           result,
-          time: testTime
+          time: testTime,
         });
         successCount++;
         console.log(`✅ ${test.name} completed in ${testTime}ms`);
       } catch (error: any) {
         results.push({
           name: test.name,
-          success: false
-          error: error.message,
-          time: 0
+          success: false,
+          error: error?.message ?? String(error),
+          time: 0,
         });
-        console.error(`❌ ${test.name} failed:`, error.message);
+        console.error(`❌ ${test.name} failed:`, error?.message ?? error);
       }
     }
     const totalTime = Date.now() - startTime;
     const summary = {
       totalTests: tests.length,
-      successful: successCount;
+      successful: successCount,
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
-      averageTime: totalTime / tests.length
-    }
-    console.log(`📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`);
+      averageTime: totalTime / tests.length,
+    };
+    console.log(
+      `📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
+    );
     return {
       success: successCount === tests.length,
       results,
-      summary
-    }
+      summary,
+    };
   }
+
   /**
    * Performance benchmark
-   */;
+   */
   async benchmark(text: string, iterations: number = 10): Promise<any> {
     console.log(`⚡ Running performance benchmark with ${iterations} iterations...`);
     const benchmarks = {
-      entityExtraction: [],
-      classification: [],
-      embeddings: []
-    }
-    // Entity extraction benchmark
+      entityExtraction: [] as number[],
+      classification: [] as number[],
+      embeddings: [] as number[],
+    };
+
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.extractEntities(text);
       benchmarks.entityExtraction.push(Date.now() - start);
     }
-    // Classification benchmark
+
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.classifyDocument(text);
       benchmarks.classification.push(Date.now() - start);
     }
-    // Embeddings benchmark
+
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.generateEmbeddings(text);
       benchmarks.embeddings.push(Date.now() - start);
     }
-    const calculateStats = (times: number[]) => ({,
-      min: Math.min(...times),
-      max: Math.max(...times),
-      average: times.reduce((sum, time) => sum + time, 0) / times.length,
-      median: times.sort((a, b) => a - b)[Math.floor(times.length / 2)]
-    });
+
+    const calculateStats = (times: number[]) => {
+      if (!times.length) return { min: 0, max: 0, average: 0, median: 0 };
+      const sorted = [...times].sort((a, b) => a - b);
+      const sum = times.reduce((s, t) => s + t, 0);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      return {
+        min: Math.min(...times),
+        max: Math.max(...times),
+        average: sum / times.length,
+        median,
+      };
+    };
+
     return {
       iterations,
       textLength: text.length,
       entityExtraction: calculateStats(benchmarks.entityExtraction),
       classification: calculateStats(benchmarks.classification),
-      embeddings: calculateStats(benchmarks.embeddings)
-    }
+      embeddings: calculateStats(benchmarks.embeddings),
+    };
   }
+
   /**
    * Make HTTP request with retry logic
-   */;
+   */
   private async makeRequest(endpoint: string, body: any, retries: number = 0): Promise<any> {
     try {
+      const timeoutMs = this.defaultOptions.timeout ?? 30000;
+      // AbortSignal.timeout may not exist in some environments; guard it if needed
+      const signal =
+        typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout
+          ? (AbortSignal as any).timeout(timeoutMs)
+          : undefined;
+
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000)
+        ...(signal ? { signal } : {}),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       return await response.json();
     } catch (error: any) {
-      if (retries < (this.defaultOptions.retries || 0)) {
-        console.warn(`Request failed, retrying... (${retries + 1}/${this.defaultOptions.retries})`);
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)); // Exponential backoff
+      const maxRetries = this.defaultOptions.retries ?? 0;
+      if (retries < maxRetries) {
+        console.warn(`Request failed, retrying... (${retries + 1}/${maxRetries})`);
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)));
         return this.makeRequest(endpoint, body, retries + 1);
       }
       throw error;
     }
   }
 }
+
 // Export default instance
 export const onnxApiClient = new ONNXApiClient();
-// Example usage function
-export async function testONNXIntegration() {
-  try {
-    console.log('🚀 Testing ONNX Legal-BERT integration...');
-    const client = new ONNXApiClient();
-    const testResults = await client.runTests();
-    if (testResults.success) {
-      console.log('✅ All ONNX tests passed!');
-      // Run performance benchmark
-      const benchmark = await client.benchmark(
-        "This is a sample legal contract for performance testing purposes.",
-        5
-      );
-      console.log('📊 Performance Benchmark Results:');
-      console.log('Entity Extraction:', benchmark.entityExtraction);
-      console.log('Classification:', benchmark.classification);
-      console.log('Embeddings:', benchmark.embeddings);
-    } else {
-      console.error('❌ Some ONNX tests failed:', testResults.summary);
-    }
-    return testResults;
-  } catch (error) {
-    console.error('❌ ONNX integration test failed:', error);
-    throw error;
-  }
-}
+export default ONNXApiClient;

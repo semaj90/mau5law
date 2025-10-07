@@ -8,7 +8,7 @@ export interface ComponentMetadata {
   category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
   size: number; // Bundle size in bytes,
   dependencies: string[];
-  props: { [key: string]: any }
+  props: { [key: string]: any };
   lastModified: number;
   loadTime?: number;
   renderTime?: number;
@@ -288,7 +288,7 @@ class ComponentMetadataCache {
     const definition = this.COMPONENT_DEFINITIONS[componentName];
     if (!definition) return null;
     return {
-      name: componentName
+      name: componentName,
       category: definition.category || 'advanced',
       size: definition.size || 4096,
       dependencies: definition.dependencies || [],
@@ -296,7 +296,7 @@ class ComponentMetadataCache {
       lastModified: Date.now(),
       cacheable: definition.cacheable !== false,
       priority: definition.priority || 'normal',
-    }
+    };
   }
   private async loadCachedMetadata() {
     for (const componentName of Object.keys(this.COMPONENT_DEFINITIONS)) {

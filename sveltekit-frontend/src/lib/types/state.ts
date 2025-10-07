@@ -1,7 +1,6 @@
 // 🔧 Svelte 5 State Management Type Fixes
 // Fixes $state(), $derived(), and runes syntax errors
-import type {     Readable, Writable     } from 'svelte/store';
-// Import types
+import type { Readable, Writable } from 'svelte/store';
 import type {
   User,
   ChatSession,
@@ -15,22 +14,22 @@ import type {
   PerformanceMetrics,
   AIModel,
   SearchFilters,
-  SearchFacets
+  SearchFacets,
 } from '$lib/types';
+
 // =====================================================
 // SVELTE 5 RUNES TYPES
 // =====================================================
-// Fix for $state() rune
 declare global {
   function $state<T>(initial?: T): T;
   function $derived<T>(fn: () => T): T;
   function $effect(fn: () => void | (() => void)): void;
-  function $props<T = { [key: string]: any }(): T;
+  function $props<T = { [key: string]: any }>(): T;
 }
+
 // =====================================================
 // STATE STORE TYPES
 // =====================================================
-}
 export interface AppState {
   user: User | null;
   isAuthenticated: boolean;
@@ -73,10 +72,10 @@ export interface AIState {
   usage: TokenUsage;
   availability: ModelAvailability;
 }
+
 // =====================================================
 // COMPONENT STATE TYPES
 // =====================================================
-}
 export interface ComponentState {
   mounted: boolean;
   initialized: boolean;
@@ -85,7 +84,7 @@ export interface ComponentState {
   data: any;
 }
 export interface FormState {
-  values: { [key: string]: any }
+  values: { [key: string]: any };
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   isValid: boolean;
@@ -104,10 +103,10 @@ export interface ToastState {
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   maxToasts: number;
 }
+
 // =====================================================
 // STORE CREATOR UTILITIES
 // =====================================================
-}
 export interface StoreOptions<T> {
   initial: T;
   persist?: boolean;
@@ -120,32 +119,32 @@ export interface AsyncStoreOptions<T> extends StoreOptions<T> {
   refetchInterval?: number;
   staleTime?: number;
 }
+
 // =====================================================
 // XSTATE INTEGRATION TYPES
 // =====================================================
-}
 export interface MachineState {
   value: string;
   context: any;
-  matches: (_value: string) => boolean;
-  can: (_event: string) => boolean;
-  send: (_event: any) => void;
+  matches: (value: string) => boolean;
+  can: (event: string) => boolean;
+  send: (event: any) => void;
 }
 export interface MachineConfig {
   id: string;
   initial: string;
-  states: { [key: string]: any }
+  states: { [key: string]: any };
   context?: unknown;
-  on?: { [key: string]: any }
+  on?: { [key: string]: any };
 }
+
 // =====================================================
 // FORM INTEGRATION TYPES
 // =====================================================
-}
-export interface SuperFormsState<T = { [key: string]: any } {
+export interface SuperFormsState<T = { [key: string]: any }> {
   form: Writable<T>;
-  errors: Readable<Record<string, string[]>;
-  constraints: Readable<{ [key: string]: any }
+  errors: Readable<Record<string, string[]>>;
+  constraints: Readable<{ [key: string]: any }>;
   message: Writable<any>;
   submitting: Readable<boolean>;
   delayed: Readable<boolean>;
@@ -159,10 +158,10 @@ export interface ValidationConfig {
   pattern?: RegExp;
   custom?: (_value: any) => string | null;
 }
+
 // =====================================================
 // PERFORMANCE MONITORING TYPES
 // =====================================================
-}
 export interface PerformanceState {
   metrics: PerformanceMetrics;
   history: PerformanceEntry[];
@@ -184,10 +183,10 @@ export interface PerformanceThresholds {
   cpuUsage: number;
   errorRate: number;
 }
+
 // =====================================================
 // WEBSOCKET STATE TYPES
 // =====================================================
-}
 export interface WebSocketState {
   connected: boolean;
   connecting: boolean;
@@ -197,10 +196,10 @@ export interface WebSocketState {
   reconnectAttempts: number;
   maxReconnectAttempts: number;
 }
+
 // =====================================================
 // NAVIGATION STATE TYPES
 // =====================================================
-}
 export interface NavigationState {
   currentPath: string;
   previousPath: string;
@@ -214,39 +213,41 @@ export interface Breadcrumb {
   path: string;
   icon?: string;
 }
+
 // =====================================================
 // IMPORT TYPE FIXES
 // =====================================================
-// Fix common type errors
+// Fix common type errors / re-exports (adjust as needed for your codebase)
 export type { User } from './global.js';
-// Orphaned content: export type { ChatSession, ChatMessage
 export type { UploadedFile } from './global.js';
 export type { SearchResults } from './global.js';
 export type { AIResponse } from './global.js';
+
 // Fix Svelte component types
 export type SvelteComponent = import('svelte').SvelteComponent;
-// Simplified component helper types (avoid generic instantiation as SvelteComponent isn't generic here)
 export type ComponentProps<T extends SvelteComponent> = any;
 export type ComponentEvents<T extends SvelteComponent> = any;
+
 // Fix action types
 export type Action<T = HTMLElement, P = any> = (
-  node: T
-  parameters?: P;
+  node: T,
+  parameters?: P
 ) => {
   update?: (parameters: P) => void;
   destroy?: () => void;
-}
+};
+
 // =====================================================
 // HELPER TYPES
 // =====================================================
-export type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {}
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-}
-// Renamed to avoid clashing with built-in TypeScript NonNullable
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};
+export type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] };
+
+// keep NonNullish named type to avoid clashing with built-ins
 export type NonNullish<T> = T extends null | undefined ? never : T;
-export type NonNullable<T> = T extends null | undefined ? never : T;
+
+// if you need a renamed non-nullable helper (avoid overriding built-in)
+export type NonNullableCustom<T> = T extends null | undefined ? never : T;
+
 export type EventHandler<T = Event> = (_event: T) => void;
 export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;

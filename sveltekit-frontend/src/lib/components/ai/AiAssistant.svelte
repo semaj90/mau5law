@@ -72,9 +72,9 @@ https://svelte.dev/e/js_parse_error -->
     if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.searchRelatedEvidence({
       caseId,
-      query: evidenceText
+      query: evidenceText,
       userId: user.id,
-      limit: 10;
+      limit: 10
     });
   }
     // Save summary to DB using the comprehensive summaries API
@@ -84,14 +84,14 @@ https://svelte.dev/e/js_parse_error -->
         const response = await fetch('/api/summaries', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             type: 'case',
-            targetId: caseId;
+            targetId: caseId,
             depth: 'comprehensive',
-            includeRAG: true
-            includeUserActivity: false
-            enableStreaming: false
-            userId: user.id;
+            includeRAG: true,
+            includeUserActivity: false,
+            enableStreaming: false,
+            userId: user.id
           })
         });
         if (!response.ok) {
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 </script>
 
-<div class="nier-nier-bits-card p-6 nes-container">
+<div class="nier-card p-6 nes-container">
   <div class="nier-header mb-4">
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
@@ -306,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
   :global(.nier-evidence-item) {
     transition: all 0.2s ease;
   }
-  :global($1) {
+  :global(.nier-evidence-item:hover) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }

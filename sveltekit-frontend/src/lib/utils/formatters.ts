@@ -301,7 +301,7 @@ export function extractPreview(content: string, maxLength: number = 100): string
     .trim();
   return truncateText(preview, {
     maxLength,
-    wordBoundary: true
+    wordBoundary: true,
     preserveWords: true
   });
 }
@@ -335,8 +335,8 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   return chunks;
 }
 // Debounce function for search
-export function debounce<T extends (...args: any[]) => any>(,
-  func: T;
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,  
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
