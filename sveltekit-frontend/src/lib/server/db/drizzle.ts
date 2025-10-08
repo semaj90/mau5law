@@ -1,36 +1,27 @@
 // src/lib/server/db/drizzle.ts
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import * as schema from './schema-postgres';
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 
-// Connection string and env handling
-const connectionString = process.env.DATABASE_URL ?? 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
-const useMock = !process.env.DATABASE_URL || process.env.SKIP_DB === 'true' || process.env.NODE_ENV === 'test';
+// Re-export the `sql` helper for other modules (single export)
+export { sql } from 'drizzle-orm';
 
-// Build-time mock client for environments where a real DB is not available
-function createMockClient() {
-  const thrower = () => {
-    throw new Error('Database not available during build');
-  };
-  // Minimal shape compatible with postgres-js calls used in the codebase
-  return {
-    query: async () => thrower(),
-    begin: async () => thrower(),
-    end: async () => Promise.resolve(),
-  } as unknown as ReturnType<typeof postgres>;
-}
+const connectionString = process.env.DATABASE_URL ?? 'postgres://localhost:5432/deeds_dev';
 
-// Initialize runtime client or fallback to mock
-const client = useMock ? createMockClient() : postgres(connectionString, { max: 20 });
+// create a single pool for server runtime
+export const pool = new Pool({
+  connectionString,
+  // keep reasonable defaults; tune per environment
+  max: 10,
+  // optional: short idle timeout to avoid long-lived connections in dev
+  idleTimeoutMillis: 30000,
+});
 
-export const sqlClient = client;
-
-// Export a drizzle instance typed for PostgresJS adapter
-export const db: PostgresJsDatabase = drizzle(sqlClient as unknown as PostgresJsDatabase, {
-  schema,
+// Drizzle wrapper using node-postgres adapter
+export const db = drizzle(pool, {
   logger: false,
 });
 
-// Re-export sql helper
-export { sql } from 'drizzle-orm';
+// Optional helper to gracefully shutdown the pool (useful in tests/dev)
+export async function shutdownDb() {
+  await pool.end();
+}

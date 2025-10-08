@@ -18,7 +18,7 @@ type LocalClientLike = {
 };
 
 type LocalPoolLike = {
-  connect: () => Promise<LocalClientLike>;
+  connect?: () => Promise<LocalClientLike>;
   end?: () => Promise<void>;
   on?: (event: string, handler: (...args: unknown[]) => void) => void;
   totalCount?: number;
@@ -37,27 +37,35 @@ let postgresJsClient: unknown | null = null;
 let drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
 
 /**
+ * Resolve a pool candidate from available shims/clients
+ */
+function resolvePool(): LocalPoolLike | null {
+  if (poolShim) return poolShim as LocalPoolLike;
+  // Some shims attach a pool to the pgClient
+  if (pgClient && (pgClient as any).pool) return (pgClient as any).pool as LocalPoolLike;
+  return null;
+}
+
+/**
  * Initialize application database pool
  */
 export function getAppPool(): LocalPoolLike {
   if (!appPool) {
     const validation = validateDatabaseConfig();
     if (!validation.valid) {
-      throw new Error(`Invalid database configuration: ${validation.errors.join(', ')}`);
+      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown'}`);
     }
     const environment = (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development';
-    // Use the compatibility Pool shim which wraps postgres-js
-    appPool = poolShim as LocalPoolLike;
+    appPool = resolvePool();
+    if (!appPool) {
+      throw new Error('No database pool implementation available (poolShim and pgClient.pool missing).');
+    }
     // Attach basic handlers if available
     try {
       appPool.on?.('error', (err: Error) => console.error('Database pool error:', err));
-    } catch (e) {
-      console.warn('Failed to attach appPool error handler', e);
-    }
-    try {
       appPool.on?.('connect', () => console.log('✅ Database pool connection established'));
     } catch (e) {
-      console.warn('Failed to attach appPool connect handler', e);
+      console.warn('Failed to attach appPool handlers', e);
     }
     console.log(`🐘 Database pool initialized for ${environment} environment`);
   }
@@ -69,11 +77,15 @@ export function getAppPool(): LocalPoolLike {
  */
 export function getAdminPool(): LocalPoolLike {
   if (!adminPool) {
-    adminPool = poolShim as LocalPoolLike;
+    adminPool = resolvePool();
+    if (!adminPool) {
+      throw new Error('No admin database pool available (poolShim and pgClient.pool missing).');
+    }
     try {
       adminPool.on?.('error', (err: Error) => console.error('Admin database pool error:', err));
+      adminPool.on?.('connect', () => console.log('🔧 Admin database pool connection established'));
     } catch (e) {
-      console.warn('Failed to attach adminPool error handler', e);
+      console.warn('Failed to attach adminPool handlers', e);
     }
     console.log('🔧 Admin database pool initialized');
   }
@@ -86,6 +98,9 @@ export function getAdminPool(): LocalPoolLike {
 export function getPostgresJsClient(): unknown {
   if (!postgresJsClient) {
     // Use the shared postgres-js client provided by the shim
+    if (!pgClient) {
+      throw new Error('Postgres.js client not available from shim (pgClient is missing).');
+    }
     postgresJsClient = pgClient;
     console.log('🚀 Postgres.js client (from shim) initialized');
   }
@@ -99,10 +114,10 @@ export function getDrizzleDb(): PostgresJsDatabase<typeof schema> {
   if (!drizzleDb) {
     const client = getPostgresJsClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    drizzleDb = drizzle(client as any, { schema });
+    drizzleDb = drizzle(client as any, { schema: schema as any });
     console.log('🗄️ Drizzle database (postgres-js) initialized');
   }
-  return drizzleDb;
+  return drizzleDb!;
 }
 
 /**
@@ -110,12 +125,19 @@ export function getDrizzleDb(): PostgresJsDatabase<typeof schema> {
  */
 export async function executeQuery<T>(queryFn: (client: LocalClientLike) => Promise<T>, useAdmin = false): Promise<T> {
   const pool = useAdmin ? getAdminPool() : getAppPool();
+  if (!pool?.connect) {
+    throw new Error('Database pool does not support connect(); cannot execute query.');
+  }
   const conn = await pool.connect();
   try {
     const result = await queryFn(conn);
     return result;
   } finally {
-    if (conn && typeof conn.release === 'function') conn.release();
+    try {
+      if (conn && typeof conn.release === 'function') conn.release();
+    } catch (e) {
+      console.warn('Failed to release DB connection', e);
+    }
   }
 }
 
@@ -131,10 +153,13 @@ export async function testDatabaseConnection(): Promise<{
 }> {
   try {
     const pool = getAppPool();
+    if (!pool?.connect) {
+      return { success: false, error: 'App pool unavailable or missing connect()' };
+    }
     const conn = await pool.connect();
     try {
       const versionResult = await conn.query('SELECT version()');
-      const version = versionResult.rows?.[0]?.version;
+      const version = versionResult.rows?.[0]?.version as string | undefined;
       const tablesResult = await conn.query(`
         SELECT table_name
         FROM information_schema.tables
@@ -159,7 +184,11 @@ export async function testDatabaseConnection(): Promise<{
         extensions,
       };
     } finally {
-      if (conn && typeof conn.release === 'function') conn.release();
+      try {
+        if (conn && typeof conn.release === 'function') conn.release();
+      } catch (e) {
+        console.warn('Failed to release connection after test', e);
+      }
     }
   } catch (error) {
     console.error('Database connection test failed:', error);
@@ -212,7 +241,7 @@ export async function closeDatabaseConnections(): Promise<void> {
 /**
  * Health check for database connections
  */
-export async function getDatabaseHealth() {
+export async function getDatabaseHealth(): Promise<any> {
   const config = getDatabaseConfig();
   const validation = validateDatabaseConfig();
   if (!validation.valid) {
@@ -227,11 +256,11 @@ export async function getDatabaseHealth() {
     return {
       status: connectionTest.success ? 'healthy' : 'unhealthy',
       config: {
-        host: config.host,
-        port: config.port,
-        database: config.database,
-        user: config.user,
-        ssl: config.ssl,
+        host: (config as any).host,
+        port: (config as any).port,
+        database: (config as any).database,
+        user: (config as any).user,
+        ssl: (config as any).ssl,
       },
       connection: connectionTest,
       pools: {
@@ -240,17 +269,3 @@ export async function getDatabaseHealth() {
           idleCount: appPool?.idleCount || 0,
           waitingCount: appPool?.waitingCount || 0,
         },
-      },
-    };
-  } catch (error) {
-    return {
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
-      config: null,
-      connection: {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
-    };
-  }
-}
