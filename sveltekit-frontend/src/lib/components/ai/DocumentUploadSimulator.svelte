@@ -1,12 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token >;
-https://svelte.dev/e/expected_token -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   interface DocumentUpload {
     id: string;
     filename: string;
@@ -20,161 +15,244 @@ https://svelte.dev/e/expected_token -->
     localStorageKey?: string;
     error?: string;
   }
-  let uploads: DocumentUpload[] = $state([]);
-  let isDragging = $state(false);
-  let errorMessage = $state('');
-  let isLoading = $state(false);
-  let fileInput = $state<HTMLInputElementconst API_BASE  | null>(null); const data = 'http://localhost:8081/api')
+
+  // Replaced incorrect $state usage with plain reactive vars
+  let uploads: DocumentUpload[] = [];
+  let isDragging = false;
+  let errorMessage = '';
+  let isLoading = false;
+  let fileInput: HTMLInputElement | null = null;
+
+  const API_BASE = 'http://localhost:8081/api';
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
+
   async function simulateUpload(file: File): Promise<void> {
     const uploadId = crypto.randomUUID();
     const upload: DocumentUpload = {
-      id: uploadId
+      id: uploadId,
       filename: file.name,
       size: file.size,
-      type: file.type,
+      type: file.type || 'application/octet-stream',
       status: 'uploading',
-      progress: 0;
-    }
+      progress: 0,
+    };
     uploads = [...uploads, upload];
+
     try {
       // Phase 1: Upload simulation (fast)
       await updateProgress(uploadId, 'uploading', 25);
       await delay(500);
+
       // Phase 2: OCR Processing (if PDF)
       await updateProgress(uploadId, 'processing', 50);
       const extractedText = await extractTextFromFile(file);
       await updateUpload(uploadId, { extractedText });
       await delay(1000);
+
       // Phase 3: AI Summarization
       await updateProgress(uploadId, 'processing', 75);
-      const summary = await generateSummary(extractedText, file.type);
+      const summary = await generateSummary(extractedText || '', file.type);
       await updateUpload(uploadId, { summary });
       await delay(1500);
+
       // Phase 4: Generate Embeddings
       await updateProgress(uploadId, 'embedding', 90);
-      const embeddings = await generateEmbeddings(extractedText);
+      const embeddings = await generateEmbeddings(extractedText || '');
       await updateUpload(uploadId, { embeddings });
       await delay(1000);
+
       // Phase 5: Store in Local Storage (if under 10MB)
       const processedData = {
         filename: file.name,
         extractedText,
         summary,
         embeddings,
-        processedAt: new Date().toISOString();
+        processedAt: new Date().toISOString()
+      };
+
+      let localStorageKey: string | undefined = undefined;
+      if (file.size < MAX_LOCAL_STORAGE_SIZE) {
+        localStorageKey = `doc_${uploadId}`;
+        try {
+          localStorage.setItem(localStorageKey, JSON.stringify(processedData));
+        } catch (err) {
+          // ignore storage errors
+          console.warn('localStorage set failed', err);
+        }
       }
-  let localStorageKey = $state<string | undefinedif (file.size < MAX_LOCAL_STORAGE_SIZE) {
-        localStorageKey>(null)(`doc_${uploadId}`);
-        localStorage.setItem(localStorageKey, JSON.stringify(processedData));
-      }
+
       // Complete
       await updateProgress(uploadId, 'completed', 100);
       await updateUpload(uploadId, { localStorageKey });
-    } catch (error) {
-      console.error('Upload error:', error);
+    } catch (err) {
+      console.error('Upload error:', err);
+      const message = err instanceof Error ? err.message : 'Processing failed';
       await updateUpload(uploadId, {
         status: 'error',
-        error: error instanceof Error ? error.message: 'Processing failed'
-    errorMessage = error instanceof Error ? error.message : 'An error occurred'});
-    }
-  }
-  async function extractTextFromFile(file: File): Promise<string> {
-    if (file.type === 'application/pdf') {
-      // Simulate PDF OCR processing
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('enable_ocr', 'true');
-      formData.append('document_type', 'legal');
-      const response = await fetch(`${API_BASE}/upload`, {
-        method: 'POST',
-        body: formData
+        error: message
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`OCR processing failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-      }
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      return (result as { extracted_text?: any; summary?: any; embedding?: any }).extracted_text || 'PDF text extraction failed';
-    } else if (file.type === 'text/plain') {
-      return await file.text();
-    } else {
-      // For other file types, return placeholder
-      return `Content extracted from ${file.name}\n\nThis is simulated extracted text from the uploaded document. In production, this would contain the actual OCR-processed content from the file.`;
+      errorMessage = message;
     }
   }
+
+  async function extractTextFromFile(file: File): Promise<string> {
+    const name = file.name.toLowerCase();
+    const mime = file.type || '';
+
+    // Helper: try to pull text from a parsed JSON object (common keys or recursive)
+    function extractTextFromObject(obj: any, depth = 0): string {
+      if (depth > 6) return ''; // avoid infinite recursion
+      if (typeof obj === 'string') return obj;
+      if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
+      if (Array.isArray(obj)) return obj.map(item => extractTextFromObject(item, depth + 1)).filter(Boolean).join('\n\n');
+      if (obj && typeof obj === 'object') {
+        // Prefer common textual fields first
+        const commonKeys = ['text', 'content', 'body', 'description', 'summary', 'notes'];
+        for (const k of commonKeys) {
+          if (obj[k]) {
+            return extractTextFromObject(obj[k], depth + 1);
+          }
+        }
+        // Fallback: concatenate string values
+        const parts: string[] = [];
+        for (const key of Object.keys(obj)) {
+          const val = extractTextFromObject(obj[key], depth + 1);
+          if (val) parts.push(`${key}: ${val}`);
+        }
+        return parts.join('\n\n');
+      }
+      return '';
+    }
+
+    try {
+      // PDF detection: content-type or filename
+      if (mime === 'application/pdf' || name.endsWith('.pdf')) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('enable_ocr', 'true');
+        formData.append('document_type', 'legal');
+
+        const response = await fetch(`${API_BASE}/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`OCR processing failed: ${response.statusText}`);
+        }
+        const result = await response.json();
+        return result?.extracted_text || 'PDF text extraction returned no content';
+      }
+
+      // JSON files: try to parse and extract text from common fields
+      if (mime === 'application/json' || name.endsWith('.json')) {
+        const text = await file.text();
+        try {
+          const parsed = JSON.parse(text);
+          const extracted = extractTextFromObject(parsed);
+          return extracted || JSON.stringify(parsed, null, 2);
+        } catch (err) {
+          // If JSON parse fails, fall back to raw text
+          return text;
+        }
+      }
+
+      // Plain text files
+      if (mime.startsWith('text/') || name.endsWith('.txt')) {
+        return await file.text();
+      }
+
+      // Fallback for other types (images, unknowns): return a safe placeholder
+      return `Content extracted from ${file.name}\n\nThis is simulated extracted text from the uploaded document. In production, this would contain the actual OCR-processed content from the file.`;
+    } catch (err) {
+      console.warn('extractTextFromFile error', err);
+      return `Failed to extract text from ${file.name}`;
+    }
+  }
+
   async function generateSummary(text: string, fileType: string): Promise<string> {
     const response = await fetch('/api/ai/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        content: text;
+      body: JSON.stringify({
+        content: text,
         type: 'legal',
-        length: 'medium';
+        length: 'medium'
       })
     });
-    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`Summarization failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+
+    if (!response.ok) {
+      throw new Error(`Summarization failed: ${response.statusText}`);
     }
-    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-    return (result as { extracted_text?: any; summary?: any; embedding?: any }).summary || 'Summary generation failed';
+    const result = await response.json();
+    return result?.summary || 'Summary generation failed';
   }
+
   async function generateEmbeddings(text: string): Promise<number[]> {
-    // Simulate embedding generation using nomic-embed-text
-    // In production, this would call your Go service
-    const response = await fetch(`${API_BASE}/embed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.substring(0, 8000) }) // Limit text length
-    });
-    if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      return (result as { extracted_text?: any; summary?: any; embedding?: any }).embedding || [];
+    // Simulate embedding generation using nomic-embed-text endpoint
+    try {
+      const response = await fetch(`${API_BASE}/embed`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text.substring(0, 8000) }) // Limit text length
+      });
+      if (response.ok) {
+        const result = await response.json();
+        return result?.embedding || [];
+      }
+    } catch (err) {
+      console.warn('Embedding call failed, falling back to mock', err);
     }
     // Fallback: generate mock 384-dimensional embedding
     return Array.from({ length: 384 }, () => Math.random() * 2 - 1);
   }
+
   async function updateProgress(id: string, status: DocumentUpload['status'], progress: number): Promise<void> {
-    uploads = uploads.map(upload =>
-      upload.id === id ? { ...upload, status, progress } : upload
-    );
+    uploads = uploads.map(upload => upload.id === id ? { ...upload, status, progress } : upload);
   }
+
   async function updateUpload(id: string, updates: Partial<DocumentUpload>): Promise<void> {
-    uploads = uploads.map(upload =>
-      upload.id === id ? { ...upload, ...updates } : upload
-    );
+    uploads = uploads.map(upload => upload.id === id ? { ...upload, ...updates } : upload);
   }
+
   function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  function handleDrop(_event: DragEvent): void {
+
+  function handleDrop(event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
-    const files = event.dataTransfer?.file;
-    if (files) {
-      Array.from.forEach(simulateUpload);
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach(file => simulateUpload(file));
     }
   }
-  function handleFileInput(_event: Event): void {
-    const files = (event.target as HTMLInputElement).file;
-    if (files) {
-      Array.from.forEach(simulateUpload);
+
+  function handleFileInput(event: Event): void {
+    const files = (event.target as HTMLInputElement)?.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach(file => simulateUpload(file));
     }
   }
+
   function removeUpload(id: string): void {
     const upload = uploads.find(u => u.id === id);
     if (upload?.localStorageKey) {
-      localStorage.removeItem(upload.localStorageKey);
+      try {
+        localStorage.removeItem(upload.localStorageKey);
+      } catch (err) { /* ignore */ }
     }
     uploads = uploads.filter(u => u.id !== id);
   }
+
   function downloadProcessedData(upload: DocumentUpload): void {
     const data = {
       filename: upload.filename,
       extractedText: upload.extractedText,
       summary: upload.summary,
       embeddings: upload.embeddings,
-      processedAt: new Date().toISOString();
-    }
+      processedAt: new Date().toISOString()
+    };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -183,6 +261,7 @@ https://svelte.dev/e/expected_token -->
     a.click();
     URL.revokeObjectURL(url);
   }
+
   function getStatusColor(status: DocumentUpload['status']): string {
     switch (status) {
       case 'uploading': return 'text-blue-400';
@@ -192,58 +271,12 @@ https://svelte.dev/e/expected_token -->
       case 'error': return 'text-red-400';
       default: return 'text-gray-400';
     }
-  }
-  function getStatusText(status: DocumentUpload['status']): string {
-    switch (status) {
-      case 'uploading': return 'Uploading to PostgreSQL...';
-      case 'processing': return 'AI Processing (OCR + Summary)...';
-      case 'embedding': return 'Generating Embeddings (Nomic)...';
-      case 'completed': return 'Completed ✅';
-      case 'error': return 'Error ❌';
-      default: return 'Pending';
-    }
-  }
-  $effect(() => {
-    // Clean up old localStorage entries on mount
-    const keys = Object.keys.filter(key => key.startsWith('doc_'));
-    console.log(`Found ${keys.length} cached documents in localStorage`);
-  });
-</script>
-
-<div class="document-upload-simulator">
-  <h2 class="text-2xl font-bold text-green-400 mb-6">📄 AI Document Processing Simulator</h2>
-  <!-- Upload Area -->
-  <div
-    class="upload-area border-2 border-dashed border-gray-600 rounded-lg p-8 text-center transition-colors duration-200"
-    class:border-green-400={isDragging}
-    class:bg-green-400={isDragging && 'opacity-10'}
-    ondrop={handleDrop}
-    role="region"
-    aria-label="Drop zone"
-    ondragover={e => e.preventDefault()}
-    ondragenter={() => (isDragging = true)}
-    ondragleave={() => (isDragging = false)}
-  >
-    <div class="text-4xl mb-4">📄</div>
-    <p class="text-lg mb-4">Drop PDFs or text files here, or click to browse</p>
-    <input
-      bind:this={fileInput}
-      type="file"
-      accept=".pdf,.txt,.json"
-      multiple
-      class="hidden"
-      onchange={handleFileInput}
-    />
-    <button
-      type="button"
-      class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-      onclick={() => fileInput.click()}
-      aria-label="Select files to upload"
     >
       Select Files
     </button>
     <p class="text-sm text-gray-400 mt-4">Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally</p>
   </div>
+
   <!-- Processing Queue -->
   {#each uploads as upload (upload.id)}
     <div class="upload-item bg-gray-800 rounded-lg p-6 mb-4 border border-gray-700">
@@ -260,7 +293,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
         </div>
-        <button type="button" class="text-gray-400 hover:text-red-400 transition-colors" onclick={() => removeUpload(upload.id)} aria-label="Remove upload">
+        <button type="button" class="text-gray-400 hover:text-red-400 transition-colors" on:click={() => removeUpload(upload.id)} aria-label="Remove upload">
           ✕
         </button>
       </div>
@@ -308,7 +341,7 @@ https://svelte.dev/e/expected_token -->
               <div class="text-xs text-gray-300">
                 Generated {upload.embeddings.length}D vector using Nomic-Embed-Text
                 <br />
-                First 5 dimensions: [{upload.embeddings.slice.map(n => n.toFixed(3)).join(', ')}...]
+                First 5 dimensions: [{upload.embeddings.slice(0,5).map(n => n.toFixed(3)).join(', ')}...]
               </div>
             </div>
           {/if}
@@ -317,7 +350,7 @@ https://svelte.dev/e/expected_token -->
             <button
               type="button"
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-              onclick={() => downloadProcessedData(upload)}
+              on:click={() => downloadProcessedData(upload)}
               aria-label="Download processed JSON"
             >
               📥 Download JSON
@@ -335,6 +368,7 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </div>
   {/each}
+
   {#if uploads.length === 0}
     <div class="text-center py-12 text-gray-500">
       <div class="text-6xl mb-4">📄</div>

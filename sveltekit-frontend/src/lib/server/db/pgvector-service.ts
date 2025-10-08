@@ -5,11 +5,12 @@
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import { drizzle } from 'drizzle-orm/postgres-js';
 
-// PostgreSQL Connection Pool with Error Handling
-export class PgVectorService {
-  private db: any;
-  private pool: any = null; // <-- added pool property
-  private isConnected: boolean = false;
+// Add types to replace `any`
+type DrizzleDB = ReturnType<typeof drizzle>;
+
+interface PoolLike {
+  query?: (sql: string, params?: unknown[]) => Promise<any>;
+  connect?: () => Promise<{ query: (sql: string, params?: unknown[]) => Promise<any>; release?: () => void }>;
   constructor() {
     // Use drizzle with postgres-js client for compatibility
     this.db = drizzle(pgClient as any);
@@ -22,6 +23,42 @@ export class PgVectorService {
         : pgClient && (pgClient as any).pool
           ? (pgClient as any).pool
           : null;
+  }
+
+  // NEW: unified query client helper that normalizes pool / client differences
+  private async getQueryClient(): Promise<{
+    query: (sql: string, params?: any[]) => Promise<any>;
+    release?: () => void;
+  } | null> {
+    // If pool exposes connect (node-postgres Pool)
+    if (this.pool && typeof this.pool.connect === 'function') {
+      const client = await this.pool.connect();
+      return {
+        query: (sql: string, params?: any[]) => client.query(sql, params),
+        release: () => {
+          if (typeof client.release === 'function') client.release();
+        },
+      };
+    }
+
+    // If pool itself has query (simple poolShim / client)
+    if (this.pool && typeof this.pool.query === 'function') {
+      return {
+        query: (sql: string, params?: any[]) => this.pool.query(sql, params),
+      };
+    }
+
+    // postgres-js clients are often callable functions: treat pgClient as query fn
+    if (pgClient && typeof (pgClient as any) === 'function') {
+      return {
+        query: async (sql: string, params?: any[]) => {
+          // many postgres-js clients accept (sql, params) or tagged templates; try basic form
+          return await (pgClient as any)(sql, params);
+        },
+      };
+    }
+
+    return null;
   }
   /**
    * Test PostgreSQL + pgvector connection
@@ -64,34 +101,38 @@ export class PgVectorService {
         // Don't block — return an error object instead
         return { success: false, error: `Invalid embedding dimension: ${embedding.length}` };
       }
-      // Use poolShim if available for writes
-      if (poolShim && typeof poolShim.query === 'function') {
-        const embeddingStr = `[${embedding.join(',')}]`;
-        const insertQuery = `INSERT INTO legal_documents (document_id, title, content, document_type, keywords, embedding, created_at) VALUES ($1, $2, $3, $4, $5, $6::vector, NOW()) RETURNING id`;
-        const res = await poolShim.query(insertQuery, [
-          documentId,
-          metadata.title || 'Untitled',
-          content,
-          metadata.type || 'contract',
-          JSON.stringify(metadata),
-          embeddingStr,
-        ]);
-        return { success: true, id: res?.rows?.[0]?.id };
+
+      const embeddingStr = `[${embedding.join(',')}]`;
+      const clientWrapper = await this.getQueryClient();
+      if (!clientWrapper) {
+        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };
       }
-      // Fallback: call pgClient if it supports tagged-template or function call
-      if (pgClient) {
-        try {
-          // Attempt a raw SQL via postgres-js client
-          const embeddingStr = `[${embedding.join(',')}]`;
-          const r = await (pgClient as any)(
-            `INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at) VALUES (${metadata.title || 'Untitled'}, ${content}, ${metadata.type || 'contract'}, ${JSON.stringify(metadata)}, ${embeddingStr}::vector, NOW()) RETURNING id`
-          );
-          return { success: true, id: r?.[0]?.id };
-        } catch (e) {
-          return { success: false, error: (e as Error).message };
-        }
+
+      // Parameterized insert: document + vector cast
+      const insertQuery = `
+        INSERT INTO legal_documents (document_id, title, content, document_type, keywords, embedding, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6::vector, NOW())
+        RETURNING id
+      `;
+      const params = [
+        documentId,
+        metadata.title || 'Untitled',
+        content,
+        metadata.type || 'contract',
+        JSON.stringify(metadata),
+        embeddingStr,
+      ];
+
+      try {
+        const res = await clientWrapper.query(insertQuery, params);
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        // Adapt to different client shapes; support row sets from node-postgres or postgres-js
+        const id = res?.rows?.[0]?.id ?? (Array.isArray(res) && res[0]?.id) ?? null;
+        return { success: true, id };
+      } catch (e) {
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        return { success: false, error: (e as Error).message };
       }
-      return { success: false, error: 'No DB client available' };
     } catch (error) {
       return { success: false, error: (error as Error).message };
     }
@@ -121,7 +162,6 @@ export class PgVectorService {
 
       const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } = options;
 
-      // Choose distance operator mapping - adjust if your pgvector version differs
       const distanceOperator =
         distanceMetric === 'euclidean' ? '<->' : distanceMetric === 'inner_product' ? '<#>' : '<=>';
 
@@ -144,9 +184,10 @@ export class PgVectorService {
 
       const params: any[] = [embeddingStr];
 
-      // Optional threshold filter
+      // Optional threshold filter — use next parameter index
       if (typeof threshold === 'number') {
         params.push(threshold);
+        // distance compares to threshold, use $2 (or whichever param index)
         query += ` AND (ld.embedding ${distanceOperator} $1::vector) < $${params.length}`;
       }
 
@@ -160,47 +201,32 @@ export class PgVectorService {
       params.push(limit);
       query += ` ORDER BY distance ASC LIMIT $${params.length}`;
 
-      // Execute using available pool or client
-      if (this.pool && typeof this.pool.query === 'function') {
-        const startTime = Date.now();
-        const result = await this.pool.query(query, params);
+      const clientWrapper = await this.getQueryClient();
+      if (!clientWrapper) {
+        return { success: false, error: 'No DB client available' };
+      }
+
+      const startTime = Date.now();
+      try {
+        const result = await clientWrapper.query(query, params);
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        const rows = result?.rows ?? result ?? [];
         const searchTime = Date.now() - startTime;
         return {
           success: true,
-          results: result?.rows ?? [],
+          results: rows,
           metadata: {
             searchTime: `${searchTime}ms`,
-            totalResults: result?.rowCount ?? result?.rows?.length ?? 0,
+            totalResults: result?.rowCount ?? (Array.isArray(rows) ? rows.length : null),
             distanceMetric,
             threshold: typeof threshold === 'number' ? threshold : null,
             limit,
           },
         };
+      } catch (e) {
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        return { success: false, error: (e as Error).message };
       }
-
-      // Fallback: try pgClient (postgres-js)
-      if (pgClient) {
-        try {
-          const startTime = Date.now();
-          // Many postgres-js clients accept raw query + params; adapt if your client differs
-          const res = await (pgClient as any)(query, params);
-          const searchTime = Date.now() - startTime;
-          return {
-            success: true,
-            results: res?.rows ?? res ?? [],
-            metadata: {
-              searchTime: `${searchTime}ms`,
-              totalResults: Array.isArray(res?.rows ? res.rows : res) ? (res.rows ?? res).length : 0,
-              distanceMetric,
-              threshold: typeof threshold === 'number' ? threshold : null,
-            },
-          };
-        } catch (e) {
-          return { success: false, error: (e as Error).message };
-        }
-      }
-
-      return { success: false, error: 'No DB client available' };
     } catch (error) {
       return {
         success: false,
@@ -279,24 +305,33 @@ export class PgVectorService {
   ): Promise<any> {
     try {
       const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;
-      const indexName = `idx_${tableName}_${columnName}_${metric}`;
+      // sanitize identifiers to safe alphanum + underscore only
+      const safeTable = String(tableName).replace(/[^\w]/g, '_');
+      const safeColumn = String(columnName).replace(/[^\w]/g, '_');
+      const safeMetric =
+        metric === 'cosine' || metric === 'euclidean' || metric === 'inner_product' ? metric : 'cosine';
+      const indexName = `idx_${safeTable}_${safeColumn}_${safeMetric}`;
       const start = Date.now();
       if (this.pool && typeof this.pool.query === 'function') {
         try {
           await this.pool.query(`DROP INDEX IF EXISTS ${indexName}`);
           const opClass =
-            metric === 'cosine' ? 'vector_cosine_ops' : metric === 'euclidean' ? 'vector_l2_ops' : 'vector_ip_ops';
-          const indexQuery = `CREATE INDEX ${indexName} ON ${tableName} USING ivfflat (${columnName} ${opClass}) WITH (lists = ${lists})`;
+            safeMetric === 'cosine'
+              ? 'vector_cosine_ops'
+              : safeMetric === 'euclidean'
+                ? 'vector_l2_ops'
+                : 'vector_ip_ops';
+          const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(lists)})`;
           await this.pool.query(indexQuery);
-          await this.pool.query(`ANALYZE ${tableName}`);
+          await this.pool.query(`ANALYZE ${safeTable}`);
           const indexTime = Date.now() - start;
           return {
             success: true,
             details: {
               indexName,
-              tableName,
-              columnName,
-              metric,
+              tableName: safeTable,
+              columnName: safeColumn,
+              metric: safeMetric,
               lists,
               creationTime: `${indexTime}ms`,
               query: indexQuery,

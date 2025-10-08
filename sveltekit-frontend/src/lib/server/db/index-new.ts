@@ -11,8 +11,21 @@ const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
 // Add a minimal typed shape for pools/shims we interact with
 type PoolLike = {
+  // Optional lifecycle helpers
   end?: () => Promise<void> | void;
   close?: () => Promise<void> | void;
+
+  // Connection acquisition for code that expects to call connect()
+  connect?: () => Promise<{
+    query?: (text: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<{ rows?: unknown[] }>;
+    release?: () => void;
+  }>;
+
+  // Optional bookkeeping / diagnostics commonly present on pool shims
+  totalCount?: number;
+  idleCount?: number;
+  waitingCount?: number;
+  on?: (event: string, handler: (...args: unknown[]) => void) => void;
 };
 
 // derive the concrete type used by postgres-js at runtime
@@ -39,6 +52,11 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   // assign poolShim typed as PoolLike
   _pool = poolShim as PoolLike;
   // cast via unknown -> PostgresJsClient to avoid 'any'
+  if (!pgClient) {
+    console.warn(
+      'pgClient is not available from db-shim; drizzle will be initialized with a null client and may throw at runtime when used.'
+    );
+  }
   _db = drizzle(pgClient as unknown as PostgresJsClient, { schema });
 
   // Skip migrations in testing environment
@@ -93,7 +111,8 @@ export const isPostgreSQL = true;
 export const isSQLite = false;
 // Export a getter to provide the live pool value instead of a snapshot
 export function getPool() {
-  return _pool;
+  // prefer the live _pool, fall back to the imported shim if present
+  return _pool ?? (poolShim as PoolLike) ?? null;
 }
 // Schema exports
 export * from '$lib/server/db/schema-postgres';
