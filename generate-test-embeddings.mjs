@@ -1,13 +1,12 @@
 // Generate test embeddings for semantic search testing
-import { Client } from 'pg';
+import postgres from "postgres";
 
-const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  database: 'legal_ai_db',
-  user: 'legal_admin',
-  password: '123456'
-});
+const sql = postgres(
+  "postgresql://legal_admin:123456@localhost:5434/legal_ai_test",
+  {
+    max: 10,
+  }
+);
 
 async function generateEmbedding(text) {
   const response = await fetch('http://localhost:11434/api/embed', {

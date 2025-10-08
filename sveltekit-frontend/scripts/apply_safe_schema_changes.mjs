@@ -1,8 +1,6 @@
-import pg from 'pg';
-const { Client } = pg;
+import postgres from 'postgres';
 
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test';
 const statements = [
   {
     name: 'ALTER vector_metadata.document_id to uuid using cast',

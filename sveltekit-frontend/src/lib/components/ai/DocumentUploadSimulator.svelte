@@ -188,23 +188,102 @@
     return result?.summary || 'Summary generation failed';
   }
 
+  const OLLAMA_BASE = 'http://localhost:11434';
+  const OLLAMA_MODEL = 'embeddinggemma:latest';
+  const PREFERRED_DIM = 1536; // prefer pgvector-friendly dimension
+
   async function generateEmbeddings(text: string): Promise<number[]> {
-    // Simulate embedding generation using nomic-embed-text endpoint
+    // Try Ollama embeddings with a few common endpoint shapes, fall back gracefully
+    const shortText = (text || '').substring(0, 10000);
+    const attempts = [
+      { url: `${OLLAMA_BASE}/embeddings`, body: { model: OLLAMA_MODEL, input: shortText } },
+      { url: `${OLLAMA_BASE}/api/embeddings`, body: { model: OLLAMA_MODEL, input: shortText } },
+      { url: `${OLLAMA_BASE}/api/embed`, body: { model: OLLAMA_MODEL, text: shortText } },
+    ];
+
+    for (const attempt of attempts) {
+      try {
+        const res = await fetch(attempt.url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(attempt.body),
+        });
+        if (!res.ok) {
+          // try next
+          continue;
+        }
+        const json = await res.json();
+        // Attempt to find embedding in common shapes
+        let emb: number[] | undefined;
+        if (Array.isArray(json?.embedding)) emb = json.embedding;
+        else if (Array.isArray(json?.data?.[0]?.embedding)) emb = json.data[0].embedding;
+        else if (Array.isArray(json?.embeddings?.[0])) emb = json.embeddings[0];
+        if (emb && emb.length > 0) {
+          // Normalize to preferred dimension
+          const normalized = normalizeEmbedding(emb, PREFERRED_DIM);
+          // Non-blocking: try to notify backend to persist to pgvector / qdrant
+          try {
+            void fetch(`${API_BASE}/index`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                source: 'simulator',
+                embedding: normalized,
+                meta: { preview: shortText.substring(0, 200) }
+              }),
+            }).catch(() => { /* ignore */ });
+          } catch {}
+          return normalized;
+        }
+      } catch (err) {
+        // continue to next attempt
+      }
+    }
+
+    // Fallback to remote embed endpoint on API_BASE (legacy nomic style)
     try {
-      const response = await fetch(`${API_BASE}/embed`, {
+      const res = await fetch(`${API_BASE}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text.substring(0, 8000) }) // Limit text length
+        body: JSON.stringify({ text: shortText }),
       });
-      if (response.ok) {
-        const result = await response.json();
-        return result?.embedding || [];
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json?.embedding)) {
+          const normalized = normalizeEmbedding(json.embedding, PREFERRED_DIM);
+          return normalized;
+        }
       }
     } catch (err) {
-      console.warn('Embedding call failed, falling back to mock', err);
+      // continue to final fallback
     }
-    // Fallback: generate mock 384-dimensional embedding
-    return Array.from({ length: 384 }, () => Math.random() * 2 - 1);
+
+    // Final fallback: deterministic-ish mock embedding of preferred size
+    const rng = seededRandomFromString(text || 'fallback');
+    const mock = Array.from({ length: PREFERRED_DIM }, () => (rng() * 2 - 1));
+    return mock;
+  }
+
+  function normalizeEmbedding(emb: number[], targetDim: number): number[] {
+    if (emb.length === targetDim) return emb;
+    if (emb.length > targetDim) return emb.slice(0, targetDim);
+    // pad with small zeros if shorter
+    return emb.concat(Array.from({ length: targetDim - emb.length }, () => 0));
+  }
+
+  // Simple seeded random generator from string to make fallback deterministic-ish
+  function seededRandomFromString(seedStr: string): () => number {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < seedStr.length; i++) {
+      h = Math.imul(h ^ seedStr.charCodeAt(i), 16777619);
+    }
+    return function() {
+      // xorshift
+      h += 0x6D2B79F5;
+      let t = Math.imul(h ^ (h >>> 15), 1 | h);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   async function updateProgress(id: string, status: DocumentUpload['status'], progress: number): Promise<void> {
@@ -226,6 +305,12 @@
     if (files && files.length > 0) {
       Array.from(files).forEach(file => simulateUpload(file));
     }
+  }
+
+  // Added handler to set isDragging on dragenter for proper UX
+  function handleDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    isDragging = true;
   }
 
   function handleFileInput(event: Event): void {
@@ -271,10 +356,63 @@
       case 'error': return 'text-red-400';
       default: return 'text-gray-400';
     }
-    >
-      Select Files
-    </button>
-    <p class="text-sm text-gray-400 mt-4">Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally</p>
+  }
+
+  // Added: human-readable status labels used in the template
+  function getStatusText(status: DocumentUpload['status']): string {
+    switch (status) {
+      case 'uploading': return 'Uploading';
+      case 'processing': return 'Processing';
+      case 'embedding': return 'Generating Embeddings';
+      case 'completed': return 'Completed';
+      case 'error': return 'Error';
+      default: return 'Unknown';
+    }
+  }
+</script>
+
+<div class="document-upload-simulator">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h1 class="text-4xl font-extrabold text-white">Document Upload Simulator</h1>
+    <p class="text-lg text-gray-400 mt-2">Simulate document uploads and AI processing</p>
+  </div>
+
+  <!-- Upload Area -->
+  <div
+    class="upload-area bg-gray-900 rounded-lg p-6 mb-6 border-2 border-dashed border-gray-700 transition-all duration-300"
+    on:dragover|preventDefault
+    on:dragenter={handleDragEnter}
+    on:dragleave={() => isDragging = false}
+    on:drop={handleDrop}
+    on:click={() => fileInput?.click()}
+  >
+    <input
+      type="file"
+      bind:this={fileInput}
+      class="hidden"
+      multiple
+      on:change={handleFileInput}
+    />
+    <div class="text-center">
+      <div class="text-6xl mb-4">
+        {#if isDragging}
+          📂
+        {:else}
+          ⬆️
+        {/if}
+      </div>
+      <h2 class="text-2xl font-semibold text-white mb-2">Drag & Drop Files Here</h2>
+      <p class="text-gray-400 text-sm mb-4">or</p>
+      <button
+        type="button"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
+        on:click={() => fileInput?.click()}
+      >
+        Select Files
+      </button>
+      <p class="text-sm text-gray-400 mt-4">Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally</p>
+    </div>
   </div>
 
   <!-- Processing Queue -->

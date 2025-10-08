@@ -1,0 +1,274 @@
+/**
+ * Client-Side Workflow Event Stream Utility
+ *
+ * Provides a simple API for subscribing to real-time workflow events
+ * using Server-Sent Events (SSE) from the browser.
+ *
+ * Usage:
+ * ```svelte
+ * <script>
+ *   import { WorkflowEventStream } from '$lib/client/workflow-event-stream';
+ *
+ *   const stream = new WorkflowEventStream(sessionId);
+ *
+ *   stream.on('OCR_COMPLETE', (data) => {
+ *     console.log('OCR completed:', data);
+ *   });
+ *
+ *   stream.on('EMBEDDING_COMPLETE', (data) => {
+ *     console.log('Embeddings ready:', data);
+ *   });
+ *
+ *   stream.connect();
+ *
+ *   // Cleanup on component unmount
+ *   onDestroy(() => stream.disconnect());
+ * </script>
+ * ```
+ */
+
+export type WorkflowEventType =
+  | 'SSE_CONNECTED'
+  | 'SSE_ERROR'
+  | 'OCR_COMPLETE'
+  | 'OCR_ERROR'
+  | 'EMBEDDING_COMPLETE'
+  | 'EMBEDDING_ERROR'
+  | 'ENTITY_COMPLETE'
+  | 'ENTITY_ERROR'
+  | 'SUMMARY_COMPLETE'
+  | 'SUMMARY_ERROR'
+  | 'WORKFLOW_COMPLETE'
+  | 'WORKFLOW_ERROR';
+
+export interface WorkflowEvent {
+  type: WorkflowEventType;
+  evidenceId?: string;
+  sessionId?: string;
+  timestamp: string;
+  result?: any;
+  error?: string;
+}
+
+type EventCallback = (event: WorkflowEvent) => void;
+
+/**
+ * Workflow Event Stream Manager
+ */
+export class WorkflowEventStream {
+  private eventSource: EventSource | null = null;
+  private listeners: Map<WorkflowEventType, Set<EventCallback>> = new Map();
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 1000;
+
+  constructor(
+    private sessionId: string,
+    private baseUrl: string = '/api/workflow-events'
+  ) {}
+
+  /**
+   * Connect to the SSE endpoint
+   */
+  connect(): void {
+    if (this.eventSource) {
+      console.warn('[WorkflowEventStream] Already connected');
+      return;
+    }
+
+    const url = `${this.baseUrl}/${this.sessionId}`;
+    console.log(`[WorkflowEventStream] Connecting to ${url}`);
+
+    this.eventSource = new EventSource(url);
+
+    // Handle incoming messages
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data) as WorkflowEvent;
+        this.emit(data.type, data);
+      } catch (error) {
+        console.error('[WorkflowEventStream] Error parsing event:', error);
+      }
+    };
+
+    // Handle connection open
+    this.eventSource.onopen = () => {
+      console.log('[WorkflowEventStream] Connected');
+      this.reconnectAttempts = 0;
+    };
+
+    // Handle errors
+    this.eventSource.onerror = (error) => {
+      console.error('[WorkflowEventStream] Connection error:', error);
+
+      // Attempt reconnection
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.reconnectAttempts++;
+
+        setTimeout(() => {
+          console.log(
+            `[WorkflowEventStream] Reconnecting (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
+          );
+          this.disconnect();
+          this.connect();
+        }, this.reconnectDelay * this.reconnectAttempts);
+      } else {
+        console.error('[WorkflowEventStream] Max reconnection attempts reached');
+        this.disconnect();
+      }
+    };
+  }
+
+  /**
+   * Disconnect from the SSE endpoint
+   */
+  disconnect(): void {
+    if (this.eventSource) {
+      console.log('[WorkflowEventStream] Disconnecting');
+      this.eventSource.close();
+      this.eventSource = null;
+    }
+  }
+
+  /**
+   * Register an event listener
+   */
+  on(eventType: WorkflowEventType, callback: EventCallback): () => void {
+    if (!this.listeners.has(eventType)) {
+      this.listeners.set(eventType, new Set());
+    }
+
+    this.listeners.get(eventType)!.add(callback);
+
+    // Return unsubscribe function
+    return () => {
+      this.off(eventType, callback);
+    };
+  }
+
+  /**
+   * Unregister an event listener
+   */
+  off(eventType: WorkflowEventType, callback: EventCallback): void {
+    const callbacks = this.listeners.get(eventType);
+    if (callbacks) {
+      callbacks.delete(callback);
+    }
+  }
+
+  /**
+   * Emit an event to all registered listeners
+   */
+  private emit(eventType: WorkflowEventType, event: WorkflowEvent): void {
+    const callbacks = this.listeners.get(eventType);
+
+    if (callbacks) {
+      callbacks.forEach((callback) => {
+        try {
+          callback(event);
+        } catch (error) {
+          console.error(`[WorkflowEventStream] Error in ${eventType} callback:`, error);
+        }
+      });
+    }
+  }
+
+  /**
+   * Check if currently connected
+   */
+  isConnected(): boolean {
+    return this.eventSource !== null && this.eventSource.readyState === EventSource.OPEN;
+  }
+
+  /**
+   * Get the current connection state
+   */
+  getState(): number {
+    return this.eventSource?.readyState ?? EventSource.CLOSED;
+  }
+
+  /**
+   * Clear all event listeners
+   */
+  clearAllListeners(): void {
+    this.listeners.clear();
+  }
+}
+
+/**
+ * Svelte store-based wrapper for reactive workflow events
+ */
+import { writable, type Writable } from 'svelte/store';
+
+export interface WorkflowState {
+  connected: boolean;
+  events: WorkflowEvent[];
+  lastEvent: WorkflowEvent | null;
+  errors: string[];
+}
+
+export function createWorkflowStore(sessionId: string): {
+  subscribe: Writable<WorkflowState>['subscribe'];
+  connect: () => void;
+  disconnect: () => void;
+  clear: () => void;
+} {
+  const initialState: WorkflowState = {
+    connected: false,
+    events: [],
+    lastEvent: null,
+    errors: [],
+  };
+
+  const { subscribe, set, update } = writable<WorkflowState>(initialState);
+  const stream = new WorkflowEventStream(sessionId);
+
+  // Register listeners for all event types
+  stream.on('SSE_CONNECTED', (event) => {
+    update((state) => ({
+      ...state,
+      connected: true,
+      lastEvent: event,
+    }));
+  });
+
+  stream.on('SSE_ERROR', (event) => {
+    update((state) => ({
+      ...state,
+      connected: false,
+      errors: [...state.errors, event.error || 'Unknown error'],
+      lastEvent: event,
+    }));
+  });
+
+  // Register workflow event listeners
+  const workflowEventTypes: WorkflowEventType[] = [
+    'OCR_COMPLETE',
+    'OCR_ERROR',
+    'EMBEDDING_COMPLETE',
+    'EMBEDDING_ERROR',
+    'ENTITY_COMPLETE',
+    'ENTITY_ERROR',
+    'SUMMARY_COMPLETE',
+    'SUMMARY_ERROR',
+    'WORKFLOW_COMPLETE',
+    'WORKFLOW_ERROR',
+  ];
+
+  workflowEventTypes.forEach((eventType) => {
+    stream.on(eventType, (event) => {
+      update((state) => ({
+        ...state,
+        events: [...state.events, event],
+        lastEvent: event,
+      }));
+    });
+  });
+
+  return {
+    subscribe,
+    connect: () => stream.connect(),
+    disconnect: () => stream.disconnect(),
+    clear: () => set(initialState),
+  };
+}

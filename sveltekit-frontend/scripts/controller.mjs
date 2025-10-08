@@ -10,17 +10,18 @@ import { join, extname, resolve } from "path";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { createClient as createRedisClient } from "redis";
-import pg from "pg";
-import { cpus } from "os";
+import pg from 'pg';
+const { Pool } = pg;
+import { cpus } from 'os';
 
 const execAsync = promisify(exec);
 
 // --- AGENTIC CONFIG ---
 const CONFIG = {
   // Gemma3 + TensorRT-LLM
-  GEMMA_MODEL: "gemma3:legal-latest",
-  GEMMA_EMBEDDINGS: "embeddinggemma:latest",
-  OLLAMA_URL: process.env.OLLAMA_URL || "http://localhost:11434",
+  GEMMA_MODEL: 'gemma3:legal-latest',
+  GEMMA_EMBEDDINGS: 'embeddinggemma:latest',
+  OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
   TENSORRT_ENABLED: true,
 
   // System Resources
@@ -29,14 +30,14 @@ const CONFIG = {
   EMBEDDING_DIMENSION: 768,
 
   // Directories
-  ROOT_DIR: ".svelte-kit/types",
-  SOURCE_DIRS: ["src/lib", "src/routes", "src/app.html"],
+  ROOT_DIR: '.svelte-kit/types',
+  SOURCE_DIRS: ['src/lib', 'src/routes', 'src/app.html'],
   REPAIR_CACHE_TTL: 3600, // 1 hour
 
   // Redis & PostgreSQL
-  REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
-  REDIS_PASSWORD: process.env.REDIS_PASSWORD || "redis",
-  DB_URL: process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
+  REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'redis',
+  DB_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
 };
 
 console.log(`🤖 Agentic Code Repair Controller`);
@@ -48,11 +49,10 @@ console.log(`👷 Workers: ${CONFIG.WORKERS}`);
 // --- Redis Connection ---
 const redis = createRedisClient({
   url: CONFIG.REDIS_URL,
-  password: CONFIG.REDIS_PASSWORD
+  password: CONFIG.REDIS_PASSWORD,
 });
 
 // --- PostgreSQL Connection ---
-const { Pool } = pg;
 const pool = new Pool({
   connectionString: CONFIG.DB_URL,
 });
@@ -66,7 +66,7 @@ class AgenticCodeRepairController {
       filesProcessed: 0,
       errorsDetected: 0,
       repairsApplied: 0,
-      embeddingsGenerated: 0
+      embeddingsGenerated: 0,
     };
   }
 
@@ -100,7 +100,7 @@ class AgenticCodeRepairController {
           path TEXT UNIQUE NOT NULL,
           content_hash TEXT NOT NULL,
           embedding vector(${CONFIG.EMBEDDING_DIMENSION}),
-          metadata JSONB DEFAULT '{}',
+          metadata JSONB DEFAULT '{}'::jsonb,
           error_patterns TEXT[],
           repair_suggestions TEXT[],
           confidence_score FLOAT DEFAULT 0.0,
@@ -139,12 +139,12 @@ class AgenticCodeRepairController {
       const worker = new Worker(resolve('scripts/ast-worker.mjs'), {
         workerData: {
           workerId: i,
-          config: CONFIG
-        }
+          config: CONFIG,
+        },
       });
 
-      worker.on('message', (msg) => this.handleWorkerMessage(msg));
-      worker.on('error', (error) => console.error(`❌ Worker ${i} error:`, error));
+      worker.on('message', msg => this.handleWorkerMessage(msg));
+      worker.on('error', error => console.error(`❌ Worker ${i} error:`, error));
 
       this.workers.push(worker);
     }
@@ -170,13 +170,21 @@ class AgenticCodeRepairController {
     const { filePath, ast, errors, embedding, contentHash } = msg;
 
     // Cache AST in Redis
-    await redis.setEx(`ast:${filePath}`, CONFIG.REPAIR_CACHE_TTL, JSON.stringify({
-      ast, errors, contentHash, timestamp: Date.now()
-    }));
+    await redis.setEx(
+      `ast:${filePath}`,
+      CONFIG.REPAIR_CACHE_TTL,
+      JSON.stringify({
+        ast,
+        errors,
+        contentHash,
+        timestamp: Date.now(),
+      })
+    );
 
     // Store in pgvector
     if (embedding && embedding.length === CONFIG.EMBEDDING_DIMENSION) {
-      await pool.query(`
+      await pool.query(
+        `
         INSERT INTO code_embeddings (path, content_hash, embedding, error_patterns, metadata)
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT (path) DO UPDATE SET
@@ -185,13 +193,15 @@ class AgenticCodeRepairController {
           error_patterns = $4,
           metadata = $5,
           last_updated = NOW()
-      `, [
-        filePath,
-        contentHash,
-        embedding,
-        errors.map(e => e.type),
-        { errorCount: errors.length, lastAnalyzed: new Date().toISOString() }
-      ]);
+      `,
+        [
+          filePath,
+          contentHash,
+          embedding,
+          errors.map(e => e.type),
+          { errorCount: errors.length, lastAnalyzed: new Date().toISOString() },
+        ]
+      );
 
       this.stats.embeddingsGenerated++;
     }
@@ -244,7 +254,7 @@ class AgenticCodeRepairController {
   async collectFiles() {
     let files = [];
 
-    const scanDir = (dir) => {
+    const scanDir = dir => {
       try {
         for (const item of readdirSync(dir, { withFileTypes: true })) {
           const fullPath = join(dir, item.name);
@@ -308,27 +318,30 @@ class AgenticCodeRepairController {
     }
 
     // Distribute batches to workers
-    const promises = batches.map((batch, index) => {
-      if (this.workers[index]) {
-        return new Promise((resolve) => {
-          this.workers[index].postMessage({
-            type: 'process_batch',
-            batch,
-            mode: this.mode
+    const promises = batches
+      .map((batch, index) => {
+        if (this.workers[index]) {
+          return new Promise(resolve => {
+            this.workers[index].postMessage({
+              type: 'process_batch',
+              batch,
+              mode: this.mode,
+            });
+            this.workers[index].once('message', msg => {
+              if (msg.type === 'batch_complete') resolve(msg);
+            });
           });
-          this.workers[index].once('message', (msg) => {
-            if (msg.type === 'batch_complete') resolve(msg);
-          });
-        });
-      }
-    }).filter(Boolean);
+        }
+      })
+      .filter(Boolean);
 
     await Promise.all(promises);
   }
 
   async findSimilarFixes(errorType, embedding) {
     try {
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         SELECT path, repair_suggestions, confidence_score,
                embedding <=> $1 as distance
         FROM code_embeddings
@@ -336,13 +349,15 @@ class AgenticCodeRepairController {
         AND $2 = ANY(error_patterns)
         ORDER BY embedding <=> $1
         LIMIT 5
-      `, [embedding, errorType]);
+      `,
+        [embedding, errorType]
+      );
 
       return result.rows.map(row => ({
         path: row.path,
         suggestions: row.repair_suggestions,
         confidence: row.confidence_score,
-        similarity: 1 - row.distance
+        similarity: 1 - row.distance,
       }));
     } catch (error) {
       console.warn('⚠️  Similarity search failed:', error.message);
@@ -368,7 +383,8 @@ class AgenticCodeRepairController {
         console.log('🔄 Starting continuous loop mode...');
         let iteration = 1;
 
-        while (iteration <= 5) { // Max 5 iterations to prevent infinite loops
+        while (iteration <= 5) {
+          // Max 5 iterations to prevent infinite loops
           console.log(`\n🔄 Loop iteration ${iteration}`);
 
           await this.processFiles(files);
@@ -397,7 +413,6 @@ class AgenticCodeRepairController {
       console.log(`   • Embeddings generated: ${this.stats.embeddingsGenerated}`);
       console.log(`   • Duration: ${duration}s`);
       console.log(`   • Mode: ${this.mode.toUpperCase()}`);
-
     } catch (error) {
       console.error('❌ Agentic repair failed:', error);
       throw error;

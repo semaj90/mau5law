@@ -7,16 +7,12 @@ import { ENV_CONFIG } from '$lib/config/environment.js'
  * Evidence Enhancement API
  * Analyzes uploaded evidence and suggests relevant labels and classifications
  */
-import { Pool } from "pg"
+import postgres from "postgres"
 import { z } from "zod"
 // Configuration
 const CONFIG = {
     database: {
-        user: import.meta.env.DB_USER || 'postgres',
-        password: import.meta.env.DB_PASSWORD || 'password',
-        host: import.meta.env.DB_HOST || 'localhost',
-        port: parseInt(import.meta.env.DB_PORT || '5432'),
-        database: import.meta.env.DB_NAME || 'prosecutor_db'
+        connectionString: `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test'}`
     },
     redis: {
         url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
@@ -89,13 +85,14 @@ const EvidenceEnhancementResponseSchema = z.object({
     })
 })
 // Initialize connections
-let db: Pool | null = null
+let sql: ReturnType<typeof postgres> | null = null
 let redis: any = null
+
 function getDB() {
-    if (!db) {
-        db = new Pool(CONFIG.database)
+    if (!sql) {
+        sql = postgres(CONFIG.database.connectionString, { max: 10 })
     }
-    return db
+    return sql
 }
 async function getRedis() {
         if (!redis) {

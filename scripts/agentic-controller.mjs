@@ -7,8 +7,7 @@
 import { Worker } from "worker_threads";
 import chokidar from "chokidar";
 import { createClient as createRedisClient } from "redis";
-import pg from "pg";
-import pgvector from "pgvector/pg";
+import postgres from "postgres";
 import { exec } from "child_process";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -22,20 +21,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONFIG = {
   redis: {
     url: process.env.REDIS_URL || "redis://localhost:6379",
-    password: process.env.REDIS_PASSWORD || "redis"
+    password: process.env.REDIS_PASSWORD || "redis",
   },
   postgres: {
-    connectionString: process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
+    connectionString:
+      process.env.DATABASE_URL ||
+      "postgresql://legal_admin:123456@localhost:5434/legal_ai_test",
   },
   ollama: {
     url: process.env.OLLAMA_URL || "http://localhost:11434",
-    embedModel: "embeddinggemma:latest" // Primary embedding model for Legal AI
+    embedModel: "embeddinggemma:latest", // Primary embedding model for Legal AI
   },
   paths: {
     watchDir: "sveltekit-frontend/src/**/*.{ts,svelte,js}",
     errorDir: "errors",
-    workerScript: "ast-worker.mjs"
-  }
+    workerScript: "ast-worker.mjs",
+  },
 };
 
 // --- Database Setup ---

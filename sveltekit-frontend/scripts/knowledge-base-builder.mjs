@@ -12,10 +12,8 @@
 
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, extname, relative } from 'path';
-import pg from 'pg';
+import postgres from 'postgres';
 import redis from 'redis';
-
-const { Client } = pg;
 
 class KnowledgeBaseBuilder {
   constructor() {
@@ -23,11 +21,9 @@ class KnowledgeBaseBuilder {
     this.embeddingModel = 'embeddinggemma:latest';
 
     // Database connections
-    this.pgClient = new Client({
-      host: 'localhost',
-      port: 5432,
-      database: 'legal_ai_db',
-      user: 'legal_admin',
+    this.sql = postgres('postgresql://legal_admin:123456@localhost:5434/legal_ai_test', {
+      max: 10
+    });
       password: '123456'
     });
 

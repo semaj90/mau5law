@@ -1,3 +1,28 @@
+import { json } from '@sveltejs/kit';
+import fs from 'fs';
+import path from 'path';
+import { publish } from '$lib/server/evidence/rabbitmq';
+
+export const POST = async ({ request }) => {
+  // Try to use Web Fetch API formData (available in SvelteKit handlers)
+  const form = await request.formData();
+  const file = form.get('file') as any;
+  if (!file) return json({ error: 'no file' }, { status: 400 });
+
+  const uploadDir = process.env.EVIDENCE_UPLOAD_PATH || path.resolve(process.cwd(), 'uploads');
+  await fs.promises.mkdir(uploadDir, { recursive: true });
+  const filename = `${Date.now()}-${file.name}`;
+  const filepath = path.join(uploadDir, filename);
+  // file is a Blob; stream it to disk
+  const arrayBuffer = await file.arrayBuffer();
+  await fs.promises.writeFile(filepath, Buffer.from(arrayBuffer));
+
+  const evidenceId = `e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  // publish to OCR queue
+  await publish('evidence.ocr', { evidenceId, filePath: filepath });
+
+  return json({ ok: true, evidenceId });
+};
 import type { RequestHandler } from './$types';
 import { Buffer } from 'node:buffer';
 /*

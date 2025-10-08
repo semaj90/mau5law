@@ -28,7 +28,7 @@ tsc --init
 \`\`\`
 
 TypeScript helps catch errors early and improves code maintainability.`,
-      metadata: { version: '5.0', category: 'language' }
+      metadata: { version: "5.0", category: "language" },
     },
     interfaces: {
       content: `# TypeScript Interfaces
@@ -61,8 +61,8 @@ interface Calculator {
 \`\`\`
 
 Interfaces are a powerful way to define contracts within your code.`,
-      metadata: { version: '5.0', category: 'types' }
-    }
+      metadata: { version: "5.0", category: "types" },
+    },
   },
   webgpu: {
     base: {
@@ -87,7 +87,7 @@ const device = await adapter.requestDevice();
 \`\`\`
 
 WebGPU enables high-performance graphics and compute on the web.`,
-      metadata: { version: '1.0', category: 'graphics' }
+      metadata: { version: "1.0", category: "graphics" },
     },
     shaders: {
       content: `# WebGPU Shaders with WGSL
@@ -124,8 +124,8 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 \`\`\`
 
 WGSL provides modern GPU programming capabilities.`,
-      metadata: { version: '1.0', category: 'shaders' }
-    }
+      metadata: { version: "1.0", category: "shaders" },
+    },
   },
   postgresql: {
     base: {
@@ -153,7 +153,7 @@ CREATE TABLE users (id SERIAL PRIMARY KEY, name TEXT);
 \`\`\`
 
 PostgreSQL provides enterprise-class database capabilities.`,
-      metadata: { version: '17.0', category: 'database' }
+      metadata: { version: "17.0", category: "database" },
     },
     jsonb: {
       content: `# PostgreSQL JSONB
@@ -188,10 +188,10 @@ SELECT * FROM documents WHERE data->'tags' ? 'important';
 \`\`\`
 
 JSONB provides efficient JSON storage and querying capabilities.`,
-      metadata: { version: '17.0', category: 'json' }
-    }
+      metadata: { version: "17.0", category: "json" },
+    },
   },
-  'drizzle-orm': {
+  "drizzle-orm": {
     base: {
       content: `# Drizzle ORM Documentation
 
@@ -211,15 +211,15 @@ npm install -D drizzle-kit
 
 ## Quick Start
 \`\`\`typescript
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client } from 'pg';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
-const client = new Client({ connectionString: 'postgresql://...' });
-const db = drizzle(client);
+const sql = postgres('postgresql://...', { max: 10 });
+const db = drizzle(sql);
 \`\`\`
 
 Drizzle provides type-safe database operations.`,
-      metadata: { version: '0.29', category: 'orm' }
+      metadata: { version: "0.29", category: "orm" },
     },
     schema: {
       content: `# Drizzle ORM Schema Definition
@@ -270,9 +270,9 @@ const activeUsers = await db
 \`\`\`
 
 Drizzle provides compile-time type safety with zero runtime overhead.`,
-      metadata: { version: '0.29', category: 'schema' }
-    }
-  }
+      metadata: { version: "0.29", category: "schema" },
+    },
+  },
 };
 
 // Health check endpoint
@@ -289,56 +289,66 @@ app.get('/health', (req, res) => {
 app.post('/tools/call', (req, res) => {
   try {
     const { name, arguments: args } = req.body;
-    
-    if (name === 'get_library_docs') {
-      const { context7CompatibleLibraryID, topic, tokens = 10000, format = 'markdown' } = args;
-      
+
+    if (name === "get_library_docs") {
+      const {
+        context7CompatibleLibraryID,
+        topic,
+        tokens = 10000,
+        format = "markdown",
+      } = args;
+
       // Normalize library ID
-      const libraryId = context7CompatibleLibraryID.replace(/^\//, '').replace(/\/$/, '');
-      
+      const libraryId = context7CompatibleLibraryID
+        .replace(/^\//, "")
+        .replace(/\/$/, "");
+
       // Get documentation
       const library = mockDocs[libraryId];
       if (!library) {
         return res.status(404).json({
           success: false,
-          error: `Library '${libraryId}' not found. Available: ${Object.keys(mockDocs).join(', ')}`
+          error: `Library '${libraryId}' not found. Available: ${Object.keys(
+            mockDocs
+          ).join(", ")}`,
         });
       }
-      
+
       // Get specific topic or base documentation
       const doc = topic && library[topic] ? library[topic] : library.base;
       if (!doc) {
         return res.status(404).json({
           success: false,
-          error: `Topic '${topic}' not found for library '${libraryId}'. Available: ${Object.keys(library).join(', ')}`
+          error: `Topic '${topic}' not found for library '${libraryId}'. Available: ${Object.keys(
+            library
+          ).join(", ")}`,
         });
       }
-      
+
       // Prepare response
       const result = {
         content: doc.content,
         metadata: {
           library: libraryId,
-          topic: topic || 'base',
+          topic: topic || "base",
           ...doc.metadata,
           tokenCount: doc.content.length,
-          format: format
+          format: format,
         },
-        snippets: extractCodeSnippets(doc.content)
+        snippets: extractCodeSnippets(doc.content),
       };
-      
+
       res.json({
         success: true,
-        result
+        result,
       });
-      
     } else {
       res.status(400).json({
         success: false,
-        error: `Unknown tool: ${name}`
+        error: `Unknown tool: ${name}`,
       });
     }
-    
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -352,34 +362,36 @@ function extractCodeSnippets(content) {
   const snippets = [];
   const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
   let match;
-  
+
   while ((match = codeBlockRegex.exec(content)) !== null) {
-    const language = match[1] || 'text';
+    const language = match[1] || "text";
     const code = match[2].trim();
-    
+
     if (code.length > 0) {
       snippets.push({
-        title: `${language.charAt(0).toUpperCase() + language.slice(1)} Example`,
+        title: `${
+          language.charAt(0).toUpperCase() + language.slice(1)
+        } Example`,
         code: code,
-        description: `Example ${language} code snippet`
+        description: `Example ${language} code snippet`,
       });
     }
   }
-  
+
   return snippets;
 }
 
 // List available libraries
-app.get('/libraries', (req, res) => {
-  const libraries = Object.keys(mockDocs).map(id => ({
+app.get("/libraries", (req, res) => {
+  const libraries = Object.keys(mockDocs).map((id) => ({
     id,
-    name: id.charAt(0).toUpperCase() + id.slice(1).replace('-', ' '),
-    topics: Object.keys(mockDocs[id]).filter(key => key !== 'base')
+    name: id.charAt(0).toUpperCase() + id.slice(1).replace("-", " "),
+    topics: Object.keys(mockDocs[id]).filter((key) => key !== "base"),
   }));
-  
+
   res.json({
     success: true,
-    libraries
+    libraries,
   });
 });
 
