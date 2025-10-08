@@ -4,43 +4,27 @@
  * Integrates with cognitive cache and WebGPU processing
  */
 
-import { Pool, type PoolClient } from 'pg';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq, sql, and, or, desc } from 'drizzle-orm';
-import { dev } from '$app/environment';
-import * as schema from './db/schema-postgres.js';
+import { Pool, type PoolClient } from '$lib/shims/pg-compat';
 import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 
-// Inline JsonbDocument type to avoid import issues
-interface JsonbDocument {
-  id: string;
-  content: any;
-  metadata: {
-    lastModified: number;
-    accessCount: number;
-    gpuProcessed: boolean;
-    threadId?: string;
-  };
+// Add explicit JSON types to avoid `any` in JSONB parameter construction
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
+interface JsonObject {
+  [key: string]: JsonValue;
 }
 
 // Thread-safe connection pool configuration
 const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  user: 'postgres',
-  password: '123456',
-  database: 'legal_ai_db',
-  // Enhanced for concurrent operations
-  max: 20, // Maximum connections;
-  min: 5, // Minimum connections
+  connectionString: process.env.DATABASE_URL,
+  max: 20,
+  min: 5,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-  // Enable thread-safe operations
   statement_timeout: 30000,
   query_timeout: 30000,
 });
 
-export // removed unused db assignment
 // Thread synchronization primitives
 interface QueryLock {
   id: string;
@@ -51,6 +35,19 @@ interface QueryLock {
 
 const queryLocks = new Map<string, QueryLock>();
 const activeTxs = new Map<string, PoolClient>();
+
+// Add a local HealthCheckResult type to describe the health-check return shape
+interface HealthCheckResult {
+  connected: boolean;
+  activeConnections: number;
+  activeLocks: number;
+  activeTransactions: number;
+  performance: {
+    avgQueryTime: number;
+    totalQueries: number;
+  };
+  message?: string;
+}
 
 /**
  * Thread-safe transaction manager with JSONB optimization
@@ -119,33 +116,31 @@ export class ThreadSafePostgres {
   /**
    * Thread-safe JSONB document operations
    */
-  async storeJsonbDocument<T extends Record<string, any>>(
+  async storeJsonbDocument<T extends Record<string, unknown>>(
     table: string,
     id: string,
     document: T,
     options: {
       cacheKey?: string;
       gpuAccelerated?: boolean;
-      metadata?: any;
+      metadata?: Record<string, unknown>;
     } = {}
   ): Promise<boolean> {
     const queryId = `store_jsonb_${table}_${id}`;
     const release = await this.acquireQueryLock(queryId);
 
     try {
-      // Store in cognitive cache first for performance
       if (options.cacheKey) {
-        await cognitiveCache.storeJsonbDocument(options.cacheKey, document, options.metadata);
+        // assume cognitiveCache accepts unknown-ish shapes; cast conservatively
+        await cognitiveCache.storeJsonbDocument(options.cacheKey, document as unknown, options.metadata);
       }
 
-      // Thread-safe database operation
       const client = await pool.connect();
       activeTxs.set(queryId, client);
 
       try {
         await client.query('BEGIN');
 
-        // Use parameterized queries for JSONB operations
         const query = `
           INSERT INTO ${table} (id, content, metadata, created_at, updated_at)
           VALUES ($1, $2, $3, NOW(), NOW())
@@ -178,13 +173,13 @@ export class ThreadSafePostgres {
   /**
    * Thread-safe JSONB query operations with GPU acceleration support
    */
-  async queryJsonbDocuments<T = any>(
+  async queryJsonbDocuments<T = unknown>(
     table: string,
     jsonbQuery: {
       path?: string;
       operator?: '@>' | '@?' | '@@' | '->' | '->>';
-      value?: any;
-      conditions?: Record<string, any>;
+      value?: unknown;
+      conditions?: Record<string, unknown>;
     },
     options: {
       limit?: number;
@@ -197,11 +192,39 @@ export class ThreadSafePostgres {
     const queryId = `query_jsonb_${table}_${JSON.stringify(jsonbQuery).slice(0, 50)}`;
     const cacheKey = `jsonb_query_${Buffer.from(queryId).toString('base64')}`;
 
-    // Check cognitive cache first
     if (options.cacheResults) {
       const cached = await cognitiveCache.retrieveJsonbDocument(cacheKey);
       if (cached) {
-        return cached.content as T[];
+        // Possible shapes:
+        // - plain array (stored directly)
+        // - { content: [...] , metadata: {...} }
+        // - single object stored in content
+        if (Array.isArray(cached)) {
+          return cached as T[];
+        }
+
+        // Treat cached as unknown and use type guards
+        const cachedVal: unknown = cached;
+
+        if (typeof cachedVal === 'object' && cachedVal !== null) {
+          const obj = cachedVal as { content?: unknown; metadata?: Record<string, unknown> };
+
+          const content = obj.content ?? obj;
+
+          if (Array.isArray(content)) {
+            return content as T[];
+          }
+
+          // If it's a single item, normalize to array so callers always get T[]
+          if (content !== undefined && content !== null) {
+            return [content as T];
+          }
+        } else {
+          // primitive value, normalize to single-element array
+          if (cachedVal !== undefined && cachedVal !== null) {
+            return [cachedVal as T];
+          }
+        }
       }
     }
 
@@ -213,32 +236,74 @@ export class ThreadSafePostgres {
 
       try {
         let query = `SELECT * FROM ${table}`;
-        const params: any[] = [];
+        const params: unknown[] = [];
         const conditions: string[] = [];
 
+        // Helper to push a parameter and return its 1-based index
+        const pushParam = (val: JsonValue | unknown) => {
+          // If val is object/array, stringify to ensure valid JSONB parameter
+          const toStore =
+            val !== null && typeof val === 'object' ? JSON.stringify(val as JsonObject | JsonValue[]) : val;
+          params.push(toStore);
+          return params.length; // 1-based index for SQL $n
+        };
+
         // Build JSONB query conditions
+        let textSearchParamIndex: number | null = null;
         if (jsonbQuery.path && jsonbQuery.value !== undefined) {
           const operator = jsonbQuery.operator || '@>';
-          params.push(JSON.stringify(jsonbQuery.value));
-
+          // For @> we send JSON; for @@ we send text search string
           if (operator === '@>') {
-            conditions.push(`content @> $${params.length}`);
+            const idx = pushParam(jsonbQuery.value);
+            conditions.push(`content @> $${idx}`);
           } else if (operator === '@?') {
-            conditions.push(`content @? $${params.length}`);
+            const idx = pushParam(jsonbQuery.value);
+            conditions.push(`content @? $${idx}`);
           } else if (operator === '@@') {
-            conditions.push(`content::text @@ plainto_tsquery($${params.length})`);
-          } else if (operator === '->') {
-            conditions.push(`content->${jsonbQuery.path} = $${params.length}`);
-          } else if (operator === '->>') {
-            conditions.push(`content->>${jsonbQuery.path} = $${params.length}`);
+            // Full text search: ensure value is string
+            const idx = pushParam(String(jsonbQuery.value));
+            conditions.push(`content::text @@ plainto_tsquery($${idx})`);
+            textSearchParamIndex = idx;
+          } else if (operator === '->' || operator === '->>') {
+            // Only allow simple single-key names (alphanumeric and underscore) to avoid SQL injection.
+            const key = String(jsonbQuery.path);
+            if (!/^[A-Za-z0-9_]+$/.test(key)) {
+              // Fallback to containment check if path looks unsafe
+              const containmentObj = { [key]: jsonbQuery.value } as JsonObject;
+              const idx = pushParam(containmentObj);
+              conditions.push(`content @> $${idx}`);
+            } else {
+              const idx = pushParam(jsonbQuery.value as JsonValue);
+              // Use -> for JSON object, ->> for text; prefer ->> to compare text
+              if (operator === '->') {
+                conditions.push(`content->'${key}' = $${idx}`);
+              } else {
+                conditions.push(`content->>'${key}' = $${idx}`);
+              }
+            }
           }
         }
 
         // Add additional conditions
         if (jsonbQuery.conditions) {
           for (const [key, value] of Object.entries(jsonbQuery.conditions)) {
-            params.push(value);
-            conditions.push(`${key} = $${params.length}`);
+            // If condition targets JSON metadata, store as JSON for @> check
+            if (key.startsWith('metadata.')) {
+              const metaKey = key.slice('metadata.'.length);
+              // Only allow simple keys to be embedded into JSON object
+              if (!/^[A-Za-z0-9_]+$/.test(metaKey)) {
+                // fallback to equality on metadata as text
+                const idx = pushParam(String(value));
+                conditions.push(`(metadata::text) LIKE $${idx}`);
+              } else {
+                const metaObj = { [metaKey]: value } as JsonObject;
+                const idx = pushParam(metaObj);
+                conditions.push(`metadata @> $${idx}`);
+              }
+            } else {
+              const idx = pushParam(value as JsonValue);
+              conditions.push(`${key} = $${idx}`);
+            }
           }
         }
 
@@ -246,32 +311,32 @@ export class ThreadSafePostgres {
           query += ` WHERE ${conditions.join(' AND ')}`;
         }
 
-        // Add ordering
-        switch (options.orderBy) {
-          case 'created_at':
-            query += ' ORDER BY created_at DESC';
-            break;
-          case 'updated_at':
+        // Add ordering - handle relevance only when we have a text search param
+        if (options.orderBy === 'created_at') {
+          query += ' ORDER BY created_at DESC';
+        } else if (options.orderBy === 'updated_at') {
+          query += ' ORDER BY updated_at DESC';
+        } else if (options.orderBy === 'relevance') {
+          if (textSearchParamIndex !== null) {
+            query += ` ORDER BY ts_rank(to_tsvector(coalesce(content::text, '')), plainto_tsquery($${textSearchParamIndex})) DESC`;
+          } else {
+            // No text search available — fall back to updated_at to avoid invalid $1 usage
             query += ' ORDER BY updated_at DESC';
-            break;
-          case 'relevance':
-            // Add relevance scoring for JSONB queries
-            query += ' ORDER BY ts_rank(content::text::tsvector, plainto_tsquery($1)) DESC';
-            break;
+          }
         }
 
         // Add pagination
         if (options.limit) {
-          params.push(options.limit);
-          query += ` LIMIT $${params.length}`;
+          const idx = pushParam(options.limit);
+          query += ` LIMIT $${idx}`;
         }
         if (options.offset) {
-          params.push(options.offset);
-          query += ` OFFSET $${params.length}`;
+          const idx = pushParam(options.offset);
+          query += ` OFFSET $${idx}`;
         }
 
-        const result = await client.query(query, params);
-        const results = (result.rows || []) as T[];
+        const result = await client.query(query, params as unknown[]);
+        const results = ((result as { rows?: unknown[] }).rows || []) as T[];
 
         // Cache results for future queries
         if (options.cacheResults) {
@@ -284,7 +349,8 @@ export class ThreadSafePostgres {
 
         // GPU acceleration for complex result processing
         if (options.useGPU && results.length > 100) {
-          await this.processResultsWithGPU(results, queryId);
+          // pass the same cache key that was used to store results so retrieval works reliably
+          await this.processResultsWithGPU(results, queryId, cacheKey);
         }
 
         return results;
@@ -303,22 +369,59 @@ export class ThreadSafePostgres {
   /**
    * GPU-accelerated result processing
    */
-  private async processResultsWithGPU<T>(results: T[], queryId: string): Promise<void> {
+  private async processResultsWithGPU<T>(results: T[], queryId: string, cacheKey?: string): Promise<void> {
     try {
-      // Convert results to GPU-friendly format
       const serialized = results.map(r => JSON.stringify(r));
       const totalSize = serialized.reduce((sum, s) => sum + s.length, 0);
 
-      if (totalSize > 10240) {
-        // Only use GPU for large datasets (10KB+)
-        console.log(`🎯 GPU processing ${results.length} results for query ${queryId}`);
+      if (totalSize <= 10240) return;
 
-        // Mark as GPU processed in cognitive cache
-        const cacheDoc = await cognitiveCache.retrieveJsonbDocument(queryId);
-        if (cacheDoc) {
-          cacheDoc.metadata.gpuProcessed = true;
-          (cacheDoc.metadata as any).gpuProcessingTime = Date.now();
+      console.log(`🎯 GPU processing ${results.length} results for query ${queryId}`);
+
+      // Derive the same cache key pattern used earlier if not passed in
+      const effectiveCacheKey = cacheKey ?? `jsonb_query_${Buffer.from(queryId).toString('base64')}`;
+
+      const cacheDoc = await cognitiveCache.retrieveJsonbDocument(effectiveCacheKey);
+
+      if (!cacheDoc || typeof cacheDoc !== 'object') {
+        return;
+      }
+
+      // normalize possible shapes: { content, metadata } or plain stored value with metadata
+      const cacheObj: unknown = cacheDoc;
+      let content: unknown;
+      let meta: Record<string, unknown> | undefined = undefined;
+
+      if (typeof cacheObj === 'object' && cacheObj !== null) {
+        const obj = cacheObj as { content?: unknown; metadata?: unknown };
+        content = obj.content ?? obj;
+
+        if (obj.metadata && typeof obj.metadata === 'object') {
+          meta = { ...(obj.metadata as Record<string, unknown>) };
+        } else if (obj.content && typeof obj.content === 'object') {
+          const contentObj = obj.content as Record<string, unknown>;
+          if ('metadata' in contentObj && typeof contentObj.metadata === 'object') {
+            meta = { ...(contentObj.metadata as Record<string, unknown>) };
+          }
         }
+      } else {
+        content = cacheObj;
+      }
+
+      if (!meta) {
+        meta = {};
+      }
+
+      // Do not mutate existing objects in-place; create a new metadata object and re-store
+      try {
+        meta.gpuProcessed = true;
+        meta.gpuProcessingTime = Date.now();
+
+        // store back using cognitiveCache API; preserve content
+        await cognitiveCache.storeJsonbDocument(effectiveCacheKey, content as unknown, meta);
+      } catch (err) {
+        // Best-effort: log and continue without throwing
+        console.warn(`Failed to update cache metadata for ${effectiveCacheKey}:`, err);
       }
     } catch (error) {
       console.warn(`GPU processing failed for query ${queryId}:`, error);
@@ -335,9 +438,9 @@ export class ThreadSafePostgres {
       limit?: number;
       threshold?: number;
       includeMetadata?: boolean;
-      filterBy?: Record<string, any>;
+      filterBy?: Record<string, unknown>;
     } = {}
-  ): Promise<Array<any>> {
+  ): Promise<Array<Record<string, unknown>>> {
     const { table = 'document_chunks', limit = 10, threshold = 0.7, includeMetadata = true, filterBy = {} } = options;
 
     const queryId = `vector_search_${table}_${embedding.slice(0, 3).join('_')}`;
@@ -348,7 +451,7 @@ export class ThreadSafePostgres {
       activeTxs.set(queryId, client);
 
       try {
-        const params: any[] = [JSON.stringify(embedding), threshold, limit];
+        const params: unknown[] = [JSON.stringify(embedding), threshold, limit];
         let query = `
           SELECT
             id,
@@ -362,7 +465,7 @@ export class ThreadSafePostgres {
         let paramIndex = 3;
         for (const [key, value] of Object.entries(filterBy)) {
           paramIndex++;
-          params.push(JSON.stringify(value));
+          params.push(value as unknown);
 
           if (key.startsWith('metadata.')) {
             query += ` AND metadata @> $${paramIndex}`;
@@ -373,8 +476,8 @@ export class ThreadSafePostgres {
 
         query += ` ORDER BY embedding <=> $1::vector LIMIT $3`;
 
-        const result = await client.query(query, params);
-        return result.rows || [];
+        const result = await client.query(query, params as unknown[]);
+        return ((result as { rows?: unknown[] }).rows || []) as Array<Record<string, unknown>>;
       } finally {
         client.release();
         activeTxs.delete(queryId);
@@ -395,14 +498,14 @@ export class ThreadSafePostgres {
       type: 'insert' | 'update' | 'delete';
       table: string;
       id: string;
-      data?: any;
+      data?: unknown;
     }>,
     options: {
       atomic?: boolean;
       gpuAccelerated?: boolean;
     } = {}
   ): Promise<boolean> {
-    const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`; // replaced deprecated substr
     const release = await this.acquireQueryLock(batchId);
 
     try {
@@ -416,7 +519,7 @@ export class ThreadSafePostgres {
 
         for (const op of operations) {
           let query = '';
-          const params: any[] = [];
+          const params: unknown[] = [];
 
           switch (op.type) {
             case 'insert':
@@ -424,7 +527,7 @@ export class ThreadSafePostgres {
                 INSERT INTO ${op.table} (id, content, metadata, created_at, updated_at)
                 VALUES ($1, $2, $3, NOW(), NOW())
               `;
-              params.push(op.id, JSON.stringify(op.data), JSON.stringify({}));
+              params.push(op.id, JSON.stringify(op.data || {}), JSON.stringify({}));
               break;
 
             case 'update':
@@ -433,7 +536,7 @@ export class ThreadSafePostgres {
                 SET content = $2, updated_at = NOW()
                 WHERE id = $1
               `;
-              params.push(op.id, JSON.stringify(op.data));
+              params.push(op.id, JSON.stringify(op.data || {}));
               break;
 
             case 'delete':
@@ -442,14 +545,13 @@ export class ThreadSafePostgres {
               break;
           }
 
-          await client.query(query, params);
+          await client.query(query, params as unknown[]);
         }
 
         if (options.atomic) {
           await client.query('COMMIT');
         }
 
-        // GPU acceleration for large batches
         if (options.gpuAccelerated && operations.length > 50) {
           console.log(`🚀 GPU processing batch of ${operations.length} operations`);
         }
@@ -475,16 +577,19 @@ export class ThreadSafePostgres {
   /**
    * Health check for thread-safe operations
    */
-  async healthCheck(): Promise<any> {
+  async healthCheck(): Promise<HealthCheckResult> {
     try {
       const client = await pool.connect();
 
       try {
-        const result = await client.query('SELECT NOW() as timestamp');
+        await client.query('SELECT NOW() as timestamp'); // removed unused 'result' variable
+
+        // Avoid using 'any' by asserting pool to a narrow shape via unknown
+        const poolLike = pool as unknown as { totalCount?: number };
 
         return {
           connected: true,
-          activeConnections: pool.totalCount,
+          activeConnections: poolLike.totalCount ?? 0,
           activeLocks: queryLocks.size,
           activeTransactions: activeTxs.size,
           performance: {
@@ -495,7 +600,8 @@ export class ThreadSafePostgres {
       } finally {
         client.release();
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      // Keep the return shape precise and include an optional message for debugging
       return {
         connected: false,
         activeConnections: 0,
@@ -505,6 +611,7 @@ export class ThreadSafePostgres {
           avgQueryTime: 0,
           totalQueries: 0,
         },
+        message: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -540,26 +647,26 @@ export class ThreadSafePostgres {
 export const threadSafePostgres = ThreadSafePostgres.getInstance();
 
 // Utility functions for easy access
-export async function safeJsonbStore<T extends Record<string, any>>(
+export async function safeJsonbStore<T extends Record<string, unknown>>(
   table: string,
   id: string,
   document: T,
   options?: {
     cacheKey?: string;
     gpuAccelerated?: boolean;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
   }
 ): Promise<boolean> {
   return await threadSafePostgres.storeJsonbDocument(table, id, document, options || {});
 }
 
-export async function safeJsonbQuery<T = any>(
+export async function safeJsonbQuery<T = unknown>(
   table: string,
-  query: {
+  jsonbQuery: {
     path?: string;
     operator?: '@>' | '@?' | '@@' | '->' | '->>';
-    value?: any;
-    conditions?: Record<string, any>;
+    value?: unknown;
+    conditions?: Record<string, unknown>;
   },
   options?: {
     limit?: number;
@@ -569,7 +676,7 @@ export async function safeJsonbQuery<T = any>(
     cacheResults?: boolean;
   }
 ): Promise<T[]> {
-  return await threadSafePostgres.queryJsonbDocuments(table, query, options || {});
+  return await threadSafePostgres.queryJsonbDocuments(table, jsonbQuery, options || {});
 }
 
 export async function safeVectorSearch(
@@ -579,9 +686,9 @@ export async function safeVectorSearch(
     limit?: number;
     threshold?: number;
     includeMetadata?: boolean;
-    filterBy?: Record<string, any>;
+    filterBy?: Record<string, unknown>;
   }
-): Promise<Array<any>> {
+): Promise<Array<Record<string, unknown>>> {
   return await threadSafePostgres.vectorSimilaritySearch(embedding, options || {});
 }
 
@@ -597,7 +704,7 @@ export interface LegalQueryParams {
   caseId?: string;
   jurisdiction?: string;
   court?: string;
-  dateRange?: { from: Date; to: Date }
+  dateRange?: { from: Date; to: Date };
   practiceArea?: string;
   documentType?: string;
 }
@@ -613,8 +720,8 @@ export async function searchLegalDocuments(
     useGPU?: boolean;
     includeEmbeddings?: boolean;
   } = {}
-): Promise<any[]> {
-  const conditions: Record<string, any> = {};
+): Promise<Array<Record<string, unknown>>> {
+  const conditions: Record<string, JsonValue> = {};
 
   if (params.caseId) conditions.case_id = params.caseId;
   if (params.jurisdiction) conditions.jurisdiction = params.jurisdiction;
@@ -641,16 +748,16 @@ export async function searchLegalDocuments(
  * Store legal document with thread-safe JSONB operations
  */
 export async function storeLegalDocument(
-  _document: any,
+  legalDoc: { id: string } & Record<string, unknown>, // renamed param to avoid global Document collision
   options: {
     generateEmbedding?: boolean;
     gpuAccelerated?: boolean;
     cacheForSearch?: boolean;
   } = {}
 ): Promise<boolean> {
-  const cacheKey = `legal_doc_${document.id}`;
+  const cacheKey = `legal_doc_${legalDoc.id}`;
 
-  return await safeJsonbStore('legal_documents', document.id, document, {
+  return await safeJsonbStore('legal_documents', legalDoc.id, legalDoc, {
     cacheKey: options.cacheForSearch ? cacheKey : undefined,
     gpuAccelerated: options.gpuAccelerated,
     metadata: {

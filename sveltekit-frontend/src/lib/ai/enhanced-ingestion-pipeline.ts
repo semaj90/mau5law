@@ -25,7 +25,7 @@ const copilotOrchestrator = async (
 import type { DocumentEmbedding } from './som-rag-system.js';
 import { SelfOrganizingMapRAG } from './som-rag-system.js';
 import { qdrantService, QdrantService, type SearchResult } from '$lib/server/services/qdrant-service';
-import { Pool } from 'pg';
+import pgClient, { poolShim } from '$lib/server/db-shim';
 // Multimodal Evidence Processing
 export interface MultimodalEvidence {
   id: string;
@@ -178,9 +178,8 @@ export class EnhancedIngestionPipeline {
     this.qdrantClient = new QdrantClient({
       url: config.qdrantUrl || 'http://localhost:6333',
     });
-    this.pgPool = new Pool({
-      connectionString: config.pgConnectionString || import.meta.env.DATABASE_URL,
-    });
+    // Use postgres-js client via shim for pool-like behavior
+    this.pgPool = poolShim;
     this.neo4jDriver = neo4j.driver(config.neo4jUrl || 'bolt://localhost:7687', neo4j.auth.basic('neo4j', 'password'));
     // Initialize SOM RAG and Qdrant service
     this.somRAG = new SelfOrganizingMapRAG(
@@ -239,45 +238,45 @@ export class EnhancedIngestionPipeline {
   /**
    * Initialize Claude Desktop & Copilot architecture context
    */ private async initializeCopilotIntegration(): Promise<void> {
-     try {
-       console.log('🤖 Initializing Claude Desktop & Copilot integration...');
-       // Load Copilot architecture context using Context7 MCP
-       const contextLibId = await resolveLibraryId('copilot-architecture');
-       const architectureDocs = await getLibraryDocs(contextLibId, 'legal-ai-integration');
-       this.copilotContext = {
-         architecture_summary: architectureDocs.substring(0, 2000),
-         legal_context: 'Legal AI workflow with evidence processing',
-         copilot_patterns: 'SvelteKit + Drizzle ORM + Qdrant + multimodal analysis',
-         enhancement_priority: true,
-       };
-       console.log('✅ Copilot integration initialized');
-     } catch (error: unknown) {
-       console.warn('⚠️ Copilot integration failed, continuing without:', error);
-     }
-   }
+    try {
+      console.log('🤖 Initializing Claude Desktop & Copilot integration...');
+      // Load Copilot architecture context using Context7 MCP
+      const contextLibId = await resolveLibraryId('copilot-architecture');
+      const architectureDocs = await getLibraryDocs(contextLibId, 'legal-ai-integration');
+      this.copilotContext = {
+        architecture_summary: architectureDocs.substring(0, 2000),
+        legal_context: 'Legal AI workflow with evidence processing',
+        copilot_patterns: 'SvelteKit + Drizzle ORM + Qdrant + multimodal analysis',
+        enhancement_priority: true,
+      };
+      console.log('✅ Copilot integration initialized');
+    } catch (error: unknown) {
+      console.warn('⚠️ Copilot integration failed, continuing without:', error);
+    }
+  }
 
   /**
    * Initialize multimodal evidence processors
    */ private async initializeMultimodalProcessors(): Promise<void> {
-     console.log('🎥 Initializing multimodal processors...');
-     // Mock processors for different evidence types
-     this.multimodalProcessors.set('image', {
-       process: this.processImageEvidence.bind(this),
-       supportedFormats: ['jpg', 'jpeg', 'png', 'tiff', 'bmp'],
-     });
-     this.multimodalProcessors.set('video', {
-       process: this.processVideoEvidence.bind(this),
-       supportedFormats: ['mp4', 'avi', 'mov', 'mkv', 'webm'],
-     });
-     this.multimodalProcessors.set('audio', {
-       process: this.processAudioEvidence.bind(this),
-       supportedFormats: ['mp3', 'wav', 'flac', 'm4a', 'ogg'],
-     });
-     this.multimodalProcessors.set('document', {
-       process: this.processDocumentEvidence.bind(this),
-       supportedFormats: ['pdf', 'docx', 'txt', 'rtf'],
-     });
-   }
+    console.log('🎥 Initializing multimodal processors...');
+    // Mock processors for different evidence types
+    this.multimodalProcessors.set('image', {
+      process: this.processImageEvidence.bind(this),
+      supportedFormats: ['jpg', 'jpeg', 'png', 'tiff', 'bmp'],
+    });
+    this.multimodalProcessors.set('video', {
+      process: this.processVideoEvidence.bind(this),
+      supportedFormats: ['mp4', 'avi', 'mov', 'mkv', 'webm'],
+    });
+    this.multimodalProcessors.set('audio', {
+      process: this.processAudioEvidence.bind(this),
+      supportedFormats: ['mp3', 'wav', 'flac', 'm4a', 'ogg'],
+    });
+    this.multimodalProcessors.set('document', {
+      process: this.processDocumentEvidence.bind(this),
+      supportedFormats: ['pdf', 'docx', 'txt', 'rtf'],
+    });
+  }
 
   /**
    * Process image evidence: OCR, object detection, embedding, and storage
@@ -456,34 +455,34 @@ export class EnhancedIngestionPipeline {
   /**
    * Add documents to processing queue
    */ async queueDocuments(documents: IngestionDocument[]): Promise<void> {
-     this.processingQueue.push(...documents);
-     console.log(`📋 Added ${documents.length} documents to queue. Queue size: ${this.processingQueue.length}`);
-     if (!this.isProcessing) {
-       this.processQueue();
-     }
-   }
+    this.processingQueue.push(...documents);
+    console.log(`📋 Added ${documents.length} documents to queue. Queue size: ${this.processingQueue.length}`);
+    if (!this.isProcessing) {
+      this.processQueue();
+    }
+  }
 
   /**
    * Process queued documents automatically
    */ private async processQueue(): Promise<void> {
-     if (this.isProcessing || this.processingQueue.length === 0) return;
-     this.isProcessing = true;
-     console.log('🔄 Starting queue processing...');
-     while (this.processingQueue.length > 0) {
-       // Process in batches of 10 for optimal performance
-       const batchSize = Math.min(10, this.processingQueue.length);
-       const batch = this.processingQueue.splice(0, batchSize);
-       try {
-         await this.processBatch(batch);
-       } catch (error: unknown) {
-         console.error('Batch processing failed:', error);
-       }
-       // Small delay between batches to prevent overwhelming the system
-       await new Promise(resolve => setTimeout(resolve, 1000));
-     }
-     this.isProcessing = false;
-     console.log('✅ Queue processing completed');
-   }
+    if (this.isProcessing || this.processingQueue.length === 0) return;
+    this.isProcessing = true;
+    console.log('🔄 Starting queue processing...');
+    while (this.processingQueue.length > 0) {
+      // Process in batches of 10 for optimal performance
+      const batchSize = Math.min(10, this.processingQueue.length);
+      const batch = this.processingQueue.splice(0, batchSize);
+      try {
+        await this.processBatch(batch);
+      } catch (error: unknown) {
+        console.error('Batch processing failed:', error);
+      }
+      // Small delay between batches to prevent overwhelming the system
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    this.isProcessing = false;
+    console.log('✅ Queue processing completed');
+  }
 
   /**
    * Enhanced search using Qdrant vector similarity
@@ -674,21 +673,21 @@ export class EnhancedIngestionPipeline {
   /**
    * Determine legal category based on evidence analysis
    */ private determineLegalCategory(evidence: MultimodalEvidence): string {
-     // This is a mock implementation. In a real system, this would involve a more
-     // sophisticated classification model.
-     const content =
-       evidence.extracted_content.text ||
-       evidence.extracted_content.scene_summary ||
-       evidence.extracted_content.transcription ||
-       '';
-     if (content.includes('contract') || content.includes('agreement')) {
-       return 'Contract Law';
-     }
-     if (content.includes('crime') || content.includes('police')) {
-       return 'Criminal Law';
-     }
-     return 'General';
-   }
+    // This is a mock implementation. In a real system, this would involve a more
+    // sophisticated classification model.
+    const content =
+      evidence.extracted_content.text ||
+      evidence.extracted_content.scene_summary ||
+      evidence.extracted_content.transcription ||
+      '';
+    if (content.includes('contract') || content.includes('agreement')) {
+      return 'Contract Law';
+    }
+    if (content.includes('crime') || content.includes('police')) {
+      return 'Criminal Law';
+    }
+    return 'General';
+  }
 
   private async storeInQdrant(docEmbedding: DocumentEmbedding): Promise<void> {
     await this.qdrantService.upsertPoints('legal_documents', [

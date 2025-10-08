@@ -7,29 +7,35 @@
   // bits-ui / enhanced-bits-ui are Svelte-only (no React). UI primitives (Button, Tooltip, Badge, Input, Textarea) are imported later in the file.
   // Card components removed - using native HTML elements
   import Button from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge';
+  // Use default imports to match other UI components (avoid named/default mismatch)
+  import Badge from '$lib/components/ui/badge';
   import * as Tooltip from '$lib/components/ui/tooltip';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import type { ChatMessage, MessageAnalysis, RAGContext, Recommendation } from '$lib/types/ai-chat';
-  // Props using correct Svelte 5 syntax
-  let {
-    caseId = $bindable(''),
-    userId = $bindable(''),
-    enableWebGPU = $bindable(true),
-    enableAttentionTracking = $bindable(true),
-    showAnalysisPanel = $bindable(true),
-    maxMessages = $bindable(100)
-  }: {
+  import Textarea from '$lib/components/ui/Textarea.svelte';
+
+  import type { ChatMessage, MessageAnalysis, RAGContext } from '$lib/types/ai-chat';
+
+  // Local UI type: ChatMessage plus a required `id` used by the UI (each block key)
+  type UIMessage = ChatMessage & { id: string };
+
+  // Replace legacy `export let` with runes-compatible $props() destructuring
+  type Props = {
     caseId?: string;
     userId?: string;
     enableWebGPU?: boolean;
     enableAttentionTracking?: boolean;
     showAnalysisPanel?: boolean;
     maxMessages?: number;
-  } = $props();
+  };
+
+  let {
+    caseId = '',
+    userId = '',
+    enableWebGPU = true,
+    enableAttentionTracking = true,
+    showAnalysisPanel = true,
+    maxMessages = 100
+  } = $props<Props>();
+
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<HTMLTextAreaElement | null>(null);
@@ -39,8 +45,8 @@
   let currentAnalysis = $state<MessageAnalysis | null>(null);
   let ragContext = $state<RAGContext | null>(null);
   let userAttention = $state({ focused: true, lastActivity: Date.now() });
-  // Chat state
-  let messages = $state<ChatMessage[]>([]);
+  // Chat state (UI messages require `id`)
+  let messages = $state<UIMessage[]>([]);
   let sessionId = $state<string>('');
   let currentMessage = $state('');
   let wsConnection = $state<WebSocket | null>(null);
@@ -57,25 +63,33 @@
   async function initializeConnection() {
     if (!browser) return;
     try {
-      wsConnection = new WebSocket(`ws://localhost:5173/ws/chat`)
+      const proto = (location && location.protocol === 'https:') ? 'wss' : 'ws';
+      const host = (location && location.host) ? location.host : 'localhost:5173';
+      wsConnection = new WebSocket(`${proto}://${host}/ws/chat`);
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('✅ Enhanced AI Chat connected');
-      }
+      };
       wsConnection.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        handleWebSocketMessage(data);
-      }
+        try {
+          const data = JSON.parse(event.data);
+          handleWebSocketMessage(data);
+        } catch (e) {
+          console.warn('Malformed WS message', e);
+        }
+      };
       wsConnection.onclose = () => {
         isConnected = false;
         console.log('❌ Enhanced AI Chat disconnected');
-      }
+      };
       wsConnection.onerror = (error) => {
         console.error('❌ WebSocket error:', error);
         isConnected = false;
-      }
+      };
     } catch (error) {
       console.error('Failed to initialize connection:', error);
+      isConnected = false;
+      wsConnection = null;
     }
   }
   // Initialize WebGPU acceleration if enabled
@@ -91,10 +105,28 @@
     }
   }
   // Handle WebSocket messages
+  function normalizeIncomingMessage(raw: any) {
+    // Ensure minimal, well-typed ChatMessage shape for the UI
+    const id = raw?.id ?? raw?.messageId ?? `m_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
+    const role = raw?.role ?? (raw?.sender === 'user' ? 'user' : 'assistant');
+    const content = raw?.content ?? raw?.text ?? '';
+    const timestamp = raw?.timestamp ? new Date(raw.timestamp) : new Date();
+    const confidence = typeof raw?.confidence === 'number' ? raw.confidence : undefined;
+    const tokensPerSecond = typeof raw?.tokensPerSecond === 'number' ? raw.tokensPerSecond : undefined;
+    return {
+      id: String(id),
+      role,
+      content: String(content),
+      timestamp,
+      confidence,
+      tokensPerSecond
+    } as UIMessage;
+  }
+
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
       case 'message':
-        messages = [...messages, data.message];
+        messages = [...messages, normalizeIncomingMessage(data.message)];
         break;
       case 'typing':
         isTyping = data.isTyping;
@@ -114,90 +146,140 @@
         break;
       case 'stream_complete':
         if (streamingResponse) {
-          messages = [...messages, {
-            id: Date.now().toString(),
-            role: 'assistant',
-            content: streamingResponse,
-            timestamp: new Date(),
-            confidence: data.confidence,
-            analysis: currentAnalysis;
-          }];
+          messages = [
+            ...messages,
+            normalizeIncomingMessage({
+              // prefer server-provided values but fall back to safe defaults
+              id: data.id ?? `stream_${Date.now()}`,
+              role: 'assistant',
+              content: streamingResponse,
+              timestamp: data.timestamp ?? new Date().toISOString(),
+              confidence: data.confidence
+            })
+          ];
           streamingResponse = '';
         }
         isTyping = false;
         break;
     }
   }
-  async function sendMessage() {
-    if (!currentMessage.trim() || !isConnected || isTyping) return;
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
-    }
-    messages = [...messages, userMessage];
-    const messageToSend = currentMessage;
-    currentMessage = '';
-    isTyping = true;
-    // Send via WebSocket
-    if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
-      wsConnection.send(JSON.stringify({
-        type: 'message',
-        content: messageToSend,
-        sessionId,
-        userId,
-        caseId,
-        enableAnalysis: showAnalysisPanel,
-        enableWebGPU;
-      }));
-    }
-    // Fallback to HTTP API if WebSocket not available
-    if (!wsConnection || wsConnection.readyState !== WebSocket.OPEN) {
-      try {
-        const response = await fetch('/api/chat-test', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [{ role: 'user', content: messageToSend }]
-          })
-        });
-        const data = await response.json();
-        if (response.ok && data.message) {
-          messages = [...messages, {
+
+  // Helper to send via HTTP (extracted to avoid duplication)
+  async function sendViaHttp(messageToSend: string) {
+    try {
+      const response = await fetch('/api/chat-test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: messageToSend }] })
+      });
+
+      // Safely parse response body (handle non-JSON or empty bodies without throwing)
+      let data: any = {};
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        try {
+          data = await response.json();
+        } catch {
+          data = {};
+        }
+      } else {
+        // fallback to text for debugging / plain responses
+        try {
+          const text = await response.text();
+          data = text ? { message: text } : {};
+        } catch {
+          data = {};
+        }
+      }
+
+      if (response.ok && data?.message) {
+        messages = [
+          ...messages,
+          {
             id: Date.now().toString(),
             role: 'assistant',
             content: data.message,
             timestamp: new Date(),
             confidence: data.confidence,
-            tokensPerSecond: data.tokensPerSecond;
-          }];
-        }
-      } catch (error) {
-        console.error('Failed to send message:', error);
-        messages = [...messages, {
+            tokensPerSecond: data.tokensPerSecond
+          } as UIMessage
+        ];
+      } else {
+        const serverErr = data?.error ?? data?.message ?? `HTTP ${response.status}`;
+        throw new Error(serverErr);
+      }
+    } catch (error) {
+      console.error('Failed to send message via HTTP fallback:', error);
+      messages = [
+        ...messages,
+        {
           id: Date.now().toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date(),
-        }];
-      } finally {
-        isTyping = false;
-      }
+          timestamp: new Date()
+        } as UIMessage
+      ];
+    } finally {
+      isTyping = false;
     }
+  }
+
+  async function sendMessage() {
+    // allow fallback to HTTP when WS is not connected; only block empty messages or when already typing
+    if (!currentMessage.trim() || isTyping) return;
+    const userMessage: UIMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: currentMessage,
+      timestamp: new Date()
+    };
+    messages = [...messages, userMessage];
+    const messageToSend = currentMessage;
+    currentMessage = '';
+    isTyping = true;
+
+    // Try WebSocket first; if send fails, fall back to HTTP
+    if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
+      try {
+        wsConnection.send(
+          JSON.stringify({
+            type: 'message',
+            content: messageToSend,
+            sessionId,
+            userId,
+            caseId,
+            enableAnalysis: showAnalysisPanel,
+            enableWebGPU: enableWebGPU
+          })
+        );
+        // leave isTyping state to be updated by server 'typing'/'stream_complete' messages
+      } catch (err) {
+        console.warn('WebSocket send failed, falling back to HTTP', err);
+        await sendViaHttp(messageToSend);
+      }
+    } else {
+      await sendViaHttp(messageToSend);
+    }
+
     // Auto-scroll to bottom
     await tick();
     if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      try {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      } catch (e) {
+        // fallback: no-op
+      }
     }
   }
+
   // Handle keyboard shortcuts
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
+
   // Clear chat
   function clearChat() {
     messages = [];
@@ -205,38 +287,51 @@
     ragContext = null;
     streamingResponse = '';
   }
+
   // Track user attention if enabled
   function trackUserAttention() {
-    if (!enableAttentionTracking) return;
+    if (!enableAttentionTracking || !browser) return;
     userAttention = {
       focused: document.hasFocus(),
-      lastActivity: Date.now();
-    }
+      lastActivity: Date.now()
+    };
   }
+
+  // Safe timestamp formatter (handles Date or ISO string)
+  function formatTimestamp(ts: Date | string | undefined | null) {
+    if (!ts) return '';
+    if (typeof ts === 'string') {
+      const d = new Date(ts);
+      return isNaN(d.getTime()) ? '' : d.toLocaleTimeString();
+    }
+    return (ts as Date).toLocaleTimeString?.() ?? '';
+  }
+
   // Initialize on mount
   $effect(() => {
     (async () => {
       if (!sessionId) {
-        sessionId = `session_${Date.now()}_${Math.random().toString().substr(2, 9)}`;
+        // use slice instead of deprecated substr
+        sessionId = `session_${Date.now()}_${Math.random().toString().slice(2, 11)}`;
       }
       await initializeConnection();
       await initializeWebGPU();
-      if (enableAttentionTracking) {
+      if (enableAttentionTracking && browser) {
         document.addEventListener('visibilitychange', trackUserAttention);
-        document.addEventListener('focus', trackUserAttention);
-        document.addEventListener('blur', trackUserAttention);
+        window.addEventListener('focus', trackUserAttention);
+        window.addEventListener('blur', trackUserAttention);
       }
     })();
   });
   // Cleanup on destroy
   onDestroy(() => {
     if (wsConnection) {
-      wsConnection.close();
+      try { wsConnection.close(); } catch (e) { /* ignore */ }
     }
     if (enableAttentionTracking) {
       document.removeEventListener('visibilitychange', trackUserAttention);
-      document.removeEventListener('focus', trackUserAttention);
-      document.removeEventListener('blur', trackUserAttention);
+      window.removeEventListener('focus', trackUserAttention);
+      window.removeEventListener('blur', trackUserAttention);
     }
   });
 </script>
@@ -249,27 +344,23 @@
           <ChatBubbleIcon class="w-6 h-6 text-primary" />
           <div>
             <h3 class="text-lg font-semibold">Enhanced Legal AI Assistant</h3>
-            <p class="text-sm text-muted-foreground flex items-center gap-2">
+            <div class="text-sm text-muted-foreground flex items-center gap-2">
               <div class="flex items-center gap-1">
-                <div class="w-2 h-2 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
-                <span class="text-xs">
-                  {isConnected ? 'Connected' : 'Disconnected'}
-                </span>
+                <div class={isConnected ? 'w-2 h-2 rounded-full bg-green-500' : 'w-2 h-2 rounded-full bg-red-500'}></div>
+                <span class="text-xs">{isConnected ? 'Connected' : 'Disconnected'}</span>
               </div>
               {#if enableWebGPU && webgpuAccelerator}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">WebGPU Enabled</span>
               {/if}
-            </p>
+            </div>
           </div>
         </div>
+
+        <div class="flex items-center gap-2">
           {#if showAnalysisPanel}
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  class="p-2 bits-btn"
-                >
+                <Button variant="ghost" size="sm" class="p-2 bits-btn">
                   <MagnifyingGlassIcon class="w-4 h-4" />
                 </Button>
               </Tooltip.Trigger>
@@ -278,8 +369,8 @@
               </Tooltip.Content>
             </Tooltip.Root>
           {/if}
-          {/if}
-    <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">
+
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearChat} aria-label="Clear chat">
             Clear
           </Button>
         </div>
@@ -291,20 +382,14 @@
         bind:this={chatContainer}
         class="h-full overflow-y-auto p-4 space-y-4"
       >
-        {#each messages as message}
-          <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-            <div class="max-w-[80%] p-3 rounded-lg {
-              message.role === 'user'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted'
-            }">
+        {#each messages as message (message.id)}
+          <div class={message.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
+            <div class={message.role === 'user' ? 'max-w-[80%] p-3 rounded-lg bg-primary text-primary-foreground' : 'max-w-[80%] p-3 rounded-lg bg-muted'}>
               <div class="text-sm font-medium mb-1 opacity-70">
                 {message.role === 'user' ? 'You' : 'AI Assistant'}
-                <span class="text-xs ml-2">
-                  {message.timestamp?.toLocaleTimeString() || ''}
-                </span>
+                <span class="text-xs ml-2">{formatTimestamp(message.timestamp)}</span>
               </div>
-              <div class="whitespace-pre-wrap">{message.content}</div>
+              <div class="whitespace-pre-wrap">{message.content ?? ''}</div>
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-1 mt-2">
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.confidence * 100)}%</span>
@@ -350,11 +435,11 @@
           bind:value={currentMessage}
           placeholder="Ask about legal matters..."
           disabled={isTyping || !isConnected}
-          onkeydown={handleKeydown}
+          on:keydown={handleKeydown}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
         <Button
-          onclick={sendMessage}
+          on:click={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end bits-btn bits-btn"
         >

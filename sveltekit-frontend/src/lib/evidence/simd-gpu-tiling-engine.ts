@@ -40,8 +40,8 @@ const GPU_TILING_CONFIG = {
   simd: {
     vectorWidth: 8, // AVX2 256-bit / 32-bit float = 8 floats
     parallelChunks: 16,
-    batchProcessing: true
-    useGPUAcceleration: true
+    batchProcessing: true,
+    useGPUAcceleration: true,
   },
 }
 export interface TiledEvidenceChunk {
@@ -207,9 +207,9 @@ export class SIMDGPUTilingEngine {
    */
   async processEvidenceWithSIMDTiling(
     evidenceId: string
-    imageData: Float32Array
-    width: number
-    height: number;
+    imageData: Float32Array,
+    width: number,
+    height: number,
     options: {
       tileSize?: number;
       evidenceType?: 'screenshot' | 'handwriting' | 'text' | 'mixed';
@@ -263,10 +263,10 @@ export class SIMDGPUTilingEngine {
     console.log(`✅ Evidence processing complete: ${tiles.length} tiles in ${totalTime.toFixed(2)}ms`);
     return {
       chunks: tiles
-      totalProcessingTime: totalTime
+      totalProcessingTime: totalTime,
       simdMetrics: {
-        totalSIMDTime: simdTime
-        totalGPUTime: gpuTime
+        totalSIMDTime: simdTime,
+        totalGPUTime: gpuTime,
         throughputMBps,
         parallelEfficiency,
       },

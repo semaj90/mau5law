@@ -13,16 +13,19 @@ https://svelte.dev/e/js_parse_error -->
   import YoRHaNotificationManager from '$lib/components/yorha/YoRHaNotificationManager.svelte';
   // Props
   let { data }: { data: unknown } = $props(); // PageData
-  // State management
+
+  // State management (Svelte 5 runes)
   let selectedSection = $state('command-center');
   let showNewCaseModal = $state(false);
   let newCaseData = $state({
     title: '',
     description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical';
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
   });
+
   // Notification state
-  let notifications = $state<any[]>([]) => []);
+  let notifications = $state<any[]>([]);
+
   // Navigation sections
   const navigationSections = [
     { id: 'command-center', name: 'Command Center', icon: '🏢' },
@@ -32,13 +35,18 @@ https://svelte.dev/e/js_parse_error -->
     { id: 'search', name: 'Global Search', icon: '🔎' },
     { id: 'terminal', name: 'Terminal', icon: '💻' }
   ];
-  // Quick stats derived from data
-  let quickStats = $derived(() => ({
-    activeCases: (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData.activeCases,
-    evidenceItems: (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData.evidenceItems,
-    personsOfInterest: (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData.personsOfInterest,
-    aiQueries: (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData.aiQueries
+
+  // Quick stats derived from data (safe access + defaults)
+  let quickStats = $derived(() => {
+    const sd = (data as any)?.systemData || {};
+    return {
+      activeCases: sd.activeCases ?? 0,
+      evidenceItems: sd.evidenceItems ?? 0,
+      personsOfInterest: sd.personsOfInterest ?? 0,
+      aiQueries: sd.aiQueries ?? 0
+    };
   });
+
   // Handle section navigation
   function navigateToSection(sectionId: string) {
     selectedSection = sectionId;
@@ -57,6 +65,7 @@ https://svelte.dev/e/js_parse_error -->
         selectedSection = sectionId;
     }
   }
+
   // Handle new case creation
   async function handleCreateCase() {
     try {
@@ -65,24 +74,25 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           title: newCaseData.title,
           description: newCaseData.description,
-          priority: newCaseData.priority;
+          priority: newCaseData.priority
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const result = await (response as { ok?: unknown; json?: unknown }).json();
+
+      if (response.ok) {
+        const result = await response.json();
         showNewCaseModal = false;
         // Reset form
         newCaseData = {
           title: '',
           description: '',
           priority: 'medium'
-        }
+        };
         // Show success notification
-        addNotification('success', `Case "${(result as { title?: unknown }).title}" created successfully`, 5000);
-        // Refresh the page data
+        addNotification('success', `Case "${result?.title ?? 'untitled'}" created successfully`, 5000);
+        // Refresh the page data (invalidate)
         goto($page.url, { invalidateAll: true });
       } else {
         throw new Error('Failed to create case');
@@ -91,15 +101,17 @@ https://svelte.dev/e/js_parse_error -->
       addNotification('error', 'Failed to create case. Please try again.', 5000);
     }
   }
+
   // Cancel new case modal
   function cancelNewCase() {
     showNewCaseModal = false;
     newCaseData = {
       title: '',
       description: '',
-      priority: 'medium';
-    }
+      priority: 'medium'
+    };
   }
+
   // Helper function to add notifications
   function addNotification(type: string, message: string, duration: number = 5000) {
     const id = crypto.randomUUID();
@@ -127,23 +139,20 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center space-x-4">
         <button
           class="px-4 py-2 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-50 text-amber-300 hover:bg-opacity-30 transition-all duration-300"
-          onclick={() => (showNewCaseModal = true)}
+          on:click={() => (showNewCaseModal = true)}
         >
           + New Case
         </button>
         <div class="flex items-center space-x-2 text-sm">
           <span>User:</span>
           <span class="text-amber-400"
-            >{(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
-              .firstName}
-            {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
-              .lastName}</span
+            >{(data as any)?.user?.firstName}
+            {(data as any)?.user?.lastName}</span
           >
           <span
             class="px-2 py-1 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-30 text-xs uppercase"
           >
-            {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
-              .role}
+            {(data as any)?.user?.role}
           </span>
         </div>
       </div>
@@ -160,7 +169,7 @@ https://svelte.dev/e/js_parse_error -->
             section.id
               ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400'
               : 'text-amber-300'}"
-            onclick={() => navigateToSection(section.id)}
+            on:click={() => navigateToSection(section.id)}
           >
             <span class="text-lg">{section.icon}</span>
             <span class="font-medium">{section.name}</span>
@@ -193,9 +202,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if selectedSection === 'command-center'}
         <!-- Command Center Dashboard -->
         <YoRHaCommandCenter
-          systemData={(
-            data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }
-          ).systemData}
+          systemData={(data as any)?.systemData}
         />
       {:else if selectedSection === 'evidence'}
         <!-- Evidence Section -->
@@ -206,9 +213,10 @@ https://svelte.dev/e/js_parse_error -->
             <div class="recent-evidence bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Evidence</h3>
               <div class="space-y-3">
-                {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
-                  <div
-                    class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300"
+                {#if (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence && Array.isArray((data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence)}
+                  {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
+                    <div
+                      class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300"
                   >
                     <div class="flex justify-between items-start">
                       <div>
@@ -232,19 +240,19 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-3">
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/evidence/upload')}
+                  on:click={() => goto('/evidence/upload')}
                 >
                   📤 Upload Evidence
                 </button>
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/evidence/analyze')}
+                  on:click={() => goto('/evidence/analyze')}
                 >
                   🔍 Analyze Evidence
                 </button>
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/evidence/search')}
+                  on:click={() => goto('/evidence/search')}
                 >
                   🔎 Search Evidence
                 </button>
@@ -273,12 +281,13 @@ https://svelte.dev/e/js_parse_error -->
             <div class="recent-cases bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Cases</h3>
               <div class="space-y-3">
-                {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases.slice(0, 5) as case_}
-                  <div
-                    class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
+                {#if (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases && Array.isArray((data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases)}
+                  {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases.slice(0, 5) as case_}
+                    <div
+                      class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
                     role="button"
                     tabindex="0"
-                    onclick={() => goto(`/cases/${case_.id}`)}
+                    on:click={() => goto(`/cases/${case_.id}`)}
                   >
                     <div class="flex justify-between items-start">
                       <div>
@@ -317,19 +326,19 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-3">
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/ai-assistant')}
+                  on:click={() => goto('/ai-assistant')}
                 >
                   🤖 AI Assistant
                 </button>
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/detective/canvas')}
+                  on:click={() => goto('/detective/canvas')}
                 >
                   🎨 Evidence Canvas
                 </button>
                 <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  onclick={() => goto('/reports')}
+                  on:click={() => goto('/reports')}
                 >
                   📊 Generate Report
                 </button>
@@ -340,16 +349,17 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
+
   <!-- New Case Modal -->
   {#if showNewCaseModal}
     <YoRHaModal title="Create New Case" open={showNewCaseModal} close={cancelNewCase}>
-      <form class="space-y-4" onsubmit={handleCreateCase}>
+      <form class="space-y-4" on:submit|preventDefault={handleCreateCase}>
         <!-- Case Title -->
         <div>
           <label for="case-title" class="block text-sm font-medium text-amber-400 mb-2">Case Title</label>
           <input
             id="case-title"
-            type="text";
+            type="text"
             bind:value={newCaseData.title}
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
             placeholder="Enter case title..."
@@ -361,7 +371,6 @@ https://svelte.dev/e/js_parse_error -->
           <label for="case-description" class="block text-sm font-medium text-amber-400 mb-2">Description</label>
           <textarea
             id="case-description"
-            ;
             bind:value={newCaseData.description}
             rows="4"
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
@@ -373,7 +382,6 @@ https://svelte.dev/e/js_parse_error -->
           <label for="case-priority" class="block text-sm font-medium text-amber-400 mb-2">Priority</label>
           <select
             id="case-priority"
-            ;
             bind:value={newCaseData.priority}
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
           >
@@ -387,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            onclick={cancelNewCase}
+            on:click={cancelNewCase}
             class="px-6 py-2 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
           >
             Cancel
@@ -403,21 +411,22 @@ https://svelte.dev/e/js_parse_error -->
       </form>
     </YoRHaModal>
   {/if}
+
   <!-- Notification Manager -->
   {#if notifications.length > 0}
     <div class="notifications fixed top-4 right-4 space-y-2 z-50">
-      {#each notifications as notification ((notification as { id?: unknown; type?: unknown; message?: unknown }).id)}
+      {#each notifications as notification (notification.id)}
         <div
           class="notification bg-black bg-opacity-90 border border-amber-400 border-opacity-50 text-amber-300 p-3 rounded backdrop-blur-sm"
         >
           <div class="flex items-center space-x-2">
             <span class="text-lg">
-              {#if (notification as { id?: unknown; type?: unknown; message?: unknown }).type === 'success'}✅
-              {:else if (notification as { id?: unknown; type?: unknown; message?: unknown }).type === 'error'}❌
-              {:else if (notification as { id?: unknown; type?: unknown; message?: unknown }).type === 'warning'}⚠️
+              {#if notification.type === 'success'}✅
+              {:else if notification.type === 'error'}❌
+              {:else if notification.type === 'warning'}⚠️
               {:else}ℹ️{/if}
             </span>
-            <span class="text-sm">{(notification as { id?: unknown; type?: unknown; message?: unknown }).message}</span>
+            <span class="text-sm">{notification.message}</span>
           </div>
         </div>
       {/each}
@@ -443,10 +452,11 @@ https://svelte.dev/e/js_parse_error -->
     transform: scaleY(0);
     transition: transform 0.3s ease;
   }
-  .nav-item:hover:: before
+  .nav-item:hover::before,
   .nav-item.active::before {
     transform: scaleY(1);
   }
+
   .stat-item {
     padding: 12px;
     border: 1px solid rgba(251, 191, 36, 0.2);
@@ -457,15 +467,17 @@ https://svelte.dev/e/js_parse_error -->
     border-color: rgba(251, 191, 36, 0.4);
     background: rgba(251, 191, 36, 0.05);
   }
+
   .evidence-item,
   .case-item {
     transition: all 0.3s ease;
   }
-  .evidence-item: hover
+  .evidence-item:hover,
   .case-item:hover {
     background: rgba(251, 191, 36, 0.05);
     transform: translateX(4px);
   }
+
   .action-button {
     position: relative;
     overflow: hidden;

@@ -1,62 +1,71 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js'
 import { json, error } from '@sveltejs/kit'
-import { Pool } from 'pg'
+import { poolShim } from '$lib/server/db-shim';
 /*
  * Auto-Complete API Endpoint
  * Provides real-time legal phrase suggestions using semantic search
  */
-import type { Redis } from 'ioredis'
-import { createRedisInstance } from '$lib/server/redis'
-import { z } from 'zod'
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
+import { z } from 'zod';
 // Configuration
 const CONFIG = {
   redis: {
-    url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
+    url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
   },
   database: {
     user: import.meta.env.DB_USER || 'postgres',
     password: import.meta.env.DB_PASSWORD || 'password',
     host: import.meta.env.DB_HOST || 'localhost',
     port: parseInt(import.meta.env.DB_PORT || '5432'),
-    database: import.meta.env.DB_NAME || 'prosecutor_db'
+    database: import.meta.env.DB_NAME || 'prosecutor_db',
   },
   autocomplete: {
     maxSuggestions: 10,
     minQueryLength: 2,
-    cacheTimeSeconds: 300
-  }
-}
+    cacheTimeSeconds: 300,
+  },
+};
 // Validation schemas
 const AutocompleteRequestSchema = z.object({
   query: z.string().min(1).max(200),
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   maxResults: z.number().min(1).max(20).optional(),
-  includeScores: z.boolean().optional()
-})
-const AutocompleteSuggestionSchema = z.object({
-  suggestion: z.string(),
-  score: z.number(),
-  context_type: z.string(),
-  frequency: z.number().optional(),
-  prosecution_correlation: z.number().optional()
-})
+  includeScores: z.boolean().optional(),
+});
+// (Suggestion schema intentionally not used here; keep request schema)
+// Lightweight client shape used by the shim wrapper
+type ClientLike = {
+  query: (sql: string, params?: unknown[]) => Promise<{ rows?: unknown[] }>;
+  release?: () => void;
+};
 // Initialize connections
 type RedisClient = ReturnType<typeof createRedisInstance>
 let redis: RedisClient | null = null
-let db: Pool | null = null
+let db: { query: (sql: string, params?: any[]) => Promise<{ rows?: any[] }> } | null = null;
 function getRedis(): RedisClient {
   if (!redis) {
-    redis = createRedisInstance()
+    redis = createRedisInstance();
   }
-  return redis
+  return redis;
 }
 function getDB() {
   if (!db) {
-    db = new Pool(CONFIG.database)
+    // Provide a minimal db wrapper so existing call sites can use db.query(...)
+    db = {
+      query: async (sql: string, params?: any[]) => {
+        const conn = await (poolShim as unknown as { connect: () => Promise<ClientLike> }).connect();
+        try {
+          return await conn.query(sql, params);
+        } finally {
+          if (conn && typeof conn.release === 'function') conn.release();
+        }
+      },
+    };
   }
-  return db
+  return db;
 }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
@@ -178,8 +187,8 @@ async function getDatabaseSuggestions(
   context: string,
   jurisdiction: string | undefined,
   maxResults: number
-): Promise<any> {
-  const db = getDB()
+): Promise<unknown[]> {
+  const db = getDB();
   let sql = `
         SELECT
             spr.phrase as suggestion,
@@ -194,8 +203,8 @@ async function getDatabaseSuggestions(
             spr.frequency DESC,
             spr.correlation_strength DESC
         LIMIT $3
-    `
-  const params = [`%${query}%`, context, maxResults]
+    `;
+  const params = [`%${query}%`, context, maxResults];
   // Add jurisdiction filter if specified
   if (jurisdiction) {
     sql = `
@@ -213,11 +222,11 @@ async function getDatabaseSuggestions(
                 spr.frequency DESC,
                 spr.correlation_strength DESC
             LIMIT $3
-        `
-    params.push(jurisdiction)
+        `;
+    params.push(jurisdiction);
   }
-  const result = await db.query(sql, params)
-  return (result as { rows?: any }).rows
+  const result = await db.query(sql, params);
+  return (result as { rows?: unknown[] }).rows ?? [];
 }
 async function getSemanticSuggestions(query: string, maxResults: number): Promise<any> {
   const db = getDB()
@@ -250,7 +259,7 @@ function generatePrefixes(query: string): string[] {
   const prefixes = []
   // Generate cumulative prefixes
   for (let i = 1; i <= words.length; i++) {
-    prefixes.push(words.slice(0, i).join(' ')
+    prefixes.push(words.slice(0, i).join(' '));
   }
   // Add partial word prefixes for the last word
   const lastWord = words[words.length - 1]

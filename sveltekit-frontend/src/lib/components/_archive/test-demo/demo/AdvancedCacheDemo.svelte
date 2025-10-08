@@ -1,24 +1,22 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import { onMount } from 'svelte';
-  import { fade, fly, scale } from 'svelte/transition';
-  	import { quintOut } from 'svelte/easing';
-  	// Import our advanced services
-  	import { advancedCache } from '$lib/services/advanced-cache-manager';
-  	import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
-  	import { context7MCPIntegration } from '$lib/services/context7-mcp-integration';
-  	import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte';
-  	// Demo state
-  	let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
-  	let recommendations: any[] = $state([]);
-  	let bestPractices: any[] = $state([]);
-  	let demoQuery = $state('Review contract liability clauses for potential risks');
-  	let isLoading = $state(false);
-  	let showTypewriter = $state(false);
-  	let aiResponse = $state('');
-  	let userActivity: any[] = $state([]);
-  	// Demo data
-  	const legalQueries = [
+ 	import { fade, fly, scale } from 'svelte/transition';
+ 	// Import our advanced services
+ 	import { advancedCache } from '$lib/services/advanced-cache-manager';
+ 	import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
+ 	import { context7MCPIntegration } from '$lib/services/context7-mcp-integration';
+ 	import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte';
+ 	// Demo state
+ 	let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
+ 	let recommendations: any[] = $state([]);
+ 	let bestPractices: any[] = $state([]);
+ 	let demoQuery = $state('Review contract liability clauses for potential risks');
+ 	let isLoading = $state(false);
+ 	let showTypewriter = $state(false);
+ 	let aiResponse = $state('');
+ 	let userActivity: any[] = $state([]);
+ 	// Demo data
+ 	const legalQueries = [
   		'Analyze employment contract termination clause',
   		'Review intellectual property licensing agreement',
   		'Assess compliance with GDPR regulations',
@@ -26,21 +24,63 @@
   		'Examine patent infringement claims'
   	];
   	$effect(() => {
-    (async () => {
-// Load cache stats
-  		loadCacheStats();
-  		// Generate sample user activity
-  		generateSampleActivity();
-  		// Load initial best practices
-  		await loadBestPractices();
-  		// Set up periodic updates
-  		const interval = setInterval(loadCacheStats, 2000);
-  		return () => clearInterval(interval);
-    })();
-  });
+-  // initialize state (call async helpers without blocking the effect)
+-  loadCacheStats();
+-  generateSampleActivity();
+-  // fire-and-forget async load
+-  loadBestPractices().catch((err) => console.error('loadBestPractices error', err));
+-
+-  const interval = setInterval(loadCacheStats, 2000);
+-  return () => clearInterval(interval);
++  // initialize state (call async helpers without blocking the effect)
++  loadCacheStats();
++  generateSampleActivity();
++  // fire-and-forget async load
++  loadBestPractices().catch((err) => console.error('loadBestPractices error', err));
++
++  const interval = setInterval(loadCacheStats, 2000);
++  return () => clearInterval(interval);
+  	});
   	async function loadCacheStats() {
-  		const stats = advancedCache.getStats();
-  		cacheStats = { ...(await new Promise(resolve => stats.subscribe(resolve))) }
++    const defaults = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 };
++    try {
++      // Normalize the provider to a resolved value (handles sync return, Promise, or Svelte store)
++      const raw = advancedCache.getStats();
++
++      // If it's a Svelte store (has subscribe) return current value synchronously
++      if (raw && typeof (raw as any).subscribe === 'function') {
++        let current: any;
++        const unsubscribe = (raw as any).subscribe((v: any) => (current = v));
++        unsubscribe(); // always unsubscribe exactly once
++        cacheStats = { ...defaults, ...(current ?? {}) };
++        return;
++      }
++
++      // Resolve promises or values uniformly
++      const resolved = await Promise.resolve(raw);
++
++      // If resolved value is a store, extract its current value
++      if (resolved && typeof (resolved as any).subscribe === 'function') {
++        let current: any;
++        const unsubscribe = (resolved as any).subscribe((v: any) => (current = v));
++        unsubscribe();
++        cacheStats = { ...defaults, ...(current ?? {}) };
++        return;
++      }
++
++      // If resolved is a function (lazy provider), call it and await result
++      if (typeof resolved === 'function') {
++        const fnResult = await (resolved as Function)();
++        cacheStats = { ...defaults, ...(fnResult ?? {}) };
++        return;
++      }
++
++      // Plain object or undefined
++      cacheStats = { ...defaults, ...(resolved ?? {}) };
++    } catch (err) {
++      console.error('Failed to load cache stats:', err);
++      cacheStats = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 };
++    }
   	}
   	async function loadBestPractices() {
   		try {
@@ -55,11 +95,11 @@
   			// Simulate thinking time
   			await new Promise(resolve => setTimeout(resolve, 1500));
   			recommendations = await aiRecommendationEngine.generateRecommendations({
-  				userQuery: demoQuery
+  				userQuery: demoQuery,
   				legalDomain: 'contract',
   				userRole: 'legal_analyst',
-  				priority: 'high';
-  			});
+  					priority: 'high',
+  				});
   			// Simulate AI response
   			aiResponse = `Based on my analysis of "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
   			showTypewriter = true;
@@ -80,19 +120,37 @@
   		];
   	}
   	async function testCaching() {
-  		const testKey = `demo_${Date.now()}`;
-  		const testData = { message: 'Cached legal document', timestamp: Date.now() }
-  		// Set cache item
-  		await advancedCache.set(testKey, testData, {
-  			priority: 'high',
-  			ttl: 30000,
-  			tags: ['demo', 'legal-doc'];
-  		});
-  		// Get cache item (should be a hit)
-  		const retrieved = await advancedCache.get(testKey);
-  		console.log('Cache test result:', retrieved);
-  		// Update stats
-  		await loadCacheStats();
+-    const testKey = `demo_${Date.now()}`;
+-    const testData = { message: 'Cached legal document', timestamp: Date.now() };
+-    // Set cache item (fixed object literal punctuation)
+-    await advancedCache.set(testKey, testData, {
+-      priority: 'high',
+-      ttl: 30000,
+-      tags: ['demo', 'legal-doc']
+-    });
+-    // Get cache item (should be a hit)
+-    const retrieved = await advancedCache.get(testKey);
+-    console.log('Cache test result:', retrieved);
+-    // Update stats
+-    await loadCacheStats();
++    const testKey = `demo_${Date.now()}`;
++    const testData = { message: 'Cached legal document', timestamp: Date.now() };
++    try {
++      // Set cache item
++      await advancedCache.set(testKey, testData, {
++        priority: 'high',
++        ttl: 30000,
++        tags: ['demo', 'legal-doc']
++      });
++      // Get cache item (should be a hit)
++      const retrieved = await advancedCache.get(testKey);
++      console.log('Cache test result:', retrieved);
++    } catch (err) {
++      console.error('testCaching error:', err);
++    } finally {
++      // Update stats even on error to keep UI in sync
++      await loadCacheStats();
++    }
   	}
   	async function testLazyLoading() {
   		const loader = async () => {
@@ -122,17 +180,14 @@
   		recommendations = [];
   	}
   	function getRiskLevelClass(level: string) {
-  		return `risk-indicator ${level}`;
-  	}
-  	function getConfidenceWidth(confidence: number) {
-  		return `${Math.round(confidence * 100)}%`;
-  	}
+ 		return `risk-indicator ${level}`;
+ 	}
+	function getConfidenceWidth(confidence?: number) {
+		// defensively handle undefined confidence
+		return `${Math.round((confidence ?? 0) * 100)}%`;
+	}
 </script>
 
-<!-- Load advanced interaction styles -->
-<svelte:head>
-  <link rel="stylesheet" href="/src/lib/styles/advanced-interactions.css" />
-</svelte:head>
 <div class="advanced-cache-demo p-6 bg-yorha-bg-secondary min-h-screen">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
@@ -162,7 +217,8 @@
         </div>
         <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
           <div class="text-2xl font-bold text-yorha-text-primary">
-            {Math.round(cacheStats.total_size / 1024)}KB
+-            {Math.round(cacheStats.total_size / 1024)}KB
++            {Math.round((cacheStats.total_size ?? 0) / 1024)}KB
           </div>
           <div class="text-sm text-yorha-text-muted">Cache Size</div>
         </div>
@@ -174,13 +230,13 @@
       <div class="flex gap-4">
         <button
           class="bg-yorha-primary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-primary hover:bg-yorha-secondary transition-colors focus-ring-enhanced"
-          onclick={testCaching}
+          on:click={testCaching}
         >
           Test Caching
         </button>
         <button
           class="bg-yorha-accent text-yorha-bg-primary px-4 py-2 rounded border border-yorha-accent hover:opacity-80 transition-opacity focus-ring-enhanced"
-          onclick={testLazyLoading}
+          on:click={testLazyLoading}
         >
           Test Lazy Loading
         </button>
@@ -196,7 +252,7 @@
           {#each legalQueries as query, i}
             <button
               class="sample-query-btn text-sm px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded hover:border-yorha-primary transition-colors focus-ring-enhanced"
-              onclick={() => selectQuery(query)}
+              on:click={() => selectQuery(query)}
               in:fly={{ x: -20, duration: 400, delay: i * 100 }}
             >
               {query}
@@ -215,7 +271,7 @@
           />
           <button
             class="bg-gradient-to-r from-yorha-primary to-yorha-secondary text-yorha-bg-primary px-6 py-2 rounded border border-yorha-primary hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed focus-ring-enhanced"
-            onclick={generateRecommendations}
+            on:click={generateRecommendations}
             disabled={isLoading || !demoQuery.trim()}
           >
             {isLoading ? 'Analyzing...' : 'Analyze Query'}
@@ -238,7 +294,7 @@
       <!-- Typewriter Response -->
       {#if showTypewriter}
         <div
-          class="typewriter-section bg-yorha-bg-tertiary border border-yorha-border p-4 rounded mb-4";
+          class="typewriter-section bg-yorha-bg-tertiary border border-yorha-border p-4 rounded mb-4"
           in:scale={{ duration: 400, start: 0.95 }}
         >
           <h3 class="text-lg font-semibold text-yorha-primary mb-2">AI Analysis Results</h3>
@@ -277,7 +333,8 @@
                 </div>
                 <div class="confidence-section text-right">
                   <div class="text-sm text-yorha-text-muted">
-                    {Math.round(rec.confidence * 100)}% confidence
+-                    {Math.round(rec.confidence * 100)}% confidence
++                    {Math.round((rec.confidence ?? 0) * 100)}% confidence
                   </div>
                   <div class="confidence-indicator">
                     <div class="confidence-bar" style="width: {getConfidenceWidth(rec.confidence)}"></div>
@@ -307,7 +364,7 @@
         </h2>
         <div class="grid gap-4">
           {#each bestPractices as practice, i}
-            <div class="context7-enhancement performance-optimized" ; in:fly={{ y: 30, duration: 400, delay: i * 150 }}>
+            <div class="context7-enhancement performance-optimized" in:fly={{ y: 30, duration: 400, delay: i * 150 }}>
               <div class="flex items-start justify-between mb-2">
                 <h3 class="font-semibold text-yorha-text-primary">{practice.title}</h3>
                 <div class={getRiskLevelClass(practice.priority)}>
@@ -328,9 +385,12 @@
               {/if}
               <div class="practice-meta flex items-center gap-4 mt-3 text-xs text-yorha-text-muted">
                 <span>⏱️ {practice.estimatedEffort}</span>
-                {#if practice.dependencies.length > 0}
-                  <span>📦 {practice.dependencies.join(', ')}</span>
-                {/if}
+-                {#if practice.dependencies.length > 0}
+-                  <span>📦 {practice.dependencies.join(', ')}</span>
+-                {/if}
++                {#if practice.dependencies && practice.dependencies.length > 0}
++                  <span>📦 {practice.dependencies.join(', ')}</span>
++                {/if}
                 {#if practice.legalSpecific}
                   <span class="legal-accent">⚖️ Legal-specific</span>
                 {/if}
@@ -346,7 +406,7 @@
       <div class="flex flex-wrap gap-4">
         <button
           class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
-          onclick={() => {
+          on:click={() => {
             recommendations = [];
             showTypewriter = false;
           }}
@@ -355,13 +415,13 @@
         </button>
         <button
           class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity focus-ring-enhanced"
-          onclick={loadBestPractices}
+          on:click={loadBestPractices}
         >
           Refresh Best Practices
         </button>
         <button
           class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity focus-ring-enhanced"
-          onclick={() => advancedCache.clearRecommendations()}
+          on:click={() => advancedCache.clearRecommendations()}
         >
           Clear Cache
         </button>
@@ -371,8 +431,12 @@
 </div>
 
 <style>
-  /* Import advanced interactions first */
-  @import '$lib/styles/advanced-interactions.css';
+-  /* Import advanced interactions (use absolute path so PostCSS/Vite resolves it reliably) */
+-  @import '/src/lib/styles/advanced-interactions.css';
++  /* Import advanced interactions using a project-relative relative path
++     (avoid absolute leading slash which resolves to disk root like C:\src\...) */
++  @import '../../../../styles/advanced-interactions.css';
+
   .advanced-cache-demo {
     font-family: 'Inter', system-ui, sans-serif;
   }
@@ -387,9 +451,32 @@
     transform: translateX(2px);
   }
   .code-example summary:hover {
-    text-decoration: underli;
+    text-decoration: underline;
   }
   .recommendation-type {
     font-family: 'Monaco', 'Menlo', monospace;
   }
 </style>
+          on:click={() => {
+            recommendations = [];
+            showTypewriter = false;
+          }}
+        >
+          Clear Results
+        </button>
+        <button
+          class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity focus-ring-enhanced"
+          on:click={loadBestPractices}
+        >
+          Refresh Best Practices
+        </button>
+        <button
+          class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity focus-ring-enhanced"
+          on:click={() => advancedCache.clearRecommendations()}
+        >
+          Clear Cache
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

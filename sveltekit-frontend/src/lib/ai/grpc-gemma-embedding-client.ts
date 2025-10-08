@@ -11,7 +11,7 @@
  */
 import * as grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
-import { Pool, type PoolConfig } from 'pg';
+import { poolShim } from '$lib/server/db-shim';
 import { performance } from 'perf_hooks';
 import Redis, { type RedisOptions } from 'ioredis';
 // Load protobuf definitions
@@ -112,7 +112,8 @@ interface GemmaEmbeddingServiceClient extends grpc.Client {
 class GRPCGemmaEmbeddingClient {
   // typed client instead of `any`
   private client: GemmaEmbeddingServiceClient;
-  private db: Pool;
+  // Use the poolShim from db-shim which provides a minimal Pool-like API on top of postgres-js
+  private db: typeof poolShim;
   // typed redis instance
   private redis: Redis;
   private connectionPool: grpc.ChannelCredentials[] = [];
@@ -128,16 +129,18 @@ class GRPCGemmaEmbeddingClient {
   };
   constructor(config: {
     grpcEndpoint: string;
-    dbConfig: PoolConfig;
+    // dbConfig is accepted for compatibility but the shim manages connections via DATABASE_URL
+    dbConfig?: Record<string, unknown>;
     // use explicit RedisOptions type
     redisConfig?: string | RedisOptions;
     maxConnections?: number;
     timeoutMs?: number;
   }) {
     this.initializeGRPCClient(config.grpcEndpoint, config.maxConnections);
-    this.db = new Pool(config.dbConfig);
+    // Use the shared poolShim instead of creating a new pg Pool. This is conservative and reversible.
+    this.db = poolShim;
     // construct Redis using the imported Redis class
-    this.redis = new Redis(config.redisConfig as any);
+    this.redis = new Redis((config.redisConfig ?? undefined) as RedisOptions | string | undefined);
     this.circuitBreaker = new CircuitBreaker({
       failureThreshold: 5,
       recoveryTimeout: 30000,
@@ -514,10 +517,11 @@ class GRPCGemmaEmbeddingClient {
   }
   /**
    * Get client performance metrics
-   */ getMetrics(): any {
+   */
+  getMetrics(): { [key: string]: unknown } {
     return {
       ...this.metrics,
-      successRate: this.metrics.successfulRequests / this.metrics.totalRequests,
+      successRate: this.metrics.successfulRequests / Math.max(1, this.metrics.totalRequests),
       connectionPoolSize: this.connectionPool.length,
       circuitBreakerState: this.circuitBreaker.getState(),
     };
@@ -551,14 +555,16 @@ class GRPCGemmaEmbeddingClient {
   /**
    * Cleanup resources
    */ async cleanup(): Promise<void> {
-    // Close gRPC client
-    this.client.close();
-    // Close database connections
-    await this.db.end();
-    // Close Redis connection (Redis has quit())
-    await this.redis.quit();
-    console.log('🧹 gRPC Gemma Embedding Client cleanup completed');
-  }
+     // Close gRPC client
+     this.client.close();
+     // Close database connections (shim provides an optional end())
+     if (typeof this.db.end === 'function') {
+       await this.db.end();
+     }
+     // Close Redis connection (Redis has quit())
+     await this.redis.quit();
+     console.log('🧹 gRPC Gemma Embedding Client cleanup completed');
+   }
 }
 // =============================================================================
 // CIRCUIT BREAKER IMPLEMENTATION

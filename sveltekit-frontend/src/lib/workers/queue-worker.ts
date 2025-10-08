@@ -1,18 +1,17 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
+import pgClient from '$lib/server/db-shim';
 import { document_chunks } from '$lib/db/schema';
 import { cache } from '$lib/server/cache/redis';
 import { globalLoki } from '$lib/stores/global-loki';
 import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 import { jobMachine } from '$lib/workers/job-state';
-import { eq, and, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { redis } from '$lib/server/redis';
 import { closeRabbitMQ } from '$lib/server/rabbitmq';
 import { emitCacheEvent } from '$lib/server/cache/cache-events';
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-// Initialize drizzle DB instance
-const db = drizzle(pool);
+// Use postgres-js client from db-shim for Drizzle
+const db = drizzle(pgClient as any);
 let shuttingDown = false;
 // Wire globalLoki to Redis client if available
 (async () => {
@@ -74,16 +73,18 @@ async function processJob(job: { id: string; text: string; model?: string }) {
   } catch (e) {
     console.warn('⚠️ NX dedupe lock failed (continuing):', (e as Error).message || e);
   }
-  await jobMachine.createJob(job.id, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
+
+  // --- Changed: use safeJobMachine instead of jobMachine directly ---
+  await safeJobMachine.createJob(job.id, { model: job?.model || 'unknown' }); // @ts-ignore - Model property access
   try {
-    await globalLoki.startJob({ id: job.id, model: job?.model || "unknown", text: job.text }); // @ts-ignore - Model property access
+    await globalLoki.startJob({ id: job.id, model: job?.model || 'unknown', text: job.text }); // @ts-ignore - Model property access
   } catch (error) {}
-  const started = await jobMachine.startJob(job.id);
+  const started = await safeJobMachine.startJob(job.id);
   if (!started) {
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
   }
   try {
-  const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
+    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`)
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
@@ -109,7 +110,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
       .from(document_chunks as any)
       .where(sql`(metadata->>'jobId') = ${job.id}` as any);
     inserted = (already?.[0]?.count ?? 0) > 0;
-    await jobMachine.completeJob(job.id);
+    await safeJobMachine.completeJob(job.id);
     try {
       await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length: 0 });
     } catch (error) {}
@@ -135,7 +136,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     console.log('✅ Stored embedding for', job.id);
   } catch (err: any) {
     console.error('❌ Job failed:', err?.message || err);
-    await jobMachine.failJob(job.id, err, false);
+    await safeJobMachine.failJob(job.id, err, false);
     try {
       await globalLoki.failJob(job.id, err?.message || String(err));
     } catch (error) {}
@@ -201,7 +202,9 @@ process.on('SIGINT', async () => {
   console.log('🛑 Worker shutting down (SIGINT)');
   shuttingDown = true;
   try {
-    await pool.end();
+    if (typeof (pgClient as any).end === 'function') {
+      await (pgClient as any).end();
+    }
   } catch (error) {}
   try {
     await closeRabbitMQ();
@@ -212,7 +215,9 @@ process.on('SIGTERM', async () => {
   console.log('🛑 Worker shutting down (SIGTERM)');
   shuttingDown = true;
   try {
-    await pool.end();
+    if (typeof (pgClient as any).end === 'function') {
+      await (pgClient as any).end();
+    }
   } catch (error) {}
   try {
     await closeRabbitMQ();
@@ -220,3 +225,34 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 void runWorker();
+
+// --- Changed: add safe shim for jobMachine to avoid runtime errors if the export shape differs ---
+const safeJobMachine = (() => {
+	// Basic heuristic: must be an object and expose methods used below
+	if (jobMachine && typeof jobMachine === 'object') {
+		const hasCreate = typeof (jobMachine as any).createJob === 'function';
+		const hasStart = typeof (jobMachine as any).startJob === 'function';
+		const hasComplete = typeof (jobMachine as any).completeJob === 'function';
+		const hasFail = typeof (jobMachine as any).failJob === 'function';
+		if (hasCreate && hasStart && hasComplete && hasFail) {
+			return jobMachine as any;
+		}
+	}
+	// Fallback stub that logs and no-ops to keep worker running
+	console.warn('⚠️ jobMachine not available or missing methods — using stubbed fallback.');
+	return {
+		async createJob(id: string, ctx?: any) {
+			console.warn(`jobMachine.createJob stub called for ${id}`);
+		},
+		async startJob(id: string) {
+			console.warn(`jobMachine.startJob stub called for ${id}`);
+			return true;
+		},
+		async completeJob(id: string) {
+			console.warn(`jobMachine.completeJob stub called for ${id}`);
+		},
+		async failJob(id: string, err?: any, retry?: boolean) {
+			console.warn(`jobMachine.failJob stub called for ${id} -`, err);
+		},
+	} as const;
+})();
