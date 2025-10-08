@@ -17,8 +17,6 @@ https://svelte.dev/e/expected_token -->
   - Fuse.js: Fuzzy search with legal-specific weighting
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     instantSearchEngine,
@@ -29,7 +27,6 @@ https://svelte.dev/e/expected_token -->
   import Button from '$lib/components/ui/nes-button.svelte';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import * as Select from '$lib/components/ui/select';
   import {
     Search,
     Loader2,
@@ -42,148 +39,162 @@ https://svelte.dev/e/expected_token -->
     Shield,
     Zap
   } from 'lucide-svelte';
+
   // Props
-  let { placeholder = 'Search legal documents, cases, evidence...',
-    showFilters = true,
-    showStats = true,
-    showAdvanced = false,
-    maxResults = 20,
-    onResultClick = null,
-    onResultAction = null,
-    class: className = '';
-   }: { placeholder = 'Search legal documents, cases, evidence...',
-    showFilters = true,
-    showStats = true,
-    showAdvanced = false,
-    maxResults = 20,
-    onResultClick = null,
-    onResultAction = null,
-    class: className = ''
-  : unknown } = $props();
+  export let placeholder: string = 'Search legal documents, cases, evidence...';
+  export let showFilters: boolean = true;
+  export let showStats: boolean = true;
+  export let showAdvanced: boolean = false;
+  export let maxResults: number = 20;
+  export let onResultClick: ((r: InstantSearchResult) => void) | null = null;
+  export let onResultAction: ((r: InstantSearchResult, a: string) => void) | null = null;
+  export let class: string | undefined = undefined;
+  const className = class ?? '';
+
   // Search state
-  let searchQuery = $state('');
-  let searchResults = $state<InstantSearchResult[]>([]);
-  let isSearching = $state(false);
-  let showFiltersPanel = $state(false);
-  let searchStartTime = $state(0);
-  let lastSearchTime = $state(0);
+  let searchQuery = '';
+  let searchResults: InstantSearchResult[] = [];
+  let isSearching = false;
+  let showFiltersPanel = false;
+  let searchStartTime = 0;
+  let lastSearchTime = 0;
+
   // Filters
-  let selectedFilters = $state<SearchFilters>({
+  let selectedFilters: SearchFilters = {
     documentTypes: [],
     riskLevels: [],
     jurisdictions: [],
     confidenceMin: 0.5,
-    priorityMin: 50,
-  });
+    priorityMin: 50
+  };
+
   // Stats
-  let searchStats = $state({
+  let searchStats = {
     totalSearches: 0,
     averageResponseTime: 0,
     cacheHitRate: 0,
-    popularQueries: [],
+    popularQueries: [] as string[],
     performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 }
-  });
+  };
+
   // Search options
   const documentTypes = [
     { value: 'contract', label: 'Contracts', icon: FileText },
     { value: 'evidence', label: 'Evidence', icon: Shield },
     { value: 'brief', label: 'Legal Briefs', icon: Scale },
     { value: 'citation', label: 'Citations', icon: TrendingUp },
-    { value: 'precedent', label: 'Precedents', icon: Clock },
+    { value: 'precedent', label: 'Precedents', icon: Clock }
   ];
   const riskLevels = [
     { value: 'low', label: 'Low Risk', color: 'bg-green-100 text-green-800' },
     { value: 'medium', label: 'Medium Risk', color: 'bg-yellow-100 text-yellow-800' },
     { value: 'high', label: 'High Risk', color: 'bg-orange-100 text-orange-800' },
-    { value: 'critical', label: 'Critical Risk', color: 'bg-red-100 text-red-800' },
+    { value: 'critical', label: 'Critical Risk', color: 'bg-red-100 text-red-800' }
   ];
   const jurisdictions = [
     { value: 'federal', label: 'Federal' },
     { value: 'state', label: 'State' },
     { value: 'local', label: 'Local' },
-    { value: 'international', label: 'International' },
+    { value: 'international', label: 'International' }
   ];
-  let searchTimeout: NodeJS.Timeout | null = null;
-  // Initialize search engine
-  $effect(() => {
+
+  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // Initialize search engine and wire events
+  onMount(() => {
+    let mounted = true;
+
     (async () => {
-try {
-      await instantSearchEngine.initialize();
-      // Set up event listeners
-      instantSearchEngine.on('searchCompleted', (data) => {
-        lastSearchTime = (data as { responseTime?: unknown; documentCount?: unknown; jurisdiction?: unknown }).responseTim;
-        if (showStats) {
-          searchStats = instantSearchEngine.getSearchStats();
-        }
+      try {
+        await instantSearchEngine.initialize();
+        // searchCompleted -> update metrics/time/results as provided by engine
+        instantSearchEngine.on('searchCompleted', (data: any) => {
+          // robustly read responseTime
+          lastSearchTime = typeof data?.responseTime === 'number' ? data.responseTime : 0;
+          if (showStats && typeof instantSearchEngine.getSearchStats === 'function') {
+            const stats = instantSearchEngine.getSearchStats();
+            if (mounted && stats) searchStats = stats;
+          }
+        });
+        // indexRefreshed -> log count if available
+        instantSearchEngine.on('indexRefreshed', (data: any) => {
+          if (data && typeof data.documentCount !== 'undefined') {
+            console.log(`indexRefreshed: ${data.documentCount} documents`);
+          } else {
+            console.log('indexRefreshed');
+          }
+        });
+      } catch (error) {
+        console.error('❌ Failed to initialize search engine:', error);
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
   });
-      instantSearchEngine.on('indexRefreshed', (data) => {
-        console.log.documentCount} documents`);
-      });
-    } catch (error) {
-      console.error('❌ Failed to initialize search engine:', error);
-    }
+
+  onDestroy(() => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    // do not destroy singleton instantSearchEngine here
   });
-  onDestroy(async () => {
+
+  // Reactive debounce: watch searchQuery changes
+  $: {
     if (searchTimeout) {
       clearTimeout(searchTimeout);
+      searchTimeout = null;
     }
-    // Note: Don't destroy the singleton instance here as it might be used elsewhere
-  });
-  // Reactive search with debouncing
-  $effect(() => {
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    if (searchQuery.trim.length < 2) {
+
+    if (!searchQuery || searchQuery.trim().length < 2) {
       searchResults = [];
       isSearching = false;
-      return;
+    } else {
+      isSearching = true;
+      searchStartTime = Date.now();
+      searchTimeout = setTimeout(async () => {
+        await performSearch();
+      }, 150);
     }
-    isSearching = true;
-    searchStartTime = Date.now();
-    searchTimeout = setTimeout(async () => {
-      await performSearch();
-    }, 150); // 150ms debounce
-  });
+  }
+
   async function performSearch() {
-    if (!searchQuery.trim()) {
+    if (!searchQuery || !searchQuery.trim()) {
       searchResults = [];
       isSearching = false;
       return;
     }
     try {
-      const results = await instantSearchEngine.search(
-        searchQuery.trim(),
-        selectedFilters,
-        `search_${Date.now()}`
-      );
-      searchResults = results.slice(0, maxResults);
+      const results = await instantSearchEngine.search(searchQuery.trim(), selectedFilters, `search_${Date.now()}`);
+      searchResults = Array.isArray(results) ? results.slice(0, maxResults) : [];
       isSearching = false;
     } catch (error) {
       console.error('❌ Search failed:', error);
       searchResults = [];
       isSearching = false;
+    } finally {
+      lastSearchTime = Date.now() - searchStartTime;
     }
   }
+
   function toggleFiltersPanel() {
     showFiltersPanel = !showFiltersPanel;
   }
+
   function handleResultClick(result: InstantSearchResult) {
-    if (onResultClick) {
-      onResultClick(result);
-    }
+    if (onResultClick) onResultClick(result);
   }
+
   function handleResultAction(result: InstantSearchResult, action: string) {
-    if (onResultAction) {
-      onResultAction(result, action);
-    }
+    if (onResultAction) onResultAction(result, action);
   }
-  function getRiskLevelColor(riskLevel: string) {
+
+  function getRiskLevelColor(riskLevel: string | undefined) {
     const risk = riskLevels.find(r => r.value === riskLevel);
     return risk?.color || 'bg-gray-100 text-gray-800';
   }
-  function getResultTypeIcon(resultType: string) {
+
+  function getResultTypeIcon(resultType: string | undefined) {
     switch (resultType) {
       case 'cache': return Clock;
       case 'fuzzy': return Search;
@@ -192,7 +203,8 @@ try {
       default: return FileText;
     }
   }
-  function getResultTypeColor(resultType: string) {
+
+  function getResultTypeColor(resultType: string | undefined) {
     switch (resultType) {
       case 'cache': return 'text-blue-600';
       case 'fuzzy': return 'text-green-600';
@@ -201,10 +213,13 @@ try {
       default: return 'text-gray-600';
     }
   }
-  function formatScore(score: number) {
+
+  function formatScore(score: number | undefined) {
+    if (typeof score !== 'number' || Number.isNaN(score)) return '0.0%';
     return (score * 100).toFixed(1) + '%';
   }
-  function handleKeydown(_event: KeyboardEvent) {
+
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && searchResults.length > 0) {
       handleResultClick(searchResults[0]);
     } else if (event.key === 'Escape') {
@@ -213,18 +228,17 @@ try {
     }
   }
 </script>
+
 <div class="instant-legal-search {className}">
   <!-- Search Header -->
   <div class="space-y-4">
     <!-- Main Search Input -->
     <div class="relative">
-      <Search
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled"
-      />
+      <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
       <Input
         bind:value={searchQuery}
-        {placeholder}
-        keydown={handleKeydown}
+        placeholder={placeholder}
+        on:keydown={handleKeydown}
         class="pl-10 pr-20 text-base"
       />
       <!-- Search Status Icons -->
@@ -233,19 +247,16 @@ try {
           <Loader2 class="h-4 w-4 animate-spin nes-text is-disabled" />
         {/if}
         {#if showFilters}
-          <Button
-            size="sm"
-            variant="ghost"
-            onclick={toggleFiltersPanel}
-            class="h-8 w-8 p-0"
-          >
-<Filter class="h-4 w-4" />
+          <Button size="sm" variant="ghost" on:click={toggleFiltersPanel} class="h-8 w-8 p-0">
+            <Filter class="h-4 w-4" />
+          </Button>
         {/if}
       </div>
     </div>
+
     <!-- Search Filters Panel -->
     {#if showFiltersPanel && showFilters}
-      <div.Root class="p-4">
+      <div class="p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Document Types -->
           <div>
@@ -253,81 +264,58 @@ try {
             <div class="space-y-2">
               {#each documentTypes as docType}
                 <label class="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    bind:group={selectedFilters.documentTypes}
-                    value={docType.value}
-                    class="rounded"
-                  />
+                  <input type="checkbox" bind:group={selectedFilters.documentTypes} value={docType.value} class="rounded" />
                   <svelte:component this={docType.icon} class="h-4 w-4" />
                   <span class="text-sm">{docType.label}</span>
                 </label>
               {/each}
             </div>
           </div>
+
           <!-- Risk Levels -->
           <div>
             <label class="text-sm font-medium mb-2 block">Risk Levels</label>
             <div class="space-y-2">
               {#each riskLevels as risk}
                 <label class="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    bind:group={selectedFilters.riskLevels}
-                    value={risk.value}
-                    class="rounded"
-                  />
+                  <input type="checkbox" bind:group={selectedFilters.riskLevels} value={risk.value} class="rounded" />
                   <Badge class={risk.color}>{risk.label}</Badge>
                 </label>
               {/each}
             </div>
           </div>
+
           <!-- Jurisdictions -->
           <div>
             <label class="text-sm font-medium mb-2 block">Jurisdictions</label>
             <div class="space-y-2">
               {#each jurisdictions as jurisdiction}
                 <label class="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    bind:group={selectedFilters.jurisdictions}
-                    value={jurisdiction.value}
-                    class="rounded"
-                  />
+                  <input type="checkbox" bind:group={selectedFilters.jurisdictions} value={jurisdiction.value} class="rounded" />
                   <span class="text-sm">{jurisdiction.label}</span>
                 </label>
               {/each}
             </div>
           </div>
+
           <!-- Advanced Filters -->
           <div>
             <label class="text-sm font-medium mb-2 block">Minimum Scores</label>
             <div class="space-y-3">
               <div>
-                <label class="text-xs nes-text is-disabled" for="confidence-selectedf">Confidence: {selectedFilters.confidenceMin}</label><input id="confidence-selectedf"
-                  type="range";
-                  bind:value={selectedFilters.confidenceMin}
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  class="w-full"
-                />
+                <label class="text-xs nes-text is-disabled" for="confidence-selected">Confidence: {selectedFilters.confidenceMin}</label>
+                <input id="confidence-selected" type="range" bind:value={selectedFilters.confidenceMin} min="0" max="1" step="0.1" class="w-full" />
               </div>
               <div>
-                <label class="text-xs nes-text is-disabled" for="priority-selectedfil">Priority: {selectedFilters.priorityMin}</label><input id="priority-selectedfil"
-                  type="range";
-                  bind:value={selectedFilters.priorityMin}
-                  min="0"
-                  max="255"
-                  step="10"
-                  class="w-full"
-                />
+                <label class="text-xs nes-text is-disabled" for="priority-selected">Priority: {selectedFilters.priorityMin}</label>
+                <input id="priority-selected" type="range" bind:value={selectedFilters.priorityMin} min="0" max="255" step="10" class="w-full" />
               </div>
             </div>
           </div>
         </div>
-      </div.Root>
+      </div>
     {/if}
+
     <!-- Search Stats -->
     {#if showStats && (searchQuery || searchResults.length > 0)}
       <div class="flex items-center justify-between text-sm nes-text is-disabled">
@@ -351,124 +339,102 @@ try {
       </div>
     {/if}
   </div>
+
   <!-- Search Results -->
   <div class="mt-6">
     {#if searchResults.length > 0}
       <div class="space-y-4">
-        {#each searchResults as result}
-          <div.Root
-            class="hover:shadow-md transition-shadow cursor-pointer nes-container"> handleResultClick(result)}
-          >
-            <div.Header class="pb-3">
-              <!-- Result Header -->
+        {#each searchResults as result (result.id)}
+          <Card.Root class="hover:shadow-md transition-shadow cursor-pointer nes-container" on:click={() => handleResultClick(result)}>
+            <Card.Header class="pb-3">
               <div class="flex items-start justify-between">
-                <div.Title class="text-base leading-tight flex items-center gap-2">
-                  <svelte:component
-                    this={getResultTypeIcon((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)}
-                    class="h-4 w-4 {getResultTypeColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)}"
-                  />
-                  {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights?.title}
-                    {@html (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights.title}
+                <Card.Title class="text-base leading-tight flex items-center gap-2">
+                  <svelte:component this={getResultTypeIcon(result.resultType)} class="h-4 w-4 {getResultTypeColor(result.resultType)}" />
+                  {#if result.highlights?.title}
+                    {@html result.highlights.title}
                   {:else}
-                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.title || (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).id}
+                    {result.document?.metadata?.title || result.id}
                   {/if}
-                </div.Title>
+                </Card.Title>
+
                 <div class="flex items-center gap-2 ml-2">
-                  <!-- Result Type Badge -->
-                  <Badge class="text-xs capitalize {getResultTypeColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)}">
-                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType}
-                  </Badge>
-                  <!-- Score Badge -->
-                  <Badge variant="ghost" class="text-xs">
-                    {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).combinedScore)}
-                  </Badge>
-                  <!-- Risk Level Badge -->
-                  <Badge class={getRiskLevelColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.riskLevel)}>
-                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.riskLevel.toUpperCase()}
-                  </Badge>
+                  <Badge class="text-xs capitalize {getResultTypeColor(result.resultType)}">{result.resultType}</Badge>
+                  <Badge variant="ghost" class="text-xs">{formatScore(result.combinedScore)}</Badge>
+                  <Badge class={getRiskLevelColor(result.document?.riskLevel)}>{(result.document?.riskLevel || '').toUpperCase()}</Badge>
                 </div>
               </div>
-              <!-- Description -->
-              <div.Description class="text-sm">
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights?.content}
-                  {@html (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights.content}
+
+              <Card.Description class="text-sm">
+                {#if result.highlights?.content}
+                  {@html result.highlights.content}
                 {:else}
-                  {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.description || 'No description available'}
+                  {result.document?.metadata?.description || 'No description available'}
                 {/if}
-              </div.Description>
-              <!-- Metadata -->
+              </Card.Description>
+
               <div class="flex flex-wrap gap-4 text-xs nes-text is-disabled">
                 <div class="flex items-center gap-1">
                   <FileText class="h-3 w-3" />
-                  <span class="capitalize">{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.type}</span>
+                  <span class="capitalize">{result.document?.type}</span>
                 </div>
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.jurisdiction}
+
+                {#if result.document?.metadata?.jurisdiction}
                   <div class="flex items-center gap-1">
                     <Scale class="h-3 w-3" />
-                    <span>{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata.jurisdiction}</span>
+                    <span>{result.document.metadata.jurisdiction}</span>
                   </div>
                 {/if}
+
                 <div class="flex items-center gap-1">
                   <TrendingUp class="h-3 w-3" />
-                  <span>Priority: {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.priority}</span>
+                  <span>Priority: {result.document?.priority}</span>
                 </div>
+
                 <div class="flex items-center gap-1">
                   <Shield class="h-3 w-3" />
-                  <span>Confidence: {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.confidenceLevel)}</span>
+                  <span>Confidence: {formatScore(result.document?.confidenceLevel)}</span>
                 </div>
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.accessCount > 0}
+
+                {#if result.document?.accessCount > 0}
                   <div class="flex items-center gap-1">
                     <Clock class="h-3 w-3" />
-                    <span>Accessed {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.accessCount} times</span>
+                    <span>Accessed {result.document.accessCount} times</span>
                   </div>
                 {/if}
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).responseTime}
+
+                {#if result.responseTime}
                   <div class="flex items-center gap-1">
                     <Zap class="h-3 w-3" />
-                    <span>{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).responseTime}ms</span>
+                    <span>{result.responseTime}ms</span>
                   </div>
                 {/if}
               </div>
-            </div.Header>
-            <!-- Action Buttons -->
-            <div.Content class="pt-0">
+            </Card.Header>
+
+            <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <button class="nes-btn"
-                  size="sm"
-                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'view'), }}
-                >
-                  View Document
-                <button class="nes-btn"
-                  size="sm"
-                  variant="ghost"
-                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'), }}
-                >
-                  AI Analysis
-                </button>
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.type === 'evidence'}
-                  <button class="nes-btn"
-                    size="sm"
-                    variant="ghost"
-                    onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'), }}
-                  >
-                    Open in Canvas
-                  </button>
+                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'view')}>View Document</button>
+                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'analyze')}>AI Analysis</button>
+
+                {#if result.document?.type === 'evidence'}
+                  <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'canvas')}>Open in Canvas</button>
                 {/if}
-                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).fuseScore && (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).semanticScore}
+
+                {#if typeof result.fuseScore === 'number' && typeof result.semanticScore === 'number'}
                   <div class="ml-auto text-xs nes-text is-disabled">
-                    Fuzzy: {formatScore(1 - (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).fuseScore)} |
-                    Semantic: {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).semanticScore)}
+                    Fuzzy: {formatScore(1 - result.fuseScore)} | Semantic: {formatScore(result.semanticScore)}
                   </div>
                 {/if}
               </div>
-            </div.Content>
-          </div.Root>
+            </Card.Content>
+          </Card.Root>
         {/each}
       </div>
+
     {:else if searchQuery && !isSearching}
       <!-- No Results -->
-      <div.Root>
-        <div.Content class="py-12 text-center">
+      <Card.Root>
+        <Card.Content class="py-12 text-center">
           <AlertTriangle class="h-12 w-12 mx-auto nes-text is-disabled mb-4" />
           <h3 class="font-medium mb-2">No results found</h3>
           <p class="nes-text is-disabled text-sm mb-4">
@@ -483,31 +449,33 @@ try {
               <li>Using legal synonyms (e.g., "contract" instead of "agreement")</li>
             </ul>
           </div>
-        </div.Content>
-      </div.Root>
+        </Card.Content>
+      </Card.Root>
+
     {:else if searchQuery && isSearching}
       <!-- Loading State -->
-      <div.Root>
-        <div.Content class="py-12 text-center">
+      <Card.Root>
+        <Card.Content class="py-12 text-center">
           <Loader2 class="h-12 w-12 mx-auto nes-text is-disabled animate-spin mb-4" />
           <h3 class="font-medium mb-2">Searching...</h3>
           <p class="nes-text is-disabled text-sm">
             Searching across legal documents, cases, and evidence...
           </p>
-        </div.Content>
-      </div.Root>
+        </Card.Content>
+      </Card.Root>
     {/if}
   </div>
 </div>
+
 <style>
   :global(.instant-legal-search mark) {
-    background-color: theme(colors.yellow.200);
+    background-color: #f6e05e; /* fallback color */
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-weight: 500;
   }
   :global(.dark .instant-legal-search mark) {
-    background-color: theme(colors.yellow.900);
-    color: theme(colors.yellow.100);
+    background-color: #92400e;
+    color: #fef3c7;
   }
 </style>

@@ -14,8 +14,7 @@ import { createServer } from 'http';
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { cpus } from 'os';
 import { createClient as createRedisClient } from 'redis';
-import pg from 'pg';
-const { Pool } = pg;
+import postgres from "postgres";
 
 // ANSI colors
 const colors = {

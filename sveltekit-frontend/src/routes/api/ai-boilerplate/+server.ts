@@ -4,27 +4,23 @@ import type { RequestHandler } from './$types.js'
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
  */
-import { Pool } from "pg"
-import { z } from 'zod'
+import postgres from 'postgres';
+import { z } from 'zod';
 // Configuration
 const CONFIG = {
-    database: {
-        user: import.meta.env.DB_USER || 'postgres',
-        password: import.meta.env.DB_PASSWORD || 'password',
-        host: import.meta.env.DB_HOST || 'localhost',
-        port: parseInt(import.meta.env.DB_PORT || '5432'),
-        database: import.meta.env.DB_NAME || 'prosecutor_db'
-    },
-    ollama: {
-        url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
-        model: import.meta.env.LLM_MODEL || 'gemma3-legal'
-    },
-    boilerplate: {
-        minProsecutionScore: 70,
-        maxTemplates: 5,
-        templateLength: 300
-    }
-}
+  database: {
+    connectionString: `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test'}`,
+  },
+  ollama: {
+    url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+    model: import.meta.env.LLM_MODEL || 'gemma3-legal',
+  },
+  boilerplate: {
+    minProsecutionScore: 70,
+    maxTemplates: 5,
+    templateLength: 300,
+  },
+};
 // Validation schemas
 const BoilerplateRequestSchema = z.object({
     type: z.enum([
@@ -61,12 +57,13 @@ const BoilerplateResponseSchema = z.object({
     })
 })
 // Initialize database connection
-let db: Pool | null = null
+let sql: ReturnType<typeof postgres> | null = null;
+
 function getDB() {
-    if (!db) {
-        db = new Pool(CONFIG.database)
+    if (!sql) {
+      sql = postgres(CONFIG.database.connectionString, { max: 10 });
     }
-    return db
+    return sql;
 }
 export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now()

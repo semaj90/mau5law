@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager'
-import type { ShaderSearchQuery, ShaderSearchResult } from '$lib/webgpu/shader-cache-manager'
+import type { ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
 // GET endpoint - Get shader search capabilities info
 export const GET: RequestHandler = async () => {
   try {

@@ -2,14 +2,25 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
-  let { title, description, path, icon, ariaLabel = title }: { title: string; description: string; path: string; icon?: unknown; ariaLabel?: string } = $props();
+  import { SvelteComponent } from 'svelte';
   import { goto } from '$app/navigation';
-   // Svelte component constructor
+
+  // export props with safe defaults and concrete constructor typing for icon
+  export let title: string = '';
+  export let description: string = '';
+  export let path: string = '';
+  export let icon: typeof SvelteComponent | null = null;
+  export let ariaLabel: string = '';
+
+  // ensure ariaLabel defaults to title if not provided
+  $: if (!ariaLabel) ariaLabel = title;
+
+  // Svelte component constructor
   function handleNavigate() {
     if (path) goto(path);
   }
   function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
       handleNavigate();
     }
@@ -21,21 +32,21 @@ https://svelte.dev/e/js_parse_error -->
   role="button"
   tabindex="0"
   aria-label={ariaLabel}
-  onclick={handleNavigate}
-  onkeydown={handleKey}
+  on:click={handleNavigate}
+  on:keydown={handleKey}
   data-path={path}
 >
   <div class="yorha-nav-header">
     {#if icon}
-      {@const IconComponent = icon}
-      <IconComponent size={28} />
+      <svelte:component this={icon} size={28} />
     {/if}
     <h3>{title}</h3>
   </div>
   <p>{description}</p>
   <div class="yorha-nav-footer">
     <span>{path}</span>
-    {@render trailing?.()}
+    <!-- named slot "trailing" - consumers can provide content via <slot name="trailing"> -->
+    <slot name="trailing" />
   </div>
 </div>
 

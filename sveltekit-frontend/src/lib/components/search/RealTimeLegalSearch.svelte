@@ -5,9 +5,9 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { debounce } from 'lodash-es';
-  import * as CommandPrimitive from '$lib/components/ui/command';
+  import { browser } from '$app/environment';
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons
@@ -65,6 +65,9 @@
   let inputValue = $state('');
   let open = $state(false);
   let selectedResult: unknown = $state(null);
+  // add missing search history state (was referenced but not declared)
+  let searchHistory = $state<string[]>([]);
+
   // Reactive computations
   let filteredResults = $derived($searchState.results.slice(0, maxResults));
   let isStreaming = $derived($searchStatus === 'searching' && enableRealTime);
@@ -131,6 +134,29 @@
     console.log('🔌 Real-Time Legal Search Component destroyed');
   });
 
+  // Dynamically load client-only UI primitives to avoid SSR render errors
+  let CommandRoot: any = null;
+  let CommandInput: any = null;
+  let CommandContent: any = null;
+  let CommandItem: any = null;
+
+  onMount(async () => {
+    if (!browser) return;
+    try {
+      const mod = await import('$lib/components/ui/command');
+      // support both named exports and default export shapes
+      const ns = (mod && (mod.default ?? mod)) as any;
+      CommandRoot = ns.Root ?? ns.CommandRoot ?? ns;
+      CommandInput = ns.Input ?? ns.CommandInput ?? ns.InputField ?? ns;
+      CommandContent = ns.Content ?? ns.CommandContent ?? ns;
+      CommandItem = ns.Item ?? ns.CommandItem ?? ns;
+      // small safety: if mod itself is a Svelte component (default export), assign it to Root
+      if (!CommandRoot && (mod as any).default) CommandRoot = (mod as any).default;
+    } catch (e) {
+      console.warn('Failed to dynamically load Command primitive:', e);
+    }
+  });
+
   // Example: when a result is clicked or selected, call `select(...)`
   function handleResultClick(result: SearchResultEventDetail) {
     // ...any internal logic...
@@ -176,20 +202,23 @@
     </div>
   </div>
   <!-- Enhanced Search Input -->
-  <CommandPrimitive.Root bind:open>
-    <div class="relative">
+  {#if browser && CommandRoot}
+    <CommandRoot bind:open>
+      <div class="relative">
       <!-- Search Input with Enhanced Styling -->
-      <CommandPrimitive.Input
-        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+      {#if CommandInput}
+        <CommandInput
+          class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
                placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2
                focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
                {isStreaming ? 'pr-12' : 'pr-10'}"
-        {placeholder}
-        autocomplete="off"
-        spellcheck="false"
-        bind:value={inputValue}
-        onValueChange={handleInputChange}
-      />
+          {placeholder}
+          autocomplete="off"
+          spellcheck="false"
+          bind:value={inputValue}
+          onvaluechange={handleInputChange}
+        />
+      {/if}
       <!-- Search Button & Status Indicators -->
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
         {#if isStreaming}
@@ -209,11 +238,12 @@
       </div>
     </div>
     <!-- Enhanced Search Results -->
-    <CommandPrimitive.Content
-      class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
-             bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
-             data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-    >
+      {#if CommandContent}
+        <CommandContent
+          class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
+                 bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
+                 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        >
       {#if searchState.error}
         <!-- Error State -->
         <div class="flex items-center gap-2 p-4 text-red-600">
@@ -227,319 +257,121 @@
           <span class="text-sm">Searching with AI enhancement...</span>
         </div>
         <!-- Streaming Results -->
-        {#each filteredResults as result, index ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <CommandPrimitive.Item
-            value={(
-              result as {
-                title?: unknown;
-                id?: unknown;
-                realTime?: unknown;
-                type?: unknown;
-                score?: unknown;
-                content?: unknown;
-                metadata?: unknown;
-                highlights?: unknown;
-              }
-            ).id}
-            class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                   text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50
-                   {(
-              result as {
-                title?: unknown;
-                id?: unknown;
-                realTime?: unknown;
-                type?: unknown;
-                score?: unknown;
-                content?: unknown;
-                metadata?: unknown;
-                highlights?: unknown;
-              }
-            ).realTime
-              ? 'animate-pulse border-l-2 border-blue-400'
-              : ''}"
-            onSelect={() => handleSelect(result)}
-          >
-            <!-- Result Type Icon -->
-            <div class="mt-1 text-lg">
-              {getResultTypeIcon(
-                (
-                  result as {
-                    title?: unknown;
-                    id?: unknown;
-                    realTime?: unknown;
-                    type?: unknown;
-                    score?: unknown;
-                    content?: unknown;
-                    metadata?: unknown;
-                    highlights?: unknown;
-                  }
-                ).type,
-              )}
-            </div>
-            <!-- Result Content -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-2">
-                <div class="font-medium text-gray-900 truncate">
-                  {(
-                    result as {
-                      title?: unknown;
-                      id?: unknown;
-                      realTime?: unknown;
-                      type?: unknown;
-                      score?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                      highlights?: unknown;
-                    }
-                  ).title}
+        {#each filteredResults as result ((result as { title?: unknown; id?: unknown }).id)}
+          {#if CommandItem}
+            <CommandItem
+              value={(result as any).id}
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
+                     text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50
+                     {(result as any).realTime ? 'animate-pulse border-l-2 border-blue-400' : ''}"
+              onselect={() => handleSelect(result)}
+            >
+              <!-- Result Type Icon -->
+              <div class="mt-1 text-lg">
+                {getResultTypeIcon((result as any).type)}
+              </div>
+              <!-- Result Content -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                  <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                    {#if (result as any).realTime}
+                      <TrendingUp class="w-3 h-3 text-blue-500" />
+                    {/if}
+                    <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
+                  </div>
                 </div>
-                <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
-                  {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).realTime}
-                    <TrendingUp class="w-3 h-3 text-blue-500" />
+                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
+                <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                  <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
+                  {#if (result as any).metadata?.jurisdiction}
+                    <span>{(result as any).metadata.jurisdiction}</span>
                   {/if}
-                  <span
-                    >{(
-                      (
-                        result as {
-                          title?: unknown;
-                          id?: unknown;
-                          realTime?: unknown;
-                          type?: unknown;
-                          score?: unknown;
-                          content?: unknown;
-                          metadata?: unknown;
-                          highlights?: unknown;
-                        }
-                      ).score * 100
-                    ).toFixed(0)}%</span
-                  >
+                  {#if (result as any).metadata?.status}
+                    <span class="capitalize">{(result as any).metadata.status}</span>
+                  {/if}
+                  {#if (result as any).realTime}
+                    <span class="text-blue-500 font-medium">Live</span>
+                  {/if}
                 </div>
               </div>
-              <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {(
-                  result as {
-                    title?: unknown;
-                    id?: unknown;
-                    realTime?: unknown;
-                    type?: unknown;
-                    score?: unknown;
-                    content?: unknown;
-                    metadata?: unknown;
-                    highlights?: unknown;
-                  }
-                ).content?.substring(0, 120)}...
+            </CommandItem>
+          {:else}
+            <!-- Fallback plain interactive element when CommandItem primitive isn't available -->
+            <button
+              type="button"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
+                     text-sm outline-none hover:bg-gray-50"
+              onclick={() => handleSelect(result)}
+            >
+              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                  <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                    {#if (result as any).realTime}
+                      <TrendingUp class="w-3 h-3 text-blue-500" />
+                    {/if}
+                    <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
               </div>
-              <!-- Enhanced Metadata -->
-              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {(
-                    result as {
-                      title?: unknown;
-                      id?: unknown;
-                      realTime?: unknown;
-                      type?: unknown;
-                      score?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                      highlights?: unknown;
-                    }
-                  ).type}
-                </span>
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.jurisdiction}
-                  <span
-                    >{(
-                      result as {
-                        title?: unknown;
-                        id?: unknown;
-                        realTime?: unknown;
-                        type?: unknown;
-                        score?: unknown;
-                        content?: unknown;
-                        metadata?: unknown;
-                        highlights?: unknown;
-                      }
-                    ).metadata.jurisdiction}</span
-                  >
-                {/if}
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.status}
-                  <span class="capitalize"
-                    >{(
-                      result as {
-                        title?: unknown;
-                        id?: unknown;
-                        realTime?: unknown;
-                        type?: unknown;
-                        score?: unknown;
-                        content?: unknown;
-                        metadata?: unknown;
-                        highlights?: unknown;
-                      }
-                    ).metadata.status}</span
-                  >
-                {/if}
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).realTime}
-                  <span class="text-blue-500 font-medium">Live</span>
-                {/if}
-              </div>
-            </div>
-          </CommandPrimitive.Item>
+            </button>
+          {/if}
         {/each}
       {:else if filteredResults.length > 0}
         <!-- Standard Results -->
-        {#each filteredResults as result ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <CommandPrimitive.Item
-            value={(
-              result as {
-                title?: unknown;
-                id?: unknown;
-                realTime?: unknown;
-                type?: unknown;
-                score?: unknown;
-                content?: unknown;
-                metadata?: unknown;
-                highlights?: unknown;
-              }
-            ).id}
-            class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                   text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
-            onSelect={() => handleSelect(result)}
-          >
-            <!-- Result Type Icon -->
-            <div class="mt-1 text-lg">
-              {getResultTypeIcon(
-                (
-                  result as {
-                    title?: unknown;
-                    id?: unknown;
-                    realTime?: unknown;
-                    type?: unknown;
-                    score?: unknown;
-                    content?: unknown;
-                    metadata?: unknown;
-                    highlights?: unknown;
-                  }
-                ).type,
-              )}
-            </div>
-            <!-- Result Content -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-2">
-                <div class="font-medium text-gray-900 truncate">
-                  {(
-                    result as {
-                      title?: unknown;
-                      id?: unknown;
-                      realTime?: unknown;
-                      type?: unknown;
-                      score?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                      highlights?: unknown;
-                    }
-                  ).title}
+        {#each filteredResults as result ((result as any).id)}
+          {#if CommandItem}
+            <CommandItem
+              value={(result as any).id}
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
+                     text-sm outline-none hover:bg-gray-50"
+              onselect={() => handleSelect(result)}
+            >
+              <!-- Result Type Icon -->
+              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+              <!-- Result Content -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                  <div class="text-xs text-gray-500 shrink-0">{(((result as any).score ?? 0) * 100).toFixed(0)}%</div>
                 </div>
-                <div class="text-xs text-gray-500 shrink-0">
-                  {(
-                    (
-                      result as {
-                        title?: unknown;
-                        id?: unknown;
-                        realTime?: unknown;
-                        type?: unknown;
-                        score?: unknown;
-                        content?: unknown;
-                        metadata?: unknown;
-                        highlights?: unknown;
-                      }
-                    ).score * 100
-                  ).toFixed(0)}%
+                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
+                <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                  <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
+                  {#if (result as any).metadata?.jurisdiction}
+                    <span>{(result as any).metadata.jurisdiction}</span>
+                  {/if}
+                  {#if (result as any).metadata?.date}
+                    <span>{new Date((result as any).metadata.date).toLocaleDateString()}</span>
+                  {/if}
                 </div>
-              </div>
-              <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {(
-                  result as {
-                    title?: unknown;
-                    id?: unknown;
-                    realTime?: unknown;
-                    type?: unknown;
-                    score?: unknown;
-                    content?: unknown;
-                    metadata?: unknown;
-                    highlights?: unknown;
-                  }
-                ).content?.substring(0, 120)}...
-              </div>
-              <!-- Metadata Tags -->
-              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {(
-                    result as {
-                      title?: unknown;
-                      id?: unknown;
-                      realTime?: unknown;
-                      type?: unknown;
-                      score?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                      highlights?: unknown;
-                    }
-                  ).type}
-                </span>
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.jurisdiction}
-                  <span
-                    >{(
-                      result as {
-                        title?: unknown;
-                        id?: unknown;
-                        realTime?: unknown;
-                        type?: unknown;
-                        score?: unknown;
-                        content?: unknown;
-                        metadata?: unknown;
-                        highlights?: unknown;
-                      }
-                    ).metadata.jurisdiction}</span
-                  >
-                {/if}
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.date}
-                  <span
-                    >{new Date(
-                      (
-                        result as {
-                          title?: unknown;
-                          id?: unknown;
-                          realTime?: unknown;
-                          type?: unknown;
-                          score?: unknown;
-                          content?: unknown;
-                          metadata?: unknown;
-                          highlights?: unknown;
-                        }
-                      ).metadata.date,
-                    ).toLocaleDateString()}</span
-                  >
+                {#if (result as any).highlights && (result as any).highlights.length > 0}
+                  <div class="mt-2 text-xs text-blue-600">
+                    <span class="font-medium">Highlights:</span> {(result as any).highlights[0]?.substring(0,80)}...
+                  </div>
                 {/if}
               </div>
-              <!-- Highlights -->
-              {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).highlights && (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).highlights.length > 0}
-                <div class="mt-2 text-xs text-blue-600">
-                  <span class="font-medium">Highlights:</span>
-                  {(
-                    result as {
-                      title?: unknown;
-                      id?: unknown;
-                      realTime?: unknown;
-                      type?: unknown;
-                      score?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                      highlights?: unknown;
-                    }
-                  ).highlights[0]?.substring(0, 80)}...
+            </CommandItem>
+          {:else}
+            <button
+              type="button"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
+                     text-sm outline-none hover:bg-gray-50"
+              onclick={() => handleSelect(result)}
+            >
+              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                  <div class="text-xs text-gray-500 shrink-0">{(((result as any).score ?? 0) * 100).toFixed(0)}%</div>
                 </div>
-              {/if}
-            </div>
-          </CommandPrimitive.Item>
+                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
+              </div>
+            </button>
+          {/if}
         {/each}
         <!-- Search Statistics -->
         <div class="border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
@@ -569,8 +401,34 @@
           {/each}
         </div>
       {/if}
-    </CommandPrimitive.Content>
-  </CommandPrimitive.Root>
+        </CommandContent>
+      {/if}
+    </CommandRoot>
+  {:else}
+    <!-- SSR-safe fallback: simple input + results list (no client-only Command primitive) -->
+    <div class="relative">
+      <input
+        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50"
+        placeholder={placeholder}
+        autocomplete="off"
+        spellcheck="false"
+        bind:value={inputValue}
+        oninput={(e) => handleInputChange((e.target as HTMLInputElement).value)}
+      />
+      <!-- Basic static results rendering for SSR previews -->
+      {#if filteredResults && filteredResults.length > 0}
+        <div class="mt-2 max-h-80 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+          {#each filteredResults as result}
+            <div class="px-3 py-2 border-b last:border-b-0">
+              <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+              <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0, 120)}...</div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  {/if}
+
   <!-- Search Status Bar -->
   {#if enableRealTime}
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
@@ -610,12 +468,20 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Multi-line truncation utility with both vendor-prefixed and
+     non-prefixed declarations for broader compatibility. Keep
+     -webkit-line-clamp (widely supported) and add a non-prefixed
+     'line-clamp' for environments that recognize it. */
   .line-clamp-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    /* non-prefixed (informational / forward-compatible) */
+    line-clamp: 2;
+    /* additional fallbacks */
     overflow: hidden;
-    /* Note: 'line-clamp' is not a standard CSS property; use '-webkit-line-clamp' for multi-line truncation */
+    word-wrap: break-word;
   }
 </style>
 

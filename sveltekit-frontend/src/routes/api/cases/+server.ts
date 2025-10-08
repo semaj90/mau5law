@@ -2,8 +2,14 @@ import { z } from 'zod';
 import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
 import { CaseOperations } from '$lib/server/db/enhanced-operations';
 import { createClient } from 'redis';
+import postgres from 'postgres';
 import type { RequestHandler } from './$types.js';
 import { dev } from '$app/environment';
+
+// Database connection
+const sql = postgres(process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test', {
+  max: 10,
+});
 
 // add a small safe type for import.meta.env usage to avoid `any`
 type SafeImportMetaEnv = {

@@ -1,9 +1,8 @@
-import pg from 'pg';
-const { Client } = pg;
+import postgres from 'postgres';
+
 (async () => {
-  const connectionString =
-    process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
-  const c = new Client({ connectionString });
+  const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test';
+  const sql = postgres(connectionString, { max: 1 });
   try {
     await c.connect();
     const qCount = `SELECT count(*) AS total_non_uuid FROM vector_metadata WHERE document_id IS NOT NULL AND NOT (document_id ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')`;

@@ -5,12 +5,10 @@
  * Enables AI to understand project intent and finish the web app
  */
 import { createClient as createRedisClient } from 'redis';
-import pg from 'pg';
+import postgres from 'postgres';
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join, extname, basename } from 'path';
 import { createHash } from 'crypto';
-
-const { Pool } = pg;
 
 class ComprehensiveKnowledgeIndexer {
   constructor() {
@@ -18,17 +16,17 @@ class ComprehensiveKnowledgeIndexer {
       OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
       EMBEDDING_MODEL: 'embeddinggemma:latest',
       REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'redis',
-      DB_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-      EMBEDDING_DIMENSION: 768
+      DB_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test',
+      EMBEDDING_DIMENSION: 768,
     };
 
-    this.pool = new Pool({ connectionString: this.config.DB_URL });
+    this.sql = postgres(this.config.DB_URL, { max: 10 });
     this.stats = {
       codeFiles: 0,
       documentation: 0,
       userStories: 0,
       apiSpecs: 0,
-      embeddings: 0
+      embeddings: 0,
     };
   }
 
@@ -108,8 +106,8 @@ class ComprehensiveKnowledgeIndexer {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: this.config.EMBEDDING_MODEL,
-          prompt: text
-        })
+          prompt: text,
+        }),
       });
 
       if (!response.ok) {
@@ -139,21 +137,24 @@ class ComprehensiveKnowledgeIndexer {
             `${chunk.type}: ${chunk.name}\n\nCode:\n${chunk.content}\n\nPurpose: ${chunk.purpose}`
           );
 
-          await this.pool.query(`
+          await this.pool.query(
+            `
             INSERT INTO code_knowledge (file_path, chunk_type, chunk_name, content, embedding, metadata, dependencies, purpose, complexity_score)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             ON CONFLICT DO NOTHING
-          `, [
-            filePath,
-            chunk.type,
-            chunk.name,
-            chunk.content,
-            embedding,
-            chunk.metadata,
-            chunk.dependencies,
-            chunk.purpose,
-            chunk.complexity
-          ]);
+          `,
+            [
+              filePath,
+              chunk.type,
+              chunk.name,
+              chunk.content,
+              embedding,
+              chunk.metadata,
+              chunk.dependencies,
+              chunk.purpose,
+              chunk.complexity,
+            ]
+          );
 
           this.stats.embeddings++;
         }
@@ -185,7 +186,7 @@ class ComprehensiveKnowledgeIndexer {
           purpose: 'Component logic and data management',
           metadata: { component: true, framework: 'svelte5' },
           dependencies: this.extractImports(scriptMatch[1]),
-          complexity: this.calculateComplexity(scriptMatch[1])
+          complexity: this.calculateComplexity(scriptMatch[1]),
         });
       }
 
@@ -197,7 +198,7 @@ class ComprehensiveKnowledgeIndexer {
           purpose: 'Component markup and user interface',
           metadata: { component: true, ui: true },
           dependencies: [],
-          complexity: this.calculateComplexity(templateMatch[1])
+          complexity: this.calculateComplexity(templateMatch[1]),
         });
       }
     } else if (fileType === '.ts' || fileType === '.js') {
@@ -226,10 +227,10 @@ class ComprehensiveKnowledgeIndexer {
         metadata: {
           exported: !!match[1],
           async: !!match[2],
-          language: 'typescript'
+          language: 'typescript',
         },
         dependencies: this.extractImports(content),
-        complexity: this.calculateComplexity(match[0])
+        complexity: this.calculateComplexity(match[0]),
       });
     }
 
@@ -249,10 +250,10 @@ class ComprehensiveKnowledgeIndexer {
         purpose: `Class: ${match[2]}`,
         metadata: {
           exported: !!match[1],
-          language: 'typescript'
+          language: 'typescript',
         },
         dependencies: this.extractImports(content),
-        complexity: this.calculateComplexity(match[0])
+        complexity: this.calculateComplexity(match[0]),
       });
     }
 
@@ -272,10 +273,10 @@ class ComprehensiveKnowledgeIndexer {
         purpose: `Type definition: ${match[3]}`,
         metadata: {
           exported: !!match[1],
-          language: 'typescript'
+          language: 'typescript',
         },
         dependencies: [],
-        complexity: this.calculateComplexity(match[0])
+        complexity: this.calculateComplexity(match[0]),
       });
     }
 
@@ -304,13 +305,7 @@ class ComprehensiveKnowledgeIndexer {
   async indexProjectDocumentation() {
     console.log('📖 Indexing project documentation...');
 
-    const docFiles = [
-      'README.md',
-      'ARCHITECTURE.md',
-      'API.md',
-      'CHANGELOG.md',
-      'docs/**/*.md'
-    ];
+    const docFiles = ['README.md', 'ARCHITECTURE.md', 'API.md', 'CHANGELOG.md', 'docs/**/*.md'];
 
     for (const pattern of docFiles) {
       const files = this.collectFiles(['.'], ['.md'], pattern);
@@ -321,22 +316,23 @@ class ComprehensiveKnowledgeIndexer {
           const sections = this.extractMarkdownSections(content);
 
           for (const section of sections) {
-            const embedding = await this.generateEmbedding(
-              `Documentation: ${section.title}\n\n${section.content}`
-            );
+            const embedding = await this.generateEmbedding(`Documentation: ${section.title}\n\n${section.content}`);
 
-            await this.pool.query(`
+            await this.pool.query(
+              `
               INSERT INTO project_knowledge (document_type, title, content, embedding, metadata, priority)
               VALUES ($1, $2, $3, $4, $5, $6)
               ON CONFLICT DO NOTHING
-            `, [
-              'documentation',
-              section.title,
-              section.content,
-              embedding,
-              { file: filePath, section_level: section.level },
-              section.level === 1 ? 10 : 5
-            ]);
+            `,
+              [
+                'documentation',
+                section.title,
+                section.content,
+                embedding,
+                { file: filePath, section_level: section.level },
+                section.level === 1 ? 10 : 5,
+              ]
+            );
           }
 
           this.stats.documentation++;
@@ -365,7 +361,7 @@ class ComprehensiveKnowledgeIndexer {
         currentSection = {
           level: headingMatch[1].length,
           title: headingMatch[2],
-          content: line + '\n'
+          content: line + '\n',
         };
       } else if (currentSection) {
         currentSection.content += line + '\n';
@@ -383,13 +379,7 @@ class ComprehensiveKnowledgeIndexer {
     console.log('📝 Indexing user stories and requirements...');
 
     // Look for user stories in various formats
-    const storyPatterns = [
-      'stories/**/*.md',
-      'requirements/**/*.md',
-      'features/**/*.md',
-      'BACKLOG.md',
-      'ROADMAP.md'
-    ];
+    const storyPatterns = ['stories/**/*.md', 'requirements/**/*.md', 'features/**/*.md', 'BACKLOG.md', 'ROADMAP.md'];
 
     // Extract user stories from code comments
     const codeFiles = this.collectFiles(['src'], ['.ts', '.js', '.svelte']);
@@ -404,23 +394,26 @@ class ComprehensiveKnowledgeIndexer {
             `User Story: ${story.title}\n\n${story.description}\n\nAcceptance Criteria: ${story.criteria.join(', ')}`
           );
 
-          await this.pool.query(`
+          await this.pool.query(
+            `
             INSERT INTO project_knowledge (document_type, title, content, embedding, metadata, priority, status)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             ON CONFLICT DO NOTHING
-          `, [
-            'user_story',
-            story.title,
-            story.description,
-            embedding,
-            {
-              file: filePath,
-              criteria: story.criteria,
-              priority: story.priority
-            },
-            story.priority || 5,
-            story.status || 'active'
-          ]);
+          `,
+            [
+              'user_story',
+              story.title,
+              story.description,
+              embedding,
+              {
+                file: filePath,
+                criteria: story.criteria,
+                priority: story.priority,
+              },
+              story.priority || 5,
+              story.status || 'active',
+            ]
+          );
 
           this.stats.userStories++;
         }
@@ -449,7 +442,7 @@ class ComprehensiveKnowledgeIndexer {
           description: descriptionMatch ? descriptionMatch[1].trim() : '',
           criteria: criteriaMatches.map(m => m[1].trim()),
           priority: 5,
-          status: 'active'
+          status: 'active',
         });
       }
     }
@@ -472,23 +465,26 @@ class ComprehensiveKnowledgeIndexer {
             `API Endpoint: ${endpoint.method} ${endpoint.path}\n\nRequest: ${endpoint.request}\n\nResponse: ${endpoint.response}`
           );
 
-          await this.pool.query(`
+          await this.pool.query(
+            `
             INSERT INTO project_knowledge (document_type, title, content, embedding, metadata, priority)
             VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT DO NOTHING
-          `, [
-            'api_spec',
-            `${endpoint.method} ${endpoint.path}`,
-            `${endpoint.description}\n\nRequest: ${endpoint.request}\nResponse: ${endpoint.response}`,
-            embedding,
-            {
-              method: endpoint.method,
-              path: endpoint.path,
-              file: filePath,
-              parameters: endpoint.parameters
-            },
-            8
-          ]);
+          `,
+            [
+              'api_spec',
+              `${endpoint.method} ${endpoint.path}`,
+              `${endpoint.description}\n\nRequest: ${endpoint.request}\nResponse: ${endpoint.response}`,
+              embedding,
+              {
+                method: endpoint.method,
+                path: endpoint.path,
+                file: filePath,
+                parameters: endpoint.parameters,
+              },
+              8,
+            ]
+          );
 
           this.stats.apiSpecs++;
         }
@@ -504,7 +500,9 @@ class ComprehensiveKnowledgeIndexer {
     const endpoints = [];
 
     // Extract SvelteKit API routes
-    const routeHandlers = content.match(/(export\s+)(async\s+)?(GET|POST|PUT|DELETE|PATCH)\s*\([^)]*\)[^{]*{[\s\S]*?}(?=\n\s*export|\n\s*$)/g);
+    const routeHandlers = content.match(
+      /(export\s+)(async\s+)?(GET|POST|PUT|DELETE|PATCH)\s*\([^)]*\)[^{]*{[\s\S]*?}(?=\n\s*export|\n\s*$)/g
+    );
 
     if (routeHandlers) {
       for (const handler of routeHandlers) {
@@ -516,7 +514,7 @@ class ComprehensiveKnowledgeIndexer {
             description: this.extractJSDocDescription(handler),
             request: this.extractRequestType(handler),
             response: this.extractResponseType(handler),
-            parameters: this.extractParameters(handler)
+            parameters: this.extractParameters(handler),
           });
         }
       }
@@ -611,7 +609,6 @@ class ComprehensiveKnowledgeIndexer {
       console.log(`   • Total embeddings: ${this.stats.embeddings}`);
       console.log(`   • Duration: ${duration}s`);
       console.log('\n🧠 Your AI now has comprehensive project understanding!');
-
     } catch (error) {
       console.error('❌ Knowledge indexing failed:', error);
       throw error;

@@ -3,17 +3,15 @@
  * Works with existing vector_embeddings table structure
  */
 
-import { Pool } from 'pg';
+import postgres from "postgres";
 
-const pool = new Pool({
-  user: 'legal_admin',
-  password: '123456',
-  host: 'localhost',
-  port: 5432,
-  database: 'legal_ai_db',
-  max: 10,
-  idleTimeoutMillis: 30000,
-});
+const sql = postgres(
+  "postgresql://legal_admin:123456@localhost:5434/legal_ai_test",
+  {
+    max: 10,
+    idle_timeout: 30,
+  }
+);
 
 function generateMockEmbedding(text) {
   const seed = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);

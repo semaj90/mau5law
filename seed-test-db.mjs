@@ -1,33 +1,34 @@
 #!/usr/bin/env node
 
-import { Client } from 'pg';
+import postgres from "postgres";
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  user: 'legal_admin', 
-  password: 'testpass123',
-  database: 'legal_ai_test',
-});
+const sql = postgres(
+  "postgresql://legal_admin:123456@localhost:5434/legal_ai_test",
+  {
+    max: 10,
+  }
+);
 
 async function waitForDatabase(maxRetries = 30, delay = 2000) {
   console.log('🔄 Waiting for database to be ready for seeding...');
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
-      await execAsync('docker exec legal_ai_test_db pg_isready -U legal_admin -d legal_ai_test');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Extra wait for full initialization
+      await execAsync(
+        "docker exec legal_ai_test_db pg_isready -U legal_admin -d legal_ai_test"
+      );
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Extra wait for full initialization
       return;
     } catch (error) {
       console.log(`⏳ Database not ready yet (attempt ${i + 1}/${maxRetries})`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  
+
   throw new Error('❌ Database failed to become ready within timeout');
 }
 

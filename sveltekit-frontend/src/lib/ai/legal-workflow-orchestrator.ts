@@ -8,14 +8,38 @@
 import { HybridGemmaBitmapEngine } from './hybrid-gemma-bitmap-engine.js';
 import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap-engine.js';
 import { createRedisInstance } from '$lib/server/redis.js';
-import type IORedis from 'ioredis';
+
+// --- new: small adapter type covering the methods we use from Redis clients ---
+type RedisSetReturn = 'OK' | null;
+interface RedisLike {
+  exists(key: string): Promise<number>;
+  set(key: string, value: string, opts?: { EX?: number }): Promise<RedisSetReturn>;
+  // list operations - support both node-redis (lPush/lTrim) and ioredis (lpush/ltrim) shapes
+  lPush?(key: string, ...values: string[]): Promise<number>;
+  lpush?(key: string, ...values: string[]): Promise<number>;
+  lTrim?(key: string, start: number, stop: number): Promise<RedisSetReturn>;
+  ltrim?(key: string, start: number, stop: number): Promise<RedisSetReturn>;
+  // fall back generic index signature for other minor calls (if needed)
+  [key: string]: unknown;
+}
+
+// --- MOVED: AssetData must be top-level (cannot declare interface inside a class) ---
+interface AssetData {
+  assetType: string;
+  sessionId: string;
+  generatedAt: string;
+  workflowStage: string;
+  // additional fields allowed
+  [key: string]: unknown;
+}
+
 // Legal workflow stage definitions
 export interface LegalWorkflowStage {
   stage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review' | 'filing';
   substage?: string;
   priority: number;
   expectedAssets: string[];
-  nextStages: Array<{,
+  nextStages: Array<{
     stage: string;
     probability: number;
     timeEstimate: number;
@@ -32,19 +56,21 @@ export interface LegalDocumentProfile {
 }
 // Asset preloading strategies for different legal contexts
 export interface AssetPreloadingStrategy {
-  immediate: string[];     // Load instantly (< 100ms),
-  background: string[];    // Load in background (< 2s)
-  predictive: string[];    // Predict and cache (< 5s),
-  ondemand: string[];      // Load when explicitly requested
+  immediate: string[]; // Load instantly (< 100ms),
+  background: string[]; // Load in background (< 2s)
+  predictive: string[]; // Predict and cache (< 5s),
+  ondemand: string[]; // Load when explicitly requested
 }
 export class LegalWorkflowOrchestrator {
   private hybridEngine: HybridGemmaBitmapEngine;
-  private redis: IORedis;
+  private redis: RedisLike;
   private workflowProfiles: Map<string, LegalWorkflowStage> = new Map();
   private documentProfiles: Map<string, LegalDocumentProfile> = new Map();
-  constructor(hybridEngine?: HybridGemmaBitmapEngine, redis?: IORedis) {
+
+  constructor(hybridEngine?: HybridGemmaBitmapEngine, redis?: RedisLike) {
     this.hybridEngine = hybridEngine || new HybridGemmaBitmapEngine();
-    this.redis = redis || createRedisInstance();
+    // coerce the factory return to RedisLike (small, local adapter type)
+    this.redis = (redis || createRedisInstance()) as RedisLike;
     this.initializeWorkflowProfiles();
     this.initializeDocumentProfiles();
   }
@@ -52,8 +78,8 @@ export class LegalWorkflowOrchestrator {
    * Main orchestration method: predict workflow needs and preload assets
    */
   async orchestrateWorkflow(
-    currentContext: LegalContext
-    userQuery?: string;
+    currentContext: LegalContext,
+    userQuery?: string
   ): Promise<{
     prediction: HybridPredictionResult;
     workflowGuidance: WorkflowGuidance;
@@ -78,15 +104,13 @@ export class LegalWorkflowOrchestrator {
       prediction,
       workflowGuidance,
       preloadingStrategy,
-      nextSteps
-    }
+      nextSteps,
+    };
   }
   /**
    * Generate contextual prediction without explicit query
    */
-  private async generateContextualPrediction(
-    context: LegalContext;
-  ): Promise<HybridPredictionResult> {
+  private async generateContextualPrediction(context: LegalContext): Promise<HybridPredictionResult> {
     // Generate implicit query based on current workflow context
     const implicitQuery = this.generateImplicitQuery(context);
     return await this.hybridEngine.predictWithContext(implicitQuery, context);
@@ -94,10 +118,7 @@ export class LegalWorkflowOrchestrator {
   /**
    * Generate workflow-specific guidance
    */
-  private generateWorkflowGuidance(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
-  ): WorkflowGuidance {
+  private generateWorkflowGuidance(context: LegalContext, prediction: HybridPredictionResult): WorkflowGuidance {
     const currentStage = this.workflowProfiles.get(context.workflowStage);
     const documentProfile = context.documentContext
       ? this.getDocumentProfile(context.documentContext.type, context.documentContext.domain)
@@ -108,22 +129,22 @@ export class LegalWorkflowOrchestrator {
       documentSpecificGuidance: this.generateDocumentGuidance(documentProfile, context),
       efficiencyTips: this.generateEfficiencyTips(context, prediction),
       riskAlerts: this.generateRiskAlerts(context, prediction),
-      qualityChecklist: this.generateQualityChecklist(currentStage, documentProfile)
-    }
+      qualityChecklist: this.generateQualityChecklist(currentStage, documentProfile),
+    };
   }
   /**
    * Calculate optimal asset preloading strategy
    */
   private calculatePreloadingStrategy(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
+    context: LegalContext,
+    prediction: HybridPredictionResult
   ): AssetPreloadingStrategy {
     const strategy: AssetPreloadingStrategy = {
       immediate: [],
       background: [],
       predictive: [],
-      ondemand: []
-    }
+      ondemand: [],
+    };
     // Categorize assets based on prediction confidence and system performance
     for (const asset of prediction.behavioralPrediction.recommendedAssets) {
       if (asset.priority > 85 && context.systemMetrics.fps > 55) {
@@ -146,8 +167,8 @@ export class LegalWorkflowOrchestrator {
    * Generate next step recommendations
    */
   private generateNextStepRecommendations(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
+    context: LegalContext,
+    prediction: HybridPredictionResult
   ): NextStepRecommendation[] {
     const recommendations: NextStepRecommendation[] = [];
     // Workflow-based recommendations
@@ -160,7 +181,7 @@ export class LegalWorkflowOrchestrator {
           priority: Math.round(nextStage.probability * 100),
           timeEstimate: nextStage.timeEstimate,
           reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,
-          assets: this.getStageAssets(nextStage.stage)
+          assets: this.getStageAssets(nextStage.stage),
         });
       }
     }
@@ -174,7 +195,7 @@ export class LegalWorkflowOrchestrator {
         reasoning: `AI predicts ${nextState.action} with ${(nextState.probability * 100).toFixed(1)}% confidence`,
         assets: prediction.behavioralPrediction.recommendedAssets
           .filter(asset => asset.priority > 50)
-          .map(asset => asset.type)
+          .map(asset => asset.type),
       });
     }
     // Semantic similarity recommendations
@@ -186,7 +207,7 @@ export class LegalWorkflowOrchestrator {
         priority: Math.round(topMatch.similarity * 100),
         timeEstimate: 30000, // 30 seconds
         reasoning: `Found ${(topMatch.similarity * 100).toFixed(1)}% similar content in ${topMatch.legalDomain}`,
-        assets: ['document_viewer', 'comparison_tools', 'citation_helper']
+        assets: ['document_viewer', 'comparison_tools', 'citation_helper'],
       });
     }
     return recommendations.sort((a, b) => b.priority - a.priority);
@@ -194,10 +215,7 @@ export class LegalWorkflowOrchestrator {
   /**
    * Execute asset preloading in background
    */
-  private async executeAssetPreloading(
-    strategy: AssetPreloadingStrategy;
-    context: LegalContext;
-  ): Promise<void> {
+  private async executeAssetPreloading(strategy: AssetPreloadingStrategy, context: LegalContext): Promise<void> {
     // Immediate loading (highest priority)
     for (const asset of strategy.immediate) {
       this.preloadAsset(asset, 'immediate', context);
@@ -218,20 +236,16 @@ export class LegalWorkflowOrchestrator {
   /**
    * Preload individual asset
    */
-  private async preloadAsset(
-    assetType: string
-    loadingType: string
-    context: LegalContext;
-  ): Promise<void> {
+  private async preloadAsset(assetType: string, loadingType: string, context: LegalContext): Promise<void> {
     const cacheKey = `preload:${assetType}:${context.sessionId}`;
     // Check if already cached
-    const exists = await this.redis.exists(cacheKey);
-    if (exists) return;
+    const existsNum = await this.redis.exists(cacheKey);
+    if (existsNum && existsNum > 0) return;
     // Generate asset data based on type
     const assetData = this.generateAssetData(assetType, context);
-    // Cache with appropriate TTL
+    // Cache with appropriate TTL (use node-redis/set EX style)
     const ttl = loadingType === 'immediate' ? 600 : loadingType === 'background' ? 300 : 180;
-    await this.redis.setex(cacheKey, ttl, JSON.stringify(assetData);
+    await this.redis.set(cacheKey, JSON.stringify(assetData), { EX: ttl });
     console.log(`🎮 Preloaded ${assetType} (${loadingType}) for session ${context.sessionId}`);
   }
   // =============================================================================
@@ -239,66 +253,84 @@ export class LegalWorkflowOrchestrator {
   // =============================================================================
   private initializeWorkflowProfiles(): void {
     const profiles: Array<[string, LegalWorkflowStage]> = [
-      ['intake', {
-        stage: 'intake',
-        priority: 100,
-        expectedAssets: ['intake_forms', 'client_portal', 'document_upload', 'basic_templates'],
-        nextStages: [
-          { stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
-          { stage: 'research', probability: 0.15, timeEstimate: 600000 },
-          { stage: 'drafting', probability: 0.05, timeEstimate: 900000 }
-        ]
-      }],
-      ['analysis', {
-        stage: 'analysis',
-        priority: 90,
-        expectedAssets: ['document_viewer', 'annotation_tools', 'evidence_canvas', 'timeline_creator'],
-        nextStages: [
-          { stage: 'research', probability: 0.6, timeEstimate: 240000 },
-          { stage: 'drafting', probability: 0.3, timeEstimate: 480000 },
-          { stage: 'review', probability: 0.1, timeEstimate: 180000 }
-        ]
-      }],
-      ['research', {
-        stage: 'research',
-        priority: 85,
-        expectedAssets: ['legal_database', 'case_search', 'citation_tools', 'research_notes'],
-        nextStages: [
-          { stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
-          { stage: 'analysis', probability: 0.2, timeEstimate: 240000 },
-          { stage: 'review', probability: 0.1, timeEstimate: 300000 }
-        ]
-      }],
-      ['drafting', {
-        stage: 'drafting',
-        priority: 80,
-        expectedAssets: ['text_editor', 'template_library', 'citation_helper', 'style_guide'],
-        nextStages: [
-          { stage: 'review', probability: 0.8, timeEstimate: 180000 },
-          { stage: 'research', probability: 0.15, timeEstimate: 300000 },
-          { stage: 'filing', probability: 0.05, timeEstimate: 120000 }
-        ]
-      }],
-      ['review', {
-        stage: 'review',
-        priority: 75,
-        expectedAssets: ['review_tools', 'collaboration_suite', 'version_control', 'approval_workflow'],
-        nextStages: [
-          { stage: 'filing', probability: 0.6, timeEstimate: 120000 },
-          { stage: 'drafting', probability: 0.3, timeEstimate: 240000 },
-          { stage: 'analysis', probability: 0.1, timeEstimate: 180000 }
-        ]
-      }],
-      ['filing', {
-        stage: 'filing',
-        priority: 70,
-        expectedAssets: ['filing_system', 'court_integration', 'deadline_tracker', 'confirmation_tools'],
-        nextStages: [
-          { stage: 'intake', probability: 0.4, timeEstimate: 600000 },
-          { stage: 'analysis', probability: 0.3, timeEstimate: 300000 },
-          { stage: 'review', probability: 0.3, timeEstimate: 240000 }
-        ]
-      }]
+      [
+        'intake',
+        {
+          stage: 'intake',
+          priority: 100,
+          expectedAssets: ['intake_forms', 'client_portal', 'document_upload', 'basic_templates'],
+          nextStages: [
+            { stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
+            { stage: 'research', probability: 0.15, timeEstimate: 600000 },
+            { stage: 'drafting', probability: 0.05, timeEstimate: 900000 },
+          ],
+        },
+      ],
+      [
+        'analysis',
+        {
+          stage: 'analysis',
+          priority: 90,
+          expectedAssets: ['document_viewer', 'annotation_tools', 'evidence_canvas', 'timeline_creator'],
+          nextStages: [
+            { stage: 'research', probability: 0.6, timeEstimate: 240000 },
+            { stage: 'drafting', probability: 0.3, timeEstimate: 480000 },
+            { stage: 'review', probability: 0.1, timeEstimate: 180000 },
+          ],
+        },
+      ],
+      [
+        'research',
+        {
+          stage: 'research',
+          priority: 85,
+          expectedAssets: ['legal_database', 'case_search', 'citation_tools', 'research_notes'],
+          nextStages: [
+            { stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
+            { stage: 'analysis', probability: 0.2, timeEstimate: 240000 },
+            { stage: 'review', probability: 0.1, timeEstimate: 300000 },
+          ],
+        },
+      ],
+      [
+        'drafting',
+        {
+          stage: 'drafting',
+          priority: 80,
+          expectedAssets: ['text_editor', 'template_library', 'citation_helper', 'style_guide'],
+          nextStages: [
+            { stage: 'review', probability: 0.8, timeEstimate: 180000 },
+            { stage: 'research', probability: 0.15, timeEstimate: 300000 },
+            { stage: 'filing', probability: 0.05, timeEstimate: 120000 },
+          ],
+        },
+      ],
+      [
+        'review',
+        {
+          stage: 'review',
+          priority: 75,
+          expectedAssets: ['review_tools', 'collaboration_suite', 'version_control', 'approval_workflow'],
+          nextStages: [
+            { stage: 'filing', probability: 0.6, timeEstimate: 120000 },
+            { stage: 'drafting', probability: 0.3, timeEstimate: 240000 },
+            { stage: 'analysis', probability: 0.1, timeEstimate: 180000 },
+          ],
+        },
+      ],
+      [
+        'filing',
+        {
+          stage: 'filing',
+          priority: 70,
+          expectedAssets: ['filing_system', 'court_integration', 'deadline_tracker', 'confirmation_tools'],
+          nextStages: [
+            { stage: 'intake', probability: 0.4, timeEstimate: 600000 },
+            { stage: 'analysis', probability: 0.3, timeEstimate: 300000 },
+            { stage: 'review', probability: 0.3, timeEstimate: 240000 },
+          ],
+        },
+      ],
     ];
     for (const [key, profile] of profiles) {
       this.workflowProfiles.set(key, profile);
@@ -306,30 +338,39 @@ export class LegalWorkflowOrchestrator {
   }
   private initializeDocumentProfiles(): void {
     const profiles: Array<[string, LegalDocumentProfile]> = [
-      ['contract:corporate', {
-        type: 'contract',
-        domain: 'corporate',
-        complexity: 'moderate',
-        urgency: 'routine',
-        requiredAssets: ['contract_templates', 'clause_library', 'risk_analyzer'],
-        recommendedActions: ['clause_analysis', 'risk_assessment', 'precedent_search']
-      }],
-      ['brief:litigation', {
-        type: 'brief',
-        domain: 'litigation',
-        complexity: 'complex',
-        urgency: 'priority',
-        requiredAssets: ['brief_templates', 'case_law_search', 'citation_tools'],
-        recommendedActions: ['case_research', 'argument_structure', 'citation_verification']
-      }],
-      ['evidence:litigation', {
-        type: 'evidence',
-        domain: 'litigation',
-        complexity: 'highly_complex',
-        urgency: 'urgent',
-        requiredAssets: ['evidence_canvas', 'timeline_tools', 'relationship_mapper'],
-        recommendedActions: ['evidence_cataloging', 'timeline_creation', 'relationship_analysis']
-      }]
+      [
+        'contract:corporate',
+        {
+          type: 'contract',
+          domain: 'corporate',
+          complexity: 'moderate',
+          urgency: 'routine',
+          requiredAssets: ['contract_templates', 'clause_library', 'risk_analyzer'],
+          recommendedActions: ['clause_analysis', 'risk_assessment', 'precedent_search'],
+        },
+      ],
+      [
+        'brief:litigation',
+        {
+          type: 'brief',
+          domain: 'litigation',
+          complexity: 'complex',
+          urgency: 'priority',
+          requiredAssets: ['brief_templates', 'case_law_search', 'citation_tools'],
+          recommendedActions: ['case_research', 'argument_structure', 'citation_verification'],
+        },
+      ],
+      [
+        'evidence:litigation',
+        {
+          type: 'evidence',
+          domain: 'litigation',
+          complexity: 'highly_complex',
+          urgency: 'urgent',
+          requiredAssets: ['evidence_canvas', 'timeline_tools', 'relationship_mapper'],
+          recommendedActions: ['evidence_cataloging', 'timeline_creation', 'relationship_analysis'],
+        },
+      ],
     ];
     for (const [key, profile] of profiles) {
       this.documentProfiles.set(key, profile);
@@ -344,16 +385,13 @@ export class LegalWorkflowOrchestrator {
     const domain = context.documentContext?.domain || 'general';
     return `${stage} workflow for ${docType} in ${domain} legal domain`;
   }
-  private generateStageAdvice(
-    stage: LegalWorkflowStage | undefined;
-    context: LegalContext;
-  ): string {
+  private generateStageAdvice(stage: LegalWorkflowStage | undefined, _context: LegalContext): string {
     if (!stage) return 'Continue with current workflow';
     return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and ')} for optimal ${stage.stage} workflow efficiency`;
   }
   private generateNextStagePreparation(
-    currentStage: LegalWorkflowStage | undefined
-    prediction: HybridPredictionResult;
+    currentStage: LegalWorkflowStage | undefined,
+    _prediction: HybridPredictionResult
   ): string {
     if (!currentStage || currentStage.nextStages.length === 0) {
       return 'Prepare for workflow continuation based on case requirements';
@@ -361,45 +399,36 @@ export class LegalWorkflowOrchestrator {
     const nextStage = currentStage.nextStages[0];
     return `Prepare for ${nextStage.stage} transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
   }
-  private generateDocumentGuidance(
-    profile: LegalDocumentProfile | null;
-    context: LegalContext;
-  ): string {
+  private generateDocumentGuidance(profile: LegalDocumentProfile | null, _context: LegalContext): string {
     if (!profile) return 'Apply general document handling best practices';
     return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and ')}`;
   }
-  private generateEfficiencyTips(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
-  ): string[] {
+  private generateEfficiencyTips(context: LegalContext, prediction: HybridPredictionResult): string[] {
     const tips = [
       `System predicts ${prediction.fusedInsights.confidenceScore}% accuracy - leverage AI insights`,
-      `${prediction.performance.cacheHitRate.toFixed(0)}% cache hit rate - optimize asset reuse`
+      `${prediction.performance.cacheHitRate.toFixed(0)}% cache hit rate - optimize asset reuse`,
     ];
     if (context.systemMetrics.fps > 55) {
       tips.push('High system performance - enable aggressive quality tier');
     }
     return tips;
   }
-  private generateRiskAlerts(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
-  ): string[] {
-    const alerts = [];
+  private generateRiskAlerts(context: LegalContext, prediction: HybridPredictionResult): string[] {
+    const alerts: string[] = [];
     if (prediction.fusedInsights.confidenceScore < 60) {
       alerts.push('Low prediction confidence - manual verification recommended');
     }
     if (context.systemMetrics.memoryUsage > 85) {
       alerts.push('High memory usage - consider reducing background processes');
     }
-    if (context.documentContext?.complexity === 'highly_complex') {
+    if (String(context.documentContext?.complexity) === 'highly_complex') {
       alerts.push('Complex document detected - additional review cycles recommended');
     }
     return alerts;
   }
   private generateQualityChecklist(
-    stage: LegalWorkflowStage | undefined;
-    profile: LegalDocumentProfile | null;
+    stage: LegalWorkflowStage | undefined,
+    profile: LegalDocumentProfile | null
   ): string[] {
     const checklist = ['Verify all required information is complete'];
     if (stage?.stage === 'review') {
@@ -418,49 +447,56 @@ export class LegalWorkflowOrchestrator {
   private getWorkflowSpecificAssets(context: LegalContext): { essential: string[]; recommended: string[] } {
     const stage = this.workflowProfiles.get(context.workflowStage);
     if (!stage) {
-      return { essential: [], recommended: [] }
+      return { essential: [], recommended: [] };
     }
     return {
       essential: stage.expectedAssets.slice(0, 2),
-      recommended: stage.expectedAssets.slice(2)
-    }
+      recommended: stage.expectedAssets.slice(2),
+    };
   }
   private getStageAssets(stageName: string): string[] {
     const stage = this.workflowProfiles.get(stageName);
     return stage?.expectedAssets || [];
   }
-  private generateAssetData(assetType: string, context: LegalContext): any {
+  private generateAssetData(assetType: string, context: LegalContext): AssetData {
     // Generate appropriate asset data based on type and context
-    const baseData = {
+    const baseData: AssetData = {
       assetType,
       sessionId: context.sessionId,
       generatedAt: new Date().toISOString(),
-      workflowStage: context.workflowStage
-    }
+      workflowStage: context.workflowStage,
+    };
     // Add specific data based on asset type
     switch (assetType) {
       case 'document_viewer':
-        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } }
+        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
       case 'evidence_canvas':
-        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } }
+        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };
       case 'legal_database':
-        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } }
+        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default:
         return baseData;
     }
   }
-  private async recordWorkflowTransition(
-    context: LegalContext;
-    prediction: HybridPredictionResult;
-  ): Promise<void> {
+  private async recordWorkflowTransition(context: LegalContext, prediction: HybridPredictionResult): Promise<void> {
     const transitionData = {
       fromStage: context.workflowStage,
       timestamp: new Date().toISOString(),
       predictionConfidence: prediction.fusedInsights.confidenceScore,
-      sessionId: context.sessionId
+      sessionId: context.sessionId,
+    };
+    // prefer camelCase list ops (node-redis v4); fall back to older names if necessary
+    if (typeof this.redis.lPush === 'function') {
+      await this.redis.lPush('workflow:transitions', JSON.stringify(transitionData));
+      await this.redis.lTrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
+    } else if (typeof this.redis.lpush === 'function') {
+      await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData));
+      await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
+    } else {
+      // best-effort fallback: prepend a simple set + index key (non-list) so we don't throw at runtime
+      const fallbackKey = `workflow:transitions:fallback:${Date.now()}`;
+      await this.redis.set(fallbackKey, JSON.stringify(transitionData), { EX: 60 * 60 * 24 }); // 1 day
     }
-    await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData);
-    await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
   }
 }
 // =============================================================================
@@ -482,4 +518,3 @@ interface NextStepRecommendation {
   reasoning: string;
   assets: string[];
 }
-export { WorkflowGuidance, NextStepRecommendation, AssetPreloadingStrategy }

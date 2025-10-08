@@ -8,12 +8,19 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 // Add types to replace `any`
 type DrizzleDB = ReturnType<typeof drizzle>;
 
-interface PoolLike {
-  query?: (sql: string, params?: unknown[]) => Promise<any>;
-  connect?: () => Promise<{ query: (sql: string, params?: unknown[]) => Promise<any>; release?: () => void }>;
+// Replaced invalid interface with a concrete class implementation
+class PgVectorService {
+  private db: DrizzleDB | null = null;
+  private pool: any = null;
+  private isConnected = false;
+
   constructor() {
     // Use drizzle with postgres-js client for compatibility
-    this.db = drizzle(pgClient as any);
+    try {
+      this.db = drizzle(pgClient as any);
+    } catch {
+      this.db = null;
+    }
     // Best-effort: mark connected if client exists
     this.isConnected = !!pgClient;
     // Initialize pool reference: prefer poolShim, fallback to pgClient.pool if available
@@ -60,30 +67,28 @@ interface PoolLike {
 
     return null;
   }
+
   /**
    * Test PostgreSQL + pgvector connection
    * Best Practice: Always verify extensions and permissions
-   */ async testConnection(): Promise<any> {
+   */
+  async testConnection(): Promise<any> {
     try {
-      // If a poolShim is available, use it to run basic checks; otherwise rely on pgClient being present
-      if (poolShim && typeof poolShim.query === 'function') {
-        const res = await poolShim.query('SELECT NOW() as current_time');
+      const clientWrapper = await this.getQueryClient();
+      if (!clientWrapper) return { success: false, details: { error: 'No DB client available' } };
+      try {
+        const res = await clientWrapper.query('SELECT NOW() as current_time');
         return { success: true, details: { connection: res?.rows?.[0] ?? null } };
+      } catch (e) {
+        return { success: false, details: { error: (e as Error).message } };
+      } finally {
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
       }
-      if (pgClient) {
-        // Best-effort call to pgClient (may be a no-op in build/test)
-        try {
-          await (pgClient as any)('SELECT 1');
-          return { success: true, details: { connection: { ok: true } } };
-        } catch (e) {
-          return { success: false, details: { error: (e as Error).message } };
-        }
-      }
-      return { success: false, details: { error: 'No DB client available' } };
     } catch (error) {
       return { success: false, details: { error: (error as Error).message } };
     }
   }
+
   /**
    * Insert document with vector embedding
    * Best Practice: Use transactions and validate vector dimensions
@@ -98,7 +103,6 @@ interface PoolLike {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        // Don't block — return an error object instead
         return { success: false, error: `Invalid embedding dimension: ${embedding.length}` };
       }
 
@@ -108,10 +112,10 @@ interface PoolLike {
         return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };
       }
 
-      // Parameterized insert: document + vector cast
+      // Use metadata column consistently (JSON) and store embedding as ::vector
       const insertQuery = `
-        INSERT INTO legal_documents (document_id, title, content, document_type, keywords, embedding, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6::vector, NOW())
+        INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
+        VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
         RETURNING id
       `;
       const params = [
@@ -119,14 +123,13 @@ interface PoolLike {
         metadata.title || 'Untitled',
         content,
         metadata.type || 'contract',
-        JSON.stringify(metadata),
+        JSON.stringify(metadata || {}),
         embeddingStr,
       ];
 
       try {
         const res = await clientWrapper.query(insertQuery, params);
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
-        // Adapt to different client shapes; support row sets from node-postgres or postgres-js
         const id = res?.rows?.[0]?.id ?? (Array.isArray(res) && res[0]?.id) ?? null;
         return { success: true, id };
       } catch (e) {
@@ -137,6 +140,7 @@ interface PoolLike {
       return { success: false, error: (error as Error).message };
     }
   }
+
   /**
    * Vector similarity search with multiple distance metrics
    * Best Practice: Support cosine, euclidean, and inner product distances
@@ -176,7 +180,7 @@ interface PoolLike {
           ld.document_type,
           ${contentSelect}
           ld.embedding ${distanceOperator} $1::vector AS distance,
-          ld.keywords AS metadata,
+          ld.metadata AS metadata,
           ld.created_at
         FROM legal_documents ld
         WHERE ld.embedding IS NOT NULL
@@ -187,7 +191,6 @@ interface PoolLike {
       // Optional threshold filter — use next parameter index
       if (typeof threshold === 'number') {
         params.push(threshold);
-        // distance compares to threshold, use $2 (or whichever param index)
         query += ` AND (ld.embedding ${distanceOperator} $1::vector) < $${params.length}`;
       }
 
@@ -234,6 +237,7 @@ interface PoolLike {
       };
     }
   }
+
   /**
    * Batch insert multiple documents with embeddings
    * Best Practice: Use prepared statements and batch processing
@@ -250,52 +254,106 @@ interface PoolLike {
       if (!Array.isArray(documents)) return { success: false, errors: ['Invalid documents array'] };
       const errors: string[] = [];
       let inserted = 0;
-      for (const doc of documents) {
-        try {
-          if (!doc.embedding || !Array.isArray(doc.embedding)) {
-            errors.push(`${doc.documentId}: missing embedding`);
-            continue;
-          }
-          const embeddingStr = `[${doc.embedding.join(',')}]`;
-          if (poolShim && typeof poolShim.query === 'function') {
-            await poolShim.query(
-              `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) ON CONFLICT (document_id) DO NOTHING`,
-              [
-                doc.documentId,
-                doc.metadata?.title || 'Batch Insert',
-                doc.content,
-                doc.metadata?.type || 'contract',
-                JSON.stringify(doc.metadata || {}),
-              ]
-            );
-            await poolShim.query(
-              `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at) VALUES ($1, $2::vector, $3, NOW()) ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, updated_at = NOW()`,
-              [doc.documentId, embeddingStr, JSON.stringify(doc.metadata || {})]
-            );
-            inserted++;
-          } else if (pgClient) {
-            try {
-              await (pgClient as any)(`/* batch insert fallback */`);
-              inserted++;
-            } catch (e) {
-              errors.push(`${doc.documentId}: ${(e as Error).message}`);
-            }
-          } else {
-            errors.push(`${doc.documentId}: no db client`);
-          }
-        } catch (docError) {
-          errors.push(`${doc.documentId}: ${(docError as Error).message}`);
+
+      const clientWrapper = await this.getQueryClient();
+      const transactional = !!(clientWrapper && typeof clientWrapper.release === 'function');
+
+      try {
+        if (transactional) {
+          await clientWrapper!.query('BEGIN');
         }
+
+        for (const doc of documents) {
+          try {
+            if (!doc.embedding || !Array.isArray(doc.embedding)) {
+              errors.push(`${doc.documentId}: missing embedding`);
+              continue;
+            }
+            const embeddingStr = `[${doc.embedding.join(',')}]`;
+            const metadataJson = JSON.stringify(doc.metadata || {});
+
+            if (clientWrapper) {
+              try {
+                await clientWrapper.query(
+                  `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
+               VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
+               ON CONFLICT (document_id) DO UPDATE SET
+                 title = EXCLUDED.title,
+                 content = EXCLUDED.content,
+                 document_type = EXCLUDED.document_type,
+                 metadata = EXCLUDED.metadata,
+                 embedding = EXCLUDED.embedding,
+                 created_at = COALESCE(legal_documents.created_at, NOW())`,
+                  [
+                    doc.documentId,
+                    doc.metadata?.title || 'Batch Insert',
+                    doc.content,
+                    doc.metadata?.type || 'contract',
+                    metadataJson,
+                    embeddingStr,
+                  ]
+                );
+                inserted++;
+              } catch (e) {
+                errors.push(`${doc.documentId}: ${(e as Error).message}`);
+              }
+            } else if (poolShim && typeof poolShim.query === 'function') {
+              await poolShim.query(
+                `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
+               VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
+               ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, updated_at = NOW()`,
+                [
+                  doc.documentId,
+                  doc.metadata?.title || 'Batch Insert',
+                  doc.content,
+                  doc.metadata?.type || 'contract',
+                  metadataJson,
+                  embeddingStr,
+                ]
+              );
+              inserted++;
+            } else if (pgClient) {
+              try {
+                await (pgClient as any)(`/* batch insert fallback for ${doc.documentId} */`);
+                inserted++;
+              } catch (e) {
+                errors.push(`${doc.documentId}: ${(e as Error).message}`);
+              }
+            } else {
+              errors.push(`${doc.documentId}: no db client`);
+            }
+          } catch (docError) {
+            errors.push(`${doc.documentId}: ${(docError as Error).message}`);
+          }
+        }
+
+        if (transactional) {
+          await clientWrapper!.query('COMMIT');
+        }
+      } catch (overallErr) {
+        if (transactional) {
+          try {
+            await clientWrapper!.query('ROLLBACK');
+          } catch {
+            // ignore rollback errors but keep original error
+          }
+        }
+        throw overallErr;
+      } finally {
+        if (typeof clientWrapper?.release === 'function') clientWrapper.release();
       }
+
       return { success: true, inserted, errors: errors.length > 0 ? errors : undefined };
     } catch (error) {
       return { success: false, errors: [(error as Error).message] };
     }
   }
+
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
-   */ async createVectorIndex(
+   */
+  async createVectorIndex(
     options: {
       lists?: number;
       metric?: 'cosine' | 'euclidean' | 'inner_product';
@@ -305,67 +363,65 @@ interface PoolLike {
   ): Promise<any> {
     try {
       const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;
-      // sanitize identifiers to safe alphanum + underscore only
       const safeTable = String(tableName).replace(/[^\w]/g, '_');
       const safeColumn = String(columnName).replace(/[^\w]/g, '_');
       const safeMetric =
         metric === 'cosine' || metric === 'euclidean' || metric === 'inner_product' ? metric : 'cosine';
       const indexName = `idx_${safeTable}_${safeColumn}_${safeMetric}`;
       const start = Date.now();
-      if (this.pool && typeof this.pool.query === 'function') {
-        try {
-          await this.pool.query(`DROP INDEX IF EXISTS ${indexName}`);
-          const opClass =
-            safeMetric === 'cosine'
-              ? 'vector_cosine_ops'
-              : safeMetric === 'euclidean'
-                ? 'vector_l2_ops'
-                : 'vector_ip_ops';
-          const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(lists)})`;
-          await this.pool.query(indexQuery);
-          await this.pool.query(`ANALYZE ${safeTable}`);
-          const indexTime = Date.now() - start;
-          return {
-            success: true,
-            details: {
-              indexName,
-              tableName: safeTable,
-              columnName: safeColumn,
-              metric: safeMetric,
-              lists,
-              creationTime: `${indexTime}ms`,
-              query: indexQuery,
-            },
-          };
-        } catch (e) {
-          return { success: false, error: (e as Error).message };
-        }
+
+      const clientWrapper = await this.getQueryClient();
+      if (!clientWrapper) {
+        return { success: false, error: 'No DB client available for index creation' };
       }
-      return { success: false, error: 'No DB client available for index creation' };
+
+      try {
+        await clientWrapper.query(`DROP INDEX IF EXISTS ${indexName}`);
+        const opClass =
+          safeMetric === 'cosine'
+            ? 'vector_cosine_ops'
+            : safeMetric === 'euclidean'
+              ? 'vector_l2_ops'
+              : 'vector_ip_ops';
+        const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(
+          lists
+        )})`;
+        await clientWrapper.query(indexQuery);
+        await clientWrapper.query(`ANALYZE ${safeTable}`);
+        const indexTime = Date.now() - start;
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        return {
+          success: true,
+          details: {
+            indexName,
+            tableName: safeTable,
+            columnName: safeColumn,
+            metric: safeMetric,
+            lists,
+            creationTime: `${indexTime}ms`,
+            query: indexQuery,
+          },
+        };
+      } catch (e) {
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
+        return { success: false, error: (e as Error).message };
+      }
     } catch (error) {
       return { success: false, error: (error as Error).message };
     }
   }
+
   /**
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
-   */ async getDatabaseStats(): Promise<any> {
+   */
+  async getDatabaseStats(): Promise<any> {
     try {
-      // Support both poolShim-style (connect -> client) and simple client with query method
-      let client: any = null;
-      let clientNeedsRelease = false;
-      if (this.pool && typeof this.pool.connect === 'function') {
-        client = await this.pool.connect();
-        clientNeedsRelease = typeof client.release === 'function';
-      } else if (this.pool && typeof this.pool.query === 'function') {
-        client = this.pool;
-      } else if (pgClient && typeof (pgClient as any) === 'function') {
-        client = pgClient;
-      } else {
-        return { success: false, error: 'No DB client available' };
-      }
+      const clientWrapper = await this.getQueryClient();
+      if (!clientWrapper) return { success: false, error: 'No DB client available' };
+
       try {
-        const vectorStats = await client.query(`
+        const vectorStats = await clientWrapper.query(`
           SELECT
             COUNT(*) FILTER (WHERE embedding IS NOT NULL) as total_embeddings,
             COUNT(*) as total_documents,
@@ -373,7 +429,7 @@ interface PoolLike {
             MAX(created_at) as latest_document
           FROM legal_documents
         `);
-        const docStats = await client.query(`
+        const docStats = await clientWrapper.query(`
           SELECT
             document_type,
             COUNT(*) as count_per_type
@@ -382,20 +438,20 @@ interface PoolLike {
           GROUP BY document_type
           ORDER BY count_per_type DESC
         `);
-        const additionalStats = await client.query(`
+        const additionalStats = await clientWrapper.query(`
           SELECT 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
           SELECT 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
           UNION ALL
           SELECT 'vector_operations' as table_name, COUNT(*) as record_count FROM vector_operations
         `);
-        const indexStats = await client.query(`
+        const indexStats = await clientWrapper.query(`
           SELECT schemaname, tablename, indexname, indexdef
           FROM pg_indexes
           WHERE tablename IN ('legal_documents', 'embedding_cache', 'vector_metadata', 'vector_operations')
           ORDER BY tablename, indexname
         `);
-        const sizeStats = await client.query(`
+        const sizeStats = await clientWrapper.query(`
           SELECT
             pg_size_pretty(pg_database_size(current_database())) as database_size,
             pg_size_pretty(pg_total_relation_size('legal_documents')) as documents_table_size,
@@ -418,9 +474,7 @@ interface PoolLike {
           },
         };
       } finally {
-        if (clientNeedsRelease && typeof client.release === 'function') {
-          client.release();
-        }
+        if (typeof clientWrapper.release === 'function') clientWrapper.release();
       }
     } catch (error) {
       return {
@@ -429,10 +483,12 @@ interface PoolLike {
       };
     }
   }
+
   /**
    * Close database connections gracefully
    * Best Practice: Cleanup resources
-   */ async close(): Promise<void> {
+   */
+  async close(): Promise<void> {
     try {
       // Prefer pool.end() if available
       if (this.pool && typeof this.pool.end === 'function') {
@@ -452,5 +508,6 @@ interface PoolLike {
     }
   }
 }
+
 // Export singleton instance
 export const pgVectorService = new PgVectorService();
