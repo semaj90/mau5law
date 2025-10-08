@@ -1,18 +1,30 @@
 // @ts-nocheck
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import pgClient, { poolShim } from '$lib/server/db-shim';
+import postgres from 'postgres'; // derive runtime client type
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { sql } from 'drizzle-orm';
+
+// Minimal pool shape used by this script
+type PoolLike = {
+  end?: () => Promise<void> | void;
+  close?: () => Promise<void> | void;
+};
+
+// Derive concrete postgres-js client type
+type PostgresJsClient = ReturnType<typeof postgres>;
+
 interface Migration {
   id: string;
   filename: string;
-  // DB drivers commonly return timestamps as strings; accept both
-  applied_at?: string | Date;
+  // DB drivers commonly return timestamps as strings; accept both and allow null
+  applied_at?: string | Date | null;
 }
-async function runSqlMigrations(db: any, pool: any) {
+async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike) {
   console.log('🚀 Running SQL migrations from migrations folder...');
   // Create migrations table if it doesn't exist
   await db.execute(sql`
@@ -22,13 +34,15 @@ async function runSqlMigrations(db: any, pool: any) {
       applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
   // Get applied migrations (handle multiple possible return shapes)
   const result = await db.execute(sql`
     SELECT id, filename, applied_at FROM migrations ORDER BY applied_at ASC
   `);
   // drizzle/postgres-js clients sometimes return { rows: [...] } or an array directly
-  const rows = (result && (result as any).rows) ?? (Array.isArray(result) ? result : []);
-  const appliedMigrations = rows as Migration[];
+  const rows = (result && (result as any).rows) ?? (Array.isArray(result) ? result : ((result as any)[0] ?? []));
+  const appliedMigrations = (Array.isArray(rows) ? rows : []) as Migration[];
+
   // Get available migration files
   const migrationsDir = join(process.cwd(), 'src/lib/server/db/migrations');
   if (!existsSync(migrationsDir)) {
@@ -54,14 +68,23 @@ async function runSqlMigrations(db: any, pool: any) {
     const migrationSql = readFileSync(migrationPath, 'utf-8');
     console.log(`Running SQL migration: ${migration}`);
     try {
-      // Split by semicolon and execute each statement
-      const statements = migrationSql
-        .split(';')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
-      for (const statement of statements) {
-        if (statement.trim()) {
-          await db.execute(sql.raw(statement));
+      // If the file contains function/trigger definitions (dollar-quoting) or PL/pgSQL,
+      // execute the entire file as a single statement to avoid splitting inside $$ blocks.
+      const containsFunctionOrTrigger = /CREATE\s+(OR\s+REPLACE\s+)?FUNCTION|CREATE\s+TRIGGER|LANGUAGE\s+plpgsql/i.test(
+        migrationSql
+      );
+      if (containsFunctionOrTrigger) {
+        await db.execute(sql.raw(migrationSql));
+      } else {
+        // Split by semicolon for simple SQL files
+        const statements = migrationSql
+          .split(';')
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+        for (const statement of statements) {
+          if (statement.trim()) {
+            await db.execute(sql.raw(statement));
+          }
         }
       }
       // Record migration as applied (idempotent upsert)
@@ -84,8 +107,8 @@ async function runMigrations() {
     throw new Error('DATABASE_URL environment variable is not set.');
   }
   // Use postgres-js client via shim for migrations
-  const pool = poolShim;
-  const db = drizzle(pgClient as any);
+  const pool: PoolLike = poolShim as PoolLike;
+  const db = drizzle(pgClient as unknown as PostgresJsClient) as PostgresJsDatabase<any>;
   console.log('⏳ Running database migrations (via postgres-js client)...');
   console.log('📍 Database URL:', process.env.DATABASE_URL.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'));
   try {
@@ -106,6 +129,7 @@ async function runMigrations() {
     // Close the connection pool/shim if available
     try {
       if (pool && typeof pool.end === 'function') await pool.end();
+      else if (pool && typeof (pool as any).close === 'function') await (pool as any).close();
       else if (typeof (poolShim as any).end === 'function') await (poolShim as any).end();
     } catch (err) {
       console.warn('Error closing pool after migrations:', err);

@@ -4,34 +4,29 @@
  */
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
-import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres.js';
-// Production PostgreSQL Configuration
-const connectionConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5433'), // Updated to use port 5433
-  database: process.env.DB_NAME || 'legal_ai_db',
-  user: process.env.DB_USER || 'legal_admin',
-  password: process.env.DB_PASSWORD || '123456',
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000
-}
+
 // PostgreSQL Connection Pool with Error Handling
 export class PgVectorService {
   private db: any;
+  private pool: any = null; // <-- added pool property
   private isConnected: boolean = false;
   constructor() {
     // Use drizzle with postgres-js client for compatibility
     this.db = drizzle(pgClient as any);
     // Best-effort: mark connected if client exists
     this.isConnected = !!pgClient;
+    // Initialize pool reference: prefer poolShim, fallback to pgClient.pool if available
+    this.pool =
+      typeof poolShim !== 'undefined' && poolShim
+        ? poolShim
+        : pgClient && (pgClient as any).pool
+          ? (pgClient as any).pool
+          : null;
   }
   /**
    * Test PostgreSQL + pgvector connection
    * Best Practice: Always verify extensions and permissions
-   */;
-  async testConnection(): Promise<any> {
+   */ async testConnection(): Promise<any> {
     try {
       // If a poolShim is available, use it to run basic checks; otherwise rely on pgClient being present
       if (poolShim && typeof poolShim.query === 'function') {
@@ -57,9 +52,9 @@ export class PgVectorService {
    * Best Practice: Use transactions and validate vector dimensions
    */
   async insertDocumentWithEmbedding(
-    documentId: string
-    content: string
-    embedding: number[];
+    documentId: string,
+    content: string,
+    embedding: number[],
     metadata: any = {}
   ): Promise<any> {
     try {
@@ -72,8 +67,15 @@ export class PgVectorService {
       // Use poolShim if available for writes
       if (poolShim && typeof poolShim.query === 'function') {
         const embeddingStr = `[${embedding.join(',')}]`;
-        const insertQuery = `INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at) VALUES ($1, $2, $3, $4, $5::vector, NOW()) RETURNING id`;
-        const res = await poolShim.query(insertQuery, [metadata.title || 'Untitled', content, metadata.type || 'contract', JSON.stringify(metadata), embeddingStr]);
+        const insertQuery = `INSERT INTO legal_documents (document_id, title, content, document_type, keywords, embedding, created_at) VALUES ($1, $2, $3, $4, $5, $6::vector, NOW()) RETURNING id`;
+        const res = await poolShim.query(insertQuery, [
+          documentId,
+          metadata.title || 'Untitled',
+          content,
+          metadata.type || 'contract',
+          JSON.stringify(metadata),
+          embeddingStr,
+        ]);
         return { success: true, id: res?.rows?.[0]?.id };
       }
       // Fallback: call pgClient if it supports tagged-template or function call
@@ -81,7 +83,9 @@ export class PgVectorService {
         try {
           // Attempt a raw SQL via postgres-js client
           const embeddingStr = `[${embedding.join(',')}]`;
-          const r = await (pgClient as any)(`INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at) VALUES (${metadata.title || 'Untitled'}, ${content}, ${metadata.type || 'contract'}, ${JSON.stringify(metadata)}, ${embeddingStr}::vector, NOW()) RETURNING id`);
+          const r = await (pgClient as any)(
+            `INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at) VALUES (${metadata.title || 'Untitled'}, ${content}, ${metadata.type || 'contract'}, ${JSON.stringify(metadata)}, ${embeddingStr}::vector, NOW()) RETURNING id`
+          );
           return { success: true, id: r?.[0]?.id };
         } catch (e) {
           return { success: false, error: (e as Error).message };
@@ -97,7 +101,7 @@ export class PgVectorService {
    * Best Practice: Support cosine, euclidean, and inner product distances
    */
   async vectorSimilaritySearch(
-    queryEmbedding: number[]
+    queryEmbedding: number[],
     options: {
       limit?: number;
       distanceMetric?: 'cosine' | 'euclidean' | 'inner_product';
@@ -107,71 +111,101 @@ export class PgVectorService {
     } = {}
   ): Promise<any> {
     try {
-      if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
-        throw new Error(
-          `Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`
-        );
+      // Basic validation
+      if (!Array.isArray(queryEmbedding)) {
+        throw new Error('Invalid query embedding - expected array');
       }
-      const {
-        limit = 10,
-        distanceMetric = 'cosine',
-        threshold = 1.0,
-        documentType,
-        includeContent = false
-      } = options;
-      // Choose distance operator based on metric
-      const distanceOperator = {
-        cosine: '<->',
-        euclidean: '<=>',
-        inner_product: '<#>'
-      }[distanceMetric];
+      if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
+        throw new Error(`Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`);
+      }
+
+      const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } = options;
+
+      // Choose distance operator mapping - adjust if your pgvector version differs
+      const distanceOperator =
+        distanceMetric === 'euclidean' ? '<->' : distanceMetric === 'inner_product' ? '<#>' : '<=>';
+
       const embeddingStr = `[${queryEmbedding.join(',')}]`;
+
+      // Build SELECT with proper commas and alias
+      const contentSelect = includeContent ? 'ld.content,' : '';
       let query = `
         SELECT
           ld.id,
           ld.title,
           ld.document_type,
-          ${includeContent ? 'ld.content,' : ''}
-          ld.embedding ${distanceOperator} $1:: vector as distance
-          ld.keywords as metadata,
+          ${contentSelect}
+          ld.embedding ${distanceOperator} $1::vector AS distance,
+          ld.keywords AS metadata,
           ld.created_at
         FROM legal_documents ld
         WHERE ld.embedding IS NOT NULL
-        AND (ld.embedding ${distanceOperator} $1::vector) < $2
       `;
-      const queryParams = [embeddingStr, threshold];
-      let paramIndex = 3;
+
+      const params: any[] = [embeddingStr];
+
+      // Optional threshold filter
+      if (typeof threshold === 'number') {
+        params.push(threshold);
+        query += ` AND (ld.embedding ${distanceOperator} $1::vector) < $${params.length}`;
+      }
+
+      // Optional documentType filter
       if (documentType) {
-        query += ` AND ld.document_type = $${paramIndex}`;
-        queryParams.push(documentType);
-        paramIndex++;
+        params.push(documentType);
+        query += ` AND ld.document_type = $${params.length}`;
       }
-      query += ` ORDER BY ld.embedding ${distanceOperator} $1::vector LIMIT $${paramIndex}`;
-      queryParams.push(limit);
-      // Use poolShim if available
-      if (poolShim && typeof poolShim.query === 'function') {
+
+      // Final ordering and limit
+      params.push(limit);
+      query += ` ORDER BY distance ASC LIMIT $${params.length}`;
+
+      // Execute using available pool or client
+      if (this.pool && typeof this.pool.query === 'function') {
         const startTime = Date.now();
-        const result = await poolShim.query(query, queryParams as any[]);
+        const result = await this.pool.query(query, params);
         const searchTime = Date.now() - startTime;
-        return { success: true, results: result?.rows ?? [], metadata: { searchTime: `${searchTime}ms`, totalResults: result?.rowCount ?? result?.rows?.length ?? 0, distanceMetric, threshold, query: query.replace(/\$\d+/g, '?') } };
+        return {
+          success: true,
+          results: result?.rows ?? [],
+          metadata: {
+            searchTime: `${searchTime}ms`,
+            totalResults: result?.rowCount ?? result?.rows?.length ?? 0,
+            distanceMetric,
+            threshold: typeof threshold === 'number' ? threshold : null,
+            limit,
+          },
+        };
       }
+
+      // Fallback: try pgClient (postgres-js)
       if (pgClient) {
         try {
-          // Best-effort: use postgres-js to run the query
           const startTime = Date.now();
-          const res = await (pgClient as any)(query);
+          // Many postgres-js clients accept raw query + params; adapt if your client differs
+          const res = await (pgClient as any)(query, params);
           const searchTime = Date.now() - startTime;
-          return { success: true, results: res ?? [], metadata: { searchTime: `${searchTime}ms`, totalResults: Array.isArray(res) ? res.length : 0, distanceMetric, threshold } };
+          return {
+            success: true,
+            results: res?.rows ?? res ?? [],
+            metadata: {
+              searchTime: `${searchTime}ms`,
+              totalResults: Array.isArray(res?.rows ? res.rows : res) ? (res.rows ?? res).length : 0,
+              distanceMetric,
+              threshold: typeof threshold === 'number' ? threshold : null,
+            },
+          };
         } catch (e) {
           return { success: false, error: (e as Error).message };
         }
       }
+
       return { success: false, error: 'No DB client available' };
     } catch (error) {
       return {
-        success: false;
-        error: error.message
-      }
+        success: false,
+        error: (error as Error).message,
+      };
     }
   }
   /**
@@ -179,7 +213,12 @@ export class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<;
+    documents: Array<{
+      documentId: string;
+      content: string;
+      embedding: number[];
+      metadata?: any;
+    }>
   ): Promise<any> {
     try {
       if (!Array.isArray(documents)) return { success: false, errors: ['Invalid documents array'] };
@@ -195,7 +234,13 @@ export class PgVectorService {
           if (poolShim && typeof poolShim.query === 'function') {
             await poolShim.query(
               `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) ON CONFLICT (document_id) DO NOTHING`,
-              [doc.documentId, doc.metadata?.title || 'Batch Insert', doc.content, doc.metadata?.type || 'contract', JSON.stringify(doc.metadata || {})]
+              [
+                doc.documentId,
+                doc.metadata?.title || 'Batch Insert',
+                doc.content,
+                doc.metadata?.type || 'contract',
+                JSON.stringify(doc.metadata || {}),
+              ]
             );
             await poolShim.query(
               `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at) VALUES ($1, $2::vector, $3, NOW()) ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, updated_at = NOW()`,
@@ -224,8 +269,8 @@ export class PgVectorService {
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
-   */;
-  async createVectorIndex(_options: {
+   */ async createVectorIndex(
+    options: {
       lists?: number;
       metric?: 'cosine' | 'euclidean' | 'inner_product';
       tableName?: string;
@@ -236,15 +281,27 @@ export class PgVectorService {
       const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;
       const indexName = `idx_${tableName}_${columnName}_${metric}`;
       const start = Date.now();
-      if (poolShim && typeof poolShim.query === 'function') {
+      if (this.pool && typeof this.pool.query === 'function') {
         try {
-          await poolShim.query(`DROP INDEX IF EXISTS ${indexName}`);
-          const opClass = metric === 'cosine' ? 'vector_cosine_ops' : metric === 'euclidean' ? 'vector_l2_ops' : 'vector_ip_ops';
+          await this.pool.query(`DROP INDEX IF EXISTS ${indexName}`);
+          const opClass =
+            metric === 'cosine' ? 'vector_cosine_ops' : metric === 'euclidean' ? 'vector_l2_ops' : 'vector_ip_ops';
           const indexQuery = `CREATE INDEX ${indexName} ON ${tableName} USING ivfflat (${columnName} ${opClass}) WITH (lists = ${lists})`;
-          await poolShim.query(indexQuery);
-          await poolShim.query(`ANALYZE ${tableName}`);
+          await this.pool.query(indexQuery);
+          await this.pool.query(`ANALYZE ${tableName}`);
           const indexTime = Date.now() - start;
-          return { success: true, details: { indexName, tableName, columnName, metric, lists, creationTime: `${indexTime}ms`, query: indexQuery } };
+          return {
+            success: true,
+            details: {
+              indexName,
+              tableName,
+              columnName,
+              metric,
+              lists,
+              creationTime: `${indexTime}ms`,
+              query: indexQuery,
+            },
+          };
         } catch (e) {
           return { success: false, error: (e as Error).message };
         }
@@ -257,12 +314,22 @@ export class PgVectorService {
   /**
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
-   */;
-  async getDatabaseStats(): Promise<any> {
+   */ async getDatabaseStats(): Promise<any> {
     try {
-      const client = await this.pool.connect();
+      // Support both poolShim-style (connect -> client) and simple client with query method
+      let client: any = null;
+      let clientNeedsRelease = false;
+      if (this.pool && typeof this.pool.connect === 'function') {
+        client = await this.pool.connect();
+        clientNeedsRelease = typeof client.release === 'function';
+      } else if (this.pool && typeof this.pool.query === 'function') {
+        client = this.pool;
+      } else if (pgClient && typeof (pgClient as any) === 'function') {
+        client = pgClient;
+      } else {
+        return { success: false, error: 'No DB client available' };
+      }
       try {
-        // Vector embeddings statistics from legal_documents table
         const vectorStats = await client.query(`
           SELECT
             COUNT(*) FILTER (WHERE embedding IS NOT NULL) as total_embeddings,
@@ -271,11 +338,8 @@ export class PgVectorService {
             MAX(created_at) as latest_document
           FROM legal_documents
         `);
-        // Legal documents statistics by type
         const docStats = await client.query(`
           SELECT
-            COUNT(*) as total_documents,
-            COUNT(DISTINCT document_type) as unique_types,
             document_type,
             COUNT(*) as count_per_type
           FROM legal_documents
@@ -283,35 +347,19 @@ export class PgVectorService {
           GROUP BY document_type
           ORDER BY count_per_type DESC
         `);
-        // Additional vector/embedding tables statistics
         const additionalStats = await client.query(`
-          SELECT
-            'embedding_cache' as table_name,
-            COUNT(*) as record_count
-          FROM embedding_cache
+          SELECT 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
-          SELECT
-            'vector_metadata' as table_name,
-            COUNT(*) as record_count
-          FROM vector_metadata
+          SELECT 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
           UNION ALL
-          SELECT
-            'vector_operations' as table_name,
-            COUNT(*) as record_count
-          FROM vector_operations
+          SELECT 'vector_operations' as table_name, COUNT(*) as record_count FROM vector_operations
         `);
-        // Index information
         const indexStats = await client.query(`
-          SELECT
-            schemaname,
-            tablename,
-            indexname,
-            indexdef
+          SELECT schemaname, tablename, indexname, indexdef
           FROM pg_indexes
           WHERE tablename IN ('legal_documents', 'embedding_cache', 'vector_metadata', 'vector_operations')
           ORDER BY tablename, indexname
         `);
-        // Database size information
         const sizeStats = await client.query(`
           SELECT
             pg_size_pretty(pg_database_size(current_database())) as database_size,
@@ -320,40 +368,52 @@ export class PgVectorService {
             pg_size_pretty(pg_total_relation_size('vector_metadata')) as vector_metadata_size
         `);
         return {
-          success: true
+          success: true,
           stats: {
-            vectors: vectorStats.rows[0],
-            documents: docStats.rows,
-            additionalTables: additionalStats.rows,
-            indexes: indexStats.rows,
-            sizes: sizeStats.rows[0],
+            vectors: vectorStats.rows?.[0] ?? null,
+            documents: docStats.rows ?? [],
+            additionalTables: additionalStats.rows ?? [],
+            indexes: indexStats.rows ?? [],
+            sizes: sizeStats.rows?.[0] ?? null,
             connectionPool: {
-              total: this.pool.totalCount,
-              idle: this.pool.idleCount,
-              waiting: this.pool.waitingCount
-            }
-          }
-        }
+              total: this.pool?.totalCount ?? null,
+              idle: this.pool?.idleCount ?? null,
+              waiting: this.pool?.waitingCount ?? null,
+            },
+          },
+        };
       } finally {
-        client.release();
+        if (clientNeedsRelease && typeof client.release === 'function') {
+          client.release();
+        }
       }
     } catch (error) {
       return {
-        success: false;
-        error: error.message
-      }
+        success: false,
+        error: (error as Error).message,
+      };
     }
   }
   /**
    * Close database connections gracefully
    * Best Practice: Cleanup resources
-   */;
-  async close(): Promise<void> {
+   */ async close(): Promise<void> {
     try {
-      await this.pool.end();
-      console.log('📡 PostgreSQL connection pool closed');
+      // Prefer pool.end() if available
+      if (this.pool && typeof this.pool.end === 'function') {
+        await this.pool.end();
+        console.log('📡 PostgreSQL connection pool closed');
+        return;
+      }
+      // Fallback to pgClient.end if present
+      if (pgClient && typeof (pgClient as any).end === 'function') {
+        await (pgClient as any).end();
+        console.log('📡 pgClient closed');
+        return;
+      }
+      console.log('No pool/client end method found; nothing to close.');
     } catch (error) {
-      console.error('Error closing PostgreSQL pool:', error);
+      console.error('Error closing PostgreSQL pool/client:', (error as Error).message);
     }
   }
 }

@@ -8,8 +8,20 @@ const sql: ReturnType<typeof postgres> = postgres(connectionString, {
   debug: process.env.NODE_ENV === 'development',
 });
 
-type QueryResultRow = Record<string, unknown>;
-type QueryResult = { rows: QueryResultRow[] };
+export type QueryResultRow = Record<string, unknown>;
+export type QueryResult = { rows: QueryResultRow[] };
+
+// Minimal client/pool interfaces to reduce widespread `any` usage when migrating from node-postgres
+export interface ClientLike {
+  query: (textOrConfig: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<QueryResult>;
+  release?: () => void;
+}
+
+export interface PoolLike {
+  connect: () => Promise<ClientLike>;
+  query: (textOrConfig: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<QueryResult>;
+  end?: () => Promise<void>;
+}
 
 interface SqlWithClose {
   end?: () => Promise<void>;
@@ -26,7 +38,9 @@ async function runQuery(
   const values = typeof textOrConfig === 'string' ? params : textOrConfig.values;
 
   // Execute query using postgres-js's `unsafe` method for raw SQL
-  const resultRaw = await sql.unsafe(text, values as any[]);
+  // postgres-js can return multiple shapes; allow unknown and normalize below
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resultRaw = await sql.unsafe(text, values as unknown as any[]);
 
   // Normalize various possible result shapes into { rows: [...] }
   let rows: QueryResultRow[] = [];
@@ -36,10 +50,7 @@ async function runQuery(
   } else if (Array.isArray(resultRaw)) {
     // postgres-js returns an array of rows
     rows = resultRaw as QueryResultRow[];
-  } else if (
-    (resultRaw as { rows?: unknown[] })?.rows &&
-    Array.isArray((resultRaw as { rows: unknown[] }).rows)
-  ) {
+  } else if ((resultRaw as { rows?: unknown[] })?.rows && Array.isArray((resultRaw as { rows: unknown[] }).rows)) {
     // node-postgres-like result shape
     rows = (resultRaw as { rows: QueryResultRow[] }).rows;
   } else if ((resultRaw as { 0?: unknown })?.[0]) {
@@ -58,7 +69,7 @@ async function runQuery(
 }
 
 // Minimal pool shim to satisfy code paths that expect node-postgres Pool API
-export const poolShim = {
+export const poolShim: PoolLike = {
   async connect() {
     console.warn('Using db-shim poolShim.connect() — consider migrating to postgres-js client API');
     return {
@@ -66,7 +77,7 @@ export const poolShim = {
       release: () => {
         // postgres-js manages connections internally; nothing to release
       },
-    };
+    } as ClientLike;
   },
   query: runQuery,
   // Optional: allow graceful shutdown for test/cleanup scenarios

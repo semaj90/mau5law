@@ -5,8 +5,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { cn } from '$lib/utils/cn';
-  import { Card } from './index';
-  import Button from './index';
+  // removed unused/ambiguous Card/Button imports to avoid confusion
   // Types
   interface KeyboardShortcut {
     id: string;
@@ -22,16 +21,18 @@
     className?: string;
     open?: boolean;
   }
-  // Props
-  let { shortcuts = [],
-    showCategories = true,
-    searchable = true,
-    className = '',
-    open = $bindable(false)
-   }: KeyboardHelpProps = $props();
-  // State
-  let searchQuery = $state('');
-  let selectedCategory = $state('all');
+
+  // Props (use standard Svelte exports for clarity)
+  export let shortcuts: KeyboardShortcut[] = [];
+  export let showCategories = true;
+  export let searchable = true;
+  export let className = '';
+  export let open = false;
+
+  // Local state
+  let searchQuery = '';
+  let selectedCategory = 'all';
+
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
@@ -63,44 +64,42 @@
     { id: 'documentation', keys: ['f1'], description: 'Open Documentation', category: 'Help' },
     { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' }
   ];
-  // Combine default and custom shortcuts
-  const allShortcuts = $derived(() => {
-    const combined = [...defaultShortcuts, ...shortcuts];
-    return combined.filter(s => s.enabled !== false);
-  });
-  // Filter shortcuts based on search and category
-  const filteredShortcuts = $derived(() => {
-    let filtered = allShortcut;
+
+  // Reactive derived data (standard Svelte reactive statements)
+  let allShortcuts: KeyboardShortcut[] = [];
+  $: allShortcuts = [...defaultShortcuts, ...shortcuts].filter(s => s.enabled !== false);
+
+  let filteredShortcuts: KeyboardShortcut[] = [];
+  $: {
+    // start from allShortcuts
+    filteredShortcuts = allShortcuts.slice();
     // Filter by category
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(s => s.category === selectedCategory);
+      filteredShortcuts = filteredShortcuts.filter(s => s.category === selectedCategory);
     }
     // Filter by search query
-    if (searchQuery.trim()) {
+    if (searchQuery && searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(item => item.includes)(query) ||
+      filteredShortcuts = filteredShortcuts.filter(s =>
+        s.description.toLowerCase().includes(query) ||
         s.category.toLowerCase().includes(query) ||
-        s.keys.some.includes(query))
+        s.keys.some(k => String(k).toLowerCase().includes(query))
       );
     }
-    return filtered;
-  });
-  // Get unique categories
-  const categories = $derived(() => {
-    const cats = new Set(allShortcuts.map(s => s.category));
-    return ['all', ...Array.from.sort()];
-  });
-  // Group shortcuts by category for display
-  const groupedShortcuts = $derived(() => {
-    const groups: Record<string, KeyboardShortcut[]> = {}
-    filteredShortcuts.forEach(shortcut => {
-      if (!groups[shortcut.category]) {
-        groups[shortcut.category] = [];
-      }
-      groups[shortcut.category].push(shortcut);
-    });
-    return group;
-  });
+  }
+
+  let categories: string[] = [];
+  $: categories = ['all', ...Array.from(new Set(allShortcuts.map(s => s.category))).sort()];
+
+  let groupedShortcuts: Record<string, KeyboardShortcut[]> = {};
+  $: {
+    groupedShortcuts = {};
+    for (const sh of filteredShortcuts) {
+      if (!groupedShortcuts[sh.category]) groupedShortcuts[sh.category] = [];
+      groupedShortcuts[sh.category].push(sh);
+    }
+  }
+
   // Format key combination for display
   function formatKeys(keys: string[]): string {
     return keys.map(key => {
@@ -113,48 +112,61 @@
         case 'enter': return 'Enter';
         case 'esc': return 'Esc';
         case 'tab': return 'Tab';
-        default: return key.toUpperCase();
+        default: return String(key).toUpperCase();
       }
     }).join(' + ');
   }
+
   // Handle escape key to close
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       open = false;
     }
   }
+
   // Handle backdrop click
-  function handleBackdropClick(_event: MouseEvent) {
-    if (event.target === event.currentTarget) {
+  function handleBackdropClick(e: MouseEvent) {
+    if ((e.target as EventTarget) === (e.currentTarget as EventTarget)) {
       open = false;
     }
   }
-  $effect(() => {
+
+  // Global shortcut listener (Shift + ? toggles panel)
+  onMount(() => {
     if (!browser) return;
-    // Listen for global keyboard help shortcut
-    function handleGlobalShortcut(_event: KeyboardEvent) {
-      if (event.shiftKey && event.key === '?') {
-        event.preventDefault();
-        open = !ope;
+    function handleGlobalShortcut(e: KeyboardEvent) {
+      if (e.shiftKey && e.key === '?') {
+        e.preventDefault();
+        open = !open;
       }
     }
     document.addEventListener('keydown', handleGlobalShortcut);
-    return () => {
-      document.removeEventListener('keydown', handleGlobalShortcut);
-    }
+    return () => document.removeEventListener('keydown', handleGlobalShortcut);
   });
+
+  // add a ref for the dialog so we can focus it when opened
+  let dialogEl: HTMLElement | null = null;
+
+  // When the panel opens, focus the dialog to satisfy a11y and ensure keydown events are received.
+  $: if (open && dialogEl) {
+    // Use a microtask to ensure DOM is updated before focusing
+    Promise.resolve().then(() => dialogEl?.focus());
+  }
 </script>
+
 <!-- Help Panel Modal -->
 {#if open}
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
+    on:click={handleBackdropClick}
+    on:keydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="keyboard-help-title"
+    tabindex="0"
+    bind:this={dialogEl}
   >
-    <div class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col", className)} class="nes-container">
+    <div class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col nes-container", className)}>
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-nier-border-muted">
         <div>
@@ -166,22 +178,19 @@
           </p>
         </div>
         <button class="nes-btn"
-          variant="ghost"
-          size="sm"
-          onclick={() => open = false}
-          class="text-nier-text-secondary hover:text-nier-text-primary"
           aria-label="Close keyboard shortcuts help"
+          on:click={() => open = false}
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
+
       <!-- Search and Filters -->
       {#if searchable || showCategories}
         <div class="p-6 border-b border-nier-border-muted">
           <div class="flex flex-col sm:flex-row gap-4">
-            <!-- Search -->
             {#if searchable}
               <div class="flex-1">
                 <input
@@ -192,7 +201,6 @@
                 />
               </div>
             {/if}
-            <!-- Category Filter -->
             {#if showCategories}
               <div class="sm:w-48">
                 <select
@@ -210,9 +218,10 @@
           </div>
         </div>
       {/if}
+
       <!-- Shortcuts Content -->
       <div class="flex-1 overflow-y-auto p-6">
-        {#if Object.keys(errors).length === 0}
+        {#if filteredShortcuts.length === 0}
           <div class="text-center py-12">
             <div class="text-4xl mb-4">🔍</div>
             <h3 class="text-lg font-medium text-nier-text-primary mb-2">No shortcuts found</h3>
@@ -268,6 +277,7 @@
           </div>
         {/if}
       </div>
+
       <!-- Footer -->
       <div class="p-6 border-t border-nier-border-muted bg-nier-bg-secondary">
         <div class="flex items-center justify-between">

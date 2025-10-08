@@ -1,19 +1,23 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
+import * as schema from './schema-unified.js';
+
 // Environment check that works in both SvelteKit and worker contexts
 const isDev = process.env.NODE_ENV === 'development';
-import * as schema from './schema-unified.js';
+
 // Connection strings with role separation
 const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 const ADMIN_DATABASE_URL =
   process.env.DATABASE_URL_ADMIN ||
   process.env.ADMIN_DATABASE_URL ||
   'postgresql://postgres:123456@localhost:5434/legal_ai_db';
+
 // Create connections with role separation
-let runtimeConnectionSingleton: postgres.Sql;
-let adminConnectionSingleton: postgres.Sql;
-function createRuntimeConnection() {
+let runtimeConnectionSingleton: postgres.Sql | null = null;
+let adminConnectionSingleton: postgres.Sql | null = null;
+
+function createRuntimeConnection(): postgres.Sql {
   if (!runtimeConnectionSingleton) {
     runtimeConnectionSingleton = postgres(RUNTIME_DATABASE_URL, {
       // Connection pool settings
@@ -39,9 +43,10 @@ function createRuntimeConnection() {
         : false,
     });
   }
-  return runtimeConnectionSingleton;
+  return runtimeConnectionSingleton!;
 }
-function createAdminConnection() {
+
+function createAdminConnection(): postgres.Sql {
   if (!adminConnectionSingleton) {
     adminConnectionSingleton = postgres(ADMIN_DATABASE_URL, {
       // Minimal pool for admin operations
@@ -63,8 +68,9 @@ function createAdminConnection() {
         : false,
     });
   }
-  return adminConnectionSingleton;
+  return adminConnectionSingleton!;
 }
+
 // Create Drizzle clients with role separation
 export const db = drizzle(createRuntimeConnection(), {
   schema,
@@ -99,7 +105,8 @@ export async function testRuntimeConnection(): Promise<boolean> {
   try {
     const result = await db.execute('SELECT 1 as test');
     console.log('✅ Runtime database connection healthy');
-    return Array.isArray(result) && (result as { length?: any }).length > 0;
+    // Safe narrowing: after Array.isArray(result) TypeScript treats result as unknown[]
+    return Array.isArray(result) && result.length > 0;
   } catch (error) {
     console.error('❌ Runtime database connection test failed:', error);
     return false;
@@ -109,7 +116,8 @@ export async function testAdminConnection(): Promise<boolean> {
   try {
     const result = await adminDb.execute('SELECT 1 as test');
     console.log('✅ Admin database connection healthy');
-    return Array.isArray(result) && (result as { length?: any }).length > 0;
+    // Safe narrowing: after Array.isArray(result) TypeScript treats result as unknown[]
+    return Array.isArray(result) && result.length > 0;
   } catch (error) {
     console.error('❌ Admin database connection test failed:', error);
     return false;
@@ -119,11 +127,11 @@ export async function testAdminConnection(): Promise<boolean> {
 export const testConnection = testRuntimeConnection;
 // Graceful shutdown for both connections
 export function closeConnections() {
-  if (runtimeConnectionSingleton) {
+  if (runtimeConnectionSingleton && typeof runtimeConnectionSingleton.end === 'function') {
     runtimeConnectionSingleton.end();
     console.log('🔌 Runtime database connection closed');
   }
-  if (adminConnectionSingleton) {
+  if (adminConnectionSingleton && typeof adminConnectionSingleton.end === 'function') {
     adminConnectionSingleton.end();
     console.log('🔌 Admin database connection closed');
   }

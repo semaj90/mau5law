@@ -23,7 +23,9 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   defaults: true,
   oneofs: true,
 });
-const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GemmaProtoAny = { GemmaEmbeddingService: any };
+const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as unknown as GemmaProtoAny;
 // =============================================================================
 // PROTOBUF TYPE DEFINITIONS (generated types)
 // =============================================================================

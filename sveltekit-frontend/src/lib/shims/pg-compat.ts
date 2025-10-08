@@ -2,7 +2,17 @@ import postgres from 'postgres';
 
 type PoolConfig = { connectionString?: string; max?: number };
 type ListenerCallback = (...args: unknown[]) => void;
-type QueryResult = { rows: unknown[] };
+
+// Define a minimal interface for the query result
+export interface QueryResult {
+	rows: unknown[];
+}
+
+// Define a minimal interface for the PoolClient that thread-safe-postgres.ts expects
+export interface PgClient {
+	query: (text: string, params?: unknown[]) => Promise<QueryResult>;
+	release: () => void;
+}
 
 // Minimal compatibility shim to emulate node-postgres Pool using postgres-js client.
 // This is intentionally small and only implements the methods/properties the codebase expects:
@@ -51,17 +61,14 @@ export class Pool {
 		(this.listeners[event] || []).forEach(fn => {
 			try {
 				fn(...args);
-			} catch {
-				/* swallow errors from listeners */
+			} catch (e) {
+				console.warn(`Error in event listener for ${event}:`, e);
 			}
 		});
 	}
 
 	// explicit return types; avoid 'any' by using unknown and runtime checks
-	async connect(): Promise<{
-		query: (text: string, params?: unknown[]) => Promise<QueryResult>;
-		release: () => void;
-	}> {
+	async connect(): Promise<PgClient> {
 		const client = this.ensureClient();
 
 		// Narrow-view of possible shapes on the postgres-js client
@@ -117,8 +124,8 @@ export class Pool {
 			if (typeof maybeWithEnd.end === 'function') {
 				try {
 					await maybeWithEnd.end();
-				} catch {
-					/* ignore shutdown errors */
+				} catch (e) {
+					console.warn('Error during client shutdown:', e);
 				}
 			}
 		}

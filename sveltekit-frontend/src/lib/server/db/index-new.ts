@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { building } from '$app/environment';
 import * as schema from '$lib/server/db/schema-postgres';
 import type { Collection } from 'lokijs';
@@ -6,11 +5,22 @@ import dotenv from 'dotenv';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import pgClient, { poolShim } from '$lib/server/db-shim';
+import postgres from 'postgres'; // added: import to derive client type
 // Load environment-specific variables
 const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
+// Add a minimal typed shape for pools/shims we interact with
+type PoolLike = {
+  end?: () => Promise<void> | void;
+  close?: () => Promise<void> | void;
+};
+
+// derive the concrete type used by postgres-js at runtime
+type PostgresJsClient = ReturnType<typeof postgres>;
+
 let _db: PostgresJsDatabase<typeof schema> | null = null;
-let _pool: any | null = null;
+let _pool: PoolLike | null = null;
+
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build
   if (building) {
@@ -26,23 +36,33 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   console.log('  DATABASE_URL:', databaseUrl);
   // PostgreSQL connection (use postgres-js client shim)
   console.log('🐘 Connecting to PostgreSQL database (via postgres-js client):', databaseUrl);
-  _pool = poolShim;
-  _db = drizzle(pgClient as any, { schema });
+  // assign poolShim typed as PoolLike
+  _pool = poolShim as PoolLike;
+  // cast via unknown -> PostgresJsClient to avoid 'any'
+  _db = drizzle(pgClient as unknown as PostgresJsClient, { schema });
+
   // Skip migrations in testing environment
   if (nodeEnv !== 'testing') {
     try {
-      console.log('Running PostgreSQL migrations...');
-      migrate(_db, { migrationsFolder: './drizzle' });
-      console.log('✅ PostgreSQL migrations completed');
+      console.log('Running PostgreSQL migrations (async) ...');
+      // run migrations asynchronously so initializeDatabase can remain sync.
+      // Use promise handlers to log success/failure.
+      migrate(_db, { migrationsFolder: './drizzle' })
+        .then(() => {
+          console.log('✅ PostgreSQL migrations completed');
+        })
+        .catch(error => {
+          console.error('❌ PostgreSQL migration error:', error);
+        });
     } catch (error) {
-      console.error('❌ PostgreSQL migration error:', error);
+      console.error('❌ PostgreSQL migration error (sync):', error);
     }
   }
   console.log('✅ PostgreSQL database connected successfully');
   return _db;
 }
 // Main database connection
-export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
+export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as unknown as PostgresJsDatabase<typeof schema>, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
     if (!database) {
@@ -52,13 +72,29 @@ export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
   },
 });
 // Call Qdrant tag seeding on startup
+// --- NEW: safe stub for Qdrant seeding to avoid ReferenceError at module init ---
+// Replace with real initializer when Qdrant client is available
+async function initializeQdrantCollection(): Promise<void> {
+  try {
+    // If you have a Qdrant client, perform seeding here.
+    // For now, log and exit gracefully to avoid startup failures.
+    console.info('initializeQdrantCollection: no Qdrant client configured, skipping seeding.');
+    return;
+  } catch (err) {
+    console.error('initializeQdrantCollection error:', err);
+    throw err;
+  }
+}
 initializeQdrantCollection().catch(err => {
   console.error('Qdrant tag seeding failed:', err);
 });
 // Database metadata
 export const isPostgreSQL = true;
 export const isSQLite = false;
-export const pool = _pool;
+// Export a getter to provide the live pool value instead of a snapshot
+export function getPool() {
+  return _pool;
+}
 // Schema exports
 export * from '$lib/server/db/schema-postgres';
 // Graceful shutdown
@@ -66,8 +102,17 @@ export async function closeDatabase() {
   if (_pool) {
     console.log('Closing PostgreSQL connection pool...');
     try {
-      if (typeof _pool.end === 'function') await _pool.end();
-      else if (typeof (poolShim as any).end === 'function') await (poolShim as any).end();
+      // Prefer calling end() on the current pool without using "any" casts
+      if (typeof _pool.end === 'function') {
+        await _pool.end();
+      } else if (typeof (poolShim as PoolLike).end === 'function') {
+        // fallback to the imported pool shim
+        await (poolShim as PoolLike).end!();
+      } else if (typeof _pool.close === 'function') {
+        await _pool.close();
+      } else {
+        console.warn('No end/close method found on pool or poolShim; nothing to close.');
+      }
     } catch (err) {
       console.warn('Error closing pool shim:', err);
     }
