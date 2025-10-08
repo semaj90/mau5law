@@ -1,22 +1,21 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createHash } from 'crypto';
-import pg from 'pg';
+import { poolShim } from '$lib/server/db-shim';
 import redis from 'redis';
 
-const { Client } = pg;
-
-// Database connections
-const pgClient = new Client({
-  host: 'localhost',
-  port: 5432,
-  database: 'legal_ai_db',
-  user: 'legal_admin',
-  password: '123456'
-});
+// Minimal DB helper that uses the pool shim so call sites can run SQL as before
+async function queryDB(sql: string, params?: any[]) {
+  const conn = await (poolShim as any).connect();
+  try {
+    return await conn.query(sql, params);
+  } finally {
+    if (conn && typeof conn.release === 'function') conn.release();
+  }
+}
 
 const redisClient = redis.createClient({
-  url: 'redis://:redis@localhost:6379'
+  url: 'redis://:redis@localhost:6379',
 });
 
 let dbInitialized = false;
@@ -25,7 +24,12 @@ async function initializeDB() {
   if (dbInitialized) return;
 
   try {
-    await pgClient.connect();
+    // Warm a connection via the shim by running a lightweight query
+    try {
+      await queryDB('SELECT 1');
+    } catch (e) {
+      console.warn('Warning: database warmup failed', e);
+    }
 
     // Try Redis connection, but continue if it fails
     try {
@@ -35,7 +39,7 @@ async function initializeDB() {
     }
 
     // Ensure RAG documents table exists (384-dim for embeddinggemma)
-    await pgClient.query(`
+    await queryDB(`
       CREATE TABLE IF NOT EXISTS rag_documents (
         id SERIAL PRIMARY KEY,
         filename TEXT NOT NULL,
@@ -60,12 +64,12 @@ async function initializeDB() {
       ON rag_documents(content_hash);
     `);
 
-    dbInitialized = true;
-    console.log('✅ RAG database initialized');
-  } catch (error) {
-    console.error('❌ Database initialization failed:', error);
-    throw error;
-  }
+      dbInitialized = true;
+      console.log('✅ RAG database initialized');
+    } catch (error) {
+      console.error('❌ Database initialization failed:', error);
+      throw error;
+    }
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -194,18 +198,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const contentHash = createHash('sha256').update(content).digest('hex');
 
     // Check if already processed
-    const existingDoc = await pgClient.query(
-      'SELECT id FROM rag_documents WHERE content_hash = $1',
-      [contentHash]
-    );
-
-    if (existingDoc.rows.length > 0) {
+    const existingDoc = await queryDB('SELECT id FROM rag_documents WHERE content_hash = $1', [contentHash]);
+    if ((existingDoc.rows ?? []).length > 0) {
       return json({
         message: 'Document already exists in knowledge base',
         documentId: existingDoc.rows[0].id,
         chunks: 0,
         embeddings: 0,
-        duplicate: true
+        duplicate: true,
       });
     }
 
@@ -217,24 +217,27 @@ export const POST: RequestHandler = async ({ request }) => {
     const embeddings = await Promise.all(embeddingPromises);
 
     // Store main document
-    const documentResult = await pgClient.query(`
+    const documentResult = await queryDB(
+      `
       INSERT INTO rag_documents (
         filename, content_hash, file_type, file_size, content, metadata, embedding_384
       ) VALUES ($1, $2, $3, $4, $5, $6, $7::vector)
       RETURNING id
-    `, [
-      file.name,
-      contentHash,
-      file.type,
-      file.size,
-      content,
-      {
-        chunksCount: chunks.length,
-        uploadedAt: new Date().toISOString(),
-        extractionMethod: 'text_extraction'
-      },
-      JSON.stringify(embeddings[0]) // Primary document embedding (384-dim)
-    ]);
+    `,
+      [
+        file.name,
+        contentHash,
+        file.type,
+        file.size,
+        content,
+        {
+          chunksCount: chunks.length,
+          uploadedAt: new Date().toISOString(),
+          extractionMethod: 'text_extraction',
+        },
+        JSON.stringify(embeddings[0]), // Primary document embedding (384-dim)
+      ]
+    );
 
     const documentId = documentResult.rows[0].id;
 
@@ -243,7 +246,8 @@ export const POST: RequestHandler = async ({ request }) => {
       const chunk = chunks[i];
       const embedding = embeddings[i];
 
-      await pgClient.query(`
+      await queryDB(
+        `
         INSERT INTO knowledge_base (
           chunk_id, content, embedding_384, metadata, chunk_type, source_file
         ) VALUES ($1, $2, $3::vector, $4, $5, $6)
@@ -251,20 +255,22 @@ export const POST: RequestHandler = async ({ request }) => {
           content = $2,
           embedding_384 = $3::vector,
           metadata = $4
-      `, [
-        `rag:${file.name}:chunk${i}`,
-        chunk,
-        JSON.stringify(embedding),
-        {
-          documentId,
-          chunkIndex: i,
-          totalChunks: chunks.length,
-          filename: file.name,
-          fileType: file.type
-        },
-        'rag_document',
-        file.name
-      ]);
+      `,
+        [
+          `rag:${file.name}:chunk${i}`,
+          chunk,
+          JSON.stringify(embedding),
+          {
+            documentId,
+            chunkIndex: i,
+            totalChunks: chunks.length,
+            filename: file.name,
+            fileType: file.type,
+          },
+          'rag_document',
+          file.name,
+        ]
+      );
     }
 
     // Cache document for quick access (skip Redis for now)

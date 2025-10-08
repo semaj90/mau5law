@@ -1,186 +1,188 @@
 // Redis caching service for embeddings, shader modules, and search results
 import { gzipSync, gunzipSync } from 'zlib';
-// In-memory L1 cache fallback
-const memoryCache = new Map<string, any>();
+import { Buffer } from 'buffer';
+
+// In-memory L1 cache fallback (use unknown to avoid `any` while preserving generics)
+const memoryCache = new Map<string, CacheItem<unknown>>();
 const MEMORY_CACHE_MAX_SIZE = 1000;
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour default
+
 export interface CacheItem<T> {
   data: T;
   timestamp: number;
   ttl: number;
 }
+
 class CacheService {
   private redisClient: any = null;
   private useRedis = false;
+
   constructor() {
     void this.initializeRedis();
   }
-  // Expose raw client for advanced usage (enqueue, streams)
+
+  // Expose raw client for advanced usage
   get client() {
     return this.redisClient;
   }
-  // Back-compat helper for callers expecting a function
+
   getClient() {
     return this.redisClient;
   }
+
   private async initializeRedis() {
     const password = process.env.REDIS_PASSWORD;
     const host = process.env.REDIS_HOST || '127.0.0.1';
     const port = process.env.REDIS_PORT || '6379';
     const url =
-      process.env.REDIS_URL || (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`)
+      process.env.REDIS_URL || (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
+
     try {
-      // Dynamic import so builds don’t fail if ioredis is missing in some environments
-      const { default: Redis } = await import('ioredis');
-      // prefer connecting via URL so user can provide redis://user:pass@host:port
-      // Pass URL string to support multiple ioredis versions; additional options handled by the client defaults
+      const mod = await import('ioredis');
+      const Redis = (mod as any).default ?? mod;
       this.redisClient = new Redis(url);
-      this.redisClient.on('error', (err: any) => {
+      // Wire basic error handling
+      this.redisClient.on?.('error', (err: any) => {
         console.warn('Redis connection error, falling back to memory cache:', err?.message || err);
         this.useRedis = false;
       });
-      try {
-        // ioredis v4 uses .connect() when lazyConnect=true; call if present;
-        if (typeof this.redisClient.connect === 'function') {
-          await this.redisClient.connect();
-        } else if (typeof this.redisClient.ping === 'function') {
-          // older/alternative clients may expose ping
-          await this.redisClient.ping();
-        }
-      } catch (e) {
-        console.warn('Redis connect failed, using memory cache:', (e as Error).message || e);
-        this.useRedis = false;
-        return;
+
+      // Some clients require explicit connect
+      if (typeof this.redisClient.connect === 'function') {
+        await this.redisClient.connect().catch(() => {});
+      } else if (typeof this.redisClient.ping === 'function') {
+        await this.redisClient.ping().catch(() => {});
       }
+
       this.useRedis = true;
       console.log('📝 Redis cache connected');
     } catch (error: any) {
       console.warn('Redis not available, using memory cache:', error?.message || error);
       this.useRedis = false;
+      this.redisClient = null;
     }
   }
-  async get<T>(_key: string): Promise<T | null> {
+
+  async get<T>(key: string): Promise<T | null> {
     try {
       if (this.useRedis && this.redisClient) {
-        const result = await this.redisClient.get(key);
+        const rc = this.redisClient;
+        // rc.get may return string | Buffer | Uint8Array depending on client/config
+        const result: string | Buffer | Uint8Array | null = await rc.get(key);
         if (!result) return null;
-        // Try base64-gzipped JSON first
-        try {
-          const buf = Buffer.from(result, 'base64');
-          const json = gunzipSync(buf).toString('utf8');
-          return JSON.parse(json) as T;
-        } catch {
-          // Fallback to plain JSON
-          try {
-            return JSON.parse(result) as T;
-          } catch {
-            return null;
-          }
-        }
+        return this.decodeStoredValue<T>(result);
       }
       return this.getFromMemory<T>(key);
-    } catch (e) {
-      console.warn('Cache get error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Cache get error:', e?.message || e);
       return null;
     }
   }
-  async set<T>(_key: string, value: T, ttlMs: number = CACHE_TTL): Promise<void> {
+
+  async set<T>(key: string, value: T, ttlMs: number = CACHE_TTL): Promise<void> {
     try {
-      // Accept small second TTLs for back-compat
-      if (typeof ttlMs === 'number' && Number.isInteger(ttlMs) && ttlMs > 0 && ttlMs <= 86400) {
+      // Accept seconds for back-compat (<= 86400 treated as seconds)
+      if (Number.isInteger(ttlMs) && ttlMs > 0 && ttlMs <= 86400) {
         ttlMs = ttlMs * 1000;
       }
       const payload = gzipSync(JSON.stringify(value)).toString('base64');
       if (this.useRedis && this.redisClient) {
+        const rc = this.redisClient;
         const seconds = Math.max(1, Math.floor(ttlMs / 1000));
         try {
-          if (typeof this.redisClient.setex === 'function') {
-            await this.redisClient.setex(key, seconds, payload);
-          } else if (typeof this.redisClient.setEx === 'function') {
-            await this.redisClient.setEx(key, seconds, payload);
-          } else if (typeof this.redisClient.set === 'function') {
+          if (typeof rc.setex === 'function') {
+            await rc.setex(key, seconds, payload);
+          } else if (typeof rc.setEx === 'function') {
+            await rc.setEx(key, seconds, payload);
+          } else if (typeof rc.set === 'function') {
             try {
-              await this.redisClient.set(key, payload, { EX: seconds });
+              // newer redis client signature
+              await rc.set(key, payload, { EX: seconds });
             } catch {
-              await this.redisClient.set(key, payload, 'EX', seconds);
+              await rc.set(key, payload, 'EX', seconds);
             }
           } else {
-            this.setInMemory(key, JSON.parse(Buffer.from(payload, 'base64').toString('utf8')), ttlMs);
+            // Fallback to memory if unknown API
+            this.setInMemory(key, value, ttlMs);
           }
           return;
-        } catch (e) {
-          console.warn('Redis set failed, using memory cache:', (e as Error).message || e);
+        } catch (e: any) {
+          console.warn('Redis set failed, using memory cache:', e?.message || e);
         }
       }
       this.setInMemory(key, value, ttlMs);
-    } catch (e) {
-      console.warn('Cache set error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Cache set error:', e?.message || e);
       this.setInMemory(key, value, ttlMs);
     }
   }
-  // Convenience: accept seconds TTL and rely on internal gzip/base64 storage
-  async setCompressed<T>(_key: string, value: T, ttlSeconds: number): Promise<void> {
+
+  async setCompressed<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
     const ttl = Number.isFinite(ttlSeconds) ? Math.max(1, Math.floor(ttlSeconds)) : 3600;
-    return this.set(key, value, ttl);
+    return this.set(key, value, ttl * 1000);
   }
-  async del(_key: string): Promise<void> {
+
+  async del(key: string): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.del(key);
       } else {
         memoryCache.delete(key);
       }
-    } catch (e) {
-      console.warn('Cache delete error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Cache delete error:', e?.message || e);
     }
   }
-  async incr(_key: string): Promise<number> {
+
+  async incr(key: string): Promise<number> {
     try {
       if (this.useRedis && this.redisClient) {
         return await this.redisClient.incr(key);
       } else {
-        // Memory-based increment
-        const current = this.getFromMemory<number>(key) || 0;
+        const current = (this.getFromMemory<number>(key) as number) || 0;
         const newValue = current + 1;
         this.setInMemory(key, newValue, CACHE_TTL);
         return newValue;
       }
-    } catch (e) {
-      console.warn('Cache incr error:', (e as Error).message || e);
-      return 1; // Default fallback
+    } catch (e: any) {
+      console.warn('Cache incr error:', e?.message || e);
+      return 1;
     }
   }
-  async expire(_key: string, seconds: number): Promise<void> {
+
+  async expire(key: string, seconds: number): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.expire(key, seconds);
       }
-      // Memory cache doesn't support separate expiration, handled by TTL in set
-    } catch (e) {
-      console.warn('Cache expire error:', (e as Error).message || e);
+      // memory fallback handled by TTL in set
+    } catch (e: any) {
+      console.warn('Cache expire error:', e?.message || e);
     }
   }
+
   async publish(channel: string, message: unknown): Promise<void> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.publish === 'function') {
         const payload = typeof message === 'string' ? message : JSON.stringify(message);
         await this.redisClient.publish(channel, payload);
       }
-    } catch (e) {
-      console.warn('Cache publish error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Cache publish error:', e?.message || e);
     }
   }
-  // Simple list queue helpers
+
   async rpush(listKey: string, value: string): Promise<number> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.rpush === 'function') {
         return await this.redisClient.rpush(listKey, value);
       }
-    } catch (e) {
-      console.warn('Redis rpush error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Redis rpush error:', e?.message || e);
     }
     return 0;
   }
+
   async blpop(listKey: string, timeoutSec = 0): Promise<[string, string] | null> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.blpop === 'function') {
@@ -188,149 +190,228 @@ class CacheService {
         if (!res) return null;
         return [res[0], res[1]] as [string, string];
       }
-    } catch (e) {
-      console.warn('Redis blpop error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Redis blpop error:', e?.message || e);
     }
     return null;
   }
-  // Hash operations for complex caching
-  async hget(_key: string, field: string): Promise<string | null> {
+
+  async hget(key: string, field: string): Promise<string | null> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hget === 'function') {
         return await this.redisClient.hget(key, field);
       }
-      // Memory fallback: use compound key
       const compoundKey = `${key}:${field}`;
       const item = this.getFromMemory<string>(compoundKey);
       return item;
-    } catch (e) {
-      console.warn('Cache hget error:', (e as Error).message || e);
+    } catch (e: any) {
+      console.warn('Cache hget error:', e?.message || e);
       return null;
     }
   }
-  async hset(_key: string, field: string, value: any): Promise<void> {
+
+  async hset(key: string, field: string, value: unknown): Promise<void> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hset === 'function') {
         const payload = typeof value === 'string' ? value : JSON.stringify(value);
         await this.redisClient.hset(key, field, payload);
       } else {
-        // Memory fallback: use compound key
         const compoundKey = `${key}:${field}`;
         this.setInMemory(compoundKey, value, CACHE_TTL);
       }
-    } catch (e) {
-      console.warn('Cache hset error:', (e as Error).message || e);
-      // Fallback to memory
+    } catch (e: any) {
+      console.warn('Cache hset error:', e?.message || e);
       const compoundKey = `${key}:${field}`;
       this.setInMemory(compoundKey, value, CACHE_TTL);
     }
   }
-  // Batch operations
+
   async mget(keys: string[]): Promise<(any | null)[]> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.mget === 'function') {
         const results = await this.redisClient.mget(keys);
-        return results.map((r: string | null) => {
+        return results.map((r: string | Buffer | null) => {
           if (!r) return null;
-          try {
-            const buf = Buffer.from(r, 'base64');
-            const json = gunzipSync(buf).toString('utf8');
-            return JSON.parse(json);
-          } catch {
-            try {
-              return JSON.parse(r);
-            } catch {
-              return r;
-            }
-          }
+          return this.decodeStoredValue<any>(r);
         });
       }
-      // Memory fallback
-      return keys.map(key => this.getFromMemory(key));
-    } catch (e) {
-      console.warn('Cache mget error:', (e as Error).message || e);
+      return keys.map(k => this.getFromMemory<any>(k));
+    } catch (e: any) {
+      console.warn('Cache mget error:', e?.message || e);
       return keys.map(() => null);
     }
   }
-  // Embeddings
-  async getEmbedding(text: string, model: string = 'openai'): Promise<number[] | null> {
+
+  // Domain helpers
+  async getEmbedding(text: string, model = 'openai'): Promise<number[] | null> {
     const key = `embedding:${model}:${this.hashString(text)}`;
     return this.get<number[]>(key);
   }
-  async setEmbedding(text: string, embedding: number[], model: string = 'openai'): Promise<void> {
+  async setEmbedding(text: string, embedding: number[], model = 'openai'): Promise<void> {
     const key = `embedding:${model}:${this.hashString(text)}`;
     await this.set(key, embedding, 24 * 60 * 60 * 1000);
   }
-  // Search results
-  async getSearchResults(query: string, searchType: string, filters: any = {}): Promise<any[] | null> {
+
+  async getSearchResults(query: string, searchType: string, filters: unknown = {}): Promise<any[] | null> {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
     return this.get<any[]>(key);
   }
-  async setSearchResults(query: string, searchType: string, results: any[], filters: any = {}): Promise<void> {
+  async setSearchResults(query: string, searchType: string, results: any[], filters: unknown = {}): Promise<void> {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
     await this.set(key, results, 5 * 60 * 1000);
   }
-  // Compute shader/modules
-  async getShader(_key: string): Promise<string | null> {
+
+  async getShader(key: string): Promise<string | null> {
     const cacheKey = `shader:${this.hashString(key)}`;
     return this.get<string>(cacheKey);
   }
-  async setShader(_key: string, compiledWGSL: string, ttlMs: number = 6 * 60 * 60 * 1000): Promise<void> {
+  async setShader(key: string, compiledWGSL: string, ttlMs = 6 * 60 * 60 * 1000): Promise<void> {
     const cacheKey = `shader:${this.hashString(key)}`;
     await this.set(cacheKey, compiledWGSL, ttlMs);
   }
+
   // Internals
-  private getFromMemory<T>(_key: string): T | null {
-    const item = memoryCache.get(key) as CacheItem<T> | undefined;
+  private getFromMemory<T>(key: string): T | null {
+    const item = memoryCache.get(key);
     if (!item) return null;
     const now = Date.now();
-    if (
-      now >
-      (item as { timestamp?: any; ttl?: any; data?: any }).timestamp +
-        (item as { timestamp?: any; ttl?: any; data?: any }).ttl
-    ) {
+    if (now > item.timestamp + item.ttl) {
       memoryCache.delete(key);
       return null;
     }
-    return (item as { timestamp?: any; ttl?: any; data?: any }).data;
+    return item.data as T;
   }
-  private setInMemory<T>(_key: string, value: T, ttlMs: number): void {
+
+  private setInMemory<T>(key: string, value: T, ttlMs: number): void {
     if (memoryCache.size >= MEMORY_CACHE_MAX_SIZE) {
       const firstKey = memoryCache.keys().next().value;
       if (firstKey) memoryCache.delete(firstKey);
     }
     memoryCache.set(key, { data: value, timestamp: Date.now(), ttl: ttlMs });
   }
+
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
-      hash |= 0; // force 32-bit
+      hash |= 0;
     }
     return String(hash);
   }
+
   async close(): Promise<void> {
     try {
-      if (this.redisClient) await this.redisClient.quit();
-    } catch (error) {}
+      if (this.redisClient && typeof this.redisClient.quit === 'function') {
+        await this.redisClient.quit();
+      }
+    } catch {}
+  }
+
+  // Robust decoder for values stored in Redis:
+  // - Accepts string | Buffer | Uint8Array
+  // - If value is base64-encoded gzip, gunzip and parse JSON
+  // - If value is raw gzip bytes, gunzip and parse JSON
+  // - Else try JSON.parse on UTF-8 text
+  // - Else return raw string
+  private decodeStoredValue<T>(raw: unknown): T | string {
+    if (raw == null) return raw as unknown as T;
+    try {
+      // Normalize any binary-like input to a Buffer
+      let buf: Buffer | null = null;
+
+      // ArrayBuffer -> Buffer
+      if (raw instanceof ArrayBuffer) {
+        buf = Buffer.from(new Uint8Array(raw));
+      } else if (typeof Uint8Array !== 'undefined' && raw instanceof Uint8Array) {
+        // Typed array directly
+        buf = Buffer.from(raw);
+      } else if (
+        typeof ArrayBuffer !== 'undefined' &&
+        typeof raw === 'object' &&
+        raw !== null &&
+        'buffer' in (raw as object) &&
+        (raw as { buffer: unknown }).buffer instanceof ArrayBuffer
+      ) {
+        // Generic ArrayBufferView-like object (preserve offset/length when present)
+        const view = raw as {
+          buffer: ArrayBuffer;
+          byteOffset?: number;
+          byteLength?: number;
+        };
+        const byteOffset = typeof view.byteOffset === 'number' ? view.byteOffset : 0;
+        const byteLength = typeof view.byteLength === 'number' ? view.byteLength : view.buffer.byteLength;
+        buf = Buffer.from(new Uint8Array(view.buffer, byteOffset, byteLength));
+      } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(raw)) {
+        buf = raw as Buffer;
+      } else if (typeof raw === 'string') {
+        const str = raw;
+        // Try base64 -> gzip detection first (this is how set stores compressed payloads)
+        try {
+          if (str.length > 0) {
+            const maybeBuf = Buffer.from(str, 'base64');
+            if (maybeBuf.length >= 2 && maybeBuf[0] === 0x1f && maybeBuf[1] === 0x8b) {
+              const json = gunzipSync(maybeBuf).toString('utf8');
+              return JSON.parse(json) as T;
+            }
+          }
+        } catch {
+          // not base64-gzip - fall through to JSON/string parse
+        }
+        // Not base64-gzip, attempt to parse as JSON text
+        try {
+          return JSON.parse(str) as T;
+        } catch {
+          return str as unknown as T;
+        }
+      }
+
+      // If we have a Buffer (raw binary), check if it's gzip-compressed
+      if (buf) {
+        if (buf.length >= 2 && buf[0] === 0x1f && buf[1] === 0x8b) {
+          const json = gunzipSync(buf).toString('utf8');
+          return JSON.parse(json) as T;
+        }
+        // Try UTF-8 string parse
+        const text = buf.toString('utf8');
+        try {
+          return JSON.parse(text) as T;
+        } catch {
+          return text as unknown as T;
+        }
+      }
+
+      // Fallback - return as-is
+      return raw as unknown as T;
+    } catch {
+      // Last-resort: coerce to string
+      try {
+        if (typeof Buffer !== 'undefined' && Buffer.isBuffer(raw)) {
+          return (raw as Buffer).toString('utf8') as unknown as T;
+        }
+        if (typeof Uint8Array !== 'undefined' && raw instanceof Uint8Array) {
+          return Buffer.from(raw).toString('utf8') as unknown as T;
+        }
+        return String(raw) as unknown as T;
+      } catch {
+        return raw as unknown as T;
+      }
+    }
   }
 }
-// Singleton instance
+
+// Singleton
 export const cache = new CacheService();
 export const redis = cache; // compatibility alias
-// Helper functions
+
+// Simple helpers
 export const cacheEmbedding = (text: string, embedding: number[], model?: string) =>
   cache.setEmbedding(text, embedding, model);
 export const getCachedEmbedding = (text: string, model?: string) => cache.getEmbedding(text, model);
-export const cacheSearchResults = (
-  query: string
-  searchType: string;
-  results: any[]
-  filters?: unknown
-) => cache.setSearchResults(query, searchType, results, filters as any);
+export const cacheSearchResults = (query: string, searchType: string, results: any[], filters?: unknown) =>
+  cache.setSearchResults(query, searchType, results, filters);
 export const getCachedSearchResults = (query: string, searchType: string, filters?: unknown) =>
-  cache.getSearchResults(query, searchType, filters as any);
-export const cacheShader = (_key: string, compiledWGSL: string, ttlMs?: number) =>
+  cache.getSearchResults(query, searchType, filters);
+export const cacheShader = (key: string, compiledWGSL: string, ttlMs?: number) =>
   cache.setShader(key, compiledWGSL, ttlMs);
-export const getCachedShader = (_key: string) => cache.getShader(key);
+export const getCachedShader = (key: string) => cache.getShader(key);

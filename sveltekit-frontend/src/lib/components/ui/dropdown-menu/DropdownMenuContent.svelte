@@ -3,7 +3,6 @@
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
 
   import { cn } from '$lib/utils';
-  import { scale } from 'svelte/transition';
 
   // Use slot instead of a 'children' prop; avoid exporting 'class' (reserved) — use className
   export let className = '';
@@ -43,7 +42,8 @@
 
 <!-- Render the imported constructor via svelte:component and use a slot for children -->
 {#if ContentComponent}
-  <ContentComponent
+  <svelte:component
+    this={ContentComponent}
     class={contentClasses}
     {side}
     {align}

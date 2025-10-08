@@ -1,8 +1,6 @@
-import { Pool } from 'pg';
+import pgClient, { poolShim } from '$lib/server/db-shim';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5434/legal_ai_db',
-});
+const pool = poolShim;
 
 export type EmbeddingRow = {
   id: string;
@@ -15,27 +13,31 @@ export type EmbeddingRow = {
 /** Store an embedding row into pgvector-backed table `vector_embeddings`.
  * embedding should be an array of numbers (e.g., 1536-d float values)
  */
-export async function storeEmbedding(documentId: string, embedding: number[], metadata: Record<string, unknown> = {}): Promise<void> {
-  const client = await pool.connect();
+export async function storeEmbedding(
+  documentId: string,
+  embedding: number[],
+  metadata: Record<string, unknown> = {}
+): Promise<void> {
+  const conn = await (pool as any).connect();
   try {
     const embeddingStr = `[${embedding.join(',')}]`;
-    await client.query(
+    await conn.query(
       `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at)
        VALUES ($1, $2::vector, $3, NOW())
        ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, created_at = NOW()`,
       [documentId, embeddingStr, metadata]
     );
   } finally {
-    client.release();
+    if (conn && typeof conn.release === 'function') conn.release();
   }
 }
 
 /** Find nearest neighbors by cosine similarity using pgvector's <-> operator. */
 export async function findSimilar(embedding: number[], limit = 5): Promise<EmbeddingRow[]> {
-  const client = await pool.connect();
+  const conn = await (pool as any).connect();
   try {
     const embeddingStr = `[${embedding.join(',')}]`;
-    const res = await client.query(
+    const res = await conn.query(
       `SELECT id, document_id, embedding, metadata, created_at, embedding <-> $1::vector as distance
        FROM vector_embeddings
        ORDER BY embedding <-> $1::vector
@@ -49,10 +51,10 @@ export async function findSimilar(embedding: number[], limit = 5): Promise<Embed
         document_id: String(row.document_id),
         embedding: (row.embedding as number[]) ?? [],
         metadata: (row.metadata as Record<string, unknown>) ?? {},
-        created_at: String(row.created_at)
+        created_at: String(row.created_at),
       } as EmbeddingRow;
     });
   } finally {
-    client.release();
+    if (conn && typeof conn.release === 'function') conn.release();
   }
 }

@@ -2,10 +2,11 @@
 import { building } from '$app/environment';
 import * as schema from '$lib/server/db/schema-postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import pgClient from '$lib/server/db-shim';
+
 let _db: PostgresJsDatabase<typeof schema> | null = null;
-let _pool: Pool | null = null;
+
 export function getPostgreSQLDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build
   if (building) {
@@ -15,32 +16,29 @@ export function getPostgreSQLDatabase(): PostgresJsDatabase<typeof schema> | nul
   if (_db) return _db;
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
   const nodeEnv = process.env.NODE_ENV || 'development';
-  console.log('🐘 Connecting to PostgreSQL database:', databaseUrl);
-  _pool = new Pool({
-    connectionString: databaseUrl,
-  });
-  _db = drizzle(_pool, { schema });
-  // Run migrations (skip in testing environment)
+  console.log('🐘 Connecting to PostgreSQL database (via postgres-js client):', databaseUrl);
+
+  // Create drizzle instance using postgres-js client (pgClient)
+  _db = drizzle(pgClient as any, { schema });
+
+  // Note: migration step intentionally skipped here to avoid side-effects during startup
   if (nodeEnv !== 'testing') {
-    try {
-      // migrate(_db, { migrationsFolder: './drizzle' })
-      console.log('✅ PostgreSQL migrations skipped (schema already synchronized)');
-    } catch (error) {
-      console.log('⚠️ PostgreSQL migration warning:', error);
-    }
-  } else {
-    console.log('⏭️ Skipping migrations in testing environment');
+    console.log('ℹ️ Skipping automatic migrations in this shimmed startup');
   }
-  console.log('✅ PostgreSQL database connection established');
+
+  console.log('✅ PostgreSQL database (drizzle + postgres-js) initialized');
   return _db;
 }
-// Export the database instance
-export // removed unused db assignment
-// Cleanup function
+
+// Cleanup function: attempt to close postgres-js client if supported
 export async function closeDatabase() {
-  if (_pool) {
-    await _pool.end();
-    _pool = null;
+  try {
+    if (typeof (pgClient as any).end === 'function') {
+      await (pgClient as any).end();
+    }
+  } catch (e) {
+    console.warn('⚠️ Error closing postgres-js client:', e);
+  } finally {
     _db = null;
   }
 }

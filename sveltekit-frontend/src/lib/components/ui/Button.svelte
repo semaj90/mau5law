@@ -11,7 +11,20 @@
 	import { lokiButtonCache } from '$lib/services/loki-cache';
 	import { searchableButtonIndex } from '$lib/services/fuse-search';
 	// JSON SSR rendering support
-	import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';
+	// import type { UIJsonSSRConfig } from '$lib/types/ui-json-ssr'; // Removed, now globally declared
+
+    // Define ButtonAnalyticsEvent interface locally to resolve "Cannot use namespace as type" error
+    interface ButtonAnalyticsEvent {
+        id: string;
+        category: string;
+        action: string;
+        label: string;
+        timestamp: number;
+        context?: unknown;
+        variant?: string;
+        size?: string;
+    }
+
 	const buttonVariants = cva(
 		'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none nes-focus disabled:opacity-50 disabled:pointer-events-none',
 		{
@@ -171,6 +184,7 @@
 			variant, // Re-add this line
 			size,    // Re-add this line
 			label: analyticsLabel,
+			cacheKey, // Add this line to include cacheKey in the searchable index
 			// `element` may be an HTMLElement; cast to any to satisfy legacy ButtonInfo type
 			element: document.getElementById(id) as any
 			} as any);

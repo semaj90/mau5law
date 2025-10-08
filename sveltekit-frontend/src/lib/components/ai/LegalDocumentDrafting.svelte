@@ -3,11 +3,9 @@
   AI-powered legal document creation using Enhanced-Bits UI components
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  // Card components removed - using native HTML elements
-  import * as Dialog from '$lib/components/ui/dialog';
-  import Button from '$lib/components/ui/enhanced-bits';
+  // Note: removed unused onMount and Button imports and replaced external dialog usage
+  // with a lightweight inline modal to avoid dependency/import errors.
+
   // Document drafting state
   let documentTypes = $state<DocumentType[]>([]);
   let currentDocument = $state<DocumentDraft | null>(null);
@@ -307,6 +305,10 @@
   let selectedDocType = $derived(() => {
     return documentTypes.find(type => type.id === selectedDocumentType);
   });
+
+  // New: derived object for the currently selected template (avoid in-template {@const})
+  let selectedTemplateObj = $derived(() => templates.find(t => t.id === selectedTemplate) || null);
+
   let wordCount = $derived(() => {
     return documentContent ? documentContent.split(/\s+/).filter(Boolean).length : 0;
   });
@@ -354,19 +356,22 @@
                   value={docType.id}
                   class="sr-only"
                 />
-                <div class="document-type-nier-bits-card" class:selected={selectedDocumentType === docType.id}>
+                <!-- Fixed class name to match CSS (.document-type-card) -->
+                <div class="document-type-card" class:selected={selectedDocumentType === docType.id}>
                   <div class="type-header">
                     <span class="type-icon">{getDocumentTypeIcon(docType.category)}</span>
                     <div>
                       <h4>{docType.name}</h4>
-                      <span class="type-category {getCategoryColor(docType.category)}">
+                      <!-- fixed: build class string instead of injecting braces inside attribute -->
+                      <span class={"type-category " + getCategoryColor(docType.category)}>
                         {docType.category}
                       </span>
                     </div>
                   </div>
                   <p class="type-description">{docType.description}</p>
                   <div class="type-metadata">
-                    <span class="complexity {getComplexityColor(docType.complexity)}">
+                    <!-- fixed: build class string for complexity -->
+                    <span class={"complexity " + getComplexityColor(docType.complexity)}>
                       {docType.complexity}
                     </span>
                     <span class="estimated-time">{docType.estimatedTime}</span>
@@ -376,6 +381,7 @@
             {/each}
           </div>
         </section>
+
         <!-- Template Selection -->
         {#if selectedDocumentType && filteredTemplates.length > 0}
           <section class="sidebar-section">
@@ -386,20 +392,20 @@
                 <option value={template.id}>{template.name}</option>
               {/each}
             </select>
-            {#if selectedTemplate}
-              {@const template = templates.find(t => t.id === selectedTemplate)}
-              {#if template}
-                <div class="template-preview">
-                  <p class="template-description">{template.description}</p>
-                  <div class="template-stats">
-                    <span>Used {template.usage_count} times</span>
-                    <span>Updated {new Date(template.lastUpdated).toLocaleDateString()}</span>
-                  </div>
+
+            <!-- Use derived selectedTemplateObj instead of in-template {@const} -->
+            {#if selectedTemplate && selectedTemplateObj}
+              <div class="template-preview">
+                <p class="template-description">{selectedTemplateObj.description}</p>
+                <div class="template-stats">
+                  <span>Used {selectedTemplateObj.usage_count} times</span>
+                  <span>Updated {new Date(selectedTemplateObj.lastUpdated).toLocaleDateString()}</span>
                 </div>
-              {/if}
+              </div>
             {/if}
           </section>
         {/if}
+
         <!-- Document Configuration -->
         <section class="sidebar-section">
           <h3>Configuration</h3>
@@ -624,42 +630,41 @@
     </section>
   {/if}
 </div>
-<!-- Document Preview Dialog -->
-<Dialog.Root bind:open={showPreview}>
-  <Dialog.Content class="document-preview-dialog">
-    {#if currentDocument}
-      <Dialog.Title>Document Preview</Dialog.Title>
-      <Dialog.Description>
-        Preview of {currentDocument.title}
-      </Dialog.Description>
-      <div class="preview-content">
-        <div class="preview-header">
-          <h1>{documentTitle}</h1>
-          <div class="preview-metadata">
-            <span>Created: {new Date(currentDocument.metadata.createdAt).toLocaleDateString()}</span>
-            <span>Word Count: {wordCount}</span>
-            <span>Status: {currentDocument.status}</span>
+
+{#if showPreview}
+  <div class="modal-overlay" on:click={() => (showPreview = false)}>
+    <div class="modal-content document-preview-dialog" on:click|stopPropagation>
+      {#if currentDocument}
+        <div class="preview-content">
+          <div class="preview-header">
+            <h1>{documentTitle}</h1>
+            <div class="preview-metadata">
+              <span>Created: {new Date(currentDocument.metadata.createdAt).toLocaleDateString()}</span>
+              <span>Word Count: {wordCount}</span>
+              <span>Status: {currentDocument.status}</span>
+            </div>
+          </div>
+          <div class="preview-body">
+            {#each documentContent.split('\n') as paragraph}
+              {#if paragraph.trim()}
+                <p>{paragraph}</p>
+              {/if}
+            {/each}
           </div>
         </div>
-        <div class="preview-body">
-          {#each documentContent.split('\n') as paragraph}
-            {#if paragraph.trim()}
-              <p>{paragraph}</p>
-            {/if}
-          {/each}
+        <div class="dialog-actions">
+          <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}>
+            Close Preview
+          </button>
+          <button class="nes-btn">
+            Export PDF
+          </button>
         </div>
-      </div>
-      <div class="dialog-actions">
-        <button class="nes-btn btn-ghost" onclick={() => showPreview = false}>
-          Close Preview
-        </button>
-        <button class="nes-btn">
-          Export PDF
-        </button>
-      </div>
-    {/if}
-  </Dialog.Content>
-</Dialog.Root>
+      {/if}
+    </div>
+  </div>
+{/if}
+
 <style>
   .document-drafting {
     max-width: 1600px;
@@ -1127,6 +1132,25 @@
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #e2e8f0;
+  }
+  /* Modal overlay used in place of external Dialog component */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    padding: 1rem;
+  }
+  .modal-content {
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
   }
   @media (max-width: 1024px) {
     .drafting-layout {

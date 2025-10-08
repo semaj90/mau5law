@@ -88,8 +88,15 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        cases = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).cases || data;
-  }
+        // Defensive coding: ensure data is an array or has a cases property that is an array
+        if (Array.isArray(data.cases)) {
+          cases = data.cases;
+        } else if (Array.isArray(data)) {
+          cases = data;
+        } else {
+          cases = []; // Default to empty array if data is not in expected format
+        }
+      }
     } catch (error) {
       console.error("Error fetching cases:", error);
     } finally {
@@ -104,8 +111,15 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        evidence = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).evidence || data;
-  }
+        // Defensive coding: ensure data is an array or has an evidence property that is an array
+        if (Array.isArray(data.evidence)) {
+          evidence = data.evidence;
+        } else if (Array.isArray(data)) {
+          evidence = data;
+        } else {
+          evidence = []; // Default to empty array if data is not in expected format
+        }
+      }
     } catch (error) {
       console.error("Error fetching evidence:", error);
     } finally {
@@ -120,8 +134,15 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        reports = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).reports || data;
-  }
+        // Defensive coding: ensure data is an array or has a reports property that is an array
+        if (Array.isArray(data.reports)) {
+          reports = data.reports;
+        } else if (Array.isArray(data)) {
+          reports = data;
+        } else {
+          reports = []; // Default to empty array if data is not in expected format
+        }
+      }
     } catch (error) {
       console.error("Error fetching reports:", error);
     } finally {
@@ -136,8 +157,15 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        criminals = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).criminals || data;
-  }
+        // Defensive coding: ensure data is an array or has a criminals property that is an array
+        if (Array.isArray(data.criminals)) {
+          criminals = data.criminals;
+        } else if (Array.isArray(data)) {
+          criminals = data;
+        } else {
+          criminals = []; // Default to empty array if data is not in expected format
+        }
+      }
     } catch (error) {
       console.error("Error fetching criminals:", error);
     } finally {
@@ -152,8 +180,15 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        activities = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).activities || data;
-  }
+        // Defensive coding: ensure data is an array or has an activities property that is an array
+        if (Array.isArray(data.activities)) {
+          activities = data.activities;
+        } else if (Array.isArray(data)) {
+          activities = data;
+        } else {
+          activities = []; // Default to empty array if data is not in expected format
+        }
+      }
     } catch (error) {
       console.error("Error fetching activities:", error);
     } finally {
@@ -168,7 +203,14 @@
       );
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        users_list = (data as { users?: any }).users || data;
+        // Defensive coding: ensure data is an array or has a users property that is an array
+        if (Array.isArray(data.users)) {
+          users_list = data.users;
+        } else if (Array.isArray(data)) {
+          users_list = data;
+        } else {
+          users_list = []; // Default to empty array if data is not in expected format
+        }
       }
     } catch (error) {
       console.error("Error fetching users:", error);

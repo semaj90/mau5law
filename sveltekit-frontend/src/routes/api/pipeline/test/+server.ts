@@ -2,16 +2,24 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { createClient } from 'redis';
-import { evidence, vectors } from '$lib/server/db/schema-postgres';
+import { createClient, type RedisClientType } from 'redis';
+import { evidence } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
 const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
 const db = drizzle(sql);
+
+// A small compatibility type for clients that may expose convenience helpers
+type RedisCompat = RedisClientType<any, any> & {
+  ping?: () => Promise<string>;
+  xAdd?: (stream: string, id: string, fields: Record<string, string>) => Promise<string>;
+  sendCommand?: (args: string[]) => Promise<unknown>;
+};
+
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
-});
+}) as RedisCompat;
 let redisConnected = false;
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
@@ -19,6 +27,54 @@ async function connectRedis(): Promise<void> {
     redisConnected = true;
   }
 }
+
+// ---- New: robust Redis helpers to avoid direct (redis as any).ping/xAdd usage ----
+async function redisPing(): Promise<boolean> {
+  try {
+    await connectRedis();
+    const r = redis;
+    if (typeof r.ping === 'function') {
+      const pong = await r.ping();
+      return String(pong).toUpperCase() === 'PONG';
+    }
+    if (typeof r.sendCommand === 'function') {
+      const pong = await r.sendCommand(['PING']);
+      return String(pong).toUpperCase() === 'PONG';
+    }
+    return false;
+  } catch (err) {
+    console.warn('redisPing error:', err);
+    return false;
+  }
+}
+
+/**
+ * xAdd helper that supports both high-level xAdd and low-level sendCommand XADD fallback.
+ * fields: plain object whose values will be stringified.
+ */
+async function redisXAdd(stream: string, id: string, fields: Record<string, unknown>): Promise<string | null> {
+  await connectRedis();
+  const normalizedFields: Record<string, string> = {};
+  for (const [k, v] of Object.entries(fields)) normalizedFields[k] = typeof v === 'string' ? v : JSON.stringify(v);
+
+  const r = redis;
+  if (typeof r.xAdd === 'function') {
+    return await r.xAdd(stream, id, normalizedFields);
+  }
+
+  if (typeof r.sendCommand === 'function') {
+    // Build args: stream id field1 value1 field2 value2 ...
+    const args: string[] = [stream, id];
+    for (const [k, v] of Object.entries(normalizedFields)) {
+      args.push(k, v);
+    }
+    const res = await r.sendCommand(['XADD', ...args]);
+    return String(res);
+  }
+
+  throw new Error('Redis client does not support XADD or sendCommand');
+}
+// ---- end new helpers ----
 
 // Health check endpoint
 export const GET: RequestHandler = async () => {
@@ -41,10 +97,9 @@ export const GET: RequestHandler = async () => {
   // Redis
   try {
     await connectRedis();
-    // ping returns 'PONG' on success
-    // @ts-ignore - runtime may return string
-    const pong = await (redis as any).ping();
-    health.redis = pong === 'PONG';
+    // ping returns 'PONG' on success (use helper)
+    const pongOk = await redisPing();
+    health.redis = pongOk;
   } catch (redisError) {
     console.error('Redis health check failed:', redisError);
     health.redis = false;
@@ -144,11 +199,11 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   // Send to autotag worker via Redis (make each XADD resilient)
   for (const ev of testEvidenceList) {
     try {
-      await (redis as any).xAdd('autotag:requests', '*', {
+      await redisXAdd('autotag:requests', '*', {
         type: 'evidence',
         id: ev.id,
         testId,
-      } as Record<string, string>);
+      });
     } catch (redisErr) {
       console.warn('Failed to enqueue autotag request for evidence id', ev?.id, redisErr);
       // continue with other items
@@ -194,11 +249,11 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
   };
 
   // Send batch to autotag worker for clustering
-  const streamId = await (redis as any).xAdd('autotag:requests', '*', {
+  const streamId = await redisXAdd('autotag:requests', '*', {
     type: 'evidence_batch',
     id: testId,
     data: JSON.stringify(batchData),
-  } as Record<string, string>);
+  });
   console.log('Submitted batch for k-means clustering:', streamId);
 
   // Wait for clustering to complete
@@ -299,8 +354,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
 
   const settled = await Promise.allSettled(jobPromises);
   const endTime = Date.now();
-  const totalTime = endTime - startTime;
-
+  const totalTime: number = endTime - startTime;
   // Count successful jobs
   const successfulJobs = settled.reduce((acc, r) => {
     if (r.status === 'fulfilled') {
@@ -312,7 +366,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
 
   const failedJobs = concurrentJobs - successfulJobs;
   const successRate = concurrentJobs > 0 ? (successfulJobs / concurrentJobs) * 100 : 0;
-  const averageTimePerJob = concurrentJobs > 0 ? totalTime / concurrentJobs : totalTime;
+  const averageTimePerJob: number = concurrentJobs > 0 ? totalTime / concurrentJobs : totalTime;
 
   return {
     testId,

@@ -1,8 +1,8 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
   import Button from '$lib/components/ui/bitsbutton.svelte';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/Select';
+  import * as RawDialog from '$lib/components/ui/dialog';
+  import * as RawSelect from '$lib/components/ui/Select';
   import Badge from '$lib/components/ui/Badge.svelte';
   import Progress from '$lib/components/ui/Progress.svelte';
   import {
@@ -16,12 +16,41 @@
     X,
   } from 'lucide-svelte';
   import { onMount, createEventDispatcher } from 'svelte';
+  import type { ComponentType } from 'svelte';
   import { derived, get, writable } from 'svelte/store';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';
 
   import Label from '$lib/components/ui/Label.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Textarea from '$lib/components/ui/Textarea.svelte';
+
+  // Helper to normalize ESM default vs direct export to a constructor usable by <svelte:component>
+  const getCtor = (mod: any) => (mod && (mod as any).default ? (mod as any).default : mod);
+
+  // Constructor-safe aliases for direct components used with <svelte:component>
+  const ButtonComponent: any = getCtor(Button);
+  const BadgeComponent: any = getCtor(Badge);
+  const ProgressComponent: any = getCtor(Progress);
+  const CheckboxComponent: any = getCtor(Checkbox);
+  const LabelComponent: any = getCtor(Label);
+  const InputComponent: any = getCtor(Input);
+  const TextareaComponent: any = getCtor(Textarea);
+
+  // Wrap Select and Dialog module namespaces into objects whose properties are constructors.
+  const Select: any = {
+    Root: getCtor((RawSelect as any).Root ?? (RawSelect as any).default?.Root),
+    Trigger: getCtor((RawSelect as any).Trigger ?? (RawSelect as any).default?.Trigger),
+    Value: getCtor((RawSelect as any).Value ?? (RawSelect as any).default?.Value),
+    Content: getCtor((RawSelect as any).Content ?? (RawSelect as any).default?.Content),
+    Item: getCtor((RawSelect as any).Item ?? (RawSelect as any).default?.Item),
+  };
+
+  const Dialog: any = {
+    Root: getCtor((RawDialog as any).Root ?? (RawDialog as any).default?.Root),
+    Content: getCtor((RawDialog as any).Content ?? (RawDialog as any).default?.Content),
+    Header: getCtor((RawDialog as any).Header ?? (RawDialog as any).default?.Header),
+    Title: getCtor((RawDialog as any).Title ?? (RawDialog as any).default?.Title),
+  };
 
   // Public props
   export let acceptedTypes: string = '.pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp';
@@ -80,8 +109,12 @@
   const files = writable<UploadFile[]>([]);
   const isDragging = writable(false);
   const isProcessing = writable(false);
-  const showMetadata = writable(false);
-  const selectedFile = writable<UploadFile | null>(null);
+  // use plain variables for dialog bindings and nested two-way binds
+  let showMetadata = false;
+  let selectedFile: UploadFile | null = null;
+
+  // Add: local draft used for dialog binds to avoid binding into nullable selectedFile
+  let metadataDraft: UploadFile['metadata'] | null = null;
 
   const totalProgress = derived(files, ($files) => {
     if ($files.length === 0) return 0;
@@ -139,6 +172,18 @@
     target.value = '';
   }
 
+  // Add: safe id generator fallback for environments without crypto.randomUUID
+  function genId(): string {
+    try {
+      // @ts-ignore - some environments may not have randomUUID typed
+      if (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function') {
+        // @ts-ignore
+        return (crypto as any).randomUUID();
+      }
+    } catch {}
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  }
+
   function processSelectedFiles(selectedFiles: File[]) {
     const validFiles = selectedFiles.filter((file) => {
       const ext = '.' + (file.name.split('.')?.pop() || '').toLowerCase();
@@ -159,7 +204,7 @@
         return currentFiles;
       }
       const newFiles: UploadFile[] = validFiles.map((file) => ({
-        id: crypto.randomUUID(),
+        id: genId(),
         file,
         status: 'pending',
         progress: 0,
@@ -177,7 +222,8 @@
         if (uploadFile.file.type.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = (ev) => {
-            uploadFile.preview = ev.target?.result as string;
+            // FileReader.result can be string or ArrayBuffer; cast to string when possible
+            uploadFile.preview = (ev.target?.result as string) ?? undefined;
             files.update((f) => [...f]);
           };
           reader.readAsDataURL(uploadFile.file);
@@ -221,7 +267,8 @@
         body: formData,
       });
       if (!uploadResponse.ok) throw new Error(`Upload failed: ${uploadResponse.statusText}`);
-      const uploadResult = await uploadResponse.json();
+      // Type the response to expected shape
+      const uploadResult = (await uploadResponse.json()) as { documentId: string; url?: string };
       updateFileStatus(uploadFile.id, 'processing', 50);
 
       if (uploadFile.metadata.autoSummarize || uploadFile.metadata.extractEntities) {
@@ -236,7 +283,7 @@
           }),
         });
         if (!processingResponse.ok) throw new Error(`AI processing failed: ${processingResponse.statusText}`);
-        const processingResult: ProcessingResult = await processingResponse.json();
+        const processingResult = (await processingResponse.json()) as ProcessingResult;
         updateFileStatus(uploadFile.id, 'completed', 100);
 
         dispatch('file-processed', { fileId: uploadFile.id, result: processingResult });
@@ -256,9 +303,10 @@
       } else {
         updateFileStatus(uploadFile.id, 'completed', 100);
       }
-    } catch (err) {
-      updateFileStatus(uploadFile.id, 'error', 0, String(err));
-      dispatch('upload-error', { fileId: uploadFile.id, error: String(err) });
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      updateFileStatus(uploadFile.id, 'error', 0, errMsg);
+      dispatch('upload-error', { fileId: uploadFile.id, error: errMsg });
     }
   }
 
@@ -274,18 +322,37 @@
   }
 
   function openMetadataDialog(file: UploadFile) {
-    selectedFile.set(file);
-    showMetadata.set(true);
+    selectedFile = file;
+    // Use a shallow clone so bindings target metadataDraft and don't mutate selectedFile directly
+    metadataDraft = { ...file.metadata };
+    showMetadata = true;
+  }
+
+  // When saving metadata from dialog, apply draft back into files
+  function saveMetadataFromDialog() {
+    if (selectedFile && metadataDraft) {
+      updateFileMetadata(selectedFile.id, metadataDraft);
+    }
+    selectedFile = null;
+    metadataDraft = null;
+    showMetadata = false;
+  }
+
+  // When canceling, clear selection and draft
+  function cancelMetadataDialog() {
+    selectedFile = null;
+    metadataDraft = null;
+    showMetadata = false;
   }
 
   function updateFileMetadata(fileId: string, metadata: Partial<UploadFile['metadata']>) {
     files.update((currentFiles) => currentFiles.map((file) => (file.id === fileId ? { ...file, metadata: { ...file.metadata, ...metadata } } : file)));
   }
 
-  function getFileIcon(file: File) {
-    if (file.type.startsWith('image/')) return FileImage;
-    if (file.type.includes('pdf')) return FileText;
-    return FileIcon;
+  function getFileIcon(file: File): ComponentType {
+    if (file.type.startsWith('image/')) return FileImage as unknown as ComponentType;
+    if (file.type.includes('pdf')) return FileText as unknown as ComponentType;
+    return FileIcon as unknown as ComponentType;
   }
 
   function formatFileSize(bytes: number): string {
@@ -296,18 +363,19 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
+  // CHANGED: return semantic badge variant names expected by Badge component
   function getStatusColor(status: UploadFile['status']): string {
     switch (status) {
       case 'completed':
-        return 'green';
+        return 'success';
       case 'error':
-        return 'red';
+        return 'danger';
       case 'processing':
-        return 'blue';
+        return 'info';
       case 'uploading':
-        return 'yellow';
+        return 'warning';
       default:
-        return 'gray';
+        return 'neutral';
     }
   }
 
@@ -326,6 +394,7 @@
     };
   });
 </script>
+
 <!-- Main Upload Interface -->
 <div class="enhanced-document-uploader {className}">
   <!-- Drop Zone -->
@@ -333,14 +402,14 @@
     bind:this={dropZone}
     class="drop-zone"
     class:dragging={$isDragging}
-    ondragover={handleDragOver}
-    ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:dragover={handleDragOver}
+    on:dragleave={handleDragLeave}
+    on:drop={handleDrop}
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    onclick={() => fileInput?.click()}
-    onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
+    on:click={() => fileInput?.click()}
+    on:keydown={(e) => e.key === "Enter" && fileInput?.click()}
   >
     <div class="drop-zone-content">
       <Upload class="drop-zone-icon" size={48} />
@@ -348,47 +417,24 @@
         {$isDragging ? "Drop files here" : "Upload Legal Documents"}
       </h3>
       <p class="drop-zone-description">
-        Drag and drop files here, or click to select
+        Drag and drop files here, or click to select files.
       </p>
       <p class="drop-zone-specs">
-        Supports: PDF, DOCX, TXT, Images • Max {formatFileSize(maxFileSize)} • Up
-        to {maxFiles} files
+        Accepted: {acceptedTypes} • Max file: {formatFileSize(maxFileSize)} • Up to {maxFiles} files
       </p>
-      <Button variant="ghost" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
-<Upload class="mr-2" size={16} />
-        Choose Files
-</Button>
+
+      <!-- Hidden real file input to support click / keyboard -->
+      <input
+        type="file"
+        bind:this={fileInput}
+        multiple
+        accept={acceptedTypes}
+        on:change={handleFileSelect}
+        aria-hidden="true"
+        class="sr-only"
+      />
     </div>
   </div>
-  <!-- Hidden File Input -->
-  <input
-    bind:this={fileInput}
-    type="file"
-    multiple
-    accept={acceptedTypes} onchange={handleFileSelect}
-    class="sr-only"
-  />
-  <!-- Progress Overview -->
-  {#if $files.length > 0}
-    <div class="mt-6 nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex items-center justify-between">
-          <span>Upload Progress</span>
-          <Badge variant={$hasErrors ? "destructive" : "default"}>
-            {$completedFiles.length} / {$files.length} completed
-          </Badge>
-        </h3>
-      </div>
-      <div class="yorha-panel-content">
-        <div class="space-y-2">
-          <Progress value={$totalProgress} class="w-full" />
-          <p class="text-sm nes-text is-disabled">
-            Overall Progress: {Math.round($totalProgress)}%
-          </p>
-        </div>
-      </div>
-    </div>
-  {/if}
   <!-- File List -->
   {#if $files.length > 0}
     <div class="file-list mt-6">
@@ -402,7 +448,7 @@
                   <img src={file.preview} alt="Preview" class="preview-image" />
                 {:else}
                   {@const SvelteComponent = getFileIcon(file.file)}
-                  <SvelteComponent size={24} />
+                  <svelte:component this={SvelteComponent} size={24} />
                 {/if}
               </div>
               <!-- File Details -->
@@ -420,7 +466,7 @@
                 </p>
                 <!-- Progress Bar -->
                 {#if file.status !== "pending" && file.status !== "completed"}
-                  <Progress value={file.progress} class="file-progress" />
+                  <svelte:component this={ProgressComponent} value={file.progress} class="file-progress" />
                 {/if}
                 <!-- Error Message -->
                 {#if file.error}
@@ -432,7 +478,7 @@
               </div>
               <!-- Status & Actions -->
               <div class="file-actions">
-                <Badge variant={getStatusColor(file.status) as any}>
+                <svelte:component this={BadgeComponent} variant={getStatusColor(file.status) as any}>
                   {#if file.status === "processing"}
                     <Loader2 class="mr-1 animate-spin" size={12} />
                   {:else if file.status === "completed"}
@@ -441,28 +487,27 @@
                     <AlertTriangle class="mr-1" size={12} />
                   {/if}
                   {file.status}
-                </Badge>
+                </svelte:component>
                 <div class="action-buttons">
                   {#if showMetadataForm && file.status === "pending"}
-                    <Button className="bits-btn"
+                    <svelte:component this={ButtonComponent}
+                      class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      onclick={() =>
-openMetadataDialog(file)}
+                      on:click={() => openMetadataDialog(file)}
                     >
                       Edit
-</Button>
+                    </svelte:component>
                   {/if}
-                  <Button className="bits-btn"
+                  <svelte:component this={ButtonComponent}
+                    class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() =>
-removeFile(file.id)}
-                    disabled={file.status === "uploading" ||
-                      file.status === "processing"}
+                    on:click={() => removeFile(file.id)}
+                    disabled={file.status === "uploading" || file.status === "processing"}
                   >
                     <X size={16} />
-</Button>
+                  </svelte:component>
                 </div>
               </div>
             </div>
@@ -472,11 +517,11 @@ removeFile(file.id)}
     </div>
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
-      <Button
-        className="bits-btn mr-4"
-        onclick={uploadFiles}
-        disabled={$isProcessing || $files.every((f) =>
-f.status !== "pending")}
+      <svelte:component
+        this={ButtonComponent}
+        class="bits-btn mr-4"
+        on:click={uploadFiles}
+        disabled={$isProcessing || $files.every((f) => f.status !== "pending")}
       >
         {#if $isProcessing}
           <Loader2 class="mr-2 animate-spin" size={16} />
@@ -486,44 +531,45 @@ f.status !== "pending")}
           Upload & Process ({$files.filter((f) => f.status === "pending")
             .length} files)
         {/if}
-</Button>
-      <Button className="bits-btn"
+      </svelte:component>
+      <svelte:component this={ButtonComponent} class="bits-btn"
         variant="ghost"
-        onclick={() =>
-files.set([])}
+        on:click={() => files.set([])}
         disabled={$isProcessing}
       >
         Clear All
-</Button>
+      </svelte:component>
     </div>
+  {/if}
+
   <!-- Metadata Dialog -->
   <Dialog.Root bind:open={showMetadata}>
     <Dialog.Content class="max-w-md">
       <Dialog.Header>
         <Dialog.Title>Document Metadata</Dialog.Title>
       </Dialog.Header>
-      {#if $selectedFile}
+      {#if metadataDraft}
         <div class="metadata-form space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
-            <Input
+            <svelte:component this={LabelComponent} htmlFor="title">Title</svelte:component>
+            <svelte:component this={InputComponent}
               id="title"
-              bind:value={$selectedFile.metadata.title}
+              bind:value={metadataDraft.title}
               placeholder="Document title"
             />
           </div>
           <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
+            <svelte:component this={LabelComponent} htmlFor="description">Description</svelte:component>
+            <svelte:component this={TextareaComponent}
               id="description"
-              bind:value={$selectedFile.metadata.description}
+              bind:value={metadataDraft.description}
               placeholder="Brief description"
               rows={3}
             />
           </div>
           <div>
-            <Label htmlFor="document-type">Document Type</Label>
-            <Select.Root bind:value={$selectedFile.metadata.documentType}>
+            <svelte:component this={LabelComponent} htmlFor="document-type">Document Type</svelte:component>
+            <Select.Root bind:value={metadataDraft.documentType}>
               <Select.Trigger>
                 <Select.Value placeholder="Select type" />
               </Select.Trigger>
@@ -535,47 +581,38 @@ files.set([])}
             </Select.Root>
           </div>
           <div>
-            <Label htmlFor="jurisdiction">Jurisdiction</Label>
-            <Select.Root bind:value={$selectedFile.metadata.jurisdiction}>
+            <svelte:component this={LabelComponent} htmlFor="jurisdiction">Jurisdiction</svelte:component>
+            <Select.Root bind:value={metadataDraft.jurisdiction}>
               <Select.Trigger>
                 <Select.Value placeholder="Select jurisdiction" />
               </Select.Trigger>
               <Select.Content>
                 {#each jurisdictions as jurisdiction}
-                  <Select.Item value={jurisdiction.value}
-                    >{jurisdiction.label}</Select.Item
-                  >
+                  <Select.Item value={jurisdiction.value}>{jurisdiction.label}</Select.Item>
                 {/each}
               </Select.Content>
             </Select.Root>
           </div>
           <div class="ai-options">
-            <Label>AI Processing Options</Label>
+            <svelte:component this={LabelComponent}>AI Processing Options</svelte:component>
             <div class="checkbox-group">
-              <Checkbox bind:checked={$selectedFile.metadata.autoSummarize}>
+              <svelte:component this={CheckboxComponent} bind:checked={metadataDraft.autoSummarize}>
                 Auto-generate summary
-              </Checkbox>
-              <Checkbox bind:checked={$selectedFile.metadata.extractEntities}>
+              </svelte:component>
+              <svelte:component this={CheckboxComponent} bind:checked={metadataDraft.extractEntities}>
                 Extract entities (names, dates, amounts)
-              </Checkbox>
+              </svelte:component>
             </div>
           </div>
           <div class="dialog-actions">
-            <Button class="bits-btn" variant="ghost" onclick={() =>
-showMetadata.set(false)}>
+            <svelte:component this={ButtonComponent} class="bits-btn" variant="ghost" on:click={cancelMetadataDialog}>
               Cancel
-</Button>
-            <Button class="bits-btn"
-              onclick={() =>
-{
-                if ($selectedFile) {
-                  updateFileMetadata($selectedFile.id, $selectedFile.metadata);
-                }
-                showMetadata.set(false);
-              }}
+            </svelte:component>
+            <svelte:component this={ButtonComponent} class="bits-btn"
+              on:click={saveMetadataFromDialog}
             >
               Save
-</Button>
+            </svelte:component>
           </div>
         </div>
       {/if}

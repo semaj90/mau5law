@@ -3,8 +3,8 @@
  * Collects thumbs up/down feedback for supervised RL training
  * Feeds into QLoRA distilled enhanced RAG model creation
  */
+import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
 import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer'
 import { autoencoderContextSwitcher } from '$lib/orchestration/autoencoder-context-switcher'
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine'
@@ -56,115 +56,217 @@ interface QLorATrainingExample {
  * POST /api/rl-feedback
  * Submit thumbs up/down feedback for reinforcement learning
  */
-export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const feedbackData: RLFeedbackData = await request.json()
-    // Validate required fields
-    if (!feedbackData.queryId || !feedbackData.query || !feedbackData.response || !feedbackData.feedback) {
-      return json({ error: 'Missing required feedback fields' }, { status: 400 })
-    }
-    console.log(`👍👎 Received ${feedbackData.feedback} feedback for query: ${feedbackData.queryId}`)
-    // Convert feedback to numerical score
-    const feedbackScore = convertFeedbackToScore(feedbackData)
-    // Generate context embedding for this interaction
-    const contextEmbedding = await generateContextEmbedding(feedbackData)
-    // Create training example for QLoRA
-    const trainingExample: QLorATrainingExample = {
-      instruction: generateInstruction(feedbackData.context),
-      input: feedbackData.query,
-      output: feedbackData.preferredResponse || feedbackData.response,
-      preference_score: feedbackScore
-      quality_metrics: {
-        accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
-        relevance: estimateRelevance(feedbackData),
-        completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
-      },
-      metadata: {
-        domain: feedbackData.context.legalDomain,
-        model_used: feedbackData.context.modelUsed,
-        user_feedback: feedbackData.feedback,
-        context_embedding: contextEmbedding
-      }
-    }
-    // Store feedback for RL training
-    await qloraTrainer.recordUserFeedback(
-      feedbackData.query,
-      feedbackData.response,)
-      {
-        rating: feedbackScore
-        corrections: feedbackData.userCorrections || [],
-        preference_type: determinePrefererenceType(feedbackData),
-        legal_domain: feedbackData.context.legalDomain,
-        confidence_delta: calculateConfidenceDelta(feedbackData)
-      },
-      {
-        document_type: feedbackData.context.documentType,
-        jurisdiction: 'federal', // default
-        practice_area: feedbackData.context.legalDomain,
-        complexity_level: feedbackData.context.complexityLevel,
-        prior_interactions: [] // would track in production
-      }
-    )
-    // Update context switcher with usage pattern
-    await autoencoderContextSwitcher.switchContext(
-      feedbackData.userId,
-      feedbackData.query,)
-      {
-        feedback: feedbackData.feedback,
-        model_performance: feedbackScore
-        sessionId: feedbackData.sessionId
-      }
-    )
-    // Update predictive engine with user interaction
-    await predictiveAssetEngine.updateUserState(
-      feedbackData.userId,
-      feedbackData.sessionId,
-      `feedback_${feedbackData.feedback}`,)
-      {
-        document_type: feedbackData.context.documentType,
-        task: 'feedback_collection',
-        legal_domain: feedbackData.context.legalDomain,
-        feedback_score: feedbackScore
-      }
-    )
-    // Store training example in enhanced RAG dataset
-    await storeEnhancedRAGExample(trainingExample)
-    // Check if we have enough feedback to trigger model distillation
-    const feedbackCount = await getFeedbackCount(feedbackData.userId, feedbackData.context.legalDomain)
-    if (feedbackCount >= 50) { // Threshold for domain-specific distillation
-      await triggerDomainSpecificDistillation(feedbackData.context.legalDomain, feedbackData.userId)
-    }
-    return json({
-      success: true,
-      message: 'Feedback recorded successfully',
-      training_examples: 1,
-      distillation_ready: feedbackCount >= 50,
-      next_training_eta: estimateNextTrainingTime(feedbackCount)
-    })
-  } catch (error) {
-    console.error('❌ RL Feedback API error:', error)
-    return json({ error: 'Failed to process feedback' }, { status: 500 })
-  }
+export const POST: RequestHandler = async ({ request, locals }) => {
+	// Ensure we read auth from locals (same pattern as GET)
+	const authUser = (locals as any)?.user ?? null
+
+	// Try to load DB only if authenticated
+	let db: any = null
+	if (authUser?.id) {
+		try {
+			const mod = await import('$lib/server/db')
+			db = mod.default || mod.db || mod
+		} catch {
+			db = null
+		}
+	}
+
+	try {
+		const feedbackData: RLFeedbackData = await request.json()
+		// Validate required fields
+		if (!feedbackData.queryId || !feedbackData.query || !feedbackData.response || !feedbackData.feedback) {
+			return json({ error: 'Missing required feedback fields' }, { status: 400 })
+		}
+
+		console.log(`👍👎 Received ${feedbackData.feedback} feedback for query: ${feedbackData.queryId}`)
+
+		// Convert feedback to numerical score
+		const feedbackScore = convertFeedbackToScore(feedbackData)
+		// Generate context embedding for this interaction
+		const contextEmbedding = await generateContextEmbedding(feedbackData)
+		// Create training example for QLoRA
+		const trainingExample: QLorATrainingExample = {
+			instruction: generateInstruction(feedbackData.context),
+			input: feedbackData.query,
+			output: feedbackData.preferredResponse || feedbackData.response,
+			preference_score: feedbackScore,
+			quality_metrics: {
+				accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
+				relevance: estimateRelevance(feedbackData),
+				completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
+			},
+			metadata: {
+				domain: feedbackData.context.legalDomain,
+				model_used: feedbackData.context.modelUsed,
+				user_feedback: feedbackData.feedback,
+				context_embedding: contextEmbedding
+			}
+		}
+
+		// If DB available and user authenticated, write to real DB; otherwise use existing trainer mock
+		if (db && authUser?.id) {
+			try {
+				await db.insertFeedback({
+					userId: authUser.id,
+					sessionId: feedbackData.sessionId,
+					queryId: feedbackData.queryId,
+					query: feedbackData.query,
+					response: feedbackData.response,
+					feedback: feedbackData.feedback,
+					feedbackDetails: feedbackData.feedbackDetails || null,
+					context: feedbackData.context,
+					timestamp: new Date(feedbackData.timestamp || Date.now()).toISOString(),
+					training_example: trainingExample
+				})
+				console.log('✅ Feedback persisted to DB for authenticated user')
+			} catch (err) {
+				console.error('DB insert failed, falling back to in-memory trainer:', err)
+				await qloraTrainer.recordUserFeedback(
+					feedbackData.query,
+					feedbackData.response,
+					{
+						rating: feedbackScore,
+						corrections: feedbackData.userCorrections || [],
+						preference_type: determinePrefererenceType(feedbackData),
+						legal_domain: feedbackData.context.legalDomain,
+						confidence_delta: calculateConfidenceDelta(feedbackData)
+					},
+					{
+						document_type: feedbackData.context.documentType,
+						jurisdiction: 'federal',
+						practice_area: feedbackData.context.legalDomain,
+						complexity_level: feedbackData.context.complexityLevel,
+						prior_interactions: []
+					}
+				)
+			}
+		} else {
+			await qloraTrainer.recordUserFeedback(
+				feedbackData.query,
+				feedbackData.response,
+				{
+					rating: feedbackScore,
+					corrections: feedbackData.userCorrections || [],
+					preference_type: determinePrefererenceType(feedbackData),
+					legal_domain: feedbackData.context.legalDomain,
+					confidence_delta: calculateConfidenceDelta(feedbackData)
+				},
+				{
+					document_type: feedbackData.context.documentType,
+					jurisdiction: 'federal', // default
+					practice_area: feedbackData.context.legalDomain,
+					complexity_level: feedbackData.context.complexityLevel,
+					prior_interactions: [] // would track in production
+				}
+			)
+		}
+
+		// Update context switcher with usage pattern
+		await autoencoderContextSwitcher.switchContext(
+			feedbackData.userId,
+			feedbackData.query,
+			{
+				feedback: feedbackData.feedback,
+				model_performance: feedbackScore,
+				sessionId: feedbackData.sessionId
+			}
+		)
+
+		// Update predictive engine with user interaction
+		await predictiveAssetEngine.updateUserState(
+			feedbackData.userId,
+			feedbackData.sessionId,
+			`feedback_${feedbackData.feedback}`,
+			{
+				document_type: feedbackData.context.documentType,
+				task: 'feedback_collection',
+				legal_domain: feedbackData.context.legalDomain,
+				feedback_score: feedbackScore
+			}
+		)
+
+		// Store training example in enhanced RAG dataset (DB-backed when available)
+		if (db && authUser?.id && typeof db.storeRAGExample === 'function') {
+			try {
+				await db.storeRAGExample(trainingExample)
+			} catch (err) {
+				console.warn('DB storeRAGExample failed, using local store:', err)
+				await storeEnhancedRAGExample(trainingExample)
+			}
+		} else {
+			await storeEnhancedRAGExample(trainingExample)
+		}
+
+		// Check if we have enough feedback to trigger model distillation
+		const feedbackCount = await getFeedbackCount(authUser?.id || feedbackData.userId, feedbackData.context.legalDomain)
+		if (feedbackCount >= 50) { // Threshold for domain-specific distillation
+			await triggerDomainSpecificDistillation(feedbackData.context.legalDomain, authUser?.id || feedbackData.userId)
+		}
+
+		return json({
+			success: true,
+			message: 'Feedback recorded successfully',
+			training_examples: 1,
+			distillation_ready: feedbackCount >= 50,
+			next_training_eta: typeof estimateNextTrainingTime === 'function' ? estimateNextTrainingTime(feedbackCount) : null
+		})
+	} catch (error) {
+		console.error('❌ RL Feedback API error:', error)
+		return json({ error: 'Failed to process feedback' }, { status: 500 })
+	}
 }
 /**
  * GET /api/rl-feedback/stats
  * Get feedback statistics and training progress
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    const userId = url.searchParams.get('userId')
+    const userIdParam = url.searchParams.get('userId')
     const domain = url.searchParams.get('domain')
-    // Get training statistics
-    const trainingStats = qloraTrainer.getTrainingStats()
+    // Detect auth
+    const authUser = (locals as any)?.user ?? null
+
+    // Try to load DB only if authenticated
+    let db: any = null
+    if (authUser?.id) {
+      try {
+        const mod = await import('$lib/server/db')
+        db = mod.default || mod.db || mod
+      } catch {
+        db = null
+      }
+    }
+
+    // Get training statistics (DB-backed when possible)
+    let trainingStats: any
+    if (db && typeof db.getTrainingStats === 'function') {
+      trainingStats = await db.getTrainingStats(authUser?.id || userIdParam)
+    } else {
+      trainingStats = qloraTrainer.getTrainingStats()
+    }
+
     // Get context switching performance
     const switchingStats = autoencoderContextSwitcher.getPerformanceStats()
     // Get prediction engine stats
     const predictionStats = predictiveAssetEngine.getPredictionStats()
+
     // Domain-specific statistics
     let domainStats = null
     if (domain) {
-      domainStats = await getDomainSpecificStats(domain, userId)
+      domainStats = await getDomainSpecificStats(domain, authUser?.id || userIdParam)
     }
+
+    // Enhanced RAG stats (DB-backed when available)
+    const enhancedCount = db && typeof db.getEnhancedRAGExampleCount === 'function'
+      ? await db.getEnhancedRAGExampleCount()
+      : await getEnhancedRAGExampleCount()
+    const distilledCount = db && typeof db.getDistilledModelCount === 'function'
+      ? await db.getDistilledModelCount()
+      : await getDistilledModelCount()
+    const avgQuality = db && typeof db.getAverageQualityScore === 'function'
+      ? await db.getAverageQualityScore()
+      : await getAverageQualityScore()
+
     return json({
       training: {
         total_feedback: trainingStats.training_queue_size,
@@ -183,11 +285,11 @@ export const GET: RequestHandler = async ({ url }) => {
         average_confidence: predictionStats.average_confidence,
         cache_improvements: predictionStats.cache_improvements
       },
-      domain_specific: domainStats
+      domain_specific: domainStats,
       enhanced_rag: {
-        training_examples: await getEnhancedRAGExampleCount(),
-        distilled_models: await getDistilledModelCount(),
-        average_quality_score: await getAverageQualityScore()
+        training_examples: enhancedCount,
+        distilled_models: distilledCount,
+        average_quality_score: avgQuality
       }
     })
   } catch (error) {
@@ -354,7 +456,19 @@ async function storeEnhancedRAGExample(example: QLorATrainingExample): Promise<v
 /**
  * Get feedback count for domain-specific training
  */
-async function getFeedbackCount(userId: string, domain: string): Promise<number> {
+async function getFeedbackCount(userId: string | undefined, domain: string): Promise<number> {
+  // If auth + DB available, query DB; otherwise fallback to mock
+  if (userId) {
+    try {
+      const mod = await import('$lib/server/db')
+      const db = mod.default || mod.db || mod
+      if (typeof db.countFeedbackByUserAndDomain === 'function') {
+        return await db.countFeedbackByUserAndDomain(userId, domain)
+      }
+    } catch {
+      // ignore and fallback
+    }
+  }
   // Mock implementation - would query database in production
   return Math.floor(Math.random() * 100)
 }
@@ -395,6 +509,17 @@ function estimateNextTrainingTime(currentCount: number): number | null {
  * Get domain-specific statistics
  */
 async function getDomainSpecificStats(domain: string, userId?: string): Promise<any> {
+  // Always attempt DB access for domain stats, passing userId (may be undefined)
+  try {
+    const mod = await import('$lib/server/db')
+    const db = mod.default || mod.db || mod
+    if (typeof db.getDomainStats === 'function') {
+      return await db.getDomainStats(domain, userId)
+    }
+  } catch {
+    // fallback to mock
+  }
+
   // Mock implementation - would query real data in production
   return {
     domain,

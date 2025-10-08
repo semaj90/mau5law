@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
+import pgClient from '$lib/server/db-shim';
 import { document_chunks } from '$lib/db/schema';
 import { cache } from '$lib/server/cache/redis';
 import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 import { consumeFromQueue } from '$lib/server/rabbitmq';
 import { ingestionService } from '$lib/server/workflows/ingestion-service';
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
+// Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
+const db = drizzle(pgClient as any);
 let shuttingDown = false;
 const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 interface ChunkJob {
@@ -270,9 +270,15 @@ async function shutdown() {
     // Unregister worker
     await cache.del(`worker:${workerId}`);
     await cache.del(`worker:${workerId}:heartbeat`);
-    // Close database connection
-    await pool.end();
-    console.log('✅ Database connections closed');
+    // Close database connection (postgres-js exposes an optional .end())
+    try {
+      if (typeof (pgClient as any).end === 'function') {
+        await (pgClient as any).end();
+      }
+      console.log('✅ Database connections closed');
+    } catch (e) {
+      console.warn('⚠️ Error closing database connection gracefully:', e);
+    }
   } catch (error) {
     console.error('❌ Error during shutdown:', error);
   }

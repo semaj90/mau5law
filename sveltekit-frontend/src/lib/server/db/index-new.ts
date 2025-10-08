@@ -5,12 +5,12 @@ import type { Collection } from 'lokijs';
 import dotenv from 'dotenv';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { Pool } from 'pg';
+import pgClient, { poolShim } from '$lib/server/db-shim';
 // Load environment-specific variables
 const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
 let _db: PostgresJsDatabase<typeof schema> | null = null;
-let _pool: Pool | null = null;
+let _pool: any | null = null;
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build
   if (building) {
@@ -24,12 +24,10 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   console.log('🔧 Database Configuration:');
   console.log('  NODE_ENV:', nodeEnv);
   console.log('  DATABASE_URL:', databaseUrl);
-  // PostgreSQL connection
-  console.log('🐘 Connecting to PostgreSQL database:', databaseUrl);
-  _pool = new Pool({
-    connectionString: databaseUrl,
-  });
-  _db = drizzle(_pool, { schema });
+  // PostgreSQL connection (use postgres-js client shim)
+  console.log('🐘 Connecting to PostgreSQL database (via postgres-js client):', databaseUrl);
+  _pool = poolShim;
+  _db = drizzle(pgClient as any, { schema });
   // Skip migrations in testing environment
   if (nodeEnv !== 'testing') {
     try {
@@ -64,9 +62,14 @@ export const pool = _pool;
 // Schema exports
 export * from '$lib/server/db/schema-postgres';
 // Graceful shutdown
-export function closeDatabase() {
+export async function closeDatabase() {
   if (_pool) {
     console.log('Closing PostgreSQL connection pool...');
-    _pool.end();
+    try {
+      if (typeof _pool.end === 'function') await _pool.end();
+      else if (typeof (poolShim as any).end === 'function') await (poolShim as any).end();
+    } catch (err) {
+      console.warn('Error closing pool shim:', err);
+    }
   }
 }

@@ -1,7 +1,8 @@
 /**
  * MCP Helper Functions
- */;
-}
+ /**
+  * MCP Helper Functions
+  */
 export interface MCPRequest {
   method: string;
   params?: unknown;
@@ -9,13 +10,12 @@ export interface MCPRequest {
 export interface MCPToolRequest {
   method?: string; // optional when inferring default
   tool: string;
-  args?: { [key: string]: any }
+  args?: { [key: string]: any };
   component?: string;
   context?: string;
   area?: string;
 }
 export type MCPGenericRequest = MCPRequest | MCPToolRequest;
-}
 export interface OrchestrationOptions {
   maxRetries?: number;
   timeout?: number;
@@ -27,30 +27,30 @@ export interface OrchestrationOptions {
   synthesizeOutputs?: boolean;
 }
 export async function copilotOrchestrator(
-  request: MCPGenericRequest | string
-  options?: OrchestrationOptions;
+  request: MCPGenericRequest | string,
+  options?: OrchestrationOptions
 ): Promise<any> {
   const req: MCPRequest =
     typeof request === 'string'
       ? { method: 'prompt', params: { prompt: request } }
       : (request as MCPRequest);
   return {
-    success: true;
-    result: null
+    success: true,
+    result: null,
     selfPrompt: typeof request === 'string' ? request : undefined
-  }
+  };
 }
-export async function semanticSearch(query: string, options?: unknown): Promise<any> {
+export async function semanticSearch(query: string, options?: unknown): Promise<any[]> {
   // Implementation placeholder
   return [];
 }
-export async function mcpMemoryReadGraph(): Promise<any> {
+export async function mcpMemoryReadGraph(): Promise<{ nodes: any[]; edges: any[] }> {
   // Implementation placeholder
   return { nodes: [], edges: [] }
 }
-export async function mcpCodebaseAnalyze(path: string): Promise<any> {
+export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[]; analysis: { [key: string]: any } }> {
   // Implementation placeholder
-  return { files: [], analysis: { [key: string]: any } }
+  return { files: [], analysis: {} };
 }
 export function generateMCPPrompt(context: any): string {
   // Implementation placeholder
@@ -60,11 +60,11 @@ export const commonMCPQueries = {
   search: 'search',
   analyze: 'analyze',
   generate: 'generate',
-  analyzeSvelteKit: () => 'analyze-sveltekit',
-  analyzeDrizzle: () => 'analyze-drizzle',
-  performanceBestPractices: () => 'performance-best-practices',
-  securityBestPractices: () => 'security-best-practices'
-}
+  analyzeSvelteKit: (): string => 'analyze-sveltekit',
+  analyzeDrizzle: (): string => 'analyze-drizzle',
+  performanceBestPractices: (): string => 'performance-best-practices',
+  securityBestPractices: (): string => 'security-best-practices'
+};
 export default {
   copilotOrchestrator,
   semanticSearch,
@@ -72,4 +72,4 @@ export default {
   mcpCodebaseAnalyze,
   generateMCPPrompt,
   commonMCPQueries
-}
+};
