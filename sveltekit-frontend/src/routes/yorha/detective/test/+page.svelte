@@ -18,14 +18,14 @@
           priority: 'medium'
         })
       });
-      const result = await (response as { json?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; ok?: unknown }).ok) {
-        testResult = `✅ Case created successfully!\nID: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.id}\nCase Number: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.caseNumber}\nTitle: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.title}`;
+      const result = await response.json();
+      if (response.ok) {
+        testResult = `✅ Case created successfully!\nID: ${(result as any).data.id}\nCase Number: ${(result as any).data.caseNumber}\nTitle: ${(result as any).data.title}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify(details), null, 2)}`;
+        testResult = `❌ Error: ${(result as any).error}\nDetails: ${JSON.stringify((result as any).details, null, 2)}`;
       }
     } catch (error) {
-      testResult = `❌ Network error: ${error.message}`;
+      testResult = `❌ Network error: ${(error as Error).message}`;
     } finally {
       isLoading = false;
     }
@@ -33,15 +33,16 @@
   async function testCaseList() {
     isLoading = true;
     try {
-      // removed unused response assignment
-      const result = await (response as { json?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; ok?: unknown }).ok) {
-        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify(data).slice(0, 3), null, 2)}`;
+      const response = await fetch('/api/cases');
+      const result = await response.json();
+      if (response.ok) {
+        const data = (result as { data?: any[] }).data ?? [];
+        testResult = `✅ Cases retrieved successfully!\nTotal: ${data.length}\nFirst few cases:\n${JSON.stringify(data.slice(0, 3), null, 2)}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}`;
+        testResult = `❌ Error: ${(result as any).error}`;
       }
     } catch (error) {
-      testResult = `❌ Network error: ${error.message}`;
+      testResult = `❌ Network error: ${(error as Error).message}`;
     } finally {
       isLoading = false;
     }
@@ -82,4 +83,3 @@
     </ul>
   </div>
 </div>
-;

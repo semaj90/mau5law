@@ -1,7 +1,17 @@
 <script lang="ts">
   // Separate runtime import from type-only imports to avoid TS namespace/type conflicts
   import { LegalAILogic } from '$lib/core/logic/legal-ai-logic';
-  import type { LegalDocument, EvidenceItem as EvidenceItemType } from '$lib/core/logic/legal-ai-logic';
+  import type { LegalDocument } from '$lib/core/logic/legal-ai-logic';
+
+  // Local lightweight EvidenceItem type to avoid "Cannot use namespace ... as a type"
+  // Keeps the minimal shape used by this component and allows extra fields.
+  type EvidenceItemType = {
+    id?: string;
+    title?: string;
+    confidence?: number;
+    priority?: 'low' | 'medium' | 'high' | 'critical' | string;
+    [key: string]: any;
+  };
 
   // Import your existing components
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -9,7 +19,8 @@
   import * as Card from '$lib/components/ui/card';
 
   // Import hybrid theme as a global stylesheet to fix unused selector warnings
-  import '../../../styles/hybrid-theme.css';
+  // Use $lib alias so Vite/SvelteKit resolves the shared stylesheet reliably
+  import '$lib/styles/hybrid-theme.css';
 
   // Safer constructor extraction with runtime fallback & warning
   const CardComponent: any = (Card as any).Root ?? (Card as any).default;
