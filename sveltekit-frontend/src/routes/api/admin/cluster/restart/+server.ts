@@ -113,7 +113,7 @@ export const GET: RequestHandler = async () => {
  * Perform rolling restart of all workers
  */
 async function performRollingRestart(
-  clusterManager: any;
+  clusterManager: any,;
   options: { force: boolean; timeout: number }
 ): Promise<void> {
   const startTime = Date.now()

@@ -92,9 +92,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     async start(controller) {
       const encoder = new TextEncoder()
       const send = (d: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`)
-      let buffer = ''
-      let tokens = 0
-      let finished = false
+      let, buffer = ''
+      let, tokens = 0
+      let, finished = false
       const persist = async (incomplete = false) => {
         if (!buffer) return
         try {

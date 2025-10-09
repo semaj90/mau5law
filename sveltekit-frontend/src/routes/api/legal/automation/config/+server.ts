@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // List configurations with optional status filter
     const configs = Array.from(automationConfigs.values()
     const jobs = Array.from(processingJobs.values()
-    let filteredJobs = jobs
+    let, filteredJobs = jobs
     if (status) {
       filteredJobs = jobs.filter(job => job.status === status)
     }
@@ -245,7 +245,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     })
   } catch (error) {
     return json({
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: 'Delete failed'
     }, { status: 500 })
   }

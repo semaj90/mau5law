@@ -219,7 +219,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         ]
       }
       vectorSearchTime = Date.now() - vectorStart
-      (result as { performance?: any }).performance.vectorSearchMs = vectorSearchTime
+      (result as { performance?: any }).performance.vectorSearchMs, = vectorSearchTime
     }
     // 2. Strategy Analysis
     if (analysisRequest.analysisScope.strategyRecommendations) {
@@ -231,20 +231,20 @@ export const POST: RequestHandler = async ({ params, request }) => {
         includeRiskAssessment: true,
         generateAlternatives: true
       })
-      (result as { strategyAnalysis?: any }).strategyAnalysis = {
-        primaryStrategy: strategyResults.primaryApproach?.name || '',
-        alternativeStrategies: (strategyResults.alternativeApproaches || []).map(
+      (result as { strategyAnalysis?: any }).strategyAnalysis, = {
+        primaryStrategy: strategyResults,.primaryApproac,h?.nam,e || '',
+        alternativeStrategies,: (strategyResults.alternativeApproaches || []).map(
           (a: any) => a?.name || ''
         ),
-        riskAssessment: {
+        riskAssessment,: {
           level: strategyResults.riskAssessment?.overallRisk || 'medium',
-          factors: strategyResults.riskAssessment?.riskFactors || [],
-          mitigations: strategyResults.riskAssessment?.mitigationStrategies || []
+          factors,: strategyResults.riskAssessment?.riskFactors || [],
+          mitigations,: strategyResults.riskAssessment?.mitigationStrategies || []
         },
         outcomeProjections: strategyResults.outcomeProjections || []
       }
       strategyTime = Date.now() - strategyStart
-      (result as { performance?: any }).performance.strategyAnalysisMs = strategyTime
+      (result as { performance?: any }).performance.strategyAnalysisMs, = strategyTime
     }
     // 3. WASM Processing (optional - computationally expensive)
     if (analysisRequest.analysisScope.wasmProcessing) {
@@ -308,7 +308,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
       }
       wasmTime = Date.now() - wasmStart
-      (result as { performance?: any }).performance.wasmProcessingMs = wasmTime
+      (result as { performance?: any }).performance.wasmProcessingMs, = wasmTime
     }
     // 4. Correlation Analysis
     if (analysisRequest.analysisScope.correlationAnalysis) {
@@ -358,7 +358,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
       }
       correlationTime = Date.now() - correlationStart
-      (result as { performance?: any }).performance.correlationAnalysisMs = correlationTime
+      (result as { performance?: any }).performance.correlationAnalysisMs, = correlationTime
     }
     // Generate Unified Insights
     const keyFindings: string[] = []
@@ -461,10 +461,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
     }
     // Calculate final performance metrics
     const totalTime = Date.now() - startTime
-    (result as { performance?: any }).performance.processingTimeMs = totalTime
+    (result as { performance?: any }).performance.processingTimeMs, = totalTime
     (result as { performance?: any }).performance.memoryUsageMb = process.memoryUsage().heapUsed / 1024 / 1024
     return json(result)
-  } catch (err) {
+  }, catch (err) {
     console.error('Unified analysis error:', err)
     if (err instanceof z.ZodError) {
       throw error(400, new Error(JSON.stringify(makeErrorBody(err))))

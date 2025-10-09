@@ -109,7 +109,7 @@ export default class RedisShim {
           i++;
         }
       }
-      localStorage.setItem(storageKey, JSON.stringify(dataToStore);
+      localStorage.setItem(storageKey, JSON.stringify(dataToStore),;
       return 'OK';
     } catch (error) {
       this.stats.errors++;
@@ -166,16 +166,16 @@ export default class RedisShim {
   }
   async hset(hash, field, value) {
     const existing = localStorage.getItem(`redis:${hash}`);
-    const obj = existing ? JSON.parse(existing) : { [key: string]: any };
+    const obj = existing ? JSON.parse(existing) : { [key,: strin,g]: any };
     obj[field] = value;
-    localStorage.setItem(`redis:${hash}`, JSON.stringify(obj);
+    localStorage.setItem(`redis:${hash}`, JSON.stringify(obj),;
     return 1;
   }
   async lpush(key, ...values) {
     const existing = localStorage.getItem(`redis:${key}`);
     const array = existing ? JSON.parse(existing) : [];
     array.unshift(...values);
-    localStorage.setItem(`redis:${key}`, JSON.stringify(array);
+    localStorage.setItem(`redis:${key}`, JSON.stringify(array),;
     return array.length;
   }
   async rpop(key) {
@@ -183,21 +183,21 @@ export default class RedisShim {
     if (existing) {
       const array = JSON.parse(existing);
       const value = array.pop();
-      localStorage.setItem(`redis:${key}`, JSON.stringify(array);
+      localStorage.setItem(`redis:${key}`, JSON.stringify(array),;
       return value;
     }
     return null;
   }
   // Additional Redis methods that might be called
   async flushall() {
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('redis:');
-    keys.forEach(key => localStorage.removeItem(key);
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('redis:'),;
+    keys.forEach(key => localStorage.removeItem(key),;
     return 'OK';
   }
   async keys(pattern) {
     const keys = Object.keys(localStorage)
       .filter(key => key.startsWith('redis:')
-      .map(key => key.replace('redis:', '');
+      .map(key => key.replace('redis:', ''),;
     return keys;
   }
   async ttl(key) {
@@ -221,7 +221,7 @@ export default class RedisShim {
     const current = await this.get(key);
     const value = parseInt(current) || 0;
     const newValue = value + 1;
-    await this.set(key, newValue.toString();
+    await this.set(key, newValue.toString(),;
     return newValue;
   }
   async expire(key, seconds) {
@@ -231,7 +231,7 @@ export default class RedisShim {
     if (value) {
       const parsed = JSON.parse(value);
       parsed._ttl = Date.now() + (seconds * 1000);
-      localStorage.setItem(storageKey, JSON.stringify(parsed);
+      localStorage.setItem(storageKey, JSON.stringify(parsed),;
       return 1;
     }
     return 0;
@@ -258,7 +258,7 @@ export default class RedisShim {
           message: typeof message === 'string' ? message : JSON.stringify(message),
           timestamp: Date.now(),
         }
-      });
+      }),;
       return 1;
     } catch (error) {
       this.stats.errors++;
@@ -396,13 +396,13 @@ export default class RedisShim {
       return Object.entries(info)
         .filter(([key]) => key.includes('memory') || key.includes('used')
         .map(([key, value]) => `${key}:${value}`)
-        .join('\r\n');
+        .join('\r\n'),;
     }
     if (section === 'stats') {
       return Object.entries(info)
         .filter(([key]) => key.includes('hits') || key.includes('operations') || key.includes('rate')
         .map(([key, value]) => `${key}:${value}`)
-        .join('\r\n');
+        .join('\r\n'),;
     }
     return Object.entries(info)
       .map(([key, value]) => `${key}:${value}`)

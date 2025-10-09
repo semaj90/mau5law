@@ -53,11 +53,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     return json()
       {
         success: false,
-        error: 'Invalid JSON in request body',
-        metadata: {
+        error,: 'Invalid JSON in request body',
+        metadata,: {
           tool: 'unknown',
-          timestamp: Date.now(),
-          executionTime: Date.now() - startTime
+          timestamp,: Date.now(),
+          executionTime,: Date.now() - startTime
         }
       },
       { status: 400 }
@@ -69,12 +69,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     return json()
       {
         success: false,
-        error: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
-        metadata: {
+        error,: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
+        metadata,: {
           requestId: metadata.requestId,
-          tool: tool || 'unknown',
-          timestamp: Date.now(),
-          executionTime: Date.now() - startTime
+          tool,: tool || 'unknown',
+          timestamp,: Date.now(),
+          executionTime,: Date.now() - startTime
         }
       },
       { status: 400 }
@@ -128,12 +128,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     return json()
       {
         success: false,
-        error: errorMessage
+        error,: errorMessage
         metadata: {
           requestId: requestMetadata.requestId,
           executionTime,
           tool,
-          timestamp: Date.now()
+          timestamp,: Date.now()
         }
       },
       { status: 500 }
@@ -160,9 +160,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         status: 'error',
-        timestamp: Date.now(),
-        error: error instanceof Error ? error.message: 'Health check failed',
-        endpoint: url.pathname
+        timestamp,: Date.now(),
+        error,: error instanceof Error ? error.message: 'Health check failed',
+        endpoint,: url.pathname
       },
       { status: 500 }
     )

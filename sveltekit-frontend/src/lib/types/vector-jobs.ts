@@ -220,7 +220,7 @@ export class VectorProcessingError extends Error {
 		public jobId: string
 		public operation: string
 		public stage: string
-		public retryable: boolean = true;
+		public retryable: boolean = true,;
 	) {
 		super(message);
 		this.name = 'VectorProcessingError';

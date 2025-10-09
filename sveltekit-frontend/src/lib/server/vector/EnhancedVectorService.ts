@@ -63,7 +63,7 @@ export class EnhancedVectorService {
     const embedding = (result as { embedding?: any }).embedding;
     // Cache for 24 hours - using modern Redis syntax
     if (typeof (this.redis as any).setex === 'function') {
-      await (this.redis as any).setex(cacheKey, 86400, JSON.stringify(embedding);
+      await (this.redis as any).setex(cacheKey, 86400, JSON.stringify(embedding),;
     } else {
       // Fallback to SET with EX option if setex not available in types
       await (this.redis as any).set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
@@ -73,17 +73,17 @@ export class EnhancedVectorService {
   async storeDocument(id: string, content: string, metadata: any) {
     const embedding = await this.generateEmbedding(content);
     await this.qdrant.upsert(this.collectionName, {
-      wait: true;
+      wait: true,;
       points: [);
         {
           id,
-          vector: embedding;
+          vector,: embedding;
           payload: { content, ...metadata }
         }
       ]
     });
   }
-  async hybridSearch(query: string, options: any = {}) {
+  async hybridSearch(query,: string, option,s: any = {},) {
     const { limit = 10, threshold = 0.7 } = options;
     // Vector search
     const queryEmbedding = await this.generateEmbedding(query);
@@ -98,7 +98,7 @@ export class EnhancedVectorService {
     // Combine results
     return this.combineResults(vectorResults, keywordResults);
   }
-  private async keywordSearch(query: string, limit: number) {
+  private async keywordSearch(query,: string, limi,t: number,) {
     const caseResults = await db
       .select()
       .from(cases)
@@ -109,11 +109,11 @@ export class EnhancedVectorService {
     score: 0.8,
     metadata: { type: 'case', title: c.title },
     content: `${c.title} ${c.description}`
-  });
+  }),;
   }
-  private combineResults(vectorResults: any[], keywordResults: any[]) {
+  private combineResults(vectorResults,: any[], keywordResult,s: any[],) {
     const combined = new Map();
-    vectorResults.forEach((r) => combined.set(r.id, { ...r, score: r.score * 0.7 });
+    vectorResults.forEach((r) => combined.set(r.id, { ...r, score: r.score * 0.7 }),;
     keywordResults.forEach((r) => {
       const existing = combined.get(r.id);
       if (existing) existing.score += r.score * 0.3;

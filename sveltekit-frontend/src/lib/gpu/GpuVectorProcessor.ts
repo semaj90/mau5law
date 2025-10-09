@@ -23,16 +23,16 @@ export class GpuVectorProcessor {
   // reusable buffer pool for reducing allocations
   private bufferPool: Map<string, { buffer: WebGLBuffer; size: number; lastUsed: number }> =
     new Map();
-  constructor(lodCache: any, config: VectorProcessingConfig) {
+  constructor(lodCache,: any, confi,g: VectorProcessingConfig,) {
     this.lodCache = lodCache;
     this.config = config;
   }
-  async initialize(device?: GPUDevice) {
+  async initialize(device?: GPUDevice), {
     this.device = device;
     if (!this.device && this.config.fallbackToWebGL) await this.initWebGL2();
     this.isInitialized = true;
   }
-  private async initWebGL2() {
+  private async initWebGL2(), {
     if (typeof document === 'undefined') return;
     try {
       const canvas = document.createElement('canvas');
@@ -54,7 +54,7 @@ export class GpuVectorProcessor {
       });
     }
   }
-  private compileShader(gl: WebGL2RenderingContext, type: number, src: string) {
+  private compileShader(gl,: WebGL2RenderingContext, typ,e: number, s,rc: strin,g) {
     const s = gl.createShader(type)!;
     gl.shaderSource(s, src);
     gl.compileShader(s);
@@ -65,7 +65,7 @@ export class GpuVectorProcessor {
     }
     return s;
   }
-  private createProgramForDimension(dim: number) {
+  private createProgramForDimension(dim,: number), {
     if (!this.gl) throw new Error('webgl2-not-init');
     if (this.webglProgCache.has(dim)) return this.webglProgCache.get(dim)!;
     const gl = this.gl;
@@ -111,7 +111,7 @@ export class GpuVectorProcessor {
     this.webglProgCache.set(dim, rec);
     return rec;
   }
-  private getOrCreateBuffer(type: 'input' | 'output', sizeBytes: number): WebGLBuffer {
+  private getOrCreateBuffer(type,: 'input' | 'output', sizeByte,s: numbe,r): WebGLBuffer {
     if (!this.gl) throw new Error('webgl2-not-init');
     const gl = this.gl;
     const key = `${type}-${sizeBytes}`;
@@ -130,7 +130,7 @@ export class GpuVectorProcessor {
     this.bufferPool.set(key, { buffer, size: sizeBytes, lastUsed: performance.now() });
     return buffer;
   }
-  private evictOldBuffers(maxAgeMs = 30000) {
+  private evictOldBuffers(maxAgeMs = 30000), {
     if (!this.gl) return;
     const gl = this.gl;
     const now = performance.now();
@@ -141,7 +141,7 @@ export class GpuVectorProcessor {
       }
     }
   }
-  private packToVec4Buffer(vectors: Float32Array[], dim: number) {
+  private packToVec4Buffer(vectors,: Float32Array[], di,m: number,) {
     const vec4Count = Math.ceil(dim / 4);
     const totalVerts = vectors.length;
     const packed = new Float32Array(totalVerts * vec4Count * 4);
@@ -154,30 +154,30 @@ export class GpuVectorProcessor {
     return { packed, vec4Count }
   }
   private async executeWebGL2TransformFeedback(
-    vectors: Float32Array[];
+    vectors,: Float32Array[,];
     dim: number;
   ): Promise<Float32Array[]> {
-    if (!this.gl) throw new Error('webgl2-not-init');
-    const gl = this.gl;
-    const startTotal = performance.now();
-    try {
-      this.evictOldBuffers(); // periodic cleanup
-      const progRec = this.createProgramForDimension(dim);
-      const tSetupStart = performance.now();
-      const { packed, vec4Count } = this.packToVec4Buffer(vectors, dim);
+    if (!this,.g,l) thro,w new Error('webgl2-not-ini,t');
+    const, gl = this.g,l;
+    const, startTotal = performance.now(,);
+    try, {
+      this,.evictOldBuffers(,); // periodic cleanup
+      const, progRec = this.createProgramForDimension(dim,);
+      const, tSetupStart = performance.now(,);
+      const, { packed, vec4Count } = this.packToVec4Buffer(vectors, dim,);
       // use pooled buffers
-      const inBuf = this.getOrCreateBuffer('input', packed.byteLength);
-      const outFloats = vectors.length * vec4Count * 4;
-      const outBuf = this.getOrCreateBuffer('output', outFloats * 4);
-      gl.bindBuffer(gl.ARRAY_BUFFER, inBuf);
-      gl.bufferSubData(gl.ARRAY_BUFFER, 0, packed);
-      const tSetup = performance.now() - tSetupStart;
-      const tExecStart = performance.now();
-      gl.bindVertexArray(progRec.vao);
-      gl.useProgram(progRec.program);
+      const, inBuf = this.getOrCreateBuffer('input', packed.byteLength,);
+      const, outFloats = vectors.length * vec4Count *, 4;
+      const, outBuf = this.getOrCreateBuffer('output', outFloats * 4,);
+      gl,.bindBuffer(gl.ARRAY_BUFFER, inBuf,);
+      gl,.bufferSubData(gl.ARRAY_BUFFER, 0, packed,);
+      const, tSetup = performance.now() - tSetupStar,t;
+      const, tExecStart = performance.now(,);
+      gl,.bindVertexArray(progRec.vao,);
+      gl,.useProgram(progRec.program,);
       // bind attributes
-      const stride = vec4Count * 4 * 4;
-      for (let i = 0; i < vec4Count; i++) {
+      const, stride = vec4Count * 4 *, 4;
+      for (let, i =, 0;, i < vec4Co,un,t,; i++) {
         const loc = gl.getAttribLocation(progRec.program, `a_in${i}`);
         if (loc >= 0) {
           gl.enableVertexAttribArray(loc);
@@ -218,7 +218,7 @@ export class GpuVectorProcessor {
       for (let i = 0; i < vectors.length; i++) {
         const base = i * vec4Count * 4;
         const sl = readback.slice(base, base + dim);
-        results.push(new Float32Array(sl);
+        results.push(new Float32Array(sl),;
       }
       const totalTime = performance.now() - startTotal;
       telemetryBus.publish({
@@ -229,14 +229,14 @@ export class GpuVectorProcessor {
           setupMs: tSetup
           execMs: tExec
           readMs: tRead
-          dimension: dim;
+          dimension: dim,;
           count: vectors.length,
           vec4Count,
           buffersReused: true
         }
       });
       return results;
-    } catch (error) {
+    }, catch (error) {
       const totalTime = performance.now() - startTotal;
       telemetryBus.publish({
         type: 'error',
@@ -244,18 +244,18 @@ export class GpuVectorProcessor {
           operation: 'transform_feedback',
           duration: totalTime
           error: (error as Error).message,
-          dimension: dim;
+          dimension: dim,;
           count: vectors.length
         }
       });
       throw error;
     }
   }
-  async processBatch(vectors: Float32Array[]): Promise<Float32Array[]> {
-    if (!this.isInitialized) throw new Error('not-initialized');
-    if (this.device) {
+  async processBatch(vectors,: Float32Array[],): Promise<Float32Array[]> {
+    if (!this,.isInitialize,d) thro,w new Error('not-initialize,d');
+    if (this,.devic,e) {
       // WebGPU path omitted here; echo passthrough for now
-      return vectors.map((v) => new Float32Array(v.slice(0));
+      return vectors.map((v) => new Float32Array(v.slice(0)),;
     }
     if (this.gl) {
       return this.executeWebGL2TransformFeedback(vectors, this.config.dimensions);
@@ -263,17 +263,17 @@ export class GpuVectorProcessor {
     throw new Error('no-backend');
   }
   // Compatibility method for smoke test
-  async processEmbeddings(params: {
-    inputVectors: Float32Array[];
-    similarityThreshold: number;
-    topK: number;
-    useAdaptiveQuantization: boolean;
-  }): Promise<any> {
-    const start = performance.now();
-    const processedVectors = await this.processBatch(params.inputVectors);
-    const processingTime = performance.now() - start;
-    const memoryUsed = params.inputVectors.reduce((sum, v) => sum + v.byteLength, 0);
-    return {
+  async processEmbeddings(params,: {
+    inputVectors: Float32Array[],;
+    similarityThreshold: number,;
+    topK: number,;
+    useAdaptiveQuantization: boolean,;
+  }),: Promise<any> {
+    const, start = performance.now(,);
+    const, processedVectors = await this.processBatch(params.inputVectors,);
+    const, processingTime = performance.now() - star,t;
+    const, memoryUsed = params.inputVectors.reduce((sum, v) => sum + v.byteLength, 0,);
+    return, {
       processedVectors,
       processingTime,
       memoryUsed,
@@ -282,7 +282,7 @@ export class GpuVectorProcessor {
       cacheHitRate: 0.95, // placeholder
     }
   }
-  cleanup() {
+  cleanup(), {
     if (this.gl) {
       // cleanup program cache
       for (const rec of this.webglProgCache.values()) {

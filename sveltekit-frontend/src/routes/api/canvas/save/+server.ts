@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ...canvasState,
       reportId,
       updatedAt: new Date().toISOString(),
-      updatedBy: locals.user?.id || "anonymous"
+      updatedBy: getUserId(locals) || "anonymous"
     }
     // Save to Loki.js (in production this would save to PostgreSQL)
     await loki.saveCanvasState(enhancedCanvasState)
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       canvasState: enhancedCanvasState
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Canvas save error:", error)
     return json({ error: "Failed to save canvas state" }, { status: 500 })
   }
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ error: "Canvas state not found" }, { status: 404 })
     }
     return json({ canvasState })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Canvas load error:", error)
     return json({ error: "Failed to load canvas state" }, { status: 500 })
   }
@@ -77,7 +77,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     }
     // Check permissions (basic check - in production would be more sophisticated)
     if (
-      canvasState.updatedBy !== locals.user?.id &&
+      canvasState.updatedBy !== getUserId(locals) &&
       locals.user?.role !== "admin"
     ) {
       return json({ error: "Insufficient permissions" }, { status: 403 })

@@ -79,7 +79,7 @@ export interface RegistrationData {
 }
 const initialContext: AuthContext = {
   user: null
-  session: null;
+  session: null,;
   error: undefined
   isLoading: false
   deviceInfo: undefined
@@ -91,7 +91,7 @@ const initialContext: AuthContext = {
   registrationData: undefined
 }
 export const authMachine = setup({
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: AuthContext;
     events: AuthEvent;
   },

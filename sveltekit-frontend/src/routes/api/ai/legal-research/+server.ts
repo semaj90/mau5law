@@ -260,7 +260,7 @@ This research provides a foundation for further legal analysis and case preparat
   }
 }
 function generateResearchRecommendations(
-  topic: string;
+  topic: string,;
   results: LegalResearchResult[]
   userRole?: string
 ): string[] {

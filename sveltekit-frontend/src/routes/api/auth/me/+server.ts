@@ -47,7 +47,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         permissions: ['read', 'write', 'analyze'],
         isActive: true
         emailVerified: true
-        metadata: { [key: string]: any },
+        metadata: { [key,: strin,g]: any },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },

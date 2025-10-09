@@ -14,9 +14,9 @@
  * ```
  */
 
+import type { RequestEvent } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 import IORedis from 'ioredis';
-import type { RequestHandler } from './$types';
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -25,24 +25,61 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
  *
  * Stream workflow events for a specific session via Server-Sent Events
  */
-export const GET: RequestHandler = async ({ params, request }) => {
+// Accept a typed RequestEvent instead of `any`
+export const GET = async (event: RequestEvent) => {
+  const { params, request } = event;
   const { sessionId } = params;
 
   if (!sessionId) {
     throw error(400, 'Session ID is required');
   }
 
-  // Create Redis subscriber for this session
-  const redis = new IORedis(REDIS_URL);
+  // Add a small interface representing the pub/sub surface we use.
+  // This avoids casting everywhere while keeping compile-time safety.
+  interface RedisPubSub {
+    // subscribe/unsubscribe return number of channels (ioredis returns number)
+    subscribe(channel: string): Promise<number>;
+    unsubscribe(channel: string): Promise<number>;
+
+    // message handler: (channel, message)
+    on(event: 'message', listener: (channel: string, message: string) => void): void;
+    // error handler
+    on(event: 'error', listener: (err: Error) => void): void;
+
+    // remove listener (may be present depending on runtime)
+    // Provide explicit overloads to avoid `any`
+    off?(event: 'message', listener: (channel: string, message: string) => void): void;
+    off?(event: 'error', listener: (err: Error) => void): void;
+
+    // close connection
+    quit(): Promise<void>;
+  }
+
+  // Create Redis subscriber for this session and cast to our pub/sub interface
+  const redis = new IORedis(REDIS_URL) as unknown as RedisPubSub;
   const channel = `workflow:session:${sessionId}`;
 
-  // Create a readable stream for SSE
+  // helper to safely stringify unknown errors for logging (avoid `any`)
+  function stringifyError(e: unknown): string {
+    if (e instanceof Error) return e.message;
+    try {
+      return JSON.stringify(e);
+    } catch {
+      return String(e);
+    }
+  }
+
+  const encoder = new TextEncoder();
+
+  // keep references so cancel() can remove them too
+  let messageHandler: ((ch: string, message: string) => void) | null = null;
+  let errorHandler: ((err: Error) => void) | null = null;
+
   const stream = new ReadableStream({
     async start(controller) {
       console.log(`[SSE] Client connected to session: ${sessionId}`);
 
       // Send initial connection message
-      const encoder = new TextEncoder();
       controller.enqueue(
         encoder.encode(
           `data: ${JSON.stringify({
@@ -53,58 +90,122 @@ export const GET: RequestHandler = async ({ params, request }) => {
         )
       );
 
-      // Subscribe to Redis channel
-      await redis.subscribe(channel);
-
-      // Handle incoming messages from Redis
-      redis.on('message', (ch: string, message: string) => {
-        if (ch === channel) {
-          try {
-            // Parse and validate message
-            const data = JSON.parse(message);
-
-            console.log(`[SSE] Sending event to session ${sessionId}:`, data.type);
-
-            // Send SSE event to client
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
-            );
-          } catch (err) {
-            console.error(`[SSE] Error parsing message:`, err);
-          }
-        }
-      });
-
-      // Handle Redis errors
-      redis.on('error', (err: Error) => {
-        console.error(`[SSE] Redis error for session ${sessionId}:`, err);
-
+      // Try subscribing and handle subscription failure gracefully
+      try {
+        await redis.subscribe(channel);
+      } catch (subErr) {
+        console.error(`[SSE] Redis subscribe failed for session ${sessionId}:`, subErr);
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
               type: 'SSE_ERROR',
-              error: 'Redis connection error',
+              error: 'Redis subscribe failed',
+              details: stringifyError(subErr),
               timestamp: new Date().toISOString(),
             })}\n\n`
           )
         );
-      });
+        // best-effort cleanup
+        try {
+          if (typeof redis.quit === 'function') await redis.quit();
+        } catch (e) {
+          console.warn('[SSE] redis.quit error after subscribe failure:', stringifyError(e));
+        }
+        controller.close();
+        return;
+      }
+
+      // Define handlers so we can remove them on disconnect
+      messageHandler = (ch: string, message: string) => {
+        if (ch !== channel) return;
+        try {
+          const data = JSON.parse(message);
+          console.log(`[SSE] Sending event to session ${sessionId}:`, data?.type);
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+        } catch (err) {
+          console.error(`[SSE] Error parsing message for session ${sessionId}:`, err);
+        }
+      };
+
+      errorHandler = (err: Error) => {
+        console.error(`[SSE] Redis error for session ${sessionId}:`, err);
+        try {
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({
+                type: 'SSE_ERROR',
+                error: 'Redis connection error',
+                details: stringifyError(err),
+                timestamp: new Date().toISOString(),
+              })}\n\n`
+            )
+          );
+        } catch (e) {
+          // ignore enqueue errors during error handling
+        }
+      };
+
+      // runtime on/off exist on ioredis; redis is typed as RedisPubSub above
+      redis.on('message', messageHandler);
+      redis.on('error', errorHandler);
 
       // Handle client disconnect
-      request.signal.addEventListener('abort', async () => {
-        console.log(`[SSE] Client disconnected from session: ${sessionId}`);
+      request.signal.addEventListener(
+        'abort',
+        async () => {
+          console.log(`[SSE] Client disconnected from session: ${sessionId}`);
 
-        await redis.unsubscribe(channel);
-        await redis.quit();
+          // remove listeners first
+          try {
+            if (messageHandler && typeof redis.off === 'function') redis.off('message', messageHandler);
+          } catch (e) {
+            console.warn('[SSE] Error removing message handler:', stringifyError(e));
+          }
+          try {
+            if (errorHandler && typeof redis.off === 'function') redis.off('error', errorHandler);
+          } catch (e) {
+            console.warn('[SSE] Error removing error handler:', stringifyError(e));
+          }
 
-        controller.close();
-      });
+          // best-effort cleanup; methods may be async - guard with try/catch
+          try {
+            if (typeof redis.unsubscribe === 'function') await redis.unsubscribe(channel);
+          } catch (e: unknown) {
+            console.warn('[SSE] Error during redis.unsubscribe:', stringifyError(e));
+          }
+          try {
+            if (typeof redis.quit === 'function') await redis.quit();
+          } catch (e: unknown) {
+            console.warn('[SSE] Error during redis.quit:', stringifyError(e));
+          }
+
+          controller.close();
+        },
+        { once: true }
+      );
     },
 
     cancel() {
       console.log(`[SSE] Stream cancelled for session: ${sessionId}`);
-      redis.unsubscribe(channel);
-      redis.quit();
+
+      // remove listeners and attempt cleanup (synchronous path)
+      try {
+        if (messageHandler && typeof redis.off === 'function') redis.off('message', messageHandler);
+      } catch (e) {
+        console.warn('[SSE] unsubscribe error (cancel):', stringifyError(e));
+      }
+      try {
+        if (errorHandler && typeof redis.off === 'function') redis.off('error', errorHandler);
+      } catch (e) {
+        console.warn('[SSE] off error (cancel):', stringifyError(e));
+      }
+
+      if (typeof redis.unsubscribe === 'function') {
+        redis.unsubscribe(channel).catch((e: unknown) => console.warn('[SSE] unsubscribe error:', stringifyError(e)));
+      }
+      if (typeof redis.quit === 'function') {
+        redis.quit().catch((e: unknown) => console.warn('[SSE] quit error:', stringifyError(e)));
+      }
     },
   });
 
@@ -113,7 +214,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
     },
   });

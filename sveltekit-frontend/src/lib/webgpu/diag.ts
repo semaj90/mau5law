@@ -38,8 +38,8 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'Navigator is undefined (SSR or non-browser context).',
       warnings,
-      powerPreferenceTried: tried;
-      timings: { [key: string]: any },
+      powerPreferenceTried: tried,;
+      timings: { [key,: strin,g]: any },
       recommendedActions: ['Run diagnostics in a browser context (client-side).']
     }
   }
@@ -57,8 +57,8 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'WebGPU not supported by this browser.',
       warnings,
-      powerPreferenceTried: tried;
-      timings: { [key: string]: any },
+      powerPreferenceTried: tried,;
+      timings: { [key,: strin,g]: any },
       recommendedActions: recommended
     }
   }
@@ -136,13 +136,13 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
     error: 'Failed to create a WebGPU device after trying multiple power preferences.',
     warnings,
     powerPreferenceTried: tried
-    timings: t1 ? { requestAdapterMs: t1 - t0 } : { [key: string]: any },
-    adapter: adapter;
+    timings: t1 ? { requestAdapterMs: t1 - t0 } : { [key,: strin,g]: any },
+    adapter: adapter,;
       ? {
           label: (adapter as any).label ?? undefined,
-          features: Array.from(adapter.features ?? [] as any),
-          limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
-          isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
+          features,: Array.from(adapter.features ?? [] as any),
+          limits,: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
+          isFallbackAdapter,: (adapter as any).isFallbackAdapter ?? undefined
         }
       : undefined
     recommendedActions: recommended

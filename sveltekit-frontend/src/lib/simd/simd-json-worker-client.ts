@@ -40,7 +40,7 @@ export class SIMDJSONWorkerClient {
       });
       this.worker.addEventListener('error', (error) => {
         console.error('SIMD JSON Worker Error:', error);
-        this.rejectAllPending(new Error('Worker error occurred');
+        this.rejectAllPending(new Error('Worker error occurred'),;
       });
       console.log('🚀 SIMD JSON Worker Client initialized');
     } catch (error) {
@@ -88,10 +88,10 @@ export class SIMDJSONWorkerClient {
         break;
       case 'PARSE_ERROR':
       case 'ERROR':
-        pending.reject(new Error(message.error || 'Unknown worker error');
+        pending.reject(new Error(message.error || 'Unknown worker error'),;
         break;
       default:
-        pending.reject(new Error(`Unknown message type: ${type}`);
+        pending.reject(new Error(`Unknown message type: ${type}`),;
     }
   }
   /**
@@ -99,7 +99,7 @@ export class SIMDJSONWorkerClient {
    */;
   private sendMessage(type: string, data?: any, options: ParseOptions = {}): Promise<any> {
     if (!this.worker) {
-      return Promise.reject(new Error('Worker not available');
+      return Promise.reject(new Error('Worker not available'),;
     }
     const id = `msg-${++this.messageId}-${Date.now()}`;
     const timeout = options.timeout || 30000; // 30s default timeout
@@ -107,7 +107,7 @@ export class SIMDJSONWorkerClient {
       // Set up timeout
       const timeoutId = setTimeout(() => {
         this.pendingRequests.delete(id);
-        reject(new Error('Worker request timeout');
+        reject(new Error('Worker request timeout'),;
       }, timeout);
       // Store pending request
       this.pendingRequests.set(id, {
@@ -171,7 +171,7 @@ export class SIMDJSONWorkerClient {
     }
     if (!this.worker) {
       // Fallback to native JSON.parse
-      return jsonStrings.map(json => JSON.parse(json);
+      return jsonStrings.map(json => JSON.parse(json),;
     }
     try {
       const result = await this.sendMessage('PARSE_BATCH', { jsonStrings }, options);
@@ -179,7 +179,7 @@ export class SIMDJSONWorkerClient {
     } catch (error) {
       // Fallback to native JSON.parse
       console.warn('SIMD batch parsing failed, falling back to native:', error);
-      return jsonStrings.map(json => JSON.parse(json);
+      return jsonStrings.map(json => JSON.parse(json),;
     }
   }
   /**
@@ -263,7 +263,7 @@ export class SIMDJSONWorkerClient {
    */;
   terminate(): void {
     if (this.worker) {
-      this.rejectAllPending(new Error('Worker terminated');
+      this.rejectAllPending(new Error('Worker terminated'),;
       this.worker.terminate();
       this.worker = null;
       this.isReady = false;

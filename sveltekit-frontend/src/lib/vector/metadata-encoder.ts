@@ -32,7 +32,7 @@ export interface VectorMetadata {
 }
 export interface EncodingBatch {
   vectors: Float32Array[];
-  metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>;
+  metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,;
   totalSize: number;
 }
 export interface AdaptiveEncodingResult {
@@ -55,7 +55,7 @@ export class VectorMetadataEncoder {
   private readonly maxHistorySize = 100;
   constructor(
     config: Partial<VectorEncodingConfig> = {},
-    gpuContext?: HybridGPUContext;
+    gpuContext?: HybridGPUContext,;
   ) {
     this.config = {
       dimensions: validateVectorDimensions(config.dimensions || 768),
@@ -71,8 +71,8 @@ export class VectorMetadataEncoder {
    * Encode single vector with adaptive scaling
    */
   async encodeVector(
-    vector: Float32Array;
-    id: string = this.generateId();
+    vector: Float32Array,;
+    id: string = this.generateId(),;
   ): Promise<VectorMetadata> {
     return measureAsync('vector_encode_single', async () => {
       const startTime = performance.now();
@@ -102,7 +102,7 @@ export class VectorMetadataEncoder {
         encodedDimensions: workingConfig.dimensions,
         quantization: workingConfig.quantization,
         compressionRatio,
-        encoding: encoded;
+        encoding: encoded,;
         timestamp: Date.now(),
         processingTime,
         gpuAccelerated: !!this.gpuContext
@@ -114,7 +114,7 @@ export class VectorMetadataEncoder {
    * Batch encode multiple vectors with optimized memory management
    */
   async encodeBatch(
-    batch: EncodingBatch;
+    batch: EncodingBatch,;
   ): Promise<AdaptiveEncodingResult> {
     return measureAsync('vector_encode_batch', async () => {
       const startTime = performance.now();
@@ -276,7 +276,7 @@ export class VectorMetadataEncoder {
   }
   private async preprocessVector(
     vector: Float32Array
-    targetDimensions: VectorDimensions;
+    targetDimensions: VectorDimensions,;
   ): Promise<Float32Array> {
     if (vector.length === targetDimensions) {
       return vector;
@@ -291,8 +291,8 @@ export class VectorMetadataEncoder {
     return expanded;
   }
   private async encodeVectorGPU(
-    vector: Float32Array;
-    config: VectorEncodingConfig;
+    vector: Float32Array,;
+    config: VectorEncodingConfig,;
   ): Promise<Float32Array | Int8Array | Uint8Array> {
     if (!this.gpuContext || !this.shaderBundle) {
       return this.encodeVectorCPU(vector, config);
@@ -302,8 +302,8 @@ export class VectorMetadataEncoder {
     return this.encodeVectorCPU(vector, config);
   }
   private encodeVectorCPU(
-    vector: Float32Array;
-    config: VectorEncodingConfig;
+    vector: Float32Array,;
+    config: VectorEncodingConfig,;
   ): Float32Array | Int8Array | Uint8Array {
     switch (config.quantization) {
       case 'int8':
@@ -319,7 +319,7 @@ export class VectorMetadataEncoder {
   private async encodeBatchGPU(
     vectors: Float32Array[]
     metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
-    config: VectorEncodingConfig;
+    config,: VectorEncodingConfi,g;
   ): Promise<VectorMetadata[]> {
     // GPU batch processing would be more efficient
     // For now, process individually
@@ -339,7 +339,7 @@ export class VectorMetadataEncoder {
   private async encodeBatchCPU(
     vectors: Float32Array[]
     metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
-    config: VectorEncodingConfig;
+    config,: VectorEncodingConfi,g;
   ): Promise<VectorMetadata[]> {
     return vectors.map((vector, i) => {
       const startTime = performance.now();
@@ -372,15 +372,15 @@ export class VectorMetadataEncoder {
   // Quantization implementations
   private quantizeToInt8(vector: Float32Array): Int8Array {
     const result = new Int8Array(vector.length);
-    const scale = 127 / Math.max(...vector.map(Math.abs);
+    const scale = 127 / Math.max(...vector.map(Math.abs),;
     for (let i = 0; i < vector.length; i++) {
       result[i] = Math.round(vector[i] * scale);
     }
     return result;
   }
   private quantizeToInt4(vector: Float32Array): Uint8Array {
-    const result = new Uint8Array(Math.ceil(vector.length / 2);
-    const scale = 7 / Math.max(...vector.map(Math.abs);
+    const result = new Uint8Array(Math.ceil(vector.length / 2),;
+    const scale = 7 / Math.max(...vector.map(Math.abs),;
     for (let i = 0; i < vector.length; i += 2) {
       const val1 = Math.round(vector[i] * scale) + 8; // Shift to 0-15 range
       const val2 = i + 1 < vector.length ? Math.round(vector[i + 1] * scale) + 8 : 0;
@@ -389,7 +389,7 @@ export class VectorMetadataEncoder {
     return result;
   }
   private quantizeToBinary(vector: Float32Array): Uint8Array {
-    const result = new Uint8Array(Math.ceil(vector.length / 8);
+    const result = new Uint8Array(Math.ceil(vector.length / 8),;
     for (let i = 0; i < vector.length; i++) {
       const byteIndex = Math.floor(i / 8);
       const bitIndex = i % 8;
@@ -438,8 +438,8 @@ export class VectorMetadataEncoder {
       avgMetrics,)>;
       {
         maxRenderTime: 100,    // 100ms max per operation
-        maxMemoryUsage: 80,    // 80% max memory usage
-        maxTemperature: 80     // 80°C max temperature
+        maxMemoryUsage,: 80,    // 80% max memory usage
+        maxTemperature,: 80     // 80°C max temperature
       },
       this.adaptiveMode
     );
@@ -483,7 +483,7 @@ export class VectorMetadataEncoder {
       powerConsumption: sum.powerConsumption + m.powerConsumption,
       contextSwitches: sum.contextSwitches + m.contextSwitches,
       frameRate: sum.frameRate + m.frameRate,
-      lastMeasurement: Math.max(sum.lastMeasurement, m.lastMeasurement);
+      lastMeasurement: Math.max(sum.lastMeasurement, m.lastMeasurement),;
     }), {
       renderTime: 0, memoryUsage: 0, gpuUtilization: 0, temperature: 0,
       powerConsumption: 0, contextSwitches: 0, frameRate: 0, lastMeasurement: 0

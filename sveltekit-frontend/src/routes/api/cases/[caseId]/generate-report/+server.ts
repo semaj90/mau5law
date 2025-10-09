@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const caseData = await db
       .select()
       .from(cases)
-      .where(and(eq(cases.id, caseId), eq(cases.createdBy, locals.user.id))
+      .where(and(eq(cases.id, caseId), eq(cases.createdBy, getUserId(locals)))
       .limit(1)
     if (!caseData.length) {
       return json(
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       case: caseRecord
       evidence: evidenceData
       generatedAt: new Date().toISOString(),
-      generatedBy: locals.user.id
+      generatedBy: getUserId(locals)
     }
     // Create report record
     const newReport = await db
@@ -48,14 +48,14 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         caseId: caseRecord.id,
         reportType,
         status: "completed",
-        createdBy: locals.user.id
+        createdBy: getUserId(locals)
       })
       .returning()
     return json({
       success: true,
       report: newReport[0]
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Report generation failed:", error)
     return json({ error: "Report generation failed" }, { status: 500 })
   }
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const userReports = await db
       .select()
       .from(reports)
-      .where(eq(reports.createdBy, locals.user.id)
+      .where(eq(reports.createdBy, getUserId(locals))
     return json({ reports: userReports })
   } catch (error: any) {
     return json({ error: "Failed to fetch reports" }, { status: 500 })

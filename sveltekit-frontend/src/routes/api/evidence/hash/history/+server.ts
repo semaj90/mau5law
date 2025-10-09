@@ -5,7 +5,7 @@ import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const userId = locals.user?.id
+  const userId = getUserId(locals)
   if (!userId) {
     return json({ error: "Not authenticated" }, { status: 401 })
   }
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 }
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const userId = locals.user?.id
+  const userId = getUserId(locals)
   if (!userId) {
     return json({ error: "Not authenticated" }, { status: 401 })
   }

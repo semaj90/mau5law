@@ -534,8 +534,7 @@ d;
   .modal-content {
     max-width: 90vw;
     max-height: 90vh;
-    overflow: aut;
-o;
+    overflow: auto;
     position: relative;
     background: #212529;
     border: 2px solid #4a90e2;

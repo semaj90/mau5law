@@ -127,13 +127,13 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
     references: [users.id]
   }),
   chunks: many(document_chunks)
-});
+}),;
 export const documentChunksRelations = relations(document_chunks, ({ one }) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
     references: [documents.id]
   })
-});
+}),;
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.created_by],
@@ -144,11 +144,11 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     references: [users.id]
   }),
   documents: many(documents)
-});
+}),;
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
   documents: many(documents)
-});
+}),;
 // Type exports for use in application
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;

@@ -53,9 +53,9 @@ class VectorPipelineTest {
     this.testResults = {
       timestamp: new Date().toISOString(),
       status: 'running',
-      steps: { [key: string]: any },
+      steps: { [key,: strin,g]: any },
       errors: [],
-      performance: { [key: string]: any }
+      performance: { [key,: strin,g]: any }
     }
     try {
       // Step 1: Test Ollama Connection

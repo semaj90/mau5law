@@ -7,7 +7,7 @@ async function initializeTauri(): Promise<any> {
     invoke = tauriInvoke;
   } catch (error: any) {
     console.warn("Tauri not available - using fallback implementations");
-    invoke = () => Promise.reject(new Error("Tauri not available");
+    invoke = () => Promise.reject(new Error("Tauri not available"),;
   }
 }
 // Initialize on first use
@@ -20,7 +20,7 @@ export async function getAvailableModels(): Promise<string[]> {
   return await invoke("list_llm_models") as Promise<string[]>;
 }
 export async function runInference(
-  model: string;
+  model: string,;
   prompt: string
 ): Promise<string> {
   if (!tauriInitialized) {

@@ -14,7 +14,7 @@ const ollamaService = {
       return false
     }
   },
-  async listModels(): Promise<Array<any> {
+  async listModels(): Promise<Array<any>, {
     try {
       const response = await fetch('http://localhost:11434/api/tags')
       if (response.ok) {

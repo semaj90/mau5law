@@ -205,8 +205,8 @@ export class RevolutionaryMulticoreBridge {
         },
         performance: {
           totalTime: performance.now() - startTime,
-          cacheMetrics: { [key: string]: any } as any,
-          simdMetrics: { [key: string]: any } as any,
+          cacheMetrics: { [key,: strin,g]: any } as any,
+          simdMetrics: { [key,: strin,g]: any } as any,
           compressionSavings: 0,
           gpuRenderTime: 0,
           memoryEfficiency: unifiedResult.optimizationLevel / 100
@@ -378,7 +378,7 @@ export class RevolutionaryMulticoreBridge {
     revolutionaryResult: RevolutionaryAIResponse
     attentionResult: any
     multicoreResult: any
-    totalTime: number;
+    totalTime: number,;
   ) {
     const baselineTime = 5000; // 5 second baseline for comparison
     const revolutionaryOptimization = (
@@ -405,7 +405,7 @@ export class RevolutionaryMulticoreBridge {
   private generateOptimizationRecommendations(
     revolutionaryResult: RevolutionaryAIResponse
     attentionResult: any
-    multicoreResult: any;
+    multicoreResult: any,;
   ): string[] {
     const recommendations: string[] = [];
     // Revolutionary AI recommendations
@@ -502,7 +502,7 @@ export const revolutionaryMulticoreBridge = new RevolutionaryMulticoreBridge();
  */
 export async function processLegalQueryWithFullOptimization(
   query: string
-  options?: Partial<RevolutionaryMulticoreRequest['options']>;
+  options?: Partial<RevolutionaryMulticoreRequest['options']>,;
 ): Promise<RevolutionaryMulticoreResponse> {
   return await revolutionaryMulticoreBridge.processRevolutionaryQuery({
     query,

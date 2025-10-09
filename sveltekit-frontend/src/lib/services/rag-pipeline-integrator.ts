@@ -64,9 +64,9 @@ export class RAGPipelineIntegrator {
     }
   }
   async processRAGQuery(
-    query: string;
+    query: string,;
     documents: LegalDocument[]
-    request?: Partial<SummaryRequest>;
+    request?: Partial<SummaryRequest>,;
   ): Promise<RAGPipelineResult> {
     const startTime = Date.now();
     const cacheKey = this.generateCacheKey(query, documents);
@@ -97,7 +97,7 @@ export class RAGPipelineIntegrator {
         summary: doc.summary,
         excerpt: doc.excerpt,
         metadata: doc.metadata
-      });
+      }),;
       // Step 3: Cross-encoder reranking for improved relevance
       let rerankedResults = searchResults;
       let rerankingApplied = false;
@@ -164,11 +164,11 @@ export class RAGPipelineIntegrator {
             }) as SearchResult
         ),
         summary: `Analysis of "${query}" resulted in ${documents.length} relevant documents.`,
-        metadata: {
+        metadata,: {
           processingTime: Date.now() - startTime,
-          documentsProcessed: documents.length,
-          sentencesExtracted: 0,
-          summaryGenerated: false
+          documentsProcessed,: documents.length,
+          sentencesExtracted,: 0,
+          summaryGenerated,: false
           rerankingApplied: false
           cacheHit: false
         },
@@ -177,16 +177,16 @@ export class RAGPipelineIntegrator {
     }
   }
   async processRAGQueryStreaming(
-    query: string;
+    query,: strin,g;
     documents: LegalDocument[]
     request?: Partial<SummaryRequest>;
   ): Promise<ReadableStream<string> {
-    if (!this.config.enableStreaming) {
+    if (!this,.config.enableStreamin,g) {
       // Non-streaming fallback
       const result = await this.processRAGQuery(query, documents, request);
       return new ReadableStream({
         start(controller) {
-          controller.enqueue(JSON.stringify({ type: 'complete', data: result });
+          controller.enqueue(JSON.stringify({ type: 'complete', data: result }),;
           controller.close();
         }
       });
@@ -214,7 +214,7 @@ export class RAGPipelineIntegrator {
           // Send initial state
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress;
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -224,7 +224,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 20;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress;
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -236,7 +236,7 @@ export class RAGPipelineIntegrator {
           progress.progress = 40;
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress;
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -250,14 +250,14 @@ export class RAGPipelineIntegrator {
             summary: doc.summary,
             excerpt: doc.excerpt,
             metadata: doc.metadata
-          });
+          }),;
           // Step 3: Cross-encoder reranking
           if (this.config.enableCrossEncoderReranking) {
             progress.stage = 'reranking';
             progress.progress = 60;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress;
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -272,7 +272,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 80;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress;
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -293,7 +293,7 @@ export class RAGPipelineIntegrator {
           progress.metadata.documentsProcessed = progress.documents.length;
           controller.enqueue(JSON.stringify({
               type: 'complete',
-              data: progress;
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -304,10 +304,10 @@ export class RAGPipelineIntegrator {
       }
     });
   }
-  private async applySentenceSplitting(documents: LegalDocument[]): Promise<LegalDocument[]> {
-    try {
-  const { splitSentencesEnhanced } = await import('$lib/services/enhanced-sentence-splitter');
-      return documents.map((doc) => ({
+  private async applySentenceSplitting(documents,: LegalDocument[],): Promise<LegalDocument[]> {
+    try, {
+  const, { splitSentencesEnhanced } = await import('$lib/services/enhanced-sentence-splitter',);
+      return, documents.map((doc) => ({
         ...doc,
         content: splitSentencesEnhanced(doc.content).join(' '),
         metadata: {
@@ -315,47 +315,47 @@ export class RAGPipelineIntegrator {
           sentenceSplittingApplied: true
           originalLength: doc.content.length
         }
-      });
-    } catch (error: any) {
+      }),;
+    }, catch (error: any) {
       console.warn('[RAGPipeline] Sentence splitting failed, using original documents:', error);
       return documents;
     }
   }
   private async applyCrossEncoderReranking(
-    query: string
-    searchResults: SearchResult[];
+    query,: string
+    searchResults,: SearchResult[,];
   ): Promise<SearchResult[]> {
-    try {
-      const { rerankSearchResults } = await import('./cross-encoder-reranker');
-      return await rerankSearchResults(query, searchResults, {
+    try, {
+      const, { rerankSearchResults } = await import('./cross-encoder-reranker',);
+      return, await rerankSearchResults(query, searchResults, {
         maxResults: this.config.maxDocuments,
         timeout: 5000
-      });
-    } catch (error: any) {
+      }),;
+    }, catch (error: any) {
       console.warn('[RAGPipeline] Cross-encoder reranking failed, using original ranking:', error);
       return searchResults;
     }
   }
   private async generateMMRSummary(
-    query: string;
+    query,: strin,g;
     documents: LegalDocument[]
     request?: Partial<SummaryRequest>;
   ): Promise<any> {
-    try {
-      const { generateMMRSummary } = await import('./mmr-summary-generator');
-      const config = {
+    try, {
+      const, { generateMMRSummary } = await import('./mmr-summary-generator',);
+      const, config = {
         maxSummaryLength: request?.maxLength || this.config.maxSummaryLength,
         maxSentences: 5,
         lambda: 0.7
       }
-      const result = await generateMMRSummary(documents, query, config);
-      return { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary }
-    } catch (error: any) {
+      const, result = await generateMMRSummary(documents, query, config,);
+      return, { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary }
+    }, catch (error: any) {
       console.warn('[RAGPipeline] MMR summarization failed, using fallback:', error);
       return { summary: this.generateFallbackSummary(documents as SearchResult[], query) }
     }
   }
-  private calculateInitialScore(_document: LegalDocument, query: string): number {
+  private calculateInitialScore(_document,: LegalDocument, quer,y: strin,g): number {
     const queryTerms = query.toLowerCase().split(/\s+/);
     const docText = (document.content + ' ' + (document.title || '')).toLowerCase();
     let score = 0;
@@ -373,12 +373,12 @@ export class RAGPipelineIntegrator {
     }
     return Math.min(score / totalTerms, 1.0);
   }
-  private countSentences(documents: LegalDocument[]): number {
+  private countSentences(documents,: LegalDocument[],): number {
     return documents.reduce((total, doc) => {
       return total + (doc.content.match(/[.!?]+/g) || []).length;
     }, 0);
   }
-  private generateFallbackSummary(results: SearchResult[], query: string): string {
+  private generateFallbackSummary(results,: SearchResult[], quer,y: strin,g): string {
     if (results.length === 0) {
       return `No relevant documents found for query: "${query}"`;
     }
@@ -386,14 +386,14 @@ export class RAGPipelineIntegrator {
     const excerpt = topResult.content.substring(0, this.config.maxSummaryLength - 100);
     return `Based on ${results.length} documents, key findings for "${query}": ${excerpt}...`;
   }
-  private calculateOverallConfidence(results: SearchResult[], summaryGenerated: boolean): number {
+  private calculateOverallConfidence(results,: SearchResult[], summaryGenerate,d: boolea,n): number {
     if (results.length === 0) return 0;
     const avgScore = results.reduce((sum, r) => sum + r.score, 0) / results.length;
     const resultCountFactor = Math.min(results.length / 5, 1.0);
     const summaryFactor = summaryGenerated ? 1.0 : 0.8;
     return avgScore * resultCountFactor * summaryFactor;
   }
-  private generateCacheKey(query: string, documents: LegalDocument[]): string {
+  private generateCacheKey(query,: string, document,s: LegalDocument[,]): string {
     const docIds = documents
       .slice(0, 10)
       .map((d) => d.id)
@@ -401,10 +401,10 @@ export class RAGPipelineIntegrator {
     return `${query.toLowerCase().trim()}_${docIds}`;
   }
   // Cache management
-  clearCache(): void {
-    this.resultCache.clear();
+  clearCache(),: void {
+    this,.resultCache.clear(,);
   }
-  getCacheStats(): { size: number; keys: string[] } {
+  getCacheStats(),: { size: number; keys: string[] } {
     return {
       size: this.resultCache.size,
       keys: Array.from(this.resultCache.keys()).slice(0, 10)
@@ -413,18 +413,18 @@ export class RAGPipelineIntegrator {
 }
 // Convenience functions
 export async function processLegalQuery(
-  query: string;
+  query: string,;
   documents: LegalDocument[]
-  config?: Partial<RAGPipelineConfig>;
+  config?: Partial<RAGPipelineConfig>,;
 ): Promise<RAGPipelineResult> {
   const pipeline = new RAGPipelineIntegrator(config);
   return pipeline.processRAGQuery(query, documents);
 }
 export async function processLegalQueryStreaming(
-  query: string;
+  query: string,;
   documents: LegalDocument[]
-  config?: Partial<RAGPipelineConfig>;
-): Promise<ReadableStream<string> {
+  config?: Partial<RAGPipelineConfig>,;
+): Promise<ReadableStream<string>, {
   const pipeline = new RAGPipelineIntegrator(config);
   return pipeline.processRAGQueryStreaming(query, documents);
 }
@@ -463,7 +463,7 @@ export async function testRAGPipelineIntegration(): Promise<boolean> {
     console.log('[test] RAG pipeline integration:', isValid ? 'PASS' : 'FAIL');
     console.log('[test] Result summary:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary.substring(0, 100) + '...');
     console.log('[test] Processed documents:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).metadata.documentsProcessed);
-    console.log('[test] Confidence:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).confidence.toFixed(3);
+    console.log('[test] Confidence:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).confidence.toFixed(3),;
     return isValid;
   } catch (error: any) {
     console.error('[test] RAG pipeline integration failed:', error);

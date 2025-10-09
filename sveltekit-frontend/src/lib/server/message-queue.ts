@@ -90,7 +90,7 @@ class InMemoryQueue extends EventEmitter {
   // RabbitMQ-compatible methods
   async publish(exchange: string, routingKey: string, content: any, options: any = {}): Promise<boolean> {
     const queueName = `${exchange}:${routingKey}`;
-    await this.rpush(queueName, JSON.stringify(content);
+    await this.rpush(queueName, JSON.stringify(content),;
     return true;
   }
   async consume(queueName: string, callback: (msg: any) => Promise<void>, options: any = {}): Promise<void> {
@@ -104,7 +104,7 @@ class InMemoryQueue extends EventEmitter {
             await callback({
               content: Buffer.from(JSON.stringify(message)),
               fields: { deliveryTag: Date.now() },
-              properties: { [key: string]: any },
+              properties: { [key,: strin,g]: any },
               ack: () => this.ack(queueName, message),
               nack: () => this.nack(queueName, message)
             });
@@ -247,7 +247,7 @@ export class WorkflowQueue extends InMemoryQueue {
     return this.workflows.get(workflowId);
   }
   getAllWorkflows(): any[] {
-    return Array.from(this.workflows.values();
+    return Array.from(this.workflows.values(),;
   }
 }
 export const workflowQueue = new WorkflowQueue();

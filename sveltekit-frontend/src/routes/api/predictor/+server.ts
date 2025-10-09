@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: Date.now()
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Predictor prediction error:', error)
     return json(
       { error: 'Failed to generate predictions' },)
@@ -118,7 +118,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       )
     }
     const results = await Promise.all(body.map(async (req) => {
-        const context = req.context || {})
+        const context = req.context || {},)
         const topK = req.topK || 3
         let predictions
         if (req.enhancedMode && (context.docId || context.query)) {
@@ -145,7 +145,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Bulk prediction error:', error)
     return json(
       { error: 'Failed to process bulk predictions' },)

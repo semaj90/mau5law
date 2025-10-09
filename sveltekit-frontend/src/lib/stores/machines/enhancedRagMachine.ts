@@ -14,7 +14,7 @@ type RagEvent =
   | { type: 'RETRY' }
 export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: RagContext;
     events: RagEvent;
   },
@@ -81,6 +81,6 @@ export const enhancedRagMachine = createMachine({
 export const enhancedRagStore = writable({
   state: 'idle',
   results: [],
-  loading: false;
+  loading: false,;
   error: null
 });

@@ -109,7 +109,7 @@ export class LegalAIWebGPUBridge {
    */
   async batchProcessLegalDocuments(
     documents: Array<
-    globalOptions: LegalDocumentProcessingOptions = {}
+    globalOptions,: LegalDocumentProcessingOptions = {}
   ): Promise<LegalAIProcessingResult[]> {
     if (!this.isInitialized || !this.uploader) {
       throw new Error('Legal AI WebGPU Bridge not initialized');
@@ -277,7 +277,7 @@ export namespace LegalAIIntegration {
    */
   export async function processEmbeddingsForLegalAI(
     embeddings: Float32Array | number[] | ArrayBuffer
-    documentType: LegalDocumentProcessingOptions['documentType'] = 'brief';
+    documentType: LegalDocumentProcessingOptions['documentType'] = 'brief',;
   ): Promise<GPUBuffer | Float32Array> {
     try {
       if (!(legalAIBridge as any).isInitialized) {
@@ -300,7 +300,7 @@ export namespace LegalAIIntegration {
    */
   export async function setupLegalSimilaritySearch(
     queryDocument: Float32Array
-    documentDatabase: Float32Array[];
+    documentDatabase: Float32Array[],;
   ) {
     try {
       await legalAIBridge.initialize();
@@ -309,7 +309,7 @@ export namespace LegalAIIntegration {
         documentDatabase,);
         {
           documentType: 'brief',
-          enableCaching: true
+          enableCaching,: true
           debugMode: true
         }
       );

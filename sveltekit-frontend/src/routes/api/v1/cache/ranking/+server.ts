@@ -166,23 +166,23 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: true,
         slotKey,
-        metadata: {
+        metadata,: {
           resultCount: results.length,
-          latencyMs: latency
+          latencyMs,: latency
           cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
-          expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL
+          expiresAt,: Date.now() + 30 * 1000, // 30 seconds TTL
         }
       },
       {
         status: 201,
-        headers: {
-          'X-Slot-Key': slotKey
-          'X-Latency-Ms': latency.toString(),
-          'X-Result-Count': results.length.toString()
+        headers,: {
+          'X-Slot-Key',: slotKey
+          'X-Latency-Ms',: latency.toString(),
+          'X-Result-Count',: results.length.toString()
         }
       }
     )
-  } catch (err) {
+  }, catch (err) {
     const latency = performance.now() - startTime
     if (err && typeof err === 'object' && 'status' in err) {
       throw err

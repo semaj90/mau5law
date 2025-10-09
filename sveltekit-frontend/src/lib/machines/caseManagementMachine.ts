@@ -172,7 +172,7 @@ export const caseManagementMachine = createMachine({
     evidence: [],
     searchQuery: '',
     searchResults: [],
-    filters: { [key: string]: any },
+    filters: { [key,: strin,g]: any },
     selectedCaseId: null
     isLoading: false
     error: null

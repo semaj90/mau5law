@@ -151,14 +151,14 @@ const initialContext: AISummaryContext = {
   synthesisData: null
   error: null
   loading: false
-  isPlaying: false;
+  isPlaying: false,;
   progress: 0,
   voiceEnabled: false
   highlightMode: "key_points",
   readingMode: "sequential"
 }
 export const aiSummaryMachine = createMachine({
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: AISummaryContext;
     events: AISummaryEvent;
   },
@@ -547,17 +547,17 @@ export const aiSummaryMachine = createMachine({
                 },);
                 {
                   type: "legal_significance" as const,
-                  score: 0.96,
-                  explanation:
+                  score,: 0.96,
+                  explanation,:
                     "Critical evidence for establishing intent and systematic violations",
-                  recommendations: [
+                  recommendations,: [
                     "Central to prosecution strategy",
                     "Prepare for technical challenges"
                   ]
                 }
               ]
             });
-          }, 1500);
+          }, 1500,);
         });
       }),
       synthesizeInsights: fromPromise(async ({ input }: { input: AISummaryContext }) => {
@@ -602,7 +602,7 @@ export const aiSummaryMachine = createMachine({
           }, 2000);
         });
       }),
-      readingProgress: fromPromise(async ({ input }: { input: AISummaryContext }) => {
+      readingProgress,: fromPromise(async ({ input }: { input: AISummaryContext }) => {
         return new Promise((resolve) => {
           const interval = setInterval(() => {
             // Simulate reading progress - resolve after a timeout

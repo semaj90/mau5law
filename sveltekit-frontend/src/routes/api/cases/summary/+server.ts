@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       summary,
       analytics
     } as CaseSummaryResponse)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Case summary generation error:", error)
     return json({
         success: false,
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       summary,
       analytics
     } as CaseSummaryResponse)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Case summary retrieval error:", error)
     return json({
         success: false,
@@ -164,7 +164,7 @@ async function gatherCaseData(
       {
         id: '1',
         content: 'Evidence item 1',
-        metadata: { [key: string]: any },
+        metadata: { [key,: strin,g]: any },
         createdAt: new Date()
       }
     ]

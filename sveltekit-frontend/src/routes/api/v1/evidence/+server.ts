@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const queryParams = Object.fromEntries(url.searchParams.entries())
     const validatedQuery = EvidenceQuerySchema.parse(queryParams)
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Get evidence with pagination - filter by case if specified
     const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           1
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         caseId: validatedQuery.caseId || null,
         timestamp: new Date().toISOString()
       }
@@ -99,14 +99,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Create evidence
     const evidenceId = await evidenceService.create(validatedData)
     // Get the created evidence details
     const createdEvidence = await evidenceService.getById(evidenceId)
     // Queue background analysis
     try {
-      const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id)
+      const jobId = await queueEvidenceAnalysis(evidenceId, getUserId(locals))
       console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`)
     } catch (queueError) {
       console.error('Failed to queue evidence analysis:', queueError)
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: createdEvidence,
         meta: {
           evidenceId,
-          userId: locals.user.id,
+          userId: getUserId(locals),
           caseId: validatedData.caseId,
           timestamp: new Date().toISOString(),
           analysisQueued: true

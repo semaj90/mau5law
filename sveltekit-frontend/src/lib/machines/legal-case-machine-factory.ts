@@ -70,7 +70,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
           })
         });
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({});
+          const errorData = await response.json().catch(() => ({}),;
           throw new Error(errorData.message || `RAG query failed: ${response.status}`);
         }
         return response.json();

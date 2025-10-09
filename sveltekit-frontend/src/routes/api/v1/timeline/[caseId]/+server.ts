@@ -44,6 +44,7 @@ import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema';
 import { eq, desc, asc, and, sql } from 'drizzle-orm';
 import { generateId } from 'lucia';
 import { z } from 'zod';
+import { getUserId } from '$lib/server/auth/utils';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format');
 // Timeline event schemas
@@ -151,7 +152,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         },
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate },
         timestamp: new Date().toISOString(),
       },
@@ -218,7 +219,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           message: 'Timeline event added successfully',
         },
         meta: {
-          userId: locals.user.id,
+          userId: getUserId(locals),
           caseId,
           eventId: timelineEventId,
           timestamp: new Date().toISOString(),

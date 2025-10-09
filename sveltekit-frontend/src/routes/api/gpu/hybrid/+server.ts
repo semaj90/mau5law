@@ -39,7 +39,7 @@ export interface ServiceHealthStatus {
 /*
  * Check health of all GPU services
  */
-async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus> {
+async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>, {
   const services = Object.entries(GPU_SERVICES)
   const healthChecks = services.map(async ([name, url]) => {
     try {

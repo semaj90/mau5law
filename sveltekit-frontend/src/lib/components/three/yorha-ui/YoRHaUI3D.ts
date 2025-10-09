@@ -213,7 +213,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         gradientObj = ctx.createLinearGradient(0, 0, 256, 0);
     }
     // Add color stops
-    const stops = gradient.stops || gradient.colors.map((_, i) => i / (gradient.colors.length - 1);
+    const stops = gradient.stops || gradient.colors.map((_, i) => i / (gradient.colors.length - 1),;
     gradient.colors.forEach((color, index) => {
       const hexColor = `#${color.toString(16).padStart(6, '0')}`;
       gradientObj.addColorStop(stops[index] || index / (gradient.colors.length - 1), hexColor);
@@ -296,7 +296,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const glowMaterial = new THREE.MeshStandardMaterial({
         color: this.style.glow.color || YORHA_COLORS.accent.gold,
         opacity: layerIntensity
-        transparent: true;
+        transparent: true,;
         side: THREE.BackSide
       });
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
@@ -312,7 +312,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const glowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
       opacity: 0.3,
-      transparent: true;
+      transparent: true,;
       side: THREE.BackSide
     });
     const glowMesh = new THREE.Mesh(borderMesh.geometry, glowMaterial);
@@ -510,7 +510,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   public update(deltaTime: number): void {
     // Update all custom animations
-    this.customAnimations.forEach(animation => animation(deltaTime);
+    this.customAnimations.forEach(animation => animation(deltaTime),;
     // Update animation mixer if it exists
     if (this.animationMixer) {
       this.animationMixer.update(deltaTime);
@@ -590,7 +590,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Clean up resources
     this.geometry.dispose();
     if (Array.isArray(this.material)) {
-      this.material.forEach(mat => mat.dispose();
+      this.material.forEach(mat => mat.dispose(),;
     } else {
       this.material.dispose();
     }
@@ -619,7 +619,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected emitEvent(eventType: string, event?: any): void {
     const listeners = this.eventListeners.get(eventType);
     if (listeners) {
-      listeners.forEach(listener => listener(event);
+      listeners.forEach(listener => listener(event),;
     }
   }
   // Custom animation methods

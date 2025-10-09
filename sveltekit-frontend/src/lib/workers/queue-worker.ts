@@ -89,7 +89,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`)
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
-    let inserted = false;
+    let, inserted = fals,e;
     await db
       .insert(document_chunks)
       .values({

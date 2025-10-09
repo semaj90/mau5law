@@ -190,7 +190,7 @@ function createGPUSummaryStore() {
     });
     const activeEffects = Array.from(effectsMap.entries()
       .filter(([_, count]) => count > recentMetrics.length * 0.1) // 10% threshold
-      .map(([effect, _]) => effect);
+      .map(([effect, _]) => effect),;
     // WebASM inference stats
     const recentInferences = state.webAsmMetrics.filter(m =>
       now - m.timestamp <= recentWindow
@@ -221,7 +221,7 @@ function createGPUSummaryStore() {
     const avgCompressionRatio = recentMinIOOps
       .filter(m => m.compressionRatio)
       .reduce((sum, m, _, arr) => sum + (m.compressionRatio! / arr.length), 0);
-    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName));
+    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName)),;
     // Calculate health score and identify bottlenecks
     const { healthScore, bottlenecks, recommendations } = calculateHealthMetrics(
       avgFps, memoryUsageMB, avgSearchTime, minIOCacheHitRate, activeEffects.length
@@ -273,7 +273,7 @@ function createGPUSummaryStore() {
     memoryUsageMB: number
     avgSearchTime: number
     cacheHitRate: number
-    effectsCount: number;
+    effectsCount: number,;
   ): { healthScore: number; bottlenecks: string[]; recommendations: string[] } {
     let healthScore = 100;
     const bottlenecks: string[] = [];
@@ -377,7 +377,7 @@ function createGPUSummaryStore() {
   // Process batched metrics from GPU metrics batcher
   function processBatchedMetrics(batch: BatchedMetrics) {
     // Add all samples to historical metrics
-    batch.samples.forEach(sample => addGPUMetric(sample);
+    batch.samples.forEach(sample => addGPUMetric(sample),;
     console.log(`📊 GPUStore: Processed batch of ${batch.totalSamples} metrics`);
     // Trigger immediate summary update for large batches
     if (batch.totalSamples >= 20) {
@@ -395,7 +395,7 @@ function createGPUSummaryStore() {
       return {
         fpsStability: 0,
         memoryTrend: 'stable',
-        recommendedSettings: { [key: string]: any }
+        recommendedSettings: { [key,: strin,g]: any }
       }
     }
     // Calculate FPS stability (coefficient of variation)
@@ -405,8 +405,8 @@ function createGPUSummaryStore() {
     const fpsStability = avgFps > 0 ? Math.max(0, 100 - (Math.sqrt(fpsVariance) / avgFps * 100)) : 0;
     // Memory trend analysis
     const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
-    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2);
-    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2);
+    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2),;
+    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2),;
     const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
     const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
     const memoryTrend = secondAvg > firstAvg * 1.1 ? 'increasing' :
@@ -510,7 +510,7 @@ export function trackWebASMInference(
   memoryUsage: number
   wasmPages: number
   simdSupported: boolean
-  threadCount: number;
+  threadCount: number,;
 ) {
   const inferenceTime = endTime - startTime;
   const tokensPerSecond = tokenCount / (inferenceTime / 1000);
@@ -536,7 +536,7 @@ export function trackVectorSearch(
   resultCount: number
   indexType: 'ivf' | 'hnsw' | 'flat',
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product',
-  cacheHitRate: number;
+  cacheHitRate: number,;
 ) {
   gpuSummaryStore.addVectorSearchMetric({
     queryId,
@@ -556,11 +556,11 @@ export function trackVectorSearch(
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
   bucketName: string
-  transferSize: number;
+  transferSize: number,;
   duration: number
   cacheHit: boolean
   objectKey?: string
-  compressionRatio?: number;
+  compressionRatio?: number,;
 ) {
   gpuSummaryStore.addMinIOMetric({
     operation,
@@ -581,7 +581,7 @@ export function trackGPUBridgeOperation(
   computeTime: number
   memoryBandwidth: number
   utilization: number
-  powerEfficiency: number;
+  powerEfficiency: number,;
 ) {
   gpuSummaryStore.updateGPUBridge({
     transferTime,

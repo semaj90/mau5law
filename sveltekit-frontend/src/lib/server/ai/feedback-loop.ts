@@ -166,7 +166,7 @@ class FeedbackLoop {
       // Get user's interaction history
       const userInteractions = Array.from(this.interactionHistory.values()
         .filter(i => i.userId === userId)
-        .slice(-20); // Last 20 interactions
+        .slice(-20),; // Last 20 interactions
       // Analyze patterns
       const patterns = {
         commonTopics: this.extractCommonTopics(userInteractions),
@@ -197,7 +197,7 @@ class FeedbackLoop {
   getStats(): unknown {
     const totalFeedback = this.feedbackQueue.length;
     const averageRating = this.calculateAverageRating();
-    const satisfactionByUser = Array.from(this.learningMetrics.userSatisfaction.entries();
+    const satisfactionByUser = Array.from(this.learningMetrics.userSatisfaction.entries(),;
     const topStrategies = this.getTopStrategies();
     return {
       totalFeedback,
@@ -221,7 +221,7 @@ class FeedbackLoop {
       // TODO: Replace with proper Drizzle query when feedbackModel schema is available
       const weights = null; // Stub for now
       if (weights && weights.weights) {
-        this.modelWeights = new Map(Object.entries(weights.weights as any);
+        this.modelWeights = new Map(Object.entries(weights.weights as any),;
         logger.info('[FeedbackLoop] Loaded model weights from database');
       } else {
         // Initialize with default weights
@@ -267,8 +267,8 @@ class FeedbackLoop {
     }
   }
   private async reinforcePositivePatterns(
-    interaction: InteractionData;
-    feedback: FeedbackData;
+    interaction: InteractionData,;
+    feedback: FeedbackData,;
   ): Promise<void> {
     // Increase weights for strategies that led to high satisfaction
     if (interaction.result?.metadata?.strategies) {
@@ -287,8 +287,8 @@ class FeedbackLoop {
     }
   }
   private async adjustNegativePatterns(
-    interaction: InteractionData;
-    feedback: FeedbackData;
+    interaction: InteractionData,;
+    feedback: FeedbackData,;
   ): Promise<void> {
     // Decrease weights for strategies that led to low satisfaction
     if (interaction.result?.metadata?.strategies) {
@@ -313,7 +313,7 @@ class FeedbackLoop {
   }
   private async learnFromImprovement(
     interaction: InteractionData
-    improvedResponse: string;
+    improvedResponse: string,;
   ): Promise<void> {
     // Analyze differences between original and improved response
     // This would involve NLP analysis in production
@@ -418,27 +418,27 @@ class FeedbackLoop {
     const queryLower = query.toLowerCase();
     // Check for complexity indicators
     if (queryLower.includes('precedent') || queryLower.includes('jurisdiction') ||;
-        queryLower.includes('constitutional')) {
+        queryLower.includes('constitutional'),) {
       features.isComplexLegal = true;
     }
     // Check for research indicators
     if (queryLower.includes('research') || queryLower.includes('analyze') ||;
-        queryLower.includes('compare')) {
+        queryLower.includes('compare'),) {
       features.isResearch = true;
     }
     // Check for procedural questions
     if (queryLower.includes('how to') || queryLower.includes('process') ||;
-        queryLower.includes('file')) {
+        queryLower.includes('file'),) {
       features.isProcedural = true;
     }
     // Check for case references
     if (queryLower.includes('case') || queryLower.includes('v.') ||;
-        queryLower.includes('versus')) {
+        queryLower.includes('versus'),) {
       features.hasCase = true;
     }
     // Check for statute references
     if (queryLower.includes('statute') || queryLower.includes('§') ||;
-        queryLower.includes('section')) {
+        queryLower.includes('section'),) {
       features.hasStatute = true;
     }
     return features;
@@ -455,7 +455,7 @@ class FeedbackLoop {
     return Array.from(topicCounts.entries()
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([topic]) => topic);
+      .map(([topic]) => topic),;
   }
   private extractTopics(query: string): string[] {
     // Simple keyword extraction - in production, use NLP
@@ -482,7 +482,7 @@ class FeedbackLoop {
     return Array.from(strategyCounts.entries()
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
-      .map(([strategy]) => strategy);
+      .map(([strategy]) => strategy),;
   }
   private calculateAverageComplexity(interactions: InteractionData[]): number {
     if (interactions.length === 0) return 0.5;
@@ -498,7 +498,7 @@ class FeedbackLoop {
       hourCounts[hour]++;
     }
     // Find top 3 hours
-    const indexed = hourCounts.map((count, hour) => ({ hour, count });
+    const indexed = hourCounts.map((count, hour) => ({ hour, count }),;
     indexed.sort((a, b) => b.count - a.count);
     return indexed.slice(0, 3).map(item => (item as { hour?: any }).hour);
   }
@@ -555,7 +555,7 @@ class FeedbackLoop {
   private getTopStrategies(): Array<[string, number]> {
     return Array.from(this.learningMetrics.strategyEffectiveness.entries()
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+      .slice(0, 5),;
   }
   /**
    * Cleanup on shutdown

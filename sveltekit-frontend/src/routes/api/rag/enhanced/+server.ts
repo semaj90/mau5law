@@ -202,8 +202,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json()
       {
         success: false,
-        error: e.message,
-        processing_time: Date.now() - startTime
+        error,: e.message,
+        processing_time,: Date.now() - startTime
       },
       { status: 500 }
     )

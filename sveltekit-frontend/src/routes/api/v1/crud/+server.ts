@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       case 'search':
         if (!searchQuery) return error(400, ensureError({ message: 'Search query required' })
         // Basic text search for now - can be enhanced with vector search
-        let searchResult: any[] = []
+        let, searchResul,t: any[] = []
         if (entity === 'cases') {
           searchResult = await db.select().from(cases)
             .where(
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             'enhancedRAG',
             '/api/vector/search',)
             {
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type',: 'application/json' },
               body: JSON.stringify({
                 query: searchQuery
                 entity: entity
@@ -236,7 +236,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
               cached: false
             }
           } satisfies ApiResponse)
-        } catch (vectorError) {
+        }, catch (vectorError) {
           console.error('Vector search error:', vectorError)
           // Fallback to regular search if vector search fails
           return json({
@@ -289,16 +289,16 @@ export const POST: RequestHandler = async ({ request }) => {
               'enhancedRAG',
               '/api/embeddings/generate',)
               {
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type',: 'application/json' },
                 body: JSON.stringify({
                   id: result[0].id,
-                  entity: entity;
+                  entity: entity,;
                   content: (data as { content?: any; title?: any }).content,
                   title: (data as { content?: any; title?: any }).title
                 })
               }
             )
-          } catch (embeddingError) {
+          }, catch (embeddingError) {
             console.warn('Embedding generation failed:', embeddingError)
             // Don't fail the creation, just log the warning
           }
@@ -308,7 +308,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-      case 'update':
+      case 'update',:
         if (!id || !data) return error(400, ensureError({ message: 'ID and data required for update operation' })
         // Add updated timestamp
         const updateData = {
@@ -324,7 +324,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-      case 'delete':
+      case 'delete',:
         if (!id) return error(400, ensureError({ message: 'ID required for delete operation' })
         // Perform deletion
         result = await db.delete(table).where(eq((table as any).id, id)).returning()
@@ -339,7 +339,7 @@ export const POST: RequestHandler = async ({ request }) => {
               '/api/embeddings/delete',)
               {
                 body: JSON.stringify({ id, entity }),
-                headers: { 'Content-Type': 'application/json' }
+                headers,: { 'Content-Type,': 'application/json' }
               }
             )
           } catch (cleanupErr) {

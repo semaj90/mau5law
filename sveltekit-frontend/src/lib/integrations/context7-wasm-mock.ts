@@ -34,9 +34,9 @@ export function isReady() {
 export async function loadPatterns(prebuilt: Pattern[] = []) {
   await ensureReady();
   // shallow merge by id
-  const map = new Map(patterns.map((p) => [p.id, p]);
+  const map = new Map(patterns.map((p) => [p.id, p]),;
   for (const p of prebuilt) map.set(p.id, p);
-  patterns = Array.from(map.values();
+  patterns = Array.from(map.values(),;
   // simulate IO
   await sleep(mockLatency);
   return patterns;
@@ -98,7 +98,7 @@ function inferMime(name: string) {
   return 'application/octet-stream';
 }
 function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms);
+  return new Promise((r) => setTimeout(r, ms),;
 }
 async function ensureReady() {
   if (!readyPromise) await initialize();

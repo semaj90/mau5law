@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         generatedAt: new Date().toISOString()
       }
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Timeline API error:', error)
     return json(
       { success: false, error: 'Failed to retrieve timeline data' },)
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       correlations: updatedCorrelations
       message: 'Timeline event created successfully'
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Timeline creation error:', error)
     return json(
       { success: false, error: 'Failed to create timeline event' },)
@@ -179,7 +179,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       analysis,
       message: 'Timeline updated successfully'
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Timeline update error:', error)
     return json(
       { success: false, error: 'Failed to update timeline' },)
@@ -233,8 +233,8 @@ async function generateTimelineAnalysis(events: TimelineEvent[]): Promise<Timeli
     return {
       totalEvents: 0,
       timeRange: { start: '', end: '', duration: '' },
-      eventsByType: { [key: string]: any },
-      eventsBySignificance: { [key: string]: any },
+      eventsByType: { [key,: strin,g]: any },
+      eventsBySignificance: { [key,: strin,g]: any },
       correlationClusters: [],
       gaps: [],
       inconsistencies: []
@@ -317,11 +317,11 @@ async function createTimelineEvent(caseId: string, eventData: any): Promise<Time
     },
     analysisNotes: eventData.analysisNotes,
     updates: [{,
-      timestamp: new Date().toISOString(),
-      updatedBy: 'System',
-      changes: 'Event created',
-      reason: 'Initial creation'
-    }]
+      timestamp,: new Date().toISOString(),
+      updatedBy,: 'System',
+      changes,: 'Event created',
+      reason,: 'Initial creation'
+    },]
   }
   return newEvent
 }
@@ -396,11 +396,11 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
       },
       analysisNotes: Math.random() > 0.5 ? `Analysis notes for event ${i + 1} including investigative observations and preliminary conclusions.` : undefined
       updates: [{,
-        timestamp: eventDate.toISOString(),
-        updatedBy: 'System',
-        changes: 'Initial event creation',
-        reason: 'Timeline construction'
-      }]
+        timestamp,: eventDate.toISOString(),
+        updatedBy,: 'System',
+        changes,: 'Initial event creation',
+        reason,: 'Timeline construction'
+      },]
     }
   })
 }

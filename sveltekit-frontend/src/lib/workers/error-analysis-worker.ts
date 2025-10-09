@@ -86,7 +86,7 @@ class ErrorAnalysisWorkerEngine {
     // Reduce priority for complex errors
     if (error.category === 'semantic') priority -= 0.2;
     if (error.relatedFiles.length > 3) priority -= 0.1;
-    return Math.max(0, Math.min(1, priority);
+    return Math.max(0, Math.min(1, priority),;
   }
   private isErrorFixable(code: string): boolean {
     const fixableCodes = new Set([
@@ -169,7 +169,7 @@ class ErrorAnalysisWorkerEngine {
     }
     // Add file itself as dependency
     dependencies.push(error.file);
-    return Array.from(new Set(dependencies);
+    return Array.from(new Set(dependencies),;
   }
 }
 // ======================================================================

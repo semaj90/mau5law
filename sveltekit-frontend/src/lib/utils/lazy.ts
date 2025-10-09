@@ -7,10 +7,10 @@ type LazyComponent<T extends Record<string, unknown> = {}> = {
   default: ComponentType<T>;
 }
 export function lazy<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>;
+  importFn: () => Promise<LazyComponent<T>,;
 ): ComponentType<T> {
   let component: ComponentType<T> | null = null;
-  let loadPromise: Promise<ComponentType<T> | null = null;
+  let loadPromise: Promise<ComponentType<T> | null, = null;
   return class LazyWrapper {
     constructor(_options: any) {
       if (component) {
@@ -36,8 +36,8 @@ export function lazy<T extends Record<string, unknown> = {}>(
  * Preload a component for better UX
  */
 export function preload<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>;
-): Promise<ComponentType<T> {
+  importFn: () => Promise<LazyComponent<T>,;
+): Promise<ComponentType<T>, {
   return importFn().then(module => module.default);
 }
 /**
@@ -45,10 +45,10 @@ export function preload<T extends Record<string, unknown> = {}>(
  */
 export function lazyWithIntersection<T extends Record<string, unknown> = {}>(
   importFn: () => Promise<LazyComponent<T>,
-  options: IntersectionObserverInit = {}
+  options,: IntersectionObserverInit = {}
 ): ComponentType<T> {
   let component: ComponentType<T> | null = null;
-  let loadPromise: Promise<ComponentType<T> | null = null;
+  let loadPromise: Promise<ComponentType<T> | null, = null;
   return class LazyIntersectionWrapper {
     constructor(componentOptions: any) {
       const { target } = componentOptions;

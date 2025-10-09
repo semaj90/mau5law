@@ -90,7 +90,7 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
   } catch (error) {
     return {
       summary: response.substring(0, 200) + '...',
-      raw_analysis: response;
+      raw_analysis: response,;
       confidence: 0.7,
       parsing_error: error instanceof Error ? error.message : 'Unknown parsing error'
     }

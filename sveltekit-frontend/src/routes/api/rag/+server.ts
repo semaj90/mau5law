@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         error: err.message || "Unknown error",
         action,
-        timestamp: new Date().toISOString()
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -234,7 +234,7 @@ async function handleAnalyze(request: Request): Promise<any> {
       })
     })
     return json({
-      success: true;
+      success: true,;
       analysis: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).analysis,
       metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     })
@@ -262,7 +262,7 @@ async function handleSummarize(request: Request): Promise<any> {
       })
     })
     return json({
-      success: true;
+      success: true,;
       summary: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).summary,
       metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     })
@@ -449,7 +449,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       method: "DELETE"
     })
     return json({
-      success: true;
+      success: true,;
       message: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).message || "Cache cleared successfully",
       pattern: pattern || "all"
     })

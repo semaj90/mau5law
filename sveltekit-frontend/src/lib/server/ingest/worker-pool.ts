@@ -69,7 +69,7 @@ export class SimpleWorkerPool {
           const { resolve, reject } = this.jobCallbacks.get(message.jobId)!;
           this.jobCallbacks.delete(message.jobId);
           if (message.error) {
-            reject(new Error(message.error);
+            reject(new Error(message.error),;
           } else {
             resolve(message);
           }
@@ -148,7 +148,7 @@ class WorkerInstance {
       // Set timeout
       this.jobTimeout = setTimeout(() => {
         this.worker.terminate();
-        reject(new Error(`Job ${jobData.id} timed out after ${timeout}ms`);
+        reject(new Error(`Job ${jobData.id} timed out after ${timeout}ms`),;
       }, timeout);
       // Listen for result
       const onMessage = (result: WorkerJobResult) => {
@@ -161,7 +161,7 @@ class WorkerInstance {
       }
       const onExit = (code: number) => {
         this.cleanup();
-        reject(new Error(`Worker exited with code ${code}`);
+        reject(new Error(`Worker exited with code ${code}`),;
       }
       this.worker.once('message', onMessage);
       this.worker.once('error', onError);
@@ -233,7 +233,7 @@ export class AdvancedWorkerPool extends EventEmitter {
   }
   async processJob(
     type: WorkerJobData['type'],
-    payload: any;
+    payload: any,;
     options: JobOptions = {}
   ): Promise<WorkerJobResult> {
     if (this.isShuttingDown) {
@@ -255,7 +255,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       this.processNextJob();
     });
   }
-  private async processNextJob() {
+  private async processNextJob(), {
     if (this.jobQueue.length === 0) return;
     const availableWorker = this.getAvailableWorker();
     if (!availableWorker) {
@@ -313,7 +313,7 @@ export class AdvancedWorkerPool extends EventEmitter {
           this.processNextJob();
         }, retryDelay);
       } else {
-        reject(error instanceof Error ? error : new Error(String(error));
+        reject(error instanceof Error ? error : new Error(String(error)),;
       }
     }
     // Process next job if queue has items
@@ -321,7 +321,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       setTimeout(() => this.processNextJob(), 0);
     }
   }
-  private getAvailableWorker(): WorkerInstance | null {
+  private getAvailableWorker(),: WorkerInstance | null, {
     for (const worker of Array.from(this.workers.values())) {
       if (!worker.busy) {
         return worker;
@@ -329,7 +329,7 @@ export class AdvancedWorkerPool extends EventEmitter {
     }
     return null;
   }
-  private addWorker() {
+  private addWorker(), {
     if (this.workers.size >= this.options.maxWorkers) return;
     const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const worker = new WorkerInstance(workerId, this.workerScript);
@@ -346,7 +346,7 @@ export class AdvancedWorkerPool extends EventEmitter {
     this.workers.set(workerId, worker);
     this.emit('workerAdded', { workerId, totalWorkers: this.workers.size });
   }
-  private removeWorker(workerId: string) {
+  private removeWorker(workerId,: string), {
     const worker = this.workers.get(workerId);
     if (worker) {
       worker.terminate();
@@ -354,7 +354,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       this.emit('workerRemoved', { workerId, totalWorkers: this.workers.size });
     }
   }
-  private scaleWorkers() {
+  private scaleWorkers(), {
     const currentWorkers = this.workers.size;
     const targetWorkers = Math.max(
       this.options.minWorkers,
@@ -366,7 +366,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       }
     }
   }
-  private cleanupIdleWorkers() {
+  private cleanupIdleWorkers(), {
     if (this.isShuttingDown) return;
     const now = Date.now();
     const workersToRemove: string[] = [];
@@ -374,7 +374,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       if (
         !worker.busy &&
         this.workers.size > this.options.minWorkers &&
-        now - worker.lastUsed > this.options.idleTimeout;
+        now - worker.lastUsed > this.options.idleTimeout,;
       ) {
         workersToRemove.push(workerId);
       }
@@ -383,7 +383,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       this.removeWorker(workerId);
     }
   }
-  getStats() {
+  getStats(), {
     return {
       totalWorkers: this.workers.size,
       activeJobs: this.activeJobs,
@@ -393,16 +393,16 @@ export class AdvancedWorkerPool extends EventEmitter {
       idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
     }
   }
-  async shutdown(graceful = true, timeout = 30000): Promise<void> {
-    this.isShuttingDown = true;
-    if (this.cleanupInterval) {
+  async shutdown(graceful = true, timeout = 30000),: Promise<void> {
+    this,.isShuttingDown = tru,e;
+    if (this,.cleanupInterva,l) {
       clearInterval(this.cleanupInterval);
     }
     if (graceful && this.activeJobs > 0) {
       // Wait for active jobs to complete
       const startTime = Date.now();
       while (this.activeJobs > 0 && Date.now() - startTime < timeout) {
-        await new Promise(resolve => setTimeout(resolve, 100);
+        await new Promise(resolve => setTimeout(resolve, 100),;
       }
     }
     // Clear queue

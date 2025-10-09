@@ -23,7 +23,7 @@ async function testSelfPromptingDemo() {
       }
     );
     console.log('✅ Basic orchestration successful');
-    console.log('   Result keys:', Object.keys(result);
+    console.log('   Result keys:', Object.keys(result),;
   } catch (error) {
     console.log('❌ Basic orchestration failed:', error.message);
   }

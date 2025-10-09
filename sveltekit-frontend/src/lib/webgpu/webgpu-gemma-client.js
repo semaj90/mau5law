@@ -165,8 +165,8 @@ class WebGPUGemmaClient {
   }
   async simulateInference(prompt, options) {
     // Simulate realistic processing time
-    const processingTime = Math.max(500, Math.min(3000, prompt.length * 10);
-    await new Promise(resolve => setTimeout(resolve, processingTime);
+    const processingTime = Math.max(500, Math.min(3000, prompt.length * 10),;
+    await new Promise(resolve => setTimeout(resolve, processingTime),;
     // Generate contextual response based on prompt
     if (prompt.toLowerCase().includes('legal') || prompt.toLowerCase().includes('contract')) {
       return `Based on the legal context provided, I would recommend reviewing the relevant statutes and precedents. The key considerations include contractual obligations, liability limitations, and compliance requirements. Please consult with a qualified attorney for specific legal advice.`;

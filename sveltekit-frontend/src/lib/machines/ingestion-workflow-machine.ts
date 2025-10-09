@@ -104,7 +104,7 @@ const initialContext: IngestionContext = {
   isRetrying: false
 }
 export const ingestionWorkflowMachine = setup({
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: IngestionContext;
     events: IngestionEvent;
   },
@@ -209,7 +209,7 @@ export const ingestionWorkflowMachine = setup({
       for (let i = 0; i < job.chunks.length; i += batchSize) {
         const batch = job.chunks.slice(i, i + batchSize);
         const batchResults = await Promise.all(batch.map(async (text, index) => {
-            const chunkId = `${job.id}_chunk_${i + index}`);
+            const chunkId = `${job.id}_chunk_${i + index}`,);
             // Check cache first
             const cached = await cache.get(`embedding:${chunkId}`);
             if (cached) {
@@ -219,7 +219,7 @@ export const ingestionWorkflowMachine = setup({
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
-                embedding: cached;
+                embedding: cached,;
                 metadata: {
                   ...job.metadata,
                   fromCache: true
@@ -301,7 +301,7 @@ export const ingestionWorkflowMachine = setup({
       }
     }),
     // Send job to RabbitMQ for reliable processing
-    publishToQueue: fromPromise(async ({ input }: { input: any }) => {
+    publishToQueue,: fromPromise(async ({ input }: { input: any }) => {
       const { job } = input;
       try {
         // Try RabbitMQ first
@@ -318,13 +318,13 @@ export const ingestionWorkflowMachine = setup({
         await cache.rpush('ingestion:jobs', JSON.stringify({
           ...job,
           queuedAt: new Date().toISOString()
-        });
+        }),;
         console.log(`📤 Published job ${job.id} to Redis`);
         return { backend: 'redis', jobId: job.id }
       }
     }),
     // Find similar documents for the processed job
-    findSimilarDocuments: fromPromise(async ({ input }: { input: any }) => {
+    findSimilarDocuments,: fromPromise(async ({ input }: { input: any }) => {
       const { chunks } = input;
       if (!chunks.length) return [];
       // Use the first chunk's embedding for similarity search
@@ -355,11 +355,11 @@ export const ingestionWorkflowMachine = setup({
   },
   guards: {
     hasJobsInQueue: ({ context }) => context.jobQueue.length > 0,
-    canRetry: ({ context }) => {
+    canRetry,: ({ context }) => {
       if (!context.currentJob) return false;
       return context.currentJob.retryCount < context.currentJob.maxRetries;
     },
-    isHighPriority: ({ context }) => {
+    isHighPriority,: ({ context }) => {
       if (!context.currentJob) return false;
       return context.currentJob.metadata.priority === 'urgent' || context.currentJob.metadata.priority === 'high';
     }
@@ -608,8 +608,8 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 // Utility functions
 export function createIngestionJob(
   documentId: string
-  chunks: string[];
-  metadata: Partial<IngestionJob['metadata']>;
+  chunks: string[],;
+  metadata: Partial<IngestionJob['metadata']>,;
 ): IngestionJob {
   return {
     id: `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,

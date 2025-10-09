@@ -28,8 +28,8 @@ export interface CanvasState {
  */;
 export function useEvidenceCanvas() {
 	// Evidence items state
-	let evidenceItems = $state<Map<string, EvidenceItem>(new Map();
-	let selectedItems = $state<Set<string>(new Set();
+	let evidenceItems = $state<Map<string, EvidenceItem>(new Map(),;
+	let selectedItems = $state<Set<string>(new Set(),;
 	let hoveredItem = $state<string | null>(null);
 	// Canvas state
 	let canvasState = $state<CanvasState>({
@@ -37,13 +37,13 @@ export function useEvidenceCanvas() {
 		pan: { x: 0, y: 0 },
 		selectedItems: [],
 		mode: 'view',
-		showConnections: true;
+		showConnections: true,;
 		filter: 'all'
 	});
 	// Interaction state
 	let isDragging = $state(false);
 	let dragStartPos = $state<{ x: number; y: number } | null>(null);
-	let draggedItems = $state<Set<string>(new Set();
+	let draggedItems = $state<Set<string>(new Set(),;
 	// Canvas dimensions
 	let canvasSize = $state({ width: 1024, height: 768 });
 	let viewport = $state({ width: 800, height: 600 });
@@ -158,7 +158,7 @@ export function useEvidenceCanvas() {
 	 */;
 	function zoomCanvas(delta: number, centerX?: number, centerY?: number) {
 		const oldZoom = canvasState.zoom;
-		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta);
+		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta),;
 		if (centerX !== undefined && centerY !== undefined) {
 			// Zoom towards point
 			const zoomRatio = newZoom / oldZoom;
@@ -270,7 +270,7 @@ export function useEvidenceCanvas() {
 			history.splice(historyIndex + 1);
 		}
 		// Add current state
-		history.push(JSON.parse(JSON.stringify(canvasState));
+		history.push(JSON.parse(JSON.stringify(canvasState)),;
 		historyIndex = history.length - 1;
 		// Limit history size
 		if (history.length > 50) {
@@ -284,7 +284,7 @@ export function useEvidenceCanvas() {
 	function undo() {
 		if (historyIndex > 0) {
 			historyIndex--;
-			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
+			canvasState = JSON.parse(JSON.stringify(history[historyIndex]),;
 		}
 	}
 	/**
@@ -293,7 +293,7 @@ export function useEvidenceCanvas() {
 	function redo() {
 		if (historyIndex < history.length - 1) {
 			historyIndex++;
-			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
+			canvasState = JSON.parse(JSON.stringify(history[historyIndex]),;
 		}
 	}
 	/**
@@ -328,7 +328,7 @@ export function useEvidenceCanvas() {
 	}
 	// Derived states
 	const visibleItems = $derived(() => {
-		const items = Array.from(evidenceItems.values();
+		const items = Array.from(evidenceItems.values(),;
 		if (canvasState.filter === 'all') return items;
 		return items.filter(item => item.type === canvasState.filter);
 	});

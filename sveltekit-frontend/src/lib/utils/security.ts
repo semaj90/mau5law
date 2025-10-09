@@ -176,7 +176,7 @@ export function encryptSensitiveData(data: string, key?: string): string {
 }
 export function decryptSensitiveData(
   encryptedData: string
-  key?: string;
+  key?: string,;
 ): string {
   try {
     if (!key) key = "legal-ai-security-key-2024";
@@ -200,7 +200,7 @@ export async function generateFileHash(file: File): Promise<string> {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer),;
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   } catch (error: any) {
     console.error("Error generating file hash:", error);
@@ -244,8 +244,8 @@ export function sanitizeForJavaScript(input: string): string {
 }
 // Generic input sanitization function
 export function sanitizeInput(
-  input: string;
-  type: "html" | "sql" | "js" = "html";
+  input: string,;
+  type: "html" | "sql" | "js" = "html",;
 ): string {
   switch (type) {
     case "html":
@@ -382,7 +382,7 @@ class RateLimiter {
 }
 export const rateLimiter = new RateLimiter();
 // Security monitoring with legal context
-export function logSecurityEvent(_event: Omit<SecurityEvent, "timestamp">;
+export function logSecurityEvent(_event: Omit<SecurityEvent, "timestamp">,;
 ): void {
   const fullEvent: SecurityEvent = {
     ...event,
@@ -401,7 +401,7 @@ export function logSecurityEvent(_event: Omit<SecurityEvent, "timestamp">;
     if (events.length > 100) {
       events.splice(0, events.length - 100);
     }
-    localStorage.setItem("security_events", JSON.stringify(events);
+    localStorage.setItem("security_events", JSON.stringify(events),;
   }
 }
 export function getSecurityEvents(): SecurityEvent[] {
@@ -454,7 +454,7 @@ export function generateSecureToken(length: number = 32): string {
   let result = "";
   const chars = "abcdef0123456789";
   for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length);
+    result += chars.charAt(Math.floor(Math.random() * chars.length),;
   }
   return result;
 }
@@ -474,7 +474,7 @@ export interface ChainOfCustodyEvent {
 }
 export function addChainOfCustodyEvent(
   evidenceId: string
-  event: Omit<ChainOfCustodyEvent, "timestamp">;
+  event: Omit<ChainOfCustodyEvent, "timestamp">,;
 ): void {
   const fullEvent: ChainOfCustodyEvent = {
     ...event,
@@ -528,14 +528,14 @@ export function getCSRFToken(): string {
   return generateSecureToken(32);
 }
 export function addCSRFToken(formData: FormData): FormData {
-  formData.append("csrf_token", getCSRFToken();
+  formData.append("csrf_token", getCSRFToken(),;
   return formData;
 }
 // Legal-specific security functions
 export function checkAttorneyClientPrivilege(
   userId: string
   documentId: string
-  action: string;
+  action: string,;
 ): boolean {
   const session = sessionManager.getSession();
   if (!session?.isLegalProfessional) {
@@ -555,7 +555,7 @@ export function checkAttorneyClientPrivilege(
 }
 export function validateLegalAccess(
   requiredPermission: string
-  caseId?: string;
+  caseId?: string,;
 ): boolean {
   const session = sessionManager.getSession();
   if (!session) {
@@ -581,7 +581,7 @@ export function validateLegalAccess(
 export function trackPrivilegedAccess(
   documentId: string
   action: "view" | "edit" | "download" | "print",
-  caseId?: string;
+  caseId?: string,;
 ): void {
   const session = sessionManager.getSession();
   if (session) {

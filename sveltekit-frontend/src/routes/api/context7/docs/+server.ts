@@ -74,8 +74,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         success: false,
-        error: error.message,
-        timestamp: new Date().toISOString()
+        error,: error.message,
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -100,12 +100,12 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     return json()
       {
         success: false,
-        error: error.message,
-        timestamp: new Date().toISOString()
+        error,: error.message,
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

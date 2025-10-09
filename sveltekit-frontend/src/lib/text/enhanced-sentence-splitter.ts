@@ -45,13 +45,13 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
         acc[acc.length - 1] += part;
       } else if (idx < arr.length - 1 && /^[.!?]+$/.test(arr[idx + 1] || '')) {
         // Will be handled when punctuation encountered next iteration
-        acc.push(part.trim();
+        acc.push(part.trim(),;
       } else {
-        acc.push(part.trim();
+        acc.push(part.trim(),;
       }
       return acc;
     }, [])
-    .map((s) => s.trim();
+    .map((s) => s.trim(),;
   // Protect abbreviations that caused premature splits by merging where pattern matches
   const sentences: string[] = [];
   for (let i = 0; i < raw.length; i++) {
@@ -114,6 +114,6 @@ export class EnhancedSentenceSplitter {
   }
 }
 export function createStreamingSplitter(_options: SplitterOptions = {}) {
-  return { splitter: new EnhancedSentenceSplitter(options), context: { [key: string]: any } }
+  return { splitter: new EnhancedSentenceSplitter(options), context: { [key,: strin,g]: any } }
 }
 export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter }

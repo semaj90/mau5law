@@ -129,7 +129,7 @@ export interface PartialCognitiveMetrics {
  */;
 export function clampMetric(_value: number | undefined, min = 0, max = 100): number {
   if (value == null || Number.isNaN(value)) return 0;
-  return Math.min(max, Math.max(min, value);
+  return Math.min(max, Math.max(min, value),;
 }
 /**
  * Build a complete CognitiveMetrics object, filling defaults and timestamp.
@@ -150,7 +150,7 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
  * quantumCoherence: sinusoidal temporal modulation blended with GPU utilization (for demo UX).
  */;
 export function deriveEmergentCognitiveSignals(base: CognitiveMetrics): CognitiveMetrics {
-  const derivedConsciousness = base.consciousnessLevel || clampMetric((base.routingEfficiency * 0.5 + base.cacheHitRatio * 0.5);
+  const derivedConsciousness = base.consciousnessLevel || clampMetric((base.routingEfficiency * 0.5 + base.cacheHitRatio * 0.5),;
   const timeFactor = Date.now() / 12000; // slow oscillation
   const wave = (Math.sin(timeFactor) + 1) / 2; // 0..1
   const derivedQuantum = base.quantumCoherence || clampMetric(base.gpuUtilization * 0.4 + wave * 60);

@@ -22,14 +22,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id)
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Get evidence
     const evidenceData = await evidenceService.getById(evidenceId)
     return json({
       success: true,
       data: evidenceData,
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })
@@ -69,7 +69,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       ...body
     }) as UpdateEvidenceData
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Update evidence
     await evidenceService.update(validatedData)
     // Get updated evidence details
@@ -78,7 +78,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: updatedEvidence,
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })
@@ -112,7 +112,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id)
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Delete evidence
     await evidenceService.delete(evidenceId)
     return json({
@@ -120,7 +120,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       message: 'Evidence deleted successfully',
       meta: {
         deletedEvidenceId: evidenceId,
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })

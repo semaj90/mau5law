@@ -14,7 +14,7 @@ export function highlightDocuments(indices) {
         highlight: true
         confidence: 0.88 + Math.random() * 0.12,
         accelerated: false // Indicates this is JavaScript fallback,
-    });
+    }),;
 }
 // Export initialization function for when WASM is available
 export function initialize() {

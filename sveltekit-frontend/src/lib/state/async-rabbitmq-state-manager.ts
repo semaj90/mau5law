@@ -309,73 +309,73 @@ export type AsyncStateEvent =
 const asyncStateMachine = createMachine();
   {
     id: 'asyncRabbitMQStateManager',
-    initial: 'initializing',
-    context: {
+    initial,: 'initializing',
+    context,: {
       jobStates: new Map(),
-      queueStates: new Map(),
-      globalState: {
+      queueStates,: new Map(),
+      globalState,: {
         totalJobs: 0,
-        activeJobs: 0,
-        completedJobs: 0,
-        failedJobs: 0,
-        systemHealth: {
+        activeJobs,: 0,
+        completedJobs,: 0,
+        failedJobs,: 0,
+        systemHealth,: {
           overall: 'healthy',
-          components: new Map(),
-          uptime: 0
+          components,: new Map(),
+          uptime,: 0
         },
         performance: {
           totalThroughput: 0,
-          avgResponseTime: 0,
-          errorRate: 0,
-          resourceUtilization: {
+          avgResponseTime,: 0,
+          errorRate,: 0,
+          resourceUtilization,: {
             cpu: 0,
-            memory: 0,
-            network: 0,
-            storage: 0
+            memory,: 0,
+            network,: 0,
+            storage,: 0
           },
           bottlenecks: []
         },
         alerts: [],
-        maintenanceMode: false
+        maintenanceMode,: false
         lastSyncAt: 0
       },
       syncStatus: {
         connected: false
         lastSync: 0,
-        syncLag: 0,
-        conflictCount: 0,
-        retryCount: 0,
-        backoffDelay: 1000,
-        syncHealth: 'failed'
+        syncLag,: 0,
+        conflictCount,: 0,
+        retryCount,: 0,
+        backoffDelay,: 1000,
+        syncHealth,: 'failed'
       },
       stateHistory: [],
-      subscriptions: new Map(),
-      conflictResolution: {
+      subscriptions,: new Map(),
+      conflictResolution,: {
         strategy: 'last_write_wins',
-        pendingConflicts: [],
-        resolvedConflicts: []
+        pendingConflicts,: [],
+        resolvedConflicts,: []
       },
       distributedLocks: new Map()
     },
     states: {
       initializing: {
         entry: 'initializeStateSync',
-        invoke: {
+        invoke,: {
           id: 'connectToStateSync',
-          src: 'establishStateSyncConnection',
-          onDone: {
+          src,: 'establishStateSyncConnection',
+          onDone,: {
             target: 'connected',
-            actions: 'markConnected'
+            actions,: 'markConnected'
           },
           onError: {
             target: 'disconnected',
-            actions: 'handleConnectionError'
+            actions,: 'handleConnectionError'
           }
         }
       },
       connected: {
         entry: 'startStateSyncLoop',
-        invoke: [
+        invoke,: [
           {
             id: 'stateSyncMonitor',
             src: 'monitorStateSync'
@@ -389,8 +389,8 @@ const asyncStateMachine = createMachine();
             src: 'manageLocks'
           }
         ],
-        initial: 'syncing',
-        states: {
+        initial,: 'syncing',
+        states,: {
           syncing: {
             on: {
               JOB_STATE_UPDATE: {
@@ -422,16 +422,16 @@ const asyncStateMachine = createMachine();
         },
         on: {
           CONNECTION_LOST: 'disconnected',
-          HANDLE_SYNC_ERROR: {
+          HANDLE_SYNC_ERROR,: {
             actions: 'handleSyncError'
           }
         }
       },
       disconnected: {
         entry: 'markDisconnected',
-        invoke: {
+        invoke,: {
           id: 'reconnectTimer',
-          src: 'attemptReconnection'
+          src,: 'attemptReconnection'
         },
         on: {
           CONNECTION_RESTORED: 'connected'
@@ -444,7 +444,7 @@ const asyncStateMachine = createMachine();
       initializeStateSync: () => {
         console.log('🔄 Initializing async state management...');
       },
-      markConnected: assign({
+      markConnected,: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
           connected: true
@@ -453,14 +453,14 @@ const asyncStateMachine = createMachine();
           retryCount: 0
         })
       }),
-      markDisconnected: assign({
+      markDisconnected,: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
           connected: false
           syncHealth: 'failed' as const
         })
       }),
-      updateJobState: assign({
+      updateJobState,: assign({
         jobStates: (context, event) => {
           if (!event || event.type !== 'JOB_STATE_UPDATE') return context.jobStates;
           const updated = new Map(context.jobStates);
@@ -491,7 +491,7 @@ const asyncStateMachine = createMachine();
                 stateVersion: 1,
                 lastUpdated: Date.now()
               }
-          updated.set(event.jobId, newState);
+          updated.set(event.jobId, newState),;
           return updated;
         }
       }),
@@ -531,7 +531,7 @@ const asyncStateMachine = createMachine();
                 lastUpdated: Date.now(),
                 ...event.state
               }
-          updated.set(event.queueName, newState);
+          updated.set(event.queueName, newState),;
           return updated;
         }
       }),
@@ -545,7 +545,7 @@ const asyncStateMachine = createMachine();
           }
         }
       }),
-      broadcastStateChange: (context, event) => {
+      broadcastStateChange,: (context, event) => {
         if (!event || !event.type) return;
         // Broadcast state changes to subscribers
         for (const [id, subscription] of context.subscriptions) {
@@ -568,14 +568,14 @@ const asyncStateMachine = createMachine();
           }
         }
       },
-      recordStateHistory: assign({
+      recordStateHistory,: assign({
         stateHistory: (context, event) => {
           if (!event || !event.type) return context.stateHistory;
           const historyEntry: StateHistoryEntry = {
             timestamp: Date.now(),
             event: event.type,
             previousState: null, // Would store actual previous state
-            newState: event;
+            newState: event,;
             source: 'state_manager',
             stateVersion: 1
           }
@@ -587,7 +587,7 @@ const asyncStateMachine = createMachine();
           return [historyEntry, ...context.stateHistory].slice(0, 1000); // Keep last 1000 entries
         }
       }),
-      addSubscription: assign({
+      addSubscription,: assign({
         subscriptions: (context, event) => {
           if (!event || event.type !== 'SUBSCRIBE_TO_STATE') return context.subscriptions;
           const updated = new Map(context.subscriptions);
@@ -595,7 +595,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      removeSubscription: assign({
+      removeSubscription,: assign({
         subscriptions: (context, event) => {
           if (!event || event.type !== 'UNSUBSCRIBE_FROM_STATE') return context.subscriptions;
           const updated = new Map(context.subscriptions);
@@ -603,11 +603,11 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      resolveStateConflict: (context, event) => {
+      resolveStateConflict,: (context, event) => {
         if (!event || event.type !== 'RESOLVE_CONFLICT') return;
         console.log(`🔧 Resolving state conflict: ${(event as any).conflictId}`);
       },
-      acquireDistributedLock: assign({
+      acquireDistributedLock,: assign({
         distributedLocks: (context, event) => {
           if (!event || event.type !== 'ACQUIRE_LOCK') return context.distributedLocks;
           const lockId = `lock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -625,7 +625,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      releaseDistributedLock: assign({
+      releaseDistributedLock,: assign({
         distributedLocks: (context, event) => {
           if (!event || event.type !== 'RELEASE_LOCK') return context.distributedLocks;
           const updated = new Map(context.distributedLocks);
@@ -633,14 +633,14 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      handleConnectionError: (_, event) => {
+      handleConnectionError,: (_, event) => {
         console.error('❌ State sync connection error:', (event as any)?.data);
       },
-      handleSyncError: (_, event) => {
+      handleSyncError,: (_, event) => {
         if (!event || event.type !== 'HANDLE_SYNC_ERROR') return;
         console.error('⚠️ State sync error:', (event as any).error);
       },
-      startStateSyncLoop: () => {
+      startStateSyncLoop,: () => {
         console.log('🔄 Starting state sync loop...');
       }
     },
@@ -650,28 +650,28 @@ const asyncStateMachine = createMachine();
         await rabbitmqService.connect();
         return { connected: true }
       },
-      monitorStateSync: () => (callback: any) => {
+      monitorStateSync,: () => (callback: any) => {
         const interval = setInterval(() => {
           // Monitor sync health
           callback({ type: 'SYNC_STATE' });
         }, 5000);
         return () => clearInterval(interval);
       },
-      detectStateConflicts: () => (callback: any) => {
+      detectStateConflicts,: () => (callback: any) => {
         const interval = setInterval(() => {
           // Detect state conflicts
           // Mock implementation
         }, 10000);
         return () => clearInterval(interval);
       },
-      manageLocks: () => (callback: any) => {
+      manageLocks,: () => (callback: any) => {
         const interval = setInterval(() => {
           // Manage distributed locks
           // Mock implementation
         }, 30000);
         return () => clearInterval(interval);
       },
-      attemptReconnection: () => (callback: any) => {
+      attemptReconnection,: () => (callback: any) => {
         const timeout = setTimeout(() => {
           callback({ type: 'CONNECTION_RESTORED' });
         }, 5000);
@@ -683,11 +683,11 @@ const asyncStateMachine = createMachine();
 export class AsyncRabbitMQStateManager {
   private static instance: AsyncRabbitMQStateManager;
   private stateService: any;
-  private svelteStores: Map<string, Writable<any> = new Map();
+  private svelteStores: Map<string, Writable<any>, = new Map();
   private enableN64Logging = false;
   // Svelte stores for reactive UI updates
-  public readonly jobStates: Readable<Map<string, JobState>;
-  public readonly queueStates: Readable<Map<string, QueueState>;
+  public readonly jobStates: Readable<Map<string, JobState>,;
+  public readonly queueStates: Readable<Map<string, QueueState>,;
   public readonly globalState: Readable<GlobalSystemState>;
   public readonly syncStatus: Readable<SyncStatus>;
   static getInstance(): AsyncRabbitMQStateManager {
@@ -699,8 +699,8 @@ export class AsyncRabbitMQStateManager {
   constructor() {
     this.stateService = interpret(asyncStateMachine);
     // Create reactive Svelte stores
-    const jobStatesStore = writable(new Map<string, JobState>();
-    const queueStatesStore = writable(new Map<string, QueueState>();
+    const jobStatesStore = writable(new Map<string, JobState>(),;
+    const queueStatesStore = writable(new Map<string, QueueState>(),;
     const globalStateStore = writable<GlobalSystemState>({
       totalJobs: 0,
       activeJobs: 0,

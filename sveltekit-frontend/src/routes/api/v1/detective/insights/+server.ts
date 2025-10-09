@@ -26,8 +26,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const { caseId, insightType, depth } = InsightsQuerySchema.parse(queryParams);
     // Create service instances
-    const casesService = new CasesCRUDService(locals.user.id);
-    const evidenceService = new EvidenceCRUDService(locals.user.id);
+    const casesService = new CasesCRUDService(getUserId(locals));
+    const evidenceService = new EvidenceCRUDService(getUserId(locals));
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId);
     if (!caseData) {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const evidenceResult = (await evidenceService.listByCase(caseId, { page: 1, limit: 100 })) as EvidenceListResponse;
     const evidenceList: EvidenceItem[] = Array.isArray(evidenceResult?.data) ? evidenceResult.data : [];
     // Generate insights based on case data and evidence
-    const insights = await generateDetectiveInsights(caseData, evidenceList, insightType, depth, locals.user.id);
+    const insights = await generateDetectiveInsights(caseData, evidenceList, insightType, depth, getUserId(locals));
     return json({
       success: true,
       data: {
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         },
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'insights_generated',
       },

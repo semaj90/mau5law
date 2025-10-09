@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const queryParams = Object.fromEntries(url.searchParams.entries())
     const validatedQuery = CasesQuerySchema.parse(queryParams)
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Get cases with pagination
     const result = await casesService.list({
       page: validatedQuery.page,
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     }
@@ -143,14 +143,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const validatedData = CreateCaseSchema.parse(body) as CreateCaseData
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Create case
     const caseId = await casesService.create(validatedData)
     // Get the created case details
     const createdCase = await casesService.getById(caseId)
     // Queue background synthesis
     try {
-      const jobId = await queueCaseSynthesis(caseId, locals.user.id)
+      const jobId = await queueCaseSynthesis(caseId, getUserId(locals))
       console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`)
     } catch (queueError) {
       console.error('Failed to queue case synthesis:', queueError)
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: createdCase,
         meta: {
           caseId,
-          userId: locals.user.id,
+          userId: getUserId(locals),
           timestamp: new Date().toISOString(),
           synthesisQueued: true
         }

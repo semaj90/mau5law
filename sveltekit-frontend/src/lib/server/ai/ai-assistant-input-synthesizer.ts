@@ -246,7 +246,7 @@ export class AIAssistantInputSynthesizer {
    */
   private async analyzeAndEnhanceQuery(
     query: string
-    context?: SynthesizerInput['context'];
+    context?: SynthesizerInput['context'],;
   ): Promise<SynthesizedOutput['processedQuery']> {
     try {
       // Use LegalBERT for comprehensive analysis
@@ -285,7 +285,7 @@ export class AIAssistantInputSynthesizer {
   private async performMultiStrategyRetrieval(
     processedQuery: SynthesizedOutput['processedQuery'],
     context?: SynthesizerInput['context'],
-    options?: RetrievalOptions;
+    options?: RetrievalOptions,;
   ): Promise<RetrievalResult> {
     // Default & merge options
     const defaults: Required<Pick<RetrievalOptions
@@ -293,8 +293,8 @@ export class AIAssistantInputSynthesizer {
     > = {
       enableRAG: true
       maxSources: 10,
-      similarityThreshold: 0.7,
-      enableMMR: true
+      similarityThreshold,: 0.7,
+      enableMMR,: true
       enableCrossEncoder: true
     }
     const effectiveOptions = { ...defaults, ...options }
@@ -412,7 +412,7 @@ export class AIAssistantInputSynthesizer {
   private async processAndRankContent(
     retrievedContext: any
     processedQuery: SynthesizedOutput['processedQuery'],
-    options: any;
+    options: any,;
   ): Promise<SynthesizedOutput['retrievedContext']> {
     try {
       let sources = [...retrievedContext.sources];
@@ -457,7 +457,7 @@ export class AIAssistantInputSynthesizer {
   private async constructEnhancedPrompt(
     processedQuery: SynthesizedOutput['processedQuery'],
     retrievedContext: SynthesizedOutput['retrievedContext'],
-    context?: SynthesizerInput['context'];
+    context?: SynthesizerInput['context'],;
   ): Promise<SynthesizedOutput['enhancedPrompt']> {
     try {
       // System prompt with legal expertise
@@ -494,7 +494,7 @@ export class AIAssistantInputSynthesizer {
   private async assessQuality(
     processedQuery: SynthesizedOutput['processedQuery'],
     retrievedContext: SynthesizedOutput['retrievedContext'],
-    enhancedPrompt: SynthesizedOutput['enhancedPrompt'];
+    enhancedPrompt: SynthesizedOutput['enhancedPrompt'],;
   ): Promise<QualityMetrics> {
     try {
       // Context relevance score
@@ -534,7 +534,7 @@ export class AIAssistantInputSynthesizer {
   }
   // === HELPER METHODS ===
   private async verifyComponents(): Promise<void> {
-    const checks: Array< }> = [
+    const checks: Array<, }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy' }) }
@@ -548,34 +548,34 @@ export class AIAssistantInputSynthesizer {
       }
     }
   }
-  private async withTimeout<T>(promise: Promise<T>, timeout: number): Promise<T> {
-    return Promise.race([
+  private async withTimeout<T>(promise,: Promise<T>, timeou,t: numbe,r): Promise<T> {
+    return, Promise.race([
       promise,
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error(`Timeout after ${timeout}ms`)), timeout)
       )
-    ]);
+    ]),;
   }
-  private async extractIntent(query: string, analysis: SynthesizerAnalysisResult): Promise<string> {
+  private async extractIntent(query,: string, analysi,s: SynthesizerAnalysisResul,t): Promise<string> {
     // Intent classification based on patterns and entities
-    const queryLower = query.toLowerCase();
-    if (queryLower.includes('how to') || queryLower.includes('how do')) {
+    const, queryLower = query.toLowerCase(,);
+    if (queryLower,.includes('how to') || queryLower.includes('how do',)) {
       return 'procedural_guidance';
     } else if (queryLower.includes('what is') || queryLower.includes('define')) {
       return 'definition_request';
     } else if (
       queryLower.includes('case') ||
-      analysis.entities.some((e: any) => e.type === 'CASE_CITATION');
+      analysis.entities.some((e: any) => e.type === 'CASE_CITATION'),;
     ) {
       return 'case_analysis';
     } else if (
       queryLower.includes('contract') ||
-      analysis.concepts.some((c) => c.concept === 'contract');
+      analysis.concepts.some((c) => c.concept === 'contract'),;
     ) {
       return 'contract_analysis';
     } else if (
       queryLower.includes('statute') ||
-      analysis.entities.some((e: any) => e.type === 'STATUTE');
+      analysis.entities.some((e: any) => e.type === 'STATUTE'),;
     ) {
       return 'statute_interpretation';
     } else if (queryLower.includes('precedent') || queryLower.includes('ruling')) {
@@ -585,13 +585,13 @@ export class AIAssistantInputSynthesizer {
     }
   }
   private async enhanceQueryWithContext(
-    query: string
+    query,: string
     context?: SynthesizerInput['context'],
-    analysis?: SynthesizerAnalysisResult;
+    analysis?: SynthesizerAnalysisResult,;
   ): Promise<string> {
-    let enhanced = query;
+    let, enhanced = quer,y;
     // Add legal context terms
-    if (analysis?.concepts?.length > 0) {
+    if (analysis,?.concept,s?.lengt,h, > 0) {
       const topConcepts = analysis.concepts
         .slice(0, 3)
         .map((c) => c.concept)
@@ -612,22 +612,22 @@ export class AIAssistantInputSynthesizer {
     return enhanced;
   }
   private async applyMMRDiversification(
-    sources: any[]
-    query: string;
+    sources,: any[]
+    query,: strin,g;
     lambda: number = 0.5;
   ): Promise<any[]> {
     // Implement MMR algorithm for diversity
-    if (sources.length <= 1) return sources;
-    const selected: any[] = [];
-    const remaining = [...sources];
+    if (sources,.length <=, 1) retur,n sour,ces;
+    const, selecte,d: a,ny,[], = [];
+    const, remaining = [...sources,];
     // Start with the highest relevance score
-    const first = remaining.reduce((max, curr) =>
+    const, first = remaining.reduce((max, curr) =>
       curr.relevanceScore > max.relevanceScore ? curr : max
-    );
-    selected.push(first);
-    remaining.splice(remaining.indexOf(first), 1);
+    ),;
+    selected,.push(first,);
+    remaining,.splice(remaining.indexOf(first), 1,);
     // Apply MMR selection
-    while (remaining.length > 0 && selected.length < 10) {
+    while (remaining,.length > 0 && selected.length < 1,0) {
       let bestScore = -Infinity;
       let bestIndex = -1;
       for (let i = 0; i < remaining.length; i++) {
@@ -661,32 +661,32 @@ export class AIAssistantInputSynthesizer {
     }
     return selected;
   }
-  private async applyCrossEncoderReranking(sources: any[], query: string): Promise<any[]> {
+  private async applyCrossEncoderReranking(sources,: any[], quer,y: strin,g): Promise<any[]> {
     // Apply cross-encoder reranking using LegalBERT
-    try {
-      const rerankedSources = [];
-      for (const source of sources) {
+    try, {
+      const, rerankedSources = [,];
+      for (const, source, o,f sources) {
         const similarity = await legalBERT.calculateLegalSimilarity(query, source.content);
         source.rerankedScore = similarity.similarity;
         rerankedSources.push(source);
       }
       // Sort by reranked score
-      return rerankedSources.sort((a, b) => b.rerankedScore - a.rerankedScore);
-    } catch (error: any) {
+      return, rerankedSources.sort((a, b) => b.rerankedScore - a.rerankedScore,);
+    }, catch (error: any) {
       logger.warn('[Synthesizer] Cross-encoder reranking failed:', error);
       return sources;
     }
   }
   private async generateComprehensiveSummary(
-    sources: any[]
-    processedQuery: SynthesizedOutput['processedQuery'];
+    sources,: any[]
+    processedQuery,: SynthesizedOutput['processedQuery',];
   ): Promise<SynthesizedOutput['retrievedContext']['summary']> {
-    try {
+    try, {
       // Combine all source content
-      const combinedContent = sources.map((s) => s.content).join('\n\n');
+      const, combinedContent = sources.map((s) => s.content).join('\n\n',);
       // Generate summary using available methods
-      const summary = await legalBERT.analyzeLegalText(combinedContent);
-      return {
+      const, summary = await legalBERT.analyzeLegalText(combinedContent,);
+      return, {
         abstractive: summary.summary.abstractive,
         extractive: Array.isArray(summary.summary.extractive)
           ? summary.summary.extractive: [summary.summary.extractive || ''],
@@ -694,7 +694,7 @@ export class AIAssistantInputSynthesizer {
           ? summary.summary.keyPoints
           : [summary.summary.keyPoints || '']
       }
-    } catch (error: any) {
+    }, catch (error: any) {
       logger.warn('[Synthesizer] Summary generation failed:', error);
       return {
         abstractive: 'Summary generation failed',
@@ -704,8 +704,8 @@ export class AIAssistantInputSynthesizer {
     }
   }
   private buildSystemPrompt(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    context?: SynthesizerInput['context'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    context?: SynthesizerInput['context'],;
   ): string {
     let prompt =
       'You are an expert legal AI assistant with comprehensive knowledge of law and legal procedures.';
@@ -725,7 +725,7 @@ export class AIAssistantInputSynthesizer {
     }
     return prompt;
   }
-  private buildContextPrompt(retrievedContext: SynthesizedOutput['retrievedContext']): string {
+  private buildContextPrompt(retrievedContext,: SynthesizedOutput['retrievedContext'],): string {
     let prompt = 'Based on the following legal sources and information:\n\n';
     retrievedContext.sources.forEach((source, index) => {
       prompt += `[Source ${index + 1}] ${source.title}\n`;
@@ -740,8 +740,8 @@ export class AIAssistantInputSynthesizer {
     return prompt;
   }
   private buildQueryPrompt(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    context?: SynthesizerInput['context'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    context?: SynthesizerInput['context'],;
   ): string {
     let prompt = `Question: ${processedQuery.original}\n\n`;
     if (processedQuery.entities.length > 0) {
@@ -761,9 +761,9 @@ export class AIAssistantInputSynthesizer {
     return prompt;
   }
   private buildInstructions(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    context?: SynthesizerInput['context'];
-  ): string[] {
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    context?: SynthesizerInput['context'],;
+  ): string[], {
     const instructions = [
       'Provide accurate legal information based on the provided sources',
       'Cite specific sources using [Source N] notation',
@@ -793,9 +793,9 @@ export class AIAssistantInputSynthesizer {
     return instructions;
   }
   private buildConstraints(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    context?: SynthesizerInput['context'];
-  ): string[] {
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    context?: SynthesizerInput['context'],;
+  ): string[], {
     const constraints = [
       'Do not provide legal advice or attorney-client privileged information',
       'Clearly distinguish between legal information and legal advice',
@@ -811,8 +811,8 @@ export class AIAssistantInputSynthesizer {
   }
   // === QUALITY ASSESSMENT METHODS ===
   private assessContextRelevance(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    retrievedContext: SynthesizedOutput['retrievedContext'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    retrievedContext,: SynthesizedOutput['retrievedContext',];
   ): number {
     if (retrievedContext.sources.length === 0) return 0;
     const avgRelevance =
@@ -820,7 +820,7 @@ export class AIAssistantInputSynthesizer {
       retrievedContext.sources.length;
     return Math.min(avgRelevance, 1.0);
   }
-  private assessSourceAuthority(retrievedContext: SynthesizedOutput['retrievedContext']): number {
+  private assessSourceAuthority(retrievedContext,: SynthesizedOutput['retrievedContext'],): number {
     const authorityScores = {
       case: 0.9,
       statute: 0.95,
@@ -836,19 +836,19 @@ export class AIAssistantInputSynthesizer {
     return avgAuthority;
   }
   private assessConceptCoverage(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    retrievedContext: SynthesizedOutput['retrievedContext'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    retrievedContext,: SynthesizedOutput['retrievedContext',];
   ): number {
     if (processedQuery.legalConcepts.length === 0) return 0.8;
     const sourcesText = retrievedContext.sources.map((s) => s.content.toLowerCase()).join(' ');
     const coveredConcepts = processedQuery.legalConcepts.filter((concept) =>
       sourcesText.includes(concept.toLowerCase()
-    );
+    ),;
     return coveredConcepts.length / processedQuery.legalConcepts.length;
   }
   private assessInformationCompleteness(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    retrievedContext: SynthesizedOutput['retrievedContext'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    retrievedContext,: SynthesizedOutput['retrievedContext',];
   ): number {
     // Assess based on number of sources, content length, and diversity
     const sourceCount = Math.min(retrievedContext.sources.length / 5, 1.0);
@@ -863,9 +863,9 @@ export class AIAssistantInputSynthesizer {
     return (sourceCount + contentLength + diversity) / 3;
   }
   private assessResponseReadiness(
-    processedQuery: SynthesizedOutput['processedQuery'],
-    retrievedContext: SynthesizedOutput['retrievedContext'],
-    enhancedPrompt: SynthesizedOutput['enhancedPrompt'];
+    processedQuery,: SynthesizedOutput['processedQuery'],
+    retrievedContext,: SynthesizedOutput['retrievedContext'],
+    enhancedPrompt,: SynthesizedOutput['enhancedPrompt',];
   ): number {
     // Overall readiness based on all factors
     const hasContext = retrievedContext.sources.length > 0 ? 1.0 : 0.2;
@@ -875,7 +875,7 @@ export class AIAssistantInputSynthesizer {
     return (hasContext + hasInstructions + queryClarity) / 3;
   }
   // === UTILITY METHODS ===
-  private calculateCosineSimilarity(a: number[], b: number[]): number {
+  private calculateCosineSimilarity(a,: number[], b: number[],): number {
     if (a.length !== b.length || a.length === 0) return 0;
     let dotProduct = 0;
     let normA = 0;
@@ -888,29 +888,29 @@ export class AIAssistantInputSynthesizer {
     const denominator = Math.sqrt(normA) * Math.sqrt(normB);
     return denominator === 0 ? 0 : dotProduct / denominator;
   }
-  private async calculateTextSimilarity(text1: string, text2: string): Promise<number> {
-    try {
-      const [emb1, emb2] = await Promise.all([generateEmbedding(text1), generateEmbedding(text2)]);
-      return this.calculateCosineSimilarity(emb1 || [], emb2 || []);
-    } catch (error: any) {
+  private async calculateTextSimilarity(text1,: string, text,2: strin,g): Promise<number> {
+    try, {
+      const, [emb1, emb2] = await Promise.all([generateEmbedding(text1), generateEmbedding(text2)],);
+      return, this.calculateCosineSimilarity(emb1 || [], emb2 || [],);
+    }, catch (error: any) {
       // Fallback to basic similarity
-      const words1 = new Set(text1.toLowerCase().split(/\s+/);
-      const words2 = new Set(text2.toLowerCase().split(/\s+/);
-      const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
+      const words1 = new Set(text1.toLowerCase().split(/\s+/),;
+      const words2 = new Set(text2.toLowerCase().split(/\s+/),;
+      const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)),;
       const union = new Set([...Array.from(words1), ...Array.from(words2)]);
       return intersection.size / union.size;
     }
   }
-  private calculateSourceDiversity(sources: any[]): number {
+  private calculateSourceDiversity(sources,: any[],): number {
     if (sources.length <= 1) return 0.5;
-    const types = new Set(sources.map((s) => s.type);
+    const types = new Set(sources.map((s) => s.type),;
     const metadata = sources.map((s) => s.metadata?.category || 'unknown');
     const categories = new Set(metadata);
     const typeDiversity = types.size / Math.min(sources.length, 4);
     const categoryDiversity = categories.size / Math.min(sources.length, 5);
     return (typeDiversity + categoryDiversity) / 2;
   }
-  private getUsedStrategies(_options: any): string[] {
+  private getUsedStrategies(_options,: any,): string[,] {
     const strategies = [];
     if (options.enableRAG) strategies.push('rag_pipeline');
     if (options.enableLegalBERT) strategies.push('legalbert_analysis');
@@ -918,7 +918,7 @@ export class AIAssistantInputSynthesizer {
     if (options.enableCrossEncoder) strategies.push('cross_encoder_reranking');
     return strategies;
   }
-  private calculateOverallQuality(metrics: QualityMetrics): number {
+  private calculateOverallQuality(metrics,: QualityMetrics,): number {
     const weights = {
       contextRelevance: 0.3,
       sourceAuthority: 0.2,
@@ -931,7 +931,7 @@ export class AIAssistantInputSynthesizer {
       0
     );
   }
-  private generateRecommendations(metrics: QualityMetrics): string[] {
+  private generateRecommendations(metrics,: QualityMetrics,): string[,] {
     const recommendations = [];
     if (metrics.contextRelevance < 0.6) {
       recommendations.push('Consider refining search terms for better context relevance');
@@ -954,7 +954,7 @@ export class AIAssistantInputSynthesizer {
   /**
    * Get synthesizer statistics
    */;
-  getStatistics(): { [key: string]: any } {
+  getStatistics(),: { [ke,y: strin,g]: any } {
     return {
       requestCount: this.requestCount,
       processingStats: Object.fromEntries(this.processingStats),
@@ -964,8 +964,8 @@ export class AIAssistantInputSynthesizer {
   /**
    * Health check
    */;
-  async healthCheck(): Promise<any> {
-    const components: { [key: string]: any } = {}
+  async healthCheck(),: Promise<any> {
+    const, component,s: { [k,ey: stri,ng]: any } = {}
     try {
       components.legalbert = await legalBERT.healthCheck();
     } catch (error: any) {
@@ -980,7 +980,7 @@ export class AIAssistantInputSynthesizer {
       (c: any) =>
         c.status === 'healthy' ||
         (Array.isArray(c) && c.every((item: any) => (item as { diversityScore?: any; status?: any }).status === 'healthy')
-    ).length;
+    ).length,;
     return {
       status: healthyComponents >= 1 ? 'healthy' : 'degraded',
       components

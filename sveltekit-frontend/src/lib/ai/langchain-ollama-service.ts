@@ -1,16 +1,11 @@
-
 // LangChain + Ollama Integration with CUDA Support
 // Production-ready AI service for legal document processing
-import { ChatOllama } from "@langchain/ollama";
-import { OllamaEmbeddings } from "@langchain/ollama";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { PromptTemplate } from "@langchain/core/prompts";
-import type { Document as LangChainDocument } from "@langchain/core/documents";
-import { VectorStoreRetriever } from "@langchain/core/vectorstores";
-import { BaseRetriever } from "@langchain/core/retrievers";
-import { CallbackManagerForRetrieverRun } from "@langchain/core/callbacks/manager";
-// Crypto import handled dynamically to prevent SSR issues
+import { ChatOllama } from '@langchain/ollama';
+import { OllamaEmbeddings } from '@langchain/ollama';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import type { Document as LangChainDocument } from 'langchain/document';
+
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
@@ -35,27 +30,37 @@ export interface ProcessingResult {
     totalTokens: number;
     avgChunkSize: number;
     model: string;
-  }
+  };
 }
+
+// New: strongly-typed source descriptor used in query results
+export interface QuerySource {
+  content: string;
+  metadata: Record<string, unknown>;
+  score: number;
+  // optional source identifier (e.g. chunkId or documentId)
+  id?: string;
+}
+
 export interface QueryResult {
   answer: string;
-  sources: Array<any>;
+  sources: QuerySource[]; // no more Array<any>
   confidence: number;
   processingTime: number;
 }
 // Default configuration optimized for legal AI with GPU acceleration
 const DEFAULT_CONFIG: LangChainConfig = {
-  ollamaBaseUrl: "http://localhost:11434",
-  model: "gemma3-legal-optimized:latest", // Updated to optimized model
-  embeddingModel: "embeddinggemma:latest", // GPU-accelerated embeddings
+  ollamaBaseUrl: 'http://localhost:11434',
+  model: 'gemma3-legal:latest', // Updated to optimized model
+  embeddingModel: 'embeddinggemma:latest', // GPU-accelerated embeddings
   temperature: 0.3,
   maxTokens: 2048,
   chunkSize: 1000,
   chunkOverlap: 200,
   maxRetrieverResults: 10,
   useCuda: true,
-  vectorDimensions: 768 // embeddinggemma uses 768 dimensions (BF16)
-}
+  vectorDimensions: 768, // embeddinggemma uses 768 dimensions (BF16)
+};
 // ============================================================================
 // ENHANCED LANGCHAIN + OLLAMA SERVICE
 // ============================================================================
@@ -67,7 +72,7 @@ export class LangChainOllamaService {
   private vectorStore: MemoryVectorStore | null = null;
   private isInitialized: boolean = false;
   constructor(config: Partial<LangChainConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config }
+    this.config = { ...DEFAULT_CONFIG, ...config };
     this.initializeModels();
     this.initializeTextSplitter();
   }
@@ -75,7 +80,7 @@ export class LangChainOllamaService {
     // Initialize Chat Model with CUDA optimization
     this.chatModel = new ChatOllama({
       baseUrl: this.config.ollamaBaseUrl,
-      model: this.config?.model || 'gemma3:2b',
+      model: this.config?.model || 'gemma3-legal:latest',
       temperature: this.config.temperature,
       // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
@@ -91,16 +96,14 @@ export class LangChainOllamaService {
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: this.config.chunkSize,
       chunkOverlap: this.config.chunkOverlap,
-      separators: ["\n\n", "\n", ".", "!", "?", ",", " ", ""]
+      // Removed the empty-string separator which can break splitting logic
+      separators: ['\n\n', '\n', '.', '!', '?', ',', ' '],
     });
   }
   // ========================================================================
   // DOCUMENT PROCESSING & EMBEDDING
   // ========================================================================
-  async processDocument(
-    content: string
-    metadata: { [key: string]: any } = {}
-  ): Promise<ProcessingResult> {
+  async processDocument(content: string, metadata: Record<string, unknown> = {}): Promise<ProcessingResult> {
     const startTime = Date.now();
     // Generate documentId without crypto to avoid SSR issues
     const documentId = `doc-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
@@ -109,28 +112,24 @@ export class LangChainOllamaService {
       const chunks = await this.textSplitter.splitText(content);
       // Create LangChain documents
       const documents = chunks.map((chunk, index) => ({
-        pageContent: chunk
+        pageContent: chunk,
         metadata: {
           ...metadata,
           documentId,
-          chunkIndex: index
-          chunkId: `${documentId}_${index}`
-        }
+          chunkIndex: index,
+          chunkId: `${documentId}_${index}`,
+          score: 0.8, // Default score for downstream reliability
+        },
       }));
       // Create vector store if it doesn't exist
       if (!this.vectorStore) {
-        this.vectorStore = await MemoryVectorStore.fromDocuments(
-          documents,
-          this.embeddings
-        );
+        this.vectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
       } else {
         // Add documents to existing vector store
         await this.vectorStore.addDocuments(documents);
       }
       // Calculate embeddings for return data
-      const embeddings = await Promise.all(
-        chunks.map(chunk => this.embeddings.embedQuery(chunk))
-      );
+      const embeddings = await Promise.all(chunks.map(chunk => this.embeddings.embedQuery(chunk)));
       const processingTime = Date.now() - startTime;
       const avgChunkSize = chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length;
       const result: ProcessingResult = {
@@ -139,26 +138,28 @@ export class LangChainOllamaService {
         embeddings,
         processingTime,
         metadata: {
+          // Approximate token count: dividing character length by 4 is a heuristic and may not reflect actual model tokenization
           totalTokens: content.length / 4, // Rough estimate
           avgChunkSize: Math.round(avgChunkSize),
-          model: this.config.embeddingModel
-        }
-      }
+          model: this.config.embeddingModel,
+        },
+      };
       console.log(`✅ Processed document: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error('Document processing failed:', error);
-      throw new Error(`Document processing failed: ${error.message}`);
+      throw new Error(`Document processing failed: ${message}`);
     }
   }
   // ========================================================================
   // ENHANCED RAG QUERY
   // ========================================================================
   async queryDocuments(
-    question: string
+    question: string,
     context: {
       documentTypes?: string[];
-      dateRange?: { start: Date; end: Date }
+      dateRange?: { start: Date; end: Date };
       relevanceThreshold?: number;
       maxResults?: number;
     } = {}
@@ -167,55 +168,57 @@ export class LangChainOllamaService {
       throw new Error('No documents have been processed yet. Call processDocument first.');
     }
     const startTime = Date.now();
-    const maxResults = context.maxResults || this.config.maxRetrieverResults;
-    const relevanceThreshold = context.relevanceThreshold || 0.7;
+    const maxResults = context.maxResults ?? this.config.maxRetrieverResults;
+    const relevanceThreshold = context.relevanceThreshold ?? 0.7;
     try {
-      // Create retriever with enhanced filtering
+      // Create retriever with a simple filter; use `_doc` to avoid "unused var" lint errors
       const retriever = this.vectorStore.asRetriever({
-        k: maxResults
-        searchType: "similarity",
-        // Note: searchKwargs may not be available in current version
-        filter: (doc) => true // Simple filter function
+        k: maxResults,
+        searchType: 'similarity',
+        filter: _doc => true,
       });
-      // Get relevant documents
+      // Get relevant documents from vector store
       const relevantDocs = await retriever.getRelevantDocuments(question);
-      // Filter documents based on context if provided
-      const filteredDocs = this.filterDocumentsByContext(relevantDocs, context);
+      // Apply relevance threshold (use metadata.score, fallback to default 0.8)
+      const relevanceFiltered = relevantDocs.filter(d => (d.metadata?.score ?? 0.8) >= relevanceThreshold);
+      // Then apply context-based filters (type/date) on the already relevance-filtered set
+      const filteredDocs = this.filterDocumentsByContext(relevanceFiltered, context);
       // Create enhanced prompt for legal AI
       const prompt = this.createLegalPrompt(question, filteredDocs);
       // Generate response using chat model
-      // removed unused response assignment
+      const response = await this.chatModel.invoke(prompt);
       // Calculate confidence based on document relevance
       const confidence = this.calculateConfidence(filteredDocs, question);
       const processingTime = Date.now() - startTime;
       const result: QueryResult = {
         answer: response.content as string,
-        sources: filteredDocs.map(doc => ({,
+        sources: filteredDocs.map(doc => ({
           content: doc.pageContent,
           metadata: doc.metadata,
-          score: doc.metadata.score || 0.8
+          score: doc.metadata.score || 0.8,
         })),
         confidence,
-        processingTime
-      }
+        processingTime,
+      };
       console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length} sources`);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error('Query processing failed:', error);
-      throw new Error(`Query processing failed: ${error.message}`);
+      throw new Error(`Query processing failed: ${message}`);
     }
   }
   // ========================================================================
   // HELPER METHODS
   // ========================================================================
   private filterDocumentsByContext(
-    documents: LangChainDocument[]
-    context: any
+    documents: LangChainDocument[],
+    context: { documentTypes?: string[]; dateRange?: { start: Date; end: Date } } = {}
   ): LangChainDocument[] {
     let filtered = documents;
     // Filter by document types
     if (context.documentTypes && context.documentTypes.length > 0) {
-      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type));
+      filtered = filtered.filter(doc => context.documentTypes.includes(doc.metadata.type));
     }
     // Filter by date range
     if (context.dateRange) {
@@ -227,9 +230,7 @@ export class LangChainOllamaService {
     return filtered;
   }
   private createLegalPrompt(question: string, documents: LangChainDocument[]): string {
-    const context = documents
-      .map(doc => `[Source: ${doc.metadata.chunkId}]\n${doc.pageContent}`)
-      .join('\n\n');
+    const context = documents.map(doc => `[Source: ${doc.metadata.chunkId}]\n${doc.pageContent}`).join('\n\n');
     return `You are a legal AI assistant specializing in document analysis and legal research.
 Use the provided context to answer the question accurately and professionally.
 Context:
@@ -256,22 +257,35 @@ Answer:`;
   // ========================================================================
   async testConnection(): Promise<boolean> {
     try {
-      const testResponse = await this.chatModel.invoke("Hello, this is a connection test.");
+      const testResponse = await this.chatModel.invoke('Hello, this is a connection test.');
       this.isInitialized = true;
       return !!testResponse;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Connection test failed:', error);
       return false;
     }
   }
   getStats() {
+    // Use safe runtime introspection to avoid relying on private/internal properties
+    const anyStore = this.vectorStore as any;
+    const vectorStoreDocCount =
+      anyStore?.docstore?._docs?.size ?? // docstore internal (some versions)
+      anyStore?.docs?.length ?? // some implementations
+      anyStore?.index?.length ?? // fallback
+      0;
+
+    const memoryVectorsLength =
+      anyStore?.memoryVectors?.length ?? // used in original code (if present)
+      anyStore?.vectors?.length ?? // possible alternate property
+      0;
+
     return {
       config: this.config,
-      isInitialized: this.isInitialized,
-      vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
-      model: this.config?.model || 'gemma3:2b',
-      embeddingModel: this.config.embeddingModel
-    }
+      vectorStoreDocCount,
+      memoryVectorsLength,
+      model: this.config?.model || 'gemma3:270m',
+      embeddingModel: this.config.embeddingModel,
+    };
   }
   // Clear vector store and reset
   reset() {
@@ -280,6 +294,6 @@ Answer:`;
     console.log('🔄 LangChain service reset');
   }
 }
-// Export singleton instance for global use
+// Export singleton instance for global use (single declaration)
 export const langChainOllamaService = new LangChainOllamaService();
 // Note: Types are already exported as interfaces above

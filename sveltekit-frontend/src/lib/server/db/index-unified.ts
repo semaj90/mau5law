@@ -100,7 +100,7 @@ export async function healthCheck() {
           db.select().from(sessions).limit(1),
           db.select().from(cases).limit(1)
         ]);
-        const failedTests = tableTests.filter(item => item.status) === 'rejected');
+        const failedTests = tableTests.filter(item => item.status) === 'rejected',);
         if (failedTests.length > 0) {
           return {
             status: "degraded" as const,

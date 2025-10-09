@@ -18,17 +18,17 @@ export const caseEmbeddings = pgTable(
   "case_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    caseId: uuid("case_id").notNull(),
-    docId: text("doc_id").notNull(),
-    pageNo: integer("page_no").notNull().default(0),
-    chunkNo: integer("chunk_no").notNull().default(0),
-    text: text("text").notNull(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),
-    textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),
-    metadata: jsonb("metadata").default({}),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    caseId,: uuid("case_id").notNull(),
+    docId,: text("doc_id").notNull(),
+    pageNo,: integer("page_no").notNull().default(0),
+    chunkNo,: integer("chunk_no").notNull().default(0),
+    text,: text("text").notNull(),
+    embedding,: vector("embedding", { dimensions: 512 }).notNull(),
+    textHash,: text("text_hash").notNull(),
+    model,: text("model").notNull().default("embeddinggemma:latest"),
+    metadata,: jsonb("metadata").default({}),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     caseIdIdx: index("case_embeddings_case_id_idx").on(table.caseId),
@@ -45,17 +45,17 @@ export const evidenceEmbeddings = pgTable(
   "evidence_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    evidenceId: uuid("evidence_id").notNull(),
-    docId: text("doc_id").notNull(),
-    pageNo: integer("page_no").notNull().default(0),
-    chunkNo: integer("chunk_no").notNull().default(0),
-    text: text("text").notNull(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),
-    textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),
-    metadata: jsonb("metadata").default({}),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    evidenceId,: uuid("evidence_id").notNull(),
+    docId,: text("doc_id").notNull(),
+    pageNo,: integer("page_no").notNull().default(0),
+    chunkNo,: integer("chunk_no").notNull().default(0),
+    text,: text("text").notNull(),
+    embedding,: vector("embedding", { dimensions: 512 }).notNull(),
+    textHash,: text("text_hash").notNull(),
+    model,: text("model").notNull().default("embeddinggemma:latest"),
+    metadata,: jsonb("metadata").default({}),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     evidenceIdIdx: index("evidence_embeddings_evidence_id_idx").on(table.evidenceId),
@@ -70,30 +70,30 @@ export const legalDocumentChunks = pgTable(
   "legal_document_chunks",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    documentId: text("document_id").notNull(),
-    caseId: uuid("case_id"),
-    evidenceId: uuid("evidence_id"),
-    chunkIndex: integer("chunk_index").notNull(),
-    pageNumber: integer("page_number"),
-    textContent: text("text_content").notNull(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),
-    textHash: text("text_hash").notNull().unique(),
-    tokenCount: integer("token_count"),
+    documentId,: text("document_id").notNull(),
+    caseId,: uuid("case_id"),
+    evidenceId,: uuid("evidence_id"),
+    chunkIndex,: integer("chunk_index").notNull(),
+    pageNumber,: integer("page_number"),
+    textContent,: text("text_content").notNull(),
+    embedding,: vector("embedding", { dimensions: 512 }).notNull(),
+    textHash,: text("text_hash").notNull().unique(),
+    tokenCount,: integer("token_count"),
     // Legal metadata
-    documentType: text("document_type"), // contract, evidence, brief, citation, statute, case_law
-    practiceArea: jsonb("practice_area").default([]),
-    jurisdiction: text("jurisdiction"),
-    confidenceLevel: real("confidence_level"), // 0-1
-    riskLevel: text("risk_level"), // low, medium, high, critical
+    documentType,: text("document_type"), // contract, evidence, brief, citation, statute, case_law
+    practiceArea,: jsonb("practice_area").default([]),
+    jurisdiction,: text("jurisdiction"),
+    confidenceLevel,: real("confidence_level"), // 0-1
+    riskLevel,: text("risk_level"), // low, medium, high, critical
     // Processing metadata
-    extractedEntities: jsonb("extracted_entities").default([]),
-    keyTerms: jsonb("key_terms").default([]),
-    sentimentScore: real("sentiment_score"),
-    complexityScore: real("complexity_score"),
+    extractedEntities,: jsonb("extracted_entities").default([]),
+    keyTerms,: jsonb("key_terms").default([]),
+    sentimentScore,: real("sentiment_score"),
+    complexityScore,: real("complexity_score"),
     // Cache and deduplication;
-    model: text("model").notNull().default("embeddinggemma:latest"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    model,: text("model").notNull().default("embeddinggemma:latest"),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     documentIdIdx: index("legal_document_chunks_document_id_idx").on(table.documentId),
@@ -113,13 +113,13 @@ export const embeddingCache512 = pgTable(
   "embedding_cache_512",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),
-    tokenCount: integer("token_count"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    lastAccessed: timestamp("last_accessed").defaultNow().notNull(),
-    accessCount: integer("access_count").default(0)
+    textHash,: text("text_hash").notNull().unique(),
+    embedding,: vector("embedding", { dimensions: 512 }).notNull(),
+    model,: text("model").notNull().default("embeddinggemma:latest"),
+    tokenCount,: integer("token_count"),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    lastAccessed,: timestamp("last_accessed").defaultNow().notNull(),
+    accessCount,: integer("access_count").default(0)
   },
   (table) => ({
     textHashIdx: index("embedding_cache_512_text_hash_idx").on(table.textHash),
@@ -135,14 +135,14 @@ export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
     fields: [caseEmbeddings.caseId],
     references: [cases.id]
   })
-});
+}),;
 export const evidenceEmbeddingsRelations = relations(evidenceEmbeddings, ({ one }) => ({
   // Reference to main evidence table if it exists
   evidence: one(evidence, {
     fields: [evidenceEmbeddings.evidenceId],
     references: [evidence.id]
   })
-});
+}),;
 export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocumentChunks.caseId],
@@ -152,7 +152,7 @@ export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ on
     fields: [legalDocumentChunks.evidenceId],
     references: [evidence.id]
   })
-});
+}),;
 // TypeScript types for the new tables
 export type CaseEmbedding = typeof caseEmbeddings.$inferSelect;
 export type EvidenceEmbedding = typeof evidenceEmbeddings.$inferSelect;

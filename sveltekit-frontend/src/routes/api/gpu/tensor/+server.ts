@@ -200,12 +200,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     updateProcessingStats(processingTime, (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false)
     stats.successfulRequests++
     return json({
-      success: true;
+      success: true,;
       data: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).data,
       metadata: {
         processingTime,
         cacheHit: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false,
-        service: targetService;
+        service: targetService,;
         route: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).route || generateRouteHash(cacheKey),
         requestId: enhancedTensorData.requestId,
         tensorStats: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.tensorStats,
@@ -416,7 +416,7 @@ function generateCacheKey(tensorData: any): string {
 }
 function hashArray(arr: number[], sampleSize: number): string {
   const sample = arr.slice(0, Math.min(sampleSize, arr.length)
-  let hash = 0
+  let, hash = 0
   for (let i = 0; i < sample.length; i++) {
     const value = Math.round(sample[i] * 1000); // Precision to 3 decimals
     hash = ((hash << 5) - hash) + value

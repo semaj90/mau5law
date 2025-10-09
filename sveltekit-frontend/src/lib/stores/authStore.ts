@@ -65,7 +65,7 @@ const createAuthStore = () => {
     },
     // Login user
     async login(email: string, password: string) {
-      update((state: any) => ({ ...state, isLoading: true });
+      update((state: any) => ({ ...state, isLoading: true }),;
       try {
         const response = await fetch("/api/auth/login", {
           method: "POST",
@@ -113,7 +113,7 @@ const createAuthStore = () => {
       lastName?: string;
       role?: string;
     }) {
-      update((state: any) => ({ ...state, isLoading: true });
+      update((state: any) => ({ ...state, isLoading: true }),;
       try {
         const response = await fetch("/api/auth/register", {
           method: "POST",
@@ -193,7 +193,7 @@ const createAuthStore = () => {
             ...state,
             user: { ...state.user!, ...updatedUser },
             lastActivity: new Date()
-          });
+          }),;
           return { success: true }
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
@@ -208,7 +208,7 @@ const createAuthStore = () => {
       update((state: any) => ({
         ...state,
         lastActivity: new Date()
-      });
+      }),;
     }
   }
 }
@@ -260,7 +260,7 @@ const createAIAssistantStore = () => {
           legalSpecialization:
             user.role === "prosecutor" || user.role === "detective"
         }
-      });
+      }),;
       // Load user's AI preferences from server
       this.loadPreferences();
     },
@@ -275,7 +275,7 @@ const createAIAssistantStore = () => {
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...preferences }
-          });
+          }),;
         }
       } catch (error: any) {
         console.error("Failed to load AI preferences:", error);
@@ -296,7 +296,7 @@ const createAIAssistantStore = () => {
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...updates }
-          });
+          }),;
           return { success: true }
         } else {
           return { success: false, error: "Failed to update preferences" }
@@ -310,14 +310,14 @@ const createAIAssistantStore = () => {
       update((state: any) => ({
         ...state,
         currentContext: context
-      });
+      }),;
     },
     // Add conversation to history
     addConversation(
       conversation: Omit<
         AIAssistantState["conversationHistory"][0],
         "id" | "timestamp"
-      >;
+      >,;
     ) {
       const newConversation = {
         ...conversation,
@@ -330,10 +330,10 @@ const createAIAssistantStore = () => {
           newConversation,
           ...state.conversationHistory.slice(0, 49)
         ], // Keep last 50
-      });
+      }),;
     },
     // Clear AI assistant state
-    clear() {
+    clear(), {
       set({
         isEnabled: false
         preferences: {
@@ -352,6 +352,6 @@ export const aiAssistantStore = createAIAssistantStore();
 export const aiEnabled = derived(aiAssistantStore, ($ai: any) => $ai.isEnabled);
 export const aiPreferences = derived(aiAssistantStore, ($ai: any) => $ai.preferences);
 export const aiContext = derived(aiAssistantStore, ($ai: any) => $ai.currentContext);
-export const recentConversations = derived(aiAssistantStore, ($ai: any) => $ai.conversationHistory.slice(0, 10);
+export const recentConversations = derived(aiAssistantStore, ($ai: any) => $ai.conversationHistory.slice(0, 10),;
 // Note: Auth initialization is now handled server-side via hooks.server.ts
 // Client-side initialization only when explicitly needed to prevent redirect loops

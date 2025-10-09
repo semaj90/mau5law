@@ -236,7 +236,7 @@ class GPUTensorWorker {
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
-    const shapeData = new Int32Array(shapeBuffer.getMappedRange();
+    const shapeData = new Int32Array(shapeBuffer.getMappedRange(),;
     for (let i = 0; i < 4; i++) {
       shapeData[i] = i < tensorData.shape.length ? tensorData.shape[i] : 1;
     }
@@ -246,7 +246,7 @@ class GPUTensorWorker {
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
-    const metadataArray = new Int32Array(metadataBuffer.getMappedRange();
+    const metadataArray = new Int32Array(metadataBuffer.getMappedRange(),;
     metadataArray[0] = tensorData.dimensions;
     metadataArray[1] = tensorData.lodLevel;
     metadataArray[2] = tensorData.data.length;
@@ -281,7 +281,7 @@ class GPUTensorWorker {
     copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, tensorData.data.byteLength);
     this.gpuDevice.queue.submit([copyEncoder.finish()]);
     await resultBuffer.mapAsync(GPUMapMode.READ);
-    const resultArray = new Float32Array(resultBuffer.getMappedRange();
+    const resultArray = new Float32Array(resultBuffer.getMappedRange(),;
     const processedData = new Float32Array(resultArray);
     resultBuffer.unmap();
     // Cleanup GPU resources
@@ -330,7 +330,7 @@ class GPUTensorWorker {
       this.tensorCache.delete(oldestKey);
     }
     this.tensorCache.set(cacheKey, {
-      data: result;
+      data: result,;
       timestamp: Date.now()
     });
   }

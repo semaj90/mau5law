@@ -182,7 +182,7 @@ class ComponentTextureRegistry {
     }
     // Update memory bank usage
     const currentUsage = this.memoryBankUsage.get(textureSlot.memoryBank) || 0;
-    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size);
+    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size),;
     // Reset texture slot
     textureSlot.size = 0;
     textureSlot.lockCount = Math.max(0, textureSlot.lockCount - 1);
@@ -288,21 +288,21 @@ class ComponentTextureRegistry {
         availableSize: maxSize - usage,
         componentCount: Array.from(this.components.values()
           .filter(item => item.length),
-        textureCount: Array.from(this.textureSlots.values()
+        textureCount,: Array.from(this.textureSlots.values()
           .filter(item => item.length),
-        fragmentationRatio: 0, // Would calculate actual fragmentation
-        hitRate: 0.9 // Placeholder for hit rate calculation
+        fragmentationRatio,: 0, // Would calculate actual fragmentation
+        hitRate,: 0.9 // Placeholder for hit rate calculation
       }
     });
     return {
       totalComponents: this.components.size,
       activeComponents: Array.from(this.components.values()
         .filter(item => item.length),
-      totalTextures: this.textureSlots.size,
+      totalTextures,: this.textureSlots.size,
       memoryBanks,
-      conflicts: this.conflictLog.length,
-      evictions: this.evictionCount,
-      lastDefrag: this.lastDefragTime
+      conflicts,: this.conflictLog.length,
+      evictions,: this.evictionCount,
+      lastDefrag,: this.lastDefragTime
     }
   }
   /**

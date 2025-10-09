@@ -41,7 +41,7 @@ export class User implements Partial<UserType> {
 // 2. User Store (Svelte Writable)
 // Creates a global, reactive store initialized with a Guest user.
 const createUserStore = () => {
-  const { subscribe, set, update } = writable(new User();
+  const { subscribe, set, update } = writable(new User(),;
   return {
     subscribe,
     // Set the user data (e.g., on login)
@@ -51,11 +51,11 @@ const createUserStore = () => {
     },
     // Clear user data (e.g., on logout)
     clearUser: () => {
-      set(new User(); // Reset to Guest user
+      set(new User(),; // Reset to Guest user
     },
     // Update a specific property of the user
     updateUser: (props: any) => {
-      update((user) => ({ ...user, ...props });
+      update((user) => ({ ...user, ...props }),;
     },
     // Select a case for the user
     selectCase: (caseId: string | null) => {

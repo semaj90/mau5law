@@ -64,7 +64,7 @@ export class RedisIntegration {
   compressData(data) {
     const serialized = JSON.stringify(data);
     if (this.options.useCompression && serialized.length > COMPRESSION_THRESHOLD) {
-      const compressed = gzipSync(Buffer.from(serialized);
+      const compressed = gzipSync(Buffer.from(serialized),;
       return {
         compressed: true
         data: compressed.toString('base64'),
@@ -103,7 +103,7 @@ export class RedisIntegration {
     // Try Redis first
     if (this.isConnected && this.client) {
       try {
-        await this.client.setex(finalKey, finalTTL, JSON.stringify(compressed);
+        await this.client.setex(finalKey, finalTTL, JSON.stringify(compressed),;
         return true;
       } catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);

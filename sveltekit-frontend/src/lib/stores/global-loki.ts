@@ -58,7 +58,7 @@ export class GlobalLokiStore {
       if (this.redis && typeof (this.redis as any).publish === 'function') {
           const r = this.redis as any;
           if (r && typeof r.publish === 'function') {
-            r.publish(this.pubChannel, JSON.stringify(update);
+            r.publish(this.pubChannel, JSON.stringify(update),;
           }
       }
     } catch (_) {}

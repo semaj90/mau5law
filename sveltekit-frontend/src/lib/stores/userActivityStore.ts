@@ -73,7 +73,7 @@ class UserActivityDetector {
     // Create activity event
     const activityEvent: ActivityEvent = {
       type: eventType
-      timestamp: now;
+      timestamp: now,;
       target: event?.target ? (event.target as Element).tagName: undefined
     }
     // Add to history
@@ -107,7 +107,7 @@ class UserActivityDetector {
       event => Date.now() - event.timestamp < 60000 // Last minute
     );
     // Score based on event diversity and frequency
-    const eventTypes = new Set(recentEvents.map(e => e.type);
+    const eventTypes = new Set(recentEvents.map(e => e.type),;
     const frequency = recentEvents.length;
     const diversity = eventTypes.size;
     return Math.min((frequency * diversity) / 10, 10); // Score 0-10
@@ -139,7 +139,7 @@ class UserActivityDetector {
     this.activityStore.update(metrics => ({
       ...metrics,
       isActive: false
-    });
+    }),;
     // Send idle event to GPU bridge
     this.sendActivityToGPUBridge('IDLE_TIMEOUT', {
       idleTimeMs: this.idleThreshold
@@ -173,11 +173,11 @@ class UserActivityDetector {
   private sendActivityToGPUBridge(eventType: string, data?: any): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
       const message = {
-        type: eventType;
+        type: eventType,;
         timestamp: Date.now(),
         ...data
       }
-      this.wsConnection.send(JSON.stringify(message);
+      this.wsConnection.send(JSON.stringify(message),;
     }
   }
   private shouldLogActivity(eventType: string): boolean {

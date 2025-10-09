@@ -41,7 +41,7 @@ type PrefetchEvent =
   | { type: 'CACHE_HIT'; resource: string }
   | { type: 'CACHE_MISS'; resource: string }
 export const prefetchMachine = createMachine({
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: PrefetchContext;
     events: PrefetchEvent;
   },
@@ -316,21 +316,21 @@ function generatePrefetchQueue(intent: string, context: PrefetchContext) {
       queue.push(
         { resource: 'legal-database-search', priority: 1, type: 'api' },
         { resource: 'case-law-embeddings', priority: 2, type: 'embedding' },)
-        { resource: '/legal/search', priority: 3, type: 'route' }
+        { resource: '/legal/search', priority,: 3, typ,e: 'route' }
       );
       break;
     case 'evidence_analysis':
       queue.push(
         { resource: 'ai-analysis-models', priority: 1, type: 'api' },
         { resource: 'evidence-embeddings', priority: 2, type: 'embedding' },)
-        { resource: '/evidence/analysis', priority: 3, type: 'route' }
+        { resource: '/evidence/analysis', priority,: 3, typ,e: 'route' }
       );
       break;
     case 'case_management':
       queue.push(
         { resource: 'case-templates', priority: 1, type: 'document' },
         { resource: 'workflow-data', priority: 2, type: 'api' },)
-        { resource: '/cases/new', priority: 3, type: 'route' }
+        { resource: '/cases/new', priority,: 3, typ,e: 'route' }
       );
       break;
     case 'ai_consultation':

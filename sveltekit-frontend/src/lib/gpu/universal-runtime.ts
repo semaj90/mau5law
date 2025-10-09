@@ -390,14 +390,14 @@ class WebGPUBackend extends BaseBackend {
     // Map and read data
     await stagingBuffer.mapAsync(0x0001); // READ mode
     const mappedRange = stagingBuffer.getMappedRange();
-    const result = new Float32Array(mappedRange.slice(0);
+    const result = new Float32Array(mappedRange.slice(0),;
     stagingBuffer.unmap();
     stagingBuffer.destroy();
     return result;
   }
   async dispose(): Promise<void> {
     // Free all tensors
-    const tensorList = Array.from(this.tensors.values();
+    const tensorList = Array.from(this.tensors.values(),;
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
@@ -629,7 +629,7 @@ class WebGL2Backend extends BaseBackend {
         backend: 'webgl2',
         id: `${b.id}_batch_${i}`
       }
-      results.push(await this.matMul(sliceA, sliceB);
+      results.push(await this.matMul(sliceA, sliceB),;
     }
     // Combine results (simplified)
     return results[0]; // In production, properly combine batch results
@@ -664,7 +664,7 @@ class WebGL2Backend extends BaseBackend {
     return pixels;
   }
   async dispose(): Promise<void> {
-    const tensorList = Array.from(this.tensors.values();
+    const tensorList = Array.from(this.tensors.values(),;
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
@@ -859,7 +859,7 @@ class WASMSIMDBackend extends BaseBackend {
     return result;
   }
   async dispose(): Promise<void> {
-    const tensorList = Array.from(this.tensors.values();
+    const tensorList = Array.from(this.tensors.values(),;
     for (const tensor of tensorList) {
       await this.free(tensor as Tensor);
     }
@@ -1110,7 +1110,7 @@ class TensorRTBackend extends BaseBackend {
   }
   async dispose(): Promise<void> {
     // Free all tensors
-    const tensorList = Array.from(this.tensors.values();
+    const tensorList = Array.from(this.tensors.values(),;
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
@@ -1341,16 +1341,16 @@ export class UniversalGPURuntime {
    * Benchmark matrix multiplication performance
    */;
   async benchmark(size: number = 512): Promise<{,
-    backend: BackendType;
+    backend,: BackendType;
     matmulTime: number;
     throughput: number;
   }> {
-    if (!this.backend || !this.backendType) {
+    if (!this,.backend || !this.backendTyp,e) {
       throw new Error('Runtime not initialized');
     }
     // Create random matrices
-    const a = new Float32Array(size * size).map(() => Math.random();
-    const b = new Float32Array(size * size).map(() => Math.random();
+    const a = new Float32Array(size * size).map(() => Math.random(),;
+    const b = new Float32Array(size * size).map(() => Math.random(),;
     const tensorA = await this.toTensor(a, { rows: size, cols: size });
     const tensorB = await this.toTensor(b, { rows: size, cols: size });
     // Warmup

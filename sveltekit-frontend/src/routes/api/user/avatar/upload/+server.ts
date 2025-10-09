@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({ error: "Not authenticated" }, { status: 401 })
   }
   try {
-    console.log("Avatar upload started for user:", locals.user.id)
+    console.log("Avatar upload started for user:", getUserId(locals))
     const formData = await request.formData()
     console.log(
       "FormData received, entries:",
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Generate unique filename
     const timestamp = Date.now()
     const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"
-    const filename = `avatar_${locals.user.id}_${timestamp}.${extension}`
+    const filename = `avatar_${getUserId(locals)}_${timestamp}.${extension}`
     const filepath = join(UPLOAD_DIR, filename)
     console.log("Saving file to:", filepath)
     // Convert file to buffer and save
@@ -74,14 +74,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     await db
       .update(users)
       .set({ avatarUrl })
-      .where(eq(users.id, locals.user.id)
+      .where(eq(users.id, getUserId(locals))
     console.log("Database updated successfully")
     return json({
       success: true,
       avatarUrl,
       message: "Avatar uploaded successfully"
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Avatar upload error:", error)
     const errorMessage =
       error instanceof Error ? error.message: "Unknown error"
@@ -97,7 +97,7 @@ export const DELETE: RequestHandler = async ({ locals }) => {
     await db
       .update(users)
       .set({ avatarUrl: null })
-      .where(eq(users.id, locals.user.id)
+      .where(eq(users.id, getUserId(locals))
     return json({
       success: true,
       message: "Avatar removed successfully"

@@ -260,12 +260,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json()
       {
         answer: 'Error processing query. Please check system status.',
-        model_used: 'error_handler',
-        cache_hit: false
+        model_used,: 'error_handler',
+        cache_hit,: false
         memory_bank_used: 'none',
-        response_time_ms: Date.now() - startTime,
-        cost_saved: 0,
-        error: error instanceof Error ? error.message: 'Unknown error'
+        response_time_ms,: Date.now() - startTime,
+        cost_saved,: 0,
+        error,: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     )

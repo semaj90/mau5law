@@ -441,8 +441,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .debug-panel pre {
     max-height: 300px;
-    overflow: aut;
-o;
+    overflow: auto;
     background: white;
     padding: 1rem;
     border-radius: 4px;

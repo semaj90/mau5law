@@ -154,8 +154,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       colors[i3 + 1] = color.g;
       colors[i3 + 2] = color.b;
     }
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3);
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3);
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3),;
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3),;
     const particleMaterial = new THREE.PointsMaterial({
       size: 0.05,
       vertexColors: true
@@ -375,7 +375,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     ctx.shadowOffsetX = 2;
     ctx.shadowOffsetY = 2;
     ctx.shadowBlur = 4;
-    ctx.fillText(this.options.text!, canvas.width / (2 * dpr), canvas.height / (2 * dpr);
+    ctx.fillText(this.options.text!, canvas.width / (2 * dpr), canvas.height / (2 * dpr),;
     // Create texture with appropriate filtering
     this.textTexture = new THREE.CanvasTexture(canvas);
     this.textTexture.generateMipmaps = true;
@@ -630,7 +630,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       this.remove(this.textMesh);
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose();
+        this.textMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.textMesh.material.dispose();
       }
@@ -720,7 +720,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     if (this.textMesh) {
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose();
+        this.textMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.textMesh.material.dispose();
       }
@@ -728,7 +728,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     if (this.iconMesh) {
       this.iconMesh.geometry.dispose();
       if (Array.isArray(this.iconMesh.material)) {
-        this.iconMesh.material.forEach(mat => mat.dispose();
+        this.iconMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.iconMesh.material.dispose();
       }

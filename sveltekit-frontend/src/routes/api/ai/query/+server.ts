@@ -42,7 +42,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     // Process AI query
     const result = await aiService.processQuery(
       validatedData.query,
-      locals.user.id,
+      getUserId(locals),
       validatedData.caseId,
       validatedData.options
     )
@@ -88,7 +88,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     // Find similar queries
     const similarQueries = await aiService.findSimilarQueries(
       embedding,
-      locals.user.id,
+      getUserId(locals),
       5
     )
     return json({

@@ -218,7 +218,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -263,7 +263,7 @@ export class ContextualEngineeringMachine {
         console.log(`🎯 Predicted: ${prediction.predictedIntent} (${(prediction.confidence * 100).toFixed(1)}%)`);
         console.log(`📝 Expected: ${testCase.expectedIntent}`);
         if (prediction.predictedIntent === testCase.expectedIntent &&;
-            prediction.confidence >= testCase.minConfidence) {
+            prediction.confidence >= testCase.minConfidence,) {
           successfulPredictions++;
           console.log('✅ Intent prediction correct');
         } else {
@@ -296,7 +296,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -333,7 +333,7 @@ export class ContextualEngineeringMachine {
         console.log(`   Seasonal trends: ${prediction.temporalInsights.seasonalTrends.length} trends`);
         console.log(`   User patterns: ${prediction.temporalInsights.userPatterns.length} patterns`);
         if (prediction.temporalInsights.commonAtThisTime.length > 0 ||;
-            prediction.temporalInsights.userPatterns.length > 0) {
+            prediction.temporalInsights.userPatterns.length > 0,) {
           patternsDetected++;
         }
       }
@@ -358,7 +358,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -412,7 +412,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -483,7 +483,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -546,7 +546,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -594,7 +594,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors: [`Query optimization error: ${error.message}`]
       });
     }
@@ -608,7 +608,7 @@ export class ContextualEngineeringMachine {
       // Simulate conversation with time gaps
       await storeChatWithVector(userId, "I'm working on an NDA for our startup", "session_1");
       // Simulate 1 hour gap
-      await new Promise(resolve => setTimeout(resolve, 100); // Simulate time passage
+      await new Promise(resolve => setTimeout(resolve, 100),; // Simulate time passage
       await storeChatWithVector(userId, "The other party wants to modify the confidentiality terms", "session_2");
       // Test if context is maintained
       const prediction = await getPredictiveAssistance(
@@ -635,7 +635,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors: [`Context maintenance error: ${error.message}`]
       });
     }
@@ -741,7 +741,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -835,7 +835,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -906,7 +906,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -970,7 +970,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false
         executionTime: performance.now() - startTime,
-        details: { [key: string]: any },
+        details: { [key,: strin,g]: any },
         errors
       });
     }
@@ -1119,7 +1119,7 @@ export class ContextualEngineeringMachine {
     const recentComplexity = context.conversationFlow
       .slice(-5)
       .map(msg => this.assessQueryComplexity(msg.content)
-      .reduce((sum, c) => sum + c, 0) / Math.min(5, context.conversationFlow.length);
+      .reduce((sum, c) => sum + c, 0) / Math.min(5, context.conversationFlow.length),;
     if (recentComplexity > 0.8) {
       context.learningProfile.expertise_level = 'expert';
     } else if (recentComplexity > 0.5) {
@@ -1158,7 +1158,7 @@ export class ContextualEngineeringMachine {
       if (positiveWords.includes(word)) sentiment += 0.2;
       if (negativeWords.includes(word)) sentiment -= 0.2;
     });
-    return Math.max(-1, Math.min(1, sentiment);
+    return Math.max(-1, Math.min(1, sentiment),;
   }
   /**
    * Analyze stress level from text
@@ -1172,11 +1172,11 @@ export class ContextualEngineeringMachine {
       if (stressIndicators.includes(word)) stress += 0.15;
       if (calmIndicators.includes(word)) stress -= 0.1;
     });
-    return Math.max(0, Math.min(1, stress);
+    return Math.max(0, Math.min(1, stress),;
   }
   private generateTestSummary(): void {
     const totalTests = this.testResults.length;
-    const passedTests = this.testResults.filter(item => item.success)).length;
+    const passedTests = this.testResults.filter(item => item.success),).length;
     const totalExecutionTime = this.testResults.reduce((sum, result) => sum + (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime, 0);
     console.log('\n📊 CONTEXTUAL ENGINEERING MACHINE TEST SUMMARY');
     console.log('================================================');
@@ -1202,7 +1202,7 @@ export class ContextualEngineeringMachine {
       const status = (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success ? '✅' : '❌';
       console.log(`${status} ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).testName}: ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime.toFixed(2)}ms`);
       if ((result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors && (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.length > 0) {
-        (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.forEach(error => console.log(`   ⚠️ ${error}`);
+        (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.forEach(error => console.log(`   ⚠️ ${error}`),;
       }
     });
     // System recommendations

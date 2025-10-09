@@ -21,7 +21,7 @@ export async function getUserById(id: string): Promise<User | null> {
       .select()
       .from(users)
       .where(eq(users.id, id)
-      .limit(1);
+      .limit(1),;
     return result[0] || null;
   } catch (error) {
     console.error("Error fetching user by ID:", error);
@@ -34,7 +34,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
       .select()
       .from(users)
       .where(eq(users.email, email)
-      .limit(1);
+      .limit(1),;
     return result[0] || null;
   } catch (error) {
     console.error("Error fetching user by email:", error);
@@ -68,7 +68,7 @@ export async function createUser(userData: {
   }
 }
 export async function updateUser(
-  id: string;
+  id: string,;
   updates: Partial<User>
 ): Promise<User | null> {
   try {
@@ -76,7 +76,7 @@ export async function updateUser(
       .update(users)
       .set({ ...updates, updatedAt: new Date() })
       .where(eq(users.id, id)
-      .returning();
+      .returning(),;
     return result[0] || null;
   } catch (error) {
     console.error("Error updating user:", error);

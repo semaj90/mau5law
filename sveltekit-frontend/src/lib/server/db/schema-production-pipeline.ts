@@ -50,7 +50,7 @@ export const crawlJobs = pgTable('crawl_jobs', {
   domainIdx: index('crawl_jobs_domain_idx').on(table.domain),
   priorityIdx: index('crawl_jobs_priority_idx').on(table.priority),
   createdAtIdx: index('crawl_jobs_created_at_idx').on(table.createdAt)
-});
+}),;
 /**
  * Crawled Pages - Stores raw crawled content before processing
  */;
@@ -80,7 +80,7 @@ export const crawledPages = pgTable('crawled_pages', {
   statusIdx: index('crawled_pages_status_idx').on(table.processingStatus),
   hashIdx: index('crawled_pages_hash_idx').on(table.contentHash),
   ocrIdx: index('crawled_pages_ocr_idx').on(table.ocrRequired)
-});
+}),;
 // ===== DOCUMENT PROCESSING TABLES =====
 /**
  * Documents - Processed and classified documents
@@ -126,7 +126,7 @@ export const documents = pgTable('documents', {
   embeddingStatusIdx: index('documents_embedding_status_idx').on(table.embeddingStatus),
   createdAtIdx: index('documents_created_at_idx').on(table.createdAt),
   qualityScoreIdx: index('documents_quality_score_idx').on(table.qualityScore)
-});
+}),;
 /**
  * Document Chunks - Strategic chunking for optimal embeddings
  */;
@@ -164,7 +164,7 @@ export const documentChunks = pgTable('document_chunks', {
   embeddingIdx: index('document_chunks_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
   embeddingL2Idx: index('document_chunks_embedding_l2_idx').using('hnsw', table.embedding.op('vector_l2_ops')),
   embeddingIpIdx: index('document_chunks_embedding_ip_idx').using('hnsw', table.embedding.op('vector_ip_ops'))
-});
+}),;
 // ===== SEARCH & INDEXING TABLES =====
 /**
  * Search Index - Full-text search with legal-specific ranking
@@ -197,7 +197,7 @@ export const searchIndex = pgTable('search_index', {
   freshnessIdx: index('search_index_freshness_idx').on(table.freshness),
   popularityIdx: index('search_index_popularity_idx').on(table.popularity),
   legalWeightIdx: index('search_index_legal_weight_idx').on(table.legalWeight)
-});
+}),;
 /**
  * Cache Keys - Redis cache key management and invalidation
  */;
@@ -223,7 +223,7 @@ export const cacheKeys = pgTable('cache_keys', {
   queryHashIdx: index('cache_keys_query_hash_idx').on(table.queryHash),
   expiresAtIdx: index('cache_keys_expires_at_idx').on(table.expiresAt),
   hitCountIdx: index('cache_keys_hit_count_idx').on(table.hitCount)
-});
+}),;
 // ===== PROCESSING & MONITORING TABLES =====
 /**
  * Processing Jobs - Tracks async processing tasks
@@ -256,7 +256,7 @@ export const processingJobs = pgTable('processing_jobs', {
   queueIdx: index('processing_jobs_queue_idx').on(table.queueName),
   workerIdx: index('processing_jobs_worker_idx').on(table.workerId),
   createdAtIdx: index('processing_jobs_created_at_idx').on(table.createdAt)
-});
+}),;
 /**
  * System Metrics - Performance and health monitoring
  */;
@@ -274,7 +274,7 @@ export const systemMetrics = pgTable('system_metrics', {
   componentIdx: index('system_metrics_component_idx').on(table.component),
   timestampIdx: index('system_metrics_timestamp_idx').on(table.timestamp),
   typeTimestampIdx: index('system_metrics_type_timestamp_idx').on(table.metricType, table.timestamp)
-});
+}),;
 // ===== LEGAL-SPECIFIC TABLES =====
 /**
  * Legal Authorities - Court decisions, statutes, regulations
@@ -303,7 +303,7 @@ export const legalAuthorities = pgTable('legal_authorities', {
   citationIdx: uniqueIndex('legal_authorities_citation_idx').on(table.citation),
   bindingIdx: index('legal_authorities_binding_idx').on(table.bindingStatus),
   citationCountIdx: index('legal_authorities_citation_count_idx').on(table.citationCount)
-});
+}),;
 // ===== UTILITY FUNCTIONS =====
 /**
  * Vector similarity search function

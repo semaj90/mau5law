@@ -33,12 +33,12 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
     return apiSuccess()
       {
         conversation: conversationData.conversation,
-        messages: chatMessages
+        messages,: chatMessages
       },
       'Conversation retrieved successfully',
       requestId
     )
-  } catch (err: any) {
+  }, catch (err: any) {
     return apiError(
       'Failed to retrieve conversation',
       500,
@@ -75,7 +75,7 @@ export const PATCH: RequestHandler = withErrorHandling(async (event) => {
       'Conversation updated successfully',
       requestId
     )
-  } catch (err: any) {
+  }, catch (err: any) {
     return apiError(
       'Failed to update conversation',
       500,

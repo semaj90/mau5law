@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Semantic search API error:', error)
     return json({
         error: 'Failed to perform semantic search',
@@ -89,10 +89,10 @@ export const GET: RequestHandler = async () => {
       success: 'boolean',
       query: 'string',
       results: [{,
-        document: 'string',
-        score: 'number',
-        index: 'number'
-      }],
+        document,: 'string',
+        score,: 'number',
+        index,: 'number'
+      },],
       metadata: {
         documentCount: 'number',
         resultsFound: 'number',
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
         gpuUsed: 'boolean'
       }
     },
-    examples: {
+    examples,: {
       request: {
         query: 'legal contract terms',
         documents: [
@@ -114,6 +114,6 @@ export const GET: RequestHandler = async () => {
         useGPU: true
       }
     },
-    timestamp: Date.now()
-  })
+    timestamp,: Date.now()
+  },)
 }

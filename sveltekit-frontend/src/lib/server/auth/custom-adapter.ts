@@ -27,17 +27,17 @@ import { eq, lte } from 'drizzle-orm';
 export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   async deleteSession(sessionId: string): Promise<void> {
     try {
-      await db.delete(sessions).where(eq(sessions.id, sessionId);
+      await db.delete(sessions).where(eq(sessions.id, sessionId),;
     } catch (error) {
       console.error('[AUTH] Error deleting session:', error);
       throw error;
     }
   }
   async deleteUserSessions(userId: string): Promise<void> {
-    await db.delete(sessions).where(eq(sessions.user_id, userId);
+    await db.delete(sessions).where(eq(sessions.user_id, userId),;
   }
   async getSessionAndUser(
-    sessionId: string;
+    sessionId: string,;
   ): Promise<[session: DatabaseSession | null, user: DatabaseUser | null]> {
     try {
       // Check if db and db.select exist
@@ -60,7 +60,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         .from(sessions)
         .innerJoin(users, eq(sessions.user_id, users.id)
         .where(eq(sessions.id, sessionId)
-        .limit(1);
+        .limit(1),;
       if ((result as { length?: any; map?: any }).length === 0) {
         return [null, null];
       }
@@ -85,7 +85,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           lastName: null
           role: 'user',
           isActive: true
-          avatarUrl: null;
+          avatarUrl: null,;
           name: null
         }
       }
@@ -96,7 +96,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
     }
   }
   async getUserSessions(userId: string): Promise<DatabaseSession[]> {
-    const result = await db.select().from(sessions).where(eq(sessions.user_id, userId);
+    const result = await db.select().from(sessions).where(eq(sessions.user_id, userId),;
     return (result as { length?: any; map?: any }).map((session) => ({
       id: session.id,
       userId: session.user_id,
@@ -107,7 +107,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         session_context: session.session_context,
         created_at: session.created_at
       }
-    });
+    }),;
   }
   async setSession(session: DatabaseSession): Promise<void> {
     await db.insert(sessions).values({
@@ -116,14 +116,14 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       expires_at: session.expiresAt,
       ip_address: null
       user_agent: null
-      session_context: { [key: string]: any },
+      session_context: { [key,: strin,g]: any },
       created_at: new Date()
     });
   }
   async updateSessionExpiration(sessionId: string, expiresAt: Date): Promise<void> {
-    await db.update(sessions).set({ expires_at: expiresAt }).where(eq(sessions.id, sessionId);
+    await db.update(sessions).set({ expires_at: expiresAt }).where(eq(sessions.id, sessionId),;
   }
   async deleteExpiredSessions(): Promise<void> {
-    await db.delete(sessions).where(lte(sessions.expires_at, new Date());
+    await db.delete(sessions).where(lte(sessions.expires_at, new Date()),;
   }
 }

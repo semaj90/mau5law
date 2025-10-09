@@ -169,10 +169,10 @@ export class DynamicPortManager {
     return new Promise((resolve) => {
       const server = createServer();
       server.listen(port, () => {
-        server.once('close', () => resolve(true);
+        server.once('close', () => resolve(true),;
         server.close();
       });
-      server.on('error', () => resolve(false);
+      server.on('error', () => resolve(false),;
     });
   }
   releasePort(serviceName: string): void {
@@ -207,13 +207,13 @@ export class DynamicPortManager {
     this.services.forEach((service, name) => {
       const port = service.currentPort || service.basePort;
       const envName = name.toUpperCase().replace(/-/g, '_') + '_PORT';
-      config[envName] = port.toString());
+      config[envName] = port.toString(),);
     });
     return config;
   }
   // Generate service URLs
-  getServiceUrls(): Record<string, string> {
-    const urls: Record<string, string> = {}
+  getServiceUrls(),: Record<string, string> {
+    const, url,s: Record<string, string,> = {}
     this.services.forEach((service, name) => {
       const port = service.currentPort || service.basePort;
       // Determine protocol based on service type
@@ -233,9 +233,9 @@ export class DynamicPortManager {
     return urls;
   }
   // Initialize all services and find available ports
-  async initializeAllServices(): Promise<Map<string, number> {
-    const allocated = new Map<string, number>();
-    for (const [serviceName] of this.services) {
+  async initializeAllServices(),: Promise<Map<string, number> {
+    const, allocated = new Map<string, number>(,);
+    for (const, [serviceName], o,f t,his.serv,ices) {
       try {
         const port = await this.findAvailablePort(serviceName);
         allocated.set(serviceName, port);
@@ -246,18 +246,18 @@ export class DynamicPortManager {
     return allocated;
   }
   // Display port allocation summary
-  displayPortAllocation(): void {
-    console.log('\n🔌 Dynamic Port Allocation Summary:');
-    console.log('═'.repeat(50);
-    this.services.forEach((service, name) => {
+  displayPortAllocation(),: void {
+    console,.log('\n🔌 Dynamic Port Allocation Summary:',);
+    console,.log('═'.repeat(50,);
+    this,.services.forEach((service, name) => {
       const status = service.currentPort ? '✅' : '❌';
       const port = service.currentPort || 'N/A';
       const range = `[${service.portRange[0]}-${service.portRange[service.portRange.length - 1]}]`;
-      console.log(`${status} ${name.padEnd(20)} ${port.toString()).padEnd(6)} ${range}`);
+      console.log(`${status} ${name.padEnd(20)} ${port.toString(),).padEnd(6)}, ${range}`);
     });
     console.log('═'.repeat(50);
-    console.log(`Total services: ${this.services.size}`);
-    console.log(`Allocated ports: ${Array.from(this.usedPorts).length}`);
+    console.log(`,Total, servic,es,: ${,this.services.size}`);
+    console.log(`,Allocated, por,ts,: ${A,rray.from(this.usedPorts).length}`);
   }
 }
 // Singleton instance
@@ -285,7 +285,7 @@ export function getServiceUrls(): Record<string, string> {
 export class PortAllocationError extends Error {
   constructor(serviceName: string, attempted: number[]) {
     super(
-      `Failed to allocate port for service ${serviceName}. Attempted ports: ${attempted.join(', ')}`
+      `,Failed, t,o alloca,te p,ort, for se,rvice ${serviceName}. Attempted ports: ${attempted.join(', ')}`
     );
     this.name = 'PortAllocationError';
   }
@@ -304,7 +304,7 @@ export async function resolvePortConflicts(): Promise<void> {
     }
   }
   if (conflicts.length > 0) {
-    console.log(`⚠️ Found conflicts for services: ${conflicts.join(', ')}`);
+    console.log(`⚠️ Found conflicts for, service,s: ${conflicts.join(', ')}`);
     for (const serviceName of conflicts) {
       portManager.releasePort(serviceName);
       await portManager.findAvailablePort(serviceName);

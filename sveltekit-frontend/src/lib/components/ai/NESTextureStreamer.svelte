@@ -446,8 +446,7 @@ lodManager = new N64LODManager();
   .texture-viewer {
     position: relative;
     height: 400px;
-    overflow: aut;
-o;
+    overflow: auto;
     background: repeating-conic-gradient(
       #2a2a2a 0% 25%,
       transparent 0% 50%

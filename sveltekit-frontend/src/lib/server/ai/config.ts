@@ -82,7 +82,7 @@ export function hashText(text: string): string {
  * Creates a deterministic ID from multiple components
  */;
 export function createId(...components: string[]): string {
-  return hashText(components.join('|');
+  return hashText(components.join('|'),;
 }
 /**
  * Sanitizes user input to prevent injection attacks
@@ -107,7 +107,7 @@ export function isValidUUID(uuid: string): boolean {
 export function withRetry<T>(
   operation: () => Promise<T>,
   maxRetries: number = env.RAG_MAX_RETRIES,
-  baseDelay: number = 1000;
+  baseDelay: number = 1000,;
 ): Promise<T> {
   return new Promise(async (resolve, reject) => {
     let lastError: Error;
@@ -125,7 +125,7 @@ export function withRetry<T>(
         }
         const delay = baseDelay * Math.pow(2, attempt);
         logger.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error);
-        await new Promise(resolve => setTimeout(resolve, delay);
+        await new Promise(resolve => setTimeout(resolve, delay),;
       }
     }
   });
@@ -136,7 +136,7 @@ export function withRetry<T>(
 export function withTimeout<T>(
   operation: Promise<T>
   timeoutMs: number = env.RAG_TIMEOUT_MS,
-  errorMessage: string = 'Operation timed out';
+  errorMessage: string = 'Operation timed out',;
 ): Promise<T> {
   return Promise.race([
     operation,
@@ -300,10 +300,10 @@ export const metrics = new MetricsCollector();
  * Timing decorator for measuring function execution time
  */;
 export function measureTime(operation: string) {
-  return function <T extends (...args: any[]) => Promise<any>(,
+  return function <T extends (...args: any[]) => Promise<any>,(,
     _target: any
     _propertyName: string
-    descriptor: TypedPropertyDescriptor<T>;
+    descriptor: TypedPropertyDescriptor<T>,;
   ) {
     const method = descriptor.value!;
     descriptor.value = async function (this: any, ...args: any[]) {
@@ -334,9 +334,9 @@ export function validateDocumentSize(content: string): void {
  * Extracts legal entities from text using simple patterns
  */
 export function extractLegalEntities(
-  text: string;
+  text: string,;
 ): Array< {
-  const entities: Array<any> = [];
+  const, entities: Array<any> = [];
   // Case law citations
   const casePattern = /\b\d{1,4}\s+[A-Z][a-z]+\s+\d{1,4}\b/g;
   const caseMatches = text.match(casePattern) || [];
@@ -377,7 +377,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
   try {
     await withTimeout(checkFn(), 5000, `${name} health check timed out`);
     return {
-      service: name;
+      service: name,;
       status: 'healthy',
       responseTime: Date.now() - start
 }

@@ -154,7 +154,7 @@ class RabbitMQEmbeddingWorker {
       const processingTime = Date.now() - startTime;
       console.error(`❌ Embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false;
+        success: false,;
         error: error instanceof Error ? error.message: String(error),
         processingTime
       }
@@ -186,7 +186,7 @@ class RabbitMQEmbeddingWorker {
         try {
           const batchResults = await Promise.allSettled(
             batch.map((entity) => this.processEntityEmbedding(entity)
-          );
+          ),;
           // Process batch results
           const batchProcessed = batchResults.map((result, index) => {
             if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
@@ -205,7 +205,7 @@ class RabbitMQEmbeddingWorker {
           console.log(`✅ Batch ${batchNumber}/${totalBatches} completed`);
           // Small delay between batches to prevent overwhelming Ollama
           if (i + batchSize < payload.entities.length) {
-            await new Promise((resolve) => setTimeout(resolve, 1000);
+            await new Promise((resolve) => setTimeout(resolve, 1000),;
           }
         } catch (batchError) {
           console.error(`❌ Batch ${batchNumber} failed:`, batchError);
@@ -215,7 +215,7 @@ class RabbitMQEmbeddingWorker {
               entity_id: entity.entity_id,
               error: 'Batch processing failed'
             })
-          );
+          ),;
         }
       }
       const successCount = results.filter((r) => r.success).length;
@@ -230,7 +230,7 @@ class RabbitMQEmbeddingWorker {
         success: successCount > 0
         result: {
           total: results.length,
-          successful: successCount;
+          successful: successCount,;
           failed: failCount
           results,
           averageTimePerEntity: results.length > 0 ? processingTime / results.length: 0
@@ -241,7 +241,7 @@ class RabbitMQEmbeddingWorker {
       const processingTime = Date.now() - startTime;
       console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false;
+        success: false,;
         error: error instanceof Error ? error.message: String(error),
         processingTime
       }
@@ -298,7 +298,7 @@ class RabbitMQEmbeddingWorker {
       .update(documents)
       .set(updateData)
       .where(eq(documents.id, entity_id)
-      .returning();
+      .returning(),;
     // Cache the embedding for quick access
     const cacheKey = `doc_embedding:${entity_id}:${embedding_type}`;
     await redis.setex(
@@ -364,7 +364,7 @@ class RabbitMQEmbeddingWorker {
         updated_at: new Date()
       })
       .where(eq(cases.id, entity_id)
-      .returning();
+      .returning(),;
     // Cache the embedding
     const cacheKey = `case_embedding:${entity_id}`;
     await redis.setex(
@@ -400,7 +400,7 @@ class RabbitMQEmbeddingWorker {
         .select()
         .from(document_chunks)
         .where(eq(document_chunks.id, entity_id)
-        .limit(1);
+        .limit(1),;
       if (!chunk) {
         throw new Error(`Document chunk ${entity_id} not found`);
       }
@@ -419,7 +419,7 @@ class RabbitMQEmbeddingWorker {
         embedding: sql`${JSON.stringify(embedding)}::vector`
       })
       .where(eq(document_chunks.id, entity_id)
-      .returning();
+      .returning(),;
     console.log(`✨ Generated chunk embedding for ${entity_id} (${embedding.length}D)`);
     return {
       entity_id,

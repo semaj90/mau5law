@@ -41,14 +41,14 @@ export const canvasState = writable({
 });
 // Processing queue and worker management
 export const processingQueue = writable<Array<{
-  id: string;
-  evidenceId: string;
-  status: 'queued' | 'processing' | 'completed' | 'failed';
-  startTime?: number;
-  endTime?: number;
-  error?: string;
+  id: string,;
+  evidenceId: string,;
+  status: 'queued' | 'processing' | 'completed' | 'failed',;
+  startTime?: number,;
+  endTime?: number,;
+  error?: string,;
 }>([]);
-export const activeWorkers = writable<Map<string, Worker>(new Map();
+export const activeWorkers = writable<Map<string, Worker,>(new Map(,);
 // Performance metrics
 export const performanceMetrics = writable({
   averageProcessingTime: 0,
@@ -117,7 +117,7 @@ export const evidenceWorkerStore = (() => {
     worker: null as Worker | null
     isConnected: false
     processingQueue: [] as string[],
-    messageHandlers: new Map<string, (data: any) => void>()
+    messageHandlers: new Map<string, (data,: any), => void>()
   });
   return {
     subscribe,
@@ -144,7 +144,7 @@ export const evidenceWorkerStore = (() => {
               totalEvidenceProcessed: metrics.totalEvidenceProcessed + (metadata.totalNodesProcessed || 0),
               averageProcessingTime: updateAverageProcessingTime(metrics, metadata.totalProcessingTime),
               lastUpdated: Date.now(),
-            });
+            }),;
           } else {
             console.error('Evidence processing failed:', error);
             processingStatus.set('error');
@@ -153,7 +153,7 @@ export const evidenceWorkerStore = (() => {
               ...metrics,
               errorRate: updateErrorRate(metrics, true),
               lastUpdated: Date.now(),
-            });
+            }),;
           }
         };
         worker.onerror = (error) => {
@@ -164,7 +164,7 @@ export const evidenceWorkerStore = (() => {
           ...state,
           worker,
           isConnected: true
-        });
+        }),;
         activeWorkers.update(workers => {
           const workerId = `worker_${Date.now()}`;
           workers.set(workerId, worker);
@@ -186,8 +186,8 @@ export const evidenceWorkerStore = (() => {
             {
               id: messageId
               evidenceId,
-              status: 'queued',
-              startTime: Date.now(),
+              status,: 'queued',
+              startTime,: Date.now(),
             }
           ]);
           // Set up message handler
@@ -225,11 +225,11 @@ export const evidenceWorkerStore = (() => {
             ...state,
             processingQueue: [...state.processingQueue, messageId]
           };
-        } else {
-          console.warn('Worker not initialized or not connected');
+        }, else, {
+          console,.warn('Worker not initialized or not connected',);
         }
-        return state;
-      });
+        return, stat,e;
+      },);
     },
     resetProcessor: () => {
       update(state => {
@@ -248,7 +248,7 @@ export const evidenceWorkerStore = (() => {
         return state;
       });
     },
-    terminateWorker: () => {
+    terminateWorker,: () => {
       update(state => {
         if (state.worker) {
           state.worker.terminate();
@@ -304,7 +304,7 @@ function filterEvidenceHierarchy(hierarchy: any, filter: any): any {
   // Recursively filter children
   const filteredChildren = hierarchy.children
     ?.map((child: any) => filterEvidenceHierarchy(child, filter)
-    .filter((child: any) => child !== null) || [];
+    .filter((child: any) => child !== null) || [],;
   return {
     ...hierarchy,
     children: filteredChildren

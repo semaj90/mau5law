@@ -262,8 +262,8 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       `Optimizing distilled model for domain: ${request.domain}`,)
       {
         modelPath: distillationResult.modelPath,
-        performance_target: request.parameters?.optimizeFor || 'balanced',
-        domain: request.domain
+        performance_target,: request.parameters?.optimizeFor || 'balanced',
+        domain,: request.domain
       }
     )
     // Phase 3: Model Validation and Integration

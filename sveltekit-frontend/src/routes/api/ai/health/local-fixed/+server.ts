@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
         // Service-based check
         (async () => {
           try {
-            const isAvailable = ollamaService.getIsAvailable())
+            const isAvailable = ollamaService.getIsAvailable(),)
             if (!isAvailable) {
               // Try to initialize
               await ollamaService.initialize()
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async () => {
                 error instanceof Error ? error.message: "Service check failed"
             }
           }
-        })(),
+        },)(),
         // Direct connection check
         testOllamaConnection(),
         // llama.cpp check
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async () => {
         ]
       }
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Local AI health check failed:", error)
     return json({
         success: false,
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
             "http://localhost:11434/api/generate",)
             {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers,: { "Content-Type,": "application/json" },
               body: JSON.stringify({
                 model: "gemma2:2b",
                 prompt: prompt
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   num_predict: 200
                 }
               }),
-              signal: AbortSignal.timeout(30000)
+              signal,: AbortSignal.timeout(30000)
             },
           )
           if (fallbackResponse.ok) {
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
         }
-      } catch (error: any) {
+      }, catch (error: any) {
         result = {
           success: false,
           provider: "ollama",
@@ -234,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json(result)
-  } catch (error: any) {
+  }, catch (error: any) {
     return json({
         success: false,
         error:

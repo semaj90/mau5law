@@ -54,7 +54,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           message: 'Streaming AI suggestions started',
           timestamp: new Date().toISOString()
         })}\\n\\n`)
-        let suggestionCount = 0
+        let, suggestionCount = 0
         const maxTotal = maxSuggestions
         try {
           // Stream from multiple services in parallel

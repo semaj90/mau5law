@@ -292,7 +292,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     this.scrollOffset += delta;
     // Clamp scroll offset to reasonable bounds
     const maxScroll = 2; // Maximum scroll distance
-    this.scrollOffset = Math.max(-maxScroll, Math.min(maxScroll, this.scrollOffset);
+    this.scrollOffset = Math.max(-maxScroll, Math.min(maxScroll, this.scrollOffset),;
     this.scrollContainer.position.y = this.scrollOffset;
   }
   public minimize(): void {
@@ -353,7 +353,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.titleMesh) {
       this.titleMesh.geometry.dispose();
       if (Array.isArray(this.titleMesh.material)) {
-        this.titleMesh.material.forEach(mat => mat.dispose();
+        this.titleMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.titleMesh.material.dispose();
       }
@@ -361,7 +361,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.headerMesh) {
       this.headerMesh.geometry.dispose();
       if (Array.isArray(this.headerMesh.material)) {
-        this.headerMesh.material.forEach(mat => mat.dispose();
+        this.headerMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.headerMesh.material.dispose();
       }
@@ -369,7 +369,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.closeButtonMesh) {
       this.closeButtonMesh.geometry.dispose();
       if (Array.isArray(this.closeButtonMesh.material)) {
-        this.closeButtonMesh.material.forEach(mat => mat.dispose();
+        this.closeButtonMesh.material.forEach(mat => mat.dispose(),;
       } else {
         this.closeButtonMesh.material.dispose();
       }

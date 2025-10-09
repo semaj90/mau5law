@@ -17,6 +17,7 @@ import {
 } from '$lib/schemas/evidence-upload.js';
 import { db, cases, evidence, helpers } from '$lib/server/db';
 import type { PageServerLoad, Actions } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
@@ -229,7 +230,7 @@ export const actions: Actions = {
         .insert(evidence)
         .values({
           case_id: form.data.case_id || null,
-          uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available,
+          uploader_id: getUserId(locals) || 'anonymous', // Assuming user session is available,
           title: form.data.title,
           description: form.data.description || null,
           evidence_type: evidenceType as any,

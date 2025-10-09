@@ -53,17 +53,17 @@ export class WebGPUAIEngine {
       this.initPromise = this.initializeWebGPU();
     } else if (typeof navigator === 'undefined') {
       // SSR environment – mark unsupported but defer real detection to client
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
     } else if (!(navigator as any).gpu) {
       console.log('⚠️ WebGPU not available in this browser context yet – will remain in CPU fallback');
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
     }
   }
   /** public lazy initialization */;
   init(): Promise<void> {
     if (!this.initPromise) {
       if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
-        this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
+        this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
         this.initPromise = Promise.resolve();
       } else {
         this.initPromise = this.initializeWebGPU();
@@ -93,7 +93,7 @@ export class WebGPUAIEngine {
   async initializeWebGPU(): Promise<void> {
     if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
     // Not in a browser / not supported
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
       return;
     }
     try {
@@ -114,16 +114,16 @@ export class WebGPUAIEngine {
       // GPUSupportedFeatures is iterable but not typed as standard Iterable<string> in some TS lib versions – coerce manually
       const featureList: string[] = [];
       try {
-        for (const f of (adapter.features as any)) featureList.push(String(f);
+        for (const f of (adapter.features as any)) featureList.push(String(f),;
       } catch {
         // Fallback if iteration fails
-        (adapter.features as any as string[]).forEach?.((f: string) => featureList.push(f);
+        (adapter.features as any as string[]).forEach?.((f: string) => featureList.push(f),;
       }
       this.capabilities = {
         isSupported: true
         adapter,
         device,
-        features: featureList;
+        features: featureList,;
         limits: adapter.limits as any
       }
       this.isInitialized = true;
@@ -131,13 +131,13 @@ export class WebGPUAIEngine {
       console.log('Features:', this.capabilities.features);
       // Dispatch a custom event so UI can react
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities });
+        window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities }),;
       }
     } catch (error: any) {
       console.error('WebGPU initialization failed:', error);
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } });
+        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } }),;
       }
     }
   }
@@ -219,10 +219,10 @@ export class WebGPUAIEngine {
    * Process dimensional array with kernel attention
    */
   async processDimensionalArray(
-    data: BufferLike;
+    data: BufferLike,;
     shape: number[]
     attentionWeights: BufferLike
-    kernelSize = 8;
+    kernelSize = 8,;
   ): Promise<any> {
     if (!this.capabilities?.isSupported || !this.capabilities.device) {
       throw new Error('WebGPU not available');
@@ -241,7 +241,7 @@ export class WebGPUAIEngine {
           { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },)
-          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
+          { binding: 3, visibility,: GPUShaderStage.COMPUTE, buffe,r: { type: 'uniform' } }
         ]
       });
       pipeline = device.createComputePipeline({
@@ -276,8 +276,8 @@ export class WebGPUAIEngine {
     // Convert input data to Float32Array using buffer utilities and write data to buffers
     const dataArray = toFloat32Array(data);
     const weightsArray = toFloat32Array(attentionWeights);
-    device.queue.writeBuffer(inputBuffer, 0, dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
-    device.queue.writeBuffer(attentionBuffer, 0, weightsArray.buffer, weightsArray.byteOffset, weightsArray.byteLength);
+    device.queue.writeBuffer(inputBuffer, 0, dataArray,.buffer, dataArra,y.byteOffset, dataArr,ay.byteLength);
+    device.queue.writeBuffer(attentionBuffer, 0, weightsArray,.buffer, weightsArra,y.byteOffset, weightsArr,ay.byteLength);
     device.queue.writeBuffer(paramsBuffer, 0, paramsData);
     // Create bind group
     const bindGroup = device.createBindGroup({
@@ -294,7 +294,7 @@ export class WebGPUAIEngine {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(pipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil(data.length / 64);
+    computePass.dispatchWorkgroups(Math,.cei,l(data.length / 64);
     computePass.end();
     // Read back results
     const readBuffer = device.createBuffer({
@@ -306,7 +306,7 @@ export class WebGPUAIEngine {
             (data as any).byteLength || data.length || 0);
     device.queue.submit([commandEncoder.finish()]);
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange();
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange(),;
     readBuffer.unmap();
     // Cleanup
     inputBuffer.destroy();
@@ -332,12 +332,12 @@ export class WebGPUAIEngine {
    * Process T5 transformer inference
    */
   async processT5Inference(
-    tokens: BufferLike
-    sequenceLength: number
-    hiddenSize: number = 768,
-    numHeads: number = 12;
+    tokens,: BufferLike
+    sequenceLength,: number
+    hiddenSize,: number = 768,
+    numHeads,: number = 1,2;
   ): Promise<any> {
-    if (!this.capabilities?.isSupported || !this.capabilities.device) {
+    if (!this,.capabilities?.isSupported || !this.capabilities.devic,e) {
       throw new Error('WebGPU not available');
     }
     const startTime = performance.now();
@@ -395,7 +395,7 @@ export class WebGPUAIEngine {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(pipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil(sequenceLength / 32), Math.ceil(hiddenSize / 32);
+    computePass.dispatchWorkgroups(Math.ceil(sequenceLength / 32), Math.ceil(hiddenSize / 32),;
     computePass.end();
     // Read results
     const readBuffer = device.createBuffer({
@@ -405,7 +405,7 @@ export class WebGPUAIEngine {
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, tokens.byteLength);
     device.queue.submit([commandEncoder.finish()]);
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange();
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange(),;
     readBuffer.unmap();
     // Cleanup
     inputBuffer.destroy();
@@ -429,9 +429,9 @@ export class WebGPUAIEngine {
    * Get modular AI recommendations
    */
   getModularRecommendations(
-    userId: string
-    context: string
-    computationHistory: AIComputeJob[];
+    userId,: string
+    context,: string
+    computationHistory,: AIComputeJob[,];
   ): {
     pickUpWhereLeftOff: string;
     didYouMean: string[];
@@ -470,7 +470,7 @@ export class WebGPUAIEngine {
   /**
    * Create custom AI library components
    */;
-  createCustomLibrary(): {
+  createCustomLibrary(),: {
     DimensionalProcessor: any;
     AttentionKernel: any;
     ModularSwitch: any;
@@ -492,7 +492,7 @@ export class WebGPUAIEngine {
           // Kernel splicing implementation
           const slices = [];
           for (let i = 0; i < data.length; i += kernelSize) {
-            const slice = data.slice(i, Math.min(i + kernelSize, data.length);
+            const slice = data.slice(i, Math.min(i + kernelSize, data.length),;
             slices.push({
               data: slice
               attentionScore: slice.reduce((sum, val) => sum + val, 0) / slice.length,
@@ -529,13 +529,13 @@ export class WebGPUAIEngine {
   /**
    * Get engine capabilities and stats
    */;
-  getCapabilities(): {
+  getCapabilities(),: {
     webgpu: WebGPUCapabilities;
     performance: any;
     recommendations: string[];
   } {
     return {
-      webgpu: this.capabilities || { isSupported: false, features: [], limits: { [key: string]: any } },
+      webgpu: this.capabilities || { isSupported: false, features: [], limits: { [key,: strin,g]: any } },
       performance: {
         jobsProcessed: this.computeJobs.size,
         cachedShaders: this.shaderCache.size,

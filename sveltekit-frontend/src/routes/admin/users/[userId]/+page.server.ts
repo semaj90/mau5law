@@ -3,6 +3,7 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { db } from '$lib/db/index.js';
 import { users, cases, evidence, sessions, aiHistory, profileTable } from '$lib/db/schema.js';
 import { eq, desc, count, sql } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ params, locals }) => {
   // Check authentication using Lucia v3
   if (!locals.session || !locals.user) {
@@ -10,7 +11,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   }
   // Check if user is admin
   const adminCheck = await db.select().from(users).limit(1);
-  if (adminCheck.length === 0 || adminCheck[0].id !== locals.user.id) {
+  if (adminCheck.length === 0 || adminCheck[0].id !== getUserId(locals)) {
     throw error(403, 'Admin access required');
   }
   const userId = parseInt(params.userId);

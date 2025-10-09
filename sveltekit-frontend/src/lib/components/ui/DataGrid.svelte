@@ -6,9 +6,11 @@ https://svelte.dev/e/js_parse_error -->
   import type { Props } from "$lib/types/global";
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
+
   interface DataGridProps extends Props {
     onSelectionChange?: (_event: { selectedRows: Array<string | number> }) => void;
   }
+
   let {
     columns,
     data = [],
@@ -17,54 +19,68 @@ https://svelte.dev/e/js_parse_error -->
     multiSelect = false,
     sortable = true,
     filterable = true,
-    class = '',
+    className = '',              // renamed from `class` to avoid parse error
     emptyMessage = 'No data available',
     children,
     onSelectionChange
   }: DataGridProps = $props();
-  let selectedRows = $state<Set<string | number>(0)>(new Set());
-  let sortConfig = $state(null);
+
+  // Fixed $state generics and initializers
+  let selectedRows = $state<Set<string | number>>(new Set());
+  let sortConfig = $state<{ column: string; direction: 'asc' | 'desc' } | null>(null);
   let searchQuery = $state('');
-  let columnFilters = $state<Map<string, string>('')>(new Map());
+  let columnFilters = $state<Map<string, string>>(new Map());
+
+  // filteredData: search across stringified row and apply column filters
   let filteredData = $derived(() => {
-    let filtered = data;
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(item => item.toLowerCase()).includes(query)
-        )
+    let filtered: any[] = Array.isArray(data) ? data : [];
+
+    const q = searchQuery?.trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter((item) =>
+        JSON.stringify(item || '').toLowerCase().includes(q)
       );
     }
-    // Apply column filters
+
+    // Apply column filters (exact/substring match on the column value)
     for (const [column, filter] of columnFilters) {
-      if (filter.trim()) {
-        filtered = filtered.filter(item => item.toLowerCase()).includes(filter.toLowerCase())
-        );
+      const f = filter?.trim();
+      if (f) {
+        filtered = filtered.filter((item) => {
+          const val = (item && item[column]);
+          return val != null && String(val).toLowerCase().includes(f.toLowerCase());
+        });
       }
     }
+
     return filtered;
   });
+
+  // sortedData: return array and sort if needed
   let sortedData = $derived(() => {
-    if (!sortConfig) return filteredData;
-    return [...filteredData].sort((a, b) => {
-      const aVal = a[sortConfig.column];
-      const bVal = b[sortConfig.column];
+    const base = Array.isArray(filteredData) ? filteredData : [];
+    if (!sortConfig) return base;
+    return [...base].sort((a: any, b: any) => {
+      const aVal = a?.[sortConfig.column];
+      const bVal = b?.[sortConfig.column];
       if (aVal === bVal) return 0;
       const result = aVal < bVal ? -1 : 1;
       return sortConfig.direction === 'desc' ? -result : result;
     });
   });
+
   function handleSort(column: string) {
     if (!sortable) return;
     if (sortConfig?.column === column) {
       sortConfig = {
         column,
-        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc';
-      }
+        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc'
+      };
     } else {
-      sortConfig = { column, direction: 'asc' }
+      sortConfig = { column, direction: 'asc' };
     }
   }
+
   function handleRowSelect(rowId: string | number) {
     if (!selectable) return;
     if (multiSelect) {
@@ -74,31 +90,36 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         newSelection.add(rowId);
       }
-      selectedRows = newSelectio;
+      selectedRows = newSelection;
     } else {
       selectedRows = new Set([rowId]);
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
+
   function handleSelectAll() {
     if (!multiSelect) return;
-    if (selectedRows.size === sortedData.length) {
+    const rows = Array.isArray(sortedData) ? sortedData : [];
+    if (selectedRows.size === rows.length && rows.length > 0) {
       selectedRows = new Set();
     } else {
-      selectedRows = new Set(sortedData.map(row => row.id));
+      selectedRows = new Set(rows.map((row) => row.id));
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
+
   function handleColumnFilter(column: string, value: string) {
-    if (value.trim()) {
+    if (value?.trim()) {
       columnFilters.set(column, value);
     } else {
       columnFilters.delete(column);
     }
+    // trigger reactivity
     columnFilters = new Map(columnFilters);
   }
 </script>
-<div class={cn('modern-data-grid', class)}>
+
+<div class={cn('modern-data-grid', className)}>
   <!-- Header with search and filters -->
   {#if filterable}
     <div class="grid-toolbar">
@@ -112,13 +133,14 @@ https://svelte.dev/e/js_parse_error -->
         />
       </div>
       <div class="filter-actions">
-        <button class="filter-button">
+        <button class="filter-button" type="button">
           <Filter class="h-4 w-4" />
           Filters
         </button>
       </div>
     </div>
   {/if}
+
   <!-- Data table -->
   <div class="table-container">
     <table class="data-table">
@@ -128,7 +150,8 @@ https://svelte.dev/e/js_parse_error -->
             <th class="select-header">
               <input
                 type="checkbox"
-                checked={selectedRows.size === sortedData.length && sortedData.length > 0} onchange={handleSelectAll}
+                checked={selectedRows.size === (Array.isArray(sortedData) ? sortedData.length : 0) && (Array.isArray(sortedData) ? sortedData.length : 0) > 0}
+                onchange={handleSelectAll}
                 class="checkbox-input"
               />
             </th>
@@ -139,6 +162,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="header-button"
                 onclick={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
+                type="button"
               >
                 <span class="header-text">{column.title}</span>
                 {#if sortable && column.sortable}
@@ -172,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </td>
           </tr>
-        {:else if sortedData.length === 0}
+        {:else if (Array.isArray(sortedData) ? sortedData.length : 0) === 0}
           <tr>
             <td colspan={columns.length + (selectable && multiSelect ? 1 : 0) + 1} class="empty-cell">
               <div class="empty-content">
@@ -195,7 +219,8 @@ https://svelte.dev/e/js_parse_error -->
                 <td class="select-cell">
                   <input
                     type="checkbox"
-                    checked={selectedRows.has(row.id)} onchange={() => handleRowSelect(row.id)}
+                    checked={selectedRows.has(row.id)}
+                    onchange={() => handleRowSelect(row.id)}
                     class="checkbox-input"
                   />
                 </td>
@@ -204,15 +229,18 @@ https://svelte.dev/e/js_parse_error -->
                 <td class="data-cell">
                   <div class="cell-content">
                     {#if column.formatter}
-                      {column.formatter(row[column.key], row)}
+                      {@html String(column.formatter(row[column.key], row))}
                     {:else}
-                      {row[column.key] || '—'}
+                      {row[column.key] ?? '—'}
                     {/if}
                   </div>
                 </td>
               {/each}
               <td class="actions-cell">
-                {@render children?.({ row, index })}
+                {#if typeof children === 'function'}
+                  {children({ row, index })}
+                {/if}
+                {@render rowActions?.({ row, index })}
               </td>
             </tr>
           {/each}
@@ -221,6 +249,7 @@ https://svelte.dev/e/js_parse_error -->
     </table>
   </div>
 </div>
+
 <style>
   .modern-data-grid {
     background-color: white;
@@ -234,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
   .grid-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid rgb(243 244 246);
     background-color: rgb(249 250 251);
@@ -260,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-size: 0.875rem;
     background-color: white;
-    transition: border-color 0.15;
+    transition: border-color 0.15s;
   }
   .search-input:focus {
     outline: none;
@@ -282,26 +311,24 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     font-weight: 500;
     color: rgb(55 65 81);
-    transition: all 0.15;
+    transition: all 0.15s;
   }
   .filter-button:hover {
     background-color: rgb(249 250 251);
     border-color: rgb(156 163 175);
   }
   .table-container {
-    overflow: aut;
-o;
+    overflow: auto;
     max-height: 70vh;
   }
   .data-table {
     width: 100%;
-    border-collapse: collap;
+    border-collapse: collapse;
     font-size: 0.875rem;
   }
   .table-header {
     background-color: rgb(249 250 251);
     position: sticky;
-y;
     top: 0;
     z-index: 10;
   }
@@ -322,7 +349,7 @@ y;
   .header-button {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     width: 100%;
     padding: 0.75rem 1rem;
     background: none;
@@ -331,7 +358,7 @@ y;
     font-weight: inherit;
     color: inherit;
     cursor: pointer;
-    transition: background-color 0.15;
+    transition: background-color 0.15s;
   }
   .header-button:hover:not(:disabled) {
     background-color: rgb(243 244 246);
@@ -421,9 +448,10 @@ y;
     opacity: 0.5;
   }
   @keyframes spin {
-    to { transform: rotate(360deg), }
+    to { transform: rotate(360deg); }
   }
-/* Responsive design */ @media (max-width: 768px) {
+  /* Responsive design */
+  @media (max-width: 768px) {
     .grid-toolbar {
       flex-direction: column;
       gap: 1rem;

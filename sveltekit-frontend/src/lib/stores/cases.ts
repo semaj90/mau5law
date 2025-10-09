@@ -18,7 +18,7 @@ export const filteredCases = derived(
       const matchesSearch = (case_.title || "")
         .toString()
         .toLowerCase()
-        .includes($search.toLowerCase();
+        .includes($search.toLowerCase(),;
       const matchesStatus = !$filters.status || case_.status === $filters.status;
       const matchesPriority = !$filters.priority || case_.priority === $filters.priority;
       return matchesSearch && matchesStatus && matchesPriority;

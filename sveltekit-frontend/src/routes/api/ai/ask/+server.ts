@@ -259,7 +259,7 @@ Instructions:
           confidence = 0.5
         }
       }
-    } catch (error: unknown) {
+    }, catch (error: unknown) {
       console.error("AI inference failed:", error)
       aiAnswer = generateFallbackResponse(query, relevantSources)
       provider = "hybrid"
@@ -290,7 +290,7 @@ Instructions:
       success: true,
       data: response
     })
-  } catch (error: unknown) {
+  }, catch (error: unknown) {
     console.error("AI endpoint error:", error)
     return json(
       {
@@ -353,4 +353,4 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);,

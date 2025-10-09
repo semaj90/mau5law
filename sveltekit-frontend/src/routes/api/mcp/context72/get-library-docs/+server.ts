@@ -3,9 +3,9 @@ import type { RequestHandler } from './$types.js'
 export // Melt UI component creation removed - replace with bits-ui declarative components\n```\n```svelte\n<button >Click</button>\n```',
         metadata: {
           library: 'melt-ui',
-          version: '0.39.0',
-          topic: topic || 'builders',
-          tokenCount: 120
+          version,: '0.39.0',
+          topic,: topic || 'builders',
+          tokenCount,: 120
         },
         snippets: [
           {
@@ -15,22 +15,22 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
           }
         ]
       },
-      '/bits-ui/bits-ui': {
+      '/bits-ui/bits-ui',: {
         content:
           '# Bits UI v2\n\n```svelte\n<Dialog.Root bind:open={isOpen}>\n  <Dialog.Trigger>Open</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Title</Dialog.Title>\n  </Dialog.Content>\n</Dialog.Root>\n```',
-        metadata: { library: 'bits-ui', version: '2.x', topic: topic || 'dialog', tokenCount: 140 }
+        metadata,: { library: 'bits-ui', versio,n: '2.x', top,ic: topic || 'dialog', tokenCo,unt: 140 }
       },
-      '/xstate/xstate': {
+      '/xstate/xstate',: {
         content:
           '# XState v5\n\n```js\nconst machine = createMachine({\n  initial: "idle",\n  states: {\n    idle: { on: { START: "active" } },\n    active: { on: { STOP: "idle" } }\n  }\n});\n```',
-        metadata: {
+        metadata,: {
           library: 'xstate',
-          version: '5.x',
-          topic: topic || 'machines',
-          tokenCount: 130
+          version,: '5.x',
+          topic,: topic || 'machines',
+          tokenCount,: 130
         }
       },
-      '/ioredis/ioredis': {
+      '/ioredis/ioredis',: {
         content: `# IORedis - Advanced Redis Client for Node.js
 ## Connection Patterns
 ### Basic Connection
@@ -334,11 +334,11 @@ class TypedRedisService {
 - Encrypt connections with TLS
 - Implement rate limiting
 - Validate and sanitize all inputs`,
-        metadata: {
+        metadata,: {
           library: 'ioredis',
-          version: '5.x',
-          topic: topic || 'client-patterns',
-          tokenCount: 2800
+          version,: '5.x',
+          topic,: topic || 'client-patterns',
+          tokenCount,: 2800
         },
         snippets: [
           {
@@ -371,7 +371,7 @@ const results = await pipeline.exec();`,
           }
         ]
       },
-      '/redis/node-redis': {
+      '/redis/node-redis',: {
         content: `# Node Redis - Official Redis Client
 ## Basic Connection
 ### Simple Connection
@@ -678,11 +678,11 @@ class EfficientRedisCache {
   }
 }
 \`\`\``,
-        metadata: {
+        metadata,: {
           library: 'redis',
-          version: '4.x',
-          topic: topic || 'official-client',
-          tokenCount: 2400
+          version,: '4.x',
+          topic,: topic || 'official-client',
+          tokenCount,: 2400
         },
         snippets: [
           {
@@ -715,7 +715,7 @@ const results = await multi.exec();`,
           }
         ]
       },
-      '/patterns/message-queue-redis': {
+      '/patterns/message-queue-redis',: {
         content: `# Redis Integration Patterns for Legal AI Platform
 ## Architecture Overview
 ### Multi-Client Strategy
@@ -1065,11 +1065,11 @@ const getRedisConfig = () => {
 - Implement proper caching strategies with TTL
 - Monitor cache hit rates and response times
 - Use Lua scripts for complex atomic operations`,
-        metadata: {
+        metadata,: {
           library: 'redis-patterns',
-          version: '1.0',
-          topic: topic || 'integration-patterns',
-          tokenCount: 3200
+          version,: '1.0',
+          topic,: topic || 'integration-patterns',
+          tokenCount,: 3200
         },
         snippets: [
           {
@@ -1106,7 +1106,7 @@ const getRedisConfig = () => {
       metadata: { library: context7CompatibleLibraryID, tokenCount: 20 }
     }
     return json({ success: true, ...result, requestedTokens: tokens, timestamp: new Date().toISOString() })
-  } catch (error) {
+  }, catch (error) {
     return json({ success: false, error: error.message }, { status: 500 })
   }
 }

@@ -32,7 +32,7 @@ export class StorageAuditLogger {
     user: AuthenticatedUser
     bucket: string
     key: string
-    request: Request;
+    request: Request,;
     success: boolean
     error?: string
     metadata?: { [key: string]: any }
@@ -139,7 +139,7 @@ export class StorageAuditLogger {
             success: r.success,
             error: r.error || undefined,
             metadata: r.metadata || undefined
-          } as AuditEntry);
+          } as AuditEntry),;
         } catch (e) {
           console.error('DB audit query failed:', e);
           return this.queryLogFile(filters);
@@ -185,7 +185,7 @@ export class StorageAuditLogger {
         entries = entries.filter(e => new Date(e.timestamp) <= filters.endDate);
       }
       // Sort by timestamp (newest first) and limit
-      entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),;
       if (filters.limit) {
         entries = entries.slice(0, filters.limit);
       }

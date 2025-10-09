@@ -53,8 +53,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const { caseId, analysisType, depth, focusAreas, options = {} } = DetectiveAnalysisSchema.parse(body)
     // Create service instances
-    const casesService = new CasesCRUDService(locals.user.id)
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           timestamp: new Date().toISOString(),
           type: analysisType
           depth,
-          analyzedBy: locals.user.id
+          analyzedBy: getUserId(locals)
         }
       }
     })
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'detective_analysis_completed'
       }
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Validate case ID format
     const validatedCaseId = z.string().uuid().parse(caseId)
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Verify case exists and user has access
     const caseData = await casesService.getById(validatedCaseId)
     if (!caseData) {
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       )
     }
     // Generate insights based on case data and previous analyses
-    const insights = await generateCaseInsights(caseData, locals.user.id)
+    const insights = await generateCaseInsights(caseData, getUserId(locals))
     return json({
       success: true,
       data: {
@@ -182,7 +182,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         lastUpdated: new Date().toISOString()
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })

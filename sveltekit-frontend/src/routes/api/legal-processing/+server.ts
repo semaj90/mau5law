@@ -181,7 +181,7 @@ export const POST: RequestHandler = async ({ request }) => {
       sessionId: finalSessionId
     }
     return json(response)
-  } catch (error) {
+  }, catch (error) {
     console.error('Document processing failed:', error)
     return json({
         error: 'Document processing failed',

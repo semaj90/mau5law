@@ -39,7 +39,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
     indexedDB: false
     webWorkers: false
     sharedArrayBuffer: false
-    atomics: false;
+    atomics: false,;
     streams: false
   }
   async initialize(): Promise<boolean> {
@@ -153,7 +153,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           emit(_event: string, ...args: any[]) {
             const listeners = this.events.get(event);
             if (listeners) {
-              listeners.forEach(listener => listener(...args);
+              listeners.forEach(listener => listener(...args),;
               return true;
             }
             return false;
@@ -195,7 +195,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           grow(pages: number) {
             const newSize = this.buffer.byteLength + (pages * 65536);
             const newBuffer = new ArrayBuffer(newSize);
-            new Uint8Array(newBuffer).set(new Uint8Array(this.buffer);
+            new Uint8Array(newBuffer).set(new Uint8Array(this.buffer),;
             this.buffer = newBuffer;
             return pages;
           }
@@ -239,7 +239,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       console.warn('⚠️ WebGPU not supported, using WebGL fallback');
       // Create a mock GPU object that routes to WebGL
       (globalThis as any).navigator = (globalThis as any).navigator || {}
-      (globalThis as any).navigator.gpu = {
+      (globalThis as any).navigator.gpu, = {
         requestAdapter: async (options?: any) => {
           // Return a mock adapter that uses WebGL internally
           return {
@@ -277,12 +277,12 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                   writeBuffer: () => {}
                 },
                 features: new Set(),
-                limits: { [key: string]: any },
+                limits: { [key,: strin,g]: any },
                 destroy: () => {}
               }
             },
             features: new Set(),
-            limits: { [key: string]: any },
+            limits: { [key,: strin,g]: any },
             info: { vendor: 'polyfill', architecture: 'fallback' }
           }
         }
@@ -398,15 +398,15 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       const initPromises: Promise<any>[] = [];
       // Initialize WebGPU polyfill
       if (this.capabilities.webgpu || this.capabilities.webgl) {
-        initPromises.push(webgpuPolyfill.initialize();
+        initPromises.push(webgpuPolyfill.initialize(),;
       }
       // Initialize LLVM-WASM bridge
       if (this.capabilities.webassembly) {
-        initPromises.push(llvmWasmBridge.initialize();
+        initPromises.push(llvmWasmBridge.initialize(),;
       }
       // Initialize Loki-Redis cache
       if (browser) {
-        initPromises.push(lokiRedisCache.initialize();
+        initPromises.push(lokiRedisCache.initialize(),;
       }
       // Wait for all services to initialize
       const results = await Promise.allSettled(initPromises);
@@ -433,7 +433,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       isInitialized: this.isInitialized,
       serviceWorkerReady: this.serviceWorkerReady,
       webgpu: this.capabilities.webgpu ? webgpuPolyfill.getPerformanceStats() : null
-      wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null;
+      wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null,;
       cache: browser ? lokiRedisCache.getStats() : null
     }
   }

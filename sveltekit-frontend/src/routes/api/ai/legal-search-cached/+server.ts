@@ -69,11 +69,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         {
           success: true,
           ...cachedResults,
-          metadata: {
+          metadata,: {
             ...cachedResults.metadata,
-            fromCache: true
+            fromCache,: true
             cacheKey,
-            totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms`
+            totalResponseTime,: `${(performance.now() - startTime).toFixed(2)}ms`
           }
         },
         'VECTOR_SEARCH'
@@ -124,7 +124,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const cacheTTL = getLegalCacheTTL(searchType)
     await redisService.set(cacheKey, response, cacheTTL)
     return cachedJson(response, 'VECTOR_SEARCH')
-  } catch (error: any) {
+  }, catch (error: any) {
     const totalTime = performance.now() - startTime
     return json({
       success: false,

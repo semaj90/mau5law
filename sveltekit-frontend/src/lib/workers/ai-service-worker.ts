@@ -155,12 +155,12 @@ class AIServiceWorker {
   }
   private async callProvider(
     provider: AIProviderConfig
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,;
+    signal: AbortSignal,;
   ): Promise<AIResponse> {
     const timeoutId = setTimeout(() => {
       if (!signal.aborted) {
-        signal.dispatchEvent(new Event('timeout');
+        signal.dispatchEvent(new Event('timeout'),;
       }
     }, provider.timeout);
     try {
@@ -180,8 +180,8 @@ class AIServiceWorker {
   }
   private async callOllama(
     provider: AIProviderConfig
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,;
+    signal: AbortSignal,;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
@@ -220,8 +220,8 @@ class AIServiceWorker {
   }
   private async callAutoGen(
     provider: AIProviderConfig
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,;
+    signal: AbortSignal,;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
@@ -254,8 +254,8 @@ class AIServiceWorker {
   }
   private async callCrewAI(
     provider: AIProviderConfig
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,;
+    signal: AbortSignal,;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
@@ -336,7 +336,7 @@ class AIServiceWorker {
     });
   }
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms);
+    return new Promise((resolve) => setTimeout(resolve, ms),;
   }
 }
 // Initialize the worker

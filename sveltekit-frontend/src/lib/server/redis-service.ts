@@ -490,7 +490,7 @@ class RedisService {
     }
   }
   async xRevRange(_key: string
-    end: string;
+    end: string,;
     start: string
     options?: { COUNT: number }
   ): Promise<any[]> {

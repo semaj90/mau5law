@@ -3,6 +3,7 @@ import { caseActivities } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
 import { eq, sql, desc, or as orExpr } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
@@ -126,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relatedEvidence: data.relatedEvidence || [],
       relatedCriminals: data.relatedCriminals || [],
       metadata: data.metadata || {},
-      createdBy: locals.user.id,
+      createdBy: getUserId(locals),
     };
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });

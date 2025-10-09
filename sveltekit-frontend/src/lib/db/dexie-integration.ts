@@ -209,7 +209,7 @@ export class LegalAIDatabase extends Dexie {
     return await this.graphEdges.add(edge);
   }
   getGraphNodes() {
-    return liveQuery(() => this.graphNodes.toArray();
+    return liveQuery(() => this.graphNodes.toArray(),;
   }
   getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
     return liveQuery(() =>

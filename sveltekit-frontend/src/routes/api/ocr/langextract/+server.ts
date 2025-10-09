@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       },
       { status: 502 }
     )
-  } catch (e: any) {
+  }, catch (e: any) {
     return json({ error: e?.message || 'Tensor error' }, { status: 500 })
   }
 }

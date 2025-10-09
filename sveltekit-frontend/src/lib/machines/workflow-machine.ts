@@ -34,8 +34,8 @@ export type DocumentEvent =
   | { type: 'ABORT' }
 export const documentWorkflowMachine = setup({
   types: {
-    context: { [key: string]: any } as DocumentContext,
-    events: { [key: string]: any } as DocumentEvent
+    context: { [key,: strin,g]: any } as DocumentContext,
+    events: { [key,: strin,g]: any } as DocumentEvent
   },
   actions: {
     setDocumentInfo: assign({
@@ -214,8 +214,8 @@ export type CaseEvent =
   | { type: 'REOPEN_CASE'; reason: string }
 export const caseWorkflowMachine = setup({
   types: {
-    context: { [key: string]: any } as CaseContext,
-    events: { [key: string]: any } as CaseEvent
+    context: { [key,: strin,g]: any } as CaseContext,
+    events: { [key,: strin,g]: any } as CaseEvent
   },
   actions: {
     createCase: assign({
@@ -393,8 +393,8 @@ export type RAGEvent =
   | { type: 'RETRY' }
 export const ragWorkflowMachine = setup({
   types: {
-    context: { [key: string]: any } as RAGContext,
-    events: { [key: string]: any } as RAGEvent
+    context: { [key,: strin,g]: any } as RAGContext,
+    events: { [key,: strin,g]: any } as RAGEvent
   },
   actions: {
     initializeQuery: assign({
@@ -544,7 +544,7 @@ export class WorkflowOrchestrator {
     return this.activeWorkflows.size;
   }
   getAllWorkflows() {
-    return Array.from(this.activeWorkflows.entries();
+    return Array.from(this.activeWorkflows.entries(),;
   }
 }
 // Export singleton instance

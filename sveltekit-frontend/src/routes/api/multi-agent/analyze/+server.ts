@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
       analysis: analysisResult
       message: "Multi-agent analysis completed successfully"
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Multi-agent analysis error:", error)
     return json({
         success: false,
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // If storage directory doesn't exist, return empty result (no analyses yet)
       if (!nodeFs.existsSync(baseDir)) {
         return json({
-          success: true;
+          success: true,;
           analyses: [],
           caseId
         })
@@ -232,18 +232,18 @@ export const GET: RequestHandler = async ({ url }) => {
       return json()
         {
           success: false,
-              error: error?.message ?? String(error)
+              error,: error?.message ?? String(error)
             },
             { status: 500 }
           )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("GET handler error:", error)
     return json()
       {
         success: false,
-        error: error?.message ?? String(error),
-        message: "Failed to retrieve analyses"
+        error,: error?.message ?? String(error),
+        message,: "Failed to retrieve analyses"
       },
       { status: 500 }
     )

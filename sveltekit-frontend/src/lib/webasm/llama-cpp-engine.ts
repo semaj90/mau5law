@@ -214,7 +214,7 @@ export class WebASMLlamaCppEngine {
       // Update performance metrics
       this.updateMetrics(outputTokens.length, processingTime);
       return {
-        text: outputText;
+        text: outputText,;
         tokens: outputTokens.length,
         processingTime,
         tokensPerSecond,
@@ -231,7 +231,7 @@ export class WebASMLlamaCppEngine {
    */
   private async* streamInference(
     inputTokens: number[]
-    request: InferenceRequest;
+    request: InferenceRequest,;
   ): AsyncGenerator<number> {
     // Set sampling parameters
     this.wasmModule.llama_set_params({
@@ -257,7 +257,7 @@ export class WebASMLlamaCppEngine {
    */
   private async batchInference(
     inputTokens: number[]
-    request: InferenceRequest;
+    request: InferenceRequest,;
   ): Promise<number[]> {
     return this.wasmModule.llama_generate({
       input_tokens: inputTokens
@@ -348,7 +348,7 @@ export class WebASMLlamaCppEngine {
       // removed unused db assignment
       const transaction = db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
-      const result = await this.promisifyRequest(store.get(modelPath);
+      const result = await this.promisifyRequest(store.get(modelPath),;
       return result?.data || null;
     } catch {
       return null;
@@ -359,7 +359,7 @@ export class WebASMLlamaCppEngine {
       // removed unused db assignment
       const transaction = db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data });
+      await this.promisifyRequest(store.put({ path: modelPath, data }),;
     } catch (error) {
       console.warn('Failed to cache model:', error);
     }
@@ -423,7 +423,7 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
 });
 // Convenience function for quick inference
 export async function runQuickInference(
-  prompt: string;
+  prompt: string,;
   options: Partial<InferenceRequest> = {}
 ): Promise<InferenceResult> {
   if (!llamaCppEngine) {

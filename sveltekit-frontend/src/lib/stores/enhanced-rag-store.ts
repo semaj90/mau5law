@@ -152,7 +152,7 @@ export function createEnhancedRAGStore() {
   const state = writable<RAGStoreState>({
     documents: [],
     searchResults: [],
-    embeddings: { [key: string]: any },
+    embeddings: { [key,: strin,g]: any },
     currentQuery: '',
     selectedDocuments: [],
     status: {
@@ -191,11 +191,11 @@ export function createEnhancedRAGStore() {
     },
     recommendations: [],
     didYouMean: [],
-    isLoading: false;
+    isLoading: false,;
     error: null
     somClusters: [],
     neuralPredictions: [],
-    cachingLayers: { [key: string]: any },
+    cachingLayers: { [key,: strin,g]: any },
     autoOptimization: true
   });
   // Performance metrics
@@ -219,10 +219,10 @@ export function createEnhancedRAGStore() {
   }
   // Core actions
   async function search(
-    query: string;
+    query: string,;
     options: any = {}
   ): Promise<any> {
-    state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null });
+    state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null }),;
     try {
       ragActor.send({ type: 'SEARCH_START', query });
       // Check multi-layer cache first
@@ -232,8 +232,8 @@ export function createEnhancedRAGStore() {
           ...s,
           searchResults: cachedResult.results,
           recommendations: cachedResult.recommendations
-        });
-        performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 });
+        }),;
+        performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 }),;
         updateCacheMetrics();
         return {
           results: cachedResult.results,
@@ -282,7 +282,7 @@ export function createEnhancedRAGStore() {
         relevanceScore: 0.8,
         rank: index + 1,
         snippet: docEmbedding.content?.substring(0, 200) || ''
-      });
+      }),;
       // Update state
       const clusters = somRAG.getClusters();
       const memoryPrediction = await neuralMemory.predictMemoryUsage(10);
@@ -294,7 +294,7 @@ export function createEnhancedRAGStore() {
         neuralPredictions: [memoryPrediction],
         recommendations,
         didYouMean
-      });
+      }),;
       // Cache results in multiple layers
       await cacheResultsMultiLayer(query, {
         results: optimizedResults
@@ -303,7 +303,7 @@ export function createEnhancedRAGStore() {
         recommendations
       });
       // Update performance metrics
-      performanceMetrics.update((p) => ({ ...p, totalQueries: p.totalQueries + 1 });
+      performanceMetrics.update((p) => ({ ...p, totalQueries: p.totalQueries + 1 }),;
       updatePerformanceMetrics();
       ragActor.send({ type: 'SEARCH_SUCCESS', results: optimizedResults });
       return {
@@ -312,14 +312,14 @@ export function createEnhancedRAGStore() {
       }
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message: 'Search failed';
-      state.update((s) => ({ ...s, error: errorMessage });
+      state.update((s) => ({ ...s, error: errorMessage }),;
       ragActor.send({ type: 'SEARCH_ERROR', error: errorMessage });
       return {
         results: [],
         recommendations: []
       }
     } finally {
-      state.update((s) => ({ ...s, isLoading: false });
+      state.update((s) => ({ ...s, isLoading: false }),;
     }
   }
   async function addDocument(_document: RAGDocument): Promise<any> {
@@ -335,12 +335,12 @@ export function createEnhancedRAGStore() {
         ...s,
         documents: [...s.documents, document],
         embeddings: { ...s.embeddings, [document.id]: embeddings }
-      });
+      }),;
       // Update caching layers
       await updateCachingLayers(document, embeddings);
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message: 'Failed to add document';
-      state.update((s) => ({ ...s, error: errorMessage });
+      state.update((s) => ({ ...s, error: errorMessage }),;
     }
   }
   async function removeDocument(documentId: string): Promise<any> {
@@ -350,7 +350,7 @@ export function createEnhancedRAGStore() {
       embeddings: Object.fromEntries(
         Object.entries(s.embeddings).filter(([id]) => id !== documentId)
       )
-    });
+    }),;
     // Clear from all cache layers
     Object.values(cachingLayers).forEach((layer) => {
       layer.delete(documentId);
@@ -380,7 +380,7 @@ export function createEnhancedRAGStore() {
             clusterCount: optimization.clusterCount,
             averageSearchTime: p.averageResponseTime
           }
-        });
+        }),;
       });
     } catch (error: any) {
       console.error('Cache optimization failed:', error);
@@ -398,7 +398,7 @@ export function createEnhancedRAGStore() {
       embeddings: (currentState as RAGStoreState).embeddings,
       somClusters: (currentState as RAGStoreState).somClusters,
       cacheMetrics: (currentState as RAGStoreState).cacheMetrics,
-      performanceMetrics: currentMetrics;
+      performanceMetrics: currentMetrics,;
       timestamp: new Date().toISOString()
     }
   }
@@ -435,8 +435,8 @@ export function createEnhancedRAGStore() {
     return Array.from(new Set(suggestions)).slice(0, 3);
   }
   async function generateRecommendations(
-    query: string;
-    results: SearchResult[];
+    query: string,;
+    results: SearchResult[],;
   ): Promise<string[]> {
     // Generate intelligent recommendations based on search results and patterns
     const somRecommendations = await somRAG.generateRecommendations(query, results);
@@ -448,7 +448,7 @@ export function createEnhancedRAGStore() {
       state.update((s) => ({
         ...s,
         cacheMetrics: { ...s.cacheMetrics, hitRate }
-      });
+      }),;
     });
   }
   function updatePerformanceMetrics() {
@@ -460,7 +460,7 @@ export function createEnhancedRAGStore() {
       performanceMetrics.update((p) => ({
         ...p,
         throughputQPS: p.totalQueries / timeDiff
-      });
+      }),;
     });
   }
   async function rebalanceCacheLayers(): Promise<any> {
@@ -471,7 +471,7 @@ export function createEnhancedRAGStore() {
   async function generateEmbeddings(content: string): Promise<number[]> {
     // Generate embeddings using configured model
     // This would interface with your embedding service
-    return new Array(768).fill(0).map(() => Math.random(); // Placeholder
+    return new Array(768).fill(0).map(() => Math.random(),; // Placeholder
   }
   async function updateCachingLayers(_document: RAGDocument, embeddings: number[]): Promise<any> {
     // Update all relevant cache layers with new document

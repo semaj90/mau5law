@@ -46,7 +46,8 @@ export interface WorkflowEvent {
   evidenceId?: string;
   sessionId?: string;
   timestamp: string;
-  result?: any;
+  // Use 'unknown' instead of 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
+  result?: unknown;
   error?: string;
 }
 
@@ -82,12 +83,19 @@ export class WorkflowEventStream {
     this.eventSource = new EventSource(url);
 
     // Handle incoming messages
-    this.eventSource.onmessage = (event) => {
+    this.eventSource.onmessage = event => {
       try {
         const data = JSON.parse(event.data) as WorkflowEvent;
         this.emit(data.type, data);
       } catch (error) {
         console.error('[WorkflowEventStream] Error parsing event:', error);
+        // Notify listeners about parse error
+        this.emit('SSE_ERROR', {
+          type: 'SSE_ERROR',
+          sessionId: this.sessionId,
+          timestamp: new Date().toISOString(),
+          error: String(error),
+        });
       }
     };
 
@@ -95,11 +103,26 @@ export class WorkflowEventStream {
     this.eventSource.onopen = () => {
       console.log('[WorkflowEventStream] Connected');
       this.reconnectAttempts = 0;
+      // Notify listeners that SSE is connected
+      this.emit('SSE_CONNECTED', {
+        type: 'SSE_CONNECTED',
+        sessionId: this.sessionId,
+        timestamp: new Date().toISOString(),
+        result: { url },
+      });
     };
 
     // Handle errors
-    this.eventSource.onerror = (error) => {
+    this.eventSource.onerror = error => {
       console.error('[WorkflowEventStream] Connection error:', error);
+
+      // Notify listeners about the connection error
+      this.emit('SSE_ERROR', {
+        type: 'SSE_ERROR',
+        sessionId: this.sessionId,
+        timestamp: new Date().toISOString(),
+        error: typeof error === 'string' ? error : ((error as any)?.message ?? 'Unknown EventSource error'),
+      });
 
       // Attempt reconnection
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -114,6 +137,13 @@ export class WorkflowEventStream {
         }, this.reconnectDelay * this.reconnectAttempts);
       } else {
         console.error('[WorkflowEventStream] Max reconnection attempts reached');
+        // Emit a final SSE_ERROR indicating permanent failure
+        this.emit('SSE_ERROR', {
+          type: 'SSE_ERROR',
+          sessionId: this.sessionId,
+          timestamp: new Date().toISOString(),
+          error: 'Max reconnection attempts reached',
+        });
         this.disconnect();
       }
     };
@@ -163,7 +193,7 @@ export class WorkflowEventStream {
     const callbacks = this.listeners.get(eventType);
 
     if (callbacks) {
-      callbacks.forEach((callback) => {
+      callbacks.forEach(callback => {
         try {
           callback(event);
         } catch (error) {

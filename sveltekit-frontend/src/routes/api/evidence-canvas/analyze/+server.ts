@@ -50,7 +50,7 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
         options: options || {}
       }
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Evidence canvas analysis error:', error)
     return json({
         error: 'Internal server error during analysis',

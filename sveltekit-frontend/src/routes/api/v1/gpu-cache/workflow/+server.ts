@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         contextComplexity: workflowContext.complexity
       }
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Workflow optimization error:', error)
     return json({
         error: 'Failed to optimize workflow',
@@ -235,14 +235,14 @@ export const PUT: RequestHandler = async ({ request }) => {
         // Process workflow-specific GPU optimizations
         const webgpuResult = await webgpuRAGService.processQuery(
           `workflow-optimize:${workflowType}`,)
-          { embeddings: [], context: { optimization, workflowType, cacheKeys } }
+          { embeddings: [], context,: { optimization, workflowType, cacheKeys } }
         )
         results.webgpu.applied++
         results.webgpu.details.push({
           optimized: (webgpuResult as any).processed || false,
           performance: (webgpuResult as any).performance || {}
         })
-      } catch (error: any) {
+      }, catch (error: any) {
         results.webgpu.failed++
         results.webgpu.details.push({
           error: error instanceof Error ? error.message: 'WebGPU optimization failed'
@@ -266,7 +266,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Workflow application error:', error)
     return json({
         error: 'Failed to apply workflow optimizations',

@@ -22,7 +22,7 @@ export class EmbeddingService {
   constructor(
     baseUrl = 'http://localhost:11434',
     model = 'embeddinggemma:latest',
-    dimensions = 512;
+    dimensions = 512,;
   ) {
     this.baseUrl = baseUrl;
     this?.model || "unknown" // @ts-ignore - Model property access = model
@@ -72,12 +72,12 @@ export class EmbeddingService {
    * Generate embeddings for multiple texts in batch
    */
   async generateBatchEmbeddings(
-    texts: string[];
+    texts: string[],;
     options: EmbeddingOptions = {}
   ): Promise<number[][]> {
     const embeddings = await Promise.all(
       texts.map(text => this.generateEmbedding(text, options)
-    );
+    ),;
     return embeddings;
   }
   /**
@@ -111,7 +111,7 @@ export class EmbeddingService {
           profileEmbedding: `[${embedding.join(',')}]`, // Store as vector string
           updatedAt: new Date()
         })
-        .where(eq(users.id, userId);
+        .where(eq(users.id, userId),;
       console.log(`Generated profile embedding for user ${userId}`);
     } catch (error: any) {
       console.error(`Error generating user profile embedding for ${userId}:`, error);
@@ -158,7 +158,7 @@ export class EmbeddingService {
           preferenceEmbedding: `[${embedding.join(',')}]`, // Store as vector string
           updatedAt: new Date()
         })
-        .where(eq(users.id, userId);
+        .where(eq(users.id, userId),;
       console.log(`Generated preference embedding for user ${userId}`);
     } catch (error: any) {
       console.error(`Error generating user preference embedding for ${userId}:`, error);
@@ -169,7 +169,7 @@ export class EmbeddingService {
    * Generate document embedding and store in database
    */
   async generateDocumentEmbedding(
-    content: string;
+    content: string,;
     metadata: {
       documentId?: string;
       evidenceId?: string;
@@ -192,7 +192,7 @@ export class EmbeddingService {
         chunkSize: content.length,
         parentChunkId: metadata.parentChunkId || null,
         embeddingModel: this?.model || "unknown" // @ts-ignore - Model property access,
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       });
       console.log('Generated and stored document embedding');
     } catch (error: any) {
@@ -212,7 +212,7 @@ export class EmbeddingService {
         caseId,
         content,
         embedding: `[${embedding.join(',')}]`, // Store as vector string;
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       });
       console.log(`Generated and stored case embedding for case ${caseId}`);
     } catch (error: any) {
@@ -245,7 +245,7 @@ export class EmbeddingService {
    * Normalize vector to unit length
    */;
   private normalizeVector(vector: number[]): number[] {
-    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
+    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0),;
     if (norm === 0) {
       return vector; // Return original if zero vector
     }
@@ -257,7 +257,7 @@ export class EmbeddingService {
   chunkText(
     text: string
     chunkSize: number = 600,
-    overlap: number = 60;
+    overlap: number = 60,;
   ): { text: string; index: number }[] {
     const chunks = [];
     let start = 0;
@@ -266,7 +266,7 @@ export class EmbeddingService {
       const end = Math.min(start + chunkSize, text.length);
       const chunk = text.slice(start, end);
       chunks.push({
-        text: chunk;
+        text: chunk,;
         index: index++
       });
       // Move start position considering overlap

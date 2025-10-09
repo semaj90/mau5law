@@ -51,13 +51,13 @@ export const GET: RequestHandler = async ({ url }) => {
           spriteMatrix: Array.from({ length: 8 }, () =>
             Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
           ),
-          colorPalette: ['#000000', '#555555', '#AAAAAA', '#FFFFFF'],
-          compressionRatio: shard.compressionRatio,
-          cacheState: shard.cacheState,
-          predictiveScore: Math.random(),
-          lastAccessed: new Date(Date.now() - Math.random() * 86400000).toISOString(),
-          hitCount: Math.floor(Math.random() * 1000),
-          mockData: true,
+          colorPalette,: ['#000000', '#555555', '#AAAAAA', '#FFFFFF'],
+          compressionRatio,: shard.compressionRatio,
+          cacheState,: shard.cacheState,
+          predictiveScore,: Math.random(),
+          lastAccessed,: new Date(Date.now() - Math.random() * 86400000).toISOString(),
+          hitCount,: Math.floor(Math.random() * 1000),
+          mockData,: true,
         })
         return json({
           action: 'bitmap_sprites',
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json()
           {
             error: 'Unknown action',
-            availableActions: [
+            availableActions,: [
               'assets',
               'bitmap_sprites',
               'chr_manifests',
@@ -206,18 +206,18 @@ export const GET: RequestHandler = async ({ url }) => {
               'vector_similarity',
               'cache_health'
             ],
-            timestamp: new Date().toISOString()
+            timestamp,: new Date().toISOString()
           },
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('❌ Neural topology assets API error:', error)
     return json()
       {
         error: 'Neural assets operation failed',
-        message: error?.message || 'Unknown error',
-        timestamp: new Date().toISOString()
+        message,: error?.message || 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
             matrix: Array.from({ length: 8 }, () =>
               Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
             ),
-            palette: Array.from()
+            palette,: Array.from()
               { length: 4 },
               () =>
                 `#${Math.floor(Math.random() * 16777215)
@@ -373,24 +373,24 @@ export const POST: RequestHandler = async ({ request }) => {
         return json()
           {
             error: 'Unknown POST action',
-            availableActions: [
+            availableActions,: [
               'optimize_cache',
               'generate_sprites',
               'update_chr_manifest',
               'predict_asset_usage'
             ],
-            timestamp: new Date().toISOString()
+            timestamp,: new Date().toISOString()
           },
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('❌ Neural topology assets POST API error:', error)
     return json()
       {
         error: 'POST operation failed',
-        message: error?.message || 'Unknown error',
-        timestamp: new Date().toISOString()
+        message,: error?.message || 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

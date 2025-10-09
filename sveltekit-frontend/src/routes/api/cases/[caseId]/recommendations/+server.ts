@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         `${NLP_SERVICE_URL}/analyze-criminal-actions`,)
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,: { "Content-Type,": "application/json" },
           body: JSON.stringify({ text: textToEmbed })
         }
       )
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           })
         }
       }
-    } catch (vectorError) {
+    }, catch (vectorError) {
       console.warn("Vector search failed:", vectorError)
       // Continue without vector recommendations
     }
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         .sort((a, b) => b.confidence - a.confidence)
         .slice(0, 10)
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Error generating recommendations:", error)
     return json(
       { error: "Failed to generate recommendations" },)

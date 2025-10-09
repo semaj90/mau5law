@@ -27,7 +27,7 @@ interface LegalJobRequest {
     agents?: Array<any>
 }
 // POST /api/legal - Submit legal AI job
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Authentication check
     const sessionId = cookies.get('lucia_session')
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   }
 }
 // GET /api/legal - Get job status or results
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const jobId = url.searchParams.get('job_id')
   const caseId = url.searchParams.get('case_id')
   if (jobId) {

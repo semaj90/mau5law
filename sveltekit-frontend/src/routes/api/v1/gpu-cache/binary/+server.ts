@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json(response)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Binary shader cache POST error:', error)
     return json({ error: 'Failed to store shader' }, { status: 500 })
   }

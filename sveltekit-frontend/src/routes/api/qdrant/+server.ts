@@ -4,6 +4,7 @@ import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimi
 import { productionLogger as logger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
 import type { RequestHandler } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
 import os from 'os'; // Import the 'os' module
 
 // Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.
@@ -154,7 +155,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     // Rate limiting
     const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api');
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_sync:${clientIP}:${locals.user?.id || 'anonymous'}`,
+      key: `qdrant_sync:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       ...rateLimitConfig,
     });
     if (!rateLimitResult.allowed) {
@@ -448,7 +449,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
   try {
     // Rate limiting for collection operations
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_collection:${clientIP}:${locals.user?.id || 'anonymous'}`,
+      key: `qdrant_collection:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       limit: 10, // Stricter for collection operations
       windowSec: 60,
     });
@@ -560,7 +561,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
   try {
     // Rate limiting for deletion operations
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_delete:${clientIP}:${locals.user?.id || 'anonymous'}`,
+      key: `qdrant_delete:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       limit: 5, // Very strict for deletions
       windowSec: 300, // 5-minute window
     });

@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		if (!body.strategy || !['speed', 'quality', 'comparison'].includes(body.strategy)) {
 			return json({
-				success: false;
+				success: false,;
 				error: 'Invalid strategy: must be "speed", "quality", or "comparison"'
 			}, { status: 400 })
 		}
@@ -91,22 +91,22 @@ export const GET: RequestHandler = async () => {
 			},)
 			{
 				type: 'comparison',
-				description: 'Comprehensive comparison across all strategies',
-				tests: ['all_endpoints', 'scaling_analysis', 'resource_utilization'],
-				metrics: ['speed', 'quality', 'resource_efficiency', 'cost_effectiveness']
+				description,: 'Comprehensive comparison across all strategies',
+				tests,: ['all_endpoints', 'scaling_analysis', 'resource_utilization'],
+				metrics,: ['speed', 'quality', 'resource_efficiency', 'cost_effectiveness']
 			}
 		],
 		parameters: {
 			max_error_count: 200,
-			max_iterations: 10,
-			min_iterations: 1,
-			supported_strategies: ['speed', 'quality', 'comparison']
+			max_iterations,: 10,
+			min_iterations,: 1,
+			supported_strategies,: ['speed', 'quality', 'comparison']
 		},
 		hardware: {
 			gpu: 'NVIDIA RTX 3060 Ti',
-			memory: '16GB RAM',
-			cuda_version: '12.8',
-			go_service_version: '2.0.0'
+			memory,: '16GB RAM',
+			cuda_version,: '12.8',
+			go_service_version,: '2.0.0'
 		},
 		timestamp: new Date().toISOString()
 	})

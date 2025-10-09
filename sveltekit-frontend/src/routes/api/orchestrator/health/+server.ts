@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
     ]
     // Check all HTTP services in parallel
     const serviceChecks = await Promise.all(services.slice(0, 3).map(async (service) => {
-        const { healthy, responseTime } = await checkServiceHealth(service.url))
+        const { healthy, responseTime } = await checkServiceHealth(service.url),)
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
@@ -153,11 +153,11 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503
     })
-  } catch (error) {
+  }, catch (error) {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: { [key: string]: any },
+      nintendo_memory_banks: { [key,: strin,g]: any },
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'
     }, { status: 500 })

@@ -197,23 +197,23 @@ class ParallaxDynamic {
 	}
 	setupEventListeners() {
 		// Mouse events
-		window.addEventListener('mousemove', this.handleMouseMove.bind(this);
+		window.addEventListener('mousemove', this.handleMouseMove.bind(this),;
 		// Touch events for mobile
 		window.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-		window.addEventListener('touchstart', this.handleTouchStart.bind(this);
-		window.addEventListener('touchend', this.handleTouchEnd.bind(this);
+		window.addEventListener('touchstart', this.handleTouchStart.bind(this),;
+		window.addEventListener('touchend', this.handleTouchEnd.bind(this),;
 		// Gyroscope events
 		if (this.isGyroscopeAvailable) {
-			window.addEventListener('deviceorientation', this.handleGyroscope.bind(this);
+			window.addEventListener('deviceorientation', this.handleGyroscope.bind(this),;
 		}
 		// Pointer events
-		window.addEventListener('pointermove', this.handlePointerMove.bind(this);
-		window.addEventListener('pointerdown', this.handlePointerDown.bind(this);
-		window.addEventListener('pointerup', this.handlePointerUp.bind(this);
+		window.addEventListener('pointermove', this.handlePointerMove.bind(this),;
+		window.addEventListener('pointerdown', this.handlePointerDown.bind(this),;
+		window.addEventListener('pointerup', this.handlePointerUp.bind(this),;
 		// Performance monitoring
-		window.addEventListener('resize', this.handleResize.bind(this);
+		window.addEventListener('resize', this.handleResize.bind(this),;
 		// Page visibility for performance optimization
-		document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this);
+		document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this),;
 	}
 	handleMouseMove(event) {
 		if (this.isMobile && this.isGyroscopeAvailable) return;
@@ -361,7 +361,7 @@ class ParallaxDynamic {
 		const computePass = commandEncoder.beginComputePass();
 		computePass.setPipeline(this.transformPipeline);
 		computePass.setBindGroup(0, bindGroup);
-		computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64);
+		computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64),;
 		computePass.end();
 		this.webgpuDevice.queue.submit([commandEncoder.finish()]);
 		// Read back results
@@ -373,7 +373,7 @@ class ParallaxDynamic {
 		copyEncoder.copyBufferToBuffer(transformBuffer, 0, readBuffer, 0, transformData.byteLength);
 		this.webgpuDevice.queue.submit([copyEncoder.finish()]);
 		await readBuffer.mapAsync(GPUMapMode.READ);
-		const resultData = new Float32Array(readBuffer.getMappedRange();
+		const resultData = new Float32Array(readBuffer.getMappedRange(),;
 		// Apply transforms to DOM elements
 		this.layers.forEach((layer, i) => {
 			if (!layer.enabled || !layer.element) return;
@@ -408,8 +408,8 @@ class ParallaxDynamic {
 			inputY += Math.cos(currentTime * this.config.autoRotateSpeed * 0.7) * 15;
 		}
 		// Clamp to maximum offset
-		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX);
-		inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY);
+		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX),;
+		inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY),;
 		this.layers.forEach(layer => {
 			if (!layer.enabled || !layer.element) return;
 			// Calculate target offsets

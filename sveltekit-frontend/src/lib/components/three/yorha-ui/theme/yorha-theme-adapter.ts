@@ -113,7 +113,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const textColor = resolveColorToken(role.text, YORHA_COLORS.primary.black);
   const glow = options?.enableGlow ? {
     enabled: true
-    color: backgroundColor;
+    color: backgroundColor,;
     intensity: 0.35
   } : undefined;
   // Derive simple hover (lighten by adding small value) – naive approach

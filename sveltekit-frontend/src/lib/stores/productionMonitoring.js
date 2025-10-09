@@ -89,7 +89,7 @@ async function updateMetrics() {
     ...current,
     ...metrics,
     timestamp: Date.now(),
-  });
+  }),;
 }
 // Fetch metrics from various sources
 async function fetchMetrics() {
@@ -100,10 +100,10 @@ async function fetchMetrics() {
     fetchAutoSolveMetrics()
   ]);
   return {
-    system: results[0].status === 'fulfilled' ? results[0].value: { [key: string]: any },
-    services: results[1].status === 'fulfilled' ? results[1].value : { [key: string]: any },
-    optimization: results[2].status === 'fulfilled' ? results[2].value : { [key: string]: any },
-    autoSolve: results[3].status === 'fulfilled' ? results[3].value : { [key: string]: any }
+    system: results[0].status === 'fulfilled' ? results[0].value: { [key,: strin,g]: any },
+    services: results[1].status === 'fulfilled' ? results[1].value : { [key,: strin,g]: any },
+    optimization: results[2].status === 'fulfilled' ? results[2].value : { [key,: strin,g]: any },
+    autoSolve: results[3].status === 'fulfilled' ? results[3].value : { [key,: strin,g]: any }
   };
 }
 // System performance metrics
@@ -247,7 +247,7 @@ export const performanceScore = derived(performanceMetrics, $metrics => {
 function calculateSystemScore(system) {
   const cpuScore = Math.max(0, 100 - system.cpu);
   const memoryScore = Math.max(0, 100 - system.memory);
-  const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10);
+  const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10),;
   return (cpuScore + memoryScore + lagScore) / 3;
 }
 function calculateOptimizationScore(optimization) {

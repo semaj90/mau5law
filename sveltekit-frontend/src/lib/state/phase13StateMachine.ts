@@ -202,7 +202,7 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
       orchestrationData: orchestrationResult
       processingTime: Date.now()
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     throw new Error(`Enhanced RAG query failed: ${error}`);
   }
 });
@@ -249,8 +249,8 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
 // Main Phase 13 state machine
 export const phase13StateMachine = setup({
   types: {
-    context: { [key: string]: any } as Phase13Context,
-    events: { [key: string]: any } as Phase13Event
+    context: { [key,: strin,g]: any } as Phase13Context,
+    events: { [key,: strin,g]: any } as Phase13Event
   },
   actors: {
     webglVertexStreamingService,
@@ -264,7 +264,7 @@ export const phase13StateMachine = setup({
           const gl = event.canvas.getContext("webgl2", {
             powerPreference: "high-performance",
             preserveDrawingBuffer: true
-            antialias: false;
+            antialias: false,;
             alpha: false
           }) as WebGL2RenderingContext;
           // Initialize WebGL state
@@ -524,7 +524,7 @@ export const phase13StateMachine = setup({
         src: "enhancedRAGService",
         input: ({ context, event }) => ({
           query: event.type === "ENHANCED_RAG_QUERY" ? event.query: "",
-          context: event.type === "ENHANCED_RAG_QUERY" ? event.context : { [key: string]: any },
+          context: event.type === "ENHANCED_RAG_QUERY" ? event.context : { [key,: strin,g]: any },
           pageRankScores: context.pageRankScores
         }),
         onDone: {
@@ -617,7 +617,7 @@ export const phase13Derived = {
       return {
         overall: webglScore + apiScore + perfScore + latencyScore,
         webgl: webglScore
-        api: apiScore;
+        api: apiScore,;
         performance: perfScore + latencyScore
       }
     }
@@ -643,7 +643,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
   return {
     actor,
     machine: phase13StateMachine
-    stores: phase13Stores;
+    stores: phase13Stores,;
     derived: phase13Derived
     // Convenience methods
     startVertexStreaming: (vertices: Float32Array) => {

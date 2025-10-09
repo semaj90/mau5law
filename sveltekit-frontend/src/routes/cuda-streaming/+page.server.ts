@@ -1,5 +1,6 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { error, fail, json } from '@sveltejs/kit';
+import { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ locals }) => {
   try {
     // Get CUDA/GPU system information
@@ -49,7 +50,7 @@ export const actions: Actions = {
         operationType,
         inputData,
         batchSize,
-        userId: locals.user?.id,
+        userId: getUserId(locals),
       });
       return json({
         success: true,
@@ -93,7 +94,7 @@ export const actions: Actions = {
       const processingResult = await processCudaDocument(documentData, {
         processingType,
         useGpu,
-        userId: locals.user?.id,
+        userId: getUserId(locals),
       });
       const processingTime = Date.now() - startTime;
       return json({

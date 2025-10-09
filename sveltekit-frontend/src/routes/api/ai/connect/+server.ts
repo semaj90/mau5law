@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'http://localhost:11434/api/generate',)
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,: { 'Content-Type,': 'application/json' },
           body: JSON.stringify({
             model,
             prompt: 'Test connection',
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'connected',
       timestamp: new Date().toISOString()
     })
-  } catch (err: any) {
+  }, catch (err: any) {
     console.error('AI connection error:', err)
     // If this is a SvelteKit HttpError rethrow it
     if (err && typeof err === 'object' && 'status' in err) {

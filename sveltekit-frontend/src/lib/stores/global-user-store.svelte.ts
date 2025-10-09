@@ -321,8 +321,8 @@ export const globalUserStore = {
     try {
       const params = new URLSearchParams({ userId: globalUserState.user.id });
       if (timeRange) {
-        params.set('from', timeRange.from.toISOString();
-        params.set('to', timeRange.to.toISOString();
+        params.set('from', timeRange.from.toISOString(),;
+        params.set('to', timeRange.to.toISOString(),;
       }
       // removed unused response assignment
       if (response.ok) {
@@ -362,7 +362,7 @@ export const globalUserStore = {
   addSearchQuery(query: string, resultsCount: number, context?: string) {
     const search: SearchQuery = {
       query,
-      results: resultsCount;
+      results: resultsCount,;
       timestamp: new Date(),
       context
     }
@@ -470,7 +470,7 @@ if (browser) {
       navigator.sendBeacon('/api/v1/sync/user-state-beacon', JSON.stringify({
         userId: globalUserStore.user?.id,
         data: { lastActivity: new Date() }
-      });
+      }),;
     }
   });
 }

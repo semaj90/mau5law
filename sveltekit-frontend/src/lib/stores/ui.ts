@@ -27,7 +27,7 @@ export const contextMenuActions = {
     contextMenuStore.set({ ...defaultContextMenuState });
   },
   update: (state: Partial<ContextMenuState>) => {
-    contextMenuStore.update((s) => ({ ...s, ...state });
+    contextMenuStore.update((s) => ({ ...s, ...state }),;
   }
 }
 // Theme system
@@ -100,35 +100,35 @@ export const uiStore = {
     notifications.update((list) => [...list, fullNotification]);
     if ((notification as { duration?: any }).duration !== 0) {
       setTimeout(() => {
-        notifications.update((list) => list.filter((n) => n.id !== id);
+        notifications.update((list) => list.filter((n) => n.id !== id),;
       }, (notification as { duration?: any }).duration || 5000);
     }
     return id;
   },
   dismissNotification: (id: string) => {
-    notifications.update((list) => list.filter((n) => n.id !== id);
+    notifications.update((list) => list.filter((n) => n.id !== id),;
   },
   // Modals
   openModal: (modalId: string) => {
-    modals.update((state) => ({ ...state, [modalId]: true });
+    modals.update((state) => ({ ...state, [modalId]: true }),;
   },
   closeModal: (modalId: string) => {
-    modals.update((state) => ({ ...state, [modalId]: false });
+    modals.update((state) => ({ ...state, [modalId]: false }),;
   },
   // Loading states
   setLoading: (_key: string, isLoading: boolean) => {
-    loading.update((state) => ({ ...state, [key]: isLoading });
+    loading.update((state) => ({ ...state, [key]: isLoading }),;
   },
   // Sidebar
   toggleSidebar: () => {
-    sidebar.update((state) => ({ ...state, isOpen: !state.isOpen });
+    sidebar.update((state) => ({ ...state, isOpen: !state.isOpen }),;
   },
   // Forms
   updateForm: (formId: string, updates: Partial<FormState>) => {
     forms.update((state) => ({
       ...state,
       [formId]: { ...state[formId], ...updates }
-    });
+    }),;
   }
 }
 export default uiStore;

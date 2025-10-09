@@ -85,7 +85,7 @@ export async function parseJsonStream(
     const extractedTexts: string[] = [];
     // Split into chunks
     for (let i = 0; i < jsonString.length; i += chunkSize) {
-      chunks.push(jsonString.slice(i, i + chunkSize);
+      chunks.push(jsonString.slice(i, i + chunkSize),;
     }
     // Process each chunk
     for (const chunk of chunks) {
@@ -133,9 +133,9 @@ function extractTextFromObject(obj: any): string[] {
     if (typeof value === 'string' && value.length > 10) {
       texts.push(value);
     } else if (Array.isArray(value)) {
-      value.slice(0, 20).forEach(item => walk(item, depth + 1);
+      value.slice(0, 20).forEach(item => walk(item, depth + 1),;
     } else if (value && typeof value === 'object') {
-      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1);
+      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1),;
     }
   }
   walk(obj);

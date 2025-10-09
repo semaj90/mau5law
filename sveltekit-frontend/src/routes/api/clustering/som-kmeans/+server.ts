@@ -336,7 +336,7 @@ function updateSOMWeights(
   bmu: { x: number, y: number },
   learningRate: number
   neighborhoodRadius: number
-  width: number;
+  width: number,;
   height: number
 ): void {
   for (let x = 0; x < width; x++) {
@@ -414,7 +414,7 @@ function calculateClusterQuality(points: number[][], centroid: number[]): number
   if (points.length === 0) return 0
   const distances = points.map(point => calculateEuclideanDistance(point, centroid)
   const avgDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length
-  return Math.max(0, 1 - (avgDistance / 10); // Normalized quality score
+  return Math.max(0, 1 - (avgDistance / 10),; // Normalized quality score
 }
 function generateSOMTopology(neurons: number[][][], width: number, height: number): unknown {
   return {

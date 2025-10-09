@@ -29,19 +29,19 @@ export interface DocumentProcessingContext {
 }
 export type DocumentProcessingEvent =;
   | {
-      type: 'START_PROCESSING';
-      documentId: string;
-      content: string;
-      metadata?: { [key: string]: any }
+      type: 'START_PROCESSING',;
+      documentId: string,;
+      content: string,;
+      metadata?: { [key,: strin,g]: any }
     }
-  | { type: 'CHUNKING_COMPLETE'; chunks: string[] }
-  | { type: 'CHUNKING_FAILED'; error: string }
-  | { type: 'EMBEDDING_COMPLETE'; embeddings: number[][] }
-  | { type: 'EMBEDDING_FAILED'; error: string }
+  | { type: 'CHUNKING_COMPLETE',; chunks: string[] }
+  | { type: 'CHUNKING_FAILED',; error: string }
+  | { type: 'EMBEDDING_COMPLETE',; embeddings: number[][] }
+  | { type: 'EMBEDDING_FAILED',; error: string }
   | { type: 'STORAGE_COMPLETE' }
-  | { type: 'STORAGE_FAILED'; error: string }
+  | { type: 'STORAGE_FAILED',; error: string }
   | { type: 'INDEXING_COMPLETE' }
-  | { type: 'INDEXING_FAILED'; error: string }
+  | { type: 'INDEXING_FAILED',; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'RESET' }
@@ -120,7 +120,7 @@ const storageActor = fromPromise(async ({
         processed_at: new Date().toISOString()
       } as any,
       embedding: vec as unknown as any
-    });
+    }),;
     await db.insert(documentEmbeddings).values(rows);
     console.log(`✅ Database storage complete: ${rows.length} records inserted`);
     return { stored: rows.length }
@@ -188,13 +188,13 @@ export const documentProcessingMachine = createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOlwGIBlAFQG0AFAB1VgBdYBPWAYzFUQB2AFIAUAG3wA3PiAAOUsFWkBXGrRkgAHogC0AdgAsAJgCsADgBMAZj6n9RtUY1HTJgDQgAnocN6Jh0YUXsLe20TM1MHRzUAX2iHNCw8AmJScmZqWgYmFnYOLgB3UgIAa2Y+YVFxKRl5JRUEbV0jUwtdaxdTLxMfA39TC00Yuw6tdRNO4yCR8KjcAmI0nLyCkjEJKRkM3PyigGFgZhLSsoAmCpqFOpqGmFpgAC9t7oQfJwHdBCNTS1KdJrNqYLQgKhfCCAKAAIm4AEb4ACu6wgm12UGO+CKBSSxTKrQudju922vSGfhGUxMky8PlMJg+0ws1lcPgchJAp3O9EepEoaABwI2YJyiKOp3OFwArqRAQTngRnnQGFyPt8+USvlBIIC6GB0b9gkCUgBdCbqOg6LzWGzM1p+PxhBJhJoIBAAaXCdDRgNl2WVXCRvI1Wp1ep1BoNxutJHIjFUjo+MZdHrIXtgPr9AcDkgNOqNhoAxLHCRzOKi4gFguEYok0mlMqW8zIiTidbr9Uo2h0Pr6jdGHe6vQy-HkGhz2YyQs5HYL3SX0yWcnki3kywXMsVyuoVPWquVN7Wap1gKOhqbx+avRaKZv6eL1Rq-n7CJa3a3uyNPVzvf7uIoLFpTsT4w3NNsTxnINQ0nNZKhrf5l0XHlVw2dY9i6Ax7G2PoakA9dDx1Y9uVPBBz0ve1kGfV98l+T9vzAKB-xnEsq3fWty1rJx63Axtm1bVsQxGUMFDmKMTAg1sjA+AxONlZwYMQ4U7j+WCUOBckMMjZgowIAhSMDJsGNkZwjOvCJ43knQHy1Rk2VNcCAggICYDlKi5Vo9swlE0tJyDINnDaFpZV02ZZj6IZrH8pQpljEY+hGayHQrOS2XdZTmF9RSyJHdZKJGcwOhMAZP0GUxFP0qNdM7QyNOZeNEqSmKsrSxSSCy-8qnhNJmgaCJ5nC-ztDmMJFu0cL7M29xJoXGqJzq3Zm2a7Q20C4Z2kWcMYzcMIw10YYBp2YbXLhEaVOPNSDvqSK6t5MIdCOuz2g6IJdAsjwY3GcJVBdHQJh-JBHrkt7koBNIcvOoY1HC-yuiYMJOh6Jh5iuqJwmjHmrMDHNWe-drCb-IqyFEcEXrBKKovC6IzoZgLNq6qKNGsYZUZGvpZlGaI5iRmmZqO+brrfF7yAKkGbshN7LVh5SnFsL45mCRNnGsLyFrmlZwjitxzPmKNJiGaznxNhJEuOv0DsN7XdZJw26u2Zx3FYhbghVh5IxuXZFl0KLzN2JnZmG5mueKz6MFJgBBBAAAY0-I1P6q2wKxL4YKvpGxMCi++5Lkjl+ZGvjxZ5eUXUcAAK8MIgNPQzXl0xVZGq9UacBvNr9JdcQb7E-fHvMRmBZjKOOl-5+ZIyisrRrMhZdE6VyIiG2d1v3qf7qpomD6O0s2f27cJt0LQhKdGM-t27Qc+xrQ-7g-xA+7cAMABfN6cCnpQFCvSVQ9ckYchBJ8R2lJKyJ1jNzeYNJPb0mhOjLE6djqjjjI+TKXsRagWXigWAfFNYVyFo+dyFsHZWUjn8WkcwRhBAWEERpFkjD2A+m0L6mF9o6k2n9b2O0vr2xwf1R+sB-4AGU0qPSGBnIoIIQLWCrJYrQMSkTawsUNGEmGhOZBdAeDAOAaArGYC2wQKitA+mHs3YYxGFCOB+giTjB5s6VErDOHDTgUZGOxNOF6REWE0qBjDg9FcMuGMsZzRLnMJYIGjIBZx3joAfgAmxKRdD5FrQSjwvggASP0JdR49AqIIZyYH0MMhKEcC1dJNgcYBDiPHXQjQ9BeP1Ec2BEiOD9EwP0hJSjZFCAqB5ARDBjHhDScwWyMYgjAwdoaTsKd2Q9BdqGOK40nZTUqg-aqDTp7Yn7oPQx1xokyISbcpJ+zTbW3cZMn2KwFhdLnMEmZ3tYzuTGWwCZ6S-ajKKpFUq9wKxeFqtLYI9gkzKjmNFJZgpDDzFKQSB4b1JioJaG9QGb1Fm8hHo7IFQLeZUl9jqP6ksOQbKBTFFBpslDmAcEEgFqy1nqAOZA05+tjkrEcgsq5Fy2xXIOQAeWFU4fGPJjHwmAQCKprz4UIpefUwKFp-qhWdHsOmLIgrBV5BqRxmq8VVmtDWW0tZhbhh9rStJxKFx0zdqisBX0DbapjLfGMf9Y2Bvjaau5qLpXqt9MG7+dZ9CjAmBMB2fR-FvnVE4YmFh1AjzdsJbOBKGXEvSZ8nh79TKPKzjW2+xbK1+rrgA0Nqgtl9oJcG9FbAhlJPQYsJ+UZlbTMdIEqOGYIw1KiIGAJxBkQytkCOkIhxKSVuKt25tv6V1Yq-T8-lKaGSGGMqhKGE7TKDhqEHF8QN5gzPmdFcIidDCMjzS2gKtKz1I1iozTu56FZzL6Y8ntZQXCfTzBbX6hxhahiA5B1lQcOQ0bPQi9tRL31btjN8D4uxKkJK-qmQ4WdxNMwRhFY4tQ5lUlUBsqtPqEPXTIGWh6Z6C0UtadUjOUGjEJvreKn9dJoxGhNMqRwOh9hTBGHR9i5ZjGJRhQKxO5GhH1tI-9RjhKGMsJiDO6Zexti1MJF3Qo2p4aeITOGbOGnGxWaDUjRjb52ZBcCw2qNdAXMOEKfZ-KBHWk2rHNyJKfAjB1PDV8RwsRxkrNxTm36cM6bJqDeRz96WH0lCfRRl1bGaFfR7v8aYKwJM6yDaJ8+4QJNOaEwE0N8a8P2rdbGlzGYKSI0uNGX2VdyzJxhGUZwRdnOJvlJF5zTm+JHvO6e8h50yFjUYwWpj76QvGmFl1nkLwOsW062dJsUQozFHMKx6Lh6YsUcU5R3Ttm0b2YcE4Z0LgLbLYhksdOWH2sXD-sKCYgHgOubG1FyAo2xvjZKJN6bw3Dvjdi4t9NlGHBzEnCUE2-4TbJktsYU4qczaRi+2xjbHLqAAGIDvOZG8dsb3Ybve5tz7sBvt7YAIo6F+yNiDLm2BHCUf0VjwAUGh9WwIAA */
   id: 'documentProcessing',
   types: {
-    context: { [key: string]: any } as DocumentProcessingContext,
-    events: { [key: string]: any } as DocumentProcessingEvent
+    context: { [key,: strin,g]: any } as DocumentProcessingContext,
+    events: { [key,: strin,g]: any } as DocumentProcessingEvent
   },
   context: {
     documentId: '',
     content: '',
-    metadata: { [key: string]: any },
+    metadata: { [key,: strin,g]: any },
     chunks: [],
     embeddings: [],
     progress: 0,
@@ -443,13 +443,13 @@ export const documentProcessingMachine = createMachine({
       actions: assign({
         documentId: '',
         content: '',
-        metadata: { [key: string]: any },
+        metadata: { [key,: strin,g]: any },
         chunks: [],
         embeddings: [],
         progress: 0,
         errors: [],
         startTime: 0,
-        endTime: undefined;
+        endTime: undefined,;
         status: 'pending',
         retryCount: 0,
         processingStage: 'chunking'

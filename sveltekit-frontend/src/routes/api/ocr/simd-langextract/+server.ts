@@ -269,7 +269,7 @@ async function getStandardEmbedding(
 }
 // Batch processing endpoint
 export async function handleBatchProcessing(
-  texts: Array<any>;
+  texts: Array<any>,;
   config: Partial<TextTileConfig>
 ): Promise<any[]> {
   console.log(`🚀 SIMD batch processing: ${texts.length} texts`)
@@ -303,7 +303,7 @@ export async function handleBenchmarkTesting(
       compression_targets: compressionTargets
       sample_texts: sampleTexts.length
     },
-    compression_results: { [key: string]: any },
+    compression_results: { [key,: strin,g]: any },
     performance_stats: {
       total_processing_time: 0,
       avg_compression_ratio: 0,

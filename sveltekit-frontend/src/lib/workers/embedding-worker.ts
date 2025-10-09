@@ -73,13 +73,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         }
         this.postResponse({
           id,
-          success: true;
+          success: true,;
           data: result
         });
       } catch (error: any) {
         this.postResponse({
           id,
-          success: false;
+          success: false,;
           error: error instanceof Error ? error.message: 'Unknown error'
         });
       }
@@ -202,13 +202,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return texts.map((text: any) => ({,
         id: this.generateId(),
         embedding: new Array(dimensions).fill(0).map(() => Math.random() - 0.5),
-        content: text;
+        content: text,;
         metadata: {
           tokenCount: Math.ceil(text.length / 4),
           processingTime: Math.random() * 100
         },
         processingTime: Math.random() * 100
-      });
+      }),;
     }
     private splitTextIntoChunks(text: string, chunkSize: number, overlap: number): string[] {
       const chunks: string[] = [];
@@ -229,7 +229,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         }
       }
       if (currentChunk.trim().length > 0) {
-        chunks.push(currentChunk.trim();
+        chunks.push(currentChunk.trim(),;
       }
       return chunks;
     }
@@ -475,7 +475,7 @@ export class EmbeddingWorkerManager {
     return this.executeTask('similarity', task, onProgress);
   }
   public async processGeneral(
-    data: any;
+    data: any,;
     options: any
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<any> {

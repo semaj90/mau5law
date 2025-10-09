@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const targetModule = moduleRegistry.get(toModule)
         if (!targetModule) {
           return json({
-            success: false;
+            success: false,;
             error: `Target module not found: ${toModule}`
           }, { status: 404 })
         }

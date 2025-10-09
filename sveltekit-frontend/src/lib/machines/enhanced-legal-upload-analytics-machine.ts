@@ -180,7 +180,7 @@ const LegalContextSchema = z.object({
   matterNumber: z.string().optional()
 });
 // Enhanced Production Services
-export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input: { userAnalytics: UserAnalytics; context: UploadContext } }): Promise< => {
+export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input: { userAnalytics: UserAnalytics; context: UploadContext } }): Promise<, => {
     try {
       // Production API call to user behavior analysis service
       const response = await fetch('/api/ai/ollama/analyze-behavior', {
@@ -296,7 +296,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('caseId', input.context.caseId || '');
-        formData.append('legalContext', JSON.stringify(input.context.legalContext);
+        formData.append('legalContext', JSON.stringify(input.context.legalContext),;
         formData.append('model', input.context.ollamaConfig?.model || 'gemma3:270m');
         formData.append('analysisType', 'comprehensive_legal');
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
@@ -326,16 +326,16 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
             acquisition_date: new Date().toISOString(),
             authenticity_verified: true
             chain_of_custody: [{,
-              timestamp: new Date().toISOString(),
-              actor: input.context.authSession?.userId || 'system',
-              action: 'uploaded',
-              details: `Uploaded via legal AI system with ${(result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence}% confidence`
-            }]
+              timestamp,: new Date().toISOString(),
+              actor,: input.context.authSession?.userId || 'system',
+              action,: 'uploaded',
+              details,: `Uploaded via legal AI system with ${(result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence}% confidence`
+            },]
           }
         }
       });
       return await Promise.all(analysisPromises);
-    } catch (error) {
+    }, catch (error) {
       console.warn('Production AI analysis unavailable, using fallback');
       // Enhanced legal fallback analysis
       return input.files.map((file, index) => ({
@@ -360,11 +360,11 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
           acquisition_date: new Date().toISOString(),
           authenticity_verified: false
           chain_of_custody: [{,
-            timestamp: new Date().toISOString(),
-            actor: input.context.authSession?.userId || 'anonymous',
-            action: 'uploaded',
-            details: 'Uploaded via fallback system'
-          }]
+            timestamp,: new Date().toISOString(),
+            actor,: input.context.authSession?.userId || 'anonymous',
+            action,: 'uploaded',
+            details,: 'Uploaded via fallback system'
+          },]
         }
       });
     }
@@ -448,8 +448,8 @@ export function generateUserInsights(context: UploadContext): any {
 // Enhanced XState Machine with Production Integration
 export const comprehensiveUploadAnalyticsMachine = setup({
   types: {
-    context: { [key: string]: any } as UploadContext,
-    events: { [key: string]: any } as
+    context: { [key,: strin,g]: any } as UploadContext,
+    events: { [key,: strin,g]: any } as
       | { type: 'SELECT_FILES'; files: File[]; caseId?: string }
       | { type: 'START_UPLOAD' }
       | { type: 'CANCEL_UPLOAD' }

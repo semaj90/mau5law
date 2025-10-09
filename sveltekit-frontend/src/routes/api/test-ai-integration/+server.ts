@@ -232,7 +232,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       Return a JSON object with this exact structure:
       {"status": "success", "message": "test completed", "number": 42}
       Return only the JSON, no other text.
-    `)
+    `,)
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

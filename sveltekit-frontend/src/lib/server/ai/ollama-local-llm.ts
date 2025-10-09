@@ -150,7 +150,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          name: targetName;
+          name: targetName,;
           modelfile: modelfile
         })
       });
@@ -169,7 +169,7 @@ TEMPLATE """{{ if .System }}<|system|>
     try {
       // Use legal model if available
       const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access)
-      logger.info(`[OllamaLLM] Generating with model ${model}`);
+      logger.info(`[OllamaLLM] Generating with model ${model}`),;
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -199,11 +199,11 @@ TEMPLATE """{{ if .System }}<|system|>
    */
   async generateStream(_options: OllamaGenerateOptions
     onToken: (token: string) => void,
-    onComplete: (response: string) => void;
+    onComplete: (response: string) => void,;
   ): Promise<void> {
     try {
       const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access)
-      logger.info(`[OllamaLLM] Streaming generation with model ${model}`);
+      logger.info(`[OllamaLLM] Streaming generation with model ${model}`),;
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -254,7 +254,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          model: embeddingModel;
+          model: embeddingModel,;
           prompt: text
         })
       });
@@ -298,7 +298,7 @@ TEMPLATE """{{ if .System }}<|system|>
    */
   async processLegalDocument(_document: string
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: unknown;
+    options?: unknown,;
   ): Promise<any> {
     try {
       let prompt = '';

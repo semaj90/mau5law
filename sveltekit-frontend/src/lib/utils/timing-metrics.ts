@@ -48,13 +48,13 @@ class TimingMetricsCollector {
     const timingHeader = response.headers.get('Server-Timing');
     if (!timingHeader) return serverTiming;
     // Parse Server-Timing header format: "name;dur=123, name2;dur=456"
-    const timings = timingHeader.split(',').map((t) => t.trim();
+    const timings = timingHeader.split(',').map((t) => t.trim(),;
     for (const timing of timings) {
       const parts = timing.split(';');
       const name = parts[0]?.trim();
-      const durPart = parts.find((p) => p.startsWith('dur=');
+      const durPart = parts.find((p) => p.startsWith('dur='),;
       if (name && durPart) {
-        const duration = parseFloat(durPart.replace('dur=', '');
+        const duration = parseFloat(durPart.replace('dur=', ''),;
         if (!isNaN(duration)) {
           serverTiming[name] = duration;
         }
@@ -93,7 +93,7 @@ class TimingMetricsCollector {
       firstInputDelay,
       cumulativeLayoutShift,
       // Server timing (populated during fetch)
-      serverTiming: { [key: string]: any },
+      serverTiming: { [key,: strin,g]: any },
       // Custom marks
       customMarks: { ...this.customMarks },
       // Metadata
@@ -165,7 +165,7 @@ class TimingMetricsCollector {
         url: typeof input === 'string' ? input : input.toString(),
         method: init?.method || 'GET',
         clientDuration,
-        serverTiming: { [key: string]: any },
+        serverTiming: { [key,: strin,g]: any },
         requestId,
         status: 0,
         error: error instanceof Error ? error.message: 'Unknown error',
@@ -281,7 +281,7 @@ class TimingMetricsCollector {
       history.push(metrics);
       // Keep only last 50 requests
       const trimmed = history.slice(-50);
-      sessionStorage.setItem('timing-metrics', JSON.stringify(trimmed);
+      sessionStorage.setItem('timing-metrics', JSON.stringify(trimmed),;
     } catch (e) {
       // Silent fail for storage issues
     }

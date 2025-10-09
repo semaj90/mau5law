@@ -204,16 +204,16 @@ export const GET: RequestHandler = async ({ url }) => {
               },)
               {
                 id: 'compliance_check',
-                name: 'Compliance Check',
-                description: 'Regulatory and compliance verification',
-                agents: ['compliance_specialist'],
-                estimatedTime: '1-2 minutes',
-                bestFor: ['regulatory_filings', 'compliance_docs', 'quick_checks']
+                name,: 'Compliance Check',
+                description,: 'Regulatory and compliance verification',
+                agents,: ['compliance_specialist'],
+                estimatedTime,: '1-2 minutes',
+                bestFor,: ['regulatory_filings', 'compliance_docs', 'quick_checks']
               }
             ]
           }
         })
-      case 'health':
+      case 'health',:
         // Health check for CrewAI system
         const activeReviews = await crewAIOrchestrator.getActiveReviews()
         const isHealthy = activeReviews.length < 10; // Arbitrary threshold
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default:
         throw error(400, `Unknown action: ${action}`)
     }
-  } catch (err: any) {
+  }, catch (err: any) {
     console.error('❌ CrewAI status error:', err)
     return json({
       success: false,

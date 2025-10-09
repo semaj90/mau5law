@@ -100,11 +100,11 @@ export class RabbitMQManager extends EventEmitter {
       this.connection = await amqp.connect(this.url);
       this.channel = await this.connection.createChannel();
       // Setup error handling
-      this.connection.on('error', this.handleConnectionError.bind(this);
+      this.connection.on('error', this.handleConnectionError.bind(this),;
       this.connection.on('close', () => {
         this.emit('connection_lost');
       });
-      this.channel.on('error', this.handleChannelError.bind(this);
+      this.channel.on('error', this.handleChannelError.bind(this),;
       console.log('✅ RabbitMQ connected');
     } catch (error: any) {
       throw new Error(`RabbitMQ connection failed: ${error.message}`);
@@ -122,7 +122,7 @@ export class RabbitMQManager extends EventEmitter {
     // Declare queues
     for (const [name, queue] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queue, {
-        durable: true;
+        durable: true,;
         arguments: {
           'x-message-ttl': 300000, // 5 minutes TTL
           'x-max-retries': 3
@@ -278,9 +278,9 @@ export class RabbitMQManager extends EventEmitter {
       return;
     }
     try {
-      const message = Buffer.from(JSON.stringify(data);
+      const message = Buffer.from(JSON.stringify(data),;
       const success = this.channel.publish(exchange, routingKey, message, {
-        persistent: true;
+        persistent: true,;
         timestamp: Date.now()
       });
       if (!success) {
@@ -323,7 +323,7 @@ export class RabbitMQManager extends EventEmitter {
       console.log(`📄 Processing document embedding: ${document_id}`);
       // Generate document data
       const docData = {
-        id: document_id;
+        id: document_id,;
         title: title || `Document ${document_id}`,
         documentType: document_type
         content,
@@ -369,7 +369,7 @@ export class RabbitMQManager extends EventEmitter {
           id: document_id
           title: docData.title,
           content,
-          type: document_type;
+          type: document_type,;
           metadata: {
             case_id,
             document_type,
@@ -380,7 +380,7 @@ export class RabbitMQManager extends EventEmitter {
       // Invalidate related caches
       await this.publishCacheInvalidation({
         type: 'document',
-        id: document_id;
+        id: document_id,;
         keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`]
       });
       this.channel.ack(msg);
@@ -474,8 +474,8 @@ export class RabbitMQManager extends EventEmitter {
                 cacheKey,);
                 {
                   embedding,
-                  metadata: data.metadata || {},
-                  timestamp: Date.now()
+                  metadata,: data.metadata || {},
+                  timestamp,: Date.now()
                 },
                 7200 // 2 hours
               );
@@ -491,8 +491,8 @@ export class RabbitMQManager extends EventEmitter {
               cacheKey,);
               {
                 embedding: data.embedding,
-                metadata: data.metadata || {},
-                timestamp: Date.now()
+                metadata,: data.metadata || {},
+                timestamp,: Date.now()
               },
               data.type === 'similarity' ? 3600 : 7200
             );
@@ -513,7 +513,7 @@ export class RabbitMQManager extends EventEmitter {
       const { user_id, session_id, message, embedding, context_type } = data;
       console.log(`💬 Chat context ${context_type}: ${user_id}`);
       // Generate embedding if not provided
-      const messageEmbedding = embedding || (await this.embeddings.embedQuery(message);
+      const messageEmbedding = embedding || (await this.embeddings.embedQuery(message),;
       // Store in database if available
       if (this.db && this.schema?.chatEmbeddings) {
         const conversationId = `${user_id}_${session_id}`;

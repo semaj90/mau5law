@@ -12,7 +12,7 @@ vi.mock('$app/environment', () => ({
   building: false
   version: '1.0.0-test',
   browser: true
-});
+}),;
 // Mock SvelteKit navigation
 vi.mock('$app/navigation', () => ({
   goto: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock('$app/navigation', () => ({
   afterNavigate: vi.fn(),
   pushState: vi.fn(),
   replaceState: vi.fn()
-});
+}),;
 // Mock global fetch
 global.fetch = vi.fn();
 // Mock WebSocket
@@ -38,7 +38,7 @@ global.WebSocket = vi.fn().mockImplementation(() => ({
   OPEN: 1,
   CLOSING: 2,
   CLOSED: 3
-});
+}),;
 // Mock localStorage
 const mockStorage = {
   getItem: vi.fn(),
@@ -49,11 +49,11 @@ const mockStorage = {
   key: vi.fn()
 }
 Object.defineProperty(window, 'localStorage', {
-  value: mockStorage;
+  value: mockStorage,;
   writable: true
 });
 Object.defineProperty(window, 'sessionStorage', {
-  value: mockStorage;
+  value: mockStorage,;
   writable: true
 });
 // Mock crypto for session token generation
@@ -85,13 +85,13 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn()
-});
+}),;
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn()
-});
+}),;
 // Enhanced database mocking
 const createMockDb = () => ({
   select: vi.fn().mockReturnThis(),
@@ -127,9 +127,9 @@ vi.mock('$lib/server/db/index.ts', () => ({
     database: 'connected',
     tablesAccessible: true
   }),
-  fullSchema: { [key: string]: any },
+  fullSchema: { [key,: strin,g]: any },
   isPostgreSQL: true
-});
+}),;
 // Mock enhanced database operations
 vi.mock('$lib/server/db/enhanced-operations', () => ({
   checkDatabaseHealth: vi.fn().mockResolvedValue({,
@@ -161,7 +161,7 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
     findById: vi.fn(),
     create: vi.fn()
   }
-});
+}),;
 // Mock Drizzle ORM imports
 vi.mock('drizzle-orm', () => ({
   sql: vi.fn(),
@@ -176,7 +176,7 @@ vi.mock('drizzle-orm', () => ({
   isNull: vi.fn(),
   isNotNull: vi.fn(),
   ne: vi.fn()
-});
+}),;
 // Mock Redis service
 vi.mock('$lib/server/redis/redis-service.ts', () => ({
   redisService: {
@@ -188,7 +188,7 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({
     expire: vi.fn().mockResolvedValue(1),
     disconnect: vi.fn()
   }
-});
+}),;
 // Mock Ollama service
 vi.mock('$lib/server/services/OllamaService.js', () => ({
   ollamaService: {
@@ -213,7 +213,7 @@ vi.mock('$lib/server/api/response', () => ({
     NotFound: vi.fn((type) => new Error(`${type} not found`)),
     ValidationFailed: vi.fn((field, message) => new Error(`Validation failed: ${message}`)
   }
-});
+}),;
 // Mock embedding repository
 vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
   getEmbeddingRepository: vi.fn(() => ({,
@@ -233,7 +233,7 @@ vi.mock('$lib/server/production-logger.js', () => ({
     warn: vi.fn(),
     debug: vi.fn()
   }
-});
+}),;
 // Mock SSR cache
 vi.mock('$lib/server/ssr/enhanced-load', () => ({
   SSRCache: {
@@ -241,7 +241,7 @@ vi.mock('$lib/server/ssr/enhanced-load', () => ({
     set: vi.fn(),
     clear: vi.fn()
   }
-});
+}),;
 // Mock URL.createObjectURL
 global.URL.createObjectURL = vi.fn(() => 'mocked-object-url');
 global.URL.revokeObjectURL = vi.fn();
@@ -294,7 +294,7 @@ global.File = class MockFile {
     return new ReadableStream({
       start(controller) {
         this.arrayBuffer().then(buffer => {
-          controller.enqueue(new Uint8Array(buffer);
+          controller.enqueue(new Uint8Array(buffer),;
           controller.close();
         });
       }
@@ -313,21 +313,21 @@ global.FileReader = class MockFileReader extends EventTarget {
     setTimeout(() => {
       this.result = 'mocked file content';
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend');
+      this.dispatchEvent(new Event('loadend'),;
     }, 0);
   }
   readAsDataURL(file: File) {
     setTimeout(() => {
       this.result = `data:${file.type}base64,mockedcontent`;
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend');
+      this.dispatchEvent(new Event('loadend'),;
     }, 0);
   }
   readAsArrayBuffer(file: File) {
     setTimeout(() => {
       this.result = new ArrayBuffer(file.size);
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend');
+      this.dispatchEvent(new Event('loadend'),;
     }, 0);
   }
 } as any;
@@ -427,7 +427,7 @@ global.Blob = class MockBlob {
     return new ReadableStream({
       start: (controller) => {
         this.arrayBuffer().then(buffer => {
-          controller.enqueue(new Uint8Array(buffer);
+          controller.enqueue(new Uint8Array(buffer),;
           controller.close();
         });
       }
@@ -468,7 +468,7 @@ beforeEach(() => {
           logs: [)
             { level: 'info', message: 'Test log entry', timestamp: new Date().toISOString() }
           ],
-          timestamp: new Date().toISOString()
+          timestamp,: new Date().toISOString()
         })
       });
     }
@@ -480,7 +480,7 @@ beforeEach(() => {
         headers: new Headers({ 'Content-Type': 'text/stream' }),
         body: {
           getReader: () => ({
-            read: vi.fn();
+            read: vi.fn(),;
               .mockResolvedValueOnce({
                 value: new TextEncoder().encode('{"response":"Test response"}'),
                 done: false
@@ -499,7 +499,7 @@ beforeEach(() => {
           results: [)
             { id: '1', title: 'Test Result', similarity: 0.95 }
           ],
-          query: 'test query'
+          query,: 'test query'
         })
       });
     }

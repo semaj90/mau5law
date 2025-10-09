@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
       throw fetchError
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Ingest API error:', error)
     return json({
         error: 'Internal server error',
@@ -140,7 +140,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       timestamp: new Date().toISOString(),
       architecture: 'go-microservice'
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     return json({
         status: 'error',
         service: 'ingest-service',

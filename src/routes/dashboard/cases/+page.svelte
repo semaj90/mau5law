@@ -1,7 +1,7 @@
 <script lang="ts">
-	// Removed import of unavailable UI components and $types to avoid editor/TS errors:
-	// import { ButtonBits, CardBits, InputBits } from '$lib/components/ui/bits-ui';
-	// import type { PageData } from './$types';
+	import { createWorkflowStore } from '$lib/client/workflow-event-stream';
+	import { browser } from '$app/environment';
+	import { onMount, onDestroy } from 'svelte';
 
 	// Minimal local types to satisfy TypeScript / IDE without the generated $types
 	type CaseItem = {
@@ -17,21 +17,41 @@
 	type PageData = {
 		cases?: CaseItem[];
 		error?: string;
+		session?: {
+			id: string;
+			userId: string;
+		};
 	};
 
 	// Use SvelteKit-style incoming data
 	export let data: PageData;
 
-	// Use server-loaded cases instead of hardcoded data
-	let cases = $state(data.cases || []);
-	let searchQuery = $state('');
+	// Use server-loaded cases instead of runic stores for predictable reactivity
+	let cases: CaseItem[] = data.cases || [];
+	let searchQuery = '';
+	let showUploadModal = false;
+	let selectedCaseForUpload: string | null = null;
 
-	// Reactive filtered array
-	let filteredCases = $derived(
-		cases.filter(c =>
-			c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			c.case_number.toLowerCase().includes(searchQuery.toLowerCase())
-		)
+	// Workflow store for real-time updates
+	const sessionId = data.session?.id || 'guest';
+	const workflowStore = createWorkflowStore(sessionId);
+
+	// Connect/disconnect workflow store using standard lifecycle hooks
+	onMount(() => {
+		if (browser) {
+			workflowStore.connect();
+		}
+	});
+	onDestroy(() => {
+		if (browser) {
+			workflowStore.disconnect();
+		}
+	});
+
+	// Reactive filtered array computed from local variables
+	$: filteredCases = cases.filter(c =>
+		(c.title || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+		(c.case_number || '').toLowerCase().includes((searchQuery || '').toLowerCase())
 	);
 
 	// Handle new case creation
@@ -136,7 +156,7 @@
 				<div class="case-actions">
 					<!-- replaced ButtonBits with anchor/button that work without the custom component lib -->
 					<a class="nes-btn is-primary is-small" href={`/evidenceboard?case=${case_.id}`}>🔍 Evidence Board</a>
-					<button class="nes-btn is-disabled is-small">📝 Details</button>
+					<button class="nes-btn is-small" disabled>📝 Details</button>
 				</div>
 			</article>
 		{/each}
@@ -276,6 +296,14 @@
 		color: var(--nier-text-muted);
 		margin-bottom: 1rem;
 		font-size: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		.cases-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
 	}
 
 	@media (max-width: 768px) {

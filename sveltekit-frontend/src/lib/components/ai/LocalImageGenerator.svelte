@@ -639,8 +639,7 @@ d;
   .modal-content {
     max-width: 90vw;
     max-height: 90vh;
-    overflow: aut;
-o;
+    overflow: auto;
     background: white;
   }
   .modal-header {

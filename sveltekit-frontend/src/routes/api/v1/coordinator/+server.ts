@@ -45,8 +45,8 @@ export const GET: RequestHandler = async ({ url }) => {
             return json()
               {
                 success: false,
-                error: `Service '${serviceId}' not found`,
-                timestamp: new Date().toISOString()
+                error,: `Service '${serviceId}' not found`,
+                timestamp,: new Date().toISOString()
               },
               { status: 404 }
             )
@@ -65,13 +65,13 @@ export const GET: RequestHandler = async ({ url }) => {
           }),
           timestamp: new Date().toISOString()
         })
-      case 'metrics':
+      case 'metrics',:
         return json({
           success: true,
           data: systemStatus.performance,
           timestamp: new Date().toISOString()
         })
-      case 'errors':
+      case 'errors',:
         return json({
           success: true,
           data: systemStatus.activeErrors,
@@ -81,20 +81,20 @@ export const GET: RequestHandler = async ({ url }) => {
         return json()
           {
             success: false,
-            error: `Unknown action: ${action}`,
-            availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
-            timestamp: new Date().toISOString()
+            error,: `Unknown action: ${action}`,
+            availableActions,: ['status', 'health', 'services', 'metrics', 'errors'],
+            timestamp,: new Date().toISOString()
           },
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Coordinator API error:', error)
     return json()
       {
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -127,8 +127,8 @@ export const POST: RequestHandler = async ({ request }) => {
           return json()
             {
               success: false,
-              error: 'Service target required for restart action',
-              timestamp: new Date().toISOString()
+              error,: 'Service target required for restart action',
+              timestamp,: new Date().toISOString()
             },
             { status: 400 }
           )
@@ -139,8 +139,8 @@ export const POST: RequestHandler = async ({ request }) => {
           return json()
             {
               success: false,
-              error: `Service '${target}' not found`,
-              timestamp: new Date().toISOString()
+              error,: `Service '${target}' not found`,
+              timestamp,: new Date().toISOString()
             },
             { status: 404 }
           )
@@ -152,14 +152,14 @@ export const POST: RequestHandler = async ({ request }) => {
           serviceId: target
           timestamp: new Date().toISOString()
         })
-      case 'force_health_check':
+      case 'force_health_check',:
         // Trigger immediate health check across all services
         return json({
           success: true,
           message: 'Forced health check initiated for all services',
           timestamp: new Date().toISOString()
         })
-      case 'clear_errors':
+      case 'clear_errors',:
         // Clear non-critical active errors
         return json({
           success: true,
@@ -170,20 +170,20 @@ export const POST: RequestHandler = async ({ request }) => {
         return json()
           {
             success: false,
-            error: `Unknown action: ${action}`,
-            availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
-            timestamp: new Date().toISOString()
+            error,: `Unknown action: ${action}`,
+            availableActions,: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
+            timestamp,: new Date().toISOString()
           },
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Coordinator POST API error:', error)
     return json()
       {
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

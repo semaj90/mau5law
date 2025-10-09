@@ -196,7 +196,7 @@ export const MinimalDesignSystem: DesignSystem = {
 // ======================================================================
 export function createDesignSystem(
   name: string
-  customTokens: Partial<CustomDesignTokens>;
+  customTokens: Partial<CustomDesignTokens>,;
   options: {
     baseSystem?: DesignSystem;
     animations?: Partial<AnimationConfig>;

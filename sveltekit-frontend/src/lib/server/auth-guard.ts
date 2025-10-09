@@ -97,7 +97,7 @@ export async function requireAuthentication(_event: RequestEvent): Promise<Authe
 export function checkOwnership(
   user: AuthenticatedUser
   resourceOwnerId: string
-  allowedRoles: string[] = ['admin', 'system'];
+  allowedRoles: string[] = ['admin', 'system'],;
 ): boolean {
   // User owns the resource
   if (user.id === resourceOwnerId) {

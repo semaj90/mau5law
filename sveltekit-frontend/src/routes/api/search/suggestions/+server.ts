@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .catch(error => {
             console.warn('Smart completions failed:', error)
             return { completions: [] }
-          }) :
+          }), :
         Promise.resolve({ completions: [] })
     ]
     const [contextualResults, trendingResults, completionResults] = await Promise.all(suggestionPromises)
@@ -176,15 +176,15 @@ async function processEnhancedSuggestions(
   try {
     const allSuggestions = [
       ...contextualSuggestions.map((s: any) => ({,
-        text: s.text || s.suggestion,
-        category: s.category || category,
-        score: s.relevanceScore || s.score || 0.8,
-        trending: s.trending || false,
-        description: s.description || s.explanation,
-        definition: includeDefinitions ? s.definition: undefined
-        practiceArea: s.practiceArea,
-        confidence: s.confidence || 0.7,
-        source: 'contextual'
+        text,: s.text || s.suggestion,
+        category,: s.category || category,
+        score,: s.relevanceScore || s.score || 0.8,
+        trending,: s.trending || false,
+        description,: s.description || s.explanation,
+        definition,: includeDefinitions ? s.definition: undefined
+        practiceArea,: s.practiceArea,
+        confidence,: s.confidence || 0.7,
+        source,: 'contextual'
       })),
       ...completions.map((c: any) => ({,
         text: c.completion || c.text,
@@ -211,7 +211,7 @@ async function processEnhancedSuggestions(
         jurisdiction: determineJurisdiction(suggestion.text),
         urgencyLevel: determineUrgencyLevel(suggestion.text)
       })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.warn('Error processing enhanced suggestions:', error)
     return []
   }

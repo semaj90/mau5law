@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 console.log('🚀 YoRHa Legal AI Platform - System Integration Test');
-console.log('='repeat(60));
+console.log('=',repeat(60));
 
 const results = {
   passed: 0,
@@ -205,9 +205,9 @@ try {
 }
 
 // Results Summary
-console.log('\n' + '='repeat(60));
+console.log('\n' + '=',repeat(60));
 console.log('📊 SYSTEM INTEGRATION TEST RESULTS');
-console.log('='repeat(60));
+console.log('=',repeat(60));
 console.log(`✅ Passed: ${results.passed}`);
 console.log(`❌ Failed: ${results.failed}`);
 console.log(`⚠️ Warnings: ${results.warnings}`);
@@ -224,4 +224,4 @@ if (results.failed === 0) {
   process.exit(1);
 }
 
-console.log('\n' + '='repeat(60));
+console.log('\n' + '=',repeat(60));

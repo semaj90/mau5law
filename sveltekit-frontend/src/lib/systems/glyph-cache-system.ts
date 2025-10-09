@@ -115,7 +115,7 @@ export class GlyphCacheSystem {
   async getGlyph(
     char: string
     fontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal',
-    fontSize: number = 8;
+    fontSize: number = 8,;
   ): Promise<GlyphTexture> {
     const startTime = performance.now();
     this.cacheRequests++;
@@ -149,12 +149,12 @@ export class GlyphCacheSystem {
   private async createFontCache(
     fontKey: string
     fontStyle: string
-    fontSize: number;
+    fontSize: number,;
   ): Promise<void> {
     const font: GlyphFont = {
       fontName: fontKey
       fontSize,
-      fontStyle: fontStyle as any;
+      fontStyle: fontStyle as any,;
       glyphs: new Map(),
       totalGlyphs: 0,
       cacheSize: 0,
@@ -166,7 +166,7 @@ export class GlyphCacheSystem {
   private async generateGlyph(
     char: string
     fontStyle: string
-    fontSize: number;
+    fontSize: number,;
   ): Promise<GlyphTexture> {
     const charCode = char.charCodeAt(0);
     // Generate NES-style 8x8 pattern
@@ -307,7 +307,7 @@ export class GlyphCacheSystem {
   private renderGlyphTexture(
     char: string
     nesPattern: Uint8Array
-    fontStyle: string;
+    fontStyle: string,;
   ): ImageData | null {
     if (!this.renderContext) return null;
     // Clear canvas
@@ -399,7 +399,7 @@ export class GlyphCacheSystem {
     });
     this.metrics.memoryUsage = totalMemory;
     this.metrics.totalGlyphs = Array.from(this.fonts.values()
-      .reduce((sum, font) => sum + font.totalGlyphs, 0);
+      .reduce((sum, font) => sum + font.totalGlyphs, 0),;
   }
   private optimizeCache(): void {
     console.log('🧹 Optimizing glyph cache...');
@@ -439,7 +439,7 @@ export class GlyphCacheSystem {
         });
         cacheData[key] = { ...font, glyphs: glyphData }
       });
-      localStorage.setItem('glyph_cache_system', JSON.stringify(cacheData);
+      localStorage.setItem('glyph_cache_system', JSON.stringify(cacheData),;
       console.log('💾 Glyph cache persisted to storage');
     } catch (error) {
       console.warn('⚠️ Failed to persist glyph cache:', error);
@@ -456,7 +456,7 @@ export class GlyphCacheSystem {
     console.log(`📚 Preloading ${commonChars.length} common glyphs...`);
     const promises = [];
     for (const char of commonChars) {
-      promises.push(this.getGlyph(char, fontStyle);
+      promises.push(this.getGlyph(char, fontStyle),;
     }
     await Promise.all(promises);
     console.log(`✅ Preloaded ${commonChars.length} glyphs for ${fontStyle} style`);
@@ -527,7 +527,7 @@ export class GlyphCacheSystem {
         .split(',')
         .map((s: string) => s.trim()
         .filter((s: string) => s.length > 0)
-        .slice(0, 5);
+        .slice(0, 5),;
       this.llmCache.set(cacheKey, suggestions);
       console.log(`🤖 Generated ${suggestions.length} LLM suggestions for "${inputText}"`);
       return suggestions;
@@ -573,7 +573,7 @@ export class GlyphCacheSystem {
         synthesized: combo
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
-        llmGenerated: true;
+        llmGenerated: true,;
         embeddings: embedding
       });
     }
@@ -588,9 +588,9 @@ export class GlyphCacheSystem {
     const text = glyphs.join('');
     // Generate variations
     combinations.push(text); // Original
-    combinations.push(text.toLowerCase(); // Lowercase
-    combinations.push(text.toUpperCase(); // Uppercase
-    combinations.push(text.replace(/\s+/g, ''); // No spaces
+    combinations.push(text.toLowerCase(),; // Lowercase
+    combinations.push(text.toUpperCase(),; // Uppercase
+    combinations.push(text.replace(/\s+/g, ''),; // No spaces
     // Legal document variations
     if (text.includes('contract')) {
       combinations.push('agreement', 'deed', 'covenant');
@@ -617,7 +617,7 @@ export class GlyphCacheSystem {
    * Calculate Levenshtein similarity
    */;
   private calculateLevenshteinSimilarity(a: string, b: string): number {
-    const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null);
+    const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null),;
     for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
     for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
     for (let j = 1; j <= b.length; j++) {
@@ -644,7 +644,7 @@ export class GlyphCacheSystem {
         pattern: Array.from(glyph.nesPattern),
         quantized: Array.from(glyph.quantizedData),
         bankId: glyph.chrRomBankId
-      });
+      }),;
       await enhancedCachingRevolutionaryBridge.storeTextureStream('glyph_cache', textureData);
       console.log(`🎮 Streamed ${glyphs.length} glyphs to texture cache`);
     } catch (error) {
@@ -671,8 +671,8 @@ export const glyphCacheSystem = new GlyphCacheSystem();
  * Convenience functions
  */
 export async function getCachedGlyph(
-  char: string;
-  style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal';
+  char: string,;
+  style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal',;
 ): Promise<GlyphTexture> {
   return await glyphCacheSystem.getGlyph(char, style);
 }

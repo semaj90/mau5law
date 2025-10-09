@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
       filters: { jurisdiction, category },
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Laws search error:', error)
     return json({
         success: false,

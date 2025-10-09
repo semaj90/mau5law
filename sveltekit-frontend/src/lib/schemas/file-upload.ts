@@ -117,7 +117,7 @@ export const fileUploadSchema = z.object({
 export const multipleFileUploadSchema = z.object({
   files: z.array(z.any()
     .min(1, 'At least one file is required')
-    .max(10, 'Cannot upload more than 10 files at once');
+    .max(10, 'Cannot upload more than 10 files at once'),;
     .refine((files) => {
       const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
       return totalSize <= 500 * 1024 * 1024; // 500MB total limit
@@ -159,10 +159,10 @@ export const caseWithFilesSchema = z.object({
     .max(20, 'Cannot upload more than 20 files when creating a case')
     .default([]),
   // File descriptions and metadata arrays (matching array indices)
-  fileDescriptions: z.array(z.string()).default([]),
-  fileTitles: z.array(z.string()).default([]),
-  fileTypes: z.array(fileTypeEnum).default([]),
-  fileEvidenceTypes: z.array(evidenceTypeEnum).default([])
+  fileDescriptions,: z.array(z.string()).default([]),
+  fileTitles,: z.array(z.string()).default([]),
+  fileTypes,: z.array(fileTypeEnum).default([]),
+  fileEvidenceTypes,: z.array(evidenceTypeEnum).default([])
 });
 // File search schema
 export const fileSearchSchema = z.object({
@@ -235,7 +235,7 @@ export const getFileCategory = (mimeType: string): FileType => {
 export const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   if (bytes === 0) return '0 B';
-  const i = Math.floor(Math.log(bytes) / Math.log(1024);
+  const i = Math.floor(Math.log(bytes) / Math.log(1024),;
   return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
 }
 // Default form values
@@ -252,7 +252,7 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   enableEmbeddings: true
   enableSummarization: true
   chainOfCustody: [],
-  metadata: { [key: string]: any }
+  metadata: { [key,: strin,g]: any }
 }
 export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   title: '',

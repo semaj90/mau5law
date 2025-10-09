@@ -72,9 +72,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     return json()
       {
         service: 'unified-ai-orchestrator',
-        status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        status,: 'error',
+        error,: error instanceof Error ? error.message: 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -91,8 +91,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       return json()
         {
           success: false,
-          error: 'Missing required field: content, messages, or prompt',
-          timestamp: new Date().toISOString()
+          error,: 'Missing required field: content, messages, or prompt',
+          timestamp,: new Date().toISOString()
         },
         { status: 400 }
       )
@@ -139,7 +139,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       `${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed} orchestrator, ${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics.totalLatency.toFixed(2)}ms`
     )
     return json(response)
-  } catch (error) {
+  }, catch (error) {
     logger.error('[Unified Orchestrator] Request failed:', error)
     const errorResponse = {
       success: false,

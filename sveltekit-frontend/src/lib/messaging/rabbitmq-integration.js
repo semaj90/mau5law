@@ -65,7 +65,7 @@ async function ensureChannel() {
 export async function sendToQueue(queue, message, options = { persistent: true }) {
   const ch = await ensureChannel();
   await ch.assertQueue(queue, { durable: true });
-  const buf = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message);
+  const buf = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message),;
   return ch.sendToQueue(queue, buf, options);
 }
 /**
@@ -92,7 +92,7 @@ export async function consume(queue, onMessage, options = { noAck: false }) {
 		content = msg.content.toString();
 	  }
 	  try {
-		await Promise.resolve(onMessage(content, msg);
+		await Promise.resolve(onMessage(content, msg),;
 		if (!options.noAck) ch.ack(msg);
 	  } catch (err) {
 		// on handler error -> nack so message can be retried or dead-lettered

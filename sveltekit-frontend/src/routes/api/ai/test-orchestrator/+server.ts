@@ -62,8 +62,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         type: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -137,8 +137,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json()
       {
         type: 'custom_test_error',
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: 'Unknown error',
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

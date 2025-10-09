@@ -88,7 +88,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
  */
 async function updateEvidenceWithResults(
   documentId: string
-  results: GoServerResponse;
+  results: GoServerResponse,;
 ): Promise<void> {
   try {
     const updateData: Partial<typeof evidence.$inferInsert> = {
@@ -114,7 +114,7 @@ async function updateEvidenceWithResults(
       go_server_metadata: results.metadata,
       success: results.success
     });
-    await db.update(evidence).set(updateData).where(eq(evidence.id, documentId);
+    await db.update(evidence).set(updateData).where(eq(evidence.id, documentId),;
     console.log(`✅ Evidence record ${documentId} updated with AI results`);
   } catch (error: any) {
     console.error(`❌ Failed to update evidence record ${documentId}:`, error);
@@ -150,7 +150,7 @@ export function createLegalAIWorker(): Worker {
           success: true
           documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
-          goServerResults: results;
+          goServerResults: results,;
           summary: {
             entitiesExtracted: results.entities?.length || 0,
             summaryGenerated: !!results.summary,
@@ -178,8 +178,8 @@ export function createLegalAIWorker(): Worker {
               },
               updatedAt: new Date()
             })
-            .where(eq(evidence.id, (data as { documentId?: any }).documentId);
-        } catch (dbError) {
+            .where(eq(evidence.id, (data as { documentId?: any }).documentId),;
+        }, catch (dbError) {
           console.error(`❌ Failed to update evidence with error status:`, dbError);
         }
         throw error;
@@ -188,7 +188,7 @@ export function createLegalAIWorker(): Worker {
     {
       connection: {
         host: 'localhost',
-        port: 6379,
+        port,: 6379,
         // Parse Redis URL if provided
         ...(REDIS_URL.startsWith('redis://') && {,
           host: new URL(REDIS_URL).hostname,
@@ -196,7 +196,7 @@ export function createLegalAIWorker(): Worker {
         })
       },
       concurrency: 2, // Process 2 documents simultaneously
-      removeOnComplete: { count: 50 }, // Keep last 50 completed jobs
+      removeOnComplete,: { count: 50 }, // Keep last 50 completed jobs
       removeOnFail: { count: 25 }, // Keep last 25 failed jobs
     }
   );

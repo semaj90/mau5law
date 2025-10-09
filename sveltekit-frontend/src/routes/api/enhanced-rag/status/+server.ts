@@ -86,9 +86,9 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       health: {
         overallStatus: 'system_error',
-        services: { [key: string]: any },
-        capabilities: { [key: string]: any },
-        performance: { [key: string]: any }
+        services: { [key,: strin,g]: any },
+        capabilities: { [key,: strin,g]: any },
+        performance: { [key,: strin,g]: any }
       }
     }, { status: 500 })
   }

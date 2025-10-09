@@ -67,7 +67,7 @@ export class MCPApiClient {
       files.forEach((file, index) => {
         formData.append(`document_${index}`, file);
       });
-      formData.append('options', JSON.stringify(options);
+      formData.append('options', JSON.stringify(options),;
       const response = await fetch(`${this.baseUrl}/process`, {
         method: 'POST',
         body: formData

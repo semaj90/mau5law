@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         .from(caseActivities)
         .where(eq(caseActivities.caseId, caseId)
         .orderBy(desc(caseActivities.timestamp)
-        .limit(50); // Limit activity history
+        .limit(50),; // Limit activity history
       // Get timeline events
       const timeline = await db
         .select()
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             model_name: 'nomic-embed-text',
             metadata: {
               entityType: 'case',
-              entityId: caseId;
+              entityId: caseId,;
               content: caseContent.substring(0, 500), // Store first 500 chars for reference
             },
             created_at: now
@@ -315,20 +315,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json()
       {
         success: true,
-        message: 'Case created successfully',
-        data: {
+        message,: 'Case created successfully',
+        data,: {
           ...newCase[0],
-          hasEmbedding: !!caseEmbedding,
-          createdBy: {
+          hasEmbedding,: !!caseEmbedding,
+          createdBy,: {
             id: user.id,
-            email: user.email,
-            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email
+            email,: user.email,
+            name,: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email
           }
         }
       },
       { status: 201 }
     )
-  } catch (err: any) {
+  }, catch (err: any) {
     if (err.status) {
       // Re-throw SvelteKit errors
       throw err

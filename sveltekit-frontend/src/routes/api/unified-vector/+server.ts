@@ -90,16 +90,16 @@ export const PUT: RequestHandler = async ({ request }) => {
             userId: data.userId,
             sessionId: data.sessionId,
             documents: [{,
-              type: 'feedback',
-              vote: data.vote,
-              documentId: data.documentId,
-              relevanceScore: data.relevanceScore
-            }]
+              type,: 'feedback',
+              vote,: data.vote,
+              documentId,: data.documentId,
+              relevanceScore,: data.relevanceScore
+            },]
           }
         }
         const feedbackResult = await unifiedVectorOrchestrator.process(feedbackRequest)
         return json(feedbackResult)
-      case 'retrain':
+      case 'retrain',:
         // Trigger model retraining
         return json({
           success: false,
@@ -113,7 +113,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           availableActions: ['feedback', 'retrain']
         }, { status: 400 })
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('❌ Unified Vector update error:', error)
     return json({
       success: false,

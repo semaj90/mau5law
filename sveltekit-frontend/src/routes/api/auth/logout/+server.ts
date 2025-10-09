@@ -29,7 +29,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
     // Log successful logout
     console.log('User logged out successfully:', {
       sessionId: typedLocals.session.id,
-      userId: typedLocals.user?.id,
+      userId: typedgetUserId(locals),
       timestamp: new Date().toISOString()
     })
     return json({

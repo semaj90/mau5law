@@ -216,8 +216,8 @@ export async function searchEvidence(
 // Add or update a case in Qdrant (with optimized batching support)
 export async function upsertCase(
   id: string
-  embedding: number[];
-  payload: any;
+  embedding: number[],;
+  payload: any,;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
@@ -231,11 +231,11 @@ export async function upsertCase(
     // Convert to regular array for API compatibility
     const vectorArray = Array.from(embedding);
     await wrapper.upsert(COLLECTIONS.CASES, {
-      wait: true;
+      wait: true,;
       points: [);
         {
           id,
-          vector: vectorArray
+          vector,: vectorArray
           payload
         }
       ]
@@ -248,7 +248,7 @@ export async function upsertCase(
       vectorDimension: embedding.length,
       payloadSize: JSON.stringify(payload).length
     });
-  } catch (error: any) {
+  }, catch (error: any) {
     logger.error("Failed to upsert case in Qdrant", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant'
@@ -261,8 +261,8 @@ export async function upsertCase(
 // Add or update evidence in Qdrant (with optimized batching support)
 export async function upsertEvidence(
   id: string
-  embedding: number[];
-  payload: any;
+  embedding: number[],;
+  payload: any,;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
@@ -276,11 +276,11 @@ export async function upsertEvidence(
     // Convert to regular array for API compatibility
     const vectorArray = Array.from(embedding);
     await wrapper.upsert(COLLECTIONS.EVIDENCE, {
-      wait: true;
+      wait: true,;
       points: [);
         {
           id,
-          vector: vectorArray
+          vector,: vectorArray
           payload
         }
       ]
@@ -293,7 +293,7 @@ export async function upsertEvidence(
       vectorDimension: embedding.length,
       payloadSize: JSON.stringify(payload).length
     });
-  } catch (error: any) {
+  }, catch (error: any) {
     logger.error("Failed to upsert evidence in Qdrant", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant'
@@ -305,8 +305,8 @@ export async function upsertEvidence(
 }
 // Delete a point from Qdrant (with enhanced logging)
 export async function deletePoint(
-  collection: string;
-  id: string;
+  collection: string,;
+  id: string,;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
@@ -318,7 +318,7 @@ export async function deletePoint(
   }
   try {
     await wrapper.delete(collection, {
-      wait: true;
+      wait: true,;
       points: [id]
     });
     logger.info('Point deleted successfully', {
@@ -386,7 +386,7 @@ export const qdrant = {
   getQueryHistory: () => qdrantOptimized.getQueryHistory(),
   clearCaches: () => qdrantOptimized.clearCaches(),
   // Batch operations for memory efficiency
-  upsertBatch: (collection: string, points: Array<) =>
+  upsertBatch: (collection: string, points: Array<,) =>
     qdrantOptimized.upsertBatch(collection, points),
   // Search with advanced options
   searchOptimized: (collection: string, query: string | number[], options = {}) =>

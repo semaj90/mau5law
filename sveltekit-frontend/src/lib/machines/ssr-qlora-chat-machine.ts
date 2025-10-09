@@ -305,8 +305,8 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       sessionId: (_, event) => event.type === 'INITIALIZE' ? event.sessionId : ''
     }),
     loadContext: assign({
-      userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : { [key: string]: any },
-      systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : { [key: string]: any }
+      userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : { [key,: strin,g]: any },
+      systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : { [key,: strin,g]: any }
     }),
     addUserMessage: assign({
       messages: (context, event) => {
@@ -448,7 +448,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             ...context.messages.slice(0, -1),
             {
               ...lastMessage,
-              chunks: updatedChunks;
+              chunks: updatedChunks,;
               content: updatedChunks.join(' ')
             }
           ];
@@ -581,7 +581,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       if (event.type === 'SEND_MESSAGE') {
         const message = event.message.content.toLowerCase();
         const commonPatterns = ['hello', 'help', 'contract review', 'legal research'];
-        return commonPatterns.some(pattern => message.includes(pattern);
+        return commonPatterns.some(pattern => message.includes(pattern),;
       }
       return false;
     },
@@ -595,7 +595,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         const message = event.message.content;
         const complexPatterns = ['analyze', 'compare', 'summarize', 'explain'];
         const isComplex = message.length > 100 ||
-                         complexPatterns.some(pattern => message.toLowerCase().includes(pattern);
+                         complexPatterns.some(pattern => message.toLowerCase().includes(pattern),;
         return context.systemStatus.gemma3Ready && isComplex;
       }
       return false;

@@ -15,20 +15,20 @@ export default {
   homedir: () => '/',
   // System resources (mock values)
   cpus: () => [{,
-    model: 'Browser JavaScript Engine',
-    speed: 2000,
-    times: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 }
-  }],
+    model,: 'Browser JavaScript Engine',
+    speed,: 2000,
+    times,: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 }
+  },],
   totalmem: () => 8 * 1024 * 1024 * 1024, // 8GB mock
-  freemem: () => 4 * 1024 * 1024 * 1024,  // 4GB mock
-  uptime: () => performance.now() / 1000,
+  freemem,: () => 4 * 1024 * 1024 * 1024,  // 4GB mock
+  uptime,: () => performance.now() / 1000,
   // Network interfaces (empty for security)
-  networkInterfaces: () => ({}),
+  networkInterfaces,: () => ({}),
   // Constants
-  constants: {
-    signals: { [key: string]: any },
-    errno: { [key: string]: any },
-    priority: { [key: string]: any }
+  constants,: {
+    signals: { [key,: string,]: any },
+    errno: { [key,: string,]: any },
+    priority: { [key,: string,]: any }
   },
   // Path constants
   EOL: '\n',
@@ -51,8 +51,8 @@ export const freemem = () => 4 * 1024 * 1024 * 1024;
 export const uptime = () => performance.now() / 1000;
 export const networkInterfaces = () => ({});
 export const constants = {
-  signals: { [key: string]: any },
-  errno: { [key: string]: any },
-  priority: { [key: string]: any }
+  signals: { [key,: strin,g]: any },
+  errno: { [key,: strin,g]: any },
+  priority: { [key,: strin,g]: any }
 };
 export const EOL = '\n';

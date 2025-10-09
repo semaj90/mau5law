@@ -1,10 +1,8 @@
-
 // Context7 MCP Helpers: Production implementation with VS Code Extension Integration
 // Library ID resolution using Context7 MCP server
 // ============================================================================
 // VS Code Extension Integration Types & Interfaces
 // ============================================================================
-}
 export interface VSCodeMCPContext {
   workspaceRoot: string;
   activeFiles: string[];
@@ -25,7 +23,7 @@ export interface AutoMCPSuggestion {
   tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';
   confidence: number;
   reasoning: string;
-  args: { [key: string]: any }
+  args: { [key: string]: any };
   priority: 'high' | 'medium' | 'low';
   expectedOutput: string;
 }
@@ -37,18 +35,16 @@ export interface MCPContextAnalysis {
 }
 // Extension-specific MCP tool suggestions
 export interface ContextTriggers {
-  onFileOpen: string[];           // Detect stack from open files,
-  onNpmErrors: string[];          // Parse `npm run check` output
-  onPromptAnalysis: string[];     // Analyze user comments/prompts,
-  onWorkspaceChange: string;      // Detect project type
+  onFileOpen: string[]; // Detect stack from open files
+  onNpmErrors: string[]; // Parse `npm run check` output
+  onPromptAnalysis: string[]; // Analyze user comments/prompts
+  onWorkspaceChange: string; // Detect project type
 }
 // ============================================================================
 // Intelligent Context Detection Functions
 // ============================================================================
 // Analyze current VS Code workspace and suggest appropriate MCP tools
-export async function getContextAwareSuggestions(
-  vsCodeContext: VSCodeMCPContext;
-): Promise<AutoMCPSuggestion[]> {
+export async function getContextAwareSuggestions(vsCodeContext: VSCodeMCPContext): Promise<AutoMCPSuggestion[]> {
   const suggestions: AutoMCPSuggestion[] = [];
   // Analyze TypeScript errors for context
   const errorSuggestions = analyzeErrorsForMCPSuggestions(vsCodeContext.errors);
@@ -60,10 +56,10 @@ export async function getContextAwareSuggestions(
   const intentSuggestions = analyzePromptIntent(vsCodeContext.recentPrompts);
   suggestions.push(...intentSuggestions);
   // Sort by priority and confidence
-  return suggestions;
+  return suggestions
     .sort((a, b) => {
-      const priorityWeight = { high: 3, medium: 2, low: 1 }
-      return (priorityWeight[b.priority] * b.confidence) - (priorityWeight[a.priority] * a.confidence);
+      const priorityWeight = { high: 3, medium: 2, low: 1 };
+      return priorityWeight[b.priority] * b.confidence - priorityWeight[a.priority] * a.confidence;
     })
     .slice(0, 5); // Return top 5 suggestions
 }
@@ -78,7 +74,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'XState error detected - suggesting library documentation',
         args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
         priority: 'high',
-        expectedOutput: 'XState v5 migration guide and best practices'
+        expectedOutput: 'XState v5 migration guide and best practices',
       });
     }
     if (error.message.includes('Drizzle') || error.message.includes('drizzle')) {
@@ -88,7 +84,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Drizzle ORM error detected - analyzing database stack',
         args: { component: 'drizzle', context: 'legal-ai' },
         priority: 'high',
-        expectedOutput: 'Drizzle ORM setup analysis and recommendations'
+        expectedOutput: 'Drizzle ORM setup analysis and recommendations',
       });
     }
     if (error.message.includes('SvelteKit') || error.message.includes('svelte')) {
@@ -98,7 +94,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'SvelteKit error detected - suggesting best practices',
         args: { area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines'
+        expectedOutput: 'SvelteKit performance optimization guidelines',
       });
     }
     if (error.message.includes('env') || error.message.includes('environment')) {
@@ -108,7 +104,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Environment configuration error detected',
         args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },
         priority: 'medium',
-        expectedOutput: 'Environment variable setup recommendations'
+        expectedOutput: 'Environment variable setup recommendations',
       });
     }
   });
@@ -140,7 +136,7 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
       reasoning: `${tech} files detected in workspace`,
       args: { component: tech, context: 'legal-ai' },
       priority: 'medium',
-      expectedOutput: `${tech} analysis and optimization recommendations`
+      expectedOutput: `${tech} analysis and optimization recommendations`,
     });
   });
   return suggestions;
@@ -157,7 +153,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User explicitly mentioned best practices or optimization',
         args: { area: detectArea(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Customized best practices for current context'
+        expectedOutput: 'Customized best practices for current context',
       });
     }
     if (lowerPrompt.includes('integrate') || lowerPrompt.includes('add')) {
@@ -167,7 +163,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User asking for integration guidance',
         args: { feature: extractFeature(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Integration patterns and implementation guide'
+        expectedOutput: 'Integration patterns and implementation guide',
       });
     }
     if (lowerPrompt.includes('docs') || lowerPrompt.includes('documentation')) {
@@ -177,7 +173,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User requesting documentation',
         args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
         priority: 'medium',
-        expectedOutput: 'Relevant library documentation and examples'
+        expectedOutput: 'Relevant library documentation and examples',
       });
     }
   });
@@ -193,7 +189,7 @@ function detectArea(prompt: string): string {
 function extractFeature(prompt: string): string {
   // Extract feature name from integration prompts
   const words = prompt.split(' ');
-  const integrateIndex = words.findIndex((w: any) => w.includes('integrat') || w.includes('add');
+  const integrateIndex = words.findIndex((w: any) => w.includes('integrat') || w.includes('add'));
   return words[integrateIndex + 1] || 'unknown-feature';
 }
 function extractLibrary(prompt: string): string {
@@ -206,16 +202,17 @@ function extractLibrary(prompt: string): string {
 // ============================================================================
 // Context-aware library documentation with VS Code integration
 export async function getContextAwareLibraryDocs(
-  libraryName: string
-  vsCodeContext?: VSCodeMCPContext
-  topic?: string;
+  libraryName: string,
+  vsCodeContext?: VSCodeMCPContext,
+  topic?: string
 ): Promise<string> {
   try {
     // Enhance topic based on current context
     let enhancedTopic = topic;
     if (vsCodeContext && !topic) {
       // Auto-detect topic from current errors or files
-      const relevantErrors = vsCodeContext.errors.filter((e: any) => e.message.toLowerCase().includes(libraryName.toLowerCase()
+      const relevantErrors = vsCodeContext.errors.filter((e: any) =>
+        e.message.toLowerCase().includes(libraryName.toLowerCase())
       );
       if (relevantErrors.length > 0) {
         enhancedTopic = 'troubleshooting';
@@ -230,55 +227,56 @@ export async function getContextAwareLibraryDocs(
 // ============================================================================
 // Core MCP Helper Functions (existing)
 // ============================================================================
+// Replace the broken resolveLibraryId implementation
 export async function resolveLibraryId(libraryName: string): Promise<string> {
   try {
-    const response = await fetch("http://localhost:3000/mcp/call", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
-        tool: "resolve-library-id",
-        arguments: { libraryName }
-      })
+    const response = await fetch('http://localhost:3000/mcp/call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tool: 'resolve-library-id',
+        arguments: { libraryName },
+      }),
     });
     const data = await response.json();
     // Parse the selected library ID from the response text
     const match = data?.content?.[0]?.text?.match(/Selected Library ID: (\S+)/);
     if (match) return match[1];
-    throw new Error(data?.content?.[0]?.text || "No library ID found");
+    throw new Error(data?.content?.[0]?.text || 'No library ID found');
   } catch (err: any) {
-    console.error("resolveLibraryId error:", err);
+    console.error('resolveLibraryId error:', err);
     throw err;
   }
 }
-// Fetch library documentation from Context7 MCP server
+// Fix getLibraryDocs parameter list and request body
 export async function getLibraryDocs(
-  context7CompatibleLibraryID: string
-  topic?: string
-  tokens: number = 10000,
+  context7CompatibleLibraryID: string,
+  topic?: string,
+  tokens: number = 10000
 ): Promise<string> {
   try {
-    const response = await fetch("http://localhost:3000/mcp/call", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
-        tool: "get-library-docs",
-        arguments: { context7CompatibleLibraryID, topic, tokens }
-      })
+    const response = await fetch('http://localhost:3000/mcp/call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tool: 'get-library-docs',
+        arguments: { context7CompatibleLibraryID, topic, tokens },
+      }),
     });
     const data = await response.json();
-    return data?.content?.[0]?.text || "No documentation found.";
+    return data?.content?.[0]?.text || 'No documentation found.';
   } catch (err: any) {
-    console.error("getLibraryDocs error:", err);
+    console.error('getLibraryDocs error:', err);
     throw err;
   }
 }
 // Enhanced semantic search using Context7 MCP server
 export async function semanticSearch(query: string): Promise<any[]> {
   try {
-    const response = await fetch("http://localhost:3000/api/semantic-search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
+    const response = await fetch('http://localhost:3000/api/semantic-search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -286,32 +284,32 @@ export async function semanticSearch(query: string): Promise<any[]> {
     const data = await response.json();
     return data.results || [];
   } catch (err: any) {
-    console.error("semanticSearch error:", err);
+    console.error('semanticSearch error:', err);
     // Return empty array on error to prevent UI breakage
     return [];
   }
 }
 // Enhanced Context7 MCP tool calling with Copilot architecture integration
 export async function callContext7Tool(
-  toolName: string
+  toolName: string,
   args: { [key: string]: any },
-  options: { includeCopilotContext?: boolean } = {},
+  options: { includeCopilotContext?: boolean } = {}
 ): Promise<any> {
   try {
-    const response = await fetch("http://localhost:3000/mcp/call", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
-        tool: toolName;
+    const response = await fetch('http://localhost:3000/mcp/call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tool: toolName,
         arguments: {
           ...args,
           // Inject Copilot architecture context if requested
           ...(options.includeCopilotContext && {
-            copilotArchitecture: true
-            legalAIContext: true
-          })
-        }
-      })
+            copilotArchitecture: true,
+            legalAIContext: true,
+          }),
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Context7 tool call failed: ${response.status}`);
@@ -325,38 +323,34 @@ export async function callContext7Tool(
 }
 // Copilot architecture-aware library documentation retrieval
 export async function getLibraryDocsWithContext(
-  context7CompatibleLibraryID: string
-  topic?: string
+  context7CompatibleLibraryID: string,
+  topic?: string,
   tokens: number = 10000,
-  includeCopilotPatterns: boolean = true,
+  includeCopilotPatterns: boolean = true
 ): Promise<string> {
   try {
-    const response = await callContext7Tool("get-library-docs", {
+    const response = await callContext7Tool('get-library-docs', {
       context7CompatibleLibraryID,
       topic,
       tokens,
-      includeCopilotPatterns
+      includeCopilotPatterns,
     });
-    return response?.content?.[0]?.text || "No documentation found.";
+    return response?.content?.[0]?.text || 'No documentation found.';
   } catch (err: any) {
-    console.error("getLibraryDocsWithContext error:", err);
+    console.error('getLibraryDocsWithContext error:', err);
     throw err;
   }
 }
 // Create memory relation for agent integration
-export async function createMemoryRelation(
-  entityId: string
-  relation: string
-  targetId: string
-): Promise<void> {
+export async function createMemoryRelation(entityId: string, relation: string, targetId: string): Promise<void> {
   try {
-    await callContext7Tool("create-memory-relation", {
+    await callContext7Tool('create-memory-relation', {
       entityId,
       relation,
-      targetId
+      targetId,
     });
   } catch (err: any) {
-    console.error("createMemoryRelation error:", err);
+    console.error('createMemoryRelation error:', err);
     throw err;
   }
 }

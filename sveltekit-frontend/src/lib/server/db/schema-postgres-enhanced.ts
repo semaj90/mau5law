@@ -20,28 +20,28 @@ export const cases = pgTable(
   "cases",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-    title: text("title").notNull(),
-    caseNumber: text("case_number").notNull().unique(),
-    description: text("description").notNull(),
-    incidentDate: timestamp("incident_date"),
-    location: text("location"),
-    priority: text("priority").notNull().default("medium"), // low, medium, high, urgent
-    status: text("status").notNull().default("open"), // open, closed, pending, archived, under_review
-    category: text("category").notNull(),
-    dangerScore: integer("danger_score").default(0), // 0-10
-    estimatedValue: real("estimated_value"),
-    jurisdiction: text("jurisdiction"),
-    leadProsecutor: text("lead_prosecutor"),
-    assignedTeam: jsonb("assigned_team").default([]),
-    tags: jsonb("tags").default([]),
-    aiSummary: text("ai_summary"),
-    metadata: jsonb("metadata").default({}),
+    userId,: uuid("user_id").notNull(),
+    title,: text("title").notNull(),
+    caseNumber,: text("case_number").notNull().unique(),
+    description,: text("description").notNull(),
+    incidentDate,: timestamp("incident_date"),
+    location,: text("location"),
+    priority,: text("priority").notNull().default("medium"), // low, medium, high, urgent
+    status,: text("status").notNull().default("open"), // open, closed, pending, archived, under_review
+    category,: text("category").notNull(),
+    dangerScore,: integer("danger_score").default(0), // 0-10
+    estimatedValue,: real("estimated_value"),
+    jurisdiction,: text("jurisdiction"),
+    leadProsecutor,: text("lead_prosecutor"),
+    assignedTeam,: jsonb("assigned_team").default([]),
+    tags,: jsonb("tags").default([]),
+    aiSummary,: text("ai_summary"),
+    metadata,: jsonb("metadata").default({}),
     // Vector embeddings
-    titleEmbedding: vector("title_embedding", { dimensions: 768 }),
-    contentEmbedding: vector("content_embedding", { dimensions: 768 }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    titleEmbedding,: vector("title_embedding", { dimensions: 768 }),
+    contentEmbedding,: vector("content_embedding", { dimensions: 768 }),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     userIdIdx: index("cases_user_id_idx").on(table.userId),
@@ -56,38 +56,38 @@ export const evidence = pgTable(
   "evidence",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
-    userId: uuid("user_id").notNull(),
-    title: text("title").notNull(),
-    description: text("description"),
-    evidenceType: text("evidence_type").notNull(), // document, image, video, audio, physical, digital, testimony
-    subType: text("sub_type"),
+    caseId,: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
+    userId,: uuid("user_id").notNull(),
+    title,: text("title").notNull(),
+    description,: text("description"),
+    evidenceType,: text("evidence_type").notNull(), // document, image, video, audio, physical, digital, testimony
+    subType,: text("sub_type"),
     // File information
-    fileName: text("file_name"),
-    fileSize: integer("file_size"),
-    mimeType: text("mime_type"),
-    hash: text("hash"),
+    fileName,: text("file_name"),
+    fileSize,: integer("file_size"),
+    mimeType,: text("mime_type"),
+    hash,: text("hash"),
     // Chain of custody
-    collectedAt: timestamp("collected_at"),
-    collectedBy: text("collected_by"),
-    location: text("location"),
-    chainOfCustody: jsonb("chain_of_custody").default([]),
+    collectedAt,: timestamp("collected_at"),
+    collectedBy,: text("collected_by"),
+    location,: text("location"),
+    chainOfCustody,: jsonb("chain_of_custody").default([]),
     // Classification
-    tags: jsonb("tags").default([]),
-    isAdmissible: boolean("is_admissible").default(true),
-    confidentialityLevel: text("confidentiality_level").default("standard"), // public, standard, confidential, classified
+    tags,: jsonb("tags").default([]),
+    isAdmissible,: boolean("is_admissible").default(true),
+    confidentialityLevel,: text("confidentiality_level").default("standard"), // public, standard, confidential, classified
     // Analysis
-    aiAnalysis: jsonb("ai_analysis").default({}),
-    aiTags: jsonb("ai_tags").default([]),
-    aiSummary: text("ai_summary"),
-    summary: text("summary"),
+    aiAnalysis,: jsonb("ai_analysis").default({}),
+    aiTags,: jsonb("ai_tags").default([]),
+    aiSummary,: text("ai_summary"),
+    summary,: text("summary"),
     // Vector embeddings
-    titleEmbedding: vector("title_embedding", { dimensions: 768 }),
-    contentEmbedding: vector("content_embedding", { dimensions: 768 }),
+    titleEmbedding,: vector("title_embedding", { dimensions: 768 }),
+    contentEmbedding,: vector("content_embedding", { dimensions: 768 }),
     // Evidence board positioning
-    boardPosition: jsonb("board_position").default({ x: 0, y: 0 }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    boardPosition,: jsonb("board_position").default({ x: 0, y: 0 }),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     caseIdIdx: index("evidence_case_id_idx").on(table.caseId),
@@ -101,41 +101,41 @@ export const criminals = pgTable(
   "criminals",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
+    userId,: uuid("user_id").notNull(),
     // Personal information
-    firstName: text("first_name").notNull(),
-    lastName: text("last_name").notNull(),
-    middleName: text("middle_name"),
-    aliases: jsonb("aliases").default([]),
-    dateOfBirth: timestamp("date_of_birth"),
-    placeOfBirth: text("place_of_birth"),
+    firstName,: text("first_name").notNull(),
+    lastName,: text("last_name").notNull(),
+    middleName,: text("middle_name"),
+    aliases,: jsonb("aliases").default([]),
+    dateOfBirth,: timestamp("date_of_birth"),
+    placeOfBirth,: text("place_of_birth"),
     // Contact information
-    address: text("address"),
-    phone: text("phone"),
-    email: text("email"),
+    address,: text("address"),
+    phone,: text("phone"),
+    email,: text("email"),
     // Identification
-    socialSecurityNumber: text("social_security_number"),
-    driversLicense: text("drivers_license"),
+    socialSecurityNumber,: text("social_security_number"),
+    driversLicense,: text("drivers_license"),
     // Physical description
-    height: integer("height"), // inches
-    weight: integer("weight"), // pounds
-    eyeColor: text("eye_color"),
-    hairColor: text("hair_color"),
-    distinguishingMarks: text("distinguishing_marks"),
+    height,: integer("height"), // inches
+    weight,: integer("weight"), // pounds
+    eyeColor,: text("eye_color"),
+    hairColor,: text("hair_color"),
+    distinguishingMarks,: text("distinguishing_marks"),
     // Status and classification
-    status: text("status").notNull(), // suspect, person_of_interest, witness, victim, defendant
-    dangerLevel: text("danger_level").default("low"), // low, medium, high, extreme
-    currentLocation: text("current_location"),
-    knownAssociates: jsonb("known_associates").default([]),
-    criminalHistory: jsonb("criminal_history").default([]),
+    status,: text("status").notNull(), // suspect, person_of_interest, witness, victim, defendant
+    dangerLevel,: text("danger_level").default("low"), // low, medium, high, extreme
+    currentLocation,: text("current_location"),
+    knownAssociates,: jsonb("known_associates").default([]),
+    criminalHistory,: jsonb("criminal_history").default([]),
     // Case association
-    associatedCases: jsonb("associated_cases").default([]),
-    notes: text("notes"),
-    metadata: jsonb("metadata").default({}),
+    associatedCases,: jsonb("associated_cases").default([]),
+    notes,: text("notes"),
+    metadata,: jsonb("metadata").default({}),
     // Vector embeddings
-    profileEmbedding: vector("profile_embedding", { dimensions: 768 }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    profileEmbedding,: vector("profile_embedding", { dimensions: 768 }),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     nameIdx: index("criminals_name_idx").on(table.firstName, table.lastName),
@@ -149,19 +149,19 @@ export const evidenceConnections = pgTable(
   "evidence_connections",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
-    fromEvidenceId: uuid("from_evidence_id").references(() => evidence.id, {
+    caseId,: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
+    fromEvidenceId,: uuid("from_evidence_id").references(() => evidence.id, {
       onDelete: "cascade"
     }),
-    toEvidenceId: uuid("to_evidence_id").references(() => evidence.id, {
+    toEvidenceId,: uuid("to_evidence_id").references(() => evidence.id, {
       onDelete: "cascade"
     }),
-    connectionType: text("connection_type").notNull().default("related"), // related, contradicts, supports, timeline
-    strength: real("strength").default(0.5), // 0-1 confidence
-    description: text("description"),
-    metadata: jsonb("metadata").default({}),
-    createdBy: uuid("created_by").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    connectionType,: text("connection_type").notNull().default("related"), // related, contradicts, supports, timeline
+    strength,: real("strength").default(0.5), // 0-1 confidence
+    description,: text("description"),
+    metadata,: jsonb("metadata").default({}),
+    createdBy,: uuid("created_by").notNull(),
+    createdAt,: timestamp("created_at").defaultNow().notNull()
   },
   (table) => ({
     caseIdIdx: index("evidence_connections_case_id_idx").on(table.caseId),
@@ -176,14 +176,14 @@ export const vectorMetadata = pgTable(
   "vector_metadata",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    documentId: uuid("document_id").notNull().unique(),
-    documentType: text("document_type").notNull(), // case, evidence, criminal
-    collectionName: text("collection_name").notNull(),
-    metadata: jsonb("metadata").default({}),
-    contentHash: text("content_hash").notNull(),
-    embeddingModel: text("embedding_model").default("nomic-embed-text"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    documentId,: uuid("document_id").notNull().unique(),
+    documentType,: text("document_type").notNull(), // case, evidence, criminal
+    collectionName,: text("collection_name").notNull(),
+    metadata,: jsonb("metadata").default({}),
+    contentHash,: text("content_hash").notNull(),
+    embeddingModel,: text("embedding_model").default("nomic-embed-text"),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     documentIdIdx: index("vector_metadata_document_id_idx").on(
@@ -202,10 +202,10 @@ export const embeddingCache = pgTable(
   "embedding_cache",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 768 }).notNull(),
-    model: text("model").notNull().default("nomic-embed-text"),
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    textHash,: text("text_hash").notNull().unique(),
+    embedding,: vector("embedding", { dimensions: 768 }).notNull(),
+    model,: text("model").notNull().default("nomic-embed-text"),
+    createdAt,: timestamp("created_at").defaultNow().notNull()
   },
   (table) => ({
     textHashIdx: index("embedding_cache_text_hash_idx").on(table.textHash),
@@ -217,12 +217,12 @@ export const conversations = pgTable(
   "conversations",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-    title: text("title").notNull(),
-    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general;
-    metadata: jsonb("metadata").default({}),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    userId,: uuid("user_id").notNull(),
+    title,: text("title").notNull(),
+    type,: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general;
+    metadata,: jsonb("metadata").default({}),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     userIdIdx: index("conversations_user_id_idx").on(table.userId),
@@ -233,14 +233,14 @@ export const messages = pgTable(
   "messages",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    conversationId: uuid("conversation_id").references(() => conversations.id, {
+    conversationId,: uuid("conversation_id").references(() => conversations.id, {
       onDelete: "cascade"
     }),
-    role: text("role").notNull(), // user, assistant, system
-    content: text("content").notNull(),
-    metadata: jsonb("metadata").default({}),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    role,: text("role").notNull(), // user, assistant, system
+    content,: text("content").notNull(),
+    metadata,: jsonb("metadata").default({}),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     conversationIdIdx: index("messages_conversation_id_idx").on(
@@ -254,14 +254,14 @@ export const userActivity = pgTable(
   "user_activity",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-    action: text("action").notNull(), // create, update, delete, view, search
-    resourceType: text("resource_type").notNull(), // case, evidence, criminal
-    resourceId: uuid("resource_id"),
-    details: jsonb("details").default({}),
-    ipAddress: text("ip_address"),
-    userAgent: text("user_agent"),
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    userId,: uuid("user_id").notNull(),
+    action,: text("action").notNull(), // create, update, delete, view, search
+    resourceType,: text("resource_type").notNull(), // case, evidence, criminal
+    resourceId,: uuid("resource_id"),
+    details,: jsonb("details").default({}),
+    ipAddress,: text("ip_address"),
+    userAgent,: text("user_agent"),
+    createdAt,: timestamp("created_at").defaultNow().notNull()
   },
   (table) => ({
     userIdIdx: index("user_activity_user_id_idx").on(table.userId),
@@ -277,14 +277,14 @@ export const systemConfig = pgTable(
   "system_config",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    key: text("key").notNull().unique(),
-    value: jsonb("value").notNull(),
-    description: text("description"),
-    category: text("category").default("general"),
-    isEncrypted: boolean("is_encrypted").default(false),
-    updatedBy: uuid("updated_by").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    key,: text("key").notNull().unique(),
+    value,: jsonb("value").notNull(),
+    description,: text("description"),
+    category,: text("category").default("general"),
+    isEncrypted,: boolean("is_encrypted").default(false),
+    updatedBy,: uuid("updated_by").notNull(),
+    createdAt,: timestamp("created_at").defaultNow().notNull(),
+    updatedAt,: timestamp("updated_at").defaultNow().notNull()
   },
   (table) => ({
     keyIdx: index("system_config_key_idx").on(table.key),
@@ -295,7 +295,7 @@ export const systemConfig = pgTable(
 export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   connections: many(evidenceConnections)
-});
+}),;
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
@@ -303,7 +303,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   }),
   connectionsFrom: many(evidenceConnections, { relationName: "from" }),
   connectionsTo: many(evidenceConnections, { relationName: "to" })
-});
+}),;
 export const evidenceConnectionsRelations = relations(
   evidenceConnections,
   ({ one }) => ({
@@ -325,13 +325,13 @@ export const evidenceConnectionsRelations = relations(
 );
 export const conversationsRelations = relations(conversations, ({ many }) => ({
   messages: many(messages)
-});
+}),;
 export const messagesRelations = relations(messages, ({ one }) => ({
   conversation: one(conversations, {
     fields: [messages.conversationId],
     references: [conversations.id]
   })
-});
+}),;
 // Export all table types for TypeScript
 export type Case = typeof cases.$inferSelect;
 export type Evidence = typeof evidence.$inferSelect;

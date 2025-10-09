@@ -93,7 +93,7 @@ export class AdvisoryLockService {
         }
         if (!lockAcquired) {
           // Wait a bit before retrying
-          await new Promise(resolve => setTimeout(resolve, 100);
+          await new Promise(resolve => setTimeout(resolve, 100),;
         }
       }
       if (!lockAcquired) {
@@ -127,7 +127,7 @@ export class AdvisoryLockService {
   async releaseLock(
     entityType: LockType
     entityId: string
-    mode: LockMode = LOCK_MODES.EXCLUSIVE;
+    mode: LockMode = LOCK_MODES.EXCLUSIVE,;
   ): Promise<boolean> {
     const lockKey = `${entityType}:${entityId}:${mode}`;
     const numericLockId = this.generateLockId(entityType, entityId);
@@ -214,10 +214,10 @@ export class AdvisoryLockService {
       const lockKey = `${entityType}:${entityId}`;
       const matches = Array.from(this.locks.entries()
         .filter(([key]) => key.startsWith(lockKey)
-        .map(([_, info]) => info);
+        .map(([_, info]) => info),;
       return matches;
     }
-    return Array.from(this.locks.values();
+    return Array.from(this.locks.values(),;
   }
   /**
    * Release all locks held by a session

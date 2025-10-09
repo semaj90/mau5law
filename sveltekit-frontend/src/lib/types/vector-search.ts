@@ -2,7 +2,7 @@
 // Legal AI Platform - Vector Similarity Search Types
 export interface VectorSearchResult {
   results: Array<{,
-    id: string;
+    id,: string;
     content: string;
     metadata: { [key: string]: any }
     similarity: number;

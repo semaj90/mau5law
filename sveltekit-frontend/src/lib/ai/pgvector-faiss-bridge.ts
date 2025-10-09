@@ -174,7 +174,7 @@ class FAISSGPUEngine {
   async createIndex(
     indexType: 'flat' | 'ivf' | 'hnsw' = 'ivf',
     metricType: 'cosine' | 'euclidean' | 'inner_product' = 'cosine',
-    nlist: number = 100;
+    nlist: number = 100,;
   ): Promise<FAISSIndex | null> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -217,7 +217,7 @@ class FAISSGPUEngine {
   async search(
     queryVector: Float32Array
     k: number = 10,
-    nprobe?: number;
+    nprobe?: number,;
   ): Promise<FAISSSearchResult> {
     const startTime = performance.now();
     if (!this.gpuIndex) {
@@ -299,7 +299,7 @@ class PgVectorBridge {
         metadata: { type: 'legal_document', id },
         created_at: new Date(),
         updated_at: new Date()
-      });
+      }),;
     } catch (error) {
       console.error('❌ pgvector query error:', error);
       return [];
@@ -308,7 +308,7 @@ class PgVectorBridge {
   async searchSimilar(
     queryEmbedding: number[]
     limit: number = 10,
-    threshold: number = 0.7;
+    threshold: number = 0.7,;
   ): Promise<PgVectorDocument[]> {
     try {
       // Mock pgvector similarity search
@@ -551,7 +551,7 @@ export class PgVectorFAISSBridge {
     faissResults: PgVectorDocument[]
     pgvectorResults: PgVectorDocument[]
     faissScores: number[]
-    fusionMethod: 'rank' | 'score' | 'weighted';
+    fusionMethod: 'rank' | 'score' | 'weighted',;
   ): PgVectorDocument[] {
     switch (fusionMethod) {
       case 'rank':
@@ -573,8 +573,8 @@ export class PgVectorFAISSBridge {
       case 'weighted':
       default:
         // Weighted fusion (FAISS gets 70%, pgvector gets 30%)
-        const faissWeighted = faissResults.slice(0, Math.floor(50 * 0.7);
-        const pgvectorWeighted = pgvectorResults.slice(0, Math.floor(50 * 0.3);
+        const faissWeighted = faissResults.slice(0, Math.floor(50 * 0.7),;
+        const pgvectorWeighted = pgvectorResults.slice(0, Math.floor(50 * 0.3),;
         return [...faissWeighted, ...pgvectorWeighted];
     }
   }
@@ -582,7 +582,7 @@ export class PgVectorFAISSBridge {
     faissResults: FAISSSearchResult | null
     pgvectorCount: number
     config: HybridSearchConfig
-    totalTime: number;
+    totalTime: number,;
   ): string {
     const parts = [];
     if (faissResults && faissResults.gpu_accelerated) {

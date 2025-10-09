@@ -55,24 +55,24 @@ export interface LegalCase {
 export interface CrossSystemInsights {
   // Citation-Report connections
   citationReportLinks: Array<{,
-    citationId: string;
+    citationId,: string;
     reportId: string;
     relevance: number;
     context: string;
   }>;
   // POI-Citation connections
   poiCitationLinks: Array<{,
-    poiId: string;
-    citationId: string;
-    involvement: 'author' | 'referenced' | 'opposing' | 'supporting';
-    frequency: number;
+    poiId: string,;
+    citationId: string,;
+    involvement: 'author' | 'referenced' | 'opposing' | 'supporting',;
+    frequency: number,;
   }>;
   // POI-Report connections
   poiReportLinks: Array<{,
-    poiId: string;
-    reportId: string;
-    role: 'subject' | 'contributor' | 'reviewer' | 'mentioned';
-    importance: number;
+    poiId: string,;
+    reportId: string,;
+    role: 'subject' | 'contributor' | 'reviewer' | 'mentioned',;
+    importance: number,;
   }>;
   // Network patterns
   networkPatterns: {
@@ -105,7 +105,7 @@ interface PlatformContext {
   }
   // AI processing queue
   aiQueue: Array<{,
-    id: string;
+    id,: string;
     type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
     entityIds: string[];
     priority: number;

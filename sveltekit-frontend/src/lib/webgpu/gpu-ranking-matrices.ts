@@ -278,7 +278,7 @@ export class GPURankingMatrices {
     computePass.end();
     this.device.queue.submit([commandEncoder.finish()]);
     // Cache ranking matrices if enabled
-    if this.config.enableCaching) {
+    if, this.config.enableCaching) {
       documents.forEach((doc, index) => {
         const matrix = new Float32Array(RANKING_VALUES_PER_DOCUMENT);
         // Extract 4x4 matrix from ranking data

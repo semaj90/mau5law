@@ -56,12 +56,12 @@ export interface PredictActionResponse {
 }
 export interface BulkPredictResponse {
   results: Array<{,
-    action: string
+    action,: string
     predictions: PredictionResult[]
     context: any
     enhancedMode: boolean
   }>
-  totalRequests: number
+  totalRequests,: number
   stats: Partial<PredictorStats>
   timestamp: number
 }

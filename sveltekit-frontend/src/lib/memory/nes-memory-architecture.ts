@@ -240,7 +240,7 @@ export class NESMemoryArchitecture {
     }
   }
   async allocateDocument(_document: Omit<LegalDocument, 'lastAccessed'>,
-    data: ArrayBuffer;
+    data: ArrayBuffer,;
     options: {
       preferredBank?: string;
       compress?: boolean;
@@ -362,7 +362,7 @@ export class NESMemoryArchitecture {
     return Math.max(0, Math.min(255, priority));
   }
   private async compressDocument(
-    data: ArrayBuffer;
+    data: ArrayBuffer,;
     document: Omit<LegalDocument, 'lastAccessed'>,
     compressionLevel: number
   ): Promise<any> {

@@ -213,7 +213,7 @@ export function createRoute(id: string, path: string): RouteBuilder {
 /**
  * Batch route registration utility
  */;
-export function registerRoutes(routes: Array<): GeneratedRoute[] {
+export function registerRoutes(routes: Array<,): GeneratedRoute[] {
   return routes.map(route => {
     const config = route.config || {}
     return registerDynamicRoute(route.id, route.path, config);
@@ -223,13 +223,13 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
  * Route pattern matching utility
  */
 export function matchRoute(
-  pattern: string;
-  path: string;
+  pattern: string,;
+  path: string,;
 ): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
   if (patternParts.length !== pathParts.length) {
-    return { match: false, params: { [key: string]: any } }
+    return { match: false, params: { [key,: strin,g]: any } }
   }
   const params: Record<string, string> = {}
   for (let i = 0; i < patternParts.length; i++) {
@@ -243,7 +243,7 @@ export function matchRoute(
       params[name] = pathPart;
     } else if (patternPart !== pathPart) {
       // Static segment mismatch
-      return { match: false, params: { [key: string]: any } }
+      return { match: false, params: { [key,: strin,g]: any } }
     }
   }
   return { match: true, params }
@@ -315,7 +315,7 @@ export function debugRoutes(): {
   totalRoutes: number;
   staticRoutes: number;
   dynamicRoutes: number;
-  routeList: Array<any> {
+  routeList: Array<any>, {
   const dynamicRoutes = getAllDynamicRoutes();
   const staticRoutesFromRegistry: Array<[string, RouteDefinition]> = [];
   const routeList = [

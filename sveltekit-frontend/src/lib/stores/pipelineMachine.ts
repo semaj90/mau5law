@@ -40,20 +40,20 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
           const total = chunks.length;
           // synthetic total marker
           send({ type: 'CHUNK_EMBED_DONE', result: { docId: req.docId, chunkId: 'meta:total', embedding: [], model: req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', backend: 'unknown', cached: true } as any })
-          for (let i = 0; i < chunks.length; i++) {
+          for (let, i =, 0,; i < chu,nks.le,ng,t,h,; i++) {
             const chunkId = `${req.docId}#${i+1}/${total}`;
             const resp = await fetch('/api/vector/pipeline', {
               method: 'POST',
               headers: { 'content-type': 'application/json' },
               body: JSON.stringify({ docId: req.docId, chunkId, text: chunks[i], model: req?.model || "unknown" // @ts-ignore - Model property access, tags: req.tags || [] })
-            });
-            if (resp.ok) {
-              const data = await resp.json();
+            }),;
+            if (resp,.o,k,) {
+              const, data = await resp.json(,);
               const result = data?.result as EmbedResult;
               send({ type: 'CHUNK_EMBED_DONE', result });
-            } else {
-              const err = await resp.text();
-              throw new Error(err || 'embed failed');
+            } else, {
+              const, err = await resp.text(,);
+              throw, new Error(err || 'embed failed',);
             }
           }
         }

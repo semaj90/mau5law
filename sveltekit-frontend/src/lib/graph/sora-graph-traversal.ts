@@ -204,16 +204,16 @@ export class SoraGraphTraversal {
         nodesVisited = wasmResult.nodesVisited;
         edgesTraversed = wasmResult.edgesTraversed;
         // Convert WASM results to our format
-        wasmResult.nodes.forEach((node: any) => nodes.set(node.id, this.convertWasmNode(node));
-        wasmResult.edges.forEach((edge: any) => edges.set(edge.id, this.convertWasmEdge(edge));
-        wasmResult.paths.forEach((path: any) => paths.push(this.convertWasmPath(path));
+        wasmResult.nodes.forEach((node: any) => nodes.set(node.id, this.convertWasmNode(node)),;
+        wasmResult.edges.forEach((edge: any) => edges.set(edge.id, this.convertWasmEdge(edge)),;
+        wasmResult.paths.forEach((path: any) => paths.push(this.convertWasmPath(path)),;
       } else {
         // Fallback to JavaScript implementation
         const jsResult = await this.jsSemanticTraversal(query, startEmbeddings);
         nodesVisited = jsResult.nodesVisited;
         edgesTraversed = jsResult.edgesTraversed;
-        jsResult.nodes.forEach((node, id) => nodes.set(id, node);
-        jsResult.edges.forEach((edge, id) => edges.set(id, edge);
+        jsResult.nodes.forEach((node, id) => nodes.set(id, node),;
+        jsResult.edges.forEach((edge, id) => edges.set(id, edge),;
         paths.push(...jsResult.paths);
       }
       return {
@@ -231,7 +231,7 @@ export class SoraGraphTraversal {
           positions: new Float32Array(0),
           colors: new Float32Array(0),
           connections: new Uint32Array(0),
-          metadata: { [key: string]: any }
+          metadata: { [key,: strin,g]: any }
         }
       }
     } catch (error: any) {
@@ -358,7 +358,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       }
     }
   }
@@ -429,7 +429,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       }
     }
   }
@@ -475,7 +475,7 @@ export class SoraGraphTraversal {
         if (path.length > 1) {
           paths.push({
             nodes: path
-            totalWeight: minDistance;
+            totalWeight: minDistance,;
             confidence: node.metadata.confidence
           });
         }
@@ -511,7 +511,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       }
     }
   }
@@ -597,7 +597,7 @@ export class SoraGraphTraversal {
   private generateCacheKey(query: GraphTraversalQuery): string {
     return `${query.startNodes.join(',')}_${query.maxDepth}_${query.traversalStrategy}_${JSON.stringify(query.filters)}`;
   }
-  private async getSemanticEmbeddings(nodeIds: string[]): Promise<Map<string, Float32Array> {
+  private async getSemanticEmbeddings(nodeIds: string[]): Promise<Map<string, Float32Array>, {
     const embeddings = new Map<string, Float32Array>();
     for (const nodeId of nodeIds) {
       // Mock embedding generation
@@ -617,7 +617,7 @@ export class SoraGraphTraversal {
         id: `sim_node_${i}`,
         type: 'concept',
         label: `Similar Concept ${i}`,
-        properties: { [key: string]: any },
+        properties: { [key,: strin,g]: any },
         position: { x: Math.random() * 100, y: Math.random() * 100, z: Math.random() * 100 },
         metadata: {
           importance: Math.random(),
@@ -637,17 +637,17 @@ export class SoraGraphTraversal {
       target: targetId
       type: 'RELATED_TO',
       weight: Math.random(),
-      properties: { [key: string]: any },
+      properties: { [key,: strin,g]: any },
       metadata: {
-        confidence: Math.random() * 0.3 + 0.7,
-        strength: Math.random(),
-        bidirectional: true
+        confidence: Math.random,(), * 0.,3 + 0.7,
+        strength,: Math.random(),
+        bidirectional,: true
       }
     }];
   }
-  private async getNodeById(nodeId: string): Promise<GraphNode | null> {
+  private async getNodeById(nodeId,: string,): Promise<GraphNode | null> {
     // Check cache first
-    if (this.nodeCache.has(nodeId)) {
+    if (this,.nodeCache.has(nodeId,)) {
       return this.nodeCache.get(nodeId)!;
     }
     // Mock node retrieval
@@ -670,10 +670,10 @@ export class SoraGraphTraversal {
     this.nodeCache.set(nodeId, node);
     return node;
   }
-  private async getNodeNeighbors(nodeId: string, relationshipTypes?: string[]): Promise<Array<any> {
+  private async getNodeNeighbors(nodeId,: string, relationshipTypes?: string[],): Promise<Array<any> {
     // Mock neighbor retrieval
-    const neighbors: Array<any> = [];
-    for (let i = 0; i < Math.floor(Math.random() * 5) + 1; i++) {
+    const, neighbor,s: Array<any,> =, [];
+    for (let, i =, 0;, i < M,ath.floor(Math.random() * 5), +, 1; i++) {
       const neighborId = `neighbor_${nodeId}_${i}`;
       const neighbor = await this.getNodeById(neighborId);
       if (neighbor) {
@@ -683,7 +683,7 @@ export class SoraGraphTraversal {
           target: neighborId
           type: 'RELATED_TO',
           weight: Math.random(),
-          properties: { [key: string]: any },
+          properties: { [key,: strin,g]: any },
           metadata: {
             confidence: Math.random() * 0.3 + 0.7,
             strength: Math.random(),
@@ -695,7 +695,7 @@ export class SoraGraphTraversal {
     }
     return neighbors;
   }
-  private passesFilters(node: GraphNode, filters?: GraphTraversalQuery['filters']): boolean {
+  private passesFilters(node,: GraphNode, filters?: GraphTraversalQuery['filters'],): boolean {
     if (!filters) return true;
     if (filters.nodeTypes && !filters.nodeTypes.includes(node.type)) {
       return false;
@@ -705,7 +705,7 @@ export class SoraGraphTraversal {
     }
     return true;
   }
-  private reconstructPath(previous: Map<string, string | null>, endNode: string): string[] {
+  private reconstructPath(previous,: Map<string, string | null>, endNod,e: strin,g): string,[] {
     const path: string[] = [];
     let current: string | null = endNode;
     while (current !== null) {
@@ -714,7 +714,7 @@ export class SoraGraphTraversal {
     }
     return path;
   }
-  private getNodeColor(node: GraphNode): { r: number; g: number; b: number; a: number } {
+  private getNodeColor(node,: GraphNode,): { r: number; g: number; b: number; a: number } {
     const colors = {
       case: { r: 0.2, g: 0.6, b: 1.0, a: 1.0 },
       precedent: { r: 0.8, g: 0.2, b: 0.2, a: 1.0 },
@@ -725,7 +725,7 @@ export class SoraGraphTraversal {
     }
     return colors[node.type] || colors.concept;
   }
-  private calculateBoundingBox(positions: Float32Array): { min: [number, number, number]; max: [number, number, number] } {
+  private calculateBoundingBox(positions,: Float32Array,): { min: [number, number, number]; max: [number, number, number] } {
     let minX = Infinity, minY = Infinity, minZ = Infinity;
     let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
     for (let i = 0; i < positions.length; i += 3) {
@@ -738,23 +738,23 @@ export class SoraGraphTraversal {
     }
     return { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] }
   }
-  private getNodeTypeDistribution(nodes: Map<string, GraphNode>): Record<string, number> {
-    const distribution: Record<string, number> = {}
+  private getNodeTypeDistribution(nodes,: Map<string, GraphNode>,): Record<string, number> {
+    const, distributio,n: Record<string, number,> = {}
     for (const node of nodes.values()) {
       distribution[node.type] = (distribution[node.type] || 0) + 1;
     }
     return distribution;
   }
-  private getEdgeTypeDistribution(edges: Map<string, GraphEdge>): Record<string, number> {
-    const distribution: Record<string, number> = {}
+  private getEdgeTypeDistribution(edges,: Map<string, GraphEdge>,): Record<string, number> {
+    const, distributio,n: Record<string, number,> = {}
     for (const edge of edges.values()) {
       distribution[edge.type] = (distribution[edge.type] || 0) + 1;
     }
     return distribution;
   }
-  private async enhanceWithMemoryData(result: GraphTraversalResult): Promise<GraphTraversalResult> {
+  private async enhanceWithMemoryData(result,: GraphTraversalResult,): Promise<GraphTraversalResult> {
     // Enhance nodes with NES memory bank information
-    for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
+    for (const, [nodeId, node], o,f (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).no,des) {
       const memoryDoc = nesMemory.getDocument(nodeId);
       if (memoryDoc) {
         node.metadata.memoryBank = this.getMemoryBankName(memoryDoc.bankId);
@@ -763,7 +763,7 @@ export class SoraGraphTraversal {
     }
     return result;
   }
-  private getMemoryBankName(bankId?: number): string {
+  private getMemoryBankName(bankId?: number),: string {
     const bankNames = {
       0: 'INTERNAL_RAM',
       1: 'CHR_ROM',
@@ -773,7 +773,7 @@ export class SoraGraphTraversal {
     }
     return bankNames[bankId as keyof typeof bankNames] || 'UNKNOWN';
   }
-  private prepareWasmInput(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): any {
+  private prepareWasmInput(query,: GraphTraversalQuery, embedding,s: Map<string, Float32Array,>): any {
     return {
       query: JSON.stringify(query),
       embeddings: Array.from(embeddings.entries()).map(([id, emb]) => ({
@@ -782,36 +782,36 @@ export class SoraGraphTraversal {
       })
     }
   }
-  private convertWasmNode(wasmNode: any): GraphNode {
+  private convertWasmNode(wasmNode,: any,): GraphNode {
     return wasmNode as GraphNode;
   }
-  private convertWasmEdge(wasmEdge: any): GraphEdge {
+  private convertWasmEdge(wasmEdge,: any,): GraphEdge {
     return wasmEdge as GraphEdge;
   }
-  private convertWasmPath(wasmPath: any): { nodes: string[]; totalWeight: number; confidence: number } {
+  private convertWasmPath(wasmPath,: any,): { nodes: string[]; totalWeight: number; confidence: number } {
     return wasmPath;
   }
   /**
    * Get performance metrics
    */;
-  getMetrics() {
+  getMetrics(), {
     return { ...this.metrics }
   }
   /**
    * Clear caches
    */;
-  clearCaches(): void {
-    this.graphCache.clear();
-    this.nodeCache.clear();
-    this.edgeCache.clear();
-    console.log('🧹 Sora caches cleared');
+  clearCaches(),: void {
+    this,.graphCache.clear(,);
+    this,.nodeCache.clear(,);
+    this,.edgeCache.clear(,);
+    console,.log('🧹 Sora caches cleared',);
   }
   /**
    * Cleanup resources
    */;
-  async dispose(): Promise<void> {
-    this.clearCaches();
-    if (this.neo4jDriver) {
+  async dispose(),: Promise<void> {
+    this,.clearCaches(,);
+    if (this,.neo4jDrive,r) {
       await this.neo4jDriver.close();
     }
     if (this.wasmModule) {

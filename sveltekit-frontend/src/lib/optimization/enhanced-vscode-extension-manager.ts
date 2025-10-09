@@ -81,7 +81,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
     this.config = config;
     this.memoryManager = new NeuralMemoryManager(config);
   }
-  async executeCommand<T>(commandId: string, ...args: any[]): Promise<AsyncCommandResult<T> {
+  async executeCommand<T>(commandId: string, ...args: any[]): Promise<AsyncCommandResult<T>, {
     const startTime = performance.now();
     try {
       if (!vscode) {

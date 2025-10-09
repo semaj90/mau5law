@@ -363,7 +363,7 @@ async function enhanceRecommendationsWithEmbeddings(
           if (recProfile.length >= 50) {
             const recEmbedding = await generateEnhancedEmbedding(recProfile, {
               provider: 'nomic-embed',
-              legalDomain: true;
+              legalDomain: true,;
               cache: true
             }) as number[]
             const similarity = cosineSimilarity(targetEmbedding, recEmbedding)

@@ -45,7 +45,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: EMBEDDING_MODEL;
+        model: EMBEDDING_MODEL,;
         prompt: text
       })
     })
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           relevantLaws: ['Bank Secrecy Act', '31 USC 5311'],
           type: 'document'
         }
-      ].filter(item => item.similarity) >= threshold)
+      ].filter(item => item.similarity) >= threshold,)
        .slice(0, limit)
       return json({
         success: true,
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           processedAt: new Date().toISOString()
         }
       })
-    } catch (error: any) {
+    }, catch (error: any) {
       console.error('Similar evidence search failed:', error)
       if (error instanceof z.ZodError) {
         return json({

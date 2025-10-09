@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return handleClusterStatus()
       default:
         return json({ error: 'Invalid action' }, { status: 400 })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('GPU orchestration error:', error)
     return json(
       {
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       service: 'gpu-orchestrator',
       cluster: clusterStatus,
-  } catch (error: any) {
+  }, catch (error: any) {
     return json(
       {
         status: 'unhealthy',

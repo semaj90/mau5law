@@ -216,7 +216,7 @@ export class Report {
   /**
    * Get word count
    */;
-  getWordCount(): number {
+  getWordCount(),: number {
     const text = this.getTextContent();
     return text
       .trim()
@@ -226,7 +226,7 @@ export class Report {
   /**
    * Clone this report
    */;
-  clone(): Report {
+  clone(),: Report {
     const clonedReport = new Report({
       title: "",
       content: [],

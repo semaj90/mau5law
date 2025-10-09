@@ -43,7 +43,7 @@ export interface FormSubmissionResult<T = any> {
 export type AITaskType = 'generate' | 'analyze' | 'embed' | 'search' | 'embedding' | 'analysis' | 'classification' | 'summarization';
 export type WorkerMessageType = 'error' | 'status' | 'result' | 'task' | 'TASK_STARTED' | 'TASK_COMPLETED' | 'TASK_ERROR' | 'TASK_CANCELLED' | 'STATUS_UPDATE';
 export interface AITask { taskId: string; type: AITaskType; providerId: string; model: string; prompt: string; timestamp: number; priority: 'low' | 'medium' | 'high';[key: string]: any, }
-export interface WorkerStatus { status: 'idle' | 'processing' | 'error'; activeRequests: number; queueLength: number; providers: { id: string; status: ServiceStatus }[]; maxConcurrent: number; uptime: number; totalProcessed: number; errors: number; performance: { avgTaskTime: number; tasksPerMinute: number } lastActivity: Date, }
+export interface WorkerStatus { status: 'idle' | 'processing' | 'error'; activeRequests: number; queueLength: number; providers: { id: string; status: ServiceStatus }[]; maxConcurrent: number; uptime: number; totalProcessed: number; errors: number; performance: { avgTaskTime: number; tasksPerMinute: number }, lastActivity: Date, }
 export interface WorkerMessage { taskId?: string; type: WorkerMessageType; data?: unknown; payload?: AITask | APIResponse<unknown> | WorkerStatus, }
 // Copilot & RAG
 export type CopilotSource = 'context7_mcp' | 'enhanced_local_index' | 'basic_index';
@@ -51,12 +51,12 @@ export interface CopilotIndexEntry { id: string; content: string; score: number;
 export interface SimilarityResult { id: string; documentId: string; documentType: string; chunkIndex: number; content: string; score: number, }
 // Database / Evidence / Document (narrow versions - keep existing User above)
 export interface Case { id: string; title: string; description: string | null; userId: string; status: string; createdAt: Date, }
-export interface Evidence { id: string; name: string; caseId: string; contentText: string | null; filePath: string | null; metadata: { [key: string]: any } createdAt: Date, }
+export interface Evidence { id: string; name: string; caseId: string; contentText: string | null; filePath: string | null; metadata: { [key: string]: any }, createdAt: Date, }
 export interface DocumentChunk { id: string; evidenceId: string; chunkText: string; chunkSequence: number, }
 // Canvas / NES engine
 export interface CanvasState { id: string; animation: string; frame: number; fabricJSON: object; metadata: { duration?: number; transitions?: string[]; userContext?: string[]; confidence?: number } }
 export interface CanvasAnimation { name: string; frames: CanvasState[]; loop: boolean, }
-export interface UserActivityLog { timestamp: number; action: string; context: { [key: string]: any } sessionId: string, }
+export interface UserActivityLog { timestamp: number; action: string; context: { [key: string]: any }, sessionId: string, }
 // GPU / Tensor
 export type GPUTaskType = 'matrix_multiply' | 'convolution' | 'attention' | 'fft';
 export interface GPUTaskRequest { taskId: string; type: GPUTaskType; inputs: number[][]; use_gpu: boolean; cache_key?: string, }

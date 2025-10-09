@@ -231,7 +231,7 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     webgpuUtilization: config.useWebGPU ? 0.85 : 0,
     compressionRatio: 4.5,
     memoryUsage: {
-      peak: memoryPeak;
+      peak: memoryPeak,;
       average: (memoryStart + memoryPeak) / 2
     }
   }

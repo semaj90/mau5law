@@ -189,7 +189,7 @@ export class SIMDGPUTilingEngine {
       }
     `;
     const shaderModule = this.device.createShaderModule({
-      code: shaderCode;
+      code: shaderCode,;
       label: 'SIMD-Evidence-Tiling-Compute',
     });
     this.computePipeline = this.device.createComputePipeline({
@@ -276,7 +276,7 @@ export class SIMDGPUTilingEngine {
   }
   private async performGPUTiling(
     imageData: Float32Array
-    width: number;
+    width: number,;
     height: number
     tileSize: number
     evidenceType: string
@@ -406,7 +406,7 @@ export class SIMDGPUTilingEngine {
   }
   private async performCPUTiling(
     imageData: Float32Array
-    width: number;
+    width: number,;
     height: number
     tileSize: number
     evidenceType: string

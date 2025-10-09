@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       search
     } = EvidenceQuerySchema.parse(queryParams)
     // Create evidence service
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Build query options
     const options = {
       page,
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           try {
             // Check if evidence already has analysis
             if (evidence.metadata?.aiAnalysis) {
-              return evidence)
+              return evidence,)
             }
             // Call MCP server for Gemma embeddings analysis
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError)
             return evidence
           }
-        })
+        },)
       )
     }
     // Calculate additional metadata
@@ -153,13 +153,13 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_list_by_case',
         caseId
       }
     })
-  } catch (err: any) {
+  }, catch (err: any) {
     console.error('Error retrieving evidence by case:', err)
     if (err instanceof z.ZodError) {
       return error(

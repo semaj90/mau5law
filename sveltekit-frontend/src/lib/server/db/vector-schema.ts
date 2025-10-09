@@ -26,17 +26,17 @@ export const documentEmbeddings = pgTable(
       .defaultRandom()
       .defaultRandom()
       .defaultRandom(),
-    documentId: text("document_id").notNull(),
-    documentType: text("document_type").notNull(), // 'case', 'evidence', 'note', 'report'
-    chunkIndex: integer("chunk_index").notNull().default(0),
-    chunkText: text("chunk_text").notNull(),
-    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized);
-    metadata: jsonb("metadata")
+    documentId,: text("document_id").notNull(),
+    documentType,: text("document_type").notNull(), // 'case', 'evidence', 'note', 'report'
+    chunkIndex,: integer("chunk_index").notNull().default(0),
+    chunkText,: text("chunk_text").notNull(),
+    embedding,: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized);
+    metadata,: jsonb("metadata")
       .$type()
       .default({}),
-    modelUsed: text("model_used").default("nomic-embed-text"),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow()
+    modelUsed,: text("model_used").default("nomic-embed-text"),
+    createdAt,: timestamp("created_at").defaultNow(),
+    updatedAt,: timestamp("updated_at").defaultNow()
   },
   (table) => ({
     // Vector similarity search index
@@ -63,18 +63,18 @@ export const searchQueries = pgTable(
       .defaultRandom()
       .defaultRandom()
       .defaultRandom(),
-    userId: text("user_id").notNull(),
-    queryText: text("query_text").notNull(),
-    queryEmbedding: vector("query_embedding", { dimensions: 384 }),
-    searchType: text("search_type").notNull().default("semantic"), // 'semantic', 'keyword', 'hybrid'
-    resultsCount: integer("results_count").default(0),
-    results: jsonb("results")
+    userId,: text("user_id").notNull(),
+    queryText,: text("query_text").notNull(),
+    queryEmbedding,: vector("query_embedding", { dimensions: 384 }),
+    searchType,: text("search_type").notNull().default("semantic"), // 'semantic', 'keyword', 'hybrid'
+    resultsCount,: integer("results_count").default(0),
+    results,: jsonb("results")
       .$type;
         totalFound: number;
         searchTime: number;
       }>()
       .default({ items: [], totalFound: 0, searchTime: 0 }),
-    createdAt: timestamp("created_at").defaultNow()
+    createdAt,: timestamp("created_at").defaultNow()
   },
   (table) => ({
     userIdx: index("idx_search_user").on(table.userId),
@@ -96,17 +96,17 @@ export const aiModels = pgTable(
       .defaultRandom()
       .defaultRandom()
       .defaultRandom(),
-    name: text("name").notNull().unique(),
-    provider: text("provider").notNull(), // 'ollama', 'openai', 'anthropic'
-    modelType: text("model_type").notNull(), // 'embedding', 'chat', 'completion'
-    embeddingDimensions: integer("embedding_dimensions"),
-    contextLength: integer("context_length"),
-    config: jsonb("config")
+    name,: text("name").notNull().unique(),
+    provider,: text("provider").notNull(), // 'ollama', 'openai', 'anthropic'
+    modelType,: text("model_type").notNull(), // 'embedding', 'chat', 'completion'
+    embeddingDimensions,: integer("embedding_dimensions"),
+    contextLength,: integer("context_length"),
+    config,: jsonb("config")
       .$type()
       .default({}),
-    isActive: integer("is_active").notNull().default(1),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow()
+    isActive,: integer("is_active").notNull().default(1),
+    createdAt,: timestamp("created_at").defaultNow(),
+    updatedAt,: timestamp("updated_at").defaultNow()
   },
   (table) => ({
     nameIdx: index("idx_model_name").on(table.name),
@@ -125,7 +125,7 @@ export const documentEmbeddingsRelations = relations(
 );
 export const searchQueriesRelations = relations(searchQueries, ({ one }) => ({
   // User relation can be added here
-});
+}),;
 // Export types
 export type DocumentEmbedding = typeof documentEmbeddings.$inferSelect;
 export type NewDocumentEmbedding = typeof documentEmbeddings.$inferInsert;

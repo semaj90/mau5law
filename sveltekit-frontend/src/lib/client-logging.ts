@@ -7,14 +7,14 @@ function base() {
 }
 export function logInfo(_event: string, fields: LogFields = {}) {
   // eslint-disable-next-line no-console
-  console.info(JSON.stringify({ level: 'info', event, ...base(), ...fields });
+  console.info(JSON.stringify({ level: 'info', event, ...base(), ...fields }),;
 }
 export function logWarn(_event: string, fields: LogFields = {}) {
   // eslint-disable-next-line no-console
-  console.warn(JSON.stringify({ level: 'warn', event, ...base(), ...fields });
+  console.warn(JSON.stringify({ level: 'warn', event, ...base(), ...fields }),;
 }
 export function logError(_event: string, error: unknown, fields: LogFields = {}) {
   const errObj = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) }
   // eslint-disable-next-line no-console
-  console.error(JSON.stringify({ level: 'error', event, ...base(), ...fields, error: errObj });
+  console.error(JSON.stringify({ level: 'error', event, ...base(), ...fields, error: errObj }),;
 }

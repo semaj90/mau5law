@@ -233,8 +233,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const document = await jsonbLegalService.createLegalDocument()
           {
             title: documentData.title,
-            content: documentData.content,
-            metadata: documentData.metadata
+            content,: documentData.content,
+            metadata,: documentData.metadata
           },
           documentData.embeddings ? {
             title: documentData.embeddings.title || [],
@@ -258,7 +258,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         }, { status: 201 })
-      case 'cases':
+      case 'cases',:
         // Create case
         const caseData = CreateCaseSchema.parse(requestBody)
         const caseRecord = await jsonbLegalService.createCase({
@@ -283,18 +283,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         }, { status: 201 })
-      case 'evidence':
+      case 'evidence',:
         // Create evidence
         const evidenceData = CreateEvidenceSchema.parse(requestBody)
         const evidence = await jsonbLegalService.createEvidence()
           {
             caseId: evidenceData.caseId,
-            title: evidenceData.title,
-            description: evidenceData.description,
-            filePath: evidenceData.filePath,
-            fileSize: evidenceData.fileSize,
-            mimeType: evidenceData.mimeType,
-            metadata: evidenceData.metadata
+            title,: evidenceData.title,
+            description,: evidenceData.description,
+            filePath,: evidenceData.filePath,
+            fileSize,: evidenceData.fileSize,
+            mimeType,: evidenceData.mimeType,
+            metadata,: evidenceData.metadata
           },
           evidenceData.embedding
         )
@@ -315,7 +315,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         }, { status: 201 })
-      case 'search':
+      case 'search',:
         // Search documents by criteria
         const searchCriteria = DocumentSearchSchema.parse(requestBody)
         const searchCriteriaWithDates = {
@@ -343,7 +343,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         })
-      case 'concepts':
+      case 'concepts',:
         // Analyze legal concepts
         const { documentIds } = z.object({
           documentIds: z.array(z.string().uuid()).min(1).max(100)
@@ -366,7 +366,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         })
-      case 'similar-cases':
+      case 'similar-cases',:
         // Find similar cases
         const { caseId, threshold } = z.object({
           caseId: z.string().uuid(),
@@ -390,7 +390,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             timestamp: new Date().toISOString()
           }
         })
-      case 'citation-network':
+      case 'citation-network',:
         // Build citation network
         const { documentId, depth } = z.object({
           documentId: z.string().uuid(),
@@ -417,7 +417,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default:
         throw error(404, `Operation not found: ${operation}`)
     }
-  } catch (err: any) {
+  }, catch (err: any) {
     const duration = performance.now() - startTime
     let errorMessage = 'Unknown error'
     let statusCode = 500
@@ -451,7 +451,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error: errorMessage
       metadata: {
         requestId,
-        processingTime: duration;
+        processingTime: duration,;
         timestamp: new Date().toISOString()
       }
     }, { status: statusCode })

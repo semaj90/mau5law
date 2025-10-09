@@ -242,7 +242,7 @@ export async function importCases(
           skipped: 0,
           errors: validationResult.errors,
           warnings: validationResult.warnings,
-          summary: { [key: string]: any }
+          summary: { [key,: strin,g]: any }
         }
       }
     }
@@ -295,7 +295,7 @@ export async function importCases(
       skipped: 0,
       errors: [message],
       warnings: [],
-      summary: { [key: string]: any }
+      summary: { [key,: strin,g]: any }
     }
   }
 }

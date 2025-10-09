@@ -123,7 +123,7 @@ export class ComprehensiveIntegration {
       this.updatePerformanceMetrics();
     }, 30000);
     // Cleanup interval on destroy
-    this.streamingCleanup.push(() => clearInterval(performanceInterval);
+    this.streamingCleanup.push(() => clearInterval(performanceInterval),;
   }
   /**
    * Broadcast evidence updates to connected clients
@@ -226,7 +226,7 @@ export class ComprehensiveIntegration {
    * Cleanup resources
    */;
   destroy(): void {
-    this.streamingCleanup.forEach(cleanup => cleanup();
+    this.streamingCleanup.forEach(cleanup => cleanup(),;
     this.streamingCleanup = [];
     this.initialized = false;
     console.log('🧹 Comprehensive Integration destroyed');

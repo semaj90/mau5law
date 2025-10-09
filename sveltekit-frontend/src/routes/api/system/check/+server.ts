@@ -22,8 +22,8 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         services: {
-          ollama: { status: 'error', error: 'System check failed' },
-          database: { status: 'error', error: 'System check failed' }
+          ollama: { status: 'error', error,: 'System check failed' },
+          database: { status: 'error', error,: 'System check failed' }
         },
         environment: { ollamaUrl: OLLAMA_URL },
         timestamp: new Date().toISOString()
@@ -66,7 +66,7 @@ async function checkOllamaStatus(): Promise<any> {
     }
     return {
       status: 'error',
-      error: errorMessage;
+      error: errorMessage,;
       url: OLLAMA_URL
     }
   }

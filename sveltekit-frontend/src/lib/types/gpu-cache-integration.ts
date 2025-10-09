@@ -378,7 +378,7 @@ export class EnhancedGPUCacheError extends Error {
     message: string
     public code: string
     public integration?: keyof IntegrationStatus
-    public context?: any;
+    public context?: any,;
   ) {
     super(message);
     this.name = 'EnhancedGPUCacheError';
@@ -487,7 +487,7 @@ export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): n
 export function createCacheKey(
   baseKey: string
   workflowType?: LegalWorkflowType
-  format?: EncodingFormat;
+  format?: EncodingFormat,;
 ): string {
   const parts = [baseKey];
   if (workflowType) parts.push(workflowType);
@@ -495,8 +495,8 @@ export function createCacheKey(
   return parts.join(':');
 }
 export function estimateMemoryFootprint(
-  data: any;
-  format: EncodingFormat = 'json';
+  data: any,;
+  format: EncodingFormat = 'json',;
 ): number {
   const jsonSize = JSON.stringify(data).length * 2; // UTF-16
   switch (format) {

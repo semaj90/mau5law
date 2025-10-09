@@ -30,14 +30,14 @@ export const GET: RequestHandler = async ({ url }) => {
     if (includeStats) {
       const detailedBuckets = await Promise.allSettled(buckets.map(async (bucket) => {
           try {
-            const files = await minioService.listFiles(bucket.name, undefined, 1000))
+            const files = await minioService.listFiles(bucket.name, undefined, 1000),)
             return {
               name: bucket.name,
               creationDate: bucket.creationDate,
               fileCount: files.length,
               totalSize: files.reduce((sum, file) => sum + (file.size || 0), 0)
             }
-          } catch (error) {
+          }, catch (error) {
             return {
               name: bucket.name,
               creationDate: bucket.creationDate,
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Bucket listing error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to list buckets',

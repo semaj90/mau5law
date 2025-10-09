@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     return json()
       {
         success: false,
-        error: message
+        error,: message
         timestamp: new Date().toISOString()
       },
       { status: 500 }

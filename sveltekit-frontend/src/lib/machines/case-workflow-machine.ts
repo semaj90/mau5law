@@ -21,16 +21,16 @@ export interface CaseWorkflowContext {
     current_action: string;
   }
   }); const settings = {
-    auto_analyze: boolean;
-    notification_level: 'minimal' | 'normal' | 'detailed';
-    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
+    auto_analyze: boolean,;
+    notification_level: 'minimal' | 'normal' | 'detailed',;
+    ai_assistance_level: 'basic' | 'enhanced' | 'proactive',;
   }
 }
 export const caseWorkflowMachine = createMachine({
   id: 'caseWorkflow',
   types: {
-    context: { [key: string]: any } as CaseWorkflowContext,
-    events: { [key: string]: any } as
+    context: { [key,: strin,g]: any } as CaseWorkflowContext,
+    events: { [key,: strin,g]: any } as
       | { type: 'CREATE_CASE'; case_data: any }
       | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: any }
       | { type: 'START_ANALYSIS' }
@@ -54,19 +54,19 @@ export const caseWorkflowMachine = createMachine({
       completed_steps: 0,
       current_action: 'Ready to start'
     }
-    }); const settings = {
+    },); const settings = {
       auto_analyze: true
       notification_level: 'normal',
       ai_assistance_level: 'enhanced'
     }
   },
   initial: 'idle',
-  states: {
+  states,: {
     idle: {
       on: {
         CREATE_CASE: {
           target: 'creatingCase',
-          actions: assign({
+          actions,: assign({
             case_data: ({ event }) => event.case_data,
             current_step: 'creating_case',
             progress: ({ context }) => ({
@@ -100,9 +100,9 @@ export const caseWorkflowMachine = createMachine({
           );
           return { ...result, memory_context: memoryContext }
         }),
-        onDone: {
+        onDone,: {
           target: 'caseReady',
-          actions: assign({
+          actions,: assign({
             case_id: ({ event }) => event.output.case_id,
             memory_context: ({ event }) => event.output.memory_context,
             progress: ({ context }) => ({
@@ -114,7 +114,7 @@ export const caseWorkflowMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions,: assign({
             error_message: ({ event }) => `Failed to create case: ${event.error}`
           })
         }
@@ -124,10 +124,10 @@ export const caseWorkflowMachine = createMachine({
       entry: assign({
         current_step: 'case_ready'
       }),
-      on: {
+      on,: {
         UPLOAD_DOCUMENT: {
           target: 'uploadingDocument',
-          actions: assign({
+          actions,: assign({
             progress: ({ context }) => ({
               ...context.progress,
               current_action: 'Uploading document...'
@@ -136,7 +136,7 @@ export const caseWorkflowMachine = createMachine({
         },
         START_ANALYSIS: {
           target: 'analyzingCase',
-          guard: ({ context }) => context.documents.length > 0
+          guard,: ({ context }) => context.documents.length > 0
         },
         REQUEST_AI_ASSISTANCE: {
           target: 'providingAssistance'
@@ -177,9 +177,9 @@ export const caseWorkflowMachine = createMachine({
           });
           return result;
         }),
-        onDone: {
+        onDone,: {
           target: 'documentProcessing',
-          actions: assign({
+          actions,: assign({
             documents: ({ context, event }) => [
               ...context.documents,
               event.output.document
@@ -193,7 +193,7 @@ export const caseWorkflowMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions,: assign({
             error_message: ({ event }) => `Upload failed: ${event.error}`
           })
         }
@@ -230,7 +230,7 @@ export const caseWorkflowMachine = createMachine({
           }
           return { processed: true, auto_analysis: false }
         }),
-        onDone: [
+        onDone,: [
           {
             target: 'caseReady',
             guard: ({ event }) => !event.output.analysis,
@@ -252,9 +252,9 @@ export const caseWorkflowMachine = createMachine({
             })
           }
         ],
-        onError: {
+        onError,: {
           target: 'error',
-          actions: assign({
+          actions,: assign({
             error_message: ({ event }) => `Processing failed: ${event.error}`
           })
         }
@@ -268,7 +268,7 @@ export const caseWorkflowMachine = createMachine({
           current_action: 'Analyzing case and documents...'
         })
       }),
-      invoke: {
+      invoke,: {
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, documents } = input.context;
           // Comprehensive case analysis
@@ -292,15 +292,15 @@ export const caseWorkflowMachine = createMachine({
             user_id,);
             {
               type: 'analysis',
-              content: 'Comprehensive case analysis completed',
-              metadata: { analysis_id: analysis.id }
+              content,: 'Comprehensive case analysis completed',
+              metadata,: { analysis_id: analysis.id }
             }
           );
           return { analysis, recommendations }
         }),
         onDone: {
           target: 'reviewingRecommendations',
-          actions: assign({
+          actions,: assign({
             analysis_results: ({ context, event }) => [
               ...context.analysis_results,
               event.output.analysis
@@ -315,7 +315,7 @@ export const caseWorkflowMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions,: assign({
             error_message: ({ event }) => `Analysis failed: ${event.error}`
           })
         }
@@ -325,10 +325,10 @@ export const caseWorkflowMachine = createMachine({
       entry: assign({
         current_step: 'reviewing_recommendations'
       }),
-      on: {
+      on,: {
         ACCEPT_RECOMMENDATION: {
           target: 'executingRecommendation',
-          actions: assign({
+          actions,: assign({
             progress: ({ context }) => ({
               ...context.progress,
               current_action: 'Executing recommendation...'
@@ -346,7 +346,7 @@ export const caseWorkflowMachine = createMachine({
         },
         NEXT_STEP: {
           target: 'workflowComplete',
-          guard: ({ context }) => context.recommendations.every(r => r.status === 'completed')
+          guard,: ({ context }) => context.recommendations.every(r => r.status === 'completed')
         }
       }
     },
@@ -388,9 +388,9 @@ export const caseWorkflowMachine = createMachine({
           });
           return { recommendation_id, result }
         }),
-        onDone: {
+        onDone,: {
           target: 'reviewingRecommendations',
-          actions: assign({
+          actions,: assign({
             recommendations: ({ context, event }) =>
               context.recommendations.map(r =>
                 r.id === event.output.recommendation_id
@@ -406,7 +406,7 @@ export const caseWorkflowMachine = createMachine({
         },
         onError: {
           target: 'reviewingRecommendations',
-          actions: assign({
+          actions,: assign({
             recommendations: ({ context, event }) =>
               context.recommendations.map(r =>
                 r.id === (event as any).recommendation_id
@@ -439,9 +439,9 @@ export const caseWorkflowMachine = createMachine({
           });
           return assistance;
         }),
-        onDone: {
+        onDone,: {
           target: 'caseReady',
-          actions: assign({
+          actions,: assign({
             progress: ({ context }) => ({
               ...context.progress,
               current_action: 'AI assistance provided'
@@ -450,7 +450,7 @@ export const caseWorkflowMachine = createMachine({
         },
         onError: {
           target: 'caseReady',
-          actions: assign({
+          actions,: assign({
             error_message: ({ event }) => `AI assistance failed: ${event.error}`
           })
         }
@@ -458,7 +458,7 @@ export const caseWorkflowMachine = createMachine({
     },
     workflowComplete: {
       type: 'final',
-      entry: assign({
+      entry,: assign({
         current_step: 'complete',
         progress: ({ context }) => ({
           ...context.progress,
@@ -471,13 +471,13 @@ export const caseWorkflowMachine = createMachine({
       on: {
         RETRY: {
           target: 'idle',
-          actions: assign({
+          actions,: assign({
             error_message: undefined
           })
         },
         RESET: {
           target: 'idle',
-          actions: assign({
+          actions,: assign({
             case_id: undefined
             case_data: undefined
             documents: [],

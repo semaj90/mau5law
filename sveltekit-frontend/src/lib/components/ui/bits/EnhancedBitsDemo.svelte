@@ -1,14 +1,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  interface Props {
-    class?: string;
-  }
-  import { Button, Dialog, Select, Input, Card } from './index';
-  import type { SelectOption } from './index';
+  import { Button, Dialog, Input } from './index';
+  // Local SelectOption type (used by the demo data)
+  type SelectOption = {
+    value: string;
+    label: string;
+    description?: string;
+    category?: string;
+  };
   import { cn } from '$lib/utils/cn';
   import { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle } from 'lucide-svelte';
   // Demo state using Svelte 5 runes
   let selectedCaseType = $state('');
+  let selectedEvidenceCategory = $state('');
   let searchQuery = $state('');
   let dialogOpen = $state(false);
   let evidenceDialogOpen = $state(false);
@@ -96,6 +100,7 @@
     { id: 'cards', label: 'Evidence Cards', icon: Brain }
   ]);
 </script>
+
 <div class="yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="yorha-panel-header mb-6">
@@ -112,7 +117,7 @@
       {#each demoSections as section (section.id)}
         <button
           class={tabClasses(section.id)}
-          on:click={() => currentTab = section.id}
+          onclick={() => currentTab = section.id}
         >
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
@@ -142,7 +147,7 @@ Default Button
               <Button class="bits-btn" variant="primary">
 Primary Action
 </Button>
-              <Button class="bits-btn" variant="yorha" legal>
+              <Button class="bits-btn" variant="default">
 YoRHa Legal
 </Button>
               <Button class="bits-btn" variant="ghost">
@@ -154,16 +159,16 @@ Outline Style
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Legal AI Variants</h3>
             <div class="space-y-3">
-              <Button class="bits-btn" variant="crimson" confidence="high" legal>
+              <Button class="bits-btn" variant="crimson">
 Critical Evidence
 </Button>
-              <Button class="bits-btn" variant="gold" confidence="medium" legal>
+              <Button class="bits-btn" variant="gold">
 Case Analysis
 </Button>
-              <Button class="bits-btn" variant="primary" confidence="low" legal>
+              <Button class="bits-btn" variant="primary">
 Review Required
 </Button>
-              <Button class="bits-btn" variant="ghost" loading legal>
+              <Button class="bits-btn" variant="ghost" loading>
 Processing...
 </Button>
             </div>
@@ -172,17 +177,17 @@ Processing...
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Priority Actions</h3>
             <div class="space-y-3">
-              <Button class="bits-btn" priority="critical" legal>
+              <Button class="bits-btn" variant="destructive">
 <AlertTriangle class="w-4 h-4 mr-2" />
                 Critical Alert
 </Button>
-              <Button class="bits-btn" priority="high" variant="ghost">
+              <Button class="bits-btn" variant="ghost">
 High Priority
 </Button>
-              <Button class="bits-btn" priority="medium" variant="secondary">
+              <Button class="bits-btn" variant="secondary">
 Medium Priority
 </Button>
-              <Button class="bits-btn" priority="low" variant="ghost">
+              <Button class="bits-btn" variant="ghost">
 Low Priority
 </Button>
             </div>
@@ -272,13 +277,13 @@ Low Priority
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn" variant="yorha" legal on:click={() => dialogOpen = true}>
+          <Button class="bits-btn" variant="default" onclick={() => dialogOpen = true}>
             Case Management
 </Button>
-          <Button class="bits-btn" variant="primary" legal on:click={() => evidenceDialogOpen = true}>
+          <Button class="bits-btn" variant="primary" onclick={() => evidenceDialogOpen = true}>
             Evidence Upload
 </Button>
-          <Button class="bits-btn" variant="ghost" legal on:click={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="ghost" onclick={runAIAnalysis} loading={aiAnalysisLoading}>
 {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -287,8 +292,8 @@ Low Priority
 </Button>
         </div>
         <!-- Case Management Dialog -->
-        <Dialog bind:open={dialogOpen} size="lg" legal caseManagement>
-          <div>
+        <Dialog bind:open={dialogOpen} size="lg">
+          <div data-legal data-case-management>
             <div class="yorha-panel-header">
               <h2 class="text-xl font-gothic text-nier-text-primary">Case Management System</h2>
               <p class="text-nier-text-secondary mt-2">
@@ -297,21 +302,24 @@ Low Priority
             </div>
             <div class="yorha-panel-content space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select
-                  bind:value={selectedCaseType}
-                  options={caseTypes}
-                  placeholder="Select case type..."
-                  legal
-                  caseType
-                  label="Case Category"
-                />
-                <Input
-                  variant="legal"
-                  placeholder="Enter case title..."
-                  label="Case Title"
-                  required
-                  legal
-                />
+                <div data-legal data-case-type>
+                  <!-- Fallback native select (replaces missing Select component) -->
+                  <label for="case-category-select" class="block text-sm mb-2 text-nier-text-secondary">Case Category</label>
+                  <select id="case-category-select" bind:value={selectedCaseType} class="w-full rounded border px-3 py-2 bg-transparent text-nier-text-primary">
+                    <option value="" disabled>Select case type...</option>
+                    {#each caseTypes as opt}
+                      <option value={opt.value} title={opt.description}>{opt.label}</option>
+                    {/each}
+                  </select>
+                </div>
+                <div data-legal>
+                  <Input
+                    variant="legal"
+                    placeholder="Enter case title..."
+                    label="Case Title"
+                    required
+                  />
+                </div>
               </div>
               <div class="agent-nier-bits-card p-4">
                 <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
@@ -332,18 +340,19 @@ Low Priority
               </div>
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" on:click={() => dialogOpen = false}>
+              <Button class="bits-btn" variant="ghost" onclick={() => dialogOpen = false}>
                 Cancel
 </Button>
-              <Button class="bits-btn" variant="primary" legal>
+              <Button class="bits-btn" variant="primary">
 Create Case
 </Button>
             </div>
           </div>
         </Dialog>
+
         <!-- Evidence Upload Dialog -->
-        <Dialog bind:open={evidenceDialogOpen} size="md" legal evidenceAnalysis>
-          <div>
+        <Dialog bind:open={evidenceDialogOpen} size="md">
+          <div data-legal data-evidence-analysis>
             <div class="yorha-panel-header">
               <h2 class="text-xl font-gothic text-nier-text-primary">Evidence Upload</h2>
               <p class="text-nier-text-secondary mt-2">
@@ -351,13 +360,16 @@ Create Case
               </p>
             </div>
             <div class="yorha-panel-content space-y-4">
-              <Select
-                options={evidenceCategories}
-                placeholder="Select evidence category..."
-                legal
-                evidenceCategory
-                label="Evidence Type"
-              />
+              <div data-legal data-evidence-category>
+                <!-- Native select for evidence category -->
+                <label for="evidence-type-select" class="block text-sm mb-2 text-nier-text-secondary">Evidence Type</label>
+                <select id="evidence-type-select" bind:value={selectedEvidenceCategory} class="w-full rounded border px-3 py-2 bg-transparent text-nier-text-primary">
+                  <option value="" disabled>Select evidence category...</option>
+                  {#each evidenceCategories as opt}
+                    <option value={opt.value} title={opt.description}>{opt.label}</option>
+                  {/each}
+                </select>
+              </div>
               {#if evidenceUploadProgress > 0}
                 <div class="processing-bar">
                   <div
@@ -378,15 +390,16 @@ Create Case
               {/if}
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" on:click={() => evidenceDialogOpen = false}>
+              <Button class="bits-btn" variant="ghost" onclick={() => evidenceDialogOpen = false}>
                 Cancel
 </Button>
-              <Button class="bits-btn" variant="primary" legal on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+              <Button class="bits-btn" variant="primary" onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                 Upload Evidence
 </Button>
             </div>
           </div>
         </Dialog>
+
       </div>
     {:else if currentTab === 'cards'}
       <!-- Enhanced Cards Demo -->
@@ -397,12 +410,14 @@ Create Case
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {#each mockEvidenceItems as item (item.id)}
-            <div
-              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg"
-              class:ring-2={selectedEvidenceCard === item.id}
-              class:ring-nier-border-primary={selectedEvidenceCard === item.id}
-              on:click={() => selectEvidenceCard(item.id)}
-            >
+            <button
+               type="button"
+               class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg"
+               class:ring-2={selectedEvidenceCard === item.id}
+               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
+               aria-pressed={selectedEvidenceCard === item.id}
+              onclick={() => selectEvidenceCard(item.id)}
+             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
                   <h3 class="font-semibold text-nier-text-primary text-sm">
@@ -427,25 +442,25 @@ Create Case
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
                       <Button size="sm" variant="ghost" class="flex-1 bits-btn bits-btn">
-Review
-</Button>
+  Review
+  </Button>
                       <Button size="sm" variant="primary" class="flex-1 bits-btn bits-btn">
-Analyze
-</Button>
+  Analyze
+  </Button>
                     </div>
                   </div>
                 {/if}
               </div>
-            </div>
+            </button>
           {/each}
         </div>
         <!-- AI Analysis Card -->
         <div class="mt-6">
           <div
-            variant="default"
-            aiAnalysis
-            confidence="high"
-            size="lg"
+            data-variant="default"
+            data-ai-analysis
+            data-confidence="high"
+            data-size="lg"
             class="p-6 nes-container">
             <div class="space-y-4">
               <div class="flex items-center gap-3">
@@ -486,6 +501,7 @@ Generate Report
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .demo-content {

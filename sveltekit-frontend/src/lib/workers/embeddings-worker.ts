@@ -95,13 +95,13 @@ class EmbeddingsWorker {
       } catch (error) {
         console.warn(`⚠️ Failed to generate embedding for text: ${text.substring(0, 50)}...`);
         // Return zero vector on failure
-        results.push(new Float32Array(this.embeddingDim);
+        results.push(new Float32Array(this.embeddingDim),;
       }
     }
     return results;
   }
   async preprocessTextForVector(text: string): Promise<{,
-    cleanText: string;
+    cleanText,: string;
     tokens: string[];
     metadata: {
       originalLength: number;
@@ -110,7 +110,7 @@ class EmbeddingsWorker {
       hasSpecialChars: boolean;
     }
   }> {
-    if (!this.isInitialized || !this.wasmModule) {
+    if (!this,.isInitialized || !this.wasmModul,e) {
       throw new Error('WASM module not initialized');
     }
     try {

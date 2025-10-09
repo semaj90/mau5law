@@ -249,7 +249,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         { status: 500 },
       )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Multi-agent API error:", error)
     return json({ error: "Invalid request format" }, { status: 400 })
   }

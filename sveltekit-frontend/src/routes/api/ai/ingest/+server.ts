@@ -66,8 +66,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json()
       {
         error: "Document ingestion failed",
-        message: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString()
+        message,: error instanceof Error ? error.message: "Unknown error",
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

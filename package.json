@@ -55,14 +55,17 @@
     "drizzle-kit": "^0.31.5",
     "drizzle-orm": "^0.44.6",
     "fabric": "^6.7.1",
+    "ioredis": "^5.8.1",
     "lucia": "^3.2.2",
+    "minio": "^8.0.6",
     "neo4j-driver": "^5.28.2",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "playwright": "^1.55.0",
     "protobufjs": "^7.5.4",
     "redis": "^5.8.3",
-    "svelte": "^5.39.2"
+    "svelte": "^5.39.2",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@julr/unocss-preset-forms": "^2.0.0",

@@ -67,7 +67,7 @@ export const synthesisCache = pgTable('synthesis_cache', {
 // Initialize dynamic port allocation for all services
 async function initializeDynamicPorts() {
   const allocatedPorts = await portManager.initializeAllServices();
-  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries());
+  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries()),;
   return allocatedPorts;
 }
 // Helper function to get service port with fallback
@@ -110,15 +110,15 @@ const services = {
       process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5434).toString())
     ),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
-    user: process.env.POSTGRES_USER || 'legal_admin',
-    password: process.env.POSTGRES_PASSWORD || '123456'
+    user,: process.env.POSTGRES_USER || 'legal_admin',
+    password,: process.env.POSTGRES_PASSWORD || '123456'
   },
   // Redis Configuration with dynamic port
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString())),
+    port,: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString(),)),
     db: 0,
-    keyPrefix: 'legal-ai:'
+    keyPrefix,: 'legal-ai:'
   }
 }
 // ===== DATABASE CONNECTION =====
@@ -187,9 +187,9 @@ function calculateSimilarity(doc1: any, doc2: any): number {
   // Simple Jaccard similarity for demonstration
   const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
   const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
-  const words1 = new Set(text1.split(/\s+/);
-  const words2 = new Set(text2.split(/\s+/);
-  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
+  const words1 = new Set(text1.split(/\s+/),;
+  const words2 = new Set(text2.split(/\s+/),;
+  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)),;
   const union = new Set([...Array.from(words1), ...Array.from(words2)]);
   return intersection.size / union.size;
 }
@@ -276,7 +276,7 @@ const orchestrationMachine = createMachine({
     performance: {
       startTime: null
       endTime: null
-      stageTimings: { [key: string]: any }
+      stageTimings: { [key,: strin,g]: any }
     }
   },
   states: {
@@ -316,9 +316,9 @@ const orchestrationMachine = createMachine({
         analyzingQuery: {
           invoke: {
             src: 'analyzeWithLegalBERT',
-            onDone: {
+            onDone,: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis'
+              actions,: 'storeLegalBertAnalysis'
             },
             onError: 'fallbackAnalysis'
           }
@@ -326,25 +326,25 @@ const orchestrationMachine = createMachine({
         fallbackAnalysis: {
           invoke: {
             src: 'basicAnalysis',
-            onDone: 'generatingEmbeddings'
+            onDone,: 'generatingEmbeddings'
           }
         },
         generatingEmbeddings: {
           invoke: {
             src: 'generateNomicEmbeddings',
-            onDone: {
+            onDone,: {
               target: 'searchingKnowledgeBase',
-              actions: 'storeEmbeddings'
+              actions,: 'storeEmbeddings'
             }
           }
         },
         searchingKnowledgeBase: {
           type: 'parallel',
-          states: {
+          states,: {
             neo4jSearch: {
               invoke: {
                 src: 'searchNeo4j',
-                onDone: {
+                onDone,: {
                   actions: 'storeNeo4jResults'
                 }
               }
@@ -352,7 +352,7 @@ const orchestrationMachine = createMachine({
             pgVectorSearch: {
               invoke: {
                 src: 'searchPGVector',
-                onDone: {
+                onDone,: {
                   actions: 'storePGVectorResults'
                 }
               }
@@ -360,7 +360,7 @@ const orchestrationMachine = createMachine({
             enhancedRAGPipeline: {
               invoke: {
                 src: 'runEnhancedRAGPipeline',
-                onDone: {
+                onDone,: {
                   actions: 'storeRAGResults'
                 }
               }
@@ -368,7 +368,7 @@ const orchestrationMachine = createMachine({
             goLlamaPipeline: {
               invoke: {
                 src: 'runGoLlamaPipeline',
-                onDone: {
+                onDone,: {
                   actions: 'storeGoLlamaResponse'
                 }
               }
@@ -379,48 +379,48 @@ const orchestrationMachine = createMachine({
         rankingResults: {
           invoke: {
             src: 'rankWithCrossEncoder',
-            onDone: 'context7Enhancement'
+            onDone,: 'context7Enhancement'
           }
         },
         context7Enhancement: {
           invoke: {
             src: 'enhanceWithContext7',
-            onDone: 'generatingResponse'
+            onDone,: 'generatingResponse'
           }
         },
         generatingResponse: {
           invoke: {
             src: 'generateWithGemma3Legal',
-            onDone: {
+            onDone,: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse'
+              actions,: 'storeOllamaResponse'
             }
           }
         },
         synthesizing: {
           invoke: {
             src: 'performFinalSynthesis',
-            onDone: {
+            onDone,: {
               target: 'cachingResult',
-              actions: 'storeFinalSynthesis'
+              actions,: 'storeFinalSynthesis'
             }
           }
         },
         cachingResult: {
           invoke: {
             src: 'cacheResult',
-            onDone: 'complete'
+            onDone,: 'complete'
           }
         },
         complete: {
           type: 'final',
-          entry: 'recordEndTime'
+          entry,: 'recordEndTime'
         }
       }
     },
     error: {
       entry: 'logError',
-      on: {
+      on,: {
         RETRY: 'processing'
       }
     }
@@ -559,7 +559,7 @@ export class EnhancedAISynthesisOrchestrator {
             .select()
             .from(synthesisCache)
             .where(eq(synthesisCache.queryHash, cacheKey)
-            .limit(1);
+            .limit(1),;
           if (dbCache.length > 0) {
             logger.info('[Cache] Database hit');
             // Update hit count and last accessed
@@ -569,44 +569,44 @@ export class EnhancedAISynthesisOrchestrator {
                 hitCount: sql`${synthesisCache.hitCount} + 1`,
                 lastAccessed: new Date()
               })
-              .where(eq(synthesisCache.id, dbCache[0].id);
+              .where(eq(synthesisCache.id, dbCache[0].id),;
             // Store in Redis for next time
-            await (redis as any).setex(cacheKey, 3600, JSON.stringify(dbCache[0].result);
-            return { hit: true, data: dbCache[0].result }
+            await (redis, as, an,y).setex(cacheKey, 3600, JSON.stringify(dbCache[0].resu,lt);
+            return, { hit: true, data: dbCache[0].result }
           }
-          return { hit: false }
+          return, { hit: false }
         }),
-        analyzeWithLegalBERT: fromPromise(async ({ input }: { input: any }) => {
+        analyzeWithLegalBERT,: fromPromise(async ({ input }: { input: any }) => {
           return await legalBERT.analyzeLegalText(input.query);
         }),
-        basicAnalysis: fromPromise(async ({ input }: { input: any }) => {
+        basicAnalysis,: fromPromise(async ({ input }: { input: any }) => {
           return {
             entities: [],
             concepts: [],
             complexity: { legalComplexity: 0.5 }
           }
         }),
-        generateNomicEmbeddings: fromPromise(async ({ input }: { input: any }) => {
+        generateNomicEmbeddings,: fromPromise(async ({ input }: { input: any }) => {
           const embedding = await self.embeddings.embedQuery(input.query);
           logger.info('[Embeddings] Generated nomic-embed-text embedding');
           return embedding;
         }),
-        searchNeo4j: fromPromise(async ({ input }: { input: any }) => {
+        searchNeo4j,: fromPromise(async ({ input }: { input: any }) => {
           if (!self.neo4jStore) return [];
           const results = await self.neo4jStore.similaritySearch(input.query, 10);
           logger.info(`[Neo4j] Found ${results.length} documents`);
           return results;
         }),
-        searchPGVector: fromPromise(async ({ input }: { input: any }) => {
+        searchPGVector,: fromPromise(async ({ input }: { input: any }) => {
           if (!self.pgVectorStore) return [];
           const results = await self.pgVectorStore.similaritySearch(input.query, 10);
           logger.info(`[PGVector] Found ${results.length} documents`);
           return results.map((doc, index) => ({
             ...doc,
             score: 1.0 - index * 0.1
-          });
+          }),;
         }),
-        runEnhancedRAGPipeline: fromPromise(async ({ input }: { input: any }) => {
+        runEnhancedRAGPipeline,: fromPromise(async ({ input }: { input: any }) => {
           try {
             const response = await fetch(`${services.goMicroservice.enhancedRAG}/api/search`, {
               method: 'POST',
@@ -615,7 +615,7 @@ export class EnhancedAISynthesisOrchestrator {
                 query: input.query,
                 limit: 10,
                 useGPU: true
-                useSIMD: true;
+                useSIMD: true,;
                 embedding: input.embeddings || null
               })
             });
@@ -628,7 +628,7 @@ export class EnhancedAISynthesisOrchestrator {
             return [];
           }
         }),
-        runGoLlamaPipeline: fromPromise(async ({ input }: { input: any }) => {
+        runGoLlamaPipeline,: fromPromise(async ({ input }: { input: any }) => {
           try {
             const response = await fetch(`${services.goMicroservice.enhancedRAG}/api/generate`, {
               method: 'POST',
@@ -652,7 +652,7 @@ export class EnhancedAISynthesisOrchestrator {
           }
           return null;
         }),
-        rankWithCrossEncoder: fromPromise(async ({ input }: { input: any }) => {
+        rankWithCrossEncoder,: fromPromise(async ({ input }: { input: any }) => {
           // Get the current context from the machine
           const context = input;
           // Combine all results
@@ -681,7 +681,7 @@ export class EnhancedAISynthesisOrchestrator {
           logger.info(`[Cross-Encoder] Ranked ${diverseResults.length} results`);
           return diverseResults;
         }),
-        enhanceWithContext7: fromPromise(async ({ input }: { input: any }) => {
+        enhanceWithContext7,: fromPromise(async ({ input }: { input: any }) => {
           try {
             // Query Context7 MCP for relevant documentation
             const response = await fetch(`${services.context7}/api/query`, {
@@ -704,7 +704,7 @@ export class EnhancedAISynthesisOrchestrator {
           }
           return null;
         }),
-        generateWithGemma3Legal: fromPromise(async ({ input }: { input: any }) => {
+        generateWithGemma3Legal,: fromPromise(async ({ input }: { input: any }) => {
           const prompt = buildEnhancedPrompt(input);
           try {
             // Try GPU Orchestrator first for acceleration
@@ -712,7 +712,7 @@ export class EnhancedAISynthesisOrchestrator {
               `${services.goMicroservice.gpuOrchestrator}/api/generate`,);
               {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,: { 'Content-Type,': 'application/json' },
                 body: JSON.stringify({,
                   model: 'gemma3-legal:latest',
                   prompt,
@@ -741,7 +741,7 @@ export class EnhancedAISynthesisOrchestrator {
               stream: false
             })
           });
-          if (ollamaResponse.ok) {
+          if (ollamaResponse,.ok) {
             const result = await ollamaResponse.json();
             logger.info('[Ollama] Generated response with gemma3-legal:latest');
             return (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).response;
@@ -774,11 +774,11 @@ export class EnhancedAISynthesisOrchestrator {
           // })
           return result;
         }),
-        cacheResult: fromPromise(async ({ input }: { input: any }) => {
+        cacheResult,: fromPromise(async ({ input }: { input: any }) => {
           const cacheKey = generateCacheKey(input.query);
           const result = input.finalSynthesis;
           // Store in Redis
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result);
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result),;
           // Store in PostgreSQL
           await db.insert(synthesisCache).values({
             queryHash: cacheKey
@@ -798,7 +798,7 @@ export class EnhancedAISynthesisOrchestrator {
           if (!context.performance) context.performance = {}
           context.performance.startTime = Date.now();
         },
-        recordEndTime: ({ context }: { context: any }) => {
+        recordEndTime,: ({ context }: { context: any }) => {
           if (!context.performance) return;
           context.performance.endTime = Date.now();
           const start = context.performance.startTime || 0;
@@ -806,66 +806,66 @@ export class EnhancedAISynthesisOrchestrator {
           const duration = end - start;
           logger.info(`[Performance] Total processing time: ${duration}ms`);
         },
-        useCachedResult: ({ context, event }) => {
+        useCachedResult,: ({ context, event }) => {
           context.finalSynthesis = event.output?.data || event.data;
         },
-        storeLegalBertAnalysis: ({ context, event }) => {
+        storeLegalBertAnalysis,: ({ context, event }) => {
           (context as any).legalBertAnalysis = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.legalBert = Date.now();
         },
-        storeEmbeddings: ({ context, event }) => {
+        storeEmbeddings,: ({ context, event }) => {
           (context as any).embeddings = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.embeddings = Date.now();
         },
-        storeNeo4jResults: ({ context, event }) => {
+        storeNeo4jResults,: ({ context, event }) => {
           (context as any).neo4jResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.neo4j = Date.now();
         },
-        storePGVectorResults: ({ context, event }) => {
+        storePGVectorResults,: ({ context, event }) => {
           (context as any).pgVectorResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.pgvector = Date.now();
         },
-        storeRAGResults: ({ context, event }) => {
+        storeRAGResults,: ({ context, event }) => {
           (context as any).ragResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.rag = Date.now();
         },
-        storeGoLlamaResponse: ({ context, event }) => {
+        storeGoLlamaResponse,: ({ context, event }) => {
           (context as any).goLlamaResponse = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.goLlama = Date.now();
         },
-        storeOllamaResponse: ({ context, event }) => {
+        storeOllamaResponse,: ({ context, event }) => {
           (context as any).ollamaResponse = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.ollama = Date.now();
         },
-        storeFinalSynthesis: ({ context, event }) => {
+        storeFinalSynthesis,: ({ context, event }) => {
           (context as any).finalSynthesis = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
             (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.synthesis = Date.now();
         },
-        logError: ({ context, event }) => {
+        logError,: ({ context, event }) => {
           logger.error('[Orchestrator] Error:', event.error || event.data);
         }
       },
@@ -883,7 +883,7 @@ export class EnhancedAISynthesisOrchestrator {
     });
     this.service.start();
   }
-  private async ensureModels() {
+  private async ensureModels(), {
     try {
       // Check and create gemma3-legal:latest
       await this.ensureGemma3LegalModel();
@@ -904,7 +904,7 @@ export class EnhancedAISynthesisOrchestrator {
           (m: any) =>
             m?.name === 'gemma3-legal:latest' ||
             (m?.name?.includes('gemma') && m?.name?.includes('legal')
-        );
+        ),;
       if (!hasGemma3Legal) {
         logger.info('[Models] Creating gemma3-legal:latest...');
         const modelfile = `
@@ -982,7 +982,7 @@ TEMPLATE """{{ if .System }}<|system|>
       logger.error('[Models] Failed to ensure nomic-embed-text:', error);
     }
   }
-  private async testServiceConnectivity() {
+  private async testServiceConnectivity(), {
     const serviceTests = [
       { name: 'PostgreSQL', test: () => pgConnection`SELECT 1` },
       {
@@ -1010,11 +1010,11 @@ TEMPLATE """{{ if .System }}<|system|>
       }
     }
   }
-  private generateCacheKey(query: string): string {
+  private generateCacheKey(query,: string,): string {
     const crypto = require('crypto');
     return crypto.createHash('sha256').update(query).digest('hex');
   }
-  private applyMMR(documents: any[], lambda: number = 0.7): unknown[] {
+  private applyMMR(documents,: any[], lambd,a: number = 0.,7): unknown,[] {
     if (documents.length <= 1) return documents;
     const selected = [documents[0]];
     const remaining = documents.slice(1);
@@ -1048,19 +1048,19 @@ TEMPLATE """{{ if .System }}<|system|>
     }
     return selected;
   }
-  private calculateSimilarity(doc1: any, doc2: any): number {
+  private calculateSimilarity(doc1,: any, doc,2: an,y): number {
     // Simple Jaccard similarity for demonstration
     const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
     const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
-    const words1 = new Set(text1.split(/\s+/);
-    const words2 = new Set(text2.split(/\s+/);
-    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
+    const words1 = new Set(text1.split(/\s+/),;
+    const words2 = new Set(text2.split(/\s+/),;
+    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)),;
     const union = new Set([...Array.from(words1), ...Array.from(words2)]);
     return intersection.size / union.size;
   }
   // ===== PUBLIC API =====
-  async process(query: string, options?: { [key: string]: any }): Promise<any> {
-    if (!this.initialized) {
+  async process(query,: string, options?: { [ke,y: stri,ng]: any, }): Promise<any> {
+    if (!this,.initialize,d) {
       await this.initialize();
     }
     logger.info(`[Orchestrator] Processing query: "${query}"`);
@@ -1072,7 +1072,7 @@ TEMPLATE """{{ if .System }}<|system|>
           performance: {
             startTime: Date.now(),
             endTime: null
-            stageTimings: { [key: string]: any }
+            stageTimings: { [key,: strin,g]: any }
           }
         }
       });
@@ -1085,7 +1085,7 @@ TEMPLATE """{{ if .System }}<|system|>
             db.insert(autoSolveResults);
               .values({
                 query,
-                solution: result;
+                solution: result,;
                 confidence: result?.confidence_score
                   ? Math.round((result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).confidence_score * 100)
                   : null
@@ -1093,24 +1093,24 @@ TEMPLATE """{{ if .System }}<|system|>
                 serviceUsed: 'enhanced-orchestrator',
                 success: true
               })
-              .execute();
+              .execute(),;
             resolve(result);
-          } else if (snapshot.status === 'error') {
-            reject(new Error('Processing failed');
+          }, else if (snapshot.status === 'error') {
+            reject(new Error('Processing failed'),;
           }
         },
-        error: reject
+        error,: reject
       });
       service.start();
       service.send({ type: 'START' });
     });
   }
   async processWithStreaming(
-    query: string
-    options?: { [key: string]: any }
-  ): Promise<AsyncGenerator<any> {
-    const self = this;
-    async function* streamResults() {
+    query,: string
+    options?: { [key,: strin,g]: any }
+  ),: Promise<AsyncGenerator<any> {
+    const, self = thi,s;
+    async function,* streamResults(), {
       let isComplete = false;
       const events: any[] = [];
       const service = createActor(self.machine, {
@@ -1138,12 +1138,12 @@ TEMPLATE """{{ if .System }}<|system|>
         if (events.length > 0) {
           yield events.shift();
         }
-        await new Promise((resolve) => setTimeout(resolve, 100);
+        await new Promise((resolve) => setTimeout(resolve, 100),;
       }
     }
     return streamResults();
   }
-  private calculateProgress(state: any): number {
+  private calculateProgress(state,: any,): number {
     const stages = {
       idle: 0,
       initializing: 5,
@@ -1163,8 +1163,8 @@ TEMPLATE """{{ if .System }}<|system|>
     return (stages as any)[stateString as any] || 0;
   }
   // Health check
-  async health(): Promise<any> {
-    return {
+  async health(),: Promise<any> {
+    return, {
       status: this.initialized ? 'healthy' : 'initializing',
       services: {
         postgres: await this.checkPostgres(),
@@ -1178,35 +1178,35 @@ TEMPLATE """{{ if .System }}<|system|>
       }
     }
   }
-  private async checkPostgres(): Promise<boolean> {
-    try {
-      await pgConnection`SELECT 1`;
-      return true;
-    } catch {
+  private async checkPostgres(),: Promise<boolean> {
+    try, {
+      await, pgConnectio,n`SELECT, 1`;
+      return, tru,e;
+    }, catch {
       return false;
     }
   }
-  private async checkRedis(): Promise<boolean> {
-    try {
-      await (redis as any).set('health-check', 'ok', 'EX', 1);
-      return true;
-    } catch {
-      return false;
+  private async checkRedis(),: Promise<boolean> {
+    try, {
+      await (redis, as, an,y).set('health-check', 'ok', 'EX', 1);
+      return, tru,e;
+    }, catch, {
+      return, fals,e;
     }
   }
-  private async checkOllama(): Promise<boolean> {
-    try {
+  private async checkOllama(),: Promise<boolean> {
+    try, {
       // removed unused response assignment
-      return (response as { ok?: any; json?: any }).ok;
-    } catch {
+      return (response, as, {, ok?:, any; json?:, any, }).ok;
+    }, catch {
       return false;
     }
   }
-  private async checkService(url: string): Promise<boolean> {
-    try {
+  private async checkService(url,: string,): Promise<boolean> {
+    try, {
       // removed unused response assignment
-      return (response as { ok?: any; json?: any }).ok;
-    } catch {
+      return (response, as, {, ok?:, any; json?:, any, }).ok;
+    }, catch {
       return false;
     }
   }

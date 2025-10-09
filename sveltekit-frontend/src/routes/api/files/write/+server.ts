@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('File write error:', error)
     return json()
-      { error: 'Failed to write file', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to write file', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }

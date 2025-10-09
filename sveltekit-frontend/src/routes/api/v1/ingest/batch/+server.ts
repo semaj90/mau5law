@@ -95,9 +95,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         return json()
           {
             error: `Batch ingest service error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status} - ${errorText}`,
-            service: 'ingest-service',
-            port: '8227',
-            batch_size: requestData.documents.length
+            service,: 'ingest-service',
+            port,: '8227',
+            batch_size,: requestData.documents.length
           },
           { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status }
         )
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
       throw fetchError
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     const processingTime = Date.now() - startTime
     console.error('Batch ingest API error:', error)
     return json({

@@ -89,8 +89,8 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           caseId,
           userId,
-          processingType: 'full_analysis',
-          priority: 5
+          processingType,: 'full_analysis',
+          priority,: 5
         }
       )
       const jobPublished = await rabbitMQService.publishDocumentProcessingJob(processingJob)
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingStatus: 'queued',
         jobQueueStatus: jobPublished ? 'published' : 'failed'
       }, { status: 202 })
-    } catch (uploadError) {
+    }, catch (uploadError) {
       console.error('Upload service error:', uploadError)
       // Update document status to failed
       await db.update(documents)
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentId
       }, { status: 500 })
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Document upload error:', error)
     return json({
       error: 'Internal server error',

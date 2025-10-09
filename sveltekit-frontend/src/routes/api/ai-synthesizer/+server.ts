@@ -237,13 +237,13 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
   }
   // Default GET returns health
   // Construct a minimal fake event for GET handler
-  return GET({ url, request: new Request(url), params: { [key: string]: any } } as any)
+  return GET({ url, request: new Request(url), params: { [key,: strin,g]: any } } as any)
 }
 // Helper function for streaming requests
 async function processStreamingRequest(
   streamId: string
   query: string
-  context: any;
+  context: any,;
   options: any
 ): Promise<void> {
   try {

@@ -4,9 +4,9 @@
  */
 export function createEventListener<T extends keyof HTMLElementEventMap>(
   element: HTMLElement
-  event: T;
+  event: T,;
   handler: (_event: HTMLElementEventMap[T]) => void,
-  options?: AddEventListenerOptions;
+  options?: AddEventListenerOptions,;
 ) {
   element.addEventListener(event, handler, options);
   return () => {
@@ -28,7 +28,7 @@ export function createTimeout(callback: () => void, delay: number) {
 export function createWebSocket(url: string, protocols?: string | string[]) {
   const ws = new WebSocket(url, protocols);
   return {
-    socket: ws;
+    socket: ws,;
     cleanup: () => {
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
@@ -37,8 +37,8 @@ export function createWebSocket(url: string, protocols?: string | string[]) {
   }
 }
 export function createResizeObserver(
-  callback: ResizeObserverCallback;
-  element: Element;
+  callback: ResizeObserverCallback,;
+  element: Element,;
 ) {
   const observer = new ResizeObserver(callback);
   observer.observe(element);
@@ -47,9 +47,9 @@ export function createResizeObserver(
   }
 }
 export function createIntersectionObserver(
-  callback: IntersectionObserverCallback;
+  callback: IntersectionObserverCallback,;
   element: Element
-  options?: IntersectionObserverInit;
+  options?: IntersectionObserverInit,;
 ) {
   const observer = new IntersectionObserver(callback, options);
   observer.observe(element);

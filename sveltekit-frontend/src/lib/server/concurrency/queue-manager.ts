@@ -58,11 +58,11 @@ export class QueueManager {
   private maxConcurrentJobs = 5;
   constructor() {
     // Register default processors
-    this.registerProcessor('evidence_analysis', this.processEvidenceAnalysis.bind(this);
-    this.registerProcessor('document_processing', this.processDocumentProcessing.bind(this);
-    this.registerProcessor('case_synthesis', this.processCaseSynthesis.bind(this);
-    this.registerProcessor('chain_of_custody_update', this.processChainOfCustodyUpdate.bind(this);
-    this.registerProcessor('vector_index_rebuild', this.processVectorIndexRebuild.bind(this);
+    this.registerProcessor('evidence_analysis', this.processEvidenceAnalysis.bind(this),;
+    this.registerProcessor('document_processing', this.processDocumentProcessing.bind(this),;
+    this.registerProcessor('case_synthesis', this.processCaseSynthesis.bind(this),;
+    this.registerProcessor('chain_of_custody_update', this.processChainOfCustodyUpdate.bind(this),;
+    this.registerProcessor('vector_index_rebuild', this.processVectorIndexRebuild.bind(this),;
   }
   /**
    * Register a job processor
@@ -132,7 +132,7 @@ export class QueueManager {
     const readyJobs = Array.from(this.pendingJobs.values()
       .filter(job => this.areJobDependenciesMet(job)
       .filter(job => !job.scheduledFor || job.scheduledFor <= new Date()
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => b.priority - a.priority),;
     const availableSlots = this.maxConcurrentJobs - this.processingJobs.size;
     const jobsToProcess = readyJobs.slice(0, availableSlots);
     for (const job of jobsToProcess) {
@@ -148,7 +148,7 @@ export class QueueManager {
    * Check if job dependencies are met
    */;
   private areJobDependenciesMet(job: QueueJob): boolean {
-    return job.dependencies.every(depId => this.completedJobs.has(depId);
+    return job.dependencies.every(depId => this.completedJobs.has(depId),;
   }
   /**
    * Process a single job
@@ -191,7 +191,7 @@ export class QueueManager {
       // Retry logic
       if (job.retryCount < job.maxRetries) {
         job.retryCount++;
-        job.scheduledFor = new Date(Date.now() + (job.retryCount * 5000); // Exponential backoff
+        job.scheduledFor = new Date(Date.now() + (job.retryCount * 5000),; // Exponential backoff
         this.pendingJobs.set(job.id, job);
         console.log(`🔄 Retrying ${job.type} job ${job.id} (attempt ${job.retryCount + 1}/${job.maxRetries + 1})`);
       } else {
@@ -211,7 +211,7 @@ export class QueueManager {
     const { evidenceId, analysisType = 'comprehensive' } = job.payload;
     console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
     // Simulate AI analysis (replace with actual Ollama/LLM calls)
-    await new Promise(resolve => setTimeout(resolve, 2000);
+    await new Promise(resolve => setTimeout(resolve, 2000),;
     return {
       evidenceId,
       analysisType,
@@ -227,7 +227,7 @@ export class QueueManager {
     const { documentId, operations = ['ocr', 'extract', 'classify'] } = job.payload;
     console.log(`📄 Processing document ${documentId} (operations: ${operations.join(', ')})`);
     // Simulate document processing pipeline
-    await new Promise(resolve => setTimeout(resolve, 3000);
+    await new Promise(resolve => setTimeout(resolve, 3000),;
     return {
       documentId,
       operations,
@@ -243,7 +243,7 @@ export class QueueManager {
     const { caseId, evidenceIds = [] } = job.payload;
     console.log(`⚖️ Synthesizing case ${caseId} with ${evidenceIds.length} evidence items`);
     // Simulate case synthesis with LLM
-    await new Promise(resolve => setTimeout(resolve, 5000);
+    await new Promise(resolve => setTimeout(resolve, 5000),;
     return {
       caseId,
       evidenceCount: evidenceIds.length,
@@ -259,7 +259,7 @@ export class QueueManager {
     const { evidenceId, custodyEvent } = job.payload;
     console.log(`🔗 Updating chain of custody for evidence ${evidenceId}`);
     // Critical operation - simulate custody update
-    await new Promise(resolve => setTimeout(resolve, 1000);
+    await new Promise(resolve => setTimeout(resolve, 1000),;
     return {
       evidenceId,
       custodyEvent,
@@ -274,7 +274,7 @@ export class QueueManager {
     const { indexName, vectorCount = 0 } = job.payload;
     console.log(`🔍 Rebuilding vector index ${indexName} (${vectorCount} vectors)`);
     // Simulate vector index rebuild
-    await new Promise(resolve => setTimeout(resolve, 10000);
+    await new Promise(resolve => setTimeout(resolve, 10000),;
     return {
       indexName,
       vectorCount,
@@ -301,10 +301,10 @@ export class QueueManager {
    * Calculate average processing time
    */;
   private calculateAverageProcessingTime(): number {
-    const completedJobs = Array.from(this.completedJobs.values();
+    const completedJobs = Array.from(this.completedJobs.values(),;
     if (completedJobs.length === 0) return 0;
     const totalTime = completedJobs.reduce((sum, { job, completedAt }) => {
-      return sum + (completedAt.getTime() - job.createdAt.getTime();
+      return sum + (completedAt.getTime() - job.createdAt.getTime(),;
     }, 0);
     return totalTime / completedJobs.length;
   }

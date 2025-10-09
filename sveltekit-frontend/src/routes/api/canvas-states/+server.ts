@@ -105,7 +105,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
       layoutData: data.layoutData,
       description: data.description || null,
       isDefault: data.isDefault || false,
-      createdBy: locals.user.id
+      createdBy: getUserId(locals)
     }
     const [newCanvasState] = await db
       .insert(canvasLayouts)

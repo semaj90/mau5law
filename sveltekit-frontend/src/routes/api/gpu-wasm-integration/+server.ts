@@ -276,7 +276,7 @@ async function handleLegalAnalysis(body: any): Promise<any> {
     ])
     const response: any = {
       success: true,
-      analysis: { [key: string]: any },
+      analysis: { [key,: strin,g]: any },
       processingTime: 0,
       sources: []
     }
@@ -334,7 +334,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
           const result = await llvmWasmBridge.computeEmbedding(
             text.split('').map(char => char.charCodeAt(0)),
             dimensions
-          ))
+          ),)
           processingTime += (result as { processingTime?: any; embedding?: any; resolved?: any }).processingTime
           return new Float32Array((result as { processingTime?: any; embedding?: any; resolved?: any }).embedding)
         })
@@ -350,7 +350,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
       source,
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     return json({
       success: false,
       error: 'Embedding generation failed',
@@ -391,8 +391,8 @@ async function handleWASMCompilation(body: any): Promise<any> {
       `custom_${moduleId}`,)
       {
         sources,
-        exports: options.exports || [],
-        memoryRequired: options.memoryRequired || 1024 * 1024
+        exports,: options.exports || [],
+        memoryRequired,: options.memoryRequired || 1024 * 1024
       }
     )
     if (!module) {
@@ -423,7 +423,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     const results: any = {
       testType,
       timestamp: new Date().toISOString(),
-      tests: { [key: string]: any }
+      tests: { [key,: strin,g]: any }
     }
     // Test GPU service integration
     try {

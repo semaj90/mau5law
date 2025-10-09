@@ -4,7 +4,6 @@
 // - After embedding, upsert to Qdrant and log to todo log/DB as needed
 // - Add error handling and logging for all embedding operations
 // - See qdrant-service.ts for vector DB integration
-}
 export interface DocumentChunk {
   id: string;
   text: string;
@@ -21,7 +20,7 @@ export interface EmbeddingResult {
 export class NomicEmbeddingsService {
   /**
    * Embed text using Nomic embeddings
-   */;
+   */
   async embed(text: string): Promise<EmbeddingResult> {
     // PRODUCTION: Call Ollama or Nomic API for real embeddings
     try {
@@ -30,21 +29,21 @@ export class NomicEmbeddingsService {
       const embedding = this.generateMockEmbedding(text);
       return {
         embedding,
-        model: "nomic-embed-text-v1",
+        model: 'nomic-embed-text-v1',
         metadata: {
-          timestamp: new Date().toISOString()
-        }
-      }
+          timestamp: new Date().toISOString(),
+        },
+      };
     } catch (error: any) {
       // Fallback to mock embedding if real API fails
-      console.warn("Falling back to mock embedding:", error);
+      console.warn('Falling back to mock embedding:', error);
       return {
         embedding: new Array(768).fill(0).map(() => Math.random()),
-        model: "nomic-embed-text-v1",
+        model: 'nomic-embed-text-v1',
         metadata: {
-          timestamp: new Date().toISOString()
-        }
-      }
+          timestamp: new Date().toISOString(),
+        },
+      };
     }
   }
   private generateMockEmbedding(text: string): number[] {
@@ -56,7 +55,7 @@ export class NomicEmbeddingsService {
     }
     for (let i = 0; i < 768; i++) {
       // Create pseudo-random values based on text hash and position
-      hash = ((hash * 9301) + 49297) % 233280;
+      hash = (hash * 9301 + 49297) % 233280;
       embedding[i] = (hash / 233280) * 2 - 1; // Normalize to [-1, 1]
     }
     return embedding;
@@ -64,40 +63,38 @@ export class NomicEmbeddingsService {
   /**
    * Embed and upsert a document to Qdrant for audit/agent pipeline
    * Usage: await nomicEmbeddings.embedAndUpsert(doc)
-   */;
-  async embedAndUpsert(_document: DocumentChunk): Promise<EmbeddingResult> {
+   */
+  async embedAndUpsert(document: DocumentChunk): Promise<EmbeddingResult> {
     const embeddingResult = await this.embed(document.text);
     try {
       // Upsert to Qdrant for semantic search
-      const { qdrantService } = await import("./qdrant-service");
-      await qdrantService.upsertPoints([);
+      const { qdrantService } = await import('./qdrant-service');
+      await qdrantService.upsertPoints([
         {
           id: document.id,
           vector: embeddingResult.embedding,
           payload: {
             documentId: document.metadata?.documentId || `doc_${Date.now()}`,
-            filename: document.metadata?.filename || "unknown",
-            documentType: document.metadata?.documentType || "text",
-            uploadedBy: document.metadata?.uploadedBy || "system",
-            uploadedAt:
-              document.metadata?.uploadedAt || new Date().toISOString(),
-            processingStatus:
-              document.metadata?.processingStatus || "processed",
+            filename: document.metadata?.filename || 'unknown',
+            documentType: document.metadata?.documentType || 'text',
+            uploadedBy: document.metadata?.uploadedBy || 'system',
+            uploadedAt: document.metadata?.uploadedAt || new Date().toISOString(),
+            processingStatus: document.metadata?.processingStatus || 'processed',
             text: document.text,
-            embeddingModel: embeddingResult?.model || "unknown",
+            embeddingModel: embeddingResult?.model || 'unknown',
             embeddingTimestamp: embeddingResult.metadata?.timestamp,
             fileMetadata: {
               size: document.metadata?.size || 0,
-              mimeType: document.metadata?.mimeType || "text/plain",
+              mimeType: document.metadata?.mimeType || 'text/plain',
               pageCount: document.metadata?.pageCount,
               wordCount: document.metadata?.wordCount,
-              language: document.metadata?.language
-            }
-          }
-        }
+              language: document.metadata?.language,
+            },
+          },
+        },
       ]);
     } catch (error: any) {
-      console.warn("Failed to upsert to Qdrant:", error);
+      console.warn('Failed to upsert to Qdrant:', error);
     }
     // TODO: Log upsert to phase10-todo.log or DB
     // TODO: Optionally trigger agent action after upsert

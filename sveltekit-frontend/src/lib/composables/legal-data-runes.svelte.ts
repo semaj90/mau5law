@@ -51,8 +51,8 @@ export function useLegalCase(initialCaseId?: string) {
   let hasCurrentCase = $derived(currentCase !== null);
   let currentCaseStatus = $derived(currentCase?.status || null);
   let currentCasePriority = $derived(currentCase?.priority || null);
-  let activeCases = $derived(cases.filter(c => c.status === 'active');
-  let urgentCases = $derived(cases.filter(c => c.priority === 'urgent');
+  let activeCases = $derived(cases.filter(c => c.status === 'active'),;
+  let urgentCases = $derived(cases.filter(c => c.priority === 'urgent'),;
   let casesCount = $derived(cases.length);
   // Case status summary
   let statusSummary = $derived(() => {
@@ -163,7 +163,7 @@ export function useEvidence(caseId?: string) {
   let currentEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let uploadProgress = $state<Map<string, number>(new Map();
+  let uploadProgress = $state<Map<string, number>(new Map(),;
   // Derived values
   let evidenceCount = $derived(evidence.length);
   let hasCurrentEvidence = $derived(currentEvidence !== null);
@@ -209,7 +209,7 @@ export function useEvidence(caseId?: string) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId);
-      formData.append('metadata', JSON.stringify(metadata);
+      formData.append('metadata', JSON.stringify(metadata),;
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
         body: formData
@@ -298,7 +298,7 @@ export function usePersonsOfInterest() {
     return byType;
   });
   // Active persons
-  let activePersons = $derived(persons.filter(p => p.status === 'active');
+  let activePersons = $derived(persons.filter(p => p.status === 'active'),;
   async function loadPersons(): Promise<void> {
     isLoading = true;
     error = null;

@@ -64,7 +64,7 @@ export class CacheService {
     }
   }
   async cacheCase(caseId: string, caseData: any, ttl = 3600) {
-    await (this.redis as any).setex(`case:${caseId}`, ttl, JSON.stringify(caseData);
+    await (this.redis as any).setex(`case:${caseId}`, ttl, JSON.stringify(caseData),;
   }
   async getCachedCase(caseId: string) {
     const cached = await this.redis.get(`case:${caseId}`);

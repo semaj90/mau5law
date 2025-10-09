@@ -151,7 +151,7 @@ export class AIAssistantStore {
     // Semantic search through history for relevant context
     const searchResults = await this.searchConversationHistory(query);
     const relevantMessages = searchResults
-      .filter(item => item.score) && (result as { score?: any; item?: any }).score < 0.5) // Lower score = better match in Fuse.js
+      .filter(item => item.score) && (result as { score?: any; item?: any }).score < 0.5,) // Lower score = better match in Fuse.js
       .slice(0, 5)
       .map(result => (result as { score?: any; item?: any }).item);
     // Combine and deduplicate
@@ -163,8 +163,8 @@ export class AIAssistantStore {
     this.contextCache.set(cacheKey, contextMessages);
     // Cleanup old cache entries
     if (this.contextCache.size > 100) {
-      const keys = Array.from(this.contextCache.keys();
-      keys.slice(0, 50).forEach(key => this.contextCache.delete(key);
+      const keys = Array.from(this.contextCache.keys(),;
+      keys.slice(0, 50).forEach(key => this.contextCache.delete(key),;
     }
     return contextMessages;
   }
@@ -276,7 +276,7 @@ export class AIAssistantStore {
     // Persist to localStorage
     if (this.config.persistHistory) {
       try {
-        localStorage.setItem('ai-assistant-messages', JSON.stringify(this.messages);
+        localStorage.setItem('ai-assistant-messages', JSON.stringify(this.messages),;
       } catch (error) {
         console.error('Error persisting messages:', error);
       }
@@ -331,11 +331,11 @@ export class AIAssistantStore {
    * Calculate backend score for selection algorithm
    */
   private calculateBackendScore(
-    backend: Backend;
+    backend: Backend,;
     complexity: string
     hasLegalContext: boolean
     requiresSpeed: boolean
-    healthScore: number;
+    healthScore: number,;
   ): number {
     let score = healthScore * 0.4; // Base health score (40% weight)
     // Complexity scoring
@@ -359,12 +359,12 @@ export class AIAssistantStore {
     // Latency penalty
     const latencyPenalty = Math.min(this.backendLatency[backend] / 5000, 0.3); // Max 30% penalty for 5s+ latency
     score -= latencyPenalty;
-    return Math.max(0, Math.min(1, score); // Normalize to 0-1
+    return Math.max(0, Math.min(1, score),; // Normalize to 0-1
   }
   /**
    * Get health scores for all backends
    */;
-  private async getBackendHealthScores(): Promise<Record<Backend, number> {
+  private async getBackendHealthScores(): Promise<Record<Backend, number>, {
     try {
       const healthResponse = await fetch('/api/ai/health');
       const healthData = await healthResponse.json();

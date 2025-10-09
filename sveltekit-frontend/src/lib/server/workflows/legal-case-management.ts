@@ -44,48 +44,48 @@ export interface LegalCaseContext {
 }
 export type LegalCaseEvent =;
   | {
-      type: 'CREATE_CASE';
-      title: string;
-      description: string;
-      caseType: string;
-      jurisdiction: string;
-      createdBy: string;
+      type: 'CREATE_CASE',;
+      title: string,;
+      description: string,;
+      caseType: string,;
+      jurisdiction: string,;
+      createdBy: string,;
     }
   | {
-      type: 'ADD_EVIDENCE';
-      evidenceId: string;
-      description: string;
-      evidenceType: string;
-      source: string;
+      type: 'ADD_EVIDENCE',;
+      evidenceId: string,;
+      description: string,;
+      evidenceType: string,;
+      source: string,;
     }
   | {
-      type: 'ADD_PERSON_OF_INTEREST';
-      personId: string;
-      name: string;
-      role: string;
-      relationship: string;
+      type: 'ADD_PERSON_OF_INTEREST',;
+      personId: string,;
+      name: string,;
+      role: string,;
+      relationship: string,;
     }
   | {
-      type: 'ADD_TIMELINE_EVENT';
-      date: string;
-      event: string;
-      description: string;
-      category: string;
+      type: 'ADD_TIMELINE_EVENT',;
+      date: string,;
+      event: string,;
+      description: string,;
+      category: string,;
     }
-  | { type: 'UPDATE_ANALYSIS'; analysis: any }
-  | { type: 'SET_DEADLINE'; date: string; description: string; deadlineType: string }
-  | { type: 'ASSIGN_LAWYER'; lawyerId: string; name: string }
-  | { type: 'UPDATE_STATUS'; status: string }
-  | { type: 'UPDATE_PRIORITY'; priority: string }
-  | { type: 'COMPLETE_DEADLINE'; deadlineId: string }
+  | { type: 'UPDATE_ANALYSIS',; analysis: any }
+  | { type: 'SET_DEADLINE',; date: strin,g; description: stri,ng; deadlineType: string }
+  | { type: 'ASSIGN_LAWYER',; lawyerId: strin,g; name: string }
+  | { type: 'UPDATE_STATUS',; status: string }
+  | { type: 'UPDATE_PRIORITY',; priority: string }
+  | { type: 'COMPLETE_DEADLINE',; deadlineId: string }
   | { type: 'GENERATE_REPORT' }
   | { type: 'ARCHIVE_CASE' }
   | { type: 'ESCALATE' }
-  | { type: 'NOTIFY_STAKEHOLDERS'; message: string; recipients: string[] }
+  | { type: 'NOTIFY_STAKEHOLDERS',; message: strin,g; recipients: string[] }
   | { type: 'CALCULATE_RISKS' }
-  | { type: 'PROGRESS_UPDATE'; progress: number }
+  | { type: 'PROGRESS_UPDATE',; progress: number }
   | { type: 'VALIDATION_COMPLETE' }
-  | { type: 'VALIDATION_FAILED'; errors: string[] }
+  | { type: 'VALIDATION_FAILED',; errors: string[] }
 // Case management actors
 const caseValidationActor = fromPromise(async ({
     input
@@ -119,7 +119,7 @@ const caseValidationActor = fromPromise(async ({
       errors.push('A case with a similar title may already exist');
     }
     if (errors.length > 0) {
-      throw new Error(errors.join('; ');
+      throw new Error(errors.join('; '),;
     }
     console.log(`✅ Case validation complete: ${title}`);
     return { valid: true }
@@ -243,7 +243,7 @@ const stakeholderNotificationActor = fromPromise(async ({
       type: notificationType
       sentAt: new Date().toISOString(),
       status: 'sent'
-    });
+    }),;
     // Store notifications
     await cache.set(`notifications:case:${caseId}`, notifications, 86400); // 24h TTL
     console.log(`✅ Notifications sent successfully`);
@@ -288,8 +288,8 @@ export const legalCaseManagementMachine = createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOlwGIB5AFQBUBJAEQCEBlRgNTYG0AFAB1VgC6w+JYhxAAPRAFoATAA4ALA1EA2OgCYAzEarqFAGhCsQmqgGZNAVgAcmjXW1UAvp-NosuAlQkFNQ03HyCIuJSSipKGs4a6iEaWs72SFoKmhqa2lQs-u5eASBBoeEUGITklHS0DEwc3Lz8giJiElK5eaZK5kYK2iq2tsp0mqqe3n4BwaEARCEAJnMzFNFxiclpmYLZ+UVSyVKl5RpVOAq+tna22k5IpjguNhreWs5an6+BwaQhE3NEzAmwIJFKFWqXzSCCqxVU6hcVAMGgsVjolCJJQAnj5-IFgmEIlFVtENHQqNjdE4HK53NiArJQoNfEhBmAoghkOEOFMqDAANYAUQAkmQ6KFvgCgcCKaCyNDYQjvC44SiUVZMdkjEK1LqNPq9K4zHQKjYnAqNg5Kq5tO4NM0sW1HqNeoMaEJfmJgkJWRyBYChWFYhsRFtdvtxXLScoGpD-mqHq5PWq6ppXN0KnRdH7tOq2vpKhc3N4CIEEJheACYcjUZz0fCMVEq95a+L5eT6S3m01NObdDo9DbUOqKycdJ0Sk4zYPPQ1vfHfeLAzHgmRKJaxxKJzz41G7ixp7OqOEezQNKm0xpc5cXrcbC0Pf6VT6a0FdbHfaGKb0KYhimN6JrePa9gex7jpQo6BM2L6VmKx42hOxIajYcHPrqOqevqXDULWFQftmJoakqaiuCWg4GGo8FmN+M7rlgQ7FuawZNrObaNFgY6BnQCGGEhHgOPY6ygdcBjmOutr6BcFGjLWlQrIR8EkXC5FQBh8E9kBkKOCBIDfEgKAaKxhFQapOGMSUu7oZUeI4jijqQp4mg6oEcQnHQdB0LQKnqYJQlliJ9YAIo4BAtCwMAtAYApymqepml0MAygQCVZU6UhrAAHL+YFbZBZZqK2F2LlImWJEWIYWqBfUpQlMEaFuK45TBHKCinGU5QGqURhmOUCWvmlCKVLBj7VlgrJmNQ2h0OliXKcNqkAEIqYFs2xYFwX8lOREuF4yVvK4aotY6RhGQcZjlOF+hMdcNZXO0vUQP5WKIjNc3IEgp0Oelh0rcdKW3VJJTxM6T2aN9Njao4zjah5JWblcxgKm9p0fbdS1rQgG0qQBSF7cdC7HY9zP8Sx9geR4nifZcmj+Kx+b-aYXzPVc1qKucgOQ4JfnVHQdDLrQqP3Y9UMOFjK0lPY3ynKdGiQ2tOO49J7EbEgaxrMj4uo-YNrWJoKqM+Y6gHHQuMPSTr2Q9TdO04g6mabLVN0zTdOoBzWlfLzeO87zNzM3aOMOPK4slK9Ug2kTvMy9gKAAOKKMpmn6apBnG5p21yxJ0NM1jYTfQzjOMNKZhmOrjOE4cUXfWFCuQ5tz1q0t5uk3tFOJdTO0SRTLG0+x-28-z-gXHz0uQ+LQeuxAy3BdJl7q7zxPnE4pQQxoMWlFcUduPYTuOy9CWGxALsYJpBv53nm2E8Xq1l5TTv83KdZfN9o5aqQEElrLvCrJgddFjvDZiCZKgJkpjGNJzN02oT7nyjjrFOacpR3TTlfYUMUvQ6gAvoMEJgdB2mfLyBmxQtgNUyq1du6s1T93VpXDOLdHrKmcFFOgb9K7YMOKuQ4Bc6BcI4Tw9mZNFjHC3C0ZmeRbT3HYfddhmgTiywIjIjOYcQEaJ7gnb8ZZmyJ0fK1E4KhTCXFwf7E4lpbTX0XEFNwaVtTm28ZJfxrZAzQlEWTUefCLZJyTnmJwhhQpHD5CxWKn9f7aKdHKLYWoBHaLZG-TROgLSKNbN0exJNhGahHJcYJvNjFD1OPTcJmgsrHy8YYqJPjYlJ3ickzaSS2G4NXJY9cJRQnrjCSlSKpiHDXGCEElpbTHHtNIQzLpkYeluOaZtEpZSKk3yqcUxcZwEpHDYZUqK3dJzBFfqpCo3h+RbOWT5GOjtzZbI2bLWpnTGF5NeYEyWzyqleI8dLLpPj4rZLJLkopJhYqjWyvYHUdB3kRPBc0-5Nw7nqhCE4k4DdwRBBCOFZmcLIVcuhdnWFvzh4BKxbLROdoZ7YrnmYOetLHAksnjUG4VwOYGGsOqbwKoHZ5RzpzA+fzZbYvuTTNMCUWUKwCv4lOL84o7hShYM43MFaogdPyfYCr4E5tVT49VQS7lMoSWvK4qU8r5QMJgykZjLSxRoXc8eQyQSQpeVIyepbPaKu1QQXVD9PkqpCDnI1Jqb4pQ9Ey31Xq-VmDaT6bpIazAzD+qnEOJqTa1t9gKKTaq9tQaI06u9Xqg+sbmQdHJBzDSUa-nxrOfG3RiaE2grZuafQNozgDwfncdh2ayZzG2Hkemm4e0mCTrm2cBbe0lvHUWy2FaSZVrLQ8txVomT8g0HDfYWwbTbGMQ0OYKpiAMqPG3GqSSb2NrveU5mVSLZdKhYkMJMtJzlIAIzCkzBR6IgaIAuKdKJlPqfU2nOL6xOWDmFc+gIqVQoLmFC4qhokHGsK3E4e6z4qs2LfHW9TJVPvUl+kJJQ3CfGCnccKgQIps0NCYw9xhrVPv9S+q9xV8nVJ8tVJgPy-xUkCtWIjY7QM+yLlOmV9w6RNXpJy4k3LKNgZgwagGkaM5wJVT7W1Kq7VqoHhq2j0bXVce40GV+I5rAyg7V6n1fqA0QaE-B1Z4iLBCzOEYCwlQUHhCJj4Jw0YSU8Y40HMlFb42ELpSx5kKH7kGCJF6IKBIIpggrU57N1MJwS2lEYBjxgWZVNs6YJw5QLLNcadmXPJd81G7TtHQOXD3b8cK-MrTHvpIl6zBKEm9pS6zY9XL7RMDjgytKUUQgsziB5kIfNyS8e3jySdFoQjnBOKyI3eSr7mvK-ZlBaX6sFea+YNr6wj06lM8N0bOm+b5H7E4O+fWuafm8KqOZfCQKjVBSNJgrbtW9f1+Dk8NHj0tIyJtK8LB8xivmqKcz-NrCXl6eCCrVYxZdQtmbHqivsz+kFMKo2CqTcnb+JKjhpvbuPfqRUhKyRkgdh9vJrbpsAa7a7NbXRsrcwVKnHQgJzH5UFLyNBQJX0NHrT9hdwqgdrZizG7lkqKoqgpJYUwGS8gbGyq9hxj2Vu5YZI7aXcRYqyC2Pca4lpEduGQ0YhTR5-V5G-gDqPKnJj1xWzTGTAVgfRZyjFBjjsYfBGqLqbvjKHg45nTZAaI4k3lhSOTh7MmhOUKw7GkJdDM4pGZSJdcqkONLPVTyWOC-TJJzFIf5VtDsaE-ZF8TrzEYBNnfrJOL5VGHtyj8wvHKUJ9bI9TBOZzAGl2OegLgEyBxMC8M7gDlJALwfgjQWXuzSHWVuxcAAAJz6xGKg+i-0K0+x9EwzZF7VnAqmKi7T5G5AvCghoAOEMKLJhEOO7M+L7M4Y42nQ2NjW4FyS0U0f6Z+DYfUNUFyVfVUJwayLA2xazf6FrJxW3fLQTTdUpPdH9ArdmWqFhYJOuSTJ9fYG0NbE4CfI+LbHKa4NIJ+T6BUQIwdEaXgzKbQCJOhJuDmAjLhBXOqe3VwMqFYcKCcAKcKIIj3TnInLjfQhUKOJwnHQHD5Y2KdSGUnCKXbLbCAuwRaC6dRAIj3PZYKMZDma4FKWgkIqDdqHGY4f7BUOe5lQ5Kna5eqYaJmBYNGIdQeE7Q3Hja5fbe5R5Z5Kef5VwAFRfIFZfcwlQ+8W3EwsKJJYI67e-OjZjHlF2M1HLNmfySzJmXuO+P6KwbqJwKrFjTqdA-Zb7bWQHPLcvKqGzeqEFG4OqKKZwLKcZUpCgxNAYYoLaduJFGdYIgGNKYzIrGOcrMYiqSqU5HkEYs8O4nKBFSqNoS4m8Z6I-Dg71FhNlAJJqVEqXBqPKGcBERKO4xpZKQInE4I3qAaTXfnIJRwYJZHVbeAuxPYiY2jKYmOHqGON+OkGjVzPuZmBVWOKqQKfUdZVKFzC5eeNGGzOebOe0vE4w2gsjBQaOIwVbNKHPDOXEgzU4sUyjPkJiQ-D2KudQhgw2Zzew0xSzFhOY7IkIIzGOYhSqUY7jXvfmOKKjYJK9RE8I3dJhFhFhN+dhFrMef7OqOE8hVlJKfY+UyIn1VE7zHaRYjqDaaBCLGzWzYhTnN4nkqYmqYPYIlKWzfGMZMpfzZhYxKpDE+7ZaIKDaeuQ4q4rODjJhFhXpFo54+LPGPKCKPEqqJeT6GU3qJzHjG9Ok+Ex0po0kykipSk6klcwrOkwTRk4I5kx-S0vbN4iJRrWvGzYZGZbsReFedwNhD4PnGZWdUYzjGrScLkzqLKUeK4qrTNe5KfRrBuOYMqT9Xovbbko5Aqe6BqTmeqLQTGNU5wXaKwf7UqVzYaU04CKOCwU7Aa7k3-aQwTUYLOWEhxJUlKFhfbLvG-FhHkqDMqfGBeLwT7NabrFGHQ46A8YdEaJU3Zc9TEscxtQEjkq4FUmTdUpzEhGZOcPafbFjWOI8qY4TGTHvYdTYLqTjFKR4q+VwZaVhFmJyF+S8kqYKCKPKJzGWXuQEwJR+RwOYh1e4iErNJFHjO7JYVqe+UE7-HIxhNUnWUKJZRFJJCEztFJfJcE2YvqKqfzcqXrKqHnO5UKJOYIhYjjUaTnOc+8i7JcywvaXjaIwtcpDGLU5wKdVhOsNQMYRc8dWnPqMKC4i6LjCKC4VzFvNGZVYJKzMU4K1WEzUqErGdQ4hKKpSKNzbaJU3hB9BI0ZAzU9NK31TmQzGdcJM0xLVcsLMYFGcZC5WOJc5eZyJuVwKyYeNJJeRUv6X8lYG8n5ac6-A8gZFE-o9EnUy0jOcK2cIIy7HVUeHvBcn8vcw8nqY8rjXPZeOKCCqSGC+s8JFCpC4mM0jjG8mZSJXYi3F6Uk6tKLYK2cYfSaYzVKNzOHMEqCpEkzF6VaLQ-raKJwX0n8h8p8xqJ+KOdhdkIzLVOdUC7S5KXjBKUzC8kqcnK8t8zaVhSYhKRYvGFrNzXzXOWqOY5zfchUHqNhWO9GNK9QXyfnHyzCgJT6hYL5M3G8jKd4ZJLGGdK9WJCwqJJa7bLhJcnqX8pjGcv7DjLjbKJPWONUkK2aOlWzQ4zOaYpwhKWWOckqkAA */
   id: 'legalCaseManagement',
   types: {
-    context: { [key: string]: any } as LegalCaseContext,
-    events: { [key: string]: any } as LegalCaseEvent
+    context: { [key,: strin,g]: any } as LegalCaseContext,
+    events: { [key,: strin,g]: any } as LegalCaseEvent
   },
   context: {
     caseId: '',
@@ -607,7 +607,7 @@ export const legalCaseManagementMachine = createMachine({
                 index.toString()) === event.deadlineId ? { ...deadline, completed: true } : deadline
               ),
             lastModified: () => Date.now()
-          })
+          },)
         },
         UPDATE_STATUS: [
           {
@@ -636,9 +636,9 @@ export const legalCaseManagementMachine = createMachine({
             })
           }
         ],
-        ESCALATE: {
+        ESCALATE,: {
           target: 'escalated',
-          actions: assign({
+          actions,: assign({
             priority: 'urgent',
             notifications: ({ context }) => [
               ...context.notifications,
@@ -663,7 +663,7 @@ export const legalCaseManagementMachine = createMachine({
       invoke: {
         src: stakeholderNotificationActor
         id: 'notificationActor',
-        input: ({ context, event }) => ({
+        input,: ({ context, event }) => ({
           caseId: context.caseId,
           message: (event as any).message,
           recipients: (event as any).recipients,
@@ -673,7 +673,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         NOTIFICATION_COMPLETE: {
           target: 'active',
-          actions: assign({
+          actions,: assign({
             notifications: ({ context, event }) => [
               ...context.notifications,
               ...((event as any).output?.notifications?.map(
@@ -684,7 +684,7 @@ export const legalCaseManagementMachine = createMachine({
         },
         NOTIFICATION_ERROR: {
           target: 'active',
-          actions: assign({
+          actions,: assign({
             errors: ({ context, event }) => [
               ...context.errors,
               `Notification failed: ${event.error?.message || 'Unknown error'}`
@@ -697,7 +697,7 @@ export const legalCaseManagementMachine = createMachine({
       entry: assign({
         workflowStage: 'proceedings'
       }),
-      on: {
+      on,: {
         UPDATE_STATUS: [
           {
             target: 'active',
@@ -716,7 +716,7 @@ export const legalCaseManagementMachine = createMachine({
             })
           }
         ],
-        GENERATE_REPORT: {
+        GENERATE_REPORT,: {
           target: 'generatingReport'
         }
       }
@@ -724,9 +724,9 @@ export const legalCaseManagementMachine = createMachine({
     generatingReport: {
       // Report generation logic would go here
       after: {
-        2000: {
+        2000,: {
           target: 'underReview',
-          actions: assign({
+          actions,: assign({
             documents: ({ context }) => [
               ...context.documents,
               `case_report_${context.caseId}_${Date.now()}`
@@ -740,7 +740,7 @@ export const legalCaseManagementMachine = createMachine({
         priority: 'urgent',
         workflowStage: 'proceedings'
       }),
-      on: {
+      on,: {
         UPDATE_STATUS: [
           {
             target: 'active',
@@ -767,10 +767,10 @@ export const legalCaseManagementMachine = createMachine({
         workflowStage: 'closure',
         progress: 100
       }),
-      on: {
+      on,: {
         ARCHIVE_CASE: {
           target: 'archived',
-          actions: assign({
+          actions,: assign({
             status: 'archived'
           })
         }
@@ -778,7 +778,7 @@ export const legalCaseManagementMachine = createMachine({
     },
     archived: {
       type: 'final',
-      entry: assign({
+      entry,: assign({
         status: 'archived'
       })
     },
@@ -786,7 +786,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({
+          actions,: assign({
             title: ({ event }) => event.title,
             description: ({ event }) => event.description,
             caseType: ({ event }) => event.caseType as any,
@@ -802,7 +802,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({
+          actions,: assign({
             errors: []
           })
         }

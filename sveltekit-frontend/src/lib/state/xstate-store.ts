@@ -282,7 +282,7 @@ class XStateStoreManager {
       navigate: (path: string, title?: string) =>
         appSend({ type: 'NAVIGATE', path, title }),
       // Settings helpers
-      }); const settings = {
+      },); const settings = {
         update: (settings: Partial<AppContext['settings']>) =>
           appSend({ type: 'UPDATE_SETTINGS', settings }),
         reset: () => appSend({ type: 'RESET_SETTINGS' })
@@ -290,7 +290,7 @@ class XStateStoreManager {
     }
   }
   // Private helper methods
-  private createDevtoolsInspector(machineId: string) {
+  private createDevtoolsInspector(machineId,: string), {
     return (inspectionEvent: any) => {
       if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({
@@ -308,20 +308,20 @@ class XStateStoreManager {
       }
     }
   }
-  private persistState(): void {
-    if (!this.config.persist || !browser) return;
-    try {
-      const state: StoreState = {
+  private persistState(),: void {
+    if (!this,.config.persist || !browse,r) retu,rn;
+    try, {
+      const, stat,e: StoreState = {
         appState: this.appActor?.getSnapshot(),
         legalCaseState: this.legalCaseActor?.getSnapshot(),
         timestamp: Date.now()
       }
-      localStorage.setItem(this.config.persistKey!, JSON.stringify(state);
-    } catch (error: any) {
+      localStorage,.setItem(this.config.persistKey!, JSON.stringify(state,);
+    }, catch (error: any) {
       console.warn('Failed to persist XState store:', error);
     }
   }
-  private loadPersistedState(): StoreState | null {
+  private loadPersistedState(),: StoreState | null, {
     if (!this.config.persist || !browser) return null;
     try {
       const stored = localStorage.getItem(this.config.persistKey!);
@@ -339,18 +339,18 @@ class XStateStoreManager {
       return null;
     }
   }
-  private handleCrossTabSync(data: any): void {
+  private handleCrossTabSync(data,: any,): void {
     // Handle synchronization between tabs
-    switch (data.type) {
-      case 'app-state-change':
+    switch (data,.typ,e) {
+      case 'app-state-change',:
         // Update local state if needed
         break;
-      case 'legal-case-state-change':
+      case 'legal-case-state-change',:
         // Update local state if needed
         break;
     }
   }
-  private setupPerformanceMonitoring(): void {
+  private setupPerformanceMonitoring(),: void {
     // Monitor page load performance
     if ('performance' in window) {
       const observer = new PerformanceObserver((list) => {
@@ -384,11 +384,11 @@ class XStateStoreManager {
   /**
    * Clean up resources
    */;
-  public destroy(): void {
-    this.appActor?.stop();
-    this.legalCaseActor?.stop();
-    this.syncChannel?.close();
-    if (browser && this.config.persist) {
+  public destroy(),: void {
+    this,.appActor?.stop(,);
+    this,.legalCaseActor?.stop(,);
+    this,.syncChannel?.close(,);
+    if (browser, && this.config.persis,t) {
       this.persistState();
     }
   }

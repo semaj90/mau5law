@@ -63,7 +63,7 @@ export class QdrantApiWrapper {
         {
           collection: collectionName
           vectorSize: config.vectors?.size,
-          distance: config.vectors?.distance
+          distance,: config.vectors?.distance
         }
       );
       return response;
@@ -144,7 +144,7 @@ export class QdrantApiWrapper {
           component: 'QdrantApiWrapper',
           service: 'qdrant'
         },)
-        { collection: collectionName, pointCount: options.points.length }
+        { collection: collectionName, pointCount,: options.points.length }
       );
       throw error;
     }
@@ -172,7 +172,7 @@ export class QdrantApiWrapper {
         {
           collection: collectionName
           resultsCount: response.length,
-          scoreThreshold: options.score_threshold
+          scoreThreshold,: options.score_threshold
         }
       );
       return response;
@@ -241,7 +241,7 @@ export class QdrantApiWrapper {
           component: 'QdrantApiWrapper',
           service: 'qdrant'
         },)
-        { collection: collectionName, ids: options.ids }
+        { collection: collectionName, ids,: options.ids }
       );
       throw error;
     }
@@ -311,7 +311,7 @@ export class QdrantApiWrapper {
           component: 'QdrantApiWrapper',
           service: 'qdrant'
         },)
-        { collection: collectionName, field: fieldName }
+        { collection: collectionName, field,: fieldName }
       );
       throw error;
     }

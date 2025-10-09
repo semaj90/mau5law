@@ -151,11 +151,11 @@ Respond in JSON format with the following structure:
         analysisModel: model
         analysisType,
         chainOfCustody: [{,
-          timestamp: new Date().toISOString(),
-          actor: session.userId,
-          action: 'uploaded_and_analyzed',
-          details: `Analyzed with ${model} at ${analysisResult.confidence * 100}% confidence`
-        }]
+          timestamp,: new Date().toISOString(),
+          actor,: session.userId,
+          action,: 'uploaded_and_analyzed',
+          details,: `Analyzed with ${model} at ${analysisResult.confidence * 100}% confidence`
+        },]
       }
     })
     // Generate and store vector embeddings for semantic search
@@ -202,7 +202,7 @@ Respond in JSON format with the following structure:
       tags: analysisResult.suggestedTags,
       confidence: analysisResult.confidence
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Legal document analysis error:', error)
     return json({ error: 'Analysis failed' }, { status: 500 })
   }

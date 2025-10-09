@@ -56,13 +56,15 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'digital', label: 'Digital', icon: Archive },
   ];
   // Detective mode configuration
-  let detectiveConfig = {
-    enableSuspiciousPatternDetection: true
-    enableCrossReferenceAnalysis: true
-    enableEntityMapping: true
-    enableTimelineAnalysis: true
-    confidenceThreshold: 7,
-  }
+  // make detectiveConfig reactive using Svelte 5 runes so bind:checked works on nested props
+  let detectiveConfig = $state({
+    enableSuspiciousPatternDetection: true,
+    enableCrossReferenceAnalysis: true,
+    enableEntityMapping: true,
+    enableTimelineAnalysis: true,
+    // use a 0..1 confidence scale (adjust if your code expects 0..100)
+    confidenceThreshold: 0.7
+  });
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
   let networkLayout: unknown = {}
@@ -82,19 +84,18 @@ https://svelte.dev/e/js_parse_error -->
   async function loadEvidence() {
     try {
       const caseData = await caseManagementService.getCaseById(caseId, {
-        includeEvidence: true
-        includeTimeline: true
+        includeEvidence: true,
+        includeTimeline: true,
       });
       if (caseData?.evidence) {
-        evidenceItems = caseData.evidenc;
+        evidenceItems = caseData.evidence;
       }
     } catch (error) {
       console.error('Failed to load evidence:', error);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Evidence service unavailable, using mock data';
-      notice.style.cssText = 'position: fixed;
-d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Provide mock evidence data
@@ -107,11 +108,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           fileName: 'mock_contract.pdf',
           fileSize: 245760,
           mimeType: 'application/pdf',
-          analyzed: true;
+          analyzed: true,
           confidence: 0.85,
           tags: ['contract', 'legal', 'mock'],
-          mockData: true
-          uploadedAt: new Date(Date.now() - 86400000).toISOString();
+          mockData: true,
+          uploadedAt: new Date(Date.now() - 86400000).toISOString(),
         },
         {
           id: 'mock-evidence-2',
@@ -121,35 +122,37 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           fileName: 'mock_email.eml',
           fileSize: 32768,
           mimeType: 'message/rfc822',
-          analyzed: false;
+          analyzed: false,
           confidence: 0.72,
           tags: ['email', 'communication', 'mock'],
-          mockData: true
-          uploadedAt: new Date(Date.now() - 172800000).toISOString();
+          mockData: true,
+          uploadedAt: new Date(Date.now() - 172800000).toISOString(),
         }
       ];
     }
   }
+
   // Load detective insights if in detective mode with fallbacks
   async function loadDetectiveInsights() {
     try {
       loadingAnalysis = true;
       const insights = await caseManagementService.generateDetectiveInsights(caseId);
-      detectiveInsights = insight;
+      detectiveInsights = insights;
       // Build connection map for network view
       buildConnectionMap(insights);
     } catch (error) {
       console.error('Failed to load detective insights:', error);
       // Provide mock detective insights as fallback
       detectiveInsights = {
-        mockData: true
+        mockData: true,
         confidence: 0.78,
         suspiciousPatterns: [
           {
             type: 'time_anomaly',
             description: 'Mock suspicious pattern: Unusual timing in document creation',
             severity: 'medium',
-            evidence: ['mock-evidence-1'];
+            evidence: ['mock-evidence-1'],
+            confidence: 0.72
           }
         ],
         entityConnections: [
@@ -157,7 +160,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             source: 'mock-evidence-1',
             target: 'mock-evidence-2',
             confidence: 0.85,
-            relationship: 'references';
+            relationship: 'references'
           }
         ],
         crossReferences: [
@@ -165,7 +168,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             sourceEvidence: 'mock-evidence-1',
             targetEvidence: 'mock-evidence-2',
             relevance: 0.75,
-            type: 'temporal';
+            type: 'temporal'
           }
         ],
         timeline: {
@@ -173,17 +176,18 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             {
               timestamp: new Date(Date.now() - 86400000).toISOString(),
               evidenceId: 'mock-evidence-1',
-              description: 'Mock contract document created';
+              description: 'Mock contract document created'
             }
           ]
         }
-      }
+      };
       // Build connection map for mock data
       buildConnectionMap(detectiveInsights);
     } finally {
       loadingAnalysis = false;
     }
   }
+
   // Build connection map for network visualization
   function buildConnectionMap(insights: any) {
     const connections: any[] = [];
@@ -207,7 +211,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         label: ref.type,
       });
     });
-    connectionMap = connection;
+    connectionMap = connections;
   }
   // Initialize canvas for network view
   function initializeCanvas() {
@@ -220,19 +224,22 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     }
   }
   // Derived evidence list filtered by search and type
-  let filteredEvidence = $derived(evidenceItems.filter((evidence: any) => {
-    const query = searchQuery?.toLowerCase() || '';
-    const matchesSearch =
-      !query ||
-      evidence.title?.toLowerCase().includes(query) ||
-      evidence.description?.toLowerCase().includes(query) ||
-      evidence.evidenceNumber?.toLowerCase().includes(query);
-    const matchesType = filterType === 'all' || evidence.evidenceType === filterTyp;
-    return matchesSearch && matchesTyp;
-  }));
+  let filteredEvidence = $derived(() => {
+    return (Array.isArray(evidenceItems) ? evidenceItems : []).filter((evidence: any) => {
+      const query = (searchQuery || '').toLowerCase();
+      const matchesSearch =
+        !query ||
+        (evidence.title?.toLowerCase?.().includes(query)) ||
+        (evidence.description?.toLowerCase?.().includes(query)) ||
+        (String(evidence.evidenceNumber || '').toLowerCase().includes(query));
+      const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
+      return matchesSearch && matchesType;
+    });
+  });
+
   // Toggle detective mode
   async function toggleDetectiveMode() {
-    detectiveMode = !detectiveMod;
+    detectiveMode = !detectiveMode;
     if (detectiveMode) {
       await caseManagementService.enableDetectiveMode(caseId, detectiveConfig);
       await loadDetectiveInsights();
@@ -268,14 +275,14 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     });
   }
   // Handle drag and drop for evidence connections
-  function handleDragStart(_event: DragEvent, evidenceId: string) {
-    if (!event.dataTransfer) return;
+  function handleDragStart(evt: DragEvent, evidenceId: string) {
+    if (!evt.dataTransfer) return;
     draggedEvidence = evidenceId;
-    event.dataTransfer.setData('text/plain', evidenceId);
-    event.dataTransfer.effectAllowed = 'link';
+    evt.dataTransfer.setData('text/plain', evidenceId);
+    evt.dataTransfer.effectAllowed = 'link';
   }
-  function handleDrop(_event: DragEvent, targetEvidenceId: string) {
-    event.preventDefault();
+  function handleDrop(evt: DragEvent, targetEvidenceId: string) {
+    evt.preventDefault();
     if (draggedEvidence && draggedEvidence !== targetEvidenceId) {
       createEvidenceConnection(draggedEvidence, targetEvidenceId);
     }
@@ -286,11 +293,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     try {
       console.log(`Creating connection: ${sourceId} -> ${targetId}`);
       connectionMap.update((connections: unknown[]) => [
-        ...connections,
+        ...(Array.isArray(connections) ? connections : []),
         {
           type: 'manual',
-          source: sourceId
-          target: targetId
+          source: sourceId,
+          target: targetId,
           strength: 1.0,
           label: 'User Created',
         }
@@ -303,10 +310,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   function getEvidenceIcon(type: string) {
     switch (type) {
       case 'document': return FileText;
-      case 'photo': return Imag;
+      case 'photo': return Image;
       case 'video': return Video;
       case 'audio': return Music;
-      case 'digital': return Archiv;
+      case 'digital': return Archive;
       default: return FileText;
     }
   }
@@ -345,27 +352,29 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     ctx.stroke();
     ctx.setLineDash([]);
   }
-  function drawEvidenceNode(evidence: unknown, index: number) {
+  function drawEvidenceNode(evidence: any, index: number) {
     if (!ctx) return;
     const x = 50 + (index % 8) * 100;
     const y = 50 + Math.floor(index / 8) * 100;
     // Draw node circle
     ctx.beginPath();
     ctx.arc(x, y, 20, 0, 2 * Math.PI);
-    ctx.fillStyle = evidence.analyzed ? '#10b981' : '#6b7280';
+    ctx.fillStyle = (evidence?.analyzed) ? '#10b981' : '#6b7280';
     ctx.fill();
-    // Draw evidence type indicator
+    // Draw evidence type indicator (use first character of title as placeholder)
     ctx.fillStyle = '#ffffff';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText.toUpperCase(), x, y + 4);
+    const label = String(evidence?.title || '').charAt(0).toUpperCase();
+    ctx.fillText(label, x, y + 4);
   }
   // Reactive updates for network view
-  // Reactive: re-render when network view is active and canvas is ready
-  $effect(() => { if (viewMode === 'network' && canvas) {
-    // slight delay to ensure canvas size is bound
-    setTimeout(() => renderNetworkView(), 0), });
-  }
+  $effect(() => {
+    if (viewMode === 'network' && canvas) {
+      // slight delay to ensure canvas size is bound
+      setTimeout(() => renderNetworkView(), 0);
+    }
+  });
 </script>
 
 <!-- Evidence Board UI -->
@@ -734,9 +743,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     display: flex;
     align-items: center;
     color: #64748b;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
-  .view-btn: hover
+  .view-btn:hover {
+    /* optional hover styles if needed */
+  }
   .view-btn.active {
     background: white;
     color: #3b82f6;
@@ -752,9 +763,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
-  .detective-toggle: hover {
+  .detective-toggle:hover {
     border-color: #3b82f6;
     color: #3b82f6;
   }
@@ -774,9 +785,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    transition: background 0.2;
+    transition: background 0.2s;
   }
-  .analyze-btn:hover:not(:disabled) {,
+  .analyze-btn:hover:not(:disabled) {
     background: #2563eb;
   }
   .analyze-btn:disabled {
@@ -790,9 +801,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 0.5rem;
     cursor: pointer;
     color: #64748b;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
-  .filter-toggle: hover
+  .filter-toggle:hover {
+    /* optional hover styles */
+  }
   .filter-toggle.active {
     border-color: #3b82f6;
     color: #3b82f6;
@@ -881,8 +894,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .evidence-display {
     flex: 1;
     padding: 1.5rem;
-    overflow: aut;
-o;
+    overflow: auto;
   }
   .evidence-grid {
     display: grid;
@@ -1032,7 +1044,7 @@ o;
     position: relative;
     height: 600px;
   }
-  .network-canv.network-legend {
+  .network-legend {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -1073,8 +1085,8 @@ o;
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   /* Responsive design */
   @media (max-width: 768px) {

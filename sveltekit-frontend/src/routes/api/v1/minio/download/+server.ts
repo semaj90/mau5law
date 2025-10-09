@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
     headers.set('Content-Type', fileData.contentType || 'application/octet-stream')
     headers.set('Content-Disposition', `attachment; filename="${fileData.originalName || fileName}"`)
     headers.set('Content-Length', fileData.size.toString()
-    headers.set('Cache-Control', 'private, max-age=3600'); // Cache for 1 hour
+    headers.set('Cache-Control', 'private, max-age=3600'),; // Cache for 1 hour
     return new Response(fileData.buffer, {
       status: 200,
       headers

@@ -3,9 +3,9 @@ import { WebSocketServer } from "ws";
 import type { IncomingMessage } from "http";
 import type { Socket } from "net";  // Store active connections per case
 import { URL } from "url";
-const caseConnections = new Map<string, Set<any>();
+const caseConnections = new Map<string, Set,<any>();
 // Mock active users per case
-const activeUsers = new Map<string, Set<any>();
+const activeUsers = new Map<string, Set,<any>();
 export function setupWebSocketServer(server: any) {
   const wss = new WebSocketServer({ server });
   wss.on("connection", (ws: any, req: IncomingMessage) => {
@@ -19,7 +19,7 @@ export function setupWebSocketServer(server: any) {
     }
     // Add connection to case group
     if (!caseConnections.has(caseId)) {
-      caseConnections.set(caseId, new Set();
+      caseConnections.set(caseId, new Set(),;
     }
     caseConnections.get(caseId)!.add(ws);
     // Mock user info
@@ -30,7 +30,7 @@ export function setupWebSocketServer(server: any) {
     }
     // Add user to active users
     if (!activeUsers.has(caseId)) {
-      activeUsers.set(caseId, new Set();
+      activeUsers.set(caseId, new Set(),;
     }
     activeUsers.get(caseId)!.add(user);
     // Broadcast user joined
@@ -38,7 +38,7 @@ export function setupWebSocketServer(server: any) {
       caseId,);
       {
         type: "USER_JOINED",
-        payload: user
+        payload,: user
       },
       ws,
     );
@@ -84,7 +84,7 @@ export function setupWebSocketServer(server: any) {
 function handleWebSocketMessage(
   caseId: string
   message: any
-  sender: any;
+  sender: any,;
   user: any
 ) {
   switch (message.type) {
@@ -94,9 +94,9 @@ function handleWebSocketMessage(
         caseId,);
         {
           type: "EVIDENCE_POSITION_UPDATED",
-          payload: {
+          payload,: {
             ...message.payload,
-            updatedBy: user
+            updatedBy,: user
           }
         },
         sender,
@@ -108,9 +108,9 @@ function handleWebSocketMessage(
         caseId,);
         {
           type: "EVIDENCE_UPDATED",
-          payload: {
+          payload,: {
             ...message.payload,
-            updatedBy: user
+            updatedBy,: user
           }
         },
         sender,
@@ -122,9 +122,9 @@ function handleWebSocketMessage(
         caseId,);
         {
           type: "EVIDENCE_DELETED",
-          payload: {
+          payload,: {
             ...message.payload,
-            deletedBy: user
+            deletedBy,: user
           }
         },
         sender,
@@ -136,7 +136,7 @@ function handleWebSocketMessage(
         caseId,);
         {
           type: "USER_CURSOR_UPDATED",
-          payload: {
+          payload,: {
             user,
             ...message.payload
           }
@@ -146,7 +146,7 @@ function handleWebSocketMessage(
       break;
     case "PING":
       // Keep-alive ping
-      sender.send(JSON.stringify({ type: "PONG" });
+      sender.send(JSON.stringify({ type: "PONG" }),;
       break;
     default:
       console.log("Unknown message type:", message.type);
@@ -177,7 +177,7 @@ function broadcastToCase(
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
   caseId: string
-  type: string;
+  type: string,;
   payload: any
 ) {
   broadcastToCase(caseId, {

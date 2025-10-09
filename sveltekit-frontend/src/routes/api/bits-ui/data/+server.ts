@@ -139,7 +139,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) =
   const processedData = {
     received: data
     processedAt: new Date().toISOString(),
-    userId: locals.user?.id,
+    userId: getUserId(locals),
     status: 'processed'
   }
   return createSSRResponse(processedData, { status: 201 })

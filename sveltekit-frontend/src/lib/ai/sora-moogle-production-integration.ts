@@ -129,7 +129,7 @@ export class ProductionSoraService {
   private async performSimpleTraversal(
     startNodeId: string
     query: string
-    config: SoraTraversalOptions;
+    config: SoraTraversalOptions,;
   ): Promise<SoraTraversalPath[]> {
     // Mock traversal for production - replace with actual Neo4j queries
     const mockNode: SoraGraphNode = {
@@ -214,7 +214,7 @@ export class ProductionMoogleService {
   }
   private async render2DVisualization(
     paths: SoraTraversalPath[]
-    config: MoogleVisualizationConfig;
+    config: MoogleVisualizationConfig,;
   ): Promise<MoogleVisualizationOutput> {
     if (!this.canvas || !this.context) {
       throw new Error('Canvas not initialized');
@@ -230,8 +230,8 @@ export class ProductionMoogleService {
     const allNodes = new Map<string, SoraGraphNode>();
     const allEdges = new Map<string, SoraGraphEdge>();
     paths.forEach(path => {
-      path.nodes.forEach(node => allNodes.set(node.id, node);
-      path.edges.forEach(edge => allEdges.set(edge.id, edge);
+      path.nodes.forEach(node => allNodes.set(node.id, node),;
+      path.edges.forEach(edge => allEdges.set(edge.id, edge),;
     });
     const nodePositions = this.calculateNodePositions(allNodes, allEdges, config);
     // Render edges first
@@ -239,7 +239,7 @@ export class ProductionMoogleService {
     // Render nodes
     this.renderNodes(allNodes, nodePositions, config);
     // Generate metadata
-    const positions = Array.from(nodePositions.entries()).map(([id, pos]) => ({ id, x: pos.x, y: pos.y });
+    const positions = Array.from(nodePositions.entries()).map(([id, pos]) => ({ id, x: pos.x, y: pos.y }),;
     const bounds = this.calculateBounds(positions);
     const imageData = this.context.getImageData(0, 0, config.width, config.height);
     const base64 = this.canvas.toDataURL('image/png');
@@ -261,14 +261,14 @@ export class ProductionMoogleService {
   private calculateNodePositions(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
-    config: MoogleVisualizationConfig;
+    config: MoogleVisualizationConfig,;
   ): Map<string, { x: number; y: number }> {
     const positions = new Map<string, { x: number; y: number }>();
     // Simple circular layout for production
     const centerX = config.width / 2;
     const centerY = config.height / 2;
     const radius = Math.min(config.width, config.height) * 0.3;
-    const nodeArray = Array.from(nodes.values();
+    const nodeArray = Array.from(nodes.values(),;
     nodeArray.forEach((node, index) => {
       const angle = (index / nodeArray.length) * 2 * Math.PI;
       positions.set(node.id, {
@@ -281,7 +281,7 @@ export class ProductionMoogleService {
   private renderEdges(
     edges: Map<string, SoraGraphEdge>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig;
+    config: MoogleVisualizationConfig,;
   ): void {
     if (!this.context) return;
     this.context.strokeStyle = '#4a9eff';
@@ -302,7 +302,7 @@ export class ProductionMoogleService {
   private renderNodes(
     nodes: Map<string, SoraGraphNode>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig;
+    config: MoogleVisualizationConfig,;
   ): void {
     if (!this.context) return;
     const nodeColors = {
@@ -316,7 +316,7 @@ export class ProductionMoogleService {
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (!pos) return;
-      const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min);
+      const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min),;
       this.context!.fillStyle = nodeColors[node.type] || '#888888';
       this.context!.beginPath();
       this.context!.arc(pos.x, pos.y, size / 2, 0, 2 * Math.PI);
@@ -341,7 +341,7 @@ export class ProductionMoogleService {
   private generateSVG(
     nodes: Map<string, SoraGraphNode>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig;
+    config: MoogleVisualizationConfig,;
   ): string {
     let svg = `<svg width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`
     svg += `<rect width="100%" height="100%" fill="${config.backgroundColor}"/>`;
@@ -349,7 +349,7 @@ export class ProductionMoogleService {
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (pos) {
-        const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min);
+        const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min),;
         svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${size/2}" fill="#4CAF50" stroke="#ffffff"/>`;
       }
     });
@@ -400,7 +400,7 @@ export async function performLegalGraphQuery(
   options: Partial<SoraTraversalOptions> = {}
 ): Promise<SoraTraversalPath[]> {
   try {
-    soraStore.update(state => ({ ...state, isLoading: true, error: null });
+    soraStore.update(state => ({ ...state, isLoading: true, error: null }),;
     const startNodeId = caseId || 'root';
     const paths = await soraService.traverseGraph(startNodeId, query, {
       ...options,
@@ -412,11 +412,11 @@ export async function performLegalGraphQuery(
       currentPaths: paths
       isLoading: false
       isInitialized: true
-    });
+    }),;
     return paths;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message: 'Unknown error';
-    soraStore.update(state => ({ ...state, error: errorMessage, isLoading: false });
+    soraStore.update(state => ({ ...state, error: errorMessage, isLoading: false }),;
     throw error;
   }
 }
@@ -425,7 +425,7 @@ export async function generateLegalVisualization(
   options: Partial<MoogleVisualizationConfig> = {}
 ): Promise<MoogleVisualizationOutput> {
   try {
-    moogleStore.update(state => ({ ...state, isRendering: true, error: null });
+    moogleStore.update(state => ({ ...state, isRendering: true, error: null }),;
     const visualization = await moogleService.synthesize2D(paths, {
       ...options,
       qualityLevel: 'medium', // Production setting
@@ -436,11 +436,11 @@ export async function generateLegalVisualization(
       currentVisualization: visualization
       isRendering: false
       isInitialized: true
-    });
+    }),;
     return visualization;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message: 'Unknown error';
-    moogleStore.update(state => ({ ...state, error: errorMessage, isRendering: false });
+    moogleStore.update(state => ({ ...state, error: errorMessage, isRendering: false }),;
     throw error;
   }
 }

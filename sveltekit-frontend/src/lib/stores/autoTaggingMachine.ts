@@ -15,19 +15,19 @@ export type AutoTagEvent =
 export const autoTaggingMachine = createMachine();
   {
     id: "autoTagging",
-    initial: "idle",
-    context: {
+    initial,: "idle",
+    context,: {
       selectedNode: null
       aiTags: null
       error: null
       retryCount: 0
     } as AutoTagContext,
-    states: {
+    states,: {
       idle: {
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions,: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -43,22 +43,22 @@ export const autoTaggingMachine = createMachine();
       processing: {
         invoke: {
           id: "callAITagging",
-          src: "tagWithAI",
-          input: ({ context }) => ({
+          src,: "tagWithAI",
+          input,: ({ context }) => ({
             content: context.selectedNode?.content,
             fileName: context.selectedNode?.name,
             fileType: context.selectedNode?.type
           }),
-          onDone: {
+          onDone,: {
             target: "complete",
-            actions: assign({
+            actions,: assign({
               aiTags: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }: { event: any }) =>
                 event.data?.message || "AI tagging failed",
               retryCount: ({ context }) => context.retryCount + 1
@@ -70,7 +70,7 @@ export const autoTaggingMachine = createMachine();
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions,: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -83,7 +83,7 @@ export const autoTaggingMachine = createMachine();
           },
           RESET: {
             target: "idle",
-            actions: assign({
+            actions,: assign({
               selectedNode: null
               aiTags: null
               error: null
@@ -96,11 +96,11 @@ export const autoTaggingMachine = createMachine();
         on: {
           RETRY: {
             target: "processing",
-            guard: ({ context }) => context.retryCount < 3
+            guard,: ({ context }) => context.retryCount < 3
           },
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions,: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -108,7 +108,7 @@ export const autoTaggingMachine = createMachine();
           },
           RESET: {
             target: "idle",
-            actions: assign({
+            actions,: assign({
               selectedNode: null
               aiTags: null
               error: null

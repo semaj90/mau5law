@@ -7,15 +7,53 @@ import type { RequestHandler } from './$types.js'
 import { minio } from '$lib/server/minio/client'
 import { db } from '$lib/server/db'
 import embeddingService from '$lib/services/embedding-service'
+
+/*
+ * Typed DB wrapper and helpers to avoid `any` casts
+ */
+// Tighten DB typing (avoid `any`)
+type DBExecuteResultRow = Record<string, unknown>
+type DBClient = { execute(sql: string, params?: unknown[]): Promise<DBExecuteResultRow[]> }
+const dbClient = db as unknown as DBClient
+
+function vectorToPgVectorString(vec: number[]): string {
+  // produce a string like "[0.1,0.2,0.3]" which matches the previous code expectation
+  return `[${vec.join(',')}]`
+}
+
+function parseVectorString(vecValue: unknown): number[] {
+  if (!vecValue && vecValue !== 0) return []
+  if (Array.isArray(vecValue)) return vecValue.map((v) => Number(v))
+  if (typeof vecValue === 'string') {
+    const s = vecValue.trim()
+    // common formats: "[1,2,3]" or "1,2,3" or JSON array
+    try {
+      if (s.startsWith('[') && s.endsWith(']')) {
+        const inner = s.slice(1, -1).trim()
+        if (inner.length === 0) return []
+        return inner.split(',').map((p) => Number(p.trim()))
+      }
+      const parsed = JSON.parse(s)
+      if (Array.isArray(parsed)) return parsed.map(Number)
+      // fallback split by comma
+      return s.split(',').map((p) => Number(p.trim()))
+    } catch {
+      return s.split(',').map((p) => Number(p.trim()))
+    }
+  }
+  // fallback to attempt number conversion
+  return [Number(vecValue)]
+}
+
 interface VectorPipelineRequest {
-  bucket_name: string
-  object_key?: string
-  batch_objects?: string[]
-  chunk_size?: number
-  overlap?: number
-  embed_model?: string
-  metadata?: { [key: string]: any }
-  force_reprocess?: boolean
+  bucket_name: string;
+  object_key?: string;
+  batch_objects?: string[];
+  chunk_size?: number;
+  overlap?: number;
+  embed_model?: string;
+  metadata?: Record<string, unknown>;
+  force_reprocess?: boolean;
 }
 interface ProcessingResult {
   success: boolean
@@ -27,13 +65,34 @@ interface ProcessingResult {
   errors?: string[]
 }
 interface EmbeddingResult {
+  document_id: string;
+  chunk_id: string;
+  text: string;
+  embedding: number[];
+  metadata: Record<string, unknown>;
+  processing_time: number;
+  model_used: string;
+}
+
+// Add missing SimilarityResult type to satisfy TypeScript and match returned shape
+interface SimilarityResult {
   document_id: string
   chunk_id: string
-  text: string
-  embedding: number[]
-  metadata: { [key: string]: any }
-  processing_time: number
+  content: string
+  metadata: Record<string, unknown>
   model_used: string
+  processed_at: string | Date | null
+  similarity: number
+}
+
+// Define a typed stats return shape instead of `any`
+interface PipelineStats {
+  database_stats: Record<string, unknown> | null
+  fastembed_service: unknown
+  pipeline_config: {
+    fastembed_url: string
+    cuda_enabled: boolean
+  }
 }
 class VectorPipelineService {
   private fastEmbedUrl: string
@@ -55,7 +114,7 @@ class VectorPipelineService {
         request.batch_objects ||
         (request.object_key
           ? [request.object_key]
-          : await this.listBucketObjects(request.bucket_name)
+          : await this.listBucketObjects(request.bucket_name)); // <-- closed paren and added semicolon
       if (objectsToProcess.length === 0) {
         throw new Error('No objects found to process')
       }
@@ -79,7 +138,7 @@ class VectorPipelineService {
         processed_count: objectsToProcess.length - errors.length,
         failed_count: errors.length,
         embeddings_generated: results.length,
-        processing_time: processingTime
+        processing_time: processingTime, // <-- added comma
         results,
         errors: errors.length > 0 ? errors : undefined
       }
@@ -92,8 +151,8 @@ class VectorPipelineService {
    * Process a single document
    */
   private async processDocument(
-    bucketName: string
-    objectKey: string
+    bucketName: string, // <-- added comma
+    objectKey: string,  // <-- added comma
     request: VectorPipelineRequest
   ): Promise<EmbeddingResult[]> {
     // Check if already processed (unless force_reprocess is true)
@@ -116,26 +175,26 @@ class VectorPipelineService {
     // Generate embeddings using FastEmbed
     const embeddings = await this.generateEmbeddings(
       chunks,
-      request.embed_model || 'BAAI/bge-small-en-v1.5'
+      request.embed_model || 'embeddinggemma:latest' // swapped default model
     )
     // Create results
     const results: EmbeddingResult[] = chunks.map((chunk, index) => ({
-      document_id: objectKey
+      document_id: objectKey,
       chunk_id: `${objectKey}_chunk_${index}`,
-      text: chunk
-      embedding: embeddings[index]
+      text: chunk,
+      embedding: embeddings[index],
       metadata: {
-        source_bucket: bucketName
-        source_key: objectKey
-        chunk_index: index
+        source_bucket: bucketName,
+        source_key: objectKey,
+        chunk_index: index,
         chunk_size: chunk.length,
         processed_at: new Date().toISOString(),
         cuda_enabled: this.cudaEnabled,
-        ...request.metadata
+        ...request.metadata,
       },
-      processing_time: 0, // Will be set by caller
-      model_used: request.embed_model || 'BAAI/bge-small-en-v1.5'
-    })
+      processing_time: 0, // <-- Added missing comma here
+      model_used: request.embed_model || 'embeddinggemma:latest',
+    }));
     // Store in database
     await this.storeEmbeddings(results)
     return results
@@ -148,9 +207,9 @@ class VectorPipelineService {
       const stream = await minio.getObject(bucketName, objectKey)
       const chunks: Buffer[] = []
       return new Promise<Buffer>((resolve, reject) => {
-        stream.on('data', (chunk: Buffer) => chunks.push(chunk)
-        stream.on('end', () => resolve(Buffer.concat(chunks))
-        stream.on('error', (err: unknown) => reject(err)
+        stream.on('data', (chunk: Buffer) => chunks.push(chunk)); // <-- closed with );
+        stream.on('end', () => resolve(Buffer.concat(chunks)));    // <-- closed with );
+        stream.on('error', (err: unknown) => reject(err));         // <-- closed with );
       })
     } catch (err) {
       throw new Error(`Failed to download ${objectKey} from MinIO: ${err}`)
@@ -171,7 +230,7 @@ class VectorPipelineService {
         return content.toString('utf8')
       case 'json':
         try {
-          const jsonData = JSON.parse(content.toString('utf8')
+          const jsonData = JSON.parse(content.toString('utf8')) // <-- added closing paren
           return JSON.stringify(jsonData, null, 2)
         } catch {
           return content.toString('utf8')
@@ -199,10 +258,39 @@ class VectorPipelineService {
     return chunks.filter((chunk) => chunk.trim().length > 0)
   }
   /*
-   * Generate embeddings using FastEmbed service
+   * Generate embeddings using FastEmbed service (prefer $lib/services/embedding-service)
    */
   private async generateEmbeddings(texts: string[], model: string): Promise<number[][]> {
     try {
+      // Prefer the centralized embeddingService (may wrap Ollama / other backends)
+      try {
+        if (isEmbeddingService(embeddingService)) {
+          const maybeResult = await embeddingService.embed({
+            texts,
+            model,
+            normalize: true,
+            device: this.cudaEnabled ? 'cuda' : 'cpu'
+          })
+          // embeddingService may return number[][] or { embeddings: number[][] }
+          if (Array.isArray(maybeResult) && maybeResult.length > 0 && Array.isArray(maybeResult[0])) {
+            return maybeResult as number[][]
+          }
+          if (
+            maybeResult &&
+            typeof maybeResult === 'object' &&
+            'embeddings' in (maybeResult as object) &&
+            Array.isArray((maybeResult as { embeddings?: unknown }).embeddings)
+          ) {
+            return (maybeResult as { embeddings: number[][] }).embeddings
+          }
+          // Unexpected shape: fall through to HTTP fallback
+          console.warn('embeddingService returned unexpected shape, falling back to FastEmbed HTTP endpoint')
+        }
+      } catch (svcErr) {
+        console.warn('embeddingService failed, falling back to FastEmbed HTTP endpoint:', svcErr)
+      }
+
+      // Fallback: FastEmbed HTTP API
       const response = await fetch(`${this.fastEmbedUrl}/embed`, {
         method: 'POST',
         headers: {
@@ -211,15 +299,22 @@ class VectorPipelineService {
         body: JSON.stringify({
           texts,
           model,
-          normalize: true;
+          normalize: true,
           device: this.cudaEnabled ? 'cuda' : 'cpu'
         })
       })
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`FastEmbed API error: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
+      if (!response.ok) {
+        throw new Error(`FastEmbed API error: ${response.status} ${response.statusText}`)
       }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json()
-      return (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).embeddings
+      const result = await response.json()
+      // Validate shapes: accept either number[][] or { embeddings: number[][] }
+      if (Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
+        return result as number[][]
+      }
+      if (result && typeof result === 'object' && Array.isArray((result as { embeddings?: unknown }).embeddings)) {
+        return (result as { embeddings: number[][] }).embeddings
+      }
+      throw new Error('FastEmbed returned unexpected payload shape; expected embeddings array')
     } catch (err) {
       throw new Error(`Failed to generate embeddings: ${err}`)
     }
@@ -230,11 +325,11 @@ class VectorPipelineService {
   private async storeEmbeddings(results: EmbeddingResult[]): Promise<void> {
     try {
       // Begin transaction
-      await (db as any).execute('BEGIN')
+      await dbClient.execute('BEGIN')
       for (const result of results) {
         // Convert embedding to pgvector format
-        const embeddingVector = `[${(result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).embedding.join(',')}]`
-        await (db as any).execute(
+        const embeddingVector = vectorToPgVectorString(result.embedding);
+        await dbClient.execute(
           `
 					INSERT INTO document_embeddings
 					(document_id, chunk_id, content, embedding, metadata, processed_at, model_used)
@@ -247,19 +342,19 @@ class VectorPipelineService {
 					model_used = EXCLUDED.model_used
 				`,
           [
-            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).document_id,
-            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).chunk_id,
-            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).text,
+            result.document_id,
+            result.chunk_id,
+            result.text,
             embeddingVector,
-            JSON.stringify((result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).metadata),
-            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).model_used
+            JSON.stringify(result.metadata),
+            result.model_used,
           ]
-        )
+        );
       }
-      await (db as any).execute('COMMIT')
+      await dbClient.execute('COMMIT')
       console.log(`Stored ${results.length} embeddings in PostgreSQL`)
     } catch (err) {
-      await (db as any).execute('ROLLBACK')
+      await dbClient.execute('ROLLBACK')
       throw new Error(`Failed to store embeddings: ${err}`)
     }
   }
@@ -268,7 +363,7 @@ class VectorPipelineService {
    */
   private async checkExistingEmbeddings(documentId: string): Promise<EmbeddingResult[]> {
     try {
-      const rows = await (db as any).execute(
+      const rows = await dbClient.execute(
         `
 				SELECT chunk_id, content, embedding, metadata, model_used, processed_at
 				FROM document_embeddings
@@ -277,14 +372,33 @@ class VectorPipelineService {
 			`,
         [documentId]
       )
-      return rows.map((row: any) => ({,
-        document_id: documentId
-        chunk_id: row.chunk_id,
-        text: row.content,
-        embedding: JSON.parse(row.embedding), // Parse pgvector format
-        metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-        processing_time: 0,
-        model_used: row.model_used
+
+      return rows.map((row) => {
+        // normalize model_used to string with safe fallback
+        const modelUsed =
+          typeof row['model_used'] === 'string' ? (row['model_used'] as string) : String(row['model_used'] ?? 'unknown')
+
+        // parse metadata safely
+        let metadata: Record<string, unknown> = {}
+        try {
+          if (typeof row['metadata'] === 'string') {
+            metadata = JSON.parse(row['metadata'] as string) as Record<string, unknown>
+          } else if (row['metadata'] && typeof row['metadata'] === 'object') {
+            metadata = row['metadata'] as Record<string, unknown>
+          }
+        } catch {
+          metadata = {}
+        }
+
+        return {
+          document_id: String(documentId),
+          chunk_id: String(row['chunk_id'] ?? ''),
+          text: String(row['content'] ?? ''),
+          embedding: parseVectorString(row['embedding']),
+          metadata,
+          processing_time: 0,
+          model_used: modelUsed,
+        } as EmbeddingResult
       })
     } catch (err) {
       console.error('Failed to check existing embeddings:', err)
@@ -299,13 +413,16 @@ class VectorPipelineService {
       const objectsList: string[] = []
       const stream = minio.listObjects(bucketName, '', true)
       return new Promise<string[]>((resolve, reject) => {
-        stream.on('data', (obj: any) => {
-          if (obj.name) {
-            objectsList.push(obj.name)
+        stream.on('data', (obj: unknown) => {
+          if (obj && typeof obj === 'object') {
+            const o = obj as Record<string, unknown>
+            if (typeof o.name === 'string') {
+              objectsList.push(o.name)
+            }
           }
         })
-        stream.on('end', () => resolve(objectsList)
-        stream.on('error', (err: unknown) => reject(err)
+        stream.on('end', () => resolve(objectsList))
+        stream.on('error', (err: unknown) => reject(err))
       })
     } catch (err) {
       throw new Error(`Failed to list bucket objects: ${err}`)
@@ -315,25 +432,23 @@ class VectorPipelineService {
    * Search similar documents using vector similarity
    */
   async searchSimilar(
-    query: string
+    query: string,
     options: {
       model?: string
       limit?: number
       threshold?: number
-      filters?: { [key: string]: any }
+      filters?: Record<string, unknown>
     } = {}
-  ): Promise<any[]> {
+  ): Promise<SimilarityResult[]> {
     // Generate embedding for query
-    const queryEmbedding = await this.generateEmbeddings(
-      [query],
-      options?.model || "unknown" // @ts-ignore - Model property access || 'BAAI/bge-small-en-v1.5'
-    )
+    const modelToUse = options.model ?? 'embeddinggemma:latest' // swapped default model
+    const queryEmbedding = await this.generateEmbeddings([query], modelToUse)
     const queryVector = `[${queryEmbedding[0].join(',')}]`
     // Build SQL query with filters
     let whereClause = ''
-    const params: any[] = [queryVector, options.limit || 10]
+    const params: unknown[] = [queryVector, options.limit || 10]
     if (options.filters) {
-      const filterConditions = Object.entries(options.filters).map(([key, value], index) => {
+      const filterConditions = Object.entries(options.filters).map(([key, value]) => {
         params.push(value)
         return `metadata->>'${key}' = $${params.length}`
       })
@@ -341,7 +456,7 @@ class VectorPipelineService {
         whereClause = 'WHERE ' + filterConditions.join(' AND ')
       }
     }
-    const similarityThreshold = options.threshold || 0.7
+    const similarityThreshold = options.threshold ?? 0.7
     const query_sql = `
 			SELECT
 				document_id,
@@ -358,26 +473,42 @@ class VectorPipelineService {
 			LIMIT $2
 		`
     try {
-      const results = await (db as any).execute(query_sql, params)
-      return results.map((row: any) => ({,
-        document_id: row.document_id,
-        chunk_id: row.chunk_id,
-        content: row.content,
-        metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-        model_used: row.model_used,
-        processed_at: row.processed_at,
-        similarity: parseFloat(row.similarity)
+      const results = await dbClient.execute(query_sql, params);
+      return results.map((row) => {
+        // safe metadata parsing
+        let metadata: Record<string, unknown> = {}
+        try {
+          if (typeof row['metadata'] === 'string') {
+            metadata = JSON.parse(row['metadata'] as string) as Record<string, unknown>
+          } else if (row['metadata'] && typeof row['metadata'] === 'object') {
+            metadata = row['metadata'] as Record<string, unknown>
+          }
+        } catch {
+          metadata = {}
+        }
+        // normalize processed_at to string | null
+        const processedAt =
+          row['processed_at'] == null ? null : typeof row['processed_at'] === 'string' ? (row['processed_at'] as string) : String(row['processed_at'])
+        return {
+          document_id: String(row['document_id'] ?? ''),
+          chunk_id: String(row['chunk_id'] ?? ''),
+          content: String(row['content'] ?? ''),
+          metadata,
+          model_used: String(row['model_used'] ?? 'unknown'),
+          processed_at: processedAt,
+          similarity: typeof row['similarity'] === 'string' ? parseFloat(row['similarity'] as string) : Number(row['similarity'] ?? 0),
+        } as SimilarityResult
       })
-    } catch (err) {
-      throw new Error(`Similarity search failed: ${err}`)
-    }
+     } catch (err) {
+       throw new Error(`Similarity search failed: ${err}`)
+     }
   }
   /*
    * Get pipeline statistics
    */
-  async getStats(): Promise<any> {
+  async getStats(): Promise<PipelineStats> {
     try {
-      const stats = await (db as any).execute(`
+      const stats = await dbClient.execute(`
 				SELECT
 					COUNT(*) as total_embeddings,
 					COUNT(DISTINCT document_id) as total_documents,
@@ -388,7 +519,7 @@ class VectorPipelineService {
 				FROM document_embeddings
 			`)
       // Get FastEmbed service health
-      let fastEmbedHealth = null
+      let fastEmbedHealth: unknown = null
       try {
         const healthResponse = await fetch(`${this.fastEmbedUrl}/health`)
         if (healthResponse.ok) {
@@ -398,8 +529,8 @@ class VectorPipelineService {
         console.warn('FastEmbed health check failed:', err)
       }
       return {
-        database_stats: stats[0]
-        fastembed_service: fastEmbedHealth
+        database_stats: (stats && stats[0]) || null,
+        fastembed_service: fastEmbedHealth,
         pipeline_config: {
           fastembed_url: this.fastEmbedUrl,
           cuda_enabled: this.cudaEnabled
@@ -410,13 +541,32 @@ class VectorPipelineService {
     }
   }
 }
+
+// Add a typed embedding service interface and a runtime type-guard
+type EmbedParams = {
+  texts: string[]
+  model: string
+  normalize?: boolean
+  device?: string
+}
+interface EmbeddingService {
+  embed(params: EmbedParams): Promise<number[][] | { embeddings: number[][] }>
+}
+function isEmbeddingService(obj: unknown): obj is EmbeddingService {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    typeof (obj as { embed?: unknown }).embed === 'function'
+  )
+}
+
 const vectorPipelineService = new VectorPipelineService()
 export const POST: RequestHandler = async ({ request }) => {
 	try {
     const body = (await request.json()) as VectorPipelineRequest
     // Validate required fields
     if (!body.bucket_name) {
-      return error(400, 'bucket_name is required')
+      throw error(400, 'bucket_name is required') // changed from `return error(...)`
     }
     const result = await vectorPipelineService.processDocuments(body)
     return json({
@@ -425,7 +575,8 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (err) {
 		console.error('Vector pipeline processing error:', err)
-		return error(500, `Processing failed: ${err}`)
+		// surface proper SvelteKit error (was return error(...))
+		throw error(500, `Processing failed: ${String(err)}`)
 	}
 }
 export const GET: RequestHandler = async ({ url }) => {
@@ -433,41 +584,44 @@ export const GET: RequestHandler = async ({ url }) => {
 		const action = url.searchParams.get('action')
 		const query = url.searchParams.get('q')
 		switch (action) {
-			case 'search':
-				if (!query) {
-					return error(400, 'Query parameter q is required for search')
-				}
-				const limit = parseInt(url.searchParams.get('limit') || '10')
-				const threshold = parseFloat(url.searchParams.get('threshold') || '0.7')
-				const model = url.searchParams.get('model') || 'BAAI/bge-small-en-v1.5'
-				// Parse filters from URL parameters
-				const filters: { [key: string]: any } = {}
-				for (const [key, value] of url.searchParams) {
-					if (key.startsWith('filter.')) {
-						const filterKey = key.substring(7); // Remove 'filter.' prefix
-						filters[filterKey] = value
-					}
-				}
-				const searchResults = await vectorPipelineService.searchSimilar(query, {
-					limit,
-					threshold,
-					model,
-					filters: Object.keys(filters).length > 0 ? filters : undefined
-				})
-				return json({
-					query,
-					results: searchResults
-					count: searchResults.length,
-					options: { limit, threshold, model, filters }
-				})
-			case 'stats':
-				const stats = await vectorPipelineService.getStats()
-				return json(stats)
-			default:
-				return error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats')
-		}
+      case 'search': {
+        if (!query) {
+          throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)`
+        }
+        // declarations inside a braced block to avoid lexical-declaration-in-case-block errors
+        const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+        const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
+        const model = url.searchParams.get('model') || 'embeddinggemma:latest'; // swapped default model
+        // Parse filters from URL parameters (URLSearchParams values are strings)
+        const filters: Record<string, string> = {};
+        for (const [key, value] of url.searchParams) {
+          if (key.startsWith('filter.')) {
+            const filterKey = key.substring(7); // Remove 'filter.' prefix
+            filters[filterKey] = value;
+          }
+        }
+        const searchResults = await vectorPipelineService.searchSimilar(query, {
+          limit,
+          threshold,
+          model,
+          filters: Object.keys(filters).length > 0 ? (filters as Record<string, unknown>) : undefined,
+        });
+        return json({
+          query,
+          results: searchResults,
+          count: searchResults.length,
+          options: { limit, threshold, model, filters },
+        });
+      }
+      case 'stats': {
+        const stats = await vectorPipelineService.getStats();
+        return json(stats);
+      }
+      default:
+        throw error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats'); // changed from `return error(...)`
+    }
 	} catch (err) {
 		console.error('Vector pipeline GET error:', err)
-		return error(500, `Request failed: ${err}`)
+		throw error(500, `Request failed: ${String(err)}`)
 	}
 }

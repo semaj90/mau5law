@@ -238,7 +238,7 @@ async function handleHealthCheck(): Promise<Response> {
             endpoint: healthEndpoint
             lastCheck: new Date().toISOString()
           }
-        } catch (error: any) {
+        }, catch (error: any) {
           healthChecks[serviceName] = {
             status: 'error',
             error: String(error),

@@ -169,45 +169,45 @@ const orchestrationMachine = createMachine({
         analyzingQuery: {
           invoke: {
             src: 'analyzeWithLegalBERT',
-            onDone: {
+            onDone,: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis'
+              actions,: 'storeLegalBertAnalysis'
             },
             onError: {
               target: 'fallbackAnalysis',
-              actions: 'logError'
+              actions,: 'logError'
             }
           }
         },
         fallbackAnalysis: {
           invoke: {
             src: 'basicAnalysis',
-            onDone: {
+            onDone,: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis'
+              actions,: 'storeLegalBertAnalysis'
             }
           }
         },
         generatingEmbeddings: {
           invoke: {
             src: 'generateEmbeddings',
-            onDone: {
+            onDone,: {
               target: 'searchingKnowledgeBase',
-              actions: 'storeEmbeddings'
+              actions,: 'storeEmbeddings'
             },
             onError: {
               target: 'error',
-              actions: 'logError'
+              actions,: 'logError'
             }
           }
         },
         searchingKnowledgeBase: {
           type: 'parallel',
-          states: {
+          states,: {
             neo4jSearch: {
               invoke: {
                 src: 'searchNeo4j',
-                onDone: {
+                onDone,: {
                   actions: 'storeNeo4jResults'
                 },
                 onError: {
@@ -218,7 +218,7 @@ const orchestrationMachine = createMachine({
             pgVectorSearch: {
               invoke: {
                 src: 'searchPGVector',
-                onDone: {
+                onDone,: {
                   actions: 'storePGVectorResults'
                 },
                 onError: {
@@ -229,7 +229,7 @@ const orchestrationMachine = createMachine({
             ragPipeline: {
               invoke: {
                 src: 'runRAGPipeline',
-                onDone: {
+                onDone,: {
                   actions: 'storeRAGResults'
                 },
                 onError: {
@@ -240,7 +240,7 @@ const orchestrationMachine = createMachine({
             context7Search: {
               invoke: {
                 src: 'searchContext7',
-                onDone: {
+                onDone,: {
                   actions: 'storeContext7Results'
                 },
                 onError: {
@@ -254,48 +254,48 @@ const orchestrationMachine = createMachine({
         rankingResults: {
           invoke: {
             src: 'rankWithCrossEncoder',
-            onDone: {
+            onDone,: {
               target: 'generatingResponse',
-              actions: 'storeRankedResults'
+              actions,: 'storeRankedResults'
             }
           }
         },
         generatingResponse: {
           invoke: {
             src: 'generateWithGemma3Legal',
-            onDone: {
+            onDone,: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse'
+              actions,: 'storeOllamaResponse'
             },
             onError: {
               target: 'fallbackGeneration',
-              actions: 'logError'
+              actions,: 'logError'
             }
           }
         },
         fallbackGeneration: {
           invoke: {
             src: 'generateFallbackResponse',
-            onDone: {
+            onDone,: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse'
+              actions,: 'storeOllamaResponse'
             }
           }
         },
         synthesizing: {
           invoke: {
             src: 'performFinalSynthesis',
-            onDone: {
+            onDone,: {
               target: 'cachingResult',
-              actions: 'storeFinalSynthesis'
+              actions,: 'storeFinalSynthesis'
             }
           }
         },
         cachingResult: {
           invoke: {
             src: 'cacheResult',
-            onDone: 'complete',
-            onError: 'complete', // Still complete even if caching fails
+            onDone,: 'complete',
+            onError,: 'complete', // Still complete even if caching fails
           }
         },
         complete: {
@@ -306,7 +306,7 @@ const orchestrationMachine = createMachine({
     error: {
       on: {
         RETRY: 'processing',
-        RESET: 'idle'
+        RESET,: 'idle'
       }
     }
   }
@@ -459,7 +459,7 @@ export class EnhancedAISynthesisOrchestrator {
               body: JSON.stringify({,
                 query: context.query,
                 limit: 10,
-                useGPU: true;
+                useGPU: true,;
                 model: 'gemma3-legal:latest'
               })
             });
@@ -512,7 +512,7 @@ export class EnhancedAISynthesisOrchestrator {
         cacheResult: (async ({ context }) => {
           if (!context.finalSynthesis || !context.query) return;
           const cacheKey = `synthesis:${Buffer.from(context.query).toString('base64')}`;
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis);
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis),;
           // Also update monitoring metrics
           await monitoringService.recordMetric('synthesis_completed', 1);
         }) as any, // Temporary cast to fix UnknownActorLogic
@@ -723,9 +723,9 @@ RESPONSE:`;
   private calculateSimilarity(text1: string, text2: string): number {
     // Simple Jaccard similarity for demonstration
     // In production, use embeddings for semantic similarity
-    const words1 = new Set(text1.toLowerCase().split(/\s+/);
-    const words2 = new Set(text2.toLowerCase().split(/\s+/);
-    const intersection = new Set([...words1].filter((x) => words2.has(x));
+    const words1 = new Set(text1.toLowerCase().split(/\s+/),;
+    const words2 = new Set(text2.toLowerCase().split(/\s+/),;
+    const intersection = new Set([...words1].filter((x) => words2.has(x)),;
     const union = new Set([...words1, ...words2]);
     return intersection.size / union.size;
   }
@@ -758,11 +758,11 @@ RESPONSE:`;
               resolve(result);
             } else {
               subscription.unsubscribe();
-              reject(new Error('No synthesis result');
+              reject(new Error('No synthesis result'),;
             }
           } else if ((snapshot as any).status === 'error' || (snapshot as any).value === 'error') {
             subscription.unsubscribe();
-            reject(new Error('Processing failed');
+            reject(new Error('Processing failed'),;
           }
         });
         // Send the START event to begin processing
@@ -802,7 +802,7 @@ RESPONSE:`;
         const change = stateChanges.shift();
         yield change;
       }
-      await new Promise((resolve) => setTimeout(resolve, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100),;
       snapshot = service.getSnapshot() as any;
     }
     // Yield final result

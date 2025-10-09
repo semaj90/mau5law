@@ -80,8 +80,8 @@ export async function extractTextFromImage(buffer: Buffer, options: {
       await worker.initialize(language);
       // Set OCR parameters
       await worker.setParameters({
-        tessedit_pageseg_mode: pageSegMode.toString()),
-        preserve_interword_spaces: preserveInterword ? '1' : '0'
+        tessedit_pageseg_mode: pageSegMode.toString(),),
+        preserve_interword_spaces,: preserveInterword ? '1' : '0'
       });
       const { data } = await worker.recognize(optimizedBuffer);
       return {
@@ -99,9 +99,9 @@ export async function extractTextFromImage(buffer: Buffer, options: {
     } finally {
       await worker.terminate();
     }
-  } catch (error) {
+  }, catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     }
@@ -125,7 +125,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
     });
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: `PDF extraction failed: ${error}`,
       processingTime: Date.now() - startTime
     }
@@ -158,13 +158,13 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
       ], { stdio: 'pipe' });
       let stderr = '';
       ffmpeg.stderr?.on('data', (data) => {
-        stderr += data.toString());
+        stderr += data.toString(),);
       });
       ffmpeg.on('close', (code) => {
         if (code === 0) {
           resolve();
         } else {
-          reject(new Error(`ffmpeg failed with code ${code}: ${stderr}`);
+          reject(new Error(`ffmpeg failed with code ${code}: ${stderr}`),;
         }
       });
       ffmpeg.on('error', (error) => {
@@ -187,11 +187,11 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
       sampleRate: audioInfo.sampleRate,
       processingTime: Date.now() - startTime
     }
-  } catch (error) {
+  }, catch (error) {
     // Cleanup on error
     if (outputPath) await cleanupTempFile(outputPath);
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     }
@@ -221,7 +221,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
     // Calculate frame timestamps (evenly distributed)
     const timestamps: number[] = [];
     for (let i = 1; i <= frameCount; i++) {
-      timestamps.push((i * duration) / (frameCount + 1);
+      timestamps.push((i * duration) / (frameCount + 1),;
     }
     // Extract frames
     const frameBuffers: Buffer[] = [];
@@ -231,7 +231,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
       await new Promise<void>((resolve, reject) => {
         const ffmpeg = spawn(ffmpegPath, [
           '-i', inputPath!,
-          '-ss', timestamps[i].toString()),
+          '-ss', timestamps[i].toString(),),
           '-vframes', '1',
           '-f', 'image2',
           '-vcodec', 'mjpeg',
@@ -242,13 +242,13 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
         ], { stdio: 'pipe' });
         let stderr = '';
         ffmpeg.stderr?.on('data', (data) => {
-          stderr += data.toString());
+          stderr += data.toString(),);
         });
         ffmpeg.on('close', (code) => {
           if (code === 0) {
             resolve();
           } else {
-            reject(new Error(`Frame extraction failed: ${stderr}`);
+            reject(new Error(`Frame extraction failed: ${stderr}`),;
           }
         });
         ffmpeg.on('error', reject);
@@ -269,9 +269,9 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
       },
       processingTime: Date.now() - startTime
     }
-  } catch (error) {
+  }, catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     }
@@ -323,7 +323,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
     }
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     }
@@ -343,11 +343,11 @@ async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> 
     ], { stdio: 'pipe' });
     let stdout = '';
     ffprobe.stdout?.on('data', (data) => {
-      stdout += data.toString());
+      stdout += data.toString(),);
     });
     ffprobe.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`ffprobe failed with code ${code}`);
+        reject(new Error(`ffprobe failed with code ${code}`),;
         return;
       }
       try {
@@ -376,11 +376,11 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
     ], { stdio: 'pipe' });
     let stdout = '';
     ffprobe.stdout?.on('data', (data) => {
-      stdout += data.toString());
+      stdout += data.toString(),);
     });
     ffprobe.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`ffprobe failed with code ${code}`);
+        reject(new Error(`ffprobe failed with code ${code}`),;
         return;
       }
       try {
@@ -440,13 +440,13 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
       }
     }
     return {
-      success: false;
+      success: false,;
       error: `Unsupported content type for text extraction: ${contentType}`,
       processingTime: Date.now() - startTime
     }
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     }

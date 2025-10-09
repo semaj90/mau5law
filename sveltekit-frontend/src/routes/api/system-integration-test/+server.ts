@@ -26,9 +26,9 @@ export const GET: RequestHandler = async ({ url }) => {
   } = {
     timestamp: new Date().toISOString(),
     testType,
-    results: { [key: string]: any },
+    results: { [key,: strin,g]: any },
     errors: [],
-    performance: { [key: string]: any }
+    performance: { [key,: strin,g]: any }
   }
   try {
     // Test PostgreSQL + pgvector
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const stats =
           typeof (redisService as any).getStats === 'function'
             ? (redisService as any).getStats()
-            : { [key: string]: any }
+            : { [key,: strin,g]: any }
         results.results.redis = {
           status: 'connected',
           healthy,
@@ -192,11 +192,11 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         status: 'error',
-        timestamp: new Date().toISOString(),
-        error: msg
-        results: { [key: string]: any },
+        timestamp,: new Date().toISOString(),
+        error,: msg
+        results: { [key,: string,]: any },
         errors: [msg],
-        performance: { total: Date.now() - startTime }
+        performance,: { total: Date.now() - startTime }
       },
       { status: 500 }
     )
@@ -235,7 +235,7 @@ async function runStressTest(_options: any = {}): Promise<Response> {
     stressTest: {
       iterations,
       concurrent,
-      results: workerResults;
+      results: workerResults,;
       summary: {
         avgResponseTime:
           workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,

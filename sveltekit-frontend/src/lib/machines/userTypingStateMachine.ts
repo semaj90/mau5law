@@ -80,8 +80,8 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
 export const userTypingStateMachine = createMachine({
   id: 'userTyping',
   types: {
-    context: { [key: string]: any } as TypingContext,
-    events: { [key: string]: any } as TypingEvent
+    context: { [key,: strin,g]: any } as TypingContext,
+    events: { [key,: strin,g]: any } as TypingEvent
   },
   context: {
     currentText: '',

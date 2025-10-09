@@ -34,7 +34,7 @@ const retryLLMCall = async (fn: () => Promise<any>, model: string, prompt: strin
       return await fn();
     } catch (error: any) {
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1));
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)),;
     }
   }
 }
@@ -52,7 +52,7 @@ export class OllamaRetryWrapper {
    * Make LLM call with automatic retry and error logging
    */
   async callLLM(
-    prompt: string;
+    prompt: string,;
     options: LLMCallOptions = {}
   ): Promise<LLMResponse> {
     const {
@@ -79,7 +79,7 @@ export class OllamaRetryWrapper {
             body: JSON.stringify({
               model,
               prompt,
-              stream: false;
+              stream: false,;
               options: {
                 temperature,
                 num_predict: maxTokens
@@ -162,7 +162,7 @@ export class OllamaRetryWrapper {
       const availableModels = models.map((m: any) => m.name);
       const missingModels = requiredModels.filter((model: string) =>
         !availableModels.some((available: string) => available.includes(model)
-      );
+      ),;
       const status = missingModels.length === 0 ? 'healthy' : 'degraded';
       const details = {
         totalModels: models.length,
@@ -220,7 +220,7 @@ export const ollamaWrapper = new OllamaRetryWrapper();
 export async function promptLLM(
   prompt: string
   model?: string
-  options?: Partial<LLMCallOptions>;
+  options?: Partial<LLMCallOptions>,;
 ): Promise<string> {
   const result = await ollamaWrapper.callLLM(prompt, {
     model,
@@ -232,7 +232,7 @@ export async function promptLLM(
  * Streaming LLM call with retry logic
  */
 export async function* streamLLM(
-  prompt: string;
+  prompt: string,;
   options: LLMCallOptions = {}
 ): AsyncGenerator<string, void, unknown> {
   const {
@@ -250,7 +250,7 @@ export async function* streamLLM(
       body: JSON.stringify({
         model,
         prompt,
-        stream: true;
+        stream: true,;
         options: { temperature }
       })
     });

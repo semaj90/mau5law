@@ -37,8 +37,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const { caseId, entityTypes, connectionStrength, maxDepth, options = {} } = ConnectionMappingSchema.parse(body)
     // Create service instances
-    const casesService = new CasesCRUDService(locals.user.id)
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           connectionStrength,
           maxDepth,
           entityTypes: entityTypes || 'all',
-          analyzedBy: locals.user.id,
+          analyzedBy: getUserId(locals),
           nodesGenerated: connectionMap.nodes.length,
           edgesGenerated: connectionMap.edges.length
         }
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'connection_map_generated'
       }
@@ -199,7 +199,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
   // Enhanced with MCP multi-core processing for semantic analysis
   const mcpEndpoint = 'http://localhost:3002'
   return await Promise.all(evidence.map(async (item, index) => {
-    let semanticData = null)
+    let semanticData = null,)
     // Call MCP server for Gemma embeddings semantic analysis
     try {
       const response = await fetch(`${mcpEndpoint}/mcp/semantic-analyze`, {
@@ -226,7 +226,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
       label: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || `Evidence ${index + 1}`,
       type: 'evidence',
       subtype: semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType || 'unknown',
-      size: importance;
+      size: importance,;
       color: getNodeColor('evidence', semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType),
       metadata: {
         originalId: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id,

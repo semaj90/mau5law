@@ -75,7 +75,7 @@ export class MultiDimensionalImageCache {
   private multiLayerCache: any;
   private rlCache = reinforcementLearningCache;
   // Multi-dimensional storage
-  private dimensionalIndices: Map<string, Set<string> = new Map();
+  private dimensionalIndices: Map<string, Set<string>, = new Map();
   private imageEntries: Map<string, ImageCacheEntry> = new Map();
   private gpuTextures: Map<string, GPUTextureMatrix> = new Map();
   // Cache layers with different characteristics
@@ -186,7 +186,7 @@ export class MultiDimensionalImageCache {
     // Create indices for each dimension
     const dimensions = ['temporal', 'spatial', 'semantic', 'visual', 'algorithm'];
     dimensions.forEach((dim) => {
-      this.dimensionalIndices.set(dim, new Set();
+      this.dimensionalIndices.set(dim, new Set(),;
     });
     console.log('📊 Dimensional indices initialized:', dimensions);
   }
@@ -194,7 +194,7 @@ export class MultiDimensionalImageCache {
     imageData: string
     dimensions: CacheDimensions
     graphData: any
-    processingMetrics: any;
+    processingMetrics: any,;
   ): Promise<string> {
     const startTime = performance.now();
     try {
@@ -319,7 +319,7 @@ export class MultiDimensionalImageCache {
   }
   private async compressImageData(
     imageData: string
-    graphData: any;
+    graphData: any,;
   ): Promise<any> {
     try {
       // Convert graph data to format suitable for neural networks
@@ -349,7 +349,7 @@ export class MultiDimensionalImageCache {
         confidenceLevel: 0.8,
         riskLevel: 'medium' as const,
         lastAccessed: Date.now(),
-        compressed: true;
+        compressed: true,;
         metadata: {
           imageData,
           originalSize: imageData.length,
@@ -368,8 +368,8 @@ export class MultiDimensionalImageCache {
       console.error('Failed to compress image data:', error);
       // Return fallback compression
       return {
-        original: { [key: string]: any } as EncodedGraphPattern,
-        som: { [key: string]: any } as SOMDecomposition,
+        original: { [key,: strin,g]: any } as EncodedGraphPattern,
+        som: { [key,: strin,g]: any } as SOMDecomposition,
         compressed: new ArrayBuffer(imageData.length),
         compressionRatio: 1.0
       }
@@ -390,7 +390,7 @@ export class MultiDimensionalImageCache {
       const img = new Image();
       img.src = imageData;
       await new Promise((resolve) => {
-        img.onload = resolve);
+        img.onload = resolve,);
       });
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
       const imageDataArray = ctx.getImageData(0, 0, dimensions.width, dimensions.height);
@@ -414,10 +414,10 @@ export class MultiDimensionalImageCache {
       return null;
     }
   }
-  private async storeInLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): Promise<void> {
+  private async storeInLayers(entry,: ImageCacheEntry, dimension,s: CacheDimension,s): Promise<void> {
     // Determine appropriate layers based on dimensions and usage patterns
-    const layersToUse = this.selectOptimalLayers(entry, dimensions);
-    for (const layer of layersToUse) {
+    const, layersToUse = this.selectOptimalLayers(entry, dimensions,);
+    for (const, layer, o,f layersToUse) {
       try {
         const layerKey = `${layer.name}_${entry.id}`;
         if (layer.compression && entry.compressionData) {
@@ -443,10 +443,10 @@ export class MultiDimensionalImageCache {
       }
     }
   }
-  private async getFromLayers(cacheKey: string): Promise<ImageCacheEntry | null> {
+  private async getFromLayers(cacheKey,: string,): Promise<ImageCacheEntry | null> {
     // Try layers in priority order
-    const sortedLayers = [...this.cacheLayers].sort((a, b) => b.priority - a.priority);
-    for (const layer of sortedLayers) {
+    const, sortedLayers = [...this.cacheLayers].sort((a, b) => b.priority - a.priority,);
+    for (const, layer, o,f sortedLayers) {
       try {
         const layerKey = `${layer.name}_${cacheKey}`;
         if (layer.name === 'memory_compressed') {
@@ -467,15 +467,15 @@ export class MultiDimensionalImageCache {
         console.error(`Failed to retrieve from layer ${layer.name}:`, error);
       }
     }
-    return null;
+    return, nul,l;
   }
-  private async findSimilarImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
-    try {
+  private async findSimilarImage(query,: MultiDimensionalQuery,): Promise<ImageCacheEntry | null> {
+    try, {
       // Use SOM to find similar cached images
-      const somDecomposition = await this.som.getDecomposition();
-      if (!somDecomposition) return null;
+      const, somDecomposition = await this.som.getDecomposition(,);
+      if (!somDecomposition), return, nu,ll;
       // Find entries with similar patterns
-      const candidates: { entry: ImageCacheEntry; similarity: number }[] = [];
+      const, candidate,s: { entry: ImageCacheEntry; similarity: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         if (entry.compressionData?.som) {
           const similarity = this.calculateSOMSimilarity(
@@ -494,17 +494,17 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
       return candidates.length > 0 ? candidates[0].entry: null;
-    } catch (error) {
+    }, catch (error) {
       console.error('SOM similarity search failed:', error);
       return null;
     }
   }
   private async findPatternMatchingImage(
-    query: MultiDimensionalQuery;
+    query,: MultiDimensionalQuer,y;
   ): Promise<ImageCacheEntry | null> {
-    try {
+    try, {
       // Use auto-encoder to find pattern-matching images
-      const candidates: { entry: ImageCacheEntry; patternMatch: number }[] = [];
+      const, candidate,s: { entry: ImageCacheEntry; patternMatch: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         if (entry.compressionData?.original) {
           const patternMatch = this.calculatePatternSimilarity(
@@ -523,12 +523,12 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
       return candidates.length > 0 ? candidates[0].entry: null;
-    } catch (error) {
+    }, catch (error) {
       console.error('Pattern matching search failed:', error);
       return null;
     }
   }
-  private selectOptimalLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): CacheLayer[] {
+  private selectOptimalLayers(entry,: ImageCacheEntry, dimension,s: CacheDimension,s): CacheLayer,[] {
     const selectedLayers: CacheLayer[] = [];
     // GPU texture layer for high-quality or SOM-based visualizations
     if (dimensions.visual === 'hires' || dimensions.algorithm === 'som') {
@@ -551,16 +551,16 @@ export class MultiDimensionalImageCache {
     return selectedLayers;
   }
   private async reconstructFromCompressed(
-    data: ArrayBuffer
-    cacheKey: string;
+    data,: ArrayBuffer
+    cacheKey,: strin,g;
   ): Promise<ImageCacheEntry | null> {
-    try {
+    try, {
       // Parse FlatBuffer data back to document
-      const document = nesGPUBridge.parseFlatBufferToDocument(data);
-      const metadata = document?.metadata as any;
-      if (!metadata?.imageData) return null;
+      const, document = nesGPUBridge.parseFlatBufferToDocument(data,);
+      const, metadata = document?.metadata as an,y;
+      if (!metadata,?.imageData), retur,n n,ull;
       // Reconstruct entry
-      const entry: ImageCacheEntry = {
+      const, entr,y: ImageCacheEntry = {
         id: cacheKey
         algorithm: 'dfs', // Default
         imageData: metadata.imageData,
@@ -590,14 +590,14 @@ export class MultiDimensionalImageCache {
         },
         timestamp: document?.lastAccessed || Date.now()
       }
-      return entry;
-    } catch (error) {
+      return, entr,y;
+    }, catch (error) {
       console.error('Failed to reconstruct from compressed data:', error);
       return null;
     }
   }
   // Helper methods
-  private generateMultiDimensionalKey(dimensions: CacheDimensions, graphData: any): string {
+  private generateMultiDimensionalKey(dimensions,: CacheDimensions, graphDat,a: an,y): string {
     const parts = [
       dimensions.temporal || 'recent',
       dimensions.spatial || 'local',
@@ -608,48 +608,48 @@ export class MultiDimensionalImageCache {
     ];
     return `md_${parts.join('_')}`.replace(/[^a-zA-Z0-9_]/g, '_').substring(0, 64);
   }
-  private generateGraphSignature(graphData: any): string {
+  private generateGraphSignature(graphData,: any,): string {
     if (graphData.signature) return graphData.signature;
     const nodeCount = graphData.nodes?.length || 0;
     const edgeCount = graphData.edges?.length || 0;
     const domain = graphData.metadata?.legalDomain || 'general';
     return `${nodeCount}_${edgeCount}_${domain}_${Date.now()}`.substring(0, 32);
   }
-  private updateDimensionalIndices(cacheKey: string, dimensions: CacheDimensions): void {
-    Object.entries(dimensions).forEach(([dim, value]) => {
+  private updateDimensionalIndices(cacheKey,: string, dimension,s: CacheDimension,s): void {
+    Object,.entries(dimensions).forEach(([dim, value]) => {
       if (value) {
         const dimSet = this.dimensionalIndices.get(dim);
         if (dimSet) {
           dimSet.add(`${value}:${cacheKey}`);
         }
       }
-    });
+    }),;
   }
-  private calculateCitationDensity(graphData: any): number {
+  private calculateCitationDensity(graphData,: any,): number {
     const citationEdges = graphData.edges?.filter((e: any) => e.type === 'cites').length || 0;
     const totalEdges = graphData.edges?.length || 1;
     return citationEdges / totalEdges;
   }
-  private calculateJurisdictionalSpread(graphData: any): number {
+  private calculateJurisdictionalSpread(graphData,: any,): number {
     const jurisdictions = new Set(
       graphData.nodes?.map((n: any) => n.metadata?.jurisdiction).filter(Boolean) || []
     );
     return Math.min(jurisdictions.size / 10, 1.0); // Normalize to 0-1
   }
-  private calculateTemporalRange(graphData: any): number {
+  private calculateTemporalRange(graphData,: any,): number {
     const timestamps =
       graphData.nodes?.map((n: any) => n.metadata?.timestamp).filter(Boolean) || [];
     if (timestamps.length < 2) return 0;
     const range = Math.max(...timestamps) - Math.min(...timestamps);
     return Math.min(range / (365 * 24 * 60 * 60 * 1000), 1.0); // Normalize to years
   }
-  private calculateComplexityIndex(graphData: any): number {
+  private calculateComplexityIndex(graphData,: any,): number {
     const nodeCount = graphData.nodes?.length || 0;
     const edgeCount = graphData.edges?.length || 0;
     const nodeTypes = new Set(graphData.nodes?.map((n: any) => n.type) || []).size;
     return Math.min((edgeCount / nodeCount + nodeTypes / 6) / 2, 1.0);
   }
-  private calculateSOMSimilarity(som1: SOMDecomposition, som2: SOMDecomposition): number {
+  private calculateSOMSimilarity(som1,: SOMDecomposition, som,2: SOMDecompositio,n): number {
     // Simple similarity calculation between SOM decompositions
     if (!som1.convergenceHistory || !som2.convergenceHistory) return 0;
     const len = Math.min(som1.convergenceHistory.length, som2.convergenceHistory.length);
@@ -661,14 +661,14 @@ export class MultiDimensionalImageCache {
     }
     return similarity / len;
   }
-  private calculatePatternSimilarity(signature: string, pattern: EncodedGraphPattern): number {
+  private calculatePatternSimilarity(signature,: string, patter,n: EncodedGraphPatter,n): number {
     // Simple pattern similarity based on signature matching
     const signatureScore = signature === pattern.patternSignature ? 1.0 : 0.5;
     const compressionScore = 1 - pattern.reconstructionError;
     return (signatureScore + compressionScore) / 2;
   }
   // Public API methods
-  getMetrics() {
+  getMetrics(), {
     return {
       ...this.metrics,
       hitRatio:
@@ -686,10 +686,10 @@ export class MultiDimensionalImageCache {
       }))
     }
   }
-  async evictExpired(): Promise<number> {
-    let evicted = 0;
-    const now = Date.now();
-    for (const [key, entry] of this.imageEntries.entries()) {
+  async evictExpired(),: Promise<number> {
+    let, evicted =, 0;
+    const, now = Date.now(,);
+    for (const, [key, entry], o,f t,his.imageEntries.entri,es()) {
       const age = now - entry.timestamp;
       if (age > 24 * 60 * 60 * 1000) {
         // 24 hours
@@ -701,9 +701,9 @@ export class MultiDimensionalImageCache {
     console.log(`🧹 Evicted ${evicted} expired entries`);
     return evicted;
   }
-  async cleanup(): Promise<void> {
+  async cleanup(),: Promise<void> {
     // Clean up GPU resources
-    for (const texture of this.gpuTextures.values()) {
+    for (const, texture, o,f t,his.gpuTextures.valu,es()) {
       try {
         texture.texture?.destroy();
         texture.gpuBuffer?.destroy();

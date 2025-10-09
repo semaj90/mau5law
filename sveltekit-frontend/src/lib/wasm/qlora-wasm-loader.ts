@@ -160,7 +160,7 @@ export class QLoRAWasmLoader {
     // For now, we'll create a mock implementation
     console.log(`📦 Loading WASM module from: ${wasmPath}`);
     // Simulate loading time
-    await new Promise(resolve => setTimeout(resolve, 1000);
+    await new Promise(resolve => setTimeout(resolve, 1000),;
     // Return mock implementation
     return this.createMockWasmModule();
   }
@@ -237,7 +237,7 @@ export class QLoRAWasmLoader {
    */
   async generateText(
     modelKey: string
-    prompt: string;
+    prompt: string,;
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -319,7 +319,7 @@ export class QLoRAWasmLoader {
    */
   async updateAdapter(
     modelKey: string
-    trainingData: Array<;
+    trainingData: Array<,;
   ): Promise<boolean> {
     console.log(`🔄 Updating QLoRA adapter with ${trainingData.length} examples...`);
     try {
@@ -328,7 +328,7 @@ export class QLoRAWasmLoader {
       // 2. Run incremental QLoRA training
       // 3. Update the loaded adapter weights
       // For now, simulate the update process
-      await new Promise(resolve => setTimeout(resolve, 2000);
+      await new Promise(resolve => setTimeout(resolve, 2000),;
       console.log('✅ QLoRA adapter updated successfully');
       return true;
     } catch (error) {
@@ -452,8 +452,8 @@ export class QLoRAWasmLoader {
    */
   private async recordInference(
     prompt: string
-    response: string;
-    result: QLoRAInferenceResult;
+    response: string,;
+    result: QLoRAInferenceResult,;
   ): Promise<void> {
     try {
       // This would integrate with the QLoRA trainer for continuous learning
@@ -494,7 +494,7 @@ export async function prepareDistilledModels(): Promise<void> {
   for (const model of models) {
     console.log(`⬇️ Preparing ${model.name} (${model.size}MB)...`);
     // Would implement actual download and caching logic
-    await new Promise(resolve => setTimeout(resolve, 500);
+    await new Promise(resolve => setTimeout(resolve, 500),;
     console.log(`✅ ${model.name} ready`);
   }
   console.log('🚀 All distilled models prepared for browser execution');

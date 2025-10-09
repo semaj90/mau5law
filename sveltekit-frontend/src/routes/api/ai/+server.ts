@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate AI response
     const response = await legalAI.generateResponse(body)
     return json(response)
-  } catch (error) {
+  }, catch (error) {
     console.error('AI API Error:', error)
     return json({
         error: 'Internal server error',
@@ -295,8 +295,8 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         status: 'unhealthy',
-        error: error instanceof Error ? error.message: 'Service check failed',
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: 'Service check failed',
+        timestamp,: new Date().toISOString()
       },
       { status: 503 }
     )
