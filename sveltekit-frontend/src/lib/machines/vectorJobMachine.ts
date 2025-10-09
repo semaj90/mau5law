@@ -110,7 +110,7 @@ const vectorJobServices = {
 				throw new Error(status.error || 'Job processing failed');
 			}
 			// Wait 5 seconds before next poll
-			await new Promise(resolve => setTimeout(resolve, 5000);
+			await new Promise(resolve => setTimeout(resolve, 5000),;
 			attempts++;
 		}
 		throw new Error('Job processing timeout');
@@ -118,8 +118,8 @@ const vectorJobServices = {
 }
 export const vectorJobMachine = createMachine({
 	types: {
-		context: { [key: string]: any } as VectorJobContext,
-		events: { [key: string]: any } as VectorJobEvent
+		context: { [key,: strin,g]: any } as VectorJobContext,
+		events: { [key,: strin,g]: any } as VectorJobEvent
 	},
 	id: 'vectorJob',
 	initial: 'idle',
@@ -305,7 +305,7 @@ export const vectorJobMachine = createMachine({
 								processingTime: context.processingTimeMs,
 								usedWebGPU: context.useWebGPU
 							}
-						});
+						}),;
 					}
 				}
 			],
@@ -326,7 +326,7 @@ export const vectorJobMachine = createMachine({
 								attempts: context.attempts,
 								usedWebGPU: context.useWebGPU
 							}
-						});
+						}),;
 					}
 				}
 			],
@@ -358,8 +358,8 @@ export async function createVectorJob(
 	ownerType: string
 	ownerId: string
 	operation: string
-	data?: any;
-	priority: string = 'medium';
+	data?: any,;
+	priority: string = 'medium',;
 ): Promise<any> {
 	const { createActor } = await import('xstate');
 	const actor = createActor(vectorJobMachine);
@@ -378,7 +378,7 @@ export async function createVectorJob(
 }
 // Utility for batch vector job processing
 export async function processBatchVectorJobs(
-	jobs: Array<;
+	jobs: Array<,;
 ): Promise<VectorJobActor[]> {
 	const actors = await Promise.all(
 		jobs.map(job =>

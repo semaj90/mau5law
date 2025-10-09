@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Canvas saved successfully',
       saved_at: savedCanvas.created_at
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Canvas save error:', error)
     return json({
         error: 'Failed to save canvas',

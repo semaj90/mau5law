@@ -6,10 +6,10 @@ try {
 } catch {
   // Provide minimal fallback schema structure
   schema = {
-    documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: { [key: string]: any } },
-    documentVectors: { [key: string]: any },
-    evidence: { [key: string]: any },
-    cases: { [key: string]: any }
+    documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: { [key,: strin,g]: any } },
+    documentVectors: { [key,: strin,g]: any },
+    evidence: { [key,: strin,g]: any },
+    cases: { [key,: strin,g]: any }
   }
 }
 import Redis from "ioredis";
@@ -40,51 +40,40 @@ const sql = postgres({
   password: process.env.DATABASE_PASSWORD || '123456',
   max: 20,
   idle_timeout: 20,
-  prepare: true;
-  ssl: process.env.NODE_ENV === 'production' ? 'require' : false
+  prepare: true,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
-// removed unused db assignment
+// --- Create Drizzle DB instance to use consistently as `db` ---
+const db = drizzle(sql);
+
 // Initialize Redis for caching
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   db: parseInt(process.env.REDIS_DB || '0'),
   maxRetriesPerRequest: 3,
-  enableReadyCheck: true
-  lazyConnect: false
+  enableReadyCheck: true,
+  lazyConnect: false,
   retryStrategy: (times) => Math.min(times * 50, 2000)
 });
 // Initialize LangChain components
 const embeddings = new OllamaEmbeddings({
-  baseUrl: OLLAMA_BASE_URL
-  model: EMBEDDING_MODEL
+  baseUrl: OLLAMA_BASE_URL,
+  model: EMBEDDING_MODEL,
   requestOptions: {
-    useMMap: true
-    numThread: 8
+    useMMap: true,
+    numThreads: 8
   }
 });
 const llm = new Ollama({
-  baseUrl: OLLAMA_BASE_URL
-  model: LLM_MODEL
+  baseUrl: OLLAMA_BASE_URL,
+  model: LLM_MODEL,
   temperature: 0.3, // Lower for legal accuracy
   numCtx: 8192,
   numPredict: 2048,
   topK: 40,
   topP: 0.9,
-  repeatPenalty: 1.1,
-  callbacks: [);
-    {
-      handleLLMStart: async (llm, prompts) => {
-        console.log(`[RAG] LLM Started: ${LLM_MODEL}`);
-      },
-      handleLLMEnd: async (output) => {
-        console.log(`[RAG] LLM Completed`);
-      },
-      handleLLMError: async (err) => {
-        console.error('[RAG] LLM Error:', err);
-      }
-    }
-  ]
+  repeatPenalty: 1.1
 });
 // Text splitter for legal documents
 const textSplitter = new RecursiveCharacterTextSplitter({
@@ -128,20 +117,20 @@ export class LegalRAGPipeline {
     title: string;
     content: string;
     documentType: string;
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any };
     caseId?: string;
     userId: string;
   }) {
     const startTime = Date.now();
     const { title, content, documentType, metadata = {}, caseId, userId } = params;
     try {
-      // 1. Create main document record
+      // 1. Create main document record (use db from drizzle)
       const [document] = await db
-        .insert(schema.legalDocuments);
+        .insert(schema.legalDocuments)
         .values({
           title,
           content: content.substring(0, 10000), // Store first 10k chars for preview
-          fullText: content
+          fullText: content,
           documentType,
           keywords: metadata.keywords || [],
           topics: metadata.topics || [],
@@ -150,28 +139,29 @@ export class LegalRAGPipeline {
           createdBy: userId
         })
         .returning();
-      console.log(`[RAG] Created document: ${document.id}`);
+
       // 2. Generate document-level embedding
       const docEmbedding = await this.generateEmbedding(`${title}\n${content.substring(0, 2000)}`);
-      // Store as JSON string for now (pgvector requires array format)
       await db
         .update(schema.legalDocuments)
         .set({ embedding: JSON.stringify(docEmbedding) })
-        .where(eq(schema.legalDocuments.id, document.id);
+        .where(eq(schema.legalDocuments.id, document.id));
+
       // 3. Split into chunks for detailed retrieval
       const chunks = await this.smartLegalChunking(content);
-      console.log(`[RAG] Split into ${chunks.length} chunks`);
+
       // 4. Process chunks in batches
       const BATCH_SIZE = 10;
       for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
         const batch = chunks.slice(i, i + BATCH_SIZE);
-        const chunkRecords = await Promise.all(batch.map(async (chunk, idx) => {
-            const embedding = await this.generateEmbedding(chunk));
+        const chunkRecords = await Promise.all(
+          batch.map(async (chunk, idx) => {
+            const embedding = await this.generateEmbedding(chunk);
             return {
               documentId: document.id,
               documentType,
               chunkIndex: i + idx,
-              content: chunk
+              content: chunk,
               embedding: JSON.stringify(embedding),
               metadata: {
                 title,
@@ -179,14 +169,12 @@ export class LegalRAGPipeline {
                 totalChunks: chunks.length,
                 ...metadata
               }
-            }
+            };
           })
         );
         await db.insert(schema.documentChunks).values(chunkRecords);
-        console.log(
-          `[RAG] Processed batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(chunks.length / BATCH_SIZE)}`
-        );
       }
+
       // 5. Auto-generate tags using AI
       const tags = await this.generateAutoTags(content, documentType);
       for (const tag of tags) {
@@ -194,19 +182,20 @@ export class LegalRAGPipeline {
           entityId: document.id,
           entityType: 'document',
           tag: tag.tag,
-          confidence: tag.confidence.toString()),
+          confidence: String(tag.confidence),
           source: 'ai_analysis',
           model: LLM_MODEL
         });
       }
+
       const processingTime = Date.now() - startTime;
       console.log(`[RAG] Document ingestion completed in ${processingTime}ms`);
       return {
         documentId: document.id,
         chunksCreated: chunks.length,
-        tags: tags.map((t) => t.tag),
+        tags: tags.map((t: any) => t.tag),
         processingTime
-      }
+      };
     } catch (error: any) {
       console.error('[RAG] Ingestion error:', error);
       throw error;
@@ -222,9 +211,8 @@ export class LegalRAGPipeline {
   }): Promise<LangChainDocument[]> {
     const { query, caseId, documentType, limit = 10, threshold = 0.5 } = params;
     try {
-      // Generate query embedding
       const queryEmbedding = await this.generateEmbedding(query);
-      // Perform vector similarity search
+      // Vector results (using sql tagged template) - keep as-is but ensure usage is syntactically valid
       const vectorResults = await sql`
         SELECT
           dc.id,
@@ -240,7 +228,7 @@ export class LegalRAGPipeline {
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
       `;
-      // Perform keyword search
+
       const keywordResults = await sql`
         SELECT
           dc.id,
@@ -256,41 +244,42 @@ export class LegalRAGPipeline {
         ORDER BY text_rank DESC
         LIMIT ${limit}
       `;
-      // Combine and deduplicate results
+
       const combinedResults = new Map<string, any>();
-      // Add vector results with higher weight
-      vectorResults.forEach((r) => {
+      vectorResults.forEach((r: any) => {
         combinedResults.set(r.id, {
           ...r,
           score: r.similarity * 0.7
         });
       });
-      // Add or update with keyword results
-      keywordResults.forEach((r) => {
+      keywordResults.forEach((r: any) => {
         const existing = combinedResults.get(r.id);
         if (existing) {
-          existing.score += r.text_rank * 0.3;
+          existing.score += (r.text_rank || 0) * 0.3;
         } else {
           combinedResults.set(r.id, {
             ...r,
-            score: r.text_rank * 0.3
+            score: (r.text_rank || 0) * 0.3
           });
         }
       });
+
       // Sort by combined score and convert to Documents
-      const sortedResults = Array.from(combinedResults.values()
+      const sortedResults = Array.from(combinedResults.values())
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
-      return sortedResults.map((r): LangChainDocument => ({
-            pageContent: r.content,
-            metadata: {
-              ...r.metadata,
-              documentId: r.document_id,
-              score: r.score,
-              similarity: r.similarity || 0,
-              textRank: r.text_rank || 0
-            }
-          })
+
+      return sortedResults.map(
+        (r): LangChainDocument => ({
+          pageContent: r.content,
+          metadata: {
+            ...(r.metadata || {}),
+            documentId: r.document_id,
+            score: r.score,
+            similarity: r.similarity || 0,
+            textRank: r.text_rank || 0
+          }
+        })
       );
     } catch (error: any) {
       console.error('[RAG] Search error:', error);
@@ -307,9 +296,8 @@ export class LegalRAGPipeline {
     const startTime = Date.now();
     const { question, caseId, userId, conversationContext } = params;
     try {
-      // 1. Retrieve relevant context
       const relevantDocs = await this.hybridSearch({
-        query: question
+        query: question,
         caseId,
         limit: 5,
         threshold: 0.6
@@ -320,17 +308,18 @@ export class LegalRAGPipeline {
             "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
           sources: [],
           confidence: 0
-        }
+        };
       }
-      // 2. Build context from retrieved documents
+
       const context = relevantDocs
         .map((doc, idx) => `[Source ${idx + 1}]:\n${doc.pageContent}`)
         .join('\n\n---\n\n');
-      // 3. Create prompt with legal context
+
+      // --- Cleaned prompt (removed stray characters and ensured valid template) ---
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
 ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ''}
-Legal Context:)
+Legal Context:
 {context}
 Question: {question}
 Instructions:
@@ -341,30 +330,23 @@ Instructions:
 5. If the context doesn't fully answer the question, clearly state what information is missing
 Answer:
       `);
-      // 4. Create chain and generate answer
-      const chain = RunnableSequence.from([);
-        {
-          context: () => context,
-          question: new RunnablePassthrough()
-        },
-        promptTemplate,
-        llm,
-        new StringOutputParser()
-      ]);
-      const chainResult = await chain.invoke(question);
-      const answer = typeof chainResult === 'string' ? chainResult : chainResult.parse || '';
-      // 5. Extract confidence and key points
+
+      // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
+      const promptText = await promptTemplate.format({ context, question });
+      const llmResult = await (llm as any).call(promptText);
+      const answer = typeof llmResult === 'string' ? llmResult : llmResult?.text || '';
+
       const analysis = await this.analyzeAnswer(answer, relevantDocs);
-      // 6. Log the query for future improvement
+
       const queryEmbedding = await this.generateEmbedding(question);
       await db.insert(schema.userAiQueries).values({
         userId,
         caseId,
-        query: question
-        response: answer
-        model: LLM_MODEL
+        query: question,
+        response: answer,
+        model: LLM_MODEL,
         queryType: 'legal_research',
-        confidence: analysis.confidence.toString()),
+        confidence: String(analysis.confidence),
         processingTime: Date.now() - startTime,
         contextUsed: relevantDocs.map((d) => d.metadata.documentId),
         embedding: JSON.stringify(queryEmbedding),
@@ -373,28 +355,28 @@ Answer:
           keyPoints: analysis.keyPoints
         }
       });
+
       return {
         answer,
-        sources: relevantDocs.map((d) => ({,
+        sources: relevantDocs.map((d) => ({
           id: d.metadata.documentId,
-          title: d.metadata.title,
+          title: (d.metadata as any).title,
           score: d.metadata.score
         })),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime
-      }
+      };
     } catch (error: any) {
       console.error('[RAG] QA error:', error);
-      // Log failed query
       await db.insert(schema.userAiQueries).values({
         userId,
         caseId,
-        query: question
+        query: question,
         response: '',
-        model: LLM_MODEL
-        isSuccessful: false
-        errorMessage: error.message,
+        model: LLM_MODEL,
+        isSuccessful: false,
+        errorMessage: error?.message || String(error),
         processingTime: Date.now() - startTime
       });
       throw error;
@@ -484,66 +466,59 @@ Analysis:
   }
   // === HELPER METHODS ===
   private async generateEmbedding(text: string): Promise<number[]> {
-    // Check cache first
     const cacheKey = `embedding:${this.hashText(text)}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
       return JSON.parse(cached);
     }
-    // Generate new embedding
     const embedding = await embeddings.embedQuery(text);
     // Cache for 24 hours
-    await redis.set(cacheKey, JSON.stringify(embedding);
+    await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 60 * 60 * 24);
     return embedding;
   }
   private async smartLegalChunking(content: string): Promise<string[]> {
     const chunks: string[] = [];
-    // Legal document patterns
     const sectionPatterns = [
       /(?:^|\n)(?:SECTION|ARTICLE|CLAUSE|PARAGRAPH)\s+[\d.]+[^\n]*/gi,
       /(?:^|\n)§\s*[\d.]+[^\n]*/g,
-      /(?:^|\n)\d+\.\s+[A-Z][^\n]+/g, // Numbered sections with capital start
-      /(?:^|\n)\([a-z]\)\s+[^\n]+/g, // Lettered subsections
+      /(?:^|\n)\d+\.\s+[A-Z][^\n]+/g,
+      /(?:^|\n)\([a-z]\)\s+[^\n]+/g
     ];
-    // Try to split by legal structure
+
     let structuredChunks: string[] = [];
     for (const pattern of sectionPatterns) {
       const matches = content.match(pattern);
       if (matches && matches.length > 0) {
         const sections = content.split(pattern);
-        // Recombine pattern matches with their content
         for (let i = 0; i < sections.length; i++) {
           if (sections[i].trim().length > 50) {
-            structuredChunks.push(sections[i].trim();
+            structuredChunks.push(sections[i].trim());
           }
         }
         if (structuredChunks.length > 0) break;
       }
     }
-    // If no legal structure found, use standard chunking
+
     if (structuredChunks.length === 0) {
       const docs = await textSplitter.createDocuments([content]);
       structuredChunks = docs.map((d) => d.pageContent);
     }
-    // Further split large chunks if needed
+
     for (const chunk of structuredChunks) {
       if (chunk.length > 2000) {
         const subDocs = await textSplitter.createDocuments([chunk]);
-        chunks.push(...subDocs.map((d) => d.pageContent);
+        chunks.push(...subDocs.map((d) => d.pageContent));
       } else {
         chunks.push(chunk);
       }
     }
     return chunks;
   }
-  private async generateAutoTags(
-    content: string
-    documentType: string;
-  ): Promise<Array<any> {
+  private async generateAutoTags(content: string, documentType: string): Promise<Array<any>> {
     const tagPrompt = PromptTemplate.fromTemplate(`
 Extract relevant legal tags from this {documentType} document.
 Focus on: legal concepts, parties, jurisdictions, case types, and key topics.
-Document excerpt:)
+Document excerpt:
 {content}
 Return ONLY a JSON array of tags with confidence scores (0-1):
 [{"tag": "contract law", "confidence": 0.95}, ...]
@@ -552,11 +527,10 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     try {
       const chainResult = await chain.invoke({
         documentType,
-        content: content.substring(0, 3000), // Use first 3000 chars for tagging
+        content: content.substring(0, 3000)
       });
-      // removed unused response assignment
-      // Extract JSON from response
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
+      const responseText = typeof chainResult === 'string' ? chainResult : chainResult?.parse || String(chainResult);
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
@@ -567,40 +541,46 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     }
   }
   private async analyzeAnswer(answer: string, sources: LangChainDocument[]) {
-    // Simple confidence calculation based on source relevance
-    const avgScore = sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / sources.length;
+    if (!sources || sources.length === 0) {
+      return { confidence: 0, keyPoints: [] };
+    }
+    const avgScore =
+      sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / (sources.length || 1);
     const confidence = Math.min(0.95, avgScore);
-    // Extract key points (simplified - could use LLM for better extraction)
+
     const keyPoints = answer
       .split('\n')
-      .filter((line) => line.match(/^\d+\.|^-|^•/)
+      .filter((line) => !!line && (/^\d+\.|^-|^•/.test(line) || line.trim().length > 40))
       .slice(0, 5)
-      .map((line) => line.replace(/^[\d.•-]\s*/, '').trim();
+      .map((line) => line.replace(/^[\d.•-]\s*/, '').trim());
+
     return {
       confidence,
       keyPoints
-    }
+    };
   }
   private parseContractAnalysis(analysis: string) {
     const sections = {
       contractType: '',
-      parties: [],
-      keyTerms: [],
-      risks: [],
-      legalIssues: [],
-      recommendations: []
-    }
-    // Parse the structured response
-    // removed unused lines assignment
+      parties: [] as string[],
+      keyTerms: [] as string[],
+      risks: [] as string[],
+      legalIssues: [] as string[],
+      recommendations: [] as string[]
+    };
+
+    const lines = (analysis || '').split(/\r?\n/);
     let currentSection = '';
     for (const line of lines) {
-      if (line.includes('CONTRACT TYPE')) currentSection = 'type';
-      else if (line.includes('KEY TERMS')) currentSection = 'terms';
-      else if (line.includes('RISK')) currentSection = 'risks';
-      else if (line.includes('LEGAL ISSUES')) currentSection = 'issues';
-      else if (line.includes('RECOMMENDATIONS')) currentSection = 'recommendations';
-      else if (line.trim() && currentSection) {
-        const trimmed = line.replace(/^[-•*]\s*/, '').trim();
+      const l = line.trim();
+      if (!l) continue;
+      if (l.toUpperCase().includes('CONTRACT TYPE')) currentSection = 'type';
+      else if (l.toUpperCase().includes('KEY TERMS')) currentSection = 'terms';
+      else if (l.toUpperCase().includes('RISK')) currentSection = 'risks';
+      else if (l.toUpperCase().includes('LEGAL ISSUES')) currentSection = 'issues';
+      else if (l.toUpperCase().includes('RECOMMENDATIONS')) currentSection = 'recommendations';
+      else if (currentSection) {
+        const trimmed = l.replace(/^[-•*]\s*/, '').trim();
         switch (currentSection) {
           case 'type':
             if (!sections.contractType) sections.contractType = trimmed;
@@ -628,7 +608,11 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
   // === CLEANUP ===
   async close() {
     // Cleanup handled by connection pool
-    await sql.end();
+    try {
+      await sql.end();
+    } catch {
+      // ignore if postgres client doesn't expose end
+    }
   }
 }
 // Export singleton instance

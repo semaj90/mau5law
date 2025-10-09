@@ -69,7 +69,7 @@ export async function multiResolutionLegalAnalysis(device: GPUDevice) {
   console.log('- Standard:', standardBuffer.uploadStats);
   console.log('- Bulk:', bulkBuffer.uploadStats);
   // Cache statistics
-  console.log('🗄️ Cache stats:', uploader.getCacheStats();
+  console.log('🗄️ Cache stats:', uploader.getCacheStats(),;
   // Cleanup
   [criticalBuffer, standardBuffer, bulkBuffer].forEach(result =>
     (result as { buffer?: any; uploadStats?: any }).buffer.destroy()
@@ -105,7 +105,7 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
     });
   });
   // Cleanup
-  batchResults.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
+  batchResults.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy(),;
 }
 /**
  * Example 4: Legal AI Compute Pipeline with Quantization
@@ -165,7 +165,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   // Large corpus of legal documents (can use lower precision)
   const documentCorpus = [];
   for (let i = 0; i < 1000; i++) {
-    documentCorpus.push(new Float32Array(768).fill(0.1 + Math.random() * 0.8);
+    documentCorpus.push(new Float32Array(768).fill(0.1 + Math.random() * 0.8),;
   }
   const uploader = new WebGPUBufferUploader(device);
   // Upload query with high precision
@@ -194,7 +194,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   });
   // Cleanup
   queryBuffer.buffer.destroy();
-  corpusBuffers.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
+  corpusBuffers.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy(),;
 }
 /**
  * Example 6: Debug and Analysis Tools
@@ -216,7 +216,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
     ensureF32(float32Data),
     ensureF32(regularArray)
   ];
-  console.log('📊 Normalized data lengths:', normalizedData.map(d => d.length);
+  console.log('📊 Normalized data lengths:', normalizedData.map(d => d.length),;
   // Test all quantization profiles
   console.log('🎯 Testing legal AI profiles:');
   const testData = new Float32Array(1000).fill(0.5);
@@ -282,7 +282,7 @@ export async function realWorldLegalAIPipeline(device: GPUDevice) {
     spaceSavings: `${(((totalOriginalSize - totalCompressedSize) / totalOriginalSize) * 100).toFixed(1)}%`
   });
   // Cleanup
-  results.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
+  results.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy(),;
   uploader.clearCache();
   console.log('✅ Legal AI pipeline complete');
 }

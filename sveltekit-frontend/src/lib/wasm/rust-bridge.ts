@@ -218,7 +218,7 @@ export async function benchmarkRustBridge(): Promise<any> {
   const textTime = performance.now() - textStart;
   // Benchmark vector operations
   const vectorStart = performance.now();
-  const sampleVector = new Array(384).fill(0).map(() => Math.random();
+  const sampleVector = new Array(384).fill(0).map(() => Math.random(),;
   optimizeEmbeddingVector(sampleVector);
   const vectorTime = performance.now() - vectorStart;
   // Benchmark system access

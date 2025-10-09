@@ -42,7 +42,7 @@ export const goMicroserviceMachine = createMachine({
           const start = Date.now();
           const res = await fetch(`${endpoint}/health`);
           if (!res.ok) throw new Error('health check failed');
-          await res.json().catch(() => ({});
+          await res.json().catch(() => ({}),;
           return { responseTime: Date.now() - start } as HealthResult;
         }),
         input: ({ context }: any) => ({ endpoint: context.endpoint }),
@@ -89,7 +89,7 @@ export const goMicroserviceMachine = createMachine({
                 body: request.body ? JSON.stringify(request.body) : undefined
               } as RequestInit);
               if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-              const data = await res.json().catch(() => ({});
+              const data = await res.json().catch(() => ({}),;
               return { status: res.status, data, headers: Object.fromEntries(res.headers.entries()), duration: Date.now() - start } as GoServiceResponse;
             }),
             // Map MAKE_REQUEST event payload + current endpoint into promise input
@@ -116,7 +116,7 @@ export const goMicroserviceMachine = createMachine({
               const start = Date.now();
               const res = await fetch(`${endpoint}/health`);
               if (!res.ok) throw new Error('health check failed');
-              await res.json().catch(() => ({});
+              await res.json().catch(() => ({}),;
               return { responseTime: Date.now() - start } as HealthResult;
             }),
             input: ({ context }: any) => ({ endpoint: context.endpoint })

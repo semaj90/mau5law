@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     // Enhanced rate limiting for GET requests based on user role
     const isAuthenticated = !!locals.user
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_optimized_get:${clientIP}:${locals.user?.id || 'anonymous'}`,
+      key: `qdrant_optimized_get:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       limit: isAuthenticated ? 200 : 100, // Higher limit for authenticated users
       windowSec: 60
     })
@@ -52,8 +52,8 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         },)
         {
           status: 429,
-          headers: {
-            'Retry-After': rateLimitResult.retryAfter.toString()
+          headers,: {
+            'Retry-After',: rateLimitResult.retryAfter.toString()
           }
         }
       )
@@ -192,10 +192,10 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             },)
             {
               collection,
-              queryType: typeof queryInput
+              queryType,: typeof queryInput
               resultsCount: results.length,
               processingTime,
-              cacheHit: performanceMetrics.cacheHits > 0
+              cacheHit,: performanceMetrics.cacheHits > 0
             }
           )
           return json({
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             },)
             {
               collection,
-              queryType: typeof query
+              queryType,: typeof query
               processingTime: Date.now() - startTime
             }
           )
@@ -285,7 +285,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     logger.error(
       'Optimized Qdrant GET operation failed',
       error instanceof Error ? error : undefined
@@ -301,8 +301,8 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     return json()
       {
         success: false,
-        error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
+        error,: 'Internal server error',
+        details,: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },
       { status: 500 }
     )
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     // Enhanced rate limiting based on user role
     const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api')
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_optimized_post:${clientIP}:${locals.user?.id || 'anonymous'}`,
+      key: `qdrant_optimized_post:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       ...rateLimitConfig
     })
     if (!rateLimitResult.allowed) {
@@ -328,8 +328,8 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         },)
         {
           status: 429,
-          headers: {
-            'Retry-After': rateLimitResult.retryAfter.toString()
+          headers,: {
+            'Retry-After',: rateLimitResult.retryAfter.toString()
           }
         }
       )
@@ -376,7 +376,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             },)
             {
               collection,
-              pointsCount: points.length,
+              pointsCount,: points.length,
               processingTime,
               memoryUsage
             }
@@ -408,7 +408,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             },)
             {
               collection,
-              pointsCount: points.length
+              pointsCount,: points.length
             }
           )
           throw upsertError
@@ -437,7 +437,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           },)
           {
             cacheType,
-            memoryFreed: beforeMemory.total - afterMemory.total
+            memoryFreed,: beforeMemory.total - afterMemory.total
           }
         )
         return json({
@@ -511,7 +511,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     logger.error(
       'Optimized Qdrant POST operation failed',
       error instanceof Error ? error : undefined
@@ -521,14 +521,14 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       },)
       {
         clientIP,
-        action: body?.action || 'unknown'
+        action,: body?.action || 'unknown'
       }
     )
     return json()
       {
         success: false,
-        error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
+        error,: 'Internal server error',
+        details,: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },
       { status: 500 }
     )

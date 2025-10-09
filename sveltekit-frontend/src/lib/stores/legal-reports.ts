@@ -826,7 +826,7 @@ class LegalReportsManager {
           {
             name: 'subject',
             type: 'text',
-            required: true;
+            required: true,;
             description: 'Subject line for memo'
           }
         ],
@@ -864,7 +864,7 @@ class LegalReportsManager {
 export const reportsManager = LegalReportsManager.getInstance();
 // Convenience functions
 export async function generateReport(
-  template: ReportTemplate;
+  template: ReportTemplate,;
   variables: { [key: string]: any },
   options?: any
 ): Promise<LegalReport> {

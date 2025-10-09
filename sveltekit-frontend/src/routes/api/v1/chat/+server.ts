@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         }
       }
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Chat API error:', error)
     // Track error analytics
     await analytics.trackEvent(
@@ -344,7 +344,7 @@ async function handleParallelChatExecution({
         message,
         userId,
         sessionId,)
-        { useRAG: !!caseId, maxContextMessages: 5 }
+        { useRAG: !!caseId, maxContextMessages,: 5 }
       )
       return json({
         success: true,

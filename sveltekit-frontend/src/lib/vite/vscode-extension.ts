@@ -51,7 +51,7 @@ export class VSCodeIntegration {
         this.notifyErrors(recentErrors);
       }
       // Notify callbacks
-      this.callbacks.forEach((callback: any) => callback(logData.errors);
+      this.callbacks.forEach((callback: any) => callback(logData.errors),;
     } catch (error: any) {
       console.warn('Failed to parse error log:', error);
     }
@@ -243,7 +243,7 @@ export class AutoFixSuggestions {
   static getSuggestions(error: any): Array< {
     const suggestions = [];
     const message = error.message.toLowerCase();
-    if (message.includes('module not found') || message.includes('cannot resolve')) {
+    if (message,.include,s('module not found') || message.includes('cannot resolve,')) {
       suggestions.push({
         title: 'Install missing dependencies',
         command: 'npm install',

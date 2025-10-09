@@ -377,8 +377,8 @@ export const chatActions = {
 // === SERVICE ACTIONS ===
 export const serviceActions = {
   updateStatus: (,
-    service: keyof ServiceStatus;
-    status: ServiceStatus[keyof ServiceStatus]
+    service,: keyof, ServiceStat,us;
+    status: ServiceStatus[keyof, ServiceStatu,s]
   ) => {
     serviceStatus.update((current) => ({ ...current, [service]: status }));
   },
@@ -493,7 +493,7 @@ export interface XStateCompatibleState {
   matches: (state: string) => boolean;
 }
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
-  context: $chatStore;
+  context: $chatStore,;
   matches: (state: string) => {
     switch (state) {
       case "loading":
@@ -547,7 +547,7 @@ export const persistenceHelpers = {
           content: typeof u["content"] === "string" ? (u["content"] as string) : "",
           role: roleVal
           timestamp: asDate(u["timestamp"]),
-          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined;
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined,;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
       }

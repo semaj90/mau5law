@@ -11,7 +11,7 @@ export class BrowserAdapter {
     try {
       const data = localStorage.getItem(`loki:${dbname}`);
       if (data) {
-        callback(JSON.parse(data);
+        callback(JSON.parse(data),;
       } else {
         callback(null);
       }

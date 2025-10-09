@@ -36,11 +36,11 @@ export const GET: RequestHandler = async () => {
       return json()
         {
           ok: false,
-          source: "shim",
-          data: {
+          source,: "shim",
+          data,: {
             available: false
             message: "GPU status service unavailable",
-            timestamp: new Date().toISOString()
+            timestamp,: new Date().toISOString()
           },
           error: (err as Error).message
         },

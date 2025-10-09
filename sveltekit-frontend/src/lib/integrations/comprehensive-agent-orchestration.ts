@@ -99,7 +99,7 @@ export class ComprehensiveAgentOrchestrator {
       multicoreTasksCompleted = multicoreAnalysis.tasksCompleted;
     }
     // Step 2: Execute all requested agents in parallel
-    const agentPromises = agentsToUse.map(agent => this.executeAgent(agent, request, multicoreAnalysis);
+    const agentPromises = agentsToUse.map(agent => this.executeAgent(agent, request, multicoreAnalysis),;
     const agentResults = await Promise.allSettled(agentPromises);
     // Step 3: Process results and find the best one
     const allResults: ComprehensiveAgentResponse['allResults'] = [];
@@ -109,7 +109,7 @@ export class ComprehensiveAgentOrchestrator {
       if ((result as { status?: any; value?: any; reason?: any; result?: any }).status === 'fulfilled') {
         const agentName = agentsToUse[index];
         const agentResult = {
-          agent: agentName;
+          agent: agentName,;
           output: (result as { status?: any; value?: any; reason?: any; result?: any }).value.output,
           score: (result as { status?: any; value?: any; reason?: any; result?: any }).value.score,
           metadata: (result as { status?: any; value?: any; reason?: any; result?: any }).value.metadata
@@ -122,7 +122,7 @@ export class ComprehensiveAgentOrchestrator {
       } else {
         console.error(`❌ Agent ${agentsToUse[index]} failed:`, (result as { status?: any; value?: any; reason?: any; result?: any }).reason);
         allResults.push({
-          agent: agentsToUse[index];
+          agent: agentsToUse[index],;
           output: `Error: ${(result as { status?: any; value?: any; reason?: any; result?: any }).reason.message}`,
           score: 0,
           metadata: { error: true }
@@ -140,7 +140,7 @@ export class ComprehensiveAgentOrchestrator {
         output: 'No valid results obtained from agents',
         score: 0,
         agent: 'none',
-        metadata: { [key: string]: any }
+        metadata: { [key,: strin,g]: any }
       },
       allResults,
       multicoreAnalysis: multicoreAnalysis ? {,
@@ -189,7 +189,7 @@ export class ComprehensiveAgentOrchestrator {
     // Wait for all tasks to complete
     const results = await Promise.allSettled(
       tasks.map(task => this.multicoreService.waitForTask(task.id, 30000)
-    );
+    ),;
     // Process results
     const recommendations: string[] = [];
     let errorPatterns = null;
@@ -219,7 +219,7 @@ export class ComprehensiveAgentOrchestrator {
   private async executeAgent(
     agentName: string
     request: ComprehensiveAgentRequest
-    multicoreAnalysis: any;
+    multicoreAnalysis: any,;
   ): Promise<any> {
     const baseOptions = {
       includeContext7: request.options?.includeContext7 || false,
@@ -241,14 +241,14 @@ export class ComprehensiveAgentOrchestrator {
       case 'claude':
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext;
+          context: enhancedContext,;
           options: baseOptions
         }
         return await this.simulateClaudeAgent(claudeRequest);
       case 'crewai':
         const crewRequest: CrewAIAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext;
+          context: enhancedContext,;
           options: {
             ...baseOptions,
             crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
@@ -258,7 +258,7 @@ export class ComprehensiveAgentOrchestrator {
       case 'autogen':
         const autogenRequest: AutoGenAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext;
+          context: enhancedContext,;
           options: {
             ...baseOptions,
             analysisType: request.options?.analysisType,
@@ -288,7 +288,7 @@ export class ComprehensiveAgentOrchestrator {
     if (!errorPatterns) return 0;
     // This would be based on actual error analysis results
     // For now, return a reasonable estimate
-    return Math.min(95, Math.max(10, Math.random() * 60 + 20);
+    return Math.min(95, Math.max(10, Math.random() * 60 + 20),;
   }
   // Public method to get current system status
   getSystemStatus() {
@@ -334,7 +334,7 @@ export class ComprehensiveAgentOrchestrator {
       }
     }
     return {
-      analysis: null;
+      analysis: null,;
       recommendations: ['Error analysis failed - check multicore service'],
       fixSuggestions: ['Restart Context7 multicore service']
     }

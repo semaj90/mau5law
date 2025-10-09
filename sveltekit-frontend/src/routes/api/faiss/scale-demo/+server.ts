@@ -409,7 +409,7 @@ function calculateEnterpriseReadiness(documentCount: number) {
   const overall = Object.values(scores).reduce((a, b) => a + b, 0) / Object.keys(scores).length
   return {
     overall: Math.round(overall),
-    breakdown: scores;
+    breakdown: scores,;
     grade: overall >= 90 ? 'A' : overall >= 80 ? 'B' : overall >= 70 ? 'C' : 'D'
   }
 }

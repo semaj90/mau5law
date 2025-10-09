@@ -81,8 +81,8 @@ export class VectorWasmWrapper {
    */
   async computeBatchSimilarities(
     query: Float32Array
-    vectors: Float32Array[];
-    algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
+    vectors: Float32Array[],;
+    algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',;
   ): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');

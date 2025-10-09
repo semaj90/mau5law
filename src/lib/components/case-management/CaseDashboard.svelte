@@ -1,45 +1,41 @@
 <!--
   Case Management Dashboard
-  Real-time legal case tracking with AI insights using Enhanced Bits UI
+  Real-time legal case tracking with AI insights (fallback UI)
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import {
-    ButtonBits,
-    CardBits,
-    BadgeBits,
-    AlertBits,
-    ProgressBits,
-    SeparatorBits,
-    SkeletonBits
-  } from '$lib/components/ui/bits-ui';
-  import {
-    Activity,
-    BarChart3,
-    Clock,
-    AlertTriangle,
-    CheckCircle,
-    RefreshCw,
-    Plus,
-    FolderOpen,
-    ListTodo,
-    Brain
-  } from 'lucide-svelte';
-  import type { CaseDashboardStats } from '$lib/server/services/case-management';
 
-  // Svelte 5 runes for state management
-  let dashboardStats = $state<CaseDashboardStats | null>(null);
-  let isLoading = $state(true);
-  let error = $state<string | null>(null);
-  let refreshing = $state(false);
+  // Local fallback TypeScript interface (replaces external type import)
+  interface RecentActivity {
+    action: string;
+    description: string;
+    createdAt: string;
+    entityType?: string;
+  }
 
-  // Real-time updates
-  let lastUpdate = $state<Date>(new Date());
-  let updateInterval: NodeJS.Timeout;
+  interface CaseDashboardStats {
+    totalCases: number;
+    activeCases: number;
+    completedThisMonth: number;
+    averageProgress: number;
+    highPriorityCases: number;
+    overdueTodos: number;
+    pendingRecommendations: number;
+    totalTimeSpent: number; // minutes
+    recentActivities: RecentActivity[];
+  }
 
-  // Current user (from page data or auth store)
-  const userId = $derived($page.data?.user?.id || 'mock-user-id');
+  // Use standard local reactive variables instead of $state / $derived
+  let dashboardStats: CaseDashboardStats | null = null;
+  let isLoading = true;
+  let error: string | null = null;
+  let refreshing = false;
+
+  let lastUpdate = new Date();
+  let updateInterval: ReturnType<typeof setInterval> | null = null;
+
+  // Use a simple local userId fallback (no $page dependency)
+  const userId = 'mock-user-id';
 
   onMount(() => {
     loadDashboard();
@@ -72,6 +68,7 @@
       }
 
       const data = await response.json();
+      // Expect API to return { stats: CaseDashboardStats }
       dashboardStats = data.stats;
       lastUpdate = new Date();
     } catch (err) {
@@ -145,72 +142,73 @@
         {/if}
       </div>
 
-      <ButtonBits
-        onclick={() => loadDashboard()}
+      <!-- Replaced ButtonBits with native button -->
+      <button
+        on:click={() => loadDashboard()}
         disabled={isLoading || refreshing}
-        variant="outline"
-        size="sm"
+        class="btn-outline btn-sm"
+        aria-busy={isLoading || refreshing}
       >
         {#if isLoading || refreshing}
-          <RefreshCw class="w-4 h-4 mr-2 animate-spin" />
+          <span class="icon">🔄</span>
           Refreshing...
         {:else}
-          <RefreshCw class="w-4 h-4 mr-2" />
+          <span class="icon">🔄</span>
           Refresh
         {/if}
-      </ButtonBits>
+      </button>
     </div>
   </div>
 
   {#if error}
-    <AlertBits variant="destructive" class="mb-6">
-      <AlertTriangle class="w-4 h-4" />
-      <div class="ml-2">
+    <!-- Replaced AlertBits with native markup -->
+    <div class="alert-destructive mb-6" role="alert">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
         <h3 class="font-semibold">Failed to load dashboard</h3>
         <p class="text-sm mt-1">{error}</p>
-        <ButtonBits onclick={() => loadDashboard()} variant="outline" size="sm" class="mt-2">
-          <RefreshCw class="w-4 h-4 mr-2" />
-          Try Again
-        </ButtonBits>
+        <button on:click={() => loadDashboard()} class="btn-outline btn-sm mt-2">
+          🔄 Try Again
+        </button>
       </div>
-    </AlertBits>
+    </div>
   {:else if isLoading}
     <div class="loading-state">
       <div class="space-y-6">
-        <!-- Loading skeletons for metrics -->
+        <!-- Loading skeletons for metrics (simple placeholders) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {#each Array(8) as _}
-            <CardBits class="p-4">
-              <SkeletonBits class="h-4 w-20 mb-2" />
-              <SkeletonBits class="h-8 w-16 mb-1" />
-              <SkeletonBits class="h-3 w-24" />
-            </CardBits>
+            <section class="card p-4">
+              <div class="skeleton h-4 w-20 mb-2"></div>
+              <div class="skeleton h-8 w-16 mb-1"></div>
+              <div class="skeleton h-3 w-24"></div>
+            </section>
           {/each}
         </div>
 
         <!-- Loading skeleton for activity -->
-        <CardBits class="p-4">
-          <SkeletonBits class="h-6 w-32 mb-4" />
+        <section class="card p-4">
+          <div class="skeleton h-6 w-32 mb-4"></div>
           <div class="space-y-3">
             {#each Array(5) as _}
               <div class="flex items-center space-x-3">
-                <SkeletonBits class="h-4 w-4 rounded" />
-                <SkeletonBits class="h-4 flex-1" />
-                <SkeletonBits class="h-4 w-16" />
+                <div class="skeleton h-4 w-4 rounded"></div>
+                <div class="skeleton h-4 flex-1"></div>
+                <div class="skeleton h-4 w-16"></div>
               </div>
             {/each}
           </div>
-        </CardBits>
+        </section>
       </div>
     </div>
   {:else if dashboardStats}
     <!-- Key Metrics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Total Cases -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <FolderOpen class="w-5 h-5 text-blue-600" />
+            <span class="icon">📁</span>
             <h3 class="font-semibold text-gray-700">Total Cases</h3>
           </div>
         </div>
@@ -218,13 +216,13 @@
           <div class="text-3xl font-bold text-gray-900">{dashboardStats.totalCases}</div>
           <p class="text-sm text-gray-500">Active & Closed</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Active Cases -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200 border-l-4 border-l-green-500">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200" style="border-left:4px solid #10b981;">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <Activity class="w-5 h-5 text-green-600" />
+            <span class="icon">⚡</span>
             <h3 class="font-semibold text-gray-700">Active Cases</h3>
           </div>
         </div>
@@ -232,13 +230,13 @@
           <div class="text-3xl font-bold text-green-600">{dashboardStats.activeCases}</div>
           <p class="text-sm text-gray-500">Currently working</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Completed This Month -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <CheckCircle class="w-5 h-5 text-emerald-600" />
+            <span class="icon">✅</span>
             <h3 class="font-semibold text-gray-700">Completed (Month)</h3>
           </div>
         </div>
@@ -246,78 +244,78 @@
           <div class="text-3xl font-bold text-emerald-600">{dashboardStats.completedThisMonth}</div>
           <p class="text-sm text-gray-500">Cases closed</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Average Progress -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <BarChart3 class="w-5 h-5 text-blue-600" />
+            <span class="icon">📊</span>
             <h3 class="font-semibold text-gray-700">Avg Progress</h3>
           </div>
         </div>
         <div class="space-y-3">
           <div class="text-3xl font-bold text-blue-600">{dashboardStats.averageProgress}%</div>
-          <ProgressBits value={dashboardStats.averageProgress} class="w-full" />
+          <progress value={dashboardStats.averageProgress} max="100" class="w-full"></progress>
         </div>
-      </CardBits>
+      </section>
 
       <!-- High Priority Cases -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200 border-l-4 border-l-red-500">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200" style="border-left:4px solid #ef4444;">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <AlertTriangle class="w-5 h-5 text-red-600" />
+            <span class="icon">🚨</span>
             <h3 class="font-semibold text-gray-700">High Priority</h3>
           </div>
           {#if dashboardStats.highPriorityCases > 0}
-            <BadgeBits variant="destructive" class="animate-pulse">Urgent</BadgeBits>
+            <span class="badge badge-destructive animate-pulse">Urgent</span>
           {/if}
         </div>
         <div class="space-y-1">
           <div class="text-3xl font-bold text-red-600">{dashboardStats.highPriorityCases}</div>
           <p class="text-sm text-gray-500">Require attention</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Overdue Todos -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200 border-l-4 border-l-orange-500">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200" style="border-left:4px solid #fb923c;">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <Clock class="w-5 h-5 text-orange-600" />
+            <span class="icon">⏰</span>
             <h3 class="font-semibold text-gray-700">Overdue Tasks</h3>
           </div>
           {#if dashboardStats.overdueTodos > 0}
-            <BadgeBits variant="secondary" class="bg-orange-100 text-orange-800">Overdue</BadgeBits>
+            <span class="badge badge-warning">Overdue</span>
           {/if}
         </div>
         <div class="space-y-1">
           <div class="text-3xl font-bold text-orange-600">{dashboardStats.overdueTodos}</div>
           <p class="text-sm text-gray-500">Past due date</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Pending Recommendations -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <Brain class="w-5 h-5 text-purple-600" />
+            <span class="icon">🧠</span>
             <h3 class="font-semibold text-gray-700">AI Recommendations</h3>
           </div>
           {#if dashboardStats.pendingRecommendations > 0}
-            <BadgeBits variant="secondary" class="bg-purple-100 text-purple-800">New</BadgeBits>
+            <span class="badge badge-info">New</span>
           {/if}
         </div>
         <div class="space-y-1">
           <div class="text-3xl font-bold text-purple-600">{dashboardStats.pendingRecommendations}</div>
           <p class="text-sm text-gray-500">Pending review</p>
         </div>
-      </CardBits>
+      </section>
 
       <!-- Total Time Spent -->
-      <CardBits class="p-6 hover:shadow-lg transition-all duration-200">
+      <section class="card p-6 hover:shadow-lg transition-all duration-200">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <Clock class="w-5 h-5 text-indigo-600" />
+            <span class="icon">⏱️</span>
             <h3 class="font-semibold text-gray-700">Time Spent</h3>
           </div>
         </div>
@@ -325,117 +323,94 @@
           <div class="text-3xl font-bold text-indigo-600">{formatTime(dashboardStats.totalTimeSpent)}</div>
           <p class="text-sm text-gray-500">Across all cases</p>
         </div>
-      </CardBits>
+      </section>
     </div>
 
     <!-- Recent Activity -->
-    <CardBits class="mb-8">
-      <div class="p-6">
-        <div class="flex items-center space-x-2 mb-6">
-          <Activity class="w-5 h-5 text-blue-600" />
-          <h2 class="text-xl font-semibold text-gray-900">Recent Activity</h2>
-        </div>
+    <section class="card mb-8 p-6">
+      <div class="flex items-center space-x-2 mb-6">
+        <span class="icon">📈</span>
+        <h2 class="text-xl font-semibold text-gray-900">Recent Activity</h2>
+      </div>
 
-        {#if dashboardStats.recentActivities.length === 0}
-          <div class="text-center py-12">
-            <div class="text-6xl mb-4">📭</div>
-            <p class="text-gray-500">No recent activity</p>
-          </div>
-        {:else}
-          <div class="space-y-4">
-            {#each dashboardStats.recentActivities as activity}
-              <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  {#if activity.action === 'created'}
-                    <Plus class="w-4 h-4 text-blue-600" />
-                  {:else if activity.action === 'updated'}
-                    <Activity class="w-4 h-4 text-green-600" />
-                  {:else if activity.action === 'status_changed'}
-                    <RefreshCw class="w-4 h-4 text-orange-600" />
-                  {:else if activity.action === 'todo_added'}
-                    <ListTodo class="w-4 h-4 text-purple-600" />
-                  {:else if activity.action === 'todo_completed'}
-                    <CheckCircle class="w-4 h-4 text-green-600" />
-                  {:else if activity.action === 'recommendation_generated'}
-                    <Brain class="w-4 h-4 text-indigo-600" />
-                  {:else}
-                    <Activity class="w-4 h-4 text-gray-600" />
+      {#if dashboardStats.recentActivities.length === 0}
+        <div class="text-center py-12">
+          <div class="text-6xl mb-4">📭</div>
+          <p class="text-gray-500">No recent activity</p>
+        </div>
+      {:else}
+        <div class="space-y-4">
+          {#each dashboardStats.recentActivities as activity}
+            <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                {#if activity.action === 'created'}
+                  <span>➕</span>
+                {:else if activity.action === 'updated'}
+                  <span>🔁</span>
+                {:else if activity.action === 'status_changed'}
+                  <span>🔄</span>
+                {:else if activity.action === 'todo_added'}
+                  <span>📝</span>
+                {:else if activity.action === 'todo_completed'}
+                  <span>✅</span>
+                {:else if activity.action === 'recommendation_generated'}
+                  <span>🧠</span>
+                {:else}
+                  <span>ℹ️</span>
+                {/if}
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900">
+                  {activity.description}
+                </p>
+                <div class="flex items-center space-x-2 mt-1">
+                  <span class="text-xs text-gray-500">
+                    {formatRelativeTime(activity.createdAt)}
+                  </span>
+                  {#if activity.entityType}
+                    <span class="separator" aria-hidden="true">|</span>
+                    <span class="badge badge-outline text-xs">
+                      {activity.entityType}
+                    </span>
                   {/if}
                 </div>
-
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900">
-                    {activity.description}
-                  </p>
-                  <div class="flex items-center space-x-2 mt-1">
-                    <span class="text-xs text-gray-500">
-                      {formatRelativeTime(activity.createdAt)}
-                    </span>
-                    {#if activity.entityType}
-                      <SeparatorBits orientation="vertical" class="h-3" />
-                      <BadgeBits variant="outline" class="text-xs">
-                        {activity.entityType}
-                      </BadgeBits>
-                    {/if}
-                  </div>
-                </div>
               </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-    </CardBits>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </section>
 
     <!-- Quick Actions -->
-    <CardBits>
-      <div class="p-6">
-        <div class="flex items-center space-x-2 mb-6">
-          <Activity class="w-5 h-5 text-green-600" />
-          <h2 class="text-xl font-semibold text-gray-900">Quick Actions</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ButtonBits
-            onclick={() => window.location.href = '/cases/new'}
-            class="h-12 w-full justify-start"
-            size="lg"
-          >
-            <Plus class="w-4 h-4 mr-2" />
-            New Case
-          </ButtonBits>
-
-          <ButtonBits
-            onclick={() => window.location.href = '/cases'}
-            variant="outline"
-            class="h-12 w-full justify-start"
-            size="lg"
-          >
-            <FolderOpen class="w-4 h-4 mr-2" />
-            View All Cases
-          </ButtonBits>
-
-          <ButtonBits
-            onclick={() => window.location.href = '/todos'}
-            variant="outline"
-            class="h-12 w-full justify-start"
-            size="lg"
-          >
-            <ListTodo class="w-4 h-4 mr-2" />
-            My Tasks
-          </ButtonBits>
-
-          <ButtonBits
-            onclick={() => window.location.href = '/recommendations'}
-            variant="outline"
-            class="h-12 w-full justify-start"
-            size="lg"
-          >
-            <Brain class="w-4 h-4 mr-2" />
-            AI Insights
-          </ButtonBits>
-        </div>
+    <section class="card p-6">
+      <div class="flex items-center space-x-2 mb-6">
+        <span class="icon">⚡</span>
+        <h2 class="text-xl font-semibold text-gray-900">Quick Actions</h2>
       </div>
-    </CardBits>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button on:click={() => window.location.href = '/cases/new'} class="btn h-12 w-full justify-start">
+          <span class="mr-2">➕</span>
+          New Case
+        </button>
+
+        <button on:click={() => window.location.href = '/cases'} class="btn-outline h-12 w-full justify-start">
+          <span class="mr-2">📁</span>
+          View All Cases
+        </button>
+
+        <button on:click={() => window.location.href = '/todos'} class="btn-outline h-12 w-full justify-start">
+          <span class="mr-2">📝</span>
+          My Tasks
+        </button>
+
+        <button on:click={() => window.location.href = '/recommendations'} class="btn-outline h-12 w-full justify-start">
+          <span class="mr-2">🧠</span>
+          AI Insights
+        </button>
+      </div>
+    </section>
   {/if}
 </div>
 

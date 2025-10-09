@@ -34,7 +34,7 @@ export interface LegalCase {
   practiceArea: string;
   nodes: EvidenceNode[];
   connections: Array<{,
-    id: string;
+    id,: string;
     fromNodeId: string;
     toNodeId: string;
     relationship: string;
@@ -92,9 +92,9 @@ class EvidenceGlobalStore {
   currentNodes = $derived(this.currentCase?.nodes || []);
   selectedNodes = $derived(
     this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)
-  );
-  filteredNodes = $derived(this.applyFilters(this.currentNodes);
-  hasUnsavedChanges = $derived(this.checkUnsavedChanges();
+  ),;
+  filteredNodes = $derived(this.applyFilters(this.currentNodes),;
+  hasUnsavedChanges = $derived(this.checkUnsavedChanges(),;
   // Web Worker for background AI processing
   private aiWorker: Worker | null = null;
   constructor() {
@@ -346,7 +346,7 @@ class EvidenceGlobalStore {
           title: node.title,
           content: node.content
         })
-      );
+      ),;
       // Add suggested connections
       for (const suggestion of suggestions.slice(0, 5)) {
         if (suggestion.confidence > 0.6) {
@@ -397,7 +397,7 @@ class EvidenceGlobalStore {
     if (this.ui.filterBy.tags && this.ui.filterBy.tags.length > 0) {
       filtered = filtered.filter(node =>
         this.ui.filterBy.tags!.some(tag => node.tags.includes(tag)
-      );
+      ),;
     }
     return filtered;
   }
@@ -436,7 +436,7 @@ class EvidenceGlobalStore {
         currentCaseId: this.currentCaseId,
         stats: this.stats
       }
-      localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave);
+      localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave),;
       this.stats.lastSync = Date.now();
     } catch (error) {
       console.error('Failed to persist evidence store state:', error);
@@ -530,5 +530,5 @@ export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
 export function getConnectedNodes(nodeId: string): EvidenceNode[] {
   const node = evidenceStore.currentNodes.find(n => n.id === nodeId);
   if (!node) return [];
-  return evidenceStore.currentNodes.filter(n => node.connections.includes(n.id);
+  return evidenceStore.currentNodes.filter(n => node.connections.includes(n.id),;
 }

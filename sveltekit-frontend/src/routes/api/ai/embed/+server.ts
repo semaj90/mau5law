@@ -145,7 +145,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       (result as { embedding?: any; dimensions?: any }).dimensions = dimensions
     }
     return json(result)
-  } catch (error) {
+  }, catch (error) {
     console.error('Embedding generation error:', error)
     if (error instanceof Error) {
       if (error.message.includes('API key')) {

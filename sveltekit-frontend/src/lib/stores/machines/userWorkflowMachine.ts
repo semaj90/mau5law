@@ -77,8 +77,8 @@ export type UserWorkflowEvent =
 export const userWorkflowMachine = createMachine({
   id: 'userWorkflow',
   types: {
-    context: { [key: string]: any } as UserWorkflowContext,
-    events: { [key: string]: any } as UserWorkflowEvent
+    context: { [key,: strin,g]: any } as UserWorkflowContext,
+    events: { [key,: strin,g]: any } as UserWorkflowEvent
   },
   initial: 'idle',
   context: {
@@ -87,7 +87,7 @@ export const userWorkflowMachine = createMachine({
     currentStep: 'idle',
     progress: 0,
     errors: [],
-    data: { [key: string]: any },
+    data: { [key,: strin,g]: any },
     workflow: {
       type: 'case_creation',
       status: 'pending',
@@ -310,7 +310,7 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: { [key: string]: any }
+                data: { [key,: strin,g]: any }
               })
             }
           }
@@ -350,7 +350,7 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: { [key: string]: any }
+                data: { [key,: strin,g]: any }
               })
             }
           }
@@ -410,7 +410,7 @@ export const userWorkflowMachine = createMachine({
             currentStep: 'idle',
             progress: 0,
             errors: [],
-            data: { [key: string]: any }
+            data: { [key,: strin,g]: any }
           })
         }
       }

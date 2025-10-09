@@ -203,7 +203,7 @@ export const N64_A11Y_HELPERS = {
     `Progress: ${value} of ${max} (${Math.round((value / max) * 100)}%)`,
   generateSwitchLabel: (checked: boolean, label: string) =>
     `${label}: ${checked ? 'On' : 'Off'}`,
-  generateSelectLabel: (_value: string, options: Array<) => {
+  generateSelectLabel: (_value: string, options: Array<,) => {
     const option = options.find(opt => opt.value === value);
     return option ? `Selected: ${option.label}` : 'No selection';
   },
@@ -241,7 +241,7 @@ export const N64_UTILS = {
   // Audio context management
   createSpatialAudio: () => {
     try {
-      return new (window.AudioContext || (window as any).webkitAudioContext();
+      return new (window.AudioContext || (window as any).webkitAudioContext(),;
     } catch (error) {
       console.warn('Web Audio API not supported');
       return null;

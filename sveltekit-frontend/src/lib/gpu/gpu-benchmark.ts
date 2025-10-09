@@ -57,7 +57,7 @@ export function downloadBenchmarkCSV(summary: EmbeddingBenchmarkSummary) {
 function percentile(arr: number[], p: number) {
   if (!arr.length) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
-  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length);
+  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length),;
   return sorted[idx];
 }
 export async function runEmbeddingBenchmark(
@@ -93,8 +93,8 @@ export async function runEmbeddingBenchmark(
     const beforeMem = (performance as any).memory;
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
-          totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-          usedJSHeapSize: (performance as any).memory.usedJSHeapSize
+          totalJSHeapSize,: (performance as any).memory.totalJSHeapSize,
+          usedJSHeapSize,: (performance as any).memory.usedJSHeapSize
         }
       : null;
     for (let i = 0; i < warmup + runs; i++) {
@@ -112,8 +112,8 @@ export async function runEmbeddingBenchmark(
     const afterMem = (performance as any).memory;
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
-          totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-          usedJSHeapSize: (performance as any).memory.usedJSHeapSize
+          totalJSHeapSize,: (performance as any).memory.totalJSHeapSize,
+          usedJSHeapSize,: (performance as any).memory.usedJSHeapSize
         }
       : null;
     // Restore reduction mode

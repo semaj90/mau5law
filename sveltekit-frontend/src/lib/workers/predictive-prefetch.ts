@@ -190,7 +190,7 @@ export class PredictivePrefetcher {
       assets: ["/assets/css/forms.css", "/assets/js/case-validator.js"],
       uiBuffers: ["case-form", "precedent-search"],
       priority: "medium",
-      conditions: { [key: string]: any }
+      conditions: { [key,: strin,g]: any }
     });
     // Evidence search
     this.prefetchStrategies.set("search_evidence", {
@@ -219,7 +219,7 @@ export class PredictivePrefetcher {
       assets: ["/assets/css/settings.css"],
       uiBuffers: ["/api/ui/buffers/settings"],
       priority: "low",
-      conditions: { [key: string]: any },
+      conditions: { [key,: strin,g]: any },
       llmIntegration: {
         useLocalLLM: true
         intentThreshold: 0.7
@@ -404,7 +404,7 @@ export class PredictivePrefetcher {
         userProfile: {
           role: "user",
           recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
-          preferences: { [key: string]: any },
+          preferences: { [key,: strin,g]: any },
           workflowPatterns: []
         }
       }
@@ -497,7 +497,7 @@ export class PredictivePrefetcher {
       const connection = (navigator as any).connection;
       if (
         conditions.connection === "fast" &&
-        connection.effectiveType.includes("2g");
+        connection.effectiveType.includes("2g"),;
       ) {
         return false;
       }
@@ -522,7 +522,7 @@ export class PredictivePrefetcher {
         }
       });
       if (response.ok) {
-        await this.cache.put(route, response.clone();
+        await this.cache.put(route, response.clone(),;
       }
     } catch (error: any) {
       console.warn(`Failed to prefetch route ${route}:`, error);
@@ -536,7 +536,7 @@ export class PredictivePrefetcher {
     try {
       // removed unused response assignment
       if (response.ok) {
-        await this.cache.put(asset, response.clone();
+        await this.cache.put(asset, response.clone(),;
       }
     } catch (error: any) {
       console.warn(`Failed to prefetch asset ${asset}:`, error);

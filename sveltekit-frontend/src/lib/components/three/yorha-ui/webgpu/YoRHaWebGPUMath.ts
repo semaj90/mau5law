@@ -207,28 +207,28 @@ export class YoRHaWebGPUMath {
         module: this.device.createShaderModule({ code: vectorOpsShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     this.computePipelines.set('matrixOps', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: matrixOpsShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     this.computePipelines.set('physics', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: physicsShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     this.computePipelines.set('layout', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: layoutShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
   }
   // Vector Operations
   async vectorAdd(vectorsA: Vector3GPU[], vectorsB: Vector3GPU[]): Promise<YoRHaComputeResult> {
@@ -264,7 +264,7 @@ export class YoRHaWebGPUMath {
       const passEncoder = commandEncoder.beginComputePass();
       passEncoder.setPipeline(pipeline);
       passEncoder.setBindGroup(0, bindGroup);
-      passEncoder.dispatchWorkgroups(Math.ceil(vectorsA.length / 64);
+      passEncoder.dispatchWorkgroups(Math.ceil(vectorsA.length / 64),;
       passEncoder.end();
       commandEncoder.copyBufferToBuffer(
         bufferOutput, 0,
@@ -328,7 +328,7 @@ export class YoRHaWebGPUMath {
       const passEncoder = commandEncoder.beginComputePass();
       passEncoder.setPipeline(pipeline);
       passEncoder.setBindGroup(0, bindGroup);
-      passEncoder.dispatchWorkgroups(Math.ceil(matricesA.length / 16);
+      passEncoder.dispatchWorkgroups(Math.ceil(matricesA.length / 16),;
       passEncoder.end();
       commandEncoder.copyBufferToBuffer(
         bufferOutput, 0,
@@ -362,7 +362,7 @@ export class YoRHaWebGPUMath {
   async computeLayout(
     nodes: Array<any>
     containerSize: Vector3GPU
-    layoutType: 'row' | 'column' | 'grid';
+    layoutType: 'row' | 'column' | 'grid',;
   ): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
       return this.fallbackComputeLayout(nodes, containerSize, layoutType);
@@ -389,8 +389,8 @@ export class YoRHaWebGPUMath {
   // Physics Simulation
   async simulatePhysics(
     particles: Array<any>
-    deltaTime: number;
-    gravity: Vector3GPU;
+    deltaTime: number,;
+    gravity: Vector3GPU,;
   ): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
       return this.fallbackSimulatePhysics(particles, deltaTime, gravity);
@@ -419,10 +419,10 @@ export class YoRHaWebGPUMath {
       x: Math.random(),
       y: Math.random(),
       z: Math.random()
-    });
+    }),;
     const testMatrices = Array.from({ length: 100 }, () => ({
       elements: new Float32Array(16).map(() => Math.random()
-    });
+    }),;
     const vectorResult = await this.vectorAdd(testVectors, testVectors);
     const matrixResult = await this.matrixMultiply(testMatrices, testMatrices);
     return {
@@ -620,7 +620,7 @@ export class YoRHaWebGPUMath {
    * 🎮 Enhanced GPU Pipeline with Legal Document Processing
    */
   async processLegalDocumentTextures(
-    legalDocuments: Array<;
+    legalDocuments: Array<,;
   ): Promise<any> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');

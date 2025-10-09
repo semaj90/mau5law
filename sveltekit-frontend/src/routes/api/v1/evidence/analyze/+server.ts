@@ -6,6 +6,7 @@
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
+import { getUserId } from '$lib/server/auth/utils';
 // Configuration for running services
 const OLLAMA_BASE_URL = 'http://localhost:11434';
 const CUDA_SERVICE_URL = 'http://localhost:8096';
@@ -195,7 +196,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         embedding,
         processedAt: new Date().toISOString(),
         model: await getOptimalModel(),
-        userId: isTestMode ? 'test-user' : locals.user.id,
+        userId: isTestMode ? 'test-user' : getUserId(locals),
       },
     });
   } catch (error: any) {

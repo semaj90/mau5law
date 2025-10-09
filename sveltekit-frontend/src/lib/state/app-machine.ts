@@ -56,13 +56,13 @@ export interface AppContext {
   features: Record<string, boolean>;
   // Application settings
   }); const settings = {
-    autoSave: boolean;
-    autoSaveInterval: number;
-    enableAnalytics: boolean;
-    enableNotifications: boolean;
-    enableOfflineMode: boolean;
-    maxFileUploadSize: number;
-    defaultPageSize: number;
+    autoSave: boolean,;
+    autoSaveInterval: number,;
+    enableAnalytics: boolean,;
+    enableNotifications: boolean,;
+    enableOfflineMode: boolean,;
+    maxFileUploadSize: number,;
+    defaultPageSize: number,;
   }
   // Offline state
   isOnline: boolean;
@@ -148,8 +148,8 @@ const logoutService = fromPromise(async () => {
 const initializeAppService = fromPromise(async () => {
   // Load user preferences, feature flags, etc.
   const [userPrefs, features] = await Promise.all([
-    fetch('/api/user/preferences').then((r: any) => r.ok ? r.json() : { [key: string]: any }),
-    fetch('/api/features').then((r: any) => r.ok ? r.json() : { [key: string]: any })
+    fetch('/api/user/preferences').then((r: any) => r.ok ? r.json() : { [key,: strin,g]: an,y }),
+    fetch,('/api/features').then((r: any) => r.ok ? r.json() : { [ke,y: stri,ng]: any })
   ]);
   return { userPrefs, features }
 });
@@ -173,7 +173,7 @@ const setUser = assign({
   })
 });
 const clearUser = assign({
-  user: null;
+  user: null,;
   session: null
 });
 const setTheme = assign({
@@ -193,7 +193,7 @@ const addNotification = assign({
       type: 'info' as const,
       title: '',
       message: '',
-      ...('notification' in event ? event.notification: { [key: string]: any })
+      ...('notification' in event ? event.notification: { [key,: strin,g]: any })
     }
   ]
 });
@@ -224,7 +224,7 @@ const clearGlobalLoading = assign({
 const updateSettings = assign({
   settings: ({ context, event }: { context: AppContext; event: AppEvents }) => ({
     ...context.settings,
-    ...('settings' in event ? event.settings: { [key: string]: any })
+    ...('settings' in event ? event.settings: { [key,: strin,g]: any })
   })
 });
 const setOnline = assign({
@@ -278,15 +278,15 @@ const navigate = assign({
     return segments.map((segment, index) => ({
       label: segment.charAt(0).toUpperCase() + segment.slice(1),
       path: '/' + segments.slice(0, index + 1).join('/')
-    });
+    }),;
   }
 });
 // Main application machine
 export const appMachine = createMachine({
   id: 'app',
   types: {
-    context: { [key: string]: any } as AppContext,
-    events: { [key: string]: any } as AppEvents
+    context: { [key,: strin,g]: any } as AppContext,
+    events: { [key,: strin,g]: any } as AppEvents
   },
   context: {
     user: null
@@ -301,12 +301,12 @@ export const appMachine = createMachine({
     error: null
     performance: {
       pageLoadTime: 0,
-      apiResponseTimes: { [key: string]: any },
+      apiResponseTimes: { [key,: strin,g]: any },
       memoryUsage: 0,
       cacheHitRate: 0
     },
-    features: { [key: string]: any }
-    }); const settings = {
+    features: { [key,: strin,g]: any }
+    },); const settings = {
       autoSave: true
       autoSaveInterval: 30000,
       enableAnalytics: true
@@ -317,21 +317,21 @@ export const appMachine = createMachine({
     },
     isOnline: true
     offlineQueue: [],
-    websocket: {
+    websocket,: {
       connected: false
       connectionId: null
       lastActivity: null
     }
   },
   initial: 'initializing',
-  states: {
+  states,: {
     initializing: {
       entry: setGlobalLoading
       invoke: {
         src: initializeAppService
         onDone: {
           target: 'checkingAuth',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             assign({
               features: ({ event }) => event.output?.features || {},
@@ -344,7 +344,7 @@ export const appMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             setError
           ]
@@ -356,7 +356,7 @@ export const appMachine = createMachine({
         src: refreshSessionService
         onDone: {
           target: 'authenticated',
-          actions: setUser
+          actions,: setUser
         },
         onError: {
           target: 'unauthenticated'
@@ -367,7 +367,7 @@ export const appMachine = createMachine({
       on: {
         LOGIN: {
           target: 'authenticating',
-          actions: setGlobalLoading
+          actions,: setGlobalLoading
         }
       }
     },
@@ -375,9 +375,9 @@ export const appMachine = createMachine({
       invoke: {
         src: loginService
         input: ({ event }) => ({ credentials: event.credentials }),
-        onDone: {
+        onDone,: {
           target: 'authenticated',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             setUser,
             addNotification
@@ -385,7 +385,7 @@ export const appMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             setError,
             addNotification
@@ -398,8 +398,8 @@ export const appMachine = createMachine({
         spawnLegalCaseMachine,
         addNotification
       ],
-      initial: 'idle',
-      states: {
+      initial,: 'idle',
+      states,: {
         idle: {
           on: {
             NAVIGATE: {
@@ -407,7 +407,7 @@ export const appMachine = createMachine({
             },
             GLOBAL_LOADING: {
               target: 'globalLoading',
-              actions: setGlobalLoading
+              actions,: setGlobalLoading
             }
           }
         },
@@ -415,7 +415,7 @@ export const appMachine = createMachine({
           on: {
             GLOBAL_LOADING_COMPLETE: {
               target: 'idle',
-              actions: clearGlobalLoading
+              actions,: clearGlobalLoading
             }
           }
         }
@@ -423,11 +423,11 @@ export const appMachine = createMachine({
       on: {
         LOGOUT: {
           target: 'loggingOut',
-          actions: setGlobalLoading
+          actions,: setGlobalLoading
         },
         SESSION_EXPIRED: {
           target: 'unauthenticated',
-          actions: [
+          actions,: [
             clearUser,
             destroyLegalCaseMachine,
             addNotification
@@ -443,11 +443,11 @@ export const appMachine = createMachine({
         src: refreshSessionService
         onDone: {
           target: 'authenticated',
-          actions: setUser
+          actions,: setUser
         },
         onError: {
           target: 'unauthenticated',
-          actions: clearUser
+          actions,: clearUser
         }
       }
     },
@@ -456,7 +456,7 @@ export const appMachine = createMachine({
         src: logoutService
         onDone: {
           target: 'unauthenticated',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             clearUser,
             destroyLegalCaseMachine,
@@ -466,7 +466,7 @@ export const appMachine = createMachine({
         },
         onError: {
           target: 'authenticated',
-          actions: [
+          actions,: [
             clearGlobalLoading,
             setError
           ]
@@ -477,11 +477,11 @@ export const appMachine = createMachine({
       on: {
         RETRY_FAILED_ACTION: {
           target: 'initializing',
-          actions: clearError
+          actions,: clearError
         },
         CLEAR_ERROR: {
           target: 'unauthenticated',
-          actions: clearError
+          actions,: clearError
         }
       }
     }
@@ -531,7 +531,7 @@ export const appMachine = createMachine({
     },
     SHUTDOWN_APP: {
       target: 'initializing',
-      actions: [
+      actions,: [
         clearUser,
         destroyLegalCaseMachine,
         clearNotifications,

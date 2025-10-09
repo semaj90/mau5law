@@ -7,6 +7,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { db, sql } from '$lib/server/db';
 import { personsOfInterest } from '$lib/server/db/schema-postgres';
 import { z } from 'zod';
+import { getUserId } from '$lib/server/auth/utils';
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -109,7 +110,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const validatedQuery = PersonsOfInterestQuerySchema.parse(queryParams);
     // Create service instance
-    const personsService = new PersonsOfInterestCRUDService(locals.user.id);
+    const personsService = new PersonsOfInterestCRUDService(getUserId(locals));
     // Get persons of interest with pagination - filter by risk level if specified
     const result = validatedQuery.riskLevel
       ? await personsService.listByRiskLevel(validatedQuery.riskLevel, {
@@ -136,7 +137,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           hasPrev: page > 1,
         },
         meta: {
-          userId: locals.user.id,
+          userId: getUserId(locals),
           riskLevel: validatedQuery.riskLevel || null,
           timestamp: new Date().toISOString(),
         },
@@ -188,7 +189,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json();
     const validatedData = CreatePersonOfInterestSchema.parse(body) as CreatePersonOfInterestData;
     // Create service instance
-    const personsService = new PersonsOfInterestCRUDService(locals.user.id);
+    const personsService = new PersonsOfInterestCRUDService(getUserId(locals));
     // Create person of interest
     const personId = await personsService.create(validatedData);
     // Get the created person details
@@ -199,7 +200,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: createdPerson,
         meta: {
           personId,
-          userId: locals.user.id,
+          userId: getUserId(locals),
           caseIds: validatedData.caseIds,
           timestamp: new Date().toISOString(),
         },

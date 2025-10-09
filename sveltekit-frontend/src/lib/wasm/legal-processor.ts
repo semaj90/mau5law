@@ -83,7 +83,7 @@ export class WasmLegalProcessor {
     const startTime = performance.now();
     try {
       // 1. Extract text content
-      const buffer = new Uint8Array(await file.arrayBuffer();
+      const buffer = new Uint8Array(await file.arrayBuffer(),;
       const extractedText = this.wasmModule!.extract_pdf_text(buffer);
       // 2. Classify document type
       const documentType = this.wasmModule!.classify_document_type(extractedText);
@@ -127,7 +127,7 @@ export class WasmLegalProcessor {
     await this.ensureInitialized();
     const results: ProcessingResult[] = [];
     // Process documents in parallel with Web Workers simulation
-    const promises = files.map(file => this.processDocument(file);
+    const promises = files.map(file => this.processDocument(file),;
     const batchResults = await Promise.allSettled(promises);
     batchResults.forEach((result, index) => {
       if ((result as { status?: any; value?: any; reason?: any; text?: any; sensitiveInfo?: any }).status === 'fulfilled') {
@@ -186,10 +186,10 @@ export class WasmLegalProcessor {
       doc2.citations.some(c2 => c1.citation === c2.citation)
     );
     // Find unique content
-    const doc1Entities = new Set(doc1.legalEntities.map(e => e.text.toLowerCase());
-    const doc2Entities = new Set(doc2.legalEntities.map(e => e.text.toLowerCase());
-    const uniqueToDoc1 = [...doc1Entities].filter(e => !doc2Entities.has(e);
-    const uniqueToDoc2 = [...doc2Entities].filter(e => !doc1Entities.has(e);
+    const doc1Entities = new Set(doc1.legalEntities.map(e => e.text.toLowerCase()),;
+    const doc2Entities = new Set(doc2.legalEntities.map(e => e.text.toLowerCase()),;
+    const uniqueToDoc1 = [...doc1Entities].filter(e => !doc2Entities.has(e),;
+    const uniqueToDoc2 = [...doc2Entities].filter(e => !doc1Entities.has(e),;
     const fingerprintMatch = doc1.fingerprint === doc2.fingerprint;
     return {
       similarity,
@@ -219,7 +219,7 @@ export class WasmLegalProcessor {
   private bufferToHex(buffer: Uint8Array): string {
     return Array.from(buffer)
       .map(b => b.toString(16).padStart(2, '0')
-      .join('');
+      .join(''),;
   }
   // Mock WASM module for demo (replace with actual WASM in production)
   private async createMockWasmModule(): Promise<WasmModule> {
@@ -241,7 +241,7 @@ export class WasmLegalProcessor {
         return this.jaccardSimilarity(
           this.tokenize(text1.toLowerCase()),
           this.tokenize(text2.toLowerCase()
-        );
+        ),;
       },
       generate_document_fingerprint: (text: string): Uint8Array => {
         // Simple hash-based fingerprint
@@ -322,7 +322,7 @@ export class WasmLegalProcessor {
         const avgWordsPerSentence = words / sentences;
         const avgSyllablesPerWord = syllables / words;
         const score = 206.835 - (1.015 * avgWordsPerSentence) - (84.6 * avgSyllablesPerWord);
-        return Math.max(0, Math.min(100, score);
+        return Math.max(0, Math.min(100, score),;
       },
       detect_sensitive_information: (text: string): string => {
         const sensitive: SensitiveInfo[] = [];
@@ -353,7 +353,7 @@ export class WasmLegalProcessor {
       },
       compress_document_features: (features: Uint8Array): Uint8Array => {
         // Simple compression simulation
-        return new Uint8Array(features.buffer, 0, Math.floor(features.length * 0.7);
+        return new Uint8Array(features.buffer, 0, Math.floor(features.length * 0.7),;
       },
       memory: new WebAssembly.Memory({ initial: 1 })
     }
@@ -384,7 +384,7 @@ export class WasmLegalProcessor {
   private jaccardSimilarity(set1: string[], set2: string[]): number {
     const s1 = new Set(set1);
     const s2 = new Set(set2);
-    const intersection = new Set([...s1].filter(x => s2.has(x));
+    const intersection = new Set([...s1].filter(x => s2.has(x)),;
     const union = new Set([...s1, ...s2]);
     return union.size === 0 ? 0 : intersection.size / union.size;
   }
@@ -433,7 +433,7 @@ export class WasmProcessingWorker {
       }
     `;
     const blob = new Blob([workerScript], { type: 'application/javascript' });
-    this.worker = new Worker(URL.createObjectURL(blob);
+    this.worker = new Worker(URL.createObjectURL(blob),;
   }
   async processInWorker(method: string, ...args: any[]): Promise<any> {
     if (!this.worker) {
@@ -449,7 +449,7 @@ export class WasmProcessingWorker {
         if (e.data.id === id) {
           this.worker!.removeEventListener('message', handleMessage);
           if (e.data.error) {
-            reject(new Error(e.data.error);
+            reject(new Error(e.data.error),;
           } else {
             resolve(e.data.result);
           }

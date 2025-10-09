@@ -41,7 +41,7 @@ export async function integrateLegalChatWithWebGPU() {
           documentType: doc.type,
           enableCaching: true
           debugMode: true
-        }));
+        }),);
         return {
           ...doc,
           webgpuBuffer: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).buffer,
@@ -58,7 +58,7 @@ export async function integrateLegalChatWithWebGPU() {
         sum + (doc.compressionStats.originalSize - doc.compressionStats.compressedSize), 0)
     });
     return processedDocuments;
-  } catch (error) {
+  }, catch (error) {
     console.error('❌ Legal chat WebGPU integration failed:', error);
     // Fallback to CPU processing
     return legalDocuments.map(doc => ({
@@ -66,7 +66,7 @@ export async function integrateLegalChatWithWebGPU() {
       webgpuBuffer: null
       processingTime: 0,
       compressionStats: { originalSize: 0, compressedSize: 0, compressionRatio: 1, spaceSavings: '0%' }
-    });
+    }),;
   }
 }
 /**
@@ -133,9 +133,9 @@ export async function integrateLegalDocumentUploadWorkflow() {
     },>;
     {
       filename: 'case-citations.pdf',
-      type: 'citation' as const,
-      priority: 'low' as const,
-      embeddings: generateLegalEmbeddings(768) // Citation references
+      type,: 'citation' as const,
+      priority,: 'low' as const,
+      embeddings,: generateLegalEmbeddings(768) // Citation references
     }
   ];
   try {
@@ -156,7 +156,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
       ...doc,
       webgpuProcessing: processingResults[index]
       optimizationScore: calculateOptimizationScore(processingResults[index])
-    });
+    }),;
     console.log('✅ Legal document upload workflow enhanced:', {
       documentsProcessed: enhancedDocuments.length,
       totalCompressionRatio: processingResults.reduce((sum, r) =>
@@ -169,7 +169,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
     return enhancedDocuments;
   } catch (error) {
     console.error('❌ Legal document upload workflow integration failed:', error);
-    return uploadedDocuments.map(doc => ({ ...doc, webgpuProcessing: null });
+    return uploadedDocuments.map(doc => ({ ...doc, webgpuProcessing: null }),;
   }
 }
 /**
@@ -227,7 +227,7 @@ export async function setupLegalAIPerformanceMonitoring() {
       embeddings: generateLegalEmbeddings(384 + i * 64), // Varying sizes
       type: legalDocTypes[i % legalDocTypes.length],
       priority: legalPriorities[i % legalPriorities.length]
-    });
+    }),;
     await legalAIBridge.batchProcessLegalDocuments(testDocuments);
     // Get comprehensive performance metrics
     const performanceStats = legalAIBridge.getPerformanceStats();
@@ -235,7 +235,7 @@ export async function setupLegalAIPerformanceMonitoring() {
     // Set up periodic monitoring (in a real app, you'd use setInterval)
     const monitoringData = {
       timestamp: new Date().toISOString(),
-      stats: performanceStats;
+      stats: performanceStats,;
       recommendations: generatePerformanceRecommendations(performanceStats)
     }
     return monitoringData;

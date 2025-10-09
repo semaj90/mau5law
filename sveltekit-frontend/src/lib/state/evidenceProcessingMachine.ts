@@ -61,24 +61,24 @@ export interface EvidenceProcessingContext {
 }
 export type EvidenceProcessingEvent =;
   | {
-      type: "START_PROCESSING";
-      evidenceId: string;
-      caseId: string;
-      userId: string;
-      filename: string;
-      content: string;
-      metadata?: { [key: string]: any }
+      type: "START_PROCESSING",;
+      evidenceId: string,;
+      caseId: string,;
+      userId: string,;
+      filename: string,;
+      content: string,;
+      metadata?: { [key,: strin,g]: any }
     }
   | { type: "RETRY" }
   | { type: "CANCEL" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS"; progress: number; stage: string }
+  | { type: "UPDATE_PROGRESS",; progress: numbe,r; stage: string }
   | { type: "PROCESSING_COMPLETE" }
-  | { type: "PROCESSING_FAILED"; error: string }
+  | { type: "PROCESSING_FAILED",; error: string }
   | { type: "EMBEDDING_COMPLETE" }
-  | { type: "EMBEDDING_FAILED"; error: string }
+  | { type: "EMBEDDING_FAILED",; error: string }
   | { type: "ANALYSIS_COMPLETE" }
-  | { type: "ANALYSIS_FAILED"; error: string }
+  | { type: "ANALYSIS_FAILED",; error: string }
 // Service implementations
 const documentProcessingService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(
@@ -125,7 +125,7 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
       if (jobStatus?.progress) {
         // This would be handled by the state machine's progress update
       }
-      await new Promise((resolve: any) => setTimeout(resolve, interval);
+      await new Promise((resolve: any) => setTimeout(resolve, interval),;
       waited += interval;
     }
     throw new Error("Document processing timed out");
@@ -144,7 +144,7 @@ const embeddingGenerationService = fromPromise(async ({ input }: { input: Eviden
     await multiLayerCache.set(`embeddings:${input.evidenceId}`, result, {
       type: "embedding",
       userId: input.userId,
-      persistent: true;
+      persistent: true,;
       ttl: 86400, // 24 hours
     });
     return result;
@@ -173,7 +173,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
       );
       riskAssessment = langchainResult.riskAssessment;
       recommendations = langchainResult.recommendations;
-    } catch (error: any) {
+    }, catch (error: any) {
       console.warn(
         "LangChain analysis failed, using basic analysis only:",
         error
@@ -191,7 +191,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
     await multiLayerCache.set(`analysis:${input.evidenceId}`, analysis, {
       type: "document",
       userId: input.userId,
-      persistent: true;
+      persistent: true,;
       ttl: 43200, // 12 hours
     });
     return analysis;
@@ -214,21 +214,21 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
     await Promise.all([
       multiLayerCache.set(
         `evidence:complete:${input.evidenceId}`,
-        finalResult,);
+        finalResult,),;
         {
           type: "document",
-          userId: input.userId,
-          persistent: true;
+          userId,: input.userId,
+          persistent,: true;
           ttl: 604800, // 7 days
         }
       ),
-      multiLayerCache.set(
+      multiLayerCache,.se,t(
         `case:evidence:${input.caseId}:${input.evidenceId}`,
         finalResult,);
         {
           type: "document",
-          userId: input.userId,
-          persistent: true;
+          userId,: input.userId,
+          persistent,: true;
           ttl: 604800
         }
       )
@@ -246,32 +246,32 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
 export const evidenceProcessingMachine = createMachine();
   {
     id: "evidenceProcessing",
-    types: {
-      context: { [key: string]: any } as EvidenceProcessingContext,
-      events: { [key: string]: any } as EvidenceProcessingEvent
+    types,: {
+      context: { [key,: string,]: any } as EvidenceProcessingContext,
+      events,: { [ke,y: strin,g]: any } as EvidenceProcessingEvent
     },
     initial: "idle",
-    context: {
+    context,: {
       evidenceId: "",
-      caseId: "",
-      userId: "",
-      filename: "",
-      content: "",
-      metadata: { [key: string]: any },
+      caseId,: "",
+      userId,: "",
+      filename,: "",
+      content,: "",
+      metadata,: { [ke,y: strin,g]: any },
       progress: 0,
-      stage: "idle",
-      retryCount: 0,
-      maxRetries: 3,
-      startTime: 0,
-      stageStartTime: 0,
-      processingTimes: { [key: string]: any }
+      stage,: "idle",
+      retryCount,: 0,
+      maxRetries,: 3,
+      startTime,: 0,
+      stageStartTime,: 0,
+      processingTimes,: { [ke,y: strin,g]: any }
     },
     states: {
       idle: {
         on: {
           START_PROCESSING: {
             target: "initializing",
-            actions: assign({
+            actions,: assign({
               evidenceId: ({ event }) => event.evidenceId,
               caseId: ({ event }) => event.caseId,
               userId: ({ event }) => event.userId,
@@ -283,7 +283,7 @@ export const evidenceProcessingMachine = createMachine();
               retryCount: 0,
               startTime: Date.now(),
               stageStartTime: Date.now(),
-              processingTimes: { [key: string]: any }
+              processingTimes: { [key,: strin,g]: any }
             })
           }
         }
@@ -291,7 +291,7 @@ export const evidenceProcessingMachine = createMachine();
       initializing: {
         always: {
           target: "documentProcessing",
-          actions: assign({
+          actions,: assign({
             stage: "document-processing",
             stageStartTime: Date.now(),
             progress: 10
@@ -302,9 +302,9 @@ export const evidenceProcessingMachine = createMachine();
         invoke: {
           src: documentProcessingService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "embeddingGeneration",
-            actions: assign({
+            actions,: assign({
               extractedText: ({ event, context }) =>
                 event.output.result?.extractedText || context.content,
               documentProcessingJobId: ({ event }) => event.output.jobId,
@@ -319,7 +319,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) =>
                 `Document processing failed: ${event.error}`,
               processingTimes: ({ context }) => ({
@@ -337,9 +337,9 @@ export const evidenceProcessingMachine = createMachine();
         invoke: {
           src: embeddingGenerationService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "aiAnalysis",
-            actions: assign({
+            actions,: assign({
               chunks: ({ event }) => event.output.chunks,
               embeddings: ({ event }) =>
                 event.output.chunks?.map((chunk: any) => chunk.embedding) || [],
@@ -354,7 +354,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) =>
                 `Embedding generation failed: ${event.error}`,
               processingTimes: ({ context }) => ({
@@ -372,9 +372,9 @@ export const evidenceProcessingMachine = createMachine();
         invoke: {
           src: aiAnalysisService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "cachingResults",
-            actions: assign({
+            actions,: assign({
               analysis: ({ event }) => event.output,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -387,7 +387,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `AI analysis failed: ${event.error}`,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -404,9 +404,9 @@ export const evidenceProcessingMachine = createMachine();
         invoke: {
           src: cacheResultsService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "completed",
-            actions: assign({
+            actions,: assign({
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
                 cachingResults: Date.now() - context.stageStartTime,
@@ -418,7 +418,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `Caching results failed: ${event.error}`,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -431,7 +431,7 @@ export const evidenceProcessingMachine = createMachine();
       },
       completed: {
         type: "final",
-        entry: () => {
+        entry,: () => {
           console.log("Evidence processing completed successfully");
         }
       },
@@ -453,12 +453,12 @@ export const evidenceProcessingMachine = createMachine();
               target: "failed"
             }
           ],
-          FORCE_COMPLETE: "completed"
+          FORCE_COMPLETE,: "completed"
         }
       },
       failed: {
         type: "final",
-        entry: ({ context }) => {
+        entry,: ({ context }) => {
           console.error(
             `Evidence processing failed after ${context.retryCount} retries: ${context.error}`
           );
@@ -466,7 +466,7 @@ export const evidenceProcessingMachine = createMachine();
       },
       cancelled: {
         type: "final",
-        entry: () => {
+        entry,: () => {
           console.log("Evidence processing cancelled by user");
         }
       }
@@ -488,7 +488,7 @@ export const evidenceProcessingMachine = createMachine();
 );
 // Helper factory – optional context override placeholder (currently unused)
 export const createEvidenceProcessingActor = (
-  context?: Partial<EvidenceProcessingContext>;
+  context?: Partial<EvidenceProcessingContext>,;
 ) => {
   // NOTE: context overrides can be applied by extending the machine before actor creation if needed
   return evidenceProcessingMachine.provide({
@@ -527,7 +527,7 @@ export const canRetry = (state: EvidenceProcessingState): boolean => {
   );
 }
 export const getProgressPercentage = (
-  state: EvidenceProcessingState;
+  state: EvidenceProcessingState,;
 ): number => {
   return state.context.progress;
 }
@@ -535,12 +535,12 @@ export const getCurrentStage = (state: EvidenceProcessingState): string => {
   return state.context.stage;
 }
 export const getProcessingTimes = (
-  state: EvidenceProcessingState;
-): Record<string, number> => {
+  state: EvidenceProcessingState,;
+): Record<string, number>, => {
   return state.context.processingTimes;
 }
 export const getError = (
-  state: EvidenceProcessingState;
-): string | undefined => {
+  state: EvidenceProcessingState,;
+): string | undefined, => {
   return state.context.error;
 }

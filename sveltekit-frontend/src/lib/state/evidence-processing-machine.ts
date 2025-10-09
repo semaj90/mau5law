@@ -64,7 +64,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: { file: File } 
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        success: true;
+        success: true,;
         message: `File "${input.file.name}" uploaded successfully`
       });
     }, 1000);
@@ -82,12 +82,12 @@ const analyzeEvidenceService = fromPromise(async ({ input }: {
         entities: [
           { type: 'party', value: 'ACME Corporation', confidence: 0.95 },
           { type: 'date', value: '2024-01-15', confidence: 0.88 },)
-          { type: 'amount', value: '$75,000', confidence: 0.91 }
+          { type: 'amount', value,: '$75,000', confidenc,e: 0.91 }
         ],
         risk_assessment: 'medium' as const,
-        summary: 'Employment contract with standard terms and moderate risk factors'
+        summary,: 'Employment contract with standard terms and moderate risk factors'
       });
-    }, 2500);
+    }, 2500,);
   });
 });
 const generateGlyphService = fromPromise(async ({ input }: {
@@ -146,24 +146,24 @@ const storeInMinIOService = fromPromise(async ({ input }: {
 export const evidenceProcessingMachine = createMachine();
   {
     id: 'evidenceProcessing',
-    initial: 'idle',
-    types: {
-      context: { [key: string]: any } as EvidenceProcessingContext,
-      events: { [key: string]: any } as EvidenceProcessingEvent
+    initial,: 'idle',
+    types,: {
+      context: { [key,: string,]: any } as EvidenceProcessingContext,
+      events,: { [ke,y: strin,g]: any } as EvidenceProcessingEvent
     },
     context: {
       evidenceId: '',
-      uploadProgress: 0,
-      errors: [],
-      processingTimeMs: 0,
-      streamingUpdates: []
+      uploadProgress,: 0,
+      errors,: [],
+      processingTimeMs,: 0,
+      streamingUpdates,: []
     },
     states: {
       idle: {
         on: {
           UPLOAD_FILE: {
             target: 'uploading',
-            actions: assign({
+            actions,: assign({
               file: ({ event }) => event.file,
               evidenceId: ({ event }) => event.evidenceId,
               uploadProgress: 0,
@@ -187,9 +187,9 @@ export const evidenceProcessingMachine = createMachine();
         invoke: {
           src: uploadFileService
           input: ({ context }) => ({ file: context.file! }),
-          onDone: {
+          onDone,: {
             target: 'analyzing',
-            actions: assign({
+            actions,: assign({
               uploadProgress: 100,
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -212,7 +212,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Upload failed: ${event.error}`
@@ -241,9 +241,9 @@ export const evidenceProcessingMachine = createMachine();
             file: context.file!,
             evidenceId: context.evidenceId
           }),
-          onDone: {
+          onDone,: {
             target: 'generatingGlyph',
-            actions: assign({
+            actions,: assign({
               analysisResults: ({ event }) => event.output,
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -266,7 +266,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Analysis failed: ${event.error}`
@@ -325,9 +325,9 @@ export const evidenceProcessingMachine = createMachine();
             evidenceId: context.evidenceId,
             neuralSpriteConfig: context.glyphGeneration?.request.neural_sprite_config
           }),
-          onDone: {
+          onDone,: {
             target: 'embeddingPNG',
-            actions: assign({
+            actions,: assign({
               glyphGeneration: ({ context, event }) => ({
                 ...context.glyphGeneration!,
                 result: event.output
@@ -353,7 +353,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Glyph generation failed: ${event.error}`
@@ -397,9 +397,9 @@ export const evidenceProcessingMachine = createMachine();
             analysisResults: context.analysisResults!,
             evidenceId: context.evidenceId
           }),
-          onDone: {
+          onDone,: {
             target: 'storingInMinIO',
-            actions: assign({
+            actions,: assign({
               portableArtifact: ({ event }) => ({
                 enhancedPngUrl: event.output.enhancedPngUrl,
                 metadata: event.output.metadata,
@@ -426,7 +426,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `PNG embedding failed: ${event.error}`
@@ -456,9 +456,9 @@ export const evidenceProcessingMachine = createMachine();
             metadata: context.portableArtifact!.metadata,
             evidenceId: context.evidenceId
           }),
-          onDone: {
+          onDone,: {
             target: 'completed',
-            actions: assign({
+            actions,: assign({
               minioStorage: ({ event }) => event.output,
               processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs,
               streamingUpdates: ({ context }) => [
@@ -475,7 +475,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Storage failed: ${event.error}`
@@ -499,10 +499,10 @@ export const evidenceProcessingMachine = createMachine();
       },
       completed: {
         type: 'final',
-        entry: assign({
+        entry,: assign({
           processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs
         }),
-        on: {
+        on,: {
           RESET: 'idle'
         }
       },
@@ -510,7 +510,7 @@ export const evidenceProcessingMachine = createMachine();
         on: {
           RETRY_CURRENT_STEP: {
             target: 'analyzing', // Could be smarter about which state to retry
-            actions: assign({
+            actions,: assign({
               errors: []
             })
           },

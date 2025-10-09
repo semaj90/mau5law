@@ -154,7 +154,7 @@ async function performKeywordSearch(
   mode: 'boolean' | 'phrase',
   filters: any
   sort: string
-  page: number;
+  page: number,;
   limit: number
 ) {
   const startTime = Date.now()
@@ -189,7 +189,7 @@ async function performKeywordSearch(
       WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')
             @@ to_tsquery('english', $1)
     `
-    params.push(query.replace(/\s+/g, ' & '); // Convert to boolean query
+    params.push(query.replace(/\s+/g, ' & '),; // Convert to boolean query
     paramIndex++
   }
   // Apply filters (same as semantic search)

@@ -20,7 +20,7 @@ export const GET: RequestHandler = async () => {
       timestamp: result[0]?.current_timestamp || new Date().toISOString(),
       message: 'PostgreSQL connection successful'
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Database health check error:', error)
     return json({
         error: 'Database health check failed',

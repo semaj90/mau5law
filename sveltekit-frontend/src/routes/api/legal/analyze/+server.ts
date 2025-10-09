@@ -7,13 +7,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, documentId, caseId } = await request.json()
     const start = Date.now()
-    if (!locals.user?.id) {
+    if (!getUserId(locals)) {
       return json({ error: 'Unauthorized' }, { status: 401 })
     }
     const response = await gemma3Client.generate(prompt)
     const responseTime = Date.now() - start
     await db.insert(aiInteractions).values({
-      userId: locals.user.id,
+      userId: getUserId(locals),
       caseId,
       prompt,
       response: response.text,

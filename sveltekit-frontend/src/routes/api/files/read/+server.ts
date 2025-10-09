@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('File read error:', error)
     return json()
-      { error: 'Failed to read file', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to read file', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }

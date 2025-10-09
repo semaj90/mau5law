@@ -260,7 +260,7 @@ export class UnifiedAIService {
         options.query,);
         {
           maxResults: options.maxResults || 10,
-          relevanceThreshold: options.threshold || 0.7
+          relevanceThreshold,: options.threshold || 0.7
         }
       );
       return {
@@ -290,9 +290,9 @@ export class UnifiedAIService {
         options.query,);
         {
           limit: options.maxResults || 20,
-          threshold: options.threshold || 0.7,
-          useNESCache: this.config.gpuConfig?.useNESCache,
-          enableGPUAcceleration: this.config.enableGPUAcceleration
+          threshold,: options.threshold || 0.7,
+          useNESCache,: this.config.gpuConfig?.useNESCache,
+          enableGPUAcceleration,: this.config.enableGPUAcceleration
         }
       );
       // Format GPU results as response

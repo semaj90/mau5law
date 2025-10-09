@@ -389,7 +389,8 @@
       "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic)",
       "Bash(REDIS_PASSWORD=\"redis\" DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npm run dev:gpu)",
       "Bash(C:UsersjamesAppDataRoamingPythonPython313Scriptslitellm.exe --config litellm_config.yaml --port 4000)",
-      "Bash(C:UsersjamesAppDataRoamingPythonPython313Scriptslitellm.exe --version)"
+      "Bash(C:UsersjamesAppDataRoamingPythonPython313Scriptslitellm.exe --version)",
+      "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic:simple)"
     ],
     "deny": [],
     "ask": []

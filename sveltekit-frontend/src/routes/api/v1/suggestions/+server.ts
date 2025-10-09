@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         Vary: 'Accept-Encoding'
       }
     })
-  } catch (err: any) {
+  }, catch (err: any) {
     const processingTime = performance.now() - startTime
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors

@@ -185,7 +185,7 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.ps2,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: false;
+      pixelatedBorders: false,;
       scanlines: false
       crtEffect: false
       glowEffects: true

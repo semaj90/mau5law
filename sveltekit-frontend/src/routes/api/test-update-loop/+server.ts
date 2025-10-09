@@ -156,7 +156,7 @@ class UpdateLoopTester {
       this.testDocumentIds.push(document.id)
       // Initial embedding (simulate existing document)
       await documentUpdateLoop.queueDocumentUpdate(document.id, scenario.originalContent)
-      await new Promise((resolve: any) => setTimeout(resolve, 1000); // Wait for processing
+      await new Promise((resolve: any) => setTimeout(resolve, 1000),; // Wait for processing
       // Create some test queries that would return this document
       const testQuery = this.generateTestQuery(scenario.originalContent)
       const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery)

@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         'Access-Control-Allow-Headers': 'Content-Type'
       }
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('❌ Chat streaming error:', error)
     return json({
       success: false,

@@ -66,37 +66,37 @@ export interface CaseStoreAPI extends Readable<CaseState> {
   ): Promise<{ success: boolean; analysis?: unknown; error?: string }>;
   loadLocalFallback(): void;
   reset: () => void;
-+type PartialFilters = Partial<CaseState['filters']>;
++type, PartialFilters = Partial<CaseState['filters']>;
 +export interface CaseStoreAPI extends Readable<CaseState> {
-+  set: Writable<CaseState>['set'];
-+  update: Writable<CaseState>['update'];
++  set,: Writable<CaseState>['set'];
++  update,: Writable<CaseState>['update'];
 +
-+  loadCases(filters?: PartialFilters): Promise<void>;
-+  loadCase(caseId: string): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-+  createCase(caseData: {
-+    title: string;
++  loadCases(filters?: PartialFilters),: Promise<void>;
++  loadCase(caseId,: string,): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
++  createCase(caseData,: {
++    title,: strin,g;
 +    description?: string;
 +    caseType?: string;
 +    priority?: string;
 +  }): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-+  updateCase(caseId: string, updates: Partial<Case>): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-+  deleteCase(caseId: string): Promise<{ success: boolean; error?: string }>;
++  updateCase(caseId,: string, update,s: Partial<Case,>): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
++  deleteCase(caseId,: string,): Promise<{ success: boolean; error?: string }>;
 +  generateReport(
-+    caseId: string,
-+    reportType: string,
++    caseId,: string,
++    reportType,: string,
 +    customPrompt?: string
-+  ): Promise<{ success: boolean; report?: Report; error?: string }>;
-+  setActiveCase(caseId: string | null): void;
-+  setFilters(filters: PartialFilters): void;
-+  clearFilters(): void;
-+  setPage(page: number): void;
-+  clearError: () => void;
++  ),: Promise<{ success: boolean; report?: Report; error?: string }>;
++  setActiveCase(caseId,: string | null,): void;
++  setFilters(filters,: PartialFilters,): void;
++  clearFilters(),: void;
++  setPage(page,: number,): void;
++  clearError,: () => void;
 +  analyzeCase(
-+    caseId: string,
-+    analysisType: 'evidence' | 'legal' | 'timeline' | 'poi'
-+  ): Promise<{ success: boolean; analysis?: unknown; error?: string }>;
-+  loadLocalFallback(): void;
-+  reset: () => void;
++    caseId,: string,
++    analysisType,: 'evidence' | 'legal' | 'timeline' | 'poi'
++  ),: Promise<{ success: boolean; analysis?: unknown; error?: string }>;
++  loadLocalFallback(),: void;
++  reset,: () => void;
  }
 
  const createCaseStore = (): CaseStoreAPI => {

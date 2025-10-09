@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Job status error:', error)
     return json({
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

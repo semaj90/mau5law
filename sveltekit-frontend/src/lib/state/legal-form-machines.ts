@@ -121,24 +121,24 @@ export const documentUploadMachine = createMachine();
   {
     /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhwRABtEJMAPVAQzAEsKwBiD3VAIwEcKAGwCuPAB4J4yHnT5cK8VBmwAlOvUQQAJBAAOEgBYJhIAB6JYugJYA2AEwAOSuYDsAGne0LLpWsun6gSCYoGDh4RCQUNAxEURBMFAAzMABrZFQpOXtZAGtUZCwsXDBwOXjMtOJyBBtEMzVLCyd9fXNzKe9fEECkELCIqJoFJEoKOOIU9MksHLzEotKyipq6hqam1vbOpOJOxBUXQdMlHWdpgx8-QOCQxEiqRFKKOKo1ZnXCwonc4rXYGOr6JQaKaqAy0cxOKb-YBBY4dCotZjHFZ3IhPTYvUQfXJ5JJ-f6A4F4sGeEG1OT+NqzZrwAImIA */
     id: 'documentUpload',
-    initial: 'idle',
-    context: {
+    initial,: 'idle',
+    context,: {
       formData: null
-      validationErrors: { [key: string]: any },
+      validationErrors: { [key,: string,]: any },
       uploadProgress: 0,
-      uploadedFile: null
+      uploadedFile,: null
       processingProgress: 0,
-      aiResults: null
+      aiResults,: null
       error: null
       retryCount: 0,
-      maxRetries: 3
+      maxRetries,: 3
     } as DocumentUploadContext,
-    states: {
+    states,: {
       idle: {
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({
+            actions,: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -147,17 +147,17 @@ export const documentUploadMachine = createMachine();
       validating: {
         invoke: {
           id: 'validateDocumentForm',
-          src: 'validateDocumentForm',
-          input: ({ context }) => context.formData,
-          onDone: {
+          src,: 'validateDocumentForm',
+          input,: ({ context }) => context.formData,
+          onDone,: {
             target: 'valid',
-            actions: assign({
+            actions,: assign({
               validationErrors: () => ({})
             })
           },
           onError: {
             target: 'invalid',
-            actions: assign({
+            actions,: assign({
               validationErrors: ({ event }) => (event as any)?.error ?? {}
             })
           }
@@ -167,7 +167,7 @@ export const documentUploadMachine = createMachine();
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({
+            actions,: assign({
               formData: ({ event }) => event.data
             })
           },
@@ -177,9 +177,9 @@ export const documentUploadMachine = createMachine();
       valid: {
         on: {
           UPLOAD: 'uploading',
-          VALIDATE_FORM: {
+          VALIDATE_FORM,: {
             target: 'validating',
-            actions: assign({
+            actions,: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -188,18 +188,18 @@ export const documentUploadMachine = createMachine();
       uploading: {
         invoke: {
           id: 'uploadDocument',
-          src: 'uploadDocument',
-          input: ({ context }) => context.formData,
-          onDone: {
+          src,: 'uploadDocument',
+          input,: ({ context }) => context.formData,
+          onDone,: {
             target: 'uploaded',
-            actions: assign({
+            actions,: assign({
               uploadedFile: ({ event }) => (event.output as any) ?? null,
               uploadProgress: () => 100
             })
           },
           onError: {
             target: 'uploadError',
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
@@ -227,21 +227,21 @@ export const documentUploadMachine = createMachine();
       processing: {
         invoke: {
           id: 'processDocument',
-          src: 'processDocument',
-          input: ({ context }) => ({
+          src,: 'processDocument',
+          input,: ({ context }) => ({
             documentId: context.uploadedFile?.id,
             options: context.formData?.aiProcessing
           }),
-          onDone: {
+          onDone,: {
             target: 'completed',
-            actions: assign({
+            actions,: assign({
               aiResults: ({ event }) => (event.output as any) ?? null,
               processingProgress: () => 100
             })
           },
           onError: {
             target: 'processingError',
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
@@ -267,7 +267,7 @@ export const documentUploadMachine = createMachine();
             },
             { target: 'failed' }
           ],
-          RESET: 'idle'
+          RESET,: 'idle'
         }
       },
       processingError: {
@@ -283,14 +283,14 @@ export const documentUploadMachine = createMachine();
             },
             { target: 'failed' }
           ],
-          SKIP_PROCESSING: 'completed',
-          RESET: 'idle'
+          SKIP_PROCESSING,: 'completed',
+          RESET,: 'idle'
         }
       },
       completed: {
         on: {
           RESET: 'idle',
-          NEW_UPLOAD: 'idle'
+          NEW_UPLOAD,: 'idle'
         }
       },
       failed: {
@@ -313,16 +313,16 @@ export const documentUploadMachine = createMachine();
           throw error;
         }
       }),
-      uploadDocument: fromPromise(async ({ input }) => {
+      uploadDocument,: fromPromise(async ({ input }) => {
         // Mock upload implementation
         const formData = new FormData();
         Object.entries(input || {}).forEach(([key, value]) => {
           if (key === 'file' && value instanceof File) {
             formData.append('file', value);
           } else if (typeof value === 'object' && value !== null) {
-            formData.append(key, JSON.stringify(value);
+            formData.append(key, JSON.stringify(value),;
           } else if (value !== null && value !== undefined) {
-            formData.append(key, String(value);
+            formData.append(key, String(value),;
           }
         });
         const response = await fetch('/api/documents/upload', {
@@ -334,7 +334,7 @@ export const documentUploadMachine = createMachine();
         }
         return await response.json();
       }),
-      processDocument: fromPromise(async ({ input }) => {
+      processDocument,: fromPromise(async ({ input }) => {
         const response = await fetch('/api/ai/process-document', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -354,30 +354,30 @@ export const documentUploadMachine = createMachine();
 export const caseCreationMachine = createMachine();
   {
     id: 'caseCreation',
-    initial: 'idle',
-    context: {
+    initial,: 'idle',
+    context,: {
       formData: null
-      validationErrors: { [key: string]: any },
+      validationErrors: { [key,: string,]: any },
       createdCase: null
       relatedDocuments: [],
-      error: null
+      error,: null
       isAutoSaving: false
       lastSaved: null
     } as CaseCreationContext,
-    states: {
+    states,: {
       idle: {
         on: {
           START_CREATION: 'creating',
-          LOAD_DRAFT: 'loadingDraft'
+          LOAD_DRAFT,: 'loadingDraft'
         }
       },
       loadingDraft: {
         invoke: {
           id: 'loadDraft',
-          src: 'loadDraft',
-          onDone: {
+          src,: 'loadDraft',
+          onDone,: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               formData: ({ event }) => event.output
             })
           },
@@ -388,7 +388,7 @@ export const caseCreationMachine = createMachine();
         on: {
           UPDATE_FORM: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -402,28 +402,28 @@ export const caseCreationMachine = createMachine();
             })
           },
           AUTO_SAVE: 'autoSaving',
-          VALIDATE: 'validating',
-          SUBMIT: 'validating'
+          VALIDATE,: 'validating',
+          SUBMIT,: 'validating'
         },
         after: {
-          5000: 'autoSaving', // Auto-save every 5 seconds
+          5000,: 'autoSaving', // Auto-save every 5 seconds
         }
       },
       autoSaving: {
         invoke: {
           id: 'autoSave',
-          src: 'autoSave',
-          input: ({ context }) => context.formData,
-          onDone: {
+          src,: 'autoSave',
+          input,: ({ context }) => context.formData,
+          onDone,: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               lastSaved: () => new Date(),
               isAutoSaving: () => false
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               isAutoSaving: () => false
             })
           }
@@ -435,12 +435,12 @@ export const caseCreationMachine = createMachine();
       validating: {
         invoke: {
           id: 'validateCase',
-          src: 'validateCase',
-          input: ({ context }) => context.formData,
-          onDone: 'submitting',
-          onError: {
+          src,: 'validateCase',
+          input,: ({ context }) => context.formData,
+          onDone,: 'submitting',
+          onError,: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -462,17 +462,17 @@ export const caseCreationMachine = createMachine();
       submitting: {
         invoke: {
           id: 'createCase',
-          src: 'createCase',
-          input: ({ context }) => context.formData,
-          onDone: {
+          src,: 'createCase',
+          input,: ({ context }) => context.formData,
+          onDone,: {
             target: 'completed',
-            actions: assign({
+            actions,: assign({
               createdCase: ({ event }) => event.output
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -487,7 +487,7 @@ export const caseCreationMachine = createMachine();
       completed: {
         on: {
           NEW_CASE: 'idle',
-          EDIT_CASE: 'editing'
+          EDIT_CASE,: 'editing'
         }
       }
     }
@@ -499,12 +499,12 @@ export const caseCreationMachine = createMachine();
         const draft = localStorage.getItem('case-draft');
         return draft ? JSON.parse(draft) : null;
       }),
-      autoSave: fromPromise(async ({ input }) => {
+      autoSave,: fromPromise(async ({ input }) => {
         // Auto-save to localStorage
-        localStorage.setItem('case-draft', JSON.stringify(input);
+        localStorage.setItem('case-draft', JSON.stringify(input),;
         return true;
       }),
-      validateCase: fromPromise(async ({ input }) => {
+      validateCase,: fromPromise(async ({ input }) => {
         try {
           CaseCreationSchema.parse(input);
           return true;
@@ -515,7 +515,7 @@ export const caseCreationMachine = createMachine();
           throw error;
         }
       }),
-      createCase: fromPromise(async ({ input }) => {
+      createCase,: fromPromise(async ({ input }) => {
         const response = await fetch('/api/cases', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -535,36 +535,36 @@ export const caseCreationMachine = createMachine();
 export const searchMachine = createMachine();
   {
     id: 'search',
-    initial: 'idle',
-    context: {
+    initial,: 'idle',
+    context,: {
       query: null
       results: [],
-      validationErrors: { [key: string]: any },
+      validationErrors,: { [ke,y: strin,g]: any },
       isSearching: false
       searchHistory: [],
-      filters: { [key: string]: any },
+      filters,: { [ke,y: strin,g]: any },
       pagination: {
         page: 1,
-        pageSize: 20,
-        total: 0
+        pageSize,: 20,
+        total,: 0
       },
       analytics: null
       error: null
     } as SearchContext,
-    states: {
+    states,: {
       idle: {
         on: {
           SEARCH: 'validating',
-          LOAD_HISTORY: 'loadingHistory'
+          LOAD_HISTORY,: 'loadingHistory'
         }
       },
       loadingHistory: {
         invoke: {
           id: 'loadSearchHistory',
-          src: 'loadSearchHistory',
-          onDone: {
+          src,: 'loadSearchHistory',
+          onDone,: {
             target: 'idle',
-            actions: assign({
+            actions,: assign({
               searchHistory: ({ event }) => event.output
             })
           },
@@ -574,12 +574,12 @@ export const searchMachine = createMachine();
       validating: {
         invoke: {
           id: 'validateSearch',
-          src: 'validateSearch',
-          input: ({ context }) => context.query,
-          onDone: 'searching',
-          onError: {
+          src,: 'validateSearch',
+          input,: ({ context }) => context.query,
+          onDone,: 'searching',
+          onError,: {
             target: 'idle',
-            actions: assign({
+            actions,: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -601,11 +601,11 @@ export const searchMachine = createMachine();
       searching: {
         invoke: {
           id: 'performSearch',
-          src: 'performSearch',
-          input: ({ context }) => context.query,
-          onDone: {
+          src,: 'performSearch',
+          input,: ({ context }) => context.query,
+          onDone,: {
             target: 'results',
-            actions: assign({
+            actions,: assign({
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
               pagination: ({ event }) => event.output.pagination,
@@ -618,7 +618,7 @@ export const searchMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -633,7 +633,7 @@ export const searchMachine = createMachine();
           isSearching: () => true,
           results: () => []
         }),
-        exit: assign({
+        exit,: assign({
           isSearching: () => false
         })
       },
@@ -641,26 +641,26 @@ export const searchMachine = createMachine();
         on: {
           SEARCH: {
             target: 'validating',
-            actions: assign({
+            actions,: assign({
               query: ({ event }) => event.data
             })
           },
           REFINE_SEARCH: 'validating',
-          CLEAR_RESULTS: 'idle',
-          LOAD_MORE: 'loadingMore'
+          CLEAR_RESULTS,: 'idle',
+          LOAD_MORE,: 'loadingMore'
         }
       },
       loadingMore: {
         invoke: {
           id: 'loadMoreResults',
-          src: 'loadMoreResults',
-          input: ({ context }) => ({
+          src,: 'loadMoreResults',
+          input,: ({ context }) => ({
             query: context.query,
             page: context.pagination.page + 1
           }),
-          onDone: {
+          onDone,: {
             target: 'results',
-            actions: assign({
+            actions,: assign({
               results: ({ context, event }) => [...context.results, ...event.output.results],
               pagination: ({ event }) => event.output.pagination
             })
@@ -671,7 +671,7 @@ export const searchMachine = createMachine();
       error: {
         on: {
           RETRY: 'searching',
-          NEW_SEARCH: 'idle'
+          NEW_SEARCH,: 'idle'
         }
       }
     }
@@ -682,7 +682,7 @@ export const searchMachine = createMachine();
         const history = localStorage.getItem('search-history');
         return history ? JSON.parse(history) : [];
       }),
-      validateSearch: fromPromise(async ({ input }) => {
+      validateSearch,: fromPromise(async ({ input }) => {
         try {
           SearchQuerySchema.parse(input);
           return true;
@@ -693,7 +693,7 @@ export const searchMachine = createMachine();
           throw error;
         }
       }),
-      performSearch: fromPromise(async ({ input }: { input: any }) => {
+      performSearch,: fromPromise(async ({ input }: { input: any }) => {
         const query = input?.query || '';
         const response = await fetch('/api/search/vector', {
           method: 'POST',
@@ -707,10 +707,10 @@ export const searchMachine = createMachine();
         // Save to history
         const history = JSON.parse(localStorage.getItem('search-history') || '[]');
         const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
-        localStorage.setItem('search-history', JSON.stringify(updatedHistory);
+        localStorage.setItem('search-history', JSON.stringify(updatedHistory),;
         return data;
       }),
-      loadMoreResults: fromPromise(async ({ input }: { input: any }) => {
+      loadMoreResults,: fromPromise(async ({ input }: { input: any }) => {
         const query = input?.query || {}
         const page = input?.page || 1;
         const response = await fetch('/api/search/vector', {
@@ -735,20 +735,20 @@ export const searchMachine = createMachine();
 export const aiAnalysisMachine = createMachine();
   {
     id: 'aiAnalysis',
-    initial: 'idle',
-    context: {
+    initial,: 'idle',
+    context,: {
       analysisData: null
-      validationErrors: { [key: string]: any },
+      validationErrors: { [key,: string,]: any },
       analysisResults: null
       confidence: 0,
-      processingTime: 0,
-      tokensUsed: 0,
-      model: 'gemma3-legal:latest',
-      error: null
+      processingTime,: 0,
+      tokensUsed,: 0,
+      model,: 'gemma3-legal:latest',
+      error,: null
       isStreaming: false
       streamedContent: ''
     } as AIAnalysisContext,
-    states: {
+    states,: {
       idle: {
         on: {
           START_ANALYSIS: 'validating'
@@ -757,12 +757,12 @@ export const aiAnalysisMachine = createMachine();
       validating: {
         invoke: {
           id: 'validateAnalysis',
-          src: 'validateAnalysis',
-          input: ({ context }) => context.analysisData,
-          onDone: 'analyzing',
-          onError: {
+          src,: 'validateAnalysis',
+          input,: ({ context }) => context.analysisData,
+          onDone,: 'analyzing',
+          onError,: {
             target: 'idle',
-            actions: assign({
+            actions,: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -784,11 +784,11 @@ export const aiAnalysisMachine = createMachine();
       analyzing: {
         invoke: {
           id: 'performAnalysis',
-          src: 'performAnalysis',
-          input: ({ context }) => context.analysisData,
-          onDone: {
+          src,: 'performAnalysis',
+          input,: ({ context }) => context.analysisData,
+          onDone,: {
             target: 'completed',
-            actions: assign({
+            actions,: assign({
               analysisResults: ({ event }) => event.output.results,
               confidence: ({ event }) => event.output.confidence,
               processingTime: ({ event }) => event.output.processingTime,
@@ -797,7 +797,7 @@ export const aiAnalysisMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -820,13 +820,13 @@ export const aiAnalysisMachine = createMachine();
       completed: {
         on: {
           NEW_ANALYSIS: 'idle',
-          RETRY_ANALYSIS: 'analyzing'
+          RETRY_ANALYSIS,: 'analyzing'
         }
       },
       error: {
         on: {
           RETRY: 'analyzing',
-          NEW_ANALYSIS: 'idle'
+          NEW_ANALYSIS,: 'idle'
         }
       }
     }
@@ -844,7 +844,7 @@ export const aiAnalysisMachine = createMachine();
           throw error;
         }
       }),
-      performAnalysis: fromPromise(async ({ input }) => {
+      performAnalysis,: fromPromise(async ({ input }) => {
         const startTime = Date.now();
         const response = await fetch('/api/ai/analyze', {
           method: 'POST',

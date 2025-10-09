@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!res.ok) {
       const text = await res.text()
       return json()
-        { ok: false, status: res.status, error: text.slice(0, 2000) },
+        { ok: false, status,: res.status, erro,r: text.slice(0, 2000) },
         { status: 502 }
       )
     }
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({ ok: true, done: true, last: lastLine })
-  } catch (e: any) {
+  }, catch (e: any) {
     const msg = e instanceof Error ? e.message: "pull failed"
     return json({ ok: false, error: msg }, { status: 500 })
   }

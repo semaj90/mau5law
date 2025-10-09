@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true,
-      data: result;
+      data: result,;
       timestamp: new Date().toISOString()
     })
   } catch (err: any) {

@@ -188,15 +188,15 @@ export class EnhancedGlyphEmbedsClient {
    */
   async generateGlyphVariations(
     baseRequest: GlyphEmbedRequest
-    variations: Partial<GlyphEmbedRequest>[];
+    variations: Partial<GlyphEmbedRequest>[],;
   ): Promise<GlyphEmbedResponse[]> {
     const requests = variations.map(variation => ({
       ...baseRequest,
       ...variation
-    });
+    }),;
     const results = await Promise.allSettled(
       requests.map(request => this.generateGlyph(request)
-    );
+    ),;
     return results.map(result =>
       (result as { data?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled'
         ? (result as { data?: any; status?: any; value?: any; reason?: any }).value:  { success: false, error: (result as { data?: any; status?: any; value?: any; reason?: any }).reason?.message || 'Generation failed' }
@@ -487,7 +487,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async createShaderForCanvas(
     glyphResult: GlyphEmbedResult
-    targetFormat: 'webgl' | 'webgpu' = 'webgpu';
+    targetFormat: 'webgl' | 'webgpu' = 'webgpu',;
   ): Promise<any> {
     try {
       if (!glyphResult.simd_shader_data) {
@@ -525,7 +525,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async downloadEnhancedArtifact(
     glyphResult: GlyphEmbedResult
-    filename?: string;
+    filename?: string,;
   ): Promise<any> {
     try {
       if (!glyphResult.enhanced_artifact_url) {
@@ -554,7 +554,7 @@ export class EnhancedGlyphEmbedsClient {
     for (let i = 0; i < words.length; i += chunkSize - overlapSize) {
       const chunk = words.slice(i, i + chunkSize).join(' ');
       if (chunk.trim().length > 0) {
-        chunks.push(chunk.trim();
+        chunks.push(chunk.trim(),;
       }
       if (i + chunkSize >= words.length) break;
     }
@@ -631,7 +631,7 @@ export function createEnhancedGlyphRequest(
   evidenceId: string | number
   prompt: string
   preset: keyof typeof GLYPH_PRESETS = 'detective',
-  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents';
+  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents',;
 ): GlyphEmbedRequest {
   return {
     evidence_id: evidenceId

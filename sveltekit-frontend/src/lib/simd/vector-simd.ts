@@ -52,9 +52,9 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
   }
   private normalizeVectorsSIMD(
-    vectors: Float32Array;
+    vectors: Float32Array,;
     dimensions: number
-    vectorCount: number;
+    vectorCount: number,;
   ): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
     for (let i = 0; i < vectorCount; i++) {
@@ -63,7 +63,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       if (magnitude > 0) {
         // Process in SIMD128 chunks (4 floats at a time)
         let j = 0;
-        for (j <= dimensions - 4; j += 4) {
+        for (j <= dimensions - 4; j += 4,) {
           const idx = offset + j;
           normalizedVectors[idx] = vectors[idx] / magnitude;
           normalizedVectors[idx + 1] = vectors[idx + 1] / magnitude;
@@ -71,7 +71,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
           normalizedVectors[idx + 3] = vectors[idx + 3] / magnitude;
         }
         // Handle remaining elements
-        for (j < dimensions; j++) {
+        for (j < dimensions; j++,) {
           const idx = offset + j;
           normalizedVectors[idx] = vectors[idx] / magnitude;
         }
@@ -80,14 +80,14 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     return normalizedVectors;
   }
   private normalizeVectorsScalar(
-    vectors: Float32Array;
+    vectors: Float32Array,;
     dimensions: number
-    vectorCount: number;
+    vectorCount: number,;
   ): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
     for (let i = 0; i < vectorCount; i++) {
       const offset = i * dimensions;
-      const magnitude = this.vectorMagnitude(vectors.slice(offset, offset + dimensions);
+      const magnitude = this.vectorMagnitude(vectors.slice(offset, offset + dimensions),;
       if (magnitude > 0) {
         for (let j = 0; j < dimensions; j++) {
           normalizedVectors[offset + j] = vectors[offset + j] / magnitude;
@@ -100,7 +100,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     let sumSquares = 0;
     // Process in SIMD128 chunks
     let i = 0;
-    for (i <= dimensions - 4; i += 4) {
+    for (i <= dimensions - 4; i += 4,) {
       const idx = offset + i;
       sumSquares += vectors[idx] * vectors[idx] +
                    vectors[idx + 1] * vectors[idx + 1] +
@@ -108,7 +108,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
                    vectors[idx + 3] * vectors[idx + 3];
     }
     // Handle remaining elements
-    for (i < dimensions; i++) {
+    for (i < dimensions; i++,) {
       const val = vectors[offset + i];
       sumSquares += val * val;
     }
@@ -142,21 +142,21 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     const length = vectorA.length;
     // Process in SIMD128 chunks
     let i = 0;
-    for (i <= length - 4; i += 4) {
+    for (i <= length - 4; i += 4,) {
       dotProduct += vectorA[i] * vectorB[i] +
                    vectorA[i + 1] * vectorB[i + 1] +
                    vectorA[i + 2] * vectorB[i + 2] +
                    vectorA[i + 3] * vectorB[i + 3];
     }
     // Handle remaining elements
-    for (i < length; i++) {
+    for (i < length; i++,) {
       dotProduct += vectorA[i] * vectorB[i];
     }
     return dotProduct;
   }
   preprocessForWebGPU(
     embeddings: Float32Array[]
-    targetDimensions: number;
+    targetDimensions: number,;
   ): {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
@@ -185,7 +185,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     const magnitudes = new Float32Array(vectorCount);
     for (let i = 0; i < vectorCount; i++) {
       const offset = i * dimensions;
-      magnitudes[i] = this.vectorMagnitude(flattenedVectors.slice(offset, offset + dimensions);
+      magnitudes[i] = this.vectorMagnitude(flattenedVectors.slice(offset, offset + dimensions),;
     }
     const processingTime = performance.now() - startTime;
     const metadata: VectorMetadata = {
@@ -208,7 +208,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   computeLegalSimilarity(
     queryEmbedding: Float32Array
     documentEmbeddings: Float32Array[]
-    legalDomainWeights?: Float32Array;
+    legalDomainWeights?: Float32Array,;
   ): Array<{ index: number; similarity: number; confidence: number }> {
     const results: Array<{ index: number; similarity: number; confidence: number }> = [];
     for (let i = 0; i < documentEmbeddings.length; i++) {
@@ -237,20 +237,20 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   private computeWeightedDotProduct(
     vectorA: Float32Array
     vectorB: Float32Array
-    weights: Float32Array;
+    weights: Float32Array,;
   ): number {
     let weightedDotProduct = 0;
     if (this.simdSupported && vectorA.length >= 4) {
       // SIMD version for weighted dot product
       let i = 0;
-      for (i <= vectorA.length - 4; i += 4) {
+      for (i <= vectorA.length - 4; i += 4,) {
         weightedDotProduct +=
           (vectorA[i] * vectorB[i] * weights[i]) +
           (vectorA[i + 1] * vectorB[i + 1] * weights[i + 1]) +
           (vectorA[i + 2] * vectorB[i + 2] * weights[i + 2]) +
           (vectorA[i + 3] * vectorB[i + 3] * weights[i + 3]);
       }
-      for (i < vectorA.length; i++) {
+      for (i < vectorA.length; i++,) {
         weightedDotProduct += vectorA[i] * vectorB[i] * weights[i];
       }
     } else {
@@ -263,7 +263,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   private calculateConfidence(
     similarity: number
     queryMagnitude: number
-    docMagnitude: number;
+    docMagnitude: number,;
   ): number {
     // Confidence based on similarity strength and vector quality
     const similarityStrength = Math.abs(similarity);
@@ -274,7 +274,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   prepareForLegalWebGPU(
     caseEmbeddings: Float32Array[]
     evidenceEmbeddings: Float32Array[]
-    legalDomainWeights?: Float32Array;
+    legalDomainWeights?: Float32Array,;
   ): {
     caseData: Float32Array;
     evidenceData: Float32Array;

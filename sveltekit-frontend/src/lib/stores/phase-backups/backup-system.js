@@ -147,7 +147,7 @@ Phase 2 conflicts resolved:
         .filter((f) => f.endsWith(".ts") || f.endsWith(".js")
         .filter((f) => !f.includes("backup")
         .map((f) => `- ${f}`)
-        .join("\n");
+        .join("\n"),;
       return files;
     } catch (error) {
       return "- Error reading directory";

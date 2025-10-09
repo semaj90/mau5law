@@ -211,7 +211,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async initializeLangChainVectorStore(
     embeddings: Embeddings
-    postgresConfig: any;
+    postgresConfig: any,;
   ): Promise<void> {
     try {
       this.langchainVectorStore = await PGVector.initialize(embeddings, {
@@ -244,8 +244,8 @@ export class MultiCoreMCPVectorServer {
           simdEnabled: true
         }
       });
-      worker.on('message', this.handleWorkerMessage.bind(this);
-      worker.on('error', this.handleWorkerError.bind(this);
+      worker.on('message', this.handleWorkerMessage.bind(this),;
+      worker.on('error', this.handleWorkerError.bind(this),;
       this.workers.push(worker);
     }
   }
@@ -395,7 +395,7 @@ export class MultiCoreMCPVectorServer {
         clearTimeout(timeout);
         worker.off('message', messageHandler);
         if (result.error) {
-          reject(new Error(result.error);
+          reject(new Error(result.error),;
         } else {
           resolve(result.processedVectors);
         }
@@ -412,8 +412,8 @@ export class MultiCoreMCPVectorServer {
    */
   private async createDatabaseIndexes(
     table: string
-    algorithm: string;
-    vectors: ProcessedVector[];
+    algorithm: string,;
+    vectors: ProcessedVector[],;
   ): Promise<IndexCreationResult[]> {
     const client = await this.db.connect();
     const results: IndexCreationResult[] = [];
@@ -438,13 +438,13 @@ export class MultiCoreMCPVectorServer {
    * Create IVF_FLAT index with optimized parameters
    */
   private async createIVFFlatIndex(
-    client: any;
+    client: any,;
     table: string
-    vectorCount: number;
+    vectorCount: number,;
   ): Promise<IndexCreationResult> {
     const startTime = performance.now();
     // Auto-tune lists parameter based on vector count
-    const lists = Math.max(32, Math.min(4096, Math.round(Math.sqrt(vectorCount)));
+    const lists = Math.max(32, Math.min(4096, Math.round(Math.sqrt(vectorCount))),;
     const indexName = `idx_${table}_gemma_embedding_ivfflat`;
     const createSql = `
       CREATE INDEX CONCURRENTLY IF NOT EXISTS ${indexName}
@@ -467,9 +467,9 @@ export class MultiCoreMCPVectorServer {
    * Create HNSW index with optimized parameters
    */
   private async createHNSWIndex(
-    client: any;
+    client: any,;
     table: string
-    vectorCount: number;
+    vectorCount: number,;
   ): Promise<IndexCreationResult> {
     const startTime = performance.now();
     // Auto-tune HNSW parameters based on vector count and use case
@@ -498,9 +498,9 @@ export class MultiCoreMCPVectorServer {
    */
   private async insertVectorsInBatches(
     client: any
-    table: string;
+    table: string,;
     vectors: ProcessedVector[]
-    batchSize: number = 1000;
+    batchSize: number = 1000,;
   ): Promise<void> {
     for (let i = 0; i < vectors.length; i += batchSize) {
       const batch = vectors.slice(i, i + batchSize);
@@ -538,7 +538,7 @@ export class MultiCoreMCPVectorServer {
         norm: vector.norm,
         cached_at: Date.now()
       }
-      pipeline.setex(cacheKey, 3600, JSON.stringify(cacheData); // 1 hour TTL
+      pipeline.setex(cacheKey, 3600, JSON.stringify(cacheData),; // 1 hour TTL
     }
     await pipeline.exec();
     console.log(`💾 Cached ${vectors.length} vectors in Redis`);
@@ -563,7 +563,7 @@ export class MultiCoreMCPVectorServer {
           'legal-ai-progress',
           'vector.index.progress',
           Buffer.from(JSON.stringify(message)
-        );
+        ),;
       } catch (error) {
         console.warn('⚠️ Failed to publish progress to RabbitMQ:', error);
       }
@@ -615,7 +615,7 @@ export class MultiCoreMCPVectorServer {
    * Simple vector search by document content
    */
   async searchDocuments(
-    query: string;
+    query: string,;
     options: {
       limit?: number;
       threshold?: number;
@@ -655,11 +655,11 @@ export class MultiCoreMCPVectorServer {
         similarity: row.similarity,
         metadata: row.metadata || {},
         searchTime: performance.now() - startTime
-      });
+      }),;
       // Cache results
       if (useCache) {
         const cacheKey = `doc_search:${this.hashQuery(query)}:${limit}`;
-        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResults); // 30 min TTL
+        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResults),; // 30 min TTL
       }
       console.log(`🔍 Document search completed: ${searchResults.length} results in ${(performance.now() - startTime).toFixed(2)}ms`);
       return searchResults;
@@ -672,7 +672,7 @@ export class MultiCoreMCPVectorServer {
    * Semantic search across multiple document collections
    */
   async semanticSearch(
-    query: string;
+    query: string,;
     options: {
       collections?: string[];
       limit?: number;
@@ -755,7 +755,7 @@ export class MultiCoreMCPVectorServer {
             similarity: row.similarity,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
             source_collection: row.source_collection
-          });
+          }),;
         } catch (error) {
           console.warn(`⚠️ Search failed for collection ${collection}:`, error.message);
           return [];
@@ -776,7 +776,7 @@ export class MultiCoreMCPVectorServer {
       // Sort by similarity and limit
       const finalResults = Array.from(deduped.values()
         .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, limit);
+        .slice(0, limit),;
       const searchResult: SemanticSearchResult = {
         query,
         results: finalResults
@@ -788,7 +788,7 @@ export class MultiCoreMCPVectorServer {
       // Cache the result
       if (useCache) {
         const cacheKey = `semantic:${this.hashQuery(query)}:${collections.join(',')}:${limit}`;
-        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult);
+        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult),;
       }
       console.log(`🔍 Semantic search completed: ${finalResults.length} results across ${collections.length} collections in ${searchResult.search_time.toFixed(2)}ms`);
       return searchResult;
@@ -801,7 +801,7 @@ export class MultiCoreMCPVectorServer {
    * Full-text search with ranking
    */
   async fullTextSearch(
-    query: string;
+    query: string,;
     options: {
       collections?: string[];
       limit?: number;
@@ -851,7 +851,7 @@ export class MultiCoreMCPVectorServer {
             rank: row.rank,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata || '{}') : row.metadata,
             source_collection: row.source_collection
-          });
+          }),;
         } catch (error) {
           console.warn(`⚠️ Full-text search failed for collection ${collection}:`, error.message);
           return [];
@@ -869,7 +869,7 @@ export class MultiCoreMCPVectorServer {
       });
       const finalResults = Array.from(deduped.values()
         .sort((a, b) => b.rank - a.rank)
-        .slice(0, limit);
+        .slice(0, limit),;
       const searchResult: FullTextSearchResult = {
         query,
         results: finalResults
@@ -881,7 +881,7 @@ export class MultiCoreMCPVectorServer {
       // Cache result
       if (useCache) {
         const cacheKey = `fulltext:${this.hashQuery(query)}:${collections.join(',')}:${limit}`;
-        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult);
+        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult),;
       }
       console.log(`📝 Full-text search completed: ${finalResults.length} results in ${searchResult.search_time.toFixed(2)}ms`);
       return searchResult;
@@ -894,7 +894,7 @@ export class MultiCoreMCPVectorServer {
    * Hybrid search combining vector similarity + full-text + keyword matching
    */
   async hybridSearch(
-    query: string;
+    query: string,;
     options: {
       limit?: number;
       vectorWeight?: number;
@@ -978,8 +978,8 @@ export class MultiCoreMCPVectorServer {
       // Calculate combined scores
       const results = Array.from(scoredResults.values()).map(result => {
         // Normalize scores to 0-1 range
-        const normalizedVector = Math.min(1, Math.max(0, result.vector_score);
-        const normalizedText = Math.min(1, Math.max(0, result.text_score * 4); // Scale text rank
+        const normalizedVector = Math.min(1, Math.max(0, result.vector_score),;
+        const normalizedText = Math.min(1, Math.max(0, result.text_score * 4),; // Scale text rank
         const normalizedKeyword = result.keyword_score;
         result.combined_score =
           (normalizedVector * vectorWeight) +
@@ -1003,7 +1003,7 @@ export class MultiCoreMCPVectorServer {
       // Cache result
       if (useCache) {
         const cacheKey = `hybrid:${this.hashQuery(query)}:${limit}:${vectorWeight}:${textWeight}:${keywordWeight}`;
-        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult);
+        await this.redis.setex(cacheKey, 1800, JSON.stringify(searchResult),;
       }
       console.log(`🔀 Hybrid search completed: ${finalResults.length} results in ${searchResult.search_time.toFixed(2)}ms`);
       return searchResult;
@@ -1091,7 +1091,7 @@ export class MultiCoreMCPVectorServer {
       // 6. Cache result
       if (useCache) {
         const cacheKey = `search:${this.hashQuery(queryText)}:${k}:${algorithm}`;
-        await this.redis.setex(cacheKey, 3600, JSON.stringify(finalResult); // 1 hour TTL
+        await this.redis.setex(cacheKey, 3600, JSON.stringify(finalResult),; // 1 hour TTL
       }
       console.log(`🔍 Advanced search completed: ${totalTime.toFixed(2)}ms`);
       console.log(`📊 Strategy: ${searchStrategy}, Results: ${filteredResults.length}`);
@@ -1106,7 +1106,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async searchWithPostgresHNSW(
     queryEmbedding: Float32Array
-    k: number;
+    k: number,;
   ): Promise<SearchResult[]> {
     console.log('🐘 Searching with postgres.js HNSW');
     const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
@@ -1126,14 +1126,14 @@ export class MultiCoreMCPVectorServer {
       similarity: row.similarity,
       metadata: row.document_metadata,
       score: row.similarity
-    });
+    }),;
   }
   /**
    * Search using postgres.js with IVF-Flat index
    */
   private async searchWithPostgresIVFFlat(
     queryEmbedding: Float32Array
-    k: number;
+    k: number,;
   ): Promise<SearchResult[]> {
     console.log('🐘 Searching with postgres.js IVF-Flat');
     const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
@@ -1154,13 +1154,13 @@ export class MultiCoreMCPVectorServer {
       similarity: row.similarity,
       metadata: row.document_metadata,
       score: row.similarity
-    });
+    }),;
   }  /**
    * Search using LangChain PGVector
    */
   private async searchWithLangChain(
     queryText: string
-    k: number;
+    k: number,;
   ): Promise<SearchResult[]> {
     if (!this.langchainVectorStore) {
       throw new Error('LangChain vector store not initialized');
@@ -1173,7 +1173,7 @@ export class MultiCoreMCPVectorServer {
       similarity: 1 - score, // Convert distance to similarity;
       metadata: doc.metadata,
       score
-    });
+    }),;
   }
   /**
    * Hybrid search combining multiple strategies
@@ -1181,7 +1181,7 @@ export class MultiCoreMCPVectorServer {
   private async searchHybrid(
     queryEmbedding: Float32Array
     queryText: string
-    k: number;
+    k: number,;
   ): Promise<SearchResult[]> {
     console.log('🔀 Performing hybrid search');
     const [postgresResults, langchainResults] = await Promise.allSettled([
@@ -1202,12 +1202,12 @@ export class MultiCoreMCPVectorServer {
     });
     return Array.from(deduped.values()
       .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, k);
+      .slice(0, k),;
   }  /**
    * Select optimal search strategy based on parameters
    */
   private selectSearchStrategy(
-    algorithm: string;
+    algorithm: string,;
   ): SearchStrategy {
     if (algorithm === 'auto') {
       if (this.langchainVectorStore) {
@@ -1264,7 +1264,7 @@ export class MultiCoreMCPVectorServer {
    */;
   async cleanup(): Promise<void> {
     // Terminate worker threads
-    await Promise.all(this.workers.map(worker => worker.terminate());
+    await Promise.all(this.workers.map(worker => worker.terminate()),;
     // Close postgres.js connection
     await this.sql.end();
     // Close Redis connection (Upstash client)
@@ -1294,14 +1294,14 @@ if (!isMainThread) {
   });
   async function processVectorChunkWorker(
     chunk: VectorChunk
-    workerId: number;
+    workerId: number,;
   ): Promise<ProcessedVector[]> {
     const processedVectors: ProcessedVector[] = [];
     for (let i = 0; i < chunk.vectors.length; i++) {
       const vector = chunk.vectors[i];
       const metadata = chunk.metadata[i];
       // Calculate L2 norm for cosine similarity optimization
-      const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
+      const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0),;
       // Apply quantization if needed (optional optimization)
       const quantizedVector = simdEnabled ? quantizeVector(vector) : vector;
       processedVectors.push({
@@ -1330,7 +1330,7 @@ if (!isMainThread) {
   function quantizeVector(vector: Float32Array): Float32Array {
     // Simple INT8 quantization for memory efficiency
     const quantized = new Float32Array(vector.length);
-    const scale = 127 / Math.max(...vector.map(Math.abs);
+    const scale = 127 / Math.max(...vector.map(Math.abs),;
     for (let i = 0; i < vector.length; i++) {
       quantized[i] = Math.round(vector[i] * scale) / scale;
     }

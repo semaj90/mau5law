@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 import { getSavedCitationsForUser } from '$lib/server/services/savedCitationsService';
 
+import { getUserId } from '$lib/server/auth/utils';
 type Citation = {
   id: string;
   title: string;
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
   try {
     // try DB-backed fetch
-    const citations = await getSavedCitationsForUser(String(locals.user.id));
+    const citations = await getSavedCitationsForUser(String(getUserId(locals)));
     // if DB returns nothing, fall back to lightweight mock (keeps API stable)
     const savedCitations =
       citations && citations.length > 0

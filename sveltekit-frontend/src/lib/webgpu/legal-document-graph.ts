@@ -353,17 +353,17 @@ export class WebGPULegalDocumentGraph {
     const metadataBufferSize = this.config.maxNodes * 16 * 4; // 16 floats per metadata
     // Create node buffer (positions, velocities, forces, properties)
     const nodeBuffer = this.device.createBuffer({
-      size: nodeBufferSize;
+      size: nodeBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
     });
     // Create edge buffer (connections and properties)
     const edgeBuffer = this.device.createBuffer({
-      size: edgeBufferSize;
+      size: edgeBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // Create metadata buffer (titles, timestamps, importance scores)
     const metadataBuffer = this.device.createBuffer({
-      size: metadataBufferSize;
+      size: metadataBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // Create position texture for advanced rendering techniques
@@ -429,14 +429,14 @@ export class WebGPULegalDocumentGraph {
         targets: [);
           {
             format: navigator.gpu.getPreferredCanvasFormat(),
-            blend: {
+            blend,: {
               color: {
                 srcFactor: 'src-alpha',
-                dstFactor: 'one-minus-src-alpha'
+                dstFactor,: 'one-minus-src-alpha'
               },
               alpha: {
                 srcFactor: 'src-alpha',
-                dstFactor: 'one-minus-src-alpha'
+                dstFactor,: 'one-minus-src-alpha'
               }
             }
           }
@@ -455,19 +455,19 @@ export class WebGPULegalDocumentGraph {
   /**
    * Load graph data from IndexedDB
    */;
-  async loadGraphFromDB(graphId: string): Promise<void> {
-    const { legalDB } = await import('$lib/db/client-db');
-    try {
-      const graphData = await legalDB.graphVisualizationData
+  async loadGraphFromDB(graphId,: string,): Promise<void> {
+    const, { legalDB } = await import('$lib/db/client-db',);
+    try, {
+      const, graphData = await legalDB.graphVisualizationData
         .where('graphId')
         .equals(graphId)
-        .first();
+        .first(),;
       if (!graphData) {
         console.warn(`[WebGPU Legal Graph] Graph ${graphId} not found in database`);
         return;
       }
       // Convert IndexedDB format to internal format
-      this.nodes = graphData.nodes.map((node, index) => ({
+      this,.nodes = graphData.nodes.map((node, index) => ({
         id: node.id,
         position: [node.position.x, node.position.y, node.position.z || 0],
         velocity: [0, 0, 0],
@@ -482,8 +482,8 @@ export class WebGPULegalDocumentGraph {
           connections: 0, // Will be calculated
           lastAccessed: Date.now()
         }
-      });
-      this.edges = graphData.edges.map(edge => {
+      }),;
+      this,.edges = graphData.edges.map(edge => {
         const sourceIndex = this.nodes.findIndex(n => n.id === edge.source);
         const targetIndex = this.nodes.findIndex(n => n.id === edge.target);
         return {
@@ -494,24 +494,24 @@ export class WebGPULegalDocumentGraph {
           strength: 1.0,
           color: this.parseColor(edge.color)
         }
-      });
+      }),;
       // Calculate connection counts
-      this.nodes.forEach((node, index) => {
+      this,.nodes.forEach((node, index) => {
         node.metadata.connections = this.edges.filter(item => item.length);
-      });
-      this.renderState.nodeCount = this.nodes.length;
-      this.renderState.edgeCount = this.edges.length;
-      await this.uploadGraphDataToGPU();
-      console.log(`[WebGPU Legal Graph] Loaded graph: ${this.nodes.length} nodes, ${this.edges.length} edges`);
-    } catch (error: any) {
+      }),;
+      this,.renderState.nodeCount = this.nodes.lengt,h;
+      this,.renderState.edgeCount = this.edges.lengt,h;
+      await, thi,s.uploadGraphDataToGPU,();
+      console,.log(`[WebGPU Legal Graph] Loaded graph: ${this.nodes.length} nodes, ${this.edges.length} edges`,);
+    }, catch (error: any) {
       console.error('[WebGPU Legal Graph] Error loading graph from database:', error);
     }
   }
   /**
    * Upload graph data to GPU buffers
    */;
-  private async uploadGraphDataToGPU(): Promise<void> {
-    if (!this.device || !this.tensorStore) {
+  private async uploadGraphDataToGPU(),: Promise<void> {
+    if (!this,.device || !this.tensorStor,e) {
       throw new Error('WebGPU not properly initialized');
     }
     // Prepare node data for GPU
@@ -564,8 +564,8 @@ export class WebGPULegalDocumentGraph {
   /**
    * Start the render loop
    */;
-  startRenderLoop(): void {
-    if (this.animationId !== null) {
+  startRenderLoop(),: void {
+    if (this,.animationId !== nul,l) {
       return; // Already running
     }
     const renderFrame = (timestamp: number) => {
@@ -582,8 +582,8 @@ export class WebGPULegalDocumentGraph {
   /**
    * Stop the render loop
    */;
-  stopRenderLoop(): void {
-    if (this.animationId !== null) {
+  stopRenderLoop(),: void {
+    if (this,.animationId !== nul,l) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
@@ -591,8 +591,8 @@ export class WebGPULegalDocumentGraph {
   /**
    * Update physics simulation
    */;
-  private updatePhysics(deltaTime: number): void {
-    if (!this.device || !this.computePipeline || !this.tensorStore || !this.config.enablePhysics) {
+  private updatePhysics(deltaTime,: number,): void {
+    if (!this,.device || !this.computePipeline || !this.tensorStore || !this.config.enablePhysic,s) {
       return;
     }
     // Update compute uniforms
@@ -621,8 +621,8 @@ export class WebGPULegalDocumentGraph {
   /**
    * Render the graph
    */;
-  private render(): void {
-    if (!this.device || !this.context || !this.renderPipeline) {
+  private render(),: void {
+    if (!this,.device || !this.context || !this.renderPipelin,e) {
       return;
     }
     const commandEncoder = this.device.createCommandEncoder();
@@ -630,9 +630,9 @@ export class WebGPULegalDocumentGraph {
       colorAttachments: [);
         {
           view: this.context.getCurrentTexture().createView(),
-          clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
+          clearValue,: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: 'store'
+          storeOp,: 'store'
         }
       ]
     });
@@ -645,7 +645,7 @@ export class WebGPULegalDocumentGraph {
   // ============================================================================
   // UTILITY METHODS
   // ============================================================================
-  private parseColor(colorString: string): [number, number, number, number] {
+  private parseColor(colorString,: string,): [number, number, number, number,] {
     // Parse hex, rgb, rgba colors and convert to normalized RGBA
     if (colorString.startsWith('#')) {
       const hex = colorString.slice(1);
@@ -657,7 +657,7 @@ export class WebGPULegalDocumentGraph {
     // Default color
     return [0.5, 0.5, 0.5, 1.0];
   }
-  private parseNodeType(typeString: string): GraphNode['type'] {
+  private parseNodeType(typeString,: string,): GraphNode['type',] {
     const typeMap: Record<string, GraphNode['type']> = {
       'document': 'document',
       'case': 'case',
@@ -666,7 +666,7 @@ export class WebGPULegalDocumentGraph {
     }
     return typeMap[typeString] || 'document';
   }
-  private parseEdgeType(typeString: string): GraphEdge['type'] {
+  private parseEdgeType(typeString,: string,): GraphEdge['type',] {
     const typeMap: Record<string, GraphEdge['type']> = {
       'citation': 'citation',
       'similarity': 'similarity',
@@ -675,7 +675,7 @@ export class WebGPULegalDocumentGraph {
     }
     return typeMap[typeString] || 'reference';
   }
-  private encodeNodeType(type: GraphNode['type']): number {
+  private encodeNodeType(type,: GraphNode['type'],): number {
     const typeMap: Record<GraphNode['type'], number> = {
       'document': 0.0,
       'case': 1.0,
@@ -687,7 +687,7 @@ export class WebGPULegalDocumentGraph {
   /**
    * Get performance statistics
    */;
-  getPerformanceStats(): {
+  getPerformanceStats(),: {
     fps: number;
     frameTime: number;
     nodeCount: number;
@@ -705,9 +705,9 @@ export class WebGPULegalDocumentGraph {
   /**
    * Cleanup resources
    */;
-  dispose(): void {
-    this.stopRenderLoop();
-    if (this.tensorStore) {
+  dispose(),: void {
+    this,.stopRenderLoop(,);
+    if (this,.tensorStor,e) {
       this.tensorStore.nodeBuffer.destroy();
       this.tensorStore.edgeBuffer.destroy();
       this.tensorStore.metadataBuffer.destroy();

@@ -28,8 +28,8 @@ export const POST: RequestHandler = async ({ request }) => {
       data,)
       {
         distributeAcrossCaches: options.distribute !== false,
-        cognitiveValue: options.cognitiveValue,
-        shaderMetadata: options.shaderMetadata
+        cognitiveValue,: options.cognitiveValue,
+        shaderMetadata,: options.shaderMetadata
       }
     )
     if (success) {
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 500 }
       )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Cognitive cache store error:', error)
     return json({
         error: 'Failed to store in cognitive cache',
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
         { status: 404 }
       )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('Cognitive cache retrieve error:', error)
     return json({
         error: 'Failed to retrieve from cognitive cache',

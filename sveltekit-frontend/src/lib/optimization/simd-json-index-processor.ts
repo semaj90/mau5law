@@ -144,7 +144,7 @@ export class SIMDJSONIndexProcessor {
    */
   async semanticSearch(
     query: string
-    index: CopilotIndex;
+    index: CopilotIndex,;
     options: {
       limit?: number;
       threshold?: number;
@@ -158,7 +158,7 @@ export class SIMDJSONIndexProcessor {
     const similarities = index.entries.map((entry) => ({
       entry,
       similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
-    });
+    }),;
     // Filter and sort by similarity
     let results = similarities
       .filter(({ similarity }) => similarity >= threshold);
@@ -191,7 +191,7 @@ export class SIMDJSONIndexProcessor {
         score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding),
         embeddings: Array.from(chunk.embedding.slice(0, 10)),
         chunkType: 'paragraph' as const,
-        metadata: { [key: string]: any } // Required by TextChunk interface
+        metadata: { [key,: strin,g]: any } // Required by TextChunk interface
       } as TextChunk)),
       highlights: this.extractHighlights(entry.content, query),
       explanation: `Enhanced semantic search result (${entry.metadata.source})`,
@@ -206,7 +206,7 @@ export class SIMDJSONIndexProcessor {
       relevanceScore: similarity
       rank: index + 1,
       snippet: entry.content.substring(0, 200)
-    });
+    }),;
   }
   /**
    * SIMD-optimized cosine similarity calculation
@@ -263,7 +263,7 @@ export class SIMDJSONIndexProcessor {
         const totalLength = buffer.byteLength;
         let offset = 0;
         while (offset < totalLength) {
-          const chunk = buffer.slice(offset, Math.min(offset + chunkSize, totalLength);
+          const chunk = buffer.slice(offset, Math.min(offset + chunkSize, totalLength),;
           const jsonString = textDecoder.decode(chunk);
           try {
             const parsed = JSON.parse(jsonString);
@@ -382,7 +382,7 @@ export class SIMDJSONIndexProcessor {
         centroid: new Float32Array(cluster.centroid || []),
         memberIds: cluster.documents || [],
         relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
-      });
+      }),;
     } catch (error: any) {
       console.error('Cluster generation failed:', error);
       // Return empty clusters on error
@@ -529,7 +529,7 @@ export class SIMDJSONIndexProcessor {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size);
+      chunks.push(array.slice(i, i + size),;
     }
     return chunks;
   }
@@ -557,7 +557,7 @@ export class SIMDJSONIndexProcessor {
       const regex = new RegExp(`(.{0,50}${word}.{0,50})`, 'gi');
       const matches = content.match(regex);
       if (matches) {
-        highlights.push(...matches.slice(0, 3); // Limit to 3 highlights per word
+        highlights.push(...matches.slice(0, 3),; // Limit to 3 highlights per word
       }
     });
     return highlights.slice(0, 10); // Limit total highlights

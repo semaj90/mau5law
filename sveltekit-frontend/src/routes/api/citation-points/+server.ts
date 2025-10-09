@@ -4,6 +4,7 @@ import { db } from '$lib/server/db/index';
 import type { RequestHandler } from './$types.js';
 // import { citationPoints
 import { and, eq } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
@@ -60,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relevanceScore: data.relevanceScore || '0.0',
       metadata: data.metadata || {},
       isBookmarked: data.isBookmarked || false,
-      createdBy: locals.user.id,
+      createdBy: getUserId(locals),
     }
     const [newCitation] = await db
       .insert(reports)
@@ -68,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         title: 'Citation Point: ' + data.text.substring(0, 50),
         content: JSON.stringify(citationData),
         reportType: 'citation_point',
-        createdBy: locals.user.id,
+        createdBy: getUserId(locals),
         caseId: data.caseId,
       })
       .returning();

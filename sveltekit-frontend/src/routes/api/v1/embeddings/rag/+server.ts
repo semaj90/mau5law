@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('Enhanced RAG API error:', error)
     return json({
         error: 'Failed to process RAG query',

@@ -39,12 +39,12 @@ export type LegalFormEvent =
   | { type: "APPLY_AI_RECOMMENDATION"; recommendation: string }
 export const legalFormMachine = setup({
   types: {
-    context: { [key: string]: any } as LegalFormContext,
-    events: { [key: string]: any } as LegalFormEvent
+    context: { [key,: strin,g]: any } as LegalFormContext,
+    events: { [key,: strin,g]: any } as LegalFormEvent
   },
   actors: {
     submitCaseService: fromPromise(async ({ input }: { input: LegalFormContext }) => {
-        await new Promise((resolve) => setTimeout(resolve, 2000);
+        await new Promise((resolve) => setTimeout(resolve, 2000),;
         const success = Math.random() > 0.1; // 90% success rate
         if (!success) {
           throw new Error("Submission failed - please try again");
@@ -54,7 +54,7 @@ export const legalFormMachine = setup({
             typeof crypto !== "undefined" && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
-          success: true;
+          success: true,;
           message: "Case submitted successfully"
         }
       }
@@ -74,7 +74,7 @@ export const legalFormMachine = setup({
     confidence: 0,
     currentStep: 1,
     totalSteps: 4,
-    validationErrors: { [key: string]: any },
+    validationErrors: { [key,: strin,g]: any },
     aiRecommendations: []
   },
   states: {
@@ -216,13 +216,13 @@ export const legalFormMachine = setup({
               // AI suggestions based on priority and evidence type
               if (
                 event.priority === "critical" &&
-                context.evidenceType === "digital";
-              ) {
-                return [
+                context.evidenceType === "digital",;
+              ), {
+                return, [
                   "Enable real-time monitoring",
                   "Assign senior analyst",
                   "Fast-track processing"
-                ];
+                ],;
               }
               return context.aiSuggestions;
             }
@@ -244,18 +244,18 @@ export const legalFormMachine = setup({
         },
         NEXT: {
           target: "review",
-          guard: ({ context }) =>
+          guard,: ({ context }) =>
             context.caseTitle.trim() &&
             context.caseDescription.trim() &&
             Object.keys(context.validationErrors).length === 0,
-          actions: assign({
+          actions,: assign({
             currentStep: 3,
             confidence: ({ context }) => Math.min(context.confidence + 25, 100)
           })
         },
         BACK: {
           target: "evidenceUpload",
-          actions: assign({ currentStep: 1 })
+          actions,: assign({ currentStep: 1 })
         },
         REQUEST_AI_HELP: {
           actions: assign({
@@ -273,9 +273,9 @@ export const legalFormMachine = setup({
     review: {
       meta: {
         description: "Review all case details before submission",
-        aiContext: "quality_assurance",
-        requiredFields: [],
-        suggestedHelp: "Review and verify all case information"
+        aiContext,: "quality_assurance",
+        requiredFields,: [],
+        suggestedHelp,: "Review and verify all case information"
       },
       entry: assign({
         confidence: ({ context }) => {
@@ -300,8 +300,8 @@ export const legalFormMachine = setup({
           }
           if (
             context.evidenceType === "testimony" &&
-            context.evidenceFiles.length === 0;
-          ) {
+            context.evidenceFiles.length === 0,;
+          ), {
             recommendations.push({
               nextAction: "Attach witness statement document",
               reasoning: "Testimony cases benefit from written statements",
@@ -314,14 +314,14 @@ export const legalFormMachine = setup({
       on: {
         SUBMIT: {
           target: "submitting",
-          actions: assign({
+          actions,: assign({
             currentStep: 4,
             confidence: ({ context }) => Math.min(context.confidence + 10, 100)
           })
         },
         BACK: {
           target: "caseDetails",
-          actions: assign({ currentStep: 2 })
+          actions,: assign({ currentStep: 2 })
         },
         APPLY_AI_RECOMMENDATION: {
           actions: assign({
@@ -336,16 +336,16 @@ export const legalFormMachine = setup({
     submitting: {
       meta: {
         description: "Submitting case to system",
-        aiContext: "case_submission",
-        requiredFields: [],
-        suggestedHelp: "Case is being processed..."
+        aiContext,: "case_submission",
+        requiredFields,: [],
+        suggestedHelp,: "Case is being processed..."
       },
       invoke: {
         id: "submitCase",
-        src: "submitCaseService",
-        onDone: {
+        src,: "submitCaseService",
+        onDone,: {
           target: "success",
-          actions: assign({
+          actions,: assign({
             confidence: 100,
             aiSuggestions: [
               "Case submitted successfully",
@@ -355,7 +355,7 @@ export const legalFormMachine = setup({
         },
         onError: {
           target: "error",
-          actions: assign({
+          actions,: assign({
             validationErrors: {
               submit: "Case submission failed. Please try again."
             }
@@ -366,13 +366,13 @@ export const legalFormMachine = setup({
     success: {
       meta: {
         description: "Case successfully submitted",
-        aiContext: "completion",
-        suggestedHelp: "Case has been created successfully"
+        aiContext,: "completion",
+        suggestedHelp,: "Case has been created successfully"
       },
       on: {
         RESET_FORM: {
           target: "evidenceUpload",
-          actions: assign({
+          actions,: assign({
             evidenceFiles: [],
             caseTitle: "",
             caseDescription: "",
@@ -382,7 +382,7 @@ export const legalFormMachine = setup({
             aiSuggestions: [],
             confidence: 0,
             currentStep: 1,
-            validationErrors: { [key: string]: any },
+            validationErrors: { [key,: strin,g]: any },
             aiRecommendations: []
           })
         }
@@ -391,15 +391,15 @@ export const legalFormMachine = setup({
     error: {
       meta: {
         description: "Error occurred during submission",
-        aiContext: "error_handling",
-        suggestedHelp: "Please review the error and try again"
+        aiContext,: "error_handling",
+        suggestedHelp,: "Please review the error and try again"
       },
       on: {
         BACK: {
           target: "review",
-          actions: assign({
+          actions,: assign({
             currentStep: 3,
-            validationErrors: { [key: string]: any }
+            validationErrors: { [key,: strin,g]: any }
           })
         },
         REQUEST_AI_HELP: {
@@ -407,8 +407,8 @@ export const legalFormMachine = setup({
             aiRecommendations: [);
               {
                 nextAction: "Check network connection",
-                reasoning: "Submission errors are often connectivity related",
-                confidence: 75
+                reasoning,: "Submission errors are often connectivity related",
+                confidence,: 75
               }
             ]
           })
@@ -430,8 +430,8 @@ export function getStateDescription(state: StateValue): string {
   return descriptions[state as keyof typeof descriptions] || "Unknown state";
 }
 export function getAISuggestions(
-  context: LegalFormContext;
-  state: StateValue;
+  context: LegalFormContext,;
+  state: StateValue,;
 ): string[] {
   const baseSuggestions = context.aiSuggestions;
   // Add state-specific AI suggestions
@@ -485,8 +485,8 @@ export function getNextPossibleActions(state: StateValue): string[] {
  * @returns string[] Array of best practice recommendations
  */
 export async function generateBestPractices(
-  context: LegalFormContext;
-  state: StateValue;
+  context: LegalFormContext,;
+  state: StateValue,;
 ): Promise<string[]> {
   // #context7: Use semantic search, memory, and agent orchestration for best practices
   let dynamicPractices: string[] = [];
@@ -516,6 +516,6 @@ export async function generateBestPractices(
     "Provide clear user feedback on submission status and errors."
   ];
   // Combine static and dynamic recommendations, deduplicated
-  return Array.from(new Set([...dynamicPractices, ...basePractices]);
+  return Array.from(new Set([...dynamicPractices, ...basePractices]),;
 }
 export default legalFormMachine;

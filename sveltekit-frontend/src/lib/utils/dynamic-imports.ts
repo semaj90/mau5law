@@ -138,7 +138,7 @@ export const preloadStrategies = {
   },
   // Preload based on route
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<any> = {
+    const routeComponentMap: Record<string, Array<any>, = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
         { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }

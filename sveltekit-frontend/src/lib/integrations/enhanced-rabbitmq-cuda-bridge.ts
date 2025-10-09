@@ -14,7 +14,7 @@ export const rabbitMQCudaState = writable({
   cudaHealthy: false
   activeJobs: 0,
   completedJobs: 0,
-  lastError: null;
+  lastError: null,;
   performance: {
     averageProcessingTime: 0,
     cudaAcceleration: true
@@ -72,7 +72,7 @@ class EnhancedRabbitMQCudaBridge {
         ...state,
         connected: true
         cudaHealthy: this.cudaHealthy
-      });
+      }),;
       console.log('✅ Enhanced RabbitMQ-CUDA Bridge initialized successfully');
       return true;
     } catch (error) {
@@ -81,7 +81,7 @@ class EnhancedRabbitMQCudaBridge {
         ...state,
         connected: false
         lastError: error.message
-      });
+      }),;
       return false;
     }
   }
@@ -102,7 +102,7 @@ class EnhancedRabbitMQCudaBridge {
     ];
     for (const queueName of queues) {
       await this.channel.assertQueue(queueName, {
-        durable: true;
+        durable: true,;
         arguments: {
           'x-max-priority': 10, // Enable message priority
           'x-message-ttl': 300000 // 5 minute TTL
@@ -149,12 +149,12 @@ class EnhancedRabbitMQCudaBridge {
     const startTime = Date.now();
     let job: CUDAJob;
     try {
-      job = JSON.parse(msg.content.toString();
+      job = JSON.parse(msg.content.toString(),;
       console.log(`🔢 Processing CUDA tensor job: ${job.id}`);
       rabbitMQCudaState.update(state => ({
         ...state,
         activeJobs: state.activeJobs + 1
-      });
+      }),;
       let result;
       if (this.cudaHealthy) {
         // Use CUDA service for acceleration
@@ -183,11 +183,11 @@ class EnhancedRabbitMQCudaBridge {
           ...state.performance,
           averageProcessingTime: (state.performance.averageProcessingTime + processingTime) / 2
         }
-      });
+      }),;
     } catch (error) {
       console.error('❌ Tensor job processing failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false;
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -200,7 +200,7 @@ class EnhancedRabbitMQCudaBridge {
     const startTime = Date.now();
     let job: CUDAJob;
     try {
-      job = JSON.parse(msg.content.toString();
+      job = JSON.parse(msg.content.toString(),;
       console.log(`🔍 Processing CUDA vector similarity: ${job.id}`);
       const { queryVector, candidateVectors, algorithm = 'cosine' } = job.payload;
       let similarities;
@@ -222,7 +222,7 @@ class EnhancedRabbitMQCudaBridge {
       }
       const processingTime = Date.now() - startTime;
       await this.publishResult(job.id, {
-        success: true;
+        success: true,;
         result: { similarities, algorithm, vectorCount: candidateVectors.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy && candidateVectors.length > 100
@@ -230,7 +230,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Vector similarity job failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false;
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -243,7 +243,7 @@ class EnhancedRabbitMQCudaBridge {
     const startTime = Date.now();
     let job: CUDAJob;
     try {
-      job = JSON.parse(msg.content.toString();
+      job = JSON.parse(msg.content.toString(),;
       console.log(`📐 Processing CUDA embedding normalization: ${job.id}`);
       const { embeddings, batchSize = 100 } = job.payload;
       let normalizedEmbeddings;
@@ -264,7 +264,7 @@ class EnhancedRabbitMQCudaBridge {
       }
       const processingTime = Date.now() - startTime;
       await this.publishResult(job.id, {
-        success: true;
+        success: true,;
         result: { embeddings: normalizedEmbeddings, count: embeddings.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy
@@ -272,7 +272,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Embedding normalization failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false;
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -312,7 +312,7 @@ class EnhancedRabbitMQCudaBridge {
         rabbitMQCudaState.update(state => ({
           ...state,
           cudaHealthy: this.cudaHealthy
-        });
+        }),;
         if (this.cudaHealthy) {
           console.log(`✅ CUDA service healthy: ${health.gpu_model} (${health.cuda_cores} cores)`);
         }
@@ -330,7 +330,7 @@ class EnhancedRabbitMQCudaBridge {
   private async fallbackTensorCompute(payload: any): Promise<any> {
     console.log('🔄 Using WebAssembly fallback for tensor computation');
     // Implement WebAssembly tensor operations
-    await new Promise(resolve => setTimeout(resolve, 100); // Simulate processing
+    await new Promise(resolve => setTimeout(resolve, 100),; // Simulate processing
     return { computed: true, fallback: 'wasm' }
   }
   /**
@@ -342,8 +342,8 @@ class EnhancedRabbitMQCudaBridge {
     const similarities = vectors.map(vector => {
       if (algorithm === 'cosine') {
         const dotProduct = query.reduce((sum, val, i) => sum + val * vector[i], 0);
-        const queryMag = Math.sqrt(query.reduce((sum, val) => sum + val * val, 0);
-        const vectorMag = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
+        const queryMag = Math.sqrt(query.reduce((sum, val) => sum + val * val, 0),;
+        const vectorMag = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0),;
         return dotProduct / (queryMag * vectorMag);
       }
       return Math.random(); // Placeholder for other algorithms
@@ -356,7 +356,7 @@ class EnhancedRabbitMQCudaBridge {
   private async fallbackBatchNormalize(embeddings: number[][]): Promise<number[][]> {
     console.log('🔄 Using JavaScript fallback for batch normalization');
     return embeddings.map(embedding => {
-      const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+      const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0),;
       return embedding.map(val => val / magnitude);
     });
   }
@@ -407,7 +407,7 @@ class EnhancedRabbitMQCudaBridge {
       Buffer.from(JSON.stringify(job)),
       {
         priority,
-        persistent: true;
+        persistent: true,;
         headers: {
           'x-job-type': type
           'x-cuda-preferred': this.cudaHealthy ? 'true' : 'false'
@@ -450,7 +450,7 @@ class EnhancedRabbitMQCudaBridge {
         ...state,
         connected: false
         activeJobs: 0
-      });
+      }),;
       console.log('✅ RabbitMQ-CUDA bridge shutdown complete');
     } catch (error) {
       console.error('❌ Bridge shutdown error:', error);

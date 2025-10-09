@@ -120,7 +120,7 @@ export class ClientEmbeddingGenerator {
             );
             resolve(embeddings);
           } else {
-            reject(new Error(event.data.error);
+            reject(new Error(event.data.error),;
           }
         }
         this.worker!.postMessage({
@@ -353,7 +353,7 @@ export class EmbeddingCache {
    */;
   private cleanup(): void {
     const now = Date.now();
-    const entries = Array.from(this.cache.entries();
+    const entries = Array.from(this.cache.entries(),;
     // Sort by timestamp and remove oldest entries
     entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
     // Remove oldest 20% of entries

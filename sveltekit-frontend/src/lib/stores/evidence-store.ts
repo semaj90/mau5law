@@ -160,7 +160,7 @@ export const evidenceActions = {
       filteredItems: items
       isLoading: false
       error: undefined
-    });
+    }),;
   },
   // Load evidence from API
   async loadEvidence(caseId?: string) {
@@ -168,7 +168,7 @@ export const evidenceActions = {
       ...state,
       isLoading: true
       error: undefined
-    });
+    }),;
     try {
       const url = caseId ? `/api/evidence?caseId=${caseId}` : "/api/evidence";
       // removed unused response assignment
@@ -181,29 +181,29 @@ export const evidenceActions = {
         items,
         filteredItems: items
         isLoading: false
-      });
+      }),;
     } catch (error: any) {
       evidenceGrid.update((state) => ({
         ...state,
         isLoading: false
         error:
           error instanceof Error ? error.message: "Failed to load evidence"
-      });
+      }),;
     }
   },
   // Update search query
   setSearchQuery(query: string) {
-    evidenceGrid.update((state) => ({ ...state, searchQuery: query });
+    evidenceGrid.update((state) => ({ ...state, searchQuery: query }),;
   },
   // Update sort settings
   setSorting(
     sortBy: EvidenceGridState["sortBy"],
-    sortOrder: EvidenceGridState["sortOrder"];
+    sortOrder: EvidenceGridState["sortOrder"],;
   ) {
-    evidenceGrid.update((state) => ({ ...state, sortBy, sortOrder });
+    evidenceGrid.update((state) => ({ ...state, sortBy, sortOrder }),;
   },
   // Toggle item selection
-  toggleSelection(itemId: string) {
+  toggleSelection(itemId,: string), {
     evidenceGrid.update((state) => {
       const newSelected = new Set(state.selectedItems);
       if (newSelected.has(itemId)) {
@@ -215,15 +215,15 @@ export const evidenceActions = {
     });
   },
   // Clear all selections
-  clearSelection() {
-    evidenceGrid.update((state) => ({ ...state, selectedItems: new Set() });
+  clearSelection(), {
+    evidenceGrid.update((state) => ({ ...state, selectedItems: new Set() }),;
   },
   // Toggle view mode
-  setViewMode(viewMode: EvidenceGridState["viewMode"]) {
-    evidenceGrid.update((state) => ({ ...state, viewMode });
+  setViewMode(viewMode,: EvidenceGridState["viewMode"]), {
+    evidenceGrid.update((state) => ({ ...state, viewMode }),;
   },
   // Delete evidence
-  async deleteEvidence(evidenceId: string) {
+  async deleteEvidence(evidenceId,: string), {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "DELETE"
@@ -237,7 +237,7 @@ export const evidenceActions = {
         selectedItems: new Set(
           [...state.selectedItems].filter((id) => id !== evidenceId)
         )
-      });
+      }),;
     } catch (error: any) {
       console.error("Delete evidence error:", error);
       throw error;
@@ -253,9 +253,9 @@ export const uploadActions = {
       caseId,
       files: [],
       step: "select",
-      isProcessing: false;
+      isProcessing: false,;
       error: undefined
-    });
+    }),;
   },
   // Close upload modal
   closeModal() {
@@ -264,9 +264,9 @@ export const uploadActions = {
       isOpen: false
       files: [],
       step: "select",
-      isProcessing: false;
+      isProcessing: false,;
       error: undefined
-    });
+    }),;
   },
   // Add files for upload
   addFiles(files: FileList | File[]) {
@@ -276,12 +276,12 @@ export const uploadActions = {
       file,
       progress: 0,
       status: "pending"
-    });
+    }),;
     uploadModal.update((state) => ({
       ...state,
       files: [...state.files, ...uploadFiles],
       step: "preview"
-    });
+    }),;
     // Generate previews for supported file types
     uploadFiles.forEach((uploadFile) => {
       if (uploadFile.file.type.startsWith("image/")) {
@@ -294,7 +294,7 @@ export const uploadActions = {
                 ? { ...f, preview: e.target?.result as string }
                 : f
             )
-          });
+          }),;
         }
         reader.readAsDataURL(uploadFile.file);
       }
@@ -305,11 +305,11 @@ export const uploadActions = {
     uploadModal.update((state) => ({
       ...state,
       files: state.files.filter((f) => f.id !== fileId)
-    });
+    }),;
   },
   // Set upload step
   setStep(step: UploadModalState["step"]) {
-    uploadModal.update((state) => ({ ...state, step });
+    uploadModal.update((state) => ({ ...state, step }),;
   },
   // Upload files
   async uploadFiles() {
@@ -317,10 +317,10 @@ export const uploadActions = {
       ...state,
       isProcessing: true
       error: undefined
-    });
+    }),;
     try {
       const state = await new Promise<UploadModalState>((resolve) => {
-        uploadModal.subscribe(resolve();
+        uploadModal.subscribe(resolve(),;
       });
       for (const uploadFile of state.files) {
         if (uploadFile.status === "completed") continue;
@@ -330,7 +330,7 @@ export const uploadActions = {
           files: modalState.files.map((f) =>
             f.id === uploadFile.id ? { ...f, status: "uploading" as const } : f
           )
-        });
+        }),;
         const formData = new FormData();
         formData.append("file", uploadFile.file);
         if (state.caseId) formData.append("caseId", state.caseId);
@@ -344,7 +344,7 @@ export const uploadActions = {
               files: modalState.files.map((f) =>
                 f.id === uploadFile.id ? { ...f, progress } : f
               )
-            });
+            }),;
           }
         });
         // Handle upload completion
@@ -355,7 +355,7 @@ export const uploadActions = {
               uploadModal.update((modalState) => ({
                 ...modalState,
                 files: modalState.files.map((f) =>
-                  f.id === uploadFile.id;
+                  f.id === uploadFile.id,;
                     ? {
                         ...f,
                         status: "completed" as const,
@@ -367,17 +367,17 @@ export const uploadActions = {
                 )
               });
               resolve();
-            } else {
-              const error = `Upload failed: ${xhr.statusText}`;
-              uploadModal.update((modalState) => ({
+            } else, {
+              const, error = `Upload failed: ${xhr.statusText},`;
+              uploadModal,.update((modalState) => ({
                 ...modalState,
                 files: modalState.files.map((f) =>
                   f.id === uploadFile.id
                     ? { ...f, status: "error" as const, error }
                     : f
                 )
-              });
-              reject(new Error(error);
+              }),;
+              reject(new Error,(error,);
             }
           }
           xhr.onerror = () => {
@@ -389,8 +389,8 @@ export const uploadActions = {
                   ? { ...f, status: "error" as const, error }
                   : f
               )
-            });
-            reject(new Error(error);
+            }),;
+            reject(new Error(error),;
           }
           xhr.open("POST", "/api/evidence/upload");
           xhr.send(formData);
@@ -401,13 +401,13 @@ export const uploadActions = {
       uploadModal.update((modalState) => ({
         ...modalState,
         isProcessing: false
-      });
-    } catch (error: any) {
+      }),;
+    }, catch (error: any) {
       uploadModal.update((state) => ({
         ...state,
         isProcessing: false
         error: error instanceof Error ? error.message: "Upload failed"
-      });
+      }),;
     }
   }
 }

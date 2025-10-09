@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const connectionData = EvidenceConnectionSchema.parse(body)
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Verify both pieces of evidence exist and user has access
     const [evidence1, evidence2] = await Promise.all([
       evidenceService.getById(connectionData.evidenceId1),
@@ -70,12 +70,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       notes: connectionData.notes,
       metadata: {
         ...connectionData.metadata,
-        createdBy: locals.user.id,
+        createdBy: getUserId(locals),
         createdAt: new Date().toISOString()
       }
     }
     // Log the connection creation for audit trail
-    console.log(`Evidence connection created between ${connectionData.evidenceId1} and ${connectionData.evidenceId2} by user ${locals.user.id}`)
+    console.log(`Evidence connection created between ${connectionData.evidenceId1} and ${connectionData.evidenceId2} by user ${getUserId(locals)}`)
     return json({
       success: true,
       data: {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_connection_created'
       }
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         strength: 0.8,
         notes: 'Both items found at the same location',
         metadata: {
-          createdBy: locals.user.id,
+          createdBy: getUserId(locals),
           createdAt: new Date().toISOString()
         },
         evidence1: {
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       success: true,
       data: filteredConnections
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         filters: { evidenceId, caseId, connectionType, minStrength },
         timestamp: new Date().toISOString()
       }

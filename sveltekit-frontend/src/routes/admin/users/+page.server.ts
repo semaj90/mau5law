@@ -4,6 +4,7 @@ import { db } from '$lib/db/index.js';
 import { users, profileTable } from '$lib/db/schema.js';
 import { eq, desc, like, or } from 'drizzle-orm';
 import { hash } from '@node-rs/argon2';
+import { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ url, locals }) => {
   if (!locals.session || !locals.user) {
     throw redirect(302, '/login');
@@ -11,7 +12,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   // Check if user is admin (you might want to add an admin role field)
   // For now, we'll assume the first user is admin
   const adminCheck = await db.select().from(users).limit(1);
-  if (adminCheck.length === 0 || adminCheck[0].id !== locals.user.id) {
+  if (adminCheck.length === 0 || adminCheck[0].id !== getUserId(locals)) {
     throw error(403, 'Admin access required');
   }
   const page = parseInt(url.searchParams.get('page') || '1');
@@ -140,7 +141,7 @@ export const actions: Actions = {
       return { success: false, error: 'User ID is required' }
     }
     // Prevent admin from deleting themselves
-    if (userId === parseInt(locals.user.id)) {
+    if (userId === parseInt(getUserId(locals))) {
       return { success: false, error: 'Cannot delete your own account' }
     }
     try {

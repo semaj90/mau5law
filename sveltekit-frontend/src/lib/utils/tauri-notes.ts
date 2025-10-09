@@ -21,12 +21,12 @@ async function initializeTauri(): Promise<any> {
   } catch (error: any) {
     console.warn("Tauri not available - desktop features disabled");
     // Provide fallback implementations
-    invoke = () => Promise.reject(new Error("Tauri not available");
-    appDataDir = () => Promise.reject(new Error("Tauri not available");
-    join = () => Promise.reject(new Error("Tauri not available");
-    writeTextFile = () => Promise.reject(new Error("Tauri not available");
-    readTextFile = () => Promise.reject(new Error("Tauri not available");
-    exists = () => Promise.reject(new Error("Tauri not available");
+    invoke = () => Promise.reject(new Error("Tauri not available"),;
+    appDataDir = () => Promise.reject(new Error("Tauri not available"),;
+    join = () => Promise.reject(new Error("Tauri not available"),;
+    writeTextFile = () => Promise.reject(new Error("Tauri not available"),;
+    readTextFile = () => Promise.reject(new Error("Tauri not available"),;
+    exists = () => Promise.reject(new Error("Tauri not available"),;
   }
 }
 // Initialize Tauri when module loads
@@ -58,7 +58,7 @@ class TauriNotesService {
   }
   // Save note to local file system
   async saveNoteToFile(
-    note: SavedNote;
+    note: SavedNote,;
     format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
@@ -71,7 +71,7 @@ class TauriNotesService {
       switch (format) {
         case "html":
           content =
-            note.html || (await this.renderMarkdownToHtml(note.markdown);
+            note.html || (await this.renderMarkdownToHtml(note.markdown),;
           extension = "html";
           break;
         case "json":
@@ -128,7 +128,7 @@ class TauriNotesService {
   }
   // Export multiple notes to a single file
   async exportNotesToFile(
-    notes: SavedNote[];
+    notes: SavedNote[],;
     format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
@@ -186,7 +186,7 @@ class TauriNotesService {
         content: note.content,
         markdown: note.markdown,
         tags: note.tags
-      });
+      }),;
       const results = await invoke("search_notes", {
         query,
         notes: searchData
@@ -236,7 +236,7 @@ class TauriNotesService {
   }
   private async notesToHtml(notes: SavedNote[]): Promise<string> {
     const htmlParts = await Promise.all(notes.map(async (note) => {
-        const title = `<h1>${note.title}</h1>`);
+        const title = `<h1>${note.title}</h1>`,);
         const metadata = `
         <div class="note-metadata">
           <p><strong>Created:</strong> ${note.savedAt.toLocaleDateString()}</p>
@@ -290,13 +290,13 @@ export async function renderMarkdownInTauri(markdown: string): Promise<string> {
   return await tauriNotesService.renderMarkdownToHtml(markdown);
 }
 export async function saveNoteLocally(
-  note: SavedNote;
+  note: SavedNote,;
   format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.saveNoteToFile(note, format);
 }
 export async function exportNotesLocally(
-  notes: SavedNote[];
+  notes: SavedNote[],;
   format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.exportNotesToFile(notes, format);

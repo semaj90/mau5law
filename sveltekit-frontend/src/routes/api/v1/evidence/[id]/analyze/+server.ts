@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const body = await request.json()
     const { analysisType, options = {}, context = {} } = AnalysisRequestSchema.parse(body)
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Get evidence to verify it exists and user has access
     const evidence = await evidenceService.getById(evidenceId)
     if (!evidence) {
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         [analysisType]: {
           result: analysisResult
           timestamp: new Date().toISOString(),
-          analyzedBy: locals.user.id,
+          analyzedBy: getUserId(locals),
           options,
           version: '1.0'
         }
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_analyzed',
         analysisType

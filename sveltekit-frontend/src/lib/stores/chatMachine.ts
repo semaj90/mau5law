@@ -62,10 +62,10 @@ const initialContext: ChatContext = {
   messages: [],
   conversations: [],
   currentConversation: null
-  error: null;
+  error: null,;
   stream: null
   modelStatus: "unknown"
-  }); const settings = {
+  },); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
@@ -90,7 +90,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
       message: context.messages[context.messages.length - 1]?.content,
       conversationId: context.currentConversation?.id,
       settings: context.settings,
-      contextInjection: context.contextInjection.enabled;
+      contextInjection: context.contextInjection.enabled,;
         ? {
             documents: context.contextInjection.documents
           }
@@ -112,8 +112,8 @@ const checkModelService = fromPromise(async () => {
 });
 export const chatMachine = setup({
   types: {
-    context: { [key: string]: any } as ChatContext,
-    events: { [key: string]: any } as ChatEvent
+    context: { [key,: strin,g]: any } as ChatContext,
+    events: { [key,: strin,g]: any } as ChatEvent
   },
   actors: {
     sendMessageService,
@@ -196,7 +196,7 @@ export const chatMachine = setup({
                 if (event.type !== "INJECT_CONTEXT") return context.contextInjection;
                 return {
                   ...context.contextInjection,
-                  enabled: true;
+                  enabled: true,;
                   documents: event.documents
                 }
               }

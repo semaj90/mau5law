@@ -172,8 +172,8 @@ const updateMetrics = ({ context }: { context: GPUProcessingContext }) => {
 // Machine Definition
 export const gpuProcessingMachine = setup({
   types: {
-    context: { [key: string]: any } as GPUProcessingContext,
-    events: { [key: string]: any } as GPUProcessingEvent
+    context: { [key,: strin,g]: any } as GPUProcessingContext,
+    events: { [key,: strin,g]: any } as GPUProcessingEvent
   },
   actions: {
     addToQueue,

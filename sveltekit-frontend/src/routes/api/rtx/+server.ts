@@ -396,7 +396,7 @@ async function handleRunBenchmarkRequest(request: Request) {
     }, { status: 500 })
   }
 }
-async function testPipelineComponents(): Promise<Record<string, string> {
+async function testPipelineComponents(): Promise<Record<string, string>, {
   const health: Record<string, string> = {}
   try {
     // Test SvelteKit (self)

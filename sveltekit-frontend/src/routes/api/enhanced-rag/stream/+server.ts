@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
             message: 'Analyzing query intent with ML classifier...',
             timestamp: new Date().toISOString()
           })}\n\n`)
-          await new Promise(resolve => setTimeout(resolve, 100); // Brief pause for UX
+          await new Promise(resolve => setTimeout(resolve, 100),; // Brief pause for UX
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'progress',
             stage: 'vector_search',

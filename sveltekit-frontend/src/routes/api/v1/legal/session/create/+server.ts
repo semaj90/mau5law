@@ -93,13 +93,13 @@ function validateAndEnhanceContext(context: any): LegalContext {
       typeof context.priority_level === 'number'
         ? Math.max(1, Math.min(10, context.priority_level)
         : defaultContext.priority_level,
-    security_classification: isValidSecurityLevel(context.security_classification)
+    security_classification,: isValidSecurityLevel(context.security_classification)
       ? context.security_classification
       : defaultContext.security_classification,
-    related_cases: Array.isArray(context.related_cases)
+    related_cases,: Array.isArray(context.related_cases)
       ? context.related_cases
       : defaultContext.related_cases,
-    key_entities: Array.isArray(context.key_entities)
+    key_entities,: Array.isArray(context.key_entities)
       ? context.key_entities
       : defaultContext.key_entities
   }

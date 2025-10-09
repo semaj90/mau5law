@@ -101,8 +101,8 @@ export const POST: RequestHandler = async ({ request }) => {
           caseId,)
           {
             maxResults: 5,
-            similarityThreshold: 0.7,
-            includeCHRRomPatterns: true
+            similarityThreshold,: 0.7,
+            includeCHRRomPatterns,: true
           }
         )
         if (searchResults.length > 0) {
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
             .join('\n\n')
           console.log(`🎮 RAG search found ${searchResults.length} relevant documents`)
         }
-      } catch (ragError) {
+      }, catch (ragError) {
         console.warn('🎮 RAG search failed, continuing without context:', ragError)
       }
     }
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
       conversation_context: updatedContext || undefined
     }
     return json(response)
-  } catch (err) {
+  }, catch (err) {
     console.error('🎮 Legal chat API error:', err)
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors

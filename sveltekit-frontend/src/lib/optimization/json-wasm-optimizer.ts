@@ -40,7 +40,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   private async initializeWASM(): Promise<void> {
     try {
       // Decode base64 WASM binary
-      const wasmBytes = Uint8Array.from(atob(WASM_JSON_PARSER_BINARY), (c: any) => c.charCodeAt(0);
+      const wasmBytes = Uint8Array.from(atob(WASM_JSON_PARSER_BINARY), (c: any) => c.charCodeAt(0),;
       // Create WebAssembly module
       const module = await WebAssembly.compile(wasmBytes);
       const instance = await WebAssembly.instantiate(module, {
@@ -324,7 +324,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     // Reverse of the compression algorithm
     const codes: number[] = [];
     for (let i = 0; i < compressed.length; i += 2) {
-      codes.push(compressed[i] | (compressed[i + 1] << 8);
+      codes.push(compressed[i] | (compressed[i + 1] << 8),;
     }
     const dictionary = new Map<number, string>();
     let dictSize = 256;
@@ -401,7 +401,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return `// Auto-generated barrel exports for tree-shaking optimization\n${exports}\n`
   }
   private toCamelCase(str: string): string {
-    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase();
+    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase(),;
   }
   // === ECMAScript Module Optimization ===
   optimizeESModules(code: string): string {
@@ -423,8 +423,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     lines.forEach((line: any) => {
       const importMatch = line.match(/import\s+\{([^}]+)\}\s+from/);
       if (importMatch) {
-        const namedImports = importMatch[1].split(',').map((s: any) => s.trim();
-        namedImports.forEach((imp: any) => imports.add(imp);
+        const namedImports = importMatch[1].split(',').map((s: any) => s.trim(),;
+        namedImports.forEach((imp: any) => imports.add(imp),;
       }
     });
     // Find usages
@@ -439,8 +439,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return lines.map((line: any) => {
       const importMatch = line.match(/import\s+\{([^}]+)\}\s+from/);
       if (importMatch) {
-        const namedImports = importMatch[1].split(',').map((s: any) => s.trim();
-        const usedImports = namedImports.filter((imp: any) => usages.has(imp);
+        const namedImports = importMatch[1].split(',').map((s: any) => s.trim(),;
+        const usedImports = namedImports.filter((imp: any) => usages.has(imp),;
         if (usedImports.length === 0) return '';
         if (usedImports.length !== namedImports.length) {
           return line.replace(/\{[^}]+\}/, `{ ${usedImports.join(', ')} }`);
@@ -451,8 +451,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
   private optimizeExports(code: string): string {
     // Combine multiple exports into barrel exports
-    const exportLines = code.split('\n').filter((line: any) => line.startsWith('export');
-    const otherLines = code.split('\n').filter((line: any) => !line.startsWith('export');
+    const exportLines = code.split('\n').filter((line: any) => line.startsWith('export'),;
+    const otherLines = code.split('\n').filter((line: any) => !line.startsWith('export'),;
     if (exportLines.length > 5) {
       const exports = exportLines.map((line: any) => {
         const match = line.match(/export\s+(?:const|let|var|function|class)\s+(\w+)/);
@@ -494,21 +494,21 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
     const { compressed, stats: compressStats } = await jsonWasmOptimizer.compressJSON(data);
     if (compressStats.compression_ratio > 1.5) {
       return {
-        optimized: compressed;
+        optimized: compressed,;
         stats: compressStats
         useCompression: true
       }
     }
   }
   return {
-    optimized: json;
+    optimized: json,;
     stats: stringifyStats
     useCompression: false
   }
 }
 export async function parseOptimizedTransport<T = any>(
   data: string | Uint8Array
-  isCompressed: boolean;
+  isCompressed: boolean,;
 ): Promise<any> {
   if (isCompressed && data instanceof Uint8Array) {
     return jsonWasmOptimizer.decompressJSON<T>(data);

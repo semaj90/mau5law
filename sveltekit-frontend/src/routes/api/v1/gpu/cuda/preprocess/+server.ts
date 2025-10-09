@@ -209,7 +209,7 @@ function buildOptimizationsList(options: CudaPreprocessOptions): string[] {
 async function cleanupTempFiles(...paths: string[]) {
   await Promise.allSettled(
     paths.map(path => unlink(path).catch(() => {}))
-  )s
+  ),s
 }
 // Health check endpoint
 export const GET: RequestHandler = async () => {

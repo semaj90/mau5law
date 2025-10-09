@@ -72,25 +72,25 @@ export interface EvidenceCustodyContext {
 }
 export type EvidenceCustodyEvent =;
   | {
-      type: "START_CUSTODY_WORKFLOW";
-      evidenceId: string;
-      caseId: string;
-      userId: string;
-      originalHash: string;
+      type: "START_CUSTODY_WORKFLOW",;
+      evidenceId: string,;
+      caseId: string,;
+      userId: string,;
+      originalHash: string,;
     }
   | { type: "VERIFY_INTEGRITY" }
   | { type: "START_AI_ANALYSIS" }
-  | { type: "JOIN_COLLABORATION"; userId: string; role: string }
-  | { type: "LEAVE_COLLABORATION"; userId: string }
-  | { type: "ADD_ANNOTATION"; userId: string; content: string; position: any }
-  | { type: "TRANSFER_CUSTODY"; newCustodian: string; reason: string }
+  | { type: "JOIN_COLLABORATION",; userId: strin,g; role: string }
+  | { type: "LEAVE_COLLABORATION",; userId: string }
+  | { type: "ADD_ANNOTATION",; userId: strin,g; content: stri,ng; position: any }
+  | { type: "TRANSFER_CUSTODY",; newCustodian: strin,g; reason: string }
   | { type: "APPROVE_CUSTODY" }
-  | { type: "REJECT_CUSTODY"; reason: string }
+  | { type: "REJECT_CUSTODY",; reason: string }
   | { type: "FINALIZE_CUSTODY" }
   | { type: "RETRY" }
   | { type: "CANCEL_WORKFLOW" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS"; progress: number; stage: string }
+  | { type: "UPDATE_PROGRESS",; progress: numbe,r; stage: string }
 // Service implementations
 const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
@@ -101,7 +101,7 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
       .select()
       .from(evidence)
       .where(eq(evidence.id, input.evidenceId)
-      .limit(1);
+      .limit(1),;
     if (!evidenceRecord.length) {
       throw new Error(`Evidence not found: ${input.evidenceId}`);
     }
@@ -183,9 +183,9 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       integrityStatus = "compromised";
     } else if (
       verificationResults.aiAnalysisScore < 0.7 ||
-      !verificationResults.timestampValid;
-    ) {
-      integrityStatus = "requires-attention";
+      !verificationResults.timestampValid,;
+    ), {
+      integrityStatus = "requires-attention",;
     }
     // Create verification event
     const custodyEvent = {
@@ -397,36 +397,36 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
 export const evidenceCustodyMachine = createMachine();
   {
     id: "evidenceCustody",
-    types: {
-      context: { [key: string]: any } as EvidenceCustodyContext,
-      events: { [key: string]: any } as EvidenceCustodyEvent
+    types,: {
+      context: { [key,: string,]: any } as EvidenceCustodyContext,
+      events,: { [ke,y: strin,g]: any } as EvidenceCustodyEvent
     },
     initial: "idle",
-    context: {
+    context,: {
       evidenceId: "",
-      caseId: "",
-      userId: "",
-      currentCustodian: "",
-      originalHash: "",
-      integrityStatus: "pending",
-      activeCollaborators: [],
-      workflowStage: "idle",
-      progress: 0,
-      requiresApproval: false
+      caseId,: "",
+      userId,: "",
+      currentCustodian,: "",
+      originalHash,: "",
+      integrityStatus,: "pending",
+      activeCollaborators,: [],
+      workflowStage,: "idle",
+      progress,: 0,
+      requiresApproval,: false
       custodyEvents: [],
-      startTime: 0,
-      stageStartTime: 0,
-      stageTimes: { [key: string]: any },
+      startTime,: 0,
+      stageStartTime,: 0,
+      stageTimes,: { [ke,y: strin,g]: any },
       warnings: [],
-      retryCount: 0,
-      maxRetries: 3
+      retryCount,: 0,
+      maxRetries,: 3
     },
     states: {
       idle: {
         on: {
           START_CUSTODY_WORKFLOW: {
             target: "evidenceIntake",
-            actions: assign({
+            actions,: assign({
               evidenceId: ({ event }) => event.evidenceId,
               caseId: ({ event }) => event.caseId,
               userId: ({ event }) => event.userId,
@@ -445,9 +445,9 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: evidenceIntakeService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "integrityVerification",
-            actions: assign({
+            actions,: assign({
               evidenceData: ({ event }) => event.output.evidenceData,
               currentHash: ({ event }) => event.output.currentHash,
               integrityStatus: ({ event }) => event.output.integrityStatus,
@@ -466,7 +466,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `Evidence intake failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -483,9 +483,9 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: integrityVerificationService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "aiAnalysis",
-            actions: assign({
+            actions,: assign({
               verificationResults: ({ event }) =>
                 event.output.verificationResults,
               integrityStatus: ({ event }) => event.output.integrityStatus,
@@ -507,7 +507,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) =>
                 `Integrity verification failed: ${event.error}`,
               stageTimes: ({ context }) => ({
@@ -525,9 +525,9 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: aiAnalysisService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "collaboration",
-            actions: assign({
+            actions,: assign({
               aiAnalysis: ({ event }) => event.output.aiAnalysis,
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
@@ -544,7 +544,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `AI analysis failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -561,7 +561,7 @@ export const evidenceCustodyMachine = createMachine();
           START_AI_ANALYSIS: {
             // Allow manual restart of AI analysis
             target: "aiAnalysis",
-            actions: assign({
+            actions,: assign({
               stageStartTime: Date.now()
             })
           },
@@ -572,10 +572,10 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: collaborationService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "awaitingApproval",
-            guard: ({ context }) => context.requiresApproval,
-            actions: assign({
+            guard,: ({ context }) => context.requiresApproval,
+            actions,: assign({
               collaborationSession: ({ event }) =>
                 event.output.collaborationSession,
               stageTimes: ({ context }) => ({
@@ -590,8 +590,8 @@ export const evidenceCustodyMachine = createMachine();
         },
         always: {
           target: "finalization",
-          guard: ({ context }) => !context.requiresApproval,
-          actions: assign({
+          guard,: ({ context }) => !context.requiresApproval,
+          actions,: assign({
             workflowStage: "finalization",
             progress: 90,
             stageStartTime: Date.now()
@@ -607,7 +607,7 @@ export const evidenceCustodyMachine = createMachine();
                 event.userId
               ],
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession;
+                context.collaborationSession,;
                   ? {
                       ...context.collaborationSession,
                       participants: [
@@ -631,7 +631,7 @@ export const evidenceCustodyMachine = createMachine();
                   (id: any) => id !== event.userId
                 ),
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession;
+                context.collaborationSession,;
                   ? {
                       ...context.collaborationSession,
                       participants:
@@ -645,7 +645,7 @@ export const evidenceCustodyMachine = createMachine();
           ADD_ANNOTATION: {
             actions: assign({
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession;
+                context.collaborationSession,;
                   ? {
                       ...context.collaborationSession,
                       annotations: [
@@ -663,7 +663,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           TRANSFER_CUSTODY: {
             target: "custodyTransfer",
-            actions: assign({
+            actions,: assign({
               workflowStage: "custody-transfer",
               stageStartTime: Date.now()
             })
@@ -675,9 +675,9 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: custodyTransferService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "collaboration",
-            actions: assign({
+            actions,: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
                 event.output.transferEvent
@@ -694,7 +694,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `Custody transfer failed: ${event.error}`
             })
           }
@@ -704,7 +704,7 @@ export const evidenceCustodyMachine = createMachine();
         on: {
           APPROVE_CUSTODY: {
             target: "finalization",
-            actions: assign({
+            actions,: assign({
               approvalStatus: "approved",
               workflowStage: "finalization",
               progress: 90,
@@ -713,7 +713,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           REJECT_CUSTODY: {
             target: "rejected",
-            actions: assign({
+            actions,: assign({
               approvalStatus: "rejected",
               error: ({ event }) => event.reason
             })
@@ -725,9 +725,9 @@ export const evidenceCustodyMachine = createMachine();
         invoke: {
           src: custodyFinalizationService
           input: ({ context }) => context,
-          onDone: {
+          onDone,: {
             target: "completed",
-            actions: assign({
+            actions,: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
                 event.output.finalizationEvent
@@ -743,7 +743,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions,: assign({
               error: ({ event }) => `Finalization failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -756,7 +756,7 @@ export const evidenceCustodyMachine = createMachine();
       },
       completed: {
         type: "final",
-        entry: () => {
+        entry,: () => {
           console.log(
             "Evidence Chain of Custody workflow completed successfully"
           );
@@ -778,12 +778,12 @@ export const evidenceCustodyMachine = createMachine();
               target: "failed"
             }
           ],
-          FORCE_COMPLETE: "completed"
+          FORCE_COMPLETE,: "completed"
         }
       },
       failed: {
         type: "final",
-        entry: ({ context }) => {
+        entry,: ({ context }) => {
           console.error(
             `Evidence custody workflow failed after ${context.retryCount} retries: ${context.error}`
           );
@@ -791,13 +791,13 @@ export const evidenceCustodyMachine = createMachine();
       },
       rejected: {
         type: "final",
-        entry: ({ context }) => {
+        entry,: ({ context }) => {
           console.log(`Evidence custody workflow rejected: ${context.error}`);
         }
       },
       cancelled: {
         type: "final",
-        entry: () => {
+        entry,: () => {
           console.log("Evidence custody workflow cancelled by user");
         }
       }
@@ -807,8 +807,8 @@ export const evidenceCustodyMachine = createMachine();
     // Guards
     guards: {
       requiresApproval: ({ context }) => context.requiresApproval,
-      canRetry: ({ context }) => context.retryCount < context.maxRetries,
-      integrityCompromised: ({ context }) =>
+      canRetry,: ({ context }) => context.retryCount < context.maxRetries,
+      integrityCompromised,: ({ context }) =>
         context.integrityStatus === "compromised"
     }
   }
@@ -823,8 +823,8 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
     createdAt: evidence.createdAt
   });
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
-  const hashArray = Array.from(new Uint8Array(buffer);
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data),;
+  const hashArray = Array.from(new Uint8Array(buffer),;
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 async function generateEventSignature(_event: {
@@ -836,8 +836,8 @@ async function generateEventSignature(_event: {
   // Implementation for digital signature generation
   const data = JSON.stringify(event);
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
-  const hashArray = Array.from(new Uint8Array(buffer);
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data),;
+  const hashArray = Array.from(new Uint8Array(buffer),;
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 async function verifyMetadataIntegrity(evidence: Evidence): Promise<boolean> {
@@ -858,13 +858,13 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
 }
 async function notifyCollaborators(
   sessionId: string
-  notification: any;
+  notification: any,;
 ): Promise<void> {
   // Implementation for WebSocket notifications
   console.log(`Notifying collaborators in session ${sessionId}:`, notification);
 }
 async function calculateSessionDuration(
-  session?: EvidenceCustodyContext["collaborationSession"];
+  session?: EvidenceCustodyContext["collaborationSession"],;
 ): Promise<number> {
   if (!session) return 0;
   // Implementation for calculating session duration
@@ -882,7 +882,7 @@ async function closeCollaborationSession(sessionId: string): Promise<void> {
 }
 // Export convenience functions
 export const createEvidenceCustodyActor = (
-  context?: Partial<EvidenceCustodyContext>;
+  context?: Partial<EvidenceCustodyContext>,;
 ) => {
   return evidenceCustodyMachine.provide({
     actions: {
@@ -912,8 +912,8 @@ export const getActiveCollaborators = (state: any): string[] => {
   return state.context.activeCollaborators;
 }
 export const getCustodyEvents = (
-  state: any;
-): EvidenceCustodyContext["custodyEvents"] => {
+  state: any,;
+): EvidenceCustodyContext["custodyEvents"], => {
   return state.context.custodyEvents;
 }
 export const requiresApproval = (state: any): boolean => {

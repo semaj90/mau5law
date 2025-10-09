@@ -29,14 +29,14 @@ export const userEmbeddings = pgTable(
   "user_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-    contentType: varchar("content_type", { length: 50 }).notNull(),
-    content: text("content").notNull(),
-    embedding: vector("embedding", 384),
-    metadata: jsonb("metadata").default(sql`'{}'`),
-    caseId: uuid("case_id"),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+    userId,: uuid("user_id").notNull(),
+    contentType,: varchar("content_type", { length: 50 }).notNull(),
+    content,: text("content").notNull(),
+    embedding,: vector("embedding", 384),
+    metadata,: jsonb("metadata").default(sql`'{}'`),
+    caseId,: uuid("case_id"),
+    createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
     userIdIdx: index("user_embeddings_user_id_idx").on(table.userId),
@@ -51,13 +51,13 @@ export const caseEmbeddings = pgTable(
   "case_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    caseId: uuid("case_id").notNull(),
-    contentType: varchar("content_type", { length: 50 }).notNull(),
-    content: text("content").notNull(),
-    embedding: vector("embedding", 384),
-    metadata: jsonb("metadata").default(sql`'{}'`),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+    caseId,: uuid("case_id").notNull(),
+    contentType,: varchar("content_type", { length: 50 }).notNull(),
+    content,: text("content").notNull(),
+    embedding,: vector("embedding", 384),
+    metadata,: jsonb("metadata").default(sql`'{}'`),
+    createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
     caseIdIdx: index("case_embeddings_case_id_idx").on(table.caseId),
@@ -71,13 +71,13 @@ export const evidenceEmbeddings = pgTable(
   "evidence_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    evidenceId: uuid("evidence_id").notNull(),
-    contentType: varchar("content_type", { length: 50 }).notNull(),
-    content: text("content").notNull(),
-    embedding: vector("embedding", 384),
-    metadata: jsonb("metadata").default(sql`'{}'`),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+    evidenceId,: uuid("evidence_id").notNull(),
+    contentType,: varchar("content_type", { length: 50 }).notNull(),
+    content,: text("content").notNull(),
+    embedding,: vector("embedding", 384),
+    metadata,: jsonb("metadata").default(sql`'{}'`),
+    createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
     evidenceIdIdx: index("evidence_embeddings_evidence_id_idx").on(
@@ -93,13 +93,13 @@ export const documentEmbeddings = pgTable(
   "document_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    documentId: uuid("document_id").notNull(),
-    contentType: varchar("content_type", { length: 50 }).notNull(),
-    content: text("content").notNull(),
-    embedding: vector("embedding", 384),
-    metadata: jsonb("metadata").default(sql`'{}'`),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+    documentId,: uuid("document_id").notNull(),
+    contentType,: varchar("content_type", { length: 50 }).notNull(),
+    content,: text("content").notNull(),
+    embedding,: vector("embedding", 384),
+    metadata,: jsonb("metadata").default(sql`'{}'`),
+    createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
     documentIdIdx: index("document_embeddings_document_id_idx").on(
@@ -115,11 +115,11 @@ export const searchEmbeddings = pgTable(
   "search_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-    query: text("query").notNull(),
-    embedding: vector("embedding", 384),
-    metadata: jsonb("metadata").default(sql`'{}'`),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+    userId,: uuid("user_id").notNull(),
+    query,: text("query").notNull(),
+    embedding,: vector("embedding", 384),
+    metadata,: jsonb("metadata").default(sql`'{}'`),
+    createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
     userIdIdx: index("search_embeddings_user_id_idx").on(table.userId)

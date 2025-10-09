@@ -343,7 +343,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           // Update job completion times
           const times = updated.job_completion_times.get(job.type) || [];
           times.push(((event as any).metrics ?? {}).duration ?? 0);
-          updated.job_completion_times.set(job.type, times.slice(-100); // Keep last 100
+          updated.job_completion_times.set(job.type, times.slice(-100),; // Keep last 100
           return updated;
         }
       }),
@@ -459,21 +459,21 @@ export class OptimizedRabbitMQOrchestrator {
   }
   private async initializeJobProcessors(): Promise<void> {
     // Legal Document Analysis
-    this.jobProcessors.set('legal_document_analysis', new LegalDocumentProcessor();
-    this.jobProcessors.set('evidence_processing', new EvidenceProcessor();
-    this.jobProcessors.set('cuda_acceleration', new CudaAccelerationProcessor();
-    this.jobProcessors.set('vector_embedding', new VectorEmbeddingProcessor();
-    this.jobProcessors.set('case_similarity', new CaseSimilarityProcessor();
-    this.jobProcessors.set('rag_processing', new RAGProcessor();
-    this.jobProcessors.set('pdf_ocr', new PDFOCRProcessor();
-    this.jobProcessors.set('image_analysis', new ImageAnalysisProcessor();
-    this.jobProcessors.set('video_timeline', new VideoTimelineProcessor();
-    this.jobProcessors.set('contract_extraction', new ContractExtractionProcessor();
-    this.jobProcessors.set('citation_validation', new CitationValidationProcessor();
-    this.jobProcessors.set('semantic_search', new SemanticSearchProcessor();
-    this.jobProcessors.set('ml_clustering', new MLClusteringProcessor();
-    this.jobProcessors.set('gpu_inference', new GPUInferenceProcessor();
-    this.jobProcessors.set('workflow_orchestration', new WorkflowOrchestrationProcessor();
+    this.jobProcessors.set('legal_document_analysis', new LegalDocumentProcessor(),;
+    this.jobProcessors.set('evidence_processing', new EvidenceProcessor(),;
+    this.jobProcessors.set('cuda_acceleration', new CudaAccelerationProcessor(),;
+    this.jobProcessors.set('vector_embedding', new VectorEmbeddingProcessor(),;
+    this.jobProcessors.set('case_similarity', new CaseSimilarityProcessor(),;
+    this.jobProcessors.set('rag_processing', new RAGProcessor(),;
+    this.jobProcessors.set('pdf_ocr', new PDFOCRProcessor(),;
+    this.jobProcessors.set('image_analysis', new ImageAnalysisProcessor(),;
+    this.jobProcessors.set('video_timeline', new VideoTimelineProcessor(),;
+    this.jobProcessors.set('contract_extraction', new ContractExtractionProcessor(),;
+    this.jobProcessors.set('citation_validation', new CitationValidationProcessor(),;
+    this.jobProcessors.set('semantic_search', new SemanticSearchProcessor(),;
+    this.jobProcessors.set('ml_clustering', new MLClusteringProcessor(),;
+    this.jobProcessors.set('gpu_inference', new GPUInferenceProcessor(),;
+    this.jobProcessors.set('workflow_orchestration', new WorkflowOrchestrationProcessor(),;
   }
   private async startJobProcessors(): Promise<void> {
     for (const [type, processor] of this.jobProcessors) {
@@ -682,7 +682,7 @@ class LegalDocumentProcessor extends JobProcessor {
   async process(job: JobDefinition): Promise<any> {
     console.log(`🧠 Processing legal document: ${job.id}`);
     // Simulate legal document analysis
-    await new Promise((resolve) => setTimeout(resolve, 2000);
+    await new Promise((resolve) => setTimeout(resolve, 2000),;
     return {
       entities: ['contract', 'party', 'clause'],
       confidence: 0.92,
@@ -695,7 +695,7 @@ class EvidenceProcessor extends JobProcessor {
   type: JobType = 'evidence_processing';
   async process(job: JobDefinition): Promise<any> {
     console.log(`🔍 Processing evidence: ${job.id}`);
-    await new Promise((resolve) => setTimeout(resolve, 1500);
+    await new Promise((resolve) => setTimeout(resolve, 1500),;
     return {
       evidence_type: 'document',
       relevance_score: 0.88,
@@ -711,7 +711,7 @@ class CudaAccelerationProcessor extends JobProcessor {
   type: JobType = 'cuda_acceleration';
   async process(job: JobDefinition): Promise<any> {
     console.log(`⚡ CUDA processing: ${job.id}`);
-    await new Promise((resolve) => setTimeout(resolve, 500);
+    await new Promise((resolve) => setTimeout(resolve, 500),;
     return {
       gpu_device: 'RTX 3060 Ti',
       processing_time_ms: 450,
@@ -724,7 +724,7 @@ class VectorEmbeddingProcessor extends JobProcessor {
   type: JobType = 'vector_embedding';
   async process(job: JobDefinition): Promise<any> {
     console.log(`🔤 Generating embeddings: ${job.id}`);
-    await new Promise((resolve) => setTimeout(resolve, 3000);
+    await new Promise((resolve) => setTimeout(resolve, 3000),;
     return {
       embeddings: new Array(384).fill(0).map(() => Math.random() - 0.5),
       model: 'all-MiniLM-L6-v2',
@@ -737,77 +737,77 @@ class VectorEmbeddingProcessor extends JobProcessor {
 class CaseSimilarityProcessor extends JobProcessor {
   type: JobType = 'case_similarity';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 1000);
+    await new Promise((resolve) => setTimeout(resolve, 1000),;
     return { similar_cases: [], similarity_scores: [] }
   }
 }
 class RAGProcessor extends JobProcessor {
   type: JobType = 'rag_processing';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 2500);
+    await new Promise((resolve) => setTimeout(resolve, 2500),;
     return { response: 'Generated response', context: [], confidence: 0.85 }
   }
 }
 class PDFOCRProcessor extends JobProcessor {
   type: JobType = 'pdf_ocr';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 4000);
+    await new Promise((resolve) => setTimeout(resolve, 4000),;
     return { extracted_text: 'OCR text', pages: 5, confidence: 0.94 }
   }
 }
 class ImageAnalysisProcessor extends JobProcessor {
   type: JobType = 'image_analysis';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 1200);
-    return { objects_detected: [], text_regions: [], metadata: { [key: string]: any } }
+    await new Promise((resolve) => setTimeout(resolve, 1200),;
+    return { objects_detected: [], text_regions: [], metadata: { [key,: strin,g]: any } }
   }
 }
 class VideoTimelineProcessor extends JobProcessor {
   type: JobType = 'video_timeline';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 6000);
+    await new Promise((resolve) => setTimeout(resolve, 6000),;
     return { timeline: [], key_moments: [], duration: 0 }
   }
 }
 class ContractExtractionProcessor extends JobProcessor {
   type: JobType = 'contract_extraction';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 3500);
+    await new Promise((resolve) => setTimeout(resolve, 3500),;
     return { clauses: [], parties: [], terms: [] }
   }
 }
 class CitationValidationProcessor extends JobProcessor {
   type: JobType = 'citation_validation';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 800);
+    await new Promise((resolve) => setTimeout(resolve, 800),;
     return { valid_citations: [], invalid_citations: [], suggestions: [] }
   }
 }
 class SemanticSearchProcessor extends JobProcessor {
   type: JobType = 'semantic_search';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 300);
+    await new Promise((resolve) => setTimeout(resolve, 300),;
     return { results: [], relevance_scores: [], query_interpretation: '' }
   }
 }
 class MLClusteringProcessor extends JobProcessor {
   type: JobType = 'ml_clustering';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 9000);
+    await new Promise((resolve) => setTimeout(resolve, 9000),;
     return { clusters: [], centroids: [], silhouette_score: 0.7 }
   }
 }
 class GPUInferenceProcessor extends JobProcessor {
   type: JobType = 'gpu_inference';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 200);
+    await new Promise((resolve) => setTimeout(resolve, 200),;
     return { predictions: [], confidence_scores: [], inference_time_ms: 180 }
   }
 }
 class WorkflowOrchestrationProcessor extends JobProcessor {
   type: JobType = 'workflow_orchestration';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 500);
+    await new Promise((resolve) => setTimeout(resolve, 500),;
     return { workflow_status: 'completed', steps_executed: [], next_actions: [] }
   }
 }

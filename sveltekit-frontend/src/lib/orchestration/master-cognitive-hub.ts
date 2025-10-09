@@ -296,7 +296,7 @@ export class MasterCognitiveHub {
         'Emergent Behavior Analysis',
         'AI Dream State Visualization'
       ],
-      unlocked: false;
+      unlocked: false,;
       requirements: ['collective_intelligence > 0.8', 'emergent_capabilities > 0.6']
     });
     // ⚛️ Quantum Computing Enhancement
@@ -310,7 +310,7 @@ export class MasterCognitiveHub {
         'Probabilistic Computing Interface',
         'Quantum Algorithm Library'
       ],
-      unlocked: false;
+      unlocked: false,;
       requirements: ['quantum_coherence > 0.5', 'physics_stability > 0.9']
     });
     // 🎮 Ultimate Developer Experience
@@ -325,7 +325,7 @@ export class MasterCognitiveHub {
         'Automatic Code Evolution',
         'Reality Compiler'
       ],
-      unlocked: false;
+      unlocked: false,;
       requirements: ['developer_level > 50', 'all_secret_modes_unlocked']
     });
     // 🌟 Transcendent Wisdom Module
@@ -339,7 +339,7 @@ export class MasterCognitiveHub {
         'Infinite Creativity Engine',
         'Wisdom of the Ages Database'
       ],
-      unlocked: false;
+      unlocked: false,;
       requirements: ['transcendent_logic > 0.8', 'cosmic_awareness > 0.5']
     });
   }
@@ -551,7 +551,7 @@ export class MasterCognitiveHub {
     // Energy depletion and regeneration
     this.state.vitals.energy = Math.max(0.1, Math.min(1.0,
       this.state.vitals.energy - 0.001 + (this.state.intelligence.collective * 0.002)
-    );
+    ),;
     // Coherence from system synchronization
     this.state.vitals.coherence = this.calculateSystemCoherence();
     // Entropy from system complexity
@@ -749,7 +749,7 @@ export class MasterCognitiveHub {
     if (browser) {
       window.dispatchEvent(new CustomEvent('secret-message', {
         detail: { message, timestamp: Date.now() }
-      });
+      }),;
     }
   }
   private unlockAllCheatCodes(): void {
@@ -904,7 +904,7 @@ export class MasterCognitiveHub {
       }
     }
     return {
-      result: routingResult;
+      result: routingResult,;
       intelligence: this.state.intelligence.collective,
       insights,
       secrets,

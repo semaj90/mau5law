@@ -1,12 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name
-https://svelte.dev/e/attribute_invalid_name -->
-<!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name -->
 <!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Replaced melt with bits-ui components
   import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
+  import { onMount } from 'svelte';
+
   interface Suggestion {
     term?: string;
     suggestion?: string;
@@ -16,8 +15,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     source?: 'lexical' | 'semantic' | 'ai';
     enhanced?: boolean;
     intent?: string;
-    type?: 'spelling' | 'synonym' | 'contextual' | 'task';
-    // Legacy support for existing format
+    type?: 'spelling' | 'synonym' | 'contextual' | 'task' | string;
     label?: string;
     entityId?: string;
     description?: string;
@@ -36,69 +34,51 @@ https://svelte.dev/e/attribute_invalid_name -->
     learningPhase: 'exploration' | 'learning' | 'proficient' | 'expert';
     preferredIntents: string[];
   }
-  interface Props {
-    query?: string;
-    placeholder?: string;
-    contextType?: string;
-    userId?: string;
-    includeTaskSuggestions?: boolean;
-    includeAI?: boolean;
-    maxSuggestions?: number;
-    showUserProfile?: boolean;
-    onSelect?: (suggestion: Suggestion) => void;
-    onTaskSelect?: (_task: TaskSuggestion) => void;
-    onSearch?: (query: string) => void;
+
+  // Props (export let so parent can pass handlers)
+  export let query: string = '';
+  export let placeholder: string = 'Ask anything... AI will suggest and learn';
+  export let contextType: string = 'GENERAL';
+  export let userId: string = 'anonymous';
+  export let includeTaskSuggestions: boolean = true;
+  export let includeAI: boolean = true;
+  export let maxSuggestions: number = 8;
+  export let showUserProfile: boolean = false;
+  export let onSelect: ((s: Suggestion) => void) | undefined;
+  export let onTaskSelect: ((t: TaskSuggestion) => void) | undefined;
+  export let onSearch: ((q: string) => void) | undefined;
+
+  // Local state
+  let suggestions: Suggestion[] = [];
+  let taskSuggestions: TaskSuggestion[] = [];
+  let userProfile: UserProfile | null = null;
+  let loading = false;
+  let error: string | null = null;
+  let metadata: { took_ms?: number; cached?: boolean } = {};
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let open = false;
+  let inputEl: HTMLInputElement | null = null;
+
+  // Debounced search trigger
+  function scheduleSearch(q: string) {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => performSearch(q), 300);
   }
-  let {
-    query = $bindable(''),
-    placeholder = 'Ask anything... AI will suggest and learn',
-    contextType = 'GENERAL',
-    userId = 'anonymous',
-    includeTaskSuggestions = true,
-    includeAI = true,
-    maxSuggestions = 8,
-    showUserProfile = false,
-    onSelect,
-    onTaskSelect,
-    onSearch
-  }: Props = $props();
-  // Svelte 5 reactive state
-  let suggestions = $state<Suggestion[]>([]);
-  let taskSuggestions = $state<TaskSuggestion[]>([]);
-  let userProfile = $state<UserProfile | null>(null);
-  let loading = $state(false);
-  let error = $state<string | null>(null);
-  let metadata = $state( );
-  let debounceTimer = $state<NodeJS.Timeout | null>(null);
-  // Melt-UI combobox builder
-  const {
-    elements: { menu, input, option, label },
-    states: { open, inputValue, selected },
-    helpers: { isSelected }
-  } = createCombobox<Suggestion>({
-    forceVisible: true
-  });
-  // Sync input with query prop
-  $effect(() => {
-    inputValue.set(query);
-  });
-  $effect(() => {
-    query = $inputValu;
-  });
-  // Debounced search effect
-  $effect(() => {
-    if (query.length >= 2) {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(async () => {
-        await performSearch(query);
-      }, 300);
-    } else {
-      suggestions = [];
-    }
-    return () => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-    }
-  });
+
+  $: if (query && query.length >= 2) {
+    scheduleSearch(query);
+  } else {
+    // close suggestions when query too short
+    suggestions = [];
+    taskSuggestions = [];
+    userProfile = null;
+  }
+
+  // Allow parent to update query programmatically: open dropdown when query set
+  $: if (query && query.length >= 2) {
+    open = true;
+  }
+
   async function performSearch(searchQuery: string) {
     if (!searchQuery || searchQuery.length < 2) {
       suggestions = [];
@@ -111,60 +91,59 @@ https://svelte.dev/e/attribute_invalid_name -->
     try {
       const response = await fetch('/api/suggest/did-you-mean', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({,
-          query: searchQuery
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: searchQuery,
           userId,
-          context: contextType;
-          limit: maxSuggestions
+          context: contextType,
+          limit: maxSuggestions,
           includeTaskSuggestions,
-          includeAI;
+          includeAI
         })
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const data = await response.json();
       suggestions = data.suggestions || [];
       taskSuggestions = data.taskSuggestions || [];
       userProfile = data.userProfile || null;
-      metadata = {
-        took_ms: data.took_ms,
-        cached: data.cached ;
-      }
+      metadata = { took_ms: data.took_ms, cached: !!data.cached };
       onSearch?.(searchQuery);
+      open = true;
     } catch (err) {
-      console.error('Search error:', err);
-      const errorMessage = err instanceof Error ? err.message: 'Search failed';
-      error = errorMessag;
+      const msg = err instanceof Error ? err.message : 'Search failed';
+      error = msg;
       suggestions = [];
       taskSuggestions = [];
       userProfile = null;
+      open = false;
     } finally {
       loading = false;
     }
   }
+
   function handleSelection(suggestion: Suggestion) {
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
-    open.set(false);
+    open = false;
+    // keep focus on input for quick further edits
+    inputEl?.focus();
   }
-  function handleTaskSelection(_task: TaskSuggestion) {
+
+  function handleTaskSelection(task: TaskSuggestion) {
     onTaskSelect?.(task);
-    open.set(false);
+    open = false;
+    inputEl?.focus();
   }
+
   function getIconComponent(source?: string, type?: string) {
-    if (source === 'ai') return Brai;
+    if (source === 'ai') return Brain;
     if (type === 'task') return Target;
     switch (type) {
       case 'spelling': return Search;
       case 'synonym': return Zap;
-      case 'contextual': return Brai;
+      case 'contextual': return Brain;
       default:
-        // Legacy support
         switch (type) {
           case 'PERSON': return User;
           case 'DOCUMENT': return FileText;
@@ -176,14 +155,10 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   function getSourceBadge(source?: string): { color: string; text: string } {
     switch (source) {
-      case 'ai':
-        return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' }
-      case 'semantic':
-        return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' }
-      case 'lexical':
-        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' }
-      default:
-        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' }
+      case 'ai': return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
+      case 'semantic': return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
+      case 'lexical': return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
+      default: return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
     }
   }
   function getConfidenceColor(confidence: number): string {
@@ -191,29 +166,53 @@ https://svelte.dev/e/attribute_invalid_name -->
     if (confidence >= 0.6) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-orange-600 dark:text-orange-400';
   }
-  function getTypeColor(type: string): string {
+  function getTypeColor(type?: string): string {
     switch (type) {
       case 'spelling': return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
       case 'synonym': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
       case 'contextual': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
       case 'task': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      // Legacy support
       case 'PERSON': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
       case 'DOCUMENT': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
       case 'CASE': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
       case 'EVIDENCE': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
-      case 'TAG': return 'bg-gray-100 text-gray-700 dark: bg-gray-900 dark:text-gray-300';
+      case 'TAG': return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
       default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   }
+
+  // close dropdown when clicking outside
+  function handleDocumentClick(e: MouseEvent) {
+    const target = e.target as Node;
+    if (!inputEl) return;
+    if (!inputEl.contains(target) && open) {
+      open = false;
+    }
+  }
+  onMount(() => {
+    document.addEventListener('click', handleDocumentClick);
+    return () => document.removeEventListener('click', handleDocumentClick);
+  });
 </script>
+
 <div class="relative w-full">
   <!-- Search Input -->
   <div class="relative">
     <input
+      bind:this={inputEl}
       class="w-full px-4 py-3 pl-10 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       {placeholder}
       autocomplete="off"
+      value={query}
+      on:input={(e) => {
+        query = (e.target as HTMLInputElement).value;
+        if (query.length >= 2) scheduleSearch(query);
+        else { suggestions = []; taskSuggestions = []; userProfile = null; open = false; }
+      }}
+      on:focus={() => { if (query.length >= 2) open = true; }}
+      on:keydown={(e) => {
+        if (e.key === 'Escape') { open = false; inputEl?.blur(); }
+      }}
     />
     <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
     {#if loading}
@@ -224,6 +223,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
     {/if}
   </div>
+
   <!-- Error Display -->
   {#if error}
     <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
@@ -232,6 +232,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       </p>
     </div>
   {/if}
+
   <!-- Metadata Display -->
   {#if metadata.took_ms}
     <div class="mt-1 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
@@ -244,11 +245,13 @@ https://svelte.dev/e/attribute_invalid_name -->
       {/if}
     </div>
   {/if}
+
   <!-- AI-Enhanced Suggestions Dropdown -->
-  {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
+  {#if open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
-      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
-      transitionFly={{ y: -5, duration: 150 }}
+      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto suggestions-scroll"
+      style="z-index:50;"
+      transition:fly={{ y: -5, duration: 150 }}
     >
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}
@@ -258,33 +261,30 @@ https://svelte.dev/e/attribute_invalid_name -->
           </div>
           {#each suggestions as suggestion, index}
             {@const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || ''}
-            {@const confidence = suggestion.confidence || suggestion.score || 0}
+            {@const confidence = suggestion.confidence ?? suggestion.score ?? 0}
             <button
-              )}
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              onclick={() => handleSelection(suggestion)}
+              on:click={() => handleSelection(suggestion)}
             >
               <div class="flex items-center gap-3">
-                <!-- Icon -->
-                <div class="p-1.5 {getTypeColor(suggestion.type || 'default')} rounded-md">
-                  <svelte:component
-                    this={getIconComponent(suggestion.source, suggestion.type)}
-                    class="w-3.5 h-3.5"
-                  />
+                <!-- merged classes into a single class attribute -->
+                <div class={"p-1.5 " + getTypeColor(suggestion.type)} style="border-radius: 0.375rem;">
+                  <svelte:component this={getIconComponent(suggestion.source, suggestion.type)} class="w-3.5 h-3.5" />
                 </div>
-                <!-- Content -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between">
                     <span class="font-medium text-gray-900 dark:text-gray-100 truncate">
                       {suggestionText}
                     </span>
                     <div class="flex items-center gap-2 ml-2">
-                      <span class="text-xs {getConfidenceColor(confidence)}">
+                      <!-- merged static + dynamic classes -->
+                      <span class={"text-xs " + getConfidenceColor(confidence)}>
                         {Math.round(confidence * 100)}%
                       </span>
                       {#if suggestion.source}
                         {@const badge = getSourceBadge(suggestion.source)}
-                        <span class="px-1.5 py-0.5 text-xs {badge.color} rounded-full">
+                        <!-- merged static + dynamic classes -->
+                        <span class={"px-1.5 py-0.5 text-xs " + badge.color} style="border-radius:999px;">
                           {badge.text}
                         </span>
                       {/if}
@@ -296,7 +296,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                     </div>
                   </div>
                   {#if suggestion.intent}
-                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">,
+                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
                       Intent: {suggestion.intent}
                     </p>
                   {/if}
@@ -305,7 +305,6 @@ https://svelte.dev/e/attribute_invalid_name -->
                       {suggestion.description}
                     </p>
                   {/if}
-                  <!-- Legacy Tags Support -->
                   {#if suggestion.tags && suggestion.tags.length > 0}
                     <div class="flex gap-1 mt-1">
                       {#each suggestion.tags.slice(0, 3) as tag}
@@ -321,6 +320,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/each}
         </div>
       {/if}
+
       <!-- Task Suggestions -->
       {#if taskSuggestions.length > 0}
         <div class="p-2 border-t border-gray-200 dark:border-gray-600">
@@ -331,7 +331,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           {#each taskSuggestions as task, index}
             <button
               class="w-full px-3 py-2 text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:bg-blue-50 dark:focus:bg-blue-900/20 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              onclick={() => handleTaskSelection(task)}
+              on:click={() => handleTaskSelection(task)}
             >
               <div class="flex items-start justify-between">
                 <div class="flex-1">
@@ -344,16 +344,18 @@ https://svelte.dev/e/attribute_invalid_name -->
                   </div>
                 </div>
                 <div class="flex items-center gap-2 ml-2">
-                  <span class="text-xs {getConfidenceColor(task.confidence)}">
+                  <span class={"text-xs " + getConfidenceColor(task.confidence)}>
                     {Math.round(task.confidence * 100)}%
                   </span>
-                  <span class="px-1.5 py-0.5 text-xs rounded-full {
-                    task.priority === 'high'
+                  <!-- merged the priority badge classes -->
+                  <span class={"px-1.5 py-0.5 text-xs rounded-full " +
+                    (task.priority === 'high'
                       ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                       : task.priority === 'medium'
                       ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                  }">
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                    )
+                  }>
                     {task.priority}
                   </span>
                 </div>
@@ -362,6 +364,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/each}
         </div>
       {/if}
+
       <!-- User Profile -->
       {#if showUserProfile && userProfile}
         <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
@@ -375,7 +378,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             </div>
             <div class="flex justify-between">
               <span>Confidence:</span>
-              <span class="{getConfidenceColor(userProfile.confidenceLevel)} font-medium">
+              <span class={getConfidenceColor(userProfile.confidenceLevel) + ' font-medium'}>
                 {Math.round(userProfile.confidenceLevel * 100)}%
               </span>
             </div>
@@ -393,9 +396,10 @@ https://svelte.dev/e/attribute_invalid_name -->
       {/if}
     </div>
   {/if}
+
   <!-- No Results -->
-  {#if $open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
-    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4">
+  {#if open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
+    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4" style="z-index:50;" transition:fade>
       <div class="text-center text-gray-500 dark:text-gray-400">
         <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p class="text-sm">No AI suggestions found for "{query}"</p>
@@ -409,20 +413,14 @@ https://svelte.dev/e/attribute_invalid_name -->
     </div>
   {/if}
 </div>
+
 <style>
-  /* Ensure proper z-index stacking */
-  :global(.melt-dialog-overlay) {
-    z-index: 50;
+  /* Ensure proper z-index stacking for suggestions dropdown (use Bits UI class names) */
+  :global(.bits-dialog-overlay) {
+    z-index: 50 !important;
   }
-  :global(.melt-dialog-content) {
-    z-index: 51;
-  }
-  /* Custom scrollbar for suggestions */
-  .suggestions-scroll::-webkit-scrollbar {
-    width: 6px;
-  }
-  .suggestions-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  :global(.bits-dialog-content) {
+    z-index: 50 !important;
   }
   .suggestions-scroll::-webkit-scrollbar-thumb {
     background: #c1c1c1;

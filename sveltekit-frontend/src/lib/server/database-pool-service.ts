@@ -26,8 +26,8 @@ interface CachedQuery {
   ttl: number; // seconds
 }
 class DatabasePoolService {
-  private pools: Map<string, ReturnType<typeof postgres> = new Map();
-  private drizzleInstances: Map<string, PostgresJsDatabase<Record<string, never> = new Map();
+  private pools: Map<string, ReturnType<typeof postgres>, = new Map();
+  private drizzleInstances: Map<string, PostgresJsDatabase<Record<string, never>, = new Map();
   private connectionString: string;
   private config: DatabasePoolConfig;
   private queryCache: Map<string, CachedQuery> = new Map();
@@ -54,7 +54,7 @@ class DatabasePoolService {
   /**
    * Get or create a connection pool for a specific context
    */;
-  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres> {
+  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres>, {
     const poolKey = `${context}:${this.config.database}`;
     if (this.pools.has(poolKey)) {
       const pool = this.pools.get(poolKey)!;
@@ -79,8 +79,8 @@ class DatabasePoolService {
    * Get Drizzle instance with connection pooling
    */
   async getDrizzle(
-    context: string = 'default';
-  ): Promise<PostgresJsDatabase<Record<string, never> {
+    context: string = 'default',;
+  ): Promise<PostgresJsDatabase<Record<string, never>, {
     const poolKey = `drizzle:${context}`;
     if (this.drizzleInstances.has(poolKey)) {
       return this.drizzleInstances.get(poolKey)!;
@@ -97,7 +97,7 @@ class DatabasePoolService {
     sql: string
     params: any[] = [],
     context: string = 'default',
-    ttl: number = this.DEFAULT_CACHE_TTL;
+    ttl: number = this.DEFAULT_CACHE_TTL,;
   ): Promise<T> {
     const cacheKey = this.generateCacheKey(sql, params);
     // Check Redis cache first
@@ -178,7 +178,7 @@ class DatabasePoolService {
   /**
    * Dynamically adjust pool size based on Redis stats
    */;
-  private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig> {
+  private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig>, {
     const baseSize = this.config.max;
     let adjustedSize = baseSize;
     // Adjust based on current load
@@ -257,7 +257,7 @@ class DatabasePoolService {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheSize: this.queryCache.size,
-      pools: { [key: string]: any }
+      pools: { [key,: strin,g]: any }
     }
     for (const [key, pool] of this.pools) {
       (stats.pools as any)[key] = {
@@ -271,5 +271,5 @@ class DatabasePoolService {
 // Export singleton instance
 export const dbPool = new DatabasePoolService();
 // Graceful shutdown
-process.on('SIGTERM', () => dbPool.close();
-process.on('SIGINT', () => dbPool.close();
+process.on('SIGTERM', () => dbPool.close(),;
+process.on('SIGINT', () => dbPool.close(),;

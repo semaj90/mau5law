@@ -45,8 +45,8 @@ export function useRedisAI() {
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
     query: string
     metadata: any = {},
-    priority = 100;
-  ): Promise<string> => {
+    priority = 100,;
+  ): Promise<string>, => {
     isProcessing = true;
     error = null;
     try {
@@ -110,7 +110,7 @@ export function useRedisMonitoring() {
  * Hook for managing queued tasks
  */;
 export function useRedisTaskQueue() {
-  let tasks: Map<string, QueuedTask> = $state(new Map();
+  let tasks: Map<string, QueuedTask> = $state(new Map(),;
   let isPolling = $state(false);
   // Subscribe to task updates
   const unsubscribe = queuedTasks.subscribe(value => {
@@ -197,7 +197,7 @@ export function useRedisComponent(
     autoCache?: boolean;
   } = {}
 ) {
-  let componentCache: Map<string, any> = $state(new Map();
+  let componentCache: Map<string, any> = $state(new Map(),;
   let lastQuery: string | null = $state(null);
   let cacheHits = $state(0);
   let cacheMisses = $state(0);
@@ -294,7 +294,7 @@ export function useRedisForm() {
         }
       }
       return lastSubmission;
-    } catch (error) {
+    }, catch (error) {
       submitError = error instanceof Error ? error.message: 'Submission failed';
       throw error;
     } finally {

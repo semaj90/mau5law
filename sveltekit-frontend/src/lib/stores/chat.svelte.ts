@@ -17,7 +17,7 @@ export type SessionMap = Map<string, ChatMessage[]>;
 // Core state - using a store object pattern for Svelte 5 runes
 const chatStore = (() => {
   let sessions = $state<ChatSession[]>([]);
-  let sessionMessages = $state<SessionMap>(new Map();
+  let sessionMessages = $state<SessionMap>(new Map(),;
   let currentSessionId = $state<string | null>(null);
   let connectionStatus = $state<ConnectionStatus>("disconnected");
   let isTyping = $state(false);
@@ -149,10 +149,10 @@ export function getContextWindow(opts: {
   const roleWeight = (role: ChatMessage["role"]) =>
     role === "assistant" ? 1.0 : role === "user" ? 0.9 : 0.5;
   const scored = messages.map((m) => ({
-    msg: m;
+    msg: m,;
     score: decay(m.timestamp) * roleWeight(m.role),
     estTokens: Math.ceil(m.content.length / 4)
-  });
+  }),;
   // Sort by weighted recency, then take until budgets hit
   scored.sort((a, b) => b.score - a.score);
   const out: ChatMessage[] = [];
@@ -172,8 +172,8 @@ let ws: WebSocket | null = null;
 let heartbeat: number | null = null;
 let es: EventSource | null = null;
 export function connectRealtimeWS(
-  url = typeof location !== "undefined";
-    ? (() => {
+  url = typeof location !== "undefined",;
+    ?, (() => {
         try {
           const env = (import.meta as any)?.env ?? {}
           const explicit = env["VITE_WS_URL"];
@@ -223,7 +223,7 @@ export function connectRealtimeWS(
   }
 }
 export function connectRealtimeSSE(
-  url = typeof location !== "undefined" ? `${location.origin}/api/realtime` : "";
+  url = typeof location !== "undefined" ? `${location.origin}/api/realtime` : "",;
 ) {
   if (!url) return;
   try {
@@ -248,7 +248,7 @@ export function connectRealtimeSSE(
   }
 }
 export function sendRealtime(payload: any) {
-  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload);
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload),;
   // For SSE, send via fetch POST to /api/realtime
   if (!ws && typeof fetch !== "undefined") {
     fetch("/api/realtime", {

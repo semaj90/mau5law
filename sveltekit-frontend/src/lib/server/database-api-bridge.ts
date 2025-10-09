@@ -166,12 +166,12 @@ export class LegalDatabaseBridge {
         },);
         {
           limit: options.limit || 50,
-          offset: options.offset || 0,
-          useGPU: options.useVector,
-          cacheResults: true
+          offset,: options.offset || 0,
+          useGPU,: options.useVector,
+          cacheResults,: true
         }
       );
-      return documents.map(row => this.mapRowToDocument(row);
+      return documents.map(row => this.mapRowToDocument(row),;
     } catch (error) {
       console.error('Failed to search legal documents:', error);
       return [];
@@ -186,7 +186,7 @@ export class LegalDatabaseBridge {
       const values = [id, ...Object.values(updates).filter((_, index) =>
         Object.keys(updates)[index] !== 'id' && Object.keys(updates)[index] !== 'created_at'
       )];
-      values.push(new Date(); // updated_at
+      values.push(new Date(),; // updated_at
       await this.executeQuery(
         `UPDATE legal_documents SET ${setClause}, updated_at = $${values.length} WHERE id = $1`,
         values
@@ -485,7 +485,7 @@ export class LegalDatabaseBridge {
     }
   }
   // Statistics
-  async getDatabaseStats(): Promise<{ [key: string]: any } {
+  async getDatabaseStats(): Promise<{ [key: string]: any }, {
     try {
       const stats = {
         legal_documents: await this.executeQuery('SELECT COUNT(*) FROM legal_documents'),
@@ -507,7 +507,7 @@ export class LegalDatabaseBridge {
 // Global database bridge instance
 export const legalDB = new LegalDatabaseBridge();
 // API integration helpers
-export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument> {
+export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument>, {
   try {
     const document = await legalDB.createLegalDocument(documentData);
     return {
@@ -515,7 +515,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       data: document
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
+        cached: false,;
         source: 'api'
       }
     }
@@ -532,7 +532,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
     }
   }
 }
-export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase> {
+export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase>, {
   try {
     const legalCase = await legalDB.createLegalCase(caseData);
     return {
@@ -540,7 +540,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       data: legalCase
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
+        cached: false,;
         source: 'api'
       }
     }
@@ -560,7 +560,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
 export async function apiSearchDocuments(
   searchQuery: any
   options: any = {}
-): Promise<SSRResponse<LegalDocument[]> {
+): Promise<SSRResponse<LegalDocument[]>, {
   try {
     const documents = await legalDB.searchLegalDocuments(searchQuery, options);
     return {
@@ -568,7 +568,7 @@ export async function apiSearchDocuments(
       data: documents
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
+        cached: false,;
         source: 'api'
       }
     }

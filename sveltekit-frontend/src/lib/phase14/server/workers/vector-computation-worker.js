@@ -83,11 +83,11 @@ class VectorComputationPool {
    */
   async calculateBatchSimilarity(queryVector, vectorDatabase, options = {}) {
     const { batchSize = 100, threshold = 0.0, topK = 10 } = options;
-    const vectors = Array.from(vectorDatabase.values();
+    const vectors = Array.from(vectorDatabase.values(),;
     // Split into batches for parallel processing
     const batches = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize);
+      batches.push(vectors.slice(i, i + batchSize),;
     }
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
@@ -115,7 +115,7 @@ class VectorComputationPool {
     // Split documents into batches
     const batches = [];
     for (let i = 0; i < documents.length; i += batchSize) {
-      batches.push(documents.slice(i, i + batchSize);
+      batches.push(documents.slice(i, i + batchSize),;
     }
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
@@ -159,7 +159,7 @@ class VectorComputationPool {
     if (success) {
       job.resolve(data);
     } else {
-      job.reject(new Error(error);
+      job.reject(new Error(error),;
     }
     // Remove job from active jobs
     this.activeJobs.delete(jobId);
@@ -274,7 +274,7 @@ class LegalLLMWorkerPool {
     if (success) {
       job.resolve(data);
     } else {
-      job.reject(new Error(error);
+      job.reject(new Error(error),;
     }
     this.activeJobs.delete(jobId);
     if (this.taskQueue.length > 0) {
@@ -436,7 +436,7 @@ function setupWorkerThread() {
       normA += vecA[i] * vecA[i];
       normB += vecB[i] * vecB[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
   }
   function prepareDocumentText(document) {
     return [
@@ -468,7 +468,7 @@ function setupWorkerThread() {
     confidence += (certaintyIndicators * 0.1);
     confidence -= (uncertaintyIndicators * 0.1);
     confidence += Math.min(words / 100, 0.2); // Longer responses tend to be more confident
-    return Math.max(0.1, Math.min(0.9, confidence);
+    return Math.max(0.1, Math.min(0.9, confidence),;
   }
 }
 /**

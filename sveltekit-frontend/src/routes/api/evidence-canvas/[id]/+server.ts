@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     return json({
       success: true,
       canvas,
-      cached: false;
+      cached: false,;
       source: 'database'
     })
   } catch (err) {
@@ -199,11 +199,11 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     return json({
       success: true,
       message: 'Canvas updated successfully',
-      canvas_id: id;
+      canvas_id: id,;
       canvas: responseData
       updated_at: updatedCanvas[0].updatedAt
     })
-  } catch (err) {
+  }, catch (err) {
     console.error('Canvas update error:', err)
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors

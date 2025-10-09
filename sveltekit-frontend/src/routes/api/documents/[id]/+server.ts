@@ -52,7 +52,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     const body = await request.json()
     if (!documentId) {
       return json({
-          success: false;
+          success: false,;
           error: "Document ID is required"
         },)
         { status: 400 },

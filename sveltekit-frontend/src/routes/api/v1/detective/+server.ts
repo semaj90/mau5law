@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       success: true,
       data: insights
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })
@@ -139,13 +139,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const body = await request.json()
     const validatedData = DetectiveAnalysisSchema.parse(body)
-    const detectiveService = new DetectiveModeService(locals.user.id)
+    const detectiveService = new DetectiveModeService(getUserId(locals))
     const result = await detectiveService.runAnalysis(validatedData)
     return json({
       success: true,
       data: result
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     }, { status: 201 })

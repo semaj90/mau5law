@@ -24,7 +24,7 @@ const createAuthStore = () => {
   return {
     subscribe,
     login: async (email: string, password: string) => {
-      update((state) => ({ ...state, isLoading: true });
+      update((state) => ({ ...state, isLoading: true }),;
       try {
         const response = await fetch("/api/auth/login", {
           method: "POST",
@@ -54,7 +54,7 @@ const createAuthStore = () => {
       set({ isAuthenticated: false, user: null, isLoading: false });
     },
     checkAuth: async () => {
-      update((state) => ({ ...state, isLoading: true });
+      update((state) => ({ ...state, isLoading: true }),;
       try {
         // removed unused response assignment
         if (response.ok) {
@@ -71,7 +71,7 @@ const createAuthStore = () => {
       update((state) => ({
         ...state,
         user: state.user ? { ...state.user, ...userData } : null
-      });
+      }),;
     }
   }
 }

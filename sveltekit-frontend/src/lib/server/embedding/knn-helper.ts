@@ -44,9 +44,9 @@ export function euclideanDistance(a: Vector, b: Vector): number {
  * Returns array sorted by descending score (best first).
  */
 export function topKNearest<T extends string | number | symbol = string>(
-  query: Vector;
+  query: Vector,;
   items: { id: T; embedding: Vector }[],
-  k = 5;
+  k = 5,;
 ): { id: T; score: number }[] {
   if (!Array.isArray(query)) return [];
   const results = items.map(item => {
@@ -54,7 +54,7 @@ export function topKNearest<T extends string | number | symbol = string>(
 	return { id: (item as { embedding?: any; id?: any }).id, score }
   });
   results.sort((a, b) => b.score - a.score);
-  return results.slice(0, Math.max(0, Math.min(k, results.length));
+  return results.slice(0, Math.max(0, Math.min(k, results.length)),;
 }
 export default {
   dot,

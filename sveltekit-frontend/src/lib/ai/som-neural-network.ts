@@ -145,7 +145,7 @@ export class SOMNeuralNetwork {
       }
     }
     // Create weight tensor for GPU computation
-    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights);
+    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights),;
     this.weightTensor = tf.tensor2d(
       flatWeights,
       [width * height, this.config.inputDimension]
@@ -288,7 +288,7 @@ export class SOMNeuralNetwork {
     bmu: { x: number; y: number },
     inputSample: number[]
     learningRate: number
-    neighborhoodRadius: number;
+    neighborhoodRadius: number,;
   ): Promise<void> {
     const { width, height } = this.config.gridSize;
     for (let x = 0; x < width; x++) {
@@ -296,7 +296,7 @@ export class SOMNeuralNetwork {
         const distance = Math.sqrt((x - bmu.x) ** 2 + (y - bmu.y) ** 2);
         if (distance <= neighborhoodRadius) {
           // Calculate neighborhood function (Gaussian)
-          const influence = Math.exp(-(distance ** 2) / (2 * neighborhoodRadius ** 2);
+          const influence = Math.exp(-(distance ** 2) / (2 * neighborhoodRadius ** 2),;
           const effectiveLearningRate = learningRate * influence;
           // Update weights
           const nodeWeights = this.somGrid[x][y].weights;
@@ -340,7 +340,7 @@ export class SOMNeuralNetwork {
   }
   private async updateWeightTensor(): Promise<void> {
     if (!this.weightTensor) return;
-    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights);
+    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights),;
     const newWeightTensor = tf.tensor2d(
       flatWeights,
       [this.config.gridSize.width * this.config.gridSize.height, this.config.inputDimension]
@@ -374,7 +374,7 @@ export class SOMNeuralNetwork {
     }
     return neighbors;
   }
-  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'> {
+  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'>, {
     const clusters = await this.identifyClusters();
     const topologyMap = this.generateTopologyMap();
     const legalConcepts = this.extractLegalConcepts(inputData);
@@ -389,7 +389,7 @@ export class SOMNeuralNetwork {
   private async identifyClusters(): Promise<SOMCluster[]> {
     const clusters: SOMCluster[] = [];
     const { width, height } = this.config.gridSize;
-    const visited = Array(width).fill(null).map(() => Array(height).fill(false);
+    const visited = Array(width).fill(null).map(() => Array(height).fill(false),;
     let clusterId = 0;
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
@@ -407,7 +407,7 @@ export class SOMNeuralNetwork {
     startX: number
     startY: number
     visited: boolean[][]
-    clusterId: string;
+    clusterId: string,;
   ): Promise<SOMCluster> {
     const queue: { x: number; y: number }[] = [{ x: startX, y: startY }];
     const clusterNodes: string[] = [];
@@ -564,7 +564,7 @@ export class SOMNeuralNetwork {
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1);
+      const j = Math.floor(Math.random() * (i + 1),;
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
@@ -573,7 +573,7 @@ export class SOMNeuralNetwork {
     return [...this.trainingHistory];
   }
   getSOMGrid(): SOMNode[][] {
-    return this.somGrid.map(row => row.map(node => ({...node}));
+    return this.somGrid.map(row => row.map(node => ({...node})),;
   }
   cleanup(): void {
     this.inputTensor?.dispose();

@@ -212,8 +212,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         timestamp: new Date().toISOString(),
-        error: 'Performance metrics collection failed',
-        details: message
+        error,: 'Performance metrics collection failed',
+        details,: message
         processingTime: Date.now() - startTime
       },
       { status: 500 }
@@ -276,7 +276,7 @@ async function gatherPlatformMetrics(): Promise<any> {
 async function runPerformanceBenchmarks(): Promise<any> {
   const startTime = Date.now()
   // Simulate various performance tests
-  await new Promise((resolve) => setTimeout(resolve, 50); // Simulate work
+  await new Promise((resolve) => setTimeout(resolve, 50),; // Simulate work
   return {
     vectorSearch: {
       latency: 42, // ms
@@ -398,7 +398,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
         }
       }
-      case 'benchmark': {
+      case 'benchmark',: {
         // Run performance benchmarks
         const benchmarks = await runPerformanceBenchmarks()
         return json({
@@ -407,7 +407,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: benchmarks
         })
       }
-      case 'clear_cache': {
+      case 'clear_cache',: {
         // Clear application caches
         return json({
           success: true,
@@ -424,7 +424,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     return json({
         success: false,
         error: 'Performance action failed',

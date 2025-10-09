@@ -242,7 +242,7 @@ export async function getClusterStatus(detailed: boolean = false): Promise<Clust
   }
   // Query all instances in parallel, resilient to individual failures
   const results = await Promise.allSettled(OLLAMA_CLUSTER.map(async (config) => {
-      return await getInstanceStatus(config.id, config))
+      return await getInstanceStatus(config.id, config),)
     })
   )
   const instances: OllamaInstance[] = results.map((r, i) => {
@@ -448,19 +448,19 @@ async function executeModelOperation(operation: ModelOperation): Promise<any> {
     switch (operation.operation) {
       case 'pull':
           return { pulled: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, size: `${(Math.random() * 4 + 1).toFixed(2)}GB` })
-        case 'remove':
-          return { removed: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, freedSpace: `${(Math.random() * 2 + 0.2).toFixed(2)}GB` }
-        case 'switch':
-          return { switched: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, timestamp: new Date().toISOString() }
-        case 'preload':
-          return { preloaded: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB` }
+        case, 'remove,':
+          return, { removed: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, freedSpace: `${(Math.random() * 2 + 0.2).toFixed(2)}GB` }
+        case, 'switch,':
+          return, { switched: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, timestamp: new Date().toISOString() }
+        case, 'preload,':
+          return, { preloaded: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB` }
         default:
-          return { success: false, reason: 'unknown operation' }
+          return, { success: false, reason: 'unknown operation' }
       }
-    })()
-  return {
+    },)()
+  return, {
     success: true,
-    data: baseResult;
+    data: baseResult,;
     instances: affectedInstances
   }
 }
@@ -511,4 +511,4 @@ async function performClusterHealthCheck(): Promise<ClusterStatus> {
   // Force bypass cache and request fresh state
   clusterStatusCache = null
   return await getClusterStatus(true)
-}
+},

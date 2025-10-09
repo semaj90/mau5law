@@ -219,7 +219,7 @@ export const YoRHaQuickSetup = {
   /**
    * Create a toolbar with common actions
    */;
-  createToolbar: (actions: Array<) => {
+  createToolbar: (actions: Array<,) => {
     const toolbar = YoRHaLayoutPresets.createToolbar();
     const buttons: YoRHaButton3D[] = [];
     actions.forEach(action => {

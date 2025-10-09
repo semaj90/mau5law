@@ -59,7 +59,7 @@ export async function testConnection(): Promise<boolean> {
       WHERE table_schema = 'public'
       ORDER BY table_name
     `;
-    console.log('✅ Available Tables:', tables.map(t => t.table_name);
+    console.log('✅ Available Tables:', tables.map(t => t.table_name),;
     return true;
   } catch (error) {
     console.error('❌ Database Connection Failed:', error);
@@ -130,7 +130,7 @@ export class VectorOperations {
     vectorColumn: string
     queryVector: number[]
     limit: number = 10,
-    threshold: number = 0.7;
+    threshold: number = 0.7,;
   ): Promise<any[]> {
     try {
       const result = await client`

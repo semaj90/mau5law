@@ -85,8 +85,8 @@ function collectMetrics(): SystemMetricsData {
 }
 }
     vectorQueriesPerMin: Math.floor(Math.random() * 20),
-  gpuQueueDepth: Math.floor(Math.random() * 4),
-    timestamp: Date.now(),
+  gpuQueueDepth,: Math.floor(Math.random() * 4),
+    timestamp,: Date.now(),
   };
 }
 // (End of file) - duplicate block removed. The correct GET export and collectMetrics helper

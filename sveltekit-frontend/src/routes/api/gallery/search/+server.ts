@@ -70,7 +70,7 @@ interface SearchResponse {
     totalPages: number
   }
 }
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { filters, options }: { filters: SearchFilters; options: SearchOptions } = await request.json()
     const startTime = Date.now()

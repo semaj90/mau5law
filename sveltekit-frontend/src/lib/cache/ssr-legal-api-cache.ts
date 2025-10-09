@@ -331,7 +331,7 @@ class SSRLegalAPICache {
     const url = new URL(endpoint, browser ? window.location.origin: 'http://localhost:5173')
     if (options.method === 'GET' && options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value);
+        url.searchParams.append(key, String(value),;
       });
     }
     const response = await fetch(url.toString(), {
@@ -378,7 +378,7 @@ class ResponseQuantizer {
     const quantized = { ...response }
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.data.map(item => this.quantizeObject(item);
+      quantized.data = quantized.data.map(item => this.quantizeObject(item),;
     } else if (typeof quantized.data === 'object') {
       quantized.data = this.quantizeObject(quantized.data);
     }
@@ -395,7 +395,7 @@ class ResponseQuantizer {
         // Round numbers to reduce precision
         quantized[key] = Math.round(value * 100) / 100;
       } else if (Array.isArray(value)) {
-        quantized[key] = value.map(item => this.quantizeObject(item);
+        quantized[key] = value.map(item => this.quantizeObject(item),;
       } else if (typeof value === 'object') {
         quantized[key] = this.quantizeObject(value);
       } else {

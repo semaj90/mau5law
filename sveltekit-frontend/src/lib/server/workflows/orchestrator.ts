@@ -38,9 +38,9 @@ class WorkflowOrchestrator {
   // Start a new document processing workflow
   async startDocumentProcessing(
     documentId: string
-    content: string;
+    content: string,;
     metadata: { [key: string]: any } = {},
-    parentWorkflow?: string;
+    parentWorkflow?: string,;
   ): Promise<string> {
     const workflowId = `doc_${documentId}_${Date.now()}`;
     console.log(`📄 Starting document processing workflow: ${workflowId}`);
@@ -98,10 +98,10 @@ class WorkflowOrchestrator {
   async startLegalCaseManagement(
     title: string
     description: string
-    caseType: string;
+    caseType: string,;
     jurisdiction: string
     createdBy: string
-    parentWorkflow?: string;
+    parentWorkflow?: string,;
   ): Promise<string> {
     const workflowId = `case_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     console.log(`⚖️ Starting legal case workflow: ${workflowId}`);
@@ -168,7 +168,7 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'EVENT_SENT',
         workflowId,
-        payload: event;
+        payload: event,;
         timestamp: Date.now()
       });
       return true;
@@ -218,7 +218,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_PAUSED',
       workflowId,
-      payload: { [key: string]: any },
+      payload: { [key,: strin,g]: any },
       timestamp: Date.now()
     });
     return true;
@@ -233,7 +233,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_RESUMED',
       workflowId,
-      payload: { [key: string]: any },
+      payload: { [key,: strin,g]: any },
       timestamp: Date.now()
     });
     return true;
@@ -251,7 +251,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_CANCELLED',
       workflowId,
-      payload: { [key: string]: any },
+      payload: { [key,: strin,g]: any },
       timestamp: Date.now()
     });
     return true;
@@ -443,7 +443,7 @@ class WorkflowOrchestrator {
     for (const [workflowId, workflow] of this.workflows) {
       if (
         workflow.status === 'completed' &&
-        workflow.updatedAt < cutoff;
+        workflow.updatedAt < cutoff,;
       ) {
         if (workflow.actor) {
           workflow.actor.stop();

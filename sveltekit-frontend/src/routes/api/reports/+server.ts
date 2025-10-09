@@ -177,7 +177,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
         aiTags: data.aiTags || [],
         templateId: data.templateId || null
       },
-      createdBy: locals.user.id
+      createdBy: getUserId(locals)
     }
     const [newReport] = await db.insert(reports).values(reportData).returning()
     return json(newReport, { status: 201 })

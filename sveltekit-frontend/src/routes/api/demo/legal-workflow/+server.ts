@@ -74,7 +74,7 @@ async function createLegalCase(data: any) {
     success: true,
     step: 1,
     action: 'case_created',
-    case: newCase;
+    case: newCase,;
     message: `Legal case "${data.title}" created successfully!`,
     nextStep: 'Upload evidence files using the drag-drop canvas'
   })
@@ -406,7 +406,7 @@ export const GET: RequestHandler = async ({ url }) => {
               canvasPositions: [
                 { x: 100, y: 100 },
                 { x: 300, y: 150 },)
-                { x: 500, y: 200 }
+                { x: 500, y,: 200 }
               ]
             }
           }

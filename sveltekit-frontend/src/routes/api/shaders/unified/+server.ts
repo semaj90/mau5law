@@ -241,7 +241,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         totalResults: 0,
         searchTime,
-        query: { [key: string]: any },
+        query: { [key,: strin,g]: any },
         error: error.message || 'Unified search failed'
       }
     }, { status: 500 })

@@ -124,7 +124,7 @@ export function setOllamaEnvironment(baseUrl: string, port: number): void {
   // For browser environments, you might store this in localStorage
   if (typeof window !== 'undefined') {
     window.localStorage.setItem('ollama_url', baseUrl);
-    window.localStorage.setItem('ollama_port', port.toString();
+    window.localStorage.setItem('ollama_port', port.toString(),;
   }
 }
 /**

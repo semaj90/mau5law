@@ -133,8 +133,8 @@ export const POST: RequestHandler = async ({ request }) => {
               msg.queueName,)
               {
                 ...msg.message,
-                publishedVia: 'bulk_api',
-                timestamp: Date.now()
+                publishedVia,: 'bulk_api',
+                timestamp,: Date.now()
               }
             ))
             return { queueName: msg.queueName, success, messageId: msg.message.id }
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
         })
-      case 'simulate_load':
+      case 'simulate_load',:
         // Simulate various types of legal AI processing jobs
         const loadTestJobs = [
           {
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         ]
         const loadResults = await Promise.all(loadTestJobs.map(async (job) => {
-            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message))
+            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message),)
             return { ...job, success }
           })
         )
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: { message: `Unknown action: ${action}` }
         }, { status: 400 })
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('❌ RabbitMQ Worker POST Error:', error)
     return json({
       status: 'error',

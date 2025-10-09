@@ -94,9 +94,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         success: false,
-        error: err instanceof Error ? err.message: 'QUIC recommendation failed',
-        fallback: 'Consider using /api/search for HTTP fallback',
-        timestamp: new Date().toISOString()
+        error,: err instanceof Error ? err.message: 'QUIC recommendation failed',
+        fallback,: 'Consider using /api/search for HTTP fallback',
+        timestamp,: new Date().toISOString()
       },>
       { status: 500 }
     )
@@ -185,8 +185,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json()
       {
         success: false,
-        error: err instanceof Error ? err.message: 'QUIC recommendation failed',
-        timestamp: new Date().toISOString()
+        error,: err instanceof Error ? err.message: 'QUIC recommendation failed',
+        timestamp,: new Date().toISOString()
       },>
       { status: 500 }
     )

@@ -29,7 +29,7 @@ export async function testWasmModule(): Promise<boolean> {
       throw new Error(`Expected embedding dimension 64, got ${embedding.length}`);
     }
     // Check that embedding is normalized (magnitude should be ~1)
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0),;
     console.log(`[WASM Test] Embedding magnitude: ${magnitude}`);
     if (Math.abs(magnitude - 1.0) > 0.001) {
       throw new Error(`Expected normalized embedding (magnitude ~1.0), got ${magnitude}`);
@@ -53,7 +53,7 @@ export async function testWasmModule(): Promise<boolean> {
     // Test 4: Vector normalization
     const unnormalized = new Float32Array([3.0, 4.0, 0.0]); // Magnitude = 5
     const normalized = await vectorWasm.normalizeVector(unnormalized);
-    const normalizedMagnitude = Math.sqrt(normalized.reduce((sum, val) => sum + val * val, 0);
+    const normalizedMagnitude = Math.sqrt(normalized.reduce((sum, val) => sum + val * val, 0),;
     console.log(`[WASM Test] Normalized vector magnitude: ${normalizedMagnitude}`);
     if (Math.abs(normalizedMagnitude - 1.0) > 0.001) {
       throw new Error(`Expected normalized magnitude ~1.0, got ${normalizedMagnitude}`);

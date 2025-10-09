@@ -94,6 +94,63 @@ export class DbCaseOperations {
       evidence: evidenceData,
     };
   }
+
+  /**
+   * Create new case
+   */
+  static async create(data: {
+    title: string;
+    description?: string;
+    priority?: string;
+    status?: string;
+    incidentDate?: Date;
+    location?: string;
+    jurisdiction?: string;
+    createdBy: string;
+  }) {
+    const [newCase] = await db
+      .insert(cases)
+      .values({
+        title: data.title,
+        description: data.description || null,
+        priority: data.priority || 'medium',
+        status: data.status || 'open',
+        caseNumber: `CASE-${Date.now()}`, // Generate unique case number
+        leadProsecutor: data.createdBy,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    return newCase;
+  }
+
+  /**
+   * Update existing case
+   */
+  static async update(id: string, data: Partial<{
+    title: string;
+    description: string;
+    priority: string;
+    status: string;
+    location: string;
+    jurisdiction: string;
+  }>, userId: string) {
+    const [updatedCase] = await db
+      .update(cases)
+      .set({
+        ...data,
+        updatedAt: new Date(),
+      })
+      .where(eq(cases.id, id))
+      .returning();
+
+    if (!updatedCase) {
+      throw new Error('Case not found');
+    }
+
+    return updatedCase;
+  }
 }
 
 export class DbEvidenceOperations {

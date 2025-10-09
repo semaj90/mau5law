@@ -284,7 +284,7 @@ export class ShaderCache {
   }
   private getCurrentProgram(): ShaderProgram | null {
     // Find the currently active program
-    const programs = Array.from(this.programs.values();
+    const programs = Array.from(this.programs.values(),;
     for (let i = 0; i < programs.length; i++) {
       const program = programs[i];
       if (this.gl.getParameter(this.gl.CURRENT_PROGRAM) === program.program) {
@@ -326,7 +326,7 @@ export class ShaderCache {
   }
   public destroy(): void {
     // Clean up all programs
-    const programs = Array.from(this.programs.values();
+    const programs = Array.from(this.programs.values(),;
     for (let i = 0; i < programs.length; i++) {
       this.gl.deleteProgram(programs[i].program);
     }

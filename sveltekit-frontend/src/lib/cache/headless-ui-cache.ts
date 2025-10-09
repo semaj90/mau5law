@@ -169,7 +169,7 @@ export class HeadlessUICache {
     data: T
     ttl?: number
     source: 'client' | 'server' | 'hybrid' = 'client',
-    semanticText?: string;
+    semanticText?: string,;
   ): Promise<void> {
     const entry: CacheEntry<T> = {
       key,
@@ -215,7 +215,7 @@ export class HeadlessUICache {
    */
   private async findSemanticallysimilar<T>(
     query: string
-    threshold: number = 0.7;
+    threshold: number = 0.7,;
   ): Promise<CacheEntry<T> | null> {
     if (!vectorWasm.isInitialized()) return null;
     try {
@@ -255,7 +255,7 @@ export class HeadlessUICache {
   private async enforceMemoryLimit(): Promise<void> {
     const currentSize = this.calculateMemorySize();
     if (currentSize <= this.config.maxMemorySize) return;
-    const entries = Array.from(this.memoryCache.entries();
+    const entries = Array.from(this.memoryCache.entries(),;
     // Sort by eviction priority (lower score = higher priority to evict)
     entries.sort(([, a], [, b]) => {
       let scoreA = this.calculateEvictionScore(a);
@@ -422,7 +422,7 @@ export class HeadlessUICache {
   }
   private async searchIndexedDBBySimilarity<T>(
     queryEmbedding: Float32Array
-    threshold: number;
+    threshold: number,;
   ): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
     return new Promise((resolve) => {

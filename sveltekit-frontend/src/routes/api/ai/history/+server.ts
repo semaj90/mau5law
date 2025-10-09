@@ -21,10 +21,11 @@ import { db } from '$lib/server/db/index';
 import { eq } from 'drizzle-orm';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, response, embedding } = await request.json();
-    const userId = locals.user?.id || 'anonymous';
+    const userId = getUserId(locals) || 'anonymous';
     await db.insert(aiHistory).values({ prompt, response, embedding, userId });
     return json({ success: true });
   } catch (error: any) {
@@ -33,7 +34,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 }
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
-    const userId = locals.user?.id || 'anonymous';
+    const userId = getUserId(locals) || 'anonymous';
     const history = await db.select().from(aiHistory).where(eq(aiHistory.userId, userId));
     return json({ history });
   } catch (error: any) {

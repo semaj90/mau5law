@@ -9,7 +9,7 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     timestamp: new Date().toISOString(),
     metadata: {
       version: '1.0',
-      processed: false;
+      processed: false,;
       tags: ['legal', 'document', 'test']
     }
   }
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
       test_type,
       iterations,
       timestamp: new Date().toISOString(),
-      results: { [key: string]: any }
+      results: { [key,: strin,g]: any }
     }
     switch (test_type) {
       case 'simd_health': {
@@ -145,10 +145,10 @@ export const POST: RequestHandler = async ({ request }) => {
         )
     }
     return json(results)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('SIMD test API error:', error)
     return json()
-      { error: 'Test execution failed', details: String(error) },
+      { error: 'Test execution failed', details,: String(error) },
       { status: 500 }
     )
   }

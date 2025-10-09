@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Failed to fetch queries:', error)
     return json({
-      success: false;
+      success: false,;
       error: 'Failed to fetch queries'
     }, { status: 500 })
   }

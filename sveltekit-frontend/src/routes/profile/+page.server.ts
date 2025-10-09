@@ -5,6 +5,7 @@ import { profileUpdateZodSchema } from '$lib/db/schema';
 import { redirect, error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { getUserId } from '$lib/server/auth/utils';
 // SOLUTION: Use the pre-extracted Zod schema for SuperForms compatibility
 // No more TypeScript errors with drizzle-zod schemas!
 const profileSchema = profileUpdateZodSchema;
@@ -113,7 +114,7 @@ export const actions: Actions = {
       //     firstName: form.data.firstName,
       //     lastName: form.data.lastName,
       //   })
-      //   .where(eq(profileTable.id, locals.user.id)
+      //   .where(eq(profileTable.id, getUserId(locals))
       console.log('Profile updated:', form.data);
       return { form, success: true }
     } catch (err) {

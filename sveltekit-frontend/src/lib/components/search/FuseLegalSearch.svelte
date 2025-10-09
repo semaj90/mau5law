@@ -1,8 +1,7 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
-  import { onMount } from 'svelte';
-  import { Input } from '$lib/components/ui/enhanced-bits';
-   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
+  import Input from '$lib/components/ui/enhanced-bits';
+  import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
 
   // --- fixed: use standard Svelte exports instead of $props() destructuring ---
   export let data: any[] = [];
@@ -14,7 +13,7 @@
   let searchQuery = '';
   let searchResults: any[] = [];
   let isSearching = false;
-  let fuse: Fuse | null = null;
+  let fuse: Fuse<any> | null = null;
 
   // --- fixed: proper Fuse options (missing commas removed) ---
   const fuseOptions = {
@@ -125,13 +124,18 @@
       handleAIAction(searchResults[0], 'select');
     }
   }
+
+  // Cast Input to a constructor-compatible value for svelte:component usage
+  // (works around TypeScript error when the imported type is seen as SvelteComponentTyped instance)
+  const InputAny: any = Input as unknown as any;
 </script>
 
 <div class="space-y-4">
   <!-- Search Input -->
   <div class="relative">
     <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
-    <Input bind:value={searchQuery} {placeholder} on:keydown={handleKeydown} class="pl-10" />
+    <!-- use svelte:component with the casted Input to satisfy TypeScript -->
+    <svelte:component this={InputAny} bind:value={searchQuery} {placeholder} on:keydown={handleKeydown} class="pl-10" />
     {#if isSearching}
       <Loader2 class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin nes-text is-disabled" />
     {/if}

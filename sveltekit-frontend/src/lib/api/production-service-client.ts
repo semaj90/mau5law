@@ -3,8 +3,8 @@
  * Production Service Client for Integration Testing
  * Simplified wrapper around the main production client for testing purposes
  */
-import type { ServiceRequest, ServiceResponse } from './production-client.js';
-}
+import type { ServiceResponse } from './production-client.js';
+
 export interface IntegrationServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
@@ -18,60 +18,96 @@ class ProductionServiceClient {
   }
   async makeRequest(endpoint: string, options: IntegrationServiceRequest): Promise<ServiceResponse> {
     const url = `${this.baseUrl}${endpoint}`;
-    const startTime = performance.now();
+
+    // Cross-runtime safe "now" (performance.now if available, otherwise Date.now)
+    const perf = globalThis as unknown as { performance?: Performance | { now?: () => number } };
+    const now = typeof perf.performance?.now === 'function' ? () => perf.performance!.now() : () => Date.now();
+
+    const startTime = now();
+
+    // Build fetch options without signal for now; create signal below with fallback
+    const fetchOptions: RequestInit = {
+      method: options.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    };
+
+    // Handle body data
+    if (options.body) {
+      if (typeof options.body === 'string') {
+        fetchOptions.body = options.body;
+      } else {
+        fetchOptions.body = JSON.stringify(options.body);
+      }
+    }
+
+    // Prepare signal: prefer AbortSignal.timeout if available, otherwise AbortController fallback
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let controllerForFallback: AbortController | null = null;
     try {
-      const fetchOptions: RequestInit = {
-        method: options.method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers
-        },
-        signal: AbortSignal.timeout(options.timeout || 5000)
+      // Create a typed reference to possible AbortSignal.timeout without using `any`
+      const maybeAbortTimeout = (AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal }).timeout;
+      if (typeof maybeAbortTimeout === 'function') {
+        // call the timeout function in environments that support it
+        fetchOptions.signal = maybeAbortTimeout(options.timeout ?? 5000);
+      } else {
+        controllerForFallback = new AbortController();
+        fetchOptions.signal = controllerForFallback.signal;
+        timeoutId = setTimeout(() => {
+          controllerForFallback?.abort();
+        }, options.timeout ?? 5000);
       }
-      // Handle body data
-      if (options.body) {
-        if (typeof options.body === 'string') {
-          fetchOptions.body = options.body;
-        } else {
-          fetchOptions.body = JSON.stringify(options.body);
-        }
-      }
-      // removed unused response assignment
-      const latency = performance.now() - startTime;
-      let data: any;
+
+      const response = await fetch(url, fetchOptions);
+      const latency = now() - startTime;
+      let data: unknown;
       try {
-        data = await (response as { json?: any; text?: any; status?: any; headers?: any }).json();
-      } catch (parseError) {
-        // Handle non-JSON responses
+        data = await response.json();
+      } catch (parseError: unknown) {
+        // Handle non-JSON responses safely without `any`
+        const parseErrMessage = parseError instanceof Error ? parseError.message : String(parseError);
+        const text = await response.text().catch(() => '');
         data = {
           error: 'Non-JSON response',
-          text: await (response as { json?: any; text?: any; status?: any; headers?: any }).text(),
-          parseError: parseError.message
-        }
+          text,
+          parseError: parseErrMessage,
+        };
       }
+
       return {
         data,
-        status: (response as { json?: any; text?: any; status?: any; headers?: any }).status,
-        headers: Object.fromEntries((response as { json?: any; text?: any; status?: any; headers?: any }).headers.entries()),
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
-        latency
-      }
-    } catch (error) {
-      const latency = performance.now() - startTime;
+        latency,
+      };
+    } catch (error: unknown) {
+      const latency = now() - startTime;
+      // Safely extract message/name from unknown error
+      const message = error instanceof Error ? error.message : String(error);
+      const name = error instanceof Error ? error.name : 'Error';
       // Handle network errors, timeouts, etc.
       return {
         data: {
-          error: error.message,
-          type: error.name,
-          code: 'NETWORK_ERROR'
+          error: message,
+          type: name,
+          code: name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_ERROR',
         },
-        status: 0, // Indicates network failure
-        headers: { [key: string]: any },
+        status: 0, // Indicates network failure / aborted
+        headers: {} as Record<string, string>,
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
-        latency
+        latency,
+      };
+    } finally {
+      // Clear fallback timeout if set
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
       }
+      // No need to explicitly clear AbortSignal.timeout
     }
   }
   private extractServiceFromEndpoint(endpoint: string): string {
@@ -98,40 +134,52 @@ class ProductionServiceClient {
   // Health check for service availability
   async checkServiceHealth(servicePath: string = '/health'): Promise<boolean> {
     try {
-      // removed unused response assignment
-      return (response as { json?: any; text?: any; status?: any; headers?: any }).status >= 200 && (response as { json?: any; text?: any; status?: any; headers?: any }).status < 300;
-    } catch (error) {
+      const res = await this.makeRequest(servicePath, { method: 'GET', timeout: 2000 });
+      return (res.status ?? 0) >= 200 && (res.status ?? 0) < 300;
+    } catch {
       return false;
     }
   }
   // Bulk health check for multiple services
-  async checkServicesHealth(services: string[]): Promise<Record<string, boolean> {
-    const results: Record<string, boolean> = {}
-    await Promise.all(services.map(async (service) => {
-        results[service] = await this.checkServiceHealth(`/${service}/health`));
+  async checkServicesHealth(services: string[]): Promise<Record<string, boolean>> {
+    const results: Record<string, boolean> = {};
+    await Promise.all(
+      services.map(async service => {
+        results[service] = await this.checkServiceHealth(`/${service}/health`);
       })
     );
     return results;
   }
   // Performance benchmarking utility
-  async benchmark(endpoint: string, options: IntegrationServiceRequest, iterations: number = 5): Promise<any> {
+  async benchmark(
+    endpoint: string,
+    options: IntegrationServiceRequest,
+    iterations: number = 5
+  ): Promise<{
+    averageLatency: number;
+    minLatency: number;
+    maxLatency: number;
+    successRate: number;
+    results: ServiceResponse[];
+  }> {
     const results: ServiceResponse[] = [];
     let successCount = 0;
     for (let i = 0; i < iterations; i++) {
       const result = await this.makeRequest(endpoint, options);
       results.push(result);
-      if ((result as { status?: any }).status >= 200 && (result as { status?: any }).status < 300) {
+      if ((result.status ?? 0) >= 200 && (result.status ?? 0) < 300) {
         successCount++;
       }
     }
-    const latencies = results.map(r => r.latency);
+    const latencies = results.map(r => r.latency ?? 0);
+    const count = latencies.length || 1;
     return {
-      averageLatency: latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length,
+      averageLatency: latencies.reduce((sum, lat) => sum + lat, 0) / count,
       minLatency: Math.min(...latencies),
       maxLatency: Math.max(...latencies),
       successRate: successCount / iterations,
-      results
-    }
+      results,
+    };
   }
 }
 // Export singleton instance for tests

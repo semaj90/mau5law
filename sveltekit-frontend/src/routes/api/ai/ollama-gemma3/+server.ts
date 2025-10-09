@@ -39,7 +39,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     const data = await ollamaRes.json()
     return json({ response: data.response, model: "gemma3-legal:latest" })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Ollama Gemma3 error:", error)
     return json({ error: "Failed to call Ollama Gemma3" }, { status: 500 })
   }

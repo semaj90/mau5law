@@ -277,7 +277,7 @@ export class WebGPUTensorAccelerator {
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
       // Upload parameters
-      this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]);
+      this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]),;
       // Create bind group
       const shader = this.shaderCache.get('vectorSimilarity')!;
       const computePipeline = this.device.createComputePipeline({
@@ -301,7 +301,7 @@ export class WebGPUTensorAccelerator {
       const computePass = commandEncoder.beginComputePass();
       computePass.setPipeline(computePipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(size / 256);
+      computePass.dispatchWorkgroups(Math.ceil(size / 256),;
       computePass.end();
       // Copy result to staging buffer
       const stagingBuffer = this.device.createBuffer({
@@ -312,7 +312,7 @@ export class WebGPUTensorAccelerator {
       this.queue!.submit([commandEncoder.finish()]);
       // Read result
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const resultArray = new Float32Array(stagingBuffer.getMappedRange();
+      const resultArray = new Float32Array(stagingBuffer.getMappedRange(),;
       // Calculate cosine similarity
       let dotProduct = 0;
       let normA = 0;
@@ -322,7 +322,7 @@ export class WebGPUTensorAccelerator {
         normA += vectorA[i] * vectorA[i];
         normB += vectorB[i] * vectorB[i];
       }
-      const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+      const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
       // Cleanup
       stagingBuffer.unmap();
       bufferA.destroy();
@@ -464,7 +464,7 @@ export class WebGPUTensorAccelerator {
       .toLowerCase()
       .split(/\W+/)
       .filter((w: string) => w.length > 0);
-    const tokens = words.map((word) => this.getTokenId(word);
+    const tokens = words.map((word) => this.getTokenId(word),;
     return new Uint32Array(tokens);
   }
   private getTokenId(word: string): number {
@@ -523,7 +523,7 @@ export class WebGPUTensorAccelerator {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(computePipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256);
+    computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256),;
     computePass.end();
     // Copy and read result
     const stagingBuffer = this.device.createBuffer({
@@ -539,7 +539,7 @@ export class WebGPUTensorAccelerator {
     );
     this.queue!.submit([commandEncoder.finish()]);
     await stagingBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(stagingBuffer.getMappedRange();
+    const result = new Float32Array(stagingBuffer.getMappedRange(),;
     // Average token embeddings
     const finalEmbedding = new Float32Array(embeddingDim);
     for (let i = 0; i < embeddingDim; i++) {
@@ -599,7 +599,7 @@ export class WebGPUTensorAccelerator {
       this.device.destroy();
       this.device = null;
     }
-    this.bufferPool.forEach((buffer) => buffer.destroy();
+    this.bufferPool.forEach((buffer) => buffer.destroy(),;
     this.bufferPool = [];
     this.shaderCache.clear();
     this.isInitialized = false;
@@ -640,13 +640,13 @@ export async function acceleratedSimilarity(a: Float32Array, b: Float32Array): P
       normB += b[i] * b[i];
     }
     if (normA === 0 || normB === 0) return 0;
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
   }
   // Use WebGPU acceleration - simplified fallback for now
   // TODO: Implement proper WebGPU vector similarity computation
   const dotProduct = a.reduce((sum, val, i) => sum + val * (b[i] || 0), 0);
-  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
-  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
+  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0),;
+  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0),;
   if (normA === 0 || normB === 0) return 0;
   return dotProduct / (normA * normB);
 }

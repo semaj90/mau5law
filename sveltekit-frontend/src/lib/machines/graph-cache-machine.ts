@@ -55,7 +55,7 @@ export const graphCacheMachine = createMachine({
   // Note: predictableActionArguments removed for version compatibility
   context: {
     query: null
-    params: { [key: string]: any },
+    params: { [key,: strin,g]: any },
     result: null
     source: 'indexeddb_cache',
     isStale: false
@@ -221,14 +221,14 @@ export const graphCacheMachine = createMachine({
         RETRY: [);
           {
             target: 'querying',
-            guard: 'canRetry',
-            actions: 'incrementRetry'
+            guard,: 'canRetry',
+            actions,: 'incrementRetry'
           }
         ],
         QUERY: 'querying'
       },
       after: {
-        5000: 'idle' // Auto-recover after 5 seconds
+        5000,: 'idle' // Auto-recover after 5 seconds
       }
     }
   }
@@ -263,9 +263,9 @@ export const graphCacheMachine = createMachine({
         return null;
       }
     }),
-    setQuery: assign({
-      query: ({ event }) => event.type === 'QUERY' ? event.query: null;
-      params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : { [key: string]: any },
+    setQuery,: assign({
+      query: ({ event }) => event.type === 'QUERY' ? event.query: null,;
+      params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : { [key,: strin,g]: any },
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {
           // Simple hash function
@@ -282,13 +282,13 @@ export const graphCacheMachine = createMachine({
       },
       retryCount: 0
     }),
-    incrementQueryCount: assign({
+    incrementQueryCount,: assign({
       telemetry: ({ context }) => ({
         ...context.telemetry,
         totalQueries: context.telemetry.totalQueries + 1
       })
     }),
-    setCacheResult: assign({
+    setCacheResult,: assign({
       result: ({ event }) => event.type === 'CACHE_HIT' ? event.result: null
       source: ({ event }) => event.type === 'CACHE_HIT' ? event.source as any : 'indexeddb_cache',
       cacheHit: true
@@ -298,12 +298,12 @@ export const graphCacheMachine = createMachine({
         cacheHits: context.telemetry.cacheHits + 1
       })
     }),
-    setWasmResult: assign({
+    setWasmResult,: assign({
       result: ({ event }) => event.type === 'WASM_RESULT' ? event.result : null
       source: 'wasm' as const,
       latency: ({ event }) => event.type === 'WASM_RESULT' ? event.latency : 0
     }),
-    setAuthoritativeResult: assign({
+    setAuthoritativeResult,: assign({
       result: ({ event }) => {
         if (event.type === 'AUTHORITATIVE_RESULT') return event.result;
         if (event.type === 'REFRESH_COMPLETE') return event.result;
@@ -316,22 +316,22 @@ export const graphCacheMachine = createMachine({
       isAuthoritative: true
       lastRefresh: Date.now()
     }),
-    setRefreshJob: assign({
+    setRefreshJob,: assign({
       refreshJob: ({ context }) => `refresh_${context.queryHash}_${Date.now()}`
     }),
-    clearRefreshJob: assign({
+    clearRefreshJob,: assign({
       refreshJob: null
     }),
-    incrementRetry: assign({
+    incrementRetry,: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
-    enableBackgroundRefresh: assign({
+    enableBackgroundRefresh,: assign({
       backgroundRefreshEnabled: true
     }),
-    disableBackgroundRefresh: assign({
+    disableBackgroundRefresh,: assign({
       backgroundRefreshEnabled: false
     }),
-    updateTelemetry: assign({
+    updateTelemetry,: assign({
       telemetry: ({ context }) => {
         const total = context.telemetry.cacheHits + context.telemetry.cacheMisses;
         return {
@@ -341,7 +341,7 @@ export const graphCacheMachine = createMachine({
         }
       }
     }),
-    resetTelemetry: assign({
+    resetTelemetry,: assign({
       telemetry: {
         totalQueries: 0,
         cacheHits: 0,
@@ -352,7 +352,7 @@ export const graphCacheMachine = createMachine({
         p99LatencyMs: 0
       }
     }),
-    queryWorker: ({ context }) => {
+    queryWorker,: ({ context }) => {
       if (context.worker && context.query) {
         context.worker.postMessage({
           type: 'query',
@@ -363,14 +363,14 @@ export const graphCacheMachine = createMachine({
         });
       }
     },
-    queryWasmWorker: ({ context }) => {
+    queryWasmWorker,: ({ context }) => {
       // WASM query is handled within the worker
       console.log('🌐 Querying WASM worker for instant results');
     },
-    queryAuthoritativeSource: ({ context }) => {
+    queryAuthoritativeSource,: ({ context }) => {
       console.log('🔍 Querying authoritative source (Neo4j/Graph service)');
     },
-    scheduleIdleCallback: () => {
+    scheduleIdleCallback,: () => {
       if (typeof requestIdleCallback !== 'undefined') {
         requestIdleCallback(() => {
           // Send IDLE_CALLBACK event
@@ -378,28 +378,28 @@ export const graphCacheMachine = createMachine({
         }, { timeout: 5000 });
       }
     },
-    notifyCacheHit: ({ context }) => {
+    notifyCacheHit,: ({ context }) => {
       console.log('✅ Cache hit:', context.source, `${context.latency}ms`);
     },
-    notifyCacheMiss: () => {
+    notifyCacheMiss,: () => {
       console.log('❌ Cache miss - fetching from sources');
     },
-    notifyProvisionalResult: ({ context }) => {
+    notifyProvisionalResult,: ({ context }) => {
       console.log('⚡ Provisional result from WASM:', `${context.latency}ms`);
     },
-    notifyRehydration: ({ context }) => {
+    notifyRehydration,: ({ context }) => {
       console.log('🔄 UI rehydrated with authoritative data:', context.source);
     },
-    notifyRevalidation: ({ context }) => {
+    notifyRevalidation,: ({ context }) => {
       console.log('✅ Background revalidation complete:', context.source);
     },
-    notifyError: ({ context }) => {
+    notifyError,: ({ context }) => {
       console.error('❌ Graph cache error - retry available');
     },
-    updateCaches: ({ context }) => {
+    updateCaches,: ({ context }) => {
       console.log('💾 Updating caches with new data');
     },
-    invalidateCache: ({ context, event }) => {
+    invalidateCache,: ({ context, event }) => {
       if (context.worker) {
         context.worker.postMessage({
           type: 'cache_clear',
@@ -407,10 +407,10 @@ export const graphCacheMachine = createMachine({
         });
       }
     },
-    provideTelemetry: ({ context }) => {
+    provideTelemetry,: ({ context }) => {
       console.log('📊 Telemetry:', context.telemetry);
     },
-    setError: () => {
+    setError,: () => {
       console.error('❌ Query failed after max retries');
     }
   },
@@ -420,10 +420,10 @@ export const graphCacheMachine = createMachine({
              context.queryHash !== null &&
              (Date.now() - context.lastRefresh) > 300000; // 5 minutes
     },
-    isStaleResult: ({ context }) => {
+    isStaleResult,: ({ context }) => {
       return context.isStale || (Date.now() - context.lastRefresh) > 180000; // 3 minutes
     },
-    canRetry: ({ context }) => {
+    canRetry,: ({ context }) => {
       return context.retryCount < context.maxRetries;
     }
   }

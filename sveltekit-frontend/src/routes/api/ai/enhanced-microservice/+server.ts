@@ -60,7 +60,7 @@ class GoMicroserviceClient {
     this.retries = config.retries
   }
   private async makeRequest(
-    endpoint: string;
+    endpoint: string,;
     method: string = "GET",
     body?: unknown
   ): Promise<any> {
@@ -75,7 +75,7 @@ class GoMicroserviceClient {
             "Content-Type": "application/json",
             Accept: "application/json"
           },
-          body: body ? JSON.stringify(body) : undefined;
+          body: body ? JSON.stringify(body) : undefined,;
           signal: controller.signal
         })
         clearTimeout(timeoutId)
@@ -138,14 +138,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       },)
       { status: 400 }
     )
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error("Health check failed:", error)
     return json()
       {
         status: "error",
-        message: "Microservice unavailable",
-        error: error.message,
-        timestamp: new Date().toISOString()
+        message,: "Microservice unavailable",
+        error,: error.message,
+        timestamp,: new Date().toISOString()
       },
       { status: 503 }
     )
@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result;
+          result: result,;
           metadata: {
             processingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             chunksCreated: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).chunks?.length || 0,
@@ -188,7 +188,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-      case "search": {
+      case "search",: {
         if (!body.query) {
           return json({
               status: "error",
@@ -208,7 +208,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result;
+          result: result,;
           metadata: {
             queryProcessingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             resultsFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).total_found,
@@ -217,7 +217,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-      case "enhanced-rag": {
+      case "enhanced-rag",: {
         if (!body.query) {
           return json({
               status: "error",
@@ -272,7 +272,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-      case "legal-analysis": {
+      case "legal-analysis",: {
         if (!body.content) {
           return json({
               status: "error",
@@ -363,15 +363,15 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error(`API action failed (${action}):`, error)
     return json()
       {
         status: "error",
-        message: "Microservice request failed",
-        error: error.message,
-        timestamp: new Date().toISOString(),
-        action: action
+        message,: "Microservice request failed",
+        error,: error.message,
+        timestamp,: new Date().toISOString(),
+        action,: action
       },
       { status: 500 }
     )

@@ -10,7 +10,7 @@ export function createSearchFilters(filters: { [key: string]: any }): SearchFilt
       field,
       operator: Array.isArray(value) ? 'in' : 'contains',
       value
-    });
+    }),;
 }
 /**
  * Format search results for display
@@ -32,7 +32,7 @@ export function formatSearchResults(results: any[]): SearchResult[] {
     },
     highlights: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).highlights,
     createdAt: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).createdAt
-  });
+  }),;
 }
 /**
  * Calculate relevance score for search results
@@ -85,7 +85,7 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
   // Apply match ratio penalty - partial matches get reduced score
   const matchRatio = matches / queryWords.length;
   const finalScore = normalizedScore * Math.pow(matchRatio, 0.5);
-  return Math.min(0.95, Math.max(0, finalScore);
+  return Math.min(0.95, Math.max(0, finalScore),;
 }
 /**
  * Infer entity type from result data
@@ -158,8 +158,8 @@ export function highlightSearchTerms(text: string, query: string, options?: {
  * Debounce function for search input
  */
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T;
-  delay: number;
+  func: T,;
+  delay: number,;
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {

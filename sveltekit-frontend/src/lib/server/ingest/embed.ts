@@ -43,7 +43,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false;
+      success: false,;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     }
   }
@@ -94,7 +94,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
     }
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error)
     }
   }
@@ -107,7 +107,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false;
+      success: false,;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     }
   }
@@ -149,7 +149,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
     }
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error)
     }
   }
@@ -162,7 +162,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false;
+      success: false,;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     }
   }
@@ -205,7 +205,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
     }
   } catch (error) {
     return {
-      success: false;
+      success: false,;
       error: error instanceof Error ? error.message: String(error)
     }
   }
@@ -257,7 +257,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
       } catch (error) {
         if (failFast) throw error;
         return {
-          success: false;
+          success: false,;
           error: error instanceof Error ? error.message: String(error)
         }
       }
@@ -268,7 +268,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
         results.push((result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).value);
       } else {
         results.push({
-          success: false;
+          success: false,;
           error: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).reason?.message || 'Unknown error'
         });
       }
@@ -283,7 +283,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
   return {
     success: embeddings.length > 0,
     embeddings,
-    errors: errors.length > 0 ? errors : undefined;
+    errors: errors.length > 0 ? errors : undefined,;
     metadata: {
       batchSize: buffers.length,
       successCount: embeddings.length,
@@ -297,7 +297,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
  */
 export async function embedContent(
   content: Buffer | string
-  contentType: string;
+  contentType: string,;
   options: {
     audioPath?: string; // For audio content
   } = {}
@@ -322,7 +322,7 @@ export async function embedContent(
     return await embedText(text);
   }
   return {
-    success: false;
+    success: false,;
     error: `Unsupported content type for embedding: ${contentType}`
   }
 }
@@ -334,7 +334,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      healthy: false;
+      healthy: false,;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     }
   }

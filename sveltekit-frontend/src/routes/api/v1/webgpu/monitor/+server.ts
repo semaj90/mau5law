@@ -94,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         success: false,
-        error: 'Failed to collect system metrics',
-        details: error instanceof Error ? error.message: String(error)
+        error,: 'Failed to collect system metrics',
+        details,: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     )
@@ -127,12 +127,12 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         )
     }
-  } catch (error) {
+  }, catch (error) {
     return json()
       {
         success: false,
-        error: 'Action execution failed',
-        details: error instanceof Error ? error.message: String(error)
+        error,: 'Action execution failed',
+        details,: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     )
@@ -352,7 +352,7 @@ async function restartWorkerPools(): Promise<void> {
   try {
     // In a real implementation, would restart the worker pools
     console.log('🔄 Worker pools restart initiated')
-    await new Promise(resolve => setTimeout(resolve, 1000); // Simulate restart delay
+    await new Promise(resolve => setTimeout(resolve, 1000),; // Simulate restart delay
     console.log('✅ Worker pools restarted successfully')
   } catch (error) {
     console.error('Failed to restart worker pools:', error)
@@ -366,7 +366,7 @@ async function optimizeGPUSettings(): Promise<void> {
   try {
     // In a real implementation, would optimize GPU configurations
     console.log('🎯 GPU optimization initiated')
-    await new Promise(resolve => setTimeout(resolve, 500); // Simulate optimization
+    await new Promise(resolve => setTimeout(resolve, 500),; // Simulate optimization
     console.log('✅ GPU settings optimized')
   } catch (error) {
     console.error('Failed to optimize GPU settings:', error)
@@ -414,8 +414,8 @@ export const DELETE: RequestHandler = async () => {
     return json()
       {
         success: false,
-        error: 'Failed to clear monitoring history',
-        details: error instanceof Error ? error.message: String(error)
+        error,: 'Failed to clear monitoring history',
+        details,: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     )

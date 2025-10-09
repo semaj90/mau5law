@@ -80,12 +80,12 @@ export const GET: RequestHandler = async ({ url }) => {
           candidateVectors: Array.from({ length: 1000 }, () =>
             Array.from({ length: 1536 }, () => Math.random()
           ),
-          metadata: {
+          metadata,: {
             algorithm: 'cosine',
             threshold: 0.8,
             timestamp: Date.now()
           },
-          results: Array.from({ length: 1000 }, () => Math.random()
+          results,: Array.from({ length: 1000 }, () => Math.random()
         }
         const vectorBenchmark = await benchmarkCustomPayload(vectorData, iterations)
         return json({
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           scenario: 'comparison',
           data: {
-            scenarios: comparisonResults;
+            scenarios: comparisonResults,;
             summary: {
               totalTests: scenarios.length,
               avgSpeedup: Object.values(comparisonResults).reduce((sum: number, result: any) =>
@@ -504,7 +504,7 @@ function generateTestPayload(size: string, scenario: string): any {
       data: scenario === 'vector_operations'
         ? Array.from({ length: vectorDim }, () => Math.random()
         : `Sample data item ${i} with content`.repeat(size === 'large' ? 100 : 10),
-      metadata: {
+      metadata,: {
         created: Date.now(),
         processed: Math.random() > 0.5,
         confidence: Math.random()

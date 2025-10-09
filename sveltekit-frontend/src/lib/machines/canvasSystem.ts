@@ -30,8 +30,8 @@ type CanvasEvent =
   | { type: "CLEAR_ERROR" }
 export const canvasSystemMachine = setup({
   types: {
-    context: { [key: string]: any } as CanvasContext,
-    events: { [key: string]: any } as CanvasEvent
+    context: { [key,: strin,g]: any } as CanvasContext,
+    events: { [key,: strin,g]: any } as CanvasEvent
   },
   actions: {
     addNode: assign({
@@ -115,7 +115,7 @@ export const canvasSystemMachine = setup({
       }
       // Save to localStorage or API
       if (typeof window !== "undefined") {
-        localStorage.setItem("canvasState", JSON.stringify(state);
+        localStorage.setItem("canvasState", JSON.stringify(state),;
       }
       return state;
     })

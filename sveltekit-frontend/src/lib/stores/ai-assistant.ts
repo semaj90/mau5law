@@ -41,7 +41,7 @@ export interface CaseAIContext {
     activeEvidenceId?: string;
   }
   insights: Array<{,
-    id: string;
+    id,: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
     confidence: number;
@@ -55,7 +55,7 @@ export interface AIAssistantState {
   isLoading: boolean;
   error?: string;
   globalInsights: Array<{,
-    id: string;
+    id,: string;
     type: 'trend' | 'pattern' | 'recommendation';
     description: string;
     affectedCases: string[];

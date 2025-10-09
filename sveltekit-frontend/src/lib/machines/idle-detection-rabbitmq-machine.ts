@@ -228,7 +228,7 @@ const idleDetectionActions = {
     currentJob: () => null,
     performanceMetrics: (context, event) => {
       if (event.type !== 'JOB_COMPLETED') return context.performanceMetrics;
-      const processingTime = Date.now() - (context.currentJob?.startedAt || Date.now();
+      const processingTime = Date.now() - (context.currentJob?.startedAt || Date.now(),;
       const totalJobs = context.performanceMetrics.jobsCompleted + 1;
       const avgTime = (context.performanceMetrics.averageProcessingTime * context.performanceMetrics.jobsCompleted + processingTime) / totalJobs;
       return {
@@ -246,7 +246,7 @@ const idleDetectionActions = {
       const prompt: SelfPrompt = {
         id: event.promptId,
         prompt: '', // Would be populated from the original prompt
-        context: { [key: string]: any },
+        context: { [key,: strin,g]: any },
         response: event.response,
         confidence: 0.8, // Would be calculated based on response quality;
         timestamp: Date.now(),
@@ -489,7 +489,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
   }
 }, {
   services: idleDetectionServices
-  actions: idleDetectionActions;
+  actions: idleDetectionActions,;
   guards: idleDetectionGuards
 });
 // Helper functions for self-prompting
@@ -526,7 +526,7 @@ function selectBestPrompt(prompts: SelfPrompt[], history: SelfPrompt[]): SelfPro
   if (prompts.length === 0) return null;
   // Avoid repeating recent prompts
   const recentPrompts = history.slice(0, 10).map(p => p.prompt);
-  const uniquePrompts = prompts.filter(p => !recentPrompts.includes(p.prompt);
+  const uniquePrompts = prompts.filter(p => !recentPrompts.includes(p.prompt),;
   if (uniquePrompts.length === 0) return prompts[0];
   // Select highest confidence prompt
   return uniquePrompts.reduce((best, current) =>
@@ -538,7 +538,7 @@ async function storePromptInNeo4j(prompt: SelfPrompt, sessionId: string): Promis
   console.log('📊 Storing self-prompt in Neo4j:', prompt.id);
   // In production, this would call your Neo4j API endpoint
   // For now, we'll simulate the storage
-  await new Promise(resolve => setTimeout(resolve, 100);
+  await new Promise(resolve => setTimeout(resolve, 100),;
 }
 async function checkNeo4jConnection(): Promise<boolean> {
   try {

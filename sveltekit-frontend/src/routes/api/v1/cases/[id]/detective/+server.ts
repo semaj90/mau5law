@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const body = await request.json()
     const { enabled, reason, aiAssisted } = DetectiveModeSchema.parse(body)
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Get current case to verify it exists and user has access
     const currentCase = await casesService.getById(caseId)
     if (!currentCase) {
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         detectiveMode: {
           enabled,
           toggledAt: new Date().toISOString(),
-          toggledBy: locals.user.id,
+          toggledBy: getUserId(locals),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
           aiAssisted,
           previousState: currentCase.metadata?.detectiveMode || null
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Get updated case
     const updatedCase = await casesService.getById(caseId)
     // Log detective mode change for audit trail
-    console.log(`Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${locals.user.id}`)
+    console.log(`Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${getUserId(locals)}`)
     return json({
       success: true,
       data: {
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         caseId,
         timestamp: new Date().toISOString(),
         action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated'

@@ -394,18 +394,18 @@ export const deployComplete = async (): Promise<any> => {
   console.log('🎯 Deploying complete GPU orchestration system...')
   const deploymentSteps = [
     { name: 'Model Validation', action: () => validateModelConstraints({,
-      enforceGemma3Legal: true
-      enableFlashAttention: true
-      gpuOptimization: true
-      mcpIntegration: true
-      orchestratorPort: 8094,
-      errorProcessorPort: 8095,
-      models: {
+      enforceGemma3Legal,: true
+      enableFlashAttention,: true
+      gpuOptimization,: true
+      mcpIntegration,: true
+      orchestratorPort,: 8094,
+      errorProcessorPort,: 8095,
+      models,: {
         primary: 'gemma3-legal',
         embedding: 'nomic-embed-text',
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
-    }) },
+    },) },
     { name: 'Orchestrator Init', action: () => initializeNodeJSOrchestrator({,
       enforceGemma3Legal: true
       enableFlashAttention: true
@@ -419,7 +419,7 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'Error Processor', action: () => startErrorProcessorService({,
+    { name: 'Error Processor', action,: () => startErrorProcessorService({,
       enforceGemma3Legal: true
       enableFlashAttention: true
       gpuOptimization: true
@@ -432,7 +432,7 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'MCP Integration', action: () => configureMCPIntegration({,
+    { name: 'MCP Integration', action,: () => configureMCPIntegration({,
       enforceGemma3Legal: true
       enableFlashAttention: true
       gpuOptimization: true
@@ -445,7 +445,7 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU }
+    { name: 'FlashAttention GPU', action,: verifyFlashAttentionGPU }
   ]
   const results = []
   for (const step of deploymentSteps) {

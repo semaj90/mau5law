@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const segmentSize = Math.ceil(max / workerCount)
   const scriptPath = path.resolve('src/lib/workers/prime-worker.ts')
   const started = performance.now()
-  const promises: Promise<[] = []
+  const promises: Promise<[], = []
   for (let i = 0; i < workerCount; i++) {
     const start = i * segmentSize
     const end = Math.min(start + segmentSize, max)

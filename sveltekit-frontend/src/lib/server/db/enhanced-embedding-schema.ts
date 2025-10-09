@@ -20,19 +20,19 @@ export const documents = pgTable(
   'documents',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    title: varchar('title', { length: 512 }),
-    filename: varchar('filename', { length: 255 }).notNull(),
-    sourceUri: varchar('source_uri', { length: 1024 }).notNull(), // minio://bucket/key,
-    mimeType: varchar('mime_type', { length: 100 }),
-    fileSize: bigint('file_size', { mode: 'number' }),
-    extractedText: text('extracted_text'), // OCR/PDF extraction result
-    processingStatus: varchar('processing_status', { length: 50 }).notNull().default('pending'), // pending, processing, completed, failed
-    caseId: uuid('case_id'), // Optional association with legal case
-    uploadedBy: uuid('uploaded_by').notNull(),
-    metadata: jsonb('metadata').default({}),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    processedAt: timestamp('processed_at')
+    title,: varchar('title', { length: 512 }),
+    filename,: varchar('filename', { length: 255 }).notNull(),
+    sourceUri,: varchar('source_uri', { length: 1024 }).notNull(), // minio://bucket/key,
+    mimeType,: varchar('mime_type', { length: 100 }),
+    fileSize,: bigint('file_size', { mode: 'number' }),
+    extractedText,: text('extracted_text'), // OCR/PDF extraction result
+    processingStatus,: varchar('processing_status', { length: 50 }).notNull().default('pending'), // pending, processing, completed, failed
+    caseId,: uuid('case_id'), // Optional association with legal case
+    uploadedBy,: uuid('uploaded_by').notNull(),
+    metadata,: jsonb('metadata').default({}),
+    createdAt,: timestamp('created_at').defaultNow().notNull(),
+    updatedAt,: timestamp('updated_at').defaultNow().notNull(),
+    processedAt,: timestamp('processed_at')
   },
   (table) => ({
     statusIdx: index('idx_documents_status').on(table.processingStatus),
@@ -46,23 +46,23 @@ export const documentChunks = pgTable(
   'document_chunks',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    documentId: uuid('document_id')
+    documentId,: uuid('document_id')
       .notNull()
       .references(() => documents.id, { onDelete: 'cascade' }),
-    chunkIndex: integer('chunk_index').notNull(),
-    parentChunkId: uuid('parent_chunk_id'), // For hierarchical chunking
-    level: integer('level').notNull().default(0), // Chunk hierarchy level (0 = sentence, 1 = paragraph, 2 = section)
-    text: text('text').notNull(),
-    tokens: integer('tokens'),
-    startOffset: integer('start_offset'),
-    endOffset: integer('end_offset'),
+    chunkIndex,: integer('chunk_index').notNull(),
+    parentChunkId,: uuid('parent_chunk_id'), // For hierarchical chunking
+    level,: integer('level').notNull().default(0), // Chunk hierarchy level (0 = sentence, 1 = paragraph, 2 = section)
+    text,: text('text').notNull(),
+    tokens,: integer('tokens'),
+    startOffset,: integer('start_offset'),
+    endOffset,: integer('end_offset'),
     // pgvector embeddings - supports different model dimensions
-    embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
-    embeddingModel: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
-    confidence: real('confidence'), // Extraction/chunking confidence;
-    metadata: jsonb('metadata').default({}),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull()
+    embedding,: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
+    embeddingModel,: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
+    confidence,: real('confidence'), // Extraction/chunking confidence;
+    metadata,: jsonb('metadata').default({}),
+    createdAt,: timestamp('created_at').defaultNow().notNull(),
+    updatedAt,: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     // HNSW index for vector similarity search
@@ -77,21 +77,21 @@ export const searchQueries = pgTable(
   'search_queries',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull(),
-    sessionId: varchar('session_id', { length: 100 }), // For session grouping
-    queryText: text('query_text').notNull(),
-    queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-    searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag
-    filters: jsonb('filters').default({}),
-    resultsCount: integer('results_count').default(0),
-    searchTime: real('search_time'), // Search duration in ms
-    results: jsonb('results').default({,
+    userId,: uuid('user_id').notNull(),
+    sessionId,: varchar('session_id', { length: 100 }), // For session grouping
+    queryText,: text('query_text').notNull(),
+    queryEmbedding,: vector('query_embedding', { dimensions: 384 }),
+    searchType,: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag
+    filters,: jsonb('filters').default({}),
+    resultsCount,: integer('results_count').default(0),
+    searchTime,: real('search_time'), // Search duration in ms
+    results,: jsonb('results').default({,
       chunks: [],
       documents: [],
       totalFound: 0,
       searchStrategy: 'semantic'
     }),
-    createdAt: timestamp('created_at').defaultNow().notNull()
+    createdAt,: timestamp('created_at').defaultNow().notNull()
   },
   (table) => ({
     userIdx: index('idx_search_user').on(table.userId, table.createdAt),
@@ -105,18 +105,18 @@ export const embeddingModels = pgTable(
   'embedding_models',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    name: varchar('name', { length: 100 }).notNull().unique(),
-    provider: varchar('provider', { length: 50 }).notNull(), // ollama, openai, huggingface, local
-    modelId: varchar('model_id', { length: 200 }).notNull(), // Model identifier
-    dimensions: integer('dimensions').notNull(), // Vector dimensions
-    contextLength: integer('context_length'),
-    tokenizer: varchar('tokenizer', { length: 100 }),
-    config: jsonb('config').default({}),
-    performance: jsonb('performance').default({}),
-    isActive: boolean('is_active').notNull().default(true),
-    isDefault: boolean('is_default').notNull().default(false),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull()
+    name,: varchar('name', { length: 100 }).notNull().unique(),
+    provider,: varchar('provider', { length: 50 }).notNull(), // ollama, openai, huggingface, local
+    modelId,: varchar('model_id', { length: 200 }).notNull(), // Model identifier
+    dimensions,: integer('dimensions').notNull(), // Vector dimensions
+    contextLength,: integer('context_length'),
+    tokenizer,: varchar('tokenizer', { length: 100 }),
+    config,: jsonb('config').default({}),
+    performance,: jsonb('performance').default({}),
+    isActive,: boolean('is_active').notNull().default(true),
+    isDefault,: boolean('is_default').notNull().default(false),
+    createdAt,: timestamp('created_at').defaultNow().notNull(),
+    updatedAt,: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     nameIdx: index('idx_models_name').on(table.name),
@@ -129,19 +129,19 @@ export const processingJobs = pgTable(
   'processing_jobs',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    jobType: varchar('job_type', { length: 50 }).notNull(), // ingest, chunk, embed, index, neo4j_sync
-    status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, processing, completed, failed, retrying
-    priority: integer('priority').default(5), // 1-10, higher = more priority
-    documentId: uuid('document_id'),
-    chunkId: uuid('chunk_id'),
-    payload: jsonb('payload').default({}),
-    workerNode: varchar('worker_node', { length: 100 }), // Which worker is processing
-    startedAt: timestamp('started_at'),
-    completedAt: timestamp('completed_at'),
-    failedAt: timestamp('failed_at'),
-    nextRetryAt: timestamp('next_retry_at'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull()
+    jobType,: varchar('job_type', { length: 50 }).notNull(), // ingest, chunk, embed, index, neo4j_sync
+    status,: varchar('status', { length: 20 }).notNull().default('pending'), // pending, processing, completed, failed, retrying
+    priority,: integer('priority').default(5), // 1-10, higher = more priority
+    documentId,: uuid('document_id'),
+    chunkId,: uuid('chunk_id'),
+    payload,: jsonb('payload').default({}),
+    workerNode,: varchar('worker_node', { length: 100 }), // Which worker is processing
+    startedAt,: timestamp('started_at'),
+    completedAt,: timestamp('completed_at'),
+    failedAt,: timestamp('failed_at'),
+    nextRetryAt,: timestamp('next_retry_at'),
+    createdAt,: timestamp('created_at').defaultNow().notNull(),
+    updatedAt,: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority),
@@ -156,19 +156,19 @@ export const entityNodes = pgTable(
   'entity_nodes',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    neo4jId: varchar('neo4j_id', { length: 50 }), // Neo4j node ID for sync
-    entityType: varchar('entity_type', { length: 50 }).notNull(), // PERSON, ORG, LOCATION, etc.
-    name: varchar('name', { length: 500 }).notNull(),
-    normalizedName: varchar('normalized_name', { length: 500 }), // For deduplication
-    description: text('description'),
-    confidence: real('confidence'),
-    properties: jsonb('properties').default({}),
-    embedding: vector('embedding', { dimensions: 384 }), // Entity embedding for similarity
-    documentIds: jsonb('document_ids').default([]),
-    chunkIds: jsonb('chunk_ids').default([]),
-    lastSyncedAt: timestamp('last_synced_at'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull()
+    neo4jId,: varchar('neo4j_id', { length: 50 }), // Neo4j node ID for sync
+    entityType,: varchar('entity_type', { length: 50 }).notNull(), // PERSON, ORG, LOCATION, etc.
+    name,: varchar('name', { length: 500 }).notNull(),
+    normalizedName,: varchar('normalized_name', { length: 500 }), // For deduplication
+    description,: text('description'),
+    confidence,: real('confidence'),
+    properties,: jsonb('properties').default({}),
+    embedding,: vector('embedding', { dimensions: 384 }), // Entity embedding for similarity
+    documentIds,: jsonb('document_ids').default([]),
+    chunkIds,: jsonb('chunk_ids').default([]),
+    lastSyncedAt,: timestamp('last_synced_at'),
+    createdAt,: timestamp('created_at').defaultNow().notNull(),
+    updatedAt,: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     typeNameIdx: index('idx_entities_type_name').on(table.entityType, table.normalizedName),
@@ -181,7 +181,7 @@ export const entityNodes = pgTable(
 export const documentsRelations = relations(documents, ({ many }) => ({
   chunks: many(documentChunks),
   jobs: many(processingJobs)
-});
+}),;
 export const documentChunksRelations = relations(documentChunks, ({ one, many }) => ({
   document: one(documents, {
     fields: [documentChunks.documentId],
@@ -192,7 +192,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one, many })
     references: [documentChunks.id]
   }),
   children: many(documentChunks)
-});
+}),;
 export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
   document: one(documents, {
     fields: [processingJobs.documentId],
@@ -202,7 +202,7 @@ export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
     fields: [processingJobs.chunkId],
     references: [documentChunks.id]
   })
-});
+}),;
 // Export types
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
@@ -244,13 +244,13 @@ export const vectorOperations = {
   // Calculate cosine similarity
   cosineSimilarity: (a: number[], b: number[]): number => {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0),;
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0),;
     return dotProduct / (magnitudeA * magnitudeB);
   },
   // Normalize vector
   normalize: (vec: number[]): number[] => {
-    const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0);
+    const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0),;
     return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;
   }
 }

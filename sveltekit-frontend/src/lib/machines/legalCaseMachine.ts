@@ -350,7 +350,7 @@ export const legalCaseMachine = createMachine({
     auditTrail: [],
     activeTab: 'overview',
     selectedItems: [],
-    filters: { [key: string]: any },
+    filters: { [key,: strin,g]: any },
     sortBy: { field: 'dateCreated', direction: 'desc' },
     error: null
     retryCount: 0,
@@ -523,7 +523,7 @@ export const legalCaseMachine = createMachine({
         SET_STATUS: {
           actions: assign({
             currentCase: ({ context, event }) =>;
-              context.currentCase ? {
+              context,.currentCase ? {
                 ...context.currentCase,
                 status: event.status
               } : null
@@ -532,7 +532,7 @@ export const legalCaseMachine = createMachine({
         SET_PRIORITY: {
           actions: assign({
             currentCase: ({ context, event }) =>;
-              context.currentCase ? {
+              context,.currentCase ? {
                 ...context.currentCase,
                 priority: event.priority
               } : null
@@ -697,7 +697,7 @@ export const legalCaseMachine = createMachine({
           target: 'idle',
           actions: assign({
             currentCase: null
-            caseId: null;
+            caseId: null,;
             error: null
             retryCount: 0,
             isLoading: false

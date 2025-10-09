@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 })
     }
     // Get user ID (mock for testing - in production would come from session)
-    const userId = locals.user?.id || '00000000-0000-0000-0000-000000000001'; // Mock user ID
+    const userId = getUserId(locals) || '00000000-0000-0000-0000-000000000001'; // Mock user ID
     console.log('🔄 Creating case with data:', {
       caseNumber: data.caseNumber,
       title: data.title,
@@ -73,8 +73,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json()
       {
         success: false,
-        error: error instanceof Error ? error.message: 'Database error occurred',
-        details: error instanceof Error ? error.stack : undefined
+        error,: error instanceof Error ? error.message: 'Database error occurred',
+        details,: error instanceof Error ? error.stack : undefined
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -118,13 +118,13 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         status: 'Database connection failed',
-        error: error instanceof Error ? error.message: 'Unknown database error',
-        timestamp: new Date().toISOString(),
-        features: {
-          'postgresql-integration': '❌ Failed',
-          'drizzle-orm': '❌ Error',
-          'case-creation': '❌ Unavailable',
-          'database-queries': '❌ Failed'
+        error,: error instanceof Error ? error.message: 'Unknown database error',
+        timestamp,: new Date().toISOString(),
+        features,: {
+          'postgresql-integration',: '❌ Failed',
+          'drizzle-orm',: '❌ Error',
+          'case-creation',: '❌ Unavailable',
+          'database-queries',: '❌ Failed'
         }
       },
       { status: 500 }

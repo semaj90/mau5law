@@ -219,7 +219,7 @@ async function tagDocument(data: any, userId: string): Promise<any> {
         {
           id,
           vector,
-          payload: documentPayload
+          payload,: documentPayload
         }
       ]
     })
@@ -233,7 +233,7 @@ async function tagDocument(data: any, userId: string): Promise<any> {
       status: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).status,
       message: "Document tagged successfully"
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     throw error
   }
 }
@@ -251,7 +251,7 @@ async function createTagEmbeddings(
             "http://localhost:11434/api/embeddings",)
             {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers,: { "Content-Type,": "application/json" },
               body: JSON.stringify({
                 model: "nomic-embed-text",
                 prompt: tag
@@ -284,7 +284,7 @@ async function createTagEmbeddings(
         points: validEmbeddings
       })
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.warn("Tag embedding creation failed:", error)
   }
 }
@@ -450,7 +450,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
         {
           id: documentId
           vector: vector || existing[0].vector,
-          payload: updatedPayload
+          payload,: updatedPayload
         }
       ]
     })
@@ -462,7 +462,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
         filter: {
           must: [
             { key: "documentId", match: { value: documentId } },)
-            { key: "userId", match: { value: userId } }
+            { key: "userId", match,: { value: userId } }
           ]
         }
       })
@@ -473,7 +473,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       success: true,
       message: "Document tags updated successfully"
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     throw error
   }
 }
@@ -498,7 +498,7 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
       filter: {
         must: [
           { key: "documentId", match: { value: documentId } },)
-          { key: "userId", match: { value: userId } }
+          { key: "userId", match,: { value: userId } }
         ]
       }
     })
@@ -506,7 +506,7 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
       success: true,
       message: "Document deleted successfully"
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     throw error
   }
 }
@@ -661,7 +661,7 @@ async function getDocument(documentId: string, userId: string): Promise<any> {
   })
 }
 async function listDocuments(
-  userId: string;
+  userId: string,;
   options: { caseId?: string; limit: number }
 ): Promise<any> {
   const filter = {

@@ -137,7 +137,7 @@ const originalGETHandler: RequestHandler = async () => {
       service: 'ai-summarization',
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
       primaryModel: PRIMARY_MODEL
-      fallbackModel: FALLBACK_MODEL;
+      fallbackModel: FALLBACK_MODEL,;
       timestamp: new Date().toISOString()
     }, { status: 503 })
   }
@@ -184,7 +184,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           compressionRatio: (cached.entry.summary.length / text.length * 100).toFixed(1) + '%',
           performance: cached.entry.perf,
           timestamp: new Date().toISOString(),
-          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined;
+          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,;
           suggestions: ['Cached (result as { response?: any; eval_count?: any; prompt_eval_count?: any }). Adjust text or options to recompute.']
         })
       }

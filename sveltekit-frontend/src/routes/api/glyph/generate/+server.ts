@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'diffusion_generation',
               duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * (hasExtendedThinking ? 0.5 : 0.6)),
-              success: true;
+              success: true,;
               metadata: {
                 cache_hits: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits,
                 tensor_count: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids.length,
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'neural_sprite_compression',
               duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.2),
-              success: true;
+              success: true,;
               metadata: {
                 compression_ratio: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.compression_ratio,
                 predictive_frames_generated: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.predictive_frames?.length || 0
@@ -205,7 +205,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true;
+      success: true,;
       data: {
         glyph_url: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url,
         tensor_ids: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids,

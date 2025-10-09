@@ -36,7 +36,7 @@ export class WebAssemblyClusteringService {
       // const wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmPath)
       // this.wasmInstance = wasmModule.instance
       // Simulate successful loading
-      this.wasmInstance = { exports: { [key: string]: any } } as WebAssembly.Instance;
+      this.wasmInstance = { exports: { [key,: strin,g]: any } } as WebAssembly.Instance;
       console.log('WASM clustering module loaded successfully');
       return true;
     } catch (error: any) {
@@ -46,8 +46,8 @@ export class WebAssemblyClusteringService {
   }
   async performKMeansClustering(
     embeddings: number[][]
-    k: number;
-    config: any;
+    k: number,;
+    config: any,;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
@@ -69,8 +69,8 @@ export class WebAssemblyClusteringService {
     return this.jsKMeansClustering(embeddings, k, config);
   }
   async performSOMTraining(
-    embeddings: number[][];
-    config: any;
+    embeddings: number[][],;
+    config: any,;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
@@ -89,7 +89,7 @@ export class WebAssemblyClusteringService {
   // Mock implementations for demonstration
   private mockKMeansClustering(embeddings: number[][], k: number): number[] {
     // Simple random assignment for demo - real WASM would implement proper K-Means
-    return embeddings.map(() => Math.floor(Math.random() * k);
+    return embeddings.map(() => Math.floor(Math.random() * k),;
   }
   private calculateCentroids(embeddings: number[][], clusters: number[], k: number): number[][] {
     const centroids: number[][] = [];
@@ -98,7 +98,7 @@ export class WebAssemblyClusteringService {
       const clusterPoints = embeddings.filter((_, idx) => clusters[idx] === i);
       if (clusterPoints.length === 0) {
         // Random centroid if no points assigned
-        centroids.push(Array(dimensions).fill(0).map(() => Math.random());
+        centroids.push(Array(dimensions).fill(0).map(() => Math.random()),;
         continue;
       }
       const centroid = Array(dimensions).fill(0);
@@ -119,7 +119,7 @@ export class WebAssemblyClusteringService {
     for (let i = 0; i < width; i++) {
       weights[i] = [];
       for (let j = 0; j < height; j++) {
-        weights[i][j] = Array(dimensions).fill(0).map(() => Math.random();
+        weights[i][j] = Array(dimensions).fill(0).map(() => Math.random(),;
       }
     }
     return weights;
@@ -134,8 +134,8 @@ export class WebAssemblyClusteringService {
   // JavaScript fallback implementations
   private async jsKMeansClustering(
     embeddings: number[][]
-    k: number;
-    config: any;
+    k: number,;
+    config: any,;
   ): Promise<any> {
     console.log('Using JavaScript K-Means clustering fallback...');
     // Simple K-Means implementation
@@ -148,8 +148,8 @@ export class WebAssemblyClusteringService {
     }
   }
   private async jsSOMTraining(
-    embeddings: number[][];
-    config: any;
+    embeddings: number[][],;
+    config: any,;
   ): Promise<any> {
     console.log('Using JavaScript SOM training fallback...');
     const weights = this.mockSOMWeights(config.width, config.height, embeddings[0].length);

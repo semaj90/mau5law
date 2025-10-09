@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       notes: data.notes?.trim() || null,
       aiSummary: data.aiSummary?.trim() || null,
       aiTags: data.aiTags || [],
-      createdBy: locals.user.id
+      createdBy: getUserId(locals)
     }
     const [newCriminal] = await db
       .insert(criminals)

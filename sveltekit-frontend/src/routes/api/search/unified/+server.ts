@@ -92,7 +92,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
   results = [...mockLegalResults, ...vectorResults]
   // 4. Filter by categories if specified
   if (categories && categories.length > 0) {
-    results = results.filter(item => item.type) as any) ||
+    results = results.filter(item => item.type) as any,) ||
       categories.some(cat => (result as { type?: any; metadata?: any }).metadata?.category?.includes(cat)
     )
   }

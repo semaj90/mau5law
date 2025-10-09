@@ -68,7 +68,7 @@ export class SystemStatusTracker {
   async checkSystemHealth() {
     const results = {
       docker_available: await this.checkDocker(),
-      services: { [key: string]: any },
+      services: { [key,: strin,g]: any },
       database: await this.checkDatabase(),
       files: await this.checkCriticalFiles(),
     };
@@ -108,7 +108,7 @@ export class SystemStatusTracker {
     return criticalFiles.map((file) => ({
       file,
       status: "available",
-    });
+    }),;
   }
   async checkService(service) {
     return {
@@ -168,9 +168,9 @@ const systemTracker = new SystemStatusTracker();
 console.log("🔧 System Fix Validation Complete");
 console.log("=====================================");
 const report = systemTracker.generateSystemReport();
-console.log("System Status:", JSON.stringify(report, null, 2);
+console.log("System Status:", JSON.stringify(report, null, 2),;
 const fixSummary = systemTracker.getFixSummary();
-console.log("\nFix Summary:", JSON.stringify(fixSummary, null, 2);
+console.log("\nFix Summary:", JSON.stringify(fixSummary, null, 2),;
 console.log("\n✅ ALL CRITICAL ERRORS FIXED");
 console.log("✅ ALL STUB FILES CREATED");
 console.log("✅ DOCKER CONFIGS VALIDATED");

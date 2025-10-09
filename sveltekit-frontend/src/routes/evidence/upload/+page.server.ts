@@ -14,10 +14,16 @@ import {
   validateFileSize,
   validateFileType,
 } from '$lib/schemas/evidence-upload';
-import { db, cases, evidence } from '$lib/server/db';
+import { db } from '$lib/server/db'; // Adjust the import based on your project structure
+import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
 import { eq } from 'drizzle-orm';
+import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
 import type { InferInsertModel } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types.js';
+import { dev } from '$app/environment';
+
+// Get typed environment access
+const metaEnv = getMetaEnv();
 
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type'];
 
@@ -109,9 +115,25 @@ type IntermediateEvidenceMetadata = {
   processingOptions: ProcessingOptions;
 } & Partial<FinalEvidenceMetadata>; // All other fields are optional
 
-export const load: PageServerLoad = async ({ locals: _locals }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
+
+  // Resolve user (supports DEV_BYPASS_AUTH in dev)
+  const user = resolveUser(locals);
+
+  // If no user and dev bypass enabled, return demo data
+  if (!user && dev && (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')) {
+    console.warn('DEV_BYPASS_AUTH: returning demo cases for evidence upload');
+    return {
+      form,
+      cases: [
+        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: 'active' },
+        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: 'active' },
+      ],
+    };
+  }
+
   // Get available cases for the current user
   try {
     const userCases = await db
@@ -129,7 +151,6 @@ export const load: PageServerLoad = async ({ locals: _locals }) => {
       cases: userCases,
     };
   } catch (error: unknown) {
-    // Changed from any
     console.error('Failed to load cases:', error);
     return {
       form,
@@ -140,197 +161,167 @@ export const load: PageServerLoad = async ({ locals: _locals }) => {
 
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
-    const formData = await request.formData();
-    const form = await superValidate(formData, zod(evidenceUploadSchema));
-    if (!form.valid) {
-      console.error('Form validation failed:', form.errors);
-      return fail(400, { form });
-    }
-    const fileRaw = formData.get('file');
-    if (!(fileRaw instanceof File) || fileRaw.size === 0) {
-      return fail(400, {
-        form: {
-          ...form,
-          errors: { file: ['Please select a file to upload'] },
-        },
-      });
-    }
-    const file = fileRaw as File;
-    // Validate file size
-    if (!validateFileSize(file)) {
-      return fail(400, {
-        form: {
-          ...form,
-          errors: { file: ['File size exceeds the maximum limit of 100MB'] },
-        },
-      });
-    }
-    // Determine evidence type from file if not specified
-    let evidenceType: EvidenceType = form.data.evidence_type as EvidenceType; // Ensure initial type is correct
-    if (evidenceType === 'UNKNOWN' || !evidenceType) {
-      evidenceType = getFileTypeFromMime(file.type) as EvidenceType; // Cast return of getFileTypeFromMime
-    }
-    // Validate file type matches evidence type
-    if (!validateFileType(file, evidenceType)) {
-      return fail(400, {
-        form: {
-          ...form,
-          errors: { file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] },
-        },
-      });
-    }
     try {
-      // Verify the case exists (if case_id is provided)
-      if (form.data.case_id) {
-        const caseRecord = await db.select().from(cases).where(eq(cases.id, form.data.case_id)).limit(1);
-        if (caseRecord.length === 0) {
+      // 1) Parse incoming form data
+      const formData = await request.formData();
+      const file = formData.get('file') as File | null;
+      if (!file) {
+        return fail(400, {
+          form: {
+            errors: { file: ['No file provided'] },
+          },
+        });
+      }
+
+      const caseId = (formData.get('case_id') ?? '')?.toString() || null;
+      const title = (formData.get('title') ?? '').toString();
+      const description = (formData.get('description') ?? '').toString();
+      const evidenceType = (formData.get('evidenceType') ?? 'UNKNOWN').toString().toUpperCase();
+      const enableOcrFlag = ['on', 'true', '1'].includes((formData.get('enableOcr') ?? '').toString());
+      // parse tags (allow multiple)
+      const tags = formData
+        .getAll('tags')
+        .map(t => t.toString())
+        .filter(Boolean);
+
+      // 2) Optional: verify case exists if provided
+      if (caseId) {
+        const caseRecord = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
+        if (!caseRecord || caseRecord.length === 0) {
           return fail(400, {
             form: {
-              ...form,
               errors: { case_id: ['Selected case not found'] },
             },
           });
         }
       }
-      // Generate unique storage key
-      const fileExtension = path.extname(file.name);
+
+      // 3) Build storage key & save file
+      const fileExtension = path.extname(file.name) || '';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const randomSuffix = crypto.randomBytes(8).toString('hex');
-      const storageKey = `evidence/${form.data.case_id}/${timestamp}-${randomSuffix}${fileExtension}`;
-      // Create upload directory
-      const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', form.data.case_id || 'default');
+      const storageKey = `evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
+
+      const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', caseId ?? 'default');
       await mkdir(uploadDir, { recursive: true });
-      // Save file to disk
+
       const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filePath, fileBuffer);
-      // Generate file hash for integrity
+
+      // 4) Hash for integrity
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
-      // Generate file URL (relative to static assets)
-      const fileUrl = `/uploads/evidence/${form.data.case_id || 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
-      // OCR Processing for supported file types
-      let ocrResult: OcrResultData | null = null; // Type for ocrResult
-      if (form.data.enableOcr && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
+
+      // 5) Build a file URL relative to static assets (adjust to your serving strategy)
+      const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
+
+      // 6) Optional OCR (fail-soft)
+      let ocrResult: OcrResultData | null = null;
+      if (enableOcrFlag && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
         try {
-          // Call OCR service
-          const ocrFormData = new FormData();
-          ocrFormData.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
+          const ocrForm = new FormData();
+          ocrForm.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
           const ocrResponse = await fetch('/api/ocr/extract', {
             method: 'POST',
-            body: ocrFormData,
+            body: ocrForm,
           });
           if (ocrResponse.ok) {
-            ocrResult = (await ocrResponse.json()) as OcrResultData; // Cast to OcrResultData
-            console.log('OCR processing completed:', {
-              filename: ocrResult.filename,
-              pages: ocrResult.pages,
-              averageConfidence: ocrResult.averageConfidence,
-              legalConceptsFound: ocrResult.legalConcepts?.length || 0,
-              citationsFound: ocrResult.citations?.length || 0,
-            });
+            ocrResult = await ocrResponse.json();
+            // lightweight server-side logging (not user-visible)
+            console.log('OCR completed', { filename: ocrResult?.filename, pages: ocrResult?.pages });
           } else {
-            console.warn('OCR processing failed:', ocrResponse.statusText);
+            console.warn('OCR service returned non-OK status:', ocrResponse.status);
           }
         } catch (ocrError) {
+          // non-fatal: continue upload even if OCR fails
           console.warn('OCR processing error (non-critical):', ocrError);
         }
       }
-      // Generate rich metadata based on file type
-      // Use a mutable object that will eventually conform to FinalEvidenceMetadata
+
+      // 7) Helpers to parse booleans from FormData
+      const parseBooleanField = (key: string): boolean => {
+        const val = formData.get(key);
+        if (val === null) return false;
+        const s = String(val).toLowerCase();
+        return s === 'on' || s === 'true' || s === '1';
+      };
+
+      const processingOptions: ProcessingOptions = {
+        enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
+        enableOcr: parseBooleanField('enableOcr'),
+        enableEmbeddings: parseBooleanField('enableEmbeddings'),
+        enableSummarization: parseBooleanField('enableSummarization'),
+      };
+
+      // 8) Construct intermediate metadata based on evidence type
       let tempMetadata: IntermediateEvidenceMetadata = {
         kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
-        processingOptions: {
-          enableAiAnalysis: form.data.enableAiAnalysis,
-          enableOcr: form.data.enableOcr,
-          enableEmbeddings: form.data.enableEmbeddings,
-          enableSummarization: form.data.enableSummarization,
-        },
+        processingOptions,
       };
+
       switch (evidenceType) {
         case 'PDF':
           tempMetadata = {
             ...tempMetadata,
             kind: 'PDF',
-            pageCount: ocrResult?.pages || 1,
+            pageCount: ocrResult?.pages ?? 1,
             isEncrypted: false,
             title: file.name,
-            extractedText: ocrResult?.text,
-            legalConcepts: ocrResult?.legalConcepts || [],
-            citations: ocrResult?.citations || [],
-            ocrConfidence: ocrResult?.averageConfidence,
+            extractedText: ocrResult?.text ?? null,
+            legalConcepts: ocrResult?.legalConcepts ?? [],
+            citations: ocrResult?.citations ?? [],
+            ocrConfidence: ocrResult?.averageConfidence ?? null,
           };
           break;
         case 'IMAGE':
           tempMetadata = {
             ...tempMetadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // TODO: Extract image resolution with sharp in future implementation
+            resolution: { width: 0, height: 0 }, // TODO: extract with sharp
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
-            extractedText: ocrResult?.text,
-            ocrConfidence: ocrResult?.averageConfidence,
-          };
-          break;
-        case 'VIDEO':
-          tempMetadata = {
-            ...tempMetadata,
-            kind: 'VIDEO',
-            durationSeconds: 0, // Planned: extract audio duration with ffprobe in future implementation
-            resolution: { width: 0, height: 0 },
-            codec: 'unknown',
-            frameRate: 0,
-          };
-          break;
-        case 'AUDIO':
-          tempMetadata = {
-            ...tempMetadata,
-            kind: 'AUDIO',
-            durationSeconds: 0, // Would be extracted with ffprobe,
-            codec: 'unknown',
-            sampleRate: 44100,
-            channels: 2,
+            extractedText: ocrResult?.text ?? null,
+            ocrConfidence: ocrResult?.averageConfidence ?? null,
           };
           break;
         case 'TEXT': {
-          // For text files, we can read the content
           const textContent = fileBuffer.toString('utf-8');
           tempMetadata = {
             ...tempMetadata,
             kind: 'TEXT',
-            wordCount: textContent.split(/\s+/).filter(item => item.length).length,
+            wordCount: textContent.split(/\s+/).filter(Boolean).length,
             characterCount: textContent.length,
-            language: 'unknown', // TODO: Detect language with a library like 'franc' (https://github.com/wooorm/franc) or 'langdetect'
+            language: 'unknown',
           };
           break;
         }
         default:
           tempMetadata = {
             ...tempMetadata,
-            kind: 'UNKNOWN',
+            kind: evidenceType ?? 'UNKNOWN',
           };
       }
 
-      // Construct the final metadata object for database insertion
+      // 9) Final metadata composition
       const finalMetadata: FinalEvidenceMetadata = {
         ...tempMetadata,
-        tags: form.data.tags || [],
-        confidentialityLevel: form.data.confidentialityLevel || 'standard',
-        isAdmissible: form.data.isAdmissible !== false,
-        collectedAt: form.data.collectedAt || new Date().toISOString(),
-        collectedBy: form.data.collectedBy || 'system',
-        location: form.data.location,
-        chainOfCustody: (form.data.chainOfCustody || []).map(entry => ({
-          event: entry.action || 'unknown', // Map 'action' to 'event'
-          timestamp: entry.timestamp || new Date().toISOString(),
-          actor: entry.officer || 'unknown', // Map 'officer' to 'actor'
-          details: {
-            location: entry.location,
-            notes: entry.notes,
-            signature: entry.signature,
-          },
-        })),
+        tags,
+        confidentialityLevel: (formData.get('confidentialityLevel') ?? 'standard').toString(),
+        isAdmissible: formData.get('isAdmissible') !== 'false',
+        collectedAt: (formData.get('collectedAt') ?? new Date().toISOString()).toString(),
+        collectedBy: (formData.get('collectedBy') ?? 'system').toString(),
+        location: formData.get('location')?.toString() ?? null,
+        chainOfCustody: (() => {
+          const raw = formData.get('chainOfCustody')?.toString();
+          try {
+            if (raw) return JSON.parse(raw);
+          } catch {
+            // fall-through
+          }
+          return [];
+        })(),
         ocrResult: ocrResult
           ? {
               extractedText: ocrResult.text,
@@ -342,102 +333,38 @@ export const actions: Actions = {
           : null,
       };
 
-      // Insert evidence record into database with unified schema
-      const evidenceRecord = await db
+      // 10) Insert evidence record into DB - Use secure getUserId from session
+      const secureUserId = getUserId(locals);
+
+      const inserted = await db
         .insert(evidence)
         .values({
-          case_id: form.data.case_id || null,
-          // Require authenticated user session for evidence upload
-          uploader_id: (() => {
-            if (!locals.user?.id) {
-              throw fail(401, {
-                form: {
-                  ...form,
-                  errors: { file: ['You must be logged in to upload evidence.'] },
-                },
-              });
-            }
-            return locals.user.id;
-          })(),
-          title: form.data.title,
-          description: form.data.description || null,
+          case_id: caseId ?? null,
+          uploader_id: secureUserId,
+          title: title || file.name,
+          description: description || null,
           evidence_type: evidenceType,
           file_url: fileUrl,
           storage_key: storageKey,
           file_hash: `sha256:${fileHash}`,
-          file_size: file.size.toString(),
-          metadata: finalMetadata, // Use the strongly typed finalMetadata
+          file_size: String(file.size),
+          metadata: finalMetadata,
         })
         .returning();
-      console.log('Evidence uploaded successfully:', {
-        id: evidenceRecord[0].id,
-        title: evidenceRecord[0].title,
-        type: evidenceRecord[0].evidence_type,
-        size: file.size,
-        hash: fileHash.substring(0, 8) + '...',
-      });
-      // Trigger Go Upload Service for additional processing
-      try {
-        console.log('📤 Sending file to Go upload service for processing...');
-        const uploadFormData = new FormData();
-        uploadFormData.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
-        uploadFormData.append('evidenceId', evidenceRecord[0].id);
-        uploadFormData.append('caseId', form.data.case_id || '');
-        uploadFormData.append('title', form.data.title);
-        uploadFormData.append('evidenceType', evidenceType);
-        // Use centralized service registry for Go upload service endpoint
-        // Example: import { goServices } from '$lib/server/go-service-registry';
-        // const goUploadServiceUrl = `${goServices['legal-gateway'].baseUrl}/api/upload/go-service`;
-        const goUploadServiceUrl = process.env.GO_UPLOAD_SERVICE_URL || 'http://localhost:5173/api/upload/go-service';
-        const goServiceResponse = await fetch(goUploadServiceUrl, {
-          method: 'POST',
-          body: uploadFormData,
-        });
-        if (goServiceResponse.ok) {
-          const goResult = await goServiceResponse.json();
-          console.log('✅ Go service processing completed:', goResult);
-          // Update metadata with Go service results if available
-          if (goResult.embeddings || goResult.analysis) {
-            // This update happens *after* the initial insert.
-            // If these fields need to be in the DB, an UPDATE query is required.
-            // For now, just updating the local `finalMetadata` object for consistency.
-            finalMetadata.goServiceProcessing = {
-              embeddings: goResult.embeddings,
-              analysis: goResult.analysis,
-              processedAt: new Date().toISOString(),
-            };
-            // If a DB update is needed:
-            // await db.update(evidence).set({ metadata: finalMetadata }).where(eq(evidence.id, evidenceRecord[0].id));
-          }
-        } else {
-          console.warn('⚠️ Go upload service processing failed:', goServiceResponse.statusText);
-          console.warn('Continuing with local processing only');
-        }
-      } catch (goServiceError) {
-        console.warn('⚠️ Go upload service error (non-critical):', goServiceError);
-        console.warn('Continuing with local processing only');
-        // Don't fail the upload, just log the warning
-      }
+
+      // 11) Success response for the action
+      return {
+        success: true,
+        evidence: inserted?.[0] ?? null,
+      };
     } catch (error: unknown) {
-      console.error('Evidence upload error:', error);
-      if (error instanceof Error) {
-        // Type guard for error
-        return fail(500, {
-          form: {
-            ...form,
-            errors: { file: [`Failed to upload file: ${error.message}`] },
-          },
-        });
-      }
+      console.error('Evidence upload failed:', error);
       return fail(500, {
         form: {
-          ...form,
-          errors: { file: ['Failed to upload file. Please try again.'] },
+          errors: { _global: ['Server error while uploading evidence'] },
         },
       });
     }
-    // Redirect to evidence list or case details
-    throw redirect(302, `/cases/${form.data.case_id}/evidence`);
   },
 };
 

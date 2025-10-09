@@ -54,7 +54,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   aliases: jsonb("aliases").default([]).notNull(),
   profileImageUrl: text("profile_image_url"),
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data");
+  profileData: jsonb("profile_data"),;
     .default({
       who: "",
       what: "",
@@ -98,7 +98,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .default("inferred")
     .notNull(), // 'confirmed', 'likely', 'inferred'
   // Visual properties for the connection line
-  lineStyle: jsonb("line_style");
+  lineStyle: jsonb("line_style"),;
     .default({
       color: "#007bff",
       thickness: 2,
@@ -122,7 +122,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   description: text("description"),
   isDefault: boolean("is_default").default(false).notNull(),
   // Canvas view state;
-  viewport: jsonb("viewport");
+  viewport: jsonb("viewport"),;
     .default({
       x: 0,
       y: 0,
@@ -192,7 +192,7 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.createdBy],
     references: [users.id]
   })
-});
+}),;
 export const personsOfInterestRelations = relations(
   personsOfInterest,
   ({ one }) => ({
@@ -228,7 +228,7 @@ export const canvasLayoutsRelations = relations(canvasLayouts, ({ one }) => ({
     fields: [canvasLayouts.createdBy],
     references: [users.id]
   })
-});
+}),;
 export const canvasAnnotationsRelations = relations(
   canvasAnnotations,
   ({ one }) => ({
@@ -247,4 +247,4 @@ export const aiSummariesRelations = relations(aiSummaries, ({ one }) => ({
     fields: [aiSummaries.requestedBy],
     references: [users.id]
   })
-});
+}),;

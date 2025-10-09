@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const pdfMetadata = {
       reportId: reportId
       reportTitle: report.title,
-      generatedBy: locals.user.id,
+      generatedBy: getUserId(locals),
       generatedAt: new Date().toISOString(),
       format: exportOptions.format,
       options: exportOptions

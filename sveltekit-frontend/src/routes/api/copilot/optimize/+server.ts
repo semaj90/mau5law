@@ -90,41 +90,41 @@ export const POST: RequestHandler = async ({ request }) => {
             entries: [)
               {
                 id: 'demo_1',
-                content: content || 'Demo content',
-                score: 0.95,
-                patterns: ['$props()', '$state()', 'Context7']
+                content,: content || 'Demo content',
+                score,: 0.95,
+                patterns,: ['$props()', '$state()', 'Context7']
               }
             ]
           },
           summary: {
             totalEntries: 1,
-            indexSize: '0.5 MB',
-            optimizationTime: 150,
-            cacheHitRate: 0.8,
-            compressionSavings: '45%',
-            context7Patterns: 3
+            indexSize,: '0.5 MB',
+            optimizationTime,: 150,
+            cacheHitRate,: 0.8,
+            compressionSavings,: '45%',
+            context7Patterns,: 3
           },
           timestamp: Date.now()
         })
-      case 'semantic_search':
+      case 'semantic_search',:
         return json({
           success: true,
           query: content
           results: [)
             {
               id: 'result_1',
-              content: 'Example search result',
-              score: 0.92,
-              explanation: 'Context7 pattern match: Svelte 5 runes'
+              content,: 'Example search result',
+              score,: 0.92,
+              explanation,: 'Context7 pattern match: Svelte 5 runes'
             }
           ],
           count: 1,
-          timestamp: Date.now()
+          timestamp,: Date.now()
         })
       default:
         return error(400, `Invalid action: ${action}. Use: optimize_index, semantic_search`)
     }
-  } catch (err: any) {
+  }, catch (err: any) {
     console.error('Copilot optimization POST error:', {
       error: err.message,
       stack: err.stack,

@@ -35,7 +35,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
         user_id: null
         message: '',
         content: '',
-        metadata: { [key: string]: any },
+        metadata: { [key,: strin,g]: any },
         sources: []
       });
       return enhancedRow;
@@ -52,7 +52,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
       user_id: null
       message: '',
       content: '',
-      metadata: { [key: string]: any },
+      metadata: { [key,: strin,g]: any },
       sources: []
     });
     return [enhancedResult];
@@ -156,9 +156,9 @@ export const drizzleCompatibilityLayer: DrizzleCompatibilityLayer = {
   vectorOperations
 }
 // ===== TYPE-SAFE RESULT ENHANCER =====
-export const enhanceResultWithTypes = <T extends { [key: string]: any }(
+export const enhanceResultWithTypes = <T extends { [key: string]: any },(
   result: any
-  typeMap: Record<keyof T, any>;
+  typeMap: Record<keyof T, any>,;
 ): T => {
   if (!result || typeof result !== 'object') {
     // Create object with default values from typeMap
@@ -188,7 +188,7 @@ export const entityEnhancers = {
     content: '',
     document_type: 'document',
     file_path: null
-    metadata: { [key: string]: any },
+    metadata: { [key,: strin,g]: any },
     user_id: null
     status: 'pending',
     created_at: new Date().toISOString(),
@@ -203,7 +203,7 @@ export const entityEnhancers = {
     user_id: null
     timestamp: new Date().toISOString(),
     sources: [],
-    metadata: { [key: string]: any },
+    metadata: { [key,: strin,g]: any },
     created_at: new Date().toISOString()
   }),
   // Cache entry entity enhancer
@@ -223,12 +223,12 @@ export const entityEnhancers = {
     operation_type: 'embedding',
     input_data: null
     output_data: null
-    parameters: { [key: string]: any },
+    parameters: { [key,: strin,g]: any },
     status: 'pending',
     started_at: null
     completed_at: null
-    error_message: null;
-    metadata: { [key: string]: any }
+    error_message: null,;
+    metadata: { [key,: strin,g]: any }
   })
 }
 // ===== QUERY INTERCEPTOR FOR TYPE SAFETY =====

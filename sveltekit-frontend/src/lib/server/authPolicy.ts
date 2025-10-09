@@ -21,7 +21,7 @@ export function authorize({ user, action, resource, ownershipUserId }: PolicyInp
   if (!user) return { allowed: false, reason: 'unauthenticated' }
   const permission = `${resource}:${action}`;
   const roles = user.roles || [];
-  const hasRolePermission = roles.some(r => ROLE_PERMISSIONS[r]?.includes(permission);
+  const hasRolePermission = roles.some(r => ROLE_PERMISSIONS[r]?.includes(permission),;
   if (!hasRolePermission) return { allowed: false, reason: 'forbidden' }
   if (action === 'delete' && ownershipUserId && ownershipUserId !== user.id && !roles.includes('admin')) {
     return { allowed: false, reason: 'not_owner' }

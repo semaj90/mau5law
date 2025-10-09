@@ -27,7 +27,7 @@ export async function mcpContext72GetLibraryDocs(
   libraryId: string
   topic?: string
   options: Partial<LibraryDocsRequest> = {},
-  fetchFn: typeof fetch = fetch;
+  fetchFn: typeof fetch = fetch,;
 ): Promise<LibraryDocsResponse> {
   // Enhanced MCP context7.2 get-library-docs endpoint
   const response = await fetchFn('/api/mcp/context72/get-library-docs', {
@@ -42,7 +42,7 @@ export async function mcpContext72GetLibraryDocs(
     })
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => ({});
+    const error = await response.json().catch(() => ({}),;
     throw new Error(
       `Failed to get library docs from Context7.2: ${error.message || response.statusText}`
     );
@@ -56,7 +56,7 @@ export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Pr
     topic,);
     {
       format: 'typescript',
-      tokens: 15000
+      tokens,: 15000
     },
     fetchFn
   );
@@ -67,7 +67,7 @@ export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): P
     topic,);
     {
       format: 'typescript',
-      tokens: 12000
+      tokens,: 12000
     },
     fetchFn
   );
@@ -78,7 +78,7 @@ export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Pro
     topic,);
     {
       format: 'typescript',
-      tokens: 10000
+      tokens,: 10000
     },
     fetchFn
   );
@@ -89,7 +89,7 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
     topic,);
     {
       format: 'typescript',
-      tokens: 8000
+      tokens,: 8000
     },
     fetchFn
   );

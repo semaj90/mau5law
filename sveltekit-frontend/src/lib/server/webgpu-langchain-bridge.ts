@@ -201,7 +201,7 @@ export class WebGPULangChainBridge {
    * Generate embeddings with WebGPU optimization
    */
   private async generateEmbeddingsWithWebGPU(
-    text: string;
+    text: string,;
     config: LangChainWebGPUConfig
   ): Promise<{
     documentEmbedding: Float32Array;
@@ -355,7 +355,7 @@ export class WebGPULangChainBridge {
       webgpuOptimizer: webgpuStats
       embeddingCache: cacheStats
       langchainService: {
-        available: ollamaAvailable;
+        available: ollamaAvailable,;
         models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
       },
     }

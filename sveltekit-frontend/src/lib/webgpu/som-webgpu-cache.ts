@@ -1396,7 +1396,7 @@ export class WebGPUSOMCache {
     }
   }
   // CPU fallback methods
-  private computeLegalEmbeddingCPU(text: string, metadata: any): Float32Array {
+  private computeLegalEmbeddingCPU(text,: string, metadat,a: an,y): Float32Array {
     const embedding = new Float32Array(768);
     const textBytes = new TextEncoder().encode(text);
     for (let i = 0; i < 768; i++) {
@@ -1412,11 +1412,11 @@ export class WebGPUSOMCache {
     return embedding;
   }
   private searchLegalDocumentsCPU(
-    query: Float32Array,
-    docs: Float32Array[],
-    metadata: unknown[]
-  ): Array<{ similarity: number; index: number; metadata: unknown }> {
-    return docs
+    query,: Float32Array,
+    docs,: Float32Array[],
+    metadata,: unknown[]
+  ),: Array<{ similarity: numbe,r; index: numb,er; metadata: unknown }> {
+    return, docs
       .map((doc, index) => {
         let dotProduct = 0;
         let queryNorm = 0;
@@ -1431,9 +1431,9 @@ export class WebGPUSOMCache {
         return { similarity, index, metadata: metadata[index] };
       })
       .filter(item => item.similarity > 0.1)
-      .sort((a, b) => b.similarity - a.similarity);
+      .sort((a, b) => b.similarity - a.similarity),;
   }
-  private quantizeVectorsCPU(vectors: Float32Array[]): Int8Array[] {
+  private quantizeVectorsCPU(vectors,: Float32Array[],): Int8Array[,] {
     return vectors.map(vector => {
       const min = Math.min(...vector);
       const max = Math.max(...vector);
@@ -1442,9 +1442,9 @@ export class WebGPUSOMCache {
     });
   }
 
-  dispose(): void {
-    this.lokiDB.close();
-    if (this.indexDB) {
+  dispose(),: void {
+    this,.lokiDB.close(,);
+    if (this,.indexD,B) {
       this.indexDB.close();
     }
     // Clean up Redis sync timer

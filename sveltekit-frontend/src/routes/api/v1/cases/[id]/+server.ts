@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Get case
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       data: caseData,
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     }
@@ -122,7 +122,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       ...body
     }) as UpdateCaseData
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Update case (service expects id, data)
     await casesService.update(caseId, validatedData)
     // Get updated case details
@@ -131,7 +131,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: updatedCase,
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })
@@ -179,7 +179,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
     // Delete case
     await casesService.delete(caseId)
     return json({
@@ -187,7 +187,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       message: 'Case deleted successfully',
       meta: {
         deletedCaseId: caseId,
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })

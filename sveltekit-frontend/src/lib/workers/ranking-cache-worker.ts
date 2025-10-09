@@ -73,7 +73,7 @@ self.onmessage = async (ev: MessageEvent) => {
             if (res && typeof res === 'string') { rs = JSON.parse(res), } else { rs = unpackRankingSetJS(u8), }
           } catch { rs = unpackRankingSetJS(new Uint8Array(blob), }
         } else {
-          rs = unpackRankingSetJS(new Uint8Array(blob);
+          rs = unpackRankingSetJS(new Uint8Array(blob),;
         }
         (self as any).postMessage({ type:'unpack:done', rankingSet: rs });
         break;
@@ -106,7 +106,7 @@ function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
   let offset = 0;
   const version = 1;
   const count = Math.min(rankingSet.results.length, 1023);
-  view.setUint8(offset++, (version<<2)|((count>>8)&0x03);
+  view.setUint8(offset++, (version<<2)|((count>>8)&0x03),;
   view.setUint8(offset++, count & 0xFF);
   view.setUint8(offset++, 0); // strategy
   view.setUint8(offset++, 0); // flags placeholder
@@ -114,7 +114,7 @@ function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
   let prevId = '';
   for (let i=0;i<count;i++) {
     const r = rankingSet.results[i];
-    const scoreQ = Math.min(1023, Math.max(0, Math.round(r.score*1023));
+    const scoreQ = Math.min(1023, Math.max(0, Math.round(r.score*1023)),;
     const packed16 = (scoreQ<<6) | ((r.flags & 0xF)<<2);
     view.setUint16(offset, packed16); offset+=2;
     const delta = computeDocDelta(r.docId, prevId); prevId = r.docId;

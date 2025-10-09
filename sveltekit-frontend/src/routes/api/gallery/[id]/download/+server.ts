@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     // For now, only check if file is public or user has access to the case
     if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).isPublic) {
       // TODO: Check user permissions for the case
-      // const userHasAccess = await checkUserCaseAccess(locals.user?.id, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).caseId)
+      // const userHasAccess = await checkUserCaseAccess(getUserId(locals), (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).caseId)
       // if (!userHasAccess) {
       //   throw error(403, 'Access denied')
       // }
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     // Log download
     await logDownload({
       itemId: (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
-      userId: locals.user?.id,
+      userId: getUserId(locals),
       userAgent: request.headers.get('user-agent') || 'Unknown',
       ip: getClientIP(request),
       timestamp: new Date(),
@@ -165,7 +165,7 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
     })
   }
 }
-function parseRangeHeader(range: string, fileSize: number): Array< | null {
+function parseRangeHeader(range: string, fileSize: number): Array< | null, {
   try {
     if (!range.startsWith('bytes=')) {
       return null

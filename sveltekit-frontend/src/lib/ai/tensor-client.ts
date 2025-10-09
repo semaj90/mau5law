@@ -54,7 +54,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
       channel.port1.onmessage = (ev) => {
         Promise.resolve(gpuPromise)
           .then((gpuMeta) => resolve({ ...data, tensorMeta: ev.data, gpuMeta })
-          .catch(() => resolve({ ...data, tensorMeta: ev.data });
+          .catch(() => resolve({ ...data, tensorMeta: ev.data }),;
       }
       const payload = tensor.buffer;
       navigator.serviceWorker.controller!.postMessage()

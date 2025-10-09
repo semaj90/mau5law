@@ -1,23 +1,12 @@
 import { z } from 'zod';
 import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
-import { CaseOperations } from '$lib/server/db/enhanced-operations';
+import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-operations';
 import { createClient } from 'redis';
-import postgres from 'postgres';
 import type { RequestHandler } from './$types.js';
-import { dev } from '$app/environment';
+import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
 
-// Database connection
-const sql = postgres(process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test', {
-  max: 10,
-});
-
-// add a small safe type for import.meta.env usage to avoid `any`
-type SafeImportMetaEnv = {
-  DEV_BYPASS_AUTH?: string;
-  REDIS_URL?: string;
-  [key: string]: string | undefined;
-};
-const metaEnv: SafeImportMetaEnv = (import.meta as unknown as { env?: SafeImportMetaEnv }).env ?? {};
+// Get typed environment access
+const metaEnv = getMetaEnv();
 
 // Redis client for worker communication
 // Use an inferred client type to avoid relying on package-exported type names
@@ -41,19 +30,6 @@ async function getRedisClient(): Promise<LocalRedisClient | null> {
     }
   }
   return redisClient;
-}
-
-// Resolve user with optional development bypass
-function resolveUser(locals: App.Locals) {
-  if (locals?.user) return locals.user;
-  const bypass =
-    process.env.DEV_BYPASS_AUTH === 'true' ||
-    (metaEnv.DEV_BYPASS_AUTH !== undefined && metaEnv.DEV_BYPASS_AUTH === 'true');
-  if (dev && bypass) {
-    console.warn('DEV_BYPASS_AUTH active — returning development stub user');
-    return { id: '1', email: 'dev@local', name: 'Developer' };
-  }
-  return null;
 }
 
 // Worker trigger function
@@ -125,7 +101,7 @@ export const GET: RequestHandler = async event => {
     // Resolve user (supports DEV_BYPASS_AUTH in dev)
     const user = resolveUser(locals);
     // If dev bypass is enabled and no user, return demo payload to unblock frontend dev flows
-    if (!user && dev && (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')) {
+    if (!user && isDevBypassEnabled()) {
       console.warn('DEV_BYPASS_AUTH: returning demo cases for GET /api/cases');
       return {
         cases: [
@@ -281,5 +257,6 @@ export const OPTIONS: RequestHandler = async () => {
   // 204 No Content for preflight
   return new Response(null, { status: 204, headers });
 };
+
 // Note: Using '*' for 'Access-Control-Allow-Origin' is only safe in development.
 // Replace 'https://your-frontend-domain.com' with your actual production domain.

@@ -65,7 +65,7 @@ export class RabbitMQLegalQueue {
   private readonly maxReconnectAttempts = 10;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   // Queue management
-  private messageHandlers: Map<string, (message: LegalDocumentMessage) => Promise<void> = new Map();
+  private messageHandlers: Map<string, (message: LegalDocumentMessage) => Promise<void>, = new Map();
   private pendingAcks: Map<string, () => void> = new Map();
   private processingQueue: Map<string, LegalDocumentMessage> = new Map();
   // Performance metrics
@@ -122,7 +122,7 @@ export class RabbitMQLegalQueue {
       name: 'legal_ranking_jobs',
       durable: true
       exclusive: false
-      autoDelete: false;
+      autoDelete: false,;
       arguments: {
         'x-message-ttl': 300000, // 5 minutes TTL
         'x-max-priority': 255
@@ -505,7 +505,7 @@ export class RabbitMQLegalQueue {
     const frame = this.createSTOMPFrame('SEND', {
       'destination': '/amq/queue/' + config.name,
       'content-type': 'application/json'
-    }, JSON.stringify(config);
+    }, JSON.stringify(config),;
     this.connection?.send(frame);
   }
   private async publishToQueue(queueName: string, message: LegalDocumentMessage): Promise<void> {
@@ -518,7 +518,7 @@ export class RabbitMQLegalQueue {
       'content-type': 'application/json',
       'persistent': 'true',
       'priority': message.priority.toString()
-    }, JSON.stringify(message);
+    }, JSON.stringify(message),;
     this.connection?.send(frame);
   }
   private async startConsumers(): Promise<void> {

@@ -61,7 +61,7 @@ export interface VectorPipelineContext {
 }
 export type VectorPipelineEvent =
   | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
-  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
+  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>, }
   | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string }
   | { type: 'JOB_COMPLETED'; jobId: string; result: any }
   | { type: 'JOB_FAILED'; jobId: string; error: string }
@@ -98,7 +98,7 @@ const initialContext: VectorPipelineContext = {
   }
 }
 export const vectorPipelineMachine = setup({
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: VectorPipelineContext;
     events: VectorPipelineEvent;
   },
@@ -254,7 +254,7 @@ export const vectorPipelineMachine = setup({
         jobId: `batch_job_${Date.now()}_${index}`,
         status: 'enqueued',
         progress: 0
-      });
+      }),;
     }),
     healthCheck: fromPromise(async () => {
       // Mock health check - in real implementation would check services
@@ -263,7 +263,7 @@ export const vectorPipelineMachine = setup({
         redis: true
         goMicroservice: true
         cudaWorker: true
-        qdrant: true;
+        qdrant: true,;
         webgpu: false
       }
     }),
@@ -275,14 +275,14 @@ export const vectorPipelineMachine = setup({
             ownerType: job.ownerType,
             ownerId: job.ownerId,
             event: job.event
-          }));
+          }),);
         })
       );
       return retryResults.map((result, index) => ({
-        job: failedJobs[index];
+        job: failedJobs[index],;
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
         result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
-      });
+      }),;
     }),
     loadWebGPUModel: fromPromise(async () => {
       return await webgpuWASMExtended.loadModel();
@@ -466,7 +466,7 @@ export const vectorPipelineMachine = setup({
 // Create and export the actor
 export const vectorPipelineActor = createActor(vectorPipelineMachine);
 // Create Svelte store for reactive state
-export const vectorPipelineState = writable(vectorPipelineActor.getSnapshot();
+export const vectorPipelineState = writable(vectorPipelineActor.getSnapshot(),;
 // Update store when state changes
 vectorPipelineActor.subscribe((snapshot) => {
   vectorPipelineState.set(snapshot);
@@ -478,7 +478,7 @@ export const vectorPipelineActions = {
   submitJob: (job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>) => {
     vectorPipelineActor.send({ type: 'SUBMIT_JOB', job });
   },
-  submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>) => {
+  submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>,) => {
     vectorPipelineActor.send({ type: 'SUBMIT_BATCH', jobs });
   },
   retryFailedJobs: () => {

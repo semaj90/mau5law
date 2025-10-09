@@ -92,7 +92,7 @@ const createAnalyticsStore = () => {
             'X-Analytics-Batch': 'true'
           },
           body: JSON.stringify({,
-            events: eventsToFlush;
+            events: eventsToFlush,;
             timestamp: new Date().toISOString(),
             batchSize: eventsToFlush.length
           })

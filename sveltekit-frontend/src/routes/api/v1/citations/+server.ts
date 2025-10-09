@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     }
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const validatedQuery = CitationsQuerySchema.parse(queryParams)
-    const citationsService = new CitationsService(locals.user.id)
+    const citationsService = new CitationsService(getUserId(locals))
     const result = await citationsService.getCitations(validatedQuery)
     // Response validation
     const CitationItem = z.object({
@@ -180,12 +180,12 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       meta: z.record(z.any()).optional()
     }).passthrough()
     const payload = {
-      success: true;
+      success: true,;
       data: (result as { data?: any; pagination?: any }).data,
       pagination: (result as { data?: any; pagination?: any }).pagination,
       meta: {
         caseId: validatedQuery.caseId,
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     }
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const body = await request.json()
     const validatedData = CreateCitationSchema.parse(body)
-    const citationsService = new CitationsService(locals.user.id)
+    const citationsService = new CitationsService(getUserId(locals))
     const newCitation = await citationsService.createCitation(validatedData)
     const CitationItem = z.object({
       id: z.string(),
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: newCitation
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     }

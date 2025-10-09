@@ -86,18 +86,18 @@ export interface TestResults {
   error?:
     | string;
     | {
-        message: string;
-        code: string;
-        stack?: string;
+        message: string,;
+        code: string,;
+        stack?: string,;
       }
   executionTime?: number;
   source?: string;
   testType?: string;
   passed?: boolean;
   metadata?: {
-    model?: string;
-    version?: string;
-    environment?: string;
+    model?: string,;
+    version?: string,;
+    environment?: string,;
   }
 }
 export interface AnalysisResults {
@@ -123,23 +123,23 @@ export interface AnalysisResults {
   error?:
     | string;
     | {
-        message: string;
-        code: string;
-    details?: unknown;
+        message: string,;
+        code: string,;
+    details?: unknown,;
       }
   summary?:;
     | {
-        text: string;
-        keyPoints: string[];
-        confidence: number;
+        text: string,;
+        keyPoints: string[],;
+        confidence: number,;
       }
     | string; // some assignments use plain string
   riskAssessment?:
     | string;
     | {
-        level: 'low' | 'medium' | 'high' | 'critical';
-        factors: string[];
-        score: number;
+        level: 'low' | 'medium' | 'high' | 'critical',;
+        factors: string[],;
+        score: number,;
       }
   similarity?: number;
 }

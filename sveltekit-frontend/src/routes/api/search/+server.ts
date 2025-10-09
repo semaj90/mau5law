@@ -88,9 +88,9 @@ export const POST: RequestHandler = async ({ request }) => {
       queryEmbedding,)
       {
         limit: body.options?.limit || 10,
-        threshold: body.options?.threshold || 0.6,
-        entityTypes: body.options?.entityTypes || ['evidence'],
-        includeMetadata: true
+        threshold,: body.options?.threshold || 0.6,
+        entityTypes,: body.options?.entityTypes || ['evidence'],
+        includeMetadata,: true
         ...body.options
       }
     )
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString()
       }
     })
-  } catch (error) {
+  }, catch (error) {
     console.error('❌ Search API error:', error)
     return json({
       error: 'Internal server error during search',

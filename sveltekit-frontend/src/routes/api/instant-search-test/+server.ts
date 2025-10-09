@@ -220,7 +220,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'error',
       timestamp: new Date().toISOString(),
       error: error.message,
-      results: { [key: string]: any },
+      results: { [key,: strin,g]: any },
       errors: [error.message]
     }, { status: 500 })
   }

@@ -280,13 +280,13 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     searchResults: [],
     relatedEvidence: [],
     lastEmbedding: null
-    filters: { [key: string]: any },
+    filters: { [key,: strin,g]: any },
     activeTab: 'overview',
     isLoading: false
     error: null
     formData: {
-      caseForm: { [key: string]: any },
-      evidenceForm: { [key: string]: any }
+      caseForm: { [key,: strin,g]: any },
+      evidenceForm: { [key,: strin,g]: any }
     },
     workflowStage: 'investigation',
     nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],
@@ -344,32 +344,32 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           target: 'caseLoaded',
           actions: [
             'assignCaseData',
-            assign({ formData: () => ({ caseForm: { [key: string]: any }, evidenceForm: { [key: string]: any } }) })
+            assign({ formData: () => ({ caseForm: { [key,: strin,g]: any }, evidenceForm: { [k,ey: str,ing]: any, } }) })
           ]
         },
         onError: {
           target: 'error',
-          actions: 'assignError'
+          actions,: 'assignError'
         }
       }
     },
     caseLoaded: {
       initial: 'loadingEvidence',
-      entry: [
+      entry,: [
         assign({ isLoading: () => false })
       ],
-      states: {
+      states,: {
         loadingEvidence: {
           invoke: {
             id: 'loadEvidence',
-            src: loadEvidenceService
+            src,: loadEvidenceService
             onDone: {
               target: 'ready',
-              actions: 'assignEvidence'
+              actions,: 'assignEvidence'
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
@@ -377,7 +377,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           on: {
             ADD_EVIDENCE: {
               target: 'uploadingEvidence',
-              actions: [
+              actions,: [
                 'setLoading',
                 assign({
                   uploadQueue: (_ctx, event: any) => (event.files ?? [])
@@ -386,41 +386,41 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             PROCESS_EVIDENCE: {
               target: 'processingEvidence',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             },
             START_AI_ANALYSIS: {
               target: 'aiAnalysis',
-              actions: 'setLoading',
-              cond: 'hasEvidence'
+              actions,: 'setLoading',
+              cond,: 'hasEvidence'
             },
             FIND_SIMILAR_CASES: {
               target: 'findingSimilarCases',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             },
             GENERATE_EMBEDDING: {
               target: 'generatingEmbedding',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             },
             SEARCH_RELATED_EVIDENCE: {
               target: 'searchingRelatedEvidence',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             },
             UPDATE_CASE: {
               target: 'updatingCase',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             },
             DELETE_CASE: {
               target: 'deletingCase',
-              actions: 'setLoading'
+              actions,: 'setLoading'
             }
           }
         },
         uploadingEvidence: {
           invoke: {
             id: 'uploadEvidence',
-            src: async (context: LegalCaseContext) => {
+            src,: async (context: LegalCaseContext) => {
               const formData = new FormData();
-              (context.uploadQueue || []).forEach((file: any) => formData.append('files', file);
+              (context.uploadQueue || []).forEach((file: any) => formData.append('files', file),;
               formData.append('caseId', context.caseId ?? '');
               formData.append('documentType', 'evidence');
               const response = await fetch('/api/unified/upload', {
@@ -430,9 +430,9 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               if (!response.ok) throw new Error('Upload failed');
               return await response.json();
             },
-            onDone: {
+            onDone,: {
               target: 'loadingEvidence',
-              actions: [
+              actions,: [
                 assign({ uploadQueue: () => [] }),
                 assign({
                   notifications: (ctx) => [
@@ -448,17 +448,17 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         processingEvidence: {
           invoke: {
             id: 'processEvidence',
-            src: processEvidenceService
+            src,: processEvidenceService
             onDone: {
               target: 'ready',
-              actions: [
+              actions,: [
                 assign({ isLoading: () => false }),
                 assign({
                   evidence: (ctx, event: any) =>
@@ -472,27 +472,27 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         aiAnalysis: {
           initial: 'analyzing',
-          states: {
+          states,: {
             analyzing: {
               invoke: {
                 id: 'aiSummarizeCase',
-                src: async (context: LegalCaseContext) => {
+                src,: async (context: LegalCaseContext) => {
                   if (!context.caseId) throw new Error('Missing caseId for AI analysis');
                   return await aiSummarizationService.summarizeCase(context.caseId);
                 },
-                onDone: {
+                onDone,: {
                   target: 'complete',
-                  actions: 'assignAISummary'
+                  actions,: 'assignAISummary'
                 },
                 onError: {
                   target: '#legalCase.caseLoaded.ready',
-                  actions: 'assignError'
+                  actions,: 'assignError'
                 }
               },
               on: {
@@ -515,8 +515,8 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
                   ]
                 })
               ],
-              after: {
-                1000: {
+              after,: {
+                1000,: {
                   target: '#legalCase.caseLoaded.ready'
                 }
               }
@@ -526,24 +526,24 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         findingSimilarCases: {
           invoke: {
             id: 'findSimilarCases',
-            src: findSimilarCasesService
+            src,: findSimilarCasesService
             onDone: {
               target: 'ready',
-              actions: [
+              actions,: [
                 assign({ isLoading: () => false }),
                 'assignSimilarCases'
               ]
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         updatingCase: {
           invoke: {
             id: 'updateCase',
-            src: async (context: LegalCaseContext, event: any) => {
+            src,: async (context: LegalCaseContext, event: any) => {
               const caseId = context.caseId;
               if (!caseId) throw new Error('Missing caseId for update');
               const response = await fetch(`/api/cases/${caseId}`, {
@@ -554,23 +554,23 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               if (!response.ok) throw new Error('Update failed');
               return await response.json();
             },
-            onDone: {
+            onDone,: {
               target: 'ready',
-              actions: [
+              actions,: [
                 assign({ isLoading: () => false }),
                 'assignCaseData'
               ]
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         deletingCase: {
           invoke: {
             id: 'deleteCase',
-            src: async (context: LegalCaseContext) => {
+            src,: async (context: LegalCaseContext) => {
               if (!context.caseId) throw new Error('Missing caseId for delete');
               const response = await fetch(`/api/cases/${context.caseId}`, {
                 method: 'DELETE'
@@ -578,9 +578,9 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               if (!response.ok) throw new Error('Delete failed');
               return true;
             },
-            onDone: {
+            onDone,: {
               target: '#legalCase.idle',
-              actions: assign({
+              actions,: assign({
                 case: () => null,
                 caseId: () => null,
                 evidence: () => [],
@@ -592,33 +592,33 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         generatingEmbedding: {
           invoke: {
             id: 'generateEmbedding',
-            src: generateEmbeddingService
+            src,: generateEmbeddingService
             onDone: [
               {
                 target: 'searchingRelatedEvidence',
                 actions: 'assignEmbedding'
               }
             ],
-            onError: {
+            onError,: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         },
         searchingRelatedEvidence: {
           invoke: {
             id: 'searchRelatedEvidence',
-            src: searchRelatedEvidenceService
+            src,: searchRelatedEvidenceService
             onDone: {
               target: 'ready',
-              actions: [
+              actions,: [
                 'assignRelatedEvidence',
                 assign({
                   notifications: (ctx, event) => [
@@ -634,7 +634,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions: 'assignError'
+              actions,: 'assignError'
             }
           }
         }
@@ -667,26 +667,26 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     searching: {
       invoke: {
         id: 'search',
-        src: searchService
+        src,: searchService
         onDone: {
           target: 'idle',
-          actions: [
+          actions,: [
             assign({ isLoading: () => false }),
             'assignSearchResults'
           ]
         },
         onError: {
           target: 'error',
-          actions: 'assignError'
+          actions,: 'assignError'
         }
       }
     },
     error: {
       entry: assign({ isLoading: () => false }),
-      on: {
+      on,: {
         RETRY: {
           target: 'idle',
-          actions: 'clearError'
+          actions,: 'clearError'
         },
         DISMISS_ERROR: {
           actions: 'clearError'
@@ -697,7 +697,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
   on: {
     RESET: {
       target: 'idle',
-      actions: assign(() => ({,
+      actions,: assign(() => ({,
         case: null
         caseId: null
         evidence: [],
@@ -708,13 +708,13 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         similarCases: [],
         searchQuery: '',
         searchResults: [],
-        filters: { [key: string]: any },
+        filters: { [key,: strin,g]: any },
         activeTab: 'overview',
         isLoading: false
         error: null
         formData: {
-          caseForm: { [key: string]: any },
-          evidenceForm: { [key: string]: any }
+          caseForm: { [key,: strin,g]: any },
+          evidenceForm: { [key,: strin,g]: any }
         },
         workflowStage: 'investigation',
         nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],

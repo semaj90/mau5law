@@ -4,7 +4,7 @@ export async function createClient(opts?: any) {
   const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379'
   const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
-  const client = new IORedis(url, password ? { password } : { [key: string]: any });
+  const client = new IORedis(url, password ? { password } : { [key,: strin,g]: any });
   // Attach minimal NOAUTH graceful handling to reduce noisy loops
   client.on('error', (err: any) => {
     if (String(err?.message || '').includes('NOAUTH')) {
@@ -52,7 +52,7 @@ export async function createClient(opts?: any) {
         if (channels.length > 0) {
           await sub.subscribe(...channels);
         }
-        sub.on('message', (channel: string, message: string) => cb(channel, message);
+        sub.on('message', (channel: string, message: string) => cb(channel, message),;
         return sub;
       } else {
         // subscribe using the existing client instance

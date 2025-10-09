@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types.js';
 import { db } from '$lib/db';
 import { documents } from '$lib/db/schema';
 import crypto from 'crypto';
+import { getUserId } from '$lib/server/auth/utils';
 async function getEmbedding(text: string): Promise<number[]> {
   const response = await fetch('http://localhost:11434/api/embeddings', {
     method: 'POST',
@@ -25,7 +26,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       filename: title,
       content,
       embedding: JSON.stringify(embedding),
-      user_id: parseInt(locals.user.id),
+      user_id: parseInt(getUserId(locals)),
     })
     .returning();
   return new Response(JSON.stringify(doc[0]));

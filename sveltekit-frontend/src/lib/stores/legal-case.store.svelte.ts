@@ -62,7 +62,7 @@ export function createLegalCaseStore() {
   });
   const loading = $state({
     cases: false
-    analysis: false;
+    analysis: false,;
     documents: false
   });
   // Derived state for filtered cases based on user clearance

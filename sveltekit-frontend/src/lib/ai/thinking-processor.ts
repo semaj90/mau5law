@@ -169,7 +169,7 @@ export class ThinkingProcessor {
           line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*')
       )
       .map((step) => step.trim()
-      .slice(0, 10); // Limit to 10 steps for UI
+      .slice(0, 10),; // Limit to 10 steps for UI
   }
   /**
    * Formats thinking content for display
@@ -212,7 +212,7 @@ export class ThinkingProcessor {
     const params = new URLSearchParams();
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
-    if (options.limit) params.append('limit', options.limit.toString();
+    if (options.limit) params.append('limit', options.limit.toString(),;
     // removed unused response assignment
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -228,7 +228,7 @@ export const LegalAnalysisUtils = {
   /**
    * Determines the appropriate analysis type for a document
    */;
-  getAnalysisType(documentType: string, evidenceType?: string): string {
+  getAnalysisType(documentType,: string, evidenceType?: string,): string {
     if (evidenceType === 'chain_of_custody') return 'chain_of_custody';
     if (documentType === 'evidence') return 'classification';
     if (documentType === 'legal_document') return 'compliance';
@@ -238,7 +238,7 @@ export const LegalAnalysisUtils = {
   /**
    * Gets the confidence level description
    */;
-  getConfidenceLabel(confidence: number): { label: string; color: string } {
+  getConfidenceLabel(confidence,: number,): { label: string; color: string } {
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' }
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' }
     if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' }
@@ -248,7 +248,7 @@ export const LegalAnalysisUtils = {
   /**
    * Formats processing time for display
    */;
-  formatProcessingTime(ms: number): string {
+  formatProcessingTime(ms,: number,): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
@@ -256,7 +256,7 @@ export const LegalAnalysisUtils = {
   /**
    * Extracts key legal terms from analysis
    */;
-  extractLegalTerms(analysis: any): string[] {
+  extractLegalTerms(analysis,: any,): string[,] {
     const text = JSON.stringify(analysis).toLowerCase();
     const legalTerms = [
       'evidence',
@@ -276,7 +276,7 @@ export const LegalAnalysisUtils = {
       'sustained',
       'overruled'
     ];
-    return legalTerms.filter((term) => text.includes(term);
+    return legalTerms.filter((term) => text.includes(term),;
   }
 }
 /**
@@ -312,38 +312,38 @@ export const QuickAnalysis = {
   /**
    * Quick evidence classification
    */;
-  async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
-    return ThinkingProcessor.analyzeEvidence(evidenceId, {
+  async classifyEvidence(evidenceId,: string, useThinking = false,): Promise<ThinkingAnalysis> {
+    return, ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
       useThinkingStyle: useThinking
-    });
+    }),;
   },
   /**
    * Quick chain of custody verification
    */;
-  async verifyChainOfCustody(evidenceId: string, useThinking = true): Promise<ThinkingAnalysis> {
-    return ThinkingProcessor.analyzeEvidence(evidenceId, {
+  async verifyChainOfCustody(evidenceId,: string, useThinking = true,): Promise<ThinkingAnalysis> {
+    return, ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'chain_of_custody',
       useThinkingStyle: useThinking, // Default to thinking style for custody verification
-    });
+    }),;
   },
   /**
    * Quick case strength assessment
    */;
-  async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
-    return ThinkingProcessor.analyzeCase(caseId, {
+  async assessCaseStrength(caseId,: string, useThinking = true,): Promise<ThinkingAnalysis> {
+    return, ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
       useThinkingStyle: useThinking
-    });
+    }),;
   },
   /**
    * Quick document compliance check
    */;
-  async checkCompliance(text: string, useThinking = false): Promise<ThinkingAnalysis> {
-    return ThinkingProcessor.analyzeDocument(text, {
+  async checkCompliance(text,: string, useThinking = false,): Promise<ThinkingAnalysis> {
+    return, ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',
       analysisType: 'compliance',
       useThinkingStyle: useThinking
-    });
+    }),;
   }
 }

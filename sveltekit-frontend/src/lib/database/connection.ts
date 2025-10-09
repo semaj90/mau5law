@@ -51,7 +51,7 @@ export async function vectorSimilaritySearch(
   table: 'documents' | 'search_index',
   queryEmbedding: number[]
   limit: number = 10,
-  threshold: number = 0.8;
+  threshold: number = 0.8,;
 ): Promise<any> {
   try {
     const tableName = table === 'documents' ? 'documents' : 'search_index';

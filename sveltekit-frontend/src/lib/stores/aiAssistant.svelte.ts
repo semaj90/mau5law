@@ -76,7 +76,7 @@ const aiAssistantState = $state<AIAssistantState>({
 });
 // Create XState actor for AI assistant
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
-  services: aiAssistantServices;
+  services: aiAssistantServices,;
   actions: aiAssistantActions
 }) : null;
 export class AIAssistantManager {
@@ -469,7 +469,7 @@ export class AIAssistantManager {
       model: aiAssistantState.model || 'unknown',
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
-      statistics: stats;
+      statistics: stats,;
       usage: aiAssistantState.usage
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -497,7 +497,7 @@ export class AIAssistantManager {
         aiAssistantState.conversationHistory = data.conversation.map((entry: any) => ({
           ...entry,
           timestamp: new Date(entry.timestamp)
-        });
+        }),;
         // Restore settings if available
         if (data?.model) {
           this.setModel(data.model);
@@ -538,14 +538,14 @@ export class AIAssistantManager {
         const response = await fetch('http://localhost:11434/api/tags')
         if (response.ok) {
           const data = await response.json();
-          ollamaModels.push(...(data.models?.map((model: any) => model.name) || []);
+          ollamaModels.push(...(data.models?.map((model: any) => model.name) || []),;
         }
       } catch (error) {
         console.warn('Failed to fetch Ollama models:', error);
       }
       // Get WebAssembly models
       if (this.webAssemblyEnabled) {
-        webAssemblyModels.push(...webAssemblyAIAdapter.getAvailableModels();
+        webAssemblyModels.push(...webAssemblyAIAdapter.getAvailableModels(),;
       }
       // Combine and deduplicate
       const allModels = [...new Set([...ollamaModels, ...webAssemblyModels])];
@@ -557,9 +557,9 @@ export class AIAssistantManager {
   }
   // Analyze legal document using WebAssembly if available
   async analyzeLegalDocument(
-    title: string;
+    title: string,;
     content: string
-    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
+    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive',;
   ) {
     if (!this.webAssemblyEnabled) {
       throw new Error('WebAssembly not available for legal document analysis');

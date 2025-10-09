@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === UNIFIED SEARCH ===
-      case 'search': {
+      case 'search',: {
         const { query, filters, options } = params
         if (!query?.text && !query?.vector) {
           return json({
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === SEMANTIC SIMILARITY ===
-      case 'find_similar': {
+      case 'find_similar',: {
         const { documentId, threshold, limit } = params
         if (!documentId) {
           return json({
@@ -169,11 +169,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === NEO4J OPERATIONS ===
-      case 'sync_to_graph': {
+      case 'sync_to_graph',: {
         const { documentIds, force } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
-              success: false;
+              success: false,;
               error: 'Document IDs array required'
             },)
             { status: 400 }
@@ -191,11 +191,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingTime: Date.now() - startTime
         })
       }
-      case 'get_recommendations': {
+      case 'get_recommendations',: {
         const { documentIds, types } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
-              success: false;
+              success: false,;
               error: 'Document IDs array required'
             },)
             { status: 400 }
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingTime: Date.now() - startTime
         })
       }
-      case 'analyze_network': {
+      case 'analyze_network',: {
         const { documentIds, analysisType } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
@@ -237,7 +237,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === WORKFLOW MANAGEMENT ===
-      case 'get_workflow_status': {
+      case 'get_workflow_status',: {
         const dashboardData = ingestionService.getDashboardData()
         return json({
           success: true,
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingTime: Date.now() - startTime
         })
       }
-      case 'submit_batch_job': {
+      case 'submit_batch_job',: {
         const { documents, priority, metadata } = params
         if (!documents || !Array.isArray(documents)) {
           return json({
@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === ANALYTICS & MONITORING ===
-      case 'get_analytics': {
+      case 'get_analytics',: {
         const { timeRange, metrics } = params
         // Get comprehensive analytics
         const analytics = {
@@ -321,7 +321,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       // === HEALTH CHECK ===
-      case 'health': {
+      case 'health',: {
         const health = {
           status: 'healthy',
           services: {
@@ -363,14 +363,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
           { status: 400 }
         )
     }
-  } catch (error) {
+  }, catch (error) {
     console.error('❌ Unified API error:', error)
     return json()
       {
         success: false,
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message: String(error),
-        processingTime: Date.now() - startTime
+        error,: 'Internal server error',
+        details,: error instanceof Error ? error.message: String(error),
+        processingTime,: Date.now() - startTime
       },
       { status: 500 }
     )
@@ -451,8 +451,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         success: false,
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message: String(error)
+        error,: 'Internal server error',
+        details,: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     )

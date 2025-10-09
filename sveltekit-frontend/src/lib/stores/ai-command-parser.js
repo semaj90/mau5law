@@ -48,7 +48,7 @@ export function applyAIClasses(element, config = {}) {
   const { add = [], remove = [], toggle = [] } = config;
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
-  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls);
+  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls),;
 }
 // Simple command service for basic state management
 export const aiCommandService = {
@@ -59,7 +59,7 @@ export const aiCommandService = {
     this.state.set("processing");
     setTimeout(() => {
       this.state.set("completed");
-      this.context.update((ctx) => ({ ...ctx, lastCommand: event });
+      this.context.update((ctx) => ({ ...ctx, lastCommand: event }),;
     }, 1000);
   },
   subscribe: function (callback) {

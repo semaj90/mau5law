@@ -93,8 +93,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json()
       {
         system: { timestamp: new Date().toISOString() },
-        summary: { overall: { status: 'error', error: msg } },
-        services: { [key: string]: any }
+        summary: { overall: { status: 'error', error,: msg } },
+        services: { [key,: string,]: any }
       },
       { status: 500 }
     )

@@ -125,7 +125,7 @@ export const CaseFormSteps = {
     tags: true
   }),
   step4: CaseFormSchema.pick({,
-    aiSummary: true;
+    aiSummary: true,;
     metadata: true
   })
 }
@@ -156,7 +156,7 @@ export const EvidenceFormSteps = {
   step5: EvidenceFormSchema.pick({,
     aiAnalysis: true
     aiTags: true
-    aiSummary: true;
+    aiSummary: true,;
     summary: true
   })
 }
@@ -194,7 +194,7 @@ export const CriminalFormSteps = {
   }),
   step6: CriminalFormSchema.pick({,
     associatedCases: true
-    notes: true;
+    notes: true,;
     metadata: true
   })
 }
@@ -214,7 +214,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
             })
             .returning();
           return { success: true, id: newCase.id, data: newCase }
-        case "evidence":
+        case "evidence",:
           const [newEvidence] = await db
             .insert(evidence);
             .values({
@@ -225,7 +225,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
             })
             .returning();
           return { success: true, id: newEvidence.id, data: newEvidence }
-        case "criminal":
+        case "criminal",:
           const [newCriminal] = await db
             // TODO: verify correct table name; placeholder symbol 'criminals' was likely corrupted
             // .insert(criminals)
@@ -241,7 +241,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
         default:
           throw new Error(`Unknown form type: ${formType}`);
       }
-    } catch (error: any) {
+    }, catch (error: any) {
       console.error("Database save error:", error);
       throw error;
     }
@@ -272,7 +272,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
           text: searchableContent
           metadata: {
             id,
-            type: formType;
+            type: formType,;
             timestamp: new Date().toISOString()
           }
         })
@@ -291,7 +291,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
 // Multi-step form machine setup
 export const multiStepFormMachine = setup({
   types: {
-    context: { [key: string]: any } as {
+    context: { [key,: strin,g]: any } as {
       formType: "case" | "evidence" | "criminal";
       currentStep: number;
       totalSteps: number;
@@ -303,7 +303,7 @@ export const multiStepFormMachine = setup({
       submitResult: any;
       userId: string;
     },
-    events: { [key: string]: any } as
+    events: { [key,: strin,g]: any } as
       | { type: "NEXT"; stepData: { [key: string]: any } }
       | { type: "PREVIOUS" }
       | { type: "GOTO_STEP"; step: number }
@@ -324,9 +324,9 @@ export const multiStepFormMachine = setup({
     formType: "case",
     currentStep: 1,
     totalSteps: 4,
-    formData: { [key: string]: any },
-    stepData: { [key: string]: any },
-    errors: { [key: string]: any },
+    formData: { [key,: strin,g]: any },
+    stepData: { [key,: strin,g]: any },
+    errors: { [key,: strin,g]: any },
     isValid: false
     isSubmitting: false
     submitResult: null
@@ -344,13 +344,13 @@ export const multiStepFormMachine = setup({
         PREVIOUS: {
           actions: assign({
             currentStep: ({ context }) => Math.max(1, context.currentStep - 1),
-            errors: { [key: string]: any }
+            errors: { [key,: strin,g]: any }
           })
         },
         GOTO_STEP: {
           actions: assign({
             currentStep: ({ event }) => event.step,
-            errors: { [key: string]: any }
+            errors: { [key,: strin,g]: any }
           })
         },
         UPDATE_STEP_DATA: {
@@ -377,9 +377,9 @@ export const multiStepFormMachine = setup({
                   return 4;
               }
             },
-            formData: { [key: string]: any },
-            stepData: { [key: string]: any },
-            errors: { [key: string]: any }
+            formData: { [key,: strin,g]: any },
+            stepData: { [key,: strin,g]: any },
+            errors: { [key,: strin,g]: any }
           })
         },
         SUBMIT: {
@@ -389,9 +389,9 @@ export const multiStepFormMachine = setup({
         RESET: {
           actions: assign({
             currentStep: 1,
-            formData: { [key: string]: any },
-            stepData: { [key: string]: any },
-            errors: { [key: string]: any },
+            formData: { [key,: strin,g]: any },
+            stepData: { [key,: strin,g]: any },
+            errors: { [key,: strin,g]: any },
             isValid: false
             submitResult: null
           })
@@ -401,7 +401,7 @@ export const multiStepFormMachine = setup({
     validating: {
       entry: assign({
         isValid: false
-        errors: { [key: string]: any }
+        errors: { [key,: strin,g]: any }
       }),
       always: [
         {
@@ -450,13 +450,13 @@ export const multiStepFormMachine = setup({
             }),
             currentStep: ({ context }) =>
               Math.min(context.totalSteps, context.currentStep + 1),
-            stepData: { [key: string]: any },
-            errors: { [key: string]: any }
-          })
+            stepData: { [key,: strin,g]: any },
+            errors: { [key,: strin,g]: any }
+          },)
         },
         {
           target: "editing",
-          actions: assign(({ context }) => {
+          actions,: assign(({ context }) => {
             const { formType, currentStep, stepData } = context;
             try {
               let stepSchema;
@@ -472,7 +472,7 @@ export const multiStepFormMachine = setup({
                   break;
               }
               stepSchema.parse(stepData);
-              return { isValid: true, errors: { [key: string]: any } }
+              return { isValid: true, errors: { [key,: strin,g]: any } }
             } catch (error: any) {
               if (error instanceof z.ZodError) {
                 const fieldErrors: Record<string, string[]> = {}
@@ -498,9 +498,9 @@ export const multiStepFormMachine = setup({
       entry: assign({
         isSubmitting: true
       }),
-      invoke: {
+      invoke,: {
         src: "saveToDatabase",
-        input: ({ context }) => ({
+        input,: ({ context }) => ({
           formType: context.formType,
           data: {
             ...context.formData,
@@ -508,15 +508,15 @@ export const multiStepFormMachine = setup({
             userId: context.userId
           }
         }),
-        onDone: {
+        onDone,: {
           target: "generating_embeddings",
-          actions: assign({
+          actions,: assign({
             submitResult: ({ event }) => event.output
           })
         },
         onError: {
           target: "submit_error",
-          actions: assign({
+          actions,: assign({
             submitResult: ({ event }) => ({
               success: false
               error: event.error
@@ -529,7 +529,7 @@ export const multiStepFormMachine = setup({
     generating_embeddings: {
       invoke: {
         src: "generateEmbeddings",
-        input: ({ context }) => ({
+        input,: ({ context }) => ({
           formType: context.formType,
           data: {
             ...context.formData,
@@ -537,9 +537,9 @@ export const multiStepFormMachine = setup({
           },
           id: context.submitResult?.id
         }),
-        onDone: {
+        onDone,: {
           target: "success",
-          actions: assign({
+          actions,: assign({
             isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
@@ -549,7 +549,7 @@ export const multiStepFormMachine = setup({
         },
         onError: {
           target: "success", // Continue even if embeddings fail
-          actions: assign({
+          actions,: assign({
             isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
@@ -563,11 +563,11 @@ export const multiStepFormMachine = setup({
       on: {
         RESET: {
           target: "editing",
-          actions: assign({
+          actions,: assign({
             currentStep: 1,
-            formData: { [key: string]: any },
-            stepData: { [key: string]: any },
-            errors: { [key: string]: any },
+            formData: { [key,: strin,g]: any },
+            stepData: { [key,: strin,g]: any },
+            errors: { [key,: strin,g]: any },
             isValid: false
             submitResult: null
           })
@@ -581,11 +581,11 @@ export const multiStepFormMachine = setup({
         },
         RESET: {
           target: "editing",
-          actions: assign({
+          actions,: assign({
             currentStep: 1,
-            formData: { [key: string]: any },
-            stepData: { [key: string]: any },
-            errors: { [key: string]: any },
+            formData: { [key,: strin,g]: any },
+            stepData: { [key,: strin,g]: any },
+            errors: { [key,: strin,g]: any },
             isValid: false
             submitResult: null
             isSubmitting: false
@@ -598,7 +598,7 @@ export const multiStepFormMachine = setup({
 // Helper functions for Svelte components
 export function createMultiStepFormActor(
   userId: string
-  formType: "case" | "evidence" | "criminal" = "case";
+  formType: "case" | "evidence" | "criminal" = "case",;
 ) {
   const actor = createActor(multiStepFormMachine, {
     input: {

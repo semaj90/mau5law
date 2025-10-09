@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'User Registration API',
         'Test user registration endpoint functionality',
         async () => {
-          if (!db) throw new Error('Database not available'))
+          if (!db) throw new Error('Database not available'),)
           // Test user registration schema and validation
           const testUser = {
             email: `test-${Date.now()}@example.com`,
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
           '/api/upload/chunk',
           '/api/upload/finalize',
           '/api/evidence/upload'
-        ])
+        ],)
         return {
           message: 'Document upload system configured',
           endpoints: uploadEndpoints
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
           '/api/ai/analyze',
           '/api/ai/summarize',
           '/api/enhanced-rag'
-        ])
+        ],)
         return {
           message: 'AI chat system operational',
           endpoints: aiEndpoints
@@ -249,7 +249,7 @@ export const GET: RequestHandler = async ({ url }) => {
             dimensions: 384, // nomic-embed-text
             operations: ['embed', 'search', 'similarity', 'clustering'],
             performance: '< 50ms search times'
-          })
+          },)
         }
       ),
       runTest(
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 'User performs semantic search',
                 'User interacts with AI chat',
                 'System provides legal insights'
-              ])
+              ],)
               return {
                 message: 'Complete workflow integration validated',
                 steps: workflow
@@ -371,23 +371,23 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache-Control': 'public, max-age=300', // 5-minute cache
       }
     })
-  } catch (error: unknown) {
+  }, catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown workflow validation error'
     productionLogger.error(`Workflow validation failed: ${msg}`)
     return json()
       {
         timestamp: new Date().toISOString(),
-        overall: {
+        overall,: {
           status: 'failed',
-          score: 0,
-          totalTests: 0,
-          passed: 0,
-          failed: 1,
-          skipped: 0
+          score,: 0,
+          totalTests,: 0,
+          passed,: 0,
+          failed,: 1,
+          skipped,: 0
         },
         error: 'Workflow validation failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
-        processingTime: Date.now() - startTime
+        details,: error instanceof Error ? error.message: 'Unknown error',
+        processingTime,: Date.now() - startTime
       },>
       { status: 500 }
     )
@@ -443,13 +443,13 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     return json()
       {
         success: false,
-        error: 'Workflow test failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
-        processingTime: Date.now() - startTime
+        error,: 'Workflow test failed',
+        details,: error instanceof Error ? error.message: 'Unknown error',
+        processingTime,: Date.now() - startTime
       },
       { status: 500 }
     )

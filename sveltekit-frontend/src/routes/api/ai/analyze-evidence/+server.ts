@@ -43,7 +43,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     }
     // Check if user has access to this evidence (same case)
     // This is a simplified check - in production you'd want more robust authorization
-    const userHasAccess = evidenceRecord.uploadedBy === locals.user.id ||
+    const userHasAccess = evidenceRecord.uploadedBy === getUserId(locals) ||
                          locals.user.role === 'admin'
     if (!userHasAccess) {
       return json({ error: 'Insufficient permissions' }, { status: 403 })

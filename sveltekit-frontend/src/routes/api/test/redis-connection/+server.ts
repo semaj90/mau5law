@@ -68,13 +68,13 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         success: false,
-        error: error.message,
-        details: {
+        error,: error.message,
+        details,: {
           code: error.code,
-          errno: error.errno,
-          syscall: error.syscall,
-          address: error.address,
-          port: error.port
+          errno,: error.errno,
+          syscall,: error.syscall,
+          address,: error.address,
+          port,: error.port
         },
         timestamp: new Date().toISOString()
       },

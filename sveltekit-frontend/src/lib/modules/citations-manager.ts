@@ -77,7 +77,7 @@ export class CitationsManager {
     }
   }
   private notifySubscribers(): void {
-    this.subscribers.forEach(callback => callback(this.currentUser);
+    this.subscribers.forEach(callback => callback(this.currentUser),;
   }
   // Citation Management Methods
   async saveCitation(citation: Citation, collection?: string): Promise<boolean> {
@@ -121,7 +121,7 @@ export class CitationsManager {
         .map(c => ({
           ...c,
           savedAt: new Date(c.savedAt)
-        });
+        }),;
     } catch (error) {
       console.error('Failed to load saved citations:', error);
       return [];
@@ -176,7 +176,7 @@ export class CitationsManager {
           ...c,
           createdAt: new Date(c.createdAt),
           updatedAt: new Date(c.updatedAt)
-        });
+        }),;
     } catch (error) {
       console.error('Failed to load collections:', error);
       return [];
@@ -229,10 +229,10 @@ export class CitationsManager {
   }
   exportCitations(citationIds: string[], options: CitationImportOptions): string {
     const savedCitations = this.getSavedCitations();
-    const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id);
+    const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id),;
     return citationsToExport
       .map(citation => this.formatCitationForImport(citation, options)
-      .join('\n\n');
+      .join('\n\n'),;
   }
   importCitationsToReport(citationIds: string[], reportId: string, options: CitationImportOptions): Promise<boolean> {
     // This would integrate with your report system
@@ -274,11 +274,11 @@ export class CitationsManager {
       if (filters.collection) {
         const collection = this.getCollections().find(col => col.id === filters.collection);
         if (collection) {
-          citations = citations.filter(c => collection.citations.includes(c.id);
+          citations = citations.filter(c => collection.citations.includes(c.id),;
         }
       }
     }
-    return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime();
+    return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime(),;
   }
   // Private helper methods
   private formatBluebook(citation: Citation, options: CitationImportOptions): string {
@@ -338,7 +338,7 @@ export class CitationsManager {
       const allSaved = this.getAllStoredCitations();
       const filtered = allSaved.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...citations];
-      localStorage.setItem(this.storageKey, JSON.stringify(updated);
+      localStorage.setItem(this.storageKey, JSON.stringify(updated),;
     } catch (error) {
       console.error('Failed to store citations:', error);
     }
@@ -356,7 +356,7 @@ export class CitationsManager {
       const allCollections = this.getAllStoredCollections();
       const filtered = allCollections.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...collections];
-      localStorage.setItem(this.collectionsKey, JSON.stringify(updated);
+      localStorage.setItem(this.collectionsKey, JSON.stringify(updated),;
     } catch (error) {
       console.error('Failed to store collections:', error);
     }
@@ -382,7 +382,7 @@ export class CitationsManager {
   private saveUserState(): void {
     try {
       if (this.currentUser) {
-        localStorage.setItem('legal-ai-auth-user', JSON.stringify(this.currentUser);
+        localStorage.setItem('legal-ai-auth-user', JSON.stringify(this.currentUser),;
       } else {
         localStorage.removeItem('legal-ai-auth-user');
       }

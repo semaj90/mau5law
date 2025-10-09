@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { db } from '$lib/server/db';
 import { reports } from '$lib/server/db/schema';
 import count, { desc, eq } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 // Minimal local schema/types to unblock TS; mirrors schema-postgres reports table
 const CreateReportSchema = z.object({
   caseId: z.string().uuid(),
@@ -109,7 +110,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const validatedQuery = ReportsQuerySchema.parse(queryParams);
 
-    const reportsService = new ReportsCRUDService(locals.user.id);
+    const reportsService = new ReportsCRUDService(getUserId(locals));
     const result = validatedQuery.caseId
       ? await reportsService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
@@ -132,7 +133,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasPrev: result.page > 1,
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         caseId: validatedQuery.caseId || null,
         timestamp: new Date().toISOString(),
       },
@@ -164,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json();
     const validatedData = CreateReportSchema.parse(body) as CreateReportData;
 
-    const reportsService = new ReportsCRUDService(locals.user.id);
+    const reportsService = new ReportsCRUDService(getUserId(locals));
     const reportId = await reportsService.create(validatedData);
     const createdReport = await reportsService.getById(reportId);
 
@@ -174,7 +175,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: createdReport,
         meta: {
           reportId,
-          userId: locals.user.id,
+          userId: getUserId(locals),
           caseId: validatedData.caseId,
           timestamp: new Date().toISOString(),
         },

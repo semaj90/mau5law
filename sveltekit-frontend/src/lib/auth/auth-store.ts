@@ -35,7 +35,7 @@ const initialState: AuthState = {
   user: null
   session: null
   isLoading: true
-  isAuthenticated: false;
+  isAuthenticated: false,;
   permissions: [],
   lastActivity: null
 }
@@ -59,7 +59,7 @@ export class AuthStore {
    */;
   static async initialize(): Promise<void> {
     if (!browser) return;
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }),;
     try {
       // Check if there's an existing session
       await this.checkSession();
@@ -71,14 +71,14 @@ export class AuthStore {
       console.error('Auth initialization failed:', error);
       this.clearAuth();
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }),;
     }
   }
   /**
    * Login with email and password
    */;
   static async login(email: string, password: string, rememberMe = false): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }),;
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -97,7 +97,7 @@ export class AuthStore {
         return { success: true }
       } else {
         return {
-          success: false;
+          success: false,;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Login failed',
           requiresMFA: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresMFA
         }
@@ -106,7 +106,7 @@ export class AuthStore {
       console.error('Login error:', error);
       return { success: false, error: 'Network error during login' }
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }),;
     }
   }
   /**
@@ -119,7 +119,7 @@ export class AuthStore {
     lastName?: string;
     role?: UserRole;
   }): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }),;
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -141,7 +141,7 @@ export class AuthStore {
         }
       } else {
         return {
-          success: false;
+          success: false,;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Registration failed'
         }
       }
@@ -149,14 +149,14 @@ export class AuthStore {
       console.error('Registration error:', error);
       return { success: false, error: 'Network error during registration' }
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }),;
     }
   }
   /**
    * Logout and clear session
    */;
   static async logout(): Promise<void> {
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }),;
     try {
       await fetch('/api/auth/logout', {
         method: 'POST',
@@ -219,7 +219,7 @@ export class AuthStore {
         authState.update(state => ({
           ...state,
           user: state.user ? { ...state.user, ...result.user } : null
-        });
+        }),;
         return { success: true }
       } else {
         return { success: false, error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Profile update failed' }
@@ -264,14 +264,14 @@ export class AuthStore {
    */;
   static hasAnyPermission(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.some(permission => state.permissions.includes(permission);
+    return permissions.some(permission => state.permissions.includes(permission),;
   }
   /**
    * Check if user has all of the specified permissions
    */;
   static hasAllPermissions(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.every(permission => state.permissions.includes(permission);
+    return permissions.every(permission => state.permissions.includes(permission),;
   }
   /**
    * Check if user can access a resource
@@ -279,7 +279,7 @@ export class AuthStore {
   static canAccessResource(
     permission: Permission
     resourceOwnerId?: string
-    isPublic = false;
+    isPublic = false,;
   ): boolean {
     const state = get(authState);
     if (!state.user) return false;
@@ -314,7 +314,7 @@ export class AuthStore {
       permissions,
       lastActivity: new Date(),
       isLoading: false
-    });
+    }),;
   }
   /**
    * Private: Clear authentication state
@@ -385,7 +385,7 @@ export class AuthStore {
     authState.update(state => ({
       ...state,
       lastActivity: new Date()
-    });
+    }),;
     // Send activity ping to server occasionally
     if (type === 'login' || Math.random() < 0.1) {
       fetch('/api/auth/activity', {
@@ -416,7 +416,7 @@ export class AuthStore {
     // You can replace this with a proper notification system
     if (browser && window.confirm(
       `Your session will expire in ${minutes} minute${minutes !== 1 ? 's' : ''}. ` +
-      'Would you like to extend your session?';
+      'Would you like to extend your session?',;
     )) {
       // Refresh session by making a request
       this.checkSession();

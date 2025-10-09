@@ -1,6 +1,6 @@
 <!--
 AI RAG Interface - Retrieval Augmented Generation for legal documents
-TODO: Implement RAG functionality, vector search, document context
+Fully integrated with LangChain RAG backend and Lucia v3 authentication
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -9,40 +9,68 @@ TODO: Implement RAG functionality, vector search, document context
 	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
 	import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 	import { FileText, Brain, Search, Zap } from 'lucide-svelte';
+
+	// RAG search state
 	let query = $state('');
 	let isSearching = $state(false);
-	let results = $state([]);
+	let results = $state<any[]>([]);
+	let answer = $state('');
+	let confidence = $state(0);
+	let processingTime = $state(0);
+	let errorMessage = $state('');
+
+	// Advanced filter state
+	let useThinkingMode = $state(false);
+	let confidenceThreshold = $state(0.7);
+
+	/**
+	 * Perform RAG search using the real API endpoint
+	 */
 	async function handleRAGSearch() {
 		if (!query.trim()) return;
+
 		isSearching = true;
+		errorMessage = '';
+		results = [];
+		answer = '';
+
 		try {
-			// TODO: Implement RAG search
-			// const response = await fetch('/api/ai/rag/search', {
-			// 	method: 'POST',
-			// 	headers: { 'Content-Type': 'application/json' },
-			// 	body: JSON.stringify({ query })
-			// })
-			// results = await (response as { json?: unknown }).json()
-			// Simulate search for now
-			setTimeout(() => {
-				results = [
-					{
-						id: 1,
-						title: 'Contract Law Precedent',
-						snippet: 'This case establishes...',
-						relevance: 0.95;
+			const startTime = performance.now();
+
+			const response = await fetch('/api/ai/rag/search', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					query,
+					options: {
+						thinkingMode: useThinkingMode,
+						confidenceThreshold,
+						maxRetrievedDocs: 5,
+						useEnhancedSemanticSearch: true,
 					},
-					{
-						id: 2,
-						title: 'Evidence Standards',
-						snippet: 'The court ruled that...',
-						relevance: 0.87;
-					}
-				];
-				isSearching = false;
-			}, 1500);
+				}),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || 'Search failed');
+			}
+
+			if (data.success) {
+				results = data.results || [];
+				answer = data.answer || '';
+				confidence = data.confidence || 0;
+				processingTime = data.metadata?.processingTime || performance.now() - startTime;
+
+				console.log(`✅ RAG search completed: ${results.length} results in ${processingTime.toFixed(0)}ms`);
+			} else {
+				throw new Error(data.error || 'Search returned no results');
+			}
 		} catch (error) {
 			console.error('RAG search failed:', error);
+			errorMessage = error instanceof Error ? error.message : 'Search failed. Please try again.';
+		} finally {
 			isSearching = false;
 		}
 	}
@@ -108,9 +136,53 @@ TODO: Implement RAG functionality, vector search, document context
 										{:else}
 											Search
 										{/if}
+									</Button>
 								</div>
 							</div>
-							<!-- Results -->
+
+							<!-- Advanced Options -->
+							<div class="flex gap-4 text-xs flex-wrap">
+								<label class="flex items-center gap-2">
+									<input type="checkbox" bind:checked={useThinkingMode} />
+									<span>Thinking Mode</span>
+								</label>
+								<label class="flex items-center gap-2">
+									<span>Confidence: {confidenceThreshold}</span>
+									<input
+										type="range"
+										bind:value={confidenceThreshold}
+										min="0.1"
+										max="1.0"
+										step="0.1"
+										class="w-24"
+									/>
+								</label>
+							</div>
+
+							<!-- Error Message -->
+							{#if errorMessage}
+								<div class="nes-container is-error">
+									<p class="text-sm">{errorMessage}</p>
+								</div>
+							{/if}
+
+							<!-- AI Answer -->
+							{#if answer}
+								<div class="nes-container with-title">
+									<p class="title">AI Analysis</p>
+									<p class="text-sm whitespace-pre-wrap">{answer}</p>
+									<div class="flex justify-between items-center mt-3 text-xs">
+										<span class="nes-badge">
+											Confidence: {Math.round(confidence * 100)}%
+										</span>
+										<span class="text-gray-400">
+											{processingTime.toFixed(0)}ms
+										</span>
+									</div>
+								</div>
+							{/if}
+
+							<!-- Source Documents -->
 							{#if results.length > 0}
 								<div class="space-y-3">
 									<h3 class="nes-text is-success text-sm">
@@ -118,14 +190,17 @@ TODO: Implement RAG functionality, vector search, document context
 									</h3>
 									{#each results as result}
 										<div class="nes-container with-title is-centered">
-											<p class="title">{(result as { title?: unknown; snippet?: unknown; relevance?: unknown }).title}</p>
-											<p class="text-sm">{(result as { title?: unknown; snippet?: unknown; relevance?: unknown }).snippet}</p>
+											<p class="title">{result.title}</p>
+											<p class="text-sm">{result.snippet}</p>
 											<div class="flex justify-between items-center mt-2">
 												<span class="nes-badge is-success">
-													{Math.round.relevance * 100)}% match
+													{Math.round((result.relevance || 0) * 100)}% match
 												</span>
-												<Button size="sm" class="nes-btn">
-													View Document
+												{#if result.metadata?.source}
+													<span class="text-xs text-gray-400">
+														{result.metadata.source}
+													</span>
+												{/if}
 											</div>
 										</div>
 									{/each}

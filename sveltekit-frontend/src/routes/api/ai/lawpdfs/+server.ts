@@ -116,7 +116,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       if (!file.name.toLowerCase().endsWith('.pdf')) {
         results.push({
           filename: file.name,
-          success: false;
+          success: false,;
           error: 'Only PDF files are supported'
         })
         continue
@@ -185,8 +185,8 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
     return json()
       {
         success: false,
-        error: 'File upload processing failed',
-        details: error instanceof Error ? error.message: String(error)
+        error,: 'File upload processing failed',
+        details,: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     )

@@ -161,7 +161,7 @@ export async function setVectorCache(
     try {
       const redisKey = `${REDIS_VECTOR_PREFIX}${key}`;
       const ttlSeconds = Math.round(VECTOR_TTL_MS / 1000);
-      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry);
+      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry),;
     } catch (error) {
       console.warn('[VectorCache] Redis set failed:', error);
     }
@@ -206,8 +206,8 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
  */
 export async function setEmbeddingCache(
   text: string
-  embedding: number[];
-  model: string = 'default';
+  embedding: number[],;
+  model: string = 'default',;
 ): Promise<void> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
@@ -229,7 +229,7 @@ export async function setEmbeddingCache(
     try {
       const redisKey = `${REDIS_EMBEDDING_PREFIX}${key}`;
       const ttlSeconds = Math.round(EMBEDDING_TTL_MS / 1000);
-      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry);
+      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry),;
     } catch (error) {
       console.warn('[EmbeddingCache] Redis set failed:', error);
     }
@@ -278,7 +278,7 @@ export function getVectorCacheStats() {
 export function withVectorCache<T>(
   cacheKey: string
   operation: () => Promise<T>,
-  ttlMs: number = VECTOR_TTL_MS;
+  ttlMs: number = VECTOR_TTL_MS,;
 ) {
   return async (): Promise<T> => {
     // Implementation for generic operation caching
@@ -297,7 +297,7 @@ export function withVectorCache<T>(
     if (redis) {
       try {
         const ttlSeconds = Math.round(ttlMs / 1000);
-        await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result);
+        await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result),;
       } catch (error) {
         console.warn('[VectorCache] Middleware set failed:', error);
       }

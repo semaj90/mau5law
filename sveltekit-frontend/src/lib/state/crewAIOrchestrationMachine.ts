@@ -58,8 +58,8 @@ export type CrewAIEvents =
 // ============================================================================
 export const crewAIOrchestrationMachine = setup({
   types: {
-    context: { [key: string]: any } as CrewAIContext,
-    events: { [key: string]: any } as CrewAIEvents
+    context: { [key,: strin,g]: any } as CrewAIContext,
+    events: { [key,: strin,g]: any } as CrewAIEvents
   },
   actors: {
     // Start multi-agent review

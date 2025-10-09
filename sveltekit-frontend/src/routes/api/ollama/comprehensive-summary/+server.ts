@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTimeMs: Date.now() - started
       }
     } satisfies APIResponse<typeof summaryResponse>, { status: 200 })
-  } catch (error) {
+  }, catch (error) {
     // 5. Provide robust error handling for unexpected issues.
     console.error('Critical error in comprehensive-summary endpoint:', error)
     let errorMessage = 'An internal server error occurred.'

@@ -170,7 +170,7 @@ export class SIMDVectorJsonParser {
     const chunkSize = Math.ceil(jsonStrings.length / this.config.parallelParsers);
     const chunks: string[][] = [];
     for (let i = 0; i < jsonStrings.length; i += chunkSize) {
-      chunks.push(jsonStrings.slice(i, i + chunkSize);
+      chunks.push(jsonStrings.slice(i, i + chunkSize),;
     }
     return chunks;
   }
@@ -180,7 +180,7 @@ export class SIMDVectorJsonParser {
   private async parseChunkSIMD(
     chunk: string[]
     chunkIndex: number
-    alignedMemory: ArrayBuffer;
+    alignedMemory: ArrayBuffer,;
   ): Promise<ChunkParseResult> {
     const startTime = performance.now();
     const vectors: Float32Array[] = [];
@@ -196,7 +196,7 @@ export class SIMDVectorJsonParser {
       const cachedVector = this.parseCache.get(cacheKey);
       if (cachedVector) {
         vectors.push(cachedVector);
-        metadata.push(this.createMetadata(cacheKey, cachedVector);
+        metadata.push(this.createMetadata(cacheKey, cachedVector),;
         continue;
       }
       try {
@@ -205,7 +205,7 @@ export class SIMDVectorJsonParser {
         // Extract vector data with SIMD processing
         const vector = this.extractVectorSIMD(parsed, alignedMemory, alignedOffset + i * this.config.vectorDimensions * 4);
         vectors.push(vector);
-        metadata.push(this.createMetadata(cacheKey, vector);
+        metadata.push(this.createMetadata(cacheKey, vector),;
         // Cache the result
         if (this.parseCache.size < 10000) { // Cap cache size
           this.parseCache.set(cacheKey, vector);
@@ -230,8 +230,8 @@ export class SIMDVectorJsonParser {
    */
   private extractVectorSIMD(
     parsed: any
-    alignedMemory: ArrayBuffer;
-    offset: number;
+    alignedMemory: ArrayBuffer,;
+    offset: number,;
   ): Float32Array {
     // Create aligned view into memory
     const alignedView = new Float32Array(alignedMemory, offset, this.config.vectorDimensions);
@@ -267,14 +267,14 @@ export class SIMDVectorJsonParser {
     const simdWidth = 8; // AVX2 processes 8 floats
     let i = 0;
     // Process in SIMD chunks
-    for (i + simdWidth <= source.length; i += simdWidth) {
+    for (i + simdWidth <= source.length; i += simdWidth,) {
       // Simulated AVX2 operation
       for (let j = 0; j < simdWidth; j++) {
         target[i + j] = parseFloat(source[i + j]);
       }
     }
     // Handle remaining elements
-    for (i < source.length && i < target.length; i++) {
+    for (i < source.length && i < target.length; i++,) {
       target[i] = parseFloat(source[i]);
     }
   }
@@ -285,14 +285,14 @@ export class SIMDVectorJsonParser {
     const simdWidth = 4; // SSE4 processes 4 floats
     let i = 0;
     // Process in SIMD chunks
-    for (i + simdWidth <= source.length; i += simdWidth) {
+    for (i + simdWidth <= source.length; i += simdWidth,) {
       // Simulated SSE4 operation
       for (let j = 0; j < simdWidth; j++) {
         target[i + j] = parseFloat(source[i + j]);
       }
     }
     // Handle remaining elements
-    for (i < source.length && i < target.length; i++) {
+    for (i < source.length && i < target.length; i++,) {
       target[i] = parseFloat(source[i]);
     }
   }
@@ -326,7 +326,7 @@ export class SIMDVectorJsonParser {
    */;
   private hashVector(vector: Float32Array): string {
     let hash = 0;
-    const step = Math.max(1, Math.floor(vector.length / 100); // Sample for speed
+    const step = Math.max(1, Math.floor(vector.length / 100),; // Sample for speed
     for (let i = 0; i < vector.length; i += step) {
       hash = ((hash << 5) - hash + vector[i] * 10000) & 0xffffffff;
     }
@@ -341,14 +341,14 @@ export class SIMDVectorJsonParser {
       // AVX2 optimized norm calculation
       const simdWidth = 8;
       let i = 0;
-      for (i + simdWidth <= vector.length; i += simdWidth) {
+      for (i + simdWidth <= vector.length; i += simdWidth,) {
         for (let j = 0; j < simdWidth; j++) {
           const val = vector[i + j];
           sum += val * val;
         }
       }
       // Handle remaining
-      for (i < vector.length; i++) {
+      for (i < vector.length; i++,) {
         const val = vector[i];
         sum += val * val;
       }
@@ -372,7 +372,7 @@ export class SIMDVectorJsonParser {
       allMetadata.push(...result.metadata);
     }
     return {
-      vectors: allVectors;
+      vectors: allVectors,;
       metadata: allMetadata
       parseStatistics: {
         totalVectors: allVectors.length,
@@ -440,7 +440,7 @@ export class SIMDVectorJsonParser {
     this.parseCache.clear();
     this.memoryPool.length = 0;
     // Terminate workers
-    this.parseWorkers.forEach(worker => worker.terminate();
+    this.parseWorkers.forEach(worker => worker.terminate(),;
     this.parseWorkers.length = 0;
     console.log('🧹 SIMD parser cleanup completed');
   }

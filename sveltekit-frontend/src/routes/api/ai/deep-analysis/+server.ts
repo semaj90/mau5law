@@ -82,8 +82,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json()
       {
         error: 'Analysis failed',
-        message: error.message,
-        processingTime: Date.now() - startTime;
+        message,: error.message,
+        processingTime,: Date.now() - startTime;
       },
       { status: 500 }
     )

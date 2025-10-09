@@ -65,7 +65,7 @@ function detectIntent(queryText: string): string {
   return "general-inquiry";
 }
 export function normalize(vector: number[]): number[] {
-  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
+  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0),;
   return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
 }
 export class SOMGrid {
@@ -82,7 +82,7 @@ export class SOMGrid {
       for (let j = 0; j < width; j++) {
         this.grid[i][j] = {
           x: j
-          y: i;
+          y: i,;
           intent: "unknown"
         }
       }
@@ -103,7 +103,7 @@ export class SOMGrid {
     if (!Array.isArray(intents) || intents.length === 0) {
       console.log("No intents provided; defaulting to 'unknown'");
     }
-    const count = Math.min(vectors.length, Math.max(intents.length, 1);
+    const count = Math.min(vectors.length, Math.max(intents.length, 1),;
     for (let i = 0; i < count; i++) {
       const intent = intents[i] ?? "unknown";
       const x = i % this.width;

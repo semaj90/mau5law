@@ -72,7 +72,7 @@ class EvidenceProcessingService {
       steps: request.steps,
       currentStep: request.steps.length > 0 ? request.steps[0] : null
       stepProgress: 0,
-      results: { [key: string]: any },
+      results: { [key,: strin,g]: any },
       error: null
       startTime: new Date(),
       processingTime: 0,
@@ -162,7 +162,7 @@ class EvidenceProcessingService {
     } catch (err: any) {
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'error'
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).error = err?.message ?? String(err)
-      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).endTime = new Date()
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).endTime, = new Date()
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).processingTime = (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime ? Date.now() - (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime.getTime() : 0
       this.processingJobs.set(jobId, result)
     }

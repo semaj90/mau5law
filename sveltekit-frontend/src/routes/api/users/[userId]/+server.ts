@@ -139,7 +139,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'User ID is required' }, { status: 400 })
     }
     // Prevent self-deletion
-    if (locals.user.id === userId) {
+    if (getUserId(locals) === userId) {
       return json({ error: 'Cannot delete your own account' }, { status: 400 })
     }
     // Check if user exists

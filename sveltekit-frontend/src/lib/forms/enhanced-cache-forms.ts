@@ -41,7 +41,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
     handler: z.string(),
     action: z.string(),
     notes: z.string().optional()
-  })).default([]);
+  })).default([]),;
 }).omit({
   id: true
   createdAt: true
@@ -58,7 +58,7 @@ export class CacheFirstFormManager {
   private autosaveTimers = new Map<string, NodeJS.Timeout>();
   // Form state stores
   public activeForms = writable<string[]>([]);
-  public formErrors = writable<{ [key: string]: any }({});
+  public formErrors = writable<{ [key,: strin,g]: any }({});
   public formProgress = writable<Record<string, number>({});
   // ===== ENHANCED CASE FORM =====
   createEnhancedCaseForm(initialData?: Partial<EnhancedCaseForm>) {
@@ -70,7 +70,7 @@ export class CacheFirstFormManager {
       status: 'open',
       priority: 'medium',
       userId: '', // Will be filled from session
-      metadata: { [key: string]: any },
+      metadata: { [key,: strin,g]: any },
       attachments: [],
       jurisdiction: '',
       clientContact: {
@@ -90,14 +90,14 @@ export class CacheFirstFormManager {
       {
         SPA: true
         validators: zod(EnhancedCaseFormSchema),
-        resetForm: false
+        resetForm,: false
         invalidateAll: false
         // Cache-first validation
         onUpdate: ({ form }) => {
           this.handleFormUpdate(formId, form.data);
           this.startAutosave(formId, form.data);
         },
-        onSubmit: ({ formData, cancel }) => {
+        onSubmit,: ({ formData, cancel }) => {
           // Prevent submission if not on final step
           const currentData = this.formCache.get(formId);
           if (currentData?.step < 4) {
@@ -106,7 +106,7 @@ export class CacheFirstFormManager {
             return;
           }
         },
-        onResult: async ({ result, formEl, cancel }) => {
+        onResult,: async ({ result, formEl, cancel }) => {
           if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
             // Cache the created case immediately
             const caseData = (result as { type?: any; data?: any; error?: any }).data as any;
@@ -115,11 +115,11 @@ export class CacheFirstFormManager {
             this.cleanupForm(formId);
           }
         },
-        onError: ({ result }) => {
+        onError,: ({ result }) => {
           this.formErrors.update(errors => ({
             ...errors,
             [formId]: (result as { type?: any; data?: any; error?: any }).error
-          });
+          }),;
         }
       }
     );
@@ -147,7 +147,7 @@ export class CacheFirstFormManager {
       description: '',
       relevanceScore: 5,
       confidentialityLevel: 'restricted',
-      analysisResults: { [key: string]: any },
+      analysisResults: { [key,: strin,g]: any },
       tags: [],
       chain_of_custody: [],
       file: null as any, // Will be set by file input
@@ -160,7 +160,7 @@ export class CacheFirstFormManager {
       {
         SPA: true
         validators: zod(EvidenceUploadFormSchema),
-        onUpdate: ({ form }) => {
+        onUpdate,: ({ form }) => {
           this.handleFormUpdate(formId, form.data);
           // Auto-generate title from file name
           const formData = form.data as any;
@@ -168,7 +168,7 @@ export class CacheFirstFormManager {
             formData.title = formData.file.name.replace(/\.[^/.]+$/, '');
           }
         },
-        onSubmit: async ({ formData, cancel }) => {
+        onSubmit,: async ({ formData, cancel }) => {
           // Handle file upload first
           const file = formData.get('file') as File;
           if (file) {
@@ -176,7 +176,7 @@ export class CacheFirstFormManager {
             await this.uploadFileWithProgress(formId, file);
           }
         },
-        onResult: async ({ result }) => {
+        onResult,: async ({ result }) => {
           if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
             const evidenceData = (result as { type?: any; data?: any; error?: any }).data as any;
             await cacheFirstService.createEvidence(evidenceData);
@@ -240,7 +240,7 @@ export class CacheFirstFormManager {
     this.formProgress.update(current => ({
       ...current,
       [formId]: progress
-    });
+    }),;
   }
   private updateActiveForm(formId: string) {
     this.activeForms.update(forms => [...forms, formId]);
@@ -248,7 +248,7 @@ export class CacheFirstFormManager {
   private cleanupForm(formId: string) {
     this.formCache.delete(formId);
     this.clearAutosave(formId);
-    this.activeForms.update(forms => forms.filter(id => id !== formId);
+    this.activeForms.update(forms => forms.filter(id => id !== formId),;
     this.formErrors.update(errors => {
       delete errors[formId];
       return errors;
@@ -281,7 +281,7 @@ export class CacheFirstFormManager {
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
           data: formData
           timestamp: new Date().toISOString()
-        });
+        }),;
         console.log(`Draft saved for form ${formId}`);
       } catch (error) {
         console.error('Failed to save draft:', error);
@@ -319,11 +319,11 @@ export class CacheFirstFormManager {
           // removed unused response assignment
           resolve((response as { fileUrl?: any }).fileUrl);
         } else {
-          reject(new Error(`Upload failed: ${xhr.statusText}`);
+          reject(new Error(`Upload failed: ${xhr.statusText}`),;
         }
       });
       xhr.addEventListener('error', () => {
-        reject(new Error('Upload failed');
+        reject(new Error('Upload failed'),;
       });
       xhr.open('POST', '/api/upload');
       xhr.send(formData);

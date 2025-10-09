@@ -70,7 +70,7 @@ export const GET: RequestHandler = async () => {
         { status: 200 }
       )
     }
-  } catch (err: any) {
+  }, catch (err: any) {
     console.warn('gpu-status: ollama health check failed:', err?.message ?? err)
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       return json({ ok: false, source: 'cache', gpu: cached.payload.gpu, reason: 'health_check_error' }, { status: 200 })

@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'brief',)
         {
           jurisdiction: 'Federal District Court',
-          practiceAreas: ['Contract Law', 'Commercial Litigation']
+          practiceAreas,: ['Contract Law', 'Commercial Litigation']
         }
       )
       // Step 3: Test semantic search with Redis caching
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: 'Invalid action',
       available_actions: ['demo', 'health', 'stress-test']
     }, { status: 400 })
-  } catch (error) {
+  }, catch (error) {
     console.error('❌ Full stack demo failed:', error)
     return json({
       success: false,
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: 'Invalid request',
       expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search'
     }, { status: 400 })
-  } catch (error) {
+  }, catch (error) {
     console.error('❌ Custom test failed:', error)
     return json({
       success: false,

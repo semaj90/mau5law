@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       console.log('Enhanced RAG service unavailable, using fallback validation')
     }
     // Simulate comprehensive validation stages
-    await new Promise(resolve => setTimeout(resolve, 100); // Simulate processing time
+    await new Promise(resolve => setTimeout(resolve, 100),; // Simulate processing time
     response.progress = {
       stage: 'completed',
       percentage: 100,

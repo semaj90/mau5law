@@ -191,11 +191,11 @@ export const POST: RequestHandler = async ({ request }) => {
     return json()
       {
         success: false,
-        error: err.message,
-        processingTime: errorTime
+        error,: err.message,
+        processingTime,: errorTime
         timestamp: new Date().toISOString(),
-        stack: err.stack,
-        troubleshooting: {
+        stack,: err.stack,
+        troubleshooting,: {
           commonIssues: [
             'WebAssembly module not found or failed to load',
             'PostgreSQL or Qdrant connection issues',
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
             'Embedding service unavailable',
             'Memory allocation issues in WASM runtime'
           ],
-          solutions: [
+          solutions,: [
             'Check if all services are running (npm run dev:full)',
             'Verify database connections and Qdrant collection setup',
             'Test individual components separately',
@@ -214,10 +214,10 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       {
         status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': errorTime.toString(),
-          'X-Error-Source': 'wasm-inference-test'
+        headers,: {
+          'Content-Type',: 'application/json',
+          'X-Processing-Time',: errorTime.toString(),
+          'X-Error-Source',: 'wasm-inference-test'
         }
       }
     )
@@ -270,8 +270,8 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         status: 'unhealthy',
-        error: err.message,
-        timestamp: new Date().toISOString()
+        error,: err.message,
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

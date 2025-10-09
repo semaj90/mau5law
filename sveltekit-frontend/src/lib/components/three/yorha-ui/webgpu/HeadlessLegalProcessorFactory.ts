@@ -248,8 +248,8 @@ export class HeadlessLegalProcessorFactory {
    * Process document through LOD cache engine
    */
   private async processWithLODCache(
-    text: string;
-    config: HeadlessProcessingConfig;
+    text: string,;
+    config: HeadlessProcessingConfig,;
   ): Promise<any> {
     const context = {
       session_id: `headless-${Date.now()}`,
@@ -272,7 +272,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async generateMipmapVisualizations(
     lodEntry: LODCacheEntry
-    config: HeadlessProcessingConfig;
+    config: HeadlessProcessingConfig,;
   ): Promise<any> {
     if (!this.device || !config.enableMipmapGeneration) return null;
     console.log('🖼️ Generating headless mipmap visualizations...');
@@ -288,11 +288,11 @@ export class HeadlessLegalProcessorFactory {
       renderTarget.texture,);
       {
         maxMipLevels: 8,
-        filterMode: 'linear',
-        enableOptimizations: true
+        filterMode,: 'linear',
+        enableOptimizations,: true
         rtxOptimized: true
         enableStreaming: config.enableStreamingOptimization,
-        maxTextureSize: config.maxTextureSize
+        maxTextureSize,: config.maxTextureSize
       }
     );
     // Cleanup render target
@@ -323,7 +323,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async renderDocumentToTexture(
     lodEntry: LODCacheEntry
-    renderTarget: OffscreenRenderTarget;
+    renderTarget: OffscreenRenderTarget,;
   ): Promise<void> {
     if (!this.device) return;
     console.log('🎨 Rendering document to offscreen texture...');
@@ -332,11 +332,11 @@ export class HeadlessLegalProcessorFactory {
     // Begin render pass with offscreen target
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{,
-        view: renderTarget.texture.createView(),
-        clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
-        loadOp: 'clear',
-        storeOp: 'store'
-      }]
+        view,: renderTarget.texture.createView(),
+        clearValue,: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
+        loadOp,: 'clear',
+        storeOp,: 'store'
+      },]
     });
     // Render document visualization using compressed data
     // (This would involve creating a render pipeline and drawing the document)
@@ -348,21 +348,21 @@ export class HeadlessLegalProcessorFactory {
    * Perform legal AI analysis using Ollama integration
    */
   private async performLegalAnalysis(
-    text: string
-    lodEntry: LODCacheEntry;
+    text,: string
+    lodEntry,: LODCacheEntr,y;
   ): Promise<any> {
-    console.log('⚖️ Performing legal AI analysis...');
-    try {
+    console,.log('⚖️ Performing legal AI analysis...',);
+    try, {
       // Use compressed representations for efficient analysis
-      const analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry);
+      const, analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry,);
       // Call Ollama service for legal analysis
-      const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
+      const, response = await (ollamaService as any).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available;
         stream: false
-      });
+      }),;
       // Parse response for structured legal analysis
-      return this.parseLegalAnalysisResponse(response);
-    } catch (error) {
+      return, this.parseLegalAnalysisResponse(response,);
+    }, catch (error) {
       console.warn('Legal analysis failed, using fallback:', error);
       return this.generateFallbackAnalysis(text);
     }
@@ -370,7 +370,7 @@ export class HeadlessLegalProcessorFactory {
   /**
    * Build legal analysis prompt using LOD data
    */;
-  private buildLegalAnalysisPrompt(text: string, lodEntry: LODCacheEntry): string {
+  private buildLegalAnalysisPrompt(text,: string, lodEntr,y: LODCacheEntr,y): string {
     const contextAnchors = lodEntry.vector_metadata.context_anchors.join(', ');
     return `Analyze this legal document for key entities, risk factors, and compliance issues:
 Context Keywords: ${contextAnchors}
@@ -388,7 +388,7 @@ Format your response as structured JSON.`;
   /**
    * Parse legal analysis response into structured format
    */;
-  private parseLegalAnalysisResponse(response: any): any {
+  private parseLegalAnalysisResponse(response,: any,): any {
     // Would implement proper parsing of Ollama response
     return {
       confidence: 0.85,
@@ -402,7 +402,7 @@ Format your response as structured JSON.`;
   /**
    * Generate fallback analysis if Ollama fails
    */;
-  private generateFallbackAnalysis(text: string): any {
+  private generateFallbackAnalysis(text,: string,): any {
     return {
       confidence: 0.6,
       entities: [],
@@ -414,28 +414,28 @@ Format your response as structured JSON.`;
    * Save processing outputs to files
    */
   private async saveOutputFiles(
-    lodResult: any
-    mipmapResult: any
-    config: HeadlessProcessingConfig;
+    lodResult,: any
+    mipmapResult,: any
+    config,: HeadlessProcessingConfi,g;
   ): Promise<string[]> {
-    const outputFiles: string[] = [];
-    const baseDir = config.fileOutputPath || './headless-output';
+    const, outputFile,s: stri,ng,[], = [];
+    const, baseDir = config.fileOutputPath || './headless-output,';
     // Would implement actual file saving
-    console.log(`💾 Would save outputs to ${baseDir}`);
-    return outputFiles;
+    console,.log(`💾 Would save outputs to ${baseDir}`,);
+    return, outputFile,s;
   }
   /**
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: Array<any>;
+    documents,: Array<any,>;
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult[]> {
-    console.log(`📦 Processing ${documents.length} documents in headless batch mode`);
-    const results: HeadlessProcessingResult[] = [];
-    const concurrentLimit = config.concurrentProcessingLimit || 4;
+    console,.log(`📦 Processing ${documents.length} documents in headless batch mode`,);
+    const, result,s: HeadlessProcessingResu,lt,[], = [];
+    const, concurrentLimit = config.concurrentProcessingLimit ||, 4;
     // Process in batches to avoid overwhelming the GPU
-    for (let i = 0; i < documents.length; i += concurrentLimit) {
+    for (let, i =, 0;, i < docume,nts.le,ngt,h; i += concurren,tLimit) {
       const batch = documents.slice(i, i + concurrentLimit);
       const batchPromises = batch.map(doc =>;
         this.processLegalDocument(doc.text, {
@@ -452,7 +452,7 @@ Format your response as structured JSON.`;
   /**
    * Get processing statistics
    */;
-  getStats() {
+  getStats(), {
     return {
       isInitialized: this.isInitialized,
       hasDevice: !!this.device,
@@ -463,7 +463,7 @@ Format your response as structured JSON.`;
   /**
    * Cleanup resources
    */;
-  dispose() {
+  dispose(), {
     if (this.device) {
       // Cleanup WebGPU resources
       console.log('🧹 Disposing headless processor resources');

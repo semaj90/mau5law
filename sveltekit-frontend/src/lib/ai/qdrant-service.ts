@@ -99,15 +99,15 @@ export class QdrantService {
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
-      wait: true;
+      wait: true,;
       points: points
     });
   }
   async searchSimilar(
-    vector: number[];
+    vector: number[],;
     limit: number = 10,
     filter?: { [key: string]: any },
-  ): Promise<Array<any> {
+  ): Promise<Array<any>, {
     await this.ensureCollection();
     const searchResult = await this.client.search(this.collectionName, {
       vector,
@@ -120,11 +120,11 @@ export class QdrantService {
       id: (result as { id?: any; score?: any; payload?: any }).id as string,
       score: (result as { id?: any; score?: any; payload?: any }).score,
       payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata
-    });
+    }),;
   }
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
-      wait: true;
+      wait: true,;
       points: ids
     });
   }

@@ -51,7 +51,7 @@ export interface GPUApiResponse {
 	metadata: { [key: string]: any }
 }
 // Health check for all GPU services
-async function checkGPUHealth(): Promise<{ [key: string]: any } {
+async function checkGPUHealth(): Promise<{ [key: string]: any }, {
 	const health: { [key: string]: any } = {}
 	try {
 		// Check NVIDIA LLaMA service
@@ -104,7 +104,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any } {
 		if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
 			const serviceHealth = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json()
 			health.wasm_llvm_service = {
-				available: true;
+				available: true,;
 				status: 'healthy',
 				...serviceHealth
 			}
@@ -229,7 +229,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 					type: operationType as any
 					data,
 					priority: options.priority || 'medium',
-					metadata: { [key: string]: any }
+					metadata: { [key,: strin,g]: any }
 				})
 				result = task.result
 				serviceUsed = 'gpu_service_integration'
@@ -351,7 +351,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 						error: error instanceof Error ? error.message: 'LLaMA generation failed',
 						serviceUsed: 'nvidia_llama',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key: string]: any }
+						metadata: { [key,: strin,g]: any }
 					}
 				}
 				break
@@ -389,7 +389,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 						error: error instanceof Error ? error.message: 'WASM operation failed',
 						serviceUsed: 'wasm_llvm_service',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key: string]: any }
+						metadata: { [key,: strin,g]: any }
 					}
 				}
 				break
@@ -421,7 +421,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 						error: error instanceof Error ? error.message: 'GPU compute failed',
 						serviceUsed: 'gpu_service_integration',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key: string]: any }
+						metadata: { [key,: strin,g]: any }
 					}
 				}
 				break
@@ -460,7 +460,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			error: error instanceof Error ? error.message: 'Unknown error',
 			serviceUsed: 'error',
 			performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-			metadata: { [key: string]: any }
+			metadata: { [key,: strin,g]: any }
 		}, { status: 500 })
 	}
 }

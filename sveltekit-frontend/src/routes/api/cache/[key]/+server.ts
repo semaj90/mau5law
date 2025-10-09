@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params }) => {
       timestamp: entry.timestamp,
       ttl: entry.ttl
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('[Cache API] Individual key fetch failed:', error)
     return json(
       { success: false, error: error.message },)

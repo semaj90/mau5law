@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         citation
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     })
@@ -130,7 +130,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         message: 'Citation updated successfully'
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         citationId,
         timestamp: new Date().toISOString(),
         action: 'citation_updated'
@@ -197,7 +197,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         deletedCitationId: citationId
         timestamp: new Date().toISOString(),
         action: 'citation_deleted'

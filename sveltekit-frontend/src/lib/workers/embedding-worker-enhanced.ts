@@ -236,7 +236,7 @@ export class EnhancedEmbeddingWorker {
    * Process jobs for a specific model
    */
   private async processModelBatch(
-    jobs: EmbeddingJob[];
+    jobs: EmbeddingJob[],;
     model: string
     batchId: string
   ): Promise<void> {
@@ -375,7 +375,7 @@ export class EnhancedEmbeddingWorker {
    * Set cached embedding with compression
    */
   private async setCachedEmbedding(
-    text: string;
+    text: string,;
     embedding: number[]
     model?: string
   ): Promise<void> {
@@ -410,7 +410,7 @@ export class EnhancedEmbeddingWorker {
   private async upsertEmbeddingToDB(
     id: string
     model: string
-    embedding: number[];
+    embedding: number[],;
     meta: Record<string, unknown>
   ): Promise<void> {
     try {

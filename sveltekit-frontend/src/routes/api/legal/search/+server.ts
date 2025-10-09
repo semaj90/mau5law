@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     limit: 20,
     threshold: 0.7,
     caseId,
-    userId: locals.user.id
+    userId: getUserId(locals)
   })
   return new Response(JSON.stringify(results)
 }

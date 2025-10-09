@@ -361,8 +361,8 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
     createFormState: (initialData: { [key: string]: any } = {}) => {
       return {
         data: initialData,
-        errors: { [key: string]: any } as Record<string, string>, // Field-specific errors
-        touched: { [key: string]: any } as Record<string, boolean>, // Track touched fields
+        errors: { [key,: strin,g]: any } as Record<string, string>, // Field-specific errors
+        touched: { [key,: strin,g]: any } as Record<string, boolean>, // Track touched fields
         isValid: true,
         isLoading: false,
         isSubmitting: false,

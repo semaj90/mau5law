@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     }
     console.log(`✅ Job status retrieved: ${jobId} - ${job.status}`)
     return json(response)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error(`❌ GET /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
         success: false,
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     const existingData = await redis.get(jobKey)
     if (!existingData) {
       return json({
-          success: false;
+          success: false,;
           error: 'Job not found'
         },)
         { status: 404 }
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     // Store results if provided
     if (updateData.results) {
       const resultsKey = `results:${jobId}`
-      await redis.setex(resultsKey, 86400, JSON.stringify(updateData.results); // Keep results for 24h
+      await redis.setex(resultsKey, 86400, JSON.stringify(updateData.results),; // Keep results for 24h
     }
     // Update metadata if provided
     if (updateData.metadata) {
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     }
     console.log(`✅ Job status updated: ${jobId} - ${job.status}`)
     return json(response)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error(`❌ POST /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
         success: false,
@@ -278,7 +278,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     // Can only cancel queued or processing jobs
     if (!['queued', 'processing'].includes(job.status)) {
       return json({
-          success: false;
+          success: false,;
           error: `Cannot cancel job with status: ${job.status}`
         },)
         { status: 400 }
@@ -330,7 +330,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     }
     console.log(`✅ Job cancelled: ${jobId}`)
     return json(response)
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error(`❌ DELETE /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
         success: false,

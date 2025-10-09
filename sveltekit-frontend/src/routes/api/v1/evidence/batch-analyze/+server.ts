@@ -11,6 +11,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 
+import { getUserId } from '$lib/server/auth/utils';
 // Batch analysis schemas
 const BatchAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -363,7 +364,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           metadata: {
             model_used: await getOptimalModel(),
             processed_at: new Date().toISOString(),
-            user_id: isTestMode ? 'test-user' : locals.user.id,
+            user_id: isTestMode ? 'test-user' : getUserId(locals),
           },
         },
       },

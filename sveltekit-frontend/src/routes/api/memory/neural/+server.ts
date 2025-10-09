@@ -97,11 +97,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       },)
       {
         status: 429,
-        headers: {
-          'Retry-After': rateLimitResult.retryAfter.toString(),
-          'X-RateLimit-Limit': '100',
-          'X-RateLimit-Remaining': Math.max(0, 100 - rateLimitResult.count).toString(),
-          'X-RateLimit-Reset': new Date(Date.now() + rateLimitResult.retryAfter * 1000).toISOString()
+        headers,: {
+          'Retry-After',: rateLimitResult.retryAfter.toString(),
+          'X-RateLimit-Limit',: '100',
+          'X-RateLimit-Remaining',: Math.max(0, 100 - rateLimitResult.count).toString(),
+          'X-RateLimit-Reset',: new Date(Date.now() + rateLimitResult.retryAfter * 1000).toISOString()
         }
       }
     )
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   })
   if (!rateLimitResult.allowed) {
     return json({
-        success: false;
+        success: false,;
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       },)

@@ -36,8 +36,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json()
     const { caseId, evidenceIds, patternTypes, sensitivity, options = {} } = PatternDetectionSchema.parse(body)
     // Create service instances
-    const casesService = new CasesCRUDService(locals.user.id)
-    const evidenceService = new EvidenceCRUDService(locals.user.id)
+    const casesService = new CasesCRUDService(getUserId(locals))
+    const evidenceService = new EvidenceCRUDService(getUserId(locals))
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       evidence = await Promise.all(
         evidenceIds.map(id => evidenceService.getById(id)
       )
-      evidence = evidence.filter(Boolean); // Remove null results
+      evidence = evidence.filter(Boolean),; // Remove null results
     } else {
       // Get all case evidence
       const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 })
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           timestamp: new Date().toISOString(),
           sensitivity,
           patternTypes: patternTypes || 'all',
-          analyzedBy: locals.user.id,
+          analyzedBy: getUserId(locals),
           patternsFound: patternResults.patterns.length,
           anomaliesFound: patternResults.anomalies.length
         }
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: locals.user.id,
+        userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'pattern_detection_completed'
       }

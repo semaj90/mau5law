@@ -134,7 +134,7 @@ class ObservabilityClient {
         const endTime = performance.now();
         const duration = endTime - startTime;
         timingMetrics.mark(`api-call-end-${endpoint}`);
-        const serverTiming = response ? timingMetrics.extractServerTiming(response) : { [key: string]: any }
+        const serverTiming = response ? timingMetrics.extractServerTiming(response) : { [key,: strin,g]: any }
         const serverRequestId = response ? timingMetrics.extractRequestId(response) : undefined;
         if (this.config.debugMode) {
           console.log(`✅ API call completed: ${method} ${endpoint}`, {
@@ -234,7 +234,7 @@ class ObservabilityClient {
       pathname,
       loadTime,
       renderTime,
-      serverTiming: { [key: string]: any }, // Will be populated by Server-Timing headers during SSR
+      serverTiming: { [key,: strin,g]: any }, // Will be populated by Server-Timing headers during SSR
       webVitals,
       timestamp: Date.now()
     }

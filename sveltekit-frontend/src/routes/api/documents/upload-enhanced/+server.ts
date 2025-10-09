@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       console.error(`❌ Document processing failed: ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error}`)
       return json({
-        success: false;
+        success: false,;
         error: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error || 'Upload processing failed',
         processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails
       }, { status: 500 })
@@ -99,11 +99,11 @@ export const GET: RequestHandler = async () => {
     supportedFormats: [
       { extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
       { extension: 'doc', mimeType: 'application/msword', description: 'Microsoft Word Document', aiProcessing: true },)
-      { extension: 'docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', description: 'Microsoft Word Document (Modern)', aiProcessing: true },
-      { extension: 'txt', mimeType: 'text/plain', description: 'Plain Text', aiProcessing: true },
-      { extension: 'md', mimeType: 'text/markdown', description: 'Markdown Document', aiProcessing: true },
-      { extension: 'html', mimeType: 'text/html', description: 'HTML Document', aiProcessing: true },
-      { extension: 'rtf', mimeType: 'application/rtf', description: 'Rich Text Format', aiProcessing: true }
+      { extension: 'docx', mimeType,: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', descriptio,n: 'Microsoft Word Document (Modern)', aiProcessi,ng: true },
+      { extension: 'txt', mimeType,: 'text/plain', descriptio,n: 'Plain Text', aiProcessi,ng: true },
+      { extension: 'md', mimeType,: 'text/markdown', descriptio,n: 'Markdown Document', aiProcessi,ng: true },
+      { extension: 'html', mimeType,: 'text/html', descriptio,n: 'HTML Document', aiProcessi,ng: true },
+      { extension: 'rtf', mimeType,: 'application/rtf', descriptio,n: 'Rich Text Format', aiProcessi,ng: true }
     ],
     enhancedFeatures: [
       'Automatic text extraction from multiple formats',
@@ -115,14 +115,14 @@ export const GET: RequestHandler = async () => {
       'Real-time confidence scoring for extraction quality',
       'Automatic title generation from document content'
     ],
-    aiCapabilities: {
+    aiCapabilities,: {
       textExtraction: 'Advanced multi-format extraction',
-      documentClassification: 'Legal-specific ML classification',
-      semanticIndexing: 'Vector-based semantic chunking',
-      searchIntegration: 'Real-time enhanced search integration',
-      confidenceScoring: 'AI-powered quality assessment'
+      documentClassification,: 'Legal-specific ML classification',
+      semanticIndexing,: 'Vector-based semantic chunking',
+      searchIntegration,: 'Real-time enhanced search integration',
+      confidenceScoring,: 'AI-powered quality assessment'
     },
     apiVersion: '2.0',
-    processingEngine: 'LangChain RAG + Enhanced Semantic Search'
+    processingEngine,: 'LangChain RAG + Enhanced Semantic Search'
   })
 }

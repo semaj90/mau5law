@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Error fetching documents:', error)
     return json()
-      { error: 'Failed to fetch documents', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to fetch documents', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }
@@ -207,10 +207,10 @@ export const POST: RequestHandler = async ({ request }) => {
       embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
       message: 'Document created successfully'
     }, { status: 201 })
-  } catch (error) {
+  }, catch (error) {
     console.error('Error creating document:', error)
     return json()
-      { error: 'Failed to create document', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to create document', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }
@@ -288,7 +288,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
   } catch (error) {
     console.error('Error updating document:', error)
     return json()
-      { error: 'Failed to update document', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to update document', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }
@@ -324,7 +324,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Error deleting document:', error)
     return json()
-      { error: 'Failed to delete document', details: error instanceof Error ? error.message: String(error) },
+      { error: 'Failed to delete document', details,: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     )
   }

@@ -49,9 +49,9 @@ export const GET: RequestHandler = async () => {
     return json()
       {
         success: false,
-        error: error.message,
-        stack: error.stack,
-        timestamp: new Date().toISOString()
+        error,: error.message,
+        stack,: error.stack,
+        timestamp,: new Date().toISOString()
       },
       { status: 500 }
     )

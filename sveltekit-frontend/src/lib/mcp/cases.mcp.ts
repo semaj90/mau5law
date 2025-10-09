@@ -122,7 +122,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
         updatedAt: new Date()
       })
       .where(eq(schema.cases.id, caseId)
-      .returning();
+      .returning(),;
     if (!updated) {
       return { success: false, error: 'Case not found' }
     }
@@ -132,7 +132,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     // Publish update event
     await cache.publish('case:updated', {
       caseId,
-      changes: updates;
+      changes: updates,;
       timestamp: Date.now()
     });
     console.log(`✅ Case ${caseId} updated`);
@@ -164,7 +164,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       type: evidence.evidenceType,
       evidenceType: evidence.evidenceType,
       createdBy: 'system', // TODO: get from context
-      tags: evidence.tags ? JSON.stringify(evidence.tags) : null;
+      tags: evidence.tags ? JSON.stringify(evidence.tags) : null,;
       metadata: evidence
       createdAt: new Date()
     }).returning();
@@ -209,10 +209,10 @@ export async function searchCases(query: string, userId: string, filters?: {
       );
     }
     if (filters?.status) {
-      conditions.push(eq(schema.cases.status, filters.status);
+      conditions.push(eq(schema.cases.status, filters.status),;
     }
     if (filters?.priority) {
-      conditions.push(eq(schema.cases.priority, filters.priority);
+      conditions.push(eq(schema.cases.priority, filters.priority),;
     }
     // Execute search
     const results = await db.query.cases.findMany({
@@ -259,7 +259,7 @@ export async function getUserCases(userId: string, options: {
     }
     let conditions = [eq(schema.cases.userId, userId)];
     if (status) {
-      conditions.push(eq(schema.cases.status, status);
+      conditions.push(eq(schema.cases.status, status),;
     }
     const cases = await db.query.cases.findMany({
       where: and(...conditions),
@@ -271,7 +271,7 @@ export async function getUserCases(userId: string, options: {
     const [{ count }] = await db
       .select({ count: sql`count(*)`.mapWith(Number) })
       .from(schema.cases)
-      .where(and(...conditions);
+      .where(and(...conditions),;
     const result = { cases: cases as CaseData[], totalCount: count }
     // Cache for 2 minutes (TTL will be converted from seconds to ms)
     await cache.set(cacheKey, result, 120);
@@ -294,10 +294,10 @@ async function generateCaseNumber(): Promise<string> {
     .from(schema.cases)
     .where(like(schema.cases.caseNumber, `${prefix}%`)
     .orderBy(desc(schema.cases.caseNumber)
-    .limit(1);
+    .limit(1),;
   let nextNumber = 1;
   if ((result as { length?: any; rows?: any }).length > 0 && result[0].caseNumber) {
-    const lastNumber = parseInt(result[0].caseNumber.replace(prefix, '');
+    const lastNumber = parseInt(result[0].caseNumber.replace(prefix, ''),;
     if (!isNaN(lastNumber)) {
       nextNumber = lastNumber + 1;
     }

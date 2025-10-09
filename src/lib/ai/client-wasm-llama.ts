@@ -3,7 +3,16 @@
  * Provides instant, private AI responses with automatic server fallback
  */
 
-import type { LlamaCpp } from '@llama-node/llama-cpp';
+// Replace the inline module augmentation (which caused TS errors) with a local runtime type
+// describing just the methods this file uses. This avoids augmenting a module that may not exist
+// at compile time and removes the dependency on an ambient `LlamaCpp` symbol.
+type LlamaInstance = {
+  load(opts?: any): Promise<void>;
+  createCompletion(opts?: any): Promise<{ text: string }>;
+
+  // allow any additional runtime properties/methods
+  [key: string]: any;
+};
 
 interface ClientAIConfig {
   modelPath: string;
@@ -27,7 +36,7 @@ interface ContextSwitchRules {
 }
 
 export class ClientSideAI {
-  private llama: LlamaCpp | null = null;
+  private llama: LlamaInstance | null = null;
   private modelStatus: ModelLoadStatus = {
     loaded: false,
     loading: false,
@@ -63,10 +72,41 @@ export class ClientSideAI {
     this.modelStatus.error = null;
 
     try {
-      // Dynamic import to avoid SSR issues
-      const { LlamaCpp } = await import('@llama-node/llama-cpp');
+      // Try dynamic imports for optional native/node/browser packages.
+      // Use @ts-ignore because these are optional dev/runtime dependencies
+      // and may not exist in all environments (SSR, CI, browsers).
+      let mod: any = null;
+      try {
+        // @ts-ignore - optional dependency may not be installed
+        mod = await import('@llama-node/llama-cpp');
+      } catch (e1) {
+        try {
+          // @ts-ignore - try alternate wasm package commonly used in browser builds
+          mod = await import('llama-cpp-wasm');
+        } catch (e2) {
+          mod = null;
+        }
+      }
 
-      this.llama = new LlamaCpp();
+      if (!mod || !(mod.LlamaCpp || mod.default)) {
+        const msg = 'llama cpp module not available in the environment; falling back to server-only mode';
+        this.modelStatus.error = msg;
+        console.warn('❌', msg);
+        return;
+      }
+
+      // Handle both CommonJS and default-export shapes
+      const LlamaCtor = mod?.LlamaCpp || mod?.default;
+      // cast to any because the concrete constructor type depends on the runtime package
+      this.llama = new (LlamaCtor as any)();
+
+      // Guard that llama was constructed successfully before calling load
+      if (!this.llama) {
+        const msg = 'Failed to construct LlamaCpp instance';
+        this.modelStatus.error = msg;
+        console.warn('❌', msg);
+        return;
+      }
 
       // Load the quantized gemma3:270m model
       await this.llama.load({

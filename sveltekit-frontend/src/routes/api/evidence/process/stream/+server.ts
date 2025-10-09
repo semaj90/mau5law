@@ -9,7 +9,7 @@ const activeSessions = new Map<string, { actor: any; startTime: number }>()
 // POST starts or updates a processing session (no SSE here)
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => ({})
-  let { evidenceId, file, neuralSpriteConfig } = body
+  let, { evidenceId, file, neuralSpriteConfig } = body
   if (!evidenceId) evidenceId = `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`
   let session = activeSessions.get(evidenceId)
   if (!session) {

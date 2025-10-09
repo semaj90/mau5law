@@ -119,10 +119,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
               role: 'assistant',
               timestamp: new Date(),
               sources: [{,
-                type: 'Local Legal AI Model',
-                score: 0.88,
-                title: `${targetModel} Response`
-              }],
+                type,: 'Local Legal AI Model',
+                score,: 0.88,
+                title,: `${targetModel} Response`
+              },],
               metadata: {
                 model: targetModel
                 confidence: 0.85,
@@ -131,15 +131,15 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 tokens: (ollamaData as any)?.eval_count || 0
               }
             },
-            success: true,
-            production: true
-            service: 'ollama'
+            success,: true,
+            production,: true
+            service,: 'ollama'
           })
         }
-      } finally {
+      }, finally {
         clearTimeout(timeout)
       }
-    } catch (ollamaError) {
+    }, catch (ollamaError) {
       console.warn('Ollama service unavailable:', ollamaError)
     }
     // Final fallback - intelligent response based on legal context
@@ -190,7 +190,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         sources: [)
           {
             type: 'Legal Knowledge Base',
-            score: confidence
+            score,: confidence
             title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis`
           }
         ],

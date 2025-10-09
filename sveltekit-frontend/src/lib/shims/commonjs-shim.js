@@ -8,7 +8,7 @@ if (typeof globalThis.global === 'undefined') {
 }
 // Only define `module` / `exports` if they are truly absent (avoid clobbering real ESM environments like SSR adaptors)
 if (typeof globalThis.module === 'undefined') {
-	globalThis.module = { exports: { [key: string]: any } };
+	globalThis.module = { exports: { [key,: strin,g]: any } };
 }
 if (typeof globalThis.exports === 'undefined') {
 	globalThis.exports = globalThis.module.exports;

@@ -57,7 +57,7 @@ export const agentShellMachineMCP = createMachine({
   context: {
     input: "",
     response: "",
-    mcpResults: { [key: string]: any },
+    mcpResults: { [key,: strin,g]: any },
     serviceHealth: {
       enhancedRAG: false
       uploadService: false
@@ -65,7 +65,7 @@ export const agentShellMachineMCP = createMachine({
       mcpDatabase: false
     }
   },
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -476,14 +476,14 @@ export const agentShellServicesMCP = {
           caseId,
           query,
           limit: 5
-        });
+        }),;
       } else {
         // Search across all user cases
         promises.push(mcpTools.cases.loadCases({
           userId,
           query,
           limit: 5
-        });
+        }),;
       }
       const [searchResults] = await Promise.all(promises);
       // Combine with traditional RAG search

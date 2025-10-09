@@ -149,15 +149,15 @@ async function testRAGCaching() {
     { success: true, data: ragData },)
     {
       ttl: 300000, // 5 minutes
-      ragContext: ragData.ragContext,
-      userId: 'rag-test-user'
+      ragContext,: ragData.ragContext,
+      userId,: 'rag-test-user'
     }
   )
   // Retrieve RAG data
   const cached = await ssrLegalAPICache.cacheGet(
     '/api/v1/rag/search',
     { query: ragData.query },)
-    { ragContext: true, userId: 'rag-test-user' }
+    { ragContext: true, userId,: 'rag-test-user' }
   )
   return json({
     success: true,

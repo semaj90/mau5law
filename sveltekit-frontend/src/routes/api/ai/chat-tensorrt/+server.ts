@@ -65,23 +65,23 @@ export const POST: RequestHandler = async (event) => {
       // Return OpenAI-compatible format
       return json({
         choices: [{,
-          message: {
+          message,: {
             role: "assistant",
             content: bridgeData.response || bridgeData.output || "No response generated"
           },
-          finish_reason: "stop",
-          index: 0
-        }],
-        usage: {
+          finish_reason,: "stop",
+          index,: 0
+        },],
+        usage,: {
           total_tokens: Math.ceil((fullPrompt + (bridgeData.output || "")).length / 4),
           prompt_tokens: Math.ceil(fullPrompt.length / 4),
           completion_tokens: Math.ceil((bridgeData.output || "").length / 4)
         },
-        model: model
-        object: "chat.completion",
-        created: Math.floor(Date.now() / 1000),
-        id: `tensorrt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-        tensorrt: {
+        model,: model
+        object,: "chat.completion",
+        created,: Math.floor(Date.now() / 1000),
+        id,: `tensorrt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+        tensorrt,: {
           bridge_used: true
           bridge_url: TENSORRT_BRIDGE_URL
           model_used: model
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async (event) => {
         fallback_available: false
       }, { status: 503 })
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     console.error('TensorRT Chat API error:', error)
     return json({
       error: "Failed to generate response",

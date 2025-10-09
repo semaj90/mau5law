@@ -26,9 +26,9 @@ export function isLegalDocument(_value: any): value is LegalDocumentUnified {
     typeof value.title === 'string'
   );
 }
-export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>(
-  base: LegalDocumentUnified;
-  patch: T;
+export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>,(
+  base: LegalDocumentUnified,;
+  patch: T,;
 ): LegalDocumentUnified {
   return { ...base, ...patch }
 }

@@ -11,8 +11,8 @@ export const GET: RequestHandler = async () => {
   const results = {
     timestamp: new Date(),
     tests: [],
-    health: { [key: string]: any },
-    performance: { [key: string]: any },
+    health: { [key,: strin,g]: any },
+    performance: { [key,: strin,g]: any },
     recommendations: []
   }
   try {
@@ -165,10 +165,10 @@ async function testStreaming(): Promise<any> {
       input: {
         query: 'Test streaming query',
         context: { userId: 'test' },
-        options: { [key: string]: any }
+        options: { [key,: strin,g]: any }
       },
       onProgress: (stage, progress) => {
-        progressUpdates++)
+        progressUpdates++,)
       },
       onStage: (stage, data) => {
         stagesCompleted.push(stage)
@@ -185,7 +185,7 @@ async function testStreaming(): Promise<any> {
         activeStreams: streamingService.getActiveStreams().length
       }
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     return {
       name: 'Streaming Service',
       status: 'failed',
@@ -414,7 +414,7 @@ export const POST: RequestHandler = async ({ request }) => {
         feedback: feedbackLoop.getStats()
       }
     })
-  } catch (error: any) {
+  }, catch (error: any) {
     logger.error('[Test] Manual test failed:', error)
     return json({
       success: false,

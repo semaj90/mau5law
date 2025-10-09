@@ -70,7 +70,7 @@ class GPUServiceWorkerClient {
                 if (success) {
                     resolve(result);
                 } else {
-                    reject(new Error(error);
+                    reject(new Error(error),;
                 }
             };
             this.worker.postMessage({
@@ -80,7 +80,7 @@ class GPUServiceWorkerClient {
             }, [messageChannel.port2]);
             // Timeout after 30 seconds
             setTimeout(() => {
-                reject(new Error('GPU operation timeout');
+                reject(new Error('GPU operation timeout'),;
             }, 30000);
         });
     }
@@ -569,7 +569,7 @@ export function useLegalAI() {
     // Derived stores for specific state slices
     const currentState = derived(state, ($state) => $state.value);
     const context = derived(state, ($state) => $state.context);
-    const canTransition = derived(state, ($state) => (event) => $state.can(event);
+    const canTransition = derived(state, ($state) => (event) => $state.can(event),;
     // Specific context slices
     const chatHistory = derived(context, ($context) => $context.chatHistory);
     const searchResults = derived(context, ($context) => $context.searchResults);
@@ -690,11 +690,11 @@ export function createWebSocketService(url) {
                 return new Promise((resolve, reject) => {
                     const socket = new WebSocket(context.url);
                     socket.onopen = () => resolve(socket);
-                    socket.onerror = () => reject(new Error('WebSocket connection failed');
+                    socket.onerror = () => reject(new Error('WebSocket connection failed'),;
                     setTimeout(() => reject(new Error('Connection timeout')), 10000);
                 });
             },
-            listenToSocket: (context) => {
+            listenToSocket,: (context) => {
                 return new Promise((resolve, reject) => {
                     const { socket } = context;
                     socket.onmessage = (event) => {
@@ -706,8 +706,8 @@ export function createWebSocketService(url) {
                             console.error('Failed to parse WebSocket message:', error);
                         }
                     };
-                    socket.onclose = () => reject(new Error('WebSocket closed');
-                    socket.onerror = () => reject(new Error('WebSocket error');
+                    socket.onclose = () => reject(new Error('WebSocket closed'),;
+                    socket.onerror = () => reject(new Error('WebSocket error'),;
                 });
             }
         },
@@ -715,18 +715,18 @@ export function createWebSocketService(url) {
             setSocket: assign({
                 socket: (_, event) => event.data
             }),
-            incrementReconnectAttempts: assign({
+            incrementReconnectAttempts,: assign({
                 reconnectAttempts: (context) => context.reconnectAttempts + 1,
             }),
-            resetReconnectAttempts: assign({
+            resetReconnectAttempts,: assign({
                 reconnectAttempts: 0,
             }),
-            sendMessage: (context, event) => {
+            sendMessage,: (context, event) => {
                 if (context.socket && context.socket.readyState === WebSocket.OPEN) {
-                    context.socket.send(JSON.stringify(event.message);
+                    context.socket.send(JSON.stringify(event.message),;
                 }
             },
-            addSubscription: assign({
+            addSubscription,: assign({
                 subscriptions: (context, event) => [
                     ...context.subscriptions,
                     event.channel

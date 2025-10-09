@@ -387,7 +387,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: { [key: string]: any }, stats: { [key: string]: any } }
+        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: { [key,: strin,g]: any }, stats: { [k,ey: str,ing]: any } }
         const parse_successful = Array.isArray(data.data) && data.data.length === 1000;
         const reasonable_performance = stats.parse_time_ms < 100; // Should parse 1000 items in < 100ms
         tests.push({
@@ -419,7 +419,7 @@ export class OptimizationTestSuite {
       const start = performance.now();
       try {
         const test_object = JSON.parse(this.test_data.large_json);
-        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: { [key: string]: any }, stats: { [key: string]: any } }
+        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: { [key,: strin,g]: any }, stats: { [k,ey: str,ing]: any } }
         const compression_effective = stats.compression_ratio > 1.2; // At least 20% compression
         const compressed_is_smaller = stats.compressed_size < stats.original_size;
         tests.push({
@@ -452,7 +452,7 @@ export class OptimizationTestSuite {
           passed: true, // WASM initialization is optional
           duration_ms: performance.now() - start,
           details: {
-            wasm_available: wasm_initialized;
+            wasm_available: wasm_initialized,;
             note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback'
           }
         });
@@ -632,7 +632,7 @@ export class OptimizationTestSuite {
     // Get memory usage>
     {
       const docker_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0, cpu: 0 }
-      benchmarks.memory_usage_mb = Math.round(docker_stats.total_memory_used / (1024 * 1024);
+      benchmarks.memory_usage_mb = Math.round(docker_stats.total_memory_used / (1024 * 1024),;
     }
     return benchmarks;
   }
@@ -643,15 +643,15 @@ export class OptimizationTestSuite {
     const test_suites: TestSuite[] = [];
     // Run all test suites
     console.log('📋 Testing VS Code Extension...');
-    test_suites.push(await this.testVSCodeExtension();
+    test_suites.push(await this.testVSCodeExtension(),;
     console.log('🗄️ Testing Redis SOM Cache...');
-    test_suites.push(await this.testRedisSOMapCache();
+    test_suites.push(await this.testRedisSOMapCache(),;
     console.log('🐳 Testing Docker Optimizer...');
-    test_suites.push(await this.testDockerOptimizer();
+    test_suites.push(await this.testDockerOptimizer(),;
     console.log('📊 Testing JSON WASM Optimizer...');
-    test_suites.push(await this.testJSONWASMOptimizer();
+    test_suites.push(await this.testJSONWASMOptimizer(),;
     console.log('🔗 Testing Context7 Integration...');
-    test_suites.push(await this.testContext7Integration();
+    test_suites.push(await this.testContext7Integration(),;
     // Run performance benchmarks
     console.log('⚡ Running Performance Benchmarks...');
     const performance_benchmarks = await this.runPerformanceBenchmarks();
@@ -683,7 +683,7 @@ export class OptimizationTestSuite {
   }
   private generateRecommendations(
     test_suites: TestSuite[]
-    benchmarks: ReturnType<OptimizationTestSuite['runPerformanceBenchmarks']> extends Promise<infer T> ? T : never;
+    benchmarks: ReturnType<OptimizationTestSuite['runPerformanceBenchmarks']> extends Promise<infer T> ? T : never,;
   ): string[] {
     const recommendations: string[] = [];
     // Analyze test results

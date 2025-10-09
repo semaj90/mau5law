@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             total_results: searchResults.length,
           }
         })
-      case 'batch':
+      case 'batch',:
         // Validate batch request
         const batchData = BatchEmbeddingSchema.safeParse(body)
         if (!batchData.success) {
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           error: 'Unknown action'
         }, { status: 400 })
     }
-  } catch (error) {
+  }, catch (error) {
     return json({
       success: false,
       error: error instanceof Error ? error.message : 'Processing failed'

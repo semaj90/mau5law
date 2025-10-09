@@ -105,12 +105,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   const url = new URL(`/api/suggest?q=${encodeURIComponent(enhancedQuery)}&context=${contextType}&userId=${userId}`, 'http://localhost')
   const mockRequest = new Request(url)
   return await GET({
-    params: { [key: string]: any },
+    params: { [key,: strin,g]: any },
     url: new URL(url),
     fetch,
     request: mockRequest
     route: { id: '/api/suggest' },
-    locals: { [key: string]: any },
+    locals: { [key,: strin,g]: any },
     platform: undefined
     isDataRequest: false
     isSubRequest: false

@@ -83,9 +83,23 @@ interface RateLimitResult {
   remaining: number;
 }
 
-// Initialize database on startup (disabled for now due to DB connection issues)
+// Initialize database on startup (attempt to create embeddings table once)
+let chatDbInitialized = false;
 async function ensureDbInitialized() {
-  // Disabled for now due to PostgreSQL connection issues
+  // Run once
+  if (chatDbInitialized) return Promise.resolve();
+  try {
+    // Attempt to create/ensure embeddings table (may throw if DB unavailable)
+    await initializeChatEmbeddingsTable();
+    chatDbInitialized = true;
+    console.log('[chat-api-v3] Chat embeddings table initialized');
+  } catch (err: unknown) {
+    // Non-fatal: log and continue (keeps API available even if DB is down)
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn('[chat-api-v3] Failed to initialize chat embeddings table:', msg);
+    // mark initialized to avoid repeated expensive attempts; remove if you want retries
+    chatDbInitialized = true;
+  }
   return Promise.resolve();
 }
 // Generate request ID for tracking
@@ -146,31 +160,40 @@ async function performHealthChecks(): Promise<HealthCheckResults> {
   return results;
 }
 // Validate request input
-function validateChatRequest(body: any): { valid: boolean; error?: string } {
-  if (!body || typeof body !== 'object') {
+function validateChatRequest(body: unknown): { valid: boolean; error?: string } {
+  if (body === null || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
   }
-  if (!body.message && (!body.messages || !Array.isArray(body.messages))) {
+
+  const obj = body as Record<string, unknown>;
+
+  const hasMessage = typeof obj.message === 'string' && obj.message.trim().length > 0;
+
+  const hasMessagesArray = Array.isArray(obj.messages);
+
+  if (!hasMessage && !hasMessagesArray) {
     return { valid: false, error: 'Message or messages array is required' };
   }
-  if (body.message && typeof body.message !== 'string') {
-    return { valid: false, error: 'Message must be a string' };
+
+  if (hasMessage) {
+    const msg = String(obj.message);
+    if (msg.length > 8000) {
+      return { valid: false, error: 'Message too long (max 8000 characters)' };
+    }
   }
-  if (body.message && body.message.length > 8000) {
-    return { valid: false, error: 'Message too long (max 8000 characters)' };
+
+  if (obj.temperature !== undefined) {
+    if (typeof obj.temperature !== 'number' || obj.temperature < 0 || obj.temperature > 2) {
+      return { valid: false, error: 'Temperature must be a number between 0 and 2' };
+    }
   }
-  if (
-    body.temperature !== undefined &&
-    (typeof body.temperature !== 'number' || body.temperature < 0 || body.temperature > 2)
-  ) {
-    return { valid: false, error: 'Temperature must be a number between 0 and 2' };
+
+  if (obj.maxTokens !== undefined) {
+    if (typeof obj.maxTokens !== 'number' || obj.maxTokens < 1 || obj.maxTokens > 8192) {
+      return { valid: false, error: 'Max tokens must be a number between 1 and 8192' };
+    }
   }
-  if (
-    body.maxTokens !== undefined &&
-    (typeof body.maxTokens !== 'number' || body.maxTokens < 1 || body.maxTokens > 8192)
-  ) {
-    return { valid: false, error: 'Max tokens must be a number between 1 and 8192' };
-  }
+
   return { valid: true };
 }
 export interface ChatMessage {

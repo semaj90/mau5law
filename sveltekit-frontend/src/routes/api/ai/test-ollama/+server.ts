@@ -43,8 +43,8 @@ export const GET = (async (): Promise<any> => {
     return json()
       {
         status: "error",
-        error: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: "Unknown error",
+        timestamp,: new Date().toISOString()
       },
       { status: 500 },
     )
@@ -101,12 +101,12 @@ export const POST = (async ({ request }): Promise<any> => {
         { status: 500 },
       )
     }
-  } catch (error: any) {
+  }, catch (error: any) {
     return json()
       {
         status: "error",
-        error: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString()
+        error,: error instanceof Error ? error.message: "Unknown error",
+        timestamp,: new Date().toISOString()
       },
       { status: 500 },
     )

@@ -46,7 +46,7 @@ export class YoRHaMipmapShaders {
   async initialize(device?: GPUDevice): Promise<boolean> {
     if (this.isInitialized) return true;
     try {
-      this.device = device || (await this.getWebGPUDevice();
+      this.device = device || (await this.getWebGPUDevice(),;
       if (!this.device) {
         console.warn('WebGPU device not available for mipmap generation');
         return false;
@@ -135,7 +135,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: boxFilterShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     // 2. Bilinear filter (balanced quality/performance)
     const bilinearFilterShader = this.createBilinearFilterShader();
     this.mipmapPipelines.set('bilinear', this.device.createComputePipeline({
@@ -144,7 +144,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: bilinearFilterShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     // 3. Gaussian filter (high quality, slower)
     const gaussianFilterShader = this.createGaussianFilterShader();
     this.mipmapPipelines.set('gaussian', this.device.createComputePipeline({
@@ -153,7 +153,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: gaussianFilterShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     // 4. NVIDIA RTX-optimized tensor core acceleration
     const rtxOptimizedShader = this.createRTXOptimizedShader();
     this.mipmapPipelines.set('rtx_optimized', this.device.createComputePipeline({
@@ -162,7 +162,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: rtxOptimizedShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     // 5. Multi-level batch generation (parallel mip levels)
     const multiLevelShader = this.createMultiLevelBatchShader();
     this.mipmapPipelines.set('multi_level', this.device.createComputePipeline({
@@ -171,7 +171,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: multiLevelShader }),
         entryPoint: 'main'
       }
-    });
+    }),;
     console.log('✅ Mipmap compute pipelines initialized');
   }
   /**
@@ -252,7 +252,7 @@ export class YoRHaMipmapShaders {
   private async generateMultiLevelBatch(
     sourceTexture: GPUTexture
     maxLevels: number
-    config: MipmapConfig;
+    config: MipmapConfig,;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
     console.log('🚀 Using RTX-optimized multi-level batch generation');
@@ -294,7 +294,7 @@ export class YoRHaMipmapShaders {
   private async generateStreamingMipmaps(
     sourceTexture: GPUTexture
     maxLevels: number
-    config: MipmapConfig;
+    config: MipmapConfig,;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
     console.log('📡 Using streaming mipmap generation for large textures');
@@ -309,8 +309,8 @@ export class YoRHaMipmapShaders {
     }
     let currentTexture = sourceTexture;
     for (let level = 1; level < maxLevels; level++) {
-      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1);
-      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1);
+      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1),;
+      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1),;
       const targetWidth = Math.max(1, sourceWidth >> 1);
       const targetHeight = Math.max(1, sourceHeight >> 1);
       // Create target mip level texture
@@ -341,7 +341,7 @@ export class YoRHaMipmapShaders {
   private async generateSequentialMipmaps(
     sourceTexture: GPUTexture
     maxLevels: number
-    config: MipmapConfig;
+    config: MipmapConfig,;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
     const pipelineKey = config.filterMode === 'linear' ? 'bilinear' : 'box';
@@ -350,8 +350,8 @@ export class YoRHaMipmapShaders {
     const mipmapLevels: GPUTexture[] = [];
     let currentTexture = sourceTexture;
     for (let level = 1; level < maxLevels; level++) {
-      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1);
-      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1);
+      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1),;
+      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1),;
       const targetWidth = Math.max(1, sourceWidth >> 1);
       const targetHeight = Math.max(1, sourceHeight >> 1);
       const mipTexture = this.device.createTexture({
@@ -371,8 +371,8 @@ export class YoRHaMipmapShaders {
   private async generateSingleMipLevel(
     sourceTexture: GPUTexture
     targetTexture: GPUTexture
-    pipeline: GPUComputePipeline;
-    config: MipmapConfig;
+    pipeline: GPUComputePipeline,;
+    config: MipmapConfig,;
   ): Promise<void> {
     if (!this.device) return;
     const commandEncoder = this.device.createCommandEncoder();
@@ -394,8 +394,8 @@ export class YoRHaMipmapShaders {
     computePass.setPipeline(pipeline);
     computePass.setBindGroup(0, bindGroup);
     // Calculate dispatch size
-    const targetWidth = Math.max(1, ((targetTexture as any).width || 512);
-    const targetHeight = Math.max(1, ((targetTexture as any).height || 512);
+    const targetWidth = Math.max(1, ((targetTexture as any).width || 512),;
+    const targetHeight = Math.max(1, ((targetTexture as any).height || 512),;
     const workgroupsX = Math.ceil(targetWidth / 8);
     const workgroupsY = Math.ceil(targetHeight / 8);
     computePass.dispatchWorkgroups(workgroupsX, workgroupsY, 1);
@@ -408,8 +408,8 @@ export class YoRHaMipmapShaders {
   private async generateMipLevelWithStreaming(
     sourceTexture: GPUTexture
     targetTexture: GPUTexture
-    pipeline: GPUComputePipeline;
-    options: TextureStreamingOptions;
+    pipeline: GPUComputePipeline,;
+    options: TextureStreamingOptions,;
   ): Promise<void> {
     if (!this.device) return;
     console.log('📡 Using texture streaming for large mip level');
@@ -674,7 +674,7 @@ export class YoRHaMipmapShaders {
     this.mipmapPipelines.clear();
     // Cleanup streaming buffers
     this.streamingBuffers.forEach(buffers => {
-      buffers.forEach(buffer => buffer.destroy();
+      buffers.forEach(buffer => buffer.destroy(),;
     });
     this.streamingBuffers.clear();
     this.isInitialized = false;

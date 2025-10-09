@@ -346,7 +346,7 @@ export const GET: RequestHandler = async () => {
     const httpStatus = (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'healthy' ? 200 :
                       (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'degraded' ? 206 : 503
     return json(response, {
-      status: httpStatus;
+      status: httpStatus,;
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -364,7 +364,7 @@ export const GET: RequestHandler = async () => {
       timestamp,
       error: 'Health check system failure',
       message: error instanceof Error ? error.message: 'Unknown error',
-      services: { [key: string]: any },
+      services: { [key,: strin,g]: any },
       summary: {
         totalServices: 0,
         healthyServices: 0,

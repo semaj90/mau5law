@@ -18,8 +18,8 @@ export class SearchExamples {
       'contract violation legal precedent',);
       {
         limit: 5,
-        threshold: 0.75,
-        useCache: true
+        threshold,: 0.75,
+        useCache,: true
       }
     );
     console.log(`Found ${results.length} documents:`);
@@ -40,9 +40,9 @@ export class SearchExamples {
       'intellectual property theft criminal charges',);
       {
         collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
-        limit: 10,
-        threshold: 0.7,
-        includeContent: true
+        limit,: 10,
+        threshold,: 0.7,
+        includeContent,: true
         useCache: true
       }
     );
@@ -69,8 +69,8 @@ export class SearchExamples {
       'fraud embezzlement financial crimes',);
       {
         collections: ['legal_documents', 'case_embeddings'],
-        limit: 8,
-        useCache: true
+        limit,: 8,
+        useCache,: true
         includeSnippets: true
       }
     );
@@ -95,11 +95,11 @@ export class SearchExamples {
       'corporate merger acquisition antitrust',);
       {
         limit: 6,
-        vectorWeight: 0.4,    // 40% vector similarity
-        textWeight: 0.35,     // 35% full-text ranking
-        keywordWeight: 0.25,  // 25% keyword matching;
-        threshold: 0.6,
-        useCache: true
+        vectorWeight,: 0.4,    // 40% vector similarity
+        textWeight,: 0.35,     // 35% full-text ranking
+        keywordWeight,: 0.25,  // 25% keyword matching;
+        threshold,: 0.6,
+        useCache,: true
       }
     );
     console.log(`Hybrid search results:`);
@@ -129,10 +129,10 @@ export class SearchExamples {
       'employment discrimination workplace harassment',);
       {
         k: 7,
-        algorithm: 'hybrid',
-        useCache: true;
+        algorithm,: 'hybrid',
+        useCache,: true;
         threshold: 0.75,
-        includeMetadata: true
+        includeMetadata,: true
       }
     );
     console.log(`Advanced vector search results:`);

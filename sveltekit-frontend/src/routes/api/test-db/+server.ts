@@ -9,7 +9,7 @@ import { sql } from 'drizzle-orm'
 export const GET: RequestHandler = async ({ url }) => {
   const results: any = {
     timestamp: new Date().toISOString(),
-    tests: { [key: string]: any }
+    tests: { [key,: strin,g]: any }
   }
   try {
     // Test 1: Basic PostgreSQL Connection

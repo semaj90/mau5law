@@ -30,7 +30,7 @@ class DockerResourceOptimizer {
     return {
       key,
       data: jsonData
-      compressed: true;
+      compressed: true,;
       size: jsonData.length * 0.7 // Simulate 30% compression
     }
   }
@@ -305,11 +305,11 @@ export class AdvancedMemoryOptimizer {
   async selectOptimalCacheLayer(_key: string
     dataType: string
     size: number
-    accessFrequency: number;
+    accessFrequency: number,;
   ): Promise<CacheLayer[]> {
     const enabledLayers = Array.from(this.cacheLayers.values()
       .filter((layer) => layer.enabled)
-      .sort((a, b) => a.priority - b.priority);
+      .sort((a, b) => a.priority - b.priority),;
     // Score each layer based on multiple factors
     const scoredLayers = enabledLayers.map((layer) => {
       let score = 0;
@@ -349,7 +349,7 @@ export class AdvancedMemoryOptimizer {
       await this.reduceLOD();
     } else if (
       this.memoryPressure < 0.5 &&
-      this.currentLOD.detail !== "ultra";
+      this.currentLOD.detail !== "ultra",;
     ) {
       // Low pressure - potentially increase LOD
       await this.increaseLOD();
@@ -361,8 +361,8 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for CPU-intensive operations
    */
   async performKMeansClustering(
-    data: any[];
-    k: number = 5;
+    data: any[],;
+    k: number = 5,;
   ): Promise<ClusterMetrics[]> {
     console.log(
       `🔄 Performing k-means clustering (k=${k}) on ${(data as { length?: any; forEach?: any; map?: any }).length} items using worker threads...`
@@ -381,13 +381,13 @@ export class AdvancedMemoryOptimizer {
    * Perform k-means clustering using worker thread
    */
   private async performKMeansWithWorker(
-    data: any[];
-    k: number;
+    data: any[],;
+    k: number,;
   ): Promise<ClusterMetrics[]> {
     const worker = await this.getKMeansWorker();
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error("K-means clustering timeout");
+        reject(new Error("K-means clustering timeout"),;
       }, 300000); // 5 minute timeout
       // Set up progress monitoring
       const progressHandler = (message: any) => {
@@ -414,7 +414,7 @@ export class AdvancedMemoryOptimizer {
             clearTimeout(timeout);
             worker.off("message", messageHandler);
             worker.off("message", progressHandler);
-            reject(new Error(`Worker error: ${message.error}`);
+            reject(new Error(`Worker error: ${message.error}`),;
           }
         } catch (error: any) {
           clearTimeout(timeout);
@@ -439,8 +439,8 @@ export class AdvancedMemoryOptimizer {
    * Original in-process k-means for smaller datasets
    */
   private async performKMeansInProcess(
-    data: any[];
-    k: number;
+    data: any[],;
+    k: number,;
   ): Promise<ClusterMetrics[]> {
     // Keep original implementation for small datasets
     console.log(
@@ -464,7 +464,7 @@ export class AdvancedMemoryOptimizer {
     while (!hasConverged && iteration < maxIterations) {
       hasConverged = true;
       // Clear previous assignments
-      clusters.forEach((cluster) => (cluster.length = 0);
+      clusters.forEach((cluster) => (cluster.length = 0),;
       // Assign points to nearest centroid
       (data as { length?: any; forEach?: any; map?: any }).forEach((item, index) => {
         if (!(item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding) return;
@@ -675,8 +675,8 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for parallel processing
    */
   async performKMeansClusteringWithWorkers(
-    data: any[];
-    k: number = 5;
+    data: any[],;
+    k: number = 5,;
   ): Promise<ClusterMetrics[]> {
     console.log(
       `🔄 Performing worker-based k-means clustering (k=${k}) on ${(data as { length?: any; forEach?: any; map?: any }).length} items...`
@@ -693,7 +693,7 @@ export class AdvancedMemoryOptimizer {
         id: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).id || `item_${index}`,
         embedding: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding || [],
         metadata: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).metadata || {}
-      });
+      }),;
       // Send clustering task to worker
       const result = await this.sendWorkerMessage(worker, {
         action: "cluster",
@@ -738,14 +738,14 @@ export class AdvancedMemoryOptimizer {
       const messageWithId = { ...message, messageId }
       const timeout = setTimeout(() => {
         worker.off("message", messageHandler);
-        reject(new Error("Worker timeout");
+        reject(new Error("Worker timeout"),;
       }, 30000); // 30 second timeout
       const messageHandler = (response: any) => {
         if ((response as { messageId?: any; error?: any }).messageId === messageId) {
           clearTimeout(timeout);
           worker.off("message", messageHandler);
           if ((response as { messageId?: any; error?: any }).error) {
-            reject(new Error((response as { messageId?: any; error?: any }).error);
+            reject(new Error((response as { messageId?: any; error?: any }).error),;
           } else {
             resolve(response);
           }
@@ -769,12 +769,12 @@ export class AdvancedMemoryOptimizer {
     for (
       let i = 0;
       i < this.maxWorkers && i * batchSize < documents.length;
-      i++;
+      i++,;
     ) {
       const start = i * batchSize;
       const end = Math.min(start + batchSize, documents.length);
       const chunk = documents.slice(start, end);
-      promises.push(this.processDocumentChunk(chunk, i);
+      promises.push(this.processDocumentChunk(chunk, i),;
     }
     try {
       const results = await Promise.all(promises);
@@ -791,7 +791,7 @@ export class AdvancedMemoryOptimizer {
    */
   private async processDocumentChunk(
     documents: string[]
-    chunkIndex: number;
+    chunkIndex: number,;
   ): Promise<any[]> {
     const workerId = `document-processor-${chunkIndex}`;
     try {
@@ -920,19 +920,19 @@ export class AdvancedMemoryOptimizer {
       itemCount: pool.items.size,
       lastAccessed: pool.lastAccessed,
       priority: pool.priority
-    });
+    }),;
   }
   /**
    * Serialize clusters for worker communication
    */;
   private serializeClusters(): unknown[] {
-    return Array.from(this.clusters.values();
+    return Array.from(this.clusters.values(),;
   }
   /**
    * Apply optimization recommendations from worker
    */
   private async applyOptimizationRecommendations(
-    recommendations: any;
+    recommendations: any,;
   ): Promise<void> {
     console.log("🔧 Applying worker optimization recommendations");
     if (recommendations.adjustLOD) {
@@ -1000,13 +1000,13 @@ export class AdvancedMemoryOptimizer {
     // Select pool based on cluster characteristics
     const pools = Array.from(this.memoryPools.values()
       .filter((pool) => pool.current + cluster.memoryUsage <= pool.max)
-      .sort((a, b) => a.priority - b.priority);
+      .sort((a, b) => a.priority - b.priority),;
     return pools[0] || this.memoryPools.get("cache")!;
   }
   private async allocateToPool(
     poolId: string
-    request: any;
-    size: number;
+    request: any,;
+    size: number,;
   ): Promise<void> {
     const pool = this.memoryPools.get(poolId);
     if (!pool) return;
@@ -1027,8 +1027,8 @@ export class AdvancedMemoryOptimizer {
     return cluster.cohesion;
   }
   private async preloadToLayer(
-    layer: CacheLayer;
-    cluster: ClusterMetrics;
+    layer: CacheLayer,;
+    cluster: ClusterMetrics,;
   ): Promise<void> {
     // Implementation depends on layer type
     console.log(`Pre-loading cluster ${cluster.id} to ${layer.name}`);
@@ -1168,7 +1168,7 @@ export class AdvancedMemoryOptimizer {
     // Warm up high-priority caches
     const fastLayers = Array.from(this.cacheLayers.values()
       .filter((layer) => layer.priority <= 3)
-      .sort((a, b) => a.priority - b.priority);
+      .sort((a, b) => a.priority - b.priority),;
     // Implementation would pre-load frequently accessed data
   }
   /**
@@ -1243,7 +1243,7 @@ export class AdvancedMemoryOptimizer {
    * SIMD-optimized document processing and memory allocation
    */
   async processBatchDocumentsSIMD(
-    jsonDocuments: string[];
+    jsonDocuments: string[],;
   ): Promise<ParsedLegalDocument[]> {
     console.log(
       `📄 Processing ${jsonDocuments.length} documents with SIMD optimization...`
@@ -1255,7 +1255,7 @@ export class AdvancedMemoryOptimizer {
     const processedDocuments = await Promise.all(parsedDocuments.map(async (doc) => {
         // Generate embeddings if not present
         if (!doc.embeddings && doc.content) {
-          doc.embeddings = await this.generateDocumentEmbeddings(doc.content));
+          doc.embeddings = await this.generateDocumentEmbeddings(doc.content),);
         }
         // Allocate optimized memory based on document characteristics
         const memoryPool = await this.optimizedMemoryAllocation({
@@ -1296,15 +1296,15 @@ export class AdvancedMemoryOptimizer {
    * Generate embeddings for document content (placeholder for actual embedding service)
    */
   private async generateDocumentEmbeddings(
-    content: string;
+    content,: strin,g;
   ): Promise<Float32Array> {
     // This would typically call your embedding service (Ollama, OpenAI, etc.)
     // For now, return a mock embedding
-    const dimensions = 384; // nomic-embed-text dimensions
-    const embedding = new Float32Array(dimensions);
+    const, dimensions = 38,4; // nomic-embed-text dimensions
+    const, embedding = new Float32Array(dimensions,);
     // Simple hash-based mock embedding
-    const hash = this.simpleHash(content);
-    for (let i = 0; i < dimensions; i++) {
+    const, hash = this.simpleHash(content,);
+    for (let, i =, 0;, i < dimensi,on,s,; i++) {
       embedding[i] = (Math.sin(hash + i) + 1) / 2; // Normalize to [0,1]
     }
     return embedding;
@@ -1312,11 +1312,11 @@ export class AdvancedMemoryOptimizer {
   /**
    * Calculate document priority for memory allocation
    */;
-  private calculateDocumentPriority(doc: ParsedLegalDocument): number {
+  private calculateDocumentPriority(doc,: ParsedLegalDocument,): number {
     let priority = 0.5; // Base priority
     // Higher priority for recent documents
-    const age = Date.now() - (doc.metadata?.timestamp || Date.now();
-    const ageScore = Math.max(0, 1 - age / (30 * 24 * 60 * 60 * 1000); // 30 days
+    const age = Date.now() - (doc.metadata?.timestamp || Date.now(),;
+    const ageScore = Math.max(0, 1 - age / (30 * 24 * 60 * 60 * 1000),; // 30 days
     priority += ageScore * 0.3;
     // Higher priority for legal documents with case numbers
     if (doc.caseNumber) {
@@ -1335,7 +1335,7 @@ export class AdvancedMemoryOptimizer {
   /**
    * Simple hash function for mock embeddings
    */;
-  private simpleHash(str: string): number {
+  private simpleHash(str,: string,): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);

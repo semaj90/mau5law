@@ -69,7 +69,7 @@ export type LegalDocumentEvent =
 const services = {
   extractContent: async (context: LegalDocumentContext) => {
     // Simulate content extraction (OCR, PDF parsing, etc.)
-    await new Promise((resolve: any) => setTimeout(resolve, 1000);
+    await new Promise((resolve: any) => setTimeout(resolve, 1000),;
     return { content: context.content, title: context.title }
   },
   analyzeWithAI: async (context: LegalDocumentContext) => {
@@ -80,7 +80,7 @@ const services = {
       recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
       legalPrecedents: []
     }
-    await new Promise((resolve: any) => setTimeout(resolve, 2000);
+    await new Promise((resolve: any) => setTimeout(resolve, 2000),;
     return mockAnalysis;
   },
   extractEntities: async (context: LegalDocumentContext) => {
@@ -93,19 +93,19 @@ const services = {
       jurisdictions: [context.jurisdiction],
       caseTypes: [context.caseType]
     }
-    await new Promise((resolve: any) => setTimeout(resolve, 1500);
+    await new Promise((resolve: any) => setTimeout(resolve, 1500),;
     return mockEntities;
   },
   generateSummary: async (context: LegalDocumentContext) => {
     // This would integrate with your Ollama service
     const mockSummary = `Legal document summary for ${context.caseType} case in ${context.jurisdiction} jurisdiction. Contains ${context.entities?.parties.length || 0} parties and ${context.entities?.clauses.length || 0} legal clauses.`;
-    await new Promise((resolve: any) => setTimeout(resolve, 1000);
+    await new Promise((resolve: any) => setTimeout(resolve, 1000),;
     return mockSummary;
   },
   generateEmbedding: async (context: LegalDocumentContext) => {
     // This would integrate with your embedding service (nomic-embed-text)
-    const mockEmbedding = new Array(384).fill(0).map(() => Math.random();
-    await new Promise((resolve: any) => setTimeout(resolve, 500);
+    const mockEmbedding = new Array(384).fill(0).map(() => Math.random(),;
+    await new Promise((resolve: any) => setTimeout(resolve, 500),;
     return mockEmbedding;
   },
   assessRisk: async (context: LegalDocumentContext) => {
@@ -113,7 +113,7 @@ const services = {
     const hasLiability = context.content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
     const confidenceScore = 0.87;
-    await new Promise((resolve: any) => setTimeout(resolve, 800);
+    await new Promise((resolve: any) => setTimeout(resolve, 800),;
     return { riskScore, confidenceScore }
   },
   analyzWithMCP: async (context: LegalDocumentContext) => {
@@ -130,7 +130,7 @@ const services = {
         'Use parallel processing for entity extraction'
       ]
     }
-    await new Promise((resolve: any) => setTimeout(resolve, 1200);
+    await new Promise((resolve: any) => setTimeout(resolve, 1200),;
     return {
       mcpAnalysis: mockMCPAnalysis
       recommendations: mockMCPAnalysis.legalSpecificRecommendations
@@ -139,14 +139,14 @@ const services = {
   storeDocument: async (context: LegalDocumentContext) => {
     // This would integrate with your database and Qdrant services
     const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    await new Promise((resolve: any) => setTimeout(resolve, 800);
+    await new Promise((resolve: any) => setTimeout(resolve, 800),;
     return { documentId }
   }
 }
 // Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: { [key: string]: any } as {
+  types: { [key,: strin,g]: any } as {
     context: LegalDocumentContext;
     events: LegalDocumentEvent;
   },

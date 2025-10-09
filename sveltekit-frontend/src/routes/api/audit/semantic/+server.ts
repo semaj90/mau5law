@@ -78,7 +78,7 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
       }
       const trigger: AgentTrigger = {
         todoId: (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId,
-        action: action;
+        action: action,;
         status: 'pending'
       }
       // Trigger agent using the real Context7 orchestrator

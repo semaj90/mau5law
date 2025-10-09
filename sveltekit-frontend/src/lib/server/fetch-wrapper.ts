@@ -31,7 +31,7 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
       clearTimeout(timer);
       lastError = err;
       if (attempt === retries) break;
-      await new Promise(r => setTimeout(r, retryDelayMs * (attempt + 1));
+      await new Promise(r => setTimeout(r, retryDelayMs * (attempt + 1)),;
     }
     attempt++;
   }

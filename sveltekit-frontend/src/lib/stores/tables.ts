@@ -22,7 +22,7 @@ export interface TableNotification {
   persistent?: boolean;
 }
 class TableManager {
-  private tables: Map<string, Writable<TableState> = new Map();
+  private tables: Map<string, Writable<TableState>, = new Map();
   private notifications = writable<TableNotification[]>([]);
   createTable(id: string, initialState?: Partial<TableState>): Writable<TableState> {
     if (this.tables.has(id)) {
@@ -107,7 +107,7 @@ class TableManager {
       ...state,
       searchQuery: query
       currentPage: 1 // Reset to first page when searching
-    });
+    }),;
   }
   updateFilter(tableId: string, column: string, filter: string) {
     const table = this.getTable(tableId);
@@ -133,7 +133,7 @@ class TableManager {
       ...state,
       currentPage: page
       pageSize: pageSize || state.pageSize
-    });
+    }),;
   }
   updateColumnWidth(tableId: string, column: string, width: number) {
     const table = this.getTable(tableId);
@@ -249,7 +249,7 @@ export function createTableStats(tableId: string) {
     hasFilters: $table.columnFilters.size > 0,
     totalFilters: $table.columnFilters.size,
     expandedCount: $table.expandedRows.size
-  });
+  }),;
 }
 // Export types and utilities
 // TableState and TableNotification are already exported as interfaces above

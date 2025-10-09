@@ -267,7 +267,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
-    const metadata = formData.get('metadata') ? JSON.parse(formData.get('metadata') as string) : { [key: string]: any }
+    const metadata = formData.get('metadata') ? JSON.parse(formData.get('metadata') as string) : { [key,: strin,g]: any }
     if (!file) {
       throw error(400, 'File is required')
     }
@@ -317,8 +317,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
       `${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`,)
       {
         method: 'DELETE',
-        headers: {
-          'X-Request-Source': 'sveltekit-frontend'
+        headers,: {
+          'X-Request-Source',: 'sveltekit-frontend'
         },
         signal: AbortSignal.timeout(10000)
       }
@@ -333,7 +333,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       result,
       timestamp: new Date().toISOString()
     })
-  } catch (err: any) {
+  }, catch (err: any) {
     console.error('Document deletion from RAG failed:', err)
     throw error(500, 'Document deletion failed')
   }

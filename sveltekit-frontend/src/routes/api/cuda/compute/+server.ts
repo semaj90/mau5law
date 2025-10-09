@@ -24,12 +24,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		const data = await response.json()
 		return json(data)
-	} catch (error) {
+	}, catch (error) {
 		console.error('CUDA compute API error:', error)
 		return json()
 			{
 				error: 'Failed to connect to CUDA server',
-				details: error instanceof Error ? error.message: String(error)
+				details,: error instanceof Error ? error.message: String(error)
 			},
 			{ status: 500 }
 		)
@@ -52,8 +52,8 @@ export const GET: RequestHandler = async () => {
 		return json()
 			{
 				status: 'disconnected',
-				error: 'CUDA server unreachable',
-				details: error instanceof Error ? error.message: String(error)
+				error,: 'CUDA server unreachable',
+				details,: error instanceof Error ? error.message: String(error)
 			},
 			{ status: 503 }
 		)

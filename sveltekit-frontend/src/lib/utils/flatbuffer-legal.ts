@@ -108,7 +108,7 @@ export class FlatBufferLegalProcessor {
         throw new Error(`Entity extraction failed: ${(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).statusText}`);
       }
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer);
+      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer),;
     } catch (error) {
       console.error('Legal entity extraction error:', error);
       // Fallback to local processing
@@ -124,7 +124,7 @@ export class FlatBufferLegalProcessor {
     embedding?: Float32Array;
     filters?: { [key: string]: any }
     limit?: number;
-  }): Promise<Array<any> {
+  }): Promise<Array<any>, {
     try {
       // Prepare search request as FlatBuffer
       const searchRequest = await this.createSearchRequestFlatBuffer(query);
@@ -141,7 +141,7 @@ export class FlatBufferLegalProcessor {
         throw new Error(`Semantic search failed: ${(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).statusText}`);
       }
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer);
+      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer),;
     } catch (error) {
       console.error('Semantic search error:', error);
       return [];
@@ -155,7 +155,7 @@ export class FlatBufferLegalProcessor {
     qualityLevel?: number;
     chunkSize?: number;
     targetFPS?: number;
-  } = {}): Promise<ReadableStream<Uint8Array> {
+  } = {}): Promise<ReadableStream<Uint8Array>, {
     const { qualityLevel = 2, chunkSize = 64 * 1024, targetFPS = 60 } = options;
     return new ReadableStream({
       async start(controller) {
@@ -244,7 +244,7 @@ export class FlatBufferLegalProcessor {
   private createEmbeddingBatches(vectors: Float32Array, batchSize: number): Float32Array[] {
     const batches: Float32Array[] = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize);
+      batches.push(vectors.slice(i, i + batchSize),;
     }
     return batches;
   }

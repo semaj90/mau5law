@@ -1,16 +1,12 @@
 // @ts-nocheck - Complex AI orchestrator temporarily disabled for build stability
-// @ts-nocheck - Critical TypeScript error suppression
-/*
- * Intelligent Model Orchestrator
- * Auto-switches between Gemma variants, Legal-BERT, and ONNX models based on user intent, context, and performance metrics
- * Integrates CUDA cache optimizer with SOM neural network for optimal UX
- */
+
 import { writable, derived, type Readable } from 'svelte/store';
 import type { UserBehaviorPattern } from './qlora-topology-predictor.js';
 // Core interfaces
 export interface ModelVariant {
   id: string;
   name: string;
+  // Use canonical model type keys (match the values used in initializeModelRegistry)
   type: 'gemma-270m' | 'gemma3-legal' | 'legal-bert' | 'langextract-onnx' | 'fastapi-endpoint';
   targetLatency: number; // milliseconds
   memoryFootprint: number; // MB,
@@ -30,7 +26,7 @@ export interface UserIntent {
     userExpertise: 'novice' | 'intermediate' | 'expert';
     timeOfDay: string;
     sessionLength: number;
-  }
+  };
 }
 export interface ModelPerformanceMetrics {
   modelId: string;
@@ -55,14 +51,15 @@ export interface SelfPromptingSuggestion {
 }
 // CUDA Cache Memory Optimizer with SOM Neural Network
 export class CudaCacheSOMOptimizer {
+  // gridSize is the width/height of the 2D SOM (e.g. 8 -> 8x8)
   private somGrid: Float32Array;
-  private somSize: number = 64; // 8x8 SOM grid
+  private gridSize: number = 8; // 8x8 SOM grid
   private learningRate: number = 0.1;
   private neighborhoodRadius: number = 3;
   private cacheHitMap: Map<string, number> = new Map();
   private modelAffinityMatrix: Float32Array;
   constructor() {
-    this.somGrid = new Float32Array(this.somSize * this.somSize * 128); // 128-dim feature vectors
+    this.somGrid = new Float32Array(this.gridSize * this.gridSize * 128); // 128-dim feature vectors
     this.modelAffinityMatrix = new Float32Array(10 * 10); // 10 model types max
     this.initializeSOM();
   }
@@ -80,10 +77,11 @@ export class CudaCacheSOMOptimizer {
   }
   private findBestMatchingUnit(input: Float32Array): { x: number; y: number } {
     let minDistance = Infinity;
-    let winner = { x: 0, y: 0 }
-    for (let x = 0; x < Math.sqrt(this.somSize); x++) {
-      for (let y = 0; y < Math.sqrt(this.somSize); y++) {
-        const neuronIndex = (x * Math.sqrt(this.somSize) + y) * 128;
+    let winner = { x: 0, y: 0 };
+    const grid = this.gridSize;
+    for (let x = 0; x < grid; x++) {
+      for (let y = 0; y < grid; y++) {
+        const neuronIndex = (x * grid + y) * 128;
         let distance = 0;
         for (let i = 0; i < 128; i++) {
           const diff = input[i] - this.somGrid[neuronIndex + i];
@@ -91,23 +89,22 @@ export class CudaCacheSOMOptimizer {
         }
         if (distance < minDistance) {
           minDistance = distance;
-          winner = { x, y }
+          winner = { x, y };
         }
       }
     }
     return winner;
   }
   private updateSOMWeights(winner: { x: number; y: number }, input: Float32Array): void {
-    const gridSize = Math.sqrt(this.somSize);
-    for (let x = 0; x < gridSize; x++) {
-      for (let y = 0; y < gridSize; y++) {
+    const grid = this.gridSize;
+    for (let x = 0; x < grid; x++) {
+      for (let y = 0; y < grid; y++) {
         const distance = Math.sqrt((x - winner.x) ** 2 + (y - winner.y) ** 2);
         if (distance <= this.neighborhoodRadius) {
           const influence = Math.exp(-(distance ** 2) / (2 * this.neighborhoodRadius ** 2));
-          const neuronIndex = (x * gridSize + y) * 128;
+          const neuronIndex = (x * grid + y) * 128;
           for (let i = 0; i < 128; i++) {
-            this.somGrid[neuronIndex + i] +=
-              this.learningRate * influence * (input[i] - this.somGrid[neuronIndex + i]);
+            this.somGrid[neuronIndex + i] += this.learningRate * influence * (input[i] - this.somGrid[neuronIndex + i]);
           }
         }
       }
@@ -115,13 +112,13 @@ export class CudaCacheSOMOptimizer {
   }
   private updateModelAffinity(behavior: UserBehaviorPattern, winner: { x: number; y: number }): void {
     // Update model affinity based on successful interactions
-    const affinityIndex = winner.x * Math.sqrt(this.somSize) + winner.y;
+    const affinityIndex = winner.x * this.gridSize + winner.y;
     // Implementation would update based on behavior patterns
   }
   // Predict optimal model for given context
   predictOptimalModel(queryEmbedding: Float32Array, availableModels: ModelVariant[]): string {
     const winner = this.findBestMatchingUnit(queryEmbedding);
-    const affinityIndex = winner.x * Math.sqrt(this.somSize) + winner.y;
+    const affinityIndex = winner.x * this.gridSize + winner.y;
     // Use SOM position to predict best model based on learned patterns
     let bestModel = availableModels[0]?.id || 'gemma-270m';
     let bestScore = 0;
@@ -135,7 +132,7 @@ export class CudaCacheSOMOptimizer {
     return bestModel;
   }
   private calculateModelScore(
-    model: ModelVariant
+    model: ModelVariant,
     somPosition: { x: number; y: number },
     queryEmbedding: Float32Array
   ): number {
@@ -147,10 +144,10 @@ export class CudaCacheSOMOptimizer {
     // - SOM-learned patterns
     const cacheKey = `${model.id}-${somPosition.x}-${somPosition.y}`;
     const cacheHitProbability = this.cacheHitMap.get(cacheKey) || 0;
-    const latencyScore = Math.max(0, 1 - (model.targetLatency / 1000)); // Prefer faster models
-    const memoryScore = Math.max(0, 1 - (model.memoryFootprint / 8192)); // Prefer lighter models
+    const latencyScore = Math.max(0, 1 - model.targetLatency / 1000); // Prefer faster models
+    const memoryScore = Math.max(0, 1 - model.memoryFootprint / 8192); // Prefer lighter models
     const cacheScore = cacheHitProbability * 0.3; // 30% weight for cache efficiency
-    return (latencyScore * 0.4) + (memoryScore * 0.3) + cacheScore;
+    return latencyScore * 0.4 + memoryScore * 0.3 + cacheScore;
   }
   // Optimize CUDA memory layout for model switching
   optimizeCudaMemoryLayout(activeModels: string[]): {
@@ -162,9 +159,7 @@ export class CudaCacheSOMOptimizer {
     let currentOffset = 0;
     let totalMemory = 0;
     // Sort models by usage frequency for optimal layout
-    const sortedModels = activeModels.sort((a, b) =>
-      (this.cacheHitMap.get(b) || 0) - (this.cacheHitMap.get(a) || 0)
-    );
+    const sortedModels = activeModels.sort((a, b) => (this.cacheHitMap.get(b) || 0) - (this.cacheHitMap.get(a) || 0));
     for (const modelId of sortedModels) {
       const estimatedSize = this.estimateModelMemorySize(modelId);
       layout.set(modelId, { offset: currentOffset, size: estimatedSize });
@@ -174,9 +169,9 @@ export class CudaCacheSOMOptimizer {
     const fragmentationRatio = this.calculateFragmentation(layout);
     return {
       layout,
-      totalMemoryUsed: totalMemory
-      fragmentationRatio
-    }
+      totalMemoryUsed: totalMemory,
+      fragmentationRatio,
+    };
   }
   private estimateModelMemorySize(modelId: string): number {
     const sizeMap: Record<string, number> = {
@@ -184,8 +179,8 @@ export class CudaCacheSOMOptimizer {
       'gemma3-legal': 2048,
       'legal-bert': 256,
       'langextract-onnx': 512,
-      'fastapi-endpoint': 256
-    }
+      'fastapi-endpoint': 256,
+    };
     return sizeMap[modelId] || 1024;
   }
   private calculateFragmentation(layout: Map<string, { offset: number; size: number }>): number {
@@ -224,9 +219,9 @@ export class SelfPromptingIntelligence {
         previousQueries: this.userContextHistory.slice(-5).map(h => h.category),
         userExpertise: this.inferExpertiseLevel(context),
         timeOfDay: new Date().getHours().toString(),
-        sessionLength: context.sessionLength || 0
-      }
-    }
+        sessionLength: context.sessionLength || 0,
+      },
+    };
     this.userContextHistory.push(intent);
     return intent;
   }
@@ -244,10 +239,10 @@ export class SelfPromptingIntelligence {
   private calculateConfidence(query: string): number {
     // Calculate confidence based on query clarity, specificity, and known patterns
     const specificTerms = query.split(/\s+/).filter(item => item.length);
-    const totalWords = query.split(/\s+/).length;
-    const specificityRatio = specificTerms / totalWords;
+    const totalWords = query.split(/\s+/).length || 1;
+    const specificityRatio = specificTerms.length / totalWords;
     const knownPatternScore = this.queryPatterns.get(query.toLowerCase()) || 0;
-    return Math.min(0.95, (specificityRatio * 0.6) + (knownPatternScore * 0.4) + 0.2);
+    return Math.min(0.95, specificityRatio * 0.6 + knownPatternScore * 0.4 + 0.2);
   }
   private detectUrgency(query: string, context: any): UserIntent['urgency'] {
     const urgentKeywords = /\b(urgent|asap|immediately|now|quick|fast|emergency|deadline)\b/i;
@@ -277,8 +272,8 @@ export class SelfPromptingIntelligence {
   }
   // Generate "did you mean" suggestions
   generateSelfPromptingSuggestions(
-    originalQuery: string
-    intent: UserIntent
+    originalQuery: string,
+    intent: UserIntent,
     availableModels: ModelVariant[]
   ): SelfPromptingSuggestion[] {
     const suggestions: SelfPromptingSuggestion[] = [];
@@ -291,7 +286,7 @@ export class SelfPromptingIntelligence {
         category: 'clarification',
         modelRecommendation: 'gemma-270m', // Fast model for clarifications
         estimatedLatency: 200,
-        contextRelevance: 0.9
+        contextRelevance: 0.9,
       });
     }
     // Expansion suggestions based on context
@@ -311,7 +306,7 @@ export class SelfPromptingIntelligence {
       case 'code-generation':
         return 'write code, debug an error, or explain a programming concept';
       default:
-        return 'be more specific about what you\'re looking for';
+        return "be more specific about what you're looking for";
     }
   }
   private generateExpansionSuggestions(query: string, intent: UserIntent): SelfPromptingSuggestion[] {
@@ -324,7 +319,7 @@ export class SelfPromptingIntelligence {
         category: 'expansion',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 300,
-        contextRelevance: 0.8
+        contextRelevance: 0.8,
       });
     }
     return expansions;
@@ -340,7 +335,7 @@ export class SelfPromptingIntelligence {
         category: 'alternative',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 350,
-        contextRelevance: 0.7
+        contextRelevance: 0.7,
       });
     }
     return alternatives;
@@ -349,7 +344,7 @@ export class SelfPromptingIntelligence {
     const followUps: SelfPromptingSuggestion[] = [];
     // Based on user's previous interaction patterns
     const recentCategories = intent.context.previousQueries.slice(-3);
-    if (recentCategories.filter(item => item.length) >= 2) {
+    if (recentCategories.filter(item => item.length).length >= 2) {
       followUps.push({
         id: `followup-legal-${Date.now()}`,
         suggestion: `Should I prepare a comprehensive legal brief based on your recent research?`,
@@ -357,7 +352,7 @@ export class SelfPromptingIntelligence {
         category: 'follow-up',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 400,
-        contextRelevance: 0.85
+        contextRelevance: 0.85,
       });
     }
     return followUps;
@@ -385,6 +380,7 @@ export class IntelligentModelOrchestrator {
   private performanceMetrics: Map<string, ModelPerformanceMetrics> = new Map();
   private activeModel: string = 'gemma-270m';
   private modelSwitchQueue: string[] = [];
+  private performanceIntervalId?: ReturnType<typeof setInterval>; // <-- added to manage interval
   // Svelte stores for reactive UI
   public readonly currentModel = writable<ModelVariant | null>(null);
   public readonly suggestions = writable<SelfPromptingSuggestion[]>([]);
@@ -409,8 +405,8 @@ export class IntelligentModelOrchestrator {
         memoryFootprint: 512,
         capabilities: ['chat', 'simple-qa', 'clarification'],
         contextWindow: 2048,
-        isLoaded: true
-        warmupTime: 50
+        isLoaded: true,
+        warmupTime: 50,
       },
       {
         id: 'gemma3-legal-main',
@@ -420,8 +416,8 @@ export class IntelligentModelOrchestrator {
         memoryFootprint: 2048,
         capabilities: ['legal-research', 'document-analysis', 'legal-reasoning', 'case-law-analysis'],
         contextWindow: 4096,
-        isLoaded: true
-        warmupTime: 100
+        isLoaded: true,
+        warmupTime: 100,
       },
       {
         id: 'langextract-processor',
@@ -431,8 +427,8 @@ export class IntelligentModelOrchestrator {
         memoryFootprint: 512,
         capabilities: ['text-extraction', 'document-parsing', 'entity-extraction'],
         contextWindow: 2048,
-        isLoaded: true
-        warmupTime: 50
+        isLoaded: true,
+        warmupTime: 50,
       },
       {
         id: 'legal-bert-fast',
@@ -442,8 +438,8 @@ export class IntelligentModelOrchestrator {
         memoryFootprint: 256,
         capabilities: ['legal-entity-extraction', 'case-classification', 'legal-search'],
         contextWindow: 512,
-        isLoaded: true
-        warmupTime: 30
+        isLoaded: true,
+        warmupTime: 30,
       },
       {
         id: 'fastapi-endpoint',
@@ -453,9 +449,9 @@ export class IntelligentModelOrchestrator {
         memoryFootprint: 256,
         capabilities: ['api-processing', 'data-transformation', 'batch-processing'],
         contextWindow: 1024,
-        isLoaded: true
-        warmupTime: 25
-      }
+        isLoaded: true,
+        warmupTime: 25,
+      },
     ];
     models.forEach(model => {
       this.modelRegistry.set(model.id, model);
@@ -466,21 +462,17 @@ export class IntelligentModelOrchestrator {
         userSatisfaction: 0.8,
         cachePredictionAccuracy: 0.6,
         contextSwitchPenalty: model.warmupTime,
-        memoryEfficiency: 1 - (model.memoryFootprint / 16384),
+        memoryEfficiency: 1 - model.memoryFootprint / 16384,
         lastUsed: new Date(),
         usageCount: 0,
-        errorRate: 0.05
+        errorRate: 0.05,
       });
     });
     // Set initial model
     this.currentModel.set(this.modelRegistry.get(this.activeModel) || null);
   }
   // Main method: Intelligently handle user query
-  async processQuery(
-    query: string;
-    context: any = {},
-    userBehavior?: UserBehaviorPattern
-  ): Promise<any> {
+  async processQuery(query: string, context: any = {}, userBehavior?: UserBehaviorPattern): Promise<any> {
     // Step 1: Analyze user intent
     const intent = this.selfPrompting.analyzeUserIntent(query, context);
     // Step 2: Generate query embedding (mock for now - would use actual embedding service)
@@ -490,7 +482,7 @@ export class IntelligentModelOrchestrator {
       this.cudaOptimizer.trainFromUserBehavior(userBehavior, queryEmbedding);
     }
     // Step 4: Predict optimal model
-    const availableModels = Array.from(this.modelRegistry.values())
+    const availableModels = Array.from(this.modelRegistry.values());
     const optimalModel = this.cudaOptimizer.predictOptimalModel(queryEmbedding, availableModels);
     // Step 5: Check if model switch is needed
     const shouldSwitch = await this.shouldSwitchModel(optimalModel, intent);
@@ -498,11 +490,7 @@ export class IntelligentModelOrchestrator {
       await this.performModelSwitch(optimalModel);
     }
     // Step 6: Generate self-prompting suggestions
-    const suggestions = this.selfPrompting.generateSelfPromptingSuggestions(
-      query,
-      intent,
-      availableModels
-    );
+    const suggestions = this.selfPrompting.generateSelfPromptingSuggestions(query, intent, availableModels);
     // Step 7: Optimize CUDA memory layout
     const activeModels = this.getActiveModelIds();
     const memoryOptimization = this.cudaOptimizer.optimizeCudaMemoryLayout(activeModels);
@@ -513,33 +501,37 @@ export class IntelligentModelOrchestrator {
     this.memoryOptimization.set(memoryOptimization);
     this.performance.set(Array.from(this.performanceMetrics.values()));
     return {
-      selectedModel: optimalModel
+      selectedModel: optimalModel,
       estimatedLatency: this.estimateLatency(optimalModel, intent),
       suggestions,
       shouldPreload,
-      cacheOptimization: memoryOptimization
-    }
+      cacheOptimization: memoryOptimization,
+    };
   }
   private generateQueryEmbedding(query: string): Float32Array {
     // Mock embedding generation - would use actual embedding service
     const embedding = new Float32Array(128);
-    const words = query.toLowerCase().split(/\s+/);
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+    if (wordCount === 0) return embedding; // avoid divide-by-zero (returns zero-vector)
     for (let i = 0; i < 128; i++) {
       let value = 0;
       for (const word of words) {
         // Simple hash-based embedding simulation
         value += Math.sin(this.hashString(word + i)) * 0.1;
       }
-      embedding[i] = value / words.length;
+      embedding[i] = value / wordCount;
     }
     return embedding;
   }
+  // small utility fix: stable 32-bit hash
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      hash = (hash << 5) - hash + char;
+      // force 32-bit integer
+      hash = hash | 0;
     }
     return hash;
   }
@@ -555,38 +547,35 @@ export class IntelligentModelOrchestrator {
     const shouldSwitch = performanceBenefit > switchCost && intent.urgency !== 'critical';
     return shouldSwitch;
   }
-  private calculatePerformanceBenefit(
-    current: ModelVariant
-    target: ModelVariant;
-    intent: UserIntent
-  ): number {
+  private calculatePerformanceBenefit(current: ModelVariant, target: ModelVariant, intent: UserIntent): number {
     // Calculate expected performance improvement
     const latencyImprovement = Math.max(0, current.targetLatency - target.targetLatency);
-    const capabilityMatch = target.capabilities.some(cap =>
-      intent.category.includes(cap) || cap.includes(intent.category)
-    ) ? 100 : 0;
+    // safer capability matching: exact match or capability contains the intent category
+    const capabilityMatch = target.capabilities.some(cap => cap === intent.category || cap.includes(intent.category))
+      ? 100
+      : 0;
     const complexityMatch = this.getComplexityMatchScore(target, intent.complexity);
     return latencyImprovement + capabilityMatch + complexityMatch;
   }
   private getComplexityMatchScore(model: ModelVariant, complexity: string): number {
     const modelComplexityMap: Record<string, number> = {
-      'gemma-270m': 1,      // Simple tasks
-      'legal-bert': 2,      // Specialized simple tasks
-      'gemma3-legal': 3,    // Legal specialized complex
-      'langextract-onnx': 2,// Text extraction moderate
-      'fastapi-endpoint': 1 // Simple API processing
-    }
+      'gemma-270m': 1, // Simple tasks
+      'legal-bert': 2, // Specialized simple tasks
+      'gemma3-legal': 3, // Legal specialized complex
+      'langextract-onnx': 2, // Text extraction moderate
+      'fastapi-endpoint': 1, // Simple API processing
+    };
     const complexityScores = {
       'simple': 1,
       'moderate': 2,
       'complex': 3,
-      'expert': 4
-    }
+      'expert': 4,
+    };
     const modelScore = modelComplexityMap[model.type] || 2;
     const taskScore = complexityScores[complexity as keyof typeof complexityScores] || 2;
     // Perfect match gets high score, over/under-engineering gets penalty
     const diff = Math.abs(modelScore - taskScore);
-    return Math.max(0, 50 - (diff * 15))
+    return Math.max(0, 50 - diff * 15);
   }
   private async performModelSwitch(targetModel: string): Promise<void> {
     const targetModelInfo = this.modelRegistry.get(targetModel);
@@ -598,7 +587,7 @@ export class IntelligentModelOrchestrator {
       if (!targetModelInfo.isLoaded) {
         console.log(`Loading model: ${targetModelInfo.name}`);
         // Simulate warmup time
-        await new Promise(resolve => setTimeout(resolve, targetModelInfo.warmupTime))
+        await new Promise(resolve => setTimeout(resolve, targetModelInfo.warmupTime));
         targetModelInfo.isLoaded = true;
       }
       // Update active model
@@ -622,14 +611,14 @@ export class IntelligentModelOrchestrator {
     const model = this.modelRegistry.get(modelId);
     const metrics = this.performanceMetrics.get(modelId);
     if (!model || !metrics) return 1000; // Default fallback
-    let baseLatency = metrics.averageLatency;
+    const baseLatency = metrics.averageLatency;
     // Adjust for complexity
     const complexityMultiplier = {
       'simple': 0.7,
       'moderate': 1.0,
       'complex': 1.4,
-      'expert': 2.0
-    }
+      'expert': 2.0,
+    };
     const multiplier = complexityMultiplier[intent.complexity] || 1.0;
     // Add context switch penalty if model not loaded
     const switchPenalty = model.isLoaded ? 0 : model.warmupTime;
@@ -660,9 +649,20 @@ export class IntelligentModelOrchestrator {
   }
   private startPerformanceMonitoring(): void {
     // Monitor and update performance metrics periodically
-    setInterval(() => {
+    // clear any existing interval to avoid duplicates
+    if (this.performanceIntervalId) {
+      clearInterval(this.performanceIntervalId);
+    }
+    this.performanceIntervalId = setInterval(() => {
       this.updatePerformanceMetrics();
     }, 30000); // Update every 30 seconds
+  }
+  // allow clean shutdown in environments/tests
+  public stopPerformanceMonitoring(): void {
+    if (this.performanceIntervalId) {
+      clearInterval(this.performanceIntervalId);
+      this.performanceIntervalId = undefined;
+    }
   }
   private updatePerformanceMetrics(): void {
     // Update metrics based on actual performance data
@@ -670,7 +670,8 @@ export class IntelligentModelOrchestrator {
       // Simulate metric updates - would integrate with actual monitoring
       const timeSinceLastUse = Date.now() - metrics.lastUsed.getTime();
       // Decay unused models' scores
-      if (timeSinceLastUse > 300000) { // 5 minutes
+      if (timeSinceLastUse > 300000) {
+        // 5 minutes
         metrics.cachePredictionAccuracy *= 0.95;
       }
       // Update memory efficiency based on current load
@@ -699,20 +700,20 @@ export class IntelligentModelOrchestrator {
     memoryUsage: any;
     recommendations: string[];
   } {
-    const models = Array.from(this.performanceMetrics.values())
+    const models = Array.from(this.performanceMetrics.values());
     const totalUsage = models.reduce((sum, m) => sum + m.usageCount, 0);
     const avgSatisfaction = models.reduce((sum, m) => sum + m.userSatisfaction, 0) / models.length;
     return {
       summary: {
-        totalQueries: totalUsage
+        totalQueries: totalUsage,
         averageLatency: models.reduce((sum, m) => sum + m.averageLatency, 0) / models.length,
-        overallSatisfaction: avgSatisfaction
-        activeModels: this.getActiveModelIds().length
+        overallSatisfaction: avgSatisfaction,
+        activeModels: this.getActiveModelIds().length,
       },
       models,
       memoryUsage: this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds()),
-      recommendations: this.generateOptimizationRecommendations(models)
-    }
+      recommendations: this.generateOptimizationRecommendations(models),
+    };
   }
   private generateOptimizationRecommendations(metrics: ModelPerformanceMetrics[]): string[] {
     const recommendations: string[] = [];

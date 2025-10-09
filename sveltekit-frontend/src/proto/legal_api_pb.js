@@ -129,7 +129,7 @@ export const legal = $root.legal = (() => {
              * @returns {$protobuf.Writer} Writer
              */
             User.encode = undefined;
-            };
+            },;
 
             /**
              * Encodes the specified User message, length delimited. Does not implicitly {@link legal.api.User.verify|verify} messages.
@@ -156,7 +156,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             User.decode = undefined;
-            };
+            },;
 
             /**
              * Decodes a User message from the specified reader or buffer, length delimited.
@@ -8110,7 +8110,7 @@ export const google = $root.google = (() => {
              * @returns {$protobuf.Writer} Writer
              */
             Timestamp.encode = undefined;
-            };
+            },;
 
             /**
              * Encodes the specified Timestamp message, length delimited. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
@@ -8137,7 +8137,7 @@ export const google = $root.google = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Timestamp.decode = undefined;
-            };
+            },;
 
             /**
              * Decodes a Timestamp message from the specified reader or buffer, length delimited.
