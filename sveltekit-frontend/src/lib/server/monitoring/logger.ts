@@ -107,7 +107,7 @@ class AppLogger {
         requests: times.length
       })
       .sort((a, b) => b.avgTime - a.avgTime)
-      .slice(0, 10),;
+      .slice(0, 10);
   }
   private getPeakHours(metrics: PerformanceMetrics[]) {
     const hourCounts = metrics.reduce((acc, m) => {
@@ -119,7 +119,7 @@ class AppLogger {
     );
     return Object.entries(hourCounts)
       .map(([hour, count]) => ({ hour: parseInt(hour), requests: count })
-      .sort((a, b) => b.requests - a.requests),;
+      .sort((a, b) => b.requests - a.requests);
   }
   private async persistLog(entry: LogEntry) {
     // In production, implement database logging or external service

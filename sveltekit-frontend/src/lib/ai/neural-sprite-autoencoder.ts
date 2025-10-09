@@ -33,7 +33,7 @@ export default class NeuralSpriteAutoencoder {
 	}
 	const n = input.length;
 	if (n === 0) return new Array(this.latentSize).fill(0);
-	const chunkSize = Math.max(1, Math.floor(n / this.latentSize),;
+	const chunkSize = Math.max(1, Math.floor(n / this.latentSize);
 	const latent = new Array<number>(this.latentSize).fill(0);
 	const counts = new Array<number>(this.latentSize).fill(0);
 	for (let i = 0; i < n; i++) {
@@ -64,7 +64,7 @@ export default class NeuralSpriteAutoencoder {
 	const out = new Array<number>(outputLength);
 	for (let i = 0; i < outputLength; i++) {
 	  const t = (i / outputLength) * latent.length;
-	  const li = Math.min(latent.length - 1, Math.floor(t),;
+	  const li = Math.min(latent.length - 1, Math.floor(t);
 	  out[i] = latent[li];
 	}
 	return out;

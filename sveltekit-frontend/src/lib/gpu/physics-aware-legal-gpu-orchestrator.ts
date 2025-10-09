@@ -260,7 +260,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
           console.log('🌉 CUDA Bridge: Python ↔ Go ↔ CUDA C++ operational');
           resolve();
         } else if (event.data.type === 'bridge_error') {
-          reject(new Error(event.data.error),;
+          reject(new Error(event.data.error);
         }
       }
       this.cudaBridgeWorker!.postMessage({

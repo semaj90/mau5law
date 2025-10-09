@@ -81,6 +81,6 @@ export const enhancedRagMachine = createMachine({
 export const enhancedRagStore = writable({
   state: 'idle',
   results: [],
-  loading: false,;
+  loading: false;
   error: null
 });

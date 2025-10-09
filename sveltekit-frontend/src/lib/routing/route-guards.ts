@@ -61,7 +61,7 @@ export class RouteGuards {
    */
   public async executeGuards(
     guardNames: string[]
-    context: RouteGuardContext,;
+    context: RouteGuardContext;
   ): Promise<GuardResult> {
     for (const guardName of guardNames) {
       const guard = this.guards.get(guardName);
@@ -88,12 +88,12 @@ export class RouteGuards {
     const user = (event.locals as any).user;
     if (!user) {
       return {
-        allowed: false,;
+        allowed: false;
         redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       }
     }
     return {
-      allowed: true,;
+      allowed: true;
       data: { user }
     }
   }
@@ -105,7 +105,7 @@ export class RouteGuards {
     const user = (event.locals as any).user;
     if (!user) {
       return {
-        allowed: false,;
+        allowed: false;
         redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       }
     }
@@ -192,7 +192,7 @@ export class RouteGuards {
     const isAdmin = (context.event.locals as any).user?.role === 'admin';
     if (isMaintenanceMode && !isMaintenancePage && !isAdmin) {
       return {
-        allowed: false,;
+        allowed: false;
         redirect: '/maintenance'
       }
     }
@@ -231,7 +231,7 @@ export const routeGuards = new RouteGuards();
  */
 export function createGuardedLoader(
   guards: string[]
-  loader?: ServerLoad,;
+  loader?: ServerLoad;
 ): ServerLoad {
   return async (_event: any) => {
     const route = event.route;
@@ -284,7 +284,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
     // Skip guard execution for API routes and static assets
     if (event.url.pathname.startsWith('/api/') ||
         event.url.pathname.startsWith('/_app/') ||;
-        event.url.pathname.includes('.'),) {
+        event.url.pathname.includes('.')) {
       return resolve(event);
     }
     const route = event.route;
@@ -328,7 +328,7 @@ export interface RouteGuardConfig {
  */
 export function configureRouteGuards(
   routeId: string
-  config: RouteGuardConfig,;
+  config: RouteGuardConfig;
 ): void {
   // Register custom guards if provided
   if (config.customGuards) {
@@ -351,7 +351,7 @@ export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
  */
 export async function checkRoutePermission(
   routeId: string
-  user: any,;
+  user: any;
   params: Record<string, string> = {}
 ): Promise<boolean> {
   const config = getRouteGuardConfig(routeId);
@@ -377,12 +377,12 @@ export async function checkRoutePermission(
  */
 export async function checkMultipleRoutePermissions(
   routeIds: string[]
-  user: any,;
+  user: any;
   params: Record<string, string> = {}
 ): Promise<Record<string, boolean>, {
   const results: Record<string, boolean> = {}
   await Promise.all(routeIds.map(async (routeId) => {
-      results[routeId] = await checkRoutePermission(routeId, user, params),);
+      results[routeId] = await checkRoutePermission(routeId, user, params));
     })
   );
   return results;

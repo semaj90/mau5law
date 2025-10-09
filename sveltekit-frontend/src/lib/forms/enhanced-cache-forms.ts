@@ -41,7 +41,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
     handler: z.string(),
     action: z.string(),
     notes: z.string().optional()
-  })).default([]),;
+  })).default([]);
 }).omit({
   id: true
   createdAt: true
@@ -86,7 +86,7 @@ export class CacheFirstFormManager {
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>,);
+      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>);
       {
         SPA: true
         validators: zod(EnhancedCaseFormSchema),
@@ -119,7 +119,7 @@ export class CacheFirstFormManager {
           this.formErrors.update(errors => ({
             ...errors,
             [formId]: (result as { type?: any; data?: any; error?: any }).error
-          }),;
+          });
         }
       }
     );
@@ -156,7 +156,7 @@ export class CacheFirstFormManager {
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>,);
+      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>);
       {
         SPA: true
         validators: zod(EvidenceUploadFormSchema),
@@ -240,7 +240,7 @@ export class CacheFirstFormManager {
     this.formProgress.update(current => ({
       ...current,
       [formId]: progress
-    }),;
+    });
   }
   private updateActiveForm(formId: string) {
     this.activeForms.update(forms => [...forms, formId]);
@@ -248,7 +248,7 @@ export class CacheFirstFormManager {
   private cleanupForm(formId: string) {
     this.formCache.delete(formId);
     this.clearAutosave(formId);
-    this.activeForms.update(forms => forms.filter(id => id !== formId),;
+    this.activeForms.update(forms => forms.filter(id => id !== formId);
     this.formErrors.update(errors => {
       delete errors[formId];
       return errors;
@@ -281,7 +281,7 @@ export class CacheFirstFormManager {
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
           data: formData
           timestamp: new Date().toISOString()
-        }),;
+        });
         console.log(`Draft saved for form ${formId}`);
       } catch (error) {
         console.error('Failed to save draft:', error);
@@ -319,11 +319,11 @@ export class CacheFirstFormManager {
           // removed unused response assignment
           resolve((response as { fileUrl?: any }).fileUrl);
         } else {
-          reject(new Error(`Upload failed: ${xhr.statusText}`),;
+          reject(new Error(`Upload failed: ${xhr.statusText}`);
         }
       });
       xhr.addEventListener('error', () => {
-        reject(new Error('Upload failed'),;
+        reject(new Error('Upload failed');
       });
       xhr.open('POST', '/api/upload');
       xhr.send(formData);

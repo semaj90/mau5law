@@ -264,7 +264,7 @@ export const graphCacheMachine = createMachine({
       }
     }),
     setQuery,: assign({
-      query: ({ event }) => event.type === 'QUERY' ? event.query: null,;
+      query: ({ event }) => event.type === 'QUERY' ? event.query: null;
       params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : { [key,: strin,g]: any },
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {

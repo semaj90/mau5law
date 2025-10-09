@@ -111,7 +111,7 @@ export const Processing: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
-      isProcessing: true,;
+      isProcessing: true;
       response: 'Analyzing legal document... Please wait.',
       conversationHistory: [
         {
@@ -149,7 +149,7 @@ export const StreamingMode: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'What are the key provisions in this merger agreement?',
-      isProcessing: true,;
+      isProcessing: true;
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
       conversationHistory: [
         {
@@ -189,7 +189,7 @@ export const MultiDocumentAnalysis: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Compare these three contracts for common risk factors',
-      isProcessing: true,;
+      isProcessing: true;
       response: 'Comparing 3 contracts for risk analysis...',
       conversationHistory: [
         {
@@ -316,7 +316,7 @@ export const ErrorRecovery: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze this corrupted document',
-      isProcessing: false,;
+      isProcessing: false;
       response: '',
       conversationHistory: [
         {
@@ -377,7 +377,7 @@ export const CollaborativeMode: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Draft a motion for summary judgment based on these case files',
-      isProcessing: true,;
+      isProcessing: true;
       response: 'Analyzing case precedents and drafting motion...',
       conversationHistory: [
         {
@@ -444,7 +444,7 @@ export const Context7Integration: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
-      isProcessing: true,;
+      isProcessing: true;
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
       conversationHistory: [
         {

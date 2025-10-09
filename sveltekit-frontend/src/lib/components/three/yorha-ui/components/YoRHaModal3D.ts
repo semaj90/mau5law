@@ -216,7 +216,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     });
     const line1 = new THREE.Mesh(lineGeometry, lineMaterial);
     line1.rotation.z = Math.PI / 4;
-    const line2 = new THREE.Mesh(lineGeometry, lineMaterial.clone(),;
+    const line2 = new THREE.Mesh(lineGeometry, lineMaterial.clone();
     line2.rotation.z = -Math.PI / 4;
     buttonGroup.add(line1);
     buttonGroup.add(line2);
@@ -476,7 +476,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       if (mesh) {
         mesh.geometry.dispose();
         if (Array.isArray(mesh.material)) {
-          mesh.material.forEach(mat => mat.dispose(),;
+          mesh.material.forEach(mat => mat.dispose();
         } else {
           mesh.material.dispose();
         }
@@ -487,7 +487,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         if (child instanceof THREE.Mesh) {
           child.geometry.dispose();
           if (Array.isArray(child.material)) {
-            child.material.forEach(mat => mat.dispose(),;
+            child.material.forEach(mat => mat.dispose();
           } else {
             child.material.dispose();
           }
@@ -499,7 +499,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         if (child instanceof THREE.Mesh) {
           child.geometry.dispose();
           if (Array.isArray(child.material)) {
-            child.material.forEach(mat => mat.dispose(),;
+            child.material.forEach(mat => mat.dispose();
           } else {
             child.material.dispose();
           }

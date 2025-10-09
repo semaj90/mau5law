@@ -295,7 +295,7 @@ export class UltimateNeuralTopologyOrchestrator {
       for (const connection of node.connections) {
         edges.push({
           from: node.id,
-          to: connection,;
+          to: connection;
           weight: Math.random() * 0.8 + 0.2,
           dataFlow: this.calculateDataFlow(node.id, connection)
         });
@@ -383,7 +383,7 @@ export class UltimateNeuralTopologyOrchestrator {
       await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
         'orchestrator_warmup',
         testData,
-        10, 10,)
+        10, 10)
         { tileSize: 5, priority,: 'low' }
       );
       console.log('🔧 SIMD GPU integration initialized');
@@ -470,7 +470,7 @@ export class UltimateNeuralTopologyOrchestrator {
       predictions: results[3].status === 'fulfilled' ? results[3].value : null
       embeddings: results[0].status === 'fulfilled' && results[0].value?.embeddings?.documentEmbedding
         ? results[0].value.embeddings.documentEmbedding
-        : null,;
+        : null;
       visualizations: this.generateVisualizationData(results)
     }
   }

@@ -18,7 +18,7 @@ export interface StageStatus {
 	final?: boolean;
 	receivedAt?: number;
 	completedAt?: number;
-	stageTimestamps?: Partial<Record<PipelineStage, number>,; // per-stage arrival timestamps
+	stageTimestamps?: Partial<Record<PipelineStage, number>; // per-stage arrival timestamps
 	// Allow additional dynamic stage flags without TS complaints
 	[key: string]: unknown; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
@@ -154,13 +154,13 @@ export const completedPipelines = derived(stages, ($s) =>
 		.filter(v => v.final)
 		.sort((a, b) => ((b.completedAt || 0) - (a.completedAt || 0))
 		.slice(0, 20)
-),;
+);
 // Convenience start on import (optional). Comment out if you prefer manual control.
 if (typeof window !== 'undefined') {
 	connectRealtime();
 }
 export default {
-	connect: connectRealtime,;
+	connect: connectRealtime;
 	disconnect: disconnectRealtime
 	connectionStatus,
 	stages,

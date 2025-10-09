@@ -93,12 +93,12 @@ export class SoraGraphTraversal {
   private traversalCache: Map<string, SoraTraversalPath[]> = new Map();
   private reinforcementModel: Map<string, number> = new Map();
   constructor(
-    neo4jDriver: any
-    gpuIntegration?: NESGPUIntegration
-    memoryArch?: NESMemoryArchitecture
-    semanticPipeline?: SemanticAnalysisPipeline
-    tensorStore?: DimensionalTensorStore
-    reranker?: LegalAIReranker,;
+    neo4jDriver: any,
+    gpuIntegration?: NESGPUIntegration,
+    memoryArch?: NESMemoryArchitecture,
+    semanticPipeline?: SemanticAnalysisPipeline,
+    tensorStore?: DimensionalTensorStore,
+    reranker?: LegalAIReranker
   ) {
     this.neo4jDriver = neo4jDriver;
     this.gpuIntegration = gpuIntegration || null;
@@ -111,8 +111,8 @@ export class SoraGraphTraversal {
    * Main traversal method with reinforcement learning support
    */
   async traverseGraph(
-    startNodeId: string
-    query: string
+    startNodeId: string,
+    query: string,
     options: Partial<SoraTraversalOptions> = {}
   ): Promise<SoraTraversalPath[]> {
     const config: SoraTraversalOptions = {
@@ -120,10 +120,10 @@ export class SoraGraphTraversal {
       maxNodes: 100,
       scoreThreshold: 0.6,
       traversalStrategy: 'reinforcement',
-      semanticFiltering: true
-      useGPUAcceleration: true
+      semanticFiltering: true,
+      useGPUAcceleration: true,
       reinforcementLearning: {
-        enabled: true
+        enabled: true,
         explorationRate: 0.1,
         learningRate: 0.01,
         discountFactor: 0.95
@@ -182,8 +182,8 @@ export class SoraGraphTraversal {
   private async reinforcementTraversal(
     startNodeId: string
     queryEmbedding: Float32Array
-    config: SoraTraversalOptions,;
-    state: SoraReinforcementState,;
+    config: SoraTraversalOptions;
+    state: SoraReinforcementState;
   ): Promise<SoraTraversalPath[]> {
     const paths: SoraTraversalPath[] = [];
     const explorationPaths: SoraTraversalPath[] = [];
@@ -214,7 +214,7 @@ export class SoraGraphTraversal {
     startNode: SoraGraphNode
     queryEmbedding: Float32Array
     config: SoraTraversalOptions
-    qTable: Map<string, Map<string, number>,;
+    qTable: Map<string, Map<string, number>;
   ): Promise<SoraTraversalPath> {
     const path: SoraTraversalPath = {
       nodes: [startNode],
@@ -230,7 +230,7 @@ export class SoraGraphTraversal {
       const neighbors = await this.getNeighbors(currentNode.id);
       if (neighbors.length === 0) break;
       // Filter unvisited neighbors
-      const unvisitedNeighbors = neighbors.filter(n => !visitedNodes.has(n.target.id),;
+      const unvisitedNeighbors = neighbors.filter(n => !visitedNodes.has(n.target.id);
       if (unvisitedNeighbors.length === 0) break;
       // Epsilon-greedy action selection
       let selectedAction;
@@ -264,12 +264,12 @@ export class SoraGraphTraversal {
   private updateQTable(
     stateId: string
     actionId: string
-    reward: number,;
+    reward: number;
     config: SoraTraversalOptions
-    qTable: Map<string, Map<string, number>,;
+    qTable: Map<string, Map<string, number>;
   ): void {
     if (!qTable.has(stateId)) {
-      qTable.set(stateId, new Map(),;
+      qTable.set(stateId, new Map();
     }
     const stateActions = qTable.get(stateId)!;
     const currentQ = stateActions.get(actionId) || 0;
@@ -282,10 +282,10 @@ export class SoraGraphTraversal {
   /**
    * Get maximum Q-value for a state
    */;
-  private getMaxQValue(stateId: string, qTable: Map<string, Map<string, number>,): number {
+  private getMaxQValue(stateId: string, qTable: Map<string, Map<string, number>): number {
     const stateActions = qTable.get(stateId);
     if (!stateActions || stateActions.size === 0) return 0;
-    return Math.max(...Array.from(stateActions.values()),;
+    return Math.max(...Array.from(stateActions.values());
   }
   /**
    * Calculate reward for state transition
@@ -293,7 +293,7 @@ export class SoraGraphTraversal {
   private async calculateReward(
     fromNode: SoraGraphNode
     toNode: SoraGraphNode
-    queryEmbedding: Float32Array,;
+    queryEmbedding: Float32Array;
   ): Promise<number> {
     let reward = 0;
     // Semantic similarity reward
@@ -348,7 +348,7 @@ export class SoraGraphTraversal {
    */
   private async heuristicActionSelection(
     actions: Array<any>
-    queryEmbedding: Float32Array,;
+    queryEmbedding: Float32Array;
   ): Promise<any> {
     let bestAction = actions[0];
     let bestScore = -1;
@@ -383,7 +383,7 @@ export class SoraGraphTraversal {
   private async bestFirstTraversal(
     startNodeId: string
     queryEmbedding: Float32Array
-    config: SoraTraversalOptions,;
+    config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     const paths: SoraTraversalPath[] = [];
     const startNode = await this.getNodeById(startNodeId);
@@ -447,7 +447,7 @@ export class SoraGraphTraversal {
    */
   private async gpuEnhancedScoring(
     paths: SoraTraversalPath[]
-    queryEmbedding: Float32Array,;
+    queryEmbedding: Float32Array;
   ): Promise<SoraTraversalPath[]> {
     try {
       // Prepare embeddings for GPU processing
@@ -586,14 +586,14 @@ export class SoraGraphTraversal {
       'relationship': 0.3
     }
     score += (typeWeights[node.type] || 0.1) * 0.3;
-    return Math.max(0, Math.min(1, score),;
+    return Math.max(0, Math.min(1, score);
   }
   /**
    * Calculate semantic coherence of a path
    */
   private async calculatePathSemanticCoherence(
     path: SoraTraversalPath
-    queryEmbedding: Float32Array,;
+    queryEmbedding: Float32Array;
   ): Promise<number> {
     if (path.nodes.length < 2) return 0;
     let totalCoherence = 0;
@@ -657,7 +657,7 @@ export class SoraGraphTraversal {
       normB += b[i] * b[i];
     }
     if (normA === 0 || normB === 0) return 0;
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
   /**
    * Map Neo4j labels to node types
@@ -690,7 +690,7 @@ export class SoraGraphTraversal {
   private async breadthFirstTraversal(
     startNodeId: string
     queryEmbedding: Float32Array
-    config: SoraTraversalOptions,;
+    config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     // Simplified BFS implementation
     const startNode = await this.getNodeById(startNodeId);
@@ -709,7 +709,7 @@ export class SoraGraphTraversal {
   private async depthFirstTraversal(
     startNodeId: string
     queryEmbedding: Float32Array
-    config: SoraTraversalOptions,;
+    config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     // Simplified DFS implementation
     const startNode = await this.getNodeById(startNodeId);
@@ -733,8 +733,8 @@ export class SoraGraphTraversal {
    */
   private async applyLegalReranking(
     paths: SoraTraversalPath[]
-    query: string,;
-    config: SoraTraversalOptions,;
+    query: string;
+    config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     try {
       // Convert paths to rerank results
@@ -751,7 +751,7 @@ export class SoraGraphTraversal {
         originalScore: path.totalScore,
         rerankScore: 0,
         confidence: path.semanticCoherence
-      }),;
+      });
       // Infer user context from query and config
       const userContext: UserContext = {
         intent: this.inferUserIntent(query),
@@ -785,8 +785,8 @@ export class SoraGraphTraversal {
    */
   private async storeTensorData(
     paths: SoraTraversalPath[]
-    queryEmbedding: Float32Array,;
-    config: SoraTraversalOptions,;
+    queryEmbedding: Float32Array;
+    config: SoraTraversalOptions;
   ): Promise<void> {
     try {
       // Create tensor slices for different dimensions
@@ -886,7 +886,7 @@ export class SoraGraphTraversal {
    */;
   private hashFloat32Array(array: Float32Array): string {
     const buffer = new Uint8Array(array.buffer);
-    return this.simpleHash(Array.from(buffer).join(','),;
+    return this.simpleHash(Array.from(buffer).join(',');
   }
   /**
    * Simple string hash function
@@ -931,7 +931,7 @@ export class SoraGraphTraversal {
    */
   public async computeBatchSimilarities(
     pathEmbeddings: Float32Array[]
-    queryEmbedding: Float32Array,;
+    queryEmbedding: Float32Array;
   ): Promise<number[]> {
     try {
       return this.gpuIntegration?.computeBatchSimilarities ?
@@ -948,7 +948,7 @@ export class SoraGraphTraversal {
    * Get reinforcement learning statistics
    */;
   public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<any> } {
-    const entries = Array.from(this.reinforcementModel.entries(),;
+    const entries = Array.from(this.reinforcementModel.entries();
     const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
     return {
       totalNodes: entries.length,

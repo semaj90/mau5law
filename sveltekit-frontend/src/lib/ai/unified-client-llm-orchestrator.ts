@@ -470,7 +470,7 @@ class UnifiedClientLLMOrchestrator {
     // Legal-BERT is primarily for context understanding, not generation
     const contextAnalysis = await this.onnxInference.runInference(
       model.onnxSession,
-      request.prompt,)
+      request.prompt)
       { task: 'context_analysis' }
     );
     return {
@@ -529,7 +529,7 @@ class UnifiedClientLLMOrchestrator {
     }
     const result = await this.onnxInference.runInference(
       model.onnxSession,
-      request.prompt,)
+      request.prompt)
       { task: request.task }
     );
     return {
@@ -563,7 +563,7 @@ class UnifiedClientLLMOrchestrator {
    */;
   private generateInferenceCacheKey(request: ClientLLMRequest): string {
     const promptHash = this.hashString(request.prompt);
-    const contextHash = this.hashString(JSON.stringify(request.context),;
+    const contextHash = this.hashString(JSON.stringify(request.context);
     return `llm:${request.task}:${promptHash}:${contextHash}`;
   }
   private hashString(str: string): string {
@@ -585,7 +585,7 @@ class UnifiedClientLLMOrchestrator {
         if (event.data.id === messageId) {
           worker.removeEventListener('message', handleMessage);
           if (event.data.type === 'ERROR') {
-            reject(new Error(event.data.data.message),;
+            reject(new Error(event.data.data.message);
           } else {
             resolve(event.data.data || event.data);
           }
@@ -596,7 +596,7 @@ class UnifiedClientLLMOrchestrator {
       // Timeout after 30 seconds
       setTimeout(() => {
         worker.removeEventListener('message', handleMessage);
-        reject(new Error('Worker timeout'),;
+        reject(new Error('Worker timeout');
       }, 30000);
     });
   }
@@ -635,7 +635,7 @@ class UnifiedClientLLMOrchestrator {
   async getStatus(): Promise<any> {
     const activeModels = Array.from(this.models.values()
       .filter(m => m.isActive)
-      .map(m => m.id),;
+      .map(m => m.id);
     const cacheStats = await parallelCacheOrchestrator.getPerformanceStats();
     return {
       modelsLoaded: this.models.size,

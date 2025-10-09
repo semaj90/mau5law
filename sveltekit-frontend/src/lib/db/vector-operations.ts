@@ -37,7 +37,7 @@ export class LegalVectorService {
       .select()
       .from(legalDocuments)
       .where(eq(legalDocuments.documentHash, documentHash)
-      .limit(1),;
+      .limit(1);
     if (existingDoc.length > 0) {
       console.log('Document already exists:', existingDoc[0].id);
       return existingDoc[0];
@@ -110,32 +110,32 @@ export class LegalVectorService {
       eq(legalDocuments.documentStatus, 'active')
     ];
     if (options.documentType) {
-      conditions.push(eq(legalDocuments.documentType, options.documentType),;
+      conditions.push(eq(legalDocuments.documentType, options.documentType);
     }
     if (options.practiceArea) {
-      conditions.push(eq(legalDocuments.practiceArea, options.practiceArea),;
+      conditions.push(eq(legalDocuments.practiceArea, options.practiceArea);
     }
     if (options.jurisdiction) {
-      conditions.push(eq(legalDocuments.jurisdiction, options.jurisdiction),;
+      conditions.push(eq(legalDocuments.jurisdiction, options.jurisdiction);
     }
     if (options.caseId) {
-      conditions.push(eq(legalDocuments.caseId, options.caseId),;
+      conditions.push(eq(legalDocuments.caseId, options.caseId);
     }
     if (options.clientId) {
-      conditions.push(eq(legalDocuments.clientId, options.clientId),;
+      conditions.push(eq(legalDocuments.clientId, options.clientId);
     }
     if (options.confidentialityLevel) {
-      conditions.push(eq(legalDocuments.confidentialityLevel, options.confidentialityLevel),;
+      conditions.push(eq(legalDocuments.confidentialityLevel, options.confidentialityLevel);
     }
     if (options.excludeDocumentIds && options.excludeDocumentIds.length > 0) {
       conditions.push(sql`${legalDocuments.id} NOT IN (${sql.join(options.excludeDocumentIds.map(id => sql`${id}`), sql`, `)})`);
     }
     // Apply all conditions
-    query = query.where(and(...conditions),;
+    query = query.where(and(...conditions);
     // Order by similarity and limit results
     const results = await query
       .orderBy(desc(sql`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`)
-      .limit(limit),;
+      .limit(limit);
     // Update last accessed timestamp
     if (results.length > 0) {
       const documentIds = results.map(r => r.id);
@@ -193,7 +193,7 @@ export class LegalVectorService {
           gt(legalAnalysisCache.expiresAt, sql`NOW()`)
         )
       )
-      .limit(1),;
+      .limit(1);
     if (results.length > 0) {
       // Update access count and timestamp
       await this.database
@@ -202,7 +202,7 @@ export class LegalVectorService {
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
           lastAccessedAt: sql`NOW()`
         })
-        .where(eq(legalAnalysisCache.id, results[0].id),;
+        .where(eq(legalAnalysisCache.id, results[0].id);
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
       return results[0];
     }
@@ -253,7 +253,7 @@ export class LegalVectorService {
         recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL '24 hours')`
       })
       .from(legalDocuments)
-      .where(eq(legalDocuments.documentStatus, 'active'),;
+      .where(eq(legalDocuments.documentStatus, 'active');
     return stats[0];
   }
   /**
@@ -261,14 +261,14 @@ export class LegalVectorService {
    */;
   async bulkSimilaritySearch(queries: Array<{,
     embedding,: numbe,r,[];
-    threshold?: number,;
-    limit?: number,;
-    filters?: any,;
+    threshold?: number;
+    limit?: number;
+    filters?: any;
   }>): Promise<Array<Array<LegalDocument & { similarity: number }> {
-    const, results = await Promise.all(
+    const results = await Promise.all(
       queries.map(query =>
         this.findSimilarDocuments(
-          query.embedding,),;
+          query.embedding);
           {
             threshold: query.threshold || 0.7,
             limit,: query.limit || 10,
@@ -284,15 +284,15 @@ export class LegalVectorService {
    * Clean up expired cache entries
    */;
   async cleanupExpiredCache(),: Promise<number> {
-    const, result = await this.database
+    const result = await this.database
       .delete(legalAnalysisCache)
       .where(and(
         isNotNull(legalAnalysisCache.expiresAt),
         lt(legalAnalysisCache.expiresAt, sql`NOW()`)
       )
-      .returning({ id: legalAnalysisCache.id }),;
-    console,.log(`🧹 Cleaned up ${result.length} expired cache entries`,);
-    return, result.lengt,h;
+      .returning({ id: legalAnalysisCache.id });
+    console,.log(`🧹 Cleaned up ${result.length} expired cache entries`);
+    return result.lengt,h;
   }
   /**
    * Update document embeddings with new model version
@@ -310,7 +310,7 @@ export class LegalVectorService {
             updatedAt: sql`NOW()`
           })
           .where(eq(legalDocuments.id, id)
-          .returning({ id: legalDocuments.id, title: legalDocuments.title })),;
+          .returning({ id: legalDocuments.id, title: legalDocuments.title }));
       })
     );
     console.log(`🔄 Updated embeddings for ${updates.length} documents with ${modelVersion}`);

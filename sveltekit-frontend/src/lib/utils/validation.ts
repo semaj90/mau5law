@@ -41,7 +41,7 @@ export function validateField(_value: any
   // Required validation
   if (
     config.required &&
-    (value === null || value === undefined || value === ""),;
+    (value === null || value === undefined || value === "");
   ) {
     errors.push("This field is required");
     return createValidationResult(false, errors, warnings);
@@ -49,7 +49,7 @@ export function validateField(_value: any
   // Skip other validations if value is empty and not required
   if (
     !config.required &&
-    (value === null || value === undefined || value === ""),;
+    (value === null || value === undefined || value === "");
   ) {
     return createValidationResult(true, errors, warnings, value);
   }
@@ -116,7 +116,7 @@ export function validateField(_value: any
 // Specific validation functions
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email.toLowerCase(),;
+  return emailRegex.test(email.toLowerCase();
 }
 export function isValidURL(url: string): boolean {
   try {
@@ -133,7 +133,7 @@ export function isValidPhone(phone: string): boolean {
 }
 export function isValidDate(date: string): boolean {
   const parsedDate = new Date(date);
-  return !isNaN(parsedDate.getTime(),;
+  return !isNaN(parsedDate.getTime();
 }
 // File validation
 export interface FileValidationConfig {
@@ -143,7 +143,7 @@ export interface FileValidationConfig {
   requireHash?: boolean;
 }
 export function validateFile(
-  file: File,;
+  file: File;
   config: FileValidationConfig
 ): ValidationResult {
   const errors: string[] = [];
@@ -199,7 +199,7 @@ export function validateCaseData(data: any): ValidationResult {
       maxLength: 5000
     },
     status: {
-      required: true,;
+      required: true;
       custom: [
         {
           name: "valid-status",
@@ -210,7 +210,7 @@ export function validateCaseData(data: any): ValidationResult {
       ]
     },
     priority: {
-      required: true,;
+      required: true;
       custom: [
         {
           name: "valid-priority",
@@ -225,8 +225,8 @@ export function validateCaseData(data: any): ValidationResult {
   const warnings: string[] = [];
   for (const [field, fieldConfig] of Object.entries(config)) {
     const result = validateField(data[field], fieldConfig);
-    errors.push(...result.errors.map((e: any) => `${field}: ${e}`),;
-    warnings.push(...result.warnings.map((w) => `${field}: ${w}`),;
+    errors.push(...result.errors.map((e: any) => `${field}: ${e}`);
+    warnings.push(...result.warnings.map((w) => `${field}: ${w}`);
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
 }
@@ -337,11 +337,11 @@ export class FormValidator {
       const value = this.values.get(name);
       const result = validateField(value, config);
       if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
-        allErrors.push(...result.errors.map((e: any) => `${name}: ${e}`),;
+        allErrors.push(...result.errors.map((e: any) => `${name}: ${e}`);
         this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
       }
       if ((result as { errors?: any; warnings?: any }).warnings.length > 0) {
-        allWarnings.push(...result.warnings.map((w) => `${name}: ${w}`),;
+        allWarnings.push(...result.warnings.map((w) => `${name}: ${w}`);
         this.warnings.set(name, (result as { errors?: any; warnings?: any }).warnings);
       }
     }
@@ -392,15 +392,15 @@ export function sanitizeFilename(filename: string): string {
 }
 // Data structure validation
 export function validateObject(
-  obj: any,;
+  obj: any;
   schema: Record<string, FormFieldConfig>,
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   for (const [key, config] of Object.entries(schema)) {
     const result = validateField(obj[key], config);
-    errors.push(...result.errors.map((e: any) => `${key}: ${e}`),;
-    warnings.push(...result.warnings.map((w) => `${key}: ${w}`),;
+    errors.push(...result.errors.map((e: any) => `${key}: ${e}`);
+    warnings.push(...result.warnings.map((w) => `${key}: ${w}`);
   }
   return createValidationResult(errors.length === 0, errors, warnings, obj);
 }

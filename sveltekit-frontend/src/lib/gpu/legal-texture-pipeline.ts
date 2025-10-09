@@ -63,11 +63,11 @@ export interface CourtroomDisplay {
   displayType: 'evidence' | 'timeline' | 'comparison' | 'analysis';
   content: LegalDocumentTexture[];
   }); const settings = {
-    contrast: number,;
-    brightness: number,;
-    zoom: number,;
-    annotations: boolean,;
-    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical',;
+    contrast: number;
+    brightness: number;
+    zoom: number;
+    annotations: boolean;
+    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';
   }
 }
 /**
@@ -180,7 +180,7 @@ export class LegalDocumentTexturePipeline {
     const enhancedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.enhanceForensicVisibility(chunk.data, photo.analysis)
-    }),;
+    });
     return {
       ...texture,
       chunks: enhancedChunks
@@ -198,7 +198,7 @@ export class LegalDocumentTexturePipeline {
     const enhancedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.enhanceDocumentClarity(chunk.data, scan.metadata.quality)
-    }),;
+    });
     return {
       ...texture,
       chunks: enhancedChunks
@@ -253,7 +253,7 @@ export class LegalDocumentTexturePipeline {
     // Draw timeline elements
     const timelineElements = visualization.elements
       .filter(el => el.properties.timestamp)
-      .sort((a, b) => new Date(a.properties.timestamp).getTime() - new Date(b.properties.timestamp).getTime(),;
+      .sort((a, b) => new Date(a.properties.timestamp).getTime() - new Date(b.properties.timestamp).getTime();
     timelineElements.forEach((element, index) => {
       this.drawTimelineElement(ctx, element, index, timelineElements.length);
     });
@@ -347,7 +347,7 @@ export class LegalDocumentTexturePipeline {
     const optimizedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.applyCourtroomOptimization(chunk.data, settings)
-    }),;
+    });
     return {
       ...texture,
       textureType: 'courtroom',
@@ -400,7 +400,7 @@ export class LegalDocumentTexturePipeline {
       const a = data[i + 3];
       // Convert to grayscale and enhance contrast
       const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-      const enhanced_luminance = Math.min(255, Math.max(0, (luminance - 128) * contrastMultiplier + 128),;
+      const enhanced_luminance = Math.min(255, Math.max(0, (luminance - 128) * contrastMultiplier + 128);
       enhanced[i] = enhanced_luminance;
       enhanced[i + 1] = enhanced_luminance;
       enhanced[i + 2] = enhanced_luminance;
@@ -419,9 +419,9 @@ export class LegalDocumentTexturePipeline {
       let b = data[i + 2];
       const a = data[i + 3];
       // Apply brightness and contrast
-      r = Math.min(255, Math.max(0, (r - 128) * settings.contrast + 128 + settings.brightness),;
-      g = Math.min(255, Math.max(0, (g - 128) * settings.contrast + 128 + settings.brightness),;
-      b = Math.min(255, Math.max(0, (b - 128) * settings.contrast + 128 + settings.brightness),;
+      r = Math.min(255, Math.max(0, (r - 128) * settings.contrast + 128 + settings.brightness);
+      g = Math.min(255, Math.max(0, (g - 128) * settings.contrast + 128 + settings.brightness);
+      b = Math.min(255, Math.max(0, (b - 128) * settings.contrast + 128 + settings.brightness);
       // Apply highlight mode
       if (settings.highlightMode === 'critical') {
         // Add red tint for critical elements

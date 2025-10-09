@@ -72,7 +72,7 @@ export interface CaseStoreAPI extends Readable<CaseState> {
 +  update,: Writable<CaseState>['update'];
 +
 +  loadCases(filters?: PartialFilters),: Promise<void>;
-+  loadCase(caseId,: string,): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
++  loadCase(caseId,: string): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
 +  createCase(caseData,: {
 +    title,: strin,g;
 +    description?: string;
@@ -80,16 +80,16 @@ export interface CaseStoreAPI extends Readable<CaseState> {
 +    priority?: string;
 +  }): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
 +  updateCase(caseId,: string, update,s: Partial<Case,>): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-+  deleteCase(caseId,: string,): Promise<{ success: boolean; error?: string }>;
++  deleteCase(caseId,: string): Promise<{ success: boolean; error?: string }>;
 +  generateReport(
 +    caseId,: string,
 +    reportType,: string,
 +    customPrompt?: string
 +  ),: Promise<{ success: boolean; report?: Report; error?: string }>;
-+  setActiveCase(caseId,: string | null,): void;
-+  setFilters(filters,: PartialFilters,): void;
++  setActiveCase(caseId,: string | null): void;
++  setFilters(filters,: PartialFilters): void;
 +  clearFilters(),: void;
-+  setPage(page,: number,): void;
++  setPage(page,: number): void;
 +  clearError,: () => void;
 +  analyzeCase(
 +    caseId,: string,

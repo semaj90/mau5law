@@ -61,7 +61,7 @@ export function setSessionTokenCookie(_event: RequestEvent
   event.cookies.set("session", token, {
     path: "/",
     expires: expiresAt
-    httpOnly: true,;
+    httpOnly: true;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });
@@ -69,7 +69,7 @@ export function setSessionTokenCookie(_event: RequestEvent
 export function deleteSessionTokenCookie(_event: RequestEvent): void {
   event.cookies.delete("session", {
     path: "/",
-    httpOnly: true,;
+    httpOnly: true;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });

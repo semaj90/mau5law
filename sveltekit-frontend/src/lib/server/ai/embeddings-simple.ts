@@ -20,7 +20,7 @@ const TARGET_DIM: number = (() => {
 })();
 function ensureDim(
   vec: number[] | Float32Array | null | undefined
-  target = TARGET_DIM,;
+  target = TARGET_DIM;
 ): number[] {
   if (!vec || (!Array.isArray(vec as any) && !(vec instanceof Float32Array))
     return [];
@@ -29,7 +29,7 @@ function ensureDim(
     : Array.from(vec as Float32Array);
   if (arr.length === target) return arr;
   if (arr.length > target) return arr.slice(0, target);
-  return arr.concat(Array(target - arr.length).fill(0),;
+  return arr.concat(Array(target - arr.length).fill(0);
 }
 export interface EmbeddingOptions {
   model?: "openai" | "local";
@@ -37,7 +37,7 @@ export interface EmbeddingOptions {
   maxTokens?: number;
 }
 export async function generateEmbedding(
-  text: string,;
+  text: string;
   options: EmbeddingOptions = {}
 ): Promise<number[] | null> {
   const { model = "local", cache = true, maxTokens = 8000 } = options;
@@ -97,12 +97,12 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      input: text,;
+      input: text;
       model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
     })
   });
   if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
-    const errorData = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json().catch(() => ({ error: 'Unknown error' }),;
+    const errorData = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json().catch(() => ({ error: 'Unknown error' });
     throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText} - ${JSON.stringify(errorData)}`);
   }
   const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
@@ -156,7 +156,7 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[],;
+  texts: string[];
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
   const { model = 'openai' } = options;
@@ -174,12 +174,12 @@ export async function generateBatchEmbeddings(
       for (const t of validTexts) {
         try {
           const e = await generateCpuEmbedding(t);
-          out.push(ensureDim(e, TARGET_DIM),;
+          out.push(ensureDim(e, TARGET_DIM);
         } catch (e: any) {
           // fallback to Ollama per-text
           try {
             const nomic = await generateNomicEmbedding(t);
-            out.push(ensureDim(nomic, TARGET_DIM),;
+            out.push(ensureDim(nomic, TARGET_DIM);
           } catch {
             out.push(null);
           }
@@ -211,7 +211,7 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      input: texts,;
+      input: texts;
       model: 'text-embedding-3-small'
     })
   });
@@ -219,11 +219,11 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
     throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
   }
   const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-  return (data as { data?: any; embedding?: any; embeddings?: any }).data.map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM),;
+  return (data as { data?: any; embedding?: any; embeddings?: any }).data.map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM);
 }
 // Nomic batch embedding generation
 async function generateNomicBatchEmbeddings(
-  texts: string[],;
+  texts: string[];
 ): Promise<(number[] | null)[]> {
   const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
   // Note: Ollama doesn't support batch embeddings, so we process individually

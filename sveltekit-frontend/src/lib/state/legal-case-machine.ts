@@ -420,7 +420,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             id: 'uploadEvidence',
             src,: async (context: LegalCaseContext) => {
               const formData = new FormData();
-              (context.uploadQueue || []).forEach((file: any) => formData.append('files', file),;
+              (context.uploadQueue || []).forEach((file: any) => formData.append('files', file);
               formData.append('caseId', context.caseId ?? '');
               formData.append('documentType', 'evidence');
               const response = await fetch('/api/unified/upload', {

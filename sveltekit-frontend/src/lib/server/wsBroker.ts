@@ -56,7 +56,7 @@ export async function initializeWsBroker(): Promise<void> {
 // Register a WebSocket connection for a session
 export function registerWsConnection(sessionId: string, ws: WebSocket): void {
   if (!sessions.has(sessionId)) {
-    sessions.set(sessionId, new Set(),;
+    sessions.set(sessionId, new Set();
   }
   sessions.get(sessionId)!.add(ws);
   console.log(
@@ -129,7 +129,7 @@ export function sendWsMessageToSession(sessionId: string, msg: ProgressMsg): voi
     const r = redis as any;
     if (typeof r.publish === 'function') {
       try {
-        r.publish('evidence:progress', JSON.stringify({ sessionId, ...msg }),;
+        r.publish('evidence:progress', JSON.stringify({ sessionId, ...msg });
       } catch (error: any) {
         console.error('❌ Error publishing to Redis:', error);
       }
@@ -187,7 +187,7 @@ export async function getMissedMessages(sessionId: string, since?: string): Prom
       })
       .filter(Boolean)
       .filter((msg: any) => !since || new Date(msg.timestamp) > new Date(since)
-      .reverse(),; // Return in chronological order
+      .reverse(); // Return in chronological order
   } catch (error: any) {
     console.error('❌ Error getting missed messages:', error);
     return [];
@@ -199,7 +199,7 @@ export function getSessionConnectionCount(sessionId: string): number {
 }
 // Get all active sessions
 export function getActiveSessions(): string[] {
-  return Array.from(sessions.keys(),;
+  return Array.from(sessions.keys();
 }
 // Broadcast to all sessions (admin functionality)
 export function broadcastToAllSessions(msg: ProgressMsg): void {
@@ -214,7 +214,7 @@ export function wsHealthCheck(): { local: number; redis: boolean } {
     0
   );
   return {
-    local: localConnections,;
+    local: localConnections;
     redis: redis?.status === 'ready'
   }
 }

@@ -48,16 +48,16 @@ export function validateAvatarFile(
     return { valid: false, error: "File is empty" }
   }
   if (file.size > config.maxFileSize) {
-    const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024),;
+    const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024);
     return {
-      valid: false,;
+      valid: false;
       error: `File too large. Maximum size is ${maxSizeMB}MB`
     }
   }
   // Check MIME type
   if (!config.allowedTypes.includes(file.type)) {
     return {
-      valid: false,;
+      valid: false;
       error: "Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP"
     }
   }
@@ -65,7 +65,7 @@ export function validateAvatarFile(
   const extension = file.name.split(".").pop()?.toLowerCase();
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
-      valid: false,;
+      valid: false;
       error:
         "Invalid file extension. Allowed extensions: " +
         config.allowedExtensions.join(", ")
@@ -75,10 +75,10 @@ export function validateAvatarFile(
   if (
     file.name.includes("..") ||
     file.name.includes("/") ||
-    file.name.includes("\\"),;
+    file.name.includes("\\");
   ) {
     return {
-      valid: false,;
+      valid: false;
       error: "Invalid file name"
     }
   }
@@ -132,7 +132,7 @@ export async function handleAvatarUpload(
     // Additional security check - verify file is actually an image
     if (!isValidImageBuffer(buffer, file.type)) {
       return {
-        success: false,;
+        success: false;
         error: "File content does not match declared type"
       }
     }
@@ -149,7 +149,7 @@ export async function handleAvatarUpload(
   } catch (error: any) {
     console.error("Avatar upload error:", error);
     return {
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: "Upload failed"
     }
   }
@@ -207,7 +207,7 @@ export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k),;
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 /**

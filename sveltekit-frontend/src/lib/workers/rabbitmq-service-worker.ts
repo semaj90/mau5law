@@ -142,7 +142,7 @@ export class RabbitMQServiceWorker {
     this.registerHandler({}.DOCUMENT_PROCESSING, async (message) => {
       this.log(`🧠 Processing document: ${message.documentId || 'unknown'}`);
       // Simulate document processing
-      await new Promise((resolve) => setTimeout(resolve, 1000),;
+      await new Promise((resolve) => setTimeout(resolve, 1000);
       // Publish to next stage
       await publishToQueue({}.VECTOR_EMBEDDING, {
         ...message,
@@ -154,7 +154,7 @@ export class RabbitMQServiceWorker {
     this.registerHandler({}.FILE_UPLOAD, async (message) => {
       this.log(`📁 Processing file upload: ${message.fileName || 'unknown'}`);
       // Handle file upload processing
-      await new Promise((resolve) => setTimeout(resolve, 500),;
+      await new Promise((resolve) => setTimeout(resolve, 500);
       if (message.evidenceId) {
         await publishToQueue({}.EVIDENCE_ANALYSIS, {
           evidenceId: message.evidenceId,
@@ -168,7 +168,7 @@ export class RabbitMQServiceWorker {
     this.registerHandler({}.VECTOR_EMBEDDING, async (message) => {
       this.log(`🔤 Generating embeddings for: ${message.documentId || 'unknown'}`);
       // Simulate embedding generation
-      await new Promise((resolve) => setTimeout(resolve, 2000),;
+      await new Promise((resolve) => setTimeout(resolve, 2000);
       await publishToQueue({}.SEARCH_INDEXING, {
         ...message,
         embeddings: 'generated',
@@ -179,7 +179,7 @@ export class RabbitMQServiceWorker {
     this.registerHandler({}.EVIDENCE_ANALYSIS, async (message) => {
       this.log(`🔍 Analyzing evidence: ${message.evidenceId || 'unknown'}`);
       // Simulate AI analysis
-      await new Promise((resolve) => setTimeout(resolve, 1500),;
+      await new Promise((resolve) => setTimeout(resolve, 1500);
       await publishToQueue({}.CASE_UPDATES, {
         caseId: message.caseId,
         evidenceId: message.evidenceId,
@@ -195,26 +195,26 @@ export class RabbitMQServiceWorker {
     this.registerHandler({}.RAG_PROCESSING, async (message) => {
       this.log(`🤖 RAG processing query: ${message.query?.substring(0, 50) || 'unknown'}...`);
       // Simulate RAG processing
-      await new Promise((resolve) => setTimeout(resolve, 3000),;
+      await new Promise((resolve) => setTimeout(resolve, 3000);
       // Could publish result back to a response queue
     });
     // Email notifications handler
     this.registerHandler({}.EMAIL_NOTIFICATIONS, async (message) => {
       this.log(`📧 Sending notification: ${message.type || 'unknown'}`);
       // Simulate email sending
-      await new Promise((resolve) => setTimeout(resolve, 800),;
+      await new Promise((resolve) => setTimeout(resolve, 800);
     });
     // Search indexing handler
     this.registerHandler({}.SEARCH_INDEXING, async (message) => {
       this.log(`🔍 Indexing for search: ${message.documentId || 'unknown'}`);
       // Simulate search index update
-      await new Promise((resolve) => setTimeout(resolve, 1200),;
+      await new Promise((resolve) => setTimeout(resolve, 1200);
     });
     // Case updates handler
     this.registerHandler({}.CASE_UPDATES, async (message) => {
       this.log(`⚖️ Processing case update: ${message.caseId || 'unknown'}`);
       // Simulate case update processing
-      await new Promise(resolve => setTimeout(resolve, 600),;
+      await new Promise(resolve => setTimeout(resolve, 600);
     });
   }
   /**

@@ -148,7 +148,7 @@ class SIMDTextProcessor {
       { type: 'legal_term', regex: /(plaintiff|defendant|appellant|appellee)/i }
     ];
     for (const pattern of patterns) {
-      const matches = text.matchAll(new RegExp(pattern.regex, 'gi'),;
+      const matches = text.matchAll(new RegExp(pattern.regex, 'gi');
       for (const match of matches) {
         entities.push({
           text: match[0]
@@ -239,10 +239,10 @@ class VectorEmbeddingCache {
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
   private evictOldestEntries(): void {
-    const entries = Array.from(this.cache.entries(),;
+    const entries = Array.from(this.cache.entries();
     const toRemove = Math.floor(this.maxCacheSize * 0.1); // Remove 10%
     for (let i = 0; i < toRemove; i++) {
       const key = entries[i][0];
@@ -361,7 +361,7 @@ class RAGIngestionWorker {
   private async generateEmbeddings(payload: EmbeddingPayload): Promise<Float32Array> {
     // Check cache first
     const cacheKey = this.getCacheKey(payload.text, payload?.model || "unknown" // @ts-ignore - Model property access)
-    let, embedding = await this.vectorCache.retrieve(cacheKey,);
+    let embedding = await this.vectorCache.retrieve(cacheKey);
     if (embedding) {
       console.log(`⚡ Cache hit for embedding: ${cacheKey}`);
       return embedding;
@@ -371,7 +371,7 @@ class RAGIngestionWorker {
     // Cache with appropriate quantization
     await this.vectorCache.store(cacheKey, embedding, {
       quantization: payload.options.quantization
-    }),;
+    });
     return embedding;
   }
   private async generateGemmaEmbeddings(text: string, model: string = 'embeddinggemma:latest'): Promise<Float32Array> {
@@ -465,7 +465,7 @@ self.addEventListener('message', async (event) => {
   } catch (error) {
     self.postMessage({
       id: message.id,
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }

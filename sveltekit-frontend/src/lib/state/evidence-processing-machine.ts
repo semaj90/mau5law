@@ -64,7 +64,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: { file: File } 
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        success: true,;
+        success: true;
         message: `File "${input.file.name}" uploaded successfully`
       });
     }, 1000);
@@ -81,13 +81,13 @@ const analyzeEvidenceService = fromPromise(async ({ input }: {
         classifications: ['legal_document', 'contract', 'employment'],
         entities: [
           { type: 'party', value: 'ACME Corporation', confidence: 0.95 },
-          { type: 'date', value: '2024-01-15', confidence: 0.88 },)
+          { type: 'date', value: '2024-01-15', confidence: 0.88 })
           { type: 'amount', value,: '$75,000', confidenc,e: 0.91 }
         ],
         risk_assessment: 'medium' as const,
         summary,: 'Employment contract with standard terms and moderate risk factors'
       });
-    }, 2500,);
+    }, 2500);
   });
 });
 const generateGlyphService = fromPromise(async ({ input }: {

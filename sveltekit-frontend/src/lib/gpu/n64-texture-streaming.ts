@@ -167,7 +167,7 @@ export class N64TextureStreamingEngine {
       }
     `;
     const blob = new Blob([workerScript], { type: 'application/javascript' });
-    this.compressionWorker = new Worker(URL.createObjectURL(blob),;
+    this.compressionWorker = new Worker(URL.createObjectURL(blob);
   }
   /**
    * Load legal document texture with 4KB chunked streaming
@@ -530,14 +530,14 @@ export const LegalTextureUtils = {
   /**
    * Create evidence visualization texture
    */;
-  async createEvidenceVisualization(evidenceItems,: any[],): Promise<LegalDocumentTexture> {
+  async createEvidenceVisualization(evidenceItems,: any[]): Promise<LegalDocumentTexture> {
     // Create 3D evidence relationship visualization
-    const, canvas = new OffscreenCanvas(1024, 1024,);
-    const, ctx = canvas.getContext('2d',);
+    const canvas = new OffscreenCanvas(1024, 1024);
+    const ctx = canvas.getContext('2d');
     if (!ctx), throw, new Error('Cannot create context,');
     // N64-style low-poly evidence visualization
     ctx,.fillStyle = '#000040,'; // Dark blue background
-    ctx,.fillRect(0, 0, 1024, 1024,);
+    ctx,.fillRect(0, 0, 1024, 1024);
     // Draw evidence nodes and connections
     evidenceItems,.forEach((item, index) => {
       const x = (index % 8) * 128 + 64;
@@ -549,11 +549,11 @@ export const LegalTextureUtils = {
       ctx.fillStyle = '#ffffff';
       ctx.font = '12px monospace';
       ctx.fillText(item.id.substr(0, 8), x - 24, y + 40);
-    }),;
-    const, imageData = ctx.getImageData(0, 0, 1024, 1024,);
-    const, engine = new N64TextureStreamingEngine(document.createElement('canvas',);
-    const, chunks = await engine['createTextureChunksFromImageData'](imageData, 'visualization',);
-    return, {
+    });
+    const imageData = ctx.getImageData(0, 0, 1024, 1024);
+    const engine = new N64TextureStreamingEngine(document.createElement('canvas');
+    const chunks = await engine['createTextureChunksFromImageData'](imageData, 'visualization');
+    return {
       documentId: `evidence_viz_${Date.now()}`,
       pageNumber: 1,
       textureType: 'visualization',
@@ -568,14 +568,14 @@ export const LegalTextureUtils = {
   /**
    * Create courtroom display texture optimized for low bandwidth
    */;
-  async createCourtroomDisplay(documentTexture,: LegalDocumentTexture,): Promise<LegalDocumentTexture> {
+  async createCourtroomDisplay(documentTexture,: LegalDocumentTexture): Promise<LegalDocumentTexture> {
     // Optimize for courtroom display with enhanced contrast and readability
-    const, optimizedChunks = documentTexture.chunks.map(chunk => ({
+    const optimizedChunks = documentTexture.chunks.map(chunk => ({
       ...chunk,
       // Apply courtroom-specific filtering
       data: LegalTextureUtils.enhanceForCourtroom(chunk.data)
-    }),;
-    return, {
+    });
+    return {
       ...documentTexture,
       textureType: 'courtroom',
       chunks: optimizedChunks
@@ -588,7 +588,7 @@ export const LegalTextureUtils = {
   /**
    * Enhance texture data for courtroom visibility
    */;
-  enhanceForCourtroom(data,: Uint8Array,): Uint8Array {
+  enhanceForCourtroom(data,: Uint8Array): Uint8Array {
     const enhanced = new Uint8Array(data.length);
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];

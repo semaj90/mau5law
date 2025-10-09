@@ -140,7 +140,7 @@ class FeedbackStore {
     interactionId: string
     rating: number
     feedback?: string
-    ratingType: string = 'response_quality',;
+    ratingType: string = 'response_quality';
   ): Promise<boolean> {
     try {
       const response = await fetch('/api/v1/feedback?action=rate', {

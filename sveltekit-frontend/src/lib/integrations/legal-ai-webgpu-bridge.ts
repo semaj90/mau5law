@@ -277,7 +277,7 @@ export namespace LegalAIIntegration {
    */
   export async function processEmbeddingsForLegalAI(
     embeddings: Float32Array | number[] | ArrayBuffer
-    documentType: LegalDocumentProcessingOptions['documentType'] = 'brief',;
+    documentType: LegalDocumentProcessingOptions['documentType'] = 'brief';
   ): Promise<GPUBuffer | Float32Array> {
     try {
       if (!(legalAIBridge as any).isInitialized) {
@@ -300,13 +300,13 @@ export namespace LegalAIIntegration {
    */
   export async function setupLegalSimilaritySearch(
     queryDocument: Float32Array
-    documentDatabase: Float32Array[],;
+    documentDatabase: Float32Array[];
   ) {
     try {
       await legalAIBridge.initialize();
       return await legalAIBridge.performLegalSimilaritySearch(
         queryDocument,
-        documentDatabase,);
+        documentDatabase);
         {
           documentType: 'brief',
           enableCaching,: true

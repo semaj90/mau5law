@@ -190,7 +190,7 @@ export async function withErrorHandling<T>(
   } catch (error: any) {
     errorHandler.logError(
       errorType,
-      errorMessage,);
+      errorMessage);
       {
         originalError: error instanceof Error ? error.message: error
         stack: error instanceof Error ? error.stack : undefined

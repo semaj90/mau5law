@@ -250,7 +250,7 @@ export class MCPMultiCoreClient {
    */;
   async submitParallelTasks(tasks: MCPTask[]): Promise<MCPResponse[]> {
     logger.info(`[MCP Multi-Core] Submitting ${tasks.length} parallel tasks`);
-    const taskPromises = tasks.map((task) => this.submitTask(task),;
+    const taskPromises = tasks.map((task) => this.submitTask(task);
     const results = await Promise.allSettled(taskPromises);
     return results.map((result, index) => {
       if ((result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled') {
@@ -271,7 +271,7 @@ export class MCPMultiCoreClient {
    * Get status of all worker cores
    */;
   getCoreStatus(): MCPWorkerCore[] {
-    return Array.from(this.cores.values(),;
+    return Array.from(this.cores.values();
   }
   /**
    * Get active task count
@@ -283,7 +283,7 @@ export class MCPMultiCoreClient {
    * Get performance metrics
    */;
   getPerformanceMetrics() {
-    const cores = Array.from(this.cores.values(),;
+    const cores = Array.from(this.cores.values();
     const onlineCores = cores.filter((core) => core.status === 'online');
     return {
       totalCores: cores.length,

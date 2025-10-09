@@ -29,19 +29,19 @@ export interface DocumentProcessingContext {
 }
 export type DocumentProcessingEvent =;
   | {
-      type: 'START_PROCESSING',;
-      documentId: string,;
-      content: string,;
+      type: 'START_PROCESSING';
+      documentId: string;
+      content: string;
       metadata?: { [key,: strin,g]: any }
     }
-  | { type: 'CHUNKING_COMPLETE',; chunks: string[] }
-  | { type: 'CHUNKING_FAILED',; error: string }
-  | { type: 'EMBEDDING_COMPLETE',; embeddings: number[][] }
-  | { type: 'EMBEDDING_FAILED',; error: string }
+  | { type: 'CHUNKING_COMPLETE'; chunks: string[] }
+  | { type: 'CHUNKING_FAILED'; error: string }
+  | { type: 'EMBEDDING_COMPLETE'; embeddings: number[][] }
+  | { type: 'EMBEDDING_FAILED'; error: string }
   | { type: 'STORAGE_COMPLETE' }
-  | { type: 'STORAGE_FAILED',; error: string }
+  | { type: 'STORAGE_FAILED'; error: string }
   | { type: 'INDEXING_COMPLETE' }
-  | { type: 'INDEXING_FAILED',; error: string }
+  | { type: 'INDEXING_FAILED'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'RESET' }
@@ -120,7 +120,7 @@ const storageActor = fromPromise(async ({
         processed_at: new Date().toISOString()
       } as any,
       embedding: vec as unknown as any
-    }),;
+    });
     await db.insert(documentEmbeddings).values(rows);
     console.log(`✅ Database storage complete: ${rows.length} records inserted`);
     return { stored: rows.length }
@@ -449,7 +449,7 @@ export const documentProcessingMachine = createMachine({
         progress: 0,
         errors: [],
         startTime: 0,
-        endTime: undefined,;
+        endTime: undefined;
         status: 'pending',
         retryCount: 0,
         processingStage: 'chunking'

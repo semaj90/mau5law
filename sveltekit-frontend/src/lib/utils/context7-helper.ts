@@ -28,7 +28,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
 export async function getLibraryDocs(
   libraryId: string
   topic?: string
-  tokens?: number,;
+  tokens?: number;
 ): Promise<string> {
   try {
     // removed unused response assignment

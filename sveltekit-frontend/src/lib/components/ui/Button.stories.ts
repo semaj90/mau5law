@@ -126,7 +126,7 @@ export const Large: Story = {
 }
 export const Disabled: Story = {
   args: {
-    disabled: true,;
+    disabled: true;
     children: 'Disabled Button'
   }
 }

@@ -170,13 +170,13 @@ export class QLoRAOllamaOrchestrator {
       this.agents.get('research_specialist')!,
       this.agents.get('synthesis_specialist')!
     ]);
-    console.log('👥 Agent crews configured:', Array.from(this.agentCrew.keys()),;
+    console.log('👥 Agent crews configured:', Array.from(this.agentCrew.keys());
   }
   /**
    * Analyze query and determine orchestration plan
    */;
   async analyzeQuery(query: string, context: any = {}): Promise<OrchestrationPlan> {
-    console.log('🔍 Analyzing query for orchestration...', query.substring(0, 100),;
+    console.log('🔍 Analyzing query for orchestration...', query.substring(0, 100);
     // Ensure router agent is loaded
     await this.ensureAgentLoaded('router');
     // Use router agent to analyze intent
@@ -247,7 +247,7 @@ Classify the query and respond with JSON:;
           onProgress(step, response.text);
         }
         // Small delay to prevent overwhelming the system
-        await new Promise(resolve => setTimeout(resolve, 100),;
+        await new Promise(resolve => setTimeout(resolve, 100);
       }
       // Synthesize final results
       const finalSynthesis = await this.synthesizeResults(plan, results);
@@ -280,7 +280,7 @@ Classify the query and respond with JSON:;
         queryId: plan.queryId,
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
-        success: false,;
+        success: false;
         duration: performance.now() - startTime
       });
       // Try fallback plan if available

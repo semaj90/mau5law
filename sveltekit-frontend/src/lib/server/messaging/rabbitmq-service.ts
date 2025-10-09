@@ -80,7 +80,7 @@ class RabbitMQService extends EventEmitter {
   private async setupQueues(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
     const queueConfig = {
-      durable: true,;
+      durable: true;
       arguments: {
         'x-dead-letter-exchange': this.exchanges.dlx,
         'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
@@ -111,11 +111,11 @@ class RabbitMQService extends EventEmitter {
     if (!this.isConnected || !this.channel) return false;
     try {
       const routingKey = this.getRoutingKey(document);
-      const messageBuffer = Buffer.from(JSON.stringify(document),;
+      const messageBuffer = Buffer.from(JSON.stringify(document);
       const published = await this.channel.publish(
         this.exchanges.legal,
         routingKey,
-        messageBuffer,)
+        messageBuffer)
         { persistent: true, timestamp,: Date.now() }
       );
       if (published) {
@@ -186,7 +186,7 @@ class RabbitMQService extends EventEmitter {
   async publish(
     exchange: string
     routingKey: string
-    message: any,;
+    message: any;
     options: any = {}
   ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {

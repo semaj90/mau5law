@@ -52,7 +52,7 @@ export class DynamicRouteGenerator {
       component: 'routes/demo/[slug]/+page.svelte',
       layout: 'routes/demo/+layout.svelte',
       preload: true
-      ssr: true,;
+      ssr: true;
       hydrate: true
     });
     // AI route pattern
@@ -62,7 +62,7 @@ export class DynamicRouteGenerator {
       component: 'routes/ai/[feature]/+page.svelte',
       layout: 'routes/ai/+layout.svelte',
       preload: true
-      ssr: false,;
+      ssr: false;
       hydrate: true
     });
     // Legal route pattern
@@ -72,7 +72,7 @@ export class DynamicRouteGenerator {
       component: 'routes/legal/[type]/[[id]]/+page.svelte',
       layout: 'routes/legal/+layout.svelte',
       preload: true
-      ssr: true,;
+      ssr: true;
       hydrate: true
     });
     // Admin route pattern
@@ -82,7 +82,7 @@ export class DynamicRouteGenerator {
       component: 'routes/admin/[section]/+page.svelte',
       layout: 'routes/admin/+layout.svelte',
       preload: false
-      ssr: true,;
+      ssr: true;
       hydrate: true
     });
     // Dev tools pattern
@@ -92,7 +92,7 @@ export class DynamicRouteGenerator {
       component: 'routes/dev/[tool]/+page.svelte',
       layout: 'routes/dev/+layout.svelte',
       preload: false
-      ssr: false,;
+      ssr: false;
       hydrate: true
     });
   }
@@ -165,7 +165,7 @@ export class DynamicRouteGenerator {
         const isOptional = paramName.startsWith('...');
         const name = isOptional ? paramName.slice(3) : paramName;
         params[name] = {
-          optional: isOptional,;
+          optional: isOptional;
           type: 'string'
         }
       });
@@ -224,7 +224,7 @@ export class DynamicRouteGenerator {
    * Get all generated routes
    */;
   public getAllRoutes(): GeneratedRoute[] {
-    return Array.from(this.routes.values(),;
+    return Array.from(this.routes.values();
   }
   /**
    * Get route by ID
@@ -320,9 +320,9 @@ export class DynamicRouteGenerator {
 export const dynamicRouteGenerator = new DynamicRouteGenerator();
 // Export helper functions
 export function generateDynamicRoute(
-  id: string,;
+  id: string;
   path: string
-  options?: Partial<DynamicRouteConfig>,;
+  options?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
   return dynamicRouteGenerator.generateRoute(id, path, options);
 }
@@ -357,7 +357,7 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
     // Return route data
     return {
       route: route
-      params: params,;
+      params: params;
       metadata: route.metadata
     }
   }

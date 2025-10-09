@@ -114,16 +114,16 @@ export class WebGPUAIEngine {
       // GPUSupportedFeatures is iterable but not typed as standard Iterable<string> in some TS lib versions – coerce manually
       const featureList: string[] = [];
       try {
-        for (const f of (adapter.features as any)) featureList.push(String(f),;
+        for (const f of (adapter.features as any)) featureList.push(String(f);
       } catch {
         // Fallback if iteration fails
-        (adapter.features as any as string[]).forEach?.((f: string) => featureList.push(f),;
+        (adapter.features as any as string[]).forEach?.((f: string) => featureList.push(f);
       }
       this.capabilities = {
         isSupported: true
         adapter,
         device,
-        features: featureList,;
+        features: featureList;
         limits: adapter.limits as any
       }
       this.isInitialized = true;
@@ -131,13 +131,13 @@ export class WebGPUAIEngine {
       console.log('Features:', this.capabilities.features);
       // Dispatch a custom event so UI can react
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities }),;
+        window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities });
       }
     } catch (error: any) {
       console.error('WebGPU initialization failed:', error);
       this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } }),;
+        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } });
       }
     }
   }
@@ -159,7 +159,7 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(64, 1, 1);
       fn kernelAttention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let index = globalId.x;
-        if (index >= params.outputSize) { return, }
+        if (index >= params.outputSize) { return }
         var sum: f32 = 0.0;
         var weightSum: f32 = 0.0;
         // Kernel attention computation
@@ -196,9 +196,9 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(32, 1, 1);
       fn t5Attention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let seqIdx = globalId.x;
-        if (seqIdx >= params.sequenceLength) { return, }
+        if (seqIdx >= params.sequenceLength) { return }
         let hiddenIdx = globalId.y;
-        if (hiddenIdx >= params.hiddenSize) { return, }
+        if (hiddenIdx >= params.hiddenSize) { return }
         let inputOffset = seqIdx * params.hiddenSize + hiddenIdx;
         // Simplified T5 attention computation
         var attentionSum: f32 = 0.0;
@@ -219,10 +219,10 @@ export class WebGPUAIEngine {
    * Process dimensional array with kernel attention
    */
   async processDimensionalArray(
-    data: BufferLike,;
+    data: BufferLike;
     shape: number[]
     attentionWeights: BufferLike
-    kernelSize = 8,;
+    kernelSize = 8;
   ): Promise<any> {
     if (!this.capabilities?.isSupported || !this.capabilities.device) {
       throw new Error('WebGPU not available');
@@ -240,7 +240,7 @@ export class WebGPUAIEngine {
         entries: [
           { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },)
+          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } })
           { binding: 3, visibility,: GPUShaderStage.COMPUTE, buffe,r: { type: 'uniform' } }
         ]
       });
@@ -306,7 +306,7 @@ export class WebGPUAIEngine {
             (data as any).byteLength || data.length || 0);
     device.queue.submit([commandEncoder.finish()]);
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange(),;
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange();
     readBuffer.unmap();
     // Cleanup
     inputBuffer.destroy();
@@ -337,7 +337,7 @@ export class WebGPUAIEngine {
     hiddenSize,: number = 768,
     numHeads,: number = 1,2;
   ): Promise<any> {
-    if (!this,.capabilities?.isSupported || !this.capabilities.devic,e) {
+    if (!this.capabilities?.isSupported || !this.capabilities.devic,e) {
       throw new Error('WebGPU not available');
     }
     const startTime = performance.now();
@@ -395,7 +395,7 @@ export class WebGPUAIEngine {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(pipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil(sequenceLength / 32), Math.ceil(hiddenSize / 32),;
+    computePass.dispatchWorkgroups(Math.ceil(sequenceLength / 32), Math.ceil(hiddenSize / 32);
     computePass.end();
     // Read results
     const readBuffer = device.createBuffer({
@@ -405,7 +405,7 @@ export class WebGPUAIEngine {
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, tokens.byteLength);
     device.queue.submit([commandEncoder.finish()]);
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange(),;
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange();
     readBuffer.unmap();
     // Cleanup
     inputBuffer.destroy();
@@ -492,7 +492,7 @@ export class WebGPUAIEngine {
           // Kernel splicing implementation
           const slices = [];
           for (let i = 0; i < data.length; i += kernelSize) {
-            const slice = data.slice(i, Math.min(i + kernelSize, data.length),;
+            const slice = data.slice(i, Math.min(i + kernelSize, data.length);
             slices.push({
               data: slice
               attentionScore: slice.reduce((sum, val) => sum + val, 0) / slice.length,

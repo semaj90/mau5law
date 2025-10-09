@@ -129,7 +129,7 @@ export class LegalBertONNXService extends EventEmitter {
       const ort = await this.loadONNXRuntime();
       // Create inference session
       this.session = await ort.InferenceSession.create(
-        this.modelConfig.modelPath,);
+        this.modelConfig.modelPath);
         {
           executionProviders: this.modelConfig.providerOptions.map(p => p.name),
           ...this.modelConfig.sessionOptions
@@ -239,7 +239,7 @@ export class LegalBertONNXService extends EventEmitter {
     }
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512),; // Truncate to max length
+      const tokens = this.tokenizer.encode(text.substring(0, 512); // Truncate to max length
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
       // Run inference
@@ -274,7 +274,7 @@ export class LegalBertONNXService extends EventEmitter {
     }
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512),;
+      const tokens = this.tokenizer.encode(text.substring(0, 512);
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
       // Run inference
@@ -338,24 +338,24 @@ export class LegalBertONNXService extends EventEmitter {
       { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },>
       { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 }
     ];
-    return mockEntities.filter(item => item.includes(entity.text.toLowerCase()),;
+    return mockEntities.filter(item => item.includes(entity.text.toLowerCase());
   }
   /**
    * Process classification outputs
    */;
-  private processClassificationOutputs(outputs,: any,): Array< {
+  private processClassificationOutputs(outputs,: any): Array< {
     // Mock classification results - replace with actual processing
-    const, legalDocTypes = [
+    const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
       { label: 'court_decision', confidence: 0.12 },>
       { label: 'legal_brief', confidence: 0.03 }
-    ],;
-    return, legalDocTypes.sort((a, b) => b.confidence - a.confidence,);
+    ];
+    return legalDocTypes.sort((a, b) => b.confidence - a.confidence);
   }
   /**
    * Extract embeddings from model outputs
    */;
-  private extractEmbeddings(outputs,: any,): number[,] {
+  private extractEmbeddings(outputs,: any): number[,] {
     // Extract from pooler output or perform mean pooling
     // This is a mock implementation
     const embeddingSize = 768;
@@ -365,20 +365,20 @@ export class LegalBertONNXService extends EventEmitter {
    * Update performance metrics
    */;
   private updateMetrics(latency,: number, succes,s: boolea,n): void {
-    this,.performanceMetrics.totalInferences+,+;
-    this,.performanceMetrics.averageLatency =
+    this.performanceMetrics.totalInferences+,+;
+    this.performanceMetrics.averageLatency =
       (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalInferences - 1) + latency) /
-      this.performanceMetrics.totalInferences,;
+      this.performanceMetrics.totalInferences;
     if (success) {
       this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1) + 1) /
         this.performanceMetrics.totalInferences;
     }, else, {
-      this,.performanceMetrics.successRate =
+      this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1)) /
-        this.performanceMetrics.totalInferences,;
+        this.performanceMetrics.totalInferences;
     }
-    this,.performanceMetrics.lastUsed = new Date(,);
+    this.performanceMetrics.lastUsed = new Date();
   }
   /**
    * Get performance metrics
@@ -396,14 +396,14 @@ export class LegalBertONNXService extends EventEmitter {
    * Cleanup resources
    */;
   async dispose(),: Promise<void> {
-    try, {
-      if (this,.sessio,n) {
+    try {
+      if (this.sessio,n) {
         await this.session.release();
         this.session = null;
       }
       this.isInitialized = false;
       this.emit('disposed');
-    }, catch (error) {
+    } catch (error) {
       console.error('Error disposing Legal-BERT ONNX service:', error);
     }
   }

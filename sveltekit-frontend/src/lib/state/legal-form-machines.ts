@@ -320,9 +320,9 @@ export const documentUploadMachine = createMachine();
           if (key === 'file' && value instanceof File) {
             formData.append('file', value);
           } else if (typeof value === 'object' && value !== null) {
-            formData.append(key, JSON.stringify(value),;
+            formData.append(key, JSON.stringify(value);
           } else if (value !== null && value !== undefined) {
-            formData.append(key, String(value),;
+            formData.append(key, String(value);
           }
         });
         const response = await fetch('/api/documents/upload', {
@@ -501,7 +501,7 @@ export const caseCreationMachine = createMachine();
       }),
       autoSave,: fromPromise(async ({ input }) => {
         // Auto-save to localStorage
-        localStorage.setItem('case-draft', JSON.stringify(input),;
+        localStorage.setItem('case-draft', JSON.stringify(input);
         return true;
       }),
       validateCase,: fromPromise(async ({ input }) => {
@@ -707,7 +707,7 @@ export const searchMachine = createMachine();
         // Save to history
         const history = JSON.parse(localStorage.getItem('search-history') || '[]');
         const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
-        localStorage.setItem('search-history', JSON.stringify(updatedHistory),;
+        localStorage.setItem('search-history', JSON.stringify(updatedHistory);
         return data;
       }),
       loadMoreResults,: fromPromise(async ({ input }: { input: any }) => {

@@ -252,7 +252,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
     const duration = Date.now() - startTime;
     return {
       taskId: task.id,
-      success: true,;
+      success: true;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
       duration,
       metrics: {
@@ -297,7 +297,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({,
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "gemma3-legal",
             prompt: task.payload.prompt,
-            stream: false,;
+            stream: false;
             format: task.payload.format || undefined
           })
         });
@@ -312,7 +312,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
     const duration = Date.now() - startTime;
     return {
       taskId: task.id,
-      success: true,;
+      success: true;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
       duration,
       metrics: {
@@ -325,7 +325,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
     return {
       taskId: task.id,
       success: false
-      result: null,;
+      result: null;
       duration: Date.now() - startTime
     }
   }
@@ -334,7 +334,7 @@ async function executeLocalLLMTask(_task: AITask): Promise<AITaskResult> {
   // Placeholder for local LLM integration
   const startTime = Date.now();
   // Simulate processing
-  await new Promise((resolve: any) => setTimeout(resolve, 1000),;
+  await new Promise((resolve: any) => setTimeout(resolve, 1000);
   return {
     taskId: task.id,
     success: true
@@ -366,12 +366,12 @@ export const aiTaskCreators = {
         data,
         format: "json",
         options
-      },)
+      })
       { priority: "high" }
     ),
   trainSOM: (vectors: number[][], labels: string[], options?: Record<string, unknown>) =>
     createAITask(
-      "som-train",);
+      "som-train");
       {
         vectors,
         labels,
@@ -381,7 +381,7 @@ export const aiTaskCreators = {
     ),
   cudaInference: (model: string, input: any, options?: Record<string, unknown>) =>
     createAITask(
-      "cuda-infer",);
+      "cuda-infer");
       {
         model,
         input,
@@ -395,7 +395,7 @@ export const aiTaskCreators = {
       {
         text,
         model: model || "nomic-embed-text"
-      },)
+      })
       { priority: "medium" }
     ),
   analyzeDocument: (prompt: string, model?: string, format?: string) =>
@@ -405,7 +405,7 @@ export const aiTaskCreators = {
         prompt,
         model: model || "gemma3-legal",
         format
-      },)
+      })
       { priority: "medium" }
     )
 }

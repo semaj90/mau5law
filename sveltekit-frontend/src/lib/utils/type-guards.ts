@@ -249,8 +249,8 @@ export function safeGet<T>(obj: unknown, path: string, defaultValue: T): T {
   }
 }
 export function hasProperty<K extends string>(
-  obj: unknown,;
-  prop: K,;
+  obj: unknown;
+  prop: K;
 ): obj is Record<K, unknown> {
   return typeof obj === 'object' && obj !== null && prop in obj;
 }

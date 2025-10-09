@@ -35,7 +35,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          model: model,;
+          model: model;
           prompt: text
         })
       });
@@ -78,7 +78,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     keyPhrases: extractKeyPhrases(text)
   }
   for (const [key, pattern] of Object.entries(patterns)) {
-    const matches = Array.from(text.matchAll(pattern as RegExp),;
+    const matches = Array.from(text.matchAll(pattern as RegExp);
     (extracted as any)[key] = matches.map(match => match[1] || match[0]).slice(0, 10);
   }
   return extracted;
@@ -117,7 +117,7 @@ function extractKeyPhrases(text: string): string[] {
  * Main embedding generation function with langchain-style processing
  */
 export async function generateEnhancedEmbedding(
-  text: string | string[],;
+  text: string | string[];
   options: EnhancedEmbeddingOptions = {},
 ): Promise<number[] | number[][]> {
   const {
@@ -176,7 +176,7 @@ export async function generateEnhancedEmbedding(
  * Batch embedding generation with progress tracking
  */
 export async function generateBatchEmbeddingsEnhanced(
-  texts: string[],;
+  texts: string[];
   options: EnhancedEmbeddingOptions = {},
   onProgress?: (completed: number, total: number) => void,
 ): Promise<number[][]> {
@@ -197,12 +197,12 @@ export async function generateBatchEmbeddingsEnhanced(
       console.error(`Batch ${i}-${i + batchSize} failed:`, error);
       // Add empty embeddings for failed items
       for (let j = 0; j < batch.length; j++) {
-        results.push(new Array(384).fill(0),; // nomic-embed-text uses 384 dimensions
+        results.push(new Array(384).fill(0); // nomic-embed-text uses 384 dimensions
       }
     }
     // Small delay between batches to avoid rate limits
     if (i + batchSize < texts.length) {
-      await new Promise((resolve) => setTimeout(resolve, 100),;
+      await new Promise((resolve) => setTimeout(resolve, 100);
     }
   }
   return results;
@@ -270,7 +270,7 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     normA += vecA[i] * vecA[i];
     normB += vecB[i] * vecB[i];
   }
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 /**
  * Backward compatibility exports

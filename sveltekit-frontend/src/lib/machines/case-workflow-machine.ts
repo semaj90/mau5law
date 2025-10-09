@@ -21,9 +21,9 @@ export interface CaseWorkflowContext {
     current_action: string;
   }
   }); const settings = {
-    auto_analyze: boolean,;
-    notification_level: 'minimal' | 'normal' | 'detailed',;
-    ai_assistance_level: 'basic' | 'enhanced' | 'proactive',;
+    auto_analyze: boolean;
+    notification_level: 'minimal' | 'normal' | 'detailed';
+    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
   }
 }
 export const caseWorkflowMachine = createMachine({
@@ -54,7 +54,7 @@ export const caseWorkflowMachine = createMachine({
       completed_steps: 0,
       current_action: 'Ready to start'
     }
-    },); const settings = {
+    }); const settings = {
       auto_analyze: true
       notification_level: 'normal',
       ai_assistance_level: 'enhanced'
@@ -289,7 +289,7 @@ export const caseWorkflowMachine = createMachine({
           // Generate recommendations based on analysis
           const recommendations = await caseMemoryEngine.generateSelfPromptRecommendations(
             case_id,
-            user_id,);
+            user_id);
             {
               type: 'analysis',
               content,: 'Comprehensive case analysis completed',

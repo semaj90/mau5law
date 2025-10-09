@@ -108,7 +108,7 @@ export class FlatBufferLegalProcessor {
         throw new Error(`Entity extraction failed: ${(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).statusText}`);
       }
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer),;
+      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer);
     } catch (error) {
       console.error('Legal entity extraction error:', error);
       // Fallback to local processing
@@ -141,7 +141,7 @@ export class FlatBufferLegalProcessor {
         throw new Error(`Semantic search failed: ${(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).statusText}`);
       }
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer),;
+      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer);
     } catch (error) {
       console.error('Semantic search error:', error);
       return [];
@@ -244,7 +244,7 @@ export class FlatBufferLegalProcessor {
   private createEmbeddingBatches(vectors: Float32Array, batchSize: number): Float32Array[] {
     const batches: Float32Array[] = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize),;
+      batches.push(vectors.slice(i, i + batchSize);
     }
     return batches;
   }

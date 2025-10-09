@@ -102,7 +102,7 @@ export const urlUtils = {
 }
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
-  url: string,;
+  url: string;
   options: RequestInit & { timeout?: number }, = {}
 ): Promise<Response>, => {
   const { timeout = 30000, ...fetchOptions } = options;
@@ -166,7 +166,7 @@ export const storage = {
   set: (_key: string, value: any): boolean => {
     try {
       if (typeof window === 'undefined') return false;
-      localStorage.setItem(key, JSON.stringify(value),;
+      localStorage.setItem(key, JSON.stringify(value);
       return true;
     } catch (error: any) {
       console.warn(`Failed to set localStorage item "${key}":`, error);

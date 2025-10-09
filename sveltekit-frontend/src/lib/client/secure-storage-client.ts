@@ -58,9 +58,9 @@ export class SecureStorageClient {
    * Upload file with proper error handling and security
    */
   async uploadFile(
-    file: File,;
+    file: File;
     bucket: string = 'legal-documents',
-    customKey?: string,;
+    customKey?: string;
   ): Promise<UploadResponse> {
     try {
       const formData = new FormData();
@@ -135,9 +135,9 @@ export class SecureStorageClient {
    * Batch upload multiple files
    */
   async uploadFiles(
-    files: File[],;
+    files: File[];
     bucket: string = 'legal-documents',
-    onProgress?: (completed: number, total: number) => void,;
+    onProgress?: (completed: number, total: number) => void;
   ): Promise<any> {
     const successful: UploadResponse[] = [];
     const failed: Array<any> = [];
@@ -223,7 +223,7 @@ export class ReactiveStorageManager {
       const result = await this.client.deleteFile(bucket, key);
       if ((result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).ok) {
         // Remove from client state only after successful server deletion
-        this.files = this.files.filter(f => !(f.bucket === bucket && f.key === key),;
+        this.files = this.files.filter(f => !(f.bucket === bucket && f.key === key);
         return true;
       } else {
         this.error = (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Delete failed';

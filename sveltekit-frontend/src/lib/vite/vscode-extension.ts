@@ -51,7 +51,7 @@ export class VSCodeIntegration {
         this.notifyErrors(recentErrors);
       }
       // Notify callbacks
-      this.callbacks.forEach((callback: any) => callback(logData.errors),;
+      this.callbacks.forEach((callback: any) => callback(logData.errors);
     } catch (error: any) {
       console.warn('Failed to parse error log:', error);
     }

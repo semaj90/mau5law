@@ -145,7 +145,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Viewer',
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
-    canDelegate: false,;
+    canDelegate: false;
     permissions: [
       'view_case', 'view_evidence', 'view_report',
       'view_users', 'view_criminals'
@@ -200,13 +200,13 @@ export class AccessControl {
    * Check if a user has any of the specified permissions
    */;
   static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
-    return permissions.some(permission => this.hasPermission(userRole, permission),;
+    return permissions.some(permission => this.hasPermission(userRole, permission);
   }
   /**
    * Check if a user has all of the specified permissions
    */;
   static hasAllPermissions(userRole: UserRole, permissions: Permission[]): boolean {
-    return permissions.every(permission => this.hasPermission(userRole, permission),;
+    return permissions.every(permission => this.hasPermission(userRole, permission);
   }
   /**
    * Get all permissions for a role
@@ -245,7 +245,7 @@ export class AccessControl {
     permission: Permission
     resourceOwnerId?: string
     userId?: string
-    isPublic?: boolean,;
+    isPublic?: boolean;
   ): boolean {
     // Check if user has the required permission
     if (!this.hasPermission(userRole, permission)) {

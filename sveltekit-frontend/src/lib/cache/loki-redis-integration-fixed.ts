@@ -155,7 +155,7 @@ export class LokiRedisCache extends EventEmitter {
         ...CACHE_CONFIG.loki,
         autoloadCallback: (err) => {
           if (err) {
-            reject(new Error(`Loki initialization failed: ${err.message || err}`),;
+            reject(new Error(`Loki initialization failed: ${err.message || err}`);
             return;
           }
           try {
@@ -183,7 +183,7 @@ export class LokiRedisCache extends EventEmitter {
             console.log(`✅ Loki initialized with ${this.collections.size} collections`);
             resolve();
           } catch (error: any) {
-            reject(new Error(`Loki collection setup failed: ${error.message}`),;
+            reject(new Error(`Loki collection setup failed: ${error.message}`);
           }
         }
       });
@@ -316,7 +316,7 @@ export class LokiRedisCache extends EventEmitter {
     // Check memory pressure
     if (
       this.stats.loki.memoryUsage >
-      CACHE_CONFIG.memory.maxLokiSize * CACHE_CONFIG.memory.evictionThreshold,;
+      CACHE_CONFIG.memory.maxLokiSize * CACHE_CONFIG.memory.evictionThreshold;
     ) {
       await this.evictLokiDocuments();
     }
@@ -608,9 +608,9 @@ export class LokiRedisCache extends EventEmitter {
     try {
       const key = `${CACHE_CONFIG.redis.keyPrefix}${cacheKey}`;
       if (typeof this.redis.setex === 'function') {
-        await this.redis.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results),;
+        await this.redis.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results);
       } else if (typeof this.redis.set === 'function') {
-        await this.redis.set(key, JSON.stringify(results),;
+        await this.redis.set(key, JSON.stringify(results);
         if (typeof this.redis.expire === 'function') {
           await this.redis.expire(key, CACHE_CONFIG.redis.ttl.searches);
         }
@@ -734,7 +734,7 @@ export class LokiRedisCache extends EventEmitter {
   private startPerformanceMonitoring(): void {
     setInterval(() => {
       this.updateMemoryStats();
-      this.emit('stats', this.getStats(),;
+      this.emit('stats', this.getStats();
     }, 10000); // Every 10 seconds
   }
   private updateMemoryStats(): void {
@@ -755,7 +755,7 @@ export class LokiRedisCache extends EventEmitter {
     }
   }
   getStats(): CacheStats {
-    return JSON.parse(JSON.stringify(this.stats),;
+    return JSON.parse(JSON.stringify(this.stats);
   }
   // Public methods for accessing cached data
   async get(_key: string): Promise<string | null> {
@@ -841,7 +841,7 @@ export class LokiRedisCache extends EventEmitter {
       if (this.loki) {
         await new Promise<void>((resolve, reject) => {
           this.loki!.saveDatabase((err) => {
-            if (err) reject(new Error(`Loki save failed: ${err.message || err}`)),);
+            if (err) reject(new Error(`Loki save failed: ${err.message || err}`)));
             else resolve();
           });
         });

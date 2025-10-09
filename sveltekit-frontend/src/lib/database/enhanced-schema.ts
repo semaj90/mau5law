@@ -79,7 +79,7 @@ export const documents = pgTable('documents', {
   embeddingIdx: index('documents_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   caseIdx: index('documents_case_idx').on(table.caseId),
   contentIdx: index('documents_content_idx').using('gin', sql`to_tsvector('english', ${table.content})`)
-}),;
+});
 // Document chunks for optimized retrieval
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -98,7 +98,7 @@ export const documentChunks = pgTable('document_chunks', {
   embeddingIdx: index('document_chunks_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   documentIdx: index('document_chunks_document_idx').on(table.documentId),
   chunkIdx: index('document_chunks_chunk_idx').on(table.documentId, table.chunkIndex)
-}),;
+});
 // Enhanced evidence table
 export const evidence = pgTable('evidence', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -122,7 +122,7 @@ export const evidence = pgTable('evidence', {
 }, (table: any) => ({,
   embeddingIdx: index('evidence_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   caseIdx: index('evidence_case_idx').on(table.caseId)
-}),;
+});
 // Enhanced search index with optimized vector operations
 export const searchIndex = pgTable('search_index', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -139,7 +139,7 @@ export const searchIndex = pgTable('search_index', {
   embeddingIdx: index('search_index_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   entityIdx: index('search_index_entity_idx').on(table.entityType, table.entityId),
   contentIdx: index('search_index_content_idx').using('gin', sql`to_tsvector('english', ${table.content})`)
-}),;
+});
 // AI chat interactions with conversation context
 export const aiInteractions = pgTable('ai_interactions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -161,7 +161,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   contextEmbeddingIdx: index('ai_interactions_context_embedding_idx').using('ivfflat', table.contextEmbedding.op('vector_cosine_ops')),
   sessionIdx: index('ai_interactions_session_idx').on(table.sessionId),
   userIdx: index('ai_interactions_user_idx').on(table.userId)
-}),;
+});
 // Vector similarity cache for performance optimization
 export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -175,7 +175,7 @@ export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
 }, (table: any) => ({,
   queryHashIdx: index('vector_similarity_cache_hash_idx').on(table.queryHash),
   expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt)
-}),;
+});
 // Legal knowledge base with semantic embeddings
 export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -199,7 +199,7 @@ export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   embeddingIdx: index('legal_knowledge_base_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   categoryIdx: index('legal_knowledge_base_category_idx').on(table.category, table.subcategory),
   jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction)
-}),;
+});
 // Embedding processing jobs for background processing
 export const embeddingJobs = pgTable('embedding_jobs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -221,7 +221,7 @@ export const embeddingJobs = pgTable('embedding_jobs', {
   statusIdx: index('embedding_jobs_status_idx').on(table.status),
   entityIdx: index('embedding_jobs_entity_idx').on(table.entityType, table.entityId),
   priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt)
-}),;
+});
 // Define relations
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
@@ -234,13 +234,13 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   }),
   chunks: many(documentChunks),
   evidence: many(evidence)
-}),;
+});
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, {
     fields: [documentChunks.documentId],
     references: [documents.id]
   })
-}),;
+});
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
@@ -254,7 +254,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.createdBy],
     references: [users.id]
   })
-}),;
+});
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.createdBy],
@@ -267,7 +267,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   documents: many(documents),
   evidence: many(evidence),
   aiInteractions: many(aiInteractions)
-}),;
+});
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, {
     fields: [aiInteractions.userId],
@@ -277,13 +277,13 @@ export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
     fields: [aiInteractions.caseId],
     references: [cases.id]
   })
-}),;
+});
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
   verifier: one(users, {
     fields: [legalKnowledgeBase.verifiedBy],
     references: [users.id]
   })
-}),;
+});
 // Type exports
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

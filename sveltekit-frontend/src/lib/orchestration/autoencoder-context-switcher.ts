@@ -95,7 +95,7 @@ export class AutoencoderContextSwitcher {
   async switchContext(
     userId: string
     query: string
-    currentContext: any,;
+    currentContext: any;
   ): Promise<any> {
     const startTime = performance.now();
     // 1. Generate context embedding using autoencoder
@@ -132,8 +132,8 @@ export class AutoencoderContextSwitcher {
    */
   private async generateContextVector(
     userId: string
-    query: string,;
-    context: any,;
+    query: string;
+    context: any;
   ): Promise<ContextVector> {
     // Extract features for autoencoder input
     const features = this.extractContextFeatures(query, context);
@@ -165,7 +165,7 @@ export class AutoencoderContextSwitcher {
    * Predict optimal model using autoencoder-compressed context
    */;
   private async predictOptimalModel(contextVector: ContextVector): Promise<SwitchingDecision> {
-    const candidates = Array.from(this.modelUsagePatterns.values(),;
+    const candidates = Array.from(this.modelUsagePatterns.values();
     const currentModelId = await this.getCurrentActiveModel();
     let bestModel = currentModelId;
     let bestScore = 0;
@@ -257,7 +257,7 @@ export class AutoencoderContextSwitcher {
    */
   private async updateUsagePatterns(
     contextVector: ContextVector
-    usedModelId: string,;
+    usedModelId: string;
   ): Promise<void> {
     const pattern = this.modelUsagePatterns.get(usedModelId) || {
       modelId: usedModelId
@@ -294,7 +294,7 @@ export class AutoencoderContextSwitcher {
    */
   private async considerCreatingSpecializedModel(
     contextVector: ContextVector
-    pattern: ModelUsagePattern,;
+    pattern: ModelUsagePattern;
   ): Promise<void> {
     console.log(`🧠 Considering specialized model creation for ${pattern.modelId}...`);
     // Analyze context clustering to determine specialization opportunity
@@ -332,7 +332,7 @@ export class AutoencoderContextSwitcher {
     }
     // Simulate QLoRA training (in production, would use actual training)
     console.log(`🔄 Training QLoRA adapter with ${trainingData.examples.length} examples...`);
-    await new Promise(resolve => setTimeout(resolve, 3000),; // Simulate training time
+    await new Promise(resolve => setTimeout(resolve, 3000); // Simulate training time
     // Store adapter configuration
     const adapterPath = `~/.ollama/models/distilled-qlora/adapters/${adapterName}.json`;
     await this.storeAdapterConfig(adapterPath, adapterConfig);
@@ -429,7 +429,7 @@ export class AutoencoderContextSwitcher {
   }
   private selectModelsForGC(memoryState: GPUMemoryState): string[] {
     const candidates = Array.from(this.modelUsagePatterns.entries()
-      .filter(([modelId]) => this.activeModels.has(modelId),;
+      .filter(([modelId]) => this.activeModels.has(modelId);
       .sort(([,a], [,b]) => {
         // Sort by LRU + usage pattern
         const scoreA = (Date.now() - a.lastAccessed) / 1000 - a.recentUsage;
@@ -458,7 +458,7 @@ export class AutoencoderContextSwitcher {
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
   private hashString(str: string): number {
     let hash = 0;
@@ -481,7 +481,7 @@ export class AutoencoderContextSwitcher {
   private async loadModelFromDisk(modelId: string): Promise<string> {
     // Mock implementation - would load actual model
     console.log(`📦 Loading model from disk: ${modelId}`);
-    await new Promise(resolve => setTimeout(resolve, 500),;
+    await new Promise(resolve => setTimeout(resolve, 500);
     return `wasm_${modelId}_${Date.now()}`;
   }
   private analyzeContextClusters(modelId: string): {coherence: number; uniqueness: number; domain: string} {
@@ -503,7 +503,7 @@ export class AutoencoderContextSwitcher {
     return Math.min(Math.max(8, Math.floor(exampleCount / 10)), 64);
   }
   private calculateOptimalAlpha(patterns: Float32Array): number {
-    return Math.max(16, Math.min(64, Math.floor(patterns.reduce((a, b) => a + b, 0) * 32)),;
+    return Math.max(16, Math.min(64, Math.floor(patterns.reduce((a, b) => a + b, 0) * 32));
   }
   private selectTargetModules(domain: string): string[] {
     return ['q_proj', 'v_proj', 'k_proj', 'o_proj'];
@@ -579,7 +579,7 @@ class GPUMemoryManager {
   }
   async forceGarbageCollection(): Promise<void> {
     console.log('🗑️ Force GPU garbage collection');
-    await new Promise(resolve => setTimeout(resolve, 200),;
+    await new Promise(resolve => setTimeout(resolve, 200);
   }
 }
 class QUICProtocolServer {
@@ -588,12 +588,12 @@ class QUICProtocolServer {
   }
   async sendLoadCommand(command: any): Promise<any> {
     // Simulate ultra-low latency QUIC communication
-    await new Promise(resolve => setTimeout(resolve, 5),; // 5ms latency
+    await new Promise(resolve => setTimeout(resolve, 5); // 5ms latency
     return { success: true, latency: 5 }
   }
   async sendUnloadCommand(modelId: string, wasmKey: string): Promise<void> {
     console.log(`⚡ QUIC unload command: ${modelId}`);
-    await new Promise(resolve => setTimeout(resolve, 2),; // 2ms latency
+    await new Promise(resolve => setTimeout(resolve, 2); // 2ms latency
   }
 }
 // Export singleton

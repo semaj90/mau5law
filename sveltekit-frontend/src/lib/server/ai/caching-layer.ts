@@ -90,7 +90,7 @@ class CachingLayer {
    * Generate cache key from input parameters
    */;
   generateKey(params: any): string {
-    const normalized = JSON.stringify(params, Object.keys(params).sort(),;
+    const normalized = JSON.stringify(params, Object.keys(params).sort();
     return `ai:synthesis:${crypto.createHash('sha256').update(normalized).digest('hex')}`;
   }
   /**
@@ -192,7 +192,7 @@ class CachingLayer {
           try {
             if ((this.redis as any).smembers) {
               const result = await (this.redis as any).smembers(`tag:${tag}`);
-              keys.push(...(Array.isArray(result) ? result : [result].filter(Boolean)),;
+              keys.push(...(Array.isArray(result) ? result : [result].filter(Boolean));
             }
           } catch (e: any) {
             // Fallback to empty keys if method doesn't exist
@@ -243,9 +243,9 @@ class CachingLayer {
   /**
    * Warm up cache with frequently accessed items
    */;
-  async warmUp(items: Array<,): Promise<void> {
+  async warmUp(items: Array<): Promise<void> {
     logger.info(`[CachingLayer] Warming up cache with ${items.length} items`);
-    const warmUpPromises = items.map((item) => this.set((item as { key?: any; value?: any; options?: any; lastAccess?: any }).key, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).value, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).options),;
+    const warmUpPromises = items.map((item) => this.set((item as { key?: any; value?: any; options?: any; lastAccess?: any }).key, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).value, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).options);
     await Promise.all(warmUpPromises);
     logger.info('[CachingLayer] Cache warm-up completed');
   }

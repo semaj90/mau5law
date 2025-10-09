@@ -104,7 +104,7 @@ export class UTF8ToFP32Converter {
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
       maxLength: undefined
-      preserveSpecialChars: true,;
+      preserveSpecialChars: true;
       encoding: 'utf8',
       ...options
     }
@@ -183,7 +183,7 @@ export class UTF8ToFP32Converter {
   private mapSpecialCharacters(
     originalText: string
     fp32Values: Float32Array
-    config: TextConversionOptions,;
+    config: TextConversionOptions;
   ): Float32Array {
     const result = new Float32Array(fp32Values);
     const bytes = this.encodeText(originalText, config.encoding);
@@ -241,7 +241,7 @@ export class UTF8ToFP32Converter {
           for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
             result[i] = (result[i] - mean) / stdDev;
             // Scale to target range (assuming ~99.7% of values within 3 std devs)
-            result[i] = Math.max(-3, Math.min(3, result[i]),; // Clip to [-3, 3]
+            result[i] = Math.max(-3, Math.min(3, result[i]); // Clip to [-3, 3]
             result[i] = minRange + ((result[i] + 3) / 6) * (maxRange - minRange);
           }
         }
@@ -250,7 +250,7 @@ export class UTF8ToFP32Converter {
         // Sigmoid normalization for smooth mapping
         for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           // Apply sigmoid function: 1 / (1 + e^(-x/32)
-          const normalized = 1 / (1 + Math.exp(-result[i] / 32),;
+          const normalized = 1 / (1 + Math.exp(-result[i] / 32);
           result[i] = minRange + normalized * (maxRange - minRange);
         }
         break;
@@ -321,7 +321,7 @@ export class UTF8ToFP32Converter {
       normalizationMethod: 'range',
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
-      preserveSpecialChars: true,;
+      preserveSpecialChars: true;
       encoding: 'utf8',
       ...options
     }
@@ -331,7 +331,7 @@ export class UTF8ToFP32Converter {
       // Convert back to bytes
       const bytes = new Uint8Array(denormalized.length);
       for (let i = 0; i < denormalized.length; i++) {
-        bytes[i] = Math.round(Math.max(0, Math.min(255, denormalized[i])),;
+        bytes[i] = Math.round(Math.max(0, Math.min(255, denormalized[i]));
       }
       // Decode bytes back to text
       const reconstructed = this.textDecoder.decode(bytes);
@@ -371,7 +371,7 @@ export class UTF8ToFP32Converter {
         // Reverse sigmoid normalization
         for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           const sigmoid = (result[i] - minRange) / (maxRange - minRange);
-          const logit = Math.log(sigmoid / (1 - sigmoid),;
+          const logit = Math.log(sigmoid / (1 - sigmoid);
           result[i] = logit * 32;
         }
         break;

@@ -30,7 +30,7 @@ export class SSE {
     for (const [clientId, stream] of this.clients) {
       try {
         const writer = stream.getWriter();
-        writer.write(this.encoder.encode(message),;
+        writer.write(this.encoder.encode(message);
         writer.releaseLock();
       } catch (error: any) {
         logger.error(`[SSE] Failed to send to client ${clientId}:`, error);
@@ -55,7 +55,7 @@ export class SSE {
     const interval = setInterval(() => {
       try {
         const writer = stream.getWriter();
-        writer.write(this.encoder.encode(`:heartbeat\n\n`),;
+        writer.write(this.encoder.encode(`:heartbeat\n\n`);
         writer.releaseLock();
       } catch (error: any) {
         clearInterval(interval);

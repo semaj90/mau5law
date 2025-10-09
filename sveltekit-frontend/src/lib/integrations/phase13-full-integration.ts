@@ -46,7 +46,7 @@ export class Phase13IntegrationManager {
       database: false
       redis: false
       ollama: false
-      qdrant: false,;
+      qdrant: false;
       docker: false
     }
   }
@@ -72,7 +72,7 @@ export class Phase13IntegrationManager {
       recommendations,
       performance: {
         database: dbConfig
-        ai: aiConfig,;
+        ai: aiConfig;
         optimization: perfConfig
       }
     }
@@ -183,7 +183,7 @@ export class Phase13IntegrationManager {
     // Check if we can enable memory-based caching as Redis alternative
     try {
       // Simulate enabling high-performance memory cache
-      await new Promise((resolve: any) => setTimeout(resolve, 100),;
+      await new Promise((resolve: any) => setTimeout(resolve, 100);
       return false; // Keep Redis as false but enable optimized memory caching
     } catch {
       return false;
@@ -193,7 +193,7 @@ export class Phase13IntegrationManager {
     // Try to optimize database connections or enable mock optimizations
     try {
       // Simulate database connection optimization
-      await new Promise((resolve: any) => setTimeout(resolve, 100),;
+      await new Promise((resolve: any) => setTimeout(resolve, 100);
       return false; // Keep database as false but enable optimized mock data
     } catch {
       return false;
@@ -490,7 +490,7 @@ export class Phase13IntegrationManager {
     try {
       // Use Context7 MCP orchestration for implementation guidance
       const orchestrationResult = await copilotOrchestrator(
-        `Implement suggestion: ${suggestion.suggested}. ${suggestion.reasoning}`,);
+        `Implement suggestion: ${suggestion.suggested}. ${suggestion.reasoning}`);
         {
           useSemanticSearch: true
           useMemory: true
@@ -535,7 +535,7 @@ export async function initializePhase13(): Promise<void> {
     const result = await phase13Integration.initializeFullIntegration();
     if ((result as { status?: any; value?: any; success?: any }).success) {
       console.log('✅ Phase 13 integration initialized successfully');
-      console.log('📊 Integration status:', phase13Integration.getIntegrationStatus(),;
+      console.log('📊 Integration status:', phase13Integration.getIntegrationStatus();
     } else {
       console.warn('⚠️ Phase 13 integration completed with warnings');
     }

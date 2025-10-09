@@ -32,7 +32,7 @@ export const connectionStatus = writable<'connecting' | 'connected' | 'disconnec
 export const lastConnectionTime = writable<Date | null>(null);
 // Real-time communication
 export const isTyping = writable(false);
-export const typingUsers = writable<Set<string>(new Set(),;
+export const typingUsers = writable<Set<string>(new Set();
 export const streamingResponse = writable('');
 export const streamingMessageId = writable<string | null>(null);
 // Analysis and AI state
@@ -113,7 +113,7 @@ export const attentionScore = derived(userAttention, ($attention) => {
   const maxInactiveTime = 60000; // 1 minute
   if (!$attention.focused) return 0;
   if (timeSinceActivity > maxInactiveTime) return 0.1;
-  return Math.max(0.1, 1 - (timeSinceActivity / maxInactiveTime),;
+  return Math.max(0.1, 1 - (timeSinceActivity / maxInactiveTime);
 });
 // Store actions
 export const chatActions = {
@@ -215,7 +215,7 @@ export const chatActions = {
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
-        content: response,;
+        content: response;
         timestamp: Date.now(),
         token_count: Math.ceil(response.length / 4) // Rough estimate
       }
@@ -234,7 +234,7 @@ export const chatActions = {
       ...metrics,
       confidenceScore: analysis.confidence,
       somCluster: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
-    }),;
+    });
   },
   setRAGContext: (context: RAGContext): void => {
     ragContext.set(context);
@@ -260,14 +260,14 @@ export const chatActions = {
       ...attention,
       lastActivity: Date.now(),
       interactionCount: attention.interactionCount + 1
-    }),;
+    });
   },
   updateAttention: (updates: Partial<AttentionData>): void => {
     userAttention.update(current => ({
       ...current,
       ...updates,
       lastActivity: Date.now()
-    }),;
+    });
   },
   // Error handling
   addError: (message: string, context?: unknown): void => {
@@ -277,7 +277,7 @@ export const chatActions = {
       context
     }
     lastError.set(message);
-    errorHistory.update(history => [...history, error].slice(-50),; // Keep last 50 errors
+    errorHistory.update(history => [...history, error].slice(-50); // Keep last 50 errors
   },
   clearError: (): void => {
     lastError.set(null);
@@ -287,7 +287,7 @@ export const chatActions = {
     connectionStatus.set(status);
     isConnected.set(status === 'connected');
     if (status === 'connected') {
-      lastConnectionTime.set(new Date(),;
+      lastConnectionTime.set(new Date();
     }
   },
   // Typing indicators
@@ -295,7 +295,7 @@ export const chatActions = {
     isTyping.set(typing);
   },
   addTypingUser: (userId: string): void => {
-    typingUsers.update(users => new Set([...users, userId]),;
+    typingUsers.update(users => new Set([...users, userId]);
   },
   removeTypingUser: (userId: string): void => {
     typingUsers.update(users => {
@@ -306,10 +306,10 @@ export const chatActions = {
   },
   // Configuration
   updateConfig: (updates: Partial): void => {
-    chatConfig.update(current => ({ ...current, ...updates }),;
+    chatConfig.update(current => ({ ...current, ...updates });
     // Save to localStorage if available
     if (browser) {
-      localStorage.setItem('chat-config', JSON.stringify(get(chatConfig)),;
+      localStorage.setItem('chat-config', JSON.stringify(get(chatConfig));
     }
   },
   // Utility
@@ -339,7 +339,7 @@ export const chatActions = {
     processingStage.set('complete');
     lastError.set(null);
     userActivities.set([]);
-    typingUsers.set(new Set(),;
+    typingUsers.set(new Set();
   }
 }
 // Initialize from localStorage if available

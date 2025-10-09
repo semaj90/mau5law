@@ -18,12 +18,12 @@ import {
  * Shows how to handle embeddings from different sources with type safety
  */
 export async function processLegalDocumentEmbeddings(
-  device: GPUDevice,;
+  device: GPUDevice;
   embeddings: {
     sourceType: 'openai' | 'sentence-transformers' | 'custom';
     data: ArrayBuffer | Float32Array | number[];
     metadata: { documentId: string; chunkIndex: number, }
-  }[],;
+  }[];
 ) {
   console.log('🧠 Processing legal document embeddings with WebGPU...');
   // Step 1: Normalize all embeddings to Float32Array
@@ -79,7 +79,7 @@ export async function processLegalDocumentEmbeddings(
 export async function optimizeModelWeights(
   device: GPUDevice
   modelWeights: { [layerName: string]: Float32Array },
-  targetPrecision: 'fp16' | 'int8' = 'fp16',;
+  targetPrecision: 'fp16' | 'int8' = 'fp16';
 ) {
   console.log(`🧮 Optimizing model weights with ${targetPrecision} quantization...`);
   // Melt UI component creation removed - replace with bits-ui declarative components
@@ -97,9 +97,9 @@ export async function optimizeModelWeights(
  * Example: Dynamic Quantization Based on GPU Memory
  */
 export async function adaptiveQuantization(
-  device: GPUDevice,;
+  device: GPUDevice;
   data: Float32Array
-  availableMemoryMB: number,;
+  availableMemoryMB: number;
 ) {
   console.log(`🎛️ Choosing quantization based on available GPU memory: ${availableMemoryMB}MB`);
   const memoryAnalysis = analyzeMemoryUsage(data);

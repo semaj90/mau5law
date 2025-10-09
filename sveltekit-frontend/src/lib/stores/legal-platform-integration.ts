@@ -62,17 +62,17 @@ export interface CrossSystemInsights {
   }>;
   // POI-Citation connections
   poiCitationLinks: Array<{,
-    poiId: string,;
-    citationId: string,;
-    involvement: 'author' | 'referenced' | 'opposing' | 'supporting',;
-    frequency: number,;
+    poiId: string;
+    citationId: string;
+    involvement: 'author' | 'referenced' | 'opposing' | 'supporting';
+    frequency: number;
   }>;
   // POI-Report connections
   poiReportLinks: Array<{,
-    poiId: string,;
-    reportId: string,;
-    role: 'subject' | 'contributor' | 'reviewer' | 'mentioned',;
-    importance: number,;
+    poiId: string;
+    reportId: string;
+    role: 'subject' | 'contributor' | 'reviewer' | 'mentioned';
+    importance: number;
   }>;
   // Network patterns
   networkPatterns: {

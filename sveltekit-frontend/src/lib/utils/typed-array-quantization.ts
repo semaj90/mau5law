@@ -11,7 +11,7 @@ import { type BufferLike, toFloat32Array, BufferTypeGuards } from './buffer-conv
 // 1. Ensure input is always Float32Array
 //
 export function ensureF32(
-  buf: BufferLike | number[],;
+  buf: BufferLike | number[];
 ): Float32Array {
   if (buf instanceof Float32Array) return buf;
   if (buf instanceof ArrayBuffer) return new Float32Array(buf);
@@ -56,11 +56,11 @@ function float16ToFloat32(h: number): number {
   const e = (h & 0x7C00) >> 10;
   const f = h & 0x03FF;
   if (e === 0) {
-    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10),;
+    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10);
   } else if (e === 0x1F) {
     return f ? NaN : (s ? -1 : 1) * Infinity;
   }
-  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10),;
+  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10);
 }
 //
 // 3. INT8 quantization
@@ -72,12 +72,12 @@ export interface QuantizationParams {
 }
 export function toInt8(
   f32: Float32Array
-  method: 'symmetric' | 'asymmetric' = 'symmetric',;
+  method: 'symmetric' | 'asymmetric' = 'symmetric';
 ): { data: Int8Array; params: QuantizationParams } {
   if (method === 'symmetric') {
     let maxAbs = 0;
     for (let i = 0; i < f32.length; i++) {
-      maxAbs = Math.max(maxAbs, Math.abs(f32[i]),;
+      maxAbs = Math.max(maxAbs, Math.abs(f32[i]);
     }
     const scale = maxAbs / 127 || 1e-6;
     const out = new Int8Array(f32.length);
@@ -104,7 +104,7 @@ export function toInt8(
 }
 export function fromInt8(
   int8: Int8Array
-  params: QuantizationParams,;
+  params: QuantizationParams;
 ): Float32Array {
   const out = new Float32Array(int8.length);
   if (params.method === 'symmetric') {
@@ -132,8 +132,8 @@ export interface QuantizedData {
   compressionRatio: number;
 }
 export function quantize(
-  input: BufferLike | number[],;
-  mode: QuantizationMode = 'fp32',;
+  input: BufferLike | number[];
+  mode: QuantizationMode = 'fp32';
 ): QuantizedData {
   const f32 = ensureF32(input);
   const originalByteLength = f32.byteLength;
@@ -200,7 +200,7 @@ export interface WebGPUQuantizationOptions {
   debugLabel?: string;
 }
 export function quantizeForWebGPU(
-  input: BufferLike | number[],;
+  input: BufferLike | number[];
   options: WebGPUQuantizationOptions = { mode: 'fp32' }
 ): QuantizedData & { alignedByteLength: number } {
   const quantized = quantize(input, options.mode);
@@ -226,8 +226,8 @@ export const LEGAL_AI_QUANTIZATION_PROFILES = {
 } as const;
 export type LegalAIProfile = keyof typeof LEGAL_AI_QUANTIZATION_PROFILES;
 export function quantizeForLegalAI(
-  input: BufferLike | number[],;
-  profile: LegalAIProfile = 'legal_standard',;
+  input: BufferLike | number[];
+  profile: LegalAIProfile = 'legal_standard';
 ): QuantizedData & { alignedByteLength: number } {
   const options = LEGAL_AI_QUANTIZATION_PROFILES[profile];
   return quantizeForWebGPU(input, { ...options, debugLabel: `legal-ai-${profile}` });
@@ -237,9 +237,9 @@ export function quantizeForLegalAI(
 //
 export function quantizeBatch(
   inputs: (BufferLike | number[])[],
-  mode: QuantizationMode = 'fp32',;
+  mode: QuantizationMode = 'fp32';
 ): QuantizedData[] {
-  return inputs.map(input => quantize(input, mode),;
+  return inputs.map(input => quantize(input, mode);
 }
 export function dequantizeBatch(quantizedBatch: QuantizedData[]): Float32Array[] {
   return quantizedBatch.map(dequantize);
@@ -255,8 +255,8 @@ export interface QuantizationStats {
   mode: QuantizationMode;
 }
 export function quantizeWithStats(
-  input: BufferLike | number[],;
-  mode: QuantizationMode = 'fp32',;
+  input: BufferLike | number[];
+  mode: QuantizationMode = 'fp32';
 ): { data: QuantizedData; stats: QuantizationStats } {
   const startTime = performance.now();
   const data = quantize(input, mode);

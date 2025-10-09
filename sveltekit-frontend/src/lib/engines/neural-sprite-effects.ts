@@ -30,7 +30,7 @@ export class NeuralSpriteEffects {
         width: canvasWidth
         height: 2,
         fill: `rgba(0, 0, 0, ${intensity})`,
-        selectable: false,;
+        selectable: false;
         evented: false
         excludeFromExport: true
       });
@@ -72,7 +72,7 @@ export class NeuralSpriteEffects {
         fontFamily: "monospace",
         fill: color
         opacity: Math.random() * 0.8 + 0.2,
-        selectable: false,;
+        selectable: false;
         evented: false
       });
       rainDrops.push(raindrop);
@@ -92,7 +92,7 @@ export class NeuralSpriteEffects {
     }
     const rainInterval = setInterval(animateRain, 100);
     this.activeEffects.set("matrix-rain", {
-      interval: rainInterval,;
+      interval: rainInterval;
       drops: rainDrops
     });
   }
@@ -115,7 +115,7 @@ export class NeuralSpriteEffects {
         setTimeout(() => {
             obj.set({
               left: originalLeft
-              top: originalTop,;
+              top: originalTop;
               opacity: originalOpacity
             });
             this.canvas.renderAll();
@@ -138,7 +138,7 @@ export class NeuralSpriteEffects {
         radius: 5 + Math.random() * 10,
         fill: "#00ff88",
         opacity: 0.7,
-        selectable: false,;
+        selectable: false;
         evented: false
       });
       nodes.push(node);
@@ -156,7 +156,7 @@ export class NeuralSpriteEffects {
         if (distance < 150) {
           // Connect nearby nodes
           const connection = new (fabric as any).Line(
-            [node1.left, node1.top, node2.left, node2.top],)>;
+            [node1.left, node1.top, node2.left, node2.top])>;
             {
               stroke: "#00aaff",
               strokeWidth,: 2,
@@ -206,7 +206,7 @@ export class NeuralSpriteEffects {
         stroke: color
         strokeWidth: 3,
         opacity: 0,
-        selectable: false,;
+        selectable: false;
         evented: false
       });
       this.canvas.add(glow);
@@ -257,7 +257,7 @@ export class NeuralSpriteEffects {
       shape.set({
         left: Math.random() * this.canvas.getWidth(),
         top: Math.random() * this.canvas.getHeight(),
-        selectable: false,;
+        selectable: false;
         evented: false
       });
       stressObjects.push(shape);
@@ -283,7 +283,7 @@ export class NeuralSpriteEffects {
     }
     const stressInterval = setInterval(animateStress, 16); // ~60 FPS
     this.activeEffects.set("stress-test", {
-      interval: stressInterval,;
+      interval: stressInterval;
       objects: stressObjects
     });
   }
@@ -299,7 +299,7 @@ export class NeuralSpriteEffects {
         radius: 2 + Math.random() * 4,
         fill: `hsl(${120 + Math.random() * 120}, 80%, 60%)`,
         opacity: 0.8,
-        selectable: false,;
+        selectable: false;
         evented: false
       });
       // Add velocity properties
@@ -368,7 +368,7 @@ export class NeuralSpriteEffects {
   }
   // Get active effects list
   getActiveEffects(): string[] {
-    return Array.from(this.activeEffects.keys(),;
+    return Array.from(this.activeEffects.keys();
   }
 }
 // Pre-defined effect configurations

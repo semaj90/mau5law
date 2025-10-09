@@ -49,7 +49,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     console.log(`❌ Chat test error: ${error instanceof Error ? error.message: 'Unknown error'}`);
     results.push({
       test: 'Basic Chat',
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -99,7 +99,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Legal Analysis',
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -148,7 +148,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Embedding Generation',
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -200,7 +200,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Realtime Chat',
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -232,7 +232,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Bridge Status',
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -271,7 +271,7 @@ export async function quickHealthCheck(): Promise<any> {
 // Function to test specific orchestrator
 export async function testSpecificOrchestrator(
   orchestratorType: 'server' | 'client' | 'mcp',
-  content: string = 'Test message',;
+  content: string = 'Test message';
 ): Promise<any> {
   const request: LLMBridgeRequest = {
     id: `test-specific-${orchestratorType}-${Date.now()}`,
@@ -312,7 +312,7 @@ export async function testSpecificOrchestrator(
     }
   } catch (error) {
     return {
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error',
       expectedOrchestrator: orchestratorType
     }

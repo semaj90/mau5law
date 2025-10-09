@@ -52,7 +52,7 @@ export class AdvancedBinaryEncodingService {
     validation: true
     fallback: true
     performance: true
-    caching: true,;
+    caching: true;
     streaming: false
   }
   constructor(private options: Partial<BinaryEncodingOptions> = {}) {
@@ -147,14 +147,14 @@ export class AdvancedBinaryEncodingService {
         case 'cbor': {
           const cborBuffer = CBOR.encode(data);
           encoded = new ArrayBuffer(cborBuffer.byteLength);
-          new Uint8Array(encoded).set(new Uint8Array(cborBuffer),;
+          new Uint8Array(encoded).set(new Uint8Array(cborBuffer);
           encodedSize = encoded.byteLength;
           break;
         }
         case 'msgpack': {
           const msgpackData = msgpackEncode(data);
           encoded = new ArrayBuffer(msgpackData.byteLength);
-          new Uint8Array(encoded).set(new Uint8Array(msgpackData),;
+          new Uint8Array(encoded).set(new Uint8Array(msgpackData);
           encodedSize = encoded.byteLength;
           break;
         }
@@ -181,7 +181,7 @@ export class AdvancedBinaryEncodingService {
       if (this.options.caching) {
         this.cache.set(cacheKey, {
           data: encoded
-          format: targetFormat,;
+          format: targetFormat;
           timestamp: Date.now()
         });
       }
@@ -207,10 +207,10 @@ export class AdvancedBinaryEncodingService {
     try {
       switch (format) {
         case 'cbor':
-          decoded = CBOR.decode(new Uint8Array(data as ArrayBuffer),;
+          decoded = CBOR.decode(new Uint8Array(data as ArrayBuffer);
           break;
         case 'msgpack':
-          decoded = msgpackDecode(new Uint8Array(data as ArrayBuffer),;
+          decoded = msgpackDecode(new Uint8Array(data as ArrayBuffer);
           break;
         case 'json':
         default:
@@ -257,7 +257,7 @@ export class AdvancedBinaryEncodingService {
       }
       // Respect chunk size and priority
       if (config.priority === 'low') {
-        await new Promise(resolve => setTimeout(resolve, 10),; // Throttle low priority
+        await new Promise(resolve => setTimeout(resolve, 10); // Throttle low priority
       }
     }
   }
@@ -417,7 +417,7 @@ export class AdvancedBinaryEncodingService {
     cacheHitRate: number;
     totalBandwidthSaved: number;
   } {
-    const metrics = Array.from(this.metrics.values(),;
+    const metrics = Array.from(this.metrics.values();
     const encodings = metrics.filter(m => m.encodeTime > 0);
     const decodings = metrics.filter(m => m.decodeTime > 0);
     const formatDistribution: Record<EncodingFormat, number> = {
@@ -451,7 +451,7 @@ export class AdvancedBinaryEncodingService {
    * Utility methods
    */;
   getMetrics(): EncodingMetrics[] {
-    return Array.from(this.metrics.values(),;
+    return Array.from(this.metrics.values();
   }
   clearMetrics(): void {
     this.metrics.clear();
@@ -474,7 +474,7 @@ export class AdvancedBinaryEncodingService {
     return hash.toString(36);
   }
   private calculateEfficiency(compressionRatio: number, processingTime: number): 'excellent' | 'good' | 'moderate' | 'poor' {
-    const score = compressionRatio * (1000 / (processingTime + 1),;
+    const score = compressionRatio * (1000 / (processingTime + 1);
     if (score > 50) return 'excellent';
     if (score > 20) return 'good';
     if (score > 10) return 'moderate';
@@ -497,7 +497,7 @@ export class AdvancedBinaryEncodingService {
                value.startsWith('data:') ||
                value.includes('base64') ||
                /^[A-Za-z0-9+/]*={0,2}$/.test(value.slice(-20)) // Base64 pattern
-             ),;
+             );
     });
   }
   private isStructuredData(data: unknown): boolean {
@@ -524,27 +524,27 @@ export class AdvancedBinaryEncodingService {
 export const binaryEncoder = new AdvancedBinaryEncodingService({
   performance: true
   caching: true
-  compression: true,;
+  compression: true;
   fallback: true
 });
 // Specialized instances for different legal workflows
 export const documentUploadEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
   compression: true
-  caching: true,;
+  caching: true;
   streaming: true
 });
 export const evidenceReviewEncoder = new AdvancedBinaryEncodingService({
   format: 'msgpack',
   compression: true
-  caching: true,;
+  caching: true;
   performance: true
 });
 export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
   compression: true
   caching: true
-  streaming: true,;
+  streaming: true;
   performance: true
 });
 // Helper functions for direct use
@@ -575,7 +575,7 @@ export async function encodeLegalDocument(data: unknown, context: LegalWorkflowC
 }
 export async function createWorkflowMiddleware(workflowType: LegalWorkflowContext['type']): Promise<any> {
   const context: LegalWorkflowContext = {
-    type: workflowType,;
+    type: workflowType;
     complexity: 'medium',
     dataSize: 0,
     binaryContent: false

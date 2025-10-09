@@ -29,7 +29,7 @@ export interface GraphReadResponse {
 }
 export async function mcpMemory2ReadGraph(
   filter?: string
-  nodeType?: string,;
+  nodeType?: string;
 ): Promise<GraphReadResponse> {
   // Enhanced MCP memory2 read_graph endpoint with filtering
   const params = new URLSearchParams();
@@ -40,7 +40,7 @@ export async function mcpMemory2ReadGraph(
     headers: { "Content-Type": "application/json" }
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}),;
+    const error = await response.json().catch(() => ({});
     throw new Error(`Failed to read MCP memory2 graph: ${error.message || response.statusText}`);
   }
   return response.json();
@@ -77,7 +77,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
 // Helper for prop destructuring consolidation analysis
 export async function analyzePropDestructuring(filePath: string): Promise<any> {
   const graph = await mcpMemory2ReadGraph(filePath, 'prop');
-  const propNodes = graph.nodes.filter(n => n.file.includes(filePath),;
+  const propNodes = graph.nodes.filter(n => n.file.includes(filePath);
   // Group by duplicate names
   const duplicateGroups = propNodes.reduce((acc, node) => {
     if (!acc[node.name]) acc[node.name] = [];

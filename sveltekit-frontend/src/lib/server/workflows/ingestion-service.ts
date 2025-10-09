@@ -95,7 +95,7 @@ export class IngestionService {
     } catch (error) {
       console.error('❌ Failed to submit document:', error);
       return {
-        success: false,;
+        success: false;
         error: error instanceof Error ? error.message: String(error)
       }
     }
@@ -146,7 +146,7 @@ export class IngestionService {
             timestamp: new Date().toISOString()
           }
         }
-        await cache.rpush('embedding:jobs', JSON.stringify(chunkJob),;
+        await cache.rpush('embedding:jobs', JSON.stringify(chunkJob);
       }
       console.log(`📤 Published job ${job.id} (${job.chunks.length} chunks) to Redis`);
     } catch (error) {
@@ -238,7 +238,7 @@ export class IngestionService {
       }
     } catch (error) {
       return {
-        success: false,;
+        success: false;
         error: error instanceof Error ? error.message: String(error)
       }
     }
@@ -267,12 +267,12 @@ export class IngestionService {
         }
       }
       return {
-        success: true,;
+        success: true;
         message: `Job ${jobId} queued for retry`
       }
     } catch (error) {
       return {
-        success: false,;
+        success: false;
         error: error instanceof Error ? error.message: String(error)
       }
     }
@@ -288,12 +288,12 @@ export class IngestionService {
         completedAt: new Date().toISOString()
       });
       return {
-        success: true,;
+        success: true;
         message: `Job ${jobId} cancelled`
       }
     } catch (error) {
       return {
-        success: false,;
+        success: false;
         error: error instanceof Error ? error.message: String(error)
       }
     }
@@ -310,13 +310,13 @@ export class IngestionService {
   async setConcurrency(concurrency: number): Promise<any> {
     if (concurrency < 1 || concurrency > 10) {
       return {
-        success: false,;
+        success: false;
         error: 'Concurrency must be between 1 and 10'
       }
     }
     this.workflowActor.send({ type: 'SET_CONCURRENCY', concurrency });
     return {
-      success: true,;
+      success: true;
       message: `Concurrency set to ${concurrency}`
     }
   }
@@ -352,7 +352,7 @@ export class IngestionService {
     this.workflowActor.send({ type: 'CLEAR_COMPLETED' });
     const cleared = jobTracker.clearCompletedJobs();
     return {
-      success: true,;
+      success: true;
       message: `Cleared ${cleared} completed jobs`
     }
   }
@@ -360,7 +360,7 @@ export class IngestionService {
     this.workflowActor.send({ type: 'RESET_STATS' });
     jobTracker.reset();
     return {
-      success: true,;
+      success: true;
       message: 'Statistics reset'
     }
   }

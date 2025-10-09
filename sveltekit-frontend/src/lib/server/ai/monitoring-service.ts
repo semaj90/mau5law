@@ -311,7 +311,7 @@ class MonitoringService extends EventEmitter {
           name: alert.name,
           severity: alert.severity,
           message: alert.message,
-          context: metrics,;
+          context: metrics;
           timestamp: new Date()
         });
         logger.warn(`[Monitoring] Alert triggered: ${alert.name} - ${alert.message}`);
@@ -326,7 +326,7 @@ class MonitoringService extends EventEmitter {
         results.set(name, healthy);
         if (!healthy) {
           this.emit('health:unhealthy', {
-            component: name,;
+            component: name;
             timestamp: new Date()
           });
         }
@@ -367,7 +367,7 @@ class MonitoringService extends EventEmitter {
     const p95 = sorted[Math.floor(len * 0.95)];
     const p99 = sorted[Math.floor(len * 0.99)];
     const mean = values.reduce((a, b) => a + b, 0) / len;
-    const squaredDiffs = values.map((v) => Math.pow(v - mean, 2),;
+    const squaredDiffs = values.map((v) => Math.pow(v - mean, 2);
     const variance = squaredDiffs.reduce((a, b) => a + b, 0) / len;
     const stdDev = Math.sqrt(variance);
     return { p50, p95, p99, mean, stdDev }
@@ -423,9 +423,9 @@ class MonitoringService extends EventEmitter {
    * Record a metric value
    */
   async recordMetric(
-    metric: string,;
+    metric: string;
     value: number
-    labels?: Record<string, string>,;
+    labels?: Record<string, string>;
   ): Promise<void> {
     const data = {
       // id: `metric_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Remove if not in MetricData interface
@@ -482,7 +482,7 @@ class MonitoringService extends EventEmitter {
     const metricData = Array.from((this.metrics as any).values()
       .flat()
       .filter((m: any) => m.data?.metric === metricName)
-      .map((m: any) => m.data?.value || 0),;
+      .map((m: any) => m.data?.value || 0);
     if (metricData.length === 0) {
       return { count: 0, sum: 0, avg: 0, min: 0, max: 0, latest: 0 }
     }

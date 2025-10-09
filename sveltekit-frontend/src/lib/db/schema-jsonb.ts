@@ -120,9 +120,9 @@ export interface UserPreferences {
   include_citations: boolean;
   auto_summarize: boolean;
   notification_}); const settings = {
-    email: boolean,;
-    push: boolean,;
-    webhook_url?: string,;
+    email: boolean;
+    push: boolean;
+    webhook_url?: string;
   }
   api_limits: {
     daily_quota: number;
@@ -180,7 +180,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
-  ),;
+  );
 }, (table: any) => ({,
   statusIdx: index('idx_documents_status').on(table.status),
   typeIdx: index('idx_documents_type').on(table.documentType),
@@ -191,7 +191,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   confidenceIdx: index('idx_summary_confidence').on(sql`(summary_data->>'confidence_score')`),
   findingsIdx: index('idx_summary_findings').using('gin', sql`(summary_data->'key_findings')`),
   issuesIdx: index('idx_summary_issues').using('gin', sql`(summary_data->'legal_issues')`)
-}),;
+});
 // Vector embeddings table
 export const documentEmbeddings = pgTable('document_embeddings', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -201,12 +201,12 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   embedding: vector('embedding'),
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),;
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
 }, (table: any) => ({,
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
   // Note: IVFFlat index for vector similarity search would be added via migration
-}),;
+});
 // Summarization jobs queue
 export const summarizationJobs = pgTable('summarization_jobs', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -231,12 +231,12 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   lockedBy: varchar('locked_by', { length: 100 }),
   lockedAt: timestamp('locked_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),;
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow();
 }, (table: any) => ({,
   statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority, table.scheduledAt),
   documentIdx: index('idx_jobs_document').on(table.documentId),
   lockedIdx: index('idx_jobs_locked').on(table.lockedBy, table.lockedAt)
-}),;
+});
 // User preferences
 export const userPreferences = pgTable('user_preferences', {
   userId: uuid('user_id').primaryKey(),

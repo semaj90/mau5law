@@ -92,7 +92,7 @@ class TodoAutogen {
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
       title: `TypeScript Error: ${file}${lineNumber ? `:${lineNumber}` : ''}`,
-      description: error,;
+      description: error;
       context: {
         file,
         lineNumber,
@@ -151,7 +151,7 @@ class TodoAutogen {
     const filename = `${todo.id}.json`;
     const filepath = join(this.unresolvedPath, category, filename);
     try {
-      await writeFile(filepath, JSON.stringify(todo, null, 2),;
+      await writeFile(filepath, JSON.stringify(todo, null, 2);
       console.log(`📝 TODO logged: ${filepath}`);
     } catch (error: any) {
       console.error('Failed to save TODO:', error);
@@ -169,7 +169,7 @@ class TodoAutogen {
       instructions: this.generateReviewInstructions(todo)
     }
     try {
-      await writeFile(queueFile, JSON.stringify(queueEntry, null, 2),;
+      await writeFile(queueFile, JSON.stringify(queueEntry, null, 2);
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
     } catch (error: any) {
       console.error(`Failed to queue for ${agent}:`, error);
@@ -209,9 +209,9 @@ export const todoAutogen = new TodoAutogen();
  */
 export async function retryLLMCall<T>(
   llmCall: () => Promise<T>,
-  model: string,;
+  model: string;
   prompt: string
-  maxRetries = 3,;
+  maxRetries = 3;
 ): Promise<T> {
   let lastError: Error;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -232,7 +232,7 @@ export async function retryLLMCall<T>(
       // Exponential backoff with jitter
       const delay = Math.min(2000 * Math.pow(2, attempt - 1), 10000);
       const jitter = Math.random() * 1000;
-      await new Promise((resolve: any) => setTimeout(resolve, delay + jitter),;
+      await new Promise((resolve: any) => setTimeout(resolve, delay + jitter);
     }
   }
   // Final attempt failed - log critical misfire
@@ -263,5 +263,5 @@ export function startMemoryMonitoring() {
     }
   }, 30000); // Check every 30 seconds
   // Cleanup on process exit
-  process.on('beforeExit', () => clearInterval(interval),;
+  process.on('beforeExit', () => clearInterval(interval);
 }

@@ -26,7 +26,7 @@ export const S3 = new S3Client({
 export async function streamToBuffer(stream: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of stream) {
-    chunks.push(Buffer.from(chunk),;
+    chunks.push(Buffer.from(chunk);
   }
   return Buffer.concat(chunks);
 }
@@ -50,7 +50,7 @@ export async function fetchMinioObject(minioUrl: string) {
     const response = await S3.send(new GetObjectCommand({
       Bucket: bucket
       Key: key
-    }),;
+    });
     const body = (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Body as Readable;
     const buffer = await streamToBuffer(body);
     return {
@@ -74,14 +74,14 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
       Bucket: bucket
       Prefix: prefix
       MaxKeys: 1000
-    }),;
+    });
     return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
       key: obj.Key!,
       size: obj.Size!,
       lastModified: obj.LastModified!,
       etag: obj.ETag!,
       minioUrl: `minio://${bucket}/${obj.Key}`
-    }),;
+    });
   } catch (error) {
     throw new Error(`Failed to list objects in ${bucket}/${prefix}: ${error}`);
   }
@@ -115,7 +115,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
       } else {
         results.push({
           url: 'unknown',
-          success: false,;
+          success: false;
           error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
         });
       }

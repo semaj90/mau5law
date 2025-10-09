@@ -113,10 +113,10 @@ export class LegalDocumentBinarySerializer {
     view.setUint32(offset, this.generateFlags(document), true); offset += 4;
     view.setBigUint64(offset, BigInt(Date.now()), true); offset += 8;
     // Core Fields
-    view.setUint8(offset, this.documentTypeToEnum(document.type),; offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel),; offset += 1;
+    view.setUint8(offset, this.documentTypeToEnum(document.type); offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel); offset += 1;
     view.setUint8(offset, document.priority || 128); offset += 1;
-    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255),; offset += 1;
+    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255); offset += 1;
     view.setUint8(offset, document.bankId || 0); offset += 1;
     offset += 3; // padding
     view.setBigUint64(offset, BigInt(document.lastAccessed || Date.now()), true); offset += 8;
@@ -278,7 +278,7 @@ export class LegalDocumentBinarySerializer {
     let offset = 16;
     for (const document of documents) {
       const docBuffer = this.serialize(document);
-      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer),;
+      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer);
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     return buffer;
@@ -300,7 +300,7 @@ export class LegalDocumentBinarySerializer {
     let offset = 16;
     for (let i = 0; i < count; i++) {
       const docBuffer = buffer.slice(offset, offset + LEGAL_DOCUMENT_BINARY_SIZE);
-      documents.push(this.deserialize(docBuffer),;
+      documents.push(this.deserialize(docBuffer);
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     return documents;
@@ -314,11 +314,11 @@ export class LegalDocumentBinarySerializer {
     return Math.abs(hash);
   }
   private static arrayToHash(arr: any[]): number {
-    return this.stringToHash(JSON.stringify(arr.sort()),;
+    return this.stringToHash(JSON.stringify(arr.sort());
   }
   private static calculateChecksum(_document: any): number {
     // Simple CRC32-like checksum
-    return this.stringToHash(JSON.stringify(document),;
+    return this.stringToHash(JSON.stringify(document);
   }
   private static generateFlags(_document: any): number {
     let flags = 0;

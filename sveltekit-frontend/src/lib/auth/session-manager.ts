@@ -81,7 +81,7 @@ export class SessionManager {
    * Create a new session
    */
   async createSession(
-    user: AuthUser,;
+    user: AuthUser;
     request: {
       ipAddress?: string;
       userAgent?: string;
@@ -119,15 +119,15 @@ export class SessionManager {
     // Use pipeline for atomic operations
     const pipeline = this.redisClient.multi();
     // Store session data
-    pipeline.set(sessionKey, JSON.stringify(sessionData),;
-    pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000),;
+    pipeline.set(sessionKey, JSON.stringify(sessionData);
+    pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000);
     // Add to user's session list
     pipeline.sAdd(userSessionsKey, sessionId);
-    pipeline.expire(userSessionsKey, Math.ceil(this.config.maxAge / 1000),;
+    pipeline.expire(userSessionsKey, Math.ceil(this.config.maxAge / 1000);
     // Store session activity index
     const activityKey = this.getActivityKey(sessionId);
-    pipeline.set(activityKey, now.getTime().toString(),;
-    pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000),;
+    pipeline.set(activityKey, now.getTime().toString();
+    pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000);
     await pipeline.exec();
     console.log(`Session created for user ${user.id}: ${sessionId}`);
     return sessionData;
@@ -191,10 +191,10 @@ export class SessionManager {
       const sessionKey = this.getSessionKey(sessionId);
       const activityKey = this.getActivityKey(sessionId);
       const pipeline = this.redisClient.multi();
-      pipeline.set(sessionKey, JSON.stringify(sessionData),;
-      pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000),;
-      pipeline.set(activityKey, now.getTime().toString(),;
-      pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000),;
+      pipeline.set(sessionKey, JSON.stringify(sessionData);
+      pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000);
+      pipeline.set(activityKey, now.getTime().toString();
+      pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000);
       await pipeline.exec();
       return true;
     } catch (error: any) {
@@ -284,7 +284,7 @@ export class SessionManager {
         }
       }
       // Sort by last activity (most recent first)
-      sessions.sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime(),;
+      sessions.sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime();
       return sessions;
     } catch (error: any) {
       console.error('Error getting user sessions:', error);
@@ -300,7 +300,7 @@ export class SessionManager {
     }
     try {
       // Get all session keys
-      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*'),;
+      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*');
       const totalSessions = sessionKeys.length;
       let activeSessions = 0;
       let expiredSessions = 0;
@@ -339,7 +339,7 @@ export class SessionManager {
       throw new Error('Session manager not initialized');
     }
     try {
-      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*'),;
+      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*');
       let cleanedCount = 0;
       for (const key of sessionKeys) {
         const sessionId = key.replace(this.getSessionKey(''), '');

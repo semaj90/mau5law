@@ -225,7 +225,7 @@ export class WebGPUTextureStreamer {
     id: string
     data: BufferLike
     width: number
-    height: number,;
+    height: number;
     options: {
       priority?: number;
       legalContext?: NESTexture['legalContext'];
@@ -295,7 +295,7 @@ export class WebGPUTextureStreamer {
   }
   private async compressTexture(
     data: ArrayBuffer
-    width: number,;
+    width: number;
     height: number
     legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {

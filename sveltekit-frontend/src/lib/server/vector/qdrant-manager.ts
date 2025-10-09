@@ -96,7 +96,7 @@ export class QdrantManager {
           query_length: params.query.length,
           results_count: results.length,
           filters_applied: !!params.filters
-        },);
+        });
         {
           responseTimeMs: responseTime
         }
@@ -151,7 +151,7 @@ export class QdrantManager {
       role: r.payload?.role,
       score: r.score,
       timestamp: r.payload?.created_at
-    }),;
+    });
   }
   // Batch upsert for efficient data synchronization
   async batchUpsert(params: {
@@ -166,7 +166,7 @@ export class QdrantManager {
     for (const batch of batches) {
       try {
         await this.client.upsert(collectionName, {
-          wait: false,;
+          wait: false;
           points: batch
         });
         totalUpserted += batch.length;
@@ -202,7 +202,7 @@ export class QdrantManager {
       }
     }
     await this.client.upsert(this.collections.documents, {
-      wait: true,;
+      wait: true;
       points: [point]
     });
   }
@@ -229,7 +229,7 @@ export class QdrantManager {
         similarity_score: r.score,
         relationship_strength: this.calculateRelationshipStrength(r.score),
         evidence_data: r.payload
-      }),;
+      });
   }
   // Vector similarity caching for performance
   async cacheEmbedding(_key: string, embedding: number[], metadata: any) {
@@ -246,7 +246,7 @@ export class QdrantManager {
       }
     }
     await this.client.upsert(this.collections.embeddings_cache, {
-      wait: false,;
+      wait: false;
       points: [point]
     });
   }
@@ -326,7 +326,7 @@ export class QdrantManager {
     return { must: conditions }
   }
   private calculateRelationshipStrength(
-    score: number,;
+    score: number;
   ): 'weak' | 'moderate' | 'strong' | 'very_strong' {
     if (score >= 0.9) return 'very_strong';
     if (score >= 0.8) return 'strong';
@@ -336,7 +336,7 @@ export class QdrantManager {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size),;
+      chunks.push(array.slice(i, i + size);
     }
     return chunks;
   }

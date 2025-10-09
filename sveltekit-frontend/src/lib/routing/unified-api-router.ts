@@ -99,7 +99,7 @@ export class UnifiedAPIRouter {
    * Register multiple routes at once
    */;
   registerMany(routes: RouteConfig[]): void {
-    routes.forEach(route => this.register(route),;
+    routes.forEach(route => this.register(route);
   }
   /**
    * Add global middleware
@@ -163,9 +163,9 @@ export class UnifiedAPIRouter {
   // ===== MIDDLEWARE EXECUTION =====
   private async executeMiddleware(
     middleware: Middleware[]
-    event: RequestEvent,;
+    event: RequestEvent;
     context: RouteContext
-    finalHandler: () => Promise<Response>,;
+    finalHandler: () => Promise<Response>;
   ): Promise<Response> {
     let index = 0;
     const next = async (): Promise<Response> => {
@@ -381,7 +381,7 @@ export class UnifiedAPIRouter {
             auth: config.auth || false,
             rateLimit: !!config.rateLimit,
             cache: !!config.cache
-          }),;
+          });
           return json({ success: true, data: routes });
         }
       });
@@ -417,7 +417,7 @@ class ServiceRegistry {
     return health;
   }
   async getAllServices(): Promise<ServiceInfo[]> {
-    return Array.from(this.services.values(),;
+    return Array.from(this.services.values();
   }
   registerService(name: string, info: ServiceInfo): void {
     this.services.set(name, info);
@@ -448,10 +448,10 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
  * Create a standardized API response
  */
 export function createAPIResponse<T>(
-  data: T,;
+  data: T;
   success: boolean = true,
   message?: string
-  meta?: Partial<ResponseMetadata>,;
+  meta?: Partial<ResponseMetadata>;
 ): APIResponse<T> {
   return {
     success,

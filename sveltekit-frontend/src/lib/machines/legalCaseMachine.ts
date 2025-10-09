@@ -697,7 +697,7 @@ export const legalCaseMachine = createMachine({
           target: 'idle',
           actions: assign({
             currentCase: null
-            caseId: null,;
+            caseId: null;
             error: null
             retryCount: 0,
             isLoading: false

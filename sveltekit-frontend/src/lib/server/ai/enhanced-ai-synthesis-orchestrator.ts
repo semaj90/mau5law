@@ -158,7 +158,7 @@ const orchestrationMachine = createMachine({
                 guard: 'cacheHit',
                 target: 'complete',
                 actions: 'storeCachedResult'
-              },);
+              });
               {
                 target: 'analyzingQuery'
               }
@@ -459,7 +459,7 @@ export class EnhancedAISynthesisOrchestrator {
               body: JSON.stringify({,
                 query: context.query,
                 limit: 10,
-                useGPU: true,;
+                useGPU: true;
                 model: 'gemma3-legal:latest'
               })
             });
@@ -512,7 +512,7 @@ export class EnhancedAISynthesisOrchestrator {
         cacheResult: (async ({ context }) => {
           if (!context.finalSynthesis || !context.query) return;
           const cacheKey = `synthesis:${Buffer.from(context.query).toString('base64')}`;
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis),;
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis);
           // Also update monitoring metrics
           await monitoringService.recordMetric('synthesis_completed', 1);
         }) as any, // Temporary cast to fix UnknownActorLogic
@@ -723,9 +723,9 @@ RESPONSE:`;
   private calculateSimilarity(text1: string, text2: string): number {
     // Simple Jaccard similarity for demonstration
     // In production, use embeddings for semantic similarity
-    const words1 = new Set(text1.toLowerCase().split(/\s+/),;
-    const words2 = new Set(text2.toLowerCase().split(/\s+/),;
-    const intersection = new Set([...words1].filter((x) => words2.has(x)),;
+    const words1 = new Set(text1.toLowerCase().split(/\s+/);
+    const words2 = new Set(text2.toLowerCase().split(/\s+/);
+    const intersection = new Set([...words1].filter((x) => words2.has(x));
     const union = new Set([...words1, ...words2]);
     return intersection.size / union.size;
   }
@@ -758,11 +758,11 @@ RESPONSE:`;
               resolve(result);
             } else {
               subscription.unsubscribe();
-              reject(new Error('No synthesis result'),;
+              reject(new Error('No synthesis result');
             }
           } else if ((snapshot as any).status === 'error' || (snapshot as any).value === 'error') {
             subscription.unsubscribe();
-            reject(new Error('Processing failed'),;
+            reject(new Error('Processing failed');
           }
         });
         // Send the START event to begin processing
@@ -802,7 +802,7 @@ RESPONSE:`;
         const change = stateChanges.shift();
         yield change;
       }
-      await new Promise((resolve) => setTimeout(resolve, 100),;
+      await new Promise((resolve) => setTimeout(resolve, 100);
       snapshot = service.getSnapshot() as any;
     }
     // Yield final result

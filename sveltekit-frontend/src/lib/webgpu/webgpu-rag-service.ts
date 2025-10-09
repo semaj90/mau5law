@@ -89,7 +89,7 @@ export async function processQuery(
         precision: options?.quantization?.precision || 'adaptive',
         compressionRatio: conversionResult.compressionRatio,
         memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024)
-      } : null,;
+      } : null;
       profiling: {
         ttfbMs: Math.round(processingTime * 0.3),
         totalMs: Math.round(processingTime),
@@ -126,7 +126,7 @@ export const webgpuRAGService = {
     }
     const result = await processQuery(query, {
       embeddings: mockEmbeddings
-      context: contextArray,;
+      context: contextArray;
       quantization: { precision: 'fp16' }, // Default to FP16 for legal AI
       memoryBudgetMB: 512 // Default 512MB budget
     });
@@ -178,7 +178,7 @@ export const webgpuRAGService = {
       device,
       embeddings.map((emb, idx) => ({
         name: `embedding_${idx}`,
-        data: Array.isArray(emb) ? new Float32Array(emb) : emb,;
+        data: Array.isArray(emb) ? new Float32Array(emb) : emb;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       })),
       { precision: 'fp16' } // Default quantization for legal AI

@@ -295,7 +295,7 @@ export class PerformanceMonitor {
    * Adjust quality settings
    */;
   private adjustQuality(adjustment: number): void {
-    const newResolution = Math.max(0.3, Math.min(1.0, this.qualitySettings.textureResolution + adjustment),;
+    const newResolution = Math.max(0.3, Math.min(1.0, this.qualitySettings.textureResolution + adjustment);
     if (Math.abs(newResolution - this.qualitySettings.textureResolution) > 0.01) {
       this.qualitySettings.textureResolution = newResolution;
       // Adjust other settings proportionally
@@ -340,7 +340,7 @@ export class PerformanceMonitor {
    * Force quality level
    */;
   setQualityLevel(level: number): void {
-    this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level),;
+    this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level);
     if (this.onQualityChange) {
       this.onQualityChange({ ...this.qualitySettings });
     }
@@ -396,7 +396,7 @@ export class PerformanceMonitor {
       sum += Math.random() * Math.sin(i) * Math.cos(i);
     }
     const cpuTime = performance.now() - cpuStart;
-    results.cpuScore = Math.max(0, Math.min(100, 100 - (cpuTime - 50) * 2),;
+    results.cpuScore = Math.max(0, Math.min(100, 100 - (cpuTime - 50) * 2);
     // GPU benchmark - WebGL operations
     if (this.capabilities.hasWebGL) {
       const canvas = document.createElement('canvas');
@@ -416,7 +416,7 @@ export class PerformanceMonitor {
         }
         gl.finish(); // Wait for GPU
         const gpuTime = performance.now() - gpuStart;
-        results.gpuScore = Math.max(0, Math.min(100, 100 - (gpuTime - 20) * 3),;
+        results.gpuScore = Math.max(0, Math.min(100, 100 - (gpuTime - 20) * 3);
         gl.deleteTexture(texture);
       }
     } else {
@@ -426,17 +426,17 @@ export class PerformanceMonitor {
     const memStart = performance.now();
     const arrays = [];
     for (let i = 0; i < 100; i++) {
-      arrays.push(new Uint8Array(1024 * 1024),; // 1MB arrays
+      arrays.push(new Uint8Array(1024 * 1024); // 1MB arrays
     }
     const memTime = performance.now() - memStart;
-    results.memoryScore = Math.max(0, Math.min(100, 100 - (memTime - 100) * 0.5),;
+    results.memoryScore = Math.max(0, Math.min(100, 100 - (memTime - 100) * 0.5);
     // Network benchmark - simple latency test
     try {
       const netStart = performance.now();
       const response = await fetch('data:text/plain;base64,SGVsbG8gV29ybGQ='); // Minimal test
       await response.text();
       const netTime = performance.now() - netStart;
-      results.networkScore = Math.max(0, Math.min(100, 100 - netTime * 10),;
+      results.networkScore = Math.max(0, Math.min(100, 100 - netTime * 10);
     } catch {
       results.networkScore = 50; // Default if fetch fails
     }
@@ -515,7 +515,7 @@ export class PerformanceMonitor {
  */
 export function createPerformanceMonitor(
   onQualityChange?: (settings: QualitySettings) => void,
-  onPerformanceUpdate?: (metrics: PerformanceMetrics) => void,;
+  onPerformanceUpdate?: (metrics: PerformanceMetrics) => void;
 ): PerformanceMonitor {
   return new PerformanceMonitor(onQualityChange, onPerformanceUpdate);
 }

@@ -296,7 +296,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('caseId', input.context.caseId || '');
-        formData.append('legalContext', JSON.stringify(input.context.legalContext),;
+        formData.append('legalContext', JSON.stringify(input.context.legalContext);
         formData.append('model', input.context.ollamaConfig?.model || 'gemma3:270m');
         formData.append('analysisType', 'comprehensive_legal');
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
@@ -335,7 +335,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
         }
       });
       return await Promise.all(analysisPromises);
-    }, catch (error) {
+    } catch (error) {
       console.warn('Production AI analysis unavailable, using fallback');
       // Enhanced legal fallback analysis
       return input.files.map((file, index) => ({

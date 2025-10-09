@@ -64,7 +64,7 @@ export class ProductionLogger {
     const reset = '\x1b[0m';
     console.log(`${color}[${logEntry.level.toUpperCase()}]${reset} ${timestamp} [${logEntry.service}] ${logEntry.message}`);
     if (logEntry.data) {
-      console.log(`${color}   Data:${reset}`, JSON.stringify(logEntry.data, null, 2),;
+      console.log(`${color}   Data:${reset}`, JSON.stringify(logEntry.data, null, 2);
     }
     if (logEntry.error) {
       console.error(`${color}   Error:${reset}`, logEntry.error.message);
@@ -106,7 +106,7 @@ export class ProductionLogger {
           message: entry.error.message,
           stack: entry.error.stack,
           name: entry.error.name
-        } : null,;
+        } : null;
         data: entry.data ? JSON.stringify(entry.data) : null
         userId: entry.userId,
         caseId: entry.caseId,

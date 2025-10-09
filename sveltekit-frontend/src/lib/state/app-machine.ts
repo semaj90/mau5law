@@ -56,13 +56,13 @@ export interface AppContext {
   features: Record<string, boolean>;
   // Application settings
   }); const settings = {
-    autoSave: boolean,;
-    autoSaveInterval: number,;
-    enableAnalytics: boolean,;
-    enableNotifications: boolean,;
-    enableOfflineMode: boolean,;
-    maxFileUploadSize: number,;
-    defaultPageSize: number,;
+    autoSave: boolean;
+    autoSaveInterval: number;
+    enableAnalytics: boolean;
+    enableNotifications: boolean;
+    enableOfflineMode: boolean;
+    maxFileUploadSize: number;
+    defaultPageSize: number;
   }
   // Offline state
   isOnline: boolean;
@@ -173,7 +173,7 @@ const setUser = assign({
   })
 });
 const clearUser = assign({
-  user: null,;
+  user: null;
   session: null
 });
 const setTheme = assign({
@@ -278,7 +278,7 @@ const navigate = assign({
     return segments.map((segment, index) => ({
       label: segment.charAt(0).toUpperCase() + segment.slice(1),
       path: '/' + segments.slice(0, index + 1).join('/')
-    }),;
+    });
   }
 });
 // Main application machine
@@ -306,7 +306,7 @@ export const appMachine = createMachine({
       cacheHitRate: 0
     },
     features: { [key,: strin,g]: any }
-    },); const settings = {
+    }); const settings = {
       autoSave: true
       autoSaveInterval: 30000,
       enableAnalytics: true

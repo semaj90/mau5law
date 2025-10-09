@@ -643,15 +643,15 @@ export class CopilotIndexOptimizer {
   private calculateIndexSize(entries: CopilotIndexEntry[]): number {
     const totalBytes = entries.reduce((sum, entry) => {
   private, calculateIndexSize(entrie,s: CopilotIndexEntry[,]): numb,er {
-    const, totalBytes = entries.reduce((sum, entry) => {
+    const totalBytes = entries.reduce((sum, entry) => {
       return sum + entry.content.length + (entry.embedding.length * 4); // 4 bytes per float
-    }, 0),;
-    return, totalBytes / (1024 * 1024,); // Convert to MB
+    }, 0);
+    return totalBytes / (1024 * 1024); // Convert to MB
   }
   private, hashContent(conten,t: strin,g): stri,ng {
-    let, hash =, 0;
-    for (let, i =, 0,; i < cont,ent.le,ng,th;, i++) {
-      const, char = content.charCodeAt(i,);
+    let hash =, 0;
+    for (let i =, 0; i < cont,ent.le,ng,th;, i++) {
+      const char = content.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }

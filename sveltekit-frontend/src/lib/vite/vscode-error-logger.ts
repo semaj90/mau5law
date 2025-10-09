@@ -44,7 +44,7 @@ export function vscodeErrorLogger(_options: any = {}) {
       errorLog.metadata = errorLog.metadata || { version: 1 }
       errorLog.metadata.lastUpdated = new Date().toISOString();
       errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors: [];
-      writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2),;
+      writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2);
     } catch (e: any) {
     // ignore
     }

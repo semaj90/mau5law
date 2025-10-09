@@ -104,7 +104,7 @@ export class QLoRAIntegrationAnalyzer {
   constructor(
     soraMoogle: ProductionSoraService
     graphTraversal: SoraGraphTraversal
-    topologyPredictor: QLoRATopologyPredictor,;
+    topologyPredictor: QLoRATopologyPredictor;
   ) {
     this.soraMoogle = soraMoogle;
     this.graphTraversal = graphTraversal;
@@ -135,7 +135,7 @@ export class QLoRAIntegrationAnalyzer {
    * Comprehensive analysis of feedback data for enhanced distillation
    */
   async analyzeFeedbackForDistillation(
-    feedbackBatch: Array<any>,;
+    feedbackBatch: Array<any>;
   ): Promise<FeedbackAnalysis> {
     console.log(
       `🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`
@@ -151,7 +151,7 @@ export class QLoRAIntegrationAnalyzer {
           context_features: this.extractContextFeatures(f.context),
           temporal_sequence: Date.now()
         })
-      ),;
+      );
       // 2. Graph Traversal: Analyze user journey and decision patterns
       const userJourneyGraphs = await this.mockBuildUserJourneyGraphs(feedbackBatch.map((f) => ({
           node_id: f.userId,
@@ -161,7 +161,7 @@ export class QLoRAIntegrationAnalyzer {
           timestamp: Date.now(),
           edges: this.identifyRelatedInteractions(f, feedbackBatch)
         })
-      ),;
+      );
       // 3. Topology Predictor: Optimize model architecture based on patterns
       const mockDocument = {
         id: 'feedback-analysis',
@@ -210,7 +210,7 @@ export class QLoRAIntegrationAnalyzer {
    */
   private async createDistillationPlan(
     feedbackBatch: any[]
-    topologyInsights: any,;
+    topologyInsights: any;
   ): Promise<DistillationPlan> {
     // Determine optimal student model size based on user preferences
     const avgResponseTime =
@@ -297,7 +297,7 @@ export class QLoRAIntegrationAnalyzer {
           f.context.legalDomain === feedback.context.legalDomain &&
           Math.abs(Date.now() - (f.timestamp || Date.now())) < 3600000 // Within 1 hour
       )
-      .map((f) => ({ target: f.userId, weight: 1.0 }),;
+      .map((f) => ({ target: f.userId, weight: 1.0 });
   }
   private extractPerformanceRequirements(feedbackBatch: any[]): any {
     const avgResponseTime =
@@ -352,7 +352,7 @@ export class QLoRAIntegrationAnalyzer {
   }
   private extractModelInsights(
     feedbackBatch: any[]
-    topologyInsights: any,;
+    topologyInsights: any;
   ): ModelPerformanceInsights {
     const modelIds = [...new Set(feedbackBatch.map((f) => f.context.modelUsed || 'default'))];
     const primaryModel = modelIds[0];
@@ -435,7 +435,7 @@ export class QLoRAIntegrationAnalyzer {
     return Object.entries(domainCounts)
       .sort(([, a], [, b]) => (b as number) - (a as number)
       .slice(0, 3)
-      .map(([domain]) => domain),;
+      .map(([domain]) => domain);
   }
   private extractPreferredFeatures(feedback: any[]): string[] {
     const positiveFeatures: string[] = [];

@@ -86,7 +86,7 @@ export class WebGPURedisOptimizer {
             let index = global_id.x;
             let length = params.x;
             let compression_ratio = params.y;
-            if (index >= length) { return, }
+            if (index >= length) { return }
             // FlashAttention2 style tensor quantization
             let value = input[index];
             let quantized = round(value * f32(compression_ratio)) / f32(compression_ratio);
@@ -239,14 +239,14 @@ export class WebGPURedisOptimizer {
       const byteSize = data.byteLength;
       // Create GPU buffers
       const inputBuffer = this.gpuDevice.createBuffer({
-        size: byteSize,;
+        size: byteSize;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
       new Float32Array(inputBuffer.getMappedRange()).set(data);
       inputBuffer.unmap();
       const outputBuffer = this.gpuDevice.createBuffer({
-        size: byteSize,;
+        size: byteSize;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
       const uniformBuffer = this.gpuDevice.createBuffer({
@@ -273,7 +273,7 @@ export class WebGPURedisOptimizer {
       computePass.end();
       // Read result
       const stagingBuffer = this.gpuDevice.createBuffer({
-        size: byteSize,;
+        size: byteSize;
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
       });
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, byteSize);
@@ -319,7 +319,7 @@ export class WebGPURedisOptimizer {
    * Enhanced cache set operation with GPU optimization
    */
   async setOptimized(_key: string
-    value: any,;
+    value: any;
     options: {
       ttl?: number;
       compress?: boolean;
@@ -452,13 +452,13 @@ export const optimizedCache = {
     return webgpuRedisOptimizer.setOptimized(key, value, {
       ttl,
       compress: value instanceof Float32Array
-      parallel: true,;
+      parallel: true;
       priority: 'medium',
     });
   },
   async get(_key: string): Promise<any> {
     return webgpuRedisOptimizer.getOptimized(key, {
-      decompress: true,;
+      decompress: true;
       parallel: true
     });
   },

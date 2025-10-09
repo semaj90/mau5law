@@ -26,7 +26,7 @@ const vector = (name: string, dimensions: number) =>;
   })(name);
 // User embeddings table
 export const userEmbeddings = pgTable(
-  "user_embeddings",);
+  "user_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),
@@ -48,7 +48,7 @@ export const userEmbeddings = pgTable(
 );
 // Case embeddings table
 export const caseEmbeddings = pgTable(
-  "case_embeddings",);
+  "case_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId,: uuid("case_id").notNull(),
@@ -68,7 +68,7 @@ export const caseEmbeddings = pgTable(
 );
 // Evidence embeddings table
 export const evidenceEmbeddings = pgTable(
-  "evidence_embeddings",);
+  "evidence_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     evidenceId,: uuid("evidence_id").notNull(),
@@ -90,7 +90,7 @@ export const evidenceEmbeddings = pgTable(
 );
 // Document embeddings table
 export const documentEmbeddings = pgTable(
-  "document_embeddings",);
+  "document_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     documentId,: uuid("document_id").notNull(),
@@ -112,7 +112,7 @@ export const documentEmbeddings = pgTable(
 );
 // Search embeddings table
 export const searchEmbeddings = pgTable(
-  "search_embeddings",);
+  "search_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),

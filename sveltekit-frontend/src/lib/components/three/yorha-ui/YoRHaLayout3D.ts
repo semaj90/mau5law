@@ -120,7 +120,7 @@ export class YoRHaLayout3D extends THREE.Group {
     const containerBounds = this.getContainerBounds();
     const availableMain = (isRow ? containerBounds.x: containerBounds.y) -
                          padding.left - padding.right -
-                         (gap * (this.children3D.length - 1),;
+                         (gap * (this.children3D.length - 1);
     const availableCross = (isRow ? containerBounds.y: containerBounds.x) -
                           padding.top - padding.bottom;
     // Distribute extra space among flex items
@@ -152,13 +152,13 @@ export class YoRHaLayout3D extends THREE.Group {
   }
   private layoutGrid(): void {
     if (this.children3D.length === 0) return;
-    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length),;
+    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length);
     const rows = this.options.gridRows || Math.ceil(this.children3D.length / columns);
     const gap = this.options.gap || 0.2;
     const padding = this.normalizePadding(this.options.padding);
     const containerBounds = this.getContainerBounds();
-    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1),;
-    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1),;
+    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1);
+    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1);
     const cellWidth = availableWidth / columns;
     const cellHeight = availableHeight / rows;
     this.children3D.forEach(({ component, layout }, index) => {
@@ -272,7 +272,7 @@ export class YoRHaLayout3D extends THREE.Group {
     childCrossSize: number
     availableCross: number
     alignSelf: string | undefined
-    padding: Required<YoRHaPadding3D>,;
+    padding: Required<YoRHaPadding3D>;
   ): number {
     const align = alignSelf || this.options.align || 'start';
     switch (align) {

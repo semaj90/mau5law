@@ -147,7 +147,7 @@ export class TextureRankingMatrices {
                 format: dimension.textureFormat,
                 viewDimension: '2d'
               }
-            },);
+            });
             {
               binding: 2,
               visibility,: GPUShaderStage.COMPUTE,
@@ -178,7 +178,7 @@ export class TextureRankingMatrices {
         }
         this.computePipelines.set(dimension.name, pipelineWrapper);
         console.log(`✅ Created compute pipeline for ${dimension.name}`);
-      }, catch (error: any) {
+      } catch (error: any) {
         console.error(`❌ Failed to create compute pipeline for ${dimension.name}:`, error);
       }
     }
@@ -194,21 +194,21 @@ export class TextureRankingMatrices {
     binaryGraphData,: BinaryGraphData
     queryEmbedding,: Float32Array
     options,: {
-      dimensions?: string[],;
-      maxResults?: number,;
-      cacheKey?: string,;
-      priorityBoost?: number,;
+      dimensions?: string[];
+      maxResults?: number;
+      cacheKey?: string;
+      priorityBoost?: number;
     } = {}
   ),: Promise<RankingResult[]> {
-    const, {
+    const {
       dimensions = this.rankingDimensions.map(d => d.name),
       maxResults = 100,
       cacheKey = this.generateCacheKey(binaryGraphData, queryEmbedding),
       priorityBoost = 1.0
-    } = options,;
-    const, startTime = performance.now(,);
+    } = options;
+    const startTime = performance.now();
     // Check cache first
-    const, cached = this.rankingCache.get(cacheKey,);
+    const cached = this.rankingCache.get(cacheKey);
     if (cached, && Date.now() - cached.timestamp < 3000,0) { // 30 second cache
       this.performanceMetrics.cacheHitRate =
         (this.performanceMetrics.cacheHitRate * this.performanceMetrics.rankingOperations + 1) /
@@ -248,7 +248,7 @@ export class TextureRankingMatrices {
       const sortedResults = combinedResults
         .sort((a, b) => b.combinedScore - a.combinedScore)
         .map((result, index) => ({ ...result, rank: index + 1 })
-        .slice(0, maxResults),;
+        .slice(0, maxResults);
       // Cache the results
       this.addToCache(cacheKey, sortedResults, cached?.priority || 128);
       const totalTime = performance.now() - startTime;
@@ -270,34 +270,34 @@ export class TextureRankingMatrices {
     dimension,: RankingDimension
     nodeCount,: numbe,r;
   ): Promise<Float32Array | null> {
-    if (!this,.devic,e) retur,n n,ull;
-    const, pipeline = this.computePipelines.get(dimension.name,);
-    if (!pipeline), return, nu,ll;
-    try, {
-      const, textureSize = Math.ceil(Math.sqrt(nodeCount,);
-      const, paddedSize = Math.min(2048, Math.pow(2, Math.ceil(Math.log2(textureSize)),);
+    if (!this.devic,e) retur,n n,ull;
+    const pipeline = this.computePipelines.get(dimension.name);
+    if (!pipeline), return nu,ll;
+    try {
+      const textureSize = Math.ceil(Math.sqrt(nodeCount);
+      const paddedSize = Math.min(2048, Math.pow(2, Math.ceil(Math.log2(textureSize)));
       // Create input texture with node embeddings
-      const, inputTexture = await this.createNodeEmbeddingTexture(
+      const inputTexture = await this.createNodeEmbeddingTexture(
         gpuNodeData.embedding,
         paddedSize,
         nodeCount
-      ),;
+      );
       // Create output texture for results
-      const, outputTexture = this.device.createTexture({
+      const outputTexture = this.device.createTexture({
         size: { width: paddedSize, height: paddedSize },
         format: dimension.textureFormat,
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
-      }),;
+      });
       // Create query buffer
-      const, queryBuffer = this.device.createBuffer({
+      const queryBuffer = this.device.createBuffer({
         size: queryEmbedding.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
-      }),;
-      new, Float32Array(queryBuffer.getMappedRange()).set(queryEmbedding,);
-      queryBuffer,.unmap(,);
+      });
+      new, Float32Array(queryBuffer.getMappedRange()).set(queryEmbedding);
+      queryBuffer,.unmap();
       // Create bind group
-      const, bindGroup = this.device.createBindGroup({
+      const bindGroup = this.device.createBindGroup({
         layout: pipeline.bindGroupLayout,
         entries: [)
           { binding: 0, resource,: inputTexture.createView() },
@@ -322,13 +322,13 @@ export class TextureRankingMatrices {
       });
       commandEncoder.copyTextureToBuffer(
         { texture: outputTexture },
-        { buffer: stagingBuffer, bytesPerRow: paddedSize * 4 },)
+        { buffer: stagingBuffer, bytesPerRow: paddedSize * 4 })
         { width: paddedSize, height,: paddedSize }
       );
       this.device.queue.submit([commandEncoder.finish()]);
       // Read results
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const resultData = new Float32Array(stagingBuffer.getMappedRange(),;
+      const resultData = new Float32Array(stagingBuffer.getMappedRange();
       const scores = new Float32Array(nodeCount);
       // Extract valid scores (first nodeCount elements)
       for (let i = 0; i < nodeCount; i++) {
@@ -341,7 +341,7 @@ export class TextureRankingMatrices {
       queryBuffer.destroy();
       stagingBuffer.destroy();
       return scores;
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error(`❌ Dimension computation failed for ${dimension.name}:`, error);
       return null;
     }
@@ -351,16 +351,16 @@ export class TextureRankingMatrices {
     textureSize,: number
     nodeCount,: numbe,r;
   ): Promise<GPUTexture> {
-    if (!this,.devic,e) thro,w new Error('GPU device not availabl,e');
-    const, embeddingDim = 38,4; // Assumed embedding dimension
-    const, texture = this.device.createTexture({
+    if (!this.devic,e) thro,w new Error('GPU device not availabl,e');
+    const embeddingDim = 38,4; // Assumed embedding dimension
+    const texture = this.device.createTexture({
       size: { width: textureSize, height: textureSize },
       format: 'rgba32float',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
-    }),;
+    });
     // Pack embeddings into RGBA32F texture (4 values per pixel)
-    const, textureData = new Float32Array(textureSize * textureSize * 4,);
-    for (let, nodeIndex =, 0; nodeInde,x < nodeCo,unt; nodeI,n,dex++) {
+    const textureData = new Float32Array(textureSize * textureSize * 4);
+    for (let nodeIndex =, 0; nodeInde,x < nodeCo,unt; nodeI,n,dex++) {
       const pixelIndex = nodeIndex * 4;
       const embeddingStart = nodeIndex * embeddingDim;
       // Pack first 4 embedding values into RGBA
@@ -384,8 +384,8 @@ export class TextureRankingMatrices {
     nodes,: FlatBufferNode[]
     priorityBoost,: numbe,r;
   ): Promise<RankingResult[]> {
-    const, result,s: RankingResu,lt,[], = [];
-    for (let, nodeIndex =, 0; nodeInde,x < no,des.le,ngth; node,I,ndex++) {
+    const result,s: RankingResu,lt,[], = [];
+    for (let nodeIndex =, 0; nodeInde,x < no,des.le,ngth; node,I,ndex++) {
       const node = nodes[nodeIndex];
       const scores = new Map<string, number>();
       let combinedScore = 0;
@@ -421,9 +421,9 @@ export class TextureRankingMatrices {
     queryEmbedding,: Float32Array
     maxResults,: numbe,r;
   ): Promise<RankingResult[]> {
-    console,.log('🔄 Using CPU fallback for ranking computation',);
-    const, result,s: RankingResu,lt,[], = [];
-    for (const, node, o,f binaryGraphD,ata.n,odes) {
+    console,.log('🔄 Using CPU fallback for ranking computation');
+    const result,s: RankingResu,lt,[], = [];
+    for (const node, o,f binaryGraphD,ata.n,odes) {
       if (!node.embedding) continue;
       // Simple cosine similarity computation
       let dotProduct = 0;
@@ -455,24 +455,24 @@ export class TextureRankingMatrices {
     return results
       .sort((a, b) => b.combinedScore - a.combinedScore)
       .map((result, index) => ({ ...result, rank: index + 1 })
-      .slice(0, maxResults),;
+      .slice(0, maxResults);
   }
   // Cache management with NES-style priority
   private generateCacheKey(binaryData,: BinaryGraphData, queryEmbeddin,g: Float32Arra,y): string {
     const dataHash = binaryData.checksum.toString(16);
     const queryHash = Array.from(queryEmbedding.slice(0, 8)
       .map(v => v.toFixed(3)
-      .join(','),;
+      .join(',');
     return `ranking_${dataHash}_${queryHash.length}`;
   }
   private addToCache(_key,: string, result,s: RankingResult[], priori,ty: numb,er): void {
     // NES-style priority eviction
-    if (this,.rankingCache.size >= this.MAX_CACHE_SIZ,E) {
-      const entries = Array.from(this.rankingCache.entries(),;
+    if (this.rankingCache.size >= this.MAX_CACHE_SIZ,E) {
+      const entries = Array.from(this.rankingCache.entries();
       entries.sort((a, b) => a[1].priority - b[1].priority);
       // Remove lowest priority entries
       const toRemove = entries.slice(0, 10);
-      toRemove.forEach(([key]) => this.rankingCache.delete(key),;
+      toRemove.forEach(([key]) => this.rankingCache.delete(key);
     }
     this.rankingCache.set(key, {
       result: results
@@ -602,7 +602,7 @@ export class TextureRankingMatrices {
    */;
   async destroy(),: Promise<void> {
     // Cleanup textures
-    for (const, texture, o,f t,his.rankingTextures.valu,es()) {
+    for (const texture, o,f t,his.rankingTextures.valu,es()) {
       texture.texture?.destroy();
       texture.gpuBuffer?.destroy();
     }
@@ -680,7 +680,7 @@ export class NESSGPUBinaryRankingPipeline {
         const binaryGraphData = this.createBinaryGraphFromDocuments(binaryDocuments);
         results = await this.textureRanking.computeRankingScores(
           binaryGraphData,
-          queryEmbedding,)
+          queryEmbedding)
           { dimensions, maxResults }
         );
       } else {
@@ -726,7 +726,7 @@ export class NESSGPUBinaryRankingPipeline {
       // Risk level adjustment (high risk = lower priority for safety)
       if (doc.riskLevel > 0.7) priority -= 20;
       // Clamp priority to NES range
-      priority = Math.max(0, Math.min(255, priority),;
+      priority = Math.max(0, Math.min(255, priority);
       // Store in appropriate NES memory bank
       const nesDocId = `legal_doc_${(doc as any).id || i}`;
       const bank = this.selectOptimalMemoryBank(doc, priority);
@@ -758,7 +758,7 @@ export class NESSGPUBinaryRankingPipeline {
       priority: doc.priority || 128,
       bankId: this.getBankIdForDocument(doc),
       metadata: doc
-    }),;
+    });
     return {
       nodes,
       edges: [], // Could add citation relationships
@@ -802,7 +802,7 @@ export class NESSGPUBinaryRankingPipeline {
   private async computeBinaryCPUFallback(
     documents: LegalDocumentBinaryLayout[]
     queryEmbedding: Float32Array
-    maxResults: number,;
+    maxResults: number;
   ): Promise<RankingResult[]> {
     console.log('🔄 Using binary CPU fallback (still faster than JSON)');
     const results: RankingResult[] = [];
@@ -839,7 +839,7 @@ export class NESSGPUBinaryRankingPipeline {
     return results
       .sort((a, b) => b.combinedScore - a.combinedScore)
       .map((result, index) => ({ ...result, rank: index + 1 })
-      .slice(0, maxResults),;
+      .slice(0, maxResults);
   }
   /**
    * Initialize GPU device for high-performance operations

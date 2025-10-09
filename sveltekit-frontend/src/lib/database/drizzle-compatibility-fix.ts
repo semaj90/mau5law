@@ -158,7 +158,7 @@ export const drizzleCompatibilityLayer: DrizzleCompatibilityLayer = {
 // ===== TYPE-SAFE RESULT ENHANCER =====
 export const enhanceResultWithTypes = <T extends { [key: string]: any },(
   result: any
-  typeMap: Record<keyof T, any>,;
+  typeMap: Record<keyof T, any>;
 ): T => {
   if (!result || typeof result !== 'object') {
     // Create object with default values from typeMap
@@ -207,7 +207,7 @@ export const entityEnhancers = {
     created_at: new Date().toISOString()
   }),
   // Cache entry entity enhancer
-  cacheEntry: (entry: any) => enhanceResultWithTypes(entry, {
+  cacheEntry: (entry: any) => enhanceResultWithTypes(entry {
     key: '',
     value: null
     createdAt: Date.now(),
@@ -227,7 +227,7 @@ export const entityEnhancers = {
     status: 'pending',
     started_at: null
     completed_at: null
-    error_message: null,;
+    error_message: null;
     metadata: { [key,: strin,g]: any }
   })
 }

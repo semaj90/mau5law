@@ -113,10 +113,10 @@ export class VectorService {
       const embedding = (result as { embedding?: any; id?: any; score?: any }).embedding;
       // Cache the result with 24-hour expiry - using modern Redis syntax
       if (typeof (this.redis as any).setex === 'function') {
-        await (this.redis as any).setex(cacheKey, 24 * 60 * 60, JSON.stringify(embedding),;
+        await (this.redis as any).setex(cacheKey, 24 * 60 * 60, JSON.stringify(embedding);
       } else {
         // Fallback: set then expire
-        await this.redis.set(cacheKey, JSON.stringify(embedding),;
+        await this.redis.set(cacheKey, JSON.stringify(embedding);
         await (this.redis as any).expire(cacheKey, 24 * 60 * 60);
       }
       // Also store in PostgreSQL for persistence
@@ -125,7 +125,7 @@ export class VectorService {
         .values({
           id: cuid2.createId(),
           textHash: Buffer.from(text).toString('base64'),
-          embedding: embedding,;
+          embedding: embedding;
           model: 'nomic-embed-text',
           createdAt: new Date()
         })
@@ -139,7 +139,7 @@ export class VectorService {
           .select()
           .from(embeddingCache)
           .where(eq(embeddingCache.textHash, Buffer.from(text).toString('base64'))
-          .limit(1),;
+          .limit(1);
         if (cached.length > 0) {
           return cached[0].embedding as number[];
         }
@@ -166,7 +166,7 @@ export class VectorService {
       const embedding = await this.generateEmbedding(content);
       // Store in Qdrant
       await this.qdrant.upsert(this.collectionName, {
-        wait: true,;
+        wait: true;
         points: [);
           {
             id: id
@@ -204,38 +204,38 @@ export class VectorService {
     }
   }
   // Semantic search with hybrid scoring
-  async search(query,: string, option,s: VectorSearchOptions = {,}): Promise<EmbeddingResult[]> {
-    const, { limit = 10, threshold = 0.7, filter = {}, includeMetadata = true } = option,s;
-    try, {
+  async search(query,: string, option,s: VectorSearchOptions = {}): Promise<EmbeddingResult[]> {
+    const { limit = 10, threshold = 0.7, filter = {}, includeMetadata = true } = option,s;
+    try {
       // Generate query embedding
-      const, queryEmbedding = await this.generateEmbedding(query,);
+      const queryEmbedding = await this.generateEmbedding(query);
       // Build Qdrant filter
-      const, qdrantFilter = this.buildQdrantFilter(filter,);
+      const qdrantFilter = this.buildQdrantFilter(filter);
       // Perform vector search
-      const, searchResult = await this.qdrant.search(this.collectionName, {
+      const searchResult = await this.qdrant.search(this.collectionName, {
         vector: queryEmbedding
         limit,
-        score_threshold: threshold,;
+        score_threshold: threshold;
         filter: qdrantFilter
         with_payload: true
-      }),;
+      });
       // Format results
-      const, result,s: EmbeddingResu,lt,[] = searchResult.map((point: any) => ({,
-        id: point.id.toString(),),
+      const result,s: EmbeddingResu,lt,[] = searchResult.map((point: any) => ({,
+        id: point.id.toString()),
         score,: point.score,
         metadata,: includeMetadata ? point.payload: { [ke,y: stri,ng]: any },
         content,: (point.payload?.content as string) || ''
-      },);
+      });
       // Cache search results
-      const, cacheKey = `search:${Buffer.from(query + JSON.stringify(options)).toString('base64')},`;
-      if (typeof (this.redis as any).setex === 'function',) {
-        await (this.redis as any).setex(cacheKey, 5 * 60, JSON.stringify(results),;
+      const cacheKey = `search:${Buffer.from(query + JSON.stringify(options)).toString('base64')},`;
+      if (typeof (this.redis as any).setex === 'function') {
+        await (this.redis as any).setex(cacheKey, 5 * 60, JSON.stringify(results);
       } else {
-        await this.redis.set(cacheKey, JSON.stringify(results),;
+        await this.redis.set(cacheKey, JSON.stringify(results);
         await (this.redis as any).expire(cacheKey, 5 * 60);
       }
       return results;
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Vector search failed:', error);
       throw error;
     }
@@ -244,34 +244,34 @@ export class VectorService {
   async hybridSearch(
     query,: strin,g;
     options: VectorSearchOptions & {
-      keywordWeight?: number,;
-      vectorWeight?: number,;
+      keywordWeight?: number;
+      vectorWeight?: number;
     }, = {}
   ): Promise<EmbeddingResult[]> {
-    const, {
+    const {
       limit = 10,
       threshold = 0.7,
       keywordWeight = 0.3,
       vectorWeight = 0.7,
       filter = {}
-    } = options,;
-    try, {
+    } = options;
+    try {
       // Perform vector search
-      const, vectorResults = await this.search(query, {
+      const vectorResults = await this.search(query, {
         ...options,
         limit: limit * 2
-      }),;
+      });
       // Perform keyword search in PostgreSQL
-      const, keywordResults = await this.keywordSearch(query, filter, limit * 2,);
+      const keywordResults = await this.keywordSearch(query, filter, limit * 2);
       // Combine and re-rank results
-      const, combinedResults = this.combineSearchResults(
+      const combinedResults = this.combineSearchResults(
         vectorResults,
         keywordResults,
         vectorWeight,
         keywordWeight
-      ),;
-      return, combinedResults.slice(0, limit,);
-    }, catch (error: any) {
+      );
+      return combinedResults.slice(0, limit);
+    } catch (error: any) {
       console.error('Hybrid search failed:', error);
       throw error;
     }
@@ -282,8 +282,8 @@ export class VectorService {
     filter,: { [ke,y: stri,ng]: any },
     limit,: numbe,r;
   ): Promise<EmbeddingResult[]> {
-    try, {
-      const, result,s: EmbeddingResu,lt,[], = [];
+    try {
+      const result,s: EmbeddingResu,lt,[], = [];
       // Search cases
       if (!filter,.type || filter.type === 'case,') {
         const caseResults = await db
@@ -303,7 +303,7 @@ export class VectorService {
             metadata: { type: 'case', title: c.title, case_id: c.id },
             content: `${c.title} ${c.description}`
           })
-        ),;
+        );
       }
       // Search evidence
       if (!filter.type || filter.type === 'evidence') {
@@ -324,7 +324,7 @@ export class VectorService {
             metadata: { type: 'evidence', title: e.title, case_id: e.caseId },
             content: `${e.title} ${e.description || ''} ${e.summary || ''}`
           })
-        ),;
+        );
       }
       // Search criminals
       if (!filter.type || filter.type === 'criminal') {
@@ -348,10 +348,10 @@ export class VectorService {
             },
             content: `${c.firstName} ${c.lastName} ${c.notes || ''}`
           })
-        ),;
+        );
       }
       return results;
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Keyword search failed:', error);
       return [];
     }
@@ -424,13 +424,13 @@ export class VectorService {
     documentId,: string
     options,: VectorSearchOptions = {}
   ),: Promise<EmbeddingResult[]> {
-    try, {
+    try {
       // Get the document - method compatibility issue
       // TODO: Verify correct Qdrant client API for retrieve method
       // const response = await this.qdrant.retrieve(this.collectionName, [documentId])
       // const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
       // Placeholder response for now
-      const, respons,e: { points: Array< } =>
+      const respons,e: { points: Array< } =>
         { points: [] }
       const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
       if (point.length === 0) {
@@ -451,15 +451,15 @@ export class VectorService {
       });
       // Filter out the original document
       const results = similar
-        .filter((p: any) => p.id.toString()) !== documentId,);
+        .filter((p: any) => p.id.toString()) !== documentId);
         .map((point: any) => ({,
-          id: point.id.toString(),),
+          id: point.id.toString()),
           score,: point.score,
           metadata,: point.payload,
           content,: (point.payload?.content as string) || ''
         });
       return results.slice(0, options.limit || 10);
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Failed to find similar documents:', error);
       throw error;
     }
@@ -468,14 +468,14 @@ export class VectorService {
   async bulkIndex(
     documents,: Array<;
   ): Promise<void> {
-    try, {
-      const, batchSize = 5,0;
-      for (let, i =, 0;, i < docume,nts.le,ngt,h; i += bat,chSize) {
+    try {
+      const batchSize = 5,0;
+      for (let i =, 0;, i < docume,nts.le,ngt,h; i += bat,chSize) {
         const batch = documents.slice(i, i + batchSize);
         // Generate embeddings for batch
         const embeddings = await Promise.all(
           batch.map((doc) => this.generateEmbedding(doc.content)
-        ),;
+        );
         // Prepare points for Qdrant
         const points = batch.map((doc, index) => ({
           id: doc.id,
@@ -484,7 +484,7 @@ export class VectorService {
             content: doc.content,
             ...doc.metadata
           }
-        }),;
+        });
         // Upsert batch to Qdrant
         await this.qdrant.upsert(this.collectionName, {
           wait: true
@@ -498,73 +498,73 @@ export class VectorService {
           metadata: doc.metadata,
           contentHash: Buffer.from(doc.content).toString('base64'),
           createdAt: new Date()
-        }),;
+        });
         await db.insert(vectorMetadata).values(metadataRecords).onConflictDoNothing();
         console.log(
           `Indexed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`
         );
       }
       console.log(`Bulk indexing completed: ${documents.length} documents`);
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Bulk indexing failed:', error);
       throw error;
     }
   }
   // Delete document
-  async deleteDocument(documentId,: string,): Promise<void> {
-    try, {
+  async deleteDocument(documentId,: string): Promise<void> {
+    try {
       // Delete from Qdrant
-      await, thi,s.qdrant.delete(this.collectionName, {
-        wait: true,;
+      await thi,s.qdrant.delete(this.collectionName, {
+        wait: true;
         points: [documentId]
-      }),;
+      });
       // Delete metadata from PostgreSQL
-      await, d,b.delete(vectorMetadata).where(eq(vectorMetadata.documentId, documentI,d);
-      console,.log(`Deleted document ${documentId}`,);
-    }, catch (error: any) {
+      await d,b.delete(vectorMetadata).where(eq(vectorMetadata.documentId, documentI,d);
+      console,.log(`Deleted document ${documentId}`);
+    } catch (error: any) {
       console.error('Failed to delete document:', error);
       throw error;
     }
   }
   // Health check
   async healthCheck(),: Promise<any> {
-    const, status = {
+    const status = {
       qdrant: false
-      redis: false,;
+      redis: false;
       collection: false
     }
-    try, {
+    try {
       // Check Qdrant
-      await, thi,s.qdrant.getCollections,();
+      await thi,s.qdrant.getCollections,();
       status,.qdrant = tru,e;
       // Check collection exists
-      const, collections = await this.qdrant.getCollections(,);
-      status,.collection = collections.collections.some((c: any) => c.name === this.collectionName,);
-    }, catch (error: any) {
+      const collections = await this.qdrant.getCollections();
+      status,.collection = collections.collections.some((c: any) => c.name === this.collectionName);
+    } catch (error: any) {
       console.error('Qdrant health check failed:', error);
     }
-    try, {
+    try {
       // Check Redis
-      if (typeof (this.redis as any).ping === 'function',) {
+      if (typeof (this.redis as any).ping === 'function') {
         await (this.redis as any).ping();
       } else {
         await this.redis.get('ping');
       }
       status.redis = true;
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Redis health check failed:', error);
     }
     return status;
   }
   // Get collection stats
   async getStats(),: Promise<any> {
-    try, {
-      const, info = await this.qdrant.getCollection(this.collectionName,);
-      return, {
+    try {
+      const info = await this.qdrant.getCollection(this.collectionName);
+      return {
         documentCount: info.points_count || 0,
         collectionInfo: info
       }
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Failed to get collection stats:', error);
       return {
         documentCount: 0,
@@ -574,9 +574,9 @@ export class VectorService {
   }
   // Close connections
   async close(),: Promise<void> {
-    try, {
-      await, this.redis.quit(,);
-    }, catch (error: any) {
+    try {
+      await this.redis.quit();
+    } catch (error: any) {
       console.error('Failed to close Redis connection:', error);
     }
   }

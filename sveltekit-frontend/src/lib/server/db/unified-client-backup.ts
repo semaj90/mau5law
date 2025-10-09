@@ -91,7 +91,7 @@ async function initialize(): Promise<void> {
 async function ensureQdrantCollection(
   collectionName: string
   vectorSize: number = 384,
-  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine',;
+  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine';
 ): Promise<void> {
   if (!qdrantClient) return;
   try {
@@ -157,7 +157,7 @@ async function hybridVectorSearch(
         results.push({
           id: row.id,
           score: row.similarity,
-          document: row as DocumentMetadata,;
+          document: row as DocumentMetadata;
           source: 'postgresql'
         });
       }
@@ -190,12 +190,12 @@ async function hybridVectorSearch(
           .select()
           .from(schema.documentMetadata)
           .where(sql`${schema.documentMetadata.id} = ANY(${qdrantIds})`);
-        const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]),;
+        const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
         for (const result of qdrantResults) {
           const document = docMap.get((result as { id?: any; score?: any }).id.toString());
           if (document) {
             results.push({
-              id: (result as { id?: any; score?: any }).id.toString(),),
+              id: (result as { id?: any; score?: any }).id.toString()),
               score,: (result as { id?: any; score?: any }).score,
               document,
               source,: 'qdrant'
@@ -203,7 +203,7 @@ async function hybridVectorSearch(
           }
         }
       }
-    }, catch (error) {
+    } catch (error) {
       console.error('Qdrant vector search error:', error);
     }
   }
@@ -217,9 +217,9 @@ async function hybridVectorSearch(
   }
   const finalResults = Array.from(uniqueResults.values()
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit),;
+    .slice(0, limit);
   return {
-    results: finalResults,;
+    results: finalResults;
     performance: {
       postgresqlTime,
       qdrantTime,
@@ -233,7 +233,7 @@ async function hybridVectorSearch(
 async function healthCheck(): Promise<any> {
   const health = {
     postgresql: false
-    qdrant: false,;
+    qdrant: false;
     pgvector: false
     overallHealth: false
   }

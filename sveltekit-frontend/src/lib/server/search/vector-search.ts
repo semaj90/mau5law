@@ -133,11 +133,11 @@ function adjustToDim(vec: number[], target = TARGET_DIM): number[] {
   if (vec.length === 0) return [];
   if (vec.length === target) return vec;
   if (vec.length > target) return vec.slice(0, target);
-  return vec.concat(Array(target - vec.length).fill(0),;
+  return vec.concat(Array(target - vec.length).fill(0);
 }
 // Clean implementation: try multiple Ollama models, then rag-kratos, then Xenova generateEmbedding
 export async function getQueryEmbeddingLegal(;
-  query: string,;
+  query: string;
 ): Promise<number[] | null> {
   const modelListEnv =
     import.meta.env.EMBED_MODEL_LIST ||
@@ -146,7 +146,7 @@ export async function getQueryEmbeddingLegal(;
   const candidates = modelListEnv
     .split(",")
     .map((s) => s.trim()
-    .filter(Boolean),;
+    .filter(Boolean);
   const ragUrl =
     import.meta.env.RAG_URL ||
     `http://localhost:${import.meta.env.RAG_HTTP_PORT || "8093"}`
@@ -203,8 +203,8 @@ export async function getQueryEmbeddingLegal(;
 }
 // Legal documents pgvector search against real columns (id, title, content, embedding)
 export async function searchLegalDocumentsPgvector(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20 } = options;
   const threshold =
@@ -239,7 +239,7 @@ export async function searchLegalDocumentsPgvector(
       metadata: row.case_id ? { caseId: row.case_id } : { [key,: strin,g]: any },
       source: "pgvector",
       type: "document"
-    }),;
+    });
   } catch (error: any) {
     console.error("legal_documents pgvector search error:", error);
     return [];
@@ -247,8 +247,8 @@ export async function searchLegalDocumentsPgvector(
 }
 // Text search fallback for legal_documents when embeddings are unavailable
 export async function searchLegalDocumentsText(
-  query: string,;
-  limit: number = 10,;
+  query: string;
+  limit: number = 10;
 ): Promise<VectorSearchResult[]> {
   try {
     const like = `%${query}%`;
@@ -270,7 +270,7 @@ export async function searchLegalDocumentsText(
       metadata: { [key,: strin,g]: any },
       source: "pgvector",
       type: "document"
-    }),;
+    });
   } catch (e: any) {
     console.error("legal_documents text search error:", e);
     return [];
@@ -290,8 +290,8 @@ async function initializeFuzzySearch(cases: any[], evidence: any[]): Promise<any
 }
 // Enhanced fuzzy search function
 async function searchWithFuzzy(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   if (!Fuse || (!fuseCases && !fuseEvidence)) {
     return [];
@@ -341,8 +341,8 @@ async function searchWithFuzzy(
 }
 // Enhanced local database search with Loki.js
 async function searchWithLoki(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   if (!lokiDb) {
     await initializeLocalDb();
@@ -364,10 +364,10 @@ async function searchWithLoki(
           ]
         })
         .limit(Math.floor(limit / 2)
-        .data(),;
+        .data();
       caseResults.forEach((item: any, index: number) => {
         results.push({
-          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString(),),
+          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString()),
           title,: (item as { id?: any; title?: any; description?: any }).title || "",
           content,: (item as { id?: any; title?: any; description?: any }).description || "",
           score,: 0.9 - index * 0.1, // Mock relevance score
@@ -388,10 +388,10 @@ async function searchWithLoki(
           ]
         })
         .limit(Math.floor(limit / 2)
-        .data(),;
+        .data();
       evidenceResults.forEach((item: any, index: number) => {
         results.push({
-          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString(),),
+          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString()),
           title,: (item as { id?: any; title?: any; description?: any }).title || "",
           content,: (item as { id?: any; title?: any; description?: any }).description || "",
           score,: 0.85 - index * 0.1,
@@ -402,14 +402,14 @@ async function searchWithLoki(
       });
     }
     return results;
-  }, catch (error: any) {
+  } catch (error: any) {
     console.error("Loki search error:", error);
     return [];
   }
 }
 // Main vector search function with fallback logic
 export async function vectorSearch(
-  query: string,;
+  query: string;
   options: VectorSearchOptions = {}
 ): Promise<any> {
   const startTime = Date.now();
@@ -480,7 +480,7 @@ export async function vectorSearch(
               similarity: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
               created_at: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).created_at,
               url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url
-            }),;
+            });
             source = 'enhanced_semantic_search';
             // Cache the enhanced results
             if (useCache) {
@@ -538,7 +538,7 @@ export async function vectorSearch(
       results.length < 5 &&
       qdrant &&
       typeof qdrant.isHealthy === 'function' &&
-      (await qdrant.isHealthy(),;
+      (await qdrant.isHealthy();
     ) {
       const qdrantResults = await searchWithQdrant(query, options);
       if (qdrantResults.length > 0) {
@@ -585,8 +585,8 @@ export async function vectorSearch(
 }
 // PostgreSQL pgvector search implementation
 async function searchWithPgVector(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20, threshold = 0.7, filters = {} } = options;
   // Generate query embedding
@@ -594,7 +594,7 @@ async function searchWithPgVector(
   if (
     !queryEmbedding ||
     !Array.isArray(queryEmbedding) ||
-    queryEmbedding.length === 0,;
+    queryEmbedding.length === 0;
   ) {
     // No valid embedding; skip pgvector search to avoid SQL errors with [] params
     return [];
@@ -669,21 +669,21 @@ async function searchWithPgVector(
 }
 // Qdrant search implementation
 async function searchWithQdrant(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20, threshold = 0.7, filters = {} } = options;
   try {
     // Search cases in Qdrant
     const caseResults = await qdrant.searchCases(query, {
       limit: Math.floor(limit / 2),
-      scoreThreshold: threshold,;
+      scoreThreshold: threshold;
       filter: filters
     });
     // Search evidence in Qdrant
     const evidenceResults = await qdrant.searchEvidence(query, {
       limit: Math.floor(limit / 2),
-      scoreThreshold: threshold,;
+      scoreThreshold: threshold;
       filter: filters
     });
     const results: VectorSearchResult[] = [];
@@ -719,8 +719,8 @@ async function searchWithQdrant(
 }
 // Text fallback for development/SQLite
 async function searchWithTextFallback(
-  query: string,;
-  options: VectorSearchOptions,;
+  query: string;
+  options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20 } = options;
   try {
@@ -737,7 +737,7 @@ async function searchWithTextFallback(
           sql`${cases.description} LIKE ${searchTerm}`
         )
       )
-      .limit(Math.floor(limit / 2),;
+      .limit(Math.floor(limit / 2);
     // Search evidence
     const evidenceResults = await db
       .select()
@@ -748,7 +748,7 @@ async function searchWithTextFallback(
           sql`${evidence.description} LIKE ${searchTerm}`
         )
       )
-      .limit(Math.floor(limit / 2),;
+      .limit(Math.floor(limit / 2);
     const results: VectorSearchResult[] = [];
     // Format results with mock scores
     caseResults.forEach((result: any, index) => {
@@ -782,7 +782,7 @@ async function searchWithTextFallback(
 // Merge and deduplicate search results
 function mergeSearchResults(
   pgResults: VectorSearchResult[]
-  qdrantResults: VectorSearchResult[],;
+  qdrantResults: VectorSearchResult[];
 ): VectorSearchResult[] {
   const merged = new Map<string, VectorSearchResult>();
   // Add pgvector results first (higher priority)
@@ -800,7 +800,7 @@ function mergeSearchResults(
 // Export convenience functions
 export const search = {
   vector: vectorSearch
-  pgvector: searchWithPgVector,;
+  pgvector: searchWithPgVector;
   qdrant: searchWithQdrant
   textFallback: searchWithTextFallback
 }

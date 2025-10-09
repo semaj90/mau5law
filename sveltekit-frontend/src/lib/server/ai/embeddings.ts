@@ -21,7 +21,7 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
   // Placeholder cache implementation
 }
 export async function generateEmbedding(
-  text: string,;
+  text: string;
   options: EmbeddingOptions = {},
 ): Promise<number[] | null> {
   const { model = "embeddinggemma", cache = true, maxTokens = 8000 } = options;
@@ -62,7 +62,7 @@ async function generateLocalEmbedding(text: string, model: string = "embeddingge
         "Content-Type": "application/json"
       },
       body: JSON.stringify({,
-        model: model,;
+        model: model;
         prompt: text
       })
     });
@@ -95,8 +95,8 @@ function quantizeEmbedding(embedding: number[], targetDimensions: number): numbe
     quantized[i] = embedding[sourceIndex];
   }
   // Normalize the quantized vector to preserve semantic magnitude
-  const magnitude = Math.sqrt(quantized.reduce((sum, val) => sum + val * val, 0),;
-  return quantized.map(val => val / (magnitude || 1),;
+  const magnitude = Math.sqrt(quantized.reduce((sum, val) => sum + val * val, 0);
+  return quantized.map(val => val / (magnitude || 1);
 }
 // Mock embedding generation for development/testing
 function generateMockEmbedding(dimensions: number = 384): number[] {
@@ -106,12 +106,12 @@ function generateMockEmbedding(dimensions: number = 384): number[] {
     embedding[i] = (Math.random() - 0.5) * 2;
   }
   // Normalize the vector
-  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0),;
+  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
   return embedding.map(val => val / magnitude);
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[],;
+  texts: string[];
   options: EmbeddingOptions = {},
 ): Promise<number[][]> {
   const { model = "embeddinggemma" } = options;
@@ -133,7 +133,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
         description: cases.description
       })
       .from(cases)
-      .where(eq(cases.id, caseId),;
+      .where(eq(cases.id, caseId);
     if (caseData.length === 0) {
       throw new Error("Case not found");
     }
@@ -177,7 +177,7 @@ export async function updateEvidenceEmbeddings(
         aiSummary: evidence.aiSummary
       })
       .from(evidence)
-      .where(eq(evidence.id, evidenceId),;
+      .where(eq(evidence.id, evidenceId);
     if (evidenceData.length === 0) {
       throw new Error("Evidence not found");
     }

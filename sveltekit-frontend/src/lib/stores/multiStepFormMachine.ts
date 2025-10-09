@@ -125,7 +125,7 @@ export const CaseFormSteps = {
     tags: true
   }),
   step4: CaseFormSchema.pick({,
-    aiSummary: true,;
+    aiSummary: true;
     metadata: true
   })
 }
@@ -156,7 +156,7 @@ export const EvidenceFormSteps = {
   step5: EvidenceFormSchema.pick({,
     aiAnalysis: true
     aiTags: true
-    aiSummary: true,;
+    aiSummary: true;
     summary: true
   })
 }
@@ -194,7 +194,7 @@ export const CriminalFormSteps = {
   }),
   step6: CriminalFormSchema.pick({,
     associatedCases: true
-    notes: true,;
+    notes: true;
     metadata: true
   })
 }
@@ -241,7 +241,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
         default:
           throw new Error(`Unknown form type: ${formType}`);
       }
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error("Database save error:", error);
       throw error;
     }
@@ -272,7 +272,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
           text: searchableContent
           metadata: {
             id,
-            type: formType,;
+            type: formType;
             timestamp: new Date().toISOString()
           }
         })
@@ -452,7 +452,7 @@ export const multiStepFormMachine = setup({
               Math.min(context.totalSteps, context.currentStep + 1),
             stepData: { [key,: strin,g]: any },
             errors: { [key,: strin,g]: any }
-          },)
+          })
         },
         {
           target: "editing",
@@ -598,7 +598,7 @@ export const multiStepFormMachine = setup({
 // Helper functions for Svelte components
 export function createMultiStepFormActor(
   userId: string
-  formType: "case" | "evidence" | "criminal" = "case",;
+  formType: "case" | "evidence" | "criminal" = "case";
 ) {
   const actor = createActor(multiStepFormMachine, {
     input: {

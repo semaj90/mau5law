@@ -36,7 +36,7 @@ export class WebAssemblyAccelerator {
         return (
           typeof WebAssembly.validate === "function" &&
           WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])
-        ),;
+        );
       } catch {
         return false;
       }
@@ -77,7 +77,7 @@ export class WebAssemblyAccelerator {
   async loadModule(
     wasmBytes: Uint8Array
     imports: { [key: string]: any } = {},
-    moduleId?: string,;
+    moduleId?: string;
   ): Promise<WasmModule> {
     try {
       const module = await WebAssembly.compile(wasmBytes.buffer as ArrayBuffer);
@@ -119,7 +119,7 @@ export class WebAssemblyAccelerator {
   async executeWasmFunction<T>(
     moduleId: string
     functionName: string
-    ...args: any[],;
+    ...args: any[];
   ): Promise<T> {
     const module = this.modules.get(moduleId);
     if (!module) {
@@ -222,7 +222,7 @@ export class WebAssemblyAccelerator {
         }
       }
       // Normalize
-      const norm = Math.sqrt((result as { set?: any; reduce?: any; length?: any }).reduce((sum, val) => sum + val * val, 0),;
+      const norm = Math.sqrt((result as { set?: any; reduce?: any; length?: any }).reduce((sum, val) => sum + val * val, 0);
       if (norm > 0) {
         for (let i = 0; i < (result as { set?: any; reduce?: any; length?: any }).length; i++) {
           result[i] /= norm;
@@ -267,7 +267,7 @@ export class WebAssemblyAccelerator {
    */
   private async compileWithAssemblyScript(
     sourceCode: string
-    options: WasmCompileOptions,;
+    options: WasmCompileOptions;
   ): Promise<Uint8Array> {
     // This would use AssemblyScript compiler
     // For now, return a placeholder WASM module
@@ -286,7 +286,7 @@ export class WebAssemblyAccelerator {
     // Load simdjson WASM module
     try {
       // removed unused response assignment
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer(),;
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       // Fallback to bundled version
       return this.getEmbeddedWasmModule("simdjson");
@@ -295,7 +295,7 @@ export class WebAssemblyAccelerator {
   private async loadVectorOpsModule(): Promise<Uint8Array> {
     try {
       // removed unused response assignment
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer(),;
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("vector-ops");
     }
@@ -303,7 +303,7 @@ export class WebAssemblyAccelerator {
   private async loadOCRProcessorModule(): Promise<Uint8Array> {
     try {
       // removed unused response assignment
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer(),;
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("ocr-processor");
     }
@@ -332,10 +332,10 @@ export class WebAssemblyAccelerator {
     return {}
   }
   private generateCacheKey(
-    source: string,;
-    options: WasmCompileOptions,;
+    source: string;
+    options: WasmCompileOptions;
   ): string {
-    const hash = this.simpleHash(source + JSON.stringify(options),;
+    const hash = this.simpleHash(source + JSON.stringify(options);
     return `wasm-compile-${hash}`;
   }
   private simpleHash(str: string): string {
@@ -361,8 +361,8 @@ export const wasmAccelerator = new WebAssemblyAccelerator();
 export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
     target: any
-    propertyKey: string,;
-    descriptor: PropertyDescriptor,;
+    propertyKey: string;
+    descriptor: PropertyDescriptor;
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any[]) {

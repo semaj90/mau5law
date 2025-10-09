@@ -259,10 +259,10 @@ class AIAssistantGlobalStore {
     return optimal;
   }
   private calculateBackendScore(
-    backend: Backend,;
+    backend: Backend;
     complexity: string
     hasLegalContext: boolean
-    requiresSpeed: boolean,;
+    requiresSpeed: boolean;
   ): number {
     let score = this.backendHealth[backend] * 0.4; // Base health (40%)
     // Complexity preferences
@@ -286,7 +286,7 @@ class AIAssistantGlobalStore {
     // Latency penalty
     const latencyPenalty = Math.min(this.metrics.backendLatency[backend] / 5000, 0.3);
     score -= latencyPenalty;
-    return Math.max(0, Math.min(1, score),;
+    return Math.max(0, Math.min(1, score);
   }
   // === Enhanced Acceleration Integration ===
   private async sendWithAcceleration(content: string, contextMessages: AIMessage[], backend: Backend) {
@@ -383,18 +383,18 @@ class AIAssistantGlobalStore {
       title: `Case Document ${i + 1}`,
       content: `Mock case content`,
       embedding: new Float32Array(768).map(() => Math.random()
-    }),;
+    });
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
       content: `Mock evidence content`,
       embedding: new Float32Array(768).map(() => Math.random()
-    }),;
+    });
     // Use accelerated processing
     const acceleratedResult = await enhanceAIResponse(
       content,
       mockCaseDocuments,
-      mockEvidenceDocuments,);
+      mockEvidenceDocuments);
       {
         maxResults: 10,
         similarityThreshold,: 0.3,
@@ -423,7 +423,7 @@ class AIAssistantGlobalStore {
     const relevantMessages = caseMessages.filter(msg => {
       const queryLower = query.toLowerCase();
       return msg.content.toLowerCase().includes(queryLower) ||
-             (legalContext && msg.content.toLowerCase().includes(legalContext.toLowerCase()),;
+             (legalContext && msg.content.toLowerCase().includes(legalContext.toLowerCase());
     }).slice(0, 5);
     // Combine and deduplicate
     const contextMessages = [...new Map(
@@ -434,8 +434,8 @@ class AIAssistantGlobalStore {
     this.contextCache.set(cacheKey, contextMessages);
     // Cleanup old cache entries
     if (this.contextCache.size > 100) {
-      const keys = Array.from(this.contextCache.keys(),;
-      keys.slice(0, 50).forEach(key => this.contextCache.delete(key),;
+      const keys = Array.from(this.contextCache.keys();
+      keys.slice(0, 50).forEach(key => this.contextCache.delete(key);
     }
     return contextMessages;
   }
@@ -546,7 +546,7 @@ class AIAssistantGlobalStore {
         config: this.config,
         metrics: this.metrics
       }
-      localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave),;
+      localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave);
     } catch (error) {
       console.error('Failed to persist AI assistant state:', error);
     }

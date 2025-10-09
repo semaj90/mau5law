@@ -26,7 +26,7 @@ export function pushAlert(alert: Omit<Alert, 'id' | 'timestamp'>) {
   return newAlert.id;
 }
 export function removeAlert(id: string) {
-  alerts.update(currentAlerts => currentAlerts.filter(alert => alert.id !== id),;
+  alerts.update(currentAlerts => currentAlerts.filter(alert => alert.id !== id);
 }
 export function clearAlerts() {
   alerts.set([]);

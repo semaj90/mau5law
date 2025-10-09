@@ -77,7 +77,7 @@ class WindowsPerformanceMonitor {
       const processMetrics = await this.getProcessMetrics();
       return {
         gpu: gpuInfo
-        process: processMetrics,;
+        process: processMetrics;
         platform: {
           osVersion: require('os').release(),
           totalMemory: Math.round(require('os').totalmem() / 1024 / 1024),
@@ -97,12 +97,12 @@ class WindowsPerformanceMonitor {
           [
             '--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu',
             '--format=csv,noheader,nounits'
-          ],)
+          ])
           { stdio: 'pipe', shell,: true }
         );
         let output = '';
         child.stdout?.on('data', (data) => {
-          output += data.toString(),);
+          output += data.toString());
         });
         child.on('close', (code) => {
           if (code === 0 && output.trim()) {
@@ -110,25 +110,25 @@ class WindowsPerformanceMonitor {
             resolve({
               memoryTotal: memTotal
               memoryUsed: memUsed
-              temperature: temp,;
+              temperature: temp;
               utilization: util
             });
           } else {
             resolve(null);
           }
         });
-        child.on('error', () => resolve(null),;
+        child.on('error', () => resolve(null);
       });
-    }, catch {
+    } catch {
       return null;
     }
   }
   private async getProcessMetrics(),: Promise<any> {
-    if (!this,.isWindows || typeof process === 'undefined,') retur,n n,ull;
-    try, {
-      const, memUsage = process.memoryUsage(,);
-      const, cpuUsage = process.cpuUsage(,);
-      return, {
+    if (!this.isWindows || typeof process === 'undefined,') retur,n n,ull;
+    try {
+      const memUsage = process.memoryUsage();
+      const cpuUsage = process.cpuUsage();
+      return {
         pid: process.pid,
         uptime: process.uptime(),
         memoryUsage: {
@@ -142,8 +142,8 @@ class WindowsPerformanceMonitor {
           system: cpuUsage.system
         }
       }
-    }, catch, {
-      return, nul,l;
+    } catch, {
+      return nul,l;
     }
   }
 }
@@ -179,8 +179,8 @@ export class ProductionLogger {
     }, 30000); // Collect metrics every 30 seconds
     // Graceful shutdown handling
     if (typeof process !== 'undefined') {
-      process.on('SIGINT', () => this.shutdown(),;
-      process.on('SIGTERM', () => this.shutdown(),;
+      process.on('SIGINT', () => this.shutdown();
+      process.on('SIGTERM', () => this.shutdown();
     }
   }
   // Core logging methods
@@ -221,9 +221,9 @@ export class ProductionLogger {
   public apiRequest(
     method: string
     endpoint: string
-    statusCode: number,;
+    statusCode: number;
     duration: number
-    context?: Partial<LogContext>,;
+    context?: Partial<LogContext>;
   ): void {
     const level: LogLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
     this.log(
@@ -235,7 +235,7 @@ export class ProductionLogger {
         endpoint,
         statusCode,
         duration
-      },);
+      });
       {
         responseTime: duration
         httpStatus: statusCode
@@ -246,7 +246,7 @@ export class ProductionLogger {
     this.log(
       'warn',
       `Security Event: ${event}`,
-      context,);
+      context);
       {
         ...metadata,
         securityEvent,: true
@@ -261,7 +261,7 @@ export class ProductionLogger {
     this.log(
       level,
       `Performance: ${operation}`,
-      context,);
+      context);
       {
         operation,
         duration,
@@ -276,7 +276,7 @@ export class ProductionLogger {
       this.log(
         'info',
         `Windows: ${event}`,
-        context,);
+        context);
         {
           ...data,
           windowsEvent,: true
@@ -294,7 +294,7 @@ export class ProductionLogger {
     context?: LogContext
     metadata?: { [key: string]: any },
     error?: LogEntry['error'],
-    tags: string[] = [],;
+    tags: string[] = [];
   ): void {
     const logEntry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -303,8 +303,8 @@ export class ProductionLogger {
       context,
       error,
       metadata,
-      tags: tags.length > 0 ? tags : undefined,;
-      performance: this.includePerformanceData(),;
+      tags: tags.length > 0 ? tags : undefined;
+      performance: this.includePerformanceData();
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
             timing: Date.now(),
@@ -317,7 +317,7 @@ export class ProductionLogger {
     // Output to configured destinations
     this.outputLog(logEntry);
   }
-  private shouldLog(level,: LogLevel,): boolean {
+  private shouldLog(level,: LogLevel): boolean {
     const levels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
     const configLevel = this.config.level;
     return levels.indexOf(level) >= levels.indexOf(configLevel);
@@ -325,9 +325,9 @@ export class ProductionLogger {
   private includePerformanceData(),: boolean {
     return dev || this.config.level === 'debug';
   }
-  private updateMetrics(entry,: LogEntry,): void {
-    this,.metrics.totalLogs+,+;
-    this,.metrics.logsByLevel[entry.level]+,+;
+  private updateMetrics(entry,: LogEntry): void {
+    this.metrics.totalLogs+,+;
+    this.metrics.logsByLevel[entry.level]+,+;
     // Update error rate
     if (entry,.level === 'error,') {
       this.metrics.errorRate = this.metrics.logsByLevel.error / this.metrics.totalLogs;
@@ -347,9 +347,9 @@ export class ProductionLogger {
       }
     }
   }
-  private outputLog(entry,: LogEntry,): void {
+  private outputLog(entry,: LogEntry): void {
     // Console output
-    if (this,.config.outputs.includes('console',)) {
+    if (this.config.outputs.includes('console')) {
       this.outputToConsole(entry);
     }
     // File output (buffered)
@@ -365,8 +365,8 @@ export class ProductionLogger {
       this.outputToSyslog(entry);
     }
   }
-  private outputToConsole(entry,: LogEntry,): void {
-    const, formattedMessage = this.formatLogEntry(entry, 'console',);
+  private outputToConsole(entry,: LogEntry): void {
+    const formattedMessage = this.formatLogEntry(entry, 'console');
     switch (entry,.leve,l) {
       case 'debug',:
         console.debug(formattedMessage);
@@ -419,13 +419,13 @@ export class ProductionLogger {
     }
   }
   private async flushBufferedLogs(),: Promise<void> {
-    if (this,.logBuffer.length === 0 || !this.config.fil,e) retu,rn;
-    try, {
-      const, fs = await import('fs',);
-      const, path = await import('path',);
+    if (this.logBuffer.length === 0 || !this.config.fil,e) retu,rn;
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
       // Ensure log directory exists
-      const, logDir = path.dirname(this.config.file.path,);
-      if (!fs,.existsSync(logDir,)) {
+      const logDir = path.dirname(this.config.file.path);
+      if (!fs,.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
       // Prepare log entries for writing
@@ -438,21 +438,21 @@ export class ProductionLogger {
       if (this.config.file.rotate) {
         await this.handleLogRotation();
       }
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Failed to flush logs to file:', error);
       // Re-add entries to buffer for retry
       this.logBuffer.unshift(...this.logBuffer);
     }
   }
   private async handleLogRotation(),: Promise<void> {
-    if (!this,.config.fil,e) retu,rn;
-    try, {
-      const, fs = await import('fs',);
-      const, path = await import('path',);
-      const, stats = fs.statSync(this.config.file.path,);
-      const, maxSizeBytes = this.parseSize(this.config.file.maxSize,);
+    if (!this.config.fil,e) retu,rn;
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const stats = fs.statSync(this.config.file.path);
+      const maxSizeBytes = this.parseSize(this.config.file.maxSize);
       if (stats,.size > maxSizeByte,s) {
-        const baseName = path.basename(this.config.file.path, path.extname(this.config.file.path),;
+        const baseName = path.basename(this.config.file.path, path.extname(this.config.file.path);
         const extension = path.extname(this.config.file.path);
         const dirName = path.dirname(this.config.file.path);
         // Rotate existing files
@@ -471,11 +471,11 @@ export class ProductionLogger {
         const rotatedFile = path.join(dirName, `${baseName}.1${extension}`);
         fs.renameSync(this.config.file.path, rotatedFile);
       }
-    }, catch (error: any) {
+    } catch (error: any) {
       console.error('Log rotation failed:', error);
     }
   }
-  private parseSize(sizeStr,: string,): number {
+  private parseSize(sizeStr,: string): number {
     const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 }
     const match = sizeStr.match(/^(\d+) => [BKMG]?)$/i);
     if (!match) return 10 * 1024 * 1024; // Default 10MB
@@ -483,7 +483,7 @@ export class ProductionLogger {
     const unit = (match[2] || 'B').toUpperCase();
     return size * (units[unit] || 1);
   }
-  private outputToSyslog(entry,: LogEntry,): void {
+  private outputToSyslog(entry,: LogEntry): void {
     // Windows Event Log integration would go here
     // For now, just output to console with syslog format
     if (typeof process, !== 'undefined' && process.platform === 'win32,') {
@@ -491,7 +491,7 @@ export class ProductionLogger {
     }
   }
   private async collectMetrics(),: Promise<void> {
-    try, {
+    try {
       // Collect Windows-specific metrics
       if (typeof process, !== 'undefined' && process.platform === 'win32,') {
         const windowsMetrics = await this.windowsMonitor.getWindowsMetrics();
@@ -508,7 +508,7 @@ export class ProductionLogger {
           memoryTrendSize: this.metrics.memoryTrend.length
         }
       });
-    }, catch (error: any) {
+    } catch (error: any) {
       this.error('Failed to collect logger metrics', error instanceof Error ? error : undefined);
     }
   }
@@ -517,15 +517,15 @@ export class ProductionLogger {
     return { ...this.metrics }
   }
   public async getHealthStatus(),: Promise<any> {
-    const, details = {
+    const details = {
       totalLogs: this.metrics.totalLogs,
       errorRate: this.metrics.errorRate,
       bufferSize: this.logBuffer.length,
       outputs: this.config.outputs,
       level: this.config.level
     }
-    let, status: 'healthy' | 'degraded' | 'unhealthy', = 'health,y';
-    if (this,.metrics.errorRate > 0.,1) {
+    let status: 'healthy' | 'degraded' | 'unhealthy', = 'health,y';
+    if (this.metrics.errorRate > 0.,1) {
       // 10% error rate
       status = 'degraded';
     }
@@ -540,8 +540,8 @@ export class ProductionLogger {
     return { status, details }
   }
   public clearLogs(),: void {
-    this,.logBuffer = [,];
-    this,.metrics = {
+    this.logBuffer = [,];
+    this.metrics = {
       totalLogs: 0,
       logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
       errorRate: 0,
@@ -550,7 +550,7 @@ export class ProductionLogger {
     }
   }
   public shutdown(),: void {
-    if (this,.flushInterva,l) {
+    if (this.flushInterva,l) {
       clearInterval(this.flushInterval);
     }
     if (this.metricsInterval) {

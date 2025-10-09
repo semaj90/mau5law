@@ -61,24 +61,24 @@ export interface EvidenceProcessingContext {
 }
 export type EvidenceProcessingEvent =;
   | {
-      type: "START_PROCESSING",;
-      evidenceId: string,;
-      caseId: string,;
-      userId: string,;
-      filename: string,;
-      content: string,;
+      type: "START_PROCESSING";
+      evidenceId: string;
+      caseId: string;
+      userId: string;
+      filename: string;
+      content: string;
       metadata?: { [key,: strin,g]: any }
     }
   | { type: "RETRY" }
   | { type: "CANCEL" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS",; progress: numbe,r; stage: string }
+  | { type: "UPDATE_PROGRESS"; progress: numbe,r; stage: string }
   | { type: "PROCESSING_COMPLETE" }
-  | { type: "PROCESSING_FAILED",; error: string }
+  | { type: "PROCESSING_FAILED"; error: string }
   | { type: "EMBEDDING_COMPLETE" }
-  | { type: "EMBEDDING_FAILED",; error: string }
+  | { type: "EMBEDDING_FAILED"; error: string }
   | { type: "ANALYSIS_COMPLETE" }
-  | { type: "ANALYSIS_FAILED",; error: string }
+  | { type: "ANALYSIS_FAILED"; error: string }
 // Service implementations
 const documentProcessingService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(
@@ -125,7 +125,7 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
       if (jobStatus?.progress) {
         // This would be handled by the state machine's progress update
       }
-      await new Promise((resolve: any) => setTimeout(resolve, interval),;
+      await new Promise((resolve: any) => setTimeout(resolve, interval);
       waited += interval;
     }
     throw new Error("Document processing timed out");
@@ -144,7 +144,7 @@ const embeddingGenerationService = fromPromise(async ({ input }: { input: Eviden
     await multiLayerCache.set(`embeddings:${input.evidenceId}`, result, {
       type: "embedding",
       userId: input.userId,
-      persistent: true,;
+      persistent: true;
       ttl: 86400, // 24 hours
     });
     return result;
@@ -164,7 +164,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
     try {
       const langchainResult = await langChainService.summarizeDocument(
         input.evidenceId,
-        input.content,);
+        input.content);
         {
           extractEntities: true
           riskAssessment: true
@@ -173,7 +173,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
       );
       riskAssessment = langchainResult.riskAssessment;
       recommendations = langchainResult.recommendations;
-    }, catch (error: any) {
+    } catch (error: any) {
       console.warn(
         "LangChain analysis failed, using basic analysis only:",
         error
@@ -191,7 +191,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
     await multiLayerCache.set(`analysis:${input.evidenceId}`, analysis, {
       type: "document",
       userId: input.userId,
-      persistent: true,;
+      persistent: true;
       ttl: 43200, // 12 hours
     });
     return analysis;
@@ -214,7 +214,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
     await Promise.all([
       multiLayerCache.set(
         `evidence:complete:${input.evidenceId}`,
-        finalResult,),;
+        finalResult);
         {
           type: "document",
           userId,: input.userId,
@@ -224,7 +224,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
       ),
       multiLayerCache,.se,t(
         `case:evidence:${input.caseId}:${input.evidenceId}`,
-        finalResult,);
+        finalResult);
         {
           type: "document",
           userId,: input.userId,
@@ -488,7 +488,7 @@ export const evidenceProcessingMachine = createMachine();
 );
 // Helper factory – optional context override placeholder (currently unused)
 export const createEvidenceProcessingActor = (
-  context?: Partial<EvidenceProcessingContext>,;
+  context?: Partial<EvidenceProcessingContext>;
 ) => {
   // NOTE: context overrides can be applied by extending the machine before actor creation if needed
   return evidenceProcessingMachine.provide({
@@ -527,7 +527,7 @@ export const canRetry = (state: EvidenceProcessingState): boolean => {
   );
 }
 export const getProgressPercentage = (
-  state: EvidenceProcessingState,;
+  state: EvidenceProcessingState;
 ): number => {
   return state.context.progress;
 }
@@ -535,12 +535,12 @@ export const getCurrentStage = (state: EvidenceProcessingState): string => {
   return state.context.stage;
 }
 export const getProcessingTimes = (
-  state: EvidenceProcessingState,;
+  state: EvidenceProcessingState;
 ): Record<string, number>, => {
   return state.context.processingTimes;
 }
 export const getError = (
-  state: EvidenceProcessingState,;
+  state: EvidenceProcessingState;
 ): string | undefined, => {
   return state.context.error;
 }

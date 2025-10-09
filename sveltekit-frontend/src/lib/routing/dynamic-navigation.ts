@@ -75,9 +75,9 @@ export class DynamicNavigation {
         this.updateCurrentPath($page.url.pathname, $page.params, $page.route.id ?? undefined);
       });
       // Handle browser back/forward
-      window.addEventListener('popstate', this.handlePopState.bind(this),;
+      window.addEventListener('popstate', this.handlePopState.bind(this);
       // Handle beforeunload for unsaved changes
-      window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this),;
+      window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this);
     }
   }
   /**
@@ -101,7 +101,7 @@ export class DynamicNavigation {
       }
     }
     // Set navigating state
-    this.state.update((state) => ({ ...state, isNavigating: true }),;
+    this.state.update((state) => ({ ...state, isNavigating: true });
     try {
       // Perform navigation
       await goto(path, {
@@ -118,7 +118,7 @@ export class DynamicNavigation {
       console.error('Navigation failed:', error);
       throw error;
     } finally {
-      this.state.update((state) => ({ ...state, isNavigating: false }),;
+      this.state.update((state) => ({ ...state, isNavigating: false });
     }
   }
   /**
@@ -208,8 +208,8 @@ export class DynamicNavigation {
    * Check if navigation is allowed
    */
   private async checkNavigationGuards(
-    to: string,;
-    from: string,;
+    to: string;
+    from: string;
   ): Promise<any> {
     for (const guard of this.guards.values()) {
       const allowed = await guard.condition(to, from);
@@ -233,9 +233,9 @@ export class DynamicNavigation {
    * Update current path and navigation state
    */
   private updateCurrentPath(
-    path: string,;
+    path: string;
     params: Record<string, string> = {},
-    routeId?: string,;
+    routeId?: string;
   ): void {
     this.state.update((state) => {
       const breadcrumbs = this.generateBreadcrumbs(path, routeId);
@@ -308,7 +308,7 @@ export class DynamicNavigation {
         label = segments[i]
           .split('-')
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1)
-          .join(' '),;
+          .join(' ');
       }
       breadcrumbs.push({
         label,
@@ -369,7 +369,7 @@ export class DynamicNavigation {
       navigationHistory: [],
       canGoBack: false
       canGoForward: false
-    }),;
+    });
     this.historyIndex = -1;
   }
   /**
@@ -415,7 +415,7 @@ export function navigate(path: string, options?: NavigationOptions): Promise<voi
 export function navigateToRoute(
   routeId: string
   params?: Record<string, string>,
-  options?: NavigationOptions,;
+  options?: NavigationOptions;
 ): Promise<void> {
   return dynamicNavigation.navigateToRoute(routeId, params, options);
 }

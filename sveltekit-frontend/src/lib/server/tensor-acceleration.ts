@@ -89,7 +89,7 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let tile_size = params.y;
-        if (index >= length) { return, }
+        if (index >= length) { return }
         // Tiled dot product computation
         var sum = 0.0;
         let tile_start = (index / tile_size) * tile_size;
@@ -111,7 +111,7 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let transform_type = params.y;
-        if (index >= length) { return, }
+        if (index >= length) { return }
         let value = input[index];
         var result_value = value;
         // L2 normalization
@@ -141,7 +141,7 @@ export class TensorAccelerator {
         let width = params.x;
         let height = params.y;
         let tile_size = params.w;
-        if (x >= width || y >= height) { return, }
+        if (x >= width || y >= height) { return }
         // Tiled feature extraction
         let tile_x = x / tile_size;
         let tile_y = y / tile_size;
@@ -250,7 +250,7 @@ export class TensorAccelerator {
       const computePass = commandEncoder.beginComputePass();
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(vectorA.length / 16),;
+      computePass.dispatchWorkgroups(Math.ceil(vectorA.length / 16);
       computePass.end();
       // Read results
       const stagingBuffer = this.device.createBuffer({
@@ -260,19 +260,19 @@ export class TensorAccelerator {
       commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, numTiles * 4);
       this.device.queue.submit([commandEncoder.finish()]);
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const results = new Float32Array(stagingBuffer.getMappedRange(),;
+      const results = new Float32Array(stagingBuffer.getMappedRange();
       // Sum partial results
       let similarity = 0;
       for (let i = 0; i < results.length; i++) {
         similarity += results[i];
       }
       // Normalize by vector magnitudes
-      const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0),;
-      const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0),;
+      const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0);
+      const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0);
       similarity = similarity / (magnitudeA * magnitudeB);
       // Cleanup
       stagingBuffer.unmap();
-      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy(),;
+      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
       const computeTime = performance.now() - startTime;
       return {
         similarity,
@@ -344,7 +344,7 @@ export class TensorAccelerator {
       const computePass = commandEncoder.beginComputePass();
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(embedding.length / 64),;
+      computePass.dispatchWorkgroups(Math.ceil(embedding.length / 64);
       computePass.end();
       // Read results
       const stagingBuffer = this.device.createBuffer({
@@ -354,9 +354,9 @@ export class TensorAccelerator {
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, embedding.byteLength);
       this.device.queue.submit([commandEncoder.finish()]);
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const transformed = new Float32Array(stagingBuffer.getMappedRange().slice(0),;
+      const transformed = new Float32Array(stagingBuffer.getMappedRange().slice(0);
       stagingBuffer.unmap();
-      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy(),;
+      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
       const computeTime = performance.now() - startTime;
       return {
         transformed,
@@ -380,7 +380,7 @@ export class TensorAccelerator {
   async analyzeImage(
     imageData: Uint32Array
     width: number
-    height: number,;
+    height: number;
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
     const startTime = performance.now();
@@ -440,14 +440,14 @@ export class TensorAccelerator {
       commandEncoder.copyBufferToBuffer(featureBuffer, 0, stagingBuffer, 0, numFeatures * 4);
       this.device.queue.submit([commandEncoder.finish()]);
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const features = new Float32Array(stagingBuffer.getMappedRange().slice(0),;
+      const features = new Float32Array(stagingBuffer.getMappedRange().slice(0);
       // Normalize features by pixels per tile
       const pixelsPerTile = tileSize * tileSize;
       for (let i = 0; i < features.length; i++) {
         features[i] /= pixelsPerTile;
       }
       stagingBuffer.unmap();
-      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy(),;
+      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
       const computeTime = performance.now() - startTime;
       return {
         features,
@@ -519,7 +519,7 @@ export async function acceleratedSimilarity(
     normA += vectorA[i] * vectorA[i];
     normB += vectorB[i] * vectorB[i];
   }
-  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   return {
     similarity,
     gpuMeta: {
@@ -543,7 +543,7 @@ export async function acceleratedTransform(
   // CPU fallback
   const transformed = new Float32Array(embedding.length);
   if (operation === 'normalize') {
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0),;
+    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
     for (let i = 0; i < embedding.length; i++) {
       transformed[i] = embedding[i] / norm;
     }

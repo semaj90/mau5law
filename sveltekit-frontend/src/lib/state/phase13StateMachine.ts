@@ -178,7 +178,7 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
   try {
     // Use copilot orchestrator for Context7 MCP integration
     const orchestrationResult = await copilotOrchestrator(
-      `Enhanced RAG query: ${query}`,);
+      `Enhanced RAG query: ${query}`);
       {
         useSemanticSearch: true
         useMemory: true
@@ -202,7 +202,7 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
       orchestrationData: orchestrationResult
       processingTime: Date.now()
     }
-  }, catch (error: any) {
+  } catch (error: any) {
     throw new Error(`Enhanced RAG query failed: ${error}`);
   }
 });
@@ -264,7 +264,7 @@ export const phase13StateMachine = setup({
           const gl = event.canvas.getContext("webgl2", {
             powerPreference: "high-performance",
             preserveDrawingBuffer: true
-            antialias: false,;
+            antialias: false;
             alpha: false
           }) as WebGL2RenderingContext;
           // Initialize WebGL state
@@ -617,7 +617,7 @@ export const phase13Derived = {
       return {
         overall: webglScore + apiScore + perfScore + latencyScore,
         webgl: webglScore
-        api: apiScore,;
+        api: apiScore;
         performance: perfScore + latencyScore
       }
     }
@@ -643,7 +643,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
   return {
     actor,
     machine: phase13StateMachine
-    stores: phase13Stores,;
+    stores: phase13Stores;
     derived: phase13Derived
     // Convenience methods
     startVertexStreaming: (vertices: Float32Array) => {

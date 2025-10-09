@@ -56,8 +56,8 @@ class EmbeddingCacheService {
    */
   async cacheEmbedding(
     text: string
-    embedding: number[],;
-    model: string = 'nomic-embed-text',;
+    embedding: number[];
+    model: string = 'nomic-embed-text';
   ): Promise<void> {
     if (!redisService.isHealthy() || !text || !embedding.length) return;
     try {
@@ -74,7 +74,7 @@ class EmbeddingCacheService {
       const compressed = this.compressEmbedding(embedding);
       const cacheData = {
         ...entry,
-        embedding: compressed,;
+        embedding: compressed;
         compressed: true
       }
       await redisService.set(
@@ -138,9 +138,9 @@ class EmbeddingCacheService {
    */
   async cacheQuery(
     query: string
-    results: any[],;
+    results: any[];
     metadata: any = {},
-    customTTL?: number,;
+    customTTL?: number;
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
     try {
@@ -209,7 +209,7 @@ class EmbeddingCacheService {
    * Batch cache multiple embeddings efficiently
    */
   async batchCacheEmbeddings(
-    items: Array<,;
+    items: Array<;
   ): Promise<void> {
     if (!redisService.isHealthy() || !items.length) return;
     try {
@@ -243,8 +243,8 @@ class EmbeddingCacheService {
    * Invalidate cache patterns
    */
   async invalidate(
-    pattern: string,;
-    type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all',;
+    pattern: string;
+    type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all';
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
     try {
@@ -331,7 +331,7 @@ class EmbeddingCacheService {
    */;
   private decompressEmbedding(compressed: string): number[] {
     try {
-      const data = Buffer.from(compressed, 'base64').toString(),);
+      const data = Buffer.from(compressed, 'base64').toString());
       return JSON.parse(data);
     } catch {
       return [];
@@ -359,7 +359,7 @@ class EmbeddingCacheService {
     else if (resultCount > 100) baseTTL *= 0.5;
     // Adjust based on query complexity
     const complexity = metadata.complexity || 1;
-    baseTTL = Math.floor(baseTTL * (2 - complexity),; // Higher complexity = shorter TTL
+    baseTTL = Math.floor(baseTTL * (2 - complexity); // Higher complexity = shorter TTL
     return Math.max(baseTTL, 60); // Minimum 1 minute
   }
   /**

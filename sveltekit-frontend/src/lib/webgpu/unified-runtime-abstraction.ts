@@ -179,7 +179,7 @@ export class UnifiedRuntimeAbstraction {
       const gl = canvas.getContext('webgl2', {
         powerPreference: 'high-performance',
         antialias: false
-        depth: false,;
+        depth: false;
         stencil: false
       });
       if (!gl) {
@@ -189,7 +189,7 @@ export class UnifiedRuntimeAbstraction {
       this.webgl2Context = gl;
       this.capabilities.webgl2 = {
         available: true
-        context: gl,;
+        context: gl;
         extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
       }
@@ -232,7 +232,7 @@ export class UnifiedRuntimeAbstraction {
         threadCount: navigator.hardwareConcurrency || 4
       }
       console.log('[Runtime] WASM SIMD initialized:', {
-        instructions: supportedInstructions,;
+        instructions: supportedInstructions;
         threads: this.capabilities.wasmSIMD.threadCount
       });
     } catch (error) {
@@ -469,7 +469,7 @@ export class UnifiedRuntimeAbstraction {
    */;
   private async executeFallback(request: InferenceRequest, failedRuntime: string): Promise<InferenceResponse> {
     const fallbackOrder = ['tensorrt', 'webgpu', 'webgl2', 'wasm']
-      .filter(runtime => runtime !== failedRuntime && this.isRuntimeAvailable(runtime),;
+      .filter(runtime => runtime !== failedRuntime && this.isRuntimeAvailable(runtime);
     for (const runtime of fallbackOrder) {
       try {
         console.log(`[Runtime] Trying fallback: ${runtime}`);
@@ -540,7 +540,7 @@ export class UnifiedRuntimeAbstraction {
         if (cached.data) {
           return {
             text: cached.data.text,
-            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined,;
+            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined;
             metadata: {
               ...cached.data.metadata,
               fromCHRROMCache: true

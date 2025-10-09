@@ -79,7 +79,7 @@ class DatabasePoolService {
    * Get Drizzle instance with connection pooling
    */
   async getDrizzle(
-    context: string = 'default',;
+    context: string = 'default';
   ): Promise<PostgresJsDatabase<Record<string, never>, {
     const poolKey = `drizzle:${context}`;
     if (this.drizzleInstances.has(poolKey)) {
@@ -97,7 +97,7 @@ class DatabasePoolService {
     sql: string
     params: any[] = [],
     context: string = 'default',
-    ttl: number = this.DEFAULT_CACHE_TTL,;
+    ttl: number = this.DEFAULT_CACHE_TTL;
   ): Promise<T> {
     const cacheKey = this.generateCacheKey(sql, params);
     // Check Redis cache first
@@ -271,5 +271,5 @@ class DatabasePoolService {
 // Export singleton instance
 export const dbPool = new DatabasePoolService();
 // Graceful shutdown
-process.on('SIGTERM', () => dbPool.close(),;
-process.on('SIGINT', () => dbPool.close(),;
+process.on('SIGTERM', () => dbPool.close();
+process.on('SIGINT', () => dbPool.close();

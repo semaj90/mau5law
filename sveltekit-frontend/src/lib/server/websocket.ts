@@ -19,7 +19,7 @@ export function setupWebSocketServer(server: any) {
     }
     // Add connection to case group
     if (!caseConnections.has(caseId)) {
-      caseConnections.set(caseId, new Set(),;
+      caseConnections.set(caseId, new Set();
     }
     caseConnections.get(caseId)!.add(ws);
     // Mock user info
@@ -30,12 +30,12 @@ export function setupWebSocketServer(server: any) {
     }
     // Add user to active users
     if (!activeUsers.has(caseId)) {
-      activeUsers.set(caseId, new Set(),;
+      activeUsers.set(caseId, new Set();
     }
     activeUsers.get(caseId)!.add(user);
     // Broadcast user joined
     broadcastToCase(
-      caseId,);
+      caseId);
       {
         type: "USER_JOINED",
         payload,: user
@@ -84,14 +84,14 @@ export function setupWebSocketServer(server: any) {
 function handleWebSocketMessage(
   caseId: string
   message: any
-  sender: any,;
+  sender: any;
   user: any
 ) {
   switch (message.type) {
     case "EVIDENCE_POSITION_UPDATE":
       // Broadcast position update to other users
       broadcastToCase(
-        caseId,);
+        caseId);
         {
           type: "EVIDENCE_POSITION_UPDATED",
           payload,: {
@@ -105,7 +105,7 @@ function handleWebSocketMessage(
     case "EVIDENCE_UPDATE":
       // Broadcast evidence changes
       broadcastToCase(
-        caseId,);
+        caseId);
         {
           type: "EVIDENCE_UPDATED",
           payload,: {
@@ -119,7 +119,7 @@ function handleWebSocketMessage(
     case "EVIDENCE_DELETE":
       // Broadcast evidence deletion
       broadcastToCase(
-        caseId,);
+        caseId);
         {
           type: "EVIDENCE_DELETED",
           payload,: {
@@ -133,7 +133,7 @@ function handleWebSocketMessage(
     case "USER_CURSOR":
       // Broadcast cursor movement for real-time collaboration
       broadcastToCase(
-        caseId,);
+        caseId);
         {
           type: "USER_CURSOR_UPDATED",
           payload,: {
@@ -146,7 +146,7 @@ function handleWebSocketMessage(
       break;
     case "PING":
       // Keep-alive ping
-      sender.send(JSON.stringify({ type: "PONG" }),;
+      sender.send(JSON.stringify({ type: "PONG" });
       break;
     default:
       console.log("Unknown message type:", message.type);
@@ -177,7 +177,7 @@ function broadcastToCase(
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
   caseId: string
-  type: string,;
+  type: string;
   payload: any
 ) {
   broadcastToCase(caseId, {

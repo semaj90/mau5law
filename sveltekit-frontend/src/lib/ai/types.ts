@@ -156,7 +156,7 @@ export class Context7AgentOrchestrator {
         default:
           throw new Error(`Unknown action: ${trigger.action}`);
       }
-      const completedTrigger = { ...trigger, status: 'done' as const, result };
+      const completedTrigger = { ...trigger, status: 'done' as const result };
       this.triggers.set(trigger.todoId, completedTrigger);
       // Log the completion
       this.logAuditEntry({

@@ -182,7 +182,7 @@ class ComponentTextureRegistry {
     }
     // Update memory bank usage
     const currentUsage = this.memoryBankUsage.get(textureSlot.memoryBank) || 0;
-    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size),;
+    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size);
     // Reset texture slot
     textureSlot.size = 0;
     textureSlot.lockCount = Math.max(0, textureSlot.lockCount - 1);

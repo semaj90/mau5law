@@ -76,7 +76,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
     parentPort!.postMessage(response);
   } catch (error) {
     const response: WorkerJobResult = {
-      success: false,;
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
@@ -133,7 +133,7 @@ async function handleEmbedding(payload: {
 }
 async function handleImageProcessing(payload: {
   buffer: number[];
-  operations: Array<any>,) {
+  operations: Array<any>) {
   const buffer = Buffer.from(payload.buffer);
   // Dynamic import Sharp
   const sharp = await import('sharp');
@@ -184,7 +184,7 @@ async function handleImageProcessing(payload: {
 // Error handling
 process.on('uncaughtException', (error) => {
   const response: WorkerJobResult = {
-    success: false,;
+    success: false;
     error: `Uncaught exception: ${error.message}`,
     processingTime: 0,
     workerId
@@ -194,7 +194,7 @@ process.on('uncaughtException', (error) => {
 });
 process.on('unhandledRejection', (reason) => {
   const response: WorkerJobResult = {
-    success: false,;
+    success: false;
     error: `Unhandled rejection: ${reason}`,
     processingTime: 0,
     workerId

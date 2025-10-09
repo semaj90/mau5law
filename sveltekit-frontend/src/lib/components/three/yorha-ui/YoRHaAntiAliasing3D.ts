@@ -466,7 +466,7 @@ class TAAManager {
         type: THREE.FloatType,
         minFilter: THREE.LinearFilter,
         magFilter: THREE.LinearFilter
-      }),;
+      });
     }
     // Initialize jitter pattern (Halton sequence)
     this.generateJitterPattern(samples);
@@ -475,7 +475,7 @@ class TAAManager {
     for (let i = 0; i < samples; i++) {
       const x = this.haltonSequence(i, 2) - 0.5;
       const y = this.haltonSequence(i, 3) - 0.5;
-      this.jitterPattern.push(new THREE.Vector2(x, y),;
+      this.jitterPattern.push(new THREE.Vector2(x, y);
     }
   }
   private haltonSequence(_index: number, base: number): number {
@@ -504,7 +504,7 @@ class TAAManager {
     return this.history[prevIndex];
   }
   public dispose(): void {
-    this.history.forEach(rt => rt.dispose(),;
+    this.history.forEach(rt => rt.dispose();
   }
 }
 // Enhanced YoRHa 3D Component with Anti-Aliasing

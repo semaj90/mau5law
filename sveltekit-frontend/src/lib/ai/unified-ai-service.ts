@@ -257,7 +257,7 @@ export class UnifiedAIService {
     }
     try {
       const langChainResponse: QueryResult = await langChainOllamaService.queryDocuments(
-        options.query,);
+        options.query);
         {
           maxResults: options.maxResults || 10,
           relevanceThreshold,: options.threshold || 0.7
@@ -287,7 +287,7 @@ export class UnifiedAIService {
     }
     try {
       const gpuResults: LegalDocument[] = await nesGPUIntegration.searchLegalDocumentsGPU(
-        options.query,);
+        options.query);
         {
           limit: options.maxResults || 20,
           threshold,: options.threshold || 0.7,

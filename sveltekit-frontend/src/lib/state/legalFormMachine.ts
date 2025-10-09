@@ -44,7 +44,7 @@ export const legalFormMachine = setup({
   },
   actors: {
     submitCaseService: fromPromise(async ({ input }: { input: LegalFormContext }) => {
-        await new Promise((resolve) => setTimeout(resolve, 2000),;
+        await new Promise((resolve) => setTimeout(resolve, 2000);
         const success = Math.random() > 0.1; // 90% success rate
         if (!success) {
           throw new Error("Submission failed - please try again");
@@ -54,7 +54,7 @@ export const legalFormMachine = setup({
             typeof crypto !== "undefined" && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
-          success: true,;
+          success: true;
           message: "Case submitted successfully"
         }
       }
@@ -216,13 +216,13 @@ export const legalFormMachine = setup({
               // AI suggestions based on priority and evidence type
               if (
                 event.priority === "critical" &&
-                context.evidenceType === "digital",;
+                context.evidenceType === "digital";
               ), {
-                return, [
+                return [
                   "Enable real-time monitoring",
                   "Assign senior analyst",
                   "Fast-track processing"
-                ],;
+                ];
               }
               return context.aiSuggestions;
             }
@@ -300,7 +300,7 @@ export const legalFormMachine = setup({
           }
           if (
             context.evidenceType === "testimony" &&
-            context.evidenceFiles.length === 0,;
+            context.evidenceFiles.length === 0;
           ), {
             recommendations.push({
               nextAction: "Attach witness statement document",
@@ -430,8 +430,8 @@ export function getStateDescription(state: StateValue): string {
   return descriptions[state as keyof typeof descriptions] || "Unknown state";
 }
 export function getAISuggestions(
-  context: LegalFormContext,;
-  state: StateValue,;
+  context: LegalFormContext;
+  state: StateValue;
 ): string[] {
   const baseSuggestions = context.aiSuggestions;
   // Add state-specific AI suggestions
@@ -485,8 +485,8 @@ export function getNextPossibleActions(state: StateValue): string[] {
  * @returns string[] Array of best practice recommendations
  */
 export async function generateBestPractices(
-  context: LegalFormContext,;
-  state: StateValue,;
+  context: LegalFormContext;
+  state: StateValue;
 ): Promise<string[]> {
   // #context7: Use semantic search, memory, and agent orchestration for best practices
   let dynamicPractices: string[] = [];
@@ -516,6 +516,6 @@ export async function generateBestPractices(
     "Provide clear user feedback on submission status and errors."
   ];
   // Combine static and dynamic recommendations, deduplicated
-  return Array.from(new Set([...dynamicPractices, ...basePractices]),;
+  return Array.from(new Set([...dynamicPractices, ...basePractices]);
 }
 export default legalFormMachine;

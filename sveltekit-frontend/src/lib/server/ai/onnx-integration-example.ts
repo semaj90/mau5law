@@ -32,7 +32,7 @@ export async function processLegalDocumentWithONNX(documentText: string) {
       `Provide a comprehensive legal analysis of this document:
 Document Type: Legal Document
 Text: ${documentText}
-Analysis:`,);
+Analysis:`);
       {
         model: 'gemma:legal',
         options,: { temperature: 0.3 }
@@ -83,7 +83,7 @@ export async function initializeONNXServices() {
 /**
  * Example: Batch process multiple legal documents efficiently
  */;
-export async function batchProcessLegalDocuments(documents: Array<,) {
+export async function batchProcessLegalDocuments(documents: Array<) {
   const results = [];
   const startTime = Date.now();
   console.log(`🔄 Batch processing ${documents.length} legal documents with ONNX...`);
@@ -114,7 +114,7 @@ export async function batchProcessLegalDocuments(documents: Array<,) {
     results,
     summary: {
       totalDocuments: documents.length,
-      successful: successCount,;
+      successful: successCount;
       failed: documents.length - successCount,
       totalTime,
       averageTimePerDocument: Math.round(totalTime / documents.length)
@@ -134,7 +134,7 @@ export async function performanceComparison(testText: string) {
     },
     ollama: {
       entityExtraction: null
-      classification: null,;
+      classification: null;
       embeddings: null
     }
   }
@@ -153,7 +153,7 @@ export async function performanceComparison(testText: string) {
     console.log('🦙 Testing Ollama Gemma:legal...');
     const ollamaStart = Date.now();
     const ollamaResponse = await ollamaService.generate(
-      `Extract entities, classify document type, and provide analysis for: ${testText}`,)
+      `Extract entities, classify document type, and provide analysis for: ${testText}`)
       { model: 'gemma:legal' }
     );
     const ollamaTotal = Date.now() - ollamaStart;

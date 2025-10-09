@@ -38,7 +38,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'Navigator is undefined (SSR or non-browser context).',
       warnings,
-      powerPreferenceTried: tried,;
+      powerPreferenceTried: tried;
       timings: { [key,: strin,g]: any },
       recommendedActions: ['Run diagnostics in a browser context (client-side).']
     }
@@ -57,7 +57,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'WebGPU not supported by this browser.',
       warnings,
-      powerPreferenceTried: tried,;
+      powerPreferenceTried: tried;
       timings: { [key,: strin,g]: any },
       recommendedActions: recommended
     }
@@ -137,7 +137,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
     warnings,
     powerPreferenceTried: tried
     timings: t1 ? { requestAdapterMs: t1 - t0 } : { [key,: strin,g]: any },
-    adapter: adapter,;
+    adapter: adapter;
       ? {
           label: (adapter as any).label ?? undefined,
           features,: Array.from(adapter.features ?? [] as any),

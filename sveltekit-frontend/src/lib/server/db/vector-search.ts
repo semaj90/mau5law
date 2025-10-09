@@ -125,8 +125,8 @@ export async function getVectorSearchStats() {
 export async function batchInsertEmbeddings(
   documents: Array<{,
     id,: strin,g;
-    content: string,;
-    embedding: number[],;
+    content: string;
+    embedding: number[];
     metadata?: { [key: string]: any }
   }>
 ) {
@@ -215,7 +215,7 @@ export async function vectorSearchHealthCheck() {
   } catch (error) {
     console.error('Vector health check failed:', error);
     return {
-      healthy: false,;
+      healthy: false;
       error: error instanceof Error ? error.message : 'Unknown error',
       vectorExtension: 'unknown',
       extensionLoaded: false

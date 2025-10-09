@@ -62,7 +62,7 @@ export function arrayToPgVector(embedding: number[]): string {
 export async function searchSimilarDocuments(
   queryEmbedding: number[]
   limit: number = 10,
-  similarityThreshold: number = 0.7,;
+  similarityThreshold: number = 0.7;
 ): Promise<SimilarityResult[]> {
   try {
     const vectorString = arrayToPgVector(queryEmbedding);
@@ -88,7 +88,7 @@ export async function searchSimilarDocuments(
         keywords: row.keywords,
         topics: row.topics
       }
-    }),;
+    });
   } catch (error) {
     console.error('Vector similarity search failed:', error);
     // Fallback to text search if vector search fails
@@ -117,7 +117,7 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
       keywords: doc.keywords,
       topics: doc.topics
     }
-  }),;
+  });
 }
 // Store AI query with embedding for future similarity search
 export async function storeAiQueryWithEmbedding(
@@ -154,8 +154,8 @@ export async function storeAiQueryWithEmbedding(
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
   textHash: string
-  embedding: number[],;
-  model: string = 'nomic-embed-text',;
+  embedding: number[];
+  model: string = 'nomic-embed-text';
 ): Promise<void> {
   try {
     await db.insert(embeddingCache).values({
@@ -179,7 +179,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
       // Parse pgvector format back to array
       const vectorString = result[0].embedding;
       if (typeof vectorString === 'string') {
-        return JSON.parse(vectorString.replace(/^\[|\]$/g, '').split(',').map(n => parseFloat(n)),;
+        return JSON.parse(vectorString.replace(/^\[|\]$/g, '').split(',').map(n => parseFloat(n));
       }
     }
     return null;
@@ -191,12 +191,12 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
   queryText: string
-  queryEmbedding: number[],;
-  limit: number = 10,;
+  queryEmbedding: number[];
+  limit: number = 10;
 ): Promise<SimilarityResult[]> {
   try {
     // First try vector search
-    const vectorResults = await searchSimilarDocuments(queryEmbedding, Math.ceil(limit * 0.7),;
+    const vectorResults = await searchSimilarDocuments(queryEmbedding, Math.ceil(limit * 0.7);
     // Then add text search results
     const textResults = await db.execute(sql`
       SELECT
@@ -221,7 +221,7 @@ export async function hybridSearch(
         topics: row.topics,
         searchType: 'text'
       }
-    }),;
+    });
     // Combine and deduplicate results
     const combinedResults = [...vectorResults, ...textSearchResults];
     const uniqueResults = Array.from(
@@ -288,7 +288,7 @@ export class GRPMOOrchestrator {
     query: string
     queryEmbedding: number[]
     userId: string
-    caseId?: string,;
+    caseId?: string;
   ): Promise<any> {
     const startTime = Date.now();
     const stages: ExtendedThinkingStage[] = [];
@@ -377,7 +377,7 @@ export class GRPMOOrchestrator {
       id: (item as { id?: any; similarity?: any; metadata?: any }).id.slice(0, 8),
       sim: Math.round((item as { id?: any; similarity?: any; metadata?: any }).similarity * 127),
       key: (item as { id?: any; similarity?: any; metadata?: any }).metadata?.keywords?.[0] || ''
-    }),;
+    });
     return JSON.stringify(compressed);
   }
   private hashString(str: string): string {
@@ -398,7 +398,7 @@ export class GRPMOOrchestrator {
       ...item,
       predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
       cacheLayer: 'warm'
-    }),;
+    });
   }
   private calculatePredictiveScore(item: SimilarityResult, queryEmbedding: number[]): number {
     // Simple cosine similarity enhancement
@@ -411,7 +411,7 @@ export class GRPMOOrchestrator {
       cacheLayer: 'cold',
       responseTime: Date.now(),
       extendedThinkingStages: []
-    }),;
+    });
   }
 }
 // PPO Reinforcement Learning Agent
@@ -436,7 +436,7 @@ class PPOAgent {
         policyGradient: currentPolicy
         valueFunction: this.valueNetwork.get(stateKey) || 0.5
       }
-    }),;
+    });
   }
   private generateStateKey(context: any): string {
     return `${context.userId}:${context.caseId || 'global'}:${context.query.length}`;

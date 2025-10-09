@@ -247,7 +247,7 @@ export const vectorSearch = {
           documentType: doc.type,
           confidenceLevel: doc.confidenceLevel
         }
-      }),;
+      });
       return results;
     } catch (error) {
       console.error('❌ Vector similarity search failed:', error);
@@ -265,7 +265,7 @@ export const vectorSearch = {
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         model: 'mock_ada_002',
         dimensions: 1536
-      }),;
+      });
       return results;
     } catch (error) {
       console.error('❌ Failed to get document embeddings:', error);
@@ -293,7 +293,7 @@ export const syncOrchestrator = {
     return {
       success: true
       totalRecords: totalSynced
-      breakdown: results,;
+      breakdown: results;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true
@@ -314,11 +314,11 @@ export const syncOrchestrator = {
     }
     try {
       // Mock health checks
-      await new Promise(resolve => setTimeout(resolve, 100),; // Simulate async check
+      await new Promise(resolve => setTimeout(resolve, 100); // Simulate async check
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
-        mockSystem: true,;
+        mockSystem: true;
         timestamp: new Date().toISOString()
       }
     } catch (error: any) {
@@ -327,7 +327,7 @@ export const syncOrchestrator = {
         status: 'error',
         checks,
         error: error.message,
-        mockSystem: true,;
+        mockSystem: true;
         timestamp: new Date().toISOString()
       }
     }

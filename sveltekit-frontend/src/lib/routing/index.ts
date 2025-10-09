@@ -213,7 +213,7 @@ export function createRoute(id: string, path: string): RouteBuilder {
 /**
  * Batch route registration utility
  */;
-export function registerRoutes(routes: Array<,): GeneratedRoute[] {
+export function registerRoutes(routes: Array<): GeneratedRoute[] {
   return routes.map(route => {
     const config = route.config || {}
     return registerDynamicRoute(route.id, route.path, config);
@@ -223,8 +223,8 @@ export function registerRoutes(routes: Array<,): GeneratedRoute[] {
  * Route pattern matching utility
  */
 export function matchRoute(
-  pattern: string,;
-  path: string,;
+  pattern: string;
+  path: string;
 ): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);

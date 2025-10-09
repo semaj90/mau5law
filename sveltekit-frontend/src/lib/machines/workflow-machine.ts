@@ -544,7 +544,7 @@ export class WorkflowOrchestrator {
     return this.activeWorkflows.size;
   }
   getAllWorkflows() {
-    return Array.from(this.activeWorkflows.entries(),;
+    return Array.from(this.activeWorkflows.entries();
   }
 }
 // Export singleton instance
