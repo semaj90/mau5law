@@ -67,7 +67,7 @@ class MarkovPredictorWithRedis {
         if (Object.keys(redisData).length > 0) {
           transitions = new Map();
           for (const [action, countStr] of Object.entries(redisData)) {
-            transitions.set(action, parseInt(countStr, 10),;
+            transitions.set(action, parseInt(countStr, 10);
           }
         }
       } catch (error) {
@@ -85,13 +85,13 @@ class MarkovPredictorWithRedis {
     return Array.from(transitions.entries()
       .map(([action, count]) => ({ action, p: count / total })
       .sort((a, b) => b.p - a.p)
-      .slice(0, topK),;
+      .slice(0, topK);
   }
   // Enhanced prediction with SIMD-accelerated similarity
   async predictNextWithSimilarity(
-    prev: Action,;
+    prev: Action;
     context: { docId?: string; query?: string },
-    topK = 3,;
+    topK = 3;
   ): Promise<PredictionResult[]> {
     const basepredictions = await this.predictNext(prev, topK * 2);
     if (!context.query && !context.docId) {
@@ -110,9 +110,9 @@ class MarkovPredictorWithRedis {
     return basepredictions.slice(0, topK);
   }
   private async enhancePredictionsWithSimilarity(
-    predictions: PredictionResult[],;
+    predictions: PredictionResult[];
     context: { docId?: string; query?: string },
-    topK: number,;
+    topK: number;
   ): Promise<PredictionResult[]> {
     // Boost predictions that match context
     const enhanced = predictions.map(pred => {
@@ -136,12 +136,12 @@ class MarkovPredictorWithRedis {
     const total = enhanced.reduce((sum, pred) => sum + pred.p, 0);
     return enhanced
       .slice(0, topK)
-      .map(pred => ({ ...pred, p: pred.p / total }),;
+      .map(pred => ({ ...pred, p: pred.p / total });
   }
   private calculateKeywordOverlap(query1: string, query2: string): number {
-    const words1 = new Set(query1.toLowerCase().split(/\s+/),;
-    const words2 = new Set(query2.toLowerCase().split(/\s+/),;
-    const intersection = new Set([...words1].filter(x => words2.has(x)),;
+    const words1 = new Set(query1.toLowerCase().split(/\s+/);
+    const words2 = new Set(query2.toLowerCase().split(/\s+/);
+    const intersection = new Set([...words1].filter(x => words2.has(x));
     const union = new Set([...words1, ...words2]);
     return union.size > 0 ? intersection.size / union.size: 0;
   }

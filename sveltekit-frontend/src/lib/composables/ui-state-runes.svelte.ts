@@ -55,7 +55,7 @@ export function useToast() {
     const now = Date.now();
     const duration = t.duration || 5000;
     return now - t.createdAt < duration;
-  }),;
+  });
   function addToast(type: Toast['type'], title: string, message?: string, duration?: number): string {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substring(2)}`;
     const toast: Toast = {
@@ -238,8 +238,8 @@ export function useAsync<T>(asyncFn: () => Promise<T>) {
 export function useSidebar(initialOpen = true) {
   let isOpen = $state(initialOpen);
   let activeSection = $state<string | null>(null);
-  let pinnedSections = $state<Set<string>(new Set(),;
-  let isPinned = $derived((section: string) => pinnedSections.has(section),;
+  let pinnedSections = $state<Set<string>(new Set();
+  let isPinned = $derived((section: string) => pinnedSections.has(section);
   function toggle(): void {
     isOpen = !isOpen;
   }
@@ -277,7 +277,7 @@ export function useSidebar(initialOpen = true) {
 export function useSearch<T>(
   items: T[]
   searchFields: (keyof T)[],
-  initialQuery = '',;
+  initialQuery = '';
 ) {
   let query = $state(initialQuery);
   let isSearching = $state(false);
@@ -308,7 +308,7 @@ export function useSearch<T>(
     query = '';
   }
   async function performAsyncSearch<R>(
-    asyncSearchFn: (query: string) => Promise<R[]>,;
+    asyncSearchFn: (query: string) => Promise<R[]>;
   ): Promise<R[]> {
     if (!query.trim()) return [];
     isSearching = true;

@@ -99,12 +99,12 @@ export class YoRHaUIExample {
   }
   private setupEventListeners(container: HTMLElement): void {
     // Mouse events
-    container.addEventListener('mousemove', this.onMouseMove.bind(this),;
-    container.addEventListener('click', this.onClick.bind(this),;
+    container.addEventListener('mousemove', this.onMouseMove.bind(this);
+    container.addEventListener('click', this.onClick.bind(this);
     // Keyboard events (for input components)
-    window.addEventListener('keydown', this.onKeyDown.bind(this),;
+    window.addEventListener('keydown', this.onKeyDown.bind(this);
     // Resize handling
-    window.addEventListener('resize', this.onWindowResize.bind(this),;
+    window.addEventListener('resize', this.onWindowResize.bind(this);
   }
   private createMainInterface(): void {
     // Create main layout container
@@ -448,7 +448,7 @@ export class YoRHaUIExample {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
   }
   private animate(): void {
-    this.animationId = requestAnimationFrame(this.animate.bind(this),;
+    this.animationId = requestAnimationFrame(this.animate.bind(this);
     // Update layouts
     this.mainLayout.updateLayout();
     // Update all components with custom animations
@@ -456,14 +456,14 @@ export class YoRHaUIExample {
       if (object instanceof YoRHaButton3D ||
           object instanceof YoRHaPanel3D ||
           object instanceof YoRHaInput3D ||;
-          object instanceof YoRHaModal3D,), {
+          object instanceof YoRHaModal3D), {
         // Components handle their own animations internally
       }
     });
     this.renderer.render(this.scene, this.camera);
   }
   public dispose(),: void {
-    if (this,.animationI,d) {
+    if (this.animationI,d) {
       cancelAnimationFrame(this.animationId);
     }
     // Dispose of all components
@@ -471,7 +471,7 @@ export class YoRHaUIExample {
       if (object instanceof YoRHaButton3D ||
           object instanceof YoRHaPanel3D ||
           object instanceof YoRHaInput3D ||;
-          object instanceof YoRHaModal3D,), {
+          object instanceof YoRHaModal3D), {
         object.dispose();
       }
     });

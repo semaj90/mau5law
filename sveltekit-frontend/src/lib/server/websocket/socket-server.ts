@@ -98,13 +98,13 @@ class RealTimeServer {
       case 'subscribe':
         const { channels } = message;
         if (Array.isArray(channels)) {
-          channels.forEach((channel) => client.subscriptions.add(channel),;
+          channels.forEach((channel) => client.subscriptions.add(channel);
         }
         break;
       case 'unsubscribe':
         const { channels: unsubChannels } = message;
         if (Array.isArray(unsubChannels)) {
-          unsubChannels.forEach((channel) => client.subscriptions.delete(channel),;
+          unsubChannels.forEach((channel) => client.subscriptions.delete(channel);
         }
         break;
       case 'publish':
@@ -123,7 +123,7 @@ class RealTimeServer {
     const payload = JSON.stringify({
       type: 'update',
       channel,
-      data: parsedMessage,;
+      data: parsedMessage;
       timestamp: new Date().toISOString()
     });
     this.clients.forEach((client, clientId) => {
@@ -153,12 +153,12 @@ class RealTimeServer {
   // Utility methods for specific updates
   public async publishEvidenceUpdate(
     evidenceId: string
-    action: string,;
+    action: string;
     data: any
-    userId?: string,;
+    userId?: string;
   ) {
     await this.publishUpdate(
-      'evidence_update',);
+      'evidence_update');
       {
         evidenceId,
         action, // 'created', 'updated', 'deleted'
@@ -169,7 +169,7 @@ class RealTimeServer {
   }
   public async publishCaseUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      'case_update',);
+      'case_update');
       {
         caseId,
         action,
@@ -180,7 +180,7 @@ class RealTimeServer {
   }
   public async publishCanvasUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      'canvas_update',);
+      'canvas_update');
       {
         caseId,
         action,

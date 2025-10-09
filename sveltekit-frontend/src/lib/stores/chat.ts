@@ -4,7 +4,7 @@ import { writable } from 'svelte/store';
 const initialState: ChatState = {
   messages: [],
   currentSession: null
-  isLoading: false,;
+  isLoading: false;
   error: null
 }
 function createChatStore() {
@@ -15,25 +15,25 @@ function createChatStore() {
     update,
     // Actions
     setMessages: (messages: ChatMessage[]) => {
-      update(state => ({ ...state, messages }),;
+      update(state => ({ ...state, messages });
     },
     addMessage: (message: ChatMessage) => {
       update(state => ({
         ...state,
         messages: [...state.messages, message]
-      }),;
+      });
     },
     setCurrentSession: (session: ChatSession | null) => {
-      update(state => ({ ...state, currentSession: session }),;
+      update(state => ({ ...state, currentSession: session });
     },
     setLoading: (isLoading: boolean) => {
-      update(state => ({ ...state, isLoading }),;
+      update(state => ({ ...state, isLoading });
     },
     setError: (error: string | null) => {
-      update(state => ({ ...state, error }),;
+      update(state => ({ ...state, error });
     },
     clearMessages: () => {
-      update(state => ({ ...state, messages: [] }),;
+      update(state => ({ ...state, messages: [] });
     },
     reset: () => {
       set(initialState);

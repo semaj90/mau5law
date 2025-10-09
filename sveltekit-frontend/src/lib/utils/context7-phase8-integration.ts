@@ -191,7 +191,7 @@ export class Context7Phase8Integrator {
     // Analyze current state for optimization opportunities
     if (
       query.currentState === "evidenceUpload" &&
-      query.xstateContext.evidenceFiles.length === 0,;
+      query.xstateContext.evidenceFiles.length === 0;
     ) {
       recommendations.push({
         type: "workflow-improvement",
@@ -298,7 +298,7 @@ const adaptiveLOD = {
    * Merge recommendations from different sources
    */
   private mergeRecommendations(
-    ...sources: Partial<Phase8Recommendation>[][],;
+    ...sources: Partial<Phase8Recommendation>[][];
   ): Phase8Recommendation[] {
     const merged: Phase8Recommendation[] = [];
     let idCounter = 1;
@@ -343,7 +343,7 @@ const adaptiveLOD = {
       originalScore: rec.aiConfidence / 100,
       rerankScore: 0,
       confidence: rec.aiConfidence
-    }),;
+    });
     const userContext: UserContext = {
       intent: "review",
       timeOfDay: this.getTimeOfDay(),

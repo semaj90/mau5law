@@ -87,7 +87,7 @@ export class PaletteAnimationController {
           this.transitions.set(`${key}[${index}]`, {
             from,
             to,
-            current: from,;
+            current: from;
             progress: 0
           });
         });
@@ -95,7 +95,7 @@ export class PaletteAnimationController {
         this.transitions.set(key, {
           from: fromColor
           to: toColor
-          current: fromColor,;
+          current: fromColor;
           progress: 0
         });
       }

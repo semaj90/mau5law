@@ -55,7 +55,7 @@ export class RabbitMQService {
     if (!this.channel) return;
     // Queue options that match existing configurations to prevent conflicts
     const queueOptions = {
-      durable: true,;
+      durable: true;
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
         'x-max-length': 10000     // Max 10k messages
@@ -68,7 +68,7 @@ export class RabbitMQService {
   async publish(queue: string, message: any): Promise<boolean> {
     if (!this.channel) return false;
     try {
-      const messageBuffer = Buffer.from(JSON.stringify(message),;
+      const messageBuffer = Buffer.from(JSON.stringify(message);
       return this.channel.sendToQueue(queue, messageBuffer, { persistent: true });
     } catch (error: any) {
       console.error('❌ Failed to publish message:', error);
@@ -80,7 +80,7 @@ export class RabbitMQService {
     await this.channel.consume(queue, async (msg) => {
       if (msg) {
         try {
-          const content = JSON.parse(msg.content.toString()),);
+          const content = JSON.parse(msg.content.toString()));
           await handler(content, msg);
           this.channel!.ack(msg);
         } catch (error: any) {
@@ -91,15 +91,15 @@ export class RabbitMQService {
     });
   }
   async healthCheck(),: Promise<any> {
-    try, {
-      if (!this,.isConnected || !this.connectio,n) {
+    try {
+      if (!this.isConnected || !this.connectio,n) {
         return { status: 'unhealthy', details: { error: 'Not connected' } }
       }
       return {
         status: 'healthy',
         details: { connected: this.isConnected, queues: Object.keys(QUEUES).length }
       }
-    }, catch (error: any) {
+    } catch (error: any) {
       return {
         status: 'unhealthy',
         details: { error: error instanceof Error ? error.message: 'Unknown error' }
@@ -107,10 +107,10 @@ export class RabbitMQService {
     }
   }
   async disconnect(),: Promise<void> {
-    if (this,.channe,l) await (th,is.channel as, any).clo,se();
-    if (this,.connectio,n) await (th,is.connection as, any).clo,se();
-    this,.isConnected = fals,e;
-    console,.log('👋 RabbitMQ disconnected',);
+    if (this.channe,l) await (th,is.channel as, any).clo,se();
+    if (this.connectio,n) await (th,is.connection as, any).clo,se();
+    this.isConnected = fals,e;
+    console,.log('👋 RabbitMQ disconnected');
   }
 }
 export const rabbitmqService = RabbitMQService.getInstance();

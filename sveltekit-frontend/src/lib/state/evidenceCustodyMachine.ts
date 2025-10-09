@@ -72,25 +72,25 @@ export interface EvidenceCustodyContext {
 }
 export type EvidenceCustodyEvent =;
   | {
-      type: "START_CUSTODY_WORKFLOW",;
-      evidenceId: string,;
-      caseId: string,;
-      userId: string,;
-      originalHash: string,;
+      type: "START_CUSTODY_WORKFLOW";
+      evidenceId: string;
+      caseId: string;
+      userId: string;
+      originalHash: string;
     }
   | { type: "VERIFY_INTEGRITY" }
   | { type: "START_AI_ANALYSIS" }
-  | { type: "JOIN_COLLABORATION",; userId: strin,g; role: string }
-  | { type: "LEAVE_COLLABORATION",; userId: string }
-  | { type: "ADD_ANNOTATION",; userId: strin,g; content: stri,ng; position: any }
-  | { type: "TRANSFER_CUSTODY",; newCustodian: strin,g; reason: string }
+  | { type: "JOIN_COLLABORATION"; userId: strin,g; role: string }
+  | { type: "LEAVE_COLLABORATION"; userId: string }
+  | { type: "ADD_ANNOTATION"; userId: strin,g; content: stri,ng; position: any }
+  | { type: "TRANSFER_CUSTODY"; newCustodian: strin,g; reason: string }
   | { type: "APPROVE_CUSTODY" }
-  | { type: "REJECT_CUSTODY",; reason: string }
+  | { type: "REJECT_CUSTODY"; reason: string }
   | { type: "FINALIZE_CUSTODY" }
   | { type: "RETRY" }
   | { type: "CANCEL_WORKFLOW" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS",; progress: numbe,r; stage: string }
+  | { type: "UPDATE_PROGRESS"; progress: numbe,r; stage: string }
 // Service implementations
 const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
@@ -101,7 +101,7 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
       .select()
       .from(evidence)
       .where(eq(evidence.id, input.evidenceId)
-      .limit(1),;
+      .limit(1);
     if (!evidenceRecord.length) {
       throw new Error(`Evidence not found: ${input.evidenceId}`);
     }
@@ -183,9 +183,9 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       integrityStatus = "compromised";
     } else if (
       verificationResults.aiAnalysisScore < 0.7 ||
-      !verificationResults.timestampValid,;
+      !verificationResults.timestampValid;
     ), {
-      integrityStatus = "requires-attention",;
+      integrityStatus = "requires-attention";
     }
     // Create verification event
     const custodyEvent = {
@@ -607,7 +607,7 @@ export const evidenceCustodyMachine = createMachine();
                 event.userId
               ],
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession,;
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       participants: [
@@ -631,7 +631,7 @@ export const evidenceCustodyMachine = createMachine();
                   (id: any) => id !== event.userId
                 ),
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession,;
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       participants:
@@ -645,7 +645,7 @@ export const evidenceCustodyMachine = createMachine();
           ADD_ANNOTATION: {
             actions: assign({
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession,;
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       annotations: [
@@ -823,8 +823,8 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
     createdAt: evidence.createdAt
   });
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data),;
-  const hashArray = Array.from(new Uint8Array(buffer),;
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
+  const hashArray = Array.from(new Uint8Array(buffer);
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 async function generateEventSignature(_event: {
@@ -836,8 +836,8 @@ async function generateEventSignature(_event: {
   // Implementation for digital signature generation
   const data = JSON.stringify(event);
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data),;
-  const hashArray = Array.from(new Uint8Array(buffer),;
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
+  const hashArray = Array.from(new Uint8Array(buffer);
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 async function verifyMetadataIntegrity(evidence: Evidence): Promise<boolean> {
@@ -858,13 +858,13 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
 }
 async function notifyCollaborators(
   sessionId: string
-  notification: any,;
+  notification: any;
 ): Promise<void> {
   // Implementation for WebSocket notifications
   console.log(`Notifying collaborators in session ${sessionId}:`, notification);
 }
 async function calculateSessionDuration(
-  session?: EvidenceCustodyContext["collaborationSession"],;
+  session?: EvidenceCustodyContext["collaborationSession"];
 ): Promise<number> {
   if (!session) return 0;
   // Implementation for calculating session duration
@@ -882,7 +882,7 @@ async function closeCollaborationSession(sessionId: string): Promise<void> {
 }
 // Export convenience functions
 export const createEvidenceCustodyActor = (
-  context?: Partial<EvidenceCustodyContext>,;
+  context?: Partial<EvidenceCustodyContext>;
 ) => {
   return evidenceCustodyMachine.provide({
     actions: {
@@ -912,7 +912,7 @@ export const getActiveCollaborators = (state: any): string[] => {
   return state.context.activeCollaborators;
 }
 export const getCustodyEvents = (
-  state: any,;
+  state: any;
 ): EvidenceCustodyContext["custodyEvents"], => {
   return state.context.custodyEvents;
 }

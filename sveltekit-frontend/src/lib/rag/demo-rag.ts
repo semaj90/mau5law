@@ -235,7 +235,7 @@ function generateEvidenceResponse(caseData: any, sources: any[]): string {
   const evidenceTypes = Array.from(new Set(sources.map(s => {
     const evidence = caseData.evidence.find((e: any) => e.id === s.id);
     return evidence?.type || 'unknown';
-  })),;
+  }));
   return `I've identified ${sources.length} pieces of relevant evidence in this case:
 ${sources.slice(0, 3).map((source, i) => {
     const evidence = caseData.evidence.find((e: any) => e.id === source.id);

@@ -491,7 +491,7 @@ const asyncStateMachine = createMachine();
                 stateVersion: 1,
                 lastUpdated: Date.now()
               }
-          updated.set(event.jobId, newState),;
+          updated.set(event.jobId, newState);
           return updated;
         }
       }),
@@ -531,7 +531,7 @@ const asyncStateMachine = createMachine();
                 lastUpdated: Date.now(),
                 ...event.state
               }
-          updated.set(event.queueName, newState),;
+          updated.set(event.queueName, newState);
           return updated;
         }
       }),
@@ -575,7 +575,7 @@ const asyncStateMachine = createMachine();
             timestamp: Date.now(),
             event: event.type,
             previousState: null, // Would store actual previous state
-            newState: event,;
+            newState: event;
             source: 'state_manager',
             stateVersion: 1
           }
@@ -686,8 +686,8 @@ export class AsyncRabbitMQStateManager {
   private svelteStores: Map<string, Writable<any>, = new Map();
   private enableN64Logging = false;
   // Svelte stores for reactive UI updates
-  public readonly jobStates: Readable<Map<string, JobState>,;
-  public readonly queueStates: Readable<Map<string, QueueState>,;
+  public readonly jobStates: Readable<Map<string, JobState>;
+  public readonly queueStates: Readable<Map<string, QueueState>;
   public readonly globalState: Readable<GlobalSystemState>;
   public readonly syncStatus: Readable<SyncStatus>;
   static getInstance(): AsyncRabbitMQStateManager {
@@ -699,8 +699,8 @@ export class AsyncRabbitMQStateManager {
   constructor() {
     this.stateService = interpret(asyncStateMachine);
     // Create reactive Svelte stores
-    const jobStatesStore = writable(new Map<string, JobState>(),;
-    const queueStatesStore = writable(new Map<string, QueueState>(),;
+    const jobStatesStore = writable(new Map<string, JobState>();
+    const queueStatesStore = writable(new Map<string, QueueState>();
     const globalStateStore = writable<GlobalSystemState>({
       totalJobs: 0,
       activeJobs: 0,

@@ -105,7 +105,7 @@ export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
  * Copy data between buffers with proper alignment
  */
 export function copyBufferAligned(
-  source: BufferLike,;
+  source: BufferLike;
   target: ArrayBuffer
   targetOffset = 0
 ): void {
@@ -238,7 +238,7 @@ export class WebGPUBufferUtils_Advanced {
    * Enhanced buffer preparation that considers quantization needs
    */
   static prepareForUploadAdvanced(
-    data: BufferLike,;
+    data: BufferLike;
     options: {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';

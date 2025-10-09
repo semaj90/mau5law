@@ -69,7 +69,7 @@ export class SOMGrid {
         const dy = y - by;
         const d2 = dx * dx + dy * dy;
         if (d2 <= r2) {
-          const g = Math.exp(-d2 / (2 * r2),;
+          const g = Math.exp(-d2 / (2 * r2);
           const i = this.idx(x, y);
           const w = this.neurons[i];
           for (let k = 0; k < this.dim; k++) {

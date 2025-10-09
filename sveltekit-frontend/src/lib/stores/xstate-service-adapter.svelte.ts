@@ -14,7 +14,7 @@ export interface MachineState<TContext = any> {
   hasTag: (tag: string) => boolean;
 }
 export interface MachineService<TContext = any> {
-  state: Readable<MachineState<TContext>,;
+  state: Readable<MachineState<TContext>;
   send: (_event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
@@ -123,7 +123,7 @@ export function createUploadService(machine: AnyStateMachine): MachineService<Up
  * Generic service creator for any machine
  */
 export function createMachineService<TContext = any>(
-  machine: AnyStateMachine,;
+  machine: AnyStateMachine;
 ): MachineService<TContext> {
   const adapter = new XStateServiceAdapter(machine);
   return adapter.createService();

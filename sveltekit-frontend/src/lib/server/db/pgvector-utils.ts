@@ -133,7 +133,7 @@ export function vectorToArray(vectorString: string): number[] {
   try {
     // Remove brackets and split by comma
     const cleaned = vectorString.replace(/^\[|\]$/g, '');
-    return cleaned.split(',').map(val => parseFloat(val.trim()),;
+    return cleaned.split(',').map(val => parseFloat(val.trim());
   } catch (error: any) {
     console.warn('Failed to parse vector string:', vectorString);
     return [];
@@ -166,7 +166,7 @@ export async function searchSimilarMessages(
       similarity: row.similarity,
       metadata: includeMetadata ? row.metadata: undefined
       documentType: 'chat_message'
-    }),;
+    });
   } catch (error: any) {
     console.error('Vector search for messages failed:', error);
     return [];
@@ -207,7 +207,7 @@ export async function searchSimilarEvidence(
         ...row.metadata
       } : undefined
       documentType: 'evidence'
-    }),;
+    });
   } catch (error: any) {
     console.error('Vector search for evidence failed:', error);
     return [];
@@ -251,17 +251,17 @@ export async function insertChatMessageWithEmbedding(messageData: {
 export async function updateEvidenceEmbeddings(
   evidenceId: string
   titleEmbedding?: number[]
-  contentEmbedding?: number[],;
+  contentEmbedding?: number[];
 ): Promise<boolean> {
   try {
     const updates: string[] = [];
     const params: any[] = [];
     if (titleEmbedding && titleEmbedding.length > 0) {
-      updates.push('title_embedding = $' + (params.length + 2),;
+      updates.push('title_embedding = $' + (params.length + 2);
       params.push(`${arrayToVector(titleEmbedding)}::vector`);
     }
     if (contentEmbedding && contentEmbedding.length > 0) {
-      updates.push('content_embedding = $' + (params.length + 2),;
+      updates.push('content_embedding = $' + (params.length + 2);
       params.push(`${arrayToVector(contentEmbedding)}::vector`);
     }
     if (updates.length === 0) {

@@ -90,10 +90,10 @@ except Exception as e:
       let output = '';
       let error = '';
       pythonProcess.stdout.on('data', (data) => {
-        output += data.toString(),);
+        output += data.toString());
       });
       pythonProcess.stderr.on('data', (data) => {
-        error += data.toString(),);
+        error += data.toString());
       });
       pythonProcess.on('close', (code) => {
         if (code === 0) {
@@ -111,7 +111,7 @@ except Exception as e:
         } else {
           reject(new Error(`TensorRT inference failed: ${error}`));
         }
-      },);
+      });
       // Timeout after 30 seconds
       setTimeout(() => {
         pythonProcess.kill();
@@ -119,8 +119,8 @@ except Exception as e:
       }, 30000);
     });
   }
-  private async pytorchInference(request,: LegalAIRequest,): Promise<LegalAIResponse> {
-    const, script = `
+  private async pytorchInference(request,: LegalAIRequest): Promise<LegalAIResponse> {
+    const script = `
 import sys
 import time
 import json
@@ -215,17 +215,17 @@ except Exception as e:
         "model_used": "Enhanced-Fallback"
     }
     print("PYTORCH_RESULT:", json.dumps(result))
-`,;
-    return, new Promise((resolve, reject) => {
+`;
+    return new Promise((resolve, reject) => {
       const pythonProcess = spawn('python3', ['-c', script]);
       let output = '';
       let error = '';
       pythonProcess.stdout.on('data', (data) => {
-        output += data.toString(),);
-      }),;
+        output += data.toString());
+      });
       pythonProcess,.stderr.on('data', (data) => {
-        error += data.toString(),);
-      },);
+        error += data.toString());
+      });
       pythonProcess.on('close', (code) => {
         const match = output.match(/PYTORCH_RESULT: (.+)/);
         if (match) {

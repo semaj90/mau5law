@@ -32,7 +32,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	let isLoading = $state(false);
 	let error = $state<string | null>(null);
 	// Streaming state
-	let loadedTextures = $state<Map<string, any>(new Map(),;
+	let loadedTextures = $state<Map<string, any>(new Map();
 	let streamingProgress = $state(0);
 	let currentDocument = $state<string | null>(null);
 	// Performance state
@@ -228,7 +228,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	// Derived states using $derived
 	const isReady = $derived(isInitialized && !isLoading && !error);
 	const hasTextures = $derived(loadedTextures.size > 0);
-	const cacheHitRate = $derived(stats.cacheHits / Math.max(1, stats.chunksLoaded),;
+	const cacheHitRate = $derived(stats.cacheHits / Math.max(1, stats.chunksLoaded);
 	const performanceLevel = $derived(stats.renderTime < 16.67 ? 'excellent' : stats.renderTime < 33.33 ? 'good' : 'poor');
 	// Status computed state
 	const status = $derived(() => {

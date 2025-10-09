@@ -271,7 +271,7 @@ export class WASMLLMService {
 		confidence += Math.min(metadata.caseReferences * 0.05, 0.15);
 		// Increase confidence for proper legal terminology
 		const legalTerms = ['plaintiff', 'defendant', 'precedent', 'statute', 'jurisdiction', 'liability', 'contract', 'tort'];
-		const foundTerms = legalTerms.filter(item => item.includes(term),;
+		const foundTerms = legalTerms.filter(item => item.includes(term);
 		confidence += Math.min(foundTerms.length * 0.02, 0.1);
 		return Math.min(Math.max(confidence, 0), 1);
 	}
@@ -281,7 +281,7 @@ export class WASMLLMService {
 		// Mock model data
 		const mockModelData = new ArrayBuffer(1024 * 1024); // 1MB mock model
 		// Simulate network delay
-		await new Promise(resolve => setTimeout(resolve, 1000),;
+		await new Promise(resolve => setTimeout(resolve, 1000);
 		return mockModelData;
 	}
 	private generateMockLegalResponse(prompt: string, maxTokens: number, temperature: number): string {
@@ -300,18 +300,18 @@ export class WASMLLMService {
 		while (response.split(' ').length < targetWords) {
 			response += ` Furthermore, the legal implications of this case extend to multiple jurisdictions and may establish important precedent for future litigation.`;
 		}
-		return response.substring(0, Math.floor(targetWords * 5),; // Approximate character limit
+		return response.substring(0, Math.floor(targetWords * 5); // Approximate character limit
 	}
 	private readStringFromMemory(memory: Uint8Array, ptr: number, length?: number): string {
 		if (length !== undefined) {
-			return new TextDecoder().decode(memory.slice(ptr, ptr + length),;
+			return new TextDecoder().decode(memory.slice(ptr, ptr + length);
 		}
 		// Read null-terminated string
 		let end = ptr;
 		while (memory[end] !== 0 && end < memory.length) {
 			end++;
 		}
-		return new TextDecoder().decode(memory.slice(ptr, end),;
+		return new TextDecoder().decode(memory.slice(ptr, end);
 	}
 	private writeStringToMemory(memory: Uint8Array, str: string, ptr?: number): number {
 		const encoded = new TextEncoder().encode(str);

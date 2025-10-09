@@ -169,7 +169,7 @@ export class ReinforcementLearningCache {
   // ===============================
   private updateTransitionMatrix(from: string, to: string): void {
     if (!this.componentTransitionMatrix.has(from)) {
-      this.componentTransitionMatrix.set(from, new Map(),;
+      this.componentTransitionMatrix.set(from, new Map();
     }
     const transitions = this.componentTransitionMatrix.get(from)!;
     const currentCount = transitions.get(to) || 0;
@@ -226,7 +226,7 @@ export class ReinforcementLearningCache {
   private calculateTriggerProbability(componentId: string): number {
     // Analyze historical usage patterns
     const baseProb = 0.3;
-    const usageHistory = this.userInteractionSequence.filter(action => action.includes(componentId),;
+    const usageHistory = this.userInteractionSequence.filter(action => action.includes(componentId);
     const recentUsage = usageHistory.length / Math.max(this.userInteractionSequence.length, 1);
     return Math.min(baseProb + (recentUsage * 0.7), 0.95);
   }
@@ -296,7 +296,7 @@ export class ReinforcementLearningCache {
     const data = JSON.stringify(component);
     const compressed = new TextEncoder().encode(data);
     // Simulate compression (in production would use actual compression algorithm)
-    return compressed.slice(0, Math.floor(compressed.length * 0.6),; // 40% compression
+    return compressed.slice(0, Math.floor(compressed.length * 0.6); // 40% compression
   }
   private predictComplexity(componentType: string): 'low' | 'medium' | 'high' {
     const complexityMap: Record<string, 'low' | 'medium' | 'high'> = {
@@ -334,10 +334,10 @@ export class ReinforcementLearningCache {
   private calculateSearchAccuracy(): number {
     if (this.assetSearchPatterns.size === 0) return 0;
     const totalSearches = Array.from(this.assetSearchPatterns.values()
-      .reduce((sum, pattern) => sum + pattern.usageFrequency, 0),;
+      .reduce((sum, pattern) => sum + pattern.usageFrequency, 0);
     const recentSearches = Array.from(this.assetSearchPatterns.values()
       .filter(pattern => Date.now() - pattern.lastAccessed < 300000) // 5 minutes
-      .length,;
+      .length;
     return totalSearches > 0 ? (recentSearches / totalSearches) : 0;
   }
   private calculateSequencePredictionAccuracy(): number {
@@ -352,7 +352,7 @@ export class ReinforcementLearningCache {
       const transitions = this.componentTransitionMatrix.get(prev);
       if (transitions) {
         const prediction = Array.from(transitions.entries()
-          .sort(([,a], [,b]) => b - a)[0]?.[0],;
+          .sort(([,a], [,b]) => b - a)[0]?.[0];
         if (prediction === current) correct++;
         total++;
       }
@@ -378,7 +378,7 @@ export class ReinforcementLearningCache {
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 }
 export const reinforcementLearningCache = new ReinforcementLearningCache();

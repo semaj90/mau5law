@@ -169,7 +169,7 @@ export class FullSystemOrchestrator {
         (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push('Phase 13 integration level below minimum threshold');
       }
       // Merge Phase 13 recommendations
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemHealth.recommendations.map(r => r.suggested),;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemHealth.recommendations.map(r => r.suggested);
     } catch (error: any) {
       console.error('❌ Phase 13 integration failed:', error);
       (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Phase 13 error: ${error.message}`);
@@ -293,7 +293,7 @@ export class FullSystemOrchestrator {
       category: category.category,
       attempted: true
       fixesApplied: 0,
-      success: false,;
+      success: false;
       details: []
     }
     try {

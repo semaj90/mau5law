@@ -55,7 +55,7 @@ export class FocusManager {
     // Add focus mode class to body
     document.body.classList.add("focus-mode-active");
     // Dispatch custom event
-    window.dispatchEvent(new CustomEvent("focusModeActivated"),;
+    window.dispatchEvent(new CustomEvent("focusModeActivated");
   }
   /**
    * Deactivate focus mode
@@ -78,7 +78,7 @@ export class FocusManager {
     // Remove focus mode class from body
     document.body.classList.remove("focus-mode-active");
     // Dispatch custom event
-    window.dispatchEvent(new CustomEvent("focusModeDeactivated"),;
+    window.dispatchEvent(new CustomEvent("focusModeDeactivated");
   }
   /**
    * Toggle focus mode
@@ -328,7 +328,7 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
 }
 // Keyboard shortcut integration
 export function setupFocusModeShortcut(
-  manager: FocusManager = globalFocusManager,;
+  manager: FocusManager = globalFocusManager;
 ) {
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "F10") {

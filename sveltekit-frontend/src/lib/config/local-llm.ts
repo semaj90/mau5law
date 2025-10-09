@@ -130,7 +130,7 @@ export async function startLocalServices(): Promise<any> {
       console.log("🚀 Starting Ollama service...");
       const ollamaProcess = spawn(
         LOCAL_LLM_PATHS.ollama.executable,
-        ["serve"],);
+        ["serve"]);
         {
           detached: true;
           stdio: "pipe"
@@ -142,7 +142,7 @@ export async function startLocalServices(): Promise<any> {
         url: LOCAL_LLM_PATHS.ollama.baseUrl
       });
       // Wait a moment for startup
-      await new Promise((resolve) => setTimeout(resolve, 3000),;
+      await new Promise((resolve) => setTimeout(resolve, 3000);
     } catch (error: any) {
       console.error("Failed to start Ollama:", error);
     }
@@ -191,7 +191,7 @@ SYSTEM """You are a specialized Legal AI Assistant powered by Gemma 3. You excel
           );
           resolve(LOCAL_LLM_PATHS.gemmaModel.name);
         } else {
-          reject(new Error(`Failed to load Gemma model, exit code: ${code}`),;
+          reject(new Error(`Failed to load Gemma model, exit code: ${code}`);
         }
       });
       importProcess.on("error", reject);

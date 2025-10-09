@@ -52,7 +52,7 @@ export async function createClient(opts?: any) {
         if (channels.length > 0) {
           await sub.subscribe(...channels);
         }
-        sub.on('message', (channel: string, message: string) => cb(channel, message),;
+        sub.on('message', (channel: string, message: string) => cb(channel, message);
         return sub;
       } else {
         // subscribe using the existing client instance

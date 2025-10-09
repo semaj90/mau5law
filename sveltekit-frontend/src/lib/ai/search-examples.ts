@@ -15,7 +15,7 @@ export class SearchExamples {
   async exampleDocumentSearch() {
     console.log('🔍 Running simple document search example...');
     const results = await this.server.searchDocuments(
-      'contract violation legal precedent',);
+      'contract violation legal precedent');
       {
         limit: 5,
         threshold,: 0.75,
@@ -37,7 +37,7 @@ export class SearchExamples {
   async exampleSemanticSearch() {
     console.log('🧠 Running semantic search example...');
     const result = await this.server.semanticSearch(
-      'intellectual property theft criminal charges',);
+      'intellectual property theft criminal charges');
       {
         collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
         limit,: 10,
@@ -66,7 +66,7 @@ export class SearchExamples {
   async exampleFullTextSearch() {
     console.log('📝 Running full-text search example...');
     const result = await this.server.fullTextSearch(
-      'fraud embezzlement financial crimes',);
+      'fraud embezzlement financial crimes');
       {
         collections: ['legal_documents', 'case_embeddings'],
         limit,: 8,
@@ -92,7 +92,7 @@ export class SearchExamples {
   async exampleHybridSearch() {
     console.log('🔀 Running hybrid search example...');
     const result = await this.server.hybridSearch(
-      'corporate merger acquisition antitrust',);
+      'corporate merger acquisition antitrust');
       {
         limit: 6,
         vectorWeight,: 0.4,    // 40% vector similarity
@@ -126,7 +126,7 @@ export class SearchExamples {
   async exampleAdvancedVectorSearch() {
     console.log('🚀 Running advanced vector search example...');
     const result = await this.server.advancedVectorSearch(
-      'employment discrimination workplace harassment',);
+      'employment discrimination workplace harassment');
       {
         k: 7,
         algorithm,: 'hybrid',

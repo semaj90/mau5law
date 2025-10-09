@@ -68,12 +68,12 @@ export class SIMDJSONParser {
    * Parse multiple legal documents with SIMD optimization
    */
   async parseDocumentsBatch(
-    jsonStrings: string[],;
+    jsonStrings: string[];
   ): Promise<ParsedLegalDocument[]> {
     const startTime = performance.now();
     if (!this.enableSIMD || jsonStrings.length < this.parallelChunks) {
       // Fallback to sequential parsing for small batches
-      return Promise.all(jsonStrings.map((json) => this.parseDocument(json)),;
+      return Promise.all(jsonStrings.map((json) => this.parseDocument(json));
     }
     // Split into chunks for parallel processing
     const chunks = this.createParallelChunks(jsonStrings);
@@ -117,7 +117,7 @@ export class SIMDJSONParser {
    */
   private async enhancedDocumentParsing(
     rawData: any
-    jsonString: string,;
+    jsonString: string;
   ): Promise<ParsedLegalDocument> {
     const document: ParsedLegalDocument = {
       id:
@@ -162,7 +162,7 @@ export class SIMDJSONParser {
    */
   private vectorizedChunking(
     textBytes: Uint8Array
-    originalText: string,;
+    originalText: string;
   ): TextChunk[] {
     const chunks: TextChunk[] = [];
     const chunkSize = 1000; // Characters per chunk
@@ -241,7 +241,7 @@ export class SIMDJSONParser {
         startIndex: position
         endIndex: end
         metadata: {
-          streamChunk: true,;
+          streamChunk: true;
           index: chunkIndex
         }
       });
@@ -249,7 +249,7 @@ export class SIMDJSONParser {
       chunkIndex++;
       // Yield control periodically for large documents
       if (chunkIndex % 100 === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 0),;
+        await new Promise((resolve) => setTimeout(resolve, 0);
       }
     }
     return chunks;
@@ -279,7 +279,7 @@ export class SIMDJSONParser {
     // Unrolled loop for better vectorization
     let i = 0;
     const len = embeddings.length;
-    for (i < len - 3; i += 4,) {
+    for (i < len - 3; i += 4) {
       const a = embeddings[i];
       const b = embeddings[i + 1];
       const c = embeddings[i + 2];
@@ -287,7 +287,7 @@ export class SIMDJSONParser {
       magnitudeSquared += a * a + b * b + c * c + d * d;
     }
     // Handle remaining elements
-    for (i < len; i++,) {
+    for (i < len; i++) {
       magnitudeSquared += embeddings[i] * embeddings[i];
     }
     const magnitude = Math.sqrt(magnitudeSquared);
@@ -306,7 +306,7 @@ export class SIMDJSONParser {
     const chunkSize = Math.ceil(jsonStrings.length / this.parallelChunks);
     const chunks: string[][] = [];
     for (let i = 0; i < jsonStrings.length; i += chunkSize) {
-      chunks.push(jsonStrings.slice(i, i + chunkSize),;
+      chunks.push(jsonStrings.slice(i, i + chunkSize);
     }
     return chunks;
   }
@@ -315,7 +315,7 @@ export class SIMDJSONParser {
    */
   private async processChunkSIMD(
     chunk: string[]
-    chunkIndex: number,;
+    chunkIndex: number;
   ): Promise<ParsedLegalDocument[]> {
     const results: ParsedLegalDocument[] = [];
     for (const jsonString of chunk) {
@@ -329,7 +329,7 @@ export class SIMDJSONParser {
    */
   private tolerantParse(
     jsonString: string
-    startTime: number,;
+    startTime: number;
   ): ParsedLegalDocument {
     console.warn("📝 Using tolerant parsing for malformed JSON");
     // Extract what we can using regex patterns

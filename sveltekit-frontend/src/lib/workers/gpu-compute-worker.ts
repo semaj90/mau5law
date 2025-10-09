@@ -181,7 +181,7 @@ class GPUWorker {
         });
         const resultSize = params.m * params.n * 4;
         const resultBuffer = this.gpuDevice.createBuffer({
-            size: resultSize,;
+            size: resultSize;
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
         });
         // Write data to buffers
@@ -208,13 +208,13 @@ class GPUWorker {
         passEncoder.end();
         // Read back result
         const readBuffer = this.gpuDevice.createBuffer({
-            size: resultSize,;
+            size: resultSize;
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
         });
         commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, resultSize);
         this.gpuDevice.queue.submit([commandEncoder.finish()]);
         await readBuffer.mapAsync(GPUMapMode.READ);
-        const result = new Float32Array(readBuffer.getMappedRange().slice(0),;
+        const result = new Float32Array(readBuffer.getMappedRange().slice(0);
         readBuffer.unmap();
         return result;
     }
@@ -291,7 +291,7 @@ class GPUWorker {
         if (this.vertexCache.size > 100) {
             // Remove least recently used
             const sorted = Array.from(this.vertexCache.entries()
-                .sort((a, b) => a[1].score - b[1].score),;
+                .sort((a, b) => a[1].score - b[1].score);
             this.vertexCache.delete(sorted[0][0]);
         }
     }

@@ -3,9 +3,9 @@
  * Prevents excessive function calls during rapid user input
  */
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T,;
+  func: T;
   wait: number
-  immediate?: boolean,;
+  immediate?: boolean;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
   return function executedFunction(this: any, ...args: Parameters<T>) {
@@ -23,8 +23,8 @@ export function debounce<T extends (...args: any[]) => any>(,
  * Throttle utility - limits function calls to once per specified interval
  */
 export function throttle<T extends (...args: any[]) => any>(,
-  func: T,;
-  limit: number,;
+  func: T;
+  limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
   return function executedFunction(this: any, ...args: Parameters<T>) {
@@ -39,7 +39,7 @@ export function throttle<T extends (...args: any[]) => any>(,
  * RequestAnimationFrame-based throttle for smooth animations
  */
 export function rafThrottle<T extends (...args: any[]) => any>(,
-  func: T,;
+  func: T;
 ): (...args: Parameters<T>) => void {
   let rafId: number | null = null;
   return function executedFunction(this: any, ...args: Parameters<T>) {

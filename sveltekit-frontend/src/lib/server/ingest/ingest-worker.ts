@@ -125,7 +125,7 @@ parentPort.on("message", async (job: Job) => {
         // Embed frames and pool embeddings
         const embeddings: number[][] = [];
         for (const frameBuffer of videoResult.frames) {
-          const frameResult = await embedImageBuffer(Buffer.from(frameBuffer),;
+          const frameResult = await embedImageBuffer(Buffer.from(frameBuffer);
           if (frameResult.success) {
             embeddings.push(frameResult.embedding!);
           }

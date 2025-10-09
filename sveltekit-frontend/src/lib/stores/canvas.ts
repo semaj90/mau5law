@@ -52,7 +52,7 @@ export const aiStore = writable({
   selectedVibe: "professional",
   prompt: "",
   response: "",
-  isGenerating: false,;
+  isGenerating: false;
   history: [] as any[]
 });
 // File upload state

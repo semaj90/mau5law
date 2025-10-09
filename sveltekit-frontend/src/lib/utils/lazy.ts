@@ -7,7 +7,7 @@ type LazyComponent<T extends Record<string, unknown> = {}> = {
   default: ComponentType<T>;
 }
 export function lazy<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>,;
+  importFn: () => Promise<LazyComponent<T>;
 ): ComponentType<T> {
   let component: ComponentType<T> | null = null;
   let loadPromise: Promise<ComponentType<T> | null, = null;
@@ -36,7 +36,7 @@ export function lazy<T extends Record<string, unknown> = {}>(
  * Preload a component for better UX
  */
 export function preload<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>,;
+  importFn: () => Promise<LazyComponent<T>;
 ): Promise<ComponentType<T>, {
   return importFn().then(module => module.default);
 }

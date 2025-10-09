@@ -77,7 +77,7 @@ export class WebGPUPolyfill {
         }
       }
       console.log('✅ WebGL2 fallback initialized');
-      console.log('Renderer:', this.webglFallback.getParameter(this.webglFallback.RENDERER),;
+      console.log('Renderer:', this.webglFallback.getParameter(this.webglFallback.RENDERER);
       return true;
     } catch (error: any) {
       console.error('WebGL initialization failed:', error);
@@ -132,7 +132,7 @@ export class WebGPUPolyfill {
   }
   private async computeEmbeddingWebGPU(
     inputVector: number[]
-    dimensions: number,;
+    dimensions: number;
   ): Promise<number[]> {
     if (!this.device) throw new Error('WebGPU device not available');
     // Get or create compute shader
@@ -156,12 +156,12 @@ export class WebGPUPolyfill {
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
     // Write input data
-    this.queue!.writeBuffer(inputBuffer, 0, new Float32Array(inputVector),;
+    this.queue!.writeBuffer(inputBuffer, 0, new Float32Array(inputVector);
     // Create bind group
     const bindGroup = this.device.createBindGroup({
       layout: shader.bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: inputBuffer } },)
+        { binding: 0, resource: { buffer: inputBuffer } })
         { binding: 1, resource,: { buffer: outputBuffer } }
       ]
     });
@@ -177,7 +177,7 @@ export class WebGPUPolyfill {
     this.queue!.submit([commandEncoder.finish()]);
     // Read result
     await resultBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(resultBuffer.getMappedRange(),;
+    const result = new Float32Array(resultBuffer.getMappedRange();
     const output = Array.from(result);
     resultBuffer.unmap();
     // Cleanup buffers
@@ -186,9 +186,9 @@ export class WebGPUPolyfill {
     resultBuffer.destroy();
     return output;
   }
-  private async createEmbeddingShader(dimensions,: number,): Promise<WebGPUComputeShader> {
-    if (!this,.devic,e) thro,w new Error('WebGPU device not availabl,e');
-    const, shaderCode = `;
+  private async createEmbeddingShader(dimensions,: number): Promise<WebGPUComputeShader> {
+    if (!this.devic,e) thro,w new Error('WebGPU device not availabl,e');
+    const shaderCode = `;
 			struct VectorData {
 				values: array<f32>
 			}
@@ -211,17 +211,17 @@ export class WebGPUPolyfill {
 				// Apply activation function and normalization
 				output_vector.values[index] = tanh(sum * 0.1) * sqrt(f32(dimensions);
 			}
-		`,;
-    const, module = this.device.createShaderModule({
+		`;
+    const module = this.device.createShaderModule({
       code: shaderCode
-    }),;
-    const, bindGroupLayout = this.device.createBindGroupLayout({
+    });
+    const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
           buffer: { type: 'read-only-storage' }
-        },)>;
+        })>;
         {
           binding: 1,
           visibility,: GPUShaderStage.COMPUTE,
@@ -240,15 +240,15 @@ export class WebGPUPolyfill {
     });
     return { module, pipeline, bindGroupLayout }
   }
-  private async createSimilarityShader(vectorLength,: number,): Promise<WebGPUComputeShader> {
-    if (!this,.devic,e) thro,w new Error('WebGPU device not availabl,e');
-    const, shaderId = `similarity_${vectorLength},`;
+  private async createSimilarityShader(vectorLength,: number): Promise<WebGPUComputeShader> {
+    if (!this.devic,e) thro,w new Error('WebGPU device not availabl,e');
+    const shaderId = `similarity_${vectorLength},`;
     // Try to get cached shader first
-    try, {
-      const, cached = await shaderCacheManager.getShader(shaderId, '', {
+    try {
+      const cached = await shaderCacheManager.getShader(shaderId, '', {
         type: 'compute',
         entryPoint: 'main'
-      }),;
+      });
       if (cached, && cached.shaderModule && cached.pipeline && cached.bindGroupLayou,t) {
         console.log(`🎯 Using cached similarity shader: ${shaderId}`);
         return {
@@ -257,7 +257,7 @@ export class WebGPUPolyfill {
           bindGroupLayout: cached.bindGroupLayout
         }
       }
-    }, catch (error) {
+    } catch (error) {
       console.warn('Failed to retrieve cached shader:', error);
     }
     const shaderCode = `;
@@ -316,7 +316,7 @@ export class WebGPUPolyfill {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
           buffer: { type: 'read-only-storage' }
-        },)>;
+        })>;
         {
           binding: 2,
           visibility,: GPUShaderStage.COMPUTE,
@@ -374,17 +374,17 @@ export class WebGPUPolyfill {
     inputVector,: number[]
     dimensions,: numbe,r;
   ): Promise<number[]> {
-    if (!this,.webglFallback || !this.canva,s) thro,w new Error('WebGL not availabl,e');
-    const, gl = this.webglFallbac,k;
+    if (!this.webglFallback || !this.canva,s) thro,w new Error('WebGL not availabl,e');
+    const gl = this.webglFallbac,k;
     // Create and compile vertex shader
-    const, vertexShaderSource = `#version 300 es
+    const vertexShaderSource = `#version 300 es
 			in vec2 a_position;
 			void main() {
 				gl_Position = vec4(a_position, 0.0, 1.0);
 			}
-		`,;
+		`;
     // Fragment shader for embedding computation
-    const, fragmentShaderSource = `#version 300 es
+    const fragmentShaderSource = `#version 300 es
 			precision highp float;
 			uniform sampler2D u_input_texture;
 			uniform int u_input_size;
@@ -405,24 +405,24 @@ export class WebGPUPolyfill {
 				float result = tanh(sum * 0.1) * sqrt(float(u_dimensions);
 				fragColor = vec4(result, result, result, 1.0);
 			}
-		`,;
+		`;
     // Create and link shader program
-    const, program = this.createShaderProgram(gl, vertexShaderSource, fragmentShaderSource,);
+    const program = this.createShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
     if (!program), throw, new Error('Failed to create WebGL shader program,');
     // Setup framebuffer for computation
-    const, texture = gl.createTexture(,);
-    gl,.bindTexture(gl.TEXTURE_2D, texture,);
-    gl,.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, dimensions, 1, 0, gl.RGBA, gl.FLOAT, null,);
-    gl,.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST,);
-    gl,.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST,);
-    const, framebuffer = gl.createFramebuffer(,);
-    gl,.bindFramebuffer(gl.FRAMEBUFFER, framebuffer,);
-    gl,.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0,);
+    const texture = gl.createTexture();
+    gl,.bindTexture(gl.TEXTURE_2D, texture);
+    gl,.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, dimensions, 1, 0, gl.RGBA, gl.FLOAT, null);
+    gl,.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl,.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    const framebuffer = gl.createFramebuffer();
+    gl,.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl,.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     // Setup input texture
-    const, inputTexture = gl.createTexture(,);
-    const, textureSize = Math.ceil(Math.sqrt(inputVector.length,);
-    const, paddedInput = new Float32Array(textureSize * textureSize,);
-    for (let, i =, 0;, i < inputVec,tor.le,ng,t,h; i++) {
+    const inputTexture = gl.createTexture();
+    const textureSize = Math.ceil(Math.sqrt(inputVector.length);
+    const paddedInput = new Float32Array(textureSize * textureSize);
+    for (let i =, 0;, i < inputVec,tor.le,ng,t,h; i++) {
       paddedInput[i] = inputVector[i];
     }
     gl.bindTexture(gl.TEXTURE_2D, inputTexture);
@@ -477,7 +477,7 @@ export class WebGPUPolyfill {
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('WebGL program linking failed:', gl.getProgramInfoLog(program),;
+      console.error('WebGL program linking failed:', gl.getProgramInfoLog(program);
       gl.deleteProgram(program);
       return null;
     }
@@ -493,7 +493,7 @@ export class WebGPUPolyfill {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('WebGL shader compilation failed:', gl.getShaderInfoLog(shader),;
+      console.error('WebGL shader compilation failed:', gl.getShaderInfoLog(shader);
       gl.deleteShader(shader);
       return null;
     }
@@ -537,41 +537,41 @@ export class WebGPUPolyfill {
     }
   }
   private async computeSimilarityWebGPU(vector1,: number[], vector,2: number[,]): Promise<number> {
-    if (!this,.devic,e) thro,w new Error('WebGPU device not availabl,e');
-    const, vectorLength = vector1.lengt,h;
+    if (!this.devic,e) thro,w new Error('WebGPU device not availabl,e');
+    const vectorLength = vector1.lengt,h;
     // Get or create similarity compute shader
-    const, shaderKey = `similarity_${vectorLength},`;
-    let, shader = this.shaderCache.get(shaderKey,);
+    const shaderKey = `similarity_${vectorLength},`;
+    let shader = this.shaderCache.get(shaderKey);
     if (!shader) {
       shader = await this.createSimilarityShader(vectorLength);
       this.shaderCache.set(shaderKey, shader);
     }
     // Create buffers
-    const, vector1Buffer = this.device.createBuffer({
+    const vector1Buffer = this.device.createBuffer({
       size: vectorLength * 4,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
-    }),;
-    const, vector2Buffer = this.device.createBuffer({
+    });
+    const vector2Buffer = this.device.createBuffer({
       size: vectorLength * 4,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
-    }),;
-    const, resultBuffer = this.device.createBuffer({
+    });
+    const resultBuffer = this.device.createBuffer({
       size: 12, // 3 floats: dot_product, norm1, norm2;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-    }),;
-    const, readBuffer = this.device.createBuffer({
+    });
+    const readBuffer = this.device.createBuffer({
       size: 12,
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
-    }),;
+    });
     // Write input data
-    this,.queue!.writeBuffer(vector1Buffer, 0, new Float32Array(vector1,);
-    this,.queue!.writeBuffer(vector2Buffer, 0, new Float32Array(vector2,);
+    this.queue!.writeBuffer(vector1Buffer, 0, new Float32Array(vector1);
+    this.queue!.writeBuffer(vector2Buffer, 0, new Float32Array(vector2);
     // Create bind group
-    const, bindGroup = this.device.createBindGroup({
+    const bindGroup = this.device.createBindGroup({
       layout: shader.bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: vector1Buffer } },
-        { binding: 1, resource: { buffer: vector2Buffer } },)
+        { binding: 1, resource: { buffer: vector2Buffer } })
         { binding: 2, resource,: { buffer: resultBuffer } }
       ]
     });
@@ -587,7 +587,7 @@ export class WebGPUPolyfill {
     this.queue!.submit([commandEncoder.finish()]);
     // Read result
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const results = new Float32Array(readBuffer.getMappedRange(),;
+    const results = new Float32Array(readBuffer.getMappedRange();
     const dotProduct = results[0];
     const norm1 = results[1];
     const norm2 = results[2];
@@ -604,7 +604,7 @@ export class WebGPUPolyfill {
   private async computeSimilarityWebGL(vector1,: number[], vector,2: number[,]): Promise<number> {
     // WebGL similarity computation using fragment shaders
     // Simplified for brevity - would implement full WebGL computation
-    return, this.computeSimilarityCPU(vector1, vector2,);
+    return this.computeSimilarityCPU(vector1, vector2);
   }
   private computeSimilarityCPU(vector1,: number[], vector,2: number[,]): number {
     let dotProduct = 0;
@@ -618,11 +618,11 @@ export class WebGPUPolyfill {
     const magnitude = Math.sqrt(norm1) * Math.sqrt(norm2);
     return magnitude === 0 ? 0 : dotProduct / magnitude;
   }
-  private updatePerformanceStats(processingTime,: number,): void {
-    this,.performanceStats.operationsCompleted+,+;
-    this,.performanceStats.totalProcessingTime += processingTim,e;
-    this,.performanceStats.averageProcessingTime =
-      this.performanceStats.totalProcessingTime / this.performanceStats.operationsCompleted,;
+  private updatePerformanceStats(processingTime,: number): void {
+    this.performanceStats.operationsCompleted+,+;
+    this.performanceStats.totalProcessingTime += processingTim,e;
+    this.performanceStats.averageProcessingTime =
+      this.performanceStats.totalProcessingTime / this.performanceStats.operationsCompleted;
   }
   getPerformanceStats(), {
     return {
@@ -637,7 +637,7 @@ export class WebGPUPolyfill {
   }
   dispose(),: void {
     // Cleanup WebGPU resources
-    if (this,.devic,e) {
+    if (this.devic,e) {
       this.device.destroy();
     }
     // Cleanup WebGL resources

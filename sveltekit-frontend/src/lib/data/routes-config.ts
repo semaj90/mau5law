@@ -3007,7 +3007,7 @@ export function getRouteById(id: string): RouteDefinition | undefined {
   return allRoutes.find(route => route.id === id);
 }
 export function getRoutesByTag(tag: string): RouteDefinition[] {
-  return allRoutes.filter(route => route.tags.includes(tag),;
+  return allRoutes.filter(route => route.tags.includes(tag);
 }
 // Route categories with metadata
 export const routeCategories = {
@@ -3086,7 +3086,7 @@ export function getRoute(id: string): RouteDefinition | undefined {
   return routeRegistry.get(id) || getRouteById(id);
 }
 export function getAllDynamicRoutes(): RouteDefinition[] {
-  return Array.from(routeRegistry.values(),;
+  return Array.from(routeRegistry.values();
 }
 export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute {
   return {

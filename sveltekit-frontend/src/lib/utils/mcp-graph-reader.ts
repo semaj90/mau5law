@@ -27,10 +27,10 @@ export class MCPGraphReader {
     // Build conditions array
     const conditions = [];
     if (query.userId) {
-      conditions.push(eq(cases.createdBy, query.userId),;
+      conditions.push(eq(cases.createdBy, query.userId);
     }
     if (query.caseId) {
-      conditions.push(eq(cases.id, query.caseId),;
+      conditions.push(eq(cases.id, query.caseId);
     }
     // Build and execute query with proper where clause
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -44,7 +44,7 @@ export class MCPGraphReader {
         }
       })
       .from(cases)
-      .leftJoin(users, eq(cases.createdBy, users.id),;
+      .leftJoin(users, eq(cases.createdBy, users.id);
     const caseData = whereClause
       ? await caseQuery.where(whereClause).execute()
       : await caseQuery.execute();
@@ -71,7 +71,7 @@ export class MCPGraphReader {
               ? 7
               : 5
       }
-    }),;
+    });
     const relations = caseData
       .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator);
       .map((item) => ({
@@ -80,7 +80,7 @@ export class MCPGraphReader {
         type: "owns" as const,
         weight: 8,
         metadata: { relationship: "case_owner" }
-      }),;
+      });
     return { nodes, relations }
   }
   /**
@@ -90,10 +90,10 @@ export class MCPGraphReader {
     // Build conditions
     const conditions = [];
     if (query.userId) {
-      conditions.push(eq(evidence.uploadedBy, query.userId),;
+      conditions.push(eq(evidence.uploadedBy, query.userId);
     }
     if (query.caseId) {
-      conditions.push(eq(evidence.caseId, query.caseId),;
+      conditions.push(eq(evidence.caseId, query.caseId);
     }
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const evidenceQuery = db;
@@ -110,7 +110,7 @@ export class MCPGraphReader {
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
-      .leftJoin(users, eq(evidence.uploadedBy, users.id),;
+      .leftJoin(users, eq(evidence.uploadedBy, users.id);
     const evidenceData = whereClause
       ? await evidenceQuery.where(whereClause).execute()
       : await evidenceQuery.execute();
@@ -140,10 +140,10 @@ export class MCPGraphReader {
               ? 8
               : 6
       }
-    }),;
+    });
     const relations = [
       ...evidenceData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case),;
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
@@ -170,10 +170,10 @@ export class MCPGraphReader {
     // Build conditions
     const conditions = [];
     if (query.userId) {
-      conditions.push(eq(reports.createdBy, query.userId),;
+      conditions.push(eq(reports.createdBy, query.userId);
     }
     if (query.caseId) {
-      conditions.push(eq(reports.caseId, query.caseId),;
+      conditions.push(eq(reports.caseId, query.caseId);
     }
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const reportQuery = db;
@@ -190,7 +190,7 @@ export class MCPGraphReader {
       })
       .from(reports)
       .leftJoin(cases, eq(reports.caseId, cases.id)
-      .leftJoin(users, eq(reports.createdBy, users.id),;
+      .leftJoin(users, eq(reports.createdBy, users.id);
     const reportData = whereClause
       ? await reportQuery.where(whereClause).execute()
       : await reportQuery.execute();
@@ -218,10 +218,10 @@ export class MCPGraphReader {
               ? 8
               : 6
       }
-    }),;
+    });
     const relations = [
       ...reportData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case),;
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,

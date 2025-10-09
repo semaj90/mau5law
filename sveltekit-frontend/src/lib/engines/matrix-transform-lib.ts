@@ -155,7 +155,7 @@ export class MatrixTransformLib {
     to: Transform2D
     t: number, // 0 to 1
   ): TransformResult {
-    t = Math.max(0, Math.min(1, t),; // Clamp to 0-1
+    t = Math.max(0, Math.min(1, t); // Clamp to 0-1
     const interpolated: Transform2D = {
       x: this.lerp(from.x, to.x, t),
       y: this.lerp(from.y, to.y, t),
@@ -270,7 +270,7 @@ export class MatrixTransformLib {
     // Keep cache size under control (max 100 entries)
     if (this.transformCache.size > 100) {
       const keysToDelete = Array.from(this.transformCache.keys()).slice(0, 20);
-      keysToDelete.forEach((key) => this.transformCache.delete(key),;
+      keysToDelete.forEach((key) => this.transformCache.delete(key);
     }
   }
   /**

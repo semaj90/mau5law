@@ -296,7 +296,7 @@ export class EmbeddingCacheMiddleware {
         options: {
           ttl: 3600,
           compress: true
-          parallel: true,;
+          parallel: true;
           priority: 'high' as const,
         },
       }));

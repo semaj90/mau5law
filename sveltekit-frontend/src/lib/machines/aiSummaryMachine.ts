@@ -151,7 +151,7 @@ const initialContext: AISummaryContext = {
   synthesisData: null
   error: null
   loading: false
-  isPlaying: false,;
+  isPlaying: false;
   progress: 0,
   voiceEnabled: false
   highlightMode: "key_points",
@@ -544,7 +544,7 @@ export const aiSummaryMachine = createMachine({
                     "Verify forensic tool calibration",
                     "Document examiner credentials"
                   ]
-                },);
+                });
                 {
                   type: "legal_significance" as const,
                   score,: 0.96,
@@ -557,7 +557,7 @@ export const aiSummaryMachine = createMachine({
                 }
               ]
             });
-          }, 1500,);
+          }, 1500);
         });
       }),
       synthesizeInsights: fromPromise(async ({ input }: { input: AISummaryContext }) => {

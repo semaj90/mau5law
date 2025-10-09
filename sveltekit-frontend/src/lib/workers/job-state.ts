@@ -28,7 +28,7 @@ class JobStore extends EventEmitter {
     }
     this.items.set(job.id, record);
     try {
-      await redis.set(`jobs:state:${job.id}`, JSON.stringify(record),;
+      await redis.set(`jobs:state:${job.id}`, JSON.stringify(record);
     } catch {
       // ignore redis failures
     }
@@ -49,7 +49,7 @@ class JobStore extends EventEmitter {
     return null;
   }
   async listJobs() {
-    return Array.from(this.items.values()).sort((a, b) => a.updatedAt.localeCompare(b.updatedAt),;
+    return Array.from(this.items.values()).sort((a, b) => a.updatedAt.localeCompare(b.updatedAt);
   }
 }
 class JobStateMachine {

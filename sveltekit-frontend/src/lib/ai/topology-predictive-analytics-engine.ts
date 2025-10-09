@@ -449,7 +449,7 @@ class TopologyPredictiveAnalyticsEngine {
       const rankedCompletions = allCompletions
         .filter(comp => comp.confidence >= (options.min_confidence || 0.3)
         .sort((a, b) => b.confidence - a.confidence)
-        .slice(0, options.max_completions || 5),;
+        .slice(0, options.max_completions || 5);
       console.log(`💡 Generated ${rankedCompletions.length} query completions`);
       return rankedCompletions;
     } catch (error) {
@@ -463,7 +463,7 @@ class TopologyPredictiveAnalyticsEngine {
   private async buildCurrentTopologyState(
     glyphs: GlyphContext[]
     userSession: any
-    currentQuery: string,;
+    currentQuery: string;
   ): Promise<Map<string, {
     node_id: string;
     position: Float32Array;
@@ -538,7 +538,7 @@ class TopologyPredictiveAnalyticsEngine {
   }
   private async findTopologyConnections(
     glyph: GlyphContext
-    allGlyphs: GlyphContext[],;
+    allGlyphs: GlyphContext[];
   ): Promise<TopologyRelationship[]> {
     const connections: TopologyRelationship[] = [];
     for (const otherGlyph of allGlyphs) {
@@ -592,7 +592,7 @@ class TopologyPredictiveAnalyticsEngine {
       return 'structural';
     }
     const sharedClusters = glyph1.retrieval_metadata.semantic_clusters
-      .filter(c => glyph2.retrieval_metadata.semantic_clusters.includes(c),;
+      .filter(c => glyph2.retrieval_metadata.semantic_clusters.includes(c);
     if (sharedClusters.length > 0) {
       return 'semantic';
     }
@@ -927,7 +927,7 @@ class TopologyContentRecommender {
       predicted_usage_context: 'analytical_context',
       prefetch_priority: 0.8 - (index * 0.1),
       estimated_value: 0.7 + Math.random() * 0.3
-    }),;
+    });
   }
 }
 class TopologyAnomalyDetector {

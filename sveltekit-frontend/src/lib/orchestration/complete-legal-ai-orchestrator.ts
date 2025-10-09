@@ -466,7 +466,7 @@ export class CompleteLegalAIOrchestrator {
       graphTraversalLatency: 0
     }
     this.systemStatus.qdrant = {
-      ready: false,;
+      ready: false;
       collections: 0,
       vectorCount: 0,
       searchLatency: 0
@@ -498,7 +498,7 @@ export class CompleteLegalAIOrchestrator {
       consumerCount: 0
     }
     this.systemStatus.minio = {
-      ready: false,;
+      ready: false;
       buckets: 0,
       objectCount: 0,
       storageUsed: 0
@@ -658,7 +658,7 @@ export class CompleteLegalAIOrchestrator {
     );
   }
   private inferDocumentType(
-    content: string,;
+    content: string;
   ): 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent' {
     // Simple document type inference
     const lowercaseContent = content.toLowerCase();

@@ -282,7 +282,7 @@ class XStateStoreManager {
       navigate: (path: string, title?: string) =>
         appSend({ type: 'NAVIGATE', path, title }),
       // Settings helpers
-      },); const settings = {
+      }); const settings = {
         update: (settings: Partial<AppContext['settings']>) =>
           appSend({ type: 'UPDATE_SETTINGS', settings }),
         reset: () => appSend({ type: 'RESET_SETTINGS' })
@@ -309,15 +309,15 @@ class XStateStoreManager {
     }
   }
   private persistState(),: void {
-    if (!this,.config.persist || !browse,r) retu,rn;
-    try, {
-      const, stat,e: StoreState = {
+    if (!this.config.persist || !browse,r) retu,rn;
+    try {
+      const stat,e: StoreState = {
         appState: this.appActor?.getSnapshot(),
         legalCaseState: this.legalCaseActor?.getSnapshot(),
         timestamp: Date.now()
       }
-      localStorage,.setItem(this.config.persistKey!, JSON.stringify(state,);
-    }, catch (error: any) {
+      localStorage,.setItem(this.config.persistKey!, JSON.stringify(state);
+    } catch (error: any) {
       console.warn('Failed to persist XState store:', error);
     }
   }
@@ -339,7 +339,7 @@ class XStateStoreManager {
       return null;
     }
   }
-  private handleCrossTabSync(data,: any,): void {
+  private handleCrossTabSync(data,: any): void {
     // Handle synchronization between tabs
     switch (data,.typ,e) {
       case 'app-state-change',:
@@ -385,9 +385,9 @@ class XStateStoreManager {
    * Clean up resources
    */;
   public destroy(),: void {
-    this,.appActor?.stop(,);
-    this,.legalCaseActor?.stop(,);
-    this,.syncChannel?.close(,);
+    this.appActor?.stop();
+    this.legalCaseActor?.stop();
+    this.syncChannel?.close();
     if (browser, && this.config.persis,t) {
       this.persistState();
     }

@@ -206,7 +206,7 @@ export class YoRHaOptimizedTextureManager {
       // Create texture entry
       const textureEntry: TextureEntry = {
         id: textureId
-        texture: sourceTexture,;
+        texture: sourceTexture;
         mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
         memoryBank: bankName
         lastAccessed: Date.now(),
@@ -292,7 +292,7 @@ export class YoRHaOptimizedTextureManager {
     }
     this.streamingSessions.set(sessionId, session);
     // Process chunks with memory-aware batching
-    const maxConcurrentChunks = Math.floor(memoryBudget / (chunkSize * chunkSize * 4),; // 4 bytes per RGBA pixel
+    const maxConcurrentChunks = Math.floor(memoryBudget / (chunkSize * chunkSize * 4); // 4 bytes per RGBA pixel
     let processedChunks = 0;
     for (let y = 0; y < sourceHeight; y += chunkSize) {
       for (let x = 0; x < sourceWidth; x += chunkSize) {
@@ -308,7 +308,7 @@ export class YoRHaOptimizedTextureManager {
         // Copy data from source
         const commandEncoder = this.device.createCommandEncoder();
         commandEncoder.copyTextureToTexture(
-          { texture: sourceTexture, origin: [x, y, 0] },)>
+          { texture: sourceTexture, origin: [x, y, 0] })>
           { texture: chunkTexture },
           [chunkWidth, chunkHeight, 1]
         );
@@ -384,7 +384,7 @@ export class YoRHaOptimizedTextureManager {
     const bank = this.textureBanks.get(bankName);
     if (!bank) return;
     console.log(`🧹 Performing garbage collection on ${bankName} bank`);
-    const textures = Array.from(bank.textures.values(),;
+    const textures = Array.from(bank.textures.values();
     // Sort by access time and priority
     textures.sort((a, b) => {
       const aPriority = a.legalDocument?.priority || 128;
@@ -397,7 +397,7 @@ export class YoRHaOptimizedTextureManager {
       return b.lastAccessed - a.lastAccessed;
     });
     // Remove bottom 25% of textures
-    const texturesToRemove = textures.slice(Math.floor(textures.length * 0.75),;
+    const texturesToRemove = textures.slice(Math.floor(textures.length * 0.75);
     for (const texture of texturesToRemove) {
       await this.releaseTexture(texture.id);
     }
@@ -424,7 +424,7 @@ export class YoRHaOptimizedTextureManager {
     const bank = this.textureBanks.get(foundBank)!;
     // Destroy GPU resources
     textureEntry.texture.destroy();
-    textureEntry.mipmaps.forEach(mip => mip.destroy(),;
+    textureEntry.mipmaps.forEach(mip => mip.destroy();
     // Remove from bank
     bank.textures.delete(textureId);
     bank.memoryUsed -= textureEntry.memoryUsed;
@@ -532,7 +532,7 @@ export class YoRHaOptimizedTextureManager {
     }
     // Cleanup streaming sessions
     for (const session of Array.from(this.streamingSessions.values())) {
-      session.streamedChunks.forEach(texture => texture.destroy(),;
+      session.streamedChunks.forEach(texture => texture.destroy();
     }
     this.streamingSessions.clear();
     // Dispose mipmap shaders

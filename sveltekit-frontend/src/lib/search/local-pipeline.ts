@@ -34,32 +34,32 @@ export class LocalSearchPipeline {
   private redis:
     | undefined;
     | {
-        get: (_key: string) => MaybePromise<string | null>,;
-        setex?: (_key: string, seconds: number, value: string) => MaybePromise<any>,;
-        set?: (_key: string, value: string) => MaybePromise<any>,;
-        expire?: (_key: string, seconds: number) => MaybePromise<any>,;
+        get: (_key: string) => MaybePromise<string | null>;
+        setex?: (_key: string, seconds: number, value: string) => MaybePromise<any>;
+        set?: (_key: string, value: string) => MaybePromise<any>;
+        expire?: (_key: string, seconds: number) => MaybePromise<any>;
       }
   constructor(), {
     this.fuse = new Fuse([], {
       includeScore: true
       threshold: 0.33,
       keys: [
-        { name: 'text', weight: 0.8 },)
+        { name: 'text', weight: 0.8 })
         { name: 'metadata.title', weight,: 0.2 }
       ] as any
     });
   }
   private async ensureReady(),: Promise<void> {
-    if (this,.read,y) retu,rn;
+    if (this.read,y) retu,rn;
     // Try to attach Redis cache if available (multiple possible modules in repo)
-    try, {
-      const, mod,A: any = await import('$lib/server/cache/redis,');
+    try {
+      const mod,A: any = await import('$lib/server/cache/redis,');
       if (modA,?.cach,e?.ge,t && (modA.cache.setex || modA.cache.set || modA.cache.expi,re)) {
         this.redis = modA.cache;
       } else if (modA?.default?.get) {
         this.redis = modA.default;
       }
-    }, catch (error) {}
+    } catch (error) {}
     if (!this.redis) {
       try {
         const modB: any = await import('$lib/server/redis-service');
@@ -84,20 +84,20 @@ export class LocalSearchPipeline {
     }
     this.ready = true;
   }
-  addDocuments(docs,: LocalDoc[],): void {
+  addDocuments(docs,: LocalDoc[]): void {
     if (!docs,?.length), retu,rn;
-    for (const, d, o,f doc,s), this.docs.set(d.i,d, d);
-    this,.rebuildIndex(,);
+    for (const d, o,f doc,s), this.docs.set(d.i,d, d);
+    this.rebuildIndex();
   }
-  removeDocument(id,: string,): void {
-    this,.docs.delete(id,);
-    this,.rebuildIndex(,);
+  removeDocument(id,: string): void {
+    this.docs.delete(id);
+    this.rebuildIndex();
   }
   private rebuildIndex(),: void {
-    this,.fuse.setCollection(Array.from(this.docs.values(),);
+    this.fuse.setCollection(Array.from(this.docs.values());
   }
-  async search(query,: string, limit = 5,): Promise<LocalSearchResult[]> {
-    await, thi,s.ensureReady,();
+  async search(query,: string, limit = 5): Promise<LocalSearchResult[]> {
+    await thi,s.ensureReady,();
     if (!query, || typeof query !== 'string,') return [];
     const key = `local-search:${query}:${limit}`;
     // Redis cache first
@@ -120,7 +120,7 @@ export class LocalSearchPipeline {
       text: h.item.text,
       metadata: h.item.metadata,
       score: 1 - (h.score ?? 0)
-    }),;
+    });
     // Cache result
     const payload = JSON.stringify(results);
     if (this.redis?.setex) {

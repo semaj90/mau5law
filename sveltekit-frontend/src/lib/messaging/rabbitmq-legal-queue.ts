@@ -82,9 +82,9 @@ export class RabbitMQLegalQueue {
   private readonly queueConfigs: Map<string, QueueConfiguration> = new Map([
     ['document.processing', {
       name: 'legal_document_processing',
-      durable: true
-      exclusive: false
-      autoDelete: false
+      durable: true,
+      exclusive: false,
+      autoDelete: false,
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL
         'x-max-priority': 255, // NES-style priority
@@ -95,9 +95,9 @@ export class RabbitMQLegalQueue {
     }],
     ['gpu.compute', {
       name: 'legal_gpu_compute',
-      durable: true
-      exclusive: false
-      autoDelete: false
+      durable: true,
+      exclusive: false,
+      autoDelete: false,
       arguments: {
         'x-message-ttl': 600000, // 10 minutes TTL
         'x-max-priority': 255,
@@ -108,9 +108,9 @@ export class RabbitMQLegalQueue {
     }],
     ['memory.allocation', {
       name: 'nes_memory_events',
-      durable: false
-      exclusive: false
-      autoDelete: true
+      durable: false,
+      exclusive: false,
+      autoDelete: true,
       arguments: {
         'x-message-ttl': 60000, // 1 minute TTL
         'x-max-length': 1000 // Circular buffer
@@ -120,9 +120,9 @@ export class RabbitMQLegalQueue {
     }],
     ['ranking.computation', {
       name: 'legal_ranking_jobs',
-      durable: true
-      exclusive: false
-      autoDelete: false,;
+      durable: true,
+      exclusive: false,
+      autoDelete: false,
       arguments: {
         'x-message-ttl': 300000, // 5 minutes TTL
         'x-max-priority': 255
@@ -144,15 +144,15 @@ export class RabbitMQLegalQueue {
   private async initializeConnection(): Promise<void> {
     try {
       const protocol = this.config.ssl ? 'wss' : 'ws';
-      const url = `${protocol}://${this.config.host}:${this.config.port}/ws`
+      const url = `${protocol}://${this.config.host}:${this.config.port}/ws`;
       console.log(`🔌 Connecting to RabbitMQ at ${url}`);
       this.connection = new WebSocket(url, ['v12.stomp']);
       this.connection.onopen = () => {
         this.handleConnectionOpen();
-      }
+      };
       this.connection.onmessage = (_event: any) => {
         this.handleMessage(event);
-      }
+      };
       this.connection.onerror = (error) => {
         console.error('❌ RabbitMQ connection error:', error);
         this.handleConnectionError();
@@ -505,7 +505,7 @@ export class RabbitMQLegalQueue {
     const frame = this.createSTOMPFrame('SEND', {
       'destination': '/amq/queue/' + config.name,
       'content-type': 'application/json'
-    }, JSON.stringify(config),;
+    }, JSON.stringify(config);
     this.connection?.send(frame);
   }
   private async publishToQueue(queueName: string, message: LegalDocumentMessage): Promise<void> {
@@ -518,7 +518,7 @@ export class RabbitMQLegalQueue {
       'content-type': 'application/json',
       'persistent': 'true',
       'priority': message.priority.toString()
-    }, JSON.stringify(message),;
+    }, JSON.stringify(message);
     this.connection?.send(frame);
   }
   private async startConsumers(): Promise<void> {

@@ -69,7 +69,7 @@ const config: DatabaseConfig = {
   qdrant: process.env.QDRANT_URL ? {,
     url: process.env.QDRANT_URL,
     apiKey: process.env.QDRANT_API_KEY
-  } : undefined,;
+  } : undefined;
   environment: isDev ? 'development' : 'production'
 }
 // ============================================================================
@@ -228,7 +228,7 @@ class DatabaseManager {
   async ensureQdrantCollection(
     collectionName: string
     vectorSize: number = 384,
-    distance: 'Cosine' | 'Dot' | 'Euclid' = 'Cosine',;
+    distance: 'Cosine' | 'Dot' | 'Euclid' = 'Cosine';
   ): Promise<void> {
     const qdrant = this.getQdrantClient();
     if (!qdrant) return;
@@ -295,7 +295,7 @@ class DatabaseManager {
           results.push({
             id: row.id,
             score: row.similarity,
-            document: row as DocumentMetadata,;
+            document: row as DocumentMetadata;
             source: 'postgresql'
           });
         }
@@ -330,12 +330,12 @@ class DatabaseManager {
               .select()
               .from(schema.documentMetadata)
               .where(sql`${schema.documentMetadata.id} = ANY(${qdrantIds})`);
-            const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]),;
+            const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
             for (const result of qdrantResults) {
               const document = docMap.get((result as { id?: any; score?: any }).id.toString());
               if (document) {
                 results.push({
-                  id: (result as { id?: any; score?: any }).id.toString(),),
+                  id: (result as { id?: any; score?: any }).id.toString()),
                   score,: (result as { id?: any; score?: any }).score,
                   document,
                   source,: 'qdrant'
@@ -343,14 +343,14 @@ class DatabaseManager {
               }
             }
           }
-        }, catch (error) {
+        } catch (error) {
           console.error('Qdrant vector search error:', error);
         }
       }
     }
     // Deduplicate and sort results
     const uniqueResults = new Map();
-    for (const, result, o,f results) {
+    for (const result, o,f results) {
       const existing = uniqueResults.get((result as { id?: any; score?: any }).id);
       if (!existing || (result as { id?: any; score?: any }).score > existing.score) {
         uniqueResults.set((result as { id?: any; score?: any }).id, result);
@@ -358,9 +358,9 @@ class DatabaseManager {
     }
     const finalResults = Array.from(uniqueResults.values()
       .sort((a, b) => b.score - a.score)
-      .slice(0, limit),;
+      .slice(0, limit);
     return {
-      results: finalResults,;
+      results: finalResults;
       performance: {
         postgresqlTime,
         qdrantTime,
@@ -372,26 +372,26 @@ class DatabaseManager {
   // HEALTH CHECKS
   // ============================================================================
   async healthCheck(),: Promise<any> {
-    const, health = {
+    const health = {
       postgresql: false
-      qdrant: false,;
+      qdrant: false;
       pgvector: false
       overallHealth: false
     }
-    try, {
+    try {
       // Test PostgreSQL
       // removed unused db assignment
-      await, d,b.execute(sql`SELECT 1,`);
+      await d,b.execute(sql`SELECT 1,`);
       health,.postgresql = tru,e;
       // Test pgvector
-      try, {
-        await, d,b.execute(sql`SELECT '[1,2,3]'::vector,`);
+      try {
+        await d,b.execute(sql`SELECT '[1,2,3]'::vector,`);
         health,.pgvector = tru,e;
-      }, catch (error) {
+      } catch (error) {
         console.warn('pgvector not available');
       }
       // Test Qdrant
-      const, qdrant = this.getQdrantClient(,);
+      const qdrant = this.getQdrantClient();
       if (qdrant) {
         try {
           await qdrant.getCollections();
@@ -403,16 +403,16 @@ class DatabaseManager {
         health,.qdrant = tru,e; // No Qdrant configured, consider healthy
       }
       health,.overallHealth = health.postgresq,l;
-    }, catch (error) {
+    } catch (error) {
       console.error('Health check failed:', error);
     }
-    return, healt,h;
+    return healt,h;
   }
   // ============================================================================
   // CLEANUP
   // ============================================================================
   async cleanup(),: Promise<void> {
-    if (this,.runtimeConnectio,n) {
+    if (this.runtimeConnectio,n) {
       await this.runtimeConnection.end();
     }
     if (this.adminConnection) {

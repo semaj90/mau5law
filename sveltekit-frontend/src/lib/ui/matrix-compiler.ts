@@ -133,7 +133,7 @@ export class MatrixUICompiler {
     return {
       compiled: compiledNodes
       webgl: webglBuffer
-      css: cssOutput,;
+      css: cssOutput;
       events: eventMappings
       optimizations
     }
@@ -260,7 +260,7 @@ export class MatrixUICompiler {
         matrix: node.matrix || [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
         bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 }
       })) || []
-    }),;
+    });
   }
   /**
    * Compile individual UI node
@@ -278,7 +278,7 @@ export class MatrixUICompiler {
     // Generate CSS classes with UnoCSS
     const cssClasses = await this.generateCSS(node);
     // Create WebGL buffer for GPU acceleration
-    const webglBuffer = this.createWebGLBuffer(node, new Float32Array(matrix),;
+    const webglBuffer = this.createWebGLBuffer(node, new Float32Array(matrix);
     // Determine LOD level based on viewport and AI context
     const lodLevel = this.calculateLOD(node);
     return {
@@ -358,7 +358,7 @@ export class MatrixUICompiler {
     }
     // Add style modifiers
     if (node.styles.base) {
-      classes.push(...node.styles.base.split(" "),;
+      classes.push(...node.styles.base.split(" ");
     }
     // AI confidence styling
     if (node.metadata?.confidence !== undefined) {
@@ -426,7 +426,7 @@ export class MatrixUICompiler {
    * Create WebGL buffer for GPU acceleration
    */
   private createWebGLBuffer(
-    node: MatrixUINode,;
+    node: MatrixUINode;
     matrix: Float32Array
   ): WebGLBuffer | undefined {
     if (!this.gl) return undefined;
@@ -483,7 +483,7 @@ export class MatrixUICompiler {
     if (
       node.metadata?.aiGenerated &&
       node.metadata?.confidence &&
-      node.metadata.confidence > 80,;
+      node.metadata.confidence > 80;
     ) {
       return "high";
     }

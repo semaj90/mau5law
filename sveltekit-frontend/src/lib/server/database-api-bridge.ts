@@ -163,7 +163,7 @@ export class LegalDatabaseBridge {
             case_id: query.caseId,
             client_id: query.clientId
           }
-        },);
+        });
         {
           limit: options.limit || 50,
           offset,: options.offset || 0,
@@ -171,7 +171,7 @@ export class LegalDatabaseBridge {
           cacheResults,: true
         }
       );
-      return documents.map(row => this.mapRowToDocument(row),;
+      return documents.map(row => this.mapRowToDocument(row);
     } catch (error) {
       console.error('Failed to search legal documents:', error);
       return [];
@@ -186,7 +186,7 @@ export class LegalDatabaseBridge {
       const values = [id, ...Object.values(updates).filter((_, index) =>
         Object.keys(updates)[index] !== 'id' && Object.keys(updates)[index] !== 'created_at'
       )];
-      values.push(new Date(),; // updated_at
+      values.push(new Date(); // updated_at
       await this.executeQuery(
         `UPDATE legal_documents SET ${setClause}, updated_at = $${values.length} WHERE id = $1`,
         values
@@ -515,7 +515,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       data: document
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false;
         source: 'api'
       }
     }
@@ -540,7 +540,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       data: legalCase
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false;
         source: 'api'
       }
     }
@@ -568,7 +568,7 @@ export async function apiSearchDocuments(
       data: documents
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false;
         source: 'api'
       }
     }

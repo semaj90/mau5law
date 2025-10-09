@@ -67,7 +67,7 @@ export const synthesisCache = pgTable('synthesis_cache', {
 // Initialize dynamic port allocation for all services
 async function initializeDynamicPorts() {
   const allocatedPorts = await portManager.initializeAllServices();
-  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries()),;
+  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries());
   return allocatedPorts;
 }
 // Helper function to get service port with fallback
@@ -116,7 +116,7 @@ const services = {
   // Redis Configuration with dynamic port
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port,: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString(),)),
+    port,: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString())),
     db: 0,
     keyPrefix,: 'legal-ai:'
   }
@@ -187,9 +187,9 @@ function calculateSimilarity(doc1: any, doc2: any): number {
   // Simple Jaccard similarity for demonstration
   const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
   const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
-  const words1 = new Set(text1.split(/\s+/),;
-  const words2 = new Set(text2.split(/\s+/),;
-  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)),;
+  const words1 = new Set(text1.split(/\s+/);
+  const words2 = new Set(text2.split(/\s+/);
+  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
   const union = new Set([...Array.from(words1), ...Array.from(words2)]);
   return intersection.size / union.size;
 }
@@ -306,7 +306,7 @@ const orchestrationMachine = createMachine({
                 target: 'complete',
                 guard: 'cacheHit',
                 actions: 'useCachedResult'
-              },);
+              });
               {
                 target: 'analyzingQuery'
               }
@@ -559,7 +559,7 @@ export class EnhancedAISynthesisOrchestrator {
             .select()
             .from(synthesisCache)
             .where(eq(synthesisCache.queryHash, cacheKey)
-            .limit(1),;
+            .limit(1);
           if (dbCache.length > 0) {
             logger.info('[Cache] Database hit');
             // Update hit count and last accessed
@@ -569,12 +569,12 @@ export class EnhancedAISynthesisOrchestrator {
                 hitCount: sql`${synthesisCache.hitCount} + 1`,
                 lastAccessed: new Date()
               })
-              .where(eq(synthesisCache.id, dbCache[0].id),;
+              .where(eq(synthesisCache.id, dbCache[0].id);
             // Store in Redis for next time
             await (redis, as, an,y).setex(cacheKey, 3600, JSON.stringify(dbCache[0].resu,lt);
-            return, { hit: true, data: dbCache[0].result }
+            return { hit: true, data: dbCache[0].result }
           }
-          return, { hit: false }
+          return { hit: false }
         }),
         analyzeWithLegalBERT,: fromPromise(async ({ input }: { input: any }) => {
           return await legalBERT.analyzeLegalText(input.query);
@@ -604,7 +604,7 @@ export class EnhancedAISynthesisOrchestrator {
           return results.map((doc, index) => ({
             ...doc,
             score: 1.0 - index * 0.1
-          }),;
+          });
         }),
         runEnhancedRAGPipeline,: fromPromise(async ({ input }: { input: any }) => {
           try {
@@ -615,7 +615,7 @@ export class EnhancedAISynthesisOrchestrator {
                 query: input.query,
                 limit: 10,
                 useGPU: true
-                useSIMD: true,;
+                useSIMD: true;
                 embedding: input.embeddings || null
               })
             });
@@ -709,7 +709,7 @@ export class EnhancedAISynthesisOrchestrator {
           try {
             // Try GPU Orchestrator first for acceleration
             const gpuResponse = await fetch(
-              `${services.goMicroservice.gpuOrchestrator}/api/generate`,);
+              `${services.goMicroservice.gpuOrchestrator}/api/generate`);
               {
                 method: 'POST',
                 headers,: { 'Content-Type,': 'application/json' },
@@ -778,7 +778,7 @@ export class EnhancedAISynthesisOrchestrator {
           const cacheKey = generateCacheKey(input.query);
           const result = input.finalSynthesis;
           // Store in Redis
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result),;
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result);
           // Store in PostgreSQL
           await db.insert(synthesisCache).values({
             queryHash: cacheKey
@@ -904,7 +904,7 @@ export class EnhancedAISynthesisOrchestrator {
           (m: any) =>
             m?.name === 'gemma3-legal:latest' ||
             (m?.name?.includes('gemma') && m?.name?.includes('legal')
-        ),;
+        );
       if (!hasGemma3Legal) {
         logger.info('[Models] Creating gemma3-legal:latest...');
         const modelfile = `
@@ -1010,7 +1010,7 @@ TEMPLATE """{{ if .System }}<|system|>
       }
     }
   }
-  private generateCacheKey(query,: string,): string {
+  private generateCacheKey(query,: string): string {
     const crypto = require('crypto');
     return crypto.createHash('sha256').update(query).digest('hex');
   }
@@ -1052,15 +1052,15 @@ TEMPLATE """{{ if .System }}<|system|>
     // Simple Jaccard similarity for demonstration
     const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
     const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
-    const words1 = new Set(text1.split(/\s+/),;
-    const words2 = new Set(text2.split(/\s+/),;
-    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)),;
+    const words1 = new Set(text1.split(/\s+/);
+    const words2 = new Set(text2.split(/\s+/);
+    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
     const union = new Set([...Array.from(words1), ...Array.from(words2)]);
     return intersection.size / union.size;
   }
   // ===== PUBLIC API =====
   async process(query,: string, options?: { [ke,y: stri,ng]: any, }): Promise<any> {
-    if (!this,.initialize,d) {
+    if (!this.initialize,d) {
       await this.initialize();
     }
     logger.info(`[Orchestrator] Processing query: "${query}"`);
@@ -1085,7 +1085,7 @@ TEMPLATE """{{ if .System }}<|system|>
             db.insert(autoSolveResults);
               .values({
                 query,
-                solution: result,;
+                solution: result;
                 confidence: result?.confidence_score
                   ? Math.round((result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).confidence_score * 100)
                   : null
@@ -1093,10 +1093,10 @@ TEMPLATE """{{ if .System }}<|system|>
                 serviceUsed: 'enhanced-orchestrator',
                 success: true
               })
-              .execute(),;
+              .execute();
             resolve(result);
           }, else if (snapshot.status === 'error') {
-            reject(new Error('Processing failed'),;
+            reject(new Error('Processing failed');
           }
         },
         error,: reject
@@ -1109,7 +1109,7 @@ TEMPLATE """{{ if .System }}<|system|>
     query,: string
     options?: { [key,: strin,g]: any }
   ),: Promise<AsyncGenerator<any> {
-    const, self = thi,s;
+    const self = thi,s;
     async function,* streamResults(), {
       let isComplete = false;
       const events: any[] = [];
@@ -1138,12 +1138,12 @@ TEMPLATE """{{ if .System }}<|system|>
         if (events.length > 0) {
           yield events.shift();
         }
-        await new Promise((resolve) => setTimeout(resolve, 100),;
+        await new Promise((resolve) => setTimeout(resolve, 100);
       }
     }
     return streamResults();
   }
-  private calculateProgress(state,: any,): number {
+  private calculateProgress(state,: any): number {
     const stages = {
       idle: 0,
       initializing: 5,
@@ -1164,7 +1164,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
   // Health check
   async health(),: Promise<any> {
-    return, {
+    return {
       status: this.initialized ? 'healthy' : 'initializing',
       services: {
         postgres: await this.checkPostgres(),
@@ -1179,34 +1179,34 @@ TEMPLATE """{{ if .System }}<|system|>
     }
   }
   private async checkPostgres(),: Promise<boolean> {
-    try, {
-      await, pgConnectio,n`SELECT, 1`;
-      return, tru,e;
-    }, catch {
+    try {
+      await pgConnectio,n`SELECT, 1`;
+      return tru,e;
+    } catch {
       return false;
     }
   }
   private async checkRedis(),: Promise<boolean> {
-    try, {
+    try {
       await (redis, as, an,y).set('health-check', 'ok', 'EX', 1);
-      return, tru,e;
-    }, catch, {
-      return, fals,e;
+      return tru,e;
+    } catch, {
+      return fals,e;
     }
   }
   private async checkOllama(),: Promise<boolean> {
-    try, {
+    try {
       // removed unused response assignment
       return (response, as, {, ok?:, any; json?:, any, }).ok;
-    }, catch {
+    } catch {
       return false;
     }
   }
-  private async checkService(url,: string,): Promise<boolean> {
-    try, {
+  private async checkService(url,: string): Promise<boolean> {
+    try {
       // removed unused response assignment
       return (response, as, {, ok?:, any; json?:, any, }).ok;
-    }, catch {
+    } catch {
       return false;
     }
   }

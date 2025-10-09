@@ -16,7 +16,7 @@ export interface AITask {
 }
 // Mock embeddings service
 const OpenAIEmbeddings = class {
-  embedQuery = async (query: string) => new Array(384).fill(0).map(() => Math.random(),;
+  embedQuery = async (query: string) => new Array(384).fill(0).map(() => Math.random();
 }
 // Mock database pool
 const pool = {
@@ -31,7 +31,7 @@ async function getRedisClient(): Promise<any> {
     redisClient = createClient({
       url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
     });
-    redisClient.on("error", (err) => console.error("Redis Client Error", err),;
+    redisClient.on("error", (err) => console.error("Redis Client Error", err);
     await redisClient.connect();
     console.log("✅ Redis client connected for caching.");
   }
@@ -142,7 +142,7 @@ export interface ExecutionPhase {
  * Main Copilot self-prompting function with comprehensive AI orchestration
  */
 export async function copilotSelfPrompt(
-  prompt: string,;
+  prompt: string;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const startTime = Date.now();
@@ -267,7 +267,7 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
         const data = await (response as { ok?: any; json?: any }).json();
         // Sort by relevance_score if available
         if (Array.isArray((data as { results?: any; memories?: any }).results)) {
-          return (data as { results?: any; memories?: any }).results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0),;
+          return (data as { results?: any; memories?: any }).results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0);
         }
         return (data as { results?: any; memories?: any }).results || [];
       }
@@ -295,7 +295,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({,
-          query: prompt,;
+          query: prompt;
           context: context
           includeGraph: true
           includeHistory: true
@@ -306,7 +306,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
         const data = await (response as { ok?: any; json?: any }).json();
         // Sort by recency or relevance if available
         if (Array.isArray((data as { results?: any; memories?: any }).memories)) {
-          return (data as { results?: any; memories?: any }).memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0),;
+          return (data as { results?: any; memories?: any }).memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0);
         }
         return (data as { results?: any; memories?: any }).memories || [];
       }
@@ -364,7 +364,7 @@ async function synthesizeAllResults(
   contextResults: any[]
   memoryResults: any[]
   agentResults: any[]
-  engineeringAnalysis: any,;
+  engineeringAnalysis: any;
 ): Promise<string> {
   const synthesisPrompt = `
 As an advanced AI synthesis engine, analyze and synthesize the following comprehensive analysis results:
@@ -416,7 +416,7 @@ function generateBasicSummary(
   prompt: string
   contextResults: any[]
   memoryResults: any[]
-  agentResults: any[],;
+  agentResults: any[];
 ): string {
   return `
 # Analysis Summary
@@ -442,9 +442,9 @@ ${prompt}
  * Generate actionable next steps
  */
 async function generateNextActions(
-  prompt: string,;
+  prompt: string;
   synthesis: string
-  engineeringAnalysis: any,;
+  engineeringAnalysis: any;
 ): Promise<NextAction[]> {
   const actions: NextAction[] = [];
   // Extract actions from engineering analysis
@@ -482,7 +482,7 @@ async function generateNextActions(
  */
 async function generateRecommendations(
   engineeringAnalysis: any
-  context: any,;
+  context: any;
 ): Promise<Recommendation[]> {
   const recommendations: Recommendation[] = [];
   if (engineeringAnalysis?.recommendations) {
@@ -514,8 +514,8 @@ async function generateRecommendations(
  * Create execution plan from actions and recommendations
  */
 async function createExecutionPlan(
-  actions: NextAction[],;
-  recommendations: Recommendation[],;
+  actions: NextAction[];
+  recommendations: Recommendation[];
 ): Promise<ExecutionPlan> {
   const phases: ExecutionPhase[] = [];
   // Group actions by dependencies and priority
@@ -562,8 +562,8 @@ async function createExecutionPlan(
   }
   const totalTime = actions.reduce((sum, action) => sum + action.estimatedTime, 0);
   const parallelTime = phases.reduce((sum, phase) => {
-    const phaseActions = actions.filter((a) => phase.actions.includes(a.id),;
-    const maxTime = Math.max(...phaseActions.map((a) => a.estimatedTime),;
+    const phaseActions = actions.filter((a) => phase.actions.includes(a.id);
+    const maxTime = Math.max(...phaseActions.map((a) => a.estimatedTime);
     return sum + maxTime;
   }, 0);
   return {
@@ -579,9 +579,9 @@ async function createExecutionPlan(
 function generateCopilotSelfPrompt(
   originalPrompt: string
   synthesis: string
-  nextActions: NextAction[],;
+  nextActions: NextAction[];
   recommendations: Recommendation[]
-  outputFormat: string,;
+  outputFormat: string;
 ): string {
   const formatInstruction =
     outputFormat === 'json'
@@ -669,7 +669,7 @@ function inferActionType(action: string): NextAction['type'] {
 function calculateConfidence(
   contextResults: any[]
   agentResults: any[]
-  engineeringAnalysis: any,;
+  engineeringAnalysis: any;
 ): number {
   let confidence = 0.5; // Base confidence
   if (contextResults.length > 0) confidence += 0.2;
@@ -680,7 +680,7 @@ function calculateConfidence(
 function extractSources(
   contextResults: any[]
   memoryResults: any[]
-  agentResults: any[],;
+  agentResults: any[];
 ): string[] {
   const sources = new Set<string>();
   contextResults.forEach((result) => {
@@ -757,7 +757,7 @@ export class RLRankingDatastore {
     if (!this.redisClient) return [];
     try {
       const summaries = await this.redisClient.zrevrange(this.summariesKey, 0, limit - 1);
-      return summaries.map((s: string) => JSON.parse(s),;
+      return summaries.map((s: string) => JSON.parse(s);
     } catch (error: any) {
       console.error('Failed to get top summaries:', error);
       return [];
@@ -765,7 +765,7 @@ export class RLRankingDatastore {
   }
   async updateUserFeedback(
     summaryId: string
-    feedback: 'positive' | 'negative' | 'neutral',;
+    feedback: 'positive' | 'negative' | 'neutral';
   ): Promise<void> {
     if (!this.redisClient) return;
     try {
@@ -815,7 +815,7 @@ export class RLRankingDatastore {
 export const rlRankingDatastore = new RLRankingDatastore();
 // Update copilotSelfPrompt to use RL ranking
 export async function enhancedCopilotSelfPromptWithRL(
-  prompt: string,;
+  prompt: string;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const result = await copilotSelfPrompt(prompt, options);

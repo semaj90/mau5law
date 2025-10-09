@@ -50,8 +50,8 @@ class GraphSpatialLayout {
    * Connected nodes will be adjacent in memory
    */
   async computeBFSLayout(
-    nodes: GraphNode[],;
-    edges: GraphEdge[],;
+    nodes: GraphNode[];
+    edges: GraphEdge[];
   ): Promise<Map<string, number>, {
     // Build adjacency map
     const adjacency = new Map<string, string[]>();
@@ -78,13 +78,13 @@ class GraphSpatialLayout {
       // Add unvisited neighbors to queue (sorted by confidence for deterministic order)
       const neighbors = adjacency.get(currentNode) || [];
       const unvisitedNeighbors = neighbors
-        .filter(neighbor => !visited.has(neighbor),;
+        .filter(neighbor => !visited.has(neighbor);
         .map(neighbor => ({
-          id: neighbor,;
+          id: neighbor;
           confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0
         })
         .sort((a, b) => b.confidence - a.confidence) // High confidence first
-        .map(n => n.id),;
+        .map(n => n.id);
       for (const neighbor of unvisitedNeighbors) {
         if (!visited.has(neighbor)) {
           visited.add(neighbor);
@@ -111,9 +111,9 @@ class GraphSpatialLayout {
    * Uses Fruchterman-Reingold algorithm
    */
   async computeForceDirectedLayout(
-    nodes: GraphNode[],;
+    nodes: GraphNode[];
     edges: GraphEdge[]
-    iterations = 500,;
+    iterations = 500;
   ): Promise<void> {
     const width = 1000;
     const height = 1000;
@@ -168,7 +168,7 @@ class GraphSpatialLayout {
         forces.get(edge.toNodeId)!.y += fy;
       }
       // Apply forces with cooling
-      const temperature = Math.max(0.1, 1.0 - (iter / iterations),;
+      const temperature = Math.max(0.1, 1.0 - (iter / iterations);
       for (const node of nodes) {
         const pos = this.nodePositions.get(node.nodeId)!;
         const force = forces.get(node.nodeId)!;
@@ -177,8 +177,8 @@ class GraphSpatialLayout {
         pos.x += (force.x / displacement) * limitedDisplacement;
         pos.y += (force.y / displacement) * limitedDisplacement;
         // Keep within bounds
-        pos.x = Math.max(0, Math.min(width, pos.x),;
-        pos.y = Math.max(0, Math.min(height, pos.y),;
+        pos.x = Math.max(0, Math.min(width, pos.x);
+        pos.y = Math.max(0, Math.min(height, pos.y);
       }
     }
     console.log('✅ Force-directed layout computed');
@@ -251,9 +251,9 @@ export class GraphTextureManager {
    * Create GPU data structures with spatial locality
    */
   private async createGPUDataStructures(
-    nodes: GraphNode[],;
+    nodes: GraphNode[];
     edges: GraphEdge[]
-    memoryLayout: Map<string, number>,;
+    memoryLayout: Map<string, number>;
   ): Promise<GPUTextureData> {
     if (!this.device) throw new Error('WebGPU device not initialized');
     // Sort nodes by memory layout order for cache performance
@@ -318,7 +318,7 @@ export class GraphTextureManager {
     // 3. CREATE RANKING MATRIX TEXTURE (rgba32float)
     // ========================================================================
     // Each 4x4 matrix needs 4 pixels (4 rows × 4 RGBA components)
-    const matrixTextureSize = Math.ceil(Math.sqrt(orderedNodes.length),;
+    const matrixTextureSize = Math.ceil(Math.sqrt(orderedNodes.length);
     const rankingTextureData = new Float32Array(matrixTextureSize * matrixTextureSize * 4 * 4); // 4 pixels per matrix
     for (let i = 0; i < orderedNodes.length; i++) {
       const node = orderedNodes[i];
@@ -348,7 +348,7 @@ export class GraphTextureManager {
     this.device.queue.writeTexture(
       { texture: rankingTexture },
       rankingTextureData,
-      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },)>
+      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize })>
       { width: matrixTextureSize, height: matrixTextureSize }
     );
     // ========================================================================
@@ -381,7 +381,7 @@ export class GraphTextureManager {
     this.device.queue.writeTexture(
       { texture: varianceTexture },
       varianceTextureData,
-      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },)>
+      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize })>
       { width: matrixTextureSize, height: matrixTextureSize }
     );
     return {

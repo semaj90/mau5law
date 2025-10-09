@@ -124,8 +124,8 @@ export class ShaderResourceManager {
    * Compile and register shader from bundle
    */
   async compileShader(
-    bundle: ShaderBundle,;
-    backend: GPUBackend = 'webgpu',;
+    bundle: ShaderBundle;
+    backend: GPUBackend = 'webgpu';
   ): Promise<CompiledShader> {
     const pool = this.pools.get(backend);
     if (!pool) {
@@ -178,8 +178,8 @@ export class ShaderResourceManager {
     id: string
     size: number
     usage: string[] = ['storage'],
-    data?: ArrayBuffer,;
-    backend: GPUBackend = 'webgpu',;
+    data?: ArrayBuffer;
+    backend: GPUBackend = 'webgpu';
   ): Promise<TrackedBuffer> {
     const pool = this.pools.get(backend);
     if (!pool) {
@@ -204,7 +204,7 @@ export class ShaderResourceManager {
           mappedAtCreation: !!data
         });
         if (data) {
-          new Uint8Array(resource.getMappedRange()).set(new Uint8Array(data),;
+          new Uint8Array(resource.getMappedRange()).set(new Uint8Array(data);
           resource.unmap();
         }
       } else if (backend === 'webgl2' || backend === 'webgl1') {
@@ -254,7 +254,7 @@ export class ShaderResourceManager {
     height: number
     format: string = 'rgba8unorm',
     usage: string[] = ['texture-binding'],
-    backend: GPUBackend = 'webgpu',;
+    backend: GPUBackend = 'webgpu';
   ): Promise<TrackedTexture> {
     const pool = this.pools.get(backend);
     if (!pool) {
@@ -275,7 +275,7 @@ export class ShaderResourceManager {
         const device = this.deviceContext as GPUDevice;
         resource = device.createTexture({
           size: { width, height },
-          format: format as GPUTextureFormat,;
+          format: format as GPUTextureFormat;
           usage: this.mapTextureUsageToWebGPU(usage)
         });
       } else if (backend === 'webgl2' || backend === 'webgl1') {
@@ -323,7 +323,7 @@ export class ShaderResourceManager {
       inputBuffers?: string[];
       outputBuffers?: string[];
     },
-    backend: GPUBackend = 'webgpu',;
+    backend: GPUBackend = 'webgpu';
   ): Promise<ShaderExecutionContext> {
     const pool = this.pools.get(backend);
     const shader = pool?.shaders.get(shaderId);
@@ -394,7 +394,7 @@ export class ShaderResourceManager {
   } {
     const pools = backend
       ? [this.pools.get(backend)].filter(Boolean) as ShaderResourcePool[]
-      : Array.from(this.pools.values(),;
+      : Array.from(this.pools.values();
     const poolStats = pools.map(pool => ({
       backend: pool.backend,
       memoryUsage: { ...pool.memoryUsage },
@@ -403,7 +403,7 @@ export class ShaderResourceManager {
       textureCount: pool.textures.size,
       bindGroupCount: pool.bindGroups.size,
       utilizationPercent: (pool.memoryUsage.allocatedBytes / pool.maxMemoryBudget) * 100
-    }),;
+    });
     const totalMemoryUsed = poolStats.reduce((sum, stats) => sum + stats.memoryUsage.allocatedBytes, 0);
     const totalMemoryBudget = poolStats.reduce((sum, stats) => sum + (this.pools.get(stats.backend)?.maxMemoryBudget || 0), 0);
     return {

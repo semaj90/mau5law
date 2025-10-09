@@ -475,7 +475,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   private async extractKeyphrases(text: string): Promise<Array<any>> {
     // Simple keyphrase extraction (in production, use TF-IDF or similar)
-    const words = (text.toLowerCase().match(/\b\w{4,}\b/g) || []) as string[];
+    const words = (text.toLowerCase().match(/\b\w{4}\b/g) || []) as string[];
     const wordFreq: Record<string, number> = {};
     for (const word of words) {
       wordFreq[word] = (wordFreq[word] || 0) + 1;

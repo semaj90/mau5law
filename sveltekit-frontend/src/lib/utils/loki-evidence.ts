@@ -72,8 +72,8 @@ export class LokiEvidenceService {
     if (syncedOps.length > 1000) {
       const toDelete = syncedOps
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        .slice(0, syncedOps.length - 1000),;
-      toDelete.forEach((op) => this.syncQueue?.remove(op),;
+        .slice(0, syncedOps.length - 1000);
+      toDelete.forEach((op) => this.syncQueue?.remove(op);
     }
   }
   // Evidence CRUD operations with local caching
@@ -202,7 +202,7 @@ export class LokiEvidenceService {
       ]
         .join(' ')
         .toLowerCase();
-      return searchFields.includes(query.toLowerCase(),;
+      return searchFields.includes(query.toLowerCase();
     });
   }
   public getEvidenceByType(type: string): LokiEvidence[] {
@@ -328,8 +328,8 @@ export class LokiEvidenceService {
     // Get local evidence
     const localEvidence = this.evidenceCollection.find({});
     // Create maps for efficient lookup
-    const localMap = new Map(localEvidence.map((e: any) => [(e as any).id, e]),;
-    const serverMap = new Map(serverEvidence.map((e: any) => [e.id, e]),;
+    const localMap = new Map(localEvidence.map((e: any) => [(e as any).id, e]);
+    const serverMap = new Map(serverEvidence.map((e: any) => [e.id, e]);
     // Find conflicts and resolve them
     for (const [id, serverItem] of Array.from(serverMap)) {
       const localItem = localMap.get(id);
@@ -342,7 +342,7 @@ export class LokiEvidenceService {
         const localUpdated = new Date((localItem as any).timeline?.updatedAt || 0);
         if (serverUpdated > localUpdated) {
           // Server is newer - update local
-          this.evidenceCollection.update(Object.assign({}, localItem, serverItem),;
+          this.evidenceCollection.update(Object.assign({}, localItem, serverItem);
         }
         // If local is newer, keep local version (it will sync to server later)
       }

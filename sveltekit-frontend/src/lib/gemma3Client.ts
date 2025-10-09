@@ -259,7 +259,7 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string,;
+    content: string;
     type: string = "general",
   ): Promise<string> {
     const messages: ChatMessage[] = [

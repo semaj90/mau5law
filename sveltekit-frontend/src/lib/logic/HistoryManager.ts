@@ -26,7 +26,7 @@ export class HistoryManager {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
     // Add new snapshot
-    this.history.push(JSON.parse(JSON.stringify(value)),;
+    this.history.push(JSON.parse(JSON.stringify(value));
     this.currentIndex = this.history.length - 1;
     // Limit history size
     if (this.history.length > this.maxHistorySize) {
@@ -40,7 +40,7 @@ export class HistoryManager {
   undo(): ContentNode[] | null {
     if (this.canUndo()) {
       this.currentIndex--;
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]),;
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
     }
     return null;
   }
@@ -50,7 +50,7 @@ export class HistoryManager {
   redo(): ContentNode[] | null {
     if (this.canRedo()) {
       this.currentIndex++;
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]),;
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
     }
     return null;
   }
@@ -71,7 +71,7 @@ export class HistoryManager {
    */;
   getCurrentSnapshot(): ContentNode[] | null {
     if (this.currentIndex >= 0 && this.currentIndex < this.history.length) {
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]),;
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
     }
     return null;
   }

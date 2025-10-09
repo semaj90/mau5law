@@ -64,13 +64,13 @@ type PredictiveTypingEvent =
   | { type: 'RESET' }
 // Machine actor for predictive analytics
 const predictiveAnalyticsActor = fromPromise(async ({
-  input,;
+  input;
 },: {
   input: {
-    query: string,;
-    glyphContext: GlyphContext[],;
-    sessionData: any,;
-    enableRealTimeLearning: boolean,;
+    query: string;
+    glyphContext: GlyphContext[];
+    sessionData: any;
+    enableRealTimeLearning: boolean;
   }
 }), => {
   try {
@@ -82,7 +82,7 @@ const predictiveAnalyticsActor = fromPromise(async ({
         query_history: input.sessionData.queryHistory || [],
         interaction_patterns: input.sessionData.interactionPatterns || [],
         current_focus: input.sessionData.currentFocus
-      },);
+      });
       {
         prediction_depth: 5,
         enable_prefetching,: true
@@ -97,17 +97,17 @@ const predictiveAnalyticsActor = fromPromise(async ({
 });
 // Machine actor for glyph context retrieval
 const glyphContextActor = fromPromise(async ({
-  input,;
+  input;
 },: {
   input: {
-    query: string,;
-    maxGlyphs: number,;
-    sessionData: any,;
+    query: string;
+    maxGlyphs: number;
+    sessionData: any;
   }
 }), => {
   try {
     const result = await enhancedRAGGlyphSystem.generateWithGlyphRAG(
-      input.query,);
+      input.query);
       {
         max_glyphs: input.maxGlyphs,
         include_visual_context,: false
@@ -124,13 +124,13 @@ const glyphContextActor = fromPromise(async ({
 });
 // Machine actor for query completion
 const queryCompletionActor = fromPromise(async ({
-  input,;
+  input;
 },: {
   input: {
-    partialQuery: string,;
-    glyphContext: GlyphContext[],;
-    sessionData: any,;
-    maxCompletions: number,;
+    partialQuery: string;
+    glyphContext: GlyphContext[];
+    sessionData: any;
+    maxCompletions: number;
   }
 }), => {
   try {
@@ -140,7 +140,7 @@ const queryCompletionActor = fromPromise(async ({
         glyphs: input.glyphContext,
         user_session: input.sessionData,
         topic_focus: input.sessionData.currentFocus
-      },);
+      });
       {
         max_completions: input.maxCompletions,
         min_confidence,: 0.3,
@@ -152,7 +152,7 @@ const queryCompletionActor = fromPromise(async ({
       confidence: comp.confidence,
       intent: comp.predicted_intent,
       topology_score: comp.topology_support
-    }),;
+    });
   } catch (error: any) {
     console.warn('Query completion failed:', error);
     return [];
@@ -160,13 +160,13 @@ const queryCompletionActor = fromPromise(async ({
 });
 // Learning actor for user feedback
 const feedbackLearningActor = fromPromise(async ({
-  input,;
+  input;
 },: {
   input: {
-    originalQuery: string,;
-    predictiveResults: PredictiveAnalyticsResult,;
-    userFeedback: any,;
-    sessionContext: any,;
+    originalQuery: string;
+    predictiveResults: PredictiveAnalyticsResult;
+    userFeedback: any;
+    sessionContext: any;
   }
 }), => {
   try {
@@ -267,7 +267,7 @@ export const predictiveTypingMachine = setup({
             confidence: query.confidence,
             intent: query.predicted_intent,
             topology_score: Math.random() * 0.3 + 0.7 // Would extract from topology data
-          }),;
+          });
         }
         return context.suggestions;
       }
@@ -602,7 +602,7 @@ export const predictiveTypingMachine = setup({
                     // Update satisfaction score based on learning success
                     const learningSuccess = event.output.learning_applied;
                     const adjustment = learningSuccess ? 0.1 : -0.05;
-                    return Math.max(0, Math.min(1, context.userSatisfactionScore + adjustment),;
+                    return Math.max(0, Math.min(1, context.userSatisfactionScore + adjustment);
                   }
                 })
               ],
@@ -674,7 +674,7 @@ export type PredictiveTypingService = ActorRefFrom<typeof predictiveTypingMachin
 export function createPredictiveTypingMachine(
   sessionId: string
   userId?: string
-  initialConfig?: Partial<PredictiveTypingContext['config']>,;
+  initialConfig?: Partial<PredictiveTypingContext['config']>;
 ) {
   return predictiveTypingMachine.provide({
     actors: {

@@ -103,7 +103,7 @@ export const grpoRateLimiter = new RateLimiter({
 // Middleware function to apply rate limiting
 export function withRateLimit(
   rateLimiter: RateLimiter
-  errorMessage: string = 'Too many requests',;
+  errorMessage: string = 'Too many requests';
 ) {
   return (handler: (request: Request) => Promise<Response>) => {
     return async (request: Request): Promise<Response> => {
@@ -111,7 +111,7 @@ export function withRateLimit(
       if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
         return new Response(JSON.stringify({
-            success: false,;
+            success: false;
             error: errorMessage
             retryAfter,
             resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
@@ -120,9 +120,9 @@ export function withRateLimit(
             status: 429,
             headers: {
               'Content-Type': 'application/json',
-              'Retry-After': retryAfter.toString(),),
+              'Retry-After': retryAfter.toString()),
               'X-RateLimit-Remaining',: '0',
-              'X-RateLimit-Reset',: (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString(,))
+              'X-RateLimit-Reset',: (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString())
             }
           }
         );

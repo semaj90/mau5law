@@ -40,7 +40,7 @@ class SelfOrganizingMap {
     height = 20,
     feature_dimensions = 8,
     initial_learning_rate = 0.1,
-    initial_radius = 5,;
+    initial_radius = 5;
   ) {
     this.width = width;
     this.height = height;
@@ -94,7 +94,7 @@ class SelfOrganizingMap {
           Math.pow(x - bmu.x, 2) + Math.pow(y - bmu.y, 2)
         );
         if (distance_to_bmu <= current_radius) {
-          const influence = Math.exp(-Math.pow(distance_to_bmu, 2) / (2 * Math.pow(current_radius, 2)),;
+          const influence = Math.exp(-Math.pow(distance_to_bmu, 2) / (2 * Math.pow(current_radius, 2));
           for (let i = 0; i < this.feature_dimensions; i++) {
             this.nodes[y][x].weights[i] +=
               current_learning_rate * influence * (input[i] - this.nodes[y][x].weights[i]);
@@ -236,7 +236,7 @@ export class RedisSOMapCache extends EventEmitter {
     return 1 - (unique_chunks / chunks.length);
   }
   private calculateKeySimilarity(_key: string): number {
-    const existing_keys = Array.from(this.cache.keys(),;
+    const existing_keys = Array.from(this.cache.keys();
     if (existing_keys.length === 0) return 0;
     let max_similarity = 0;
     for (const existing_key of existing_keys.slice(-10)) { // Check last 10 keys
@@ -326,7 +326,7 @@ export class RedisSOMapCache extends EventEmitter {
   }
   // === Redis-Compatible API ===
   async set(_key: string
-    value: any,;
+    value: any;
     options: {
       ttl?: number;
       metadata?: Partial<CacheEntry['metadata']>;
@@ -413,10 +413,10 @@ export class RedisSOMapCache extends EventEmitter {
     return false;
   }
   async keys(pattern?: string): Promise<string[]> {
-    const all_keys = Array.from(this.cache.keys(),;
+    const all_keys = Array.from(this.cache.keys();
     if (!pattern) return all_keys;
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'),;
-    return all_keys.filter((_key: any) => regex.test(key),;
+    const regex = new RegExp(pattern.replace(/\*/g, '.*');
+    return all_keys.filter((_key: any) => regex.test(key);
   }
   async flushAll(): Promise<boolean> {
     const count = this.cache.size;
@@ -426,7 +426,7 @@ export class RedisSOMapCache extends EventEmitter {
     return true;
   }
   private async intelligentEviction(needed_space: number): Promise<void> {
-    const entries = Array.from(this.cache.entries(),;
+    const entries = Array.from(this.cache.entries();
     // Sort by priority score (lower = evict first)
     entries.sort(([, a], [, b]) => a.priority_score - b.priority_score);
     let freed_space = 0;
@@ -461,11 +461,11 @@ export class RedisSOMapCache extends EventEmitter {
         expired_keys.push(key);
       }
     }
-    expired_keys.forEach((_key: any) => this.delete(key),;
+    expired_keys.forEach((_key: any) => this.delete(key);
     // Retrain SOM with recent access patterns
     const recent_entries = Array.from(this.cache.values()
       .filter((entry: any) => entry.access_count > 1)
-      .slice(-100),; // Last 100 accessed items
+      .slice(-100); // Last 100 accessed items
     for (const entry of recent_entries) {
       const features = this.extractFeatures(entry.key, entry.value, entry.metadata);
       this.som.train(features);
@@ -512,13 +512,13 @@ export class RedisSOMapCache extends EventEmitter {
       id,
       patterns: entries.map((e: any) => e.metadata.access_pattern),
       confidence: entries.reduce((sum, e) => sum + e.priority_score, 0) / entries.length
-    }),;
+    });
     const recommendations = this.generateRecommendations(clusters, som_stats);
     return { clusters, recommendations }
   }
   private generateRecommendations(
     clusters: Array<any>
-    som_stats: any,;
+    som_stats: any;
   ): string[] {
     const recommendations: string[] = [];
     if (som_stats.active_clusters < som_stats.total_clusters * 0.3) {

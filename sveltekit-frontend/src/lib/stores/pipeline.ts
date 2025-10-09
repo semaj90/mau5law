@@ -35,7 +35,7 @@ function createPipelineStore(){
   }
   connect();
   const latest = derived(events, ($e) => $e[$e.length-1]);
-  const llmResponses = derived(events, ($e) => $e.filter(e => e.type==='ai.response'),;
+  const llmResponses = derived(events, ($e) => $e.filter(e => e.type==='ai.response');
   return { events, latest, llmResponses }
 }
 export const pipeline = createPipelineStore();

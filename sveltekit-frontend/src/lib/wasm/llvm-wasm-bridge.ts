@@ -122,16 +122,16 @@ export class LLVMWASMBridge {
   }
   async compileLegalModule(
     moduleId: string
-    name: string,;
-    config: any,;
+    name: string;
+    config: any;
   ): Promise<LLVMModule | null> {
     const startTime = performance.now();
     try {
       // Mock C++ source files for legal processing
       const cppSources = config.sources.map((filename: string) => ({,
-        name: filename,;
+        name: filename;
         content: this.generateMockCppSource(filename, name)
-      }),;
+      });
       // Compile C++ to WASM using LLVM
       const compilationResult = await this.compileToWASM(cppSources, {
         moduleId,
@@ -150,7 +150,7 @@ export class LLVMWASMBridge {
         compiledWasm: compilationResult.wasmBinary,
         exports: { [key,: strin,g]: any },
         memory: null
-        isLoaded: false,;
+        isLoaded: false;
         performance: {
           compileTimeMs: performance.now() - startTime,
           loadTimeMs: 0,
@@ -271,8 +271,8 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
 }`;
   }
   private async compileToWASM(
-    sources: Array<any>,;
-    options: LLVMCompileOptions,;
+    sources: Array<any>;
+    options: LLVMCompileOptions;
   ): Promise<CompilationResult> {
     // Mock LLVM compilation process
     // In a real implementation, this would invoke clang/LLVM to compile C++ to WASM
@@ -281,7 +281,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       console.log(`🔨 Compiling ${sources.length} source files to WebAssembly...`);
       console.log(`📋 Options:`, options);
       // Simulate compilation delay
-      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000),;
+      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000);
       // Generate a minimal but functional WASM binary
       const wasmBinary = this.generateMockWASMBinary(sources, options);
       const compileTime = performance.now() - startTime;
@@ -309,8 +309,8 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     }
   }
   private generateMockWASMBinary(
-    sources: Array<any>,;
-    options: LLVMCompileOptions,;
+    sources: Array<any>;
+    options: LLVMCompileOptions;
   ): ArrayBuffer {
     // Generate a minimal WASM binary that can be instantiated
     // This is a mock implementation - real WASM would be much more complex
@@ -340,7 +340,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     ]);
     return wasmModule.buffer;
   }
-  private extractExportsFromSources(sources: Array<,): string[] {
+  private extractExportsFromSources(sources: Array<): string[] {
     const exports: string[] = [];
     for (const source of sources) {
       // Extract function names from extern "C" blocks
@@ -364,9 +364,9 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     const startTime = performance.now();
     try {
       // Create memory for the module
-      const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024),;
+      const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024);
       module.memory = new WebAssembly.Memory({
-        initial: memoryPages,;
+        initial: memoryPages;
         maximum: memoryPages * 2
       });
       // Instantiate the WASM module
@@ -479,7 +479,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       if (!vectorModule?.isLoaded) {
         // Fallback to GPU service integration
         const result = await gpuServiceIntegration.generateEmbeddings([inputVector.join(' ')]);
-        const embedding = Array.from(result[0] || new Float32Array(dimensions),;
+        const embedding = Array.from(result[0] || new Float32Array(dimensions);
         return {
           embedding,
           processingTime: performance.now() - startTime
@@ -499,7 +499,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         dimensions
       );
       // Read result
-      const embedding = Array.from(memory.slice(outputPtr / 4, outputPtr / 4 + resultSize),;
+      const embedding = Array.from(memory.slice(outputPtr / 4, outputPtr / 4 + resultSize);
       // Cleanup
       (vectorModule.exports as any).free_memory(inputPtr);
       (vectorModule.exports as any).free_memory(outputPtr);
@@ -511,7 +511,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       // Fallback to GPU service integration
       try {
         const result = await gpuServiceIntegration.generateEmbeddings([inputVector.join(' ')]);
-        const embedding = Array.from(result[0] || new Float32Array(dimensions),;
+        const embedding = Array.from(result[0] || new Float32Array(dimensions);
         return {
           embedding,
           processingTime: performance.now() - startTime
@@ -520,7 +520,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         console.error('❌ GPU service fallback failed:', fallbackError);
         // Final fallback: generate random normalized embedding
         const embedding = Array.from({ length: dimensions }, () => Math.random() - 0.5);
-        const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0),;
+        const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
         return {
           embedding: embedding.map(val => val / norm),
           processingTime: performance.now() - startTime
@@ -530,7 +530,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   }
   private async mockLLVMCompile(sources: any[], options: any): Promise<ArrayBuffer> {
     // Mock LLVM compilation
-    await new Promise(resolve => setTimeout(resolve, 100),;
+    await new Promise(resolve => setTimeout(resolve, 100);
     return this.generateMockWASMBinary(sources, options);
   }
   private async mockWASMInstantiate(wasmBinary: ArrayBuffer, imports: any): Promise<any> {

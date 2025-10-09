@@ -85,9 +85,9 @@ export class ShaderCacheManager {
   }
   private async compileShader(
     id: string
-    wgsl: string,;
+    wgsl: string;
     config: ShaderConfig
-    startTime: number,;
+    startTime: number;
   ): Promise<CompiledShader> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
@@ -177,7 +177,7 @@ export class ShaderCacheManager {
    */
   async createTensorShader(
     operation: 'embedding' | 'similarity' | 'quantize' | 'simd_parse',
-    dimensions: number,;
+    dimensions: number;
   ): Promise<CompiledShader> {
     const id = `tensor_${operation}_${dimensions}`;
     const wgsl = this.generateTensorWGSL(operation, dimensions);
@@ -202,7 +202,7 @@ export class ShaderCacheManager {
 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let index = global_id.x;
   let total = params.x * params.y;
-  if (index >= total) { return, }
+  if (index >= total) { return }
   let batch_idx = index / params.x;
   let dim_idx = index % params.x;
   // Embedding computation with optimized memory access
@@ -221,7 +221,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let pair_idx = global_id.x;
   let num_pairs = params.x;
   let dimensions = params.y;
-  if (pair_idx >= num_pairs) { return, }
+  if (pair_idx >= num_pairs) { return }
   var dot_product = 0.0;
   var norm_a = 0.0;
   var norm_b = 0.0;
@@ -246,7 +246,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let index = global_id.x;
   let total_elements = params.x;
-  if (index >= total_elements) { return, }
+  if (index >= total_elements) { return }
   // SIMD-style parallel parsing
   let raw_val = raw_data[index];
   // Unpack 4 bytes into floats
@@ -268,16 +268,16 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    * Execute tensor operation on GPU
    */
   async executeTensorOperation(
-    shader: CompiledShader,;
+    shader: CompiledShader;
     inputs: GPUBuffer[]
-    outputSize: number,;
+    outputSize: number;
   ): Promise<GPUBuffer> {
     if (!this.device || !shader.pipeline || !shader.bindGroupLayout) {
       throw new Error('Shader not properly compiled');
     }
     // Create output buffer
     const outputBuffer = this.device.createBuffer({
-      size: outputSize,;
+      size: outputSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     // Create bind group
@@ -299,7 +299,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const passEncoder = commandEncoder.beginComputePass();
     passEncoder.setPipeline(shader.pipeline as GPUComputePipeline);
     passEncoder.setBindGroup(0, bindGroup);
-    passEncoder.dispatchWorkgroups(Math.ceil(outputSize / (4 * 64)),; // Workgroup size
+    passEncoder.dispatchWorkgroups(Math.ceil(outputSize / (4 * 64)); // Workgroup size
     passEncoder.end();
     this.device.queue.submit([commandEncoder.finish()]);
     return outputBuffer;
@@ -311,7 +311,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const logData = {
       shader_id: id
       cache_type: type
-      compile_time_ms: duration,;
+      compile_time_ms: duration;
       timestamp: Date.now()
     }
     // Send to Loki.js for observability
@@ -379,7 +379,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       features[featureIndex] += 1 / (index + 1);
     });
     // Normalize
-    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0),;
+    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? features.map(val => val / magnitude) : features;
   }
   private simpleHash(str: string): number {
@@ -502,8 +502,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   async cacheShaderWithEmbedding(
     shader: CompiledShader
     description: string
-    operation: string,;
-    tags: string[] = [],;
+    operation: string;
+    tags: string[] = [];
   ): Promise<void> {
     try {
       // Update metadata
@@ -574,7 +574,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const topOperations = Object.entries(operations)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
-      .map(([operation, count]) => ({ operation, count }),;
+      .map(([operation, count]) => ({ operation, count });
     return {
       totalShaders: shaderIndex.length,
       memoryCount: this.shaders.size,

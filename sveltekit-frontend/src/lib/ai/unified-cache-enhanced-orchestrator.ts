@@ -162,7 +162,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       const orchestrationResult = await this.coordinateDistributedProcessing(request, processingResult);
       // Step 6: Generate unified response with comprehensive metrics
       const response = await this.generateUnifiedResponse(
-        request,);
+        request);
         {
           cacheStrategy,
           topologyPrediction,
@@ -368,7 +368,7 @@ export class UnifiedCacheEnhancedOrchestrator {
         let result = await this.multiTierCache.get(cacheKey);
         if (!result) result = await optimizedCache.get(cacheKey);
         if (!result) {
-          const summarizeKey = await hashPayload(JSON.stringify(request),;
+          const summarizeKey = await hashPayload(JSON.stringify(request);
           const summarizeResult = await getCache(summarizeKey);
           result = summarizeResult.entry?.structured;
         }
@@ -380,7 +380,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   private async predictOptimizedTopology(request: UnifiedCacheRequest): Promise<TopologyPrediction> {
     return await this.qloraPredictor.predictOptimalTopology(
       request.context.documentContext,
-      request.context.userSession,);
+      request.context.userSession);
       {
         maxLatency: request.cachePreferences.maxLatencyMs,
         minAccuracy,: request.optimization.targetAccuracy,
@@ -585,7 +585,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       complexity: this.calculateRequestComplexity(request),
       targetAccuracy: request.optimization.targetAccuracy
     }
-    return await hashPayload(JSON.stringify(keyData),;
+    return await hashPayload(JSON.stringify(keyData);
   }
   private calculateActualAccuracy(results: any): number {
     // Calculate actual accuracy based on processing results
@@ -680,7 +680,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   private calculateOptimalTTL(accuracy: number): number {
     // Higher accuracy results get longer TTL
     const baseTTL = 300000; // 5 minutes
-    const accuracyMultiplier = Math.max(0.5, Math.min(3.0, accuracy / 0.8),;
+    const accuracyMultiplier = Math.max(0.5, Math.min(3.0, accuracy / 0.8);
     return Math.floor(baseTTL * accuracyMultiplier);
   }
   private calculateAccuracyTrend(): string {
@@ -749,7 +749,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       }
       groups.get(groupKey)!.push(request);
     }
-    return Array.from(groups.values(),;
+    return Array.from(groups.values();
   }
   private async prefetchCacheForGroup(group: UnifiedCacheRequest[]): Promise<void> {
     // Prefetch cache data for all requests in the group
@@ -765,7 +765,7 @@ export class UnifiedCacheEnhancedOrchestrator {
     // Calculate optimal concurrency based on group characteristics
     const complexity = group.reduce((sum, req) => sum + this.calculateRequestComplexity(req), 0) / group.length;
     const baseConcurrency = 4;
-    return Math.max(2, Math.min(8, Math.floor(baseConcurrency * (1.5 - complexity)),;
+    return Math.max(2, Math.min(8, Math.floor(baseConcurrency * (1.5 - complexity));
   }
   private async processConcurrentGroup(group: UnifiedCacheRequest[], concurrency: number): Promise<UnifiedCacheResponse[]> {
     const results: UnifiedCacheResponse[] = [];
@@ -773,7 +773,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       const batch = group.slice(i, i + concurrency);
       const batchResults = await Promise.all(
         batch.map(request => this.processWithUnifiedIntelligence(request)
-      ),;
+      );
       results.push(...batchResults);
     }
     return results;

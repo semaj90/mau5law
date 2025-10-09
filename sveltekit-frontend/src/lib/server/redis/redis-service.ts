@@ -30,9 +30,9 @@ class RedisService {
       this.publisher = createClient(config);
       this.subscriber = createClient(config);
       // Setup error handlers
-      this.client.on('error', this.handleError.bind(this),;
-      this.publisher.on('error', this.handleError.bind(this),;
-      this.subscriber.on('error', this.handleError.bind(this),;
+      this.client.on('error', this.handleError.bind(this);
+      this.publisher.on('error', this.handleError.bind(this);
+      this.subscriber.on('error', this.handleError.bind(this);
       // Connect all clients
       await Promise.all([
         this.client.connect(),
@@ -91,7 +91,7 @@ class RedisService {
     caseId: string
     oldStatus: string
     newStatus: string
-    userId?: string,;
+    userId?: string;
   ) {
     await this.publish('case_update', {
       type: 'CASE_STATUS_CHANGED',
@@ -107,7 +107,7 @@ class RedisService {
     caseId: string
     nodeId: string
     position: { x: number; y: number },
-    userId?: string,;
+    userId?: string;
   ) {
     await this.publish('canvas_update', {
       type: 'CANVAS_NODE_MOVED',

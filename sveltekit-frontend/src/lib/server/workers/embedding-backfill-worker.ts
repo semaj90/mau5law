@@ -81,7 +81,7 @@ export class EmbeddingBackfillWorker {
           })
         );
         // Small delay between batches to prevent overwhelming the system
-        await new Promise(resolve => setTimeout(resolve, 1000),;
+        await new Promise(resolve => setTimeout(resolve, 1000);
       }
       console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
       return result;
@@ -109,7 +109,7 @@ export class EmbeddingBackfillWorker {
       } catch (error) {
         console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}:`, error);
         if (attempt === this.retryCount) throw error;
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt),; // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt); // Exponential backoff
       }
     }
     if (!embeddingResult?.embedding) {

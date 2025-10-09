@@ -497,7 +497,7 @@ export class PredictivePrefetcher {
       const connection = (navigator as any).connection;
       if (
         conditions.connection === "fast" &&
-        connection.effectiveType.includes("2g"),;
+        connection.effectiveType.includes("2g");
       ) {
         return false;
       }
@@ -522,7 +522,7 @@ export class PredictivePrefetcher {
         }
       });
       if (response.ok) {
-        await this.cache.put(route, response.clone(),;
+        await this.cache.put(route, response.clone();
       }
     } catch (error: any) {
       console.warn(`Failed to prefetch route ${route}:`, error);
@@ -536,7 +536,7 @@ export class PredictivePrefetcher {
     try {
       // removed unused response assignment
       if (response.ok) {
-        await this.cache.put(asset, response.clone(),;
+        await this.cache.put(asset, response.clone();
       }
     } catch (error: any) {
       console.warn(`Failed to prefetch asset ${asset}:`, error);

@@ -293,7 +293,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     variant: string
     size: string
     error?: boolean
-    success?: boolean,;
+    success?: boolean;
   ): Partial<YoRHaStyle> {
     // Size-based styles
     const sizeStyles = {
@@ -512,7 +512,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       this.remove(this.textMesh);
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose(),;
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -540,7 +540,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       if (mesh) {
         mesh.geometry.dispose();
         if (Array.isArray(mesh.material)) {
-          mesh.material.forEach(mat => mat.dispose(),;
+          mesh.material.forEach(mat => mat.dispose();
         } else {
           mesh.material.dispose();
         }

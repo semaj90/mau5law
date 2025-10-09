@@ -297,7 +297,7 @@ class LegalCitationsManager {
       extractionSource: sourceDocId
       contextSnippet: this.extractContext(sourceText, extracted.fullCitation),
       relevanceScore: extracted.relevance || 0.5,
-      bookmarked: false,;
+      bookmarked: false;
       tags: extracted.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
@@ -611,7 +611,7 @@ class LegalCitationsManager {
       legalPrinciples: data.legalPrinciples || [],
       precedentialValue: data.precedentialValue || 'informational',
       aiExtracted: false
-      bookmarked: false,;
+      bookmarked: false;
       tags: data.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),

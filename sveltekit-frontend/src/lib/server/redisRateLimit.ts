@@ -65,7 +65,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
     const allowed = res[0] === 1;
     const count = res[1];
     const retryAfter = res[2];
-    const remaining = Math.max(0, opts.limit - Number(count || 0),;
+    const remaining = Math.max(0, opts.limit - Number(count || 0);
     // resetTime semantics: seconds until window reset; use retryAfter when limited, otherwise approximate remaining window based on configured window length
     const resetTime = Number(retryAfter || 0);
     // Log rate limit activity (development only)
@@ -105,7 +105,7 @@ export async function closeRedisRateLimit(): Promise<any> {
  */
 export type RateLimitPolicy = 'admin' | 'api' | 'public' | 'auth' | 'search';
 export function createRateLimitConfig(
-  policy: RateLimitPolicy = 'api',;
+  policy: RateLimitPolicy = 'api';
 ): Pick<RedisRateLimitOptions, 'limit' | 'windowSec'> {
   switch (policy) {
     case 'admin':
@@ -143,7 +143,7 @@ export async function rateLimitHealthCheck(): Promise<any> {
     return {
       redis: false
       latencyMs: Date.now() - start,
-      scriptLoaded: false,;
+      scriptLoaded: false;
       timestamp: new Date().toISOString()
     }
   }

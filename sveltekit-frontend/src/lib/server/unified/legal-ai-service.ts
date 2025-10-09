@@ -84,7 +84,7 @@ export class UnifiedLegalAIService {
       const dbRecord =
         upload.documentType === 'evidence'
           ? await db
-              .insert(evidence),;
+              .insert(evidence);
               .values({
                 id: documentId
                 case_id: upload.caseId!,
@@ -118,7 +118,7 @@ export class UnifiedLegalAIService {
       // Step 5: Cache the document for fast access
       const cacheKey = `document:${documentId}`;
       await cache.set(
-        cacheKey,);
+        cacheKey);
         {
           id: documentId
           fileName: upload.fileName,
@@ -179,7 +179,7 @@ export class UnifiedLegalAIService {
             .select()
             .from(evidence)
             .where(eq(evidence.id, (result as { id?: any }).id)
-            .limit(1),;
+            .limit(1);
           if (dbRecord.length > 0) {
             results.push({
               ...result,
@@ -203,7 +203,7 @@ export class UnifiedLegalAIService {
             .select()
             .from(documents)
             .where(eq(documents.id, (result as { id?: any }).id)
-            .limit(1),;
+            .limit(1);
           if (dbRecord.length > 0) {
             results.push({
               ...result,
@@ -267,7 +267,7 @@ export class UnifiedLegalAIService {
         (await minioStorage.getPresignedUrl(
           evidenceRecord.length > 0 ? 'legal-evidence' : 'legal-documents',
           record.file_path
-        ),;
+        );
       // Get similar documents from Qdrant
       const textForSimilarity = record.ocr_content || record.content || record.title;
       const similarDocs = await qdrant.searchCases(textForSimilarity, { limit: 5 }); // Note: using searchCases as fallback
@@ -297,7 +297,7 @@ export class UnifiedLegalAIService {
   private async updateNeo4jRelationships(
     documentId: string
     caseId: string
-    documentType: string,;
+    documentType: string;
   ): Promise<void> {
     try {
       // TODO: Implement Neo4j driver connection and relationship updates
@@ -328,7 +328,7 @@ export class UnifiedLegalAIService {
     const health = {
       postgresql: false
       redis: false
-      minio: false,;
+      minio: false;
       qdrant: false
       neo4j: false
     }

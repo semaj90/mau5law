@@ -149,7 +149,7 @@ export class EnhancedLegalSearchService {
           sections: doc.sections || [],
           url: doc.url
         }
-      }),;
+      });
       this.memoryVectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
       console.log(`✅ Memory vector store initialized with ${documents.length} documents`);
     } catch (error: any) {
@@ -183,7 +183,7 @@ export class EnhancedLegalSearchService {
   }
   // Main search method with multiple strategies
   async search(
-    query: string,;
+    query: string;
     options: {
       jurisdiction?: string;
       category?: string;
@@ -343,8 +343,8 @@ export class EnhancedLegalSearchService {
   }
   // Database text search (disabled - no db connection)
   private async performDatabaseTextSearch(
-    query: string,;
-    options: any,;
+    query: string;
+    options: any;
   ): Promise<LegalSearchResult[]> {
     // Database search disabled for now - returning empty results
     console.log('Database search disabled - using static data only');
@@ -481,12 +481,12 @@ export class EnhancedLegalSearchService {
   }
   private normalizeScore(score: number): number {
     // Normalize different scoring systems to 0-1 range
-    return Math.max(0, Math.min(1, 1 - score),; // For similarity distance scores
+    return Math.max(0, Math.min(1, 1 - score); // For similarity distance scores
   }
   private deduplicateAndRankResults(
     results: LegalSearchResult[]
-    query: string,;
-    options: any,;
+    query: string;
+    options: any;
   ): LegalSearchResult[] {
     // Remove duplicates by ID
     const uniqueResults = new Map<string, LegalSearchResult>();

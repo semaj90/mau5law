@@ -77,7 +77,7 @@ export function generateSummary(id: string, maxSentences = 3): string | undefine
   return summarizeText(text, maxSentences);
 }
 export function listActive() {
-  return Array.from(streams.values()).map((s) => ({ id: s.id, tokens: s.tokens.length }),;
+  return Array.from(streams.values()).map((s) => ({ id: s.id, tokens: s.tokens.length });
 }
 // Retrieve or compute & store summary in cache (memory/redis)
 export async function cachedSummary(text: string, maxSentences = 3): Promise<string | undefined> {
@@ -93,7 +93,7 @@ export async function cachedSummary(text: string, maxSentences = 3): Promise<str
   }
   // Memory cache via Map keyed by key (reuse streams map not ideal) – lightweight singleton
   const mem =
-    (globalThis as any).__ragSummaryCache || ((globalThis as any).__ragSummaryCache = new Map(),;
+    (globalThis as any).__ragSummaryCache || ((globalThis as any).__ragSummaryCache = new Map();
   if (mem.has(key)) return mem.get(key);
   const summary = summarizeText(text, maxSentences);
   if (summary) {
@@ -111,7 +111,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
   const sentences = text
     .split(/(?<=[.!?])\s+/)
     .map((x) => x.trim()
-    .filter(Boolean),;
+    .filter(Boolean);
   if (!sentences.length) return text.slice(0, 300);
   // Build TF counts
   const termFreq: Record<string, number> = {}
@@ -126,13 +126,13 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
       unique.add(t);
       termFreq[t] = (termFreq[t] || 0) + 1;
     }
-    sentenceTerms.push(Array.from(unique),;
+    sentenceTerms.push(Array.from(unique);
   }
   // IDF approximation
   const totalSent = sentences.length;
   const idf: Record<string, number> = {}
   for (const [term, tf] of Object.entries(termFreq)) {
-    idf[term] = Math.log(1 + totalSent / (1 + tf),;
+    idf[term] = Math.log(1 + totalSent / (1 + tf);
   }
   // Score sentences
   const scored = sentences.map((s, i) => {

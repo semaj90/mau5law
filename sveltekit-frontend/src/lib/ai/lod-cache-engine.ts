@@ -677,7 +677,8 @@ class LODCacheEngine {
       console.log(`🗑️ Evicted LOD cache entry ${leastValuable.id} (score: ${leastValuable.score})`);
     }
   }
-  private buildRetrievalResponse(entry: LODCacheEntry, context: LODProcessingContext): ProcessLLMOutputResult {
+  // Mark context as intentionally unused (prefix with _ to satisfy linter)
+  private buildRetrievalResponse(entry: LODCacheEntry, _context: LODProcessingContext): ProcessLLMOutputResult {
     return {
       cache_entry: entry,
       instant_retrieval_key: entry.id,
@@ -698,25 +699,34 @@ class LODCacheEngine {
         this.backgroundWorker = new Worker('/workers/lod-cache-worker.js');
         console.log('🔄 LOD background worker initialized');
       } catch (error) {
-        console.warn('Background worker unavailable, processing will be synchronous');
+        console.warn('Background worker unavailable, processing will be synchronous', error);
       }
     }
   }
-  private startBackgroundPreprocessing(entry: LODCacheEntry, context: any): void {
+  // Use typed context rather than `any`
+  private startBackgroundPreprocessing(entry: LODCacheEntry, context: LODProcessingContext): void {
     if (this.backgroundWorker) {
-      this.backgroundWorker.postMessage({
-        type: 'preprocess_related_content',
-        payload: {
-          entry,
-          context,
-          config: this.config,
-        },
-      });
+      try {
+        this.backgroundWorker.postMessage({
+          type: 'preprocess_related_content',
+          payload: {
+            entry,
+            context,
+            config: this.config,
+          },
+        });
+      } catch (err) {
+        console.warn('Failed to post to background worker, falling back to synchronous preprocess:', err);
+        void this.syncPreprocessRelatedContent(entry, context);
+      }
+    } else {
+      void this.syncPreprocessRelatedContent(entry, context);
     }
   }
   // Placeholder methods for components that would be implemented
+  // Mark unused `query` param with leading underscore to satisfy unused-arg rule
   private async performVectorSearch(
-    query: string,
+    _query: string,
     _options: EnhancedRAGRetrievalOptions
   ): Promise<VectorSearchMatch[]> {
     // Stubbed vector similarity search:
@@ -797,21 +807,25 @@ class LODCacheEngine {
 class SVGSummarizationProcessor {
   constructor(private quality: 'fast' | 'balanced' | 'high') {}
   async generateGlyphSVG(compressed: Uint8Array): Promise<string> {
+    // reference this.quality to avoid "declared but never read" lint error
+    const opacity = this.quality === 'high' ? 1 : this.quality === 'fast' ? 0.75 : 0.9;
     const char = String.fromCharCode(compressed[0]);
     const complexity = compressed[2];
     const color = `hsl(${(compressed[1] / 127) * 360}, 70%, 50%)`;
     return `<svg width="16" height="16" viewBox="0 0 16 16">
-      <rect fill="${color}" width="16" height="16" rx="${complexity / 20}"/>
+      <rect fill="${color}" width="16" height="16" rx="${complexity / 20}" opacity="${opacity}"/>
       <text x="8" y="12" text-anchor="middle" font-size="12" fill="white">${char}</text>
     </svg>`;
   }
   async generateTileSVG(compressed: Uint8Array, text: string): Promise<string> {
     const hue = (compressed[0] / 127) * 360;
     const words = text.split(' ').slice(0, 3).join(' ');
+    // small usage of quality here for font-size
+    const fontSize = this.quality === 'fast' ? 5 : this.quality === 'high' ? 7 : 6;
     return `<svg width="32" height="32" viewBox="0 0 32 32">
       <rect fill="hsl(${hue}, 60%, 40%)" width="32" height="32" rx="4"/>
       <foreignObject x="2" y="2" width="28" height="28">
-        <div style="font-size:6px;color:white;text-align:center;line-height:1.2">${words}</div>
+        <div style="font-size:${fontSize}px;color:white;text-align:center;line-height:1.2">${words}</div>
       </foreignObject>
     </svg>`;
   }
@@ -871,9 +885,9 @@ class VectorMetadataEncoder {
   }
   private adaptDimensions(): number {
     // Adaptive scaling based on backend and performance profile
-    const backend = this.cacheEngine?.getHybridGPU() ? (this.cacheEngine as any).activeBackend : 'cpu';
-    // Access environment performance profile via global CLIENT_ENV if available
-    const profile = (globalThis as any).CLIENT_ENV?.PERFORMANCE_PROFILE || 'auto';
+    const backend: GPUBackendType = this.cacheEngine?.getHybridGPU() ? this.cacheEngine!.activeBackend : 'cpu';
+    // Use imported CLIENT_ENV rather than globalAny
+    const profile = (CLIENT_ENV as any)?.PERFORMANCE_PROFILE || 'auto';
     let scale = 1.0;
     if (backend === 'webgl1' || backend === 'cpu') scale *= 0.5;
     else if (backend === 'webgl2') scale *= 0.75;
@@ -912,15 +926,18 @@ class VectorMetadataEncoder {
     const duration = performance.now() - start;
     telemetryBus.publish({
       type: 'lod.embed.end',
-      meta: { durationMs: duration, dimensions: this.dimensions, backend: (this.cacheEngine as any)?.activeBackend },
+      meta: { durationMs: duration, dimensions: this.dimensions, backend: this.cacheEngine?.activeBackend ?? 'cpu' },
     });
     // Emit memory usage snapshot if provider exposes it
     try {
-      const mem = (gpuContextProvider as any).getMemoryUsage?.();
+      const memGetter = (gpuContextProvider as unknown as { getMemoryUsage?: () => unknown }).getMemoryUsage;
+      const mem = memGetter?.();
       if (mem) {
         telemetryBus.publish({ type: 'gpu.memory.update', meta: mem });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.warn('Failed to retrieve GPU memory usage:', error);
+    }
     return result;
   }
   /**
@@ -949,11 +966,11 @@ class VectorMetadataEncoder {
         let dimensions = i32(config.x);
         let maxLength = i32(config.y);
         let segmentCount = i32(config.z);
-        if (embeddingIndex >= u32(dimensions * segmentCount)) { return, }
+        if (embeddingIndex >= u32(dimensions * segmentCount)) { return }
         let segmentId = i32(embeddingIndex) / dimensions;
         let dimIndex = i32(embeddingIndex) % dimensions;
         let segmentLength = i32(lengths[segmentId]);
-        if (segmentId >= segmentCount) { return, }
+        if (segmentId >= segmentCount) { return }
         var value: f32 = 0.0;
         // Generate embedding using character-based features
         for (var i = 0; i < segmentLength; i++) {
@@ -990,8 +1007,11 @@ class VectorMetadataEncoder {
   /**
    * New pipeline-based embedding generation leveraging GPUVectorProcessor adaptive logic.
    */ private async generateEmbeddingsViaPipeline(segments: string[]): Promise<Float32Array[]> {
-    const backend = (this.cacheEngine as any)?.activeBackend || 'cpu';
-    const adaptiveDim = (gpuVectorProcessor as any)?.getCurrentEmbeddingDimension?.() || this.dimensions;
+    const backend = this.cacheEngine?.activeBackend || 'cpu';
+    const adaptiveDim =
+      (
+        gpuVectorProcessor as unknown as { getCurrentEmbeddingDimension?: () => number }
+      ).getCurrentEmbeddingDimension?.() || this.dimensions;
     const segmentCount = segments.length;
     // Build one contiguous buffer: segmentCount * adaptiveDim
     const batched = new Float32Array(segmentCount * adaptiveDim);
@@ -1003,16 +1023,16 @@ class VectorMetadataEncoder {
         batched[offset + c] = c < len ? seg.charCodeAt(c) / 127.0 : 0;
       }
     }
-    const runRes = await (gpuVectorProcessor as any).runEmbeddingBatch?.(batched, 'embed-batch');
+    const runRes = await (
+      gpuVectorProcessor as unknown as { runEmbeddingBatch?: (b: Float32Array, tag?: string) => any }
+    ).runEmbeddingBatch?.(batched, 'embed-batch');
     if (!runRes) {
       // Log fallback
       console.warn('Batched embed GPU runEmbeddingBatch failure; falling back to per-segment CPU embeddings');
       return this.generateEmbeddingsCPU(segments);
     }
     const out = runRes.data || batched;
-    // Optional GPU-provided stats buffer: interleaved [mean0, std0, mean1, std1, ...]
     const stats = runRes.stats as Float32Array | undefined;
-    // Stats layout now [mean,std,energy] per segment if present
     const triple = 3;
     const canUseStats = !!stats && stats.length >= segmentCount * triple;
     if (canUseStats) {
@@ -1033,7 +1053,6 @@ class VectorMetadataEncoder {
     for (let i = 0; i < segmentCount; i++) {
       const sliceStart = i * adaptiveDim;
       const sliceEnd = sliceStart + adaptiveDim;
-      // 1. Mean / Std: use GPU stats if available else compute on CPU
       let mean: number;
       let std: number;
       let energy = 0;
@@ -1052,35 +1071,29 @@ class VectorMetadataEncoder {
           varAcc += d * d;
         }
         std = Math.sqrt(varAcc * invDim) || 1e-6;
-        // Approximate energy if not provided
         let absAcc = 0;
         for (let j = sliceStart; j < sliceEnd; j++) absAcc += Math.abs(out[j]);
         energy = absAcc * invDim;
       }
-      // 3. Frequency-like feature (simple DFT subset / energy proxy)
       let freqAcc = 0;
       for (let j = 0; j < adaptiveDim; j += 8) {
         const v = out[sliceStart + j];
         freqAcc += Math.abs(v) * (1 + Math.sin(j * 0.03125));
       }
       const freq = freqAcc * (8 / adaptiveDim);
-      // 4. Build embedding: normalized (value - mean)/std with mild positional modulation
       const final = new Float32Array(adaptiveDim);
       for (let j = 0; j < adaptiveDim; j++) {
         const raw = out[sliceStart + j] ?? 0;
         const norm = (raw - mean) / std;
-        // positional + backend modulation factor
         const mod = Math.sin((j + 1) * 0.007 + i * 0.13) * 0.25 + Math.cos(j * 0.003) * 0.15;
         final[j] = norm * (1 + mod);
       }
-      // 5. Inject metadata at tail (last 4 slots): mean, std, freq, length ratio (energy omitted—available via stats telemetry)
       if (adaptiveDim >= 8) {
         final[adaptiveDim - 4] = mean;
         final[adaptiveDim - 3] = std;
         final[adaptiveDim - 2] = freq;
         final[adaptiveDim - 1] = Math.min(1, segments[i].length / adaptiveDim);
       }
-      // 6. L2 normalize
       let l2 = 0;
       for (let j = 0; j < adaptiveDim; j++) l2 += final[j] * final[j];
       l2 = Math.sqrt(l2) || 1e-6;
@@ -1129,38 +1142,6 @@ class VectorMetadataEncoder {
     return embeddings.map((_, index) => index % 3);
   }
 }
-class TopologyAwareAnalyzer {
-  constructor(private level: 'basic' | 'advanced' | 'neural') {}
-  async extractStructuralFeatures(text: string): Promise<Float32Array> {
-    const features = new Float32Array(64);
-    // Structural analysis
-    features[0] = text.split('.').length; // Sentence count
-    features[1] = text.split('\n').length; // Paragraph count
-    features[2] = text.match(/[A-Z]/g)?.length || 0; // Capital letters
-    features[3] = text.match(/[0-9]/g)?.length || 0; // Numbers
-    features[4] = text.match(/[()]/g)?.length || 0; // Punctuation density
-    // Fill remaining features with derived metrics
-    for (let i = 5; i < 64; i++) {
-      features[i] = (features[i % 5] + Math.sin(i)) / (i + 1);
-    }
-    return features;
-  }
-}
-class PredictiveAnalyticsEngine {
-  async calculateRetrievalScores(text: string, context: any): Promise<number[]> {
-    // Would implement sophisticated predictive modeling
-    const baseScore = text.length / 1000;
-    const contextBoost = context.query_context ? 0.3 : 0;
-    const metadataBoost = context.search_metadata ? 0.2 : 0;
-    return [
-      Math.min(baseScore + contextBoost + metadataBoost, 1.0),
-      Math.min(baseScore * 0.8 + contextBoost, 1.0),
-      Math.min(baseScore * 0.6 + metadataBoost, 1.0),
-      Math.min(baseScore * 0.4, 1.0),
-      Math.min(baseScore * 0.2, 1.0),
-    ];
-  }
-} // <-- end of LODCacheEngine class
 // Backend-specific shader creation methods were previously appended after helper classes
 // they belong to LODCacheEngine. We extend the prototype here to avoid large refactor.
 LODCacheEngine.prototype.createWebGPUEmbeddingShader = function (): string {
@@ -1176,11 +1157,11 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function (): string {
         let maxLength = i32(config.y);
         let segmentCount = i32(config.z);
         let lodLevel = config.w;
-        if (embeddingIndex >= u32(dimensions * segmentCount)) { return, }
+        if (embeddingIndex >= u32(dimensions * segmentCount)) { return }
         let segmentId = i32(embeddingIndex) / dimensions;
         let dimIndex = i32(embeddingIndex) % dimensions;
         let segmentLength = i32(lengths[segmentId]);
-        if (segmentId >= segmentCount) { return, }
+        if (segmentId >= segmentCount) { return }
         var value: f32 = 0.0;
         // Enhanced LOD-aware embedding generation
         for (var i = 0; i < segmentLength; i++) {
@@ -1209,7 +1190,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function (): string {
         let dimensions = i32(config.x);
         let embeddingCount = i32(config.y);
         let clusterCount = i32(config.z);
-        if (embeddingId >= u32(embeddingCount)) { return, }
+        if (embeddingId >= u32(embeddingCount)) { return }
         var bestCluster = 0;
         var bestDistance = 999999.0;
         // Find closest centroid using LOD-aware distance metric
@@ -1242,7 +1223,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function (): string {
         let dimensions = i32(config.x);
         let documentCount = i32(config.y);
         let similarityType = i32(config.z); // 0=cosine, 1=euclidean, 2=dot product
-        if (docId >= u32(documentCount)) { return, }
+        if (docId >= u32(documentCount)) { return }
         var similarity = 0.0;
         var queryNorm = 0.0;
         var docNorm = 0.0;

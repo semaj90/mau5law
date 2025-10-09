@@ -698,7 +698,7 @@ class MultiLayerCache {
   }
   private evictFromL1(): void {
     // Simple LRU eviction - remove oldest 20% of entries
-    const entries = Array.from(this.l1Cache.entries(),;
+    const entries = Array.from(this.l1Cache.entries();
     const toRemove = Math.floor(entries.length * 0.2);
     for (let i = 0; i < toRemove; i++) {
       this.l1Cache.delete(entries[i][0]);
@@ -868,7 +868,7 @@ class WebWorkerPool {
         }
       `;
       const blob = new Blob([workerCode], { type: 'application/javascript' });
-      const worker = new Worker(URL.createObjectURL(blob),;
+      const worker = new Worker(URL.createObjectURL(blob);
       this.workers.push(worker);
       return worker;
     }
@@ -876,7 +876,7 @@ class WebWorkerPool {
     return this.workers.find(w => !this.activeWorkers.has(w)) || this.workers[0];
   }
   terminate(): void {
-    this.workers.forEach(worker => worker.terminate(),;
+    this.workers.forEach(worker => worker.terminate();
     this.workers = [];
     this.activeWorkers.clear();
     this.taskQueue = [];
@@ -1111,7 +1111,7 @@ export const aiAssistantMachine = createMachine({
               console.warn(`NATS connection attempt ${4 - natsRetries} failed:`, error);
               natsRetries--;
               if (natsRetries > 0) {
-                await new Promise(resolve => setTimeout(resolve, 1000),;
+                await new Promise(resolve => setTimeout(resolve, 1000);
               }
             }
           }
@@ -1530,10 +1530,10 @@ export const aiAssistantMachine = createMachine({
                     ),
                     apiEndpoints: []
                   }
-                  if (context7Analysis,.documentatio,n,) {
-                    enhancedQuery = `${query}\n\nContext7 Documentation:\n${context7Analysis.documentation.substring(0, 1000)}`,;
+                  if (context7Analysis,.documentatio,n) {
+                    enhancedQuery = `${query}\n\nContext7 Documentation:\n${context7Analysis.documentation.substring(0, 1000)}`;
                   }
-                }, catch (error: any) {
+                } catch (error: any) {
                   console.warn('Context7 analysis failed:', error);
                 }
               }
@@ -2244,13 +2244,13 @@ export const aiAssistantMachine = createMachine({
               event,: `Document uploaded: ${d.title}`,
               timestamp,: new Date(d.createdAt),
               significance,: 3
-            }),),
+            })),
             ...evidence.map((e: any) => ({,
               event: `Evidence added: ${e.title}`,
               timestamp: new Date(e.createdAt),
               significance: 4
             })
-          ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime(),;
+          ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime();
           return {
             caseId,
             title: caseData.title,
@@ -2366,7 +2366,7 @@ export const aiAssistantMachine = createMachine({
               getXStateDocs(topic)
             ]);
             const validResponses = [svelteDocsResponse, bitsUIResponse, xstateDocsResponse]
-              .filter(item => item.status) === 'fulfilled',)
+              .filter(item => item.status) === 'fulfilled')
               .map(result => (result as any).value);
             const analysis: Context7Analysis = {
               suggestions: [
@@ -2383,7 +2383,7 @@ export const aiAssistantMachine = createMachine({
               apiEndpoints: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).apiEndpoints || [])
             }
             return analysis;
-          }, catch (error: any) {
+          } catch (error: any) {
             console.error('Context7 analysis failed:', error);
             throw error;
           }
@@ -2505,7 +2505,7 @@ export const aiAssistantMachine = createMachine({
               temperature,
               stream: true
               session_id: input.sessionId
-            }),;
+            });
           }
           ws.onmessage = (_event: any) => {
             try {
@@ -2839,7 +2839,7 @@ export const aiAssistantMachine = createMachine({
             // Force multiple GC cycles
             for (let i = 0; i < 3; i++) {
               memoryManager.forceGC();
-              await new Promise(resolve => setTimeout(resolve, 100),;
+              await new Promise(resolve => setTimeout(resolve, 100);
             }
           } else {
             // Standard cleanup - L1 cache only
@@ -2950,7 +2950,7 @@ export const aiAssistantActions = {
           type: 'error',
           error: context.error,
           sessionId: context.sessionId
-        }).catch(err => console.warn('Failed to publish error to NATS:', err),;
+        }).catch(err => console.warn('Failed to publish error to NATS:', err);
       }
     }
   },
@@ -2985,7 +2985,7 @@ export const aiAssistantActions = {
           caseId: context.currentCaseId,
           timestamp: new Date().toISOString()
         }
-      ).catch(err => console.warn('Failed to publish to NATS:', err),;
+      ).catch(err => console.warn('Failed to publish to NATS:', err);
     }
   }
 }

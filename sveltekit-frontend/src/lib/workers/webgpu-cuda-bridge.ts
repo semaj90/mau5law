@@ -237,7 +237,7 @@ class WebGPUCudaBridge {
 		});
 		// Create bind group
 		const bindGroup = device.createBindGroup({
-			layout: bindGroupLayout,;
+			layout: bindGroupLayout;
 			entries: [
 				{ binding: 0, resource: { buffer: inputBuffer } },
 				{ binding: 1, resource: { buffer: outputBuffer } },
@@ -486,7 +486,7 @@ self.onmessage = async (_event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 				self.postMessage({
 					type: 'init-complete',
 					requestId,
-					success: initialized,;
+					success: initialized;
 					status: bridge.getStatus()
 				});
 				break;

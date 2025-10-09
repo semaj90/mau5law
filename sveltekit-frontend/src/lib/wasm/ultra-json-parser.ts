@@ -156,7 +156,7 @@ export class UltraJSONParser {
    */;
   private calculateSupportLevel(): BrowserSIMDCapabilities['supportLevel'] {
     if (this.capabilities.webgpuCompute && this.capabilities.wasmSIMD &&;
-        this.capabilities.sharedArrayBuffer && this.capabilities.atomics,) {
+        this.capabilities.sharedArrayBuffer && this.capabilities.atomics) {
       return 'optimal';
     }
     if (this.capabilities.wasmSIMD && this.capabilities.webgpuCompute) {
@@ -482,7 +482,7 @@ export class UltraJSONParser {
       const batch = documents.slice(i, i + batchSize);
       if (opts.enableParallel && this.capabilities.sharedArrayBuffer) {
         // Process batch in parallel
-        const batchPromises = batch.map(doc => this.fastParse<T>(doc),;
+        const batchPromises = batch.map(doc => this.fastParse<T>(doc);
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
       } else {
@@ -533,7 +533,7 @@ export class UltraJSONParser {
     totalOperations: number;
     recommendedSettings: Partial<UltraJSONConfig>;
   } {
-    const cachedMetrics = Array.from(this.performanceCache.values(),;
+    const cachedMetrics = Array.from(this.performanceCache.values();
     const avgParseTime = cachedMetrics.length > 0
       ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length: 0;
     return {

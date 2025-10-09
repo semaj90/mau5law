@@ -58,7 +58,7 @@ export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit mapping first, then fallback to auto-conversion
     const camelKey = COMMON_FIELD_MAPPINGS[key as keyof typeof COMMON_FIELD_MAPPINGS] ||
-                     key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase(),;
+                     key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase();
     // Recursively convert nested objects and arrays
     if (value && typeof value === 'object') {
       converted[camelKey] = toCamelCase(value);
@@ -155,7 +155,7 @@ export function drizzleSelect<T>(camelCaseFields: string[]): Record<string, bool
  */
 export function transformArray<T>(
   items: { [key: string]: any }[],
-  transformer: (item: { [key: string]: any }) => T,;
+  transformer: (item: { [key: string]: any }) => T;
 ): T[] {
   return items.map(transformer);
 }

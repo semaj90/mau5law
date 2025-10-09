@@ -6,8 +6,8 @@
 export function safeWriteBuffer(
   queue: GPUQueue
   buffer: GPUBuffer
-  offset: number,;
-  data: ArrayBufferView | ArrayBuffer,;
+  offset: number;
+  data: ArrayBufferView | ArrayBuffer;
 ): void {
   if (data instanceof ArrayBuffer) {
     queue.writeBuffer(buffer, offset, data);
@@ -36,7 +36,7 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
 export function createFloat32Array(
   source: ArrayBufferLike | ArrayBufferView
   offset = 0,
-  length?: number,;
+  length?: number;
 ): Float32Array {
   // Normalize to underlying ArrayBuffer and compute absolute byte offset & available bytes
   let buffer: ArrayBuffer;

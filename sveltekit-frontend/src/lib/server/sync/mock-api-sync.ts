@@ -115,7 +115,7 @@ export const mockDataGenerators = {
         metadata: {
           complexity: Math.random(),
           wordCount: 500 + Math.floor(Math.random() * 2000),
-          legalDomain: docType,;
+          legalDomain: docType;
           jurisdiction: 'US',
           practiceArea: 'corporate'
         },
@@ -130,7 +130,7 @@ export const mockDataGenerators = {
   /**
    * Generate mock QLoRA topology states
    */;
-  generateMockQLoRAStates(count,: number = 5,): QLoRATopologyState[,] {
+  generateMockQLoRAStates(count,: number = 5): QLoRATopologyState[,] {
     const states: QLoRATopologyState[] = [];
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
     for (let i = 0; i < count; i++) {
@@ -178,7 +178,7 @@ export const mockDataGenerators = {
   /**
    * Generate mock HMM+SOM prediction data
    */;
-  generateMockAssetPredictions(count,: number = 8,): AssetPrediction[,] {
+  generateMockAssetPredictions(count,: number = 8): AssetPrediction[,] {
     const predictions: AssetPrediction[] = [];
     const assetTypes = ['document', 'template', 'form', 'precedent', 'citation'];
     for (let i = 0; i < count; i++) {
@@ -227,7 +227,7 @@ export const mockDataGenerators = {
   /**
    * Generate mock embedding shards for index cache
    */;
-  generateMockEmbeddingShards(count,: number = 15,): EmbeddingShard[,] {
+  generateMockEmbeddingShards(count,: number = 15): EmbeddingShard[,] {
     const shards: EmbeddingShard[] = [];
     for (let i = 0; i < count; i++) {
       const shard: EmbeddingShard = {
@@ -243,7 +243,7 @@ export const mockDataGenerators = {
   /**
    * Generate mock CHR manifests
    */;
-  generateMockCHRManifests(count,: number = 6,): CHRManifest[,] {
+  generateMockCHRManifests(count,: number = 6): CHRManifest[,] {
     const manifests: CHRManifest[] = [];
     for (let i = 0; i < count; i++) {
       const manifest: CHRManifest = {
@@ -283,7 +283,7 @@ export const databaseSync = {
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
           })
-        ),;
+        );
         // Insert vector embeddings separately
         await db.insert(vectorEmbeddings).values(batch.map((doc) => ({
             id: `embedding_${doc.id}`,
@@ -297,7 +297,7 @@ export const databaseSync = {
               confidence: doc.confidenceLevel
             }
           })
-        ),;
+        );
       }
       console.log(`✅ Synced ${mockDocs.length} mock legal documents with vector embeddings`);
       return { success: true, count: mockDocs.length }
@@ -333,7 +333,7 @@ export const databaseSync = {
             predictionAccuracy: 0.9 + Math.random() * 0.1
           }
         })
-      ),;
+      );
       console.log(`✅ Synced ${mockStates.length} QLoRA training jobs`);
       return { success: true, count: mockStates.length }
     } catch (error) {
@@ -363,7 +363,7 @@ export const databaseSync = {
             predictionLatency: prediction.predictionLatencyMs
           }
         })
-      ),;
+      );
       console.log(`✅ Synced ${mockPredictions.length} predictive asset cache entries`);
       return { success: true, count: mockPredictions.length }
     } catch (error) {
@@ -380,7 +380,7 @@ export const vectorSearch = {
   async performSimilaritySearch(
     queryEmbedding: number[]
     limit: number = 5,
-    threshold: number = 0.7,;
+    threshold: number = 0.7;
   ) {
     try {
       const results = await db;
@@ -403,7 +403,7 @@ export const vectorSearch = {
         .orderBy(
           sql`${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}`
         )
-        .limit(limit),;
+        .limit(limit);
       return results;
     } catch (error) {
       console.error('❌ Vector similarity search failed:', error);
@@ -424,7 +424,7 @@ export const vectorSearch = {
           dimensions: vectorEmbeddings.dimensions
         })
         .from(vectorEmbeddings)
-        .where(inArray(vectorEmbeddings.documentId, documentIds),;
+        .where(inArray(vectorEmbeddings.documentId, documentIds);
       return results;
     } catch (error) {
       console.error('❌ Failed to get document embeddings:', error);
@@ -455,7 +455,7 @@ export const syncOrchestrator = {
     return {
       success: true
       totalRecords: totalSynced
-      breakdown: results,;
+      breakdown: results;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true
@@ -470,7 +470,7 @@ export const syncOrchestrator = {
     const checks = {
       database: false
       pgvector: false
-      drizzle: false,;
+      drizzle: false;
       redis: false
       mockDataReady: false
     }

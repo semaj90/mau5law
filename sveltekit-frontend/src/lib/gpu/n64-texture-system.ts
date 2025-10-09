@@ -113,7 +113,7 @@ export class N64TextureLODSystem {
   }
   async generateDocumentTexture(
     documentId: string
-    content: string,;
+    content: string;
     priority: number
     docType: 'evidence' | 'contract' | 'brief' | 'citation'
   ): Promise<DocumentTexture | null> {

@@ -57,7 +57,7 @@ export function downloadBenchmarkCSV(summary: EmbeddingBenchmarkSummary) {
 function percentile(arr: number[], p: number) {
   if (!arr.length) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
-  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length),;
+  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length);
   return sorted[idx];
 }
 export async function runEmbeddingBenchmark(

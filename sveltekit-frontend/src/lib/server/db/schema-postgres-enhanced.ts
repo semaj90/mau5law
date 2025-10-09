@@ -17,7 +17,7 @@ import { relations } from "drizzle-orm";
 // CREATE EXTENSION IF NOT EXISTS vector
 // Core tables with vector support
 export const cases = pgTable(
-  "cases",);
+  "cases");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),
@@ -53,7 +53,7 @@ export const cases = pgTable(
   }),
 );
 export const evidence = pgTable(
-  "evidence",);
+  "evidence");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId,: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
@@ -98,7 +98,7 @@ export const evidence = pgTable(
   }),
 );
 export const criminals = pgTable(
-  "criminals",);
+  "criminals");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),
@@ -146,7 +146,7 @@ export const criminals = pgTable(
 );
 // Enhanced evidence connections for the board
 export const evidenceConnections = pgTable(
-  "evidence_connections",);
+  "evidence_connections");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId,: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
@@ -173,7 +173,7 @@ export const evidenceConnections = pgTable(
 );
 // Vector search metadata
 export const vectorMetadata = pgTable(
-  "vector_metadata",);
+  "vector_metadata");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     documentId,: uuid("document_id").notNull().unique(),
@@ -199,7 +199,7 @@ export const vectorMetadata = pgTable(
 );
 // Embedding cache for performance
 export const embeddingCache = pgTable(
-  "embedding_cache",);
+  "embedding_cache");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash,: text("text_hash").notNull().unique(),
@@ -214,7 +214,7 @@ export const embeddingCache = pgTable(
 );
 // Conversation and message tables for AI chat
 export const conversations = pgTable(
-  "conversations",);
+  "conversations");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),
@@ -230,7 +230,7 @@ export const conversations = pgTable(
   }),
 );
 export const messages = pgTable(
-  "messages",);
+  "messages");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     conversationId,: uuid("conversation_id").references(() => conversations.id, {
@@ -251,7 +251,7 @@ export const messages = pgTable(
 );
 // User activity and audit logging
 export const userActivity = pgTable(
-  "user_activity",);
+  "user_activity");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId,: uuid("user_id").notNull(),
@@ -274,7 +274,7 @@ export const userActivity = pgTable(
 );
 // System configuration for AI models and settings
 export const systemConfig = pgTable(
-  "system_config",);
+  "system_config");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     key,: text("key").notNull().unique(),
@@ -295,7 +295,7 @@ export const systemConfig = pgTable(
 export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   connections: many(evidenceConnections)
-}),;
+});
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
@@ -303,7 +303,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   }),
   connectionsFrom: many(evidenceConnections, { relationName: "from" }),
   connectionsTo: many(evidenceConnections, { relationName: "to" })
-}),;
+});
 export const evidenceConnectionsRelations = relations(
   evidenceConnections,
   ({ one }) => ({
@@ -325,13 +325,13 @@ export const evidenceConnectionsRelations = relations(
 );
 export const conversationsRelations = relations(conversations, ({ many }) => ({
   messages: many(messages)
-}),;
+});
 export const messagesRelations = relations(messages, ({ one }) => ({
   conversation: one(conversations, {
     fields: [messages.conversationId],
     references: [conversations.id]
   })
-}),;
+});
 // Export all table types for TypeScript
 export type Case = typeof cases.$inferSelect;
 export type Evidence = typeof evidence.$inferSelect;

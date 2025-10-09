@@ -22,7 +22,7 @@ export function classifyGPUError(err: unknown): ClassifiedGPUError {
   const retryable = category === 'execution' || category === 'resource';
   return {
     category,
-    message: msg,;
+    message: msg;
     original: err
     retryable,
   }

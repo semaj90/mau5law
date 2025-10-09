@@ -377,7 +377,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let height = i32(config.y);
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return, }
+        if (x >= width || y >= height) { return }
         let index = y * width + x;
         let pixel = inputPixels[index];
     `;
@@ -479,7 +479,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let dithering = config.w > 0.5;
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return, }
+        if (x >= width || y >= height) { return }
         let index = y * width + x;
         var pixel = inputPixels[index];
         // Apply NES quantization
@@ -510,7 +510,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let vignette = config.w;
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return, }
+        if (x >= width || y >= height) { return }
         let index = y * width + x;
         var pixel = inputPixels[index];
         // Scanline effect
@@ -709,7 +709,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Cache using NES orchestrator
     await nesCacheOrchestrator.cacheCanvasStateAsSprite(
       'hybrid_component',
-      [canvasState],);
+      [canvasState]);
       {
         priority: 2,
         compression,: true
@@ -741,7 +741,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   private setupPredictiveCaching(),: void {
     // Pre-cache likely next states based on user interaction patterns
-    const, likelyVariants = ['primary', 'secondary', 'accent', 'hover', 'active',];
+    const likelyVariants = ['primary', 'secondary', 'accent', 'hover', 'active',];
     likelyVariants,.forEach(async (variant) => {
       const predictiveState: InteractiveCanvasState = {
         id: `hybrid_${variant}_predicted`,
@@ -760,9 +760,9 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       if (predictiveState.id) {
         this.nesStateCache.set(predictiveState.id, predictiveState);
       }
-    }),;
+    });
   }
-  private generateVariantFabricJSON(variant,: string,): object {
+  private generateVariantFabricJSON(variant,: string): object {
     const colorMap = {
       primary: NES_YORHA_PALETTE.yorhaGold,
       secondary: NES_YORHA_PALETTE.nesGray,
@@ -770,25 +770,25 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       hover: NES_YORHA_PALETTE.nesLightGray,
       active: NES_YORHA_PALETTE.nesSuccess
     }
-    const baseJSON = JSON.parse(this.serializeToFabricJSON(),;
+    const baseJSON = JSON.parse(this.serializeToFabricJSON();
     if (baseJSON.objects?.[0]) {
       baseJSON.objects[0].fill = `#${(colorMap[variant as keyof typeof colorMap] || NES_YORHA_PALETTE.yorhaBeige).toString(16)}`;
     }
     return baseJSON;
   }
   private syncDOMPosition(),: void {
-    if (!this,.domOverla,y) retu,rn;
+    if (!this.domOverla,y) retu,rn;
     // Convert 3D world position to screen coordinates
-    const, vector = this.position.clone(,);
-    vector,.project(this.getCamera(,);
-    const, x = (vector.x * 0.5 + 0.5) * window.innerWidt,h;
-    const, y = (vector.y * -0.5 + 0.5) * window.innerHeigh,t;
-    this,.domOverlay.style.position = 'fixed,';
-    this,.domOverlay.style.left = `${x}px,`;
-    this,.domOverlay.style.top = `${y}px,`;
-    this,.domOverlay.style.transform = 'translate(-50%, -50%),';
-    this,.domOverlay.style.pointerEvents = 'auto,';
-    this,.domOverlay.style.zIndex = '1000,';
+    const vector = this.position.clone();
+    vector,.project(this.getCamera();
+    const x = (vector.x * 0.5 + 0.5) * window.innerWidt,h;
+    const y = (vector.y * -0.5 + 0.5) * window.innerHeigh,t;
+    this.domOverlay.style.position = 'fixed,';
+    this.domOverlay.style.left = `${x}px,`;
+    this.domOverlay.style.top = `${y}px,`;
+    this.domOverlay.style.transform = 'translate(-50%, -50%),';
+    this.domOverlay.style.pointerEvents = 'auto,';
+    this.domOverlay.style.zIndex = '1000,';
   }
   private getCamera(),: THREE.Camera, {
     // Find camera in scene hierarchy (simplified)
@@ -800,7 +800,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     return new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   }
   private startDOMSyncLoop(),: void {
-    const, syncLoop = () => {
+    const syncLoop = () => {
       if (this.domOverlay && this.hybridStyle.renderMode === 'hybrid-sync') {
         this.syncDOMPosition();
         this.syncAnimationFrame = requestAnimationFrame(syncLoop);
@@ -811,9 +811,9 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   // =============================================================================
   // NES-STYLE ANIMATION METHODS
   // =============================================================================
-  public async switchToNESState(stateId,: string,): Promise<void> {
+  public async switchToNESState(stateId,: string): Promise<void> {
     // Instant state switching like NES sprite frames
-    const, cachedState = await nesCacheOrchestrator.loadSpriteSheet('hybrid_component',);
+    const cachedState = await nesCacheOrchestrator.loadSpriteSheet('hybrid_component');
     if (cachedState) {
       const state = cachedState.find(s => s.id && s.id === stateId);
       if (state) {
@@ -822,16 +822,16 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       }
     }
   }
-  private applyNESState(state,: InteractiveCanvasState,): void {
+  private applyNESState(state,: InteractiveCanvasState): void {
     if (!state,.fabricJSO,N) retu,rn;
-    const, fabricData = JSON.parse(state.fabricJSON,);
+    const fabricData = JSON.parse(state.fabricJSON);
     if (fabricData,.objects?.[0,]) {
       const obj = fabricData.objects[0];
       // Apply position
       this.position.set(obj.left / 100, obj.top / 100, this.position.z);
       // Apply color
       if (obj.fill && this.mesh.material instanceof THREE.MeshBasicMaterial) {
-        this.mesh.material.color.setHex(parseInt(obj.fill.replace('#', ''), 16),;
+        this.mesh.material.color.setHex(parseInt(obj.fill.replace('#', ''), 16);
       }
       // Apply scale
       this.scale.set(obj.width / 200, obj.height / 100, 1);
@@ -843,8 +843,8 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   public createNESAnimation(frames,: string[], duratio,n: number = 10,0): void {
     // Create NES-style frame-based animation
-    let, currentFrame =, 0;
-    const, frameLoop = () => {
+    let currentFrame =, 0;
+    const frameLoop = () => {
       const frameId = frames[currentFrame];
       this.switchToNESState(frameId);
       currentFrame = (currentFrame + 1) % frames.length;
@@ -856,9 +856,9 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   // HYBRID INTERACTION METHODS
   // =============================================================================
   protected onHover(),: void {
-    super,.onHover(,);
+    super,.onHover();
     // Add NES-style hover effects
-    if (this,.domOverla,y) {
+    if (this.domOverla,y) {
       this.domOverlay.style.transform = 'translate(-50%, -50%) scale(1.05)';
       this.domOverlay.style.filter = 'brightness(1.2)';
     }
@@ -866,36 +866,36 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     this.switchToNESState(`hybrid_hover_${Date.now()}`);
   }
   protected onUnhover(),: void {
-    super,.onUnhover(,);
-    if (this,.domOverla,y) {
+    super,.onUnhover();
+    if (this.domOverla,y) {
       this.domOverlay.style.transform = 'translate(-50%, -50%) scale(1.0)';
       this.domOverlay.style.filter = 'brightness(1.0)';
     }
   }
   protected onClick(),: void {
-    super,.onClick(,);
+    super,.onClick();
     // NES-style click animation
-    this,.playNESClickAnimation(,);
+    this.playNESClickAnimation();
     // Update DOM overlay
-    if (this,.domOverla,y) {
+    if (this.domOverla,y) {
       this.domOverlay.style.animation = 'nesClick 0.2s ease-in-out';
     }
   }
   private playNESClickAnimation(),: void {
     // Quick scale animation like NES button press
-    const, originalScale = this.scale.clone(,);
-    this,.scale.multiplyScalar(0.95,);
+    const originalScale = this.scale.clone();
+    this.scale.multiplyScalar(0.95);
     setTimeout((), => {
       this.scale.copy(originalScale);
-    }, 100,);
+    }, 100);
   }
   // =============================================================================
   // CLEANUP AND DISPOSAL
   // =============================================================================
   public dispose(),: void {
-    super,.dispose(,);
+    super,.dispose();
     // Clean up DOM overlay
-    if (this,.domOverlay && this.domOverlay.parentNod,e) {
+    if (this.domOverlay && this.domOverlay.parentNod,e) {
       this.domOverlay.parentNode.removeChild(this.domOverlay);
     }
     // Cancel sync loop

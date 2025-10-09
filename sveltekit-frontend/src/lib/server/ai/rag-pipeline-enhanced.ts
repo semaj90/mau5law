@@ -1005,7 +1005,7 @@ export class EnhancedLegalRAGPipeline {
         WHERE ${sql.raw(vectorWhereClause)}
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
-      `) as unknown,) as, DBChunkR,ow[];
+      `) as unknown) as, DBChunkR,ow[];
 
       // Perform keyword search
       const keywordResults = (await this.sql!`

@@ -34,7 +34,7 @@ async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
  * Stream QLoRA processing with binary compression
  */
 async function* streamQLoRAResponse(
-  request: StreamingQLoRARequest,;
+  request: StreamingQLoRARequest;
 ): AsyncGenerator<StreamingResponse> {
   const { query, topologyType = 'general', accuracyTarget = 90, streamBinary = true } = request;
   try {
@@ -155,7 +155,7 @@ async function* streamQLoRAResponse(
       }
       yield {
         type: 'binary',
-        data: binaryData,;
+        data: binaryData;
         metadata: {
           compressionRatio: compressionStats.compressionRatio,
           originalSize: compressionStats.originalSize,
@@ -169,7 +169,7 @@ async function* streamQLoRAResponse(
       const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${(result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
       const tokens = responseText.split(' ');
       for (const token of tokens) {
-        await new Promise((resolve) => setTimeout(resolve, 50),; // Simulate streaming
+        await new Promise((resolve) => setTimeout(resolve, 50); // Simulate streaming
         yield { type: 'token', value: token + ' ' }
       }
     }
@@ -209,7 +209,7 @@ export function createWebSocketServer() {
             ws.send(event.data);
           } else {
             // Send JSON event
-            ws.send(JSON.stringify(event),;
+            ws.send(JSON.stringify(event);
           }
         }
       } catch (error: any) {

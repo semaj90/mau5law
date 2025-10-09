@@ -15,7 +15,7 @@ import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
 // Core case embeddings table - 512 dimensions for optimal performance
 export const caseEmbeddings = pgTable(
-  "case_embeddings",);
+  "case_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId,: uuid("case_id").notNull(),
@@ -42,7 +42,7 @@ export const caseEmbeddings = pgTable(
 );
 // Evidence embeddings table - 512 dimensions
 export const evidenceEmbeddings = pgTable(
-  "evidence_embeddings",);
+  "evidence_embeddings");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     evidenceId,: uuid("evidence_id").notNull(),
@@ -67,7 +67,7 @@ export const evidenceEmbeddings = pgTable(
 );
 // Legal document chunks for RAG pipeline - 512 dimensions
 export const legalDocumentChunks = pgTable(
-  "legal_document_chunks",);
+  "legal_document_chunks");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     documentId,: text("document_id").notNull(),
@@ -110,7 +110,7 @@ export const legalDocumentChunks = pgTable(
 );
 // High-performance embedding cache with deduplication - 512 dimensions
 export const embeddingCache512 = pgTable(
-  "embedding_cache_512",);
+  "embedding_cache_512");
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash,: text("text_hash").notNull().unique(),
@@ -135,14 +135,14 @@ export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
     fields: [caseEmbeddings.caseId],
     references: [cases.id]
   })
-}),;
+});
 export const evidenceEmbeddingsRelations = relations(evidenceEmbeddings, ({ one }) => ({
   // Reference to main evidence table if it exists
   evidence: one(evidence, {
     fields: [evidenceEmbeddings.evidenceId],
     references: [evidence.id]
   })
-}),;
+});
 export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocumentChunks.caseId],
@@ -152,7 +152,7 @@ export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ on
     fields: [legalDocumentChunks.evidenceId],
     references: [evidence.id]
   })
-}),;
+});
 // TypeScript types for the new tables
 export type CaseEmbedding = typeof caseEmbeddings.$inferSelect;
 export type EvidenceEmbedding = typeof evidenceEmbeddings.$inferSelect;

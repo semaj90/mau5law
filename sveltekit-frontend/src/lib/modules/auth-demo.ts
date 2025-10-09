@@ -78,7 +78,7 @@ export class AuthDemo {
   }
   // Get available demo users (for testing)
   getDemoUsers(): Pick<AuthUser, 'email' | 'name' | 'role'>[] {
-    return this.demoUsers.map(({ email, name, role }) => ({ email, name, role }),;
+    return this.demoUsers.map(({ email, name, role }) => ({ email, name, role });
   }
   private loadDemoUser(): void {
     try {
@@ -96,7 +96,7 @@ export class AuthDemo {
   }
   private saveDemoUser(user: AuthUser): void {
     try {
-      localStorage.setItem('legal-ai-demo-user', JSON.stringify(user),;
+      localStorage.setItem('legal-ai-demo-user', JSON.stringify(user);
     } catch (error) {
       console.warn('Failed to save demo user:', error);
     }

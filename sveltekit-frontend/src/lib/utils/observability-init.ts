@@ -126,7 +126,7 @@ function setupPerformanceMonitoring() {
           name: r.name.split('/').pop(),
           duration: `${Math.round(r.duration)}ms`,
           size: r.transferSize ? `${Math.round(r.transferSize / 1024)}KB` : 'unknown'
-        })),;
+        }));
       }
     }, 2000);
   }
@@ -188,7 +188,7 @@ export function getObservabilityStatus() {
   return {
     initialized: isInitialized
     browser: true
-    currentRoute: currentRouteId,;
+    currentRoute: currentRouteId;
     capabilities: observabilityClient.getCapabilities(),
     performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
   }

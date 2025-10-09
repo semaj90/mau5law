@@ -88,7 +88,7 @@ export const cacheActor = fromPromise(async ({
           );
           return {
             success: true
-            stored: true,;
+            stored: true;
             key: input.key,
             responseTime: performance.now() - startTime
           }
@@ -105,7 +105,7 @@ export const cacheActor = fromPromise(async ({
             await headlessUICache.clear();
           }
           return {
-            success: true,;
+            success: true;
             invalidated: true
             responseTime: performance.now() - startTime
           }
@@ -114,7 +114,7 @@ export const cacheActor = fromPromise(async ({
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
-            success: true,;
+            success: true;
             synced: true
             responseTime: performance.now() - startTime
           }
@@ -124,7 +124,7 @@ export const cacheActor = fromPromise(async ({
       }
     } catch (error: any) {
       return {
-        success: false,;
+        success: false;
         error: error.message,
         responseTime: performance.now() - startTime
       }
@@ -137,7 +137,7 @@ export const cacheActor = fromPromise(async ({
  */
 export function withCache<TContext extends { [key: string]: any },(
   baseContext: TContext
-  cacheKeyGenerator?: (context: TContext) => string,;
+  cacheKeyGenerator?: (context: TContext) => string;
 ) {
   return {
     ...baseContext,
@@ -265,7 +265,7 @@ export const createCachedMachineStates = () => ({
     checkingCache: {
       entry: ['setCacheKey'],
       invoke: {
-        src: cacheActor,;
+        src: cacheActor;
         input: ({ context, event }: { context: any; event: any }) => ({
           operation: 'get' as const,
           key: context.cache.cacheKey,
@@ -305,7 +305,7 @@ export const createCachedMachineStates = () => ({
         // Your actual computation logic here;
         src: fromPromise(async ({ input }) => {
           // Simulate computation
-          await new Promise((resolve) => setTimeout(resolve, 1000),;
+          await new Promise((resolve) => setTimeout(resolve, 1000);
           return { result: 'computed data' }
         }),
         onDone: {

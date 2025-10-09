@@ -104,7 +104,7 @@ const calculateFileHashService = fromPromise(async ({ input }: { input: Document
   }
   const buffer = await input.file.arrayBuffer();
   const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer),;
+  const hashArray = Array.from(new Uint8Array(hashBuffer);
   const hashHex = hashArray.map((b: any) => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 });
@@ -119,7 +119,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
   formData.append('userId', input.userId);
   formData.append('title', input.title);
   formData.append('description', input.description || '');
-  formData.append('tags', JSON.stringify(input.tags),;
+  formData.append('tags', JSON.stringify(input.tags);
   formData.append('fileHash', input.fileHash || '');
   // This would be replaced with actual upload to your backend
   const response = await fetch('/api/documents/upload', {
@@ -211,7 +211,7 @@ export const documentUploadMachine = createMachine({
     },
     validating: {
       invoke: {
-        src: validateFileService,;
+        src: validateFileService;
         input: ({ context }) => context,
         onDone: [
           {

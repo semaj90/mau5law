@@ -41,7 +41,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
     const ch = await getChannel();
     // Ensure queue exists
     await ch.assertQueue(queueName, {
-      durable: true,;
+      durable: true;
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL
         'x-max-length': 10000, // Max 10k messages
@@ -49,7 +49,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
     });
     const message = JSON.stringify(payload);
     const sent = ch.sendToQueue(queueName, Buffer.from(message), {
-      persistent: true,;
+      persistent: true;
       timestamp: Date.now(),
       messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     });
@@ -67,12 +67,12 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
 }
 export async function consumeFromQueue(
   queueName: string
-  processor: (payload: any, ack: () => void, nack: () => void) => Promise<void>,;
+  processor: (payload: any, ack: () => void, nack: () => void) => Promise<void>;
 ): Promise<void> {
   try {
     const ch = await getChannel();
     await ch.assertQueue(queueName, {
-      durable: true,;
+      durable: true;
       arguments: {
         'x-message-ttl': 3600000,
         'x-max-length': 10000
@@ -93,7 +93,7 @@ export async function consumeFromQueue(
         ch.nack(msg, false, false); // Don't requeue on parse errors
       }
     });
-  }, catch (error: any) {
+  } catch (error: any) {
     console.error(`❌ Failed to consume from queue ${queueName}:`, error);
     throw error;
   }
@@ -111,7 +111,7 @@ export async function setupQueues(): Promise<void> {
     ];
     for (const queueName of queues) {
       await ch.assertQueue(queueName, {
-        durable: true,;
+        durable: true;
         arguments: {
           'x-message-ttl': 3600000,
           'x-max-length': 10000
@@ -122,7 +122,7 @@ export async function setupQueues(): Promise<void> {
     // Setup dead letter exchange for failed messages
     await ch.assertExchange('evidence.dlx', 'direct', { durable: true });
     await ch.assertQueue('evidence.failed', {
-      durable: true,;
+      durable: true;
       arguments: {
         'x-message-ttl': 86400000, // 24 hours
       }

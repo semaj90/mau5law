@@ -102,7 +102,7 @@ function generateETag(content: any): string {
   const crypto = require('crypto');
   const hash = crypto.createHash('sha256')
     .update(typeof content === 'string' ? content : JSON.stringify(content)
-    .digest('hex'),;
+    .digest('hex');
   return `"${hash.substring(0, 16)}"`;
 }
 /**
@@ -110,7 +110,7 @@ function generateETag(content: any): string {
  */
 export function applyCacheHeaders(
   response: Response
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     content?: any;
     generateETag?: boolean;
@@ -131,7 +131,7 @@ export function applyCacheHeaders(
   }
   // Last-Modified header
   if (options.lastModified) {
-    headers.set('Last-Modified', options.lastModified.toUTCString(),;
+    headers.set('Last-Modified', options.lastModified.toUTCString();
   }
   // Create new response with cache headers
   return new Response(response.body, {
@@ -145,7 +145,7 @@ export function applyCacheHeaders(
  */
 export function cachedJson(
   data: any
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     status?: number;
     generateETag?: boolean;
@@ -171,7 +171,7 @@ export function cachedJson(
 export function checkConditionalHeaders(
   request: Request
   etag?: string
-  lastModified?: Date,;
+  lastModified?: Date;
 ): { isNotModified: boolean; shouldSend304: boolean } {
   const ifNoneMatch = request.headers.get('If-None-Match');
   const ifModifiedSince = request.headers.get('If-Modified-Since');
@@ -179,7 +179,7 @@ export function checkConditionalHeaders(
   // Check ETag
   if (ifNoneMatch && etag) {
     // Handle weak ETags and multiple ETags
-    const clientETags = ifNoneMatch.split(',').map(tag => tag.trim(),;
+    const clientETags = ifNoneMatch.split(',').map(tag => tag.trim();
     isNotModified = clientETags.includes(etag) || clientETags.includes('*');
   }
   // Check Last-Modified (only if ETag check didn't determine modification)
@@ -203,7 +203,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
     headers.set('ETag', etag);
   }
   if (lastModified) {
-    headers.set('Last-Modified', lastModified.toUTCString(),;
+    headers.set('Last-Modified', lastModified.toUTCString();
   }
   return new Response(null, {
     status: 304,
@@ -215,7 +215,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
  */
 export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>,(,
   handler: T
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     generateETag?: boolean;
     getLastModified?: (...args: any[]) => Date | undefined;

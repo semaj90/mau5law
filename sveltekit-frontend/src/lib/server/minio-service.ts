@@ -75,10 +75,10 @@ async function streamToString(stream: Readable): Promise<string> {
   // Handle Node.js Readable stream
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),;
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     });
     stream.on('end', () => {
-      resolve(Buffer.concat(chunks).toString('utf-8'),;
+      resolve(Buffer.concat(chunks).toString('utf-8');
     });
     stream.on('error', (error) => {
       reject(error);
@@ -156,7 +156,7 @@ export class MinIOService {
       }
       const processingTime = Date.now() - startTime;
       return {
-        content: extractedContent,;
+        content: extractedContent;
         metadata: {
           originalSize: rawContent.length,
           extractedSize: extractedContent.length,
@@ -203,7 +203,7 @@ export class MinIOService {
           .split('\n')
           .map(line => line.replace(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, '').trim()
           .filter(line => line.length > 0)
-          .join('\n'),;
+          .join('\n');
       case 'text':
       default:
         return content;
@@ -214,9 +214,9 @@ export class MinIOService {
    */
   static async storeTextContent(
     bucket: string
-    key: string,;
+    key: string;
     content: string
-    metadata?: Record<string, string>,;
+    metadata?: Record<string, string>;
   ): Promise<string> {
     try {
       const command = new PutObjectCommand({
@@ -238,9 +238,9 @@ export class MinIOService {
    */
   static async uploadLargeFile(
     bucket: string
-    key: string,;
+    key: string;
     content: Buffer | Uint8Array | string
-    contentType?: string,;
+    contentType?: string;
   ): Promise<string> {
     try {
       const upload = new Upload({
@@ -265,7 +265,7 @@ export class MinIOService {
   static async listObjects(
     bucket: string
     prefix?: string
-    maxKeys: number = 1000,;
+    maxKeys: number = 1000;
   ): Promise<FileMetadata[]> {
     try {
       const command = new ListObjectsV2Command({
@@ -279,7 +279,7 @@ export class MinIOService {
         size: obj.Size || 0,
         lastModified: obj.LastModified || new Date(),
         bucket
-      }),;
+      });
     } catch (error) {
       console.error(`Failed to list MinIO objects:`, error);
       throw error;

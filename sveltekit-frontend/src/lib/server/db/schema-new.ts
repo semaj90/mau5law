@@ -417,7 +417,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   aiAnalyses: many(aiAnalyses),
   searchTags: many(searchTags),
   reports: many(reports)
-}),;
+});
 // Sessions relations commented out - sessions table not defined in this schema
 // export const sessionsRelations = relations(sessions, ({ one }) => ({
 //   user: one(users, {
@@ -439,7 +439,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   criminals: many(caseCriminals),
   evidence: many(evidence),
   activities: many(caseActivities)
-}),;
+});
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
@@ -447,7 +447,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   }),
   cases: many(caseCriminals),
   evidence: many(evidence)
-}),;
+});
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
     fields: [caseCriminals.caseId],
@@ -461,7 +461,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     fields: [caseCriminals.addedBy],
     references: [users.id]
   })
-}),;
+});
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
@@ -475,7 +475,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.uploadedBy],
     references: [users.id]
   })
-}),;
+});
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
@@ -491,13 +491,13 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     references: [users.id],
     relationName: "createdBy"
   })
-}),;
+});
 export const canvasStatesRelations = relations(canvasStates, ({ one }) => ({
   case: one(cases, {
     fields: [canvasStates.caseId],
     references: [cases.id]
   })
-}),;
+});
 export const casesRelationsExtended = relations(cases, ({ many, one }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
@@ -513,4 +513,4 @@ export const casesRelationsExtended = relations(cases, ({ many, one }) => ({
   evidence: many(evidence),
   activities: many(caseActivities),
   canvasStates: many(canvasStates)
-}),;
+});

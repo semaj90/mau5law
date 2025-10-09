@@ -115,7 +115,7 @@ export const canvasSystemMachine = setup({
       }
       // Save to localStorage or API
       if (typeof window !== "undefined") {
-        localStorage.setItem("canvasState", JSON.stringify(state),;
+        localStorage.setItem("canvasState", JSON.stringify(state);
       }
       return state;
     })

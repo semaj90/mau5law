@@ -259,7 +259,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       this.remove(this.textMesh);
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose(),;
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -304,7 +304,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (this.textMesh) {
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose(),;
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -312,7 +312,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (this.iconMesh) {
       this.iconMesh.geometry.dispose();
       if (Array.isArray(this.iconMesh.material)) {
-        this.iconMesh.material.forEach(mat => mat.dispose(),;
+        this.iconMesh.material.forEach(mat => mat.dispose();
       } else {
         this.iconMesh.material.dispose();
       }

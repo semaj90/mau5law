@@ -46,7 +46,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
   const REDIS_TTL_SECONDS = 120; // short-lived cross-instance share
   // Helpers
   const withTimeout = async <T>(p: Promise<T>, ms = 8000): Promise<T> => {
-    const t = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms),;
+    const t = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms);
     return Promise.race([p, t]) as Promise<T>;
   }
   const fetchJson = async (url: string, init?: RequestInit, ms?: number) => {
@@ -101,7 +101,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
         body: JSON.stringify(ragBody)
       }, 10_000);
       if (rag.ok) {
-        const answer = (rag.data.answer || rag.data.response || '').toString(),);
+        const answer = (rag.data.answer || rag.data.response || '').toString());
         // Normalize to 3 bullets if needed
         const bullets = answer.split(/\n+/).filter((l: string) => l.trim()).slice(0, 3);
         summaryText = bullets.length ? bullets.map((b: string) => (b.startsWith('- ') ? b : `- ${b}`)).join('\n') : answer.slice(0, 400);
@@ -168,7 +168,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
         body: JSON.stringify({ query: ctx.query, max_results: 5, include_metadata: true })
       }, 10_000);
       if (rag.ok) {
-        const answer = (rag.data.answer || rag.data.response || '').toString(),);
+        const answer = (rag.data.answer || rag.data.response || '').toString());
         const snippet = answer.length > 320 ? `${answer.slice(0, 317)}…` : answer;
         if (snippet) {
           const patternKey = `${qKey}:answer`;

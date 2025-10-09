@@ -6,7 +6,7 @@ const items = db.addCollection('items');
 // 2. Sample Data (replace with your actual data)
 items.insert([
   { id: 1, title: 'State v. John Doe', type: 'case' },
-  { id: 2, title: 'Evidence Locker #123', type: 'evidence' },)
+  { id: 2, title: 'Evidence Locker #123', type: 'evidence' })
   { id: 3, title,: 'Witness Statement - Jane Smith', typ,e: 'document' }
 ]);
 // 3. Configure Fuse.js

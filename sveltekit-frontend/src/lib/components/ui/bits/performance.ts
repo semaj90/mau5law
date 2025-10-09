@@ -101,7 +101,7 @@ export class OptimizedComponentFactory {
     }
   }
   getLoadedComponents(): string[] {
-    return Array.from(this.loadedComponents.keys(),;
+    return Array.from(this.loadedComponents.keys();
   }
   getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
     return performanceMetrics.get(name);
@@ -411,7 +411,7 @@ export class PerformanceMonitor {
       ? values.reduce((a, b) => a + b, 0) / values.length: 0;
   }
   stopMonitoring(): void {
-    this.observers.forEach((observer) => observer.disconnect(),;
+    this.observers.forEach((observer) => observer.disconnect();
     this.observers = [];
   }
   clear(): void {
@@ -425,28 +425,28 @@ export const performanceMonitor = new PerformanceMonitor();
 registerComponent("Button", async () => ({
   name: "Button",
   default: (await import("./Button.svelte")).default
-}),;
+});
 registerComponent("Dialog", async () => ({
   name: "Dialog",
   default: (await import("./Dialog.svelte")).default
-}),;
+});
 registerComponent("Select", async () => ({
   name: "Select",
   default: (await import("./Select.svelte")).default
-}),;
+});
 registerComponent("Input", async () => ({
   name: "Input",
   default: (await import("./Input.svelte")).default
-}),;
+});
 registerComponent("Card", async () => ({
   name: "Card",
   default: (await import("./Card.svelte")).default
-}),;
+});
 registerComponent("EnhancedBitsDemo", async () => ({
   name: "EnhancedBitsDemo",
   default: (await import("./EnhancedBitsDemo.svelte")).default
-}),;
+});
 registerComponent("VectorIntelligenceDemo", async () => ({
   name: "VectorIntelligenceDemo",
   default: (await import("./VectorIntelligenceDemo.svelte")).default
-}),;
+});

@@ -209,7 +209,7 @@ export const ingestionWorkflowMachine = setup({
       for (let i = 0; i < job.chunks.length; i += batchSize) {
         const batch = job.chunks.slice(i, i + batchSize);
         const batchResults = await Promise.all(batch.map(async (text, index) => {
-            const chunkId = `${job.id}_chunk_${i + index}`,);
+            const chunkId = `${job.id}_chunk_${i + index}`);
             // Check cache first
             const cached = await cache.get(`embedding:${chunkId}`);
             if (cached) {
@@ -219,7 +219,7 @@ export const ingestionWorkflowMachine = setup({
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
-                embedding: cached,;
+                embedding: cached;
                 metadata: {
                   ...job.metadata,
                   fromCache: true
@@ -318,7 +318,7 @@ export const ingestionWorkflowMachine = setup({
         await cache.rpush('ingestion:jobs', JSON.stringify({
           ...job,
           queuedAt: new Date().toISOString()
-        }),;
+        });
         console.log(`📤 Published job ${job.id} to Redis`);
         return { backend: 'redis', jobId: job.id }
       }
@@ -608,8 +608,8 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 // Utility functions
 export function createIngestionJob(
   documentId: string
-  chunks: string[],;
-  metadata: Partial<IngestionJob['metadata']>,;
+  chunks: string[];
+  metadata: Partial<IngestionJob['metadata']>;
 ): IngestionJob {
   return {
     id: `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,

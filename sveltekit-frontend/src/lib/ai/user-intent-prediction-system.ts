@@ -137,24 +137,24 @@ class UserIntentPredictionSystem {
     personalizedSuggestions: string[];
     nextStepPrediction: string;
   }> {
-    try, {
+    try {
       // Use cached insights for ultra-fast response
-      const, userInsights = this.userInsightCache.get(userContext.userId) || this.createFallbackUserInsights(,);
+      const userInsights = this.userInsightCache.get(userContext.userId) || this.createFallbackUserInsights();
       // Generate quick actions based on query analysis
-      const, quickActions = await this.generateQuickActions(query, userInsights,);
+      const quickActions = await this.generateQuickActions(query, userInsights);
       // Provide contextual help based on user expertise level
-      const, contextualHelp = await this.generateContextualHelp(query, userInsights,);
+      const contextualHelp = await this.generateContextualHelp(query, userInsights);
       // Generate personalized suggestions from learned patterns
-      const, personalizedSuggestions = this.generatePersonalizedSuggestions(query, userInsights,);
+      const personalizedSuggestions = this.generatePersonalizedSuggestions(query, userInsights);
       // Predict next likely step
-      const, nextStepPrediction = this.predictNextUserStep(query, userContext.previousQueries || [],);
-      return, {
+      const nextStepPrediction = this.predictNextUserStep(query, userContext.previousQueries || []);
+      return {
         quickActions,
         contextualHelp,
         personalizedSuggestions,
         nextStepPrediction
       }
-    }, catch (error) {
+    } catch (error) {
       console.error('❌ Fast task assistance failed:', error);
       return {
         quickActions: [{ action: 'help', description: 'Get general help', oneClickExecute: true, estimatedTime: '< 1 min' }],
@@ -169,18 +169,18 @@ class UserIntentPredictionSystem {
    */;
   private async classifyIntent(query,: string, userContex,t: an,y): Promise<UserIntentPrediction> {
     // Extract features from query
-    const, features = this.extractIntentFeatures(query, userContext,);
+    const features = this.extractIntentFeatures(query, userContext);
     // Use ML classifier (simplified version)
-    const, classificationResult = await this.intentClassifier.classify(features,);
+    const classificationResult = await this.intentClassifier.classify(features);
     // Apply contextual refinements
-    const, refinedResult = this.refineIntentWithContext(classificationResult, userContext,);
+    const refinedResult = this.refineIntentWithContext(classificationResult, userContext);
     // Generate alternative intents
-    const, alternativeIntents = this.generateAlternativeIntents(query, refinedResult,);
+    const alternativeIntents = this.generateAlternativeIntents(query, refinedResult);
     // Suggest actions based on intent
-    const, suggestedActions = await this.generateSuggestedActions(refinedResult, userContext,);
+    const suggestedActions = await this.generateSuggestedActions(refinedResult, userContext);
     // Analyze contextual insights
-    const, contextualInsights = this.analyzeContextualInsights(query, userContext,);
-    return, {
+    const contextualInsights = this.analyzeContextualInsights(query, userContext);
+    return {
       primaryIntent: refinedResult.intent,
       confidence: refinedResult.confidence,
       alternativeIntents,
@@ -195,10 +195,10 @@ class UserIntentPredictionSystem {
     query,: string
     intentPrediction,: UserIntentPredictio,n;
   ): Promise<DidYouMeanSuggestion[]> {
-    const, suggestion,s: DidYouMeanSuggesti,on,[], = [];
-    try, {
+    const suggestion,s: DidYouMeanSuggesti,on,[], = [];
+    try {
       // Spelling corrections
-      const, spellingCorrections = await this.spellingCorrector.correct(query,);
+      const spellingCorrections = await this.spellingCorrector.correct(query);
       spellingCorrections,.forEach(correction => {
         suggestions.push({
           originalQuery: query
@@ -212,9 +212,9 @@ class UserIntentPredictionSystem {
             completenessGain: 0.2
           }
         });
-      }),;
+      });
       // Synonym expansions
-      const, synonymExpansions = await this.synonymEngine.expand(query, intentPrediction.primaryIntent,);
+      const synonymExpansions = await this.synonymEngine.expand(query, intentPrediction.primaryIntent);
       synonymExpansions,.forEach(expansion => {
         suggestions.push({
           originalQuery: query
@@ -228,9 +228,9 @@ class UserIntentPredictionSystem {
             completenessGain: 0.4
           }
         });
-      }),;
+      });
       // Query completion suggestions
-      const, completions = this.generateQueryCompletions(query, intentPrediction,);
+      const completions = this.generateQueryCompletions(query, intentPrediction);
       completions,.forEach(completion => {
         suggestions.push({
           originalQuery: query
@@ -244,7 +244,7 @@ class UserIntentPredictionSystem {
             completenessGain: 0.9
           }
         });
-      }),;
+      });
       // Clarification suggestions
       if (intentPrediction,.confidence < 0.,7) {
         const clarifications = this.generateClarificationSuggestions(query, intentPrediction);
@@ -307,7 +307,7 @@ class UserIntentPredictionSystem {
           return (b.confidence * bTotal) - (a.confidence * aTotal);
         })
         .slice(0, 5);
-    }, catch (error) {
+    } catch (error) {
       console.error('Failed to generate suggestions:', error);
       return [];
     }
@@ -358,8 +358,8 @@ class UserIntentPredictionSystem {
   }
   // Placeholder implementations for complex components
   private async generateQuickActions(query,: string, userInsight,s: UserLearningInsight,s): Promise<any[]> {
-    const, actions = [,];
-    if (query,.toLowerCase().includes('contract',)) {
+    const actions = [,];
+    if (query,.toLowerCase().includes('contract')) {
       actions.push({
         action: 'analyze_contract',
         description: 'Analyze contract terms and conditions',
@@ -378,9 +378,9 @@ class UserIntentPredictionSystem {
     return actions.slice(0, 3);
   }
   private async generateContextualHelp(query,: string, userInsight,s: UserLearningInsight,s): Promise<any[]> {
-    const, help = [,];
+    const help = [,];
     // Provide help based on user expertise level
-    const, avgExpertise = Array.from(userInsights.expertiseDomains.values()).reduce((a, b) => a + b, 0) / userInsights.expertiseDomains.siz,e;
+    const avgExpertise = Array.from(userInsights.expertiseDomains.values()).reduce((a, b) => a + b, 0) / userInsights.expertiseDomains.siz,e;
     if (avgExpertise, < 0.3) {
       help.push({
         helpType: 'explanation',
@@ -388,7 +388,7 @@ class UserIntentPredictionSystem {
         relevanceScore: 0.9
       });
     }
-    return, hel,p;
+    return hel,p;
   }
   private generatePersonalizedSuggestions(query,: string, userInsight,s: UserLearningInsight,s): string,[] {
     const suggestions: string[] = [];
@@ -413,19 +413,19 @@ class UserIntentPredictionSystem {
   private generateCacheKey(query,: string, userI,d: strin,g): string {
     return `intent:${userId}:${this.hashString(query)}`;
   }
-  private hashString(str,: string,): number {
+  private hashString(str,: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
     }
     return Math.abs(hash);
   }
-  private countComplexTerms(query,: string,): number {
+  private countComplexTerms(query,: string): number {
     const complexPatterns = [/\b\w{12}\b/g, /[:(){}[\]]/g, /\b(pursuant|heretofore|whereas|notwithstanding)\b/gi];
     return complexPatterns.reduce((count, pattern) => count + (query.match(pattern) || []).length, 0);
   }
   // Fallback methods for error cases
-  private createFallbackIntentPrediction(query,: string,): UserIntentPrediction {
+  private createFallbackIntentPrediction(query,: string): UserIntentPrediction {
     return {
       primaryIntent: 'general_assistance',
       confidence: 0.5,
@@ -462,7 +462,7 @@ class UserIntentPredictionSystem {
     }
   }
   private async buildFastCachedResponse(cached,: any, quer,y: string, userConte,xt: any, startT,ime: num,ber): Promise<any> {
-    return, {
+    return {
       intentPrediction: cached
       didYouMeanSuggestions: this.suggestionCache.get(this.generateCacheKey(query, userContext.userId)) || [],
       taskCompletion: this.createFallbackTaskPrediction(),
@@ -492,23 +492,23 @@ class UserIntentPredictionSystem {
   private generateExpansionSuggestions(query,: string, inten,t: an,y): any,[] { return [], }
   private generateSimplificationSuggestions(query,: string, inten,t: an,y): any,[] { return [], }
   private async initializePredictionSystem(),: Promise<void> {
-    console,.log('🎯 Initializing User Intent Prediction System...',);
-    console,.log('✅ Intent prediction system ready',);
+    console,.log('🎯 Initializing User Intent Prediction System...');
+    console,.log('✅ Intent prediction system ready');
   }
   /**
    * Get system performance statistics
    */;
   async getSystemStats(),: Promise<any> {
-    const, totalPredictions = this.feedbackHistory.lengt,h;
-    const, cacheHitRate = this.intentCache.size > 0 ? 0.75 :, 0; // Estimated
-    let, correctPredictions =, 0;
-    let, totalProcessingTime =, 0;
-    this,.feedbackHistory.forEach(feedback => {
+    const totalPredictions = this.feedbackHistory.lengt,h;
+    const cacheHitRate = this.intentCache.size > 0 ? 0.75 :, 0; // Estimated
+    let correctPredictions =, 0;
+    let totalProcessingTime =, 0;
+    this.feedbackHistory.forEach(feedback => {
       if (feedback.predictedIntent === feedback.actualIntent) {
         correctPredictions++;
       }
-    }),;
-    return, {
+    });
+    return {
       totalPredictions,
       cacheHitRate,
       avgProcessingTime: totalProcessingTime / Math.max(totalPredictions, 1),

@@ -92,7 +92,7 @@ export class WebGPUSOMCache {
       let doc_id = id.x;
       let vector_dim = metadata[0];
       let num_docs = metadata[1];
-      if (doc_id >= num_docs) { return, }
+      if (doc_id >= num_docs) { return }
       var dot_product = 0.0;
       var query_norm = 0.0;
       var doc_norm = 0.0;
@@ -117,7 +117,7 @@ export class WebGPUSOMCache {
       let node_id = id.x;
       let num_nodes = u32(params[0]);
       let damping = params[1];
-      if (node_id >= num_nodes) { return, }
+      if (node_id >= num_nodes) { return }
       var rank_sum = 0.0;
       for (var i = 0u; i < num_nodes; i++) {
         let edge_weight = adjacency_matrix[i * num_nodes + node_id];
@@ -144,7 +144,7 @@ export class WebGPUSOMCache {
       let embedding_id = id.x;
       let text_length = config[0];
       let embedding_dim = config[1];
-      if (embedding_id >= embedding_dim) { return, }
+      if (embedding_id >= embedding_dim) { return }
       var value = 0.0;
       // Simple bag-of-words embedding with positional encoding
       for (var i = 0u; i < text_length; i++) {
@@ -173,7 +173,7 @@ export class WebGPUSOMCache {
       let embedding_dim = config[1];
       let legal_weight = f32(config[2]) / 100.0; // Boost legal terms
       let case_weight = f32(config[3]) / 100.0;  // Boost case references
-      if (embedding_id >= embedding_dim) { return, }
+      if (embedding_id >= embedding_dim) { return }
       var value = 0.0;
       var legal_term_bonus = 0.0;
       // Legal document embedding with domain-specific weighting
@@ -211,7 +211,7 @@ export class WebGPUSOMCache {
       let vector_dim = u32(params[1]);
       let scale_factor = params[2];
       let offset = params[3];
-      if (vector_id >= vector_count * vector_dim) { return, }
+      if (vector_id >= vector_count * vector_dim) { return }
       let value = input_vectors[vector_id];
       // Quantize to 8-bit signed integer (-128 to 127)
       let scaled_value = (value + offset) * scale_factor;
@@ -232,7 +232,7 @@ export class WebGPUSOMCache {
       let num_docs = config[1];
       let jurisdiction_boost = f32(config[2]) / 100.0;
       let doc_type_boost = f32(config[3]) / 100.0;
-      if (doc_id >= num_docs) { return, }
+      if (doc_id >= num_docs) { return }
       var dot_product = 0.0;
       var query_norm = 0.0;
       var doc_norm = 0.0;
@@ -1416,7 +1416,7 @@ export class WebGPUSOMCache {
     docs,: Float32Array[],
     metadata,: unknown[]
   ),: Array<{ similarity: numbe,r; index: numb,er; metadata: unknown }> {
-    return, docs
+    return docs
       .map((doc, index) => {
         let dotProduct = 0;
         let queryNorm = 0;
@@ -1431,9 +1431,9 @@ export class WebGPUSOMCache {
         return { similarity, index, metadata: metadata[index] };
       })
       .filter(item => item.similarity > 0.1)
-      .sort((a, b) => b.similarity - a.similarity),;
+      .sort((a, b) => b.similarity - a.similarity);
   }
-  private quantizeVectorsCPU(vectors,: Float32Array[],): Int8Array[,] {
+  private quantizeVectorsCPU(vectors,: Float32Array[]): Int8Array[,] {
     return vectors.map(vector => {
       const min = Math.min(...vector);
       const max = Math.max(...vector);
@@ -1443,8 +1443,8 @@ export class WebGPUSOMCache {
   }
 
   dispose(),: void {
-    this,.lokiDB.close(,);
-    if (this,.indexD,B) {
+    this.lokiDB.close();
+    if (this.indexD,B) {
       this.indexDB.close();
     }
     // Clean up Redis sync timer

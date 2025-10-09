@@ -231,7 +231,7 @@ class Logger {
       } : undefined
     }
     if (this.config.enableConsole) {
-      console.error(this.formatForConsole(entry),;
+      console.error(this.formatForConsole(entry);
       if (error) {
         console.error('Error details:', error);
       }
@@ -252,7 +252,7 @@ class Logger {
       } : undefined
     }
     if (this.config.enableConsole) {
-      console.error(this.formatForConsole(entry),;
+      console.error(this.formatForConsole(entry);
       if (error) {
         console.error('FATAL ERROR:', error);
       }

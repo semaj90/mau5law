@@ -234,7 +234,7 @@ export class NESGPUIntegration {
       // Store in appropriate NES memory bank based on document characteristics
       await nesMemory.allocateDocument(
         document,
-        binaryDoc,);
+        binaryDoc);
         {
           compress: true
           compressionLevel: 2,
@@ -282,9 +282,9 @@ export class NESGPUIntegration {
     let offset = 0;
     // Pack fixed fields (ultra-fast)
     view.setUint32(offset, this.stringToId(document.id), true); offset += 4;
-    view.setUint8(offset, this.documentTypeToEnum(document.type || 'unknown'),; offset += 1;
+    view.setUint8(offset, this.documentTypeToEnum(document.type || 'unknown'); offset += 1;
     view.setUint8(offset, document.priority || 0); offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel || 'low'),; offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel || 'low'); offset += 1;
     view.setUint32(offset, document.size || 0, true); offset += 4;
     view.setFloat64(offset, document.lastAccessed || Date.now(), true); offset += 8;
     view.setUint32(offset, Number(document.bankId) || 0, true); offset += 4;
@@ -305,7 +305,7 @@ export class NESGPUIntegration {
       offset += 4;
     }
     // Pack metadata as compressed binary
-    const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata),;
+    const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata);
     new Uint8Array(buffer, offset).set(metadataBytes);
     return buffer;
   }
@@ -383,14 +383,14 @@ export class NESGPUIntegration {
     });
     // Map and copy data
     await stagingBuffer.mapAsync(GPUMapMode.WRITE);
-    new Uint8Array(stagingBuffer.getMappedRange()).set(new Uint8Array(binaryBuffer),;
+    new Uint8Array(stagingBuffer.getMappedRange()).set(new Uint8Array(binaryBuffer);
     stagingBuffer.unmap();
     // Use compute shader to unpack binary data into textures
     const computeShader = this.createBinaryUnpackShader(documentCount);
     const commandEncoder = this.device.createCommandEncoder();
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(computeShader);
-    computePass.dispatchWorkgroups(Math.ceil(documentCount / 256),;
+    computePass.dispatchWorkgroups(Math.ceil(documentCount / 256);
     computePass.end();
     this.device.queue.submit([commandEncoder.finish()]);
   }
@@ -413,7 +413,7 @@ export class NESGPUIntegration {
       @compute @workgroup_size(256);
       fn unpack_binary(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= ${documentCount}u) { return, }
+        if (index >= ${documentCount}u) { return }
         // Unpack binary data into structured format
         let base_offset = index * ${Math.ceil(1600 / 4)}u; // Approx binary size per doc
         node_data[index].id = binary_data[base_offset];
@@ -488,7 +488,7 @@ export class NESGPUIntegration {
       return embedding;
     } catch (error: unknown) {
       console.warn('WASM embedding failed, using CPU fallback:', error);
-      return new Float32Array(this.textToVector(query),;
+      return new Float32Array(this.textToVector(query);
     }
   }
   /**
@@ -497,7 +497,7 @@ export class NESGPUIntegration {
   private async performGPUSimilaritySearchWithRanking(
     queryEmbedding: Float32Array
     limit: number
-    threshold: number,;
+    threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
       throw new Error('GPU not available');
@@ -549,7 +549,7 @@ export class NESGPUIntegration {
         ]
       });
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(candidateDocumentIds.length / 256),;
+      computePass.dispatchWorkgroups(Math.ceil(candidateDocumentIds.length / 256);
       computePass.end();
       // Step 8: Submit GPU computation
       this.device.queue.submit([commandEncoder.finish()]);
@@ -586,7 +586,7 @@ export class NESGPUIntegration {
   private async performBasicGPUSimilaritySearch(
     queryEmbedding: Float32Array
     limit: number
-    threshold: number,;
+    threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
       throw new Error('GPU not available');
@@ -610,7 +610,7 @@ export class NESGPUIntegration {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(similarityShader);
     // Bind buffers and textures
-    computePass.dispatchWorkgroups(Math.ceil(this.stats.documentsProcessed / 256),;
+    computePass.dispatchWorkgroups(Math.ceil(this.stats.documentsProcessed / 256);
     computePass.end();
     // Read results
     this.device.queue.submit([commandEncoder.finish()]);
@@ -686,7 +686,7 @@ export class NESGPUIntegration {
       @compute @workgroup_size(256);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&rankingScores)) { return, }
+        if (index >= arrayLength(&rankingScores)) { return }
         // Calculate cosine similarity with query
         var similarity: f32 = 0.0;
         var queryMagnitude: f32 = 0.0;
@@ -733,7 +733,7 @@ export class NESGPUIntegration {
     documentIds: string[]
     rankingMatrices: Map<string, RankingMatrix>,
     limit: number
-    threshold: number,;
+    threshold: number;
   ): Promise<LegalDocument[]> {
     // In a real implementation, this would:
     // 1. Read GPU buffer results

@@ -23,7 +23,7 @@ async function embedWithLocal(text: string): Promise<number[]> {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({,
-        text: text,;
+        text: text;
         model: EMBEDDING_CONFIG.defaultModel
       })
     });
@@ -143,7 +143,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({,
-          texts: texts,;
+          texts: texts;
           model: model || EMBEDDING_CONFIG.defaultModel
         })
       });
@@ -199,7 +199,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
     activeService = 'nomic';
   }
   return {
-    local: localAvailable,;
+    local: localAvailable;
     nomic: nomicAvailable
     activeService
   }
@@ -219,7 +219,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
     normA += a[i] * a[i];
     normB += b[i] * b[i];
   }
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 export default {
   embedText,

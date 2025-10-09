@@ -46,7 +46,7 @@ const authState = writable<AuthState>({
   user: null
   session: null
   isAuthenticated: false
-  isLoading: false,;
+  isLoading: false;
   error: null
   twoFactorRequired: false
   machineState: 'idle',
@@ -71,12 +71,12 @@ if (browser) {
       twoFactorRequired: state.context.twoFactorRequired,
       loginAttempts: state.context.loginAttempts,
       lockoutUntil: state.context.lockoutUntil
-    }),;
+    });
     // Handle side effects
     if (state.matches('authenticated')) {
       // Store session in localStorage if remember me is enabled
       if (state.context.session && browser) {
-        localStorage.setItem('legal_ai_session', JSON.stringify(state.context.session),;
+        localStorage.setItem('legal_ai_session', JSON.stringify(state.context.session);
       }
     } else if (state.matches('idle') && state.context.user === null) {
       // Clear stored session on logout
@@ -130,7 +130,7 @@ async function getDeviceFingerprint(): Promise<string> {
     deviceMemory: (navigator as any).deviceMemory || 0,
     connection: (navigator as any).connection?.effectiveType || 'unknown'
   }
-  return btoa(JSON.stringify(fingerprint),;
+  return btoa(JSON.stringify(fingerprint);
 }
 export const authStore = {
   get state() {
@@ -202,7 +202,7 @@ export const authStore = {
           }
         });
         if (securityCheck.riskScore && securityCheck.riskScore > 0.8) {
-          authState.update(state => ({ ...state, error: 'Security verification failed. Please try again.' }),;
+          authState.update(state => ({ ...state, error: 'Security verification failed. Please try again.' });
           return;
         }
       } catch (error: any) {
@@ -272,11 +272,11 @@ export const authStore = {
           }
         });
         if (validationCheck.riskScore && validationCheck.riskScore > 0.9) {
-          authState.update(state => ({ ...state, error: 'Registration validation failed. Please verify your information.' }),;
+          authState.update(state => ({ ...state, error: 'Registration validation failed. Please verify your information.' });
           return;
         }
         if (validationCheck.legalVerification && !validationCheck.legalVerification.verified) {
-          authState.update(state => ({ ...state, error: 'Unable to verify legal professional credentials. Please contact support.' }),;
+          authState.update(state => ({ ...state, error: 'Unable to verify legal professional credentials. Please contact support.' });
           return;
         }
       } catch (error: any) {
@@ -298,10 +298,10 @@ export const authStore = {
         ...state,
         user: null
         session: null
-        isAuthenticated: false,;
+        isAuthenticated: false;
         error: null
         twoFactorRequired: false
-      }),;
+      });
       if (browser) {
         localStorage.removeItem('legal_ai_session');
       }
@@ -328,7 +328,7 @@ export const authStore = {
     });
   },
   clearError: () => {
-    authState.update(state => ({ ...state, error: null }),;
+    authState.update(state => ({ ...state, error: null });
   },
   // Session management utilities
   refreshSession: async () => {
@@ -366,13 +366,13 @@ export const authStore = {
   getSessionTimeRemaining: () => {
     const session = get(authState).session;
     if (!session?.expiresAt) return 0;
-    return Math.max(0, new Date(session.expiresAt).getTime() - Date.now(),;
+    return Math.max(0, new Date(session.expiresAt).getTime() - Date.now();
   },
   formatSessionExpiry: () => {
     const remaining = authStore.getSessionTimeRemaining();
     if (remaining === 0) return 'Expired';
-    const hours = Math.floor(remaining / (1000 * 60 * 60),;
-    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60),;
+    const hours = Math.floor(remaining / (1000 * 60 * 60);
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60);
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
   }

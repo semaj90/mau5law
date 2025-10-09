@@ -587,7 +587,7 @@ export class WasmGpuInitService {
         let dimensions = config.x;
         let count_a = config.y;
         let count_b = config.z;
-        if (index >= count_a * count_b) { return, }
+        if (index >= count_a * count_b) { return }
         let row = index / count_b;
         let col = index % count_b;
         var dot_product = 0.0;
@@ -612,7 +612,7 @@ export class WasmGpuInitService {
       @compute @workgroup_size(16);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&input_matrices)) { return, }
+        if (index >= arrayLength(&input_matrices)) { return }
         output_matrices[index] = input_matrices[index] * transform_matrix;
       }
     `;
@@ -628,7 +628,7 @@ export class WasmGpuInitService {
         let feature_count = params.x;
         let pattern_count = params.y;
         let doc_count = params.z;
-        if (doc_index >= doc_count) { return, }
+        if (doc_index >= doc_count) { return }
         var max_score = 0.0;
         var best_pattern = 0u;
         for (var pattern_idx = 0u; pattern_idx < pattern_count; pattern_idx++) {

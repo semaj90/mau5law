@@ -148,7 +148,7 @@ class SIMDBodyParser {
    */
   private async* createStreamingParser<T>(
     body: ReadableStream<Uint8Array> | null
-    useSIMD: boolean,;
+    useSIMD: boolean;
   ): AsyncGenerator<T, void, unknown> {
     if (!body) return;
     const reader = body.getReader();
@@ -196,7 +196,7 @@ class SIMDBodyParser {
               try {
                 const parsed = useSIMD ?
                   fastParse<T>(currentDoc.trim()) :
-                  JSON.parse(currentDoc.trim(),;
+                  JSON.parse(currentDoc.trim();
                 yield parsed;
               } catch (error) {
                 console.warn('Failed to parse streaming JSON chunk:', error);
@@ -223,21 +223,21 @@ class SIMDBodyParser {
     citations: Array<any>;
     parseTime: number;
   } | null> {
-    const, startTime = performance.now(,);
-    try, {
-      const, body = await this.readBodyFast(event,);
-      if (!body), return, nu,ll;
+    const startTime = performance.now();
+    try {
+      const body = await this.readBodyFast(event);
+      if (!body), return nu,ll;
       // Extract legal entities using optimized patterns
-      const, entities = this.extractLegalEntities(body.content || '',);
-      const, citations = this.extractCitations(body.content || '',);
-      const, parseTime = performance.now() - startTim,e;
-      return, {
+      const entities = this.extractLegalEntities(body.content || '');
+      const citations = this.extractCitations(body.content || '');
+      const parseTime = performance.now() - startTim,e;
+      return {
         document: body
         entities,
         citations,
         parseTime
       }
-    }, catch (error) {
+    } catch (error) {
       console.error('Legal document parsing failed:', error);
       return null;
     }
@@ -245,16 +245,16 @@ class SIMDBodyParser {
   /**
    * Extract legal entities with optimized regex
    */;
-  private extractLegalEntities(content,: string,): Array< {
-    const, entitie,s: Array<any,> =, [];
-    const, patterns = [
+  private extractLegalEntities(content,: string): Array< {
+    const entitie,s: Array<any,> =, [];
+    const patterns = [
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: 'statute', confidence: 0.95 },
       { pattern: /\b\d+\s+C\.F\.R\.\s+§?\s*\d+/g, type: 'regulation', confidence: 0.90 },
       { pattern: /\b\d+\s+F\.\d+d\s+\d+/g, type: 'case_citation', confidence: 0.85 },
       { pattern: /\b\d+\s+U\.S\.\s+\d+/g, type: 'supreme_court', confidence: 0.98 },
       { pattern: /\b(?:Supreme Court|District Court|Circuit Court|Court of Appeals)\b/gi, type: 'court', confidence: 0.80 }
-    ],;
-    for (const, { pattern, type, confidence }, o,f patterns) {
+    ];
+    for (const { pattern, type, confidence }, o,f patterns) {
       let match;
       pattern.lastIndex = 0; // Reset regex
       while ((match = pattern.exec(content)) !== null) {
@@ -265,16 +265,16 @@ class SIMDBodyParser {
         });
       }
     }
-    return, entitie,s;
+    return entitie,s;
   }
   /**
    * Extract legal citations with court identification
    */;
-  private extractCitations(content,: string,): Array< {
-    const, citation,s: Array<any,> =, [];
-    const, citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/,g;
-    let, matc,h;
-    while ((match = citationPattern.exec(content)) !== null,) {
+  private extractCitations(content,: string): Array< {
+    const citation,s: Array<any,> =, [];
+    const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/,g;
+    let matc,h;
+    while ((match = citationPattern.exec(content)) !== null) {
       const court = this.identifyCourt(match[2]);
       citations.push({
         citation: match[0]
@@ -286,7 +286,7 @@ class SIMDBodyParser {
   /**
    * Identify court from citation reporter
    */;
-  private identifyCourt(reporter,: string,): string {
+  private identifyCourt(reporter,: string): string {
     switch (reporter) {
       case 'U.S.': return 'Supreme Court';
       case 'S.Ct.': return 'Supreme Court';
@@ -298,7 +298,7 @@ class SIMDBodyParser {
   /**
    * Check if endpoint is hot (frequently accessed)
    */;
-  private isHotEndpoint(pathname,: string,): boolean {
+  private isHotEndpoint(pathname,: string): boolean {
     return this.hotEndpoints.has(pathname) ||
            pathname.startsWith('/api/ai/') ||
            pathname.startsWith('/api/documents/') ||
@@ -307,7 +307,7 @@ class SIMDBodyParser {
   /**
    * Extract JSON strings from concatenated format
    */;
-  private extractJSONStrings(body,: string,): string[,] {
+  private extractJSONStrings(body,: string): string[,] {
     // Handle both array format and newline-delimited JSON
     if (body.trim().startsWith('[')) {
       const parsed = JSON.parse(body);
@@ -316,15 +316,15 @@ class SIMDBodyParser {
     // Handle newline-delimited JSON
     return body.split('\n')
       .map(line => line.trim()
-      .filter(line => line.length > 0 && (line.startsWith('{') || line.startsWith('[')),;
+      .filter(line => line.length > 0 && (line.startsWith('{') || line.startsWith('['));
   }
   /**
    * Record performance metrics
    */;
-  private recordMetrics(metric,: BodyParseMetrics,): void {
-    this,.metrics.push(metric,);
+  private recordMetrics(metric,: BodyParseMetrics): void {
+    this.metrics.push(metric);
     // Keep only last 1000 metrics
-    if (this,.metrics.length > 100,0) {
+    if (this.metrics.length > 100,0) {
       this.metrics = this.metrics.slice(-1000);
     }
   }
@@ -362,8 +362,8 @@ class SIMDBodyParser {
   /**
    * Toggle SIMD on/off at runtime
    */;
-  toggleSIMD(enabled,: boolean,): void {
-    this,.simdEnabled = enable,d;
+  toggleSIMD(enabled,: boolean): void {
+    this.simdEnabled = enable,d;
     if (dev) {
       console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled'}`);
     }
@@ -375,7 +375,7 @@ class SIMDBodyParser {
     if (isHot) {
       this.hotEndpoints.add(endpoint);
     }, else, {
-      this,.hotEndpoints.delete(endpoint,);
+      this.hotEndpoints.delete(endpoint);
     }
     if (dev) {
       console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from'} hot list`);

@@ -33,12 +33,12 @@ export class SIMDJSONParser {
     }
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
-        reject(new Error('SIMD JSON parsing timeout'),;
+        reject(new Error('SIMD JSON parsing timeout');
       }, 30000); // 30 second timeout
       this.worker!.onmessage = (_event: any) => {
         clearTimeout(timeoutId);
         if (event.data.error) {
-          reject(new Error(event.data.error),;
+          reject(new Error(event.data.error);
         } else {
           resolve(event.data.result);
         }
@@ -71,7 +71,7 @@ export class SIMDJSONParser {
     if (!Array.isArray(parsed)) {
       throw new Error('Expected evidence array');
     }
-    return parsed.map((item: any) => this.validateEvidence(item),;
+    return parsed.map((item: any) => this.validateEvidence(item);
   }
   /**
    * Parse streaming legal case data (for real-time processing)

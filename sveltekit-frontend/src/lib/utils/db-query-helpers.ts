@@ -74,15 +74,15 @@ export function buildFilters(filters: SQL[]): SQL | undefined {
 }
 export function buildSearchFilters(
   searchColumns: PgColumn[]
-  searchTerm: string,;
+  searchTerm: string;
 ): SQL {
   const searchFilters = searchColumns.map((col: any) => like(col, `%${searchTerm}%`)
   );
   return or(...searchFilters);
 }
 export function applySorting(
-  column: PgColumn,;
-  order: 'asc' | 'desc' = 'desc',;
+  column: PgColumn;
+  order: 'asc' | 'desc' = 'desc';
 ): SQL {
   return order === 'asc' ? asc(column) : desc(column);
 }
@@ -105,13 +105,13 @@ export interface PaginationParams {
   limit: number;
 }
 export function getPaginationParams(
-  page: string | null,;
-  limit: string | null,;
+  page: string | null;
+  limit: string | null;
 ): PaginationParams {
-  const pageNum = Math.max(1, parseInt(page || '1'),;
-  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20')),;
+  const pageNum = Math.max(1, parseInt(page || '1');
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20'));
   return {
-    page: pageNum,;
+    page: pageNum;
     limit: limitNum
   }
 }

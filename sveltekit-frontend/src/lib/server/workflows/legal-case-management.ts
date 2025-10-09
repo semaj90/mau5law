@@ -44,48 +44,48 @@ export interface LegalCaseContext {
 }
 export type LegalCaseEvent =;
   | {
-      type: 'CREATE_CASE',;
-      title: string,;
-      description: string,;
-      caseType: string,;
-      jurisdiction: string,;
-      createdBy: string,;
+      type: 'CREATE_CASE';
+      title: string;
+      description: string;
+      caseType: string;
+      jurisdiction: string;
+      createdBy: string;
     }
   | {
-      type: 'ADD_EVIDENCE',;
-      evidenceId: string,;
-      description: string,;
-      evidenceType: string,;
-      source: string,;
+      type: 'ADD_EVIDENCE';
+      evidenceId: string;
+      description: string;
+      evidenceType: string;
+      source: string;
     }
   | {
-      type: 'ADD_PERSON_OF_INTEREST',;
-      personId: string,;
-      name: string,;
-      role: string,;
-      relationship: string,;
+      type: 'ADD_PERSON_OF_INTEREST';
+      personId: string;
+      name: string;
+      role: string;
+      relationship: string;
     }
   | {
-      type: 'ADD_TIMELINE_EVENT',;
-      date: string,;
-      event: string,;
-      description: string,;
-      category: string,;
+      type: 'ADD_TIMELINE_EVENT';
+      date: string;
+      event: string;
+      description: string;
+      category: string;
     }
-  | { type: 'UPDATE_ANALYSIS',; analysis: any }
-  | { type: 'SET_DEADLINE',; date: strin,g; description: stri,ng; deadlineType: string }
-  | { type: 'ASSIGN_LAWYER',; lawyerId: strin,g; name: string }
-  | { type: 'UPDATE_STATUS',; status: string }
-  | { type: 'UPDATE_PRIORITY',; priority: string }
-  | { type: 'COMPLETE_DEADLINE',; deadlineId: string }
+  | { type: 'UPDATE_ANALYSIS'; analysis: any }
+  | { type: 'SET_DEADLINE'; date: strin,g; description: stri,ng; deadlineType: string }
+  | { type: 'ASSIGN_LAWYER'; lawyerId: strin,g; name: string }
+  | { type: 'UPDATE_STATUS'; status: string }
+  | { type: 'UPDATE_PRIORITY'; priority: string }
+  | { type: 'COMPLETE_DEADLINE'; deadlineId: string }
   | { type: 'GENERATE_REPORT' }
   | { type: 'ARCHIVE_CASE' }
   | { type: 'ESCALATE' }
-  | { type: 'NOTIFY_STAKEHOLDERS',; message: strin,g; recipients: string[] }
+  | { type: 'NOTIFY_STAKEHOLDERS'; message: strin,g; recipients: string[] }
   | { type: 'CALCULATE_RISKS' }
-  | { type: 'PROGRESS_UPDATE',; progress: number }
+  | { type: 'PROGRESS_UPDATE'; progress: number }
   | { type: 'VALIDATION_COMPLETE' }
-  | { type: 'VALIDATION_FAILED',; errors: string[] }
+  | { type: 'VALIDATION_FAILED'; errors: string[] }
 // Case management actors
 const caseValidationActor = fromPromise(async ({
     input
@@ -119,7 +119,7 @@ const caseValidationActor = fromPromise(async ({
       errors.push('A case with a similar title may already exist');
     }
     if (errors.length > 0) {
-      throw new Error(errors.join('; '),;
+      throw new Error(errors.join('; ');
     }
     console.log(`✅ Case validation complete: ${title}`);
     return { valid: true }
@@ -243,7 +243,7 @@ const stakeholderNotificationActor = fromPromise(async ({
       type: notificationType
       sentAt: new Date().toISOString(),
       status: 'sent'
-    }),;
+    });
     // Store notifications
     await cache.set(`notifications:case:${caseId}`, notifications, 86400); // 24h TTL
     console.log(`✅ Notifications sent successfully`);
@@ -607,7 +607,7 @@ export const legalCaseManagementMachine = createMachine({
                 index.toString()) === event.deadlineId ? { ...deadline, completed: true } : deadline
               ),
             lastModified: () => Date.now()
-          },)
+          })
         },
         UPDATE_STATUS: [
           {

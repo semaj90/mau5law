@@ -211,26 +211,26 @@ export const enhancedEvidenceRelations = relations(enhancedEvidence, ({ one, man
   }),
   processingQueue: many(legalProcessingQueue),
   ragSessions: many(legalRAGSessions)
-}),;
+});
 export const legalRAGSessionsRelations = relations(legalRAGSessions, ({ one, many }) => ({
   evidence: one(enhancedEvidence, {
     fields: [legalRAGSessions.caseId],
     references: [enhancedEvidence.caseId]
   }),
   rerankingMetrics: many(legalRerankingMetrics)
-}),;
+});
 export const qdrantVectorMetadataRelations = relations(qdrantVectorMetadata, ({ one }) => ({
   evidence: one(enhancedEvidence, {
     fields: [qdrantVectorMetadata.evidenceId],
     references: [enhancedEvidence.id]
   })
-}),;
+});
 export const legalProcessingQueueRelations = relations(legalProcessingQueue, ({ one }) => ({
   evidence: one(enhancedEvidence, {
     fields: [legalProcessingQueue.evidenceId],
     references: [enhancedEvidence.id]
   })
-}),;
+});
 // === INDEXES FOR PERFORMANCE ===
 // Note: These would be created via Drizzle migrations
 // CREATE INDEX CONCURRENTLY idx_enhanced_evidence_case_type ON enhanced_evidence(case_type)

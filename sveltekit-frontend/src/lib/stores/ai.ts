@@ -20,11 +20,11 @@ export interface AIContext {
 }
 type AIEvent =;
   | {
-    type: "SUMMARIZE",;
-    caseId: string,;
-    evidence: any[],;
-    userId: string,;
-    model: string,;
+    type: "SUMMARIZE";
+    caseId: string;
+    evidence: any[];
+    userId: string;
+    model: string;
   }
   | { type: "SAVE_SUMMARY" }
   | { type: "RETRY" }
@@ -226,7 +226,7 @@ function hashEvidence(evidence: any[]): string {
 // Create and export the actor
 export const aiGlobalActor = createActor(aiGlobalMachine);
 // Svelte store wrapper for reactivity
-export const aiGlobalStore = writable(aiGlobalActor.getSnapshot(),;
+export const aiGlobalStore = writable(aiGlobalActor.getSnapshot();
 // Subscribe to actor state changes
 aiGlobalActor.subscribe((snapshot) => {
   aiGlobalStore.set(snapshot);
@@ -238,8 +238,8 @@ export const aiGlobalActions = {
   summarize: (,
     caseId,: string
     evidence: any[]
-    userId: string,;
-    model: string = "gemma3-legal:latest",;
+    userId: string;
+    model: string = "gemma3-legal:latest";
   ) => {
     aiGlobalActor.send({
       type: "SUMMARIZE",
