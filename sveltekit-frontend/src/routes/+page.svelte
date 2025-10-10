@@ -7,13 +7,20 @@
     database: 'checking',
     redis: 'checking',
     ollama: 'checking',
-    gpu: 'checking'
+    gpu: 'checking',
+    workers: 'checking' // NEW: Worker health status
   });
 
   let stats = $state({
     totalCases: 0,
     totalEvidence: 0,
     processingJobs: 0
+  });
+
+  let workerDetails = $state({
+    ocr: { status: 'offline', healthy: false, queueDepth: 0 },
+    embedding: { status: 'offline', healthy: false, queueDepth: 0 },
+    autotag: { status: 'offline', healthy: false, queueDepth: 0 }
   });
 
   // Check system health on mount
@@ -42,6 +49,44 @@
       // Check GPU
       const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }));
       systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
+
+      // Check Workers (NEW)
+      const workersCheck = await fetch('/api/health/workers').catch(() => null);
+      if (workersCheck?.ok) {
+        const workersData = await workersCheck.json();
+        systemStatus.workers = workersData.success && workersData.status === 'online' ? 'online' :
+                                workersData.status === 'degraded' ? 'degraded' : 'offline';
+
+        // Update worker details
+        if (workersData.workers) {
+          workersData.workers.forEach((worker: any) => {
+            if (worker.name.includes('OCR')) {
+              workerDetails.ocr = {
+                status: worker.status,
+                healthy: worker.healthy,
+                queueDepth: worker.queueDepth || 0,
+                processedJobs: worker.processedJobs || 0
+              };
+            } else if (worker.name.includes('Embedding')) {
+              workerDetails.embedding = {
+                status: worker.status,
+                healthy: worker.healthy,
+                queueDepth: worker.queueDepth || 0,
+                processedJobs: worker.processedJobs || 0
+              };
+            } else if (worker.name.includes('Autotag')) {
+              workerDetails.autotag = {
+                status: worker.status,
+                healthy: worker.healthy,
+                queueDepth: 0,
+                processedJobs: worker.processedJobs || 0
+              };
+            }
+          });
+        }
+      } else {
+        systemStatus.workers = 'offline';
+      }
 
       // Get stats
       const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
@@ -121,7 +166,69 @@
           {getStatusIcon(systemStatus.gpu)} {systemStatus.gpu}
         </span>
       </div>
+      <div class="status-item">
+        <span class="status-label">Background Workers</span>
+        <span class={getStatusColor(systemStatus.workers)}>
+          {getStatusIcon(systemStatus.workers)} {systemStatus.workers}
+        </span>
+      </div>
     </div>
+
+    <!-- Worker Details Panel -->
+    {#if systemStatus.workers !== 'checking'}
+      <div class="worker-details">
+        <h3>🔧 Worker Status Details</h3>
+        <div class="workers-grid">
+          <div class="worker-card {workerDetails.ocr.healthy ? 'healthy' : 'unhealthy'}">
+            <div class="worker-header">
+              <span class="worker-icon">📄</span>
+              <h4>OCR Worker</h4>
+            </div>
+            <div class="worker-stats">
+              <p>Status: <strong>{workerDetails.ocr.status}</strong></p>
+              <p>Processed: <strong>{workerDetails.ocr.processedJobs || 0}</strong></p>
+              <p>Queue: <strong>{workerDetails.ocr.queueDepth || 0}</strong></p>
+            </div>
+            <div class="worker-tech">
+              <span class="tech-badge">GPU Tesseract</span>
+              <span class="tech-badge">MinIO</span>
+            </div>
+          </div>
+
+          <div class="worker-card {workerDetails.embedding.healthy ? 'healthy' : 'unhealthy'}">
+            <div class="worker-header">
+              <span class="worker-icon">🧠</span>
+              <h4>Embedding Worker</h4>
+            </div>
+            <div class="worker-stats">
+              <p>Status: <strong>{workerDetails.embedding.status}</strong></p>
+              <p>Processed: <strong>{workerDetails.embedding.processedJobs || 0}</strong></p>
+              <p>Queue: <strong>{workerDetails.embedding.queueDepth || 0}</strong></p>
+            </div>
+            <div class="worker-tech">
+              <span class="tech-badge">embeddinggemma:latest</span>
+              <span class="tech-badge">Qdrant</span>
+              <span class="tech-badge">pgvector</span>
+            </div>
+          </div>
+
+          <div class="worker-card {workerDetails.autotag.healthy ? 'healthy' : 'unhealthy'}">
+            <div class="worker-header">
+              <span class="worker-icon">🏷️</span>
+              <h4>Autotag Worker</h4>
+            </div>
+            <div class="worker-stats">
+              <p>Status: <strong>{workerDetails.autotag.status}</strong></p>
+              <p>Processed: <strong>{workerDetails.autotag.processedJobs || 0}</strong></p>
+              <p>Type: <strong>Optional</strong></p>
+            </div>
+            <div class="worker-tech">
+              <span class="tech-badge">gemma3-legal:latest</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
   </div>
 
   <!-- Quick Stats -->
@@ -150,6 +257,26 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Featured: YoRHa Detective Interface -->
+  <div class="featured-section">
+    <a href="/yorha-detective" class="featured-card">
+      <div class="featured-badge">✨ NEW</div>
+      <div class="featured-icon">🎮⚔️</div>
+      <h2>YoRHa Detective Command Center</h2>
+      <p class="featured-description">
+        Full-featured AI detective interface with real-time Ollama chat, PostgreSQL chat history,
+        and retro gaming aesthetic. Stream responses from Gemma3-Legal with 30 GPU layers!
+      </p>
+      <div class="featured-tech">
+        <span class="tech-badge">Ollama Streaming</span>
+        <span class="tech-badge">PostgreSQL</span>
+        <span class="tech-badge">pgvector</span>
+        <span class="tech-badge">GPU 30 Layers</span>
+      </div>
+      <span class="featured-button">Launch Detective Interface →</span>
+    </a>
   </div>
 
   <!-- Feature Grid -->
@@ -204,6 +331,7 @@
   <div class="quick-actions">
     <h2>⚡ Quick Actions</h2>
     <div class="action-buttons">
+      <a href="/yorha-detective" class="quick-button detective">🎮 Detective Interface</a>
       <a href="/cases/create" class="quick-button success">+ New Case</a>
       <a href="/evidence/upload" class="quick-button legal">📤 Upload Evidence</a>
   <a href="/ai/chat" class="quick-button neural">💬 Ask AI</a>
@@ -494,6 +622,226 @@
     background: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
     transform: translateY(-2px);
+  }
+
+  .quick-button.detective {
+    background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+    color: #000;
+    border: 2px solid #00ff41;
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  }
+
+  .quick-button.detective:hover {
+    background: linear-gradient(135deg, #00cc34 0%, #00ff41 100%);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  /* Featured Section */
+  .featured-section {
+    margin-bottom: 3rem;
+  }
+
+  .featured-card {
+    position: relative;
+    display: block;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border: 3px solid #00ff41;
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .featured-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Worker Details Panel - NEW */
+  .worker-details {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px solid #333;
+  }
+
+  .worker-details h3 {
+    color: #ffd700;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .workers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .worker-card {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(42, 42, 42, 0.6) 0%, rgba(26, 26, 26, 0.6) 100%);
+    border-radius: 12px;
+    border: 2px solid #444;
+    transition: all 0.3s ease;
+  }
+
+  .worker-card.healthy {
+    border-color: #00ff41;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+  }
+
+  .worker-card.unhealthy {
+    border-color: #ff4444;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.2);
+  }
+
+  .worker-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+  }
+
+  .worker-icon {
+    font-size: 1.5rem;
+  }
+
+  .worker-header h4 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .worker-stats {
+    margin-bottom: 1rem;
+  }
+
+  .worker-stats p {
+    margin: 0.5rem 0;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  .worker-stats strong {
+    color: #00ff41;
+    font-weight: 600;
+  }
+
+  .worker-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tech-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid #a855f7;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #a855f7;
+    font-weight: 600;
+  }
+
+  .featured-card:hover {
+    border-color: #ffd700;
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+    color: #000;
+    font-weight: 900;
+    font-size: 0.75rem;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+  }
+
+  .featured-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+  }
+
+  .featured-card h2 {
+    font-size: 2rem;
+    color: #00ff41;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+  }
+
+  .featured-description {
+    font-size: 1.1rem;
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .featured-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tech-badge {
+    padding: 0.5rem 1rem;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    color: #00ff41;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .featured-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+    color: #000;
+    font-weight: 900;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
+  }
+
+  .featured-card:hover .featured-button {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+    transform: scale(1.05);
   }
 
   /* Responsive Design */

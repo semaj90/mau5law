@@ -33,7 +33,7 @@
   // Apply default for caseTypes, which might be more complex than a simple literal
   let caseTypes = $derived(propCaseTypes ?? _defaultCaseTypes);
   // bound select value for practice area
-  let selectedPracticeArea: string = '';
+  let selectedPracticeArea = $state<string>('');
   interface ToastData {
     title?: string;
     description?: string;

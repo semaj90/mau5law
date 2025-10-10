@@ -9,7 +9,6 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { createLegalChatInterface } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';
@@ -24,32 +23,34 @@
     active?: boolean;
   }
   // Gaming-style state
-  let messages = $state<ChatMessage[]>([
+  let messages: ChatMessage[] = $state([
     {
       id: '1',
       sender: 'assistant',
       content: 'YoRHa AI Assistant Online - Detective Support System Active',
-      timestamp: '19:02:52';
+      timestamp: '19:02:52'
     },
     {
       id: '2',
       sender: 'assistant',
       content: 'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-      timestamp: '19:02:52';
+      timestamp: '19:02:52'
     },
     {
       id: '3',
       sender: 'assistant',
       content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',
-      timestamp: '19:02:57';
+      timestamp: '19:02:57'
     }
   ]);
   let currentInput = $state('');
   let isTyping = $state(false);
   let systemStatus = $state('Online');
   let currentTime = $state('19:02');
+  let sessionId: string | null = $state(null);
+  let isTestMode = $state(false);
   // Sidebar navigation items
-  let sidebarItems = $state<SidebarItem[]>([
+  let sidebarItems: SidebarItem[] = $state([
     { icon: '🏠', label: 'COMMAND CENTER', active: true },
     { icon: '📋', label: 'ACTIVE CASES', count: 3 },
     { icon: '📚', label: 'EVIDENCE LIBRARY' },
@@ -59,11 +60,6 @@
     { icon: '💻', label: 'TERMINAL', active: false },
     { icon: '⚙️', label: 'SYSTEM CONFIGURATION' }
   ]);
-  // Enhanced chat builder
-  const chatBuilder = createLegalChatInterface({
-    practiceArea: 'litigation',
-    confidentiality: 'privileged';
-  });
   let messagesContainer: HTMLElement;
   // Update time periodically
   onMount(() => {
@@ -84,16 +80,18 @@
     }
   });
   async function sendMessage() {
-    if (!currentInput.trim()) return;
+    if (!currentInput.trim() || isTyping) return;
+
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'detective',
-      content: currentInput;
-      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0');
-    }
-    messages.push(userMessage);
-    const input = currentInput;
+      content: currentInput,
+      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0')
+    };
+    messages = [...messages, userMessage];
+    const messageContent = currentInput;
     currentInput = '';
+
     // Start typing indicator
     isTyping = true;
     const typingMessage: ChatMessage = {
@@ -101,41 +99,148 @@
       sender: 'assistant',
       content: '9S is ANALYZING...',
       timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
-      isTyping: true;
-    }
-    messages.push(typingMessage);
-    // Simulate AI response
-    setTimeout(() => {
+      isTyping: true
+    };
+    messages = [...messages, typingMessage];
+
+    try {
+      // Call real API endpoint
+      const response = await fetch('/api/yorha/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: messageContent,
+          sessionId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
       // Remove typing indicator
       messages = messages.filter(m => m.id !== 'typing');
-      isTyping = false;
-      // Add AI response
-      const aiResponse: ChatMessage = {
+
+      // Create AI response message
+      const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'assistant',
-        content: generateDetectiveResponse(input),
-        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0');
+        content: '',
+        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0')
+      };
+      messages = [...messages, aiMessage];
+
+      // Handle SSE stream
+      if (response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Process SSE events
+            let sepIndex: number;
+            while ((sepIndex = buffer.indexOf('\n\n')) !== -1) {
+              const packet = buffer.slice(0, sepIndex);
+              buffer = buffer.slice(sepIndex + 2);
+
+              const dataLines = packet
+                .split(/\r?\n/)
+                .filter(line => line.startsWith('data:'))
+                .map(line => line.replace(/^data:\s*/, ''))
+                .join('\n');
+
+              if (!dataLines || dataLines === '[DONE]') {
+                isTyping = false;
+                break;
+              }
+
+              try {
+                const eventData = JSON.parse(dataLines);
+
+                switch (eventData.type) {
+                  case 'connection':
+                    sessionId = eventData.sessionId;
+                    isTestMode = eventData.isTestMode;
+                    break;
+
+                  case 'token':
+                    if (eventData.fullResponse) {
+                      aiMessage.content = eventData.fullResponse;
+                      messages = [...messages];
+                    }
+                    break;
+
+                  case 'complete':
+                    aiMessage.content = eventData.fullResponse;
+                    messages = [...messages];
+                    isTyping = false;
+                    break;
+
+                  case 'error':
+                    console.error('Stream error:', eventData.error);
+                    isTyping = false;
+                    break;
+                }
+              } catch (parseError) {
+                console.warn('Failed to parse SSE:', dataLines);
+              }
+            }
+
+            if (!isTyping) break;
+          }
+        } catch (streamError) {
+          console.error('Stream error:', streamError);
+        } finally {
+          try { reader.cancel(); } catch {}
+        }
       }
-      messages.push(aiResponse);
-    }, 2000);
+    } catch (error) {
+      console.error('Send message error:', error);
+
+      // Remove typing indicator and show error
+      messages = messages.filter(m => m.id !== 'typing');
+
+      const errorMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        sender: 'assistant',
+        content: `⚠️ Error connecting to AI service. ${error instanceof Error ? error.message : 'Unknown error'}. Using test mode.`,
+        timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0')
+      };
+      messages = [...messages, errorMessage];
+      isTyping = false;
+    }
   }
-  function generateDetectiveResponse(input: string): string {
-    const responses = [
-      `Analyzing your query: "${input}". Accessing legal database and case precedents...`,
-      `Cross-referencing evidence patterns. Detective, I've identified several relevant case connections.`,
-      `Processing forensic data... This case shows similarities to archived investigations in the YoRHa database.`,
-      `Investigation parameters updated. Shall we proceed with evidence correlation analysis?`,
-      `Detective, my neural networks have processed your request. Generating comprehensive case analysis...`
+  function clearChat() {
+    messages = [
+      {
+        id: '1',
+        sender: 'assistant',
+        content: 'YoRHa AI Assistant Online - Detective Support System Active',
+        timestamp: currentTime + ':52'
+      },
+      {
+        id: '2',
+        sender: 'assistant',
+        content: 'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
+        timestamp: currentTime + ':52'
+      }
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    sessionId = null;
+    isTestMode = false;
   }
-  function selectSidebarItem(_index: number) {
+  function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
       ...item,
-      active: i === index;
+      active: i === index
     }));
   }
-  function handleKeyPress(_event: KeyboardEvent) {
+  function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       sendMessage();
     }
@@ -220,7 +325,10 @@
         <div class="chat-controls">
           <Button class="control-btn">⭐ TERMINAL</Button>
           <Button class="control-btn active">🤖 AI CHAT</Button>
-          <Button class="control-btn">🗑️ CLEAR</Button>
+          <Button class="control-btn" onclick={clearChat}>🗑️ CLEAR</Button>
+          {#if isTestMode}
+            <span class="test-mode-badge">TEST MODE</span>
+          {/if}
         </div>
       </div>
       <div class="chat-body">
@@ -389,7 +497,7 @@
   }
   .status-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.625rem;
     color: #999999;
     margin-bottom: 0.25rem;
@@ -406,7 +514,7 @@
   }
   .main-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 0, 0, 0.8);
@@ -479,7 +587,7 @@
   }
   .chat-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
     background: rgba(0, 255, 65, 0.1);
@@ -517,6 +625,15 @@
     border-color: #00ff41;
     color: #00ff41;
     background: rgba(0, 255, 65, 0.1);
+  }
+  .test-mode-badge {
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 193, 7, 0.2);
+    border: 1px solid #ffc107;
+    color: #ffc107;
+    font-size: 0.625rem;
+    font-weight: bold;
+    border-radius: 2px;
   }
   .chat-body {
     flex: 1;
@@ -637,7 +754,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .send-btn:hover:not(:disabled) {,
+  .send-btn:hover:not(:disabled) {
     background: #00cc34;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
   }
@@ -647,8 +764,8 @@
     cursor: not-allowed;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   /* Scrollbar Styles */
   .messages-container::-webkit-scrollbar {

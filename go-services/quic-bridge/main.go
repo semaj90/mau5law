@@ -7,14 +7,11 @@ import (
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/quic-go/quic-go/http3"
 )
 
 // QUICBridge provides ultra-low latency communication via HTTP/3 and WebTransport
 type QUICBridge struct {
-	server *http3.Server
-	port   string
+	port string
 }
 
 type QUICMessage struct {
@@ -145,6 +142,10 @@ func generateTLSConfig() *tls.Config {
 	}
 }
 
+// Mark generateTLSConfig as referenced to silence "unused" warnings.
+// This keeps the function available for when the HTTP/3 server is enabled
+var _ = generateTLSConfig
+
 func main() {
 	port := "8100"
 	bridge := &QUICBridge{port: port}
@@ -212,16 +213,16 @@ func main() {
 	// For now, commenting out until certificates are available
 	// Uncomment and configure TLS when ready
 	/*
-	server := &http3.Server{
-		Handler:   mux,
-		Addr:      ":" + port,
-		TLSConfig: generateTLSConfig(),
-	}
-	bridge.server = server
+		server := &http3.Server{
+			Handler:   mux,
+			Addr:      ":" + port,
+			TLSConfig: generateTLSConfig(),
+		}
+		bridge.server = server
 
-	if err := server.ListenAndServeTLS("certs/cert.pem", "certs/key.pem"); err != nil {
-		log.Fatalf("❌ QUIC Bridge failed to start: %v", err)
-	}
+		if err := server.ListenAndServeTLS("certs/cert.pem", "certs/key.pem"); err != nil {
+			log.Fatalf("❌ QUIC Bridge failed to start: %v", err)
+		}
 	*/
 
 	// Keep the program running

@@ -15,7 +15,7 @@
       practiceArea?: string;
       dateRange?: string;
       status?: string;
-    }
+    }; // <-- added missing semicolon
     confidence: number;
     clickedResults: string[];
     timeSpent: number;
@@ -54,9 +54,11 @@
     isLoading = true;
     let usingMockData = false;
     try {
-      // removed unused response assignment
+      // perform an actual fetch; if the endpoint is not available the catch block will provide mock data
+      const response = await fetch('/api/recommendations/last-searched');
+      if (!response.ok) throw new Error('Network response was not ok');
       const result = await response.json();
-      if (result.success) {
+      if (result?.success && Array.isArray(result.data)) {
         searchHistory = result.data;
         await generateAISuggestions();
       } else {
@@ -76,7 +78,7 @@
           filters: { practiceArea: 'employment-law', status: 'active' },
           confidence: 0.85,
           clickedResults: ['case-123', 'case-456'],
-          timeSpent: 420;
+          timeSpent: 420, // <-- fixed semicolon -> comma
         },
         {
           id: 'mock-002',
@@ -86,7 +88,7 @@
           searchType: 'precedents',
           confidence: 0.92,
           clickedResults: ['patent-789'],
-          timeSpent: 180;
+          timeSpent: 180,
         }
       ];
       await generateAISuggestions();
@@ -96,8 +98,7 @@
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed;
-d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -124,10 +125,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       const response = await fetch('/api/recommendations/last-searched', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           query: searchItem.query,
           searchType: searchItem.searchType,
-          filters: searchItem.filter;
+          filters: searchItem.filters
         })
       });
       if (!response.ok) {
@@ -142,8 +143,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - search repeated locally';
-      notice.style.cssText = 'position: fixed;
-d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
@@ -166,9 +166,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   function getConfidenceColor(confidence: number): string {
     const palette = getCurrentPalette();
-    if (confidence > 0.8) return palette.colors.succes;
-    if (confidence > 0.6) return palette.colors.warning;
-    return palette.colors.error;
+    // typo fixed: 'succes' -> 'success' and provide a safe fallback color
+    const successColor = (palette?.colors?.success as string) ?? '#92cc41';
+    const warningColor = (palette?.colors?.warning as string) ?? '#ffb020';
+    const errorColor = (palette?.colors?.error as string) ?? '#f83800';
+    if (confidence > 0.8) return successColor;
+    if (confidence > 0.6) return warningColor;
+    return errorColor;
   }
   function formatTimeAgo(timestamp: string): string {
     const now = new Date();
@@ -213,7 +217,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               <button
                 class="suggestion-pill"
                 onclick={() => {
-                  searchFilter = suggestio;
+                  searchFilter = suggestion;
                 }}
               >
                 {suggestion}
@@ -239,9 +243,19 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       {:else}
         {#each filteredSearches as searchItem (searchItem.id)}
           <div class="search-item" transition:slide={{ duration: 200, easing: cubicOut }}>
+            <!-- changed: add role, tabindex, aria-expanded, and keyboard handler; use DOM-style onclick/onkeydown -->
             <div
               class="search-main"
+              role="button"
+              tabindex="0"
+              aria-expanded={selectedSearch?.id === searchItem.id}
               onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
+              onkeydown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem;
+                }
+              }}
             >
               <div class="search-header">
                 <span class="search-type-icon">{getSearchIcon(searchItem.searchType)}</span>
@@ -375,7 +389,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s; /* fixed unit */
   }
   .suggestion-pill:hover {
     background: rgba(138, 43, 226, 0.3);
@@ -392,7 +406,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2;
+    transition: all 0.2s; /* fixed unit */
   }
   .search-item:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -428,7 +442,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: rgba(255, 255, 255, 0.6);
   }
   .search-type {
-    text-transform: capitaliz;
+    text-transform: capitalize; /* fixed typo */
   }
   .result-count {
     color: rgba(138, 43, 226, 0.8);
@@ -490,7 +504,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 6px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s; /* fixed unit */
   }
   .action-btn.primary {
     background: rgba(138, 43, 226, 0.2);

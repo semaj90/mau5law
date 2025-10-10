@@ -1,83 +1,120 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  interface Props {
-    collaborationSession: {
-    activeCollaborators: string[];
-    userId: string
-    evidenceId: string
-    wsConnection: WebSocket | null;
-    onAddAnnotation: (content: string, position: unknown;
-) ;
-  }
-  let { collaborationSession,
-    activeCollaborators,
-    userId,
-    evidenceId,
-    wsConnection,
-    onAddAnnotation = > void
-   }: { collaborationSession,
-    activeCollaborators,
-    userId,
-    evidenceId,
-    wsConnection,
-    onAddAnnotation = > void
-  : unknown } = $props();
-  import { onMount } from 'svelte';
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
+  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
+  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Users, MessageCircle, MapPin, Send, Eye, UserCheck } from 'lucide-svelte';
+  import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from 'lucide-svelte';
+
+  // --- Type Definitions ---
+  interface Position {
+    x: number;
+    y: number;
+  }
+
+  interface Annotation {
+    userId: string;
+    content: string;
+    position: Position;
+    timestamp: string;
+  }
+
+  interface ChatMessage {
+    userId: string;
+    message: string;
+    timestamp: string;
+  }
+
+  interface Participant {
+    userId: string;
+    role: string;
+    joinedAt: string;
+  }
+
+  interface CollaborationSession {
+    sessionId: string;
+    participants: Participant[];
+    chatHistory: ChatMessage[];
+    annotations: Annotation[];
+  }
+
   // Props
-      sessionId: string
-    participants: Array;
-    chatHistory: Array;
-    annotations: Array;
-  } | undefined;
-  // Local state
+  interface Props {
+    collaborationSession?: CollaborationSession | null;
+    activeCollaborators?: string[];
+    userId?: string;
+    evidenceId?: string;
+    wsConnection?: WebSocket | null;
+    onAddAnnotation?: (content: string, position: Position) => void;
+  }
+
+  const {
+    collaborationSession: initialCollaborationSession = null,
+    activeCollaborators = [],
+    userId = '',
+    evidenceId = '',
+    wsConnection = null,
+    onAddAnnotation = () => {}
+  } = $props<Props>();
+
+  // Local state for mutable prop
+  let collaborationSession = $state(initialCollaborationSession);
+  $effect(() => {
+    collaborationSession = initialCollaborationSession;
+  });
+
+  // Local state (Svelte 5 runes)
   let newMessage = $state('');
   let newAnnotation = $state('');
   let showAnnotationInput = $state(false);
-  let annotationPosition = $state({ x: 0, y: 0 });
-  let chatContainer: HTMLDivElement
+  let annotationPosition = $state<Position>({ x: 0, y: 0 });
+  let chatContainer: HTMLDivElement;
   let isTyping = $state(false);
   let typingUsers = $state<string[]>([]);
+
   // Auto-scroll chat to bottom when new messages arrive
   $effect(() => {
     if (collaborationSession?.chatHistory && chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      // Defer to next microtask to ensure DOM updated
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 0);
     }
   });
+
+  // WebSocket message wiring with cleanup
   $effect(() => {
-    // Set up WebSocket message listeners for real-time collaboration
-    if (wsConnection) {
-      const originalOnMessage = wsConnection.onmessag;
-      wsConnection.onmessage = (event) => {
-        originalOnMessage?.(event);
-        handleWebSocketMessage(JSON.parse(event.data));
+    if (!wsConnection) return;
+    const originalOnMessage = wsConnection.onmessage;
+    wsConnection.onmessage = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        handleWebSocketMessage(data);
+      } catch (e) {
+        // preserve original behavior too
+        originalOnMessage?.call(wsConnection, event);
       }
-    }
+    };
+    return () => {
+      // restore original handler if present
+      wsConnection.onmessage = originalOnMessage ?? null;
+    };
   });
-  function handleWebSocketMessage(data: unknown) {
-    switch (data.type) {
+
+  function handleWebSocketMessage(data: any) {
+    switch (data?.type) {
       case 'chat-message':
         if (collaborationSession) {
-          collaborationSession.chatHistory = [
-            ...collaborationSession.chatHistory,
-            data.message
-          ];
+          collaborationSession = {
+            ...collaborationSession,
+            chatHistory: [...collaborationSession.chatHistory, data.message]
+          };
         }
         break;
       case 'user-typing':
@@ -90,35 +127,43 @@ Real-time collaboration interface for multiple investigators working on evidence
         break;
       case 'annotation-added':
         if (collaborationSession) {
-          collaborationSession.annotations = [
-            ...collaborationSession.annotations,
-            data.annotation
-          ];
+          collaborationSession = {
+            ...collaborationSession,
+            annotations: [...collaborationSession.annotations, data.annotation]
+          };
         }
+        break;
+      default:
         break;
     }
   }
+
   function sendMessage() {
-    if (!newMessage.trim() || !wsConnection || !collaborationSession) return;
-    const message = {
+    if (!newMessage.trim() || !collaborationSession) return;
+    const message: ChatMessage = {
       userId,
-      message: newMessage;
-      timestamp: new Date().toISOString();
+      message: newMessage.trim(),
+      timestamp: new Date().toISOString()
+    };
+
+    if (wsConnection) {
+      wsConnection.send(JSON.stringify({
+        type: 'chat-message',
+        sessionId: collaborationSession.sessionId,
+        message
+      }));
     }
-    // Send via WebSocket
-    wsConnection.send(JSON.stringify({
-      type: 'chat-message',
-      sessionId: collaborationSession.sessionId,
-      messag;
-    }));
-    // Update local state
-    collaborationSession.chatHistory = [
-      ...collaborationSession.chatHistory,
-      message
-    ];
+
+    // Optimistically update local state
+    collaborationSession = {
+      ...collaborationSession,
+      chatHistory: [...collaborationSession.chatHistory, message]
+    };
+
     newMessage = '';
     isTyping = false;
   }
+
   function handleTyping() {
     if (!wsConnection || !collaborationSession) return;
     if (!isTyping) {
@@ -126,36 +171,43 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.send(JSON.stringify({
         type: 'user-typing',
         sessionId: collaborationSession.sessionId,
-        userId;
+        userId
       }));
+      // allow subsequent typing notifications after a short debounce
+      setTimeout(() => (isTyping = false), 2000);
     }
   }
+
   function addAnnotation() {
-    if (!newAnnotation.trim()) return;
-    const annotation = {
+    if (!newAnnotation.trim() || !collaborationSession) return;
+    const annotation: Annotation = {
       userId,
-      content: newAnnotation;
-      position: annotatio;
-Position,
-      timestamp: new Date().toISOString();
-    }
-    // Send via WebSocket
-    if (wsConnection && collaborationSession) {
+      content: newAnnotation.trim(),
+      position: annotationPosition,
+      timestamp: new Date().toISOString()
+    };
+
+    if (wsConnection) {
       wsConnection.send(JSON.stringify({
         type: 'annotation-added',
         sessionId: collaborationSession.sessionId,
-        annotatio;
+        annotation
       }));
     }
-    // Call parent callback
-    onAddAnnotation(newAnnotation, annotationPosition);
-    // Reset form
+
+    collaborationSession = {
+      ...collaborationSession,
+      annotations: [...collaborationSession.annotations, annotation]
+    };
+
+    onAddAnnotation(newAnnotation.trim(), annotationPosition);
     newAnnotation = '';
     showAnnotationInput = false;
   }
+
   function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);
-    const now = new Date());
+    const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     if (diffMins < 1) return 'just now';
@@ -163,47 +215,52 @@ Position,
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return date.toLocaleDateString();
   }
+
   function getRoleColor(role: string) {
     switch (role) {
-      case 'investigator':
-        return 'bg-blue-100 text-blue-800';
-      case 'supervisor':
-        return 'bg-purple-100 text-purple-800';
-      case 'analyst':
-        return 'bg-green-100 text-green-800';
-      case 'legal':
-        return 'bg-orange-100 text-orange-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'investigator': return 'bg-blue-100 text-blue-800';
+      case 'supervisor': return 'bg-purple-100 text-purple-800';
+      case 'analyst': return 'bg-green-100 text-green-800';
+      case 'legal': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
+
   function isCurrentUser(participantUserId: string) {
     return participantUserId === userId;
   }
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    handleTyping();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 </script>
 <div class="collaboration-panel space-y-4">
   {#if !collaborationSession}
-    <div class="nes-container">
-      <div class="yorha-panel-content p-6 text-center">
+    <Card>
+      <CardContent class="p-6 text-center">
         <Users class="w-12 h-12 mx-auto mb-4 text-gray-400" />
         <p class="text-gray-600">No active collaboration session</p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   {:else}
     <!-- Active Participants -->
-    <div class="nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex items-center text-sm">
+    <Card>
+      <CardHeader>
+        <CardTitle class="flex items-center text-sm">
           <Users class="w-4 h-4 mr-2" />
           Active Participants ({collaborationSession.participants.length})
-        </h3>
-      </div>
-      <div class="yorha-panel-content space-y-3">
+        </CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-3">
         {#each collaborationSession.participants as participant}
           <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
             <div class="flex items-center space-x-3">
               <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                {participant.userId.substring.toUpperCase()}
+                {participant.userId.slice(0,2).toUpperCase()}
               </div>
               <div>
                 <div class="flex items-center space-x-2">
@@ -222,17 +279,18 @@ Position,
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{participant.role}</span>
           </div>
         {/each}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
+
     <!-- Real-time Chat -->
-    <div class="nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex items-center text-sm">
+    <Card>
+      <CardHeader>
+        <CardTitle class="flex items-center text-sm">
           <MessageCircle class="w-4 h-4 mr-2" />
           Team Chat
-        </h3>
-      </div>
-      <div class="yorha-panel-content p-0">
+        </CardTitle>
+      </CardHeader>
+      <CardContent class="p-0">
         <!-- Chat messages -->
         <div bind:this={chatContainer} class="h-64 overflow-y-auto p-4 space-y-3 border-b">
           {#if collaborationSession.chatHistory.length === 0}
@@ -263,6 +321,7 @@ Position,
               </div>
             {/each}
           {/if}
+
           <!-- Typing indicators -->
           {#if typingUsers.length > 0}
             <div class="flex justify-start">
@@ -281,52 +340,49 @@ Position,
             </div>
           {/if}
         </div>
+
         <!-- Message input -->
         <div class="p-4">
           <div class="flex space-x-2">
-            <Textarease;
+            <Textarea
               bind:value={newMessage}
               placeholder="Type your message..."
               class="flex-1 resize-none min-h-[40px] max-h-[120px]"
-              onkeydown={(e) => {
-                handleTyping();
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
+              // @ts-ignore - The Textarea component forwards keyboard events, but its types may be incomplete.
+              on:keydown={handleKeydown}
             />
             <Button
-              onclick={sendMessage}
+              on:click={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
               class="self-end bits-btn bits-btn"
             >
-<Send class="w-4 h-4" />
-</Button>
+              <Send class="w-4 h-4" />
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
+
     <!-- Annotations -->
-    <div class="nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex items-center justify-between text-sm">
+    <Card>
+      <CardHeader>
+        <CardTitle class="flex items-center justify-between text-sm">
           <div class="flex items-center">
             <MapPin class="w-4 h-4 mr-2" />
             Annotations ({collaborationSession.annotations.length})
           </div>
-          <Button class="bits-btn"
+          <Button
+            class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() =>
-showAnnotationInput = !showAnnotationInput}
+            on:click={() => (showAnnotationInput = !showAnnotationInput)}
           >
             Add Note
-</Button>
-        </h3>
-      </div>
-      <div class="yorha-panel-content space-y-3">
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-3">
         {#if showAnnotationInput}
           <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
             <Textarea
@@ -335,13 +391,12 @@ showAnnotationInput = !showAnnotationInput}
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
-Add Annotation
-</Button>
-              <Button class="bits-btn" onclick={() =>
-showAnnotationInput = false} variant="ghost" size="sm">
+              <Button class="bits-btn" on:click={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+                Add Annotation
+              </Button>
+              <Button class="bits-btn" on:click={() => (showAnnotationInput = false)} variant="ghost" size="sm">
                 Cancel
-</Button>
+              </Button>
             </div>
           </div>
         {/if}
@@ -357,7 +412,7 @@ showAnnotationInput = false} variant="ghost" size="sm">
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex items-center space-x-2">
                     <div class="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {annotation.userId.substring.toUpperCase()}
+                      {annotation.userId.slice(0,2).toUpperCase()}
                     </div>
                     <span class="text-sm font-medium">{annotation.userId}</span>
                   </div>
@@ -375,25 +430,27 @@ showAnnotationInput = false} variant="ghost" size="sm">
             {/each}
           </div>
         {/if}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
+
     <!-- Session Info -->
-    <div class="nes-container">
-      <div class="yorha-panel-content p-4">
+    <Card>
+      <CardContent class="p-4">
         <div class="flex items-center justify-between text-sm text-gray-600">
           <div class="flex items-center space-x-2">
             <Eye class="w-4 h-4" />
-            <span>Session: {collaborationSession.sessionId.substring(0, 8)}...</span>
+            <span>Session: {collaborationSession.sessionId.slice(0, 8)}...</span>
           </div>
           <div class="flex items-center space-x-2">
             <UserCheck class="w-4 h-4" />
             <span>{activeCollaborators.length} active</span>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   {/if}
 </div>
+
 <style>
   .collaboration-panel {
     max-height: 100vh;
@@ -415,10 +472,10 @@ showAnnotationInput = false} variant="ghost" size="sm">
     margin: 0 1px;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2;
+    animation-delay: 0.2s;
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4;
+    animation-delay: 0.4s;
   }
   @keyframes typing {
     0%, 60%, 100% {

@@ -3,16 +3,9 @@
   // Svelte 5 runes are auto-imported
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  // Replace grouped named import (which caused the errors) with explicit default imports
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
   import {
@@ -27,6 +20,23 @@
     Zap,
   } from "lucide-svelte";
   import { onMount, tick } from "svelte";
+
+  // Type for chat messages
+  interface ChatMessage {
+    id: string;
+    type: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
+    performance?: {
+      duration: number;
+      tokens: number;
+      promptTokens?: number;
+      tokensPerSecond: number;
+    };
+    suggestions?: string[];
+    relatedCases?: string[];
+  }
+
   // Props
   interface Props {
     caseId?: string;
@@ -47,9 +57,7 @@
   let temperature = $state(0.7);
   let streamMode = $state(false);
   // Chat history and UI state
-  let chatHistory = $state<
-    Array()
-  >([]);
+  let chatHistory = $state<ChatMessage[]>([]);
   let chatContainer: HTMLElement;
   let tokenManager: TokenUsageManager;
   let ollamaStatus = $state<"unknown" | "healthy" | "unhealthy">("unknown");
@@ -58,7 +66,7 @@
   let errorMessage = $state("");
   let successMessage = $state("");
   // Reactive computations
-  let canSend = $derived(message.trim.length > 0 && !isLoading);
+  let canSend = $derived(message.trim().length > 0 && !isLoading);
   let messageCount = $derived(chatHistory.length);
   let lastResponse = $derived(
     chatHistory.find((msg) => msg.type === "assistant" && msg.performance)
@@ -66,39 +74,41 @@
   // Initialize component
   $effect(() => {
     (async () => {
-await checkOllamaHealth();
-    await loadAvailableModels();
-    // Auto-scroll setup
-    return () => {
-      // Cleanup if needed
-    }
+      await checkOllamaHealth();
+      // Auto-scroll setup
+      return () => {
+        // Cleanup if needed
+      }
     })();
   });
   // Health check function
   async function checkOllamaHealth() {
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/health/ollama');
+      if (!response.ok) {
+        ollamaStatus = 'unhealthy';
+        console.error('Health check failed:', response.statusText);
+        return;
+      }
       const data = await response.json();
       ollamaStatus = data.status === "healthy" ? "healthy" : "unhealthy";
       if (data.models) {
-        availableModels = data.models.map((m: unknown) => m.name);
+        availableModels = data.models.map((m: { name: string }) => m.name);
       }
     } catch (error) {
       ollamaStatus = "unhealthy";
       console.error("Health check failed:", error);
     }
   }
-  async function loadAvailableModels() {
-    // Models are loaded in health check
-  }
+
   // Send message function
   async function sendMessage() {
     if (!canSend) return;
     const userMessage = message.trim();
-    const messageId = Date.now.toString();
+    const messageId = Date.now().toString();
     // Add user message to history
     chatHistory.push({
-      id: messageId
+      id: messageId,
       type: "user",
       content: userMessage,
       timestamp: new Date(),
@@ -108,22 +118,16 @@ await checkOllamaHealth();
     isLoading = true;
     errorMessage = "";
     try {
-      const chatRequest: ChatRequest = {
-        message: userMessage,
-        model,
-        temperature,
-        stream: streamMode,
-        caseId,
-        useRAG,
-      }
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [{ role: "user", content: userMessage }],
           model,
-          stream: streamMode
+          stream: streamMode,
           sessionId: caseId,
+          temperature,
+          useRAG,
         }),
       });
       if (!response.ok) {
@@ -140,9 +144,10 @@ await checkOllamaHealth();
     } catch (error) {
       console.error("Chat error:", error);
       errorMessage =
-        error instanceof Error ? error.message: "Unknown error occurred";
+        error instanceof Error ? error.message : "Unknown error occurred";
       // Add error message to chat
-      chatHistory.push.toString(),
+      chatHistory.push({
+        id: Date.now().toString(),
         type: "assistant",
         content: `❌ Error: ${errorMessage}`,
         timestamp: new Date(),
@@ -167,7 +172,7 @@ await checkOllamaHealth();
       tokenManager.recordTokenUsage({
         promptTokens: data.performance.promptTokens || 0,
         responseTokens: data.performance.tokens || 0,
-        model: model
+        model: model,
         prompt: chatHistory[chatHistory.length - 2]?.content || "",
         response: data.response,
         processingTime: data.performance.duration || 0,
@@ -175,7 +180,7 @@ await checkOllamaHealth();
     }
   }
   async function handleStreamingResponse(
-    response: Response
+    response: Response,
     messageId: string
   ) {
     const reader = response.body?.getReader();
@@ -207,7 +212,7 @@ await checkOllamaHealth();
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-  function handleKeyPress(_event: KeyboardEvent) {
+  function handleKeyPress(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -226,8 +231,8 @@ await checkOllamaHealth();
       timestamp: new Date().toISOString(),
       model,
       caseId,
-      messages: chatHistory;
-    }
+      messages: chatHistory,
+    };
     const blob = new Blob([JSON.stringify(chatData, null, 2)], {
       type: "application/json",
     });
@@ -462,7 +467,7 @@ await checkOllamaHealth();
     overflow-y: auto;
   }
   /* Custom scrollbar */
-  .ollama-chat-interface :global($1) {
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar) {
     width: 0.5rem;
   }
   .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-track) {
@@ -476,3 +481,9 @@ await checkOllamaHealth();
     background-color: #9ca3af;
   }
 </style>
+  }
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb:hover) {
+    background-color: #9ca3af;
+  }
+</style>
+

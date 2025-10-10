@@ -12,6 +12,7 @@ https://svelte.dev/e/props_duplicate -->
     Settings,
     Trash2,
   } from "lucide-svelte";
+  import * as Dialog from "bits-ui/dialog";
 
   // Replace export lets with a single $props() destructuring for runes mode
   interface Props {
@@ -190,31 +191,18 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
   <!-- Citation Dialog -->
-  {#if showCitationDialog}
-    <div
-      class="dialog-overlay"
-      tabindex="0"
-      onclick={() => (showCitationDialog = false)}
-      onkeydown={(e) => {
-        if (e.key === 'Escape') showCitationDialog = false;
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="citation-dialog-title"
-    >
-      <div
-        class="dialog-content"
-        role="document"
-        tabindex="-1"
-        onclick={(e) => e.stopPropagation()}
-        onkeydown={(e) => e.stopPropagation()}
-      >
+  <Dialog.Root bind:open={showCitationDialog}>
+    <Dialog.Portal>
+      <Dialog.Overlay class="dialog-overlay" />
+      <Dialog.Content class="dialog-content">
         <div class="dialog-header">
-          <h4 class="dialog-title" id="citation-dialog-title">
+          <Dialog.Title class="dialog-title">
             <Quote />
             Legal Citation
-          </h4>
-          <button class="btn-close" onclick={() => (showCitationDialog = false)}>×</button>
+          </Dialog.Title>
+          <Dialog.Close asChild>
+            <button class="btn-close">×</button>
+          </Dialog.Close>
         </div>
 
         <div class="dialog-body">
@@ -233,11 +221,13 @@ https://svelte.dev/e/props_duplicate -->
         </div>
 
         <div class="dialog-footer">
-          <button class="btn-close" onclick={() => (showCitationDialog = false)}>Close</button>
+          <Dialog.Close asChild>
+            <button class="btn-close">Close</button>
+          </Dialog.Close>
         </div>
-      </div>
-    </div>
-  {/if}
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>
 </div>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
@@ -503,13 +493,11 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.2s;
   }
   .dialog-footer .btn-close:hover {
-    background: #2e5ebd;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .dialog-footer .btn-close:hover {
-    background: rgb(23, 71, 168);
+    background: #e5e7eb;
   }
 </style>
+
+
