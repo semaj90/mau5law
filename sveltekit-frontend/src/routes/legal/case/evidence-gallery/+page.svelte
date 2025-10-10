@@ -4,8 +4,8 @@
   import { page } from '$app/state';
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card';
-  import { Select } from '$lib/components/ui/enhanced-bits';
-  import { Input } from '$lib/components/ui/enhanced-bits';
+  import Select from '$lib/components/ui/select/Select.svelte';
+  import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
   let isConnecting = $state(false);
   let selectedItem = $state(null);

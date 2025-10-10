@@ -13,8 +13,8 @@
   import * as Alert from '$lib/components/ui/alert';
   import * as Tabs from '$lib/components/ui/tabs';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Separator } from '$lib/components/ui/separator';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Separator from '$lib/components/ui/separator/Separator.svelte';
   import {
     Shield, Zap, Cpu, Database, Brain,
     CheckCircle, AlertCircle, Clock, Users,

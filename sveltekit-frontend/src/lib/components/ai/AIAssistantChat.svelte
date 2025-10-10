@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Textarea } from '$lib/components/ui/textarea/index.js';
-  import { Switch } from '$lib/components/ui/switch/index.js';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import Switch from '$lib/components/ui/switch/Switch.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
     aiAssistantManager,

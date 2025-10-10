@@ -12,15 +12,15 @@
   import EnhancedAIAssistant from '$lib/components/ai/EnhancedAIAssistant.svelte';
   import CitationsManager from '$lib/components/citations/CitationsManager.svelte';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import * as Card from '$lib/components/ui/card';
   import * as Tabs from '$lib/components/ui/tabs';
   import * as Dialog from '$lib/components/ui/dialog';
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import {
     FileText,
     Search,

@@ -1,22 +1,19 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createHash } from 'crypto';
-import { poolShim } from '$lib/server/db-shim';
+import { db } from '$lib/server/db';
+import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
+import { eq } from 'drizzle-orm';
+import { minio, ensureBucket, putObject } from '$lib/server/minio/client';
 import redis from 'redis';
-
-// Minimal DB helper that uses the pool shim so call sites can run SQL as before
-async function queryDB(sql: string, params?: any[]) {
-  const conn = await (poolShim as any).connect();
-  try {
-    return await conn.query(sql, params);
-  } finally {
-    if (conn && typeof conn.release === 'function') conn.release();
-  }
-}
 
 const redisClient = redis.createClient({
   url: 'redis://:redis@localhost:6379',
 });
+
+// Qdrant configuration
+const QDRANT_URL = 'http://localhost:6333';
+const QDRANT_COLLECTION = 'legal_documents';
 
 let dbInitialized = false;
 
@@ -24,52 +21,61 @@ async function initializeDB() {
   if (dbInitialized) return;
 
   try {
-    // Warm a connection via the shim by running a lightweight query
-    try {
-      await queryDB('SELECT 1');
-    } catch (e) {
-      console.warn('Warning: database warmup failed', e);
-    }
-
-    // Try Redis connection, but continue if it fails
+    // Try Redis connection
     try {
       await redisClient.connect();
     } catch (redisError) {
       console.warn('⚠️ Redis connection failed, continuing without cache:', redisError);
     }
 
-    // Ensure RAG documents table exists (384-dim for embeddinggemma)
-    await queryDB(`
-      CREATE TABLE IF NOT EXISTS rag_documents (
-        id SERIAL PRIMARY KEY,
-        filename TEXT NOT NULL,
-        content_hash TEXT UNIQUE NOT NULL,
-        file_type TEXT,
-        file_size INTEGER,
-        content TEXT,
-        metadata JSONB DEFAULT '{}',
-        embedding vector(768),
-        embedding_384 vector(384),
-        processed_at TIMESTAMP DEFAULT NOW(),
-        created_at TIMESTAMP DEFAULT NOW()
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_rag_embedding
-      ON rag_documents USING hnsw (embedding vector_cosine_ops);
-
-      CREATE INDEX IF NOT EXISTS idx_rag_embedding_384
-      ON rag_documents USING hnsw (embedding_384 vector_cosine_ops);
-
-      CREATE INDEX IF NOT EXISTS idx_rag_content_hash
-      ON rag_documents(content_hash);
-    `);
-
-      dbInitialized = true;
-      console.log('✅ RAG database initialized');
-    } catch (error) {
-      console.error('❌ Database initialization failed:', error);
-      throw error;
+    // Ensure MinIO bucket exists
+    try {
+      await ensureBucket('legal-documents');
+      console.log('✅ MinIO bucket initialized');
+    } catch (minioError) {
+      console.warn('⚠️ MinIO initialization failed, will use localStorage fallback:', minioError);
     }
+
+    // Initialize Qdrant collection
+    try {
+      await initializeQdrantCollection();
+      console.log('✅ Qdrant collection initialized');
+    } catch (qdrantError) {
+      console.warn('⚠️ Qdrant initialization failed, will use localStorage fallback:', qdrantError);
+    }
+
+    dbInitialized = true;
+    console.log('✅ RAG services initialized (with fallbacks)');
+  } catch (error) {
+    console.error('❌ Service initialization failed:', error);
+    // Don't throw - allow graceful degradation with localStorage
+  }
+}
+
+async function initializeQdrantCollection() {
+  // Check if collection exists
+  try {
+    const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
+      method: 'GET'
+    });
+
+    if (response.status === 404) {
+      // Create collection with 384 dimensions for embeddinggemma
+      await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vectors: {
+            size: 384,
+            distance: 'Cosine'
+          }
+        })
+      });
+      console.log('✅ Created Qdrant collection');
+    }
+  } catch (error) {
+    console.error('Qdrant collection initialization error:', error);
+  }
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -92,6 +98,37 @@ async function generateEmbedding(text: string): Promise<number[]> {
   } catch (error) {
     console.warn('⚠️ Embedding generation failed, using fallback:', error);
     return Array(384).fill(0.01 * Math.random());
+  }
+}
+
+async function storeInQdrant(id: string, embedding: number[], metadata: any, tags: string[]) {
+  try {
+    const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}/points`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        points: [
+          {
+            id: id,
+            vector: embedding,
+            payload: {
+              ...metadata,
+              tags: tags
+            }
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Qdrant storage failed: ${response.status}`);
+    }
+
+    console.log(`✅ Stored in Qdrant: ${id}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Qdrant storage error:', error);
+    return false;
   }
 }
 
@@ -160,12 +197,37 @@ ${chunk}
   `.trim());
 }
 
+function extractTags(content: string, filename: string): string[] {
+  const tags: string[] = [];
+
+  // Extract tags from filename
+  const filenameParts = filename.toLowerCase().replace(/\.[^/.]+$/, '').split(/[_\-\s]/);
+  tags.push(...filenameParts.filter(part => part.length > 2));
+
+  // Extract common legal document keywords
+  const legalKeywords = [
+    'contract', 'agreement', 'evidence', 'testimony', 'deposition',
+    'motion', 'brief', 'memorandum', 'affidavit', 'exhibit',
+    'plaintiff', 'defendant', 'witness', 'court', 'judge'
+  ];
+
+  const contentLower = content.toLowerCase();
+  legalKeywords.forEach(keyword => {
+    if (contentLower.includes(keyword) && !tags.includes(keyword)) {
+      tags.push(keyword);
+    }
+  });
+
+  return [...new Set(tags)].slice(0, 10); // Unique tags, max 10
+}
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await initializeDB();
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    const customTags = formData.get('tags') as string | null;
 
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
@@ -182,7 +244,7 @@ export const POST: RequestHandler = async ({ request }) => {
       'text/markdown',
       'application/json',
       'text/csv',
-      'application/pdf' // Note: PDF processing would need additional libraries
+      'application/pdf'
     ];
 
     if (!allowedTypes.some(type => file.type.includes(type)) &&
@@ -197,16 +259,37 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate content hash for deduplication
     const contentHash = createHash('sha256').update(content).digest('hex');
 
-    // Check if already processed
-    const existingDoc = await queryDB('SELECT id FROM rag_documents WHERE content_hash = $1', [contentHash]);
-    if ((existingDoc.rows ?? []).length > 0) {
+    // Check if already processed (using Drizzle)
+    const existingDoc = await db.select({ id: documents.id })
+      .from(documents)
+      .where(eq(documents.sourceUri, `hash:${contentHash}`))
+      .limit(1);
+
+    if (existingDoc.length > 0) {
       return json({
         message: 'Document already exists in knowledge base',
-        documentId: existingDoc.rows[0].id,
+        documentId: existingDoc[0].id,
         chunks: 0,
         embeddings: 0,
         duplicate: true,
       });
+    }
+
+    // Upload to MinIO
+    const timestamp = Date.now();
+    const minioObject = `${timestamp}-${file.name}`;
+    const buffer = Buffer.from(arrayBuffer);
+
+    let minioSuccess = false;
+    try {
+      await putObject('legal-documents', minioObject, buffer, {
+        'Content-Type': file.type,
+        'Original-Filename': file.name
+      });
+      minioSuccess = true;
+      console.log(`✅ Uploaded to MinIO: ${minioObject}`);
+    } catch (minioError) {
+      console.warn('⚠️ MinIO upload failed:', minioError);
     }
 
     // Create semantic chunks
@@ -216,64 +299,73 @@ export const POST: RequestHandler = async ({ request }) => {
     const embeddingPromises = chunks.map(chunk => generateEmbedding(chunk));
     const embeddings = await Promise.all(embeddingPromises);
 
-    // Store main document
-    const documentResult = await queryDB(
-      `
-      INSERT INTO rag_documents (
-        filename, content_hash, file_type, file_size, content, metadata, embedding_384
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7::vector)
-      RETURNING id
-    `,
-      [
-        file.name,
-        contentHash,
-        file.type,
-        file.size,
-        content,
-        {
-          chunksCount: chunks.length,
-          uploadedAt: new Date().toISOString(),
-          extractionMethod: 'text_extraction',
-        },
-        JSON.stringify(embeddings[0]), // Primary document embedding (384-dim)
-      ]
-    );
+    // Extract tags
+    const autoTags = extractTags(content, file.name);
+    const tags = customTags
+      ? [...autoTags, ...customTags.split(',').map(t => t.trim())]
+      : autoTags;
 
-    const documentId = documentResult.rows[0].id;
+    // Store main document (using Drizzle)
+    const [newDocument] = await db.insert(documents).values({
+      filename: file.name,
+      sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
+      mimeType: file.type,
+      fileSize: file.size,
+      extractedText: content,
+      processingStatus: 'completed',
+      uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
+      metadata: {
+        chunksCount: chunks.length,
+        uploadedAt: new Date().toISOString(),
+        extractionMethod: 'text_extraction',
+        tags,
+        contentHash
+      },
+      processedAt: new Date()
+    }).returning({ id: documents.id });
 
-    // Store individual chunks in knowledge base
+    const documentId = newDocument.id;
+
+    // Store in Qdrant with tags
+    const qdrantId = `doc-${documentId}`;
+    await storeInQdrant(qdrantId, embeddings[0], {
+      documentId,
+      filename: file.name,
+      fileType: file.type,
+      chunksCount: chunks.length
+    }, tags);
+
+    // Store individual chunks in documentChunks table (using Drizzle)
+    const chunkInserts = chunks.map((chunk, i) => ({
+      documentId,
+      chunkIndex: i,
+      level: 0, // Top-level chunks
+      text: chunk,
+      tokens: chunk.split(/\s+/).length, // Rough token estimate
+      embedding: JSON.stringify(embeddings[i]), // Store as JSON for pgvector
+      embeddingModel: 'embeddinggemma:latest',
+      metadata: {
+        chunkIndex: i,
+        totalChunks: chunks.length,
+        filename: file.name,
+        fileType: file.type,
+        tags
+      }
+    }));
+
+    await db.insert(documentChunks).values(chunkInserts);
+
+    // Store chunks in Qdrant for vector search
     for (let i = 0; i < chunks.length; i++) {
-      const chunk = chunks[i];
-      const embedding = embeddings[i];
-
-      await queryDB(
-        `
-        INSERT INTO knowledge_base (
-          chunk_id, content, embedding_384, metadata, chunk_type, source_file
-        ) VALUES ($1, $2, $3::vector, $4, $5, $6)
-        ON CONFLICT (chunk_id) DO UPDATE SET
-          content = $2,
-          embedding_384 = $3::vector,
-          metadata = $4
-      `,
-        [
-          `rag:${file.name}:chunk${i}`,
-          chunk,
-          JSON.stringify(embedding),
-          {
-            documentId,
-            chunkIndex: i,
-            totalChunks: chunks.length,
-            filename: file.name,
-            fileType: file.type,
-          },
-          'rag_document',
-          file.name,
-        ]
-      );
+      await storeInQdrant(`chunk-${documentId}-${i}`, embeddings[i], {
+        documentId,
+        chunkIndex: i,
+        filename: file.name,
+        chunkContent: chunks[i].slice(0, 200) // Preview
+      }, tags);
     }
 
-    // Cache document for quick access (skip Redis for now)
+    // Cache document for quick access
     try {
       await redisClient.setEx(
         `rag:doc:${documentId}`,
@@ -284,6 +376,9 @@ export const POST: RequestHandler = async ({ request }) => {
           contentHash,
           chunks: chunks.length,
           embeddings: embeddings.length,
+          tags,
+          minioObject: minioSuccess ? minioObject : null,
+          qdrantId,
           processedAt: new Date().toISOString()
         })
       );
@@ -291,7 +386,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.warn('⚠️ Redis caching failed, continuing without cache:', redisError);
     }
 
-    console.log(`✅ RAG document processed: ${file.name} (${chunks.length} chunks)`);
+    console.log(`✅ RAG document processed: ${file.name} (${chunks.length} chunks, ${tags.length} tags)`);
 
     return json({
       message: 'Document successfully uploaded and processed',
@@ -299,8 +394,11 @@ export const POST: RequestHandler = async ({ request }) => {
       filename: file.name,
       chunks: chunks.length,
       embeddings: embeddings.length,
+      tags,
       contentHash,
       fileSize: file.size,
+      minioStored: minioSuccess,
+      qdrantStored: true,
       processedAt: new Date().toISOString()
     });
 

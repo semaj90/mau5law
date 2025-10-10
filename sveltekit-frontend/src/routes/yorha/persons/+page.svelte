@@ -2,8 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Card from '$lib/components/ui/card';
+  import Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
@@ -153,6 +152,13 @@
   $effect(() => {
     loadPersons();
   });
+
+  // Workaround: some generated component d.ts export shapes cause TS to treat them as instance types.
+  // Cast to any and use svelte:component to avoid the "SvelteComponentTyped vs Constructor" errors.
+  const CardComponent: any = Card;
+  const ButtonComponent: any = Button;
+  const InputComponent: any = Input;
+  const BadgeComponent: any = Badge;
 </script>
 <svelte:head>
   <title>PERSONS OF INTEREST - YoRHa Detective Interface</title>
@@ -220,11 +226,10 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <Button class="header-btn bits-btn bits-btn" onclick={() =>
-showNewPersonModal = true}>
+        <ButtonComponent class="header-btn bits-btn bits-btn" on:click={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
-</Button>
+        </ButtonComponent>
       </div>
     </header>
     <!-- Search and Filters -->
@@ -232,7 +237,7 @@ showNewPersonModal = true}>
       <div class="search-section">
         <div class="search-input-wrapper">
           <Search class="search-icon w-4 h-4" />
-          <Input
+          <InputComponent
             type="text"
             placeholder="Search persons, aliases, descriptions..."
             bind:value={searchQuery}
@@ -278,8 +283,9 @@ showNewPersonModal = true}>
         </div>
       {:else}
         {#each filteredPersons as person (person.id)}
-          <Card.Root class="person-nier-bits-card nes-container">
-            <Card.Header class="person-header nes-container">
+          <!-- replaced Card usage with direct component tag -->
+          <CardComponent class="person-nier-bits-card nes-container">
+            <div class="person-header nes-container">
                <div class="person-photo">
                  {#if person.photo}
                    <img src={person.photo} alt={person.name} />
@@ -295,15 +301,15 @@ showNewPersonModal = true}>
                  <div class="person-id">{person.id}</div>
                </div>
                <div class="person-badges">
-                 <Badge class={getThreatLevelColor(person.threat_level)}>
+                 <BadgeComponent class={getThreatLevelColor(person.threat_level)}>
                    {person.threat_level.toUpperCase()}
-                 </Badge>
-                 <Badge class={getStatusColor(person.status)}>
+                 </BadgeComponent>
+                 <BadgeComponent class={getStatusColor(person.status)}>
                    {person.status.toUpperCase()}
-                 </Badge>
+                 </BadgeComponent>
                </div>
-            </Card.Header>
-            <Card.Content class="person-content nes-container">
+            </div>
+            <div class="person-content nes-container">
                <div class="person-details">
                  <div class="detail-row">
                    <span class="detail-label">Last Seen:</span>
@@ -326,24 +332,24 @@ showNewPersonModal = true}>
                    <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
                  {/each}
                </div>
-            </Card.Content>
+            </div>
 
             <!-- replaced Card.Footer (not exported) with a plain div -->
             <div class="person-actions nes-container card-footer">
-               <Button class="bits-btn" size="sm" variant="ghost">
+               <ButtonComponent class="bits-btn" size="sm" variant="ghost">
                  <Eye class="w-4 h-4" />
                  View
-               </Button>
-               <Button class="bits-btn" size="sm" variant="ghost">
+               </ButtonComponent>
+               <ButtonComponent class="bits-btn" size="sm" variant="ghost">
                  <Edit class="w-4 h-4" />
                  Edit
-               </Button>
-               <Button class="bits-btn" size="sm" variant="destructive">
+               </ButtonComponent>
+               <ButtonComponent class="bits-btn" size="sm" variant="destructive">
                  <Trash2 class="w-4 h-4" />
                  Remove
-               </Button>
+               </ButtonComponent>
             </div>
-          </Card.Root>
+          </CardComponent>
          {/each}
       {/if}
     </div>
@@ -358,459 +364,321 @@ showNewPersonModal = true}>
     {/if}
   </main>
 </div>
-<!-- Add Person Modal -->
-<Dialog.Root bind:open={showNewPersonModal}>
-  <Dialog.Content class="yorha-modal">
-    <!-- Header: use a simple wrapper instead of Dialog.Header (not exported by the dialog module) -->
-    <div class="dialog-header">
-      <Dialog.Title>ADD PERSON OF INTEREST</Dialog.Title>
-    </div>
 
-    <div class="modal-form">
-      <div class="form-grid">
-        <div class="form-field">
-          <label class="form-label" for="full-name">FULL NAME</label>
-          <Input id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
-        </div>
-        <div class="form-field">
-          <label class="form-label" for="alias">ALIAS / CODENAME</label>
-          <Input id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
-        </div>
-        <div class="form-field">
-          <label class="form-label" for="threat-level">THREAT LEVEL</label>
-          <select id="threat-level" class="yorha-select" bind:value={newPerson.threat_level}>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="critical">Critical</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label class="form-label" for="status">STATUS</label>
-          <select id="status" class="yorha-select" bind:value={newPerson.status}>
-            <option value="surveillance">Under Surveillance</option>
-            <option value="wanted">Wanted</option>
-            <option value="active">Active Investigation</option>
-            <option value="cleared">Cleared</option>
-          </select>
-        </div>
-        <div class="form-field form-field-full">
-          <label class="form-label" for="description">DESCRIPTION</label>
-          <textarea id="description"
-            placeholder="Physical description, known activities, etc."
-            rows="4"
-            class="yorha-textarea"
-            bind:value={newPerson.description}
-          ></textarea>
+{#if showNewPersonModal}
+  <!-- overlay: focusable, has ARIA role and keyboard handler to close modal -->
+  <div
+    class="modal-overlay"
+    role="button"
+    tabindex="0"
+    aria-label="Close person modal"
+    onclick={() => (showNewPersonModal = false)}
+    onkeydown={(e: KeyboardEvent) => {
+      // Close on Enter / Space / Escape for keyboard users
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
+        showNewPersonModal = false;
+      }
+    }}
+  >
+    <!-- dialog: stop propagation explicitly, labelled, modal semantics -->
+    <div
+      class="yorha-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+      tabindex="-1"
+      onclick={(e: MouseEvent) => e.stopPropagation()}
+      onkeydown={(e: KeyboardEvent) => e.stopPropagation()}
+    >
+      <header class="dialog-header">
+        <!-- ensure the heading has the id referenced by aria-labelledby -->
+        <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
+        <button
+          class="close-btn"
+          aria-label="Close"
+          type="button"
+          onclick={() => (showNewPersonModal = false)}
+        >×</button>
+      </header>
+
+      <div class="modal-form">
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="full-name">FULL NAME</label>
+            <InputComponent id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="alias">ALIAS / CODENAME</label>
+            <InputComponent id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="threat-level">THREAT LEVEL</label>
+            <select id="threat-level" class="yorha-select" bind:value={newPerson.threat_level}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="status">STATUS</label>
+            <select id="status" class="yorha-select" bind:value={newPerson.status}>
+              <option value="surveillance">Under Surveillance</option>
+              <option value="wanted">Wanted</option>
+              <option value="active">Active Investigation</option>
+              <option value="cleared">Cleared</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="last-seen">LAST SEEN DATE</label>
+            <InputComponent id="last-seen" type="date" class="yorha-input" bind:value={newPerson.last_seen} />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="location">LAST KNOWN LOCATION</label>
+            <InputComponent id="location" placeholder="e.g. Downtown District" class="yorha-input" bind:value={newPerson.location} />
+          </div>
+          <div class="form-field form-field-full">
+            <label class="form-label" for="description">DESCRIPTION</label>
+            <textarea
+              id="description"
+              placeholder="Physical description, known activities, etc."
+              rows="4"
+              class="yorha-textarea"
+              bind:value={newPerson.description}
+            ></textarea>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Footer: use a simple wrapper instead of Dialog.Footer (not exported by the dialog module) -->
-    <div class="dialog-footer">
-      <Button class="bits-btn" variant="ghost" onclick={() => { showNewPersonModal = false; newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' }; }}>
-        CANCEL
-      </Button>
-      <Button class="bits-btn" onclick={handleAddPerson}>
-        ADD PERSON
-      </Button>
+      <footer class="dialog-footer">
+        <ButtonComponent
+          class="bits-btn"
+          variant="ghost"
+          onclick={() => {
+            showNewPersonModal = false;
+            newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' };
+          }}
+        >
+          CANCEL
+        </ButtonComponent>
+        <ButtonComponent class="bits-btn" onclick={handleAddPerson} >
+          ADD PERSON
+        </ButtonComponent>
+      </footer>
     </div>
-  </Dialog.Content>
-</Dialog.Root>
+  </div>
+{/if}
+
 <style>
-  .yorha-interface {
-    display: flex;
-    height: 100vh;
-    background: #2a2a2a;
-    color: #d4af37;
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 12px;
-    overflow: hidden;
-  }
-  .yorha-sidebar {
-    width: 200px;
-    background: #1a1a1a;
-    border-right: 1px solid #3a3a3a;
-    display: flex;
-    flex-direction: column;
-  }
-  .yorha-logo {
-    padding: 20px 15px;
-    border-bottom: 1px solid #3a3a3a;
-  }
-  .yorha-title,
-  .yorha-subtitle {
-    font-size: 18px;
-    font-weight: bold;
-    color: #d4af37;
-    line-height: 1;
-  }
-  .yorha-subtext {
-    font-size: 10px;
-    color: #888;
-    margin-top: 5px;
-  }
-  .yorha-nav {
-    flex: 1;
-    padding: 15px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .nav-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .nav-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 15px;
-    background: none;
-    border: none;
-    color: #888;
-    text-decoration: none;
-    text-align: left;
-    font-family: inherit;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s;
-    justify-content: space-between;
-  }
-  .nav-item:hover {
-    background: #2a2a2a;
-    color: #d4af37;
-  }
-  /* selector matched to the markup: button.nav-item.persons-active */
-  .nav-item.persons-active {
-    background: #1a2a1a;
-    color: #d4af37;
-    border-left: 3px solid #d4af37;
-  }
-  .nav-icon {
-    margin-right: 8px;
-  }
-  .nav-count {
-    font-size: 10px;
-    background: #d4af37;
-    color: #000;
-    padding: 1px 6px;
-    border-radius: 2px;
-  }
-  .yorha-status {
-    padding: 15px;
-    border-top: 1px solid #3a3a3a;
-    font-size: 10px;
-    color: #666;
-  }
-  .status-item {
-    color: #d4af37;
-  }
-  .yorha-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: #2a2a2a;
-    overflow: hidden;
-  }
-  .persons-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #3a3a3a;
-    background: #2a2a2a;
-  }
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  .header-icon {
-    background: none;
-    border: 1px solid #555;
-    color: #d4af37;
-    padding: 6px 8px;
-    font-family: inherit;
-    cursor: pointer;
-  }
-  .persons-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #d4af37;
-    margin: 0;
-  }
-  .persons-subtitle {
-    font-size: 12px;
-    color: #888;
-  }
-  .search-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: #242424;
-    border-bottom: 1px solid #3a3a3a;
-  }
-  .search-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  .search-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  /* classes applied to component instances (Search, Input, Card.*) use :global()
-     so Svelte's unused-css checker does not report false positives */
-  :global(.search-icon) {
-    position: absolute;
-    left: 10px;
-    color: #666;
-  }
-  :global(.search-input) {
-    padding-left: 35px !important;
-    background: #1a1a1a !important;
-    border: 1px solid #555 !important;
-    color: #d4af37 !important;
-    min-width: 300px;
-  }
-   .threat-filter {
-     background: #1a1a1a;
-     border: 1px solid #555;
-     color: #d4af37;
-     padding: 6px 12px;
-     font-family: inherit;
-     font-size: 11px;
-   }
-   .stats-section {
-     display: flex;
-     gap: 20px;
-   }
-   .stat-item {
-     text-align: center;
-   }
-   .stat-number {
-     display: block;
-     font-size: 18px;
-     font-weight: bold;
-     color: #d4af37;
-   }
-   .stat-label {
-     display: block;
-     font-size: 10px;
-     color: #888;
-   }
-   /* fix stat selectors to match markup: <div class="stat-item critical"> */
-   .stat-item.critical .stat-number {
-     color: #ef4444;
-   }
-   .stat-item.high .stat-number {
-     color: #f97316;
-   }
-   .persons-grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-     gap: 20px;
-     padding: 20px;
-     overflow-y: auto;
-     flex: 1;
-   }
-   /* Card.Root is rendered via a component; target the actual class used on it via :global() */
-   :global(.person-nier-bits-card),
-   :global(.person-card) {
-     background: #1a1a1a !important;
-     border: 1px solid #3a3a3a !important;
-     color: #d4af37 !important;
-   }
-   /* Card.Header is a component: use :global() so Svelte recognizes the usage */
-   :global(.person-header) {
-     display: flex;
-     gap: 15px;
-     align-items: flex-start;
-   }
+/* Replaced corrupted stylesheet with a cleaned version. Keep selectors used in markup. */
+.yorha-interface {
+  display: flex;
+  height: 100vh;
+  background: #2a2a2a;
+  color: #d4af37;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
 
-   .person-photo {
-     width: 60px;
-     height: 60px;
-     border-radius: 4px;
-     overflow: hidden;
-     background: #2a2a2a;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-   }
-   .photo-placeholder {
-     color: #666;
-   }
-   .person-basic-info {
-     flex: 1;
-   }
-   .person-name {
-     font-size: 16px;
-     font-weight: bold;
-     color: #d4af37;
-     margin-bottom: 2px;
-   }
-   /* fix: separate selectors to match the actual markup (two separate elements) */
-   .person-alias,
-   .person-id {
-     font-size: 10px;
-     color: #666;
-     font-family: 'JetBrains Mono', monospace;
-   }
+/* Sidebar */
+.yorha-sidebar {
+  width: 200px;
+  background: #1a1a1a;
+  border-right: 1px solid #3a3a3a;
+  display: flex;
+  flex-direction: column;
+}
+.yorha-logo {
+  padding: 20px 15px;
+}
+.yorha-title, .yorha-subtitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #d4af37;
+  line-height: 1;
+}
+.yorha-subtext {
+  font-size: 10px;
+  color: #888;
+  padding-top: 8px;
+  border-bottom: 1px solid #3a3a3a;
+}
+.yorha-nav {
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: #888;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  justify-content: space-between;
+  font-size: 11px;
+}
+.nav-item:hover {
+  background: #2a2a2a;
+  color: #d4af37;
+}
+.nav-item.persons-active {
+  background: #162016;
+  color: #d4af37;
+  border-left: 3px solid #d4af37;
+  padding-left: 9px;
+}
+.nav-count {
+  font-size: 10px;
+  background: #d4af37;
+  color: #000;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
 
-   .person-badges {
-     display: flex;
-     flex-direction: column;
-     gap: 4px;
-   }
-   .person-details {
-     margin: 15px 0;
-   }
-   .detail-row {
-     display: flex;
-     justify-content: space-between;
-     margin-bottom: 5px;
-     font-size: 11px;
-   }
-   .detail-label {
-     color: #888;
-   }
-   .detail-value {
-     color: #d4af37;
-   }
-   .person-description {
-     font-size: 11px;
-     color: #ccc;
-     line-height: 1.4;
-     margin: 15px 0;
-   }
-   .person-cases {
-     display: flex;
-     flex-wrap: wrap;
-     gap: 5px;
-     margin: 10px 0;
-   }
-   .case-badge {
-     font-size: 9px !important;
-     padding: 2px 6px !important;
-   }
+/* Main area */
+.yorha-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #2a2a2a;
+  overflow: hidden;
+}
+.persons-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #3a3a3a;
+  background: #2a2a2a;
+}
+.header-left { display:flex; align-items:center; gap:12px; }
+.header-icon {
+  background: none;
+  border: 1px solid #555;
+  color: #d4af37;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+.persons-title { font-size: 24px; font-weight: bold; color: #d4af37; margin: 0; }
+.persons-subtitle { font-size: 12px; color: #888; }
 
-   .person-actions {
-     display: flex;
-     gap: 8px;
-     justify-content: flex-end;
-   }
-   .empty-state {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     flex: 1;
-     color: #666;
-     text-align: center;
-   }
-   .empty-icon {
-     font-size: 48px;
-     margin-bottom: 15px;
-   }
-   .empty-title {
-     font-size: 18px;
-     color: #888;
-     margin-bottom: 10px;
-   }
-   .empty-subtitle {
-     font-size: 12px;
-   }
-   /* Error and Loading States */
-   .error-banner {
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     padding: 12px 20px;
-     background: #4a1a1a;
-     border: 1px solid #ef4444;
-     color: #fca5a5;
-     font-size: 12px;
-     margin: 15px 20px;
-     border-radius: 4px;
-   }
-   .loading-state {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     padding: 60px 20px;
-     color: #888;
-   }
-   .loading-spinner {
-     width: 32px;
-     height: 32px;
-     border: 2px solid #3a3a3a;
-     border-top: 2px solid #d4af37;
-     border-radius: 50%;
-     animation: spin 1s linear infinite;
-     margin-bottom: 15px;
-   }
-   @keyframes spin {
-     0% { transform: rotate(0deg); }
-     100% { transform: rotate(360deg); }
-   }
-   .loading-text {
-     font-size: 14px;
-     color: #666;
-   }
-   /* Modal Styles */
-   :global(.yorha-modal) {
-     background: #2a2a2a !important;
-     border: 2px solid #d4af37 !important;
-     color: #d4af37 !important;
-   }
-   .modal-form {
-     padding: 20px 0;
-   }
-   .form-grid {
-     display: grid;
-     grid-template-columns: 1fr 1fr;
-     gap: 15px;
-   }
-   .form-field {
-     display: flex;
-     flex-direction: column;
-     gap: 5px;
-   }
-   .form-field-full {
-     grid-column: 1 / -1;
-   }
-   .form-label {
-     font-size: 11px;
-     font-weight: bold;
-     color: #d4af37;
-     text-transform: uppercase;
-   }
-   :global(.yorha-input) {
-     background: #1a1a1a !important;
-     border: 1px solid #555 !important;
-     color: #d4af37 !important;
-     font-family: inherit !important;
-   }
-   .yorha-select {
-     background: #1a1a1a;
-     border: 1px solid #555;
-     color: #d4af37;
-     padding: 6px 12px;
-     font-family: inherit;
-     font-size: 12px;
-   }
-   .yorha-textarea {
-     background: #1a1a1a;
-     border: 1px solid #555;
-     color: #d4af37;
-     padding: 8px 12px;
-     font-family: inherit;
-     font-size: 12px;
-     resize: vertical;
-   }
+/* Search toolbar */
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #242424;
+  border-bottom: 1px solid #3a3a3a;
+}
+.search-input-wrapper { position: relative; display: flex; align-items: center; gap: 12px; }
+:global(.search-icon) { position: absolute; left: 10px; }
+:global(.search-input) {
+  padding-left: 36px !important;
+  background: #1a1a1a !important;
+  border: 1px solid #555 !important;
+  color: #d4af37 !important;
+  min-width: 300px;
+}
+.threat-filter {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  color: #d4af37;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+/* Stats */
+.stats-section { display: flex; gap: 20px; color: #d4af37; align-items: center; }
+.stat-item { text-align: center; font-size: 11px; }
+.stat-number { font-size: 18px; font-weight: bold; color: #d4af37; }
+.stat-item.critical .stat-number { color: #ef4444; }
+.stat-item.high .stat-number { color: #f97316; }
+
+/* Persons grid & cards */
+.persons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+:global(.person-nier-bits-card) {
+  background: #1a1a1a !important;
+  border: 1px solid #3a3a3a !important;
+  padding: 12px;
+}
+.person-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.person-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #2a2a2a;
+  display:flex; align-items:center; justify-content:center;
+}
+.photo-placeholder { color: #666; }
+.person-basic-info { flex: 1; }
+.person-name { font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 2px; }
+.person-alias, .person-id { font-size: 10px; color: #666; font-family: 'JetBrains Mono', monospace; margin: 4px 0; }
+.person-badges { display: flex; flex-direction: column; gap: 6px; }
+.person-details { color: #888; margin: 12px 0; }
+.detail-row { display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px; }
+.detail-label { color:#888; }
+.detail-value { color:#d4af37; }
+.person-description { font-size: 11px; color:#ccc; line-height:1.4; margin: 8px 0; }
+.person-cases { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+.case-badge { font-size:9px; padding:4px 8px; border-radius:4px; border:1px solid #333; background:#151515; color:#d4af37; }
+
+/* Actions */
+.person-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+/* Empty / loading / error */
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; color:#666; text-align:center; }
+.empty-icon { font-size:48px; margin-bottom:12px; }
+.empty-title { font-size:18px; color:#888; margin-bottom:8px; }
+.empty-subtitle { font-size:12px; color:#999; margin-bottom:10px; }
+
+.error-banner {
+  display:flex; align-items:center; gap:8px;
+  padding:12px 20px; background:#4a1a1a; border:1px solid #ef4444; color:#fca5a5; font-size:12px; margin:15px 20px; border-radius:4px;
+}
+.loading-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; color:#888; }
+.loading-spinner {
+  width:32px; height:32px; border:2px solid #3a3a3a; border-top:2px solid #d4af37; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:12px;
+}
+@keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed; inset:0; background: rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:50;
+}
+.yorha-modal {
+  width: 720px; max-width: 95%; background:#2a2a2a; border:2px solid #d4af37; color:#d4af37; padding: 16px; border-radius:6px;
+}
+.dialog-header { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; }
+.dialog-title { font-size:14px; font-weight:bold; }
+.close-btn { background:transparent; border:none; color:#d4af37; font-size:20px; cursor:pointer; padding:4px 8px; }
+
+.modal-form { display:flex; flex-direction:column; padding:8px 0 0 0; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-field { display:flex; flex-direction:column; gap:6px; }
+.form-field-full { grid-column: 1 / -1; }
+.form-label { font-size:11px; font-weight:bold; color:#d4af37; text-transform:uppercase; }
+:global(.yorha-input) { background:#1a1a1a !important; border:1px solid #555 !important; color:#d4af37 !important; font-family:inherit !important; padding:8px; }
+.yorha-select { background:#1a1a1a; border:1px solid #555; color:#d4af37; padding:6px 10px; font-size:12px; }
+.yorha-textarea { background:#1a1a1a; border:1px solid #555; color:#d4af37; padding:8px 10px; font-size:12px; resize:vertical; }
+.dialog-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
 </style>

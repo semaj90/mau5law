@@ -6,10 +6,10 @@ const MINIO_USE_SSL = (env.MINIO_USE_SSL || 'false') === 'true';
 const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY || 'minioadmin';
 const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY || 'minioadmin';
 export const minio = new MinioClient({
-  endPoint: MINIO_ENDPOINT
-  port: MINIO_PORT
-  useSSL: MINIO_USE_SSL
-  accessKey: MINIO_ACCESS_KEY
+  endPoint: MINIO_ENDPOINT,
+  port: MINIO_PORT,
+  useSSL: MINIO_USE_SSL,
+  accessKey: MINIO_ACCESS_KEY,
   secretKey: MINIO_SECRET_KEY
 });
 export async function ensureBucket(bucketName: string): Promise<any> {

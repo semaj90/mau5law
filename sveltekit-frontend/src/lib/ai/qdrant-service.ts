@@ -12,9 +12,9 @@ import { QdrantClient } from "@qdrant/js-client-rest";
  * Optionally triggers agent actions if similar docs found.
  */
 export async function findSimilarForAudit(
-  vector: number[]
+  vector: number[],
   limit = 5,
-  triggerAgent = false,
+  triggerAgent = false
 ): Promise<any> {
   const similar = await qdrantService.searchSimilar(vector, limit);
   // Log results to console (replace with file/db logging as needed)
@@ -31,7 +31,6 @@ export async function findSimilarForAudit(
 }
 // TODO: After initial test, connect this to /api/audit/semantic and agent integration for live pipeline validation
 // Qdrant Service for Legal Document Vector Operations
-}
 export interface LegalDocumentMetadata {
   documentId: string;
   filename: string;
@@ -99,32 +98,32 @@ export class QdrantService {
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
-      wait: true;
+      wait: true,
       points: points
     });
   }
   async searchSimilar(
-    vector: number[];
+    vector: number[],
     limit: number = 10,
-    filter?: { [key: string]: any },
-  ): Promise<Array<any>, {
+    filter?: { [key: string]: any }
+  ): Promise<Array<any>> {
     await this.ensureCollection();
     const searchResult = await this.client.search(this.collectionName, {
       vector,
       limit,
       filter,
-      with_payload: true
+      with_payload: true,
       score_threshold: 0.5
     });
-    return searchResult.map((result: any) => ({,
+    return searchResult.map((result: any) => ({
       id: (result as { id?: any; score?: any; payload?: any }).id as string,
       score: (result as { id?: any; score?: any; payload?: any }).score,
       payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata
-    });
+    }));
   }
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
-      wait: true;
+      wait: true,
       points: ids
     });
   }

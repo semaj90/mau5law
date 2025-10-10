@@ -3,17 +3,25 @@
   import Input from '$lib/components/ui/enhanced-bits';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
 
-  // --- fixed: use standard Svelte exports instead of $props() destructuring ---
-  export let data: any[] = [];
-  export let placeholder: string = 'Search laws and regulations...';
-  export let onResultSelect: ((...args: any[]) => any) | null = null;
-  export let showAIActions: boolean = true;
-  export let maxResults: number = 10;
+  // Props using Svelte 5 syntax
+  let {
+    data = [],
+    placeholder = 'Search laws and regulations...',
+    onResultSelect,
+    showAIActions = true,
+    maxResults = 10
+  }: {
+    data?: any[];
+    placeholder?: string;
+    onResultSelect?: ((...args: any[]) => any) | null;
+    showAIActions?: boolean;
+    maxResults?: number;
+  } = $props();
 
-  let searchQuery = '';
-  let searchResults: any[] = [];
-  let isSearching = false;
-  let fuse: Fuse<any> | null = null;
+  let searchQuery = $state('');
+  let searchResults = $state<any[]>([]);
+  let isSearching = $state(false);
+  let fuse = $state<Fuse<any> | null>(null);
 
   // --- fixed: proper Fuse options (missing commas removed) ---
   const fuseOptions = {
@@ -32,22 +40,26 @@
     useExtendedSearch: true
   };
 
-  // --- reactive initialization when data changes ---
-  $: if (data && data.length > 0) {
-    try {
-      fuse = new Fuse(data, fuseOptions);
-    } catch (e) {
-      fuse = null;
-      console.error('Failed to initialize Fuse:', e);
+  // Initialize Fuse when data changes
+  $effect(() => {
+    if (data && data.length > 0) {
+      try {
+        fuse = new Fuse(data, fuseOptions);
+      } catch (e) {
+        fuse = null;
+        console.error('Failed to initialize Fuse:', e);
+      }
     }
-  }
+  });
 
-  // --- run search reactively when query changes ---
-  $: if (searchQuery && searchQuery.trim() && fuse) {
-    performFuseSearch();
-  } else if (!searchQuery || !searchQuery.trim()) {
-    searchResults = [];
-  }
+  // Run search reactively when query changes
+  $effect(() => {
+    if (searchQuery && searchQuery.trim() && fuse) {
+      performFuseSearch();
+    } else if (!searchQuery || !searchQuery.trim()) {
+      searchResults = [];
+    }
+  });
 
   function performFuseSearch() {
     if (!fuse || !searchQuery.trim()) {

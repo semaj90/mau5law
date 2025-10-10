@@ -177,11 +177,11 @@
         <span class="card-button">Start Chat →</span>
       </a>
 
-  <a href="/ai/rag" class="action-card">
-        <div class="card-icon">🔍</div>
-        <h3>RAG Search</h3>
-        <p>Semantic search across legal documents with GPU acceleration</p>
-        <span class="card-button">Search Documents →</span>
+  <a href="/rag" class="action-card">
+        <div class="card-icon">🤖</div>
+        <h3>RAG Knowledge Base</h3>
+        <p>Upload documents, semantic search with embeddinggemma + MinIO + Qdrant</p>
+        <span class="card-button">Open RAG System →</span>
       </a>
 
       <a href="/yorha" class="action-card">

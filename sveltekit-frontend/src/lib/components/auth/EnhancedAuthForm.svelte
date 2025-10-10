@@ -6,11 +6,11 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label/index.js';
-  import { Alert } from '$lib/components/ui/alert/index.js';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Progress } from '$lib/components/ui/progress/index.js';
-  import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Alert from '$lib/components/ui/alert/Alert.svelte';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
   import { scale, fade } from 'svelte/transition';
   import { quartOut } from 'svelte/easing';

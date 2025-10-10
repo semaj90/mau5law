@@ -1,6 +1,13 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import type { User } from '$lib/database/schema';
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  role?: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 export interface AuthSession {
   id: string;

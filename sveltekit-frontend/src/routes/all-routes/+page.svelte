@@ -315,6 +315,125 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     isLoaded = true;
     console.log('All routes page loaded with', allRoutes.length, 'routes');
   });
+  // --- Add: color class mapping helper to avoid `bg-{color}-50` style tokens ---
+  const colorClassMap: Record<string, Record<string, string>> = {
+    blue: {
+      bg50: 'bg-blue-50',
+      bg100: 'bg-blue-100',
+      text800: 'text-blue-800',
+      text700: 'text-blue-700',
+      text600: 'text-blue-600',
+      border200: 'border-blue-200',
+      border300: 'border-blue-300',
+      bg500: 'bg-blue-500',
+      hover500: 'hover:bg-blue-600'
+    },
+    green: {
+      bg50: 'bg-green-50',
+      bg100: 'bg-green-100',
+      text800: 'text-green-800',
+      text600: 'text-green-600',
+      border200: 'border-green-200',
+      border300: 'border-green-300',
+      bg500: 'bg-green-500',
+      hover500: 'hover:bg-green-600'
+    },
+    purple: {
+      bg50: 'bg-purple-50',
+      bg100: 'bg-purple-100',
+      text800: 'text-purple-800',
+      text600: 'text-purple-600',
+      border200: 'border-purple-200',
+      border300: 'border-purple-300',
+      bg500: 'bg-purple-500',
+      hover500: 'hover:bg-purple-600'
+    },
+    yellow: {
+      bg50: 'bg-yellow-50',
+      bg100: 'bg-yellow-100',
+      text800: 'text-yellow-800',
+      text600: 'text-yellow-600',
+      border200: 'border-yellow-200',
+      border300: 'border-yellow-300',
+      bg500: 'bg-yellow-500',
+      hover500: 'hover:bg-yellow-600'
+    },
+    gray: {
+      bg50: 'bg-gray-50',
+      bg100: 'bg-gray-100',
+      text800: 'text-gray-800',
+      text600: 'text-gray-600',
+      border200: 'border-gray-200',
+      border300: 'border-gray-300',
+      bg500: 'bg-gray-500',
+      hover500: 'hover:bg-gray-600'
+    },
+    orange: {
+      bg50: 'bg-orange-50',
+      bg100: 'bg-orange-100',
+      text800: 'text-orange-800',
+      text600: 'text-orange-600',
+      border200: 'border-orange-200',
+      border300: 'border-orange-300',
+      bg500: 'bg-orange-500',
+      hover500: 'hover:bg-orange-600'
+    },
+    pink: {
+      bg50: 'bg-pink-50',
+      bg100: 'bg-pink-100',
+      text800: 'text-pink-800',
+      text600: 'text-pink-600',
+      border200: 'border-pink-200',
+      border300: 'border-pink-300',
+      bg500: 'bg-pink-500',
+      hover500: 'hover:bg-pink-600'
+    },
+    indigo: {
+      bg50: 'bg-indigo-50',
+      bg100: 'bg-indigo-100',
+      text800: 'text-indigo-800',
+      text600: 'text-indigo-600',
+      border200: 'border-indigo-200',
+      border300: 'border-indigo-300',
+      bg500: 'bg-indigo-500',
+      hover500: 'hover:bg-indigo-600'
+    },
+    emerald: {
+      bg50: 'bg-emerald-50',
+      bg100: 'bg-emerald-100',
+      text800: 'text-emerald-800',
+      text600: 'text-emerald-600',
+      border200: 'border-emerald-200',
+      border300: 'border-emerald-300',
+      bg500: 'bg-emerald-500',
+      hover500: 'hover:bg-emerald-600'
+    },
+    cyan: {
+      bg50: 'bg-cyan-50',
+      bg100: 'bg-cyan-100',
+      text800: 'text-cyan-800',
+      text600: 'text-cyan-600',
+      border200: 'border-cyan-200',
+      border300: 'border-cyan-300',
+      bg500: 'bg-cyan-500',
+      hover500: 'hover:bg-cyan-600'
+    }
+  };
+
+  function getCategoryClasses(color: string | undefined) {
+    if (!color) return colorClassMap.gray;
+    return colorClassMap[color] ?? colorClassMap.gray;
+  }
+
+  // --- Fix: ensure openClusterDialogs updates are reactive (reassign the object) ---
+  // ...existing: let openClusterDialogs = $state<{ [key: string]: boolean }>({}); ...
+  // replace usage patterns to reassign map when toggling:
+  function openCluster(serviceName: string) {
+    openClusterDialogs = { ...(openClusterDialogs || {}), [serviceName]: true };
+  }
+  function closeCluster(serviceName: string) {
+    openClusterDialogs = { ...(openClusterDialogs || {}), [serviceName]: false };
+  }
 </script>
 
 <div class="container mx-auto p-6 max-w-7xl">
@@ -414,10 +533,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {#each Object.entries(routeCategories) as [key, category]}
               {@const count = routeStats.byCategory[key] || 0}
-              <div class="text-center p-3 rounded-lg bg-{category.color}-50 border border-{category.color}-200">
+              {@const cls = getCategoryClasses(category.color)}
+              <div class={"text-center p-3 rounded-lg " + cls.bg50 + " " + cls.border200}>
                 <div class="text-2xl mb-1">{category.icon}</div>
-                <div class="font-bold text-{category.color}-800">{count}</div>
-                <div class="text-xs text-{category.color}-600">{category.name}</div>
+                <div class={"font-bold " + cls.text800}>{count}</div>
+                <div class={"text-xs " + cls.text600}>{category.name}</div>
               </div>
             {/each}
           </div>
@@ -706,14 +826,15 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                     {/if}
                   </div>
                   <div class="action-buttons">
-                    <Dialog bind:open={openClusterDialogs[serviceName]}>
-                      <DialogTrigger>
-                        <button
-                          class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
-                        >
-                          📋 View All ({endpoints.length})
-                        </button>
-                      </DialogTrigger>
+                    <!-- replace DialogTrigger + bind:open with explicit control -->
+                    <button
+                      onclick={() => openCluster(serviceName)}
+                      class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
+                    >
+                      📋 View All ({endpoints.length})
+                    </button>
+
+                    <Dialog open={!!openClusterDialogs?.[serviceName]}>
                       <DialogContent>
                         <DialogTitle>
                           {serviceIcon}
@@ -747,6 +868,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                               </div>
                             </div>
                           {/each}
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                          <button onclick={() => closeCluster(serviceName)} class="px-3 py-1 bg-gray-100 rounded">Close</button>
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -806,14 +930,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {#each filteredRoutes as route}
           {@const categoryInfo = routeCategories[route.category]}
+          {@const cls = getCategoryClasses(categoryInfo?.color)}
           <button
             type="button"
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card
-              class="hover:border-{categoryInfo.color}-400 group"
-            >
+            <Card class={"hover:" + cls.border300 + " group"}>
             {#snippet children()}
               <CardContent class="p-4">
                 <!-- Route Header -->
@@ -846,15 +969,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 {/if}
                 <!-- Route Tags -->
                 <div class="flex flex-wrap gap-2 mb-3">
-                  <span
-                    class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800 border border-{categoryInfo.color}-200"
-                  >
+                  <span class={"px-2 py-1 rounded-full text-xs " + cls.bg100 + " " + cls.text800 + " " + cls.border200}>
                     {categoryInfo.name}
                   </span>
                   <span
-                    class="px-2 py-1 rounded-full text-xs {route.type === 'configured'
+                    class={"px-2 py-1 rounded-full text-xs " + (route.type === 'configured'
                       ? 'bg-green-100 text-green-800 border border-green-200'
-                      : 'bg-purple-100 text-purple-800 border border-purple-200'}"
+                      : 'bg-purple-100 text-purple-800 border border-purple-200')}
                   >
                     {route.type}
                   </span>
@@ -866,7 +987,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       e.stopPropagation();
                       visitRoute(route.path);
                     }}
-                    class="flex-1 px-3 py-2 bg-{categoryInfo.color}-500 text-white rounded hover:bg-{categoryInfo.color}-600 text-sm font-medium transition-colors flex items-center justify-center gap-1"
+                    class={"flex-1 px-3 py-2 " + cls.bg500 + " text-white rounded " + cls.hover500 + " text-sm font-medium transition-colors flex items-center justify-center gap-1"}
                   >
                     🚀 Visit
                   </button>
@@ -1117,112 +1238,5 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     min-height: 340px;
     max-height: 500px;
     /* Improved visual hierarchy and spacing */
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border-radius: 0.75rem;
-    /* Enhanced shadow and hover effects */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-  }
-  .service-cluster:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-  }
-  /* Service cluster header proportions */
-  .service-cluster .card-header {
-    flex-shrink: 0;
-    padding: 1.25rem 1.25rem 0.75rem;
-    border-bottom: 1px solid #f3f4f6;
-  }
-  /* Service cluster content area */
-  .service-cluster .card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0.75rem 1.25rem 1.25rem;
-    overflow: hidden;
-  }
-  /* Endpoint list styling for better readability */
-  .service-cluster .endpoint-list {
-    flex: 1;
-    max-height: 200px;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-  }
-  .service-cluster .endpoint-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.5rem;
-    background: #f9fafb;
-    border-radius: 0.375rem;
-    font-size: 0.8rem;
-    border: 1px solid #e5e7eb;
-    transition: all 0.2s ease;
-  }
-  .service-cluster .endpoint-item:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
-  }
-  .service-cluster .endpoint-code {
-    flex: 1;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    color: #374151;
-    word-break: break-all;
-    margin-right: 0.5rem;
-    line-height: 1.3;
-  }
-  /* Service action buttons */
-  .service-cluster .action-buttons {
-    flex-shrink: 0;
-    display: flex;
-    gap: 0.5rem;
-    margin-top: auto;
-  }
-  /* Endpoint count badge */
-  .endpoint-count-badge {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-  /* Improved typography and spacing for SSR */
-  /* .ssr-card h3 {
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
-  } */
-  /* .ssr-card code {
-    word-break: break-all;
-    font-size: 0.85rem;
-  } */
-  /* Enhanced focus states for accessibility */
-  .ssr-card:focus-within {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-  }
-  /* Loading state optimizations */
-  .ssr-flexbox-container.loading {
-    opacity: 0.7;
-    pointer-events: none;
-  }
-  /* Grid fallback for non-flexbox browsers */
-  @supports not (display: flex) {
-    .ssr-flexbox-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-    .flex-basis-31,
-    .flex-basis-33,
-    .flex-basis-35 {
-      flex: unset;
-      max-width: unset;
-    }
   }
 </style>

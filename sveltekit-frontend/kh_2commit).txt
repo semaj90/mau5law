@@ -1,4 +1,5 @@
    kh_4Dsept13
+kh_2commit.txt)
 
  .claude/settings.local.json                        |    9 +-
  .vscode/MISSING_TASK_LABELS.txt                    |    4 +
@@ -165,7 +166,7 @@ On top of embeddings, add metadata pipelines:
 
 LangChain / LangExtract: Extract metadata from documents/images.
 
-nomic-embed-text: Store semantic embeddings in pgvector.
+embeddinggemma:latest : Store semantic embeddings in pgvector.
 
 Generative images (VAE/Stable Diffusion): Use embeddings + metadata as conditioning input.
 
@@ -207,7 +208,7 @@ Yes, you can build a GPU cache library that retains tensors in VRAM, syncs to Re
 
 Do you want me to sketch out an actual repo structure (like gpu-cache/, datastore/, langchain-pipeline/) so you can see how this would look in your deeds-web-app.
 
-● Perfect! Here are my self-prompting recommendations to enhance your    
+● Perfect! Here are my self-prompting recommendations to enhance your
   detective mode:
 
   🎯 INTELLIGENT SELF-PROMPTING STRATEGIES
@@ -218,15 +219,15 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
 
   IDLE DETECTION → SELF-PROMPT:
   "Based on the evidence uploaded in the last 2 hours, I notice potential
-  connections between Document A and Document B. Should I run an automated     
+  connections between Document A and Document B. Should I run an automated
   cross-reference analysis?"
 
   EVIDENCE STALL → SELF-PROMPT:
-  "This case has been in 'Processing' for 45 minutes. Would you like me to     
+  "This case has been in 'Processing' for 45 minutes. Would you like me to
   suggest alternative analysis approaches or flag potential issues?"
 
   PATTERN RECOGNITION → SELF-PROMPT:
-  "I've detected a recurring pattern in timestamps across 3 documents that     
+  "I've detected a recurring pattern in timestamps across 3 documents that
   might indicate coordinated activity. Should I create a timeline
   analysis?"
 
@@ -243,10 +244,10 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
   OPTIMIZATION → SELF-PROMPT:
   "Your investigation efficiency increased 34% when you analyzed phone
   records
-  before witness statements. Should I reorder the current case workflow?"      
+  before witness statements. Should I reorder the current case workflow?"
 
   PREDICTION → SELF-PROMPT:
-  "Based on evidence patterns, there's an 89% probability that Document X      
+  "Based on evidence patterns, there's an 89% probability that Document X
   contains the missing link. Should I prioritize its analysis?"
 
   3. RabbitMQ-Triggered Detective Actions
@@ -259,7 +260,7 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
   Should I merge their investigation timelines?"
 
   PROCESSING_COMPLETE → SELF-PROMPT:
-  "OCR processing found 3 suspicious discrepancies in the contract dates.      
+  "OCR processing found 3 suspicious discrepancies in the contract dates.
   Would you like me to generate a forensic timeline?"
 
   SIMILARITY_DETECTED → SELF-PROMPT:
@@ -272,15 +273,15 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
   TIME_PATTERN_ANALYSIS:
   "I notice all suspicious transactions occurred during lunch hours
   (12-1pm).
-  This might indicate an inside job. Should I analyze employee schedules?"     
+  This might indicate an inside job. Should I analyze employee schedules?"
 
   RELATIONSHIP_MAPPING:
-  "Phone records show Person A called Person B exactly 5 minutes before        
+  "Phone records show Person A called Person B exactly 5 minutes before
   each
   incident. Should I create a communication timeline?"
 
   EVIDENCE_GAP_DETECTION:
-  "There's a 3-hour gap in the surveillance footage during the critical        
+  "There's a 3-hour gap in the surveillance footage during the critical
   period.
   Should I check for backup cameras or witness statements?"
 
@@ -290,23 +291,23 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
 
   // Legal expertise prompting:
   CASE_LAW_SUGGESTION:
-  "Similar fraud cases cite United States v. Smith (2019). Should I pull       
+  "Similar fraud cases cite United States v. Smith (2019). Should I pull
   relevant precedents and highlight applicable sections?"
 
   LEGAL_STRATEGY:
-  "Based on current evidence strength, I recommend focusing on the paper       
+  "Based on current evidence strength, I recommend focusing on the paper
   trail rather than witness testimony. Should I reorder the analysis
   priority?"
 
   REGULATORY_COMPLIANCE:
-  "This evidence collection method needs chain of custody documentation        
+  "This evidence collection method needs chain of custody documentation
   for court admissibility. Should I generate the required forms?"
 
   6. Real-Time Detective Coaching
 
   // Active investigation guidance:
   METHODOLOGY_SUGGESTION:
-  "Professional investigators typically analyze financial records before       
+  "Professional investigators typically analyze financial records before
   interviewing suspects. Should I queue up the banking analysis?"
 
   BLIND_SPOT_WARNING:
@@ -318,7 +319,7 @@ Do you want me to sketch out an actual repo structure (like gpu-cache/, datastor
   user.analytics has user.tracking, back-end service_worker analysis depending on user state.
   x state
   rabbitmq
-  redis, go-microservices 
+  redis, go-microservices
 
 
 

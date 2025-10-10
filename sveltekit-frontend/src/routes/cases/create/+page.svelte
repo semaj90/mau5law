@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/button/Button.svelte';
 
   let title = $state('');
   let caseNumber = $state('');

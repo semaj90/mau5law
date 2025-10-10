@@ -450,7 +450,7 @@ export const legacyRouteMapping: Record<string, string> = {
   '/login': '/auth/login',
   '/register': '/auth/register',
   '/profile': '/profile',
-  '/reports': '/reports',
+  // '/reports': '/reports', // REMOVED: Self-referential mapping causes infinite redirect loop
   '/settings': '/settings',
   // Demo and development routes preserved
   // '/cuda-streaming': '/cuda-streaming', // Removed duplicate of earlier mapping to avoid duplicate key warning

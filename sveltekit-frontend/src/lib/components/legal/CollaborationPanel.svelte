@@ -38,7 +38,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import { Users, MessageCircle, MapPin, Send, Eye, UserCheck } from 'lucide-svelte';
   // Props
       sessionId: string

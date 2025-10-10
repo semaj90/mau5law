@@ -1,22 +1,33 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
-
 
   import { uploadWithXhr } from '$lib/api/xhr';
 
-  let file: File | null = null;
-  let percent = 0;
-  let uploading = false;
-  let controller: AbortController | null = null;
+  // Props using Svelte 5 syntax
+  let {
+    uploadUrl = '/api/upload',
+    fieldName = 'file',
+    maxBytes = 50 * 1024 * 1024, // 50MB default
+    allowedExtensions = ['png', 'jpg', 'jpeg', 'pdf', 'txt'],
+    ondone,
+    onprogress,
+    onerror,
+    oncancel
+  }: {
+    uploadUrl?: string;
+    fieldName?: string;
+    maxBytes?: number;
+    allowedExtensions?: string[];
+    ondone?: (detail: { ok: boolean; status: number; response: string }) => void;
+    onprogress?: (detail: { percent: number; loaded: number; total: number }) => void;
+    onerror?: (detail: { message: string }) => void;
+    oncancel?: () => void;
+  } = $props();
 
-  export let uploadUrl = '/api/upload';
-  export let fieldName = 'file';
-  export let maxBytes = 50 * 1024 * 1024; // 50MB default
-  export let allowedExtensions: string[] = ['png', 'jpg', 'jpeg', 'pdf', 'txt'];
-  export const useChunks = false; // placeholder for chunked upload support
+  let file: File | null = $state(null);
+  let percent = $state(0);
+  let uploading = $state(false);
+  let controller: AbortController | null = $state(null);
 
   function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -48,14 +59,14 @@
       controller = null;
       uploading = false;
       percent = 0;
-      dispatch('cancel');
+      oncancel?.();
     }
   }
 
   async function startUpload() {
     const err = validateFile(file);
     if (err) {
-      dispatch('error', { message: err });
+      onerror?.({ message: err });
       return;
     }
     if (!file) return;
@@ -70,18 +81,18 @@
     try {
       const res = await uploadWithXhr(uploadUrl, form, (loaded, total) => {
         percent = Math.round((loaded / total) * 100);
-        dispatch('progress', { percent, loaded, total });
+        onprogress?.({ percent, loaded, total });
       }, controller.signal);
 
       uploading = false;
       controller = null;
       const ok = res.status >= 200 && res.status < 300;
       percent = ok ? 100 : percent;
-      dispatch('done', { ok, status: res.status, response: res.responseText });
+      ondone?.({ ok, status: res.status, response: res.responseText });
     } catch (err) {
       uploading = false;
       controller = null;
-      dispatch('error', { message: String(err) });
+      onerror?.({ message: String(err) });
     }
   }
 

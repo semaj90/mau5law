@@ -20,6 +20,23 @@
         respond 200
     }
 
+    # QUIC Bridge proxy (WebTransport support)
+    handle /quic/* {
+        reverse_proxy https://localhost:8100 {
+            transport http {
+                tls_insecure_skip_verify
+            }
+        }
+    }
+
+    # QUIC health check (HTTP fallback)
+    handle /quic-health {
+        reverse_proxy http://localhost:8101/health
+    }
+
+    # Include auto-generated WebSocket routes from ws-orchestrator
+    import ../../Caddyfile.ws
+
     # Reverse proxy to Vite dev server
     reverse_proxy localhost:5174 {
         # Development connection settings (more permissive)

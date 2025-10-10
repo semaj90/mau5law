@@ -5,11 +5,12 @@
   import { page } from '$app/state';
   import Button from '$lib/components/ui/Button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import { Separator } from '$lib/components/ui/separator';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import Alert from '$lib/components/ui/alert/Alert.svelte';
+  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCache } from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes

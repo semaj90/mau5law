@@ -1,9 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-import { Button } from '$lib/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-import { Dialog } from '$lib/components/ui/dialog';
+import Button from '$lib/components/ui/button/Button.svelte';
+import Card from '$lib/components/ui/card/Card.svelte';
+import CardContent from '$lib/components/ui/card/CardContent.svelte';
+import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
 
@@ -770,7 +773,7 @@ $effect(() => {
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
+  <Dialog bind:open={showPOIDialog} legal={true} size="lg" on:openChange={(open: boolean) => { if (!open) closePOIDetails() }}>
     <!-- Modal Header -->
     <div class="flex justify-between items-start mb-6">
       <div>

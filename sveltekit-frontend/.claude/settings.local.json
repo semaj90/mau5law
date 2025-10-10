@@ -27,7 +27,11 @@
       "Bash(findstr:*)",
       "Bash(powershell:*)",
       "Bash(tasklist)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(cut:*)",
+      "Bash(npx svelte-check:*)",
+      "Bash(timeout 60 npx tsc --noEmit --pretty false)"
     ],
     "deny": [],
     "ask": []

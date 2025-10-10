@@ -1,9 +1,40 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/core';
+  import Card from '$lib/components/ui/card/Card.svelte';
+  import CardContent from '$lib/components/ui/card/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import Button from '$lib/components/ui/button/Button.svelte';
 
-  // Legal system statistics
-  const legalStats = {
+  // Types
+  interface LegalStats {
+    activeCases: number;
+    documentsAnalyzed: number;
+    citationsFound: number;
+    complianceScore: number;
+  }
+
+  interface LegalService {
+    name: string;
+    icon: string;
+    href: string;
+    description: string;
+  }
+
+  interface RecentActivity {
+    type: 'case_update' | 'document_review' | 'citation_check' | 'compliance_scan';
+    title: string;
+    status?: string;
+    priority?: 'high' | 'medium' | 'low';
+    confidence?: number;
+    pages?: number;
+    citations?: number;
+    verified?: number;
+    score?: number;
+    issues?: number;
+  }
+
+  // Legal system statistics - Svelte 5 $state
+  const legalStats: LegalStats = {
     activeCases: 23,
     documentsAnalyzed: 1847,
     citationsFound: 542,
@@ -11,7 +42,7 @@
   };
 
   // Legal services
-  const legalServices = [
+  const legalServices: LegalService[] = [
     {
       name: 'Case Management',
       icon: '⚖️',
@@ -51,7 +82,7 @@
   ];
 
   // Recent legal activities
-  const recentActivities = [
+  const recentActivities: RecentActivity[] = [
     { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' },
     { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 },
     { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21 },
@@ -132,7 +163,9 @@
               data-umami-event="legal-service-navigate"
               data-umami-event-service={service.name}
             >
-              Access Service
+              {#snippet children()}
+                Access Service
+              {/snippet}
             </Button>
           </CardContent>
         </Card>

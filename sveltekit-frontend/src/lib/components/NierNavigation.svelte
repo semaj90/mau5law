@@ -1,23 +1,23 @@
 <!-- YoRHa Terminal Navigation Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/state';
-  interface NavigationProps {
-    brand?: string;
-    version?: string;
-    links?: Array;
-  }
-  let {
-    brand = 'YORHA LEGAL AI',
-    version = 'v4.0.0',
-    links = [
-      { href: '/cases', label: 'CASES', icon: '📁' },
-      { href: '/evidence', label: 'EVIDENCE', icon: '📋' },
-      { href: '/reports', label: 'REPORTS', icon: '📊' },
-      { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
-    ],
-  }: NavigationProps = $props();
-  let currentPath = $derived(page.url.pathname);
+  import { page } from '$app/stores';
+
+  type Link = { href: string; label: string; icon?: string };
+
+  // Exported props with proper types
+  export let brand: string = 'YORHA LEGAL AI';
+  export let version: string = 'v4.0.0';
+  export let links: Link[] = [
+    { href: '/cases', label: 'CASES', icon: '📁' },
+    { href: '/evidence', label: 'EVIDENCE', icon: '📋' },
+    { href: '/reports', label: 'REPORTS', icon: '📊' },
+    { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
+  ];
+
+  // Reactive derived current path from the page store
+  $: currentPath = $page.url?.pathname ?? '/';
+
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   }
@@ -82,7 +82,7 @@
 .yorha-nav-container {
   align-items: center;
   display: flex;
-  justify-content: space-betwee;
+  justify-content: space-between; /* fixed typo */
   max-width: 1400px;
   margin: 0 auto;
   padding: 16px 24px;

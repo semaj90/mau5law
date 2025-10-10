@@ -7,7 +7,7 @@
   let { children, data }: { children: any; data: any } = $props();
 
   // Legal-focused console theme (green on black for legal work)
-  const consolePalette: ConsolePaletteName = 'matrix';
+  const consolePalette: ConsolePaletteName = 'legal';
 
   $effect(() => {
     applyConsolePalette(consolePalette);

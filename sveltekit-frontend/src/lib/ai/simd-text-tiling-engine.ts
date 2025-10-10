@@ -57,13 +57,13 @@ export class SIMDTextTilingEngine {
   private gpuBufferPool: ArrayBuffer[] = [];
   constructor(config: Partial<TextTileConfig> = {}) {
     this.config = {
-      compressionRatio: 109, // Target 109:1 for 7-bit NES style,
+      compressionRatio: 109, // Target 109:1 for 7-bit NES style
       tileSize: 16,
-      enableGPUAcceleration: true
+      enableGPUAcceleration: true,
       qualityTier: 'nes',
-      semanticClustering: true
+      semanticClustering: true,
       vectorDimensions: 384, // Matches nomic-embed-text
-      preserveSemantics: true
+      preserveSemantics: true,
       ...config,
     }
     console.log('🔧 SIMD Text Tiling Engine initialized:', this.config);
@@ -72,7 +72,7 @@ export class SIMDTextTilingEngine {
    * Main text processing pipeline - converts text to ultra-compressed tiles
    */
   async processText(
-    text: string
+    text: string,
     metadata: {
       type: 'legal' | 'ocr' | 'ui' | 'general';
       context?: string;
@@ -95,13 +95,13 @@ export class SIMDTextTilingEngine {
     const totalCompressionRatio =
       (text.length * 4) / compressedTiles.reduce((sum, tile) => sum + tile.compressedData.length, 0);
     return {
-      originalText: text
+      originalText: text,
       compressedTiles,
-      gpuBufferData: tiledEmbeddings
+      gpuBufferData: tiledEmbeddings,
       vertexBufferCache,
       uiComponents,
       processingStats: {
-        compressionTime: processingTime
+        compressionTime: processingTime,
         totalCompressionRatio,
         gpuUtilization: this.config.enableGPUAcceleration ? 0.85 : 0,
         cacheHits: this.calculateCacheHits(compressedTiles),
@@ -115,8 +115,8 @@ export class SIMDTextTilingEngine {
     try {
       // Use existing WebGPU LangChain bridge for optimized embedding generation
       const result = await webgpuLangChainBridge.processLegalDocument(text, {
-        useWebGPUCache: true
-        compressVectors: true
+        useWebGPUCache: true,
+        compressVectors: true,
         documentType: metadata.type === 'legal' ? 'general' : metadata.type,
       });
       // Convert embeddings to Float32Array format for SIMD processing
@@ -164,7 +164,7 @@ export class SIMDTextTilingEngine {
         Math.ceil(Math.sqrt(combinedEmbeddings.length)),
         {
           tileSize: this.config.tileSize,
-          enableCompression: true
+          enableCompression: true,
           priority: 'medium',
         }
       );
@@ -211,7 +211,7 @@ export class SIMDTextTilingEngine {
       const compressed = await this.compressToSevenBytes(tileData, tileText);
       const tile: CompressedTextTile = {
         id: `tile-${i}-${Date.now()}`,
-        compressedData: compressed
+        compressedData: compressed,
         semanticHash: await this.generateSemanticHash(tileText),
         originalLength: tileText.length,
         compressionRatio: (tileText.length * 4) / compressed.length,
@@ -305,7 +305,7 @@ export class SIMDTextTilingEngine {
       componentData,
       renderingInstructions,
       cssOptimized,
-    }
+    };
   }
   // Helper methods for compression and analysis
   private getPatternID(text: string): number {
@@ -396,7 +396,7 @@ export class SIMDTextTilingEngine {
         return `tile[${index}]: render(${tile.id}, pattern=${tile.tileMetadata.patternId}, density=${tile.tileMetadata.semanticDensity.toFixed(2)})`;
       })
       .join('\n');
-    return `// NES-style text rendering instructions\n// Quality: ${this.config.qualityTier}\n// Total tiles: ${tiles.length}\n\n${instructions}`
+    return `// NES-style text rendering instructions\n// Quality: ${this.config.qualityTier}\n// Total tiles: ${tiles.length}\n\n${instructions}`;
   }
   private generateOptimizedCSS(tiles: CompressedTextTile[]): string {
     const cssRules = tiles
@@ -445,21 +445,21 @@ export class SIMDTextTilingEngine {
       semanticPatterns: this.semanticPatterns.size,
       gpuBufferPoolSize: this.gpuBufferPool.length,
       capabilities: {
-        sevenBitCompression: true
+        sevenBitCompression: true,
         gpuAcceleration: this.config.enableGPUAcceleration,
         semanticPreservation: this.config.preserveSemantics,
-        instantUIGeneration: true
+        instantUIGeneration: true,
       },
-    }
+    };
   }
 }
 // Export singleton instance
 export const simdTextTilingEngine = new SIMDTextTilingEngine({
-  compressionRatio: 109, // Target 109:1 for 7-byte representation,
+  compressionRatio: 109, // Target 109:1 for 7-byte representation
   tileSize: 16,
-  enableGPUAcceleration: true
+  enableGPUAcceleration: true,
   qualityTier: 'nes',
-  semanticClustering: true
+  semanticClustering: true,
   vectorDimensions: 384,
-  preserveSemantics: true
+  preserveSemantics: true,
 });

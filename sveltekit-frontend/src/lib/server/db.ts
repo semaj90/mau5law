@@ -1,46 +1,36 @@
 /*
-  Consolidated Drizzle DB client and helper exports.
-  Creates a single `db` export using postgres + drizzle and re-exports
-  common helpers and schema exports for downstream modules.
+  CONSOLIDATED DATABASE EXPORT
+  Re-exports the canonical database connection from drizzle.ts (node-postgres adapter)
+  This file exists for backward compatibility with legacy imports.
+
+  MIGRATION GUIDE:
+  - OLD: import { db } from '$lib/server/db'
+  - NEW: import { db } from '$lib/server/db/index' (preferred)
+
+  This ensures all code uses the same connection pool (pg.Pool with node-postgres adapter)
 */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { sql } from 'drizzle-orm/sql';
-import { eq, and, or, ilike, like } from 'drizzle-orm/sql/expressions/conditions';
-import { count } from 'drizzle-orm/sql/functions/aggregate';
 
-// Provide local ordering helpers
-const desc = (col: any) => sql`${col} desc`;
-const asc = (col: any) => sql`${col} asc`;
+// Re-export canonical database connection (node-postgres with pg.Pool)
+export { db, sql, pool } from './db/drizzle';
+export type DB = typeof import('./db/drizzle').db;
 
-// Re-export commonly used pg-core helpers for schema files
-export { pgTable, serial, text, integer, timestamp, boolean, json, index } from 'drizzle-orm/pg-core';
+// Re-export Drizzle query helpers
+import { sql as drizzleSql } from 'drizzle-orm';
+import { eq, and, or, ilike, like } from 'drizzle-orm';
+import { count } from 'drizzle-orm';
 
-// Central schema import (consumer files import tables from $lib/server/db or ./schema)
-import * as schema from './schema';
+// Local ordering helpers for backward compatibility
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const desc = (col: any) => drizzleSql`${col} desc`;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const asc = (col: any) => drizzleSql`${col} asc`;
 
-// Ensure DATABASE_URL is present (fail fast in dev/CI to avoid confusing SSR errors)
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error('The DATABASE_URL environment variable is not set. Set it (e.g. via .env.development) before starting the app.');
-}
-
-// Create the postgres client and Drizzle instance
-const client = postgres(connectionString, {
-  max: 5,
-  // Use undefined when not in production to match expected types (object | undefined)
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
-});
-
-export const db = drizzle(client, { schema });
-export default db;
-export type DB = typeof db;
-
-// Re-export sql/helpers for convenience in other modules
-export { sql, eq, and, or, ilike, like, desc, asc, count };
-
-// Provide a helpers object for code that expects a bag of helpers
+export { eq, and, or, ilike, like, desc, asc, count };
 export const helpers = { eq, and, or, ilike, like, desc, asc, count } as const;
 
-// Re-export all schema exports to preserve existing import sites
+// Re-export commonly used pg-core helpers
+export { pgTable, serial, text, integer, timestamp, boolean, json, index } from 'drizzle-orm/pg-core';
+
+// Re-export all schema tables from canonical source
+export * from './db/schema-actual';
 export * from './schema';

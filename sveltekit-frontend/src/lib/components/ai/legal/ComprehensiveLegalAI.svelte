@@ -5,8 +5,8 @@
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import {
     Brain,
     Database,

@@ -1,6 +1,4 @@
 import type { PageServerLoad } from './$types.js';
-import fs from 'fs';
-import path from 'path';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback
@@ -75,63 +73,15 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { path: '/api/updates', icon: '🔄', description: 'Updates API' },
   ];
 
-  // Simple route scanner to detect file-based routes and conflicts
-  const scanRoot = path.join(process.cwd(), 'sveltekit-frontend', 'src', 'routes');
-  const normalize = (p: string) =>
-    p
-      .replace(scanRoot, '')
-      .replace(/\\/g, '/')
-      .replace(/\/\+page\.svelte$|\/\+layout\.svelte$|\/index\.svelte$|\.svelte$/i, '')
-      .replace(/\/+$/, '') || '/';
-
-  const routeFiles: string[] = [];
-  try {
-    const walk = (dir: string) => {
-      for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (name.name.startsWith('.')) continue;
-        const full = path.join(dir, name.name);
-        if (name.isDirectory()) walk(full);
-        else if (name.isFile() && full.endsWith('.svelte')) routeFiles.push(full);
-      }
-    };
-    if (fs.existsSync(scanRoot)) walk(scanRoot);
-  } catch (err) {
-    // ignore scan errors; we'll still return health data
-  }
-
-  const routeMap = new Map<string, string[]>();
-  for (const f of routeFiles) {
-    const id = normalize(f);
-    const arr = routeMap.get(id) || [];
-    arr.push(f);
-    routeMap.set(id, arr);
-  }
-
-  const conflicts: { routeId: string; files: string[] }[] = [];
-  for (const [id, files] of routeMap.entries()) {
-    if (files.length > 1) conflicts.push({ routeId: id, files });
-  }
-
-  // Simple layout recommendation based on scanned routes
-  const counts = { total: routeFiles.length, api: 0, ui: 0, groups: {} as Record<string, number> };
-  for (const [id] of routeMap.entries()) {
-    if (id.startsWith('/api')) counts.api++;
-    else counts.ui++;
-    const parts = id.split('/').filter(Boolean);
-    const top = parts[0] || '/';
-    counts.groups[top] = (counts.groups[top] || 0) + 1;
-  }
-
+  // Simplified route layout recommendation (removed file system scanning)
   const recommendedRouteLayout = {
     dashboardPath,
     note: isLoggedIn
       ? 'User logged in — recommend linking dashboard to user activities at /dashboard/activities.'
       : 'Public view — system dashboard at /dashboard.',
-    conflicts,
-    counts,
+    conflicts: [], // No file-based conflicts detected without fs access
+    counts: { total: realRoutes.length, api: realRoutes.filter(r => r.path.startsWith('/api')).length, ui: realRoutes.filter(r => !r.path.startsWith('/api')).length, groups: {} },
     suggestions: [
-      conflicts.length ? 'Resolve duplicate route files (see conflicts) to avoid SvelteKit route ambiguity.' : null,
-      counts.api > 0 ? 'Keep /api routes as file-based server endpoints under /src/routes/api.' : null,
       'Use nested dashboards for user-specific flows, e.g. /dashboard/activities, /dashboard/settings.',
       'Group feature pages under top-level namespaces (ai, yorha, admin) to keep routes organized.',
     ].filter(Boolean),
@@ -148,7 +98,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       fileRoutesSample: realRoutes.map(r => r.path),
       counts: {
         config: realRoutes.length,
-        fileBased: realRoutes.length,
+        fileBased: 0, // No file-based scanning
         api: realRoutes.filter(r => r.path.startsWith('/api')).length,
         configMissingFiles: 0,
         filesMissingConfig: 0,

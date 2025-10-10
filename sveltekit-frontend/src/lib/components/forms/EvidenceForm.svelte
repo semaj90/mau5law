@@ -12,7 +12,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from "$lib/components/ui/label";
+  import Label from "$lib/components/ui/label/Label.svelte";
   import type { Evidence } from "$lib/types/api";
   import * as Select from 'bits-ui';
   // Bindable props already defined above; redundant redeclarations removed

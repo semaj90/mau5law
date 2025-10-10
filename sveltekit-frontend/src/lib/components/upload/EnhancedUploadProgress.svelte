@@ -1,9 +1,9 @@
 <script lang="ts">
   import { enhancedUploadStore, type EnhancedUploadState } from '$lib/stores/enhanced-upload-machine';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { CheckCircle, AlertCircle, Clock, Zap, Database, Network, Cpu, Brain, Eye } from 'lucide-svelte';
   // Reactive state from enhanced upload machine
   let uploadState = $state<EnhancedUploadState>();

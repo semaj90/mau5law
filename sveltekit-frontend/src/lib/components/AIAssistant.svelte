@@ -10,7 +10,7 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
   // Legal AI Assistant State Machine (XState Best Practices)
   const legalAIMachine = createMachine({

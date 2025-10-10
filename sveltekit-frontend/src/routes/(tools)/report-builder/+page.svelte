@@ -1,33 +1,47 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Evidence } from '$lib/types/api';
   	import { onMount } from 'svelte';
-  	import { page } from '$app/state';
-  	import ReportEditor from "$lib/components/ReportEditor.svelte";
-  	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
-  	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
+  	import { page } from '$app/stores';
+  	import { get } from 'svelte/store';
+  	// Note: ReportEditor uses stores, not props - displays independently
+  	import ReportEditor from "$lib/components/editor/ReportEditor.svelte";
+  	// Use FabricCanvas as CanvasEditor alternative
+  	import FabricCanvas from "$lib/components/canvas/FabricCanvas.svelte";
+  	import type { Report, CanvasState } from "$lib/data/types";
+  	// Avoid importing namespaces as types here — use lightweight local types to satisfy the component's needs.
+  	type LocalEvidence = {
+  		id: string;
+  		caseId?: string;
+  		title: string;
+  		evidenceType?: string;
+  		// allow additional fields coming from the real type
+  		[key: string]: any;
+  	};
+  	type LocalCitationPoint = {
+  		source: string;
+  		text: string;
+  		[key: string]: any;
+  	};
   	let currentReport: Report | null = $state(null);
   	let currentCanvasState: CanvasState | null = $state(null);
-  	let evidence: Evidence[] = $state([]);
-  	let citationPoints: CitationPoint[] = $state([]);
+  	let evidence = $state<LocalEvidence[]>([]);
+  	let citationPoints = $state<LocalCitationPoint[]>([]);
   	let activeTab: 'editor' | 'canvas' = $state('editor');
   	let isLoading = $state(false);
   	let error = $state('');
-  	// Demo case ID - in real app this would come from the route
-  	const caseId = page.params.caseId || 'demo-case-123';
-  	$effect(() => {
-    (async () => {
-await loadDemoData();
-    })();
-  });
+  	// Demo case ID - in real app this would come from the route (read safely from the page store)
+  	const caseId = (get(page).params?.caseId) ?? 'demo-case-123';
+  	// Load demo data once on mount
+  	onMount(() => {
+  		void loadDemoData();
+  	});
   	async function loadDemoData() {
   		try {
   			isLoading = true;
   			// Load sample citation points
-  			const citationsResponse = await fetch(`/api/citations?caseId=${caseId}`);
+  			const citationsResponse = await fetch(`/api/citations?caseId=${encodeURIComponent(caseId)}`);
   			if (citationsResponse.ok) {
   				citationPoints = await citationsResponse.json();
-  }
+  			}
   			// Load sample evidence (mock for now)
   			evidence = [
   				{
@@ -56,23 +70,23 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
+  					updatedAt: new Date()
   				},
   				{
   					id: '2',
   					caseId,
-  					criminalId: null
+  					criminalId: null,
   					title: 'Witness Statement - John Doe',
   					description: 'Eyewitness account of the incident',
   					evidenceType: 'document',
   					fileType: 'application/pdf',
-  					subType: null
-  					fileUrl: null
+  					subType: null,
+  					fileUrl: null,
   					fileName: 'witness_statement.pdf',
-  					fileSize: null
+  					fileSize: null,
   					mimeType: 'application/pdf',
   					hash: 'def456ghi789',
   					tags: [],
@@ -87,23 +101,23 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
+  					updatedAt: new Date()
   				},
   				{
   					id: '3',
   					caseId,
-  					criminalId: null
+  					criminalId: null,
   					title: 'Physical Evidence - Weapon',
   					description: 'Photograph of recovered weapon',
   					evidenceType: 'photo',
   					fileType: 'image/jpeg',
-  					subType: null
-  					fileUrl: null
+  					subType: null,
+  					fileUrl: null,
   					fileName: 'weapon_photo.jpg',
-  					fileSize: null
+  					fileSize: null,
   					mimeType: 'image/jpeg',
   					hash: 'ghi789jkl012',
   					tags: [],
@@ -118,18 +132,19 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
-  }
+  					updatedAt: new Date()
+  				}
   			];
   		} catch (err) {
   			console.error('Failed to load demo data:', err);
   			error = 'Failed to load demo data';
   		} finally {
   			isLoading = false;
-  }}
+  		}
+  	}
   	async function handleReportSave(report: Report) {
   		try {
   			currentReport = report;
@@ -137,23 +152,32 @@ await loadDemoData();
   		} catch (err) {
   			console.error('Failed to save report:', err);
   			error = 'Failed to save report';
-  }}
+  		}
+  	}
   	async function handleCanvasSave(canvasState: CanvasState) {
   		try {
-  			currentCanvasState = canvasStat;
+  			currentCanvasState = canvasState;
   			console.log('Canvas saved:', canvasState);
   		} catch (err) {
   			console.error('Failed to save canvas:', err);
   			error = 'Failed to save canvas';
-  }}
+  		}
+  	}
   	function createNewReport() {
   		currentReport = null;
   		activeTab = 'editor';
-  }
+  	}
   	function createNewCanvas() {
   		currentCanvasState = null;
   		activeTab = 'canvas';
-  }
+  	}
+	// In Svelte 5 (runes mode) components are dynamic by default — use them directly.
+	// Safely derive a reportId for the CanvasEditor; Report type may not include 'id'.
+	let reportId: string = 'temp-report-id';
+	// replace legacy reactive statement with runes-compatible effect & use a safe cast to avoid TS error
+	$effect(() => {
+		reportId = (currentReport as any)?.id ?? 'temp-report-id';
+	});
 </script>
 
 <svelte:head>
@@ -162,13 +186,14 @@ await loadDemoData();
 </svelte:head>
 <div class="space-y-4">
   <!-- Header -->
-  <header class="space-y-4">
+  <header>
     <div class="space-y-4">
       <h1>📝 Report Builder</h1>
-      <p class="space-y-4">AI-powered case analysis and report generation</p>
+      <p>AI-powered case analysis and report generation</p>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => createNewReport()}> 📄 New Report </button>
-        <button class="space-y-4" onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
+        <!-- changed: use onclick instead of deprecated on:click -->
+        <button onclick={() => createNewReport()}> 📄 New Report </button>
+        <button onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -176,22 +201,23 @@ await loadDemoData();
   {#if error}
     <div class="space-y-4">
       ❌ {error}
-      <button onclick={() => (error = '')} class="space-y-4">×</button>
+      <!-- changed: use onclick instead of deprecated on:click -->
+      <button onclick={() => (error = '')}>×</button>
     </div>
   {/if}
   <!-- Loading State -->
   {#if isLoading}
     <div class="space-y-4">
-      <div class="space-y-4">⏳</div>
+      <div>⏳</div>
       <p>Loading demo data...</p>
     </div>
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class="space-y-4" class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
+      <button class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
         📝 Report Editor
       </button>
-      <button class="space-y-4" ; class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
+      <button class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>
@@ -204,21 +230,24 @@ await loadDemoData();
             <h2>Prosecutor's Report</h2>
             <p>Write, edit, and analyze case reports with AI assistance</p>
           </div>
-          <ReportEditor report={currentReport} {caseId} save={handleReportSave} autoSaveEnabled={true} />
+		  <!-- ReportEditor uses internal stores, not props -->
+		  <ReportEditor />
         </div>
       {:else if activeTab === 'canvas'}
-        <!-- Canvas Editor Tab -->
         <div class="space-y-4">
           <div class="space-y-4">
-            <h2>Interactive Evidence Canvas</h2>
-            <p>Visualize evidence, create diagrams, and annotate with AI insights</p>
+            <h2>Interactive Canvas</h2>
+            <p>Visualize and annotate case evidence</p>
           </div>
-          <CanvasEditor
-            canvasState={currentCanvasState}
-            reportId={currentReport?.id || 'temp-report-id'}
-            {evidence}
-            {citationPoints}
-            save={handleCanvasSave}
+          <!-- Use FabricCanvas for interactive canvas -->
+          <FabricCanvas
+            width={1200}
+            height={800}
+            caseId={caseId}
+            readOnly={false}
+            gridEnabled={true}
+            snapToGrid={true}
+            onSave={handleCanvasSave}
           />
         </div>
       {/if}
@@ -236,28 +265,24 @@ await loadDemoData();
       </div>
       <div class="space-y-4">
         <h3>📚 Citation Library</h3>
-        <p class="space-y-4">{citationPoints.length} citations available</p>
+        <p>{citationPoints.length} citations available</p>
         <div class="space-y-4">
           {#each citationPoints.slice(0, 3) as citation}
             <div class="space-y-4">
-              <div class="space-y-4">{citation.source}</div>
-              <div class="space-y-4">{citation.text.substring(0, 60)}...</div>
+              <div>{citation.source}</div>
+              <div>{citation.text.substring(0, 60)}...</div>
             </div>
           {/each}
         </div>
       </div>
       <div class="space-y-4">
         <h3>📋 Evidence Repository</h3>
-        <p class="space-y-4">{evidence.length} pieces of evidence</p>
+        <p>{evidence.length} pieces of evidence</p>
         <div class="space-y-4">
           {#each evidence as item}
             <div class="space-y-4">
-              <div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).title}</div>
-              <div class="space-y-4">
-                {(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).evidenceType ||
-                  (item as { title?: unknown; evidenceType?: unknown; type?: unknown }).type ||
-                  'unknown'}
-              </div>
+              <div>{item.title}</div>
+              <div>{item.evidenceType || 'unknown'}</div>
             </div>
           {/each}
         </div>
@@ -265,9 +290,9 @@ await loadDemoData();
       <div class="space-y-4">
         <h3>⚡ Quick Actions</h3>
         <div class="space-y-4">
-          <button class="space-y-4">📤 Export PDF</button>
-          <button class="space-y-4">💾 Save Template</button>
-          <button class="space-y-4">🔄 Sync Offline</button>
+          <button>📤 Export PDF</button>
+          <button>💾 Save Template</button>
+          <button>🔄 Sync Offline</button>
         </div>
       </div>
     </aside>
@@ -283,3 +308,4 @@ await loadDemoData();
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 </style>
+

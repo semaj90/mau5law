@@ -4,38 +4,43 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
   import DiamondModal from '$lib/components/ui/DiamondModal.svelte';
   import LastSearchedModal from './LastSearchedModal.svelte';
   import LastWorkedModal from './LastWorkedModal.svelte';
   import AIRecommendationAssistant from './AIRecommendationAssistant.svelte';
-  import { Button } from '$lib/components/ui/button';
+  // Button replaced by native <button> where click handlers are needed
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  // Dashboard state
-  let isOpen = $state(false);
-  let activeTab = $state<'overview' | 'search' | 'work' | 'ai'>('overview');
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  // Dashboard state (use standard reactive variables)
+  let isOpen: boolean = false;
+  let activeTab: 'overview' | 'search' | 'work' | 'ai' = 'overview';
   // Modal states
-  let showSearchModal = $state(false);
-  let showWorkModal = $state(false);
-  let showAIModal = $state(false);
+  let showSearchModal: boolean = false;
+  let showWorkModal: boolean = false;
+  let showAIModal: boolean = false;
   // Quick stats
-  let stats = $state({
+  let stats: {
+    recentCases: number;
+    activeSearches: number;
+    workInProgress: number;
+    aiRecommendations: number;
+    loading: boolean;
+  } = {
     recentCases: 0,
     activeSearches: 0,
     workInProgress: 0,
     aiRecommendations: 0,
-    loading: true;
-  });
+    loading: true
+  };
   // Recent activity summary
-  let recentActivity = $state<Array<{
+  let recentActivity: Array<{
     id: string;
     type: 'search' | 'work' | 'case' | 'ai';
     title: string;
     timestamp: string;
     priority: 'low' | 'medium' | 'high' | 'critical';
     confidence?: number;
-  }>>([]);
+  }> = [];
   export function open() {
     isOpen = true;
     loadDashboardData();
@@ -69,35 +74,35 @@
       // Update stats
       stats = {
         recentCases: cases.data?.length || 0,
-        activeSearches: searches.data?.filter((s: any) => s.confidence > 0.7).length || 0,
-        workInProgress: work.data?.filter((w: any) => w.status === 'in-progress').length || 0,
+        activeSearches: (searches.data || []).filter((s: any) => (s.confidence ?? 0) > 0.7).length || 0,
+        workInProgress: (work.data || []).filter((w: any) => w.status === 'in-progress').length || 0,
         aiRecommendations: 12, // AI recommendation count
-        loading: false;
-      }
+        loading: false
+      };
       // Compile recent activity
       recentActivity = [
-        ...(cases.data?.slice(0, 2).map((c: any) => ({,
+        ...(cases.data?.slice(0, 2).map((c: any) => ({
           id: c.id,
           type: 'case' as const,
           title: c.title,
           timestamp: c.dateUpdated,
-          priority: c.urgency,
-          confidence: c.priority / 250;
+          priority: (c.urgency as any) ?? 'medium',
+          confidence: (c.priority ?? 0) / 250
         })) || []),
-        ...(searches.data?.slice(0, 2).map((s: any) => ({,
+        ...(searches.data?.slice(0, 2).map((s: any) => ({
           id: s.id,
           type: 'search' as const,
           title: s.query,
           timestamp: s.lastSearched,
-          priority: s.confidence > 0.8 ? 'high' : 'medium',
-          confidence: s.confidenc;
+          priority: (s.confidence ?? 0) > 0.8 ? 'high' : 'medium',
+          confidence: s.confidence ?? 0
         })) || []),
-        ...(work.data?.slice(0, 2).map((w: any) => ({,
+        ...(work.data?.slice(0, 2).map((w: any) => ({
           id: w.id,
           type: 'work' as const,
           title: w.title,
           timestamp: w.lastWorked,
-          priority: w.priority > 200 ? 'high' : 'medium';
+          priority: (w.priority ?? 0) > 200 ? 'high' : 'medium'
         })) || [])
       ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
        .slice(0, 6);
@@ -110,8 +115,8 @@
         activeSearches: 3,
         workInProgress: 2,
         aiRecommendations: 8,
-        loading: false;
-      }
+        loading: false
+      };
       recentActivity = [
         {
           id: 'mock-activity-001',
@@ -134,16 +139,17 @@
           type: 'work',
           title: 'Patent Prior Art Research',
           timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          priority: 'medium';
+          priority: 'medium',
         }
       ];
-      // Display fallback notice
-      const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed;
-d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-      document.body.appendChild(notice);
-      setTimeout(() => notice.remove(), 3000);
+      // Display fallback notice (guard DOM access for SSR)
+      if (typeof document !== 'undefined') {
+        const notice = document.createElement('div');
+        notice.innerHTML = '⚠️ failure default to mock';
+        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+      }
     } finally {
       stats.loading = false;
     }
@@ -176,6 +182,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     if (minutes > 0) return `${minutes}m ago`;
     return 'Just now';
   }
+  // add helper to build tab classes
+  function getTabClass(tab: 'overview' | 'search' | 'work' | 'ai') {
+    const base = 'px-4 py-2 rounded transition-all';
+    const active = 'bg-blue-600 text-white';
+    const inactive = 'text-slate-300 hover:text-white hover:bg-slate-700';
+    return `${base} ${activeTab === tab ? active : inactive}`;
+  }
   onMount(() => {
     if (isOpen) {
       loadDashboardData();
@@ -183,39 +196,32 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   });
 </script>
 
-<DiamondModal bind:isOpen title="🎯 Recommendation Engine" size="xl">
+<DiamondModal open={isOpen} title="🎯 Recommendation Engine" size="large" on:close={() => { isOpen = false; }}>
   <div class="space-y-6">
     <!-- Tab Navigation -->
     <div class="flex space-x-2 p-1 bg-slate-800/50 rounded-lg border border-slate-600">
+      <!-- changed: use getTabClass and on:click -->
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'overview'
-          ? 'bg-blue-600 text-white'
-          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => (activeTab = 'overview')}
+        class={getTabClass('overview')}
+        on:click={() => (activeTab = 'overview')}
       >
         📊 Overview
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'search'
-          ? 'bg-blue-600 text-white'
-          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => (activeTab = 'search')}
+        class={getTabClass('search')}
+        on:click={() => (activeTab = 'search')}
       >
         🔍 Search History
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'work'
-          ? 'bg-blue-600 text-white'
-          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => (activeTab = 'work')}
+        class={getTabClass('work')}
+        on:click={() => (activeTab = 'work')}
       >
         💼 Work Activity
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'ai'
-          ? 'bg-blue-600 text-white'
-          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => activeTab === 'ai'}
+        class={getTabClass('ai')}
+        on:click={() => (activeTab = 'ai')}
       >
         🤖 AI Assistant
       </button>
@@ -257,27 +263,27 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Button
-                variant="outline"
-                class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => (showSearchModal = true)}
+              <button
+                type="button"
+                class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
+                on:click={() => (showSearchModal = true)}
               >
                 🔍 View Search History
-              </Button>
-              <Button
-                variant="outline"
-                class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => (showWorkModal = true)}
+              </button>
+              <button
+                type="button"
+                class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
+                on:click={() => (showWorkModal = true)}
               >
                 💼 Work Activity
-              </Button>
-              <Button
-                variant="outline"
-                class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => (showAIModal = true)}
+              </button>
+              <button
+                type="button"
+                class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
+                on:click={() => (showAIModal = true)}
               >
                 🤖 AI Assistant
-              </Button>
+              </button>
             </div>
           </CardContent>
         </Card>
@@ -311,7 +317,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                           {Math.round(activity.confidence * 100)}% confidence
                         </Badge>
                       {/if}
-                      <Badge variant="outline" class="text-xs {getPriorityColor(activity.priority)}">
+                      <Badge variant="outline" class={`text-xs ${getPriorityColor(activity.priority)}`}>
                         {activity.priority}
                       </Badge>
                     </div>
@@ -330,9 +336,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🔍 Search History & Insights</h3>
             <p class="text-slate-300 mb-6">View your recent searches, patterns, and AI-powered search suggestions.</p>
-            <Button onclick={() => (showSearchModal = true)} class="bg-blue-600 hover:bg-blue-700">
+            <button type="button" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white" on:click={() => (showSearchModal = true)}>
               Open Search Dashboard
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
@@ -345,9 +351,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <p class="text-slate-300 mb-6">
               Monitor your case work, time tracking, and progress across all legal matters.
             </p>
-            <Button onclick={() => (showWorkModal = true)} class="bg-green-600 hover:bg-green-700">
+            <button type="button" class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white" on:click={() => (showWorkModal = true)}>
               Open Work Dashboard
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
@@ -360,22 +366,23 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <p class="text-slate-300 mb-6">
               Get intelligent insights, case analysis, and workflow optimization from Gemma3 Legal AI.
             </p>
-            <Button onclick={() => (showAIModal = true)} class="bg-purple-600 hover:bg-purple-700">
+            <button type="button" class="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white" on:click={() => (showAIModal = true)}>
               Launch AI Assistant
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
     {/if}
   </div>
   <div slot="footer" class="flex justify-between">
-    <Button variant="outline" onclick={close}>Close Dashboard</Button>
-    <Button onclick={() => loadDashboardData()} disabled={stats.loading}>
+    <button type="button" class="px-3 py-2 border border-slate-600 rounded text-slate-300" on:click={close}>Close Dashboard</button>
+    <button type="button" class="px-3 py-2 bg-slate-700 rounded text-white" on:click={() => loadDashboardData()} disabled={stats.loading}>
       {stats.loading ? '⚡ Loading...' : '🔄 Refresh'}
-    </Button>
+    </button>
   </div>
 </DiamondModal>
+
 <!-- Individual Modals -->
 <LastSearchedModal bind:isOpen={showSearchModal} />
 <LastWorkedModal bind:isOpen={showWorkModal} />
-<AIRecommendationAssistant bind:isOpen={showAIModal} />;
+<AIRecommendationAssistant bind:isOpen={showAIModal} />

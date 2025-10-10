@@ -35,29 +35,43 @@
     preferredIntents: string[];
   }
 
-  // Props (export let so parent can pass handlers)
-  export let query: string = '';
-  export let placeholder: string = 'Ask anything... AI will suggest and learn';
-  export let contextType: string = 'GENERAL';
-  export let userId: string = 'anonymous';
-  export let includeTaskSuggestions: boolean = true;
-  export let includeAI: boolean = true;
-  export let maxSuggestions: number = 8;
-  export let showUserProfile: boolean = false;
-  export let onSelect: ((s: Suggestion) => void) | undefined;
-  export let onTaskSelect: ((t: TaskSuggestion) => void) | undefined;
-  export let onSearch: ((q: string) => void) | undefined;
+  // Props using Svelte 5 syntax
+  let {
+    query = $bindable(''),
+    placeholder = 'Ask anything... AI will suggest and learn',
+    contextType = 'GENERAL',
+    userId = 'anonymous',
+    includeTaskSuggestions = true,
+    includeAI = true,
+    maxSuggestions = 8,
+    showUserProfile = false,
+    onSelect,
+    onTaskSelect,
+    onSearch
+  }: {
+    query?: string;
+    placeholder?: string;
+    contextType?: string;
+    userId?: string;
+    includeTaskSuggestions?: boolean;
+    includeAI?: boolean;
+    maxSuggestions?: number;
+    showUserProfile?: boolean;
+    onSelect?: (s: Suggestion) => void;
+    onTaskSelect?: (t: TaskSuggestion) => void;
+    onSearch?: (q: string) => void;
+  } = $props();
 
   // Local state
-  let suggestions: Suggestion[] = [];
-  let taskSuggestions: TaskSuggestion[] = [];
-  let userProfile: UserProfile | null = null;
-  let loading = false;
-  let error: string | null = null;
-  let metadata: { took_ms?: number; cached?: boolean } = {};
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let open = false;
-  let inputEl: HTMLInputElement | null = null;
+  let suggestions = $state<Suggestion[]>([]);
+  let taskSuggestions = $state<TaskSuggestion[]>([]);
+  let userProfile = $state<UserProfile | null>(null);
+  let loading = $state(false);
+  let error = $state<string | null>(null);
+  let metadata = $state<{ took_ms?: number; cached?: boolean }>({});
+  let debounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
+  let open = $state(false);
+  let inputEl = $state<HTMLInputElement | null>(null);
 
   // Debounced search trigger
   function scheduleSearch(q: string) {
@@ -65,19 +79,17 @@
     debounceTimer = setTimeout(() => performSearch(q), 300);
   }
 
-  $: if (query && query.length >= 2) {
-    scheduleSearch(query);
-  } else {
-    // close suggestions when query too short
-    suggestions = [];
-    taskSuggestions = [];
-    userProfile = null;
-  }
-
-  // Allow parent to update query programmatically: open dropdown when query set
-  $: if (query && query.length >= 2) {
-    open = true;
-  }
+  $effect(() => {
+    if (query && query.length >= 2) {
+      scheduleSearch(query);
+      open = true;
+    } else {
+      // close suggestions when query too short
+      suggestions = [];
+      taskSuggestions = [];
+      userProfile = null;
+    }
+  });
 
   async function performSearch(searchQuery: string) {
     if (!searchQuery || searchQuery.length < 2) {

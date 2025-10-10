@@ -13,8 +13,9 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/Button.svelte';
   import type { UploadFile } from '$lib/components/ui/modular/types';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
-  import { Label } from '$lib/components/ui/label';
+  import Alert from '$lib/components/ui/alert/Alert.svelte';
+  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
+  import Label from '$lib/components/ui/label/Label.svelte';
   import {
     Select,
     SelectContent,
@@ -22,8 +23,8 @@ https://svelte.dev/e/js_parse_error -->
     SelectTrigger,
     SelectValue,
   } from '$lib/components/ui/select';
-  import { Switch } from '$lib/components/ui/switch';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Switch from '$lib/components/ui/switch/Switch.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import { fileUploadSchema } from '$lib/schemas/upload';
   import Form from '$lib/components/ui/Form.svelte';
   import FileUpload from '$lib/components/ui/modular/FileUpload.svelte';

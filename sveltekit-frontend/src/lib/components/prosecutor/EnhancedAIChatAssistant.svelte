@@ -15,7 +15,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import {
     Bot,

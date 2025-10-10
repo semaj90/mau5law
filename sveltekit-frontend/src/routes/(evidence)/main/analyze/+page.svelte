@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
   // Use the correct casing that exists in the repo
   import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
@@ -12,9 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
   import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
   import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
-  import { Progress } from '$lib/components/ui/progress';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   // Import explicit Svelte components to avoid resolving to select.ts (not a module)
   import SelectContent from '$lib/components/ui/select/SelectContent.svelte';
   import SelectItem from '$lib/components/ui/select/SelectItem.svelte';
@@ -22,21 +19,56 @@ https://svelte.dev/e/js_parse_error -->
   import SelectTrigger from '$lib/components/ui/select/SelectTrigger.svelte';
   import SelectValue from '$lib/components/ui/select/SelectValue.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  // Reactive state with Svelte 5 syntax
+
+  // Types
+  interface AnalysisStep {
+    name: string;
+    key: string;
+    status: 'pending' | 'processing' | 'completed';
+    description: string;
+    icon: string;
+    duration: string;
+  }
+
+  interface EvidenceType {
+    value: string;
+    label: string;
+  }
+
+  interface PriorityOption {
+    value: string;
+    label: string;
+    color: string;
+  }
+
+  interface AnalysisResults {
+    status: string;
+    sessionId: string;
+    analysisResults: Record<string, any>;
+    metadata?: {
+      source: string;
+      processingTime: string;
+      model: string;
+    };
+  }
+
+  // Svelte 5 runes - reactive state
   let analyzing = $state(false);
-  let results = $state(null);
+  let results = $state<AnalysisResults | null>(null);
   let error = $state('');
   let progress = $state(0);
   let showResults = $state(false);
+
   // Form data
   let caseId = $state('');
   let evidenceContent = $state('');
-  let evidenceFile = $state(null);
+  let evidenceFile = $state<File | null>(null);
   let evidenceType = $state('police_report');
   let priority = $state('medium');
   let sessionId = $state('');
+
   // Analysis pipeline steps with enhanced metadata
-  const steps = [
+  let steps = $state<AnalysisStep[]>([
     {
       name: 'Evidence Analysis',
       key: 'evidence_analysis',
@@ -69,9 +101,10 @@ https://svelte.dev/e/js_parse_error -->
       icon: '⚖️',
       duration: '25-35s',
     },
-  ];
+  ]);
+
   // Evidence type options
-  const evidenceTypes = [
+  const evidenceTypes: EvidenceType[] = [
     { value: 'police_report', label: 'Police Report' },
     { value: 'witness_statement', label: 'Witness Statement' },
     { value: 'financial_records', label: 'Financial Records' },
@@ -80,8 +113,9 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'expert_testimony', label: 'Expert Testimony' },
     { value: 'other', label: 'Other Document' },
   ];
+
   // Priority options
-  const priorityOptions = [
+  const priorityOptions: PriorityOption[] = [
     { value: 'low', label: 'Low Priority', color: 'bg-gray-100 text-gray-800' },
     {
       value: 'medium',
@@ -95,40 +129,67 @@ https://svelte.dev/e/js_parse_error -->
     },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-100 text-red-800' },
   ];
-  // Current step tracking (Svelte 5 runes)
-  // compute currentStep from progress and clamp to valid index using $derived
-  // provide an explicit getter so the runtime knows we depend on `progress`
-  let currentStep = $derived(() => {
-    const total = steps.length || 1; // guard against division by zero
+
+  // Current step tracking (derived from progress) - use $state + $effect to update
+  let currentStep = $state(0);
+  $effect(() => {
+    const total = steps.length || 1;
     const perStep = 100 / total;
-    // use the reactive value by reading progress here
-    const p = progress;
-    return Math.max(0, Math.min(total - 1, Math.floor(p / perStep)));
+    currentStep = Math.max(0, Math.min(total - 1, Math.floor(progress / perStep)));
   });
 
   // File upload handler
-  function handleFileUpload(event: Event) {
+  function handleFileUpload(event: Event): void {
     const input = event.target as HTMLInputElement | null;
     if (!input || !input.files || input.files.length === 0) return;
     evidenceFile = input.files[0];
     // Read file content (plain text fallback)
     const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
+    reader.onload = (e: ProgressEvent<FileReader>): void => {
       evidenceContent = String(e.target?.result ?? '');
     };
     reader.readAsText(evidenceFile);
   }
+
   // Start analysis
-  async function startAnalysis() {
-    if (!caseId || !evidenceContent) {
-      error = 'Please provide a case ID and evidence content';
+  async function startAnalysis(): Promise<void> {
+    // Validation
+    if (!caseId.trim()) {
+      error = 'Case ID is required';
       return;
     }
+    if (!evidenceContent.trim()) {
+      error = 'Evidence content is required';
+      return;
+    }
+    if (evidenceContent.length < 50) {
+      error = 'Evidence content must be at least 50 characters';
+      return;
+    }
+    if (evidenceContent.length > 100000) {
+      error = 'Evidence content is too large (max 100,000 characters)';
+      return;
+    }
+
     analyzing = true;
     error = '';
     results = null;
     progress = 0;
+
+    // Simulate progressive analysis steps
+    const updateProgress = (step: number): void => {
+      progress = (step / steps.length) * 100;
+      if (step > 0) {
+        steps[step - 1].status = 'completed';
+      }
+      if (step < steps.length) {
+        steps[step].status = 'processing';
+      }
+    };
+
     try {
+      updateProgress(0);
+
       const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,13 +200,20 @@ https://svelte.dev/e/js_parse_error -->
           type: evidenceType === 'police_report' ? 'document' : evidenceType,
         }),
       });
+
+      updateProgress(2);
+
       if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.statusText}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `Analysis failed: ${response.statusText}`);
       }
+
       const data = await response.json();
+      updateProgress(3);
+
       // Handle real AI response directly (no polling needed)
+      updateProgress(4);
       analyzing = false;
-      progress = 100;
       showResults = true;
 
       // Transform API response to expected format
@@ -165,18 +233,27 @@ https://svelte.dev/e/js_parse_error -->
           model: data.data?.model || 'gemma3-legal',
           processedAt: data.data?.processedAt,
         },
-      }
+      };
     } catch (err) {
       console.error('Evidence analysis error:', err);
-      // Show fallback notice
-      const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-      document.body.appendChild(notice);
-      setTimeout(() => notice.remove(), 3000);
-      // Generate mock analysis results
       analyzing = false;
+
+      // Production error handling
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+
+      // Show toast notification with improved styling
+      const notice = document.createElement('div');
+      notice.innerHTML = `⚠️ API failed: ${errorMessage.substring(0, 100)}`;
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.75rem 1.25rem; border-radius: 6px; z-index: 10000; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px;';
+      document.body.appendChild(notice);
+      setTimeout(() => {
+        notice.style.transition = 'opacity 0.3s';
+        notice.style.opacity = '0';
+        setTimeout(() => notice.remove(), 300);
+      }, 4000);
+
+      // Generate mock analysis results for demo purposes
       progress = 100;
       showResults = true;
       results = {
@@ -203,12 +280,13 @@ https://svelte.dev/e/js_parse_error -->
           processingTime: '45 seconds',
           model: 'Legal Evidence AI v2.0 (Simulated)',
         },
-      }
+      };
       error = '';
     }
   }
+
   // Reset form
-  function resetForm() {
+  function resetForm(): void {
     caseId = '';
     evidenceContent = '';
     evidenceFile = null;
@@ -220,11 +298,12 @@ https://svelte.dev/e/js_parse_error -->
     progress = 0;
     showResults = false;
     sessionId = '';
-    // Reset steps
-    steps.forEach(step => (step.status = 'pending'));
+    // Reset steps - need to create new array to trigger reactivity
+    steps = steps.map(step => ({ ...step, status: 'pending' as const }));
   }
+
   // View detailed results
-  function viewDetailedResults(analysisData) {
+  function viewDetailedResults(analysisData: any): void {
     console.log('Opening detailed results:', analysisData);
     // Could open a modal or navigate to detailed view
   }
@@ -247,7 +326,14 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Case ID -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
-          <Input id="caseId" bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
+          <!-- use native input to guarantee Svelte two-way binding -->
+          <input
+            id="caseId"
+            bind:value={caseId}
+            placeholder="CASE-2024-001"
+            disabled={analyzing}
+            class="font-mono w-full rounded border px-3 py-2 focus:outline-none focus:ring"
+          />
         </div>
         <!-- Evidence Type -->
         <div class="space-y-2">
@@ -285,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
           id="evidenceFile"
           type="file"
           accept=".txt,.pdf,.doc,.docx"
-          onchange={handleFileUpload}
+          on:change={handleFileUpload}
           disabled={analyzing}
           class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80"
         />
@@ -333,8 +419,8 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
-        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" on:click={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -371,59 +457,62 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Step-by-step Progress -->
         <div class="space-y-4">
           {#each steps as step, i}
-            {@const isActive = currentStep === i}
-            {@const isCompleted = step.status === 'completed'}
-            {@const isProcessing = step.status === 'processing'}
-            <div class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
+            <!-- replaced invalid `class:ring-2={...}` / `class:ring-primary={...}` / `class:shadow-md={...}` -->
+            <div class={"transition-all duration-300 nes-container " + (currentStep === i ? 'ring-2 ring-primary shadow-md' : '')}>
               <div class="yorha-panel-content p-4">
                 <div class="flex items-center gap-4">
                   <!-- Status Icon -->
                   <div class="flex-shrink-0">
-                    {#if isCompleted}
-                      <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
-                        ✓
-                      </div>
-                    {:else if isProcessing}
-                      <div
-                        class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center animate-pulse"
+                    {#if step.status === 'completed'}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
-                        {step.icon}
-                      </div>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M9 12l2 2 4-4m2-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    {:else if step.status === 'processing'}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 text-blue-500 animate-spin"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M12 4v8l4 4m0 0l4-4m-4 4V4"
+                        />
+                      </svg>
                     {:else}
-                      <div class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center">
-                        {step.icon}
-                      </div>
+                      <span class="block w-6 h-6 rounded-full bg-gray-200"></span>
                     {/if}
                   </div>
-                  <!-- Step Info -->
-                  <div class="flex-grow">
-                    <div class="flex items-center gap-2">
-                      <h3 class="font-semibold {isActive ? 'text-primary' : ''}">
-                        {step.name}
-                      </h3>
-                      {#if isProcessing}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
-                          >Processing</span
-                        >
-                      {:else if isCompleted}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                  <!-- Step Details -->
+                  <div class="flex-1">
+                    <div class="flex justify-between text-sm">
+                      <span class="font-medium nes-text is-disabled">{step.name}</span>
+                      <span class="nes-text is-disabled">{step.duration}</span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      {#if step.status === 'completed'}
+                        Completed
+                      {:else if step.status === 'processing'}
+                        Processing...
                       {:else}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Pending</span>
+                        Pending
                       {/if}
                     </div>
-                    <p class="text-sm nes-text is-disabled">
-                      {step.description}
-                    </p>
-                    <p class="text-xs nes-text is-disabled">
-                      Est. {step.duration}
-                    </p>
                   </div>
-                  <!-- Mini Progress for Active Step -->
-                  {#if isProcessing}
-                    <div class="flex-shrink-0 w-20">
-                      <Progress value={75} class="h-2" />
-                    </div>
-                  {/if}
                 </div>
               </div>
             </div>
@@ -432,62 +521,63 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-  <!-- Results Modal/Display -->
+  <!-- Results Display -->
   {#if showResults && results}
-    <Dialog bind:open={showResults}>
-      <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Analysis Results - {caseId}</DialogTitle>
-          <DialogDescription>Multi-agent pipeline analysis completed successfully</DialogDescription>
-        </DialogHeader>
-        <div class="space-y-4">
-          {#each Object.entries(results.analysisResults ?? {}) as [key, data]}
-            <div class="nes-container">
-              <div class="yorha-panel-header">
-                <h3 class="nes-text is-primary text-lg">
-                  {steps.find(s => s.key === key)?.icon || '📄'}
-                  {String(key).replace(/\b\w/g, l => l.toUpperCase())}
-                </h3>
-              </div>
-              <div class="yorha-panel-content">
-                <div class="bg-muted p-4 rounded-lg">
-                  <pre class="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
-										{JSON.stringify(data, null, 2)}
- 									</pre>
-                </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    class="mt-2 bits-btn bits-btn"
-                    onclick={() => viewDetailedResults(data)}
-                  >
-                    View Details →
-                  </Button>
-              </div>
+    <div class="nes-container">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary flex items-center gap-2">✅ Analysis Completed</h3>
+        <p class="nes-text">Review the automated analysis results and next steps</p>
+      </div>
+      <div class="yorha-panel-content space-y-6">
+        <!-- Summary Card -->
+        <div class="p-4 rounded-lg border bg-gray-50">
+          <div class="flex justify-between items-center">
+            <div>
+              <h4 class="text-lg font-semibold">Analysis Summary</h4>
+              <p class="text-sm text-gray-500">
+                Session ID: <span class="font-mono">{results.sessionId}</span>
+              </p>
             </div>
-          {/each}
+            <div>
+              <Button
+                class="bits-btn"
+                variant="outline"
+                on:click={() => viewDetailedResults(results.analysisResults)}
+                disabled={analyzing}
+              >
+                View Detailed Results
+              </Button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-sm">
+              <span class="font-medium">Document Type:</span>
+              <span class="ml-2">{results.analysisResults.documentType}</span>
+            </div>
+            <div class="text-sm">
+              <span class="font-medium">Key Facts Count:</span>
+              <span class="ml-2">{results.analysisResults.keyFactsCount}</span>
+            </div>
+            <div class="text-sm">
+              <span class="font-medium">Confidence Score:</span>
+              <span class="ml-2">{(results.analysisResults.confidenceScore * 100).toFixed(1)}%</span>
+            </div }
+            <div class="text-sm">
+              <span class="font-medium">Legal Relevance:</span>
+              <span class="ml-2">{results.analysisResults.legalRelevance}</span>
+            </div>
+          </div>
         </div>
-        <DialogFooter>
-          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <!-- Next Steps -->
+        <div class="space-y-2">
+          <h4 class="text-lg font-semibold">Recommended Next Steps</h4>
+          <ul class="list-disc list-inside">
+            {#each results.analysisResults.nextSteps as step}
+              <li class="text-sm text-gray-700">{step}</li>
+            {/each}
+          </ul>
+        </div>
+      </div>
+    </div>
   {/if}
 </div>
-
-<style>
-  /* Custom animations for progress indicators */
-  @keyframes pulse-glow {
-    0%,
-    100% {
-      box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-    }
-  }
-  .animate-pulse-glow {
-    animation: pulse-glow 2s infinite;
-  }
-</style>

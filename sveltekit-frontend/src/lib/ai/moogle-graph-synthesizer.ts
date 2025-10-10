@@ -614,7 +614,7 @@ export class MoogleGraphSynthesizer {
       rewardSurface,
       trainingProgress: rewardHistory,
       optimalPolicy
-    }
+    };
   }
 
   /**
@@ -1091,4 +1091,45 @@ export class MoogleGraphSynthesizer {
   private wasmForceDirectedLayout() { /* ... */ }
   private wasmGenerateMeshVertices() { /* ... */ }
   private wasmComputeNodePositions() { /* ... */ }
-  private wasmOptimizeMeshLOD() { /* ... */ },
+  private wasmOptimizeMeshLOD() { /* ... */ }
+
+  // Cache key generation
+  private generateCacheKey(paths: SoraTraversalPath[], _config: MoogleVisualizationConfig, mode: string): string {
+    const pathSignature = paths.map(p => p.nodes.map(n => n.id).join('-')).join('_');
+    return `moogle_${mode}_${this.simpleHash(pathSignature)}`;
+  }
+
+  // Missing visualization methods (stubs for now)
+  private async generateQValueHeatmap(_nodes: Map<string, SoraGraphNode>, _qValues: Map<string, Map<string, number>>, _config: Partial<MoogleVisualizationConfig>): Promise<ImageData> {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d')!;
+    return ctx.getImageData(0, 0, 512, 512);
+  }
+
+  private async highlightOptimalPaths(_paths: SoraTraversalPath[], _qValues: Map<string, Map<string, number>>): Promise<Array<any>> {
+    return [];
+  }
+
+  private async generateRewardSurface(_nodes: Map<string, SoraGraphNode>, _qValues: Map<string, Map<string, number>>, _config: Partial<MoogleVisualizationConfig>): Promise<Moogle3DMesh> {
+    const emptyMesh: Moogle3DMesh = {
+      vertices: new Float32Array(0),
+      indices: new Uint32Array(0),
+      normals: new Float32Array(0),
+      uvs: new Float32Array(0),
+      colors: new Float32Array(0),
+      vertexBuffer: new ArrayBuffer(0),
+      indexBuffer: new ArrayBuffer(0),
+      lodMeshes: [],
+      metadata: {
+        nodePositions: [],
+        edgeGeometry: [],
+        boundingBox: { min: [0, 0, 0], max: [0, 0, 0], center: [0, 0, 0] },
+        meshStats: { vertexCount: 0, triangleCount: 0, memoryUsage: 0 },
+        renderTime: 0
+      }
+    };
+    return emptyMesh;
+  }
+}

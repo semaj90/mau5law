@@ -22,8 +22,8 @@
   // Enhanced UI components
   import * as Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Badge } from '$lib/components/ui/badge';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   // Icons
   import {
     Brain, Network, Zap, Eye, Target, TrendingUp, Activity,

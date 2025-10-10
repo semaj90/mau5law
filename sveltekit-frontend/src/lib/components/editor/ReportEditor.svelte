@@ -36,12 +36,22 @@ https://svelte.dev/e/js_parse_error -->
     Settings,
   } from "lucide-svelte";
   // State
-  let editorComponent = $state({}) {
-        single: "layout-single",
-        dual: "layout-dual",
-        masonry: "layout-masonry",
-      }[$report.settings.layout]
-    : "layout-single"
+  let editorComponent = $state<any>(null);
+  let selectedEvidence = $state<any>(null);
+  let showEvidenceModal = $state(false);
+  let showSettingsModal = $state(false);
+  let evidenceSearchResults = $state<any[]>([]);
+  let evidenceFormData = $state<any>(null);
+  let cleanupAutoSave: (() => void) | null = null;
+
+  let layoutClass = $derived(
+    $report?.settings?.layout
+      ? {
+          single: "layout-single",
+          dual: "layout-dual",
+          masonry: "layout-masonry",
+        }[$report.settings.layout]
+      : "layout-single"
   );
   // Reactive editor height
   let editorHeight = $derived($reportUI && $reportUI.fullscreen ? window.innerHeight - 200 : 500);
@@ -67,11 +77,11 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Handle evidence actions
   const handleViewEvidence = (evidence: any) => {
-    selectedEvidence = evidenc;
+    selectedEvidence = evidence;
     showEvidenceModal = true;
   }
   const handleEditEvidence = (evidence: any) => {
-    selectedEvidence = evidenc;
+    selectedEvidence = evidence;
     showEvidenceModal = true;
   }
   const handleDeleteEvidence = async (evidence: any) => {
@@ -314,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-      <RichTextEditor;
+      <RichTextEditor
         bind:this={editorComponent}
         height={editorHeight}
       />
@@ -397,7 +407,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   .report-editor.fullscreen {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -428,7 +437,7 @@ d;
   .section-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     margin-bottom: 0.75rem;
   }
   .section-header h3 {
@@ -517,7 +526,7 @@ d;
   .editor-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
     background: #ffffff;
@@ -582,8 +591,8 @@ d;
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .layout-toggle: hover
-  .fullscreen-toggle: hover
+  .layout-toggle:hover,
+  .fullscreen-toggle:hover,
   .settings-btn:hover {
     background: #f3f4f6;
     color: #3b82f6;
@@ -603,7 +612,7 @@ d;
   .panel-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }

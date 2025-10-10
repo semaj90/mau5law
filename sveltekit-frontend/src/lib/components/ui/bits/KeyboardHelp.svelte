@@ -22,16 +22,24 @@
     open?: boolean;
   }
 
-  // Props (use standard Svelte exports for clarity)
-  export let shortcuts: KeyboardShortcut[] = [];
-  export let showCategories = true;
-  export let searchable = true;
-  export let className = '';
-  export let open = false;
+  // Props using Svelte 5 syntax
+  let {
+    shortcuts = [],
+    showCategories = true,
+    searchable = true,
+    className = '',
+    open = $bindable(false)
+  }: {
+    shortcuts?: KeyboardShortcut[];
+    showCategories?: boolean;
+    searchable?: boolean;
+    className?: string;
+    open?: boolean;
+  } = $props();
 
   // Local state
-  let searchQuery = '';
-  let selectedCategory = 'all';
+  let searchQuery = $state('');
+  let selectedCategory = $state('all');
 
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
@@ -65,40 +73,37 @@
     { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' }
   ];
 
-  // Reactive derived data (standard Svelte reactive statements)
-  let allShortcuts: KeyboardShortcut[] = [];
-  $: allShortcuts = [...defaultShortcuts, ...shortcuts].filter(s => s.enabled !== false);
+  // Reactive derived data using Svelte 5 runes
+  let allShortcuts = $derived([...defaultShortcuts, ...shortcuts].filter(s => s.enabled !== false));
 
-  let filteredShortcuts: KeyboardShortcut[] = [];
-  $: {
-    // start from allShortcuts
-    filteredShortcuts = allShortcuts.slice();
+  let filteredShortcuts = $derived.by(() => {
+    let result = allShortcuts.slice();
     // Filter by category
     if (selectedCategory !== 'all') {
-      filteredShortcuts = filteredShortcuts.filter(s => s.category === selectedCategory);
+      result = result.filter(s => s.category === selectedCategory);
     }
     // Filter by search query
     if (searchQuery && searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filteredShortcuts = filteredShortcuts.filter(s =>
+      result = result.filter(s =>
         s.description.toLowerCase().includes(query) ||
         s.category.toLowerCase().includes(query) ||
         s.keys.some(k => String(k).toLowerCase().includes(query))
       );
     }
-  }
+    return result;
+  });
 
-  let categories: string[] = [];
-  $: categories = ['all', ...Array.from(new Set(allShortcuts.map(s => s.category))).sort()];
+  let categories = $derived(['all', ...Array.from(new Set(allShortcuts.map(s => s.category))).sort()]);
 
-  let groupedShortcuts: Record<string, KeyboardShortcut[]> = {};
-  $: {
-    groupedShortcuts = {};
+  let groupedShortcuts = $derived.by(() => {
+    const result: Record<string, KeyboardShortcut[]> = {};
     for (const sh of filteredShortcuts) {
-      if (!groupedShortcuts[sh.category]) groupedShortcuts[sh.category] = [];
-      groupedShortcuts[sh.category].push(sh);
+      if (!result[sh.category]) result[sh.category] = [];
+      result[sh.category].push(sh);
     }
-  }
+    return result;
+  });
 
   // Format key combination for display
   function formatKeys(keys: string[]): string {
@@ -145,13 +150,15 @@
   });
 
   // add a ref for the dialog so we can focus it when opened
-  let dialogEl: HTMLElement | null = null;
+  let dialogEl = $state<HTMLElement | null>(null);
 
   // When the panel opens, focus the dialog to satisfy a11y and ensure keydown events are received.
-  $: if (open && dialogEl) {
-    // Use a microtask to ensure DOM is updated before focusing
-    Promise.resolve().then(() => dialogEl?.focus());
-  }
+  $effect(() => {
+    if (open && dialogEl) {
+      // Use a microtask to ensure DOM is updated before focusing
+      Promise.resolve().then(() => dialogEl?.focus());
+    }
+  });
 </script>
 
 <!-- Help Panel Modal -->

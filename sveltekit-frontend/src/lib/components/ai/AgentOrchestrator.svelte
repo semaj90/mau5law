@@ -15,7 +15,11 @@ Manages AutoGen and CrewAI multi-agent workflows
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
   import {
     Users,

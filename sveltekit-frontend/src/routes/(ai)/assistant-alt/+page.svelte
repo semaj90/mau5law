@@ -1,11 +1,15 @@
 <script lang="ts">
-  // removed unused onMount import
-   import { Dialog } from '$lib/components/ui/dialog';
-   // enhanced-bits exports a collection; import as a namespace and select the Button constructor
-   import * as EnhancedBits from '$lib/components/ui/enhanced-bits';
-   const Button = (EnhancedBits as any).Button ?? (EnhancedBits as any).default?.Button ?? (EnhancedBits as any).default ?? (EnhancedBits as any);
-   import { cn } from '$lib/utils';
-   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+  import { browser } from '$app/environment';
+  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import { cn } from '$lib/utils';
+  import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+
+  // --- changed code: ensure type-only imports are referenced to avoid "unused import" diagnostics ---
+  // purely a compile-time/type alias; removed at runtime (no effect on bundle)
+  type _EnsureImportedTypes = ChatMessage | SystemStatus;
+  // --- end changed code ---
+
   // Minimal local types to satisfy TS for this page
   type Person = {
     id: string;
@@ -29,120 +33,135 @@
   };
   type RagAnalysisResponse = { persons?: Person[] };
 
-   // Props from server load function (optional)
-   let { data }: { data?: any } = $props();
+  // Props from server load function (optional)
+  let { data }: { data?: any } = $props();
 
-   // Svelte 5 runes - proper syntax
-   let messages = $state<ChatMessage[]>([]);
-   let currentMessage = $state('');
-   let isStreaming = $state(false);
-   let error = $state('');
-   let conversationId = $state<string | null>(null);
-   let userId = $state('mock-user-id'); // TODO: Get from auth
-   let systemStatus = $state<SystemStatus>({
-     gpu: false,
-     ollama: false,
-     enhancedRAG: false,
-     postgres: false,
-     neo4j: false
-   });
+  // Svelte 5 runes - proper syntax
+  let messages = $state<ChatMessage[]>([]);
+  let currentMessage = $state('');
+  let isStreaming = $state(false);
+  let error = $state('');
+  let conversationId = $state<string | null>(null);
+  let userId = $state('mock-user-id'); // TODO: Get from auth
+  let systemStatus = $state<SystemStatus>({
+    gpu: false,
+    ollama: false,
+    enhancedRAG: false,
+    postgres: false,
+    neo4j: false
+  });
 
-   // Update userId if data is provided from server
-   $effect(() => {
-     if (data?.user?.id) {
-       userId = data.user.id;
-     }
-   });
+  // Update userId if data is provided from server
+  $effect(() => {
+    if (data?.user?.id) {
+      userId = data.user.id;
+    }
+  });
+
   // POI Timeline State
   let poiTimelineData = $state<POI[]>([]);
   // selectedPOI should be a normalized POI or null — narrow type for template usage
   let selectedPOI = $state<POI | null>(null);
-   let showPOIDialog = $state(false);
-   let timelineLoading = $state(false);
-   let showTimeline = $state(false);
-   let evidenceReports = $state([]);
-   // hold the full response shape (or null before any analysis)
-   let ragAnalysisResults = $state<RagAnalysisResponse | null>(null);
-   // User Activity Timeline State
-   let userActivityTimeline = $state([]);
-   let activityLoading = $state(false);
-   let focusMetrics = $state({
-     sessionsToday: 0,
-     totalTime: 0,
-     casesAnalyzed: 0,
-     evidenceReviewed: 0
-   });
-   async function checkSystemStatus() {
-     try {
-       const res = await fetch('/api/v1/cluster/health');
-       if (!res.ok) {
-         throw new Error(`Health check failed: ${res.status}`);
-       }
-       const data = await res.json();
-       systemStatus = {
-         gpu: data?.services?.gpu === 'accelerated',
-         ollama: data?.services?.ollama === 'healthy',
-         enhancedRAG: data?.services?.enhancedRAG === 'running',
-         postgres: data?.services?.postgres === 'connected',
-         neo4j: data?.services?.neo4j === 'active'
-       }
-     } catch (e: unknown) {
-       console.error('Health check error:', e);
-       // Show fallback notice
-       const notice = document.createElement('div');
-       notice.innerHTML = '⚠️ failure default to mock';
-       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-       document.body.appendChild(notice);
-       setTimeout(() => notice.remove(), 3000);
-       // Set mock system status
-       systemStatus = {
-         gpu: false,
-         ollama: false,
-         enhancedRAG: false,
-         postgres: false,
-         neo4j: false
-       }
-       error = 'System health check failed - using mock status';
-     }
-   }
-   async function sendMessage() {
-     if (!currentMessage.trim() || isStreaming) return;
-     const userMessage: ChatMessage = {
-       id: crypto.randomUUID(),
-       role: 'user',
-       content: currentMessage,
-       timestamp: new Date()
-     }
-     messages = [...messages, userMessage];
-     const messageToSend = currentMessage;
-     currentMessage = '';
-     isStreaming = true;
-     error = '';
-     try {
+  let showPOIDialog = $state(false);
+  let timelineLoading = $state(false);
+  let showTimeline = $state(false);
+  let evidenceReports = $state<any[]>([]);
+  // hold the full response shape (or null before any analysis)
+  let ragAnalysisResults = $state<RagAnalysisResponse | null>(null);
+  // User Activity Timeline State
+  let userActivityTimeline = $state<any[]>([]);
+  let activityLoading = $state(false);
+  let focusMetrics = $state({
+    sessionsToday: 0,
+    totalTime: 0,
+    casesAnalyzed: 0,
+    evidenceReviewed: 0
+  });
+
+  async function checkSystemStatus(): Promise<void> {
+    try {
+      const res = await fetch('/api/v1/cluster/health');
+      if (!res.ok) {
+        throw new Error(`Health check failed: ${res.status}`);
+      }
+
+      // rename to avoid shadowing top-level `data`
+      const healthData: any = await res.json();
+
+      // normalize various shapes returned by health API (boolean or strings)
+      const isUp = (val: unknown, accepted: string[] = ['healthy', 'running', 'connected', 'active', 'accelerated']) => {
+        if (val === true) return true;
+        if (typeof val === 'string') return accepted.includes(val.toLowerCase());
+        return false;
+      };
+
+      systemStatus = {
+        gpu: isUp(healthData?.services?.gpu),
+        ollama: isUp(healthData?.services?.ollama),
+        enhancedRAG: isUp(healthData?.services?.enhancedRAG),
+        postgres: isUp(healthData?.services?.postgres),
+        neo4j: isUp(healthData?.services?.neo4j)
+      };
+    } catch (e: unknown) {
+      console.error('Health check error:', e);
+      // Show fallback notice only in browser (avoid DOM ops during SSR)
+      if (browser) {
+        const notice = document.createElement('div');
+        notice.innerHTML = '⚠️ failure default to mock';
+        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+      }
+      // Set mock system status
+      systemStatus = {
+        gpu: false,
+        ollama: false,
+        enhancedRAG: false,
+        postgres: false,
+        neo4j: false
+      };
+      error = 'System health check failed - using mock status';
+    }
+  }
+
+  async function sendMessage(): Promise<void> {
+    if (!currentMessage.trim() || isStreaming) return;
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: currentMessage,
+      timestamp: new Date()
+    };
+    messages = [...messages, userMessage];
+    const messageToSend = currentMessage;
+    currentMessage = '';
+    isStreaming = true;
+    error = '';
+    try {
       // Initiate stream by POSTing, then consume response body as a stream
       const initResponse = await fetch('/api/ai/chat-sse', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json'
-         },
-         body: JSON.stringify({
-           message: messageToSend,
-           model: 'gemma3-legal:latest',
-           conversationId,
-           userId,
-           useRAG: true
-         })
-       });
-       if (!initResponse.ok) {
-         throw new Error(`HTTP ${initResponse.status}`);
-       }
-       const aiMessage: ChatMessage = {
-         id: crypto.randomUUID(),
-         role: 'assistant',
-         content: '',
-         timestamp: new Date()
-       }
-       messages = [...messages, aiMessage];
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: messageToSend,
+          model: 'gemma3-legal:latest',
+          conversationId,
+          userId,
+          useRAG: true
+        })
+      });
+      if (!initResponse.ok) {
+        throw new Error(`HTTP ${initResponse.status}`);
+      }
+      const aiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: '',
+        timestamp: new Date()
+      };
+      messages = [...messages, aiMessage];
       // Consume the response body stream (SSE framed as "data: ...\n\n")
       if (initResponse.body) {
         const reader = initResponse.body.getReader();
@@ -207,12 +226,14 @@
       }
      } catch (e: unknown) {
        console.error('Send message error:', e);
-       // Show fallback notice
-       const notice = document.createElement('div');
-       notice.innerHTML = '⚠️ failure default to mock';
-       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-       document.body.appendChild(notice);
-       setTimeout(() => notice.remove(), 3000);
+       // Show fallback notice only in browser (avoid DOM ops during SSR)
+       if (browser) {
+         const notice = document.createElement('div');
+         notice.innerHTML = '⚠️ failure default to mock';
+         notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+         document.body.appendChild(notice);
+         setTimeout(() => notice.remove(), 3000);
+       }
        // Generate mock AI assistant response
        const mockLegalAssistantResponses = [
          "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
@@ -230,37 +251,43 @@
        messages = [...messages, mockAiMessage];
        error = '';
      } finally {
-       isStreaming = false;
-     }
-   }
-   async function handleQuickQuery(query: string) {
-     currentMessage = query;
-     await sendMessage();
-   }
-   function handleKeydown(e: KeyboardEvent) {
-     if (e.key === 'Enter' && !e.shiftKey) {
-       e.preventDefault();
-       sendMessage();
-     }
-   }
-   function clearChat() {
-     messages = [];
-     error = '';
-   }
-   // Semantic RAG-based POI Timeline Functions
-   async function loadEvidenceReports() {
+      isStreaming = false;
+    }
+  }
+
+  async function handleQuickQuery(query: string): Promise<void> {
+    currentMessage = query;
+    await sendMessage();
+  }
+
+  function handleKeydown(e: KeyboardEvent): void {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function clearChat(): void {
+    messages = [];
+    error = '';
+  }
+
+  // Semantic RAG-based POI Timeline Functions
+  async function loadEvidenceReports(): Promise<void> {
      try {
       const resp = await fetch('/api/v1/evidence/reports');
       if (!resp.ok) throw new Error(`Evidence reports API failed: ${resp.status}`);
       evidenceReports = await resp.json();
      } catch (e) {
        console.error('Failed to load evidence reports:', e);
-       // Show fallback notice
-       const notice = document.createElement('div');
-       notice.innerHTML = '⚠️ failure default to mock';
-       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-       document.body.appendChild(notice);
-       setTimeout(() => notice.remove(), 3000);
+       // Show fallback notice only in browser (avoid DOM ops during SSR)
+       if (browser) {
+         const notice = document.createElement('div');
+         notice.innerHTML = '⚠️ failure default to mock';
+         notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+         document.body.appendChild(notice);
+         setTimeout(() => notice.remove(), 3000);
+       }
        // Set mock evidence reports
        evidenceReports = [
          {
@@ -279,10 +306,11 @@
            content: 'Mock evidence: Witness account of contract negotiation meeting.',
            confidence: 0.92,
          }
-       ];
-     }
-   }
-   async function analyzePersonsOfInterest() {
+      ];
+    }
+  }
+
+  async function analyzePersonsOfInterest(): Promise<void> {
      if (evidenceReports.length === 0) {
        await loadEvidenceReports();
      }
@@ -322,10 +350,11 @@
        error = 'Failed to analyze persons of interest';
        console.error('POI analysis error:', e);
      } finally {
-       timelineLoading = false;
-     }
-   }
-   async function generateUserActivityTimeline() {
+      timelineLoading = false;
+    }
+  }
+
+  async function generateUserActivityTimeline(): Promise<void> {
      activityLoading = true;
      try {
       const resp = await fetch(`/api/v1/user/activity?userId=${encodeURIComponent(String(userId))}`);
@@ -341,21 +370,32 @@
      } catch (e) {
        console.error('Failed to generate user activity timeline:', e);
      } finally {
-       activityLoading = false;
-     }
-   }
-   function selectPOI(poi: Person | null) {
-     selectedPOI = poi;
-     showPOIDialog = true;
-   }
-   function closePOIDetails() {
-     selectedPOI = null;
-     showPOIDialog = false;
-   }
-   $effect(() => {
+      activityLoading = false;
+    }
+  }
+
+  function selectPOI(poi: POI | null): void {
+    selectedPOI = poi;
+    showPOIDialog = true;
+  }
+
+  function closePOIDetails(): void {
+    selectedPOI = null;
+    showPOIDialog = false;
+  }
+
+  // --- changed code: helper to get typed entries for systemStatus ---
+  function getSystemStatusEntries(): [keyof typeof systemStatus, boolean][] {
+    return Object.entries(systemStatus) as [keyof typeof systemStatus, boolean][];
+  }
+  // --- end changed code ---
+
+  $effect(() => {
+     // Only run side-effects that depend on the DOM / window in the browser.
+     if (!browser) return;
      checkSystemStatus();
      loadEvidenceReports();
-     // Check system status every 30 seconds
+     // Check system status every 30 seconds (browser-only)
      const interval = setInterval(checkSystemStatus, 30000);
      return () => clearInterval(interval);
    });
@@ -381,7 +421,7 @@
           </h2>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {#each Object.entries(systemStatus) as [key, status]}
+          {#each getSystemStatusEntries() as [key, status]}
             <div class="flex items-center gap-2">
               <div class={cn(
                 "w-3 h-3 rounded-full",
@@ -405,7 +445,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
           >
             Contract Law
@@ -413,7 +453,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
           >
             Evidence Rules
@@ -421,7 +461,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
           >
             Liability
@@ -429,7 +469,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
           >
             Tort Law
@@ -446,11 +486,14 @@
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold">Legal AI Chat</h2>
               <div class="flex gap-2">
-                <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
+                <span class={cn(
+                  "px-2 py-1 rounded text-xs font-medium",
+                  isStreaming ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+                )}>
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
                 <Button variant="ghost" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn"
-                  onclick={clearChat} disabled={isStreaming}>
+                  on:click={clearChat} disabled={isStreaming}>
                   Clear
                 </Button>
               </div>
@@ -484,7 +527,9 @@
                         "text-xs mt-1 opacity-70",
                         message.role === 'user' ? "text-blue-100" : "text-gray-500"
                       )}>
-                        {message.timestamp.toLocaleTimeString()}
+                        {typeof message.timestamp === 'string'
+                          ? new Date(message.timestamp).toLocaleTimeString()
+                          : message.timestamp.toLocaleTimeString()}
                       </div>
                     </div>
                   </div>
@@ -501,13 +546,13 @@
               <div class="flex gap-2">
                 <input
                   bind:value={currentMessage}
-                  onkeydown={handleKeydown}
+                  on:keydown={handleKeydown}
                   placeholder="Ask a legal question..."
                   disabled={isStreaming}
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  onclick={sendMessage}
+                  on:click={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6 bits-btn bits-btn"
                 >
@@ -537,7 +582,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  onclick={() => showTimeline = false}
+                  on:click={() => showTimeline = false}
                   class="nes-btn bits-btn"
                 >
                   {#snippet children()}
@@ -565,7 +610,7 @@
                       <Button
                         variant="ghost"
                         size="sm"
-                        onclick={() => selectPOI(poi)}
+                        on:click={() => selectPOI(poi)}
                         class="nes-btn bits-btn"
                       >
                         {#snippet children()}
@@ -573,7 +618,7 @@
                         {/snippet}
                       </Button>
                     </div>
-                    {#if poi.activities.length > 0}
+                    {#if poi.activities?.length > 0}
                       <div class="mt-3">
                         <h4 class="font-medium mb-2">Recent Activity</h4>
                         <div class="space-y-2">
@@ -596,7 +641,7 @@
                         </div>
                       </div>
                     {/if}
-                    {#if poi.evidenceSources.length > 0}
+                    {#if poi.evidenceSources?.length > 0}
                       <div class="mt-3 pt-3 border-t border-gray-100">
                         <h4 class="font-medium mb-2">Evidence Sources</h4>
                         <div class="flex flex-wrap gap-1">
@@ -636,7 +681,7 @@
                     <div class="flex-1">
                       <div class="font-medium">{activity.action}</div>
                       <div class="text-sm text-gray-600">
-                        {activity.description || acti(vity as CustomEvent).details}
+                        {activity.description || activity.details}
                       </div>
                     </div>
                     <div class="text-xs text-gray-500">
@@ -706,7 +751,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  onclick={checkSystemStatus}
+                  on:click={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
@@ -721,7 +766,7 @@
                   class="bits-btn w-full justify-start"
                   variant="ghost"
                   size="sm"
-                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -745,7 +790,7 @@
               </h3>
               <div class="space-y-2">
                 <Button class="nes-btn is-primary w-full justify-start bits-btn"
-                 onclick={analyzePersonsOfInterest}
+                 on:click={analyzePersonsOfInterest}
                   disabled={timelineLoading}
                   fullWidth={true}
                 >
@@ -765,7 +810,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                 onclick={generateUserActivityTimeline}
+                 on:click={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
@@ -819,7 +864,7 @@
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
+  <Dialog bind:open={showPOIDialog} legal={true} size="lg" on:openChange={(e: CustomEvent<boolean>) => { if (!e.detail) closePOIDetails(); }}>
     {#snippet content()}
       <div class="p-6 max-h-[80vh] overflow-y-auto">
         <!-- Modal Header -->
@@ -843,7 +888,7 @@
           <Button
             variant="ghost"
             size="sm"
-            onclick={closePOIDetails}
+            on:click={closePOIDetails}
             class="bits-btn"
           >
             {#snippet children()}
@@ -869,7 +914,7 @@
                   <div class="flex-1">
                     <div class="font-medium">{activity.description || activity.type}</div>
                     <div class="text-sm text-gray-600 mt-1">
-                      {acti(vity as CustomEvent).details || 'Activity details from evidence analysis'}
+                      {activity.details || 'Activity details from evidence analysis'}
                     </div>
                     <div class="text-xs text-gray-500 mt-2">
                       {new Date(activity.timestamp).toLocaleString()}
@@ -948,13 +993,13 @@
           <Button
             variant="ghost"
             size="sm"
-            onclick={closePOIDetails}
+            on:click={closePOIDetails}
             class="bits-btn"
           >
             Close
           </Button>
           <Button
-            onclick={() => {
+            on:click={() => {
               handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
               closePOIDetails();
             }}
@@ -968,6 +1013,7 @@
     {/snippet}
   </Dialog>
 {/if}
+
 <style>
   /* Custom scrollbar for chat */
   :global(::-webkit-scrollbar) {

@@ -11,10 +11,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   // Use concrete component modules used elsewhere in the project
   import Button from '$lib/components/ui/button';
   import Input from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import {
     Upload,

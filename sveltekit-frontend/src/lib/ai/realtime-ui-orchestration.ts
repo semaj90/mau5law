@@ -43,12 +43,12 @@ export class LegalCanvasManager {
       width: config.width || 1920,
       height: config.height || 1080,
       backgroundColor: '#1a1a1a',
-      selection: true
-      preserveObjectStacking: true
+      selection: true,
+      preserveObjectStacking: true,
       renderOnAddRemove: false, // Manual rendering for 60fps control
-      skipTargetFind: false
-      perPixelTargetFind: true
-      enableRetinaScaling: true
+      skipTargetFind: false,
+      perPixelTargetFind: true,
+      enableRetinaScaling: true,
       imageSmoothingEnabled: true
     });
     // Configure canvas for high performance
@@ -82,8 +82,8 @@ export class LegalCanvasManager {
    * Create real-time progress indicator
    */
   createProgressIndicator(
-    id: string;
-    config: ProgressConfig;
+    id: string,
+    config: ProgressConfig
   ): ProgressIndicator {
     if (!this.canvas) throw new Error('Canvas not initialized');
     const indicator = new ProgressIndicator(id, config, this.canvas);
@@ -95,9 +95,9 @@ export class LegalCanvasManager {
    * Update progress with smooth animation
    */
   updateProgress(
-    id: string;
-    progress: number
-    details?: ProgressDetails;
+    id: string,
+    progress: number,
+    details?: ProgressDetails
   ): void {
     const indicator = this.progressIndicators.get(id);
     if (indicator) {
@@ -209,7 +209,7 @@ export class LegalCanvasManager {
       activeIndicators: this.progressIndicators.size,
       canvasObjects: this.canvas?.getObjects().length || 0,
       memoryUsage: this.getCanvasMemoryUsage()
-    }
+    };
   }
   /**
    * Estimate canvas memory usage
@@ -296,7 +296,7 @@ class ProgressIndicator {
     });
     // Group elements
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
-      selectable: false;
+      selectable: false,
       evented: false
     });
     this.canvas.add(this.progressGroup);
@@ -305,7 +305,7 @@ class ProgressIndicator {
    * Update progress with animation
    */;
   updateProgress(progress: number, details?: ProgressDetails): void {
-    this.animationTarget = Math.max(0, Math.min(1, progress);
+    this.animationTarget = Math.max(0, Math.min(1, progress));
     if (details && this.progressText) {
       const text = details.customText || `${Math.round(progress * 100)}%`;
       this.progressText.set('text', text);
@@ -352,8 +352,8 @@ class VectorVisualization {
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
       const point = new fabric.Circle({
-        left: x
-        top: y
+        left: x,
+        top: y,
         radius: 5 + vector.similarity * 10,
         fill: this.getColorFromSimilarity(vector.similarity),
         stroke: '#ffffff',
@@ -364,9 +364,9 @@ class VectorVisualization {
       });
       this.canvas.add(point);
       this.vectorPoints.push({
-        object: point
-        originalX: x
-        originalY: y
+        object: point,
+        originalX: x,
+        originalY: y,
         similarity: vector.similarity,
         phase: Math.random() * Math.PI * 2
       });
@@ -393,7 +393,7 @@ class VectorVisualization {
       stroke: '#444444',
       strokeWidth: 1,
       opacity: 0.3,
-      selectable: false;
+      selectable: false,
       evented: false
     });
     this.canvas.add(line);
@@ -421,7 +421,7 @@ class VectorVisualization {
 // =============================================================================
 export class LokiCacheManager {
   private db: Loki | null = null;
-  private collections: Map<string, Collection<any>, = new Map();
+  private collections: Map<string, Collection<any>> = new Map();
   private isInitialized = false;
   constructor() {
     this.initializeLoki();
@@ -435,13 +435,13 @@ export class LokiCacheManager {
       const LokiIndexedAdapter = Loki.LokiIndexedAdapter;
       this.db = new Loki('legal-ai-cache', {
         adapter: new LokiIndexedAdapter(),
-        autoload: true
+        autoload: true,
         autoloadCallback: () => {
           this.setupCollections();
           this.isInitialized = true;
           console.log('📦 Loki.js IndexedDB cache initialized');
         },
-        autosave: true
+        autosave: true,
         autosaveInterval: 4000 // Save every 4 seconds
       });
     } catch (error) {
@@ -481,23 +481,23 @@ export class LokiCacheManager {
    * Cache vector similarity results
    */
   async cacheVectorResults(
-    queryId: string
-    results: SimilarityResult[];
+    queryId: string,
+    results: SimilarityResult[]
   ): Promise<void> {
     if (!this.isInitialized) return;
     const collection = this.collections.get('vectors');
     if (!collection) return;
     try {
       const cacheEntry = {
-        query_id: queryId
-        results: results.map(result => ({,
+        query_id: queryId,
+        results: results.map(result => ({
           document_id: result.document_id,
           similarity: result.similarity,
           metadata: result.metadata
         })),
         timestamp: Date.now(),
         ttl: Date.now() + 3600000 // 1 hour TTL
-      }
+      };
       // Upsert cache entry
       const existing = collection.findOne({ query_id: queryId });
       if (existing) {
@@ -520,7 +520,7 @@ export class LokiCacheManager {
     if (!collection) return null;
     try {
       const cached = collection.findOne({
-        query_id: queryId
+        query_id: queryId,
         ttl: { $gt: Date.now() } // Check TTL
       });
       if (cached) {
@@ -537,21 +537,21 @@ export class LokiCacheManager {
    * Cache canvas state for offline editing
    */
   async cacheCanvasState(
-    canvasId: string
-    canvasData: any
-    userId: string;
+    canvasId: string,
+    canvasData: any,
+    userId: string
   ): Promise<void> {
     if (!this.isInitialized) return;
     const collection = this.collections.get('canvas_state');
     if (!collection) return;
     try {
       const stateEntry = {
-        canvas_id: canvasId
-        user_id: userId
-        canvas_data: canvasData
+        canvas_id: canvasId,
+        user_id: userId,
+        canvas_data: canvasData,
         timestamp: Date.now(),
         version: Date.now() // Simple versioning
-      }
+      };
       collection.insert(stateEntry);
       // Keep only last 10 versions per canvas
       const allStates = collection.find({ canvas_id: canvasId });
@@ -559,7 +559,7 @@ export class LokiCacheManager {
         const oldStates = allStates
           .sort((a, b) => a.timestamp - b.timestamp)
           .slice(0, allStates.length - 10);
-        oldStates.forEach(state => collection.remove(state);
+        oldStates.forEach(state => collection.remove(state));
       }
       console.log(`🎨 Cached canvas state: ${canvasId}`);
     } catch (error) {
@@ -601,7 +601,7 @@ export class LokiCacheManager {
       const vectorsCollection = this.collections.get('vectors');
       if (vectorsCollection) {
         const expired = vectorsCollection.find({ ttl: { $lt: now } });
-        expired.forEach(entry => vectorsCollection.remove(entry);
+        expired.forEach(entry => vectorsCollection.remove(entry));
         cleanedCount += expired.length;
       }
       // Clean old interactions (keep last 1000)
@@ -612,7 +612,7 @@ export class LokiCacheManager {
           .data();
         if (allInteractions.length > 1000) {
           const toRemove = allInteractions.slice(1000);
-          toRemove.forEach(interaction => interactionsCollection.remove(interaction);
+          toRemove.forEach(interaction => interactionsCollection.remove(interaction));
           cleanedCount += toRemove.length;
         }
       }
@@ -628,20 +628,20 @@ export class LokiCacheManager {
    */;
   getCacheStats(): CacheStats {
     if (!this.isInitialized || !this.db) {
-      return { totalEntries: 0, collectionStats: {}, isInitialized: false }
+      return { totalEntries: 0, collectionStats: {}, isInitialized: false };
     }
     const stats: CacheStats = {
       totalEntries: 0,
       collectionStats: {},
       isInitialized: true
-    }
+    };
     this.collections.forEach((collection, name) => {
       const count = collection.count();
       stats.totalEntries += count;
       stats.collectionStats[name] = {
         count,
         size: this.estimateCollectionSize(collection)
-      }
+      };
     });
     return stats;
   }
@@ -688,8 +688,8 @@ export class RabbitMQRealtimeMessenger {
       // Setup exchanges for real-time messaging
       await this.setupExchanges();
       // Setup connection error handling
-      this.connection.on('error', this.handleConnectionError.bind(this);
-      this.connection.on('close', this.handleConnectionClose.bind(this);
+      this.connection.on('error', this.handleConnectionError.bind(this));
+      this.connection.on('close', this.handleConnectionClose.bind(this));
       this.isConnected = true;
       console.log('📡 RabbitMQ real-time messenger initialized');
     } catch (error) {
@@ -714,15 +714,15 @@ export class RabbitMQRealtimeMessenger {
    * Subscribe to real-time progress updates
    */
   async subscribeToProgress(
-    progressId: string
-    handler: ProgressMessageHandler;
+    progressId: string,
+    handler: ProgressMessageHandler
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const queueName = `progress-${progressId}`;
     const routingKey = `progress.${progressId}`;
     // Create temporary queue
     const queue = await this.channel.assertQueue(queueName, {
-      exclusive: true
+      exclusive: true,
       autoDelete: true
     });
     // Bind to progress exchange
@@ -731,7 +731,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const progressData = JSON.parse(msg.content.toString();
+          const progressData = JSON.parse(msg.content.toString());
           handler(progressData);
           this.channel!.ack(msg);
         } catch (error) {
@@ -747,8 +747,8 @@ export class RabbitMQRealtimeMessenger {
    * Publish progress update
    */
   async publishProgress(
-    progressId: string
-    progressData: ProgressUpdate;
+    progressId: string,
+    progressData: ProgressUpdate
   ): Promise<void> {
     if (!this.channel) return;
     const routingKey = `progress.${progressId}`;
@@ -756,7 +756,7 @@ export class RabbitMQRealtimeMessenger {
       ...progressData,
       timestamp: Date.now(),
       id: progressId
-    }
+    };
     await this.channel.publish(
       'legal-ai-realtime',
       routingKey,
@@ -768,14 +768,14 @@ export class RabbitMQRealtimeMessenger {
    * Subscribe to canvas collaboration updates
    */
   async subscribeToCanvasUpdates(
-    canvasId: string
-    handler: CanvasUpdateHandler;
+    canvasId: string,
+    handler: CanvasUpdateHandler
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const queueName = `canvas-${canvasId}`;
     // Create queue for canvas updates
     const queue = await this.channel.assertQueue(queueName, {
-      exclusive: true
+      exclusive: true,
       autoDelete: true
     });
     // Bind to canvas collaboration exchange
@@ -784,7 +784,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const updateData = JSON.parse(msg.content.toString();
+          const updateData = JSON.parse(msg.content.toString());
           if (updateData.canvasId === canvasId) {
             handler(updateData);
           }
@@ -802,15 +802,15 @@ export class RabbitMQRealtimeMessenger {
    * Publish canvas collaboration update
    */
   async publishCanvasUpdate(
-    canvasId: string
-    updateData: CanvasUpdate;
+    canvasId: string,
+    updateData: CanvasUpdate
   ): Promise<void> {
     if (!this.channel) return;
     const message = {
       ...updateData,
       canvasId,
       timestamp: Date.now()
-    }
+    };
     await this.channel.publish(
       'canvas-collaboration',
       '',
@@ -822,7 +822,7 @@ export class RabbitMQRealtimeMessenger {
    * Subscribe to vector processing notifications
    */
   async subscribeToVectorUpdates(
-    handler: VectorUpdateHandler;
+    handler: VectorUpdateHandler
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const queueName = 'vector-updates';
@@ -836,7 +836,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const vectorData = JSON.parse(msg.content.toString();
+          const vectorData = JSON.parse(msg.content.toString());
           handler(vectorData);
           this.channel!.ack(msg);
         } catch (error) {
@@ -872,7 +872,7 @@ export class RabbitMQRealtimeMessenger {
       isConnected: this.isConnected,
       activeSubscriptions: this.subscriptions.size,
       messageHandlers: this.messageHandlers.size
-    }
+    };
   }
   /**
    * Cleanup RabbitMQ resources
@@ -897,12 +897,12 @@ export const realTimeUIMachine = createMachine({
   id: 'realTimeUI',
   initial: 'initializing',
   context: {
-    canvasManager: null
-    cacheManager: null
-    messenger: null
+    canvasManager: null,
+    cacheManager: null,
+    messenger: null,
     activeProgress: new Map(),
-    vectorVisualization: null
-    collaborativeMode: false
+    vectorVisualization: null,
+    collaborativeMode: false,
     renderMetrics: {
       fps: 0,
       droppedFrames: 0
@@ -1036,9 +1036,9 @@ export const realTimeUIMachine = createMachine({
       return {
         ...context,
         activeProgress: new Map(),
-        vectorVisualization: null
+        vectorVisualization: null,
         collaborativeMode: false
-      }
+      };
     })
   }
 });

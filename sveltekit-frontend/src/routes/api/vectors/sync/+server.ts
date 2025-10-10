@@ -3,15 +3,13 @@ import type { RequestHandler } from './$types.js';
 // Automatic vector synchronization to Qdrant after CUDA processing
 // Triggered by Go microservice after successful vector generation
 import { json } from '@sveltejs/kit';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+// Use canonical database connection (node-postgres with connection pooling)
+import { db } from '$lib/server/db';
 import { createRedisInstance } from '$lib/server/redis';
 import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
 import { eq } from 'drizzle-orm';
 
-// Initialize connections
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
-const db = drizzle(sql);
+// Redis connection
 let redis: ReturnType<typeof createRedisInstance> | null = null;
 try {
   redis = createRedisInstance();

@@ -14,12 +14,12 @@ https://svelte.dev/e/js_parse_error -->
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label';
+  import Label from '$lib/components/ui/label/Label.svelte';
   import * as Card from '$lib/components/ui/card';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils';
   interface Document {

@@ -68,11 +68,12 @@
   // add missing search history state (was referenced but not declared)
   let searchHistory = $state<string[]>([]);
 
-  // Reactive computations
-  let filteredResults = $derived($searchState.results.slice(0, maxResults));
-  let isStreaming = $derived($searchStatus === 'searching' && enableRealTime);
-  let connectionStatus = $derived($searchState.connectionStatus);
-  let searchMetrics = $derived($searchState.searchMetrics);
+  // Reactive computations (fixed: derive from the actual variables via functions)
+  let filteredResults = $derived(() => (searchState?.results ?? []).slice(0, maxResults));
+  let isStreaming = $derived(() => (searchStatus === 'searching') && enableRealTime);
+  let connectionStatus = $derived(() => searchState?.connectionStatus ?? 'disconnected');
+  let searchMetrics = $derived(() => searchState?.searchMetrics ?? { totalQueries: 0, averageResponseTime: 0, lastQueryTime: 0 });
+
   // Enhanced debounced search
   const debouncedSearch = debounce(async (query: string) => {
     if (!query.trim() || query.length < 2) return;
@@ -141,6 +142,7 @@
   let CommandItem: any = null;
 
   onMount(async () => {
+    // onMount only runs in the browser; explicit `browser` guard is redundant but harmless.
     if (!browser) return;
     try {
       const mod = await import('$lib/components/ui/command');
@@ -208,15 +210,20 @@
       <!-- Search Input with Enhanced Styling -->
       {#if CommandInput}
         <CommandInput
-          class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
-               placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2
-               focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
-               {isStreaming ? 'pr-12' : 'pr-10'}"
-          {placeholder}
+          class={`
+            flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+            placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2
+            focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
+            ${isStreaming ? 'pr-12' : 'pr-10'}
+          `}
+          placeholder={placeholder}
           autocomplete="off"
           spellcheck="false"
           bind:value={inputValue}
-          onvaluechange={handleInputChange}
+          onvaluechange={(e: any) => {
+            const val = (e && (e.detail ?? (e.target && e.target.value))) ?? '';
+            handleInputChange(String(val));
+          }}
         />
       {/if}
       <!-- Search Button & Status Indicators -->
@@ -244,11 +251,11 @@
                  bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
                  data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
         >
-      {#if searchState.error}
+      {#if $searchState?.error}
         <!-- Error State -->
         <div class="flex items-center gap-2 p-4 text-red-600">
           <AlertCircle class="h-4 w-4" />
-          <span class="text-sm">{searchState.error}</span>
+          <span class="text-sm">{$searchState?.error}</span>
         </div>
       {:else if isStreaming}
         <!-- Streaming State -->
@@ -261,9 +268,7 @@
           {#if CommandItem}
             <CommandItem
               value={(result as any).id}
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                     text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50
-                     {(result as any).realTime ? 'animate-pulse border-l-2 border-blue-400' : ''}"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
               onselect={() => handleSelect(result)}
             >
               <!-- Result Type Icon -->
@@ -300,8 +305,7 @@
             <!-- Fallback plain interactive element when CommandItem primitive isn't available -->
             <button
               type="button"
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                     text-sm outline-none hover:bg-gray-50"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
               onclick={() => handleSelect(result)}
             >
               <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
@@ -326,8 +330,7 @@
           {#if CommandItem}
             <CommandItem
               value={(result as any).id}
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                     text-sm outline-none hover:bg-gray-50"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
               onselect={() => handleSelect(result)}
             >
               <!-- Result Type Icon -->
@@ -358,8 +361,7 @@
           {:else}
             <button
               type="button"
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
-                     text-sm outline-none hover:bg-gray-50"
+              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
               onclick={() => handleSelect(result)}
             >
               <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
@@ -434,7 +436,7 @@
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
       <div class="flex items-center gap-4">
         <span class="flex items-center gap-1">
-          <div class="w-2 h-2 rounded-full {connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400'}"></div>
+          <div class={"w-2 h-2 rounded-full " + (connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400')}></div>
           Real-time {connectionStatus}
         </span>
         {#if enableVectorSearch}

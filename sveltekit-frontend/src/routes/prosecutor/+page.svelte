@@ -11,7 +11,7 @@ Features: Case management, evidence upload, AI chat, vector search
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Input } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import EvidenceUploadComponent from '$lib/components/prosecutor/EvidenceUploadComponent.svelte';
   import EnhancedAIChatAssistant from '$lib/components/prosecutor/EnhancedAIChatAssistant.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';

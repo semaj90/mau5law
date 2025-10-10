@@ -18,8 +18,8 @@ https://svelte.dev/e/component_invalid_directive -->
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Select } from "$lib/components/ui/select";
-  import { Separator } from "$lib/components/ui/separator";
+  import Select from '$lib/components/ui/select/Select.svelte';
+  import Separator from '$lib/components/ui/separator/Separator.svelte';
   let editor = $state<Editor | null >(null);
   let editorElement = $state({}) {
     editor = new Editor({

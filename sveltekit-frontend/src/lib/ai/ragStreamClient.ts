@@ -36,7 +36,7 @@ import { writable, get } from 'svelte/store';
  *      onError: e => console.error(e)
  *    });
  *  }
- *  function cancel() { abortCtrl?.abort(), }
+ *  function cancel() { abortCtrl?.abort(); }
  */
 export interface RagStreamOptions {
   query: string;
@@ -345,7 +345,7 @@ export interface RagStreamStore {
   interrupt: (mode?: 'graceful' | 'force') => Promise<void>; // request server to stop; fallback to local summary
   clear: () => void;
   resetMetrics: () => void;
-  rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index,
+  rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index
   undoLast: (count?: number) => void; // undo last N patches
 }
 
@@ -658,7 +658,12 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
           default:
             console.warn('Unknown event type:', ev);
         }
-        if
+      }
+    } catch (error) {
+      console.error('Stream error:', error);
+    } finally {
+      flushBatch();
+      running = false;
     }
   }
 

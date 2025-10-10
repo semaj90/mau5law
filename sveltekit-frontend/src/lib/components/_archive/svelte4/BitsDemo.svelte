@@ -1,9 +1,15 @@
 <!-- Component exported by default -->
 <script lang="ts">
+  // Avoid "Cannot use namespace 'BitsDemoProps' as a type" by declaring a local prop type
+  // that matches the shape used by this component.
+  interface BitsDemoProps {
+    caseTypes?: Array<{ value: string; label: string }>;
+    useLibrary?: string;
+    class?: string;
+    id?: string;
+    'data-testid'?: string;
+  }
   // Svelte 5 runes are auto-imported
-  import type { BitsDemoProps } from '$lib/types/component-props.js';
-  // removed bits-ui compound imports because those are Svelte components,
-  // not objects with nested properties like Button.Root, Select.Trigger, etc.
   import { onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { fly } from 'svelte/transition';

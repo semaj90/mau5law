@@ -2,12 +2,11 @@ import type { RequestHandler } from './$types.js'
 // src/routes/api/cases/[id]/evidence/+server.ts
 // API endpoint to get evidence for a specific case
 import { json } from '@sveltejs/kit'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+// Use canonical database connection (node-postgres with connection pooling)
+import { db } from '$lib/server/db'
 import { eq, desc } from 'drizzle-orm'
 import { evidenceTable } from '$lib/server/schema.js'
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db')
-const db = drizzle(sql)
+
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const { id: caseId } = params
@@ -18,18 +17,19 @@ export const GET: RequestHandler = async ({ params }) => {
     const evidence = await db
       .select()
       .from(evidenceTable)
-      .where(eq(evidenceTable.case_id, caseId)
-      .orderBy(desc(evidenceTable.uploaded_at)
+      .where(eq(evidenceTable.case_id, caseId))
+      .orderBy(desc(evidenceTable.uploaded_at));
     return json({
       success: true,
       evidence,
       count: evidence.length
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching evidence:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json({
       error: 'Failed to fetch evidence',
-      details: error.message
+      details: errorMessage
     }, { status: 500 })
   }
 }

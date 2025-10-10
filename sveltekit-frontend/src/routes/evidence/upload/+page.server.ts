@@ -16,9 +16,8 @@ import {
 } from '$lib/schemas/evidence-upload';
 import { db } from '$lib/server/db'; // Adjust the import based on your project structure
 import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
-import { eq } from 'drizzle-orm';
+import { eq, type InferInsertModel } from 'drizzle-orm';
 import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
-import type { InferInsertModel } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types.js';
 import { dev } from '$app/environment';
 
@@ -164,14 +163,32 @@ export const actions: Actions = {
     try {
       // 1) Parse incoming form data
       const formData = await request.formData();
-      const file = formData.get('file') as File | null;
-      if (!file) {
+
+      // Accept generic form entry (server may provide a non-DOM File)
+      const rawFile = formData.get('file');
+      if (!rawFile) {
         return fail(400, {
           form: {
             errors: { file: ['No file provided'] },
           },
         });
       }
+
+      // Ensure the provided entry supports arrayBuffer (basic duck-typing)
+      if (typeof (rawFile as any).arrayBuffer !== 'function') {
+        return fail(400, {
+          form: {
+            errors: { file: ['Uploaded file is not readable on server'] },
+          },
+        });
+      }
+
+      // Normalize file fields safely for server-side processing
+      const fileName = (rawFile as any).name ?? 'upload.bin';
+      const fileType = (rawFile as any).type ?? 'application/octet-stream';
+      const fileSize = Number((rawFile as any).size ?? 0);
+      const arrayBuffer = await (rawFile as any).arrayBuffer();
+      const fileBuffer = Buffer.from(arrayBuffer);
 
       const caseId = (formData.get('case_id') ?? '')?.toString() || null;
       const title = (formData.get('title') ?? '').toString();
@@ -197,7 +214,8 @@ export const actions: Actions = {
       }
 
       // 3) Build storage key & save file
-      const fileExtension = path.extname(file.name) || '';
+      // Use normalized values when constructing paths/hashes
+      const fileExtension = path.extname(fileName) || '';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const randomSuffix = crypto.randomBytes(8).toString('hex');
       const storageKey = `evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
@@ -206,7 +224,6 @@ export const actions: Actions = {
       await mkdir(uploadDir, { recursive: true });
 
       const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
-      const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filePath, fileBuffer);
 
       // 4) Hash for integrity
@@ -215,25 +232,33 @@ export const actions: Actions = {
       // 5) Build a file URL relative to static assets (adjust to your serving strategy)
       const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
 
-      // 6) Optional OCR (fail-soft)
+      // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
       let ocrResult: OcrResultData | null = null;
       if (enableOcrFlag && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
         try {
+          // prefer explicit OCR base from metaEnv, fallback to localhost dev host
+          const ocrBase =
+            (metaEnv as any).OCR_BASE_URL ??
+            (metaEnv as any).BASE_URL ??
+            (dev ? 'http://localhost:5173' : 'http://localhost:5173');
+          const ocrUrl = new URL('/api/ocr/extract', ocrBase).toString();
+
           const ocrForm = new FormData();
-          ocrForm.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
-          const ocrResponse = await fetch('/api/ocr/extract', {
+          // create a Blob with correct mime type for OCR endpoint
+          ocrForm.append('file', new Blob([fileBuffer], { type: fileType }), fileName);
+
+          const ocrResponse = await fetch(ocrUrl, {
             method: 'POST',
             body: ocrForm,
           });
+
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
-            // lightweight server-side logging (not user-visible)
             console.log('OCR completed', { filename: ocrResult?.filename, pages: ocrResult?.pages });
           } else {
             console.warn('OCR service returned non-OK status:', ocrResponse.status);
           }
         } catch (ocrError) {
-          // non-fatal: continue upload even if OCR fails
           console.warn('OCR processing error (non-critical):', ocrError);
         }
       }
@@ -257,7 +282,7 @@ export const actions: Actions = {
       let tempMetadata: IntermediateEvidenceMetadata = {
         kind: evidenceType,
         uploadedAt: new Date().toISOString(),
-        fileSize: file.size,
+        fileSize: fileSize,
         processingOptions,
       };
 
@@ -268,7 +293,7 @@ export const actions: Actions = {
             kind: 'PDF',
             pageCount: ocrResult?.pages ?? 1,
             isEncrypted: false,
-            title: file.name,
+            title: fileName,
             extractedText: ocrResult?.text ?? null,
             legalConcepts: ocrResult?.legalConcepts ?? [],
             citations: ocrResult?.citations ?? [],
@@ -280,8 +305,8 @@ export const actions: Actions = {
             ...tempMetadata,
             kind: 'IMAGE',
             resolution: { width: 0, height: 0 }, // TODO: extract with sharp
-            format: file.type.split('/')[1] || 'unknown',
-            hasAlphaChannel: file.type === 'image/png',
+            format: fileType.split('/')[1] || 'unknown',
+            hasAlphaChannel: fileType === 'image/png',
             extractedText: ocrResult?.text ?? null,
             ocrConfidence: ocrResult?.averageConfidence ?? null,
           };
@@ -304,7 +329,7 @@ export const actions: Actions = {
           };
       }
 
-      // 9) Final metadata composition
+      // 9) Final metadata composition - prefer undefined over null for optional fields
       const finalMetadata: FinalEvidenceMetadata = {
         ...tempMetadata,
         tags,
@@ -312,7 +337,7 @@ export const actions: Actions = {
         isAdmissible: formData.get('isAdmissible') !== 'false',
         collectedAt: (formData.get('collectedAt') ?? new Date().toISOString()).toString(),
         collectedBy: (formData.get('collectedBy') ?? 'system').toString(),
-        location: formData.get('location')?.toString() ?? null,
+        location: formData.get('location')?.toString() ?? undefined,
         chainOfCustody: (() => {
           const raw = formData.get('chainOfCustody')?.toString();
           try {
@@ -341,13 +366,13 @@ export const actions: Actions = {
         .values({
           case_id: caseId ?? null,
           uploader_id: secureUserId,
-          title: title || file.name,
+          title: title || fileName,
           description: description || null,
           evidence_type: evidenceType,
           file_url: fileUrl,
           storage_key: storageKey,
           file_hash: `sha256:${fileHash}`,
-          file_size: String(file.size),
+          file_size: fileSize,
           metadata: finalMetadata,
         })
         .returning();

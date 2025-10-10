@@ -1,12 +1,11 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   // Import local UI components (paths updated during migration)
-  import ButtonBits from '$lib/components/ui/button/Button.svelte';
-  import CardBits from '$lib/components/ui/Card.svelte';
-  import InputBits from '$lib/components/ui/input/InputBits.svelte';
-  import SelectBits from '$lib/components/ui/select/SelectBits.svelte';
-  import TabsBits from '$lib/components/ui/tabs/TabsBits.svelte';
-  import TooltipBits from '$lib/components/ui/tooltip/TooltipBits.svelte';
+  import ButtonBitsRaw from '$lib/components/ui/button/Button.svelte';
+  import CardBitsRaw from '$lib/components/ui/Card.svelte';
+  import InputBitsRaw from '$lib/components/ui/input/InputBits.svelte';
+  import SelectBitsRaw from '$lib/components/ui/select/SelectBits.svelte';
+  import TabsBitsRaw from '$lib/components/ui/tabs/TabsBits.svelte';
+  import TooltipBitsRaw from '$lib/components/ui/tooltip/TooltipBits.svelte';
 
   // Form state using Svelte 5 runes
   let formData = $state({
@@ -144,6 +143,19 @@
     if (formData.deadline) completedFields++;
     return Math.floor((completedFields / totalFields) * 100);
   });
+
+  // Correct constructor typing for Svelte components to satisfy TypeScript
+  import type { SvelteComponentTyped } from 'svelte';
+  type ComponentConstructor<Props = Record<string, any>, Events = Record<string, any>, Slots = Record<string, any>> =
+    new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
+
+  // Cast the raw imports to constructor types (keeps runtime import the same)
+  const CardBits = CardBitsRaw as unknown as ComponentConstructor;
+  const InputBits = InputBitsRaw as unknown as ComponentConstructor;
+  const SelectBits = SelectBitsRaw as unknown as ComponentConstructor;
+  const ButtonBits = ButtonBitsRaw as unknown as ComponentConstructor;
+  const TooltipBits = TooltipBitsRaw as unknown as ComponentConstructor;
+  const TabsBits = TabsBitsRaw as unknown as ComponentConstructor;
 </script>
 
 <CardBits variant="interactive" padding="lg">
