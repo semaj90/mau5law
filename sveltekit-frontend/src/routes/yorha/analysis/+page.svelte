@@ -4,8 +4,8 @@
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import {
     BarChart3,
     TrendingUp,

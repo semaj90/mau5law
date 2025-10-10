@@ -14,7 +14,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Progress } from '$lib/components/ui/progress';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import {
     Play,
     Pause,

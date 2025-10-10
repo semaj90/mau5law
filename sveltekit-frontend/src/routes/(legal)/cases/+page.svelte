@@ -85,8 +85,11 @@
   {:else}
     <div class="cases-grid">
       {#each cases as caseItem (caseItem.id)}
-        <div class="case-card" onclick={() => navigateToCase(caseItem.id)}>
-          <div class="case-header">
+        <div class="case-card"
+             onclick={() => navigateToCase(caseItem.id)}
+             onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigateToCase(caseItem.id); }}
+             role="button"
+             tabindex="0">          <div class="case-header">
             <h3>{caseItem.title}</h3>
             <span class="case-status status-{caseItem.status}">{caseItem.status}</span>
           </div>

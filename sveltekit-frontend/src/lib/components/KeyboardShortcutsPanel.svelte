@@ -21,8 +21,8 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Switch } from '$lib/components/ui/switch';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Switch from '$lib/components/ui/switch/Switch.svelte';
   let { visible = $bindable()  }: { visible = $bindable() : unknown } = $props(); // false
   let { context = $bindable()  }: { context = $bindable() : unknown } = $props(); // string[] = ['global']
   let searchQuery = $state('');

@@ -57,8 +57,8 @@ export const documentChunks = pgTable(
     startOffset,: integer('start_offset'),
     endOffset,: integer('end_offset'),
     // pgvector embeddings - supports different model dimensions
-    embedding,: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
-    embeddingModel,: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
+    embedding: vector('embedding', { dimensions: 384 }), // embeddinggemma:latest (384-dim)
+    embeddingModel: varchar('embedding_model', { length: 100 }).default('embeddinggemma:latest'),
     confidence,: real('confidence'), // Extraction/chunking confidence;
     metadata,: jsonb('metadata').default({}),
     createdAt,: timestamp('created_at').defaultNow().notNull(),

@@ -12,8 +12,8 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
   import {
     Bot,

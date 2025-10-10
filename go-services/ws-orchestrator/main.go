@@ -36,7 +36,13 @@ func wsHandler(serviceName string) http.HandlerFunc {
 
 		log.Printf("✅ [%s] Client connected from %s\n", serviceName, r.RemoteAddr)
 
-		// Keepalive ticker
+		// Enhanced RAG specific handler
+		if serviceName == "enhanced-rag" {
+			handleEnhancedRAG(conn)
+			return
+		}
+
+		// Keepalive ticker for other services
 		ticker := time.NewTicker(30 * time.Second)
 		defer ticker.Stop()
 
@@ -77,6 +83,114 @@ func wsHandler(serviceName string) http.HandlerFunc {
 	}
 }
 
+// Enhanced RAG handler with legal search capabilities
+func handleEnhancedRAG(conn *websocket.Conn) {
+	defer conn.Close()
+
+	// Keep connection alive
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		var request map[string]interface{}
+		if err := conn.ReadJSON(&request); err != nil {
+			log.Printf("🔌 [enhanced-rag] Client disconnected: %v", err)
+			return
+		}
+
+		requestType, _ := request["type"].(string)
+		query, _ := request["query"].(string)
+
+		log.Printf("📨 [enhanced-rag] Request: %s - %s", requestType, query)
+
+		var response map[string]interface{}
+		switch requestType {
+		case "legal_search":
+			response = processLegalSearch(query, request)
+		case "document_analysis":
+			response = processDocumentAnalysis(query, request)
+		case "similarity_search":
+			response = processSimilaritySearch(query, request)
+		case "ping":
+			response = map[string]interface{}{
+				"type":      "pong",
+				"status":    "connected",
+				"timestamp": time.Now().Format(time.RFC3339),
+			}
+		default:
+			response = map[string]interface{}{
+				"status":    "error",
+				"message":   "Unknown request type",
+				"timestamp": time.Now().Format(time.RFC3339),
+			}
+		}
+
+		response["service"] = "enhanced-rag"
+		if err := conn.WriteJSON(response); err != nil {
+			log.Printf("❌ [enhanced-rag] Write error: %v", err)
+			return
+		}
+	}
+}
+
+func processLegalSearch(query string, context map[string]interface{}) map[string]interface{} {
+	// Mock implementation - integrate with actual RAG service on port 8095
+	return map[string]interface{}{
+		"status":    "success",
+		"type":      "legal_search",
+		"query":     query,
+		"timestamp": time.Now().Format(time.RFC3339),
+		"results": []map[string]interface{}{
+			{
+				"id":         uuid.New().String(),
+				"title":      "Relevant Case Law",
+				"type":       "case",
+				"content":    "Mock legal search result for: " + query,
+				"score":      0.95,
+				"similarity": 0.92,
+				"metadata": map[string]interface{}{
+					"jurisdiction": "US",
+					"date":        "2024-01-01",
+					"status":      "final",
+				},
+			},
+		},
+	}
+}
+
+func processDocumentAnalysis(query string, context map[string]interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		"status":    "success",
+		"type":      "document_analysis",
+		"timestamp": time.Now().Format(time.RFC3339),
+		"analysis": map[string]interface{}{
+			"summary":    "Mock document analysis",
+			"key_points": []string{"Point 1", "Point 2"},
+			"entities":   []string{"Entity 1", "Entity 2"},
+		},
+	}
+}
+
+func processSimilaritySearch(query string, context map[string]interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		"status":    "success",
+		"type":      "similarity_search",
+		"timestamp": time.Now().Format(time.RFC3339),
+		"similar_documents": []map[string]interface{}{
+			{
+				"id":         "doc1",
+				"title":      "Similar Document 1",
+				"similarity": 0.88,
+			},
+			{
+				"id":         "doc2",
+				"title":      "Similar Document 2",
+				"similarity": 0.82,
+			},
+		},
+	}
+}
+
 func pickPortInRange(start, end int) (net.Listener, int, error) {
 	for port := start; port <= end; port++ {
 		addr := fmt.Sprintf(":%d", port)
@@ -95,6 +209,7 @@ func main() {
 		"chat":         wsHandler("chat"),
 		"canvas":       wsHandler("canvas"),
 		"notifications": wsHandler("notifications"),
+		"enhanced-rag": wsHandler("enhanced-rag"), // New legal search service
 	}
 
 	var configs []ServiceConfig

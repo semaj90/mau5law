@@ -11,15 +11,15 @@ export class SearchExamples {
   }
   /**
    * Example: Simple document search
-   */;
+   */
   async exampleDocumentSearch() {
     console.log('🔍 Running simple document search example...');
     const results = await this.server.searchDocuments(
-      'contract violation legal precedent');
+      'contract violation legal precedent',
       {
         limit: 5,
-        threshold,: 0.75,
-        useCache,: true
+        threshold: 0.75,
+        useCache: true,
       }
     );
     console.log(`Found ${results.length} documents:`);
@@ -33,17 +33,17 @@ export class SearchExamples {
   }
   /**
    * Example: Semantic search across multiple collections
-   */;
+   */
   async exampleSemanticSearch() {
     console.log('🧠 Running semantic search example...');
     const result = await this.server.semanticSearch(
-      'intellectual property theft criminal charges');
+      'intellectual property theft criminal charges',
       {
         collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
-        limit,: 10,
-        threshold,: 0.7,
-        includeContent,: true
-        useCache: true
+        limit: 10,
+        threshold: 0.7,
+        includeContent: true,
+        useCache: true,
       }
     );
     console.log(`Semantic search results:`);
@@ -62,16 +62,16 @@ export class SearchExamples {
   }
   /**
    * Example: Full-text search with ranking
-   */;
+   */
   async exampleFullTextSearch() {
     console.log('📝 Running full-text search example...');
     const result = await this.server.fullTextSearch(
-      'fraud embezzlement financial crimes');
+      'fraud embezzlement financial crimes',
       {
         collections: ['legal_documents', 'case_embeddings'],
-        limit,: 8,
-        useCache,: true
-        includeSnippets: true
+        limit: 8,
+        useCache: true,
+        includeSnippets: true,
       }
     );
     console.log(`Full-text search results:`);
@@ -88,18 +88,18 @@ export class SearchExamples {
   }
   /**
    * Example: Hybrid search combining all methods
-   */;
+   */
   async exampleHybridSearch() {
     console.log('🔀 Running hybrid search example...');
     const result = await this.server.hybridSearch(
-      'corporate merger acquisition antitrust');
+      'corporate merger acquisition antitrust',
       {
         limit: 6,
-        vectorWeight,: 0.4,    // 40% vector similarity
-        textWeight,: 0.35,     // 35% full-text ranking
-        keywordWeight,: 0.25,  // 25% keyword matching;
-        threshold,: 0.6,
-        useCache,: true
+        vectorWeight: 0.4,    // 40% vector similarity
+        textWeight: 0.35,     // 35% full-text ranking
+        keywordWeight: 0.25,  // 25% keyword matching
+        threshold: 0.6,
+        useCache: true,
       }
     );
     console.log(`Hybrid search results:`);
@@ -122,17 +122,17 @@ export class SearchExamples {
   }
   /**
    * Example: Advanced vector search (existing functionality)
-   */;
+   */
   async exampleAdvancedVectorSearch() {
     console.log('🚀 Running advanced vector search example...');
     const result = await this.server.advancedVectorSearch(
-      'employment discrimination workplace harassment');
+      'employment discrimination workplace harassment',
       {
         k: 7,
-        algorithm,: 'hybrid',
-        useCache,: true;
+        algorithm: 'hybrid',
+        useCache: true,
         threshold: 0.75,
-        includeMetadata,: true
+        includeMetadata: true,
       }
     );
     console.log(`Advanced vector search results:`);
@@ -152,11 +152,11 @@ export class SearchExamples {
   }
   /**
    * Example: Search performance comparison
-   */;
+   */
   async exampleSearchComparison() {
     console.log('📊 Running search performance comparison...');
     const query = 'criminal defense attorney client privilege';
-    const results = {}
+    const results: any = {};
     // Test all search methods with the same query
     const startTime = performance.now();
     try {
@@ -165,36 +165,36 @@ export class SearchExamples {
       const docResults = await this.server.searchDocuments(query, { limit: 5, useCache: false });
       results.document = {
         count: docResults.length,
-        time: performance.now() - docStart
-      }
+        time: performance.now() - docStart,
+      };
       // Semantic search
       const semStart = performance.now();
       const semResults = await this.server.semanticSearch(query, { limit: 5, useCache: false });
       results.semantic = {
         count: semResults.total_results,
-        time: performance.now() - semStart
-      }
+        time: performance.now() - semStart,
+      };
       // Full-text search
       const textStart = performance.now();
       const textResults = await this.server.fullTextSearch(query, { limit: 5, useCache: false });
       results.fulltext = {
         count: textResults.total_results,
-        time: performance.now() - textStart
-      }
+        time: performance.now() - textStart,
+      };
       // Hybrid search
       const hybridStart = performance.now();
       const hybridResults = await this.server.hybridSearch(query, { limit: 5, useCache: false });
       results.hybrid = {
         count: hybridResults.total_results,
-        time: performance.now() - hybridStart
-      }
+        time: performance.now() - hybridStart,
+      };
       // Advanced vector search
       const vectorStart = performance.now();
       const vectorResults = await this.server.advancedVectorSearch(query, { k: 5, useCache: false });
       results.vector = {
         count: vectorResults.results.length,
-        time: performance.now() - vectorStart
-      }
+        time: performance.now() - vectorStart,
+      };
     } catch (error) {
       console.error('Search comparison error:', error);
     }
@@ -212,7 +212,7 @@ export class SearchExamples {
   }
   /**
    * Run all search examples
-   */;
+   */
   async runAllExamples() {
     console.log('🎯 Running all search examples...\n');
     try {

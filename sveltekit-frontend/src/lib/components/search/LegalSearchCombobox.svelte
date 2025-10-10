@@ -33,26 +33,39 @@
     highlights?: string[];
   }
 
-  // Props (use standard Svelte exports)
-  export let placeholder: string = "Search cases, precedents, statutes, evidence...";
-  export let value: string = "";
-  export let categories: Array<'cases' | 'evidence' | 'precedents' | 'statutes' | 'criminals' | 'documents'> = ['cases', 'evidence', 'precedents', 'statutes'];
-  export let enableVectorSearch: boolean = true;
-  export let aiSuggestions: boolean = true;
-  export let maxResults: number = 20;
-  export let similarityThreshold: number = 0.7;
-  export let includeMetadata: boolean = true;
-  export let disabled: boolean = false;
-  export let className: string = "";
+  // Props using Svelte 5 syntax
+  let {
+    placeholder = "Search cases, precedents, statutes, evidence...",
+    value = $bindable(""),
+    categories = ['cases', 'evidence', 'precedents', 'statutes'],
+    enableVectorSearch = true,
+    aiSuggestions = true,
+    maxResults = 20,
+    similarityThreshold = 0.7,
+    includeMetadata = true,
+    disabled = false,
+    className = ""
+  }: {
+    placeholder?: string;
+    value?: string;
+    categories?: Array<'cases' | 'evidence' | 'precedents' | 'statutes' | 'criminals' | 'documents'>;
+    enableVectorSearch?: boolean;
+    aiSuggestions?: boolean;
+    maxResults?: number;
+    similarityThreshold?: number;
+    includeMetadata?: boolean;
+    disabled?: boolean;
+    className?: string;
+  } = $props();
 
   // State
-  let open = false;
-  let inputValue: string = value;
-  let searchResults: SearchResult[] = [];
-  let isLoading = false;
-  let selectedResult: SearchResult | null = null;
-  let recentSearches: string[] = [];
-  let suggestions: string[] = [];
+  let open = $state(false);
+  let inputValue = $state(value);
+  let searchResults = $state<SearchResult[]>([]);
+  let isLoading = $state(false);
+  let selectedResult = $state<SearchResult | null>(null);
+  let recentSearches = $state<string[]>([]);
+  let suggestions = $state<string[]>([]);
 
   // Icon/color mappings
   const typeIcons: Record<string, any> = {
@@ -200,9 +213,11 @@
   }
 
   // Derived display results
-  $: displayResults = inputValue.length < 2
-    ? recentSearches.map(s => ({ id: `recent-${s}`, title: s, type: 'recent' } as SearchResult))
-    : searchResults;
+  let displayResults = $derived(
+    inputValue.length < 2
+      ? recentSearches.map(s => ({ id: `recent-${s}`, title: s, type: 'recent' } as SearchResult))
+      : searchResults
+  );
 </script>
 
 <div class={cn("relative", className)} bind:this={rootEl} role="combobox" aria-expanded={open}>

@@ -8,7 +8,7 @@
   import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
   import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
   // Props

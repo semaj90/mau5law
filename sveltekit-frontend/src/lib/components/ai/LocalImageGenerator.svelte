@@ -8,22 +8,47 @@ Production-ready with native Windows support
   import { onMount } from 'svelte';
   import {
     imageGenerationService,
-    imageGenerationStore,
-    type ImageGenerationRequest,
-    type ImageGenerationResult
+    imageGenerationStore
+    // removed problematic `type` imports to avoid TS namespace errors when importing from .js
   } from '$lib/services/local-image-generation-service.js';
+
+  // minimal local types to avoid external namespace errors
+  interface ImageGenerationRequest {
+    prompt: string;
+    negativePrompt?: string;
+    width?: number;
+    height?: number;
+    steps?: number;
+    cfgScale?: number;
+    seed?: number;
+    style?: string;
+    provider?: string;
+  }
+  interface ImageGenerationResult {
+    id?: string;
+    prompt: string;
+    imageUrl: string;
+    provider?: string;
+    parameters?: Record<string, any>;
+    metadata?: { seed?: number; size?: { width: number; height: number }; [k: string]: any };
+    timestamp?: number | string | Date;
+    processingTime?: number;
+  }
+
   interface Props {
     caseId?: string;
     onImageGenerated?: (result: ImageGenerationResult) => void;
     initialPrompt?: string;
     compact?: boolean;
   }
+
   let {
     caseId = '',
-    onImageGenerated = () => ,
+    onImageGenerated = (result: ImageGenerationResult) => {}, // fixed default
     initialPrompt = '',
     compact = false
   }: Props = $props();
+
   // Component state
   let prompt = $state(initialPrompt);
   let negativePrompt = $state('blurry, low quality, distorted, text, watermark, signature');
@@ -38,16 +63,18 @@ Production-ready with native Windows support
   let seed = $state(-1);
   // UI state
   let showHistory = $state(false);
-  let selectedImage = $state<ImageGenerationResult | null>(null);
+  let selectedImage = $state<ImageGenerationResult | null>(null); // use local type
   let generationHistory = $state<ImageGenerationResult[]>([]);
   // Provider status
-  let providerStatus = $state<Map<string, string>('')>(new Map());
+  let providerStatus = $state<Map<string, string>>(new Map()); // fixed generic and initialization
+
   $effect(() => {
     // Load provider status
     providerStatus = imageGenerationService.getProviderStatus();
     // Load generation history
     loadHistory();
   });
+
   async function loadHistory() {
     try {
       generationHistory = await imageGenerationService.getGenerationHistory();
@@ -55,6 +82,7 @@ Production-ready with native Windows support
       console.error('Failed to load generation history:', error);
     }
   }
+
   async function generateImage() {
     if (!prompt.trim()) {
       alert('Please enter a prompt');
@@ -68,10 +96,10 @@ Production-ready with native Windows support
         height,
         steps,
         cfgScale,
-        seed: seed === -1 ? undefined : seed;
-        style: selectedStyle;
-        provider: selectedProvider;
-      }
+        seed: seed === -1 ? undefined : seed,
+        style: selectedStyle,
+        provider: selectedProvider
+      };
       const result = await imageGenerationService.generateImage(request);
       // Update history
       generationHistory = [result, ...generationHistory];
@@ -80,43 +108,51 @@ Production-ready with native Windows support
       onImageGenerated(result);
     } catch (error) {
       console.error('Image generation failed:', error);
-      alert(`Image generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      alert(`Image generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
   function useImageAsEvidence(result: ImageGenerationResult) {
     if (caseId && onImageGenerated) {
-      // Create evidence record for the generated image
       const evidence = {
-        id: `generated_${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).id}`,
-        title: `AI Generated: ${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt.substring(0, 50)}...`,
-        description: `Generated image from prompt: ${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt}`,
+        id: `generated_${result.id}`,
+        title: `AI Generated: ${result.prompt?.substring(0, 50) ?? 'generated image'}...`,
+        description: `Generated image from prompt: ${result.prompt}`,
         evidenceType: 'image',
-        fileUrl: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl,
+        fileUrl: result.imageUrl,
         metadata: {
-          aiGenerated: true;
-          provider: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider,
-          parameters: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters,
-          generatedAt: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp
+          aiGenerated: true,
+          provider: result.provider,
+          parameters: result.parameters,
+          generatedAt: result.timestamp
         },
-        tags: ['ai-generated', (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider, selectedStyle]
-      }
+        tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle]
+      };
+      // parent callback — still call with result (evidence creation handled outside)
       onImageGenerated(result);
     }
   }
+
   async function regenerateWithSeed(result: ImageGenerationResult) {
-    prompt = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt;
-    if ((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.seed !== -1) {
-      seed = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.seed;
+    prompt = result.prompt;
+    if (result.metadata?.seed !== undefined && result.metadata.seed !== -1) {
+      seed = result.metadata.seed;
+    } else {
+      seed = -1;
     }
-    selectedStyle = ((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters.style as any) || 'realistic';
-    width = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.size.width;
-    height = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.size.height;
+    selectedStyle = (result.parameters?.style as any) || 'realistic';
+    width = result.metadata?.size?.width ?? width;
+    height = result.metadata?.size?.height ?? height;
     await generateImage();
   }
-  function copyPrompt(text: string) {
-    navigator.clipboard.writeText.then(() => {
-      // Could add a toast notification here
-    });
+
+  async function copyPrompt(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      // optional: small feedback can be added
+    } catch (err) {
+      console.error('Failed to copy prompt', err);
+    }
   }
   // Legal/evidence specific prompts
   const legalPromptTemplates = [
@@ -156,7 +192,7 @@ Production-ready with native Windows support
       <label class="nes-text">Legal Templates:</label>
       <div class="template-buttons">
         {#each legalPromptTemplates as template}
-          <button class="template-btn nes-btn is-primary" onclick={() => (prompt = template.prompt)}>
+          <button class="template-btn nes-btn is-primary" on:click={() => (prompt = template.prompt)}>
             {template.name}
           </button>
         {/each}
@@ -184,7 +220,7 @@ Production-ready with native Windows support
             {#each Array.from(providerStatus.keys()) as provider}
               <option value={provider}>
                 {provider}
-                {providerStatus.get(provider) !== 'internal' ? '(Available)' : '(Fallback)'}
+                {providerStatus.get(provider) !== 'internal' ? ' (Available)' : ' (Fallback)'}
               </option>
             {/each}
           </select>
@@ -201,10 +237,10 @@ Production-ready with native Windows support
     {#if advancedMode}
       <div class="advanced-controls nes-container is-dark">
         <div class="input-group">
-          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea
+          <label class="nes-text" for="negative-prompt">Negative Prompt:</label>
+          <textarea
             id="negative-prompt"
             class="nes-textarea"
-            ;
             bind:value={negativePrompt}
             placeholder="What to avoid in the image..."
             rows="2"
@@ -238,7 +274,7 @@ Production-ready with native Windows support
     <div class="generate-section">
       <button
         class="generate-btn nes-btn is-success"
-        onclick={generateImage}
+        on:click={generateImage}
         disabled={$imageGenerationStore.status.isGenerating || !prompt.trim()}
       >
         {#if $imageGenerationStore.status.isGenerating}
@@ -407,11 +443,11 @@ Production-ready with native Windows support
   </div>
   <!-- Selected Image Modal -->
   {#if selectedImage}
-    <div class="modal-overlay" onclick={() => (selectedImage = null)}>
-      <div class="modal-content nes-container is-rounded" onclick={e => e.stopPropagation()}>
+    <div class="modal-overlay" on:click={() => (selectedImage = null)}>
+      <div class="modal-content nes-container is-rounded" on:click|stopPropagation>
         <div class="modal-header">
           <h4>Generated Image Details</h4>
-          <button class="nes-btn is-error" onclick={() => (selectedImage = null)}>×</button>
+          <button class="nes-btn is-error" on:click={() => (selectedImage = null)}>×</button>
         </div>
         <div class="modal-body">
           <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image" />
@@ -460,7 +496,7 @@ Production-ready with native Windows support
   }
   .generator-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -556,7 +592,7 @@ Production-ready with native Windows support
     margin-right: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg), }
+    to { transform: rotate(360deg); }
   }
   .current-generation {
     margin: 1rem 0;
@@ -587,7 +623,7 @@ Production-ready with native Windows support
   }
   .history-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -624,7 +660,6 @@ Production-ready with native Windows support
   }
   .modal-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     width: 100%;
@@ -644,7 +679,7 @@ d;
   }
   .modal-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }

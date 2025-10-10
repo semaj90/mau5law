@@ -1,7 +1,7 @@
 # LEGAL_AI_COMPONENTS_COMPLETE.md
 
 Version: 1.0 Last updated: 2025-09-04
-
+C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\LAZY_LOADING_STRATEGY.md
 ## Purpose
 
 This document collects concise legal, compliance, and usage guidance for AI components used in this

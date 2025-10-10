@@ -20,8 +20,8 @@
   import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  import { Input } from '$lib/components/ui/input';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Input from '$lib/components/ui/input/Input.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import {
     FileText,
     Search,

@@ -22,8 +22,8 @@ https://svelte.dev/e/expected_token -->
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Test results state
   let connectionStatus = 'untested';
   let connectionDetails: unknown = null;

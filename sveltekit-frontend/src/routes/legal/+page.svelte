@@ -1,6 +1,19 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/core';
+  // import raw defaults and cast to the Svelte constructor type to satisfy TS
+  import { SvelteComponent } from 'svelte';
+  import CardDefault from '$lib/components/ui/card/Card.svelte';
+  import CardContentDefault from '$lib/components/ui/card/CardContent.svelte';
+  import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte';
+  import CardTitleDefault from '$lib/components/ui/card/CardTitle.svelte';
+  import ButtonDefault from '$lib/components/ui/core/Button.svelte';
+
+  // Cast to typeof SvelteComponent (constructor) so Svelte/TS accepts them in markup
+  const Card = CardDefault as unknown as typeof SvelteComponent;
+  const CardContent = CardContentDefault as unknown as typeof SvelteComponent;
+  const CardHeader = CardHeaderDefault as unknown as typeof SvelteComponent;
+  const CardTitle = CardTitleDefault as unknown as typeof SvelteComponent;
+  const Button = ButtonDefault as unknown as typeof SvelteComponent;
+
   import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';
 
   // Get legal route group
@@ -154,7 +167,8 @@
     margin-bottom: 3rem;
   }
 
-  .stat-card {
+  /* Component-level classes passed into Card/Button - mark global so Svelte doesn't flag them as unused */
+  :global(.stat-card) {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
   }
@@ -189,13 +203,14 @@
     gap: 1.5rem;
   }
 
-  .action-card {
+  :global(.action-card) {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
     transition: all 0.3s ease;
   }
 
-  .action-card:hover {
+  /* make hover selector global so Svelte knows it's used on a child component */
+  :global(.action-card):hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
   }
@@ -212,7 +227,7 @@
     align-items: center;
   }
 
-  .action-button {
+  :global(.action-button) {
     background: var(--surface-primary, #00ff00);
     color: var(--surface-secondary, #000000);
     border: none;
@@ -222,7 +237,8 @@
     transition: all 0.2s;
   }
 
-  .action-button:hover {
+  /* make button hover global as well to avoid similar unused-selector warnings */
+  :global(.action-button):hover {
     background: var(--text-primary, #00ff00);
     transform: scale(1.05);
   }
@@ -246,7 +262,7 @@
     font-size: 1.5rem;
   }
 
-  .status-card {
+  :global(.status-card) {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
   }

@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from 'bits-ui';
+  // import { Button } from 'bits-ui'; // removed unused Button import
   import { fade } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
 
@@ -105,6 +105,7 @@ https://svelte.dev/e/js_parse_error -->
     return priority.charAt(0).toUpperCase() + priority.slice(1);
   }
 </script>
+
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Case Information</h2>
@@ -121,8 +122,7 @@ https://svelte.dev/e/js_parse_error -->
         id="title"
         type="text"
         bind:value={formData.title}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        class:border-red-500={!!validationErrors.title}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-500' : ''}`}
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
       {#if validationErrors.title}
@@ -139,8 +139,7 @@ https://svelte.dev/e/js_parse_error -->
         id="client_name"
         type="text"
         bind:value={formData.client_name}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        class:border-red-500={!!validationErrors.client_name}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.client_name ? 'border-red-500' : ''}`}
         placeholder="Enter client's full name"
       />
       {#if validationErrors.client_name}
@@ -157,8 +156,7 @@ https://svelte.dev/e/js_parse_error -->
         <select
           id="case_type"
           bind:value={formData.case_type}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          class:border-red-500={!!validationErrors.case_type}
+          class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.case_type ? 'border-red-500' : ''}`}
         >
           <option value="">Select case type</option>
           {#each caseTypes as type}
@@ -201,8 +199,7 @@ https://svelte.dev/e/js_parse_error -->
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        class:border-red-500={!!validationErrors.jurisdiction}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.jurisdiction ? 'border-red-500' : ''}`}
       >
         <option value="">Select jurisdiction</option>
         {#each jurisdictions as jurisdiction}
@@ -223,12 +220,19 @@ https://svelte.dev/e/js_parse_error -->
         id="description"
         bind:value={formData.description}
         rows="4"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        class:border-red-500={!!validationErrors.description}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.description ? 'border-red-500' : ''}`}
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
       {#if validationErrors.description}
         <p class="mt-1 text-sm text-red-600">{validationErrors.description}</p>
       {/if}
     </div>
-e
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-2">
+      <button type="button" on:click={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 border">Save Draft</button>
+      <button type="submit" class="px-4 py-2 rounded-md bg-blue-600 text-white">Next</button>
+    </div>
+
+  </form>
+</div>

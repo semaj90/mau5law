@@ -3,9 +3,7 @@
   interface Props {
     cases: Case[] ;
   }
-  let { cases = []
-   }: { cases = []
-  : unknown } = $props();
+  let { cases = [] }: Props = $props();
   // Simple Case Stats Component - TODO: Enhance with full functionality
   //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -34,68 +32,70 @@
   //   upcomingDeadlines: number
   //   overdueCount: number
   // }
-  let stats = $derived({
-    // TODO: IMPLEMENT ADVANCED CALCULATIONS
-    // ===================================
-    // 1. Resolution time analytics
-    // 2. Workload distribution analysis
-    // 3. Trend calculations with historical data
-    // 4. Performance metrics and KPIs
-    // 5. Predictive analytics for case outcomes
-    // Basic stats (STUB)
+  // Basic stats (computed reactively)
+  $: stats = {
     total: cases.length,
-    active: cases.filter(item => item.length),
-    pending: cases.filter(item => item.length),
-    closed: cases.filter(item => item.length),
+    // adjust these status strings if your Case type uses different values/names
+    active: cases.filter(c => c.status === 'ACTIVE').length,
+    pending: cases.filter(c => c.status === 'PENDING').length,
+    closed: cases.filter(c => c.status === 'CLOSED').length,
     recentlyUpdated: cases.filter(c => {
-      const weekAgo = new Date());
+      const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
       return c.updatedAt && new Date(c.updatedAt) > weekAgo;
     }).length,
-  });
+  };
 </script>
 
 <div class="case-stats container mx-auto px-4">
-  <div class="stat-nier-bits-card">
-    <div class="stat-value">{stats.total}</div>
-    <div class="stat-label">Total Cases</div>
-  </div>
-  <div class="stat-nier-bits-card">
-    <div class="stat-value">{stats.active}</div>
-    <div class="stat-label">Active</div>
-  </div>
-  <div class="stat-nier-bits-card">
-    <div class="stat-value">{stats.pending}</div>
-    <div class="stat-label">Pending</div>
-  </div>
-  <div class="stat-nier-bits-card">
-    <div class="stat-value">{stats.closed}</div>
-    <div class="stat-label">Closed</div>
-  </div>
-  <div class="stat-nier-bits-card">
-    <div class="stat-value">{stats.recentlyUpdated}</div>
-    <div class="stat-label">Recently Updated</div>
-  </div>
-</div>
+  <div class="stat-card">
+     <div class="stat-value">{stats.total}</div>
+     <div class="stat-label">Total Cases</div>
+   </div>
+  <div class="stat-card">
+     <div class="stat-value">{stats.active}</div>
+     <div class="stat-label">Active</div>
+   </div>
+  <div class="stat-card">
+     <div class="stat-value">{stats.pending}</div>
+     <div class="stat-label">Pending</div>
+   </div>
+  <div class="stat-card">
+     <div class="stat-value">{stats.closed}</div>
+     <div class="stat-label">Closed</div>
+   </div>
+  <div class="stat-card">
+     <div class="stat-value">{stats.recentlyUpdated}</div>
+     <div class="stat-label">Recently Updated</div>
+   </div>
+ </div>
 
-<style>
-  /* @unocss-include */
-  .case-stats {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .stat-card {
-    flex: 1;
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid #e9ecef;
-  }
-  .stat-value {
-    font-size: 2rem;
-    font-weight: bold;
+ <style>
+   /* @unocss-include */
+   .case-stats {
+     display: flex;
+     gap: 1rem;
+     margin-bottom: 1rem;
+   }
+   .stat-card {
+     flex: 1;
+     background: #f8f9fa;
+     padding: 1rem;
+     border-radius: 8px;
+     text-align: center;
+     border: 1px solid #e9ecef;
+   }
+   .stat-value {
+     font-size: 2rem;
+     font-weight: bold;
+     color: #495057;
+   }
+   .stat-label {
+     font-size: 0.875rem;
+     color: #6c757d;
+     margin-top: 0.25rem;
+   }
+ </style>
     color: #495057;
   }
   .stat-label {

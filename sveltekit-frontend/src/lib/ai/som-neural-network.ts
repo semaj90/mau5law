@@ -6,7 +6,7 @@ import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
-}
+
 export interface SOMConfig {
   gridSize: { width: number; height: number }
   learningRate: number;
@@ -73,10 +73,10 @@ export class SOMNeuralNetwork {
       learningRate: config.learningRate || 0.1,
       neighborhoodRadius: config.neighborhoodRadius || 2.0,
       epochs: config.epochs || 100,
-      enableGPU: config.enableGPU !== undefined ? config.enableGPU: true
+      enableGPU: config.enableGPU !== undefined ? config.enableGPU : true,
       decayRate: config.decayRate || 0.99,
-      inputDimension: config.inputDimension || 384
-    }
+      inputDimension: config.inputDimension || 384,
+    };
     this.somGrid = [];
     this.initializeCache();
   }
@@ -139,13 +139,13 @@ export class SOMNeuralNetwork {
             conceptType: 'mixed',
             importance: 0,
             jurisdiction: 'unknown',
-            practiceArea: []
-          }
-        }
+            practiceArea: [],
+          },
+        };
       }
     }
     // Create weight tensor for GPU computation
-    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights);
+    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights));
     this.weightTensor = tf.tensor2d(
       flatWeights,
       [width * height, this.config.inputDimension]
@@ -197,11 +197,11 @@ export class SOMNeuralNetwork {
         Math.abs(this.trainingHistory[epoch - 1].quantizationError - avgQuantError) / avgQuantError : 1.0;
       this.trainingHistory.push({
         epoch,
-        quantizationError: avgQuantError
-        topographicError: avgTopError
-        neighborhoodSize: currentNeighborhoodRadius
-        learningRate: currentLearningRate
-        convergenceRate
+        quantizationError: avgQuantError,
+        topographicError: avgTopError,
+        neighborhoodSize: currentNeighborhoodRadius,
+        learningRate: currentLearningRate,
+        convergenceRate,
       });
       // Decay parameters
       currentLearningRate *= this.config.decayRate;
@@ -223,8 +223,8 @@ export class SOMNeuralNetwork {
     const result: SOMDecomposition = {
       ...decomposition,
       processingTime,
-      convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
-    }
+      convergenceHistory: this.trainingHistory.map(h => h.quantizationError),
+    };
     // Cache the result
     if (this.cache) {
       await this.cache.set(cacheKey, result, { type: "document", ttl: 3600 });
@@ -259,7 +259,7 @@ export class SOMNeuralNetwork {
     const y = flatIndex % width;
     inputTensor.dispose();
     distances.dispose();
-    return { x, y }
+    return { x, y };
   }
   private findBMUCPU(inputSample: number[]): { x: number; y: number } {
     let minDistance = Infinity;
@@ -274,7 +274,7 @@ export class SOMNeuralNetwork {
         }
       }
     }
-    return { x: bmuX, y: bmuY }
+    return { x: bmuX, y: bmuY };
   }
   private calculateDistance(a: number[] | Float32Array, b: number[] | Float32Array): number {
     let sum = 0;
@@ -286,9 +286,9 @@ export class SOMNeuralNetwork {
   }
   private async updateNeighborhood(
     bmu: { x: number; y: number },
-    inputSample: number[]
-    learningRate: number
-    neighborhoodRadius: number;
+    inputSample: number[],
+    learningRate: number,
+    neighborhoodRadius: number
   ): Promise<void> {
     const { width, height } = this.config.gridSize;
     for (let x = 0; x < width; x++) {
@@ -296,7 +296,7 @@ export class SOMNeuralNetwork {
         const distance = Math.sqrt((x - bmu.x) ** 2 + (y - bmu.y) ** 2);
         if (distance <= neighborhoodRadius) {
           // Calculate neighborhood function (Gaussian)
-          const influence = Math.exp(-(distance ** 2) / (2 * neighborhoodRadius ** 2);
+          const influence = Math.exp(-(distance ** 2) / (2 * neighborhoodRadius ** 2));
           const effectiveLearningRate = learningRate * influence;
           // Update weights
           const nodeWeights = this.somGrid[x][y].weights;
@@ -340,7 +340,7 @@ export class SOMNeuralNetwork {
   }
   private async updateWeightTensor(): Promise<void> {
     if (!this.weightTensor) return;
-    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights);
+    const flatWeights = this.somGrid.flat().flatMap(node => Array.from(node.weights));
     const newWeightTensor = tf.tensor2d(
       flatWeights,
       [this.config.gridSize.width * this.config.gridSize.height, this.config.inputDimension]
@@ -374,7 +374,7 @@ export class SOMNeuralNetwork {
     }
     return neighbors;
   }
-  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'>, {
+  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'>> {
     const clusters = await this.identifyClusters();
     const topologyMap = this.generateTopologyMap();
     const legalConcepts = this.extractLegalConcepts(inputData);
@@ -383,13 +383,13 @@ export class SOMNeuralNetwork {
       clusters,
       topologyMap,
       legalConcepts,
-      decompositionQuality
-    }
+      decompositionQuality,
+    };
   }
   private async identifyClusters(): Promise<SOMCluster[]> {
     const clusters: SOMCluster[] = [];
     const { width, height } = this.config.gridSize;
-    const visited = Array(width).fill(null).map(() => Array(height).fill(false);
+    const visited = Array(width).fill(null).map(() => Array(height).fill(false));
     let clusterId = 0;
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
@@ -404,10 +404,10 @@ export class SOMNeuralNetwork {
     return clusters;
   }
   private async floodFillCluster(
-    startX: number
-    startY: number
-    visited: boolean[][]
-    clusterId: string;
+    startX: number,
+    startY: number,
+    visited: boolean[][],
+    clusterId: string
   ): Promise<SOMCluster> {
     const queue: { x: number; y: number }[] = [{ x: startX, y: startY }];
     const clusterNodes: string[] = [];
@@ -448,18 +448,18 @@ export class SOMNeuralNetwork {
       centroid[i] /= clusterNodes.length;
     }
     return {
-      id: clusterId
+      id: clusterId,
       centroid,
-      nodes: clusterNodes
+      nodes: clusterNodes,
       legalSignificance: totalImportance / clusterNodes.length,
       conceptSimilarity: this.calculateClusterSimilarity(clusterNodes),
       boundingBox: {
-        x: minX
-        y: minY
+        x: minX,
+        y: minY,
         width: maxX - minX + 1,
-        height: maxY - minY + 1
-      }
-    }
+        height: maxY - minY + 1,
+      },
+    };
   }
   private calculateClusterSimilarity(nodes: string[]): number {
     if (nodes.length < 2) return 1.0;
@@ -502,7 +502,7 @@ export class SOMNeuralNetwork {
             somPosition: { x, y },
             legalTerms: this.inferLegalTerms(node),
             citationNetwork: this.inferCitationNetwork(node),
-            importance: node.legalContext.importance
+            importance: node.legalContext.importance,
           });
         }
       }
@@ -558,13 +558,13 @@ export class SOMNeuralNetwork {
     return {
       ...decomposition,
       processingTime: 0, // Already computed
-      convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
-    }
+      convergenceHistory: this.trainingHistory.map(h => h.quantizationError),
+    };
   }
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1);
+      const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
@@ -573,7 +573,7 @@ export class SOMNeuralNetwork {
     return [...this.trainingHistory];
   }
   getSOMGrid(): SOMNode[][] {
-    return this.somGrid.map(row => row.map(node => ({...node}));
+    return this.somGrid.map(row => row.map(node => ({...node})));
   }
   cleanup(): void {
     this.inputTensor?.dispose();

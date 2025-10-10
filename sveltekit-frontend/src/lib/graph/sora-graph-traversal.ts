@@ -1,824 +1,984 @@
-// Legacy traversal shim removed — using the SoraGraphTraversal class implementation below.
 /**
- * Sora - Advanced Graph Traversal Engine
- * Integrates Neo4j, WASM acceleration, and NES memory architecture
- * for ultra-fast legal knowledge graph navigation
+ * SORA Graph Traversal System
+ * High-performance graph traversal with Neo4j integration
+ * Optimized for legal document semantic analysis and reinforcement learning
  */
-import { nesGPUIntegration, type LegalDocument } from '$lib/gpu/nes-gpu-integration.js';
-import { nesMemory, type MemoryBank } from '$lib/memory/nes-memory-architecture.js';
-import { semanticAnalysisPipeline, type SemanticAnalysisResult } from '$lib/ai/semantic-analysis-pipeline.js';
-// Graph traversal types
-export interface GraphNode {
-  id: string;
-  type: 'case' | 'precedent' | 'statute' | 'person' | 'organization' | 'concept';
-  label: string;
-  properties: { [key: string]: any }
-  position: { x: number; y: number; z: number }
-  metadata: {
-    importance: number;
-    confidence: number;
+// Production-compatible simplified imports
+type NESGPUIntegration = { computeBatchSimilarities?: (data: any) => Promise<number[]> }
+type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any, data: any) => void }
+type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>; extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
+type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any }
+type LegalAIReranker = { rerank: (results: any[], context: any) => Promise<any[]> }
+type TensorSlice = {
+  data: Float32Array;
+  dimensions: number[];
+  axis?: number;
+  index?: number;
+  lodLevel?: number;
+  metadata?: {
+    timestamp: number;
+    hash: string;
+    size: number;
+    compressed: boolean;
+    accessCount: number;
     lastAccessed: number;
-    memoryBank?: string;
-    vectorEmbedding?: Float32Array;
   }
 }
-export interface GraphEdge {
+type UserContext = {
+  userId?: string;
+  preferences?: any;
+  intent?: string;
+  timeOfDay?: string;
+  userRole?: string;
+  workflowState?: string;
+  recentActions?: any[];
+  currentCase?: any;
+}
+type RerankResult = { id: string; score: number; metadata: any }
+type GraphNode = { id: string; properties: any }
+type GraphEdge = { id: string; source: string; target: string; weight: number }
+
+export interface SoraGraphNode {
+  id: string;
+  type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
+  properties: { [key: string]: any }
+  embedding?: Float32Array;
+  coordinates?: { x: number; y: number; z: number }
+  score?: number;
+  depth?: number;
+}
+export interface SoraGraphEdge {
   id: string;
   source: string;
   target: string;
-  type: 'CITES' | 'RELATED_TO' | 'CONFLICTS_WITH' | 'SUPPORTS' | 'MENTIONS' | 'PART_OF';
+  type: 'cites' | 'contains' | 'related' | 'similar' | 'references' | 'contradicts';
   weight: number;
   properties: { [key: string]: any }
-  metadata: {
-    confidence: number;
-    strength: number;
-    bidirectional: boolean;
-  }
 }
-export interface GraphTraversalQuery {
-  startNodes: string[];
+export interface SoraTraversalPath {
+  nodes: SoraGraphNode[];
+  edges: SoraGraphEdge[];
+  totalScore: number;
+  pathLength: number;
+  semanticCoherence: number;
+}
+export interface SoraTraversalOptions {
   maxDepth: number;
-  relationshipTypes?: string[];
-  filters?: {
-    nodeTypes?: string[];
-    minImportance?: number;
-    dateRange?: { start: Date; end: Date }
-    jurisdiction?: string[];
-  }
-  traversalStrategy: 'breadth_first' | 'depth_first' | 'weighted' | 'semantic_similarity';
-  returnLimit?: number;
-  useWasmAcceleration?: boolean;
-  cacheResults?: boolean;
-}
-export interface GraphTraversalResult {
-  nodes: Map<string, GraphNode>;
-  edges: Map<string, GraphEdge>;
-  paths: Array<any>;
-  statistics: {
-    traversalTime: number;
-    nodesVisited: number;
-    edgesTraversed: number;
-    cacheHits: number;
-    wasmAccelerated: boolean;
-  }
-  visualizationData: {
-    positions: Float32Array;
-    colors: Float32Array;
-    connections: Uint32Array;
-    metadata: any;
+  maxNodes: number;
+  scoreThreshold: number;
+  traversalStrategy: 'breadth-first' | 'depth-first' | 'best-first' | 'reinforcement';
+  semanticFiltering: boolean;
+  useGPUAcceleration: boolean;
+  reinforcementLearning: {
+    enabled: boolean;
+    explorationRate: number;
+    learningRate: number;
+    discountFactor: number;
   }
 }
-export interface Neo4jConnection {
-  uri: string;
-  user: string;
-  password: string;
-  database?: string;
+export interface SoraReinforcementState {
+  currentNode: string;
+  visitedNodes: Set<string>;
+  pathHistory: string[];
+  cumulativeReward: number;
+  actionValues: Map<string, number>;
 }
 export class SoraGraphTraversal {
-  private neo4jDriver: any = null;
-  private wasmModule: any = null;
-  private graphCache = new Map<string, GraphTraversalResult>();
-  private nodeCache = new Map<string, GraphNode>();
-  private edgeCache = new Map<string, GraphEdge>();
-  private isInitialized = false;
-  // Performance metrics
-  private metrics = {
-    totalTraversals: 0,
-    cacheHits: 0,
-    averageTraversalTime: 0,
-    wasmAccelerationUsed: 0,
-    memoryBankAccess: 0
-  }
-  constructor(private config: {
-    neo4j?: Neo4jConnection;
-    enableWasm?: boolean;
-    cacheSize?: number;
-    memoryIntegration?: boolean;
-  } = {}) {
-    this.config = {
-      enableWasm: true
-      cacheSize: 10000,
-      memoryIntegration: true
-      ...config
-    }
-  }
-  async initialize(): Promise<void> {
-    if (this.isInitialized) return;
-    try {
-      console.log('🌟 Initializing Sora Graph Traversal Engine...');
-      // Initialize Neo4j connection (mock for now)
-      if (this.config.neo4j) {
-        await this.initializeNeo4j();
-      }
-      // Initialize WASM acceleration module
-      if (this.config.enableWasm) {
-        await this.initializeWasm();
-      }
-      // Integrate with NES memory architecture
-      if (this.config.memoryIntegration) {
-        await this.initializeMemoryIntegration();
-      }
-      this.isInitialized = true;
-      console.log('✅ Sora Graph Traversal Engine initialized');
-    } catch (error: any) {
-      console.error('❌ Sora initialization failed:', error);
-      throw error;
-    }
+  private neo4jDriver: any;
+  private gpuIntegration: NESGPUIntegration | null = null;
+  private memoryArch: NESMemoryArchitecture | null = null;
+  private semanticPipeline: SemanticAnalysisPipeline | null = null;
+  private tensorStore: DimensionalTensorStore | null = null;
+  private reranker: LegalAIReranker | null = null;
+  private traversalCache: Map<string, SoraTraversalPath[]> = new Map();
+  private reinforcementModel: Map<string, number> = new Map();
+  constructor(
+    neo4jDriver: any,
+    gpuIntegration?: NESGPUIntegration,
+    memoryArch?: NESMemoryArchitecture,
+    semanticPipeline?: SemanticAnalysisPipeline,
+    tensorStore?: DimensionalTensorStore,
+    reranker?: LegalAIReranker
+  ) {
+    this.neo4jDriver = neo4jDriver;
+    this.gpuIntegration = gpuIntegration || null;
+    this.memoryArch = memoryArch || null;
+    this.semanticPipeline = semanticPipeline || null;
+    this.tensorStore = tensorStore || null;
+    this.reranker = reranker || null;
   }
   /**
-   * Advanced graph traversal with multiple strategies
-   */;
-  async traverseGraph(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
-    if (!this.isInitialized) {
-      await this.initialize();
-    }
-    const startTime = performance.now();
-    const cacheKey = this.generateCacheKey(query);
-    try {
-      // Check cache first
-      if (query.cacheResults !== false && this.graphCache.has(cacheKey)) {
-        this.metrics.cacheHits++;
-        console.log(`⚡ Sora cache hit for query: ${cacheKey}`);
-        return this.graphCache.get(cacheKey)!;
-      }
-      console.log(`🌟 Starting Sora traversal: ${query.traversalStrategy}`);
-      // Execute traversal based on strategy
-      let result: GraphTraversalResult;
-      switch (query.traversalStrategy) {
-        case 'breadth_first':
-          result = await this.breadthFirstTraversal(query);
-          break;
-        case 'depth_first':
-          result = await this.depthFirstTraversal(query);
-          break;
-        case 'weighted':
-          result = await this.weightedTraversal(query);
-          break;
-        case 'semantic_similarity':
-          result = await this.semanticSimilarityTraversal(query);
-          break;
-        default:
-          throw new Error(`Unknown traversal strategy: ${query.traversalStrategy}`);
-      }
-      // Enhance result with NES memory data
-      if (this.config.memoryIntegration) {
-        result = await this.enhanceWithMemoryData(result);
-      }
-      // Generate visualization data
-      (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).visualizationData = await this.generateVisualizationData(result);
-      const traversalTime = performance.now() - startTime;
-      (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).statistics.traversalTime = traversalTime;
-      // Update metrics
-      this.metrics.totalTraversals++;
-      this.metrics.averageTraversalTime =
-        (this.metrics.averageTraversalTime * (this.metrics.totalTraversals - 1) + traversalTime) /
-        this.metrics.totalTraversals;
-      // Cache result
-      if (query.cacheResults !== false) {
-        this.graphCache.set(cacheKey, result);
-      }
-      console.log(`✅ Sora traversal completed in ${traversalTime.toFixed(2)}ms`);
-      return result;
-    } catch (error: any) {
-      console.error('❌ Sora traversal failed:', error);
-      throw error;
-    }
-  }
-  /**
-   * Semantic similarity traversal using AI pipeline
-   */;
-  private async semanticSimilarityTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
-    const nodes = new Map<string, GraphNode>();
-    const edges = new Map<string, GraphEdge>();
-    const paths: Array<any> = [];
-    let nodesVisited = 0;
-    let edgesTraversed = 0;
-    let wasmAccelerated = false;
-    try {
-      // Get semantic embeddings for start nodes
-      const startEmbeddings = await this.getSemanticEmbeddings(query.startNodes);
-      // Use WASM acceleration if available
-      if (this.config.enableWasm && this.wasmModule && query.useWasmAcceleration !== false) {
-        const wasmResult = await this.wasmSemanticTraversal(query, startEmbeddings);
-        wasmAccelerated = true;
-        nodesVisited = wasmResult.nodesVisited;
-        edgesTraversed = wasmResult.edgesTraversed;
-        // Convert WASM results to our format
-        wasmResult.nodes.forEach((node: any) => nodes.set(node.id, this.convertWasmNode(node));
-        wasmResult.edges.forEach((edge: any) => edges.set(edge.id, this.convertWasmEdge(edge));
-        wasmResult.paths.forEach((path: any) => paths.push(this.convertWasmPath(path));
-      } else {
-        // Fallback to JavaScript implementation
-        const jsResult = await this.jsSemanticTraversal(query, startEmbeddings);
-        nodesVisited = jsResult.nodesVisited;
-        edgesTraversed = jsResult.edgesTraversed;
-        jsResult.nodes.forEach((node, id) => nodes.set(id, node);
-        jsResult.edges.forEach((edge, id) => edges.set(id, edge);
-        paths.push(...jsResult.paths);
-      }
-      return {
-        nodes,
-        edges,
-        paths,
-        statistics: {
-          traversalTime: 0, // Will be set by caller
-          nodesVisited,
-          edgesTraversed,
-          cacheHits: this.metrics.cacheHits,
-          wasmAccelerated
-        },
-        visualizationData: {
-          positions: new Float32Array(0),
-          colors: new Float32Array(0),
-          connections: new Uint32Array(0),
-          metadata: { [key,: strin,g]: any }
-        }
-      }
-    } catch (error: any) {
-      console.error('❌ Semantic similarity traversal failed:', error);
-      throw error;
-    }
-  }
-  /**
-   * WASM-accelerated semantic traversal
-   */;
-  private async wasmSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
-    if (!this.wasmModule) {
-      throw new Error('WASM module not initialized');
-    }
-    try {
-      // Prepare WASM input data
-      const inputData = this.prepareWasmInput(query, embeddings);
-      // Call WASM function
-      const result = await this.wasmModule.semanticTraversal(inputData);
-      this.metrics.wasmAccelerationUsed++;
-      return result;
-    } catch (error: any) {
-      console.warn('WASM traversal failed, falling back to JS:', error);
-      return this.jsSemanticTraversal(query, embeddings);
-    }
-  }
-  /**
-   * JavaScript fallback for semantic traversal
-   */;
-  private async jsSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
-    const nodes = new Map<string, GraphNode>();
-    const edges = new Map<string, GraphEdge>();
-    const paths: Array<any> = [];
-    let nodesVisited = 0;
-    let edgesTraversed = 0;
-    // Simulate graph traversal with semantic similarity
-    for (const startNodeId of query.startNodes) {
-      const embedding = embeddings.get(startNodeId);
-      if (!embedding) continue;
-      // Find semantically similar nodes
-      const similarNodes = await this.findSemanticalSimilarNodes(embedding, query);
-      for (const similarNode of similarNodes) {
-        nodes.set(similarNode.id, similarNode);
-        nodesVisited++;
-        // Create path
-        paths.push({
-          nodes: [startNodeId, similarNode.id],
-          totalWeight: similarNode.metadata.importance,
-          confidence: similarNode.metadata.confidence
-        });
-        // Find edges between nodes
-        const edgesBetween = await this.findEdgesBetween(startNodeId, similarNode.id);
-        edgesBetween.forEach(edge => {
-          edges.set(edge.id, edge);
-          edgesTraversed++;
-        });
-      }
-    }
-    return { nodes, edges, paths, nodesVisited, edgesTraversed }
-  }
-  /**
-   * Breadth-first traversal implementation
-   */;
-  private async breadthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
-    const nodes = new Map<string, GraphNode>();
-    const edges = new Map<string, GraphEdge>();
-    const paths: Array<any> = [];
-    const queue: Array<any> = [];
-    const visited = new Set<string>();
-    let nodesVisited = 0;
-    let edgesTraversed = 0;
-    // Initialize queue with start nodes
-    query.startNodes.forEach(nodeId => {
-      queue.push({ nodeId, depth: 0, path: [nodeId], weight: 0 });
-    });
-    while (queue.length > 0 && nodesVisited < (query.returnLimit || 1000)) {
-      const current = queue.shift()!;
-      if (visited.has(current.nodeId) || current.depth > query.maxDepth) {
-        continue;
-      }
-      visited.add(current.nodeId);
-      // Get node data
-      const node = await this.getNodeById(current.nodeId);
-      if (node && this.passesFilters(node, query.filters)) {
-        nodes.set(current.nodeId, node);
-        nodesVisited++;
-        if (current.path.length > 1) {
-          paths.push({
-            nodes: [...current.path],
-            totalWeight: current.weight,
-            confidence: node.metadata.confidence
-          });
-        }
-      }
-      // Get neighbors
-      if (current.depth < query.maxDepth) {
-        const neighbors = await this.getNodeNeighbors(current.nodeId, query.relationshipTypes);
-        for (const { node: neighborNode, edge } of neighbors) {
-          if (!visited.has(neighborNode.id)) {
-            edges.set(edge.id, edge);
-            edgesTraversed++;
-            queue.push({
-              nodeId: neighborNode.id,
-              depth: current.depth + 1,
-              path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight
-            });
-          }
-        }
-      }
-    }
-    return {
-      nodes,
-      edges,
-      paths,
-      statistics: {
-        traversalTime: 0,
-        nodesVisited,
-        edgesTraversed,
-        cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
+   * Main traversal method with reinforcement learning support
+   */
+  async traverseGraph(
+    startNodeId: string,
+    query: string,
+    options: Partial<SoraTraversalOptions> = {}
+  ): Promise<SoraTraversalPath[]> {
+    const config: SoraTraversalOptions = {
+      maxDepth: 5,
+      maxNodes: 100,
+      scoreThreshold: 0.6,
+      traversalStrategy: 'reinforcement',
+      semanticFiltering: true,
+      useGPUAcceleration: true,
+      reinforcementLearning: {
+        enabled: true,
+        explorationRate: 0.1,
+        learningRate: 0.01,
+        discountFactor: 0.95
       },
-      visualizationData: {
-        positions: new Float32Array(0),
-        colors: new Float32Array(0),
-        connections: new Uint32Array(0),
-        metadata: { [key,: strin,g]: any }
-      }
+      ...options
     }
-  }
-  /**
-   * Depth-first traversal implementation
-   */;
-  private async depthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
-    const nodes = new Map<string, GraphNode>();
-    const edges = new Map<string, GraphEdge>();
-    const paths: Array<any> = [];
-    const stack: Array<any> = [];
-    const visited = new Set<string>();
-    let nodesVisited = 0;
-    let edgesTraversed = 0;
-    // Initialize stack with start nodes
-    query.startNodes.forEach(nodeId => {
-      stack.push({ nodeId, depth: 0, path: [nodeId], weight: 0 });
-    });
-    while (stack.length > 0 && nodesVisited < (query.returnLimit || 1000)) {
-      const current = stack.pop()!;
-      if (visited.has(current.nodeId) || current.depth > query.maxDepth) {
-        continue;
-      }
-      visited.add(current.nodeId);
-      // Get node data
-      const node = await this.getNodeById(current.nodeId);
-      if (node && this.passesFilters(node, query.filters)) {
-        nodes.set(current.nodeId, node);
-        nodesVisited++;
-        if (current.path.length > 1) {
-          paths.push({
-            nodes: [...current.path],
-            totalWeight: current.weight,
-            confidence: node.metadata.confidence
-          });
-        }
-      }
-      // Get neighbors (reverse order for DFS)
-      if (current.depth < query.maxDepth) {
-        const neighbors = await this.getNodeNeighbors(current.nodeId, query.relationshipTypes);
-        for (let i = neighbors.length - 1; i >= 0; i--) {
-          const { node: neighborNode, edge } = neighbors[i];
-          if (!visited.has(neighborNode.id)) {
-            edges.set(edge.id, edge);
-            edgesTraversed++;
-            stack.push({
-              nodeId: neighborNode.id,
-              depth: current.depth + 1,
-              path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight
-            });
-          }
-        }
-      }
-    }
-    return {
-      nodes,
-      edges,
-      paths,
-      statistics: {
-        traversalTime: 0,
-        nodesVisited,
-        edgesTraversed,
-        cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
-      },
-      visualizationData: {
-        positions: new Float32Array(0),
-        colors: new Float32Array(0),
-        connections: new Uint32Array(0),
-        metadata: { [key,: strin,g]: any }
-      }
-    }
-  }
-  /**
-   * Weighted traversal using edge weights and node importance
-   */;
-  private async weightedTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
-    // Use Dijkstra's algorithm for weighted shortest paths
-    const nodes = new Map<string, GraphNode>();
-    const edges = new Map<string, GraphEdge>();
-    const paths: Array<any> = [];
-    const distances = new Map<string, number>();
-    const previous = new Map<string, string | null>();
-    const unvisited = new Set<string>();
-    let nodesVisited = 0;
-    let edgesTraversed = 0;
-    // Initialize distances
-    query.startNodes.forEach(nodeId => {
-      distances.set(nodeId, 0);
-      previous.set(nodeId, null);
-      unvisited.add(nodeId);
-    });
-    while (unvisited.size > 0 && nodesVisited < (query.returnLimit || 1000)) {
-      // Find node with minimum distance
-      let currentNode: string | null = null;
-      let minDistance = Infinity;
-      for (const nodeId of unvisited) {
-        const distance = distances.get(nodeId) || Infinity;
-        if (distance < minDistance) {
-          minDistance = distance;
-          currentNode = nodeId;
-        }
-      }
-      if (!currentNode || minDistance === Infinity) break;
-      unvisited.delete(currentNode);
-      // Get node data
-      const node = await this.getNodeById(currentNode);
-      if (node && this.passesFilters(node, query.filters)) {
-        nodes.set(currentNode, node);
-        nodesVisited++;
-        // Reconstruct path
-        const path = this.reconstructPath(previous, currentNode);
-        if (path.length > 1) {
-          paths.push({
-            nodes: path
-            totalWeight: minDistance;
-            confidence: node.metadata.confidence
-          });
-        }
-      }
-      // Check neighbors
-      const neighbors = await this.getNodeNeighbors(currentNode, query.relationshipTypes);
-      for (const { node: neighborNode, edge } of neighbors) {
-        if (unvisited.has(neighborNode.id) || !unvisited.has(neighborNode.id)) {
-          const alt = minDistance + edge.weight;
-          const currentDistance = distances.get(neighborNode.id) || Infinity;
-          if (alt < currentDistance) {
-            distances.set(neighborNode.id, alt);
-            previous.set(neighborNode.id, currentNode);
-            unvisited.add(neighborNode.id);
-          }
-          edges.set(edge.id, edge);
-          edgesTraversed++;
-        }
-      }
-    }
-    return {
-      nodes,
-      edges,
-      paths,
-      statistics: {
-        traversalTime: 0,
-        nodesVisited,
-        edgesTraversed,
-        cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
-      },
-      visualizationData: {
-        positions: new Float32Array(0),
-        colors: new Float32Array(0),
-        connections: new Uint32Array(0),
-        metadata: { [key,: strin,g]: any }
-      }
-    }
-  }
-  /**
-   * Generate visualization data for Moogle
-   */;
-  private async generateVisualizationData(result: GraphTraversalResult): Promise<any> {
-    const nodeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes.size;
-    const edgeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges.size;
-    // Positions (x, y, z for each node)
-    const positions = new Float32Array(nodeCount * 3);
-    // Colors (r, g, b, a for each node)
-    const colors = new Float32Array(nodeCount * 4);
-    // Connections (source, target for each edge)
-    const connections = new Uint32Array(edgeCount * 2);
-    let nodeIndex = 0;
-    const nodeIndexMap = new Map<string, number>();
-    // Process nodes
-    for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
-      nodeIndexMap.set(nodeId, nodeIndex);
-      // Position
-      positions[nodeIndex * 3] = node.position.x;
-      positions[nodeIndex * 3 + 1] = node.position.y;
-      positions[nodeIndex * 3 + 2] = node.position.z;
-      // Color based on node type and importance
-      const color = this.getNodeColor(node);
-      colors[nodeIndex * 4] = color.r;
-      colors[nodeIndex * 4 + 1] = color.g;
-      colors[nodeIndex * 4 + 2] = color.b;
-      colors[nodeIndex * 4 + 3] = color.a;
-      nodeIndex++;
-    }
-    // Process edges
-    let edgeIndex = 0;
-    for (const [edgeId, edge] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges) {
-      const sourceIndex = nodeIndexMap.get(edge.source);
-      const targetIndex = nodeIndexMap.get(edge.target);
-      if (sourceIndex !== undefined && targetIndex !== undefined) {
-        connections[edgeIndex * 2] = sourceIndex;
-        connections[edgeIndex * 2 + 1] = targetIndex;
-        edgeIndex++;
-      }
-    }
-    return {
-      positions,
-      colors,
-      connections: connections.slice(0, edgeIndex * 2),
-      metadata: {
-        nodeCount,
-        edgeCount: edgeIndex
-        boundingBox: this.calculateBoundingBox(positions),
-        nodeTypes: this.getNodeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes),
-        edgeTypes: this.getEdgeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges)
-      }
-    }
-  }
-  // Helper methods (mock implementations for now)
-  private async initializeNeo4j(): Promise<void> {
-    // Mock Neo4j initialization
-    console.log('🔗 Neo4j connection initialized (mock)');
-  }
-  private async initializeWasm(): Promise<void> {
-    try {
-      // Mock WASM module loading
-      this.wasmModule = {
-        semanticTraversal: async (inputData: any) => ({,
-          nodes: [],
-          edges: [],
-          paths: [],
-          nodesVisited: 0,
-          edgesTraversed: 0
-        })
-      }
-      console.log('🚀 WASM module initialized (mock)');
-    } catch (error: any) {
-      console.warn('WASM initialization failed:', error);
-    }
-  }
-  private async initializeMemoryIntegration(): Promise<void> {
-    // Integration with NES memory architecture
-    console.log('🎮 Memory integration initialized');
-  }
-  private generateCacheKey(query: GraphTraversalQuery): string {
-    return `${query.startNodes.join(',')}_${query.maxDepth}_${query.traversalStrategy}_${JSON.stringify(query.filters)}`;
-  }
-  private async getSemanticEmbeddings(nodeIds: string[]): Promise<Map<string, Float32Array>, {
-    const embeddings = new Map<string, Float32Array>();
-    for (const nodeId of nodeIds) {
-      // Mock embedding generation
-      const embedding = new Float32Array(384);
-      for (let i = 0; i < 384; i++) {
-        embedding[i] = Math.random() * 2 - 1;
-      }
-      embeddings.set(nodeId, embedding);
-    }
-    return embeddings;
-  }
-  private async findSemanticalSimilarNodes(embedding: Float32Array, query: GraphTraversalQuery): Promise<GraphNode[]> {
-    // Mock semantic similarity search
-    const similarNodes: GraphNode[] = [];
-    for (let i = 0; i < Math.min(10, query.returnLimit || 10); i++) {
-      similarNodes.push({
-        id: `sim_node_${i}`,
-        type: 'concept',
-        label: `Similar Concept ${i}`,
-        properties: { [key,: strin,g]: any },
-        position: { x: Math.random() * 100, y: Math.random() * 100, z: Math.random() * 100 },
-        metadata: {
-          importance: Math.random(),
-          confidence: Math.random() * 0.3 + 0.7,
-          lastAccessed: Date.now(),
-          vectorEmbedding: embedding
-        }
-      });
-    }
-    return similarNodes;
-  }
-  private async findEdgesBetween(sourceId: string, targetId: string): Promise<GraphEdge[]> {
-    // Mock edge finding
-    return [{
-      id: `edge_${sourceId}_${targetId}`,
-      source: sourceId
-      target: targetId
-      type: 'RELATED_TO',
-      weight: Math.random(),
-      properties: { [key,: strin,g]: any },
-      metadata: {
-        confidence: Math.random,(), * 0.,3 + 0.7,
-        strength,: Math.random(),
-        bidirectional,: true
-      }
-    }];
-  }
-  private async getNodeById(nodeId,: string): Promise<GraphNode | null> {
     // Check cache first
-    if (this.nodeCache.has(nodeId)) {
-      return this.nodeCache.get(nodeId)!;
+    const cacheKey = `${startNodeId}_${query}_${JSON.stringify(config)}`;
+    if (this.traversalCache.has(cacheKey)) {
+      return this.traversalCache.get(cacheKey)!;
     }
-    // Mock node retrieval
-    const node: GraphNode = {
-      id: nodeId
-      type: 'case',
-      label: `Node ${nodeId}`,
-      properties: { title: `Case ${nodeId}` },
-      position: {
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        z: Math.random() * 100
-      },
-      metadata: {
-        importance: Math.random(),
-        confidence: Math.random() * 0.3 + 0.7,
-        lastAccessed: Date.now()
+    // Get query embedding for semantic filtering
+    const queryEmbedding = this.semanticPipeline?.generateEmbedding ?
+      await this.semanticPipeline.generateEmbedding(query) : new Float32Array(384);
+    // Initialize reinforcement learning state
+    const rlState: SoraReinforcementState = {
+      currentNode: startNodeId,
+      visitedNodes: new Set(),
+      pathHistory: [startNodeId],
+      cumulativeReward: 0,
+      actionValues: new Map()
+    };
+    let paths: SoraTraversalPath[] = [];
+    switch (config.traversalStrategy) {
+      case 'reinforcement':
+        paths = await this.reinforcementTraversal(startNodeId, queryEmbedding, config, rlState);
+        break;
+      case 'best-first':
+        paths = await this.bestFirstTraversal(startNodeId, queryEmbedding, config);
+        break;
+      case 'depth-first':
+        paths = await this.depthFirstTraversal(startNodeId, queryEmbedding, config);
+        break;
+      case 'breadth-first':
+      default:
+        paths = await this.breadthFirstTraversal(startNodeId, queryEmbedding, config);
+        break;
+    }
+    // GPU-accelerated semantic scoring if enabled
+    if (config.useGPUAcceleration && paths.length > 0) {
+      paths = await this.gpuEnhancedScoring(paths, queryEmbedding);
+    }
+    // Apply legal AI reranking for improved relevance
+    if (paths.length > 1) {
+      paths = await this.applyLegalReranking(paths, query, config);
+    }
+    // Store in dimensional tensor store for future analysis
+    await this.storeTensorData(paths, queryEmbedding, config);
+    // Cache results
+    this.traversalCache.set(cacheKey, paths);
+    return paths;
+  }
+  /**
+   * Reinforcement learning-based traversal
+   */
+  private async reinforcementTraversal(
+    startNodeId: string,
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions,
+    state: SoraReinforcementState
+  ): Promise<SoraTraversalPath[]> {
+    const paths: SoraTraversalPath[] = [];
+    const explorationPaths: SoraTraversalPath[] = [];
+    // Get initial node
+    const startNode = await this.getNodeById(startNodeId);
+    if (!startNode) return paths;
+    // Initialize Q-learning values
+    const qTable = new Map<string, Map<string, number>>();
+    // Episode-based learning
+    for (let episode = 0; episode < 10; episode++) {
+      const episodePath = await this.runReinforcementEpisode(
+        startNode,
+        queryEmbedding,
+        config,
+        qTable
+      );
+      if (episodePath.nodes.length > 1) {
+        paths.push(episodePath);
       }
     }
-    this.nodeCache.set(nodeId, node);
-    return node;
+    // Select best paths based on learned values
+    return this.selectBestPaths(paths, 5);
   }
-  private async getNodeNeighbors(nodeId,: string, relationshipTypes?: string[]): Promise<Array<any> {
-    // Mock neighbor retrieval
-    const neighbor,s: Array<any,> =, [];
-    for (let i =, 0;, i < M,ath.floor(Math.random() * 5), +, 1; i++) {
-      const neighborId = `neighbor_${nodeId}_${i}`;
-      const neighbor = await this.getNodeById(neighborId);
-      if (neighbor) {
-        const edge: GraphEdge = {
-          id: `edge_${nodeId}_${neighborId}`,
-          source: nodeId
-          target: neighborId
-          type: 'RELATED_TO',
-          weight: Math.random(),
-          properties: { [key,: strin,g]: any },
-          metadata: {
-            confidence: Math.random() * 0.3 + 0.7,
-            strength: Math.random(),
-            bidirectional: true
-          }
-        }
-        neighbors.push({ node: neighbor, edge });
+  /**
+   * Run single reinforcement learning episode
+   */
+  private async runReinforcementEpisode(
+    startNode: SoraGraphNode,
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions,
+    qTable: Map<string, Map<string, number>>
+  ): Promise<SoraTraversalPath> {
+    const path: SoraTraversalPath = {
+      nodes: [startNode],
+      edges: [],
+      totalScore: 0,
+      pathLength: 0,
+      semanticCoherence: 0
+    }
+    let currentNode = startNode;
+    const visitedNodes = new Set([startNode.id]);
+    for (let depth = 0; depth < config.maxDepth; depth++) {
+      // Get possible actions (neighboring nodes)
+      const neighbors = await this.getNeighbors(currentNode.id);
+      if (neighbors.length === 0) break;
+      // Filter unvisited neighbors
+      const unvisitedNeighbors = neighbors.filter(n => !visitedNodes.has(n.target.id));
+      if (unvisitedNeighbors.length === 0) break;
+      // Epsilon-greedy action selection
+      let selectedAction;
+      if (Math.random() < config.reinforcementLearning.explorationRate) {
+        // Explore: random action
+        selectedAction = unvisitedNeighbors[Math.floor(Math.random() * unvisitedNeighbors.length)];
+      } else {
+        // Exploit: best known action
+        selectedAction = await this.selectBestAction(currentNode.id, unvisitedNeighbors, qTable, queryEmbedding);
       }
+      // Calculate reward for this transition
+      const reward = await this.calculateReward(currentNode, selectedAction.target, queryEmbedding);
+      // Update Q-table
+      this.updateQTable(currentNode.id, selectedAction.target.id, reward, config, qTable);
+      // Move to next node
+      path.nodes.push(selectedAction.target);
+      path.edges.push(selectedAction.edge);
+      visitedNodes.add(selectedAction.target.id);
+      currentNode = selectedAction.target;
+      // Update path metrics
+      path.totalScore += reward;
+      path.pathLength++;
     }
-    return neighbors;
-  }
-  private passesFilters(node,: GraphNode, filters?: GraphTraversalQuery['filters']): boolean {
-    if (!filters) return true;
-    if (filters.nodeTypes && !filters.nodeTypes.includes(node.type)) {
-      return false;
-    }
-    if (filters.minImportance && node.metadata.importance < filters.minImportance) {
-      return false;
-    }
-    return true;
-  }
-  private reconstructPath(previous,: Map<string, string | null>, endNod,e: strin,g): string,[] {
-    const path: string[] = [];
-    let current: string | null = endNode;
-    while (current !== null) {
-      path.unshift(current);
-      current = previous.get(current) || null;
-    }
+    // Calculate final semantic coherence
+    path.semanticCoherence = await this.calculatePathSemanticCoherence(path, queryEmbedding);
     return path;
   }
-  private getNodeColor(node,: GraphNode): { r: number; g: number; b: number; a: number } {
-    const colors = {
-      case: { r: 0.2, g: 0.6, b: 1.0, a: 1.0 },
-      precedent: { r: 0.8, g: 0.2, b: 0.2, a: 1.0 },
-      statute: { r: 0.2, g: 0.8, b: 0.2, a: 1.0 },
-      person: { r: 1.0, g: 0.6, b: 0.2, a: 1.0 },
-      organization: { r: 0.6, g: 0.2, b: 0.8, a: 1.0 },
-      concept: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 }
+  /**
+   * Update Q-learning table
+   */
+  private updateQTable(
+    stateId: string,
+    actionId: string,
+    reward: number,
+    config: SoraTraversalOptions,
+    qTable: Map<string, Map<string, number>>
+  ): void {
+    if (!qTable.has(stateId)) {
+      qTable.set(stateId, new Map());
     }
-    return colors[node.type] || colors.concept;
+    const stateActions = qTable.get(stateId)!;
+    const currentQ = stateActions.get(actionId) || 0;
+    // Q-learning update rule: Q(s,a) = Q(s,a) + α[r + γ*max(Q(s',a')) - Q(s,a)]
+    const newQ = currentQ + config.reinforcementLearning.learningRate * (
+      reward + config.reinforcementLearning.discountFactor * this.getMaxQValue(actionId, qTable) - currentQ
+    );
+    stateActions.set(actionId, newQ);
   }
-  private calculateBoundingBox(positions,: Float32Array): { min: [number, number, number]; max: [number, number, number] } {
-    let minX = Infinity, minY = Infinity, minZ = Infinity;
-    let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
-    for (let i = 0; i < positions.length; i += 3) {
-      minX = Math.min(minX, positions[i]);
-      minY = Math.min(minY, positions[i + 1]);
-      minZ = Math.min(minZ, positions[i + 2]);
-      maxX = Math.max(maxX, positions[i]);
-      maxY = Math.max(maxY, positions[i + 1]);
-      maxZ = Math.max(maxZ, positions[i + 2]);
+  /**
+   * Get maximum Q-value for a state
+   */;
+  private getMaxQValue(stateId: string, qTable: Map<string, Map<string, number>>): number {
+    const stateActions = qTable.get(stateId);
+    if (!stateActions || stateActions.size === 0) return 0;
+    return Math.max(...Array.from(stateActions.values()));
+  }
+  /**
+   * Calculate reward for state transition
+   */
+  private async calculateReward(
+    fromNode: SoraGraphNode,
+    toNode: SoraGraphNode,
+    queryEmbedding: Float32Array
+  ): Promise<number> {
+    let reward = 0;
+    // Semantic similarity reward
+    if (toNode.embedding) {
+      const similarity = this.cosineSimilarity(queryEmbedding, toNode.embedding);
+      reward += similarity * 10;
     }
-    return { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] }
-  }
-  private getNodeTypeDistribution(nodes,: Map<string, GraphNode>): Record<string, number> {
-    const distributio,n: Record<string, number,> = {}
-    for (const node of nodes.values()) {
-      distribution[node.type] = (distribution[node.type] || 0) + 1;
+    // Node type bonus
+    const typeBonus = {
+      'document': 2,
+      'case': 3,
+      'evidence': 4,
+      'entity': 1,
+      'concept': 1,
+      'relationship': 0.5
     }
-    return distribution;
+    reward += typeBonus[toNode.type] || 0;
+    // Novelty bonus (encourage exploration of less visited nodes)
+    const visitCount = this.reinforcementModel.get(toNode.id) || 0;
+    reward += Math.max(0, 2 - visitCount * 0.1);
+    // Update visit count
+    this.reinforcementModel.set(toNode.id, visitCount + 1);
+    return reward;
   }
-  private getEdgeTypeDistribution(edges,: Map<string, GraphEdge>): Record<string, number> {
-    const distributio,n: Record<string, number,> = {}
-    for (const edge of edges.values()) {
-      distribution[edge.type] = (distribution[edge.type] || 0) + 1;
+  /**
+   * Select best action using Q-values
+   */
+  private async selectBestAction(
+    stateId: string,
+    actions: Array<any>,
+    qTable: Map<string, Map<string, number>>,
+    queryEmbedding: Float32Array
+  ): Promise<any> {
+    const stateActions = qTable.get(stateId);
+    if (!stateActions) {
+      // No Q-values yet, use heuristic selection
+      return this.heuristicActionSelection(actions, queryEmbedding);
     }
-    return distribution;
-  }
-  private async enhanceWithMemoryData(result,: GraphTraversalResult): Promise<GraphTraversalResult> {
-    // Enhance nodes with NES memory bank information
-    for (const [nodeId, node], o,f (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).no,des) {
-      const memoryDoc = nesMemory.getDocument(nodeId);
-      if (memoryDoc) {
-        node.metadata.memoryBank = this.getMemoryBankName(memoryDoc.bankId);
-        this.metrics.memoryBankAccess++;
+    let bestAction = actions[0];
+    let bestValue = -Infinity;
+    for (const action of actions) {
+      const qValue = stateActions.get(action.target.id) || 0;
+      if (qValue > bestValue) {
+        bestValue = qValue;
+        bestAction = action;
       }
     }
-    return result;
+    return bestAction;
   }
-  private getMemoryBankName(bankId?: number),: string {
-    const bankNames = {
-      0: 'INTERNAL_RAM',
-      1: 'CHR_ROM',
-      2: 'PRG_ROM',
-      3: 'SAVE_RAM',
-      4: 'EXPANSION_ROM'
+  /**
+   * Heuristic action selection for unexplored states
+   */
+  private async heuristicActionSelection(
+    actions: Array<any>,
+    queryEmbedding: Float32Array
+  ): Promise<any> {
+    let bestAction = actions[0];
+    let bestScore = -1;
+    for (const action of actions) {
+      let score = 0;
+      // Semantic similarity
+      if (action.target.embedding) {
+        score += this.cosineSimilarity(queryEmbedding, action.target.embedding) * 0.6;
+      }
+      // Edge weight
+      score += action.edge.weight * 0.2;
+      // Node type preference
+      const typeScore = {
+        'evidence': 0.8,
+        'case': 0.7,
+        'document': 0.6,
+        'entity': 0.4,
+        'concept': 0.3,
+        'relationship': 0.2
+      }
+      score += (typeScore[action.target.type] || 0) * 0.2;
+      if (score > bestScore) {
+        bestScore = score;
+        bestAction = action;
+      }
     }
-    return bankNames[bankId as keyof typeof bankNames] || 'UNKNOWN';
+    return bestAction;
   }
-  private prepareWasmInput(query,: GraphTraversalQuery, embedding,s: Map<string, Float32Array,>): any {
+  /**
+   * Best-first traversal strategy
+   */
+  private async bestFirstTraversal(
+    startNodeId: string,
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions
+  ): Promise<SoraTraversalPath[]> {
+    const paths: SoraTraversalPath[] = [];
+    const startNode = await this.getNodeById(startNodeId);
+    if (!startNode) return paths;
+    // Priority queue for best-first search
+    const priorityQueue: Array<any> = [];
+    priorityQueue.push({
+      node: startNode,
+      path: [startNode],
+      edges: [],
+      score: this.calculateNodeScore(startNode, queryEmbedding)
+    });
+    const visited = new Set<string>();
+    while (priorityQueue.length > 0 && paths.length < 10) {
+      // Sort by score (descending)
+      priorityQueue.sort((a, b) => b.score - a.score);
+      const current = priorityQueue.shift()!;
+      if (visited.has(current.node.id)) continue;
+      visited.add(current.node.id);
+      // Check if this path meets our criteria
+      if (current.path.length > 1 && current.score >= config.scoreThreshold) {
+        const pathCoherence = await this.calculatePathSemanticCoherence(
+          {
+            nodes: current.path,
+            edges: current.edges,
+            totalScore: current.score,
+            pathLength: current.path.length,
+            semanticCoherence: 0
+          },
+          queryEmbedding
+        );
+        paths.push({
+          nodes: current.path,
+          edges: current.edges,
+          totalScore: current.score,
+          pathLength: current.path.length,
+          semanticCoherence: pathCoherence
+        });
+      }
+      // Expand if not at max depth
+      if (current.path.length < config.maxDepth) {
+        const neighbors = await this.getNeighbors(current.node.id);
+        for (const neighbor of neighbors) {
+          if (!visited.has(neighbor.target.id) && !current.path.some(n => n.id === neighbor.target.id)) {
+            const nodeScore = this.calculateNodeScore(neighbor.target, queryEmbedding);
+            const pathScore = current.score + nodeScore * (1 - current.path.length * 0.1);
+            priorityQueue.push({
+              node: neighbor.target,
+              path: [...current.path, neighbor.target],
+              edges: [...current.edges, neighbor.edge],
+              score: pathScore
+            });
+          }
+        }
+      }
+    }
+    return this.selectBestPaths(paths, 5);
+  }
+  /**
+   * GPU-accelerated semantic scoring
+   */
+  private async gpuEnhancedScoring(
+    paths: SoraTraversalPath[],
+    queryEmbedding: Float32Array
+  ): Promise<SoraTraversalPath[]> {
+    try {
+      // Prepare embeddings for GPU processing
+      const allEmbeddings: Float32Array[] = [];
+      const nodeIndices: number[] = [];
+      paths.forEach((path, pathIndex) => {
+        path.nodes.forEach((node, nodeIndex) => {
+          if (node.embedding) {
+            allEmbeddings.push(node.embedding);
+            nodeIndices.push(pathIndex * 1000 + nodeIndex); // Encode path and node index
+          }
+        });
+      });
+      if (allEmbeddings.length > 0) {
+        // Use GPU for batch similarity computation
+        const similarities = this.gpuIntegration?.computeBatchSimilarities ?
+          await this.gpuIntegration.computeBatchSimilarities(allEmbeddings) :
+          allEmbeddings.map(() => 0.5); // Fallback similarity scores
+        // Update node scores with GPU-computed similarities
+        similarities.forEach((similarity, index) => {
+          const encodedIndex = nodeIndices[index];
+          const pathIndex = Math.floor(encodedIndex / 1000);
+          const nodeIndex = encodedIndex % 1000;
+          if (paths[pathIndex] && paths[pathIndex].nodes[nodeIndex]) {
+            paths[pathIndex].nodes[nodeIndex].score = similarity;
+          }
+        });
+        // Recalculate path scores
+        paths.forEach(path => {
+          const avgNodeScore = path.nodes.reduce((sum, node) => sum + (node.score || 0), 0) / path.nodes.length;
+          path.totalScore = avgNodeScore * path.semanticCoherence;
+        });
+      }
+      return paths.sort((a, b) => b.totalScore - a.totalScore);
+    } catch (error) {
+      console.warn('GPU-enhanced scoring failed, falling back to CPU:', error);
+      return paths;
+    }
+  }
+  /**
+   * Get node by ID from Neo4j
+   */;
+  private async getNodeById(nodeId: string): Promise<SoraGraphNode | null> {
+    try {
+      const session = this.neo4jDriver.session();
+      try {
+        const result = await session.run(
+          'MATCH (n) WHERE id(n) = $nodeId RETURN n, labels(n) as labels',
+          { nodeId: parseInt(nodeId) }
+        );
+        if ((result as { records?: any; id?: any; rerankScore?: any }).records.length === 0) return null;
+        const record = (result as { records?: any; id?: any; rerankScore?: any }).records[0];
+        const node = record.get('n');
+        const labels = record.get('labels');
+        return {
+          id: nodeId,
+          type: this.mapLabelsToType(labels),
+          properties: node.properties,
+          embedding: node.properties.embedding ? new Float32Array(node.properties.embedding) : undefined,
+          coordinates: node.properties.coordinates ? {
+            x: node.properties.coordinates.x,
+            y: node.properties.coordinates.y,
+            z: node.properties.coordinates.z || 0
+          } : undefined
+        };
+      } finally {
+        await session.close();
+      }
+    } catch (error) {
+      console.error('Error getting node by ID:', error);
+      return null;
+    }
+  }
+  /**
+   * Get neighbors of a node
+   */;
+  private async getNeighbors(nodeId: string): Promise<Array<any>> {
+    try {
+      const session = this.neo4jDriver.session();
+      try {
+        const result = await session.run(`
+          MATCH (n)-[r]-(m)
+          WHERE id(n) = $nodeId
+          RETURN m, r, labels(m) as target_labels, type(r) as rel_type
+          ORDER BY r.weight DESC
+          LIMIT 20
+        `, { nodeId: parseInt(nodeId) });
+        const neighbors: Array<any> = [];
+        for (const record of (result as { records?: any; id?: any; rerankScore?: any }).records) {
+          const targetNode = record.get('m');
+          const relationship = record.get('r');
+          const targetLabels = record.get('target_labels');
+          const relType = record.get('rel_type');
+          const target: SoraGraphNode = {
+            id: targetNode.identity.toString(),
+            type: this.mapLabelsToType(targetLabels),
+            properties: targetNode.properties,
+            embedding: targetNode.properties.embedding ?
+              new Float32Array(targetNode.properties.embedding) : undefined
+          };
+          const edge: SoraGraphEdge = {
+            id: relationship.identity.toString(),
+            source: nodeId,
+            target: target.id,
+            type: this.mapRelationshipType(relType),
+            weight: relationship.properties.weight || 1,
+            properties: relationship.properties
+          };
+          neighbors.push({ target, edge });
+        }
+        return neighbors;
+      } finally {
+        await session.close();
+      }
+    } catch (error) {
+      console.error('Error getting neighbors:', error);
+      return [];
+    }
+  }
+  /**
+   * Calculate node score based on query embedding
+   */;
+  private calculateNodeScore(node: SoraGraphNode, queryEmbedding: Float32Array): number {
+    let score = 0;
+    // Semantic similarity
+    if (node.embedding) {
+      score += this.cosineSimilarity(queryEmbedding, node.embedding) * 0.7;
+    }
+    // Node type importance
+    const typeWeights = {
+      'evidence': 1.0,
+      'case': 0.9,
+      'document': 0.8,
+      'entity': 0.6,
+      'concept': 0.5,
+      'relationship': 0.3
+    }
+    score += (typeWeights[node.type] || 0.1) * 0.3;
+    return Math.max(0, Math.min(1, score));
+  }
+  /**
+   * Calculate semantic coherence of a path
+   */
+  private async calculatePathSemanticCoherence(
+    path: SoraTraversalPath,
+    queryEmbedding: Float32Array
+  ): Promise<number> {
+    if (path.nodes.length < 2) return 0;
+    let totalCoherence = 0;
+    let comparisons = 0;
+    // Calculate pairwise similarities between consecutive nodes
+    for (let i = 0; i < path.nodes.length - 1; i++) {
+      const node1 = path.nodes[i];
+      const node2 = path.nodes[i + 1];
+      if (node1.embedding && node2.embedding) {
+        totalCoherence += this.cosineSimilarity(node1.embedding, node2.embedding);
+        comparisons++;
+      }
+    }
+    // Calculate average similarity to query
+    let queryCoherence = 0;
+    let queryComparisons = 0;
+    for (const node of path.nodes) {
+      if (node.embedding) {
+        queryCoherence += this.cosineSimilarity(queryEmbedding, node.embedding);
+        queryComparisons++;
+      }
+    }
+    const avgPathCoherence = comparisons > 0 ? totalCoherence / comparisons : 0;
+    const avgQueryCoherence = queryComparisons > 0 ? queryCoherence / queryComparisons : 0;
+    // Combine path coherence and query relevance
+    return (avgPathCoherence * 0.4 + avgQueryCoherence * 0.6);
+  }
+  /**
+   * Select best paths based on multiple criteria
+   */;
+  private selectBestPaths(paths: SoraTraversalPath[], limit: number): SoraTraversalPath[] {
+    // Sort by combined score
+    paths.sort((a, b) => {
+      const scoreA = a.totalScore * 0.4 + a.semanticCoherence * 0.6;
+      const scoreB = b.totalScore * 0.4 + b.semanticCoherence * 0.6;
+      return scoreB - scoreA;
+    });
+    // Remove duplicate paths (same nodes in same order)
+    const uniquePaths: SoraTraversalPath[] = [];
+    const pathSignatures = new Set<string>();
+    for (const path of paths) {
+      const signature = path.nodes.map(n => n.id).join('-');
+      if (!pathSignatures.has(signature)) {
+        pathSignatures.add(signature);
+        uniquePaths.push(path);
+      }
+    }
+    return uniquePaths.slice(0, limit);
+  }
+  /**
+   * Cosine similarity between two embeddings
+   */;
+  private cosineSimilarity(a: Float32Array, b: Float32Array): number {
+    if (a.length !== b.length) return 0;
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    if (normA === 0 || normB === 0) return 0;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  }
+  /**
+   * Map Neo4j labels to node types
+   */;
+  private mapLabelsToType(labels: string[]): SoraGraphNode['type'] {
+    if (labels.includes('Document')) return 'document';
+    if (labels.includes('Case')) return 'case';
+    if (labels.includes('Evidence')) return 'evidence';
+    if (labels.includes('Entity')) return 'entity';
+    if (labels.includes('Concept')) return 'concept';
+    return 'relationship';
+  }
+  /**
+   * Map Neo4j relationship types
+   */;
+  private mapRelationshipType(relType: string): SoraGraphEdge['type'] {
+    const mapping: Record<string, SoraGraphEdge['type']> = {
+      'CITES': 'cites',
+      'CONTAINS': 'contains',
+      'RELATED_TO': 'related',
+      'SIMILAR_TO': 'similar',
+      'REFERENCES': 'references',
+      'CONTRADICTS': 'contradicts'
+    }
+    return mapping[relType] || 'related';
+  }
+  /**
+   * Breadth-first traversal (fallback implementation)
+   */
+  private async breadthFirstTraversal(
+    startNodeId: string,
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions
+  ): Promise<SoraTraversalPath[]> {
+    // Simplified BFS implementation
+    const startNode = await this.getNodeById(startNodeId);
+    if (!startNode) return [];
+    return [{
+      nodes: [startNode],
+      edges: [],
+      totalScore: this.calculateNodeScore(startNode, queryEmbedding),
+      pathLength: 1,
+      semanticCoherence: 1.0
+    }];
+  }
+  /**
+   * Depth-first traversal (fallback implementation)
+   */
+  private async depthFirstTraversal(
+    startNodeId: string,
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions
+  ): Promise<SoraTraversalPath[]> {
+    // Simplified DFS implementation
+    const startNode = await this.getNodeById(startNodeId);
+    if (!startNode) return [];
+    return [{
+      nodes: [startNode],
+      edges: [],
+      totalScore: this.calculateNodeScore(startNode, queryEmbedding),
+      pathLength: 1,
+      semanticCoherence: 1.0
+    }];
+  }
+  /**
+   * Clear traversal cache
+   */;
+  public clearCache(): void {
+    this.traversalCache.clear();
+  }
+  /**
+   * Apply legal AI reranking to improve path relevance
+   */
+  private async applyLegalReranking(
+    paths: SoraTraversalPath[],
+    query: string,
+    config: SoraTraversalOptions
+  ): Promise<SoraTraversalPath[]> {
+    try {
+      // Convert paths to rerank results
+      const rerankInputs: RerankResult[] = paths.map((path, index) => ({
+        id: `path_${index}`,
+        score: path.totalScore,
+        content: path.nodes.map(n => n.properties?.title || n.properties?.content || n.id).join(' → '),
+        metadata: {
+          pathLength: path.pathLength,
+          semanticCoherence: path.semanticCoherence,
+          nodeTypes: path.nodes.map(n => n.type),
+          totalScore: path.totalScore
+        },
+        originalScore: path.totalScore,
+        rerankScore: 0,
+        confidence: path.semanticCoherence
+      });
+      // Infer user context from query and config
+      const userContext: UserContext = {
+        intent: this.inferUserIntent(query),
+        timeOfDay: this.getTimeOfDay(),
+        userRole: 'user', // Could be enhanced with actual user context
+        workflowState: 'draft',
+        recentActions: [],
+        currentCase: undefined
+      }
+      // Apply reranking
+      const rerankedResults = await this.reranker?.rerank(rerankInputs, userContext) || [];
+      // Reorder paths based on reranking scores
+      const pathScoreMap = new Map<number, number>();
+      rerankedResults.forEach((result, index) => {
+        const originalIndex = parseInt((result as { records?: any; id?: any; rerankScore?: any }).id.split('_')[1]);
+        pathScoreMap.set(originalIndex, (result as { records?: any; id?: any; rerankScore?: any }).rerankScore);
+      });
+      // Update path scores and resort
+      paths.forEach((path, index) => {
+        const rerankScore = pathScoreMap.get(index) || path.totalScore;
+        path.totalScore = (path.totalScore * 0.6) + (rerankScore * 0.4); // Blend scores
+      });
+      return paths.sort((a, b) => b.totalScore - a.totalScore);
+    } catch (error) {
+      console.warn('Legal reranking failed, using original order:', error);
+      return paths;
+    }
+  }
+  /**
+   * Store graph traversal data in dimensional tensor store
+   */
+  private async storeTensorData(
+    paths: SoraTraversalPath[],
+    queryEmbedding: Float32Array,
+    config: SoraTraversalOptions
+  ): Promise<void> {
+    try {
+      // Create tensor slices for different dimensions
+      const documents = new Set<string>();
+      const chunks = new Set<string>();
+      // Extract unique elements
+      paths.forEach(path => {
+        path.nodes.forEach(node => {
+          if (node.type === 'document' || node.type === 'case') {
+            documents.add(node.id);
+          }
+          if (node.embedding) {
+            chunks.add(node.id);
+          }
+        });
+      });
+      // Store path embeddings as tensor slices
+      for (let i = 0; i < paths.length; i++) {
+        const path = paths[i];
+        // Create path representation by averaging node embeddings
+        const pathEmbedding = this.createPathEmbedding(path);
+        if (pathEmbedding) {
+          const tensorSlice: TensorSlice = {
+            axis: 1, // Document axis
+            index: i,
+            lodLevel: 0,
+            data: pathEmbedding,
+            dimensions: [pathEmbedding.length],
+            metadata: {
+              timestamp: Date.now(),
+              hash: this.generatePathHash(path),
+              size: pathEmbedding.byteLength,
+              compressed: false,
+              accessCount: 1,
+              lastAccessed: Date.now()
+            }
+          };
+          if (this.tensorStore?.storeTensorSlice) {
+            await this.tensorStore.storeTensorSlice(tensorSlice);
+          }
+        }
+      }
+      // Store query embedding for future similarity analysis
+      if (queryEmbedding) {
+        const querySlice: TensorSlice = {
+          axis: 3, // Representations axis
+          index: 0,
+          lodLevel: 0,
+          data: queryEmbedding,
+          dimensions: [queryEmbedding.length],
+          metadata: {
+            timestamp: Date.now(),
+            hash: this.hashFloat32Array(queryEmbedding),
+            size: queryEmbedding.byteLength,
+            compressed: false,
+            accessCount: 1,
+            lastAccessed: Date.now()
+          }
+        };
+        if (this.tensorStore?.storeTensorSlice) {
+          await this.tensorStore.storeTensorSlice(querySlice);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to store tensor data:', error);
+    }
+  }
+  /**
+   * Create path embedding by averaging node embeddings
+   */;
+  private createPathEmbedding(path: SoraTraversalPath): Float32Array | null {
+    const nodeEmbeddings = path.nodes
+      .map(node => node.embedding)
+      .filter(embedding => embedding !== undefined) as Float32Array[];
+    if (nodeEmbeddings.length === 0) return null;
+    const embeddingDim = nodeEmbeddings[0].length;
+    const pathEmbedding = new Float32Array(embeddingDim);
+    // Average all node embeddings
+    for (let i = 0; i < embeddingDim; i++) {
+      let sum = 0;
+      for (const embedding of nodeEmbeddings) {
+        sum += embedding[i];
+      }
+      pathEmbedding[i] = sum / nodeEmbeddings.length;
+    }
+    return pathEmbedding;
+  }
+  /**
+   * Generate hash for path to track uniqueness
+   */;
+  private generatePathHash(path: SoraTraversalPath): string {
+    const pathSignature = path.nodes.map(n => `${n.id}:${n.type}`).join('|');
+    return this.simpleHash(pathSignature);
+  }
+  /**
+   * Hash Float32Array for caching
+   */;
+  private hashFloat32Array(array: Float32Array): string {
+    const buffer = new Uint8Array(array.buffer);
+    return this.simpleHash(Array.from(buffer).join(','));
+  }
+  /**
+   * Simple string hash function
+   */;
+  private simpleHash(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString(16);
+  }
+  /**
+   * Infer user intent from query
+   */;
+  private inferUserIntent(query: string): UserContext['intent'] {
+    const searchKeywords = ['find', 'search', 'look', 'show', 'list'];
+    const analyzeKeywords = ['analyze', 'examine', 'investigate', 'study', 'review'];
+    const createKeywords = ['create', 'new', 'add', 'make', 'generate'];
+    const navigateKeywords = ['go', 'navigate', 'move', 'switch', 'open'];
+    const lowerQuery = query.toLowerCase();
+    if (searchKeywords.some(keyword => lowerQuery.includes(keyword))) return 'search';
+    if (analyzeKeywords.some(keyword => lowerQuery.includes(keyword))) return 'analyze';
+    if (createKeywords.some(keyword => lowerQuery.includes(keyword))) return 'create';
+    if (navigateKeywords.some(keyword => lowerQuery.includes(keyword))) return 'navigate';
+    return 'search'; // Default fallback
+  }
+  /**
+   * Get current time of day
+   */;
+  private getTimeOfDay(): UserContext['timeOfDay'] {
+    const hour = new Date().getHours();
+    if (hour < 6) return 'night';
+    if (hour < 12) return 'morning';
+    if (hour < 18) return 'afternoon';
+    if (hour < 22) return 'evening';
+    return 'night';
+  }
+  /**
+   * Enhanced GPU batch similarities using existing NES GPU integration
+   */
+  public async computeBatchSimilarities(
+    pathEmbeddings: Float32Array[],
+    queryEmbedding: Float32Array
+  ): Promise<number[]> {
+    try {
+      return this.gpuIntegration?.computeBatchSimilarities ?
+        await this.gpuIntegration.computeBatchSimilarities(pathEmbeddings) : [];
+    } catch (error) {
+      console.warn('GPU batch similarity computation failed, falling back to CPU:', error);
+      // CPU fallback
+      return pathEmbeddings.map(embedding =>
+        this.cosineSimilarity(embedding, queryEmbedding)
+      );
+    }
+  }
+  /**
+   * Get reinforcement learning statistics
+   */;
+  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<any> } {
+    const entries = Array.from(this.reinforcementModel.entries());
+    const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
     return {
-      query: JSON.stringify(query),
-      embeddings: Array.from(embeddings.entries()).map(([id, emb]) => ({
-        id,
-        embedding: Array.from(emb)
-      })
-    }
-  }
-  private convertWasmNode(wasmNode,: any): GraphNode {
-    return wasmNode as GraphNode;
-  }
-  private convertWasmEdge(wasmEdge,: any): GraphEdge {
-    return wasmEdge as GraphEdge;
-  }
-  private convertWasmPath(wasmPath,: any): { nodes: string[]; totalWeight: number; confidence: number } {
-    return wasmPath;
+      totalNodes: entries.length,
+      avgVisitCount: totalVisits / Math.max(1, entries.length),
+      topNodes: entries
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([id, visits]) => ({ id, visits }))
+    };
   }
   /**
-   * Get performance metrics
+   * Get tensor store statistics
    */;
-  getMetrics(), {
-    return { ...this.metrics }
-  }
-  /**
-   * Clear caches
-   */;
-  clearCaches(),: void {
-    this.graphCache.clear();
-    this.nodeCache.clear();
-    this.edgeCache.clear();
-    console,.log('🧹 Sora caches cleared');
-  }
-  /**
-   * Cleanup resources
-   */;
-  async dispose(),: Promise<void> {
-    this.clearCaches();
-    if (this.neo4jDrive,r) {
-      await this.neo4jDriver.close();
+  public async getTensorStats(): Promise<any> {
+    try {
+      // Get basic stats from tensor store
+      const stats = this.tensorStore?.getStats ? await this.tensorStore.getStats() : {};
+      return {
+        totalSlices: stats.totalTensorSlices || 0,
+        totalSize: stats.totalMemoryUsage || 0,
+        cacheHitRate: stats.cacheHitRate || 0,
+        dimensions: stats.dimensions || { documents: 0, chunks: 0, representations: 0 }
+      };
+    } catch (error) {
+      return {
+        totalSlices: 0,
+        totalSize: 0,
+        cacheHitRate: 0,
+        dimensions: { documents: 0, chunks: 0, representations: 0 }
+      };
     }
-    if (this.wasmModule) {
-      this.wasmModule = null;
-    }
-    console.log('🌟 Sora Graph Traversal Engine disposed');
   }
 }
-// Export singleton instance
-export const soraGraphTraversal = new SoraGraphTraversal();

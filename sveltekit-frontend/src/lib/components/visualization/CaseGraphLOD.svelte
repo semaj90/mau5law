@@ -18,7 +18,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
   import * as Card from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import {
     Network, Eye, Layers, ZoomIn, ZoomOut, RotateCcw,
     Users, FileText, Calendar, MapPin, Search, Filter

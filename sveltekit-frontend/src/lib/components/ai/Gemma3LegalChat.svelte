@@ -6,14 +6,14 @@ https://svelte.dev/e/attribute_invalid_name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { writable, derived } from 'svelte/store';
+  import { writable, derived, get } from 'svelte/store';
   import { createMachine, createActor } from 'xstate';
   import { Gemma3WASMBridge } from '$lib/services/gemma3-wasm-bridge';
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import {
     Card,
     CardHeader,
@@ -25,7 +25,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
   interface Props {
     caseId?: string;
@@ -42,7 +42,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     tokensPerSecond: 0,
     latency: 0,
     cacheHitRate: 0,
-    gpuUtilization: 0;
+    gpuUtilization: 0, // fixed trailing semicolon -> comma
   });
   // Gemma3 Bridge Instance
   let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
@@ -87,18 +87,18 @@ https://svelte.dev/e/attribute_invalid_name -->
     initial: 'idle',
     context: {
       currentQuery: '',
-      useRAG: true
-      useGPU: true
-      streamResponse: true
+      useRAG: true,
+      useGPU: true,
+      streamResponse: true,
       maxTokens: 2000,
-      temperature: 0.1;
+      temperature: 0.1,
     },
     states: {
       idle: {
         on: {
           SEND_MESSAGE: {
             target: 'processing',
-            actions: ['storeQuery'];
+            actions: ['storeQuery'], // <- changed: previously ended with a semicolon which caused parse error
           }
         }
       },
@@ -120,7 +120,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               src: 'searchDocuments',
               onDone: {
                 target: 'generating',
-                actions: ['storeSources'];
+                actions: ['storeSources'],
               },
               onError: 'generating' // Continue without RAG if search fails
             }
@@ -130,21 +130,21 @@ https://svelte.dev/e/attribute_invalid_name -->
               src: 'generateResponse',
               onDone: {
                 target: '#gemma3Chat.idle',
-                actions: ['addMessage', 'updateMetrics'];
+                actions: ['addMessage', 'updateMetrics'],
               },
               onError: 'error'
             }
           },
           error: {
             entry: ['logError'],
-            always: '#gemma3Chat.idle';
+            always: '#gemma3Chat.idle'
           }
         }
       }
     }
   });
   // Initialize on mount
-  $effect(() => {
+  $effect(async () => { // made async to allow await inside
     try {
       // Initialize Gemma3 WASM Bridge
       if (typeof window !== 'undefined' && 'gpu' in navigator) {
@@ -152,19 +152,19 @@ https://svelte.dev/e/attribute_invalid_name -->
           modelPath: '/models/gemma3-legal-q4.wasm',
           weightsPath: '/models/gemma3-legal-weights.bin',
           vocabPath: '/models/gemma3-vocab.json',
-          useWebGPU: true
-          useSimd: true
+          useWebGPU: true,
+          useSimd: true,
           numThreads: navigator.hardwareConcurrency || 4,
           maxContextLength: 4096,
           temperature: 0.1,
           topK: 40,
-          topP: 0.9;
+          topP: 0.9,
         });
         await gemma3Bridge.initialize();
         gpuStatus.set({
-          available: true;
+          available: true,
           layers: 35,
-          memory: 8192;
+          memory: 8192,
         });
       }
       // Connect to NATS for real-time updates
@@ -192,7 +192,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               embedding: event.data,
               caseId,
               limit: 10,
-              threshold: 0.7;
+              threshold: 0.7,
             });
             return (response as { results?: any; json?: any; body?: any }).result;
           },
@@ -204,7 +204,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               const result = await gemma3Bridge.processLegalText(augmentedPrompt, {
                 maxLength: context.maxTokens,
                 temperature: context.temperature,
-                stream: context.streamRespon;
+                stream: context.streamResponse,
               });
               return {
                 content: (result as { text?: any; processingTime?: any; analysis?: any }).text,
@@ -220,11 +220,11 @@ https://svelte.dev/e/attribute_invalid_name -->
               const response = await fetch('/api/ai/gemma3-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({,
-                  prompt: augmentedPrompt
+                body: JSON.stringify({
+                  prompt: augmentedPrompt,
                   maxTokens: context.maxTokens,
                   temperature: context.temperature,
-                  stream: context.streamRespon;
+                  stream: context.streamResponse,
                 })
               });
               if (context.streamResponse) {
@@ -269,13 +269,13 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Message handling
   let userInput = $state('');
   async function sendMessage() {
-    if (!userInput.trim() || $isProcessing) return;
+    if (!userInput.trim() || get(isProcessing)) return;
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: userInput;
+      content: userInput,
       timestamp: new Date(),
-    }
+    };
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);
     const startTime = performance.now();
@@ -286,7 +286,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       await new Promise((resolve) => {
         const unsubscribe = ragMachine.subscribe((state) => {
           if (state.matches('idle')) {
-            unsubscribe()));
+            unsubscribe();
             resolve(state.context);
           }
         });
@@ -307,8 +307,9 @@ https://svelte.dev/e/attribute_invalid_name -->
       userInput = '';
     }
   }
+
   function buildAugmentedPrompt(query: string, sources: Source[]): string {
-  let prompt = $state(`Legal Query: ${query}\n\n`);
+    let prompt = `Legal Query: ${query}\n\n`;
     if (sources && sources.length > 0) {
       prompt += 'Relevant Legal Context:\n';
       sources.forEach((source, idx) => {
@@ -320,10 +321,11 @@ https://svelte.dev/e/attribute_invalid_name -->
     prompt += 'Legal Analysis:';
     return prompt;
   }
+
   async function handleStreamingResponse(response: Response) {
     const reader = (response as { results?: any; json?: any; body?: any }).body?.getReader();
     const decoder = new TextDecoder();
-  let fullContent = $state('');
+    let fullContent = '';
     if (!reader) throw new Error('No response body');
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
@@ -349,6 +351,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
     return { content: fullContent }
   }
+
   function subscribeToUpdates() {
     if (!natsConnection) return;
     // Subscribe to case updates
@@ -367,13 +370,13 @@ https://svelte.dev/e/attribute_invalid_name -->
   function updatePerformanceMetrics(processingTime: number) {
     performanceMetrics.update(m => ({
       ...m,
-      latency: processingTime
+      latency: processingTime,
       tokensPerSecond: gemma3Bridge?.metrics?.tokensProcessed
         ? gemma3Bridge.metrics.tokensProcessed / (processingTime / 1000)
         : 0,
-      cacheHitRate: gemma3Bridge?.metrics?.cacheHits
+      cacheHitRate: gemma3Bridge?.metrics?.cacheHits && (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses) > 0
         ? gemma3Bridge.metrics.cacheHits / (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses)
-        : 0;
+        : 0,
     }));
   }
   // UI state
@@ -481,15 +484,15 @@ https://svelte.dev/e/attribute_invalid_name -->
       </ScrollArea>
       <!-- Input Area -->
       <div class="p-4 border-t">
-        <form onsubmit|preventDefault={sendMessage} class="flex gap-2">
-          <Textarease;
+        <form on:submit|preventDefault={sendMessage} class="flex gap-2">
+          <Textarea
             bind:value={userInput}
             placeholder="Ask a legal question..."
             class="flex-1"
             rows={3}
-            disabled={$isProcessing}
-            keydown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+            disabled={ $isProcessing }  <!-- markup store access is OK here -->
+            on:keydown={(e: KeyboardEvent) => {
+              if ((e as KeyboardEvent).key === 'Enter' && !(e as KeyboardEvent).shiftKey) {
                 e.preventDefault();
                 sendMessage();
               }
@@ -500,11 +503,12 @@ https://svelte.dev/e/attribute_invalid_name -->
             disabled={$isProcessing || !userInput.trim()}
             class="self-end bits-btn bits-btn"
           >
-{#if $isProcessing}
+            {#if $isProcessing}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Send class="h-4 w-4" />
             {/if}
+          </Button>
         </form>
       </div>
     </TabsContent>
@@ -526,11 +530,13 @@ https://svelte.dev/e/attribute_invalid_name -->
             </Alert>
             <div class="grid grid-cols-2 gap-4">
               <Button variant="ghost" class="justify-start bits-btn bits-btn">
-<FileText class="h-4 w-4 mr-2" />
+                <FileText class="h-4 w-4 mr-2" />
                 Upload Document
+              </Button>
               <Button variant="ghost" class="justify-start bits-btn bits-btn">
-<Search class="h-4 w-4 mr-2" />
+                <Search class="h-4 w-4 mr-2" />
                 Search Documents
+              </Button>
             </div>
           </div>
         </div>

@@ -11,9 +11,10 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Alert from '$lib/components/ui/alert/Alert.svelte';
+  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
   import {
     Shield, CheckCircle, AlertCircle, Loader2,
     User, MessageCircle, Settings, LogOut,

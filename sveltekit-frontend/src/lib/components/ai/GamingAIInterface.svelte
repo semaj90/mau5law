@@ -26,36 +26,36 @@
     id: string;
     role: 'user' | 'assistant' | 'system';
     content: string;
-    timestamp: Date
-    status?: 'sending' | 'sent' | 'error'
+    timestamp: Date;
+    status?: 'sending' | 'sent' | 'error';
     metadata?: {
-      tokens?: number
-      model?: string
-      processingTime?: number
-      confidence?: number
-    }
+      tokens?: number;
+      model?: string;
+      processingTime?: number;
+      confidence?: number;
+    };
   }
   interface Props {
     caseContext?: {
       id: string;
       title: string;
       status: string;
-    }
-    isVisible?: boolean
+    };
+    isVisible?: boolean;
   }
   let {
     caseContext,
     isVisible = true
-  }: Props = $props()
+  }: Props = $props();
   // Component States
   let showAIInterface = $state(false);
   let showNierAssistant = $state(false);
   let isExpanded = $state(false);
-  let aiMode = $state<'idle' | 'thinking' | 'active'>('idle')
+  let aiMode = $state<'idle' | 'thinking' | 'active'>('idle');
   let isConnected = $state(true);
-  let systemStatus = $state<'online' | 'processing' | 'offline'>('online')
+  let systemStatus = $state<'online' | 'processing' | 'offline'>('online');
   // Gaming UI States
-  let scanlinePosition = spring(0, { stiffness: 0.1, damping: 0.8 })
+  let scanlinePosition = spring(0, { stiffness: 0.1, damping: 0.8 });
   let glitchEffect = $state(false);
   let terminalMode = $state(false);
   // AI Messages
@@ -67,77 +67,78 @@
       timestamp: new Date(),
       metadata: { confidence: 100, model: 'gemma3-legal' }
     }
-  ])
+  ]);
   let inputValue = $state('');
   let isTyping = $state(false);
   // Real AI Integration
   async function sendMessage(content?: string) {
-    if (!content || !content.trim()) return
+    if (!content || !content.trim()) return;
     // Add user message
     const userMessage: AIMessage = {
       id: crypto.randomUUID(),
       role: 'user',
       content,
       timestamp: new Date(),
-      status: 'sending';
-    }
-    messages = [...messages, userMessage]
+      status: 'sending'
+    };
+    messages = [...messages, userMessage];
     // Set typing state
-    isTyping = true
-    aiMode = 'thinking'
+    isTyping = true;
+    aiMode = 'thinking';
     try {
+      const body = {
+        message: content,
+        settings: {
+          model: 'gemma3-legal',
+          temperature: 0.1
+        }
+      };
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          message: content;
-          }); const settings = {
-            model: 'gemma3-legal',
-            temperature: 0.1;
-          }
-        })
-      })
+        body: JSON.stringify(body)
+      });
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`)
+        throw new Error(`API Error: ${response.status}`);
       }
-      const data = await response.json()
+      const data = await response.json();
       // Add AI response
       const aiMessage: AIMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: data.response,
+        content: data?.response ?? 'No response from model',
         timestamp: new Date(),
         status: 'sent',
         metadata: {
-          model: data.model,
-          confidence: Math.floor(Math.random() * 20) + 80, // Simulate confidence
-          processingTime: Math.floor(Math.random() * 1000) + 500;
+          model: data?.model ?? 'gemma3-legal',
+          confidence: Math.floor(Math.random() * 20) + 80, // Simulate confidence if absent
+          processingTime: typeof data?.processingTime === 'number' ? data.processingTime : Math.floor(Math.random() * 1000) + 500
         }
-      }
-      messages = [...messages, aiMessage]
+      };
+      messages = [...messages, aiMessage];
       // Update user message status
       messages = messages.map(msg =>
         msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
-      )
+      );
     } catch (error) {
-      console.error('AI Chat Error:', error)
+      console.error('AI Chat Error:', error);
       // Add error message
       const errorMessage: AIMessage = {
         id: crypto.randomUUID(),
         role: 'system',
-        content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message: 'Unknown error'}`,
+        content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message : 'Unknown error'}`,
         timestamp: new Date(),
         metadata: { confidence: 0 }
-      }
-      messages = [...messages, errorMessage]
+      };
+      messages = [...messages, errorMessage];
       // Update user message status
       messages = messages.map(msg =>
         msg.id === userMessage.id ? { ...msg, status: 'error' } : msg
-      )
+      );
     } finally {
-      isTyping = false
-      aiMode = 'idle'
-      inputValue = ''
+      isTyping = false;
+      aiMode = 'idle';
+      inputValue = '';
     }
   }
   // Gaming Interface Themes
@@ -149,7 +150,7 @@
       danger: 'text-red-400',
       bg: 'bg-gray-900',
       panel: 'bg-gray-800/90',
-      border: 'border-gray-600/50';
+      border: 'border-gray-600/50'
     },
     cyberpunk: {
       primary: 'text-cyan-300',
@@ -158,7 +159,7 @@
       danger: 'text-pink-400',
       bg: 'bg-black',
       panel: 'bg-gray-900/95',
-      border: 'border-cyan-500/30';
+      border: 'border-cyan-500/30'
     },
     matrix: {
       primary: 'text-green-300',
@@ -167,11 +168,11 @@
       danger: 'text-red-500',
       bg: 'bg-black',
       panel: 'bg-green-950/80',
-      border: 'border-green-500/40';
+      border: 'border-green-500/40'
     }
-  }
+  };
   let currentTheme = $state('yorha');
-  let theme = $derived(themes[currentTheme as keyof typeof themes])
+  let theme = $derived(() => themes[currentTheme as keyof typeof themes]);
   // System monitoring data
   let systemMetrics = $state({
     cpuUsage: 23,
@@ -181,75 +182,75 @@
   });
   // Gaming-style AI responses
   const processAICommand = async (command: string) => {
-    isTyping = true
-    aiMode = 'thinking'
+    isTyping = true;
+    aiMode = 'thinking';
     // Add user message
     const userMessage: AIMessage = {
-      id: Date.now.toString(),
+      id: Date.now().toString(),
       role: 'user',
-      content: command;
+      content: command,
       timestamp: new Date(),
-      status: 'sent';
-    }
-    messages = [...messages, userMessage]
+      status: 'sent'
+    };
+    messages = [...messages, userMessage];
     // Simulate processing with gaming effects
-    await new Promise(resolve => setTimeout(resolve, 1200))
+    await new Promise(resolve => setTimeout(resolve, 1200));
     // Generate contextual AI response
-    let response = ''
-    let confidence = Math.floor(Math.random() * 20) + 80
+    let response = '';
+    let confidence = Math.floor(Math.random() * 20) + 80;
     if (command.toLowerCase().includes('analyze')) {
-      response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`
+      response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`;
     } else if (command.toLowerCase().includes('search')) {
-      response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation: Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`
+      response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation: Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`;
     } else if (command.toLowerCase().includes('status')) {
-      response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection: STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`
+      response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection: STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`;
     } else {
-      response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`
+      response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`;
     }
     // Add AI response
     const aiResponse: AIMessage = {
       id: (Date.now() + 1).toString(),
       role: 'assistant',
-      content: response;
+      content: response,
       timestamp: new Date(),
       metadata: {
         tokens: response.length,
         model: 'YoRHa-Legal-AI-v2',
         processingTime: 1.2,
-        confidence: confidenc;
+        confidence: confidence
       }
-    }
-    messages = [...messages, aiResponse]
-    isTyping = false
-    aiMode = 'active'
+    };
+    messages = [...messages, aiResponse];
+    isTyping = false;
+    aiMode = 'active';
     // Reset to idle after showing result
     setTimeout(() => {
-      aiMode = 'idle'
-    }, 2000)
-  }
+      aiMode = 'idle';
+    }, 2000);
+  };
   // Removed duplicate sendMessage arrow function
   const toggleInterface = () => {
-    showAIInterface = !showAIInterface
+    showAIInterface = !showAIInterface;
     if (showAIInterface) {
       // Gaming effect when opening
-      glitchEffect = true
-      setTimeout(() => glitchEffect = false, 500)
+      glitchEffect = true;
+      setTimeout(() => (glitchEffect = false), 500);
     }
-  }
+  };
   const openNierAssistant = () => {
-    showNierAssistant = true
-    showAIInterface = false
-  }
+    showNierAssistant = true;
+    showAIInterface = false;
+  };
   // System monitoring simulation
   $effect(() => {
     const interval = setInterval(() => {
-      systemMetrics.cpuUsage = Math.floor(Math.random() * 30) + 15
-      systemMetrics.memoryUsage = Math.floor(Math.random() * 20) + 60
-      systemMetrics.aiProcessing = Math.floor(Math.random() * 25) + 5
-      systemMetrics.caseAnalysis = Math.floor(Math.random() * 15) + 85
-    }, 3000)
-    return () => clearInterval(interval)
-  })
+      systemMetrics.cpuUsage = Math.floor(Math.random() * 30) + 15;
+      systemMetrics.memoryUsage = Math.floor(Math.random() * 20) + 60;
+      systemMetrics.aiProcessing = Math.floor(Math.random() * 25) + 5;
+      systemMetrics.caseAnalysis = Math.floor(Math.random() * 15) + 85;
+    }, 3000);
+    return () => clearInterval(interval);
+  });
 </script>
 <!-- Gaming AI Button -->
 <GamingAIButton
@@ -262,7 +263,7 @@
 <!-- Gaming AI Interface -->
 {#if showAIInterface}
   <div
-    class="fixed inset-4 z-40 flex items-center justify-center";
+    class="fixed inset-4 z-40 flex items-center justify-center"
     in:scale={{ duration: 400, start: 0.9 }}
     out:scale={{ duration: 300, start: 0.9 }}
   >
@@ -272,8 +273,10 @@
       role="button"
       tabindex="0"
       aria-label="Close AI Interface"
-      onclick={() => showAIInterface = false}
-      keydown={e => { if (e.key === 'Enter' || e.key === ' ') showAIInterface = false, }}
+      on:click={() => (showAIInterface = false)}
+      on:keydown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') showAIInterface = false;
+      }}
     ></div>
     <!-- Main Interface Panel -->
     <div
@@ -407,7 +410,13 @@
           </div>
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
-            <form onsubmit={e => { e.preventDefault(); sendMessage(inputValue), }} class="flex gap-3">
+            <form
+              on:submit={(e) => {
+                e.preventDefault();
+                sendMessage(inputValue);
+              }}
+              class="flex gap-3"
+            >
               <div class="flex-1 relative">
                 <input
                   bind:value={inputValue}
@@ -489,16 +498,16 @@
 {/if}
 <!-- Nier Assistant Integration -->
 {#if showNierAssistant}
-  <NierAIAssistant;
-    bind:isOpen={showNierAssistant}
-    {caseContext}
-    close={() => showNierAssistant = false}
-  />
+<NierAIAssistant
+  isOpen={showNierAssistant}
+  {caseContext}
+  onClose={() => (showNierAssistant = false)}
+/>
 {/if}
 <style>
   @keyframes scanner {
-    0% { top: 0%; opacity: 1, }
-    50% { opacity: 0.3, }
-    100% { top: 100%; opacity: 1, }
+    0% { top: 0%; opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { top: 100%; opacity: 1; }
   }
 </style>

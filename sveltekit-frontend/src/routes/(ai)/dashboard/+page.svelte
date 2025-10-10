@@ -328,7 +328,7 @@
     margin-bottom: 3rem;
   }
 
-  .status-card {
+  :global(.status-card) {
     background: rgba(0, 212, 170, 0.1);
     border: 1px solid rgba(0, 212, 170, 0.3);
   }
@@ -358,7 +358,7 @@
     gap: 1.5rem;
   }
 
-  .stat-card {
+  :global(.stat-card) {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
@@ -392,19 +392,19 @@
     gap: 1.5rem;
   }
 
-  .service-card {
+  :global(.service-card) {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
   }
 
-  .service-card:hover {
+  :global(.service-card:hover) {
     background: rgba(0, 212, 170, 0.1);
     border-color: rgba(0, 212, 170, 0.3);
     transform: translateY(-5px);
   }
 
-  .service-title {
+  :global(.service-title) {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -415,7 +415,7 @@
     font-size: 1.5rem;
   }
 
-  .service-status {
+  :global(.service-status) {
     margin-left: auto;
   }
 
@@ -432,7 +432,7 @@
     margin-bottom: 1rem;
   }
 
-  .service-button {
+  :global(.service-button) {
     width: 100%;
     background: #00d4aa;
     color: #000;
@@ -443,7 +443,7 @@
     transition: all 0.3s ease;
   }
 
-  .service-button:hover {
+  :global(.service-button:hover) {
     background: #00b89a;
     transform: translateY(-2px);
   }
@@ -463,7 +463,7 @@
     gap: 1rem;
   }
 
-  .activity-card {
+  :global(.activity-card) {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -510,20 +510,9 @@
     gap: 1rem;
   }
 
-  .action-button {
-    background: rgba(0, 212, 170, 0.2);
-    border: 1px solid rgba(0, 212, 170, 0.4);
-    color: #00d4aa;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-
-  .action-button:hover {
-    background: rgba(0, 212, 170, 0.3);
-    transform: translateY(-2px);
-  }
+  /* Note: .action-button styles moved to Button component variants if needed */
+  /* :global(.action-button) { ... } */
+  /* :global(.action-button:hover) { ... } */
 
   /* Status Badge Styles */
   :global(.status-online) {

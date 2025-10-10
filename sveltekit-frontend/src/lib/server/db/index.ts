@@ -1,6 +1,12 @@
 // @ts-nocheck
 import { db, sql, pool } from './drizzle';
 export { db, sql, pool };
+
+// Re-export common Drizzle ORM helpers
+import { eq, and, or, not, count } from 'drizzle-orm';
+export { eq, and, or, not, count };
+export const helpers = { eq, and, or, not, count };
+
 // Database type detection
 export const isPostgreSQL = true; // Since we're using PostgreSQL with pgvector
 // Re-export all database tables and relations from schema (using schema-actual to match production DB)

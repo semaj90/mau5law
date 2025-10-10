@@ -5,8 +5,8 @@ export async function fetchEmbedding(text: string): Promise<number[]> {
     const response = await fetchOllama('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        model: 'nomic-embed-text',
+      body: JSON.stringify({
+        model: 'embeddinggemma:latest',
         prompt: text
       })
     });

@@ -33,11 +33,12 @@ https://svelte.dev/e/js_parse_error -->
     readOnly = false
   }: Props = $props();
   // State management - Svelte 5 runes
-  let evidenceItems = $state<any[]>([]);
-  let selectedEvidence = $state<string[]>([]);
-  let detectiveInsights = $state<any>(null);
-  let connectionMap = $state<any[]>([]);
-  let analysisResults = $state<any>(null);
+  // state values as normal reactive variables (Svelte runes handle reactivity)
+  let evidenceItems: any[] = [];
+  let selectedEvidence: string[] = [];
+  let detectiveInsights: any = null;
+  let connectionMap: any[] = [];
+
   // UI state - Svelte 5 runes
   let searchQuery = $state('');
   let filterType = $state('all');
@@ -66,10 +67,20 @@ https://svelte.dev/e/js_parse_error -->
     confidenceThreshold: 0.7
   });
   let canvas: HTMLCanvasElement | null = null;
-  let ctx: CanvasRenderingContext2D | null;
-  let networkLayout: unknown = {}
+  let ctx: CanvasRenderingContext2D | null = null;
+
+  // new: auth/session + search/upload state
+  let userSession: any = null;
+  let authChecked = false;
+  let searchProvider: 'pgvector' | 'qdrant' = 'pgvector';
+  let tagSearchResults: any[] = [];
+  let lastSearchQuery = '';
+
+  // Evidence loading and initialization - Svelte 5 runes
+  // ensure we know auth status before loading data
   $effect(() => {
     (async () => {
+      await checkSession();
       await loadEvidence();
       if (detectiveMode) {
         await loadDetectiveInsights();
@@ -77,9 +88,64 @@ https://svelte.dev/e/js_parse_error -->
       initializeCanvas();
     })();
   });
-  onDestroy(() => {
-    // Cleanup canvas and event listeners
-  });
+
+  // Check session via backend (Lucia v3 / SvelteKit server endpoint)
+  async function checkSession() {
+    try {
+      const res = await apiFetch('/api/auth/session'); // expects { user: { id, username, ... } } or null
+      if (res?.user) {
+        userSession = res.user;
+        readOnly = false;
+      } else {
+        userSession = null;
+        readOnly = true;
+      }
+    } catch (err) {
+      console.warn('Auth check failed, using read-only fallback', err);
+      userSession = null;
+      readOnly = true;
+    } finally {
+      authChecked = true;
+    }
+  }
+
+  // Semantic search wrapper (select pgvector or qdrant on server)
+  async function performSemanticSearch(query: string) {
+    try {
+      lastSearchQuery = query;
+      const endpoint = searchProvider === 'pgvector' ? '/api/search/pgvector' : '/api/search/qdrant';
+      const res = await apiFetch(endpoint, {
+        method: 'POST',
+        body: JSON.stringify({ q: query, top_k: 10, tags: true })
+      });
+      tagSearchResults = res?.results || [];
+    } catch (err) {
+      console.error('Semantic search failed', err);
+      tagSearchResults = [];
+    }
+  }
+
+  // Upload helper using MinIO presigned URL endpoint
+  async function uploadToMinio(file: File) {
+    try {
+      const presign = await apiFetch('/api/storage/presign', {
+        method: 'POST',
+        body: JSON.stringify({ fileName: file.name, contentType: file.type })
+      });
+      if (!presign?.url) throw new Error('Presign URL missing');
+      const putResp = await fetch(presign.url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!putResp.ok) throw new Error('Upload failed');
+      return presign.key || presign.objectKey || null;
+    } catch (err) {
+      console.error('MinIO upload failed', err);
+      return null;
+    }
+  }
+
   // Load evidence for the case with fallbacks
   async function loadEvidence() {
     try {
@@ -223,15 +289,16 @@ https://svelte.dev/e/js_parse_error -->
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
   }
-  // Derived evidence list filtered by search and type
+  // Reactive filtered list using Svelte 5 runes ($derived)
   let filteredEvidence = $derived(() => {
-    return (Array.isArray(evidenceItems) ? evidenceItems : []).filter((evidence: any) => {
-      const query = (searchQuery || '').toLowerCase();
+    const items = Array.isArray(evidenceItems) ? evidenceItems : [];
+    const query = (searchQuery || '').toLowerCase();
+    return items.filter((evidence: any) => {
       const matchesSearch =
         !query ||
-        (evidence.title?.toLowerCase?.().includes(query)) ||
-        (evidence.description?.toLowerCase?.().includes(query)) ||
-        (String(evidence.evidenceNumber || '').toLowerCase().includes(query));
+        String(evidence.title || '').toLowerCase().includes(query) ||
+        String(evidence.description || '').toLowerCase().includes(query) ||
+        String(evidence.evidenceNumber || '').toLowerCase().includes(query);
       const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
       return matchesSearch && matchesType;
     });
@@ -245,12 +312,13 @@ https://svelte.dev/e/js_parse_error -->
       await loadDetectiveInsights();
     }
   }
+
   // Analyze selected evidence
   async function analyzeSelectedEvidence() {
-    if ($selectedEvidence.length === 0) return;
+    if (selectedEvidence.length === 0) return;
     loadingAnalysis = true;
     try {
-      for (const evidenceId of $selectedEvidence) {
+      for (const evidenceId of selectedEvidence) {
         // API expects a string id; extend if options are supported
         await caseManagementService.analyzeEvidence(evidenceId);
       }
@@ -266,13 +334,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Handle evidence selection
   function toggleEvidenceSelection(evidenceId: string) {
-    selectedEvidence.update((selected: string[]) => {
-      if (selected.includes(evidenceId)) {
-        return selected.filter((id: string) => id !== evidenceId);
-      } else {
-        return [...selected, evidenceId];
-      }
-    });
+    if (selectedEvidence.includes(evidenceId)) {
+      selectedEvidence = selectedEvidence.filter(id => id !== evidenceId);
+    } else {
+      selectedEvidence = [...selectedEvidence, evidenceId];
+    }
   }
   // Handle drag and drop for evidence connections
   function handleDragStart(evt: DragEvent, evidenceId: string) {
@@ -292,8 +358,8 @@ https://svelte.dev/e/js_parse_error -->
   async function createEvidenceConnection(sourceId: string, targetId: string) {
     try {
       console.log(`Creating connection: ${sourceId} -> ${targetId}`);
-      connectionMap.update((connections: unknown[]) => [
-        ...(Array.isArray(connections) ? connections : []),
+      connectionMap = [
+        ...(Array.isArray(connectionMap) ? connectionMap : []),
         {
           type: 'manual',
           source: sourceId,
@@ -301,7 +367,7 @@ https://svelte.dev/e/js_parse_error -->
           strength: 1.0,
           label: 'User Created',
         }
-      ]);
+      ];
     } catch (error) {
       console.error('Failed to create connection:', error);
     }
@@ -318,9 +384,16 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Get analysis status color
-  function getAnalysisStatusColor(evidence: unknown) {
-    if (evidence.analyzed) return 'text-green-600';
-    if (loadingAnalysis && $selectedEvidence.includes(evidence.id)) return 'text-yellow-600';
+  function getAnalysisStatusColor(evidence: any) {
+    // runtime-guard evidence shape to avoid TS/runtime errors
+    if (evidence && (evidence as any).analyzed) return 'text-green-600';
+    if (
+      loadingAnalysis &&
+      evidence &&
+      typeof (evidence as any).id === 'string' &&
+      selectedEvidence.includes((evidence as any).id)
+    )
+      return 'text-yellow-600';
     return 'text-gray-400';
   }
   // Render network view
@@ -331,7 +404,7 @@ https://svelte.dev/e/js_parse_error -->
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
     // Draw connections
-    $connectionMap.forEach(connection => {
+    connectionMap.forEach(connection => {
       drawConnection(connection);
     });
     // Draw evidence nodes
@@ -339,13 +412,13 @@ https://svelte.dev/e/js_parse_error -->
       drawEvidenceNode(evidence, index);
     });
   }
-  function drawConnection(connection: unknown) {
+  function drawConnection(connection: any) {
     if (!ctx) return;
-    // Simplified connection drawing
+    const c: any = connection || {};
     ctx.beginPath();
-    ctx.strokeStyle = connection.type === 'entity' ? '#3b82f6' : '#ef4444';
-    ctx.lineWidth = connection.strength * 3;
-    ctx.setLineDash(connection.type === 'manual' ? [5, 5] : []);
+    ctx.strokeStyle = c.type === 'entity' ? '#3b82f6' : '#ef4444';
+    ctx.lineWidth = (c.strength || 0.5) * 3;
+    ctx.setLineDash(c.type === 'manual' ? [5, 5] : []);
     // Draw line between nodes (simplified positioning)
     ctx.moveTo(100, 100);
     ctx.lineTo(300, 200);
@@ -390,19 +463,26 @@ https://svelte.dev/e/js_parse_error -->
       </h2>
       <div class="evidence-stats">
         <span class="stat">
-          {$evidenceItems.length} Evidence Items
+          {evidenceItems.length} Evidence Items
         </span>
         <span class="stat">
-          {$evidenceItems.filter(item => item.length)} Analyzed
+          {evidenceItems.filter(item => item.analyzed).length} Analyzed
         </span>
         {#if detectiveMode}
           <span class="stat suspicious">
-            {$detectiveInsights.suspiciousPatterns?.length || 0} Patterns
+            {detectiveInsights?.suspiciousPatterns?.length || 0} Patterns
           </span>
         {/if}
       </div>
     </div>
     <div class="header-controls">
+      {#if authChecked}
+        {#if userSession}
+          <div class="user-badge">Signed in as {userSession.username}</div>
+        {:else}
+          <div class="user-badge read-only">Read-only (no session)</div>
+        {/if}
+      {/if}
       <!-- View Mode Toggle -->
       <div class="view-toggle">
         <button
@@ -446,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </button>
       <!-- Analysis Controls -->
-      {#if $selectedEvidence.length > 0}
+      {#if selectedEvidence.length > 0}
         <button
           class="analyze-btn"
           onclick={analyzeSelectedEvidence}
@@ -458,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
             Analyzing...
           {:else}
             <Brain class="w-4 h-4" />
-            Analyze ({$selectedEvidence.length})
+            Analyze ({selectedEvidence.length})
           {/if}
         </button>
       {/if}
@@ -516,7 +596,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
   <!-- Detective Insights Panel -->
-  {#if detectiveMode && $detectiveInsights.suspiciousPatterns?.length > 0}
+  {#if detectiveMode && detectiveInsights?.suspiciousPatterns?.length > 0}
     <div class="insights-panel">
       <div class="insights-header">
         <h3>🕵️ Detective Insights</h3>
@@ -526,7 +606,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       {#if showInsights}
         <div class="insights-content">
-          {#each $detectiveInsights.suspiciousPatterns as pattern}
+          {#each detectiveInsights?.suspiciousPatterns || [] as pattern}
             <div class="insight-item" class:high-confidence={pattern.confidence > 0.8}>
               <div class="insight-header">
                 <AlertTriangle class="w-4 h-4 text-yellow-500" />
@@ -546,20 +626,32 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Grid View -->
       <div class="evidence-grid">
         {#each filteredEvidence as evidence (evidence.id)}
+          {@const Icon = getEvidenceIcon(evidence.evidenceType)}
           <div
-            class="evidence-nier-bits-card"
-            class:selected={$selectedEvidence.includes(evidence.id)}
+            class="evidence-card"
+            class:selected={selectedEvidence.includes(evidence.id)}
             class:analyzed={evidence.analyzed}
             class:suspicious={evidence.suspiciousIndicators?.length > 0}
             draggable={detectiveMode}
             ondragstart={e => handleDragStart(e, evidence.id)}
             ondragover={e => e.preventDefault()}
-            ondrop={onclick}
+            ondrop={e => handleDrop(e, evidence.id)}
+            onclick={() => toggleEvidenceSelection(evidence.id)}
+            onkeydown={(e: KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleEvidenceSelection(evidence.id);
+              }
+            }}
+            role="button"
+            tabindex="0"
+            aria-pressed={selectedEvidence.includes(evidence.id)}
           >
             <!-- Evidence Header -->
             <div class="nier-bits-yorha-panel-header">
               <div class="evidence-icon">
-                <svelte:component this={getEvidenceIcon(evidence.evidenceType)} class="w-5 h-5" />
+                <!-- removed nested {@const} and now use Icon directly -->
+                <Icon class="w-5 h-5" />
               </div>
               <div class="evidence-info">
                 <h4 class="evidence-title">{evidence.title}</h4>
@@ -619,6 +711,29 @@ https://svelte.dev/e/js_parse_error -->
                   Analyzed: {new Date(evidence.dateAnalyzed).toLocaleDateString()}
                 </span>
               {/if}
+              <!-- quick semantic search -->
+              <button class="search-related" onclick={() => performSemanticSearch(evidence.title || evidence.description || '')}>
+                Search Related
+              </button>
+              {#if !readOnly}
+                <label class="upload-btn">
+                  <input type="file" style="display:none" onchange={async e => {
+                    const f = (e.target as HTMLInputElement).files?.[0];
+                    if (f) {
+                      const key = await uploadToMinio(f);
+                      if (key) {
+                        // notify backend to attach file to evidence (best-effort)
+                        await apiFetch('/api/evidence/attach-file', {
+                          method: 'POST',
+                          body: JSON.stringify({ evidenceId: evidence.id, objectKey: key })
+                        }).catch(err => console.warn('Attach file failed', err));
+                        await loadEvidence();
+                      }
+                    }
+                  }} />
+                  Upload File
+                </label>
+              {/if}
             </div>
           </div>
         {/each}
@@ -627,9 +742,11 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Timeline View -->
       <div class="evidence-timeline">
         {#each filteredEvidence.sort((a, b) => new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime()) as evidence, index (evidence.id)}
+          {@const Icon = getEvidenceIcon(evidence.evidenceType)}
           <div class="timeline-item">
             <div class="timeline-marker">
-              <svelte:component this={getEvidenceIcon(evidence.evidenceType)} class="w-4 h-4" />
+              <!-- removed nested {@const} and now use Icon directly -->
+              <Icon class="w-4 h-4" />
             </div>
             <div class="timeline-content">
               <div class="timeline-header">
@@ -679,7 +796,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .board-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
     background: white;
@@ -743,10 +860,13 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     color: #64748b;
-    transition: all 0.2s;
+    transition: color 0.2s ease, background 0.2s ease;
   }
+  /* Provide a minimal non-empty hover rule to fix empty ruleset error */
   .view-btn:hover {
-    /* optional hover styles if needed */
+    background: rgba(59,130,246,0.06); /* subtle blue tint */
+    color: #1e40af;
+    transform: translateY(-1px);
   }
   .view-btn.active {
     background: white;
@@ -763,7 +883,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
   }
   .detective-toggle:hover {
     border-color: #3b82f6;
@@ -803,8 +923,11 @@ https://svelte.dev/e/js_parse_error -->
     color: #64748b;
     transition: all 0.2s;
   }
+  /* Replaced empty ruleset with a minimal non-empty hover style to avoid "Do not use empty rulesets" error */
   .filter-toggle:hover {
-    /* optional hover styles */
+    background: rgba(59,130,246,0.04); /* subtle tint */
+    color: #1e40af;
+    transform: translateY(-1px);
   }
   .filter-toggle.active {
     border-color: #3b82f6;
@@ -854,7 +977,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
   }
   .insights-panel {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.06);
     border: 1px solid #fecaca;
     border-radius: 0.5rem;
     margin: 1rem 1.5rem;
@@ -862,10 +985,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   .insights-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.12);
     font-weight: 600;
   }
   .insights-content {
@@ -878,7 +1001,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 0.5rem;
     border-left: 4px solid #f59e0b;
   }
-  .insight-.high-confidence {
+  .insight-item.high-confidence {
     border-left-color: #dc2626;
   }
   .insight-header {
@@ -907,7 +1030,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.75rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s ease;
     position: relative;
   }
   .evidence-card:hover {
@@ -946,7 +1069,7 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0 0 0.25rem 0;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsi;
+    text-overflow: ellipsis;
   }
   .evidence-number {
     font-size: 0.875rem;
@@ -991,15 +1114,15 @@ https://svelte.dev/e/js_parse_error -->
   }
   .suspicious-badge {
     background: #fef3c7;
-    color: #92400;
+    color: #92400e;
   }
   .references-badge {
-    background: #dbeaf;
+    background: #dbeafe;
     color: #1d4ed8;
   }
   .card-footer {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.75rem;
     color: #64748b;
   }
@@ -1096,7 +1219,7 @@ https://svelte.dev/e/js_parse_error -->
       gap: 1rem;
     }
     .header-controls {
-      justify-content: space-betwee;
+      justify-content: space-between;
     }
     .filters-panel {
       flex-direction: column;
@@ -1111,3 +1234,5 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+
+

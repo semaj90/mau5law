@@ -22,7 +22,7 @@ export default ;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from "$lib/components/ui/label";
+  import Label from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
     AlertCircle,

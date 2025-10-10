@@ -40,42 +40,52 @@ https://svelte.dev/e/expected_token -->
     Zap
   } from 'lucide-svelte';
 
-  // Props
-  export let placeholder: string = 'Search legal documents, cases, evidence...';
-  export let showFilters: boolean = true;
-  export let showStats: boolean = true;
-  export let showAdvanced: boolean = false;
-  export let maxResults: number = 20;
-  export let onResultClick: ((r: InstantSearchResult) => void) | null = null;
-  export let onResultAction: ((r: InstantSearchResult, a: string) => void) | null = null;
-  export let class: string | undefined = undefined;
-  const className = class ?? '';
+  // Props using Svelte 5 syntax
+  let {
+    placeholder = 'Search legal documents, cases, evidence...',
+    showFilters = true,
+    showStats = true,
+    showAdvanced = false,
+    maxResults = 20,
+    onResultClick,
+    onResultAction,
+    class: className = ''
+  }: {
+    placeholder?: string;
+    showFilters?: boolean;
+    showStats?: boolean;
+    showAdvanced?: boolean;
+    maxResults?: number;
+    onResultClick?: (r: InstantSearchResult) => void;
+    onResultAction?: (r: InstantSearchResult, a: string) => void;
+    class?: string;
+  } = $props();
 
   // Search state
-  let searchQuery = '';
-  let searchResults: InstantSearchResult[] = [];
-  let isSearching = false;
-  let showFiltersPanel = false;
-  let searchStartTime = 0;
-  let lastSearchTime = 0;
+  let searchQuery = $state('');
+  let searchResults = $state<InstantSearchResult[]>([]);
+  let isSearching = $state(false);
+  let showFiltersPanel = $state(false);
+  let searchStartTime = $state(0);
+  let lastSearchTime = $state(0);
 
   // Filters
-  let selectedFilters: SearchFilters = {
+  let selectedFilters = $state<SearchFilters>({
     documentTypes: [],
     riskLevels: [],
     jurisdictions: [],
     confidenceMin: 0.5,
     priorityMin: 50
-  };
+  });
 
   // Stats
-  let searchStats = {
+  let searchStats = $state({
     totalSearches: 0,
     averageResponseTime: 0,
     cacheHitRate: 0,
     popularQueries: [] as string[],
     performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 }
-  };
+  });
 
   // Search options
   const documentTypes = [
@@ -140,7 +150,7 @@ https://svelte.dev/e/expected_token -->
   });
 
   // Reactive debounce: watch searchQuery changes
-  $: {
+  $effect(() => {
     if (searchTimeout) {
       clearTimeout(searchTimeout);
       searchTimeout = null;
@@ -156,7 +166,7 @@ https://svelte.dev/e/expected_token -->
         await performSearch();
       }, 150);
     }
-  }
+  });
 
   async function performSearch() {
     if (!searchQuery || !searchQuery.trim()) {

@@ -6,7 +6,7 @@ Compact AI recommendations component for sidebar/dashboard use
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import {
     Card,
     CardHeader,

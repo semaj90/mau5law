@@ -3,7 +3,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from "$lib/components/ui/textarea/index";
+  import Textarea from "$lib/components/ui/textarea/Textarea.svelte";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
   import AIChatMessage from "./AIChatMessage.svelte";

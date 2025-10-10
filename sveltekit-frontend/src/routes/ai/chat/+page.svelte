@@ -1,20 +1,90 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-import { Button } from '$lib/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-import { Dialog } from '$lib/components/ui/dialog';
+  // Svelte runes are auto-imported - removed unused onMount import
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Card from '$lib/components/ui/card/Card.svelte';
+  import CardContent from '$lib/components/ui/card/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import { cn } from '$lib/utils';
-  import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+  import type { SystemStatus } from '$lib/types/ai';
+
+  // --- added: explicit local domain types to avoid `any` ---
+  // Local chat message shape used by this page (matches the fields referenced in template/code)
+  type LocalChatMessage = {
+    id: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+    timestamp: Date;
+    // allow any extras from server or stubs
+    [k: string]: any;
+  };
+
+  type Activity = {
+    description?: string;
+    type?: string;
+    timestamp?: string | number | Date;
+  };
+
+  type EvidenceSource = {
+    id?: string;
+    title?: string;
+    name?: string;
+    type?: string;
+    content?: string;
+    description?: string;
+    confidence?: number;
+  };
+
+  type POI = {
+    id: string;
+    name: string;
+    type?: string;
+    activities?: Activity[];
+    confidence?: number;
+    evidenceSources?: EvidenceSource[];
+    relationships?: Array<{ target?: string; type?: string }>;
+  };
+
+  type EvidenceReport = {
+    id: string;
+    title?: string;
+    type?: string;
+    date?: string;
+    content?: string;
+    confidence?: number;
+  };
+
+  type UserActivity = {
+    action: string;
+    description?: string;
+    details?: string;
+    timestamp?: string | number | Date;
+  };
+
+  type FocusMetrics = {
+    sessionsToday: number;
+    totalTime: number;
+    casesAnalyzed: number;
+    evidenceReviewed: number;
+  };
+
+  // Extend imported SystemStatus locally to include optional gpu flag
+  // include the optional flags we display; Partial ensures extra keys are allowed
+  type LocalSystemStatus = SystemStatus & Partial<Record<'gpu' | 'ollama' | 'enhancedRAG' | 'postgres' | 'neo4j', boolean>>;
+
+  // --- end added types ---
 
   // Svelte 5 runes - proper syntax
-  let messages = $state<ChatMessage[]>([]);
+  let messages = $state<LocalChatMessage[]>([]);
   let currentMessage = $state('');
   let isStreaming = $state(false);
   let error = $state('');
   let conversationId = $state<string | null>(null);
-  let userId = $state('mock-user-id'); // TODO: Get from auth
-  let systemStatus = $state<SystemStatus>({
+  let userId = $state('mock-user-id');
+
+  // Use the LocalSystemStatus type so `gpu` is allowed and avoid type mismatch
+  let systemStatus = $state<LocalSystemStatus>({
     gpu: false,
     ollama: false,
     enhancedRAG: false,
@@ -34,37 +104,51 @@ $effect(() => {
 });
 
   // POI Timeline State
-  let poiTimelineData = $state<any[]>([]);
-  let selectedPOI = $state<any>(null);
+  let poiTimelineData = $state<POI[]>([]);
+  let selectedPOI = $state<POI | null>(null);
   let showPOIDialog = $state(false);
   let timelineLoading = $state(false);
   let showTimeline = $state(false);
-  let evidenceReports = $state<any[]>([]);
-  let ragAnalysisResults = $state<any>({});
+  let evidenceReports = $state<EvidenceReport[]>([]);
+  type RagPerson = {
+    id: string;
+    name: string;
+    type?: string;
+    timeline?: Activity[];
+    confidence?: number;
+    sources?: EvidenceSource[];
+    relationships?: Array<{ target?: string; type?: string }>;
+  };
+
+  type RagAnalysisResponse = {
+    persons?: RagPerson[];
+  };
+  let ragAnalysisResults = $state<RagAnalysisResponse | null>(null);
 
   // User Activity Timeline State
-  let userActivityTimeline = $state<any[]>([]);
+  let userActivityTimeline = $state<UserActivity[]>([]);
   let activityLoading = $state(false);
-  let focusMetrics = $state({
+  let focusMetrics = $state<FocusMetrics>({
     sessionsToday: 0,
     totalTime: 0,
     casesAnalyzed: 0,
     evidenceReviewed: 0
   });
 
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<void> {
     try {
       const res = await fetch('/api/v1/cluster/health');
       if (!res.ok) {
         throw new Error(`Health check failed: ${res.status}`);
       }
-      const data = await res.json();
+      // avoid shadowing top-level `data` prop
+      const healthData = await res.json();
       systemStatus = {
-        gpu: data?.services?.gpu === 'accelerated',
-        ollama: data?.services?.ollama === 'healthy',
-        enhancedRAG: data?.services?.enhancedRAG === 'running',
-        postgres: data?.services?.postgres === 'connected',
-        neo4j: data?.services?.neo4j === 'active'
+        gpu: healthData?.services?.gpu === 'accelerated',
+        ollama: healthData?.services?.ollama === 'healthy',
+        enhancedRAG: healthData?.services?.enhancedRAG === 'running',
+        postgres: healthData?.services?.postgres === 'connected',
+        neo4j: healthData?.services?.neo4j === 'active'
       }
     } catch (e: unknown) {
       console.error('Health check error:', e);
@@ -86,10 +170,10 @@ $effect(() => {
     }
   }
 
-  async function sendMessage() {
+  async function sendMessage(): Promise<void> {
     if (!currentMessage.trim() || isStreaming) return;
 
-    const userMessage: ChatMessage = {
+    const userMessage: LocalChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
@@ -102,10 +186,8 @@ $effect(() => {
     error = '';
 
     try {
-      // Use proper Server-Sent Events (SSE) endpoint
-      const eventSource = new EventSource('/api/ai/chat-sse');
-
-      // Send message data via POST first to initiate the stream
+      // removed unused EventSource usage (was causing unnecessary connection)
+      // Send message data via POST and stream the response body
       const initResponse = await fetch('/api/ai/chat-sse', {
         method: 'POST',
         headers: {
@@ -124,7 +206,7 @@ $effect(() => {
         throw new Error(`HTTP ${initResponse.status}`);
       }
 
-      const aiMessage: ChatMessage = {
+      const aiMessage: LocalChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: '',
@@ -132,53 +214,82 @@ $effect(() => {
       }
       messages = [...messages, aiMessage];
 
-      // Handle SSE streaming with proper event handling
+      // Handle fetch streaming response body
       if (initResponse.body) {
         const reader = initResponse.body.getReader();
         const decoder = new TextDecoder();
+        let buffer = '';
         try {
+          let sepIndex: number;
           while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n'); // Declared 'lines' here
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                try {
-                  const eventData = JSON.parse(line.slice(6));
-                  switch (eventData.type) {
-                    case 'connection':
-                      if (eventData.conversationId) {
-                        conversationId = eventData.conversationId;
-                      }
-                      break;
-                    case 'token':
-                      aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
-                      // Trigger Svelte 5 reactivity
-                      messages = [...messages];
-                      break;
-                    case 'complete':
-                      aiMessage.content = eventData.fullResponse; // Corrected typo
-                      messages = [...messages];
-                      isStreaming = false;
-                      break;
-                    case 'error':
-                      error = eventData.error;
-                      isStreaming = false;
-                      break;
-                    case 'close':
-                      isStreaming = false;
-                      break;
-                  }
-                } catch (parseError) {
-                  console.warn('Failed to parse SSE data:', line);
+            if (done) {
+              // process any remaining buffer once
+              if (buffer.length === 0) break;
+            } else {
+              buffer += decoder.decode(value, { stream: true });
+            }
+
+            // SSE events are delimited by a blank line
+            while ((sepIndex = buffer.indexOf('\n\n')) !== -1) {
+              const packet = buffer.slice(0, sepIndex);
+              buffer = buffer.slice(sepIndex + 2);
+
+              // gather all 'data:' lines for this packet (handles multi-line data)
+              const dataLines = packet
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(Boolean)
+                .filter(l => l.startsWith('data:'))
+                .map(l => l.replace(/^data:\s*/, ''))
+                .join('\n');
+
+              if (!dataLines) continue;
+              if (dataLines === '[DONE]') {
+                isStreaming = false;
+                break;
+              }
+
+              try {
+                const eventData = JSON.parse(dataLines);
+                switch (eventData.type) {
+                  case 'connection':
+                    if (eventData.conversationId) conversationId = eventData.conversationId;
+                    break;
+                  case 'token':
+                    if (eventData.fullResponse !== undefined && eventData.fullResponse !== null) {
+                      aiMessage.content = eventData.fullResponse;
+                    } else if (eventData.content) {
+                      aiMessage.content += eventData.content;
+                    }
+                    messages = [...messages];
+                    break;
+                  case 'complete':
+                    aiMessage.content = eventData.fullResponse ?? aiMessage.content;
+                    messages = [...messages];
+                    isStreaming = false;
+                    break;
+                  case 'error':
+                    error = eventData.error ?? 'Unknown error';
+                    isStreaming = false;
+                    break;
+                  case 'close':
+                    isStreaming = false;
+                    break;
                 }
+              } catch (parseError) {
+                console.warn('Failed to parse SSE payload:', dataLines);
               }
             }
+            if (!isStreaming) break;
           }
         } catch (streamError) {
           console.error('SSE streaming error:', streamError);
           error = 'Stream connection failed';
+        } finally {
+          // ensure reader lock is released
+          try { reader.cancel(); } catch {}
+          try { reader.releaseLock?.(); } catch {}
         }
       }
     } catch (e: unknown) {
@@ -197,7 +308,7 @@ $effect(() => {
         "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
       ];
       const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
-      const mockAiMessage: ChatMessage = {
+      const mockAiMessage: LocalChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
@@ -210,25 +321,25 @@ $effect(() => {
     }
   }
 
-  async function handleQuickQuery(query: string) {
+  async function handleQuickQuery(query: string): Promise<void> {
     currentMessage = query;
     await sendMessage();
   }
 
-  function handleKeydown(e: KeyboardEvent) {
+  function handleKeydown(e: KeyboardEvent): void {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   }
 
-  function clearChat() {
+  function clearChat(): void {
     messages = [];
     error = '';
   }
 
   // Semantic RAG-based POI Timeline Functions
-  async function loadEvidenceReports() {
+  async function loadEvidenceReports(): Promise<void> {
     try {
       const response = await fetch('/api/v1/evidence/reports'); // Declared 'response' here
       if (!response.ok) {
@@ -265,7 +376,7 @@ $effect(() => {
     }
   }
 
-  async function analyzePersonsOfInterest() {
+  async function analyzePersonsOfInterest(): Promise<void> {
     if (evidenceReports.length === 0) {
       await loadEvidenceReports();
     }
@@ -282,9 +393,9 @@ $effect(() => {
         })
       });
       if (ragResponse.ok) {
-        ragAnalysisResults = await ragResponse.json();
+        ragAnalysisResults = await ragResponse.json() as RagAnalysisResponse;
         // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({ // Explicitly type person
+        poiTimelineData = ragAnalysisResults?.persons?.map((person: RagPerson): POI => ({
           id: person.id,
           name: person.name,
           type: person.type || 'person',
@@ -303,7 +414,7 @@ $effect(() => {
     }
   }
 
-  async function generateUserActivityTimeline() {
+  async function generateUserActivityTimeline(): Promise<void> {
     activityLoading = true;
     try {
       const response = await fetch('/api/v1/user/activity'); // Declared 'response' here
@@ -324,12 +435,12 @@ $effect(() => {
     }
   }
 
-  function selectPOI(poi: any) { // Explicitly type poi
+  function selectPOI(poi: POI): void {
     selectedPOI = poi;
     showPOIDialog = true;
   }
 
-  function closePOIDetails() {
+  function closePOIDetails(): void {
     selectedPOI = null;
     showPOIDialog = false;
   }
@@ -394,7 +505,7 @@ $effect(() => {
             variant="secondary"
             on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
-            ariaLabel="Explain contract formation requirements"
+            aria-label="Explain contract formation requirements"
           >
             Contract Law
           </Button>
@@ -403,7 +514,7 @@ $effect(() => {
             variant="secondary"
             on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
-            ariaLabel="What is the chain of custody for evidence?"
+            aria-label="What is the chain of custody for evidence?"
           >
             Evidence Rules
           </Button>
@@ -412,7 +523,7 @@ $effect(() => {
             variant="secondary"
             on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
-            ariaLabel="Explain liability limitations in contracts"
+            aria-label="Explain liability limitations in contracts"
           >
             Liability
           </Button>
@@ -421,7 +532,7 @@ $effect(() => {
             variant="secondary"
             on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
-            ariaLabel="What are the elements of negligence?"
+            aria-label="What are the elements of negligence?"
           >
             Tort Law
           </Button>
@@ -436,10 +547,12 @@ $effect(() => {
         <Card class="flex flex-col h-[70vh] nes-container">
           <CardHeader>
             <div class="flex justify-between items-center">
-              <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
+              <span class={isStreaming
+                ? 'px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white'
+                : 'px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700'}>
                 {isStreaming ? 'Streaming...' : 'Ready'}
               </span>
-              <Button variant="secondary" class="bits-btn bits-nes-btn" on:click={clearChat} disabled={isStreaming} ariaLabel="Clear chat">
+              <Button variant="secondary" class="bits-btn bits-nes-btn" on:click={clearChat} disabled={isStreaming} aria-label="Clear chat">
                 Clear
               </Button>
             </div>
@@ -489,15 +602,15 @@ $effect(() => {
             <div class="flex gap-2">
               <input
                 bind:value={currentMessage}
-                onkeydown={handleKeydown}
+                on:keydown={handleKeydown}
                 class="flex-1 p-2 border rounded-md"
                 placeholder="Ask a legal question..."
               />
               <Button
-                onclick={sendMessage}
+                on:click={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn"
-                ariaLabel="Send message"
+                aria-label="Send message"
               >
                 {#if isStreaming}
                   <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -523,7 +636,7 @@ $effect(() => {
                 variant="secondary"
                 on:click={() => showTimeline = false}
                 class="nes-btn bits-btn"
-                ariaLabel="Close timeline"
+                aria-label="Close timeline"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -546,7 +659,7 @@ $effect(() => {
                       variant="secondary"
                       on:click={() => selectPOI(poi)}
                       class="nes-btn bits-btn"
-                      ariaLabel={`View details for ${poi.name}`}
+                      aria-label={`View details for ${poi.name}`}
                     >
                       View Details
                     </Button>
@@ -560,9 +673,11 @@ $effect(() => {
                           <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
                             <div class="font-medium">{activity.description || activity.type}</div>
-                            <div class="text-gray-500">
-                              {new Date(activity.timestamp).toLocaleDateString()}
-                            </div>
+                            {#if activity.timestamp}
+                              <div class="text-gray-500">
+                                {new Date(activity.timestamp).toLocaleDateString()}
+                              </div>
+                            {/if}
                           </div>
                         </div>
                       {/each}
@@ -615,12 +730,14 @@ $effect(() => {
                   <div class="flex-1">
                     <div class="font-medium">{activity.action}</div>
                     <div class="text-sm text-gray-600">
-                      {activity.description || acti(vity as CustomEvent).details}
+                      {activity.description || activity.details}
                     </div>
                   </div>
-                  <div class="text-xs text-gray-500">
-                    {new Date(activity.timestamp).toLocaleTimeString()}
-                  </div>
+                  {#if activity.timestamp}
+                    <div class="text-xs text-gray-500">
+                      {new Date(activity.timestamp).toLocaleTimeString()}
+                    </div>
+                  {/if}
                 </div>
               {/each}
             </CardContent>
@@ -779,13 +896,15 @@ $effect(() => {
               </CardContent>
             </Card>
           {/if}
+        </div>
       </div>
     </div>
   </div>
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
+  <Dialog bind:open={showPOIDialog} size="lg">
+    {#snippet children()}
     <!-- Modal Header -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -799,9 +918,11 @@ $effect(() => {
           <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
             {selectedPOI.type}
           </span>
-          <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-            Confidence: {Math.round(selectedPOI.confidence * 100)}%
-          </span>
+          {#if selectedPOI.confidence !== undefined}
+            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+              Confidence: {Math.round(selectedPOI.confidence * 100)}%
+            </span>
+          {/if}
         </div>
       </div>
       <Button
@@ -809,7 +930,7 @@ $effect(() => {
         size="sm"
         on:click={closePOIDetails}
         class="bits-btn"
-        ariaLabel="Close"
+        aria-label="Close"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -829,7 +950,9 @@ $effect(() => {
             <div class="relative">
               <div class="absolute -left-[21px] top-1.5 w-2 h-2 bg-purple-500 rounded-full"></div>
               <div class="font-medium">{activity.description || activity.type}</div>
-              <div class="text-sm text-gray-500">{new Date(activity.timestamp).toLocaleString()}</div>
+              {#if activity.timestamp}
+                <div class="text-sm text-gray-500">{new Date(activity.timestamp).toLocaleString()}</div>
+              {/if}
             </div>
           {/each}
           {#if !selectedPOI.activities || selectedPOI.activities.length === 0}
@@ -902,7 +1025,7 @@ $effect(() => {
         variant="secondary"
         on:click={closePOIDetails}
         class="bits-btn"
-        ariaLabel="Close person of interest details"
+        aria-label="Close"
       >
         Close
       </Button>
@@ -913,11 +1036,11 @@ $effect(() => {
         }}
         disabled={isStreaming}
         class="nes-btn is-primary bits-btn"
-        ariaLabel="Ask AI about this person"
+        aria-label="Ask AI about this person"
       >
         Ask AI About This Person
       </Button>
     </div>
+    {/snippet}
   </Dialog>
 {/if}
-</div>

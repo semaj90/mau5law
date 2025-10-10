@@ -52,8 +52,8 @@ export class SIMDVectorJsonParser {
       enabledInstructions: this.detectSIMDCapabilities(),
       memoryAlignment: 32, // 256-bit alignment for AVX
       parallelParsers: Math.min(4, Math.ceil(require('os').cpus().length / 2)),
-      ...config
-    }
+      ...config,
+    };
     this.initializeMemoryPool();
     this.initializeParseWorkers();
     console.log(`🚀 SIMD Vector Parser initialized:`);
@@ -64,7 +64,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Parse batch of JSON vector strings with SIMD acceleration
-   */;
+   */
   async parseBatch(jsonStrings: string[]): Promise<VectorParseResult> {
     const startTime = performance.now();
     const totalVectors = jsonStrings.length;
@@ -89,8 +89,8 @@ export class SIMDVectorJsonParser {
         vectorsPerSecond,
         memoryUsed: process.memoryUsage().heapUsed / 1024 / 1024,
         simdUtilization: this.calculateSIMDUtilization(chunkResults),
-        cacheHitRate: this.calculateCacheHitRate(totalVectors)
-      }
+        cacheHitRate: this.calculateCacheHitRate(totalVectors),
+      };
       console.log(`⚡ SIMD JSON Parse: ${totalVectors} vectors in ${parseTime.toFixed(2)}ms`);
       console.log(`📊 Throughput: ${vectorsPerSecond.toFixed(0)} vectors/second`);
       console.log(`🧠 SIMD Utilization: ${(mergedResult.parseStatistics.simdUtilization * 100).toFixed(1)}%`);
@@ -101,7 +101,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Detect available SIMD instruction sets
-   */;
+   */
   private detectSIMDCapabilities(): SIMDInstructionSet[] {
     const capabilities: SIMDInstructionSet[] = [];
     try {
@@ -124,7 +124,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Initialize memory pool with aligned allocations for SIMD
-   */;
+   */
   private initializeMemoryPool(): void {
     const poolSize = 10; // Pre-allocate 10 buffers
     for (let i = 0; i < poolSize; i++) {
@@ -136,7 +136,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Initialize worker threads for parallel SIMD parsing
-   */;
+   */
   private initializeParseWorkers(): void {
     // Workers would be initialized here in production
     // For now, we'll simulate with sync processing
@@ -144,7 +144,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Allocate aligned memory for SIMD operations
-   */;
+   */
   private allocateAlignedMemory(vectorCount: number): ArrayBuffer {
     const requiredSize = vectorCount * this.config.vectorDimensions * 4 + this.config.memoryAlignment;
     // Try to get from pool first
@@ -157,7 +157,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Release aligned memory back to pool
-   */;
+   */
   private releaseAlignedMemory(buffer: ArrayBuffer): void {
     if (this.memoryPool.length < 20) { // Cap pool size
       this.memoryPool.push(buffer);
@@ -165,12 +165,12 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Create chunks for parallel processing
-   */;
+   */
   private createParseChunks(jsonStrings: string[]): string[][] {
     const chunkSize = Math.ceil(jsonStrings.length / this.config.parallelParsers);
     const chunks: string[][] = [];
     for (let i = 0; i < jsonStrings.length; i += chunkSize) {
-      chunks.push(jsonStrings.slice(i, i + chunkSize);
+      chunks.push(jsonStrings.slice(i, i + chunkSize));
     }
     return chunks;
   }
@@ -178,9 +178,9 @@ export class SIMDVectorJsonParser {
    * Parse chunk using SIMD acceleration
    */
   private async parseChunkSIMD(
-    chunk: string[]
-    chunkIndex: number
-    alignedMemory: ArrayBuffer;
+    chunk: string[],
+    chunkIndex: number,
+    alignedMemory: ArrayBuffer
   ): Promise<ChunkParseResult> {
     const startTime = performance.now();
     const vectors: Float32Array[] = [];
@@ -196,7 +196,7 @@ export class SIMDVectorJsonParser {
       const cachedVector = this.parseCache.get(cacheKey);
       if (cachedVector) {
         vectors.push(cachedVector);
-        metadata.push(this.createMetadata(cacheKey, cachedVector);
+        metadata.push(this.createMetadata(cacheKey, cachedVector));
         continue;
       }
       try {
@@ -205,7 +205,7 @@ export class SIMDVectorJsonParser {
         // Extract vector data with SIMD processing
         const vector = this.extractVectorSIMD(parsed, alignedMemory, alignedOffset + i * this.config.vectorDimensions * 4);
         vectors.push(vector);
-        metadata.push(this.createMetadata(cacheKey, vector);
+        metadata.push(this.createMetadata(cacheKey, vector));
         // Cache the result
         if (this.parseCache.size < 10000) { // Cap cache size
           this.parseCache.set(cacheKey, vector);
@@ -222,16 +222,16 @@ export class SIMDVectorJsonParser {
       metadata,
       parseTime,
       simdOperations,
-      chunkIndex
-    }
+      chunkIndex,
+    };
   }
   /**
    * Extract vector using SIMD operations
    */
   private extractVectorSIMD(
-    parsed: any
-    alignedMemory: ArrayBuffer;
-    offset: number;
+    parsed: any,
+    alignedMemory: ArrayBuffer,
+    offset: number
   ): Float32Array {
     // Create aligned view into memory
     const alignedView = new Float32Array(alignedMemory, offset, this.config.vectorDimensions);
@@ -262,56 +262,56 @@ export class SIMDVectorJsonParser {
   }
   /**
    * SIMD copy using AVX2 (simulated)
-   */;
+   */
   private copyVectorAVX2(source: any[], target: Float32Array): void {
     const simdWidth = 8; // AVX2 processes 8 floats
     let i = 0;
     // Process in SIMD chunks
-    for (i + simdWidth <= source.length; i += simdWidth) {
+    for (; i + simdWidth <= source.length; i += simdWidth) {
       // Simulated AVX2 operation
       for (let j = 0; j < simdWidth; j++) {
         target[i + j] = parseFloat(source[i + j]);
       }
     }
     // Handle remaining elements
-    for (i < source.length && i < target.length; i++) {
+    for (; i < source.length && i < target.length; i++) {
       target[i] = parseFloat(source[i]);
     }
   }
   /**
    * SIMD copy using SSE4 (simulated)
-   */;
+   */
   private copyVectorSSE4(source: any[], target: Float32Array): void {
     const simdWidth = 4; // SSE4 processes 4 floats
     let i = 0;
     // Process in SIMD chunks
-    for (i + simdWidth <= source.length; i += simdWidth) {
+    for (; i + simdWidth <= source.length; i += simdWidth) {
       // Simulated SSE4 operation
       for (let j = 0; j < simdWidth; j++) {
         target[i + j] = parseFloat(source[i + j]);
       }
     }
     // Handle remaining elements
-    for (i < source.length && i < target.length; i++) {
+    for (; i < source.length && i < target.length; i++) {
       target[i] = parseFloat(source[i]);
     }
   }
   /**
    * Create metadata for parsed vector
-   */;
+   */
   private createMetadata(cacheKey: string, vector: Float32Array): ParsedMetadata {
     return {
-      documentId: cacheKey
+      documentId: cacheKey,
       embeddingHash: this.hashVector(vector),
       dimensions: vector.length,
       norm: this.calculateNorm(vector),
       timestamp: Date.now(),
-      parseTime: 0 // Would be measured per vector in production
-    }
+      parseTime: 0, // Would be measured per vector in production
+    };
   }
   /**
    * Fast string hashing
-   */;
+   */
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -323,10 +323,10 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Fast vector hashing
-   */;
+   */
   private hashVector(vector: Float32Array): string {
     let hash = 0;
-    const step = Math.max(1, Math.floor(vector.length / 100); // Sample for speed
+    const step = Math.max(1, Math.floor(vector.length / 100)); // Sample for speed
     for (let i = 0; i < vector.length; i += step) {
       hash = ((hash << 5) - hash + vector[i] * 10000) & 0xffffffff;
     }
@@ -334,21 +334,21 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Calculate vector L2 norm
-   */;
+   */
   private calculateNorm(vector: Float32Array): number {
     let sum = 0;
     if (this.config.enabledInstructions.includes('AVX2')) {
       // AVX2 optimized norm calculation
       const simdWidth = 8;
       let i = 0;
-      for (i + simdWidth <= vector.length; i += simdWidth) {
+      for (; i + simdWidth <= vector.length; i += simdWidth) {
         for (let j = 0; j < simdWidth; j++) {
           const val = vector[i + j];
           sum += val * val;
         }
       }
       // Handle remaining
-      for (i < vector.length; i++) {
+      for (; i < vector.length; i++) {
         const val = vector[i];
         sum += val * val;
       }
@@ -363,7 +363,7 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Merge results from all chunks
-   */;
+   */
   private mergeChunkResults(chunkResults: ChunkParseResult[]): VectorParseResult {
     const allVectors: Float32Array[] = [];
     const allMetadata: ParsedMetadata[] = [];
@@ -372,21 +372,21 @@ export class SIMDVectorJsonParser {
       allMetadata.push(...result.metadata);
     }
     return {
-      vectors: allVectors;
-      metadata: allMetadata
+      vectors: allVectors,
+      metadata: allMetadata,
       parseStatistics: {
         totalVectors: allVectors.length,
         parseTime: 0, // Will be filled by caller
         vectorsPerSecond: 0, // Will be filled by caller
         memoryUsed: 0, // Will be filled by caller
         simdUtilization: 0, // Will be filled by caller
-        cacheHitRate: 0 // Will be filled by caller
-      }
-    }
+        cacheHitRate: 0, // Will be filled by caller
+      },
+    };
   }
   /**
    * Calculate SIMD utilization across chunks
-   */;
+   */
   private calculateSIMDUtilization(chunkResults: ChunkParseResult[]): number {
     const totalOperations = chunkResults.reduce((sum, result) => sum + result.vectors.length, 0);
     const simdOperations = chunkResults.reduce((sum, result) => sum + result.simdOperations, 0);
@@ -394,28 +394,28 @@ export class SIMDVectorJsonParser {
   }
   /**
    * Calculate cache hit rate
-   */;
+   */
   private calculateCacheHitRate(totalVectors: number): number {
     const cacheSize = this.parseCache.size;
     return Math.min(1, cacheSize / totalVectors);
   }
   /**
    * Set vector dimensions
-   */;
+   */
   setVectorDimensions(dimensions: number): void {
     this.config.vectorDimensions = dimensions;
     console.log(`📏 Vector dimensions set to: ${dimensions}`);
   }
   /**
    * Enable specific SIMD instructions
-   */;
+   */
   enableSIMDInstructions(instructions: SIMDInstructionSet[]): void {
     this.config.enabledInstructions = instructions;
     console.log(`🚀 SIMD instructions enabled: ${instructions.join(', ')}`);
   }
   /**
    * Get parser statistics
-   */;
+   */
   getStatistics(): SIMDParserStatistics {
     return {
       cacheSize: this.parseCache.size,
@@ -423,24 +423,24 @@ export class SIMDVectorJsonParser {
       enabledSIMD: this.config.enabledInstructions,
       vectorDimensions: this.config.vectorDimensions,
       batchSize: this.config.batchSize,
-      parallelParsers: this.config.parallelParsers
-    }
+      parallelParsers: this.config.parallelParsers,
+    };
   }
   /**
    * Clear cache and reset
-   */;
+   */
   reset(): void {
     this.parseCache.clear();
     console.log('🧹 SIMD parser cache cleared');
   }
   /**
    * Cleanup resources
-   */;
+   */
   cleanup(): void {
     this.parseCache.clear();
     this.memoryPool.length = 0;
     // Terminate workers
-    this.parseWorkers.forEach(worker => worker.terminate();
+    this.parseWorkers.forEach(worker => worker.terminate());
     this.parseWorkers.length = 0;
     console.log('🧹 SIMD parser cleanup completed');
   }
@@ -469,5 +469,5 @@ export {
   ParsedMetadata,
   ParseStatistics,
   SIMDInstructionSet,
-  SIMDParserConfig
-}
+  SIMDParserConfig,
+};

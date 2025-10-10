@@ -2,9 +2,12 @@
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   // import * as Tooltip from 'bits-ui'; // Removed melt dependency
-  import { Brain, MessageSquare, Sparkles, Mic, MicOff, Settings } from 'lucide-svelte';
+  import { Brain, Sparkles, Mic, MicOff } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { Badge } from '$lib/components/ui/badge/index.js';
+  import { SvelteComponent } from 'svelte';
+  import BadgeDefault from '$lib/components/ui/badge/Badge.svelte';
+  // Cast to constructor type so template receives a proper Svelte component constructor
+  const Badge = BadgeDefault as unknown as typeof SvelteComponent;
   // Tooltip wrapper removed for now to avoid incomplete module issues
   interface Props {
     variant?: 'floating' | 'inline' | 'compact' | 'full';

@@ -11,9 +11,9 @@ https://svelte.dev/e/js_parse_error -->
   	import * as Dialog from '$lib/components/ui/dialog';
   	import * as Button from '$lib/components/ui/button';
   	import * as Input from '$lib/components/ui/input';
-  	import { Badge } from '$lib/components/ui/badge';
-  	import { ScrollArea } from '$lib/components/ui/scroll-area';
-  	import { Separator } from '$lib/components/ui/separator';
+  	import Badge from '$lib/components/ui/badge/Badge.svelte';
+  	import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  	import Separator from '$lib/components/ui/separator/Separator.svelte';
   	import { createMachine, interpret } from 'xstate';
   	import type { Interpreter } from 'xstate';
   	import { writable, derived } from 'svelte/store';

@@ -14,11 +14,15 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import type { Writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  // Import Card component constructors (named exports — module has no default export)
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
+  // Import Card component constructors (default exports)
+  import Card from '$lib/components/ui/card/Card.svelte';
+  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import CardDescription from '$lib/components/ui/card/CardDescription.svelte';
+  import CardContent from '$lib/components/ui/card/CardContent.svelte';
   // Removed broken select module import. Using native <select> instead.
   import {
     AlertCircle,
@@ -31,7 +35,8 @@ https://svelte.dev/e/js_parse_error -->
     Users,
     Scale
   } from 'lucide-svelte';
-  import { caseFormSchema, type CaseForm } from '$lib/schemas/forms';
+  import { caseFormSchema } from '$lib/schemas/forms';
+  import type { CaseForm } from '$lib/schemas/forms';
   import { createCaseCreationForm } from '$lib/forms/superforms-xstate-integration';
   import type { SuperValidated } from 'sveltekit-superforms';
   // Svelte 5 Props Interface

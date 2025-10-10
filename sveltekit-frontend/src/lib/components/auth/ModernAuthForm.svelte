@@ -7,8 +7,8 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label/index.js';
-  import { Alert } from '$lib/components/ui/alert/index.js';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Alert from '$lib/components/ui/alert/Alert.svelte';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
   interface Props {
     mode?: 'login' | 'register';

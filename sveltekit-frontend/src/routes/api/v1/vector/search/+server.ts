@@ -1,14 +1,15 @@
 /**
  * Vector Search API - pgvector with CUDA acceleration for legal document search
  * Handles semantic search, similarity queries, and parallel processing
+ *
+ * MIGRATION NOTE: Now uses the canonical database connection from $lib/server/db
+ * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { getDatabaseUrl, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
-import { sql } from 'drizzle-orm'
-// Add concrete types to avoid `any`
+import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js'
+// Use canonical database connection (node-postgres adapter with connection pooling)
+import { db, sql } from '$lib/server/db'// Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
@@ -56,9 +57,10 @@ interface SearchResponse {
     clientHints?: Record<string, unknown>; // added optional client hints returned to client
   };
 }
-// Initialize database connection
-const client = postgres(getDatabaseUrl());
-const db = drizzle(client);
+
+// NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
+// The 'db' and 'sql' are already imported from '$lib/server/db' above
+
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   // use slice instead of deprecated substr to create a stable request id

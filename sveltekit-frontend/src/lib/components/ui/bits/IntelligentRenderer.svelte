@@ -38,28 +38,34 @@
     realTimeUpdates?: boolean;
   };
 
-  // Props (use standard Svelte props)
-  // Provide a safe default to avoid undefined in reactive expressions
-  export let data: IntelligentRendererData = {
-    documents: [],
-    evidence: [],
-    textContent: '',
-    interactiveElements: 0,
-    realTimeUpdates: false
-  };
-  export let priority: 'critical' | 'high' | 'medium' | 'low' = 'medium';
-  export let type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'default' = 'default';
-  export let title: string = 'Legal AI Analysis';
+  // Props using Svelte 5 syntax
+  let {
+    data = {
+      documents: [],
+      evidence: [],
+      textContent: '',
+      interactiveElements: 0,
+      realTimeUpdates: false
+    },
+    priority = 'medium',
+    type = 'default',
+    title = 'Legal AI Analysis'
+  }: {
+    data?: IntelligentRendererData;
+    priority?: 'critical' | 'high' | 'medium' | 'low';
+    type?: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'default';
+    title?: string;
+  } = $props();
 
-  // Reactive intelligent rendering decision (simple sync call)
-  $: useGlyphEngine = Boolean(
+  // Reactive intelligent rendering decision using Svelte 5
+  let useGlyphEngine = $derived(Boolean(
     LegalAILogic &&
       typeof (LegalAILogic as any).requiresGlyphEngine === 'function' &&
       (LegalAILogic as any).requiresGlyphEngine(data)
-  );
+  ));
 
-  // Process data with pure logic (fixed syntax)
-  $: processedData = (() => {
+  // Process data with pure logic using Svelte 5
+  let processedData = $derived.by(() => {
     try {
       if (data?.evidence && LegalAILogic && typeof (LegalAILogic as any).categorizeEvidence === 'function') {
         return { ...data, evidence: (LegalAILogic as any).categorizeEvidence(data.evidence) ?? data.evidence };
@@ -72,7 +78,7 @@
       // noop - fall back to raw data
     }
     return data;
-  })();
+  });
 
   // Accept either native DOM Events (e.g. click) or CustomEvent dispatched from components.
   function handleInteraction(event: Event & { detail?: any } | CustomEvent) {

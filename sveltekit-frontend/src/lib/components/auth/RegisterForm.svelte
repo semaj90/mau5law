@@ -12,7 +12,7 @@
   import { zod } from 'sveltekit-superforms/adapters';
   import { createActor } from 'xstate';
   // Removed legacy UI library component imports (Card, Form, Alert, Select, etc.)
-  import { Checkbox } from '$lib/components/ui/checkbox';
+  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
   import {
     Eye, EyeOff, Shield, Loader2, AlertCircle,
     Zap, UserPlus, Badge, Building, Scale

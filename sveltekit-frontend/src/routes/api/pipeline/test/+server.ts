@@ -1,20 +1,19 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { createClient, type RedisClientType } from 'redis';
+// Use canonical database connection (node-postgres with connection pooling)
+import { db } from '$lib/server/db';
+import { createClient } from 'redis';
 import { evidence } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
-const db = drizzle(sql);
-
 // A small compatibility type for clients that may expose convenience helpers
-type RedisCompat = RedisClientType<any, any> & {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RedisCompat = any & {
   ping?: () => Promise<string>;
   xAdd?: (stream: string, id: string, fields: Record<string, string>) => Promise<string>;
   sendCommand?: (args: string[]) => Promise<unknown>;
+  connect?: () => Promise<void>;
 };
 
 const redis = createClient({
@@ -359,7 +358,9 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
   const successfulJobs = settled.reduce((acc, r) => {
     if (r.status === 'fulfilled') {
       const v = (r as PromiseFulfilledResult<Record<string, unknown>>).value;
-      if ((v as any)?.success) return acc + 1;
+      if (v && typeof v === 'object' && 'success' in v && v.success) {
+        return acc + 1;
+      }
     }
     return acc;
   }, 0);

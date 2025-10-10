@@ -2,23 +2,24 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  // Badge replaced with span - not available in enhanced-bits
   import * as Card from '$lib/components/ui/card';
   import {
     Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
     Save, Download, Image as ImageIcon, FileText
   } from 'lucide-svelte';
+
   interface Props {
     width?: number;
     height?: number;
     caseId?: string;
     readOnly?: boolean;
-  gridEnabled?: boolean;
-  snapToGrid?: boolean;
+    gridEnabled?: boolean;
+    snapToGrid?: boolean;
     onSave?: (data: { objects: any[] }) => void;
     onDelete?: (data: { objectId: string }) => void;
     onSelect?: (data: { object: any }) => void;
   }
+
   let {
     width = 800,
     height = 600,
@@ -30,28 +31,32 @@
     onDelete,
     onSelect
   }: Props = $props();
+
   // Fabric.js canvas instance
-let fabricCanvas = $state<any >(null);
-  let canvasElement: HTMLCanvasElement;
-let isLoading = $state(false);
-let selectedObject = $state<any >(null);
-let canvasObjects = $state<any[] >([]);
-let zoomLevel = $state(1);
+  let fabricCanvas = $state<any>(null);
+  let canvasElement: HTMLCanvasElement | undefined;
+  let isLoading = $state(false);
+  let selectedObject = $state<any>(null);
+  let canvasObjects = $state<any[]>([]);
+  let zoomLevel = $state(1);
+
   // Evidence management
   interface EvidenceItem {
     id: string;
     type: 'image' | 'document' | 'annotation';
     title: string;
     url?: string;
-    urlExpiry?: number; // timestamp when presigned URL expires
+    urlExpiry?: number;
     x: number;
     y: number;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
-let evidenceItems = $state<EvidenceItem[] >([]);
-let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
-let uploadProgress = $state(new Map<string, number>());
-  // Derived state for better performance
+
+  let evidenceItems = $state<EvidenceItem[]>([]);
+  let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
+  let uploadProgress = $state(new Map<string, number>());
+
+  // Derived state (kept concise - author used $derived runes)
   let evidenceCount = $derived(evidenceItems.length);
   let hasSelectedObject = $derived(selectedObject !== null);
   let hasUploadProgress = $derived(uploadProgress.size > 0);
@@ -64,43 +69,44 @@ let uploadProgress = $state(new Map<string, number>());
     minioStatus === 'connected' ? 'bg-green-500' :
     minioStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
   );
-  // Helper to normalize dynamic import of Fabric.js across different bundlers
-  // (module may export a default, a `fabric` named export, or the namespace itself)
+
+  // Helper to normalize dynamic import of Fabric.js across bundlers
   async function getFabric(): Promise<any> {
     const mod: any = await import('fabric');
     return mod.fabric ?? mod.default ?? mod;
   }
+
   $effect(() => {
-    // Dynamically import Fabric.js to avoid SSR issues - use async IIFE
     (async () => {
       try {
         const fabric = await getFabric();
         fabricCanvas = new fabric.Canvas(canvasElement, {
-      width,
-      height,
-      backgroundColor: '#f8fafc',
-      selection: !readOnly,
-    });
-    if (gridEnabled) {
-      drawGrid(fabric);
-    }
+          width,
+          height,
+          backgroundColor: '#f8fafc',
+          selection: !readOnly,
+        });
+        if (gridEnabled) {
+          drawGrid(fabric);
+        }
         setupCanvasEvents();
         await checkMinIOStatus();
-        loadCanvasData();
+        await loadCanvasData();
       } catch (error) {
         console.error('Failed to initialize Fabric canvas:', error);
       }
-    })(); // Close async IIFE
+    })();
   });
+
   function drawGrid(fabric: any) {
     if (!fabricCanvas) return;
     const gridSize = 25;
     const lines: any[] = [];
-    for (let i = 0; i < (width / gridSize); i++) {
+    for (let i = 0; i < Math.ceil(width / gridSize); i++) {
       const distance = i * gridSize;
       lines.push(new fabric.Line([ distance, 0, distance, height ], { stroke: '#edf2f7', selectable: false, evented: false }));
     }
-    for (let j = 0; j < (height / gridSize); j++) {
+    for (let j = 0; j < Math.ceil(height / gridSize); j++) {
       const distance = j * gridSize;
       lines.push(new fabric.Line([ 0, distance, width, distance ], { stroke: '#edf2f7', selectable: false, evented: false }));
     }
@@ -109,18 +115,20 @@ let uploadProgress = $state(new Map<string, number>());
     if (snapToGrid) {
       fabricCanvas.on('object:moving', (e: any) => {
         const obj = e.target;
+        if (!obj) return;
         obj.set({
-          left: Math.round(obj.left / gridSize) * gridSize,
-          top: Math.round(obj.top / gridSize) * gridSize,
+          left: Math.round((obj.left ?? 0) / gridSize) * gridSize,
+          top: Math.round((obj.top ?? 0) / gridSize) * gridSize,
         });
       });
     }
   }
+
   function setupCanvasEvents() {
     if (!fabricCanvas) return;
     // Object selection
     fabricCanvas.on('selection:created', (e: any) => {
-      selectedObject = e.selected[0];
+      selectedObject = e.selected?.[0] ?? null;
       onSelect?.({ object: selectedObject });
     });
     fabricCanvas.on('selection:cleared', () => {
@@ -132,17 +140,18 @@ let uploadProgress = $state(new Map<string, number>());
     });
     // Mouse wheel zoom
     fabricCanvas.on('mouse:wheel', (opt: any) => {
-      const delta = opt.e.deltaY;
-      let zoom = fabricCanvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
-      fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      const e = opt.e;
+      const delta = e.deltaY;
+      let zoom = fabricCanvas.getZoom ? fabricCanvas.getZoom() : zoomLevel;
+      zoom *= Math.pow(0.999, delta);
+      zoom = Math.min(Math.max(zoom, 0.01), 20);
+      fabricCanvas.zoomToPoint({ x: e.offsetX, y: e.offsetY }, zoom);
       zoomLevel = zoom;
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
     });
   }
+
   async function checkMinIOStatus() {
     try {
       const response = await fetch('/api/v1/minio/status');
@@ -151,62 +160,66 @@ let uploadProgress = $state(new Map<string, number>());
       minioStatus = 'disconnected';
     }
   }
+
   async function loadCanvasData() {
     if (!caseId) return;
+    isLoading = true;
     try {
-      isLoading = true;
-      // Load evidence items for this case
       const response = await fetch(`/api/v1/evidence/${caseId}`);
       if (!response.ok) {
         evidenceItems = [];
         return;
       }
       const evidence = await response.json();
-      evidenceItems = evidence;
-      // Add evidence to canvas
+      evidenceItems = Array.isArray(evidence) ? evidence : [];
       for (const item of evidenceItems) {
+        // don't await all serially in case there are many; but to keep ordering, await here
+        // awaiting ensures images are added before next step; adjust if parallel desired
+        // graceful handling inside addEvidenceToCanvas
+        // eslint-disable-next-line no-await-in-loop
         await addEvidenceToCanvas(item);
       }
     } catch (error) {
       console.error('Failed to load canvas data:', error);
+    } finally {
+      isLoading = false;
+    }
+  }
+
   async function refreshExpiredUrl(evidence: EvidenceItem): Promise<string> {
     if (!evidence.urlExpiry || Date.now() < evidence.urlExpiry) {
       return evidence.url || '';
     }
     try {
-      // Refresh presigned URL
       const response = await fetch(`/api/v1/minio/url-refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bucket: evidence.metadata.bucket,
-          fileName: evidence.metadata.fileName,
+          bucket: evidence.metadata?.bucket,
+          fileName: evidence.metadata?.fileName,
         })
       });
       if (response.ok) {
         const result = await response.json();
-        return (result as { url?: any }).url;
+        return result?.url ?? (evidence.url || '');
       }
     } catch (error) {
       console.warn('Failed to refresh URL for:', evidence.id);
     }
     return evidence.url || '';
   }
-      console.warn('Failed to refresh URL for:', evidence.id);
-    }
-    return evidence.url || '';
-  }
+
   async function addEvidenceToCanvas(evidence: EvidenceItem) {
     if (!fabricCanvas) return;
     try {
+      const fabric = await getFabric();
       if (evidence.type === 'image' && evidence.url) {
-        const fabric = await getFabric();
         const imageUrl = await refreshExpiredUrl(evidence);
-        // runtime guard: some trimmed builds or SSR stubs may not include Image
         if (!fabric || !fabric.Image || typeof fabric.Image.fromURL !== 'function') {
           console.warn('Fabric Image API not available; skipping image:', evidence.id);
           return;
         }
+        // fromURL is callback-based in many builds
         fabric.Image.fromURL(imageUrl, (img: any) => {
           img.set({
             left: evidence.x,
@@ -219,14 +232,9 @@ let uploadProgress = $state(new Map<string, number>());
           });
           fabricCanvas.add(img);
           fabricCanvas.renderAll();
-        });
+          updateCanvasObjects();
+        }, { crossOrigin: 'anonymous' });
       } else if (evidence.type === 'document') {
-        const fabric = await getFabric();
-        // runtime guard for core fabric shape constructors
-        if (!fabric || !fabric.Rect || !fabric.Text || !fabric.Group) {
-          console.warn('Required Fabric shape constructors missing; skipping document:', evidence.id);
-          return;
-        }
         const rect = new fabric.Rect({
           left: evidence.x,
           top: evidence.y,
@@ -256,37 +264,37 @@ let uploadProgress = $state(new Map<string, number>());
         });
         fabricCanvas.add(group);
         fabricCanvas.renderAll();
+        updateCanvasObjects();
       }
+    } catch (err) {
+      console.warn('Failed to add evidence to canvas:', evidence.id, err);
+    }
+  }
+
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
-    const files = input.files;
+    const files = input?.files;
     if (!files || files.length === 0) return;
-    // Upload files in parallel for better performance
-    const uploadPromises = Array.from(files).map(file => uploadEvidence(file as File));
-    await Promise.allSettled(uploadPromises);
-    input.value = ''; // Reset input
+    const promises = Array.from(files).map(f => uploadEvidence(f as File));
+    await Promise.allSettled(promises);
+    input.value = '';
   }
-    const uploadPromises = Array.from(files).map(file => uploadEvidence(file));
-    await Promise.allSettled(uploadPromises);
-    input.value = ''; // Reset input
-  }
+
   async function uploadEvidence(file: File) {
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
     try {
       isLoading = true;
       uploadProgress.set(fileId, 0);
-      // Upload file
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId || 'demo-case');
-      // Try MinIO upload first, fallback to demo endpoint
+
       let uploadResponse = await fetch('/api/v1/minio/upload?bucket=evidence-files', {
         method: 'POST',
         body: formData,
       });
-      // If MinIO fails (connection issues), try demo endpoint
+
       if (!uploadResponse.ok) {
-        console.log('🔄 MinIO upload failed, trying demo endpoint...');
         uploadResponse = await fetch('/api/evidence/demo', {
           method: 'POST',
           body: formData,
@@ -296,13 +304,12 @@ let uploadProgress = $state(new Map<string, number>());
         throw new Error('Upload failed');
       }
       const uploadResult = await uploadResponse.json();
-      // Create evidence item - handle both MinIO and demo responses
       const evidence: EvidenceItem = {
-        id: uploadResult.id || uploadResult.fileId,
+        id: uploadResult.id || uploadResult.fileId || `${Date.now()}`,
         type: file.type.startsWith('image/') ? 'image' : 'document',
         title: file.name,
         url: uploadResult.url,
-        urlExpiry: uploadResult.bucket ? Date.now() + (23 * 60 * 60 * 1000) : undefined, // 23hr expiry for MinIO
+        urlExpiry: uploadResult.bucket ? Date.now() + (23 * 60 * 60 * 1000) : undefined,
         x: Math.random() * (width - 200) + 100,
         y: Math.random() * (height - 200) + 100,
         metadata: {
@@ -312,7 +319,7 @@ let uploadProgress = $state(new Map<string, number>());
           bucket: uploadResult.bucket || 'demo',
           fileName: uploadResult.fileName || uploadResult.filename,
         }
-      }
+      };
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
       uploadProgress.set(fileId, 100);
@@ -321,10 +328,10 @@ let uploadProgress = $state(new Map<string, number>());
       uploadProgress.delete(fileId);
     } finally {
       isLoading = false;
-      // Clean up progress after 2 seconds
       setTimeout(() => uploadProgress.delete(fileId), 2000);
     }
   }
+
   function addAnnotation() {
     if (!fabricCanvas) return;
     (async () => {
@@ -347,8 +354,10 @@ let uploadProgress = $state(new Map<string, number>());
       fabricCanvas.add(text);
       fabricCanvas.setActiveObject(text);
       fabricCanvas.renderAll();
+      updateCanvasObjects();
     })();
   }
+
   function deleteSelected() {
     if (!fabricCanvas || !selectedObject) return;
     const evidenceId = selectedObject.evidenceId;
@@ -359,26 +368,50 @@ let uploadProgress = $state(new Map<string, number>());
       onDelete?.({ objectId: evidenceId });
     }
     selectedObject = null;
+    updateCanvasObjects();
   }
+
   function zoomIn() {
     if (!fabricCanvas) return;
-    const zoom = Math.min(fabricCanvas.getZoom() * 1.2, 5);
-    fabricCanvas.setZoom(zoom);
+    const zoom = Math.min((fabricCanvas.getZoom ? fabricCanvas.getZoom() : zoomLevel) * 1.2, 5);
+    fabricCanvas.setZoom ? fabricCanvas.setZoom(zoom) : (zoomLevel = zoom);
     zoomLevel = zoom;
   }
+
   function zoomOut() {
     if (!fabricCanvas) return;
-    const zoom = Math.max(fabricCanvas.getZoom() * 0.8, 0.1);
-    fabricCanvas.setZoom(zoom);
+    const zoom = Math.max((fabricCanvas.getZoom ? fabricCanvas.getZoom() : zoomLevel) * 0.8, 0.1);
+    fabricCanvas.setZoom ? fabricCanvas.setZoom(zoom) : (zoomLevel = zoom);
     zoomLevel = zoom;
   }
+
   function resetZoom() {
     if (!fabricCanvas) return;
-    fabricCanvas.setZoom(1);
+    fabricCanvas.setZoom ? fabricCanvas.setZoom(1) : (zoomLevel = 1);
     zoomLevel = 1;
   }
+
   function saveCanvas() {
     if (!fabricCanvas) return;
+    try {
+      const objects = fabricCanvas.getObjects().map((obj: any) => ({
+        type: obj.type,
+        left: obj.left,
+        top: obj.top,
+        width: obj.width,
+        height: obj.height,
+        angle: obj.angle,
+        scaleX: obj.scaleX,
+        scaleY: obj.scaleY,
+        evidenceId: obj.evidenceId,
+        evidenceType: obj.evidenceType,
+      }));
+      onSave?.({ objects });
+    } catch (err) {
+      console.warn('Failed to save canvas:', err);
+    }
+  }
+
   function updateCanvasObjects() {
     if (!fabricCanvas) return;
     canvasObjects = fabricCanvas.getObjects().map((obj: any) => ({
@@ -394,10 +427,7 @@ let uploadProgress = $state(new Map<string, number>());
       evidenceType: obj.evidenceType,
     }));
   }
-      evidenceId: obj.evidenceId,
-      evidenceType: obj.evidenceType,
-    }));
-  }
+
   function exportCanvas() {
     if (!fabricCanvas) return;
     const dataURL = fabricCanvas.toDataURL({
@@ -405,7 +435,6 @@ let uploadProgress = $state(new Map<string, number>());
       quality: 1,
       multiplier: 2,
     });
-    // Create download link
     const link = document.createElement('a');
     link.download = `case-${caseId || 'canvas'}-${Date.now()}.png`;
     link.href = dataURL;
@@ -470,10 +499,6 @@ let uploadProgress = $state(new Map<string, number>());
         </Button>
         {#if hasSelectedObject && !readOnly}
           <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
-            <Trash2 class="h-4 w-4 mr-2" />
-            Delete
-          </Button>
-        {/if}
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>

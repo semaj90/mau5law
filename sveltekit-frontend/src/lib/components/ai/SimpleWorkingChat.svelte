@@ -12,9 +12,9 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Separator } from '$lib/components/ui/separator';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Separator from '$lib/components/ui/separator/Separator.svelte';
+  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
   let inputMessage = $state('');

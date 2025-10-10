@@ -14,7 +14,7 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
   // System status state
   let systemHealth = $state<any>(null);
   let integrationTests = $state<any>({});

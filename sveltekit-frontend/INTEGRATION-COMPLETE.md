@@ -15,6 +15,7 @@ Successfully integrated **all 10 components** into a unified vector orchestratio
 - gRPC/Protobuf for batch operations
 - HTTP/3 REST API fallback
 - Collection: `legal_embeddings`
+embeddinggemma:latest
 
 ### 3. ✅ Hybrid Vector Search
 - **New file**: `src/lib/services/hybrid-vector-search.ts`

@@ -2,7 +2,7 @@
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Input } from '$lib/components/ui/input/index.js';
+  import Input from '$lib/components/ui/input/Input.svelte';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
 
   // Exported props (clean, typed)

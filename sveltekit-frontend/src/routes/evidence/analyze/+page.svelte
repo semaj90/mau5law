@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/components/ui/dialog';
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
-  import { Progress } from '$lib/components/ui/progress';
+  import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax

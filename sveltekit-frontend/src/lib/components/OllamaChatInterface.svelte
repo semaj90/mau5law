@@ -13,7 +13,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import { ScrollArea } from "$lib/components/ui/scroll-area";
+  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
   import {
     AlertCircle,

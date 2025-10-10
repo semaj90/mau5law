@@ -4,8 +4,8 @@
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List, Trash2, AlertCircle, UserPlus } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Card, Input, Label, Select, Dialog, Textarea } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Separator } from '$lib/components/ui/separator/index.js';
+  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import Separator from '$lib/components/ui/separator/Separator.svelte';
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils.js';
 

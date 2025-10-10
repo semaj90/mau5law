@@ -23,11 +23,9 @@
     "isolatedModules": true,
     "sourceMap": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "baseUrl": ".",
-    "paths": {
-      "drizzle-orm/node-postgres": ["src/lib/shims/drizzle-node-postgres.ts"]
-    }
+    "emitDecoratorMetadata": true
+    // baseUrl and paths removed - use svelte.config.js kit.alias instead
+    // This prevents conflicts with SvelteKit's auto-generated tsconfig.json
   },
   "include": [
     "src",

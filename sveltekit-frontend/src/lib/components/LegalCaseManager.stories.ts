@@ -2,39 +2,39 @@ import type { Meta, StoryObj } from '@storybook/svelte';
 import LegalCaseManager from './LegalCaseManager.svelte.js';
 const meta = {
   title: 'Business/LegalCaseManager',
-  component: LegalCaseManager
+  component: LegalCaseManager,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Comprehensive case management interface for legal professionals'
-      }
-    }
+        component: 'Comprehensive case management interface for legal professionals',
+      },
+    },
   },
   argTypes: {
     viewMode: {
       control: { type: 'select' },
-      options: ['list', 'grid', 'timeline', 'kanban']
+      options: ['list', 'grid', 'timeline', 'kanban'],
     },
     filterMode: {
       control: { type: 'select' },
-      options: ['all', 'active', 'closed', 'assigned']
+      options: ['all', 'active', 'closed', 'assigned'],
     },
     sortBy: {
       control: { type: 'select' },
-      options: ['date', 'priority', 'status', 'title']
+      options: ['date', 'priority', 'status', 'title'],
     },
     enableAI: {
       control: { type: 'boolean' },
-      description: 'Enable AI-powered case analysis'
+      description: 'Enable AI-powered case analysis',
     },
     showStats: {
       control: { type: 'boolean' },
-      description: 'Display case statistics dashboard'
-    }
+      description: 'Display case statistics dashboard',
+    },
   },
-  tags: ['autodocs']
-} satisfies Meta<LegalCaseManager>;
+  tags: ['autodocs'],
+} satisfies Meta<typeof LegalCaseManager>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {
@@ -42,87 +42,87 @@ export const Default: Story = {
     viewMode: 'list',
     filterMode: 'all',
     sortBy: 'date',
-    enableAI: true
-    showStats: true
-  }
-}
+    enableAI: true,
+    showStats: true,
+  },
+};
 export const GridView: Story = {
   args: {
     viewMode: 'grid',
     filterMode: 'active',
     sortBy: 'priority',
-    enableAI: true
-    showStats: false
+    enableAI: true,
+    showStats: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Grid view layout optimized for visual case management'
-      }
-    }
-  }
-}
+        story: 'Grid view layout optimized for visual case management',
+      },
+    },
+  },
+};
 export const Timeline: Story = {
   args: {
     viewMode: 'timeline',
     filterMode: 'all',
     sortBy: 'date',
-    enableAI: false
-    showStats: true
+    enableAI: false,
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Timeline view showing chronological case progression'
-      }
-    }
-  }
-}
+        story: 'Timeline view showing chronological case progression',
+      },
+    },
+  },
+};
 export const KanbanBoard: Story = {
   args: {
     viewMode: 'kanban',
     filterMode: 'active',
     sortBy: 'status',
-    enableAI: true
-    showStats: false
+    enableAI: true,
+    showStats: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Kanban board for workflow-based case management'
-      }
-    }
-  }
-}
+        story: 'Kanban board for workflow-based case management',
+      },
+    },
+  },
+};
 export const AssignedCases: Story = {
   args: {
     viewMode: 'list',
     filterMode: 'assigned',
     sortBy: 'priority',
-    enableAI: true
-    showStats: true
+    enableAI: true,
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Focus view showing only cases assigned to current user'
-      }
-    }
-  }
-}
+        story: 'Focus view showing only cases assigned to current user',
+      },
+    },
+  },
+};
 export const ClosedCases: Story = {
   args: {
     viewMode: 'grid',
     filterMode: 'closed',
     sortBy: 'date',
-    enableAI: false
-    showStats: true
+    enableAI: false,
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Archive view for completed and closed cases'
-      }
-    }
-  }
-}
+        story: 'Archive view for completed and closed cases',
+      },
+    },
+  },
+};
