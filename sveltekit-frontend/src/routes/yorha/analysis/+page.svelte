@@ -4,10 +4,9 @@
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import {
-    BarChart3,
+    BarChart,
     TrendingUp,
     Target,
     AlertCircle,
@@ -23,27 +22,27 @@
       active: 8,
       pending: 3,
       closed: 1,
-      success_rate: 87;
+      success_rate: 87,
     },
     evidenceAnalysis: {
       total_pieces: 247,
       processed: 203,
       ai_analyzed: 189,
       flagged: 24,
-      processing_queue: 15;
+      processing_queue: 15,
     },
     threatAssessment: {
       critical: 2,
       high: 5,
       medium: 8,
       low: 12,
-      cleared: 3;
+      cleared: 3,
     },
     aiPerformance: {
       accuracy: 94.2,
       processing_speed: 1.3,
       confidence: 91.8,
-      last_update: '2024-01-22 14:35:00';
+      last_update: '2024-01-22 14:35:00',
     }
   });
   let recentAnalyses = $state([
@@ -54,16 +53,16 @@
       status: 'completed',
       confidence: 94.7,
       findings: 'Corporate network intrusion patterns identified',
-      timestamp: '2 hours ago';
+      timestamp: '2 hours ago',
     },
     {
       id: 'ANA-002',
       case_id: 'CASE-2024-088',
       type: 'Behavioral Analysis',
       status: 'processing',
-      confidence: null;
+      confidence: null,
       findings: 'Analyzing communication patterns...',
-      timestamp: '15 minutes ago';
+      timestamp: '15 minutes ago',
     },
     {
       id: 'ANA-003',
@@ -72,7 +71,7 @@
       status: 'completed',
       confidence: 88.3,
       findings: 'Suspicious transaction clusters detected',
-      timestamp: '4 hours ago';
+      timestamp: '4 hours ago',
     }
   ]);
 </script>
@@ -153,10 +152,10 @@
       <div class="metrics-row">
         <Card.Root class="metric-nier-bits-card nes-container">
           <Card.Header class="metric-header nes-container">
-            <BarChart3 class="metric-icon" />
+            <BarChart class="metric-icon" />
             <div>
-              <Card.Title class="nes-container">Case Metrics</Card.Title>
-              <Card.Description class="nes-container">Investigation Progress</Card.Description>
+              <h3 class="card-title nes-container">Case Metrics</h3>
+              <p class="card-description nes-container">Investigation Progress</p>
             </div>
           </Card.Header>
           <Card.Content class="metric-content nes-container">
@@ -180,29 +179,29 @@
           <Card.Header class="metric-header nes-container">
             <Database class="metric-icon" />
             <div>
-              <Card.Title class="nes-container">Evidence Analysis</Card.Title>
-              <Card.Description class="nes-container">Processing Status</Card.Description>
+              <h3 class="card-title nes-container">Evidence Analysis</h3>
+              <p class="card-description nes-container">Processing Status</p>
             </div>
           </Card.Header>
           <Card.Content class="metric-content nes-container">
             <div class="progress-section">
               <div class="progress-item">
-                <span class="progress-label">Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis.total})</span>
-                <Progress value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total) * 100} class="progress-bar" />
+                <span class="progress-label">Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis.total_pieces})</span>
+                <Progress value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar" />
               </div>
               <div class="progress-item">
                 <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
-                <Progress value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total) * 100} class="progress-bar" />
+                <Progress value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar" />
               </div>
             </div>
-          </div>
-        </div>
+          </Card.Content>
+        </Card.Root>
         <Card.Root class="metric-nier-bits-card nes-container">
           <Card.Header class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
             <div>
-              <div.Title class="nes-container">Threat Assessment</div.Title>
-              <div.Description class="nes-container">Risk Analysis</div.Description>
+              <h3 class="card-title nes-container">Threat Assessment</h3>
+              <p class="card-description nes-container">Risk Analysis</p>
             </div>
           </Card.Header>
           <Card.Content class="metric-content nes-container">
@@ -224,16 +223,16 @@
                 <span class="threat-label">Low</span>
               </div>
             </div>
-          </div>
-        </div>
+          </Card.Content>
+        </Card.Root>
       </div>
       <!-- AI Performance Panel -->
       <Card.Root class="ai-performance-nier-bits-card nes-container">
         <Card.Header class="nes-container">
-          <div.Title class="flex items-center gap-2 nes-container">
+          <div class="flex items-center gap-2 nes-container card-title">
             <Brain class="w-5 h-5" />
-            AI PERFORMANCE METRICS
-          </div.Title>
+            <span>AI PERFORMANCE METRICS</span>
+          </div>
         </Card.Header>
         <Card.Content class="ai-performance-content nes-container">
           <div class="performance-metrics">
@@ -257,48 +256,50 @@
             <Clock class="w-4 h-4" />
             Last Updated: {analysisData.aiPerformance.last_update}
           </div>
-        </div>
-      </div>
+        </Card.Content>
+      </Card.Root>
       <!-- Recent Analyses -->
       <Card.Root class="recent-analyses-nier-bits-card nes-container">
         <Card.Header class="nes-container">
-          <div.Title class="nes-container">RECENT ANALYSES</div.Title>
-          <div.Description class="nes-container">Latest AI-powered investigations</div.Description>
+          <h3 class="card-title nes-container">RECENT ANALYSES</h3>
+          <p class="card-description nes-container">Latest AI-powered investigations</p>
         </Card.Header>
-        <Card.Content class="analyses-content nes-container">
-          <div class="analyses-list">
-            {#each recentAnalyses as analysis (analysis.id)}
-              <div class="analysis-item">
-                <div class="analysis-header">
-                  <div class="analysis-basic-info">
-                    <span class="analysis-id">{analysis.id}</span>
-                    <span class="analysis-case">{analysis.case_id}</span>
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{analysis.type}</span>
+        <Card.Content>
+          <div class="analyses-content nes-container">
+            <div class="analyses-list">
+              {#each recentAnalyses as analysis (analysis.id)}
+                <div class="analysis-item">
+                  <div class="analysis-header">
+                    <div class="analysis-basic-info">
+                      <span class="analysis-id">{analysis.id}</span>
+                      <span class="analysis-case">{analysis.case_id}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{analysis.type}</span>
+                    </div>
+                    <div class="analysis-status">
+                      {#if analysis.status === 'completed'}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white">COMPLETED</span>
+                        <span class="confidence-score">{analysis.confidence}% confidence</span>
+                      {:else if analysis.status === 'processing'}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white">PROCESSING</span>
+                        <Activity class="w-4 h-4 animate-pulse" />
+                      {:else}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysis.status.toUpperCase()}</span>
+                      {/if}
+                    </div>
                   </div>
-                  <div class="analysis-status">
-                    {#if analysis.status === 'completed'}
-                      <Badge class="bg-green-600 text-white">COMPLETED</Badge>
-                      <span class="confidence-score">{analysis.confidence}% confidence</span>
-                    {:else if analysis.status === 'processing'}
-                      <Badge class="bg-blue-600 text-white">PROCESSING</Badge>
-                      <Activity class="w-4 h-4 animate-pulse" />
-                    {:else}
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysis.status.toUpperCase()}</span>
-                    {/if}
+                  <div class="analysis-findings">
+                    {analysis.findings}
+                  </div>
+                  <div class="analysis-footer">
+                    <span class="analysis-timestamp">{analysis.timestamp}</span>
+                    <Button class="bits-btn" size="sm" variant="ghost">View Details</Button>
                   </div>
                 </div>
-                <div class="analysis-findings">
-                  {analysis.findings}
-                </div>
-                <div class="analysis-footer">
-                  <span class="analysis-timestamp">{analysis.timestamp}</span>
-                  <Button class="bits-btn" size="sm" variant="ghost">View Details</Button>
-                </div>
-              </div>
-            {/each}
+              {/each}
+            </div>
           </div>
-        </div>
-      </div>
+        </Card.Content>
+      </Card.Root>
     </div>
   </main>
 </div>
@@ -366,7 +367,7 @@
     background: #2a2a2a;
     color: #d4af37;
   }
-  .nav-.analysis-active {
+  .nav-item.analysis-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -441,22 +442,22 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
-  .metric-card {
+  :global(.metric-nier-bits-card) {
     background: #1a1a1a !important;
     border: 1px solid #3a3a3a !important;
     color: #d4af37 !important;
   }
-  .metric-header {
+  :global(.metric-header) {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  .metric-icon {
+  :global(.metric-icon) {
     color: #d4af37;
     width: 20px;
     height: 20px;
   }
-  .metric-content {
+  :global(.metric-content) {
     padding-top: 10px;
   }
   .metric-grid {
@@ -515,28 +516,32 @@
   .threat-label {
     font-size: 10px;
   }
-  .threat-.critical .threat-number {
+  .threat-item.critical .threat-number {
     color: #ef4444;
   }
-  .threat-.high .threat-number {
+  .threat-item.high .threat-number {
     color: #f97316;
   }
-  .threat-.medium .threat-number {
+  .threat-item.medium .threat-number {
     color: #fbbf24;
   }
-  .threat-.low .threat-number {
+  .threat-item.low .threat-number {
     color: #4ade80;
   }
-  .ai-performance-card,
-  .recent-analyses-card {
+  :global(.ai-performance-nier-bits-card),
+  :global(.recent-analyses-nier-bits-card) {
     background: #1a1a1a !important;
     border: 1px solid #3a3a3a !important;
     color: #d4af37 !important;
   }
-  .ai-performance-content {
+  :global(.ai-performance-content) {
     display: flex;
     flex-direction: column;
     gap: 15px;
+  }
+  .analyses-content {
+    max-height: 400px;
+    overflow-y: auto;
   }
   .performance-metrics {
     display: grid;
@@ -566,10 +571,6 @@
     color: #666;
     padding-top: 15px;
     border-top: 1px solid #3a3a3a;
-  }
-  .analyses-content {
-    max-height: 400px;
-    overflow-y: auto;
   }
   .analyses-list {
     display: flex;

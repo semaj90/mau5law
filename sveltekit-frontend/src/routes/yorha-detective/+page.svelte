@@ -1,6 +1,6 @@
 <!-- YoRHa Detective Interface Demo Page -->
 <script lang="ts">
-  import YorHADetectiveInterface from '$lib/components/custom/YorHADetectiveInterface.svelte';
+  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
   let isBooting = $state(true);
   let bootProgress = $state(0);

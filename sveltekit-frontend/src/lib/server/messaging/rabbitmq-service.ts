@@ -3,14 +3,13 @@
 import amqp from 'amqplib';
 import { logger } from '../ai/logger.js';
 import { EventEmitter } from 'events';
-}
 export interface LegalDocumentMessage {
   id: string;
   documentId: string;
   caseId: string;
   documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'discovery';
   content: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   priority: 'low' | 'normal' | 'high' | 'urgent';
   retryCount: number;
   timestamp: number;
@@ -53,6 +52,14 @@ class RabbitMQService extends EventEmitter {
     super();
     this.url = url;
   }
+
+  /**
+   * Alias for initialize() - for compatibility
+   */
+  async connect(): Promise<void> {
+    return this.initialize();
+  }
+
   async initialize(): Promise<void> {
     try {
       logger.info('[RabbitMQ] Connecting to RabbitMQ server...');
@@ -80,12 +87,12 @@ class RabbitMQService extends EventEmitter {
   private async setupQueues(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
     const queueConfig = {
-      durable: true;
+      durable: true,
       arguments: {
         'x-dead-letter-exchange': this.exchanges.dlx,
-        'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
+        'x-message-ttl': 24 * 60 * 60 * 1000 // 24 hours
       }
-    }
+    };
     for (const [key, queueName] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queueName, queueConfig);
     }
@@ -110,17 +117,17 @@ class RabbitMQService extends EventEmitter {
   async publishDocumentForAnalysis(_document: LegalDocumentMessage): Promise<boolean> {
     if (!this.isConnected || !this.channel) return false;
     try {
-      const routingKey = this.getRoutingKey(document);
-      const messageBuffer = Buffer.from(JSON.stringify(document);
+      const routingKey = this.getRoutingKey(_document);
+      const messageBuffer = Buffer.from(JSON.stringify(_document));
       const published = await this.channel.publish(
         this.exchanges.legal,
         routingKey,
-        messageBuffer)
-        { persistent: true, timestamp,: Date.now() }
+        messageBuffer,
+        { persistent: true, timestamp: Date.now() }
       );
       if (published) {
-        logger.info(`[RabbitMQ] Published document ${document.id}`);
-        this.emit('messagePublished', { documentId: document.id, routingKey });
+        logger.info(`[RabbitMQ] Published document ${_document.id}`);
+        this.emit('messagePublished', { documentId: _document.id, routingKey });
       }
       return published;
     } catch (error) {
@@ -129,8 +136,8 @@ class RabbitMQService extends EventEmitter {
     }
   }
   private getRoutingKey(_document: LegalDocumentMessage): string {
-    if (document.priority === 'urgent') return 'urgent.processing';
-    switch (document.documentType) {
+    if (_document.priority === 'urgent') return 'urgent.processing';
+    switch (_document.documentType) {
       case 'contract':
         return 'contract.analyze';
       case 'evidence':
@@ -141,21 +148,21 @@ class RabbitMQService extends EventEmitter {
         return 'document.analyze';
     }
   }
-  async getQueueStats(): Promise<{ [key: string]: any }, {
+  async getQueueStats(): Promise<{ [key: string]: any }> {
     if (!this.isConnected || !this.channel) {
       throw new Error('RabbitMQ not connected');
     }
-    const stats: { [key: string]: any } = {}
+    const stats: { [key: string]: any } = {};
     for (const [key, queueName] of Object.entries(this.queues)) {
       try {
         const queueInfo = await this.channel.checkQueue(queueName);
         stats[key] = {
-          queue: queueName
+          queue: queueName,
           messageCount: queueInfo.messageCount,
           consumerCount: queueInfo.consumerCount
-        }
+        };
       } catch (error) {
-        stats[key] = { error: 'Queue not found' }
+        stats[key] = { error: 'Queue not found' };
       }
     }
     return stats;
@@ -168,7 +175,7 @@ class RabbitMQService extends EventEmitter {
   }
   /**
    * Health check method for compatibility
-   */;
+   */
   async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected) {
@@ -184,9 +191,9 @@ class RabbitMQService extends EventEmitter {
    * Generic publish method for compatibility
    */
   async publish(
-    exchange: string
-    routingKey: string
-    message: any;
+    exchange: string,
+    routingKey: string,
+    message: any,
     options: any = {}
   ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {
@@ -198,7 +205,7 @@ class RabbitMQService extends EventEmitter {
         typeof message === 'string' ? message : JSON.stringify(message)
       );
       const published = this.channel.publish(exchange, routingKey, messageBuffer, {
-        persistent: true
+        persistent: true,
         ...options
       });
       return published;

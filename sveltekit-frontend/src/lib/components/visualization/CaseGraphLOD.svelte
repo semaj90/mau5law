@@ -13,7 +13,6 @@
   - Real-time collaboration cursors
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
@@ -23,17 +22,17 @@
     Network, Eye, Layers, ZoomIn, ZoomOut, RotateCcw,
     Users, FileText, Calendar, MapPin, Search, Filter
   } from 'lucide-svelte';
+
   interface GraphNode {
     id: string;
     type: 'person' | 'entity' | 'document' | 'event' | 'location';
     label: string;
     importance: number; // 0-1, affects LOD visibility
     connections: string[];
-    position: ;
-{ x: number; y: number; z?: number }
+    position: { x: number; y: number; z?: number };
     size: number;
     color: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
   interface GraphEdge {
     id: string;
@@ -43,19 +42,19 @@
     strength: number; // 0-1, affects LOD visibility
     label?: string;
     color: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
   interface GraphCluster {
     id: string;
     nodes: string[];
-    center: { x: number; y: number }
+    center: { x: number; y: number };
     radius: number;
     importance: number;
     label: string;
   }
   interface CaseGraphLODProps {
     caseId: string;
-    graphData?: { nodes: GraphNode[]; edges: GraphEdge[] }
+    graphData?: { nodes: GraphNode[]; edges: GraphEdge[] };
     enableWebGPU?: boolean;
     maxNodes?: number;
     cameraDistance?: number;
@@ -63,45 +62,49 @@
     onEdgeClick?: (edge: GraphEdge) => void;
     onLODChange?: (level: number) => void;
   }
-  let {
-    caseId,
-    graphData = { nodes: [], edges: [] },
-    enableWebGPU = true,
-    maxNodes = 1000,
-    cameraDistance = 100,
-    onNodeClick,
-    onEdgeClick,
-    onLODChange
-  }: CaseGraphLODProps = $props();
-  // Svelte 5 state management
-  let canvasElement: HTMLCanvasElement = $state(undefined as any);
-  let gpuDevice = $state<GPUDevice | null>(null);
-  let isWebGPUReady = $state(false);
-  let allNodes = $state<GraphNode[]>([]);
-  let allEdges = $state<GraphEdge[]>([]);
-  let visibleNodes = $state<GraphNode[]>([]);
-  let visibleEdges = $state<GraphEdge[]>([]);
-  let graphClusters = $state<GraphCluster[]>([]);
-  let currentLOD = $state(1);
-  let cameraPosition = $state({ x: 0, y: 0, z: cameraDistance });
-  let zoomLevel = $state(1.0);
-  let rotation = $state(0);
-  let isLoading = $state(false);
-  let selectedNode = $state<GraphNode | null>(null);
-  let hoveredNode = $state<GraphNode | null>(null);
+
+  // Props
+  export let caseId: string;
+  export let graphData: { nodes: GraphNode[]; edges: GraphEdge[] } | undefined = { nodes: [], edges: [] };
+  export let enableWebGPU = true;
+  export let maxNodes = 1000;
+  export let cameraDistance = 100;
+  export let onNodeClick: ((node: GraphNode) => void) | undefined;
+  export let onEdgeClick: ((edge: GraphEdge) => void) | undefined;
+  export let onLODChange: ((level: number) => void) | undefined;
+
+  // State
+  let canvasElement: HTMLCanvasElement | null = null;
+  let gpuDevice: GPUDevice | null = null;
+  let isWebGPUReady = false;
+  let allNodes: GraphNode[] = [];
+  let allEdges: GraphEdge[] = [];
+  let visibleNodes: GraphNode[] = [];
+  let visibleEdges: GraphEdge[] = [];
+  let graphClusters: GraphCluster[] = [];
+  let currentLOD = 1;
+  let cameraPosition = { x: 0, y: 0, z: cameraDistance };
+  let zoomLevel = 1.0;
+  let rotation = 0;
+  let isLoading = false;
+  let selectedNode: GraphNode | null = null;
+  let hoveredNode: GraphNode | null = null;
+
   // Physics simulation state
-  let physicsEnabled = $state(true);
-  let simulationStep = $state(0);
-  let forceStrength = $state(0.1);
+  let physicsEnabled = true;
+  let simulationStep = 0;
+  let forceStrength = 0.1;
+
   // Filter controls
-  let nodeTypeFilters = $state({
-    person: true
-    entity: true
-    document: true;
-    event: true;
-    location: true;
-  });
-  let importanceThreshold = $state(0.1);
+  let nodeTypeFilters = {
+    person: true,
+    entity: true,
+    document: true,
+    event: true,
+    location: true
+  };
+  let importanceThreshold = 0.1;
+
   // LOD configuration inspired by N64 polygon reduction
   const lodConfig = {
     0: {
@@ -110,7 +113,7 @@
       minImportance: 0.0,
       clusterDistance: 0,
       description: 'Ultra High (All Nodes)',
-      renderComplexity: 1.0;
+      renderComplexity: 1.0
     },
     1: {
       maxNodes: 500,
@@ -118,7 +121,7 @@
       minImportance: 0.2,
       clusterDistance: 5,
       description: 'High Detail',
-      renderComplexity: 0.7;
+      renderComplexity: 0.7
     },
     2: {
       maxNodes: 200,
@@ -126,7 +129,7 @@
       minImportance: 0.4,
       clusterDistance: 15,
       description: 'Medium Detail',
-      renderComplexity: 0.4;
+      renderComplexity: 0.4
     },
     3: {
       maxNodes: 50,
@@ -134,255 +137,264 @@
       minImportance: 0.7,
       clusterDistance: 30,
       description: 'Low Detail (N64 Style)',
-      renderComplexity: 0.2;
+      renderComplexity: 0.2
     }
-  }
-  // Derived values for automatic LOD calculation
-  let recommendedLOD = $derived(() => {
-    // N64-style LOD based on camera distance and node count
+  } as const;
+
+  // Derived values
+  $: recommendedLOD = (() => {
     const distance = Math.sqrt(cameraPosition.x ** 2 + cameraPosition.y ** 2 + cameraPosition.z ** 2);
     const nodeCount = allNodes.length;
-    if (distance < 50 && nodeCount < 200) return 0; // Ultra high
-    if (distance < 100 && nodeCount < 500) return 1; // High
-    if (distance < 200 && nodeCount < 1000) return 2; // Medium
-    return 3; // Low detail - N64 fog distance
-  });
-  let lodStats = $derived(() => {
+    if (distance < 50 && nodeCount < 200) return 0;
+    if (distance < 100 && nodeCount < 500) return 1;
+    if (distance < 200 && nodeCount < 1000) return 2;
+    return 3;
+  })();
+
+  $: lodStats = (() => {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     return {
-      level: currentLOD
+      level: currentLOD,
       visibleNodes: visibleNodes.length,
       visibleEdges: visibleEdges.length,
       maxNodes: config?.maxNodes || 50,
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
-      frameTime: estimateFrameTime();
-    }
-  });
-  // Initialize WebGPU and load graph data
-  $effect(() => {
+      frameTime: estimateFrameTime()
+    };
+  })();
+
+  // Lifecycle init
+  onMount(() => {
     (async () => {
-if (!browser) return;
-    try {
-      if (enableWebGPU) {
-        await initializeWebGPU();
+      if (!browser) return;
+      try {
+        if (enableWebGPU) {
+          await initializeWebGPU();
+        }
+        await loadGraphData();
+        startPhysicsSimulation();
+      } catch (error) {
+        console.error('[CaseGraphLOD] Initialization failed:', error);
+        await initializeCanvas2DFallback();
       }
-      await loadGraphData();
-      startPhysicsSimulation();
-    } catch (error) {
-      console.error('[CaseGraphLOD] Initialization failed:', error);
-      await initializeCanvas2DFallback();
-    }
     })();
   });
+
   onDestroy(() => {
     // Cleanup WebGPU resources and physics simulation
-    if (gpuDevice) {
-      // Cleanup GPU buffers and textures
-    }
+    physicsEnabled = false;
+    // release GPU resources if needed
+    gpuDevice = null;
   });
+
   async function initializeWebGPU(): Promise<void> {
-    if (!navigator.gpu) throw new Error('WebGPU not supported');
-    const adapter = await navigator.gpu.requestAdapter();
+    if (!('gpu' in navigator)) {
+      throw new Error('WebGPU not supported');
+    }
+    const adapter = await (navigator as any).gpu.requestAdapter();
     if (!adapter) throw new Error('WebGPU adapter not found');
-    gpuDevice = await adapter.requestDevice({
-      requiredFeatures: ['texture-compression-bc'],
-      requiredLimits: {
-        maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB for node data
-        maxBufferSize: 64 * 1024 * 1024 // 64MB like N64
-      }
-    });
+    const device = await adapter.requestDevice();
+    gpuDevice = device;
     if (!canvasElement) throw new Error('Canvas element not found');
-    const context = canvasElement.getContext('webgpu');
-    if (!context) throw new Error('WebGPU context creation failed');
+    const context = (canvasElement.getContext('webgpu') as unknown) as GPUCanvasContext;
+    const format = (navigator as any).gpu.getPreferredCanvasFormat?.() ?? 'bgra8unorm';
     context.configure({
-      device: gpuDevice;
-      format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT;
+      device: gpuDevice,
+      format,
+      alphaMode: 'premultiplied'
     });
     isWebGPUReady = true;
     console.log('[CaseGraphLOD] WebGPU initialized for graph rendering');
   }
+
   async function initializeCanvas2DFallback(): Promise<void> {
-    const ctx = canvasElement?.getContext('2d');
-    if (ctx) {
-      isWebGPUReady = true;
-    }
+    // Mark as ready to use 2D rendering path
+    isWebGPUReady = false;
+    console.warn('[CaseGraphLOD] Falling back to 2D canvas rendering');
   }
+
   async function loadGraphData(): Promise<void> {
     isLoading = true;
     try {
-      // Load graph data from API
-      // removed unused response assignment
-      const data = await response.json();
+      let data: any;
+      // prefer provided graphData prop
+      if (graphData && graphData.nodes && graphData.edges && graphData.nodes.length) {
+        data = graphData;
+      } else if (caseId) {
+        const response = await fetch(`/api/cases/${caseId}/graph`);
+        if (response.ok) {
+          data = await response.json();
+        } else {
+          throw new Error('Graph API returned non-ok status');
+        }
+      } else {
+        throw new Error('No graphData or caseId available');
+      }
       allNodes = data.nodes || [];
       allEdges = data.edges || [];
-      // Calculate node importance based on connections and metadata
       calculateNodeImportance();
-      // Create initial clusters
       generateGraphClusters();
-      // Apply initial LOD filtering
       applyLODFiltering();
-      // Initialize physics positions
       initializePhysicsPositions();
     } catch (error) {
       console.error('[CaseGraphLOD] Failed to load graph data:', error);
-      // Use demo data for development
       await loadDemoGraphData();
     } finally {
       isLoading = false;
     }
   }
+
   function calculateNodeImportance(): void {
     allNodes = allNodes.map(node => {
-      // Calculate importance based on multiple factors
-      const connectionWeight = node.connections.length / Math.max(1, allNodes.length * 0.1);
+      const connectionWeight = (node.connections?.length || 0) / Math.max(1, allNodes.length * 0.1);
       const typeWeight = getNodeTypeImportance(node.type);
-      const metadataWeight = node.metadata.priority || 0.5;
+      const metadataWeight = (node.metadata && node.metadata.priority) ? node.metadata.priority : 0.5;
       const importance = Math.min(1.0, (connectionWeight * 0.4) + (typeWeight * 0.3) + (metadataWeight * 0.3));
-      return { ...node, importance }
+      return { ...node, importance };
     });
   }
+
   function getNodeTypeImportance(type: string): number {
-    const typeWeights = {
-      person: 0.9,     // People are usually most important
-      entity: 0.8,     // Organizations, companies
-      document: 0.6,   // Evidence, contract
-      event: 0.7,      // Timeline event;
-      location: 0.5    // Places, addresse;
-    }
-    return typeWeights[type as keyof typeof typeWeights] || 0.5;
+    const typeWeights: Record<string, number> = {
+      person: 0.9,
+      entity: 0.8,
+      document: 0.6,
+      event: 0.7,
+      location: 0.5
+    };
+    return typeWeights[type] ?? 0.5;
   }
+
   function generateGraphClusters(): void {
-    // Use simple clustering based on node connections and types
     const clusters = new Map<string, GraphNode[]>();
     allNodes.forEach(node => {
-      const clusterKey = node.typ;
-      if (!clusters.has(clusterKey)) {
-        clusters.set(clusterKey, []);
-      }
+      const clusterKey = node.type;
+      if (!clusters.has(clusterKey)) clusters.set(clusterKey, []);
       clusters.get(clusterKey)!.push(node);
     });
     graphClusters = Array.from(clusters.entries()).map(([type, nodes]) => {
       const center = calculateClusterCenter(nodes);
       const radius = calculateClusterRadius(nodes, center);
-      const importance = nodes.reduce((sum, node) => sum + node.importance, 0) / nodes.length;
+      const importance = nodes.reduce((sum, n) => sum + (n.importance || 0), 0) / Math.max(1, nodes.length);
       return {
         id: `cluster_${type}`,
         nodes: nodes.map(n => n.id),
         center,
         radius,
         importance,
-        label: `${type.charAt.toUpperCase() + type.slice(1)}s (${nodes.length})`
-      }
+        label: `${type.charAt(0).toUpperCase() + type.slice(1)}s (${nodes.length})`
+      };
     });
   }
+
   function calculateClusterCenter(nodes: GraphNode[]): { x: number; y: number } {
-    const sum = nodes.reduce(
-      (acc, node) => ({ x: acc.x + node.position.x, y: acc.y + node.position.y }),
-      { x: 0, y: 0 }
-    );
-    return { x: sum.x / nodes.length, y: sum.y / nodes.length }
+    if (nodes.length === 0) return { x: 0, y: 0 };
+    const sum = nodes.reduce((acc, node) => ({ x: acc.x + (node.position?.x || 0), y: acc.y + (node.position?.y || 0) }), { x: 0, y: 0 });
+    return { x: sum.x / nodes.length, y: sum.y / nodes.length };
   }
+
   function calculateClusterRadius(nodes: GraphNode[], center: { x: number; y: number }): number {
+    if (nodes.length === 0) return 0;
     return Math.max(
-      ...nodes.map(node =>
-        Math.sqrt((node.position.x - center.x) ** 2 + (node.position.y - center.y) ** 2)
-      )
+      ...nodes.map(node => Math.sqrt(((node.position?.x || 0) - center.x) ** 2 + ((node.position?.y || 0) - center.y) ** 2))
     );
   }
+
   function applyLODFiltering(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     if (!config) return;
-    // Filter nodes based on LOD configuration and user filters
     let filtered = allNodes.filter(node => {
-      // Check type filters
-      if (!nodeTypeFilters[node.type as keyof typeof nodeTypeFilters]) return false;
-      // Check importance threshold
-      if (node.importance < Math.max(config.minImportance, importanceThreshold)) return false;
+      if (!nodeTypeFilters[node.type]) return false;
+      if ((node.importance || 0) < Math.max(config.minImportance, importanceThreshold)) return false;
       return true;
     });
-    // Sort by importance and take top N nodes
-    filtered.sort((a, b) => b.importance - a.importance);
+    filtered.sort((a, b) => (b.importance || 0) - (a.importance || 0));
     visibleNodes = filtered.slice(0, config.maxNodes);
-    // Filter edges to only show connections between visible nodes
+
     const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-    let filteredEdges = allEdges.filter(edge =>
-      visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)
-    );
-    // Sort edges by strength and take top N
+    let filteredEdges = allEdges.filter(edge => visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target));
     filteredEdges.sort((a, b) => b.strength - a.strength);
     visibleEdges = filteredEdges.slice(0, config.maxEdges);
     console.log(`[CaseGraphLOD] LOD ${currentLOD}: ${visibleNodes.length} nodes, ${visibleEdges.length} edges`);
   }
+
   function initializePhysicsPositions(): void {
-    // Initialize node positions if not set
     visibleNodes.forEach((node, index) => {
-      if (!node.position.x || !node.position.y) {
-        const angle = (index / visibleNodes.length) * Math.PI * 2;
-        const radius = Math.sqrt(visibleNodes.length) * 20;
+      if (!node.position || typeof node.position.x !== 'number' || typeof node.position.y !== 'number') {
+        const angle = (index / Math.max(1, visibleNodes.length)) * Math.PI * 2;
+        const radius = Math.sqrt(Math.max(1, visibleNodes.length)) * 20;
         node.position = {
           x: Math.cos(angle) * radius,
           y: Math.sin(angle) * radius,
-          z: node.position.z || 0;
-        }
+          z: (node.position && node.position.z) ? node.position.z : 0
+        };
       }
     });
   }
+
   function startPhysicsSimulation(): void {
-    if (!physicsEnabled) return;
+    physicsEnabled = true;
+    simulationStep = 0;
     const simulate = () => {
       if (!physicsEnabled) return;
-      // Simple force-directed layout with LOD-aware forces
       applyForces();
       simulationStep++;
-      // Render frame
       renderGraph();
-      // Continue simulation
-      if (simulationStep < 1000) { // Limit simulation steps
+      if (simulationStep < 1000) {
         requestAnimationFrame(simulate);
       }
-    }
+    };
     simulate();
   }
+
   function applyForces(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     const dampening = 0.9;
-    const repulsionStrength = forceStrength * config.renderComplexity;
-    // Apply repulsion forces between nodes
+    const repulsionStrength = forceStrength * (config?.renderComplexity ?? 1);
     for (let i = 0; i < visibleNodes.length; i++) {
       const nodeA = visibleNodes[i];
       let forceX = 0, forceY = 0;
       for (let j = 0; j < visibleNodes.length; j++) {
-        if (i === j) continu;
+        if (i === j) continue;
         const nodeB = visibleNodes[j];
-        const dx = nodeA.position.x - nodeB.position.x;
-        const dy = nodeA.position.y - nodeB.position.y;
+        const dx = (nodeA.position!.x) - (nodeB.position!.x);
+        const dy = (nodeA.position!.y) - (nodeB.position!.y);
         const distance = Math.sqrt(dx * dx + dy * dy) || 1;
         const force = repulsionStrength / (distance * distance);
-        forceX += (dx / distance) * forc;
-        forceY += (dy / distance) * forc;
+        forceX += (dx / distance) * force;
+        forceY += (dy / distance) * force;
       }
-      // Apply attraction forces from edges
+      // Attraction by connected edges
       visibleEdges.forEach(edge => {
         if (edge.source === nodeA.id) {
-          // removed unused target assignment
+          const target = visibleNodes.find(n => n.id === edge.target);
           if (target) {
-            const dx = target.position.x - nodeA.position.x;
-            const dy = target.position.y - nodeA.position.y;
+            const dx = target.position!.x - nodeA.position!.x;
+            const dy = target.position!.y - nodeA.position!.y;
             const distance = Math.sqrt(dx * dx + dy * dy) || 1;
             const attractionForce = edge.strength * forceStrength * 0.01;
-            forceX += (dx / distance) * attractionForc;
-            forceY += (dy / distance) * attractionForc;
+            forceX += (dx / distance) * attractionForce;
+            forceY += (dy / distance) * attractionForce;
+          }
+        }
+        if (edge.target === nodeA.id) {
+          const target = visibleNodes.find(n => n.id === edge.source);
+          if (target) {
+            const dx = target.position!.x - nodeA.position!.x;
+            const dy = target.position!.y - nodeA.position!.y;
+            const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+            const attractionForce = edge.strength * forceStrength * 0.01;
+            forceX += (dx / distance) * attractionForce;
+            forceY += (dy / distance) * attractionForce;
           }
         }
       });
-      // Update position with dampening
-      nodeA.position.x += forceX * dampening;
-      nodeA.position.y += forceY * dampening;
+      nodeA.position!.x += forceX * dampening;
+      nodeA.position!.y += forceY * dampening;
     }
   }
+
   async function renderGraph(): Promise<void> {
     if (isWebGPUReady && gpuDevice) {
       await renderWebGPU();
@@ -390,130 +402,123 @@ if (!browser) return;
       await renderCanvas2D();
     }
   }
+
   async function renderWebGPU(): Promise<void> {
-    // WebGPU instanced rendering for high-performance graph visualization
-    // Implementation would include:
-    // - Instanced rendering for nodes (using GPU buffers)
-    // - Line rendering for edges with bundling
-    // - LOD-based shader switching
-    // - N64-style effects for distant node;
+    // Placeholder for future high-performance rendering
+    // ...existing code...
   }
+
   async function renderCanvas2D(): Promise<void> {
     const ctx = canvasElement?.getContext('2d');
-    if (!ctx) return;
-    const width = canvasElement?.width || 800;
-    const height = canvasElement?.height || 600;
-    // Clear canvas with N64-style background
+    if (!ctx || !canvasElement) return;
+    const width = canvasElement.width || 800;
+    const height = canvasElement.height || 600;
+    ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#0a0a0f';
     ctx.fillRect(0, 0, width, height);
-    // Apply camera transform
+
     ctx.save();
     ctx.translate(width / 2, height / 2);
     ctx.scale(zoomLevel, zoomLevel);
     ctx.rotate((rotation * Math.PI) / 180);
     ctx.translate(-cameraPosition.x, -cameraPosition.y);
-    // Render edges first (behind nodes)
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 1;
+
+    // Edges
     visibleEdges.forEach(edge => {
       const source = visibleNodes.find(n => n.id === edge.source);
-      // removed unused target assignment
+      const target = visibleNodes.find(n => n.id === edge.target);
       if (source && target) {
-        // Apply LOD-based edge styling
-        const alpha = Math.max(0.1, lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity);
-        ctx.strokeStyle = `${edge.color}${Math.floor.toString-padStart(2, '0')}`;
-        ctx.lineWidth = edge.strength * 3;
+        const alpha = Math.max(0.1, (lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity || 0.2));
+        ctx.strokeStyle = edge.color;
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = Math.max(1, edge.strength * 3);
         ctx.beginPath();
-        ctx.moveTo(source.position.x, source.position.y);
-        ctx.lineTo(target.position.x, target.position.y);
+        ctx.moveTo(source.position!.x, source.position!.y);
+        ctx.lineTo(target.position!.x, target.position!.y);
         ctx.stroke();
+        ctx.globalAlpha = 1.0;
       }
     });
-    // Render nodes
+
+    // Nodes
     visibleNodes.forEach(node => {
-      const distance = Math.sqrt(
-        (node.position.x - cameraPosition.x) ** 2 +
-        (node.position.y - cameraPosition.y) ** 2
-      );
-      // Apply N64-style LOD effects
-      const lodAlpha = Math.max(0.3, 1 - (currentLOD / 3));
-      const size = node.size * Math.max(0.5, 1 - (currentLOD * 0.2));
-      ctx.fillStyle = node.color + Math.floor.toString-padStart(2, '0');
-      // Draw node based on type
+      const size = Math.max(2, node.size * Math.max(0.5, 1 - (currentLOD * 0.2)));
+      ctx.fillStyle = node.color;
       ctx.beginPath();
       switch (node.type) {
         case 'person':
-          ctx.arc(node.position.x, node.position.y, size, 0, Math.PI * 2);
+          ctx.arc(node.position!.x, node.position!.y, size, 0, Math.PI * 2);
           break;
         case 'document':
-          ctx.rect(node.position.x - size/2, node.position.y - size/2, size, size);
+          ctx.rect(node.position!.x - size / 2, node.position!.y - size / 2, size, size);
           break;
         case 'event':
-          // Draw diamond
-          ctx.moveTo(node.position.x, node.position.y - size);
-          ctx.lineTo(node.position.x + size, node.position.y);
-          ctx.lineTo(node.position.x, node.position.y + size);
-          ctx.lineTo(node.position.x - size, node.position.y);
+          ctx.moveTo(node.position!.x, node.position!.y - size);
+          ctx.lineTo(node.position!.x + size, node.position!.y);
+          ctx.lineTo(node.position!.x, node.position!.y + size);
+          ctx.lineTo(node.position!.x - size, node.position!.y);
           ctx.closePath();
           break;
         default:
-          ctx.arc(node.position.x, node.position.y, size, 0, Math.PI * 2);
+          ctx.arc(node.position!.x, node.position!.y, size, 0, Math.PI * 2);
       }
       ctx.fill();
-      // Highlight selected/hovered nodes
+
       if (node === selectedNode) {
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
         ctx.stroke();
       } else if (node === hoveredNode) {
         ctx.strokeStyle = '#ccc';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.stroke();
       }
-      // Draw labels for important nodes at higher LOD levels
-      if (currentLOD <= 1 && node.importance > 0.7) {
+
+      if (currentLOD <= 1 && (node.importance || 0) > 0.7) {
         ctx.fillStyle = '#fff';
         ctx.font = `${Math.max(10, 12 - currentLOD * 2)}px monospace`;
         ctx.textAlign = 'center';
-        ctx.fillText(node.label, node.position.x, node.position.y + size + 15);
+        ctx.fillText(node.label, node.position!.x, node.position!.y + size + 12);
       }
     });
+
     ctx.restore();
   }
+
   // User interaction handlers
-  function handleCanvasClick(_event: MouseEvent): void {
-    const rect = canvasElement?.getBoundingClientRect();
-    if (!rect) return;
-    const x = (event.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
-    const y = (event.clientY - rect.top - rect.height / 2) / zoomLevel + cameraPosition.y;
-    // Find clicked node
+  function handleCanvasClick(e: MouseEvent): void {
+    if (!canvasElement) return;
+    const rect = canvasElement.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
+    const y = (e.clientY - rect.top - rect.height / 2) / zoomLevel + cameraPosition.y;
     const clickedNode = visibleNodes.find(node => {
-      const distance = Math.sqrt((node.position.x - x) ** 2 + (node.position.y - y) ** 2);
-      return distance <= node.siz;
+      const distance = Math.sqrt((node.position!.x - x) ** 2 + (node.position!.y - y) ** 2);
+      return distance <= node.size;
     });
     if (clickedNode) {
-      selectedNode = clickedNod;
+      selectedNode = clickedNode;
       onNodeClick?.(clickedNode);
     } else {
       selectedNode = null;
     }
     renderGraph();
   }
-  function handleCanvasHover(_event: MouseEvent): void {
-    const rect = canvasElement?.getBoundingClientRect();
-    if (!rect) return;
-    const x = (event.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
-    const y = (event.clientY - rect.top - rect.height / 2) / zoomLevel + cameraPosition.y;
-    // Find hovered node
+
+  function handleCanvasHover(e: MouseEvent): void {
+    if (!canvasElement) return;
+    const rect = canvasElement.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
+    const y = (e.clientY - rect.top - rect.height / 2) / zoomLevel + cameraPosition.y;
     const hovered = visibleNodes.find(node => {
-      const distance = Math.sqrt((node.position.x - x) ** 2 + (node.position.y - y) ** 2);
-      return distance <= node.siz;
+      const distance = Math.sqrt((node.position!.x - x) ** 2 + (node.position!.y - y) ** 2);
+      return distance <= node.size;
     });
     if (hovered !== hoveredNode) {
-      hoveredNode = hovered;
+      hoveredNode = hovered || null;
       renderGraph();
     }
   }
+
   function handleZoomIn(): void {
     zoomLevel = Math.min(3.0, zoomLevel * 1.2);
     renderGraph();
@@ -523,7 +528,7 @@ if (!browser) return;
     renderGraph();
   }
   function handleResetView(): void {
-    cameraPosition = { x: 0, y: 0, z: cameraDistance }
+    cameraPosition = { x: 0, y: 0, z: cameraDistance };
     zoomLevel = 1.0;
     rotation = 0;
     renderGraph();
@@ -537,20 +542,20 @@ if (!browser) return;
     applyLODFiltering();
     renderGraph();
   }
+
   function calculateMemoryUsage(): number {
-    const nodeSize = 128; // Approximate bytes per node
-    const edgeSize = 64;  // Approximate bytes per edge
+    const nodeSize = 128;
+    const edgeSize = 64;
     return ((visibleNodes.length * nodeSize) + (visibleEdges.length * edgeSize)) / (1024 * 1024);
   }
   function estimateFrameTime(): number {
-    // Estimate based on visible elements and LOD level
-    const baseTime = 16.67; // Target 60fps
+    const baseTime = 16.67;
     const complexity = lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity;
     const nodeCount = visibleNodes.length;
     return baseTime * (1 + (nodeCount / 1000) * (2 - complexity));
   }
+
   async function loadDemoGraphData(): Promise<void> {
-    // Demo data for development/testing
     const demoNodes: GraphNode[] = [
       {
         id: 'person_1',
@@ -558,8 +563,7 @@ if (!browser) return;
         label: 'John Doe',
         importance: 0.9,
         connections: ['entity_1', 'document_1'],
-        position: ;
-{ x: 0, y: 0 },
+        position: { x: 0, y: 0 },
         size: 15,
         color: '#4ade80',
         metadata: { role: 'defendant' }
@@ -570,8 +574,7 @@ if (!browser) return;
         label: 'ABC Corp',
         importance: 0.8,
         connections: ['person_1', 'document_2'],
-        position: ;
-{ x: 50, y: 50 },
+        position: { x: 50, y: 50 },
         size: 12,
         color: '#3b82f6',
         metadata: { type: 'corporation' }
@@ -588,8 +591,8 @@ if (!browser) return;
         metadata: { relationship: 'employee' }
       }
     ];
-    allNodes = demoNode;
-    allEdges = demoEdge;
+    allNodes = demoNodes;
+    allEdges = demoEdges;
     calculateNodeImportance();
     generateGraphClusters();
     applyLODFiltering();
@@ -800,13 +803,13 @@ if (!browser) return;
   }
   .graph-canvas-container {
     position: relative;
-    background: #1a1a2;
+    background: #1a1a2e;
     border: 2px solid #444;
     border-radius: 4px;
     margin-bottom: 1rem;
     overflow: hidden;
   }
-  .graph-canv.loading-overlay {
+  .graph-canvas-container .loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -842,7 +845,7 @@ if (!browser) return;
   }
   .stat-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .label {
@@ -864,8 +867,8 @@ if (!browser) return;
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% { transform: translateX(-100%), }
-    100% { transform: translateX(100%), }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;
@@ -881,9 +884,8 @@ if (!browser) return;
     .filter-controls {
       justify-self: center;
     }
-    .graph-canv.node-info-panel {
-      position: stati;
-c;
+    .graph-canvas-container {
+      position: static;
       margin-top: 1rem;
     }
     .stats-grid {

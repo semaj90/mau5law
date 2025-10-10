@@ -1,17 +1,17 @@
 # Auto-generated WebSocket upstreams
 
-  @chat path /ws/0878f1e2-ff11-4dcc-8f5c-0000953e2e24*
-  reverse_proxy @chat localhost:5179
+  @rag path /ws/662c463c-aef3-4266-8762-8549143ff674*
+  reverse_proxy @rag localhost:5173
 
-  @canvas path /ws/4c686a2c-5ae7-447b-9e4f-552d449da7bc*
-  reverse_proxy @canvas localhost:5180
+  @chat path /ws/e079c42b-66e6-4e59-b470-fd3678ef2e86*
+  reverse_proxy @chat localhost:5174
 
-  @notifications path /ws/0e60b1e0-5f78-4d59-8021-2f7ec1a59710*
-  reverse_proxy @notifications localhost:5181
+  @canvas path /ws/be6c6eff-42c5-4aaa-ae07-86e512650192*
+  reverse_proxy @canvas localhost:5175
 
-  @enhanced-rag path /ws/2df39820-f1a9-4c79-941e-e194219380f6*
-  reverse_proxy @enhanced-rag localhost:5182
+  @notifications path /ws/e6976b4d-6785-4d36-bf48-e805d5b0d0cf*
+  reverse_proxy @notifications localhost:5176
 
-  @rag path /ws/6728c2fd-cfd1-4764-b43d-6da85e5108eb*
-  reverse_proxy @rag localhost:5183
+  @enhanced-rag path /ws/be2dbbbe-ddd2-4a9f-ba60-5c78e2e07c29*
+  reverse_proxy @enhanced-rag localhost:5177
 

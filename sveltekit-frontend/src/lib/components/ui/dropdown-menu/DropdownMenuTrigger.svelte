@@ -3,7 +3,8 @@
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   // Resolve factory at runtime via adapter
-  let Trigger: any = null;
+  // make Trigger reactive so updates inside the async loader trigger component updates
+  let Trigger: any = $state(null);
   (async () => {
     const ns = await getBitsNamespace();
     const factory = (ns as any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns;
@@ -36,6 +37,13 @@
   ));
 </script>
 
-<Trigger class={triggerClasses} {disabled} {asChild}>
-  {@render children?.()}
-</Trigger>
+{#if Trigger}
+  <svelte:component this={Trigger} class={triggerClasses} {disabled} {asChild}>
+    {@render children?.()}
+  </svelte:component>
+{:else}
+  <!-- simple fallback while adapter resolves -->
+  <button class={triggerClasses} {disabled} aria-haspopup="menu">
+    {@render children?.()}
+  </button>
+{/if}

@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     priority: 'medium',
     status: 'open',
     location: '',
-    incidentDate: '';
+    incidentDate: '',
   });
   // Priority options
   const priorityOptions = [

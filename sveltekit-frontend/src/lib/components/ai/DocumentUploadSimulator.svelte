@@ -313,6 +313,16 @@
     isDragging = true;
   }
 
+  // Keyboard handler to make the div accessible: Enter or Space opens file picker
+  function handleKeyDown(event: KeyboardEvent): void {
+    const key = event.key;
+    if (key === 'Enter' || key === ' ') {
+      // Prevent default for Space to avoid page scroll
+      event.preventDefault();
+      fileInput?.click();
+    }
+  }
+
   function handleFileInput(event: Event): void {
     const files = (event.target as HTMLInputElement)?.files;
     if (files && files.length > 0) {
@@ -381,11 +391,15 @@
   <!-- Upload Area -->
   <div
     class="upload-area bg-gray-900 rounded-lg p-6 mb-6 border-2 border-dashed border-gray-700 transition-all duration-300"
+    role="button"
+    tabindex="0"
+    aria-label="File upload area. Press Enter or Space to open file picker, or drop files here."
     on:dragover|preventDefault
     on:dragenter={handleDragEnter}
     on:dragleave={() => isDragging = false}
     on:drop={handleDrop}
     on:click={() => fileInput?.click()}
+    on:keydown={handleKeyDown}
   >
     <input
       type="file"

@@ -6,6 +6,25 @@ let lucia: any = null;
 let authEnabled = false;
 let legacyRouteMapping: Record<string, string> = {};
 
+// RabbitMQ service initialization
+let rabbitMQInitialized = false;
+async function initializeRabbitMQ() {
+  if (rabbitMQInitialized) return { initialized: true };
+
+  try {
+    console.log('🐰 [hooks.server] Initializing RabbitMQ connection...');
+    const { rabbitMQService } = await import('$lib/services/rabbitmq-service');
+    await rabbitMQService.connect();
+    rabbitMQInitialized = true;
+    console.log('✅ [hooks.server] RabbitMQ connected successfully');
+    return { initialized: true };
+  } catch (error) {
+    console.error('⚠️  [hooks.server] RabbitMQ failed to initialize:', error);
+    console.warn('📝 [hooks.server] RabbitMQ will auto-connect on first use');
+    return { initialized: false };
+  }
+}
+
 // Load auth system with comprehensive error handling
 async function initializeAuth() {
   if (authEnabled) return { lucia, enabled: true };
@@ -44,7 +63,11 @@ async function ensureInitialized() {
   if (!initialized) {
     console.log('🚀 [hooks.server] Starting initialization...');
     try {
-      await Promise.all([initializeAuth(), loadRouteConfig()]);
+      await Promise.all([
+        initializeAuth(),
+        loadRouteConfig(),
+        initializeRabbitMQ(), // Add RabbitMQ initialization
+      ]);
       initialized = true;
       console.log('✅ [hooks.server] All systems initialized successfully');
     } catch (error) {

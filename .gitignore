@@ -761,3 +761,5 @@ pytorch_cache.json
 # Cache directories
 .go-cache/
 __pycache__/
+sveltekit-tsc-output.txt
+sveltekit-tsc-output-fresh.txt
