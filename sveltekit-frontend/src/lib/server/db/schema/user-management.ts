@@ -67,13 +67,12 @@ export const users = pgTable(
     emailIdx: uniqueIndex('users_email_idx').on(table.email),
     roleIdx: index('users_role_idx').on(table.role),
     jurisdictionIdx: index('users_jurisdiction_idx').on(table.jurisdiction),
-    profileEmbeddingIdx: index('users_profile_embedding_idx').using(
-      'hnsw',
-      table.profileEmbedding.op('vector_cosine_ops'),
-    ),
+    profileEmbeddingIdx: index('users_profile_embedding_idx')
+      .using('ivfflat', table.profileEmbedding)
+      .with({ lists: 100 }),
     createdAtIdx: index('users_created_at_idx').on(table.createdAt),
     isActiveIdx: index('users_is_active_idx').on(table.isActive),
-  }),
+  })
 );
 // ============================================================================
 // USER SESSIONS TABLE

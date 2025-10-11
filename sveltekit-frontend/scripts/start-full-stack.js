@@ -397,6 +397,7 @@ async function startWorkers() {
     ...process.env,
     // Database
     DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+    SKIP_MIGRATIONS: 'true', // Workers should not run migrations
     // RabbitMQ
     RABBITMQ_URL: services.rabbitmq.running ? 'amqp://guest:guest@localhost:5672' : 'amqp://localhost:5672',
     // MinIO

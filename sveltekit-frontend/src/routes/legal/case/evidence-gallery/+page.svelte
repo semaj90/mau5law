@@ -15,7 +15,7 @@
     id: 'CORPORATE ESPIONAGE INV',
     title: 'Corporate Espionage Investigation',
     status: 'active',
-    items: [];
+    items: [], // Fixed: Removed trailing semicolon
   });
   let isDemoMode = $state(false);
   let isConnected = $state(true);
@@ -55,7 +55,7 @@
         metadata: {
           timestamp: '2024-03-15 14:32',
           location: 'Main Entrance',
-          source: 'Security System';
+          source: 'Security System', // Fixed: Removed trailing semicolon
         }
       },
       {
@@ -67,7 +67,7 @@
         connections: ['video-001'],
         metadata: {
           timestamp: '2024-03-16 09:15',
-          source: 'Detective Interview';
+          source: 'Detective Interview', // Fixed: Removed trailing semicolon
         }
       }
     ];
@@ -99,7 +99,7 @@
       type: 'DOCUMENT',
       description: 'New evidence item',
       position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
-      connections: [];
+      connections: [], // Fixed: Removed trailing semicolon
     }
     canvasItems = [...canvasItems, newEvidence];
   }
@@ -107,20 +107,20 @@
     if (!isConnecting) {
       isConnecting = true;
       selectedItem = item;
-    } else if (selectedItem && selectedItem.id !== (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
+    } else if (selectedItem && selectedItem.id !== item.id) { // Simplified type access
       // Create connection
       const newConnection = {
         from: selectedItem.id,
-        to: (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id,
-        type: 'correlation';
+        to: item.id, // Simplified type access
+        type: 'correlation', // Fixed: Removed trailing semicolon
       }
       connections = [...connections, newConnection];
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
-          return { ...i, connections: [...i.connections, (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id] }
+          return { ...i, connections: [...i.connections, item.id] } // Simplified type access
         }
-        if (i.id === (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
+        if (i.id === item.id) { // Simplified type access
           return { ...i, connections: [...i.connections, selectedItem.id] }
         }
         return i;
@@ -138,7 +138,7 @@
   let dragOffset = $state({ x: 0, y: 0 });
   function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
     draggedItem = item;
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top
@@ -147,10 +147,12 @@
   function handleMouseMove(event: MouseEvent) {
     if (draggedItem) {
       const canvas = document.getElementById('evidence-canvas');
+      if (!canvas) return; // Added null check for canvas
       const rect = canvas.getBoundingClientRect();
       const newX = event.clientX - rect.left - dragOffset.x;
       const newY = event.clientY - rect.top - dragOffset.y;
-      canvasItems = canvasItems.map.id === draggedItem.id
+      canvasItems = canvasItems.map((item: EvidenceCard) => // Fixed: Correct map syntax and added type for item
+        item.id === draggedItem.id
           ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
           : item
       );
@@ -207,137 +209,141 @@
           <span class="px-3 py-1 bg-gray-800 text-white text-sm rounded">{caseData.id}</span>
         </div>
         <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">
-📚 LIBRARY
+          📚 LIBRARY
+        </Button> <!-- Fixed: Added closing tag -->
         <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">
-📊 ANALYSIS
+          📊 ANALYSIS
+        </Button> <!-- Fixed: Added closing tag -->
       </div>
     </div>
     <!-- Main Canvas and Controls -->
     <div class="flex-1 flex">
-      <!-- Canvas Area -->
-      <div class="flex-1 relative">
-        <!-- Canvas Controls -->
-        <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
-          <Button
-            class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-            disabled
-          >
-🔒 100%
-          <Button
-            class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-            disabled
-          >
-📎 CONNECT
-          <Button
-            onclick={addEvidence}
-            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
-          >
-+ ADD EVIDENCE
-          <Button
-            class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-            disabled
-          >
-📚 LIBRARY (0)
-        </div>
-        <!-- Connection Status -->
-        <div class="absolute bottom-4 left-4 z-10">
-          <div class="flex items-center space-x-2 text-sm text-gray-600">
-            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-            <span>Demo Mode - Server Not Connected</span>
-          </div>
-        </div>
-        <!-- Main Canvas with Grid -->
-        <div
-          id="evidence-canvas"
-          class="w-full h-full relative overflow-hidden"
-          style="background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px); background-size: 20px 20px;"
+      <!-- Canvas Controls -->
+      <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
+        <Button
+          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
+          disabled
         >
-          <!-- SVG for connection lines -->
-          <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
-            {#each connections as connection}
-              {@const fromItem = canvasItems.find.id === connection.from)}
-              {@const toItem = canvasItems.find.id === connection.to)}
-              {#if fromItem && toItem}
-                <line
-                  x1={fromItem.position.x + 120}
-                  y1={fromItem.position.y + 80}
-                  x2={toItem.position.x + 120}
-                  y2={toItem.position.y + 80}
-                  stroke="#6b7280"
-                  stroke-width="2"
-                  stroke-dasharray="5,5"
-                  opacity="0.7"
-                />
-              {/if}
-            {/each}
-          </svg>
-          <!-- Evidence Cards -->
-          {#each canvasItems as item ((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id)}
-            <div
-              class="absolute cursor-pointer select-none"
-              style="left: {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).position.x}px; top: {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).position.y}px; z-index: 2;"
-              onmousedown={(e) => handleMouseDown(e, item)}
-              onclick={() => startConnection(item)}
-            >
-              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
-                <div.Header class="pb-2">
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-gray-800">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type}</span>
-                    <span class="text-xs text-gray-500">!</span>
-                  </div>
-                </div.Header>
-                <div.Content class="pt-0">
-                  <!-- Main Content Area -->
-                  <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
-                    <span class="text-white text-2xl">{getTypeIcon((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type)}</span>
-                  </div>
-                  <!-- Title -->
-                  <div class="text-sm font-bold text-blue-600 mb-1">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).title}</div>
-                  <!-- Description -->
-                  <div class="text-xs text-gray-700 mb-2">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).description}</div>
-                  <!-- Metadata -->
-                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata}
-                    <div class="text-xs text-gray-500 space-y-1">
-                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.timestamp}
-                        <div>📅 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.timestamp}</div>
-                      {/if}
-                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.location}
-                        <div>📍 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.location}</div>
-                      {/if}
-                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.source}
-                        <div>🔗 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.source}</div>
-                      {/if}
-                    </div>
-                  {/if}
-                  <!-- Connection indicators -->
-                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length > 0}
-                    <div class="flex items-center mt-2 text-xs text-green-600">
-                      <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                      {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length} connections
-                      <span class="ml-auto">🔗</span>
-                    </div>
-                  {/if}
-                </div.Content>
-              </div.Root>
-            </div>
+          🔒 100%
+        </Button> <!-- Fixed: Added closing tag -->
+        <Button
+          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
+          disabled
+        >
+          📎 CONNECT
+        </Button> <!-- Fixed: Added closing tag -->
+        <Button
+          onclick={addEvidence}
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
+        >
+          + ADD EVIDENCE
+        </Button> <!-- Fixed: Added closing tag -->
+        <Button
+          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
+          disabled
+        >
+          📚 LIBRARY (0)
+        </Button> <!-- Fixed: Added closing tag -->
+      </div>
+      <!-- Connection Status -->
+      <div class="absolute bottom-4 left-4 z-10">
+        <div class="flex items-center space-x-2 text-sm text-gray-600">
+          <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+          <span>Demo Mode - Server Not Connected</span>
+        </div>
+      </div>
+      <!-- Main Canvas with Grid -->
+      <div
+        id="evidence-canvas"
+        class="w-full h-full relative overflow-hidden"
+        style="background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px); background-size: 20px 20px;"
+      >
+        <!-- SVG for connection lines -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
+          {#each connections as connection}
+            {@const fromItem = canvasItems.find((i: EvidenceCard) => i.id === connection.from)} <!-- Fixed: Correct find syntax and added type -->
+            {@const toItem = canvasItems.find((i: EvidenceCard) => i.id === connection.to)}     <!-- Fixed: Correct find syntax and added type -->
+            {#if fromItem && toItem}
+              <line
+                x1={fromItem.position.x + 120}
+                y1={fromItem.position.y + 80}
+                x2={toItem.position.x + 120}
+                y2={toItem.position.y + 80}
+                stroke="#6b7280"
+                stroke-width="2"
+                stroke-dasharray="5,5"
+                opacity="0.7"
+              />
+            {/if}
           {/each}
-          <!-- Connection Mode Overlay -->
-          {#if isConnecting}
-            <div class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center" style="z-index: 10;">
-              <div class="bg-white p-4 rounded-lg shadow-lg border">
-                <div class="text-center">
-                  <div class="text-lg font-bold text-blue-600 mb-2">Connection Mode</div>
-                  <div class="text-sm text-gray-600 mb-4">
-                    Selected: {selectedItem?.title}<br>
-                    Click another evidence item to create connection
-                  </div>
-                  <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
-Cancel Connection
+        </svg>
+        <!-- Evidence Cards -->
+        {#each canvasItems as item (item.id)} <!-- Fixed: Simplified keying and removed redundant type cast -->
+          <div
+            class="absolute cursor-pointer select-none"
+            style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
+            onmousedown={(e: MouseEvent) => handleMouseDown(e, item)}
+            onclick={() => startConnection(item)}
+          >
+            <Card.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"> <!-- Fixed: Changed div.Root to Card.Root and simplified type access -->
+              <Card.Header class="pb-2"> <!-- Fixed: Changed div.Header to Card.Header -->
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-bold text-gray-800">{item.type}</span> <!-- Simplified type access -->
+                  <span class="text-xs text-gray-500">!</span>
                 </div>
+              </Card.Header>
+              <Card.Content class="pt-0"> <!-- Fixed: Changed div.Content to Card.Content -->
+                <!-- Main Content Area -->
+                <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
+                  <span class="text-white text-2xl">{getTypeIcon(item.type)}</span> <!-- Simplified type access -->
+                </div>
+                <!-- Title -->
+                <div class="text-sm font-bold text-blue-600 mb-1">{item.title}</div> <!-- Simplified type access -->
+                <!-- Description -->
+                <div class="text-xs text-gray-700 mb-2">{item.description}</div> <!-- Simplified type access -->
+                <!-- Metadata -->
+                {#if item.metadata} <!-- Simplified type access -->
+                  <div class="text-xs text-gray-500 space-y-1">
+                    {#if item.metadata.timestamp} <!-- Simplified type access -->
+                      <div>📅 {item.metadata.timestamp}</div> <!-- Simplified type access -->
+                    {/if}
+                    {#if item.metadata.location} <!-- Simplified type access -->
+                      <div>📍 {item.metadata.location}</div> <!-- Simplified type access -->
+                    {/if}
+                    {#if item.metadata.source} <!-- Simplified type access -->
+                      <div>🔗 {item.metadata.source}</div> <!-- Simplified type access -->
+                    {/if}
+                  </div>
+                {/if}
+                <!-- Connection indicators -->
+                {#if item.connections.length > 0} <!-- Simplified type access -->
+                  <div class="flex items-center mt-2 text-xs text-green-600">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                    {item.connections.length} connections <!-- Simplified type access -->
+                    <span class="ml-auto">🔗</span>
+                  </div>
+                {/if}
+              </Card.Content>
+            </Card.Root>
+          </div>
+        {/each}
+        <!-- Connection Mode Overlay -->
+        {#if isConnecting}
+          <div class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center" style="z-index: 10;">
+            <div class="bg-white p-4 rounded-lg shadow-lg border">
+              <div class="text-center">
+                <div class="text-lg font-bold text-blue-600 mb-2">Connection Mode</div>
+                <div class="text-sm text-gray-600 mb-4">
+                  Selected: {selectedItem?.title}<br>
+                  Click another evidence item to create connection
+                </div>
+                <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+                  Cancel Connection
+                </Button> <!-- Fixed: Added closing tag -->
               </div>
             </div>
-          {/if}
-        </div>
+          </div>
+        {/if}
       </div>
       <!-- Right Sidebar -->
       <div class="w-80 bg-white border-l flex flex-col">
@@ -388,12 +394,12 @@ Cancel Connection
             {#each canvasItems as item}
               <div class="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                 <div class="flex items-center space-x-2">
-                  <span class="text-lg">{getTypeIcon((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type)}</span>
+                  <span class="text-lg">{getTypeIcon(item.type)}</span> <!-- Simplified type access -->
                   <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-800">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).title}</div>
-                    <div class="text-xs text-gray-600">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type}</div>
+                    <div class="text-sm font-medium text-gray-800">{item.title}</div> <!-- Simplified type access -->
+                    <div class="text-xs text-gray-600">{item.type}</div> <!-- Simplified type access -->
                   </div>
-                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length > 0}
+                  {#if item.connections.length > 0} <!-- Simplified type access -->
                     <span class="text-xs text-green-600">🔗</span>
                   {/if}
                 </div>
@@ -404,17 +410,21 @@ Cancel Connection
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
           <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
-+ Add Evidence
+            + Add Evidence
+          </Button> <!-- Fixed: Added closing tag -->
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">
-🔍 Analyze All
+            🔍 Analyze All
+          </Button> <!-- Fixed: Added closing tag -->
           <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">
-📊 Generate Report
+            📊 Generate Report
+          </Button> <!-- Fixed: Added closing tag -->
         </div>
       </div>
     </div>
   </div>
 </div>
 <style>
+  /* @unocss-include */
   /* Grid background pattern */
   #evidence-canvas {
     background-color: #f9fafb;

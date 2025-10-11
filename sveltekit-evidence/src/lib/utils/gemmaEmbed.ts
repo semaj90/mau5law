@@ -1,3 +1,12 @@
+const PRIMARY_EMBEDDING_MODEL =
+  (typeof window !== "undefined" &&
+    (window as any).__ENV?.PRIMARY_EMBEDDING_MODEL) ||
+  "embeddinggemma:latest";
+
+/**
+ * Gemma Embedding Utilities
+ * Text and image embedding helpers using Gemma model
+ */
 /**
  * Gemma Embedding Utilities
  * Text and image embedding helpers using Gemma model
@@ -20,7 +29,10 @@ export interface BatchEmbeddingResult {
 /**
  * Generate text embedding using Gemma model
  */
-export async function embedText(text: string): Promise<EmbeddingResult> {
+export async function embedText(
+  text: string,
+  model: string = PRIMARY_EMBEDDING_MODEL
+): Promise<EmbeddingResult> {
   try {
     if (!text.trim()) {
       return { success: false, error: "Empty text provided" };
@@ -57,7 +69,10 @@ export async function embedText(text: string): Promise<EmbeddingResult> {
 /**
  * Generate image embedding using Gemma vision model
  */
-export async function embedImage(imageUrl: string): Promise<EmbeddingResult> {
+export async function embedImage(
+  imageUrl: string,
+  model: string = PRIMARY_EMBEDDING_MODEL
+): Promise<EmbeddingResult> {
   try {
     if (!imageUrl) {
       return { success: false, error: "No image URL provided" };
@@ -95,6 +110,7 @@ export async function embedImage(imageUrl: string): Promise<EmbeddingResult> {
  */
 export async function embedTextBatch(
   texts: string[],
+  model: string = PRIMARY_EMBEDDING_MODEL
 ): Promise<BatchEmbeddingResult> {
   try {
     if (!texts.length) {
@@ -132,7 +148,7 @@ export async function embedTextBatch(
  */
 export function cosineSimilarity(
   embedding1: number[],
-  embedding2: number[],
+  embedding2: number[]
 ): number {
   if (embedding1.length !== embedding2.length) {
     throw new Error("Embeddings must have the same dimensions");
@@ -164,7 +180,7 @@ export function findSimilarEmbeddings(
   queryEmbedding: number[],
   candidateEmbeddings: { id: string; embedding: number[]; metadata?: any }[],
   limit = 5,
-  threshold = 0.5,
+  threshold = 0.5
 ): Array<{ id: string; similarity: number; metadata?: any }> {
   const similarities = candidateEmbeddings
     .map((candidate) => ({
@@ -184,7 +200,7 @@ export function findSimilarEmbeddings(
  */
 export function normalizeEmbedding(embedding: number[]): number[] {
   const magnitude = Math.sqrt(
-    embedding.reduce((sum, val) => sum + val * val, 0),
+    embedding.reduce((sum, val) => sum + val * val, 0)
   );
 
   if (magnitude === 0) {
@@ -199,7 +215,7 @@ export function normalizeEmbedding(embedding: number[]): number[] {
  */
 export async function embedFileContent(
   content: string,
-  fileType: string,
+  fileType: string
 ): Promise<EmbeddingResult> {
   try {
     let textToEmbed = content;
@@ -252,7 +268,7 @@ export async function createRAGContext(
     metadata?: any;
   }>,
   maxContextLength = 4000,
-  similarityThreshold = 0.6,
+  similarityThreshold = 0.6
 ): Promise<{
   context: string;
   sources: Array<{ id: string; type: string; similarity: number }>;
@@ -266,7 +282,7 @@ export async function createRAGContext(
       metadata: { content: doc.content, type: doc.type, ...doc.metadata },
     })),
     10, // Get top 10 most relevant
-    similarityThreshold,
+    similarityThreshold
   );
 
   // Build context string within token limit

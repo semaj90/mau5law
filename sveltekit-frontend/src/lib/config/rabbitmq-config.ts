@@ -1,8 +1,8 @@
 /**
  * RabbitMQ Configuration for Background Job Processing
  * Handles embedding generation and document processing queues
- */;
-}
+ */
+
 export interface RabbitMQConfig {
   connection: {
     protocol: 'amqp' | 'amqps';
@@ -99,12 +99,12 @@ export const ROUTING_KEYS = {
 // Production RabbitMQ configuration
 export const getRabbitMQConfig = (): RabbitMQConfig => ({
   connection: {
-    protocol: RABBITMQ_PROTOCOL
-    hostname: RABBITMQ_HOST
-    port: RABBITMQ_PORT
-    username: RABBITMQ_USERNAME
-    password: RABBITMQ_PASSWORD
-    vhost: RABBITMQ_VHOST
+    protocol: RABBITMQ_PROTOCOL,
+    hostname: RABBITMQ_HOST,
+    port: RABBITMQ_PORT,
+    username: RABBITMQ_USERNAME,
+    password: RABBITMQ_PASSWORD,
+    vhost: RABBITMQ_VHOST,
     heartbeat: 60,
     connection_timeout: 10000,
     channel_max: 100
@@ -114,7 +114,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: EXCHANGES.LEGAL_AI_MAIN,
       type: 'topic',
       options: {
-        durable: true
+        durable: true,
         autoDelete: false
       }
     },
@@ -122,7 +122,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: EXCHANGES.LEGAL_AI_DLX,
       type: 'direct',
       options: {
-        durable: true
+        durable: true,
         autoDelete: false
       }
     }
@@ -134,8 +134,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.GENERATE_EMBEDDING,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 600000, // 10 minutes
         maxLength: 1000,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -147,8 +147,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.VECTOR_INDEX_UPDATE,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -160,8 +160,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.ANALYZE_DOCUMENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 1200000, // 20 minutes (AI processing can be slow)
         maxLength: 200,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -174,8 +174,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.CASE_CREATED,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -187,8 +187,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.FIND_SIMILAR_CASES,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 180000, // 3 minutes
         maxLength: 300,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -201,8 +201,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.SUMMARIZE_CONTENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 900000, // 15 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -214,8 +214,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.EXTRACT_ENTITIES,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 600000, // 10 minutes
         maxLength: 200,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -227,8 +227,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.CLASSIFY_DOCUMENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -241,8 +241,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.VECTOR_SEARCH,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 120000, // 2 minutes
         maxLength: 1000,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -254,8 +254,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.DEAD_LETTER,
       exchange: EXCHANGES.LEGAL_AI_DLX,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 86400000 // 24 hours in dead letter queue
       }
     },
@@ -264,8 +264,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       routingKey: ROUTING_KEYS.RETRY_FAILED_JOB,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true
-        autoDelete: false
+        durable: true,
+        autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
@@ -294,39 +294,43 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
   const baseConfig: ConsumerConfig = {
     concurrency: 3,
     prefetchCount: 10,
-    autoAck: false
+    autoAck: false,
     retryAttempts: 3,
     retryDelay: 5000,
     exponentialBackoff: true
-  }
+  };
   // Queue-specific configurations
   switch (queueName) {
-    case QUEUES.DOCUMENT_EMBEDDING: case QUEUES.CASE_EMBEDDING:;
+    case QUEUES.DOCUMENT_EMBEDDING:
+    case QUEUES.CASE_EMBEDDING:
       return {
         ...baseConfig,
         concurrency: 2, // Embedding generation is CPU intensive
         prefetchCount: 5
-      }
-    case QUEUES.DOCUMENT_ANALYSIS: case QUEUES.AI_SUMMARIZATION:;
+      };
+    case QUEUES.DOCUMENT_ANALYSIS:
+    case QUEUES.AI_SUMMARIZATION:
       return {
         ...baseConfig,
         concurrency: 1, // AI operations are resource intensive
         prefetchCount: 2,
         retryAttempts: 2,
         retryDelay: 30000 // 30 seconds
-      }
-    case QUEUES.VECTOR_SEARCH_UPDATE: return {
+      };
+    case QUEUES.VECTOR_SEARCH_UPDATE:
+      return {
         ...baseConfig,
         concurrency: 5, // Fast database operations
         prefetchCount: 20
-      }
-    case QUEUES.AI_ENTITY_EXTRACTION: case QUEUES.AI_CLASSIFICATION:;
+      };
+    case QUEUES.AI_ENTITY_EXTRACTION:
+    case QUEUES.AI_CLASSIFICATION:
       return {
         ...baseConfig,
         concurrency: 2,
         prefetchCount: 5,
         retryAttempts: 2
-      }
+      };
     default:
       return baseConfig;
   }
@@ -336,11 +340,11 @@ export const getRabbitMQConnectionURL = (): string => {
   const config = getRabbitMQConfig();
   const { protocol, hostname, port, username, password, vhost } = config.connection;
   const encodedVhost = encodeURIComponent(vhost);
-  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : ''}`
-}
+  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : ''}`;
+};
 // Health check configuration
 export const HEALTH_CHECK = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds;
+  timeout: 5000,   // 5 seconds
   retries: 3
 } as const;

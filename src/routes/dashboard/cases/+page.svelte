@@ -304,11 +304,3 @@
 		}
 	}
 </style>
-	}
-
-	@media (max-width: 768px) {
-		.cases-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-</style>

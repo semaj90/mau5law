@@ -64,7 +64,7 @@ export const documents = pgTable('documents', {
 }, (table) => ({
   userIdIndex: index('documents_user_id_idx').on(table.user_id),
   fileTypeIndex: index('documents_file_type_idx').on(table.file_type),
-  embeddingIndex: index('documents_embedding_idx').using('hnsw', table.embedding)
+  embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 })
 }));
 
 // Evidence table
@@ -88,7 +88,7 @@ export const evidence = pgTable('evidence', {
   caseIdIndex: index('evidence_case_id_idx').on(table.case_id),
   userIdIndex: index('evidence_user_id_idx').on(table.user_id),
   evidenceTypeIndex: index('evidence_type_idx').on(table.evidenceType),
-  embeddingIndex: index('evidence_embedding_idx').using('hnsw', table.embedding)
+  embeddingIndex: index('evidence_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 })
 }));
 
 // Legal Documents with vector embeddings from gemma3-legal:latest
@@ -369,7 +369,7 @@ export const ragDocuments = pgTable('rag_documents', {
   processedAt: timestamp('processed_at').defaultNow(),
   createdAt: timestamp('created_at').defaultNow()
 }, (table) => ({
-  embeddingIndex: index('rag_embedding_idx').using('hnsw', table.embedding),
+  embeddingIndex: index('rag_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   contentHashIndex: index('rag_content_hash_idx').on(table.contentHash)
 }));
 
@@ -384,7 +384,7 @@ export const knowledgeBase = pgTable('knowledge_base', {
   sourceFile: text('source_file'),
   createdAt: timestamp('created_at').defaultNow()
 }, (table) => ({
-  embeddingIndex: index('kb_embedding_idx').using('hnsw', table.embedding),
+  embeddingIndex: index('kb_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   chunkTypeIndex: index('kb_chunk_type_idx').on(table.chunkType),
   sourceFileIndex: index('kb_source_file_idx').on(table.sourceFile)
 }));
@@ -401,7 +401,7 @@ export const codeEmbeddings = pgTable('code_embeddings', {
   confidenceScore: real('confidence_score'),
   lastUpdated: timestamp('last_updated').defaultNow()
 }, (table) => ({
-  embeddingIndex: index('code_embedding_idx').using('hnsw', table.embedding),
+  embeddingIndex: index('code_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   pathIndex: index('code_path_idx').on(table.path),
   contentHashIndex: index('code_content_hash_idx').on(table.contentHash)
 }));

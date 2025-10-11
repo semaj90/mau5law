@@ -85,7 +85,7 @@ services:
       - "15672:15672" # Management UI
     environment:
       - RABBITMQ_DEFAULT_USER=legal_admin
-      - RABBITMQ_DEFAULT_PASS=rabbitmq123
+  - RABBITMQ_DEFAULT_PASS=123456
       - RABBITMQ_DEFAULT_VHOST=legal_ai_vhost
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq

@@ -51,29 +51,31 @@ export function autotag(text: string, maxTags = 6): string[] {
 export default autotag;
 
 // Worker message handling (works in Web Worker or dedicated worker contexts)
-(self as any).addEventListener('message', async (event: MessageEvent) => {
-  const payload = event.data;
-  try {
-    let text: string | undefined;
-    let id: unknown = undefined;
-    let maxTags: number | undefined = undefined;
+if (typeof self !== 'undefined') {
+  (self as any).addEventListener('message', async (event: MessageEvent) => {
+    const payload = event.data;
+    try {
+      let text: string | undefined;
+      let id: unknown = undefined;
+      let maxTags: number | undefined = undefined;
 
-    if (typeof payload === 'string') {
-      text = payload;
-    } else if (payload && typeof payload.text === 'string') {
-      text = payload.text;
-      id = payload.id;
-      if (typeof payload.maxTags === 'number') maxTags = payload.maxTags;
+      if (typeof payload === 'string') {
+        text = payload;
+      } else if (payload && typeof payload.text === 'string') {
+        text = payload.text;
+        id = payload.id;
+        if (typeof payload.maxTags === 'number') maxTags = payload.maxTags;
+      }
+
+      if (!text) {
+        (self as any).postMessage({ id, error: 'invalid payload: expected string or { text }' });
+        return;
+      }
+
+      const tags = autotag(text, maxTags ?? 6);
+      (self as any).postMessage({ id, tags });
+    } catch (err) {
+      (self as any).postMessage({ error: String(err) });
     }
-
-    if (!text) {
-      (self as any).postMessage({ id, error: 'invalid payload: expected string or { text }' });
-      return;
-    }
-
-    const tags = autotag(text, maxTags ?? 6);
-    (self as any).postMessage({ id, tags });
-  } catch (err) {
-    (self as any).postMessage({ error: String(err) });
-  }
-});
+  });
+}

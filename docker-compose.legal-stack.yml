@@ -46,7 +46,7 @@ services:
     container_name: rabbitmq-legal
     environment:
       RABBITMQ_DEFAULT_USER: legal_admin
-      RABBITMQ_DEFAULT_PASS: legal123
+  RABBITMQ_DEFAULT_PASS: 123456
       RABBITMQ_DEFAULT_VHOST: legal_ai
     ports:
       - "5672:5672"   # AMQP port

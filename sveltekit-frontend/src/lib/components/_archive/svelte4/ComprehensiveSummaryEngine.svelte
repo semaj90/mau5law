@@ -42,7 +42,7 @@ https://svelte.dev/e/props_duplicate -->
     enableRAG?: boolean;
   } = $props();
   // XState machine integration
-  const { state, send, context } = useMachine(aiSummaryMachine);
+  const { state: machineState, send, context } = useMachine(aiSummaryMachine);
   // Reactive stores
   const summaryProgress = writable(0);
   const llmOutput = writable(null);
@@ -71,11 +71,11 @@ https://svelte.dev/e/props_duplicate -->
     chunkSize: 2000,
     temperature: 0.3,
     maxTokens: 1000,
-    enableGPU: true
-    enableTriton: true
+    enableGPU: true,
+    enableTriton: true,
     fusejsThreshold: 0.6,
     ragDocumentLimit: 10,
-    userActivityDays: 30;
+    userActivityDays: 30
   });
   // Real-time metrics
   let metrics = $state({
@@ -119,7 +119,7 @@ await initializeServiceWorker();
   }
   function setupEventListeners() {
     // Listen for XState transitions
-    state.subscribe(currentState => {
+    machineState.subscribe(currentState => {
       currentStep = currentState.value.toString();
       updateUIBasedOnState(currentState);
     });
@@ -168,15 +168,15 @@ await initializeServiceWorker();
     });
     try {
       const summaryRequest = {
-        type: targetType
+        type: targetType,
         targetId,
         depth,
-        includeRAG: enableRAG
-        includeUserActivity: enableUserActivity
+        includeRAG: enableRAG,
+        includeUserActivity: enableUserActivity,
         enableStreaming,
         chunkSize: config.chunkSize,
         userId: 'current-user' // TODO: Get from auth context;
-      }
+      };
       if (enableStreaming) {
         await handleStreamingSummary(summaryRequest);
       } else {
@@ -184,7 +184,7 @@ await initializeServiceWorker();
       }
     } catch (error) {
       console.error('Summary generation failed:', error);
-      errorMessage = error.messag;
+      errorMessage = (error as Error).message;
       isProcessing = false;
     }
   }
@@ -192,7 +192,7 @@ await initializeServiceWorker();
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request);
+      body: JSON.stringify(request)
     });
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
       throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
@@ -206,7 +206,7 @@ await initializeServiceWorker();
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value);
-      // removed unused lines assignment
+      const lines = chunk.split('\n');
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           try {
@@ -224,18 +224,19 @@ await initializeServiceWorker();
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request);
+      body: JSON.stringify(request)
     });
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
       throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
     }
     const result = await (response as { ok?: any; statusText?: any; body?: any; json?: any }).json();
     if ((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).success) {
-      synthesisResult.set(result));
-      processingStats.set(metadata).processingTime,
-        tokensGenerated: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
-        documentsRetrieved: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
-        confidenceScore: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.confidence
+      synthesisResult.set((result as any).result);
+      processingStats.set({
+        totalTime: (result as any).metadata.processingTime,
+        tokensGenerated: (result as any).result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
+        documentsRetrieved: (result as any).result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
+        confidenceScore: (result as any).result.confidence
       });
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
@@ -247,16 +248,18 @@ await initializeServiceWorker();
   function handleStreamingChunk(data) {
     switch ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).type) {
       case 'status':
-        currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).messag;
-        summaryProgress.set(progress));
+        currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).message;
+        summaryProgress.set((data as any).progress);
         break;
       case 'llm_chunk':
-        streamingData.update.content,
-          timestamp: Date.now();
+        streamingData.update(d => [...d, {
+          type: 'llm_chunk',
+          content: (data as any).content,
+          timestamp: Date.now()
         }]);
         break;
       case 'complete':
-        synthesisResult.set(result));
+        synthesisResult.set((data as any).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
@@ -268,16 +271,17 @@ await initializeServiceWorker();
     }
   }
   function updateStreamingProgress(data) {
-    summaryProgress.set(progress) * 100);
+    summaryProgress.set((data as any).progress * 100);
     if ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result) {
-      streamingData.update.result.content,
+      streamingData.update(d => [...d, {
+        content: (data as any).result.content,
         chunkIndex: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).chunkIndex,
-        timestamp: Date.now();
+        timestamp: Date.now()
       }]);
     }
   }
   function handleSummaryCompletion(data) {
-    synthesisResult.set(summary));
+    synthesisResult.set((data as any).summary);
     isProcessing = false;
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';
@@ -285,7 +289,7 @@ await initializeServiceWorker();
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Legal AI Summary Complete', {
         body: 'Your comprehensive summary is ready for review.',
-        icon: '/icons/ai-summary.png';
+        icon: '/icons/ai-summary.png'
       });
     }
   }
@@ -298,11 +302,11 @@ await initializeServiceWorker();
   }
   function updateUIBasedOnState(currentState) {
     // Update UI based on XState machine state
-    const stateValue = currentState.valu;
+    const stateValue = currentState.value;
     if (typeof stateValue === 'object') {
       currentStep = Object.keys(stateValue)[0];
     } else {
-      currentStep = stateValu;
+      currentStep = stateValue;
     }
   }
   async function pauseProcessing() {
@@ -343,11 +347,11 @@ await initializeServiceWorker();
         targetType,
         depth,
         timestamp: new Date().toISOString(),
-        processingStats: $processingStat;
+        processingStats: $processingStats
       }
-    }
+    };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: exportFormat === 'json' ? 'application/json' : 'text/plain';
+      type: exportFormat === 'json' ? 'application/json' : 'text/plain'
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -360,7 +364,7 @@ await initializeServiceWorker();
     // Use Fuse.js for fuzzy search
     const results = fuzzySearch(query);
     console.log('Related content search results:', results);
-    return result;
+    return results;
   }
   // Reactive statements
   let progressPercentage = $derived($summaryProgress);
@@ -397,7 +401,7 @@ await initializeServiceWorker();
   </div>
   <!-- Advanced Configuration Panel -->
   {#if showAdvancedOptions}
-    <div class="advanced-panel" transitislide={{ duration: 300 }}>
+    <div class="advanced-panel" transition:slide={{ duration: 300 }}>
       <div class="config-grid">
         <div class="config-group">
           <label for="chunk-size">Chunk Size</label><input
@@ -423,7 +427,7 @@ await initializeServiceWorker();
         <div class="config-group">
           <label for="max-tokens">Max Tokens</label><input
             id="max-tokens"
-            type="number";
+            type="number"
             bind:value={config.maxTokens}
             min="100"
             max="4000"
@@ -598,7 +602,7 @@ await initializeServiceWorker();
                 <div class="source-type">{source.type}</div>
                 <div class="source-contribution">{Math.round(source.contribution * 100)}%</div>
                 <div class="source-details">
-                  {#each Object.entries(so(urce as CustomEvent).details) as [key, value]}
+                  {#each Object.entries(source.details) as [key, value]}
                     <span>{key}: {value}</span>
                   {/each}
                 </div>
@@ -637,17 +641,21 @@ await initializeServiceWorker();
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
-  .comprehensive-summary-engine {
+
 /* @apply max-w-6xl mx-auto p-6 space-y-6; */
-  }
-  .engine-header {
-/* @apply flex justify-between items-start pb-6 border-b border-gray-200; */
-  }
-  .header-info h2 {
+}
+.engine-header {
+  /* @apply flex justify-between items-start pb-6 border-b border-gray-200; */
+}
+.header-info h2 {
 /* @apply text-2xl font-bold text-gray-900; */
-  }
+}
   .btn-advanced {
-/* @apply flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-color; */
+    /* Example property to avoid empty ruleset */
+    cursor: pointer;
+  .btn-advanced.active {
+    /* @apply bg-purple-100 text-purple-700; */
+  }
   }
   .btn-advanced.active {
 /* @apply bg-purple-100 text-purple-700; */
@@ -655,49 +663,49 @@ await initializeServiceWorker();
   .advanced-panel {
 /* @apply bg-gray-50 rounded-lg p-6 border border-gray-200; */
   }
-  .config-grid {
-/* @apply grid grid-cols-1 md:grid-cols-3 gap-6; */
-  }
+.config-grid {
+  /* @apply grid grid-cols-1 md:grid-cols-3 gap-6; */
+}
   .config-group {
 /* @apply flex flex-col gap-2; */
   }
   .config-group label {
 /* @apply text-sm font-medium text-gray-700; */
   }
-  .config-group input[type='number'],
-  .config-group input[type='range'] {
-/* @apply px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent; */
-  }
+.config-group input[type='number'],
+.config-group input[type='range'] {
+  /* @apply px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent; */
+}
   .config-toggles {
 /* @apply flex flex-col gap-3; */
   }
-  .config-toggles label {
-/* @apply flex items-center gap-2 text-sm; */
-  }
-  .processing-status {
-/* @apply bg-white rounded-lg border border-gray-200 p-6; */
-  }
-  .status-header {
-/* @apply flex justify-between items-center mb-4; */
-  }
-  .current-step {
-/* @apply text-lg font-medium text-gray-900 mb-2; */
-  }
-  .progress-bar {
+.config-toggles label {
+  /* @apply flex items-center gap-2 text-sm; */
+}
+.processing-status {
+  /* @apply bg-white rounded-lg border border-gray-200 p-6; */
+}
+.status-header {
+  /* @apply flex justify-between items-center mb-4; */
+}
+.current-step {
+  /* @apply text-lg font-medium text-gray-900 mb-2; */
+}
+.progress-bar {
 /* @apply w-full bg-gray-200 rounded-full h-2 mb-2; */
-  }
-  .progress-fill {
-/* @apply bg-purple-600 h-2 rounded-full transition-all duration-300; */
-  }
-  .progress-text {
-/* @apply text-sm text-gray-600; */
-  }
+}
+.progress-fill {
+  /* @apply bg-purple-600 h-2 rounded-full transition-all duration-300; */
+}
+.progress-text {
+  /* @apply text-sm text-gray-600; */
+}
   .processing-controls {
 /* @apply flex gap-2; */
   }
-  .btn-primary {
+.btn-primary {
 /* @apply flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-color; */
-  }
+}
   .btn-secondary {
 /* @apply flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-color; */
   }

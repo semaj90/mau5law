@@ -45,7 +45,7 @@ GPU SIMD: 2560 CUDA cores generate Gemma embeddings in parallel
 ### **Primary Embedding Model Priority**
 Based on your Claude.md configuration:
 ```
-PRIMARY: embeddinggemma:latest (Gemma 3 legal optimized)
+PRIMARY: embeddinggemma:latest (Gemma3-legal:latest )
 FALLBACK: embeddinggemma (Gemma 3 standard)
 SECONDARY: nomic-embed-text (backup embeddings)
 ```

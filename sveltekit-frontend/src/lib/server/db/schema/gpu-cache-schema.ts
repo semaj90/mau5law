@@ -66,10 +66,9 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   accessCountIdx: index("access_count_idx").on(table.accessCount),
   reinforcementScoreIdx: index("reinforcement_score_idx").on(table.reinforcementScore),
   lastAccessedIdx: index("last_accessed_idx").on(table.lastAccessedAt),
-  // pgvector index for semantic similarity
-  embeddingIdx: index("shader_embedding_hnsw_idx").using("hnsw", table.embedding).with({
-    m: 16,
-    ef_construction: 64
+  // pgvector index for semantic similarity - using IVFFlat instead of HNSW for compatibility
+  embeddingIdx: index("shader_embedding_idx").using("ivfflat", table.embedding).with({
+    lists: 100
   })
 });
 // User shader access patterns for reinforcement learning
@@ -95,8 +94,8 @@ export const shaderUserPatterns = pgTable("shader_user_patterns", {
   // Reinforcement learning features
   reward: decimal("reward", { precision: 7, scale: 4 }), // calculated reward for this access
   prediction: jsonb("prediction").default("{}"), // ML model prediction data
-  actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training;
-  metadata: jsonb("metadata").default("{}");
+  actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training
+  metadata: jsonb("metadata").default("{}")
 }, (table) => ({
   // Indexes for ML queries
   userIdIdx: index("user_patterns_user_id_idx").on(table.userId),
@@ -119,7 +118,7 @@ export const shaderDependencies = pgTable("shader_dependencies", {
   loadOrderPriority: integer("load_order_priority").default(100), // lower = load first
   parallelizable: boolean("parallelizable").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default("{}");
+  metadata: jsonb("metadata").default("{}")
 }, (table) => ({
   // Unique constraint and indexes
   uniqueDependency: primaryKey({ columns: [table.parentShaderCacheId, table.dependentShaderCacheId] }),
@@ -151,8 +150,8 @@ export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   // Accuracy tracking for model improvement
   wasUsed: boolean("was_used"), // did user actually use this shader?
   usedAtTimestamp: timestamp("used_at_timestamp"),
-  actualDelay: integer("actual_delay"), // ms between preload and actual use;
-  metadata: jsonb("metadata").default("{}");
+  actualDelay: integer("actual_delay"), // ms between preload and actual use
+  metadata: jsonb("metadata").default("{}")
 }, (table) => ({
   userIdIdx: index("preload_user_id_idx").on(table.userId),
   shaderCacheIdIdx: index("preload_shader_id_idx").on(table.shaderCacheId),
@@ -185,7 +184,7 @@ export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
   deviceInfo: jsonb("device_info").default("{}"), // GPU model, driver version, etc.
   renderContext: jsonb("render_context").default("{}"), // resolution, complexity settings
   recordedAt: timestamp("recorded_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default("{}");
+  metadata: jsonb("metadata").default("{}")
 }, (table) => ({
   shaderCacheIdIdx: index("perf_shader_id_idx").on(table.shaderCacheId),
   userIdIdx: index("perf_user_id_idx").on(table.userId),

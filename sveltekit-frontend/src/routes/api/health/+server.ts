@@ -8,8 +8,8 @@ type HttpCheck = {
   error?: string
 }
 function tcpCheck(
-  host: string
-  port: number
+  host: string,
+  port: number,
   timeoutMs = 1000
 ): Promise<boolean> {
   return new Promise((resolve) => {
@@ -27,9 +27,9 @@ function tcpCheck(
       }
     }
     socket.setTimeout(timeoutMs)
-    socket.once("connect", () => finish(true)
-    socket.once("timeout", () => finish(false)
-    socket.once("error", () => finish(false)
+    socket.once("connect", () => finish(true))
+    socket.once("timeout", () => finish(false))
+    socket.once("error", () => finish(false))
     try {
       socket.connect(port, host)
     } catch {
@@ -168,22 +168,22 @@ export const GET: RequestHandler = async () => {
   }
   // Overall system health calculation
   const healthyServices = Object.values(services)
-    .flatMap(category => Object.values(category)
-    .filter(item => item.length)
+    .flatMap(category => Object.values(category))
+    .filter(item => item.status === "healthy").length
   const totalServices = Object.values(services)
     .flatMap(category => Object.values(category)).length
   const healthScore = Math.round((healthyServices / totalServices) * 100)
   const overallStatus = healthScore >= 80 ? "healthy" : healthScore >= 60 ? "degraded" : "unhealthy"
   const status = {
     overall: {
-      status: overallStatus
+      status: overallStatus,
       healthScore,
       healthyServices,
       totalServices,
       timestamp: new Date().toISOString()
     },
     services,
-    caching: cachingLayers
+    caching: cachingLayers,
     performance,
     architecture,
     // Compatibility with existing consumers

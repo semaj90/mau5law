@@ -4,8 +4,20 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  import { Button, Select, Input, Card } from './index.js';
-  import type { SelectOption } from './index.js';
+
+  // Replace the original imports: remove Select and Card (Card was unused; Select not exported)
+  import { Button as RawButton, Input as RawInput } from './index.js';
+
+  // Generic permissive component type
+  type AnyComponent = new (...args: any[]) => any;
+
+  // Re-cast the imported components to the permissive type
+  const Button = RawButton as unknown as AnyComponent;
+  const Input = RawInput as unknown as AnyComponent;
+
+  // Local SelectOption type (avoid relying on ./index.js export for this)
+  type SelectOption = { value: string; label: string; description?: string; category?: string };
+
   import type { VectorSearchResult, SemanticEntity } from '$lib/types/ai';
   import { cn } from '$lib/utils/cn';
   import { Search, Brain, FileText, Users, MapPin, Calendar, Scale, Zap } from 'lucide-svelte';
@@ -23,43 +35,43 @@
       value: 'semantic',
       label: 'Semantic Search',
       description: 'AI-powered contextual understanding',
-      category: 'AI-Powered';
+      category: 'AI-Powered',
     },
     {
       value: 'vector',
       label: 'Vector Similarity',
       description: 'Embedding-based similarity matching',
-      category: 'AI-Powered';
+      category: 'AI-Powered',
     },
     {
       value: 'hybrid',
       label: 'Hybrid Search',
       description: 'Combined semantic and keyword search',
-      category: 'AI-Powered';
+      category: 'AI-Powered',
     },
     {
       value: 'legal',
       label: 'Legal Precedent',
       description: 'Case law and precedent matching',
-      category: 'Legal-Specific';
+      category: 'Legal-Specific',
     },
     {
       value: 'citation',
       label: 'Citation Analysis',
       description: 'Legal citation and reference tracking',
-      category: 'Legal-Specific';
-    }
+      category: 'Legal-Specific',
+    },
   ];
   const confidenceFilters: SelectOption[] = [
     { value: 'all', label: 'All Results', description: 'Show all confidence levels' },
     { value: 'high', label: 'High Confidence', description: '90%+ confidence scores' },
     { value: 'medium', label: 'Medium Confidence', description: '70-89% confidence scores' },
-    { value: 'low', label: 'Low Confidence', description: 'Below 70% confidence' }
+    { value: 'low', label: 'Low Confidence', description: 'Below 70% confidence' },
   ];
   const analysisOptions: SelectOption[] = [
     { value: 'quick', label: 'Quick Analysis', description: 'Basic semantic parsing' },
     { value: 'standard', label: 'Standard Analysis', description: 'Full entity recognition' },
-    { value: 'deep', label: 'Deep Analysis', description: 'Advanced relationship mapping' }
+    { value: 'deep', label: 'Deep Analysis', description: 'Advanced relationship mapping' },
   ];
   // Mock search results data
   const mockSearchResults: VectorSearchResult[] = [
@@ -70,15 +82,15 @@
         caseNumber: 'CV-2024-001',
         court: 'Superior Court of California',
         judge: 'Hon. Sarah Mitchell',
-        date: '2024-01-15';
+        date: '2024-01-15',
       },
       score: 0.94,
       highlights: ['non-disclosure agreement', 'corporate espionage', 'unauthorized access'],
       source: {
         type: 'case',
         name: 'TechCorp vs. StartupInc',
-        url: '/cases/cv-2024-001';
-      }
+        url: '/cases/cv-2024-001',
+      },
     },
     {
       id: '2',
@@ -87,15 +99,15 @@
         caseNumber: 'EM-2024-042',
         jurisdiction: 'Federal District Court',
         statute: 'Title VII Civil Rights Act',
-        precedent: 'McDonnell Douglas test';
+        precedent: 'McDonnell Douglas test',
       },
       score: 0.87,
       highlights: ['employment termination', 'discrimination', 'protected class'],
       source: {
         type: 'precedent',
         name: 'EEOC Guidelines on Discrimination',
-        url: '/precedents/title-vii-enforcement';
-      }
+        url: '/precedents/title-vii-enforcement',
+      },
     },
     {
       id: '3',
@@ -104,16 +116,16 @@
         patentNumber: 'US 10,123,456',
         filingDate: '2020-03-15',
         inventor: 'Dr. Jane Smith',
-        classification: 'G06F 16/00';
+        classification: 'G06F 16/00',
       },
       score: 0.82,
       highlights: ['intellectual property', 'patent claims', 'prior art'],
       source: {
         type: 'document',
         name: 'Patent Application Analysis',
-        url: '/documents/patent-analysis-2024';
-      }
-    }
+        url: '/documents/patent-analysis-2024',
+      },
+    },
   ];
   const mockEntities: SemanticEntity[] = [
     { text: 'TechCorp', type: 'organization', confidence: 0.95, start: 0, end: 8 },
@@ -122,31 +134,29 @@
     { text: 'Superior Court of California', type: 'organization', confidence: 0.89, start: 70, end: 98 },
     { text: '2024-01-15', type: 'date', confidence: 0.99, start: 103, end: 113 },
     { text: 'Title VII Civil Rights Act', type: 'legal_term', confidence: 0.96, start: 120, end: 146 },
-    { text: 'McDonnell Douglas test', type: 'legal_term', confidence: 0.94, start: 150, end: 172 }
+    { text: 'McDonnell Douglas test', type: 'legal_term', confidence: 0.94, start: 150, end: 172 },
   ];
   // Reactive filtering of results based on confidence
-  let filteredResults = $derived(
-    selectedConfidence === 'all' ? searchResults : (() => {
-      const thresholds = {
-        high: 0.9,
-        medium: 0.7,
-        low: 0.0;
-      }
-      const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
-      const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
-      return searchResults.filter(item => item.score) >= minScore && (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score < maxScore
-      );
-    })()
-  );
+  let filteredResults = $derived(() => {
+    if (selectedConfidence === 'all') return searchResults;
+    const thresholds = {
+      high: 0.9,
+      medium: 0.7,
+      low: 0.0,
+    };
+    const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
+    const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
+    return searchResults.filter((item: VectorSearchResult) => (item.score ?? 0) >= minScore && (item.score ?? 0) < maxScore);
+  });
   // Entity type icons mapping
   const entityIcons = {
-    person: Users
-    organization: Scale;
-    location: MapPin;
-    date: Calendar
-    legal_term: FileText
-    case_citation: Scal;
-  }
+    person: Users,
+    organization: Scale,
+    location: MapPin,
+    date: Calendar,
+    legal_term: FileText,
+    case_citation: Scale,
+  };
   // Entity type colors
   const entityColors = {
     person: 'semantic-entity-person',
@@ -154,7 +164,20 @@
     location: 'semantic-entity-location',
     date: 'semantic-entity-date',
     legal_term: 'semantic-entity-legal',
-    case_citation: 'semantic-entity-legal';
+    case_citation: 'semantic-entity-legal',
+  };
+  // Helpers for safe highlight injection
+  function escapeHtml(str: string) {
+    return str.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]!));
+  }
+  function escapeRegExp(s: string) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  function highlightify(content: string, highlights: string[] = []) {
+    const safe = escapeHtml(content);
+    if (!highlights || highlights.length === 0) return safe;
+    const pattern = new RegExp(`(${highlights.map(h => escapeRegExp(h)).join('|')})`, 'gi');
+    return safe.replace(pattern, '<span class="vector-highlight">$1</span>');
   }
   // Search functionality
   async function performVectorSearch() {
@@ -166,12 +189,14 @@
       // Mock results based on search type
       searchResults = mockSearchResults.map(result => ({
         ...result,
-        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0;
-        highlights: (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights.filter(() => Math.random() > 0.3) // Random highlights
+        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
+        highlights: (result.highlights || []).filter(() => Math.random() > 0.3), // Random highlights
       }));
       // Mock entity extraction
       if (analysisDepth !== 'quick') {
-        semanticEntities = mockEntitie;
+        semanticEntities = mockEntities;
+      } else {
+        semanticEntities = [];
       }
     } catch (error) {
       console.error('Search failed:', error);
@@ -195,6 +220,10 @@
   function formatConfidence(score: number): string {
     return `${Math.round(score * 100)}%`;
   }
+
+  // Add: spread-safe attribute objects to avoid TS errors for custom attributes on native elements
+  const yorhaDivAttrs = { variant: 'yorha', legal: true } as Record<string, any>;
+  const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true, clickable: true } as Record<string, any>;
 </script>
 <div class="vector-intelligence-demo yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
@@ -213,28 +242,33 @@
   <div class="demo-config-section mb-6">
     <h2 class="text-lg font-gothic mb-4 text-nier-text-primary">Search Configuration</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      <Select;
-        bind:value={selectedSearchType}
-        options={searchTypes}
-        placeholder="Select search type..."
-        legal
-        aiRecommendations
-        label="Search Algorithm"
-      />
-      <Select
-        bind:value={selectedConfidence}
-        options={confidenceFilters}
-        placeholder="Filter by confidence..."
-        legal
-        label="Confidence Filter"
-      />
-      <Select;
-        bind:value={analysisDepth}
-        options={analysisOptions}
-        placeholder="Analysis depth..."
-        legal
-        label="Analysis Depth"
-      />
+      <!-- Native select replacing missing Select component -->
+      <div class="flex flex-col">
+        <label class="text-xs font-medium text-nier-text-muted mb-1">Search Algorithm</label>
+        <select bind:value={selectedSearchType} class="yorha-select p-2 rounded border">
+          {#each searchTypes as opt}
+            <option value={opt.value}>{opt.label}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-xs font-medium text-nier-text-muted mb-1">Confidence Filter</label>
+        <select bind:value={selectedConfidence} class="yorha-select p-2 rounded border">
+          {#each confidenceFilters as opt}
+            <option value={opt.value}>{opt.label}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-xs font-medium text-nier-text-muted mb-1">Analysis Depth</label>
+        <select bind:value={analysisDepth} class="yorha-select p-2 rounded border">
+          {#each analysisOptions as opt}
+            <option value={opt.value}>{opt.label}</option>
+          {/each}
+        </select>
+      </div>
     </div>
   </div>
   <!-- Search Interface -->
@@ -243,7 +277,7 @@
     <div class="flex gap-3 mb-4">
       <Input
         variant="search"
-  placeholder="Enter legal query or document content..."
+        placeholder="Enter legal query or document content..."
         bind:value={searchQuery}
         evidenceSearch
         legal
@@ -256,24 +290,24 @@
         variant="primary"
         legal
         loading={isSearching}
-        onclick={performVectorSearch}
+        on:click={performVectorSearch}
         disabled={!searchQuery.trim()}
       >
-{#if isSearching}
+        {#if isSearching}
           <Zap class="w-4 h-4 mr-2 animate-pulse" />
           Analyzing...
         {:else}
           <Search class="w-4 h-4 mr-2" />
           Search
         {/if}
-</Button>
+      </Button>
       {#if searchResults.length > 0}
         <Button class="bits-btn"
           variant="ghost"
-          onclick={clearResults}
+          on:click={clearResults}
         >
-Clear
-</Button>
+          Clear
+        </Button>
       {/if}
     </div>
     <!-- Search Status -->
@@ -292,7 +326,7 @@ Clear
   {#if semanticEntities.length > 0}
     <div class="demo-results-section mb-6">
       <h2 class="text-lg font-gothic mb-4 text-nier-text-primary">Extracted Entities</h2>
-      <div variant="yorha" legal class="p-4 nes-container">
+      <div {...yorhaDivAttrs} class="p-4 nes-container">
         <div class="semantic-entity-container">
           {#each semanticEntities as entity (entity.text)}
             {@const SvelteComponent = entityIcons[entity.type]}
@@ -328,40 +362,29 @@ Clear
         </div>
       </div>
       <div class="space-y-4">
-        {#each filteredResults as result ((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id)}
-          <div
-            variant="default"
-            evidenceCard
-            hoverable
-            clickable
-            class="vector-result-item nes-container">
-            {@const SvelteComponent_1 = (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.type === 'case' ? Scale :
-                          (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.type === 'precedent' ? FileText :
-                          FileText}
+        {#each filteredResults as result (result.id)}
+          {@const Icon = result.source?.type === 'case' ? Scale : result.source?.type === 'precedent' ? FileText : FileText}
+          <div {...resultItemDivAttrs} class="vector-result-item nes-container">
             <div class="space-y-3">
               <!-- Result Header -->
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-2">
-                  <SvelteComponent_1
-                    class="w-4 h-4 text-nier-text-muted"
-                  />
+                  <Icon class="w-4 h-4 text-nier-text-muted" />
                   <span class="text-sm font-medium text-nier-text-primary">
-                    {(result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.name}
+                    {result.source?.name}
                   </span>
                 </div>
-                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score))}>
-                  {formatConfidence((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score)}
+                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass(result.score ?? 0))}>
+                  {formatConfidence(result.score ?? 0)}
                 </div>
               </div>
               <!-- Result Content -->
               <div class="text-sm text-nier-text-secondary leading-relaxed">
-                {@html (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).content.replace.highlights.join('|')})`, 'gi'),
-                  '<span class="vector-highlight">$1</span>'
-                )}
+                {@html highlightify(result.content || '', result.highlights || [])}
               </div>
               <!-- Result Metadata -->
               <div class="vector-metadata-grid">
-                {#each Object.entries.metadata) as [key, value]}
+                {#each Object.entries(result.metadata || {}) as [key, value]}
                   <div class="flex flex-col">
                     <span class="text-xs font-medium text-nier-text-muted uppercase tracking-wide">
                       {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
@@ -375,19 +398,15 @@ Clear
               <!-- Action Buttons -->
               <div class="flex items-center justify-between pt-2 border-t border-nier-border-muted">
                 <div class="flex gap-2">
-                  {#each (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights as highlight}
+                  {#each result.highlights || [] as highlight}
                     <span class="text-xs px-2 py-1 bg-nier-bg-tertiary rounded text-nier-text-secondary">
                       {highlight}
                     </span>
                   {/each}
                 </div>
                 <div class="flex gap-2">
-                  <Button class="bits-btn" size="sm" variant="ghost">
-View Full
-</Button>
-                  <Button class="bits-btn" size="sm" variant="primary">
-Add to Case
-</Button>
+                  <Button class="bits-btn" size="sm" variant="ghost">View Full</Button>
+                  <Button class="bits-btn" size="sm" variant="primary">Add to Case</Button>
                 </div>
               </div>
             </div>
@@ -408,11 +427,10 @@ Add to Case
       <div class="flex justify-center gap-2">
         <Button class="bits-btn"
           variant="ghost"
-          onclick={() =>
-searchQuery = 'contract breach non-disclosure agreement'}
+          on:click={() => searchQuery = 'contract breach non-disclosure agreement'}
         >
           Try Sample Query
-</Button>
+        </Button>
       </div>
     </div>
   {/if}
@@ -481,7 +499,7 @@ searchQuery = 'contract breach non-disclosure agreement'}
     transition: all 0.2s ease;
     cursor: pointer;
   }
-  :global($1) {
+  :global(.semantic-entity-tag:hover) {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
@@ -511,7 +529,7 @@ searchQuery = 'contract breach non-disclosure agreement'}
     position: relative;
     overflow: hidden;
   }
-  :global($1) {
+  :global(.vector-result-item::after) {
     content: '';
     position: absolute;
     top: 0;
@@ -526,7 +544,7 @@ searchQuery = 'contract breach non-disclosure agreement'}
     );
     transition: left 0.5s ease;
   }
-  :global($1) {
+  :global(.vector-result-item:hover::after) {
     left: 100%;
   }
   /* Metadata grid styling */
@@ -558,5 +576,10 @@ searchQuery = 'contract breach non-disclosure agreement'}
     );
     backdrop-filter: blur(8px);
     border: 1px solid rgba(58, 55, 47, 0.1);
+  }
+  /* minimal style for native selects */
+  :global(.yorha-select) {
+    background: var(--color-nier-bg-input);
+    color: var(--color-nier-text-primary);
   }
 </style>

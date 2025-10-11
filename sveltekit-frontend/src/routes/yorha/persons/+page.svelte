@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
-  import Card from '$lib/components/ui/card';
+  import { Card } from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';

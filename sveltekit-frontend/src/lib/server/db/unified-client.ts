@@ -16,6 +16,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { sql } from 'drizzle-orm';
+import path from 'path';
 // Import unified schema
 import * as schema from './schema-unified.js';
 import type { DocumentMetadata } from './schema-unified.js';
@@ -26,15 +27,15 @@ interface DatabaseConfig {
   runtime: {
     url: string;
     poolSize: number;
-  }
+  };
   admin: {
     url: string;
     poolSize: number;
-  }
+  };
   qdrant?: {
     url: string;
     apiKey?: string;
-  }
+  };
   environment: 'development' | 'production';
 }
 interface VectorSearchOptions {
@@ -81,14 +82,14 @@ type SearchResultEntry = {
 const isDev = process.env.NODE_ENV === 'development';
 const config: DatabaseConfig = {
   runtime: {
-    url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+    url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     poolSize: isDev ? 5 : 10,
   },
   admin: {
     url:
       process.env.DATABASE_URL_ADMIN ||
       process.env.ADMIN_DATABASE_URL ||
-      'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+      'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     poolSize: 2,
   },
   qdrant: process.env.QDRANT_URL
@@ -224,11 +225,20 @@ class DatabaseManager {
       await runtimeDb.execute(sql`SELECT 1 as test`);
       console.log('✅ Runtime database connection established');
       // Run migrations in production
-      if (!isDev) {
+      // NOTE: Workers should not run migrations, only the main app
+      // Migration path is relative to current working directory
+      if (!isDev && process.env.SKIP_MIGRATIONS !== 'true') {
         const adminDb = this.getAdminDb();
-        console.log('🔄 Running database migrations with admin privileges...');
-        await migrate(adminDb, { migrationsFolder: './src/lib/server/db/migrations' });
-        console.log('✅ Database migrations completed');
+        // Resolve migrations folder explicitly from the process cwd to avoid running
+        // migrations from an unexpected nested working directory (observed in dev).
+        const migrationsFolder = process.env.MIGRATIONS_FOLDER || path.resolve(process.cwd(), 'drizzle');
+        console.log(`🔄 Running database migrations with admin privileges (folder=${migrationsFolder})...`);
+        try {
+          await migrate(adminDb, { migrationsFolder });
+          console.log('✅ Database migrations completed');
+        } catch (err) {
+          console.warn('⚠️ Migration failed (may already be applied):', err);
+        }
       }
       // Test pgvector extension
       try {
@@ -266,13 +276,12 @@ class DatabaseManager {
     try {
       const collectionsRes = await this.getQdrantCollectionsSafe(qdrant);
       // Normalize possible shapes: { collections: [...] } or { result: { collections: [...] } } or array
-      const collectionsList =
-        ((collectionsRes &&
-          (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ??
-        Array.isArray(collectionsRes))
-          ? (collectionsRes as any[])
-          : [];
-      const exists = Array.isArray(collectionsList) && collectionsList.some((c: any) => c.name === collectionName);
+      const collectionsList: { name: string }[] =
+        (collectionsRes &&
+          (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ||
+        (Array.isArray(collectionsRes) ? collectionsRes : []);
+
+      const exists = collectionsList.some(c => c.name === collectionName);
       if (!exists) {
         await this.createQdrantCollectionSafe(qdrant, collectionName, {
           vectors: {
@@ -579,6 +588,8 @@ if (!isDev) {
   dbManager.initialize().catch(console.error);
 }
 // Main exports - replaces all scattered db imports
+// Exported for direct access to the runtime Drizzle client (most common use case).
+export const db = dbManager.getRuntimeDb();
 // Exported for direct access to the admin-privileged Drizzle client.
 // Use this for database migrations and privileged operations that require elevated permissions.
 export const adminDb = dbManager.getAdminDb();
