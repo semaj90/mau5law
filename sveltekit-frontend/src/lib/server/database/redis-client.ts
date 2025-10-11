@@ -2,8 +2,11 @@
  * Redis Client Configuration
  * Provides connection management for Redis caching and orchestration
  */
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
+import dotenv from 'dotenv';
+dotenv.config();
+
 export interface RedisConfig {
   host: string;
   port: number;
@@ -19,53 +22,78 @@ const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 const defaultConfig: RedisConfig = {
   host: env.REDIS_HOST || 'localhost',
   port: parseInt(env.REDIS_PORT || '6379'),
-  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth;
+  password: env.REDIS_PASSWORD,
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
   lazyConnect: true,
+};
+
+// Replace strict dependency on package types with a minimal local interface
+// that declares only the members we use. This prevents TS errors if installed
+// Redis lib's types differ from runtime.
+interface MinimalRedisClient {
+  on(event: string, listener: (...args: unknown[]) => void): this;
+  addListener?(event: string, listener: (...args: unknown[]) => void): this;
+  removeListener?(event: string, listener: (...args: unknown[]) => void): this;
+  ping(): Promise<string>;
+  quit(): Promise<void>;
+  disconnect(): void;
+  // allow additional members as optional to avoid tight coupling
+  [key: string]: unknown;
 }
-let redis: Redis | null = null;
+
+// Use the minimal interface for runtime instances
+type IORedisClient = MinimalRedisClient;
+
+let redis: IORedisClient | null = null;
 let isConnected = false;
+
 /**
  * Get Redis client instance
- */ export async function getRedisClient(): Promise<Redis | null> {
+ */
+export async function getRedisClient(): Promise<IORedisClient | null> {
   if (redis && isConnected) {
     return redis;
   }
   try {
-    // Use Redis URL if available, otherwise use config object
+    const retryStrategy = (times: number) => {
+      console.log(`🔄 Redis connection retry attempt ${times}`);
+      return Math.min(times * 100, 2000);
+    };
+
     if (redisUrl.includes('redis://')) {
-      redis = new Redis(redisUrl, {
-        retryAttempts: 3,
-        retryDelayOnConnect: 1000,
+      // cast to our minimal interface to satisfy TS while preserving runtime behavior
+      redis = new Redis({
+        url: redisUrl,
         maxRetriesPerRequest: 3,
-        onRetry: times => {
-          console.log(`🔄 Redis connection retry attempt ${times}`);
-        },
-      });
+        retryStrategy,
+      }) as unknown as IORedisClient;
     } else {
       redis = new Redis({
-        ...defaultConfig,
-        retryAttempts: 3,
-        retryDelayOnConnect: 1000,
-        onRetry: times => {
-          console.log(`🔄 Redis connection retry attempt ${times}`);
-        },
-      });
+        host: defaultConfig.host,
+        port: defaultConfig.port,
+        password: defaultConfig.password,
+        db: defaultConfig.db,
+        maxRetriesPerRequest: 3,
+        retryStrategy,
+      }) as unknown as IORedisClient;
     }
+
+    // typed event handlers (the minimal interface exposes `on`)
     redis.on('connect', () => {
       isConnected = true;
       console.log('🎮 Redis connected successfully');
     });
-    redis.on('error', error => {
+    redis.on('error', (error: Error) => {
       isConnected = false;
-      console.warn('🔴 Redis connection error:', error.message);
+      console.warn('🔴 Redis connection error:', error?.message ?? String(error));
     });
     redis.on('close', () => {
       isConnected = false;
       console.log('🔴 Redis connection closed');
     });
+
     // Test connection
     await redis.ping();
     return redis;
@@ -76,57 +104,84 @@ let isConnected = false;
     return null;
   }
 }
+
 /**
  * Check Redis connection status
- */ export function isRedisConnected(): boolean {
+ */
+export function isRedisConnected(): boolean {
   return isConnected && redis !== null;
 }
+
 /**
  * Close Redis connection
- */ export async function closeRedisConnection(): Promise<void> {
+ */
+export async function closeRedisConnection(): Promise<void> {
   if (redis) {
-    await redis.quit();
+    try {
+      await redis.quit();
+    } catch (e) {
+      // attempt force disconnect if quit fails
+      try {
+        // log the first error, then attempt disconnect
+        console.warn('⚠️ Redis quit failed, forcing disconnect:', e instanceof Error ? e.message : String(e));
+        redis.disconnect();
+      } catch (inner) {
+        console.error('⚠️ Redis forced disconnect failed:', inner);
+      }
+    }
     redis = null;
     isConnected = false;
     console.log('🎮 Redis connection closed gracefully');
   }
 }
+
 /**
  * Create Redis client for specific use case
- */ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redis {
-  const config = { ...defaultConfig, ...customConfig }
+ */
+export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORedisClient {
+  const config = { ...defaultConfig, ...customConfig };
   const client = new Redis({
-    ...config,
-    retryAttempts: 3,
-    retryDelayOnConnect: 1000,
-  });
-  client.on('error', error => {
-    console.warn('🔴 Redis client error:', error.message);
+    host: config.host,
+    port: config.port,
+    password: config.password,
+    db: config.db,
+    maxRetriesPerRequest: 3,
+    retryStrategy: (times: number) => Math.min(times * 100, 2000),
+  }) as unknown as IORedisClient;
+  client.on('error', (error: Error) => {
+    console.warn('🔴 Redis client error:', error?.message ?? String(error));
   });
   return client;
 }
+
 /**
  * Redis health check
- */ export async function checkRedisHealth(): Promise<any> {
+ */
+export async function checkRedisHealth(): Promise<{
+  status: 'healthy' | 'disconnected' | 'error';
+  latency?: number;
+  error?: string;
+}> {
   try {
     const start = Date.now();
     const client = await getRedisClient();
     if (!client) {
-      return { status: 'disconnected', error: 'No Redis client available' }
+      return { status: 'disconnected', error: 'No Redis client available' };
     }
     await client.ping();
     const latency = Date.now() - start;
     return {
       status: 'healthy',
       latency,
-    }
+    };
   } catch (error) {
     return {
       status: 'error',
       error: error instanceof Error ? error.message : String(error),
-    }
+    };
   }
 }
-// Export singleton client for convenience and default export
-export { redis as redisClient }
-export { getRedisClient as redis }
+
+// Export a single redisClient reference and the helper functions
+export { redis as redisClient };
+export { getRedisClient, createRedisClient, checkRedisHealth, isRedisConnected, closeRedisConnection };
