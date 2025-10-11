@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ params }) => {
       success: true,
       document,
       meta: {
-        documentId: id
+        documentId: id,
         timestamp: new Date().toISOString()
       }
     })

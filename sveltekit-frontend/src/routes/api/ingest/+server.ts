@@ -56,8 +56,8 @@ export const POST: RequestHandler = async ({ request }) => {
       // Create job and queue it
       const jobId = `upload_${Date.now()}_${Math.random().toString(36).slice(2)}`
       const job = {
-        id: jobId
-        fileBuffer: buffer
+        id: jobId,
+        fileBuffer: buffer,
         filename: file.name,
         userId,
         contentType: detectedContentType
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         jobId,
-        queued: true
+        queued: true,
         warnings: warnings.length > 0 ? warnings : undefined
       })
     } else {
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const userId = requestData.userId ?? 'anonymous'
       const jobId = `minio_${Date.now()}_${Math.random().toString(36).slice(2)}`
       const job = {
-        id: jobId
+        id: jobId,
         minioUrl: requestData.minioUrl,
         userId,
         metadata: {
@@ -95,21 +95,17 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         jobId,
-        queued: true
+        queued: true,
         warnings: warnings.length > 0 ? warnings : undefined
       })
     }
   } catch (err) {
-    console.error('Ingestion error:', err)
-    return json()
-      {
-        success: false;
-        error: err instanceof Error ? err.message: String(err)
-      },
-      { status: 500 }
-    )
+    console.error('Ingestion error:', err);
+    return json({ success: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
-} // GET endpoint for job status and recent ingestions
+};
+
+// GET /api/ingest - health/stats proxy
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const userId = url.searchParams.get('userId') || 'anonymous'
@@ -145,4 +141,4 @@ export const GET: RequestHandler = async ({ url }) => {
       { status: 500 }
     )
   }
-}
+};

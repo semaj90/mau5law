@@ -9,54 +9,62 @@ import type { RequestHandler } from './$types.js'
 import { db, cases, evidence, caseActivities, userDocuments } from '$lib/server/index.js'
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js'
 import { embedText } from '$lib/server/ingest/embed.js'
+// Add missing query helpers used below
+import { eq, like, sql, desc } from 'drizzle-orm'
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, data } = await request.json()
+    const { action, data } = await request.json();
     switch (action) {
       case 'create_case':
-        return await createLegalCase(data)
+        return await createLegalCase(data);
       case 'upload_evidence':
-        return await uploadEvidenceToCase(data)
+        return await uploadEvidenceToCase(data);
       case 'update_canvas_positions':
-        return await updateCanvasPositions(data)
+        return await updateCanvasPositions(data);
       case 'generate_timeline':
-        return await generateTimeline(data)
+        return await generateTimeline(data);
       case 'chat_with_case':
-        return await chatWithCase(data)
+        return await chatWithCase(data);
       default:
-        throw new Error('Unknown action')
+        throw new Error('Unknown action');
     }
   } catch (err) {
-    console.error('Workflow demo error:', err)
-    return json({
-      success: false,
-      error: err instanceof Error ? err.message: String(err)
-    }, { status: 500 })
+    console.error('Workflow demo error:', err);
+    return json(
+      {
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 async function createLegalCase(data: any) {
-  console.log('🏛️ Step 1: Creating legal case...')
+  console.log('🏛️ Step 1: Creating legal case...');
   // Generate embeddings for case title and description
-  const titleEmbedding = await embedText(data.title)
-  const descriptionEmbedding = data.description ? await embedText(data.description) : null
+  const titleEmbedding = await embedText(data.title);
+  const descriptionEmbedding = data.description ? await embedText(data.description) : null;
   // Create the case in database
-  const [newCase] = await db.insert(cases).values({
-    title: data.title,
-    description: data.description,
-    caseNumber: `CASE-${Date.now()}`,
-    status: 'active',
-    priority: data.priority || 'medium',
-    category: data.category || 'criminal',
-    titleEmbedding: titleEmbedding.success ? JSON.stringify(titleEmbedding.embedding) : null
-    descriptionEmbedding: descriptionEmbedding?.success ? JSON.stringify(descriptionEmbedding.embedding) : null
-    metadata: JSON.stringify({
-      createdBy: data.userId,
-      workflow: 'demo',
-      jurisdiction: data.jurisdiction || 'Local Court'
-    }),
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }).returning()
+  const [newCase] = await db
+    .insert(cases)
+    .values({
+      title: data.title,
+      description: data.description,
+      caseNumber: `CASE-${Date.now()}`,
+      status: 'active',
+      priority: data.priority || 'medium',
+      category: data.category || 'criminal',
+      titleEmbedding: titleEmbedding.success ? JSON.stringify(titleEmbedding.embedding) : null,
+      descriptionEmbedding: descriptionEmbedding?.success ? JSON.stringify(descriptionEmbedding.embedding) : null,
+      metadata: JSON.stringify({
+        createdBy: data.userId,
+        workflow: 'demo',
+        jurisdiction: data.jurisdiction || 'Local Court',
+      }),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .returning();
   // Create initial timeline entry
   await db.insert(caseActivities).values({
     caseId: newCase.id,
@@ -65,31 +73,31 @@ async function createLegalCase(data: any) {
     performedBy: data.userId,
     metadata: JSON.stringify({
       action: 'create_case',
-      caseId: newCase.id
+      caseId: newCase.id,
     }),
-    createdAt: new Date()
-  })
-  console.log('✅ Case created:', newCase.caseNumber)
+    createdAt: new Date(),
+  });
+  console.log('✅ Case created:', newCase.caseNumber);
   return json({
     success: true,
     step: 1,
     action: 'case_created',
-    case: newCase,;
+    case: newCase,
     message: `Legal case "${data.title}" created successfully!`,
-    nextStep: 'Upload evidence files using the drag-drop canvas'
-  })
+    nextStep: 'Upload evidence files using the drag-drop canvas',
+  });
 }
 async function uploadEvidenceToCase(data: any) {
-  console.log('📄 Step 2: Processing evidence upload...')
-  const { caseId, files, canvasPositions } = data
-  const results = []
+  console.log('📄 Step 2: Processing evidence upload...');
+  const { caseId, files, canvasPositions } = data;
+  const results = [];
   for (let i = 0; i < files.length; i++) {
-    const file = files[i]
-    const position = canvasPositions[i] || { x: 100 + i * 150, y: 100 + i * 100 }
+    const file = files[i];
+    const position = canvasPositions[i] || { x: 100 + i * 150, y: 100 + i * 100 };
     // Create ingestion job for multimodal processing
-    const jobId = `evidence_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    const jobId = `evidence_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const job = {
-      id: jobId
+      id: jobId,
       fileBuffer: Buffer.from(file.content, 'base64'), // Demo: assuming base64 content
       filename: file.name,
       userId: data.userId,
@@ -97,13 +105,13 @@ async function uploadEvidenceToCase(data: any) {
       metadata: {
         caseId,
         evidenceType: detectEvidenceType(file.type),
-        canvasPosition: position
+        canvasPosition: position,
         uploadedAt: new Date().toISOString(),
-        priority: 'evidence'
-      }
-    }
+        priority: 'evidence',
+      },
+    };
     // Queue for worker processing (OCR, embeddings, etc.)
-    sharedWorkerPool.push(job)
+    sharedWorkerPool.push(job);
     // Create timeline entry
     await db.insert(caseActivities).values({
       caseId,
@@ -114,40 +122,74 @@ async function uploadEvidenceToCase(data: any) {
         action: 'upload_evidence',
         filename: file.name,
         jobId,
-        canvasPosition: position
+        canvasPosition: position,
       }),
-      createdAt: new Date()
-    })
+      createdAt: new Date(),
+    });
     results.push({
       filename: file.name,
       jobId,
       status: 'processing',
-      canvasPosition: position
-    })
+      canvasPosition: position,
+    });
   }
-  console.log('✅ Evidence uploaded and queued for processing')
+  console.log('✅ Evidence uploaded and queued for processing');
   return json({
     success: true,
     step: 2,
     action: 'evidence_uploaded',
     results,
     message: `${files.length} evidence files uploaded and processing started!`,
-    nextStep: 'Position evidence on canvas and wait for AI analysis'
-  })
+    nextStep: 'Position evidence on canvas and wait for AI analysis',
+  });
 }
-async function updateCanvasPositions(data: any) {
-  console.log('🎨 Step 3: Updating canvas positions...')
-  const { caseId, evidencePositions } = data
-  // Update evidence positions in metadata
+
+// Add a specific payload type to avoid `any`
+type UpdateCanvasPositionsPayload = {
+  caseId: string;
+  evidencePositions: Record<string, { x: number; y: number }>;
+  userId?: string;
+};
+
+async function updateCanvasPositions(data: UpdateCanvasPositionsPayload) {
+  console.log('🎨 Step 3: Updating canvas positions...');
+  const { caseId, evidencePositions } = data;
+  // Update evidence positions in metadata using safe read-modify-write
   for (const [evidenceId, position] of Object.entries(evidencePositions)) {
     try {
-      // Update in user_documents if exists
-      await db.update(userDocuments)
+      // Read the existing document row (if any)
+      const docs = await db
+        .select()
+        .from(userDocuments)
+        .where(eq(userDocuments.source, `evidence:${evidenceId}`))
+        .limit(1);
+
+      if (docs.length === 0) {
+        console.warn(`No user_document found for evidence:${evidenceId}`);
+        continue;
+      }
+
+      const doc = docs[0];
+      // Parse existing metadata (defensive)
+      let metadataObj: Record<string, any> = {};
+      try {
+        metadataObj = typeof doc.metadata === 'string' ? JSON.parse(doc.metadata || '{}') : doc.metadata || {};
+      } catch (err) {
+        metadataObj = {};
+      }
+
+      // Merge/overwrite the canvasPosition
+      metadataObj.canvasPosition = position;
+
+      // Persist updated metadata (cast to any for .set payload to avoid strict Drizzle typing issue)
+      await db
+        .update(userDocuments)
         .set({
-          metadata: sql`jsonb_set(metadata, '{canvasPosition}', ${JSON.stringify(position)}::jsonb)`,
-          updatedAt: new Date()
-        })
-        .where(eq(userDocuments.source, `evidence:${evidenceId}`)
+          metadata: JSON.stringify(metadataObj),
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(userDocuments.id, doc.id));
+
       // Create timeline entry for position update
       await db.insert(caseActivities).values({
         caseId,
@@ -157,44 +199,44 @@ async function updateCanvasPositions(data: any) {
         metadata: JSON.stringify({
           action: 'update_position',
           evidenceId,
-          newPosition: position
+          newPosition: position,
         }),
-        createdAt: new Date()
-      })
+        createdAt: new Date(),
+      });
     } catch (error) {
-      console.warn(`Failed to update position for evidence ${evidenceId}:`, error)
+      console.warn(`Failed to update position for evidence ${evidenceId}:`, error);
     }
   }
-  console.log('✅ Canvas positions updated')
+  console.log('✅ Canvas positions updated');
   return json({
     success: true,
     step: 3,
     action: 'positions_updated',
     updated: Object.keys(evidencePositions).length,
     message: 'Evidence positions updated on canvas!',
-    nextStep: 'Generate timeline from evidence and activities'
-  })
+    nextStep: 'Generate timeline from evidence and activities',
+  });
 }
 async function generateTimeline(data: any) {
-  console.log('⏱️ Step 4: Generating case timeline...')
-  const { caseId } = data
+  console.log('⏱️ Step 4: Generating case timeline...');
+  const { caseId } = data;
   // Get all case activities
   const activities = await db
     .select()
     .from(caseActivities)
-    .where(eq(caseActivities.caseId, caseId)
-    .orderBy(caseActivities.createdAt)
+    .where(eq(caseActivities.caseId, caseId))
+    .orderBy(caseActivities.createdAt);
   // Get processed evidence with metadata
   const evidenceDocuments = await db
     .select()
     .from(userDocuments)
-    .where(like(userDocuments.source, `evidence:%`)
-    .orderBy(userDocuments.createdAt)
+    .where(like(userDocuments.source, `evidence:%`))
+    .orderBy(userDocuments.createdAt);
   // Reconstruct timeline with AI insights
   const timeline = activities.map(activity => {
-    let metadata = {}
+    let metadata = {};
     try {
-      metadata = JSON.parse(activity.metadata || '{}')
+      metadata = JSON.parse(activity.metadata || '{}');
     } catch (error) {}
     return {
       timestamp: activity.createdAt,
@@ -202,14 +244,14 @@ async function generateTimeline(data: any) {
       description: activity.description,
       performer: activity.performedBy,
       metadata,
-      category: getTimelineCategory(activity.activityType)
-    }
-  })
+      category: getTimelineCategory(activity.activityType),
+    };
+  });
   // Add evidence processing events
   evidenceDocuments.forEach(doc => {
-    let metadata = {}
+    let metadata = {};
     try {
-      metadata = JSON.parse(doc.metadata || '{}')
+      metadata = JSON.parse(doc.metadata || '{}');
     } catch (error) {}
     timeline.push({
       timestamp: doc.createdAt,
@@ -219,64 +261,60 @@ async function generateTimeline(data: any) {
       metadata: {
         documentId: doc.id,
         processingResults: metadata.processingResults,
-        embeddings: doc.embedding ? 'generated' : 'none'
+        embeddings: doc.embedding ? 'generated' : 'none',
       },
-      category: 'evidence'
-    })
-  })
+      category: 'evidence',
+    });
+  });
   // Sort chronologically
-  timeline.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-  console.log('✅ Timeline generated with', timeline.length, 'events')
+  timeline.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  console.log('✅ Timeline generated with', timeline.length, 'events');
   return json({
     success: true,
     step: 4,
     action: 'timeline_generated',
     timeline,
     message: `Timeline reconstructed with ${timeline.length} events!`,
-    nextStep: 'Chat with case using RAG to get insights'
-  })
+    nextStep: 'Chat with case using RAG to get insights',
+  });
 }
 async function chatWithCase(data: any) {
-  console.log('💬 Step 5: RAG chat with case context...')
-  const { caseId, query } = data
+  console.log('💬 Step 5: RAG chat with case context...');
+  const { caseId, query } = data;
   // Get case details with embeddings
-  const caseDetails = await db
-    .select()
-    .from(cases)
-    .where(eq(cases.id, caseId)
-    .limit(1)
+  const caseDetails = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
   if (caseDetails.length === 0) {
-    throw new Error('Case not found')
+    throw new Error('Case not found');
   }
-  const caseData = caseDetails[0]
+  const caseData = caseDetails[0];
   // Get all related evidence documents with embeddings
   const relatedDocuments = await db
     .select({
       id: userDocuments.id,
       content: userDocuments.content,
       embedding: userDocuments.embedding,
-      metadata: userDocuments.metadata
+      metadata: userDocuments.metadata,
     })
     .from(userDocuments)
-    .where(like(userDocuments.source, `evidence:%`)
-    .limit(10)
+    .where(like(userDocuments.source, `evidence:%`))
+    .limit(10);
   // Generate query embedding for similarity search
-  const queryEmbedding = await embedText(query)
-  let similarDocuments = []
+  const queryEmbedding = await embedText(query);
+  let similarDocuments = [];
   if (queryEmbedding.success && relatedDocuments.length > 0) {
     // In production, this would use pgvector similarity search
     // For demo, we'll use the first few documents
     similarDocuments = relatedDocuments.slice(0, 3).map(doc => {
-      let metadata = {}
+      let metadata = {};
       try {
-        metadata = JSON.parse(doc.metadata || '{}')
+        metadata = JSON.parse(doc.metadata || '{}');
       } catch (error) {}
       return {
         content: doc.content?.substring(0, 500) + '...', // Truncate for demo
         metadata,
-        relevance: Math.random() * 0.4 + 0.6 // Demo relevance score
-      }
-    })
+        relevance: Math.random() * 0.4 + 0.6, // Demo relevance score
+      };
+    });
   }
   // Construct RAG context
   const ragContext = {
@@ -284,13 +322,13 @@ async function chatWithCase(data: any) {
       title: caseData.title,
       description: caseData.description,
       caseNumber: caseData.caseNumber,
-      status: caseData.status
+      status: caseData.status,
     },
-    evidence: similarDocuments
-    query
-  }
+    evidence: similarDocuments,
+    query,
+  };
   // Simulate AI response (in production, this would call your LLM)
-  const aiResponse = generateMockLegalResponse(ragContext)
+  const aiResponse = generateMockLegalResponse(ragContext);
   // Log the chat interaction
   await db.insert(caseActivities).values({
     caseId,
@@ -301,47 +339,47 @@ async function chatWithCase(data: any) {
       action: 'rag_chat',
       query,
       responseLength: aiResponse.length,
-      documentsUsed: similarDocuments.length
+      documentsUsed: similarDocuments.length,
     }),
-    createdAt: new Date()
-  })
-  console.log('✅ RAG chat completed')
+    createdAt: new Date(),
+  });
+  console.log('✅ RAG chat completed');
   return json({
     success: true,
     step: 5,
     action: 'rag_chat_completed',
-    response: aiResponse
+    response: aiResponse,
     context: {
       documentsAnalyzed: similarDocuments.length,
-      caseContext: true
-      embeddingSearch: queryEmbedding.success
+      caseContext: true,
+      embeddingSearch: queryEmbedding.success,
     },
-    message: 'AI analysis complete using case evidence and context!'
-  })
+    message: 'AI analysis complete using case evidence and context!',
+  });
 }
 function detectEvidenceType(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return 'photograph'
-  if (mimeType.startsWith('video/')) return 'video_recording'
-  if (mimeType.startsWith('audio/')) return 'audio_recording'
-  if (mimeType.includes('pdf')) return 'document'
-  return 'digital_evidence'
+  if (mimeType.startsWith('image/')) return 'photograph';
+  if (mimeType.startsWith('video/')) return 'video_recording';
+  if (mimeType.startsWith('audio/')) return 'audio_recording';
+  if (mimeType.includes('pdf')) return 'document';
+  return 'digital_evidence';
 }
 function getTimelineCategory(activityType: string): string {
   const categories: Record<string, string> = {
     case_created: 'case_management',
     evidence_uploaded: 'evidence',
     evidence_repositioned: 'evidence',
-    ai_consultation: 'analysis'
-  }
-  return categories[activityType] || 'general'
+    ai_consultation: 'analysis',
+  };
+  return categories[activityType] || 'general';
 }
 function generateMockLegalResponse(context: any): string {
-  const { case: caseData, evidence, query } = context
+  const { case: caseData, evidence, query } = context;
   return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidence.length} pieces of evidence:
 **Case Overview:**
 ${caseData.description}
 **Evidence Analysis:**
-I've analyzed ${evidence.length} documents with an average relevance score of ${evidence.reduce((sum: number, doc: any) => sum + doc.relevance, 0) / evidence.length * 100}%.
+I've analyzed ${evidence.length} documents with an average relevance score of ${(evidence.reduce((sum: number, doc: any) => sum + doc.relevance, 0) / evidence.length) * 100}%.
 **Key Findings:**
 • Evidence processing shows multimodal content (images, documents, audio/video)
 • Timeline reconstruction reveals chronological sequence of events
@@ -352,10 +390,10 @@ I've analyzed ${evidence.length} documents with an average relevance score of ${
 3. Consider timeline visualization for court presentation
 **Query Response:**
 Regarding "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status} case with ${caseData.priority} priority. The embedded evidence provides strong support for the case theory.
-*This analysis was generated using RAG (Retrieval Augmented Generation) with pgvector similarity search and Gemma embeddings.*`
+*This analysis was generated using RAG (Retrieval Augmented Generation) with pgvector similarity search and Gemma embeddings.*`;
 }
 export const GET: RequestHandler = async ({ url }) => {
-  const demo = url.searchParams.get('demo')
+	const demo = url.searchParams.get('demo');
   if (demo === 'info') {
     return json({
       workflow: 'Legal AI Case Management Demo',
@@ -364,7 +402,7 @@ export const GET: RequestHandler = async ({ url }) => {
         { step: 2, action: 'upload_evidence', description: 'Upload multimodal evidence to MinIO + worker queue' },
         { step: 3, action: 'update_canvas_positions', description: 'Position evidence on Fabric.js canvas' },
         { step: 4, action: 'generate_timeline', description: 'Reconstruct chronological timeline' },
-        { step: 5, action: 'chat_with_case', description: 'RAG chat with case context and evidence' }
+        { step: 5, action: 'chat_with_case', description: 'RAG chat with case context and evidence' },
       ],
       technologies: [
         'SvelteKit 2 API routes',
@@ -374,7 +412,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'PostgreSQL + pgvector',
         'Gemma embeddings',
         'Timeline reconstruction',
-        'RAG + LLM integration'
+        'RAG + LLM integration',
       ],
       example_usage: {
         create_case: {
@@ -387,9 +425,9 @@ export const GET: RequestHandler = async ({ url }) => {
               userId: 'attorney_123',
               priority: 'high',
               category: 'criminal',
-              jurisdiction: 'Superior Court'
-            }
-          }
+              jurisdiction: 'Superior Court',
+            },
+          },
         },
         upload_evidence: {
           method: 'POST',
@@ -401,18 +439,18 @@ export const GET: RequestHandler = async ({ url }) => {
               files: [
                 { name: 'crime_scene.jpg', type: 'image/jpeg', content: 'base64...' },
                 { name: 'witness_statement.pdf', type: 'application/pdf', content: 'base64...' },
-                { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: 'base64...' }
+                { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: 'base64...' },
               ],
               canvasPositions: [
                 { x: 100, y: 100 },
-                { x: 300, y: 150 },)
-                { x: 500, y,: 200 }
-              ]
-            }
-          }
-        }
-      }
-    })
+                { x: 300, y: 150 },
+                { x: 500, y: 200 },
+              ],
+            },
+          },
+        },
+      },
+    });
   }
-  return json({ error: 'Use ?demo=info for documentation' })
+  return json({ error: 'Use ?demo=info for documentation' });
 }
