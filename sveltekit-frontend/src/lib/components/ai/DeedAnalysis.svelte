@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -12,9 +9,9 @@ https://svelte.dev/e/js_parse_error -->
   // Props (Svelte 5 runes)
   let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props();
   // State
-  let similarDocuments = $state<SimilarityResult[] >([]);
-  let isLoading = $state<boolean >(false);
-  let error = $state<string | null >(null);
+  let similarDocuments = $state<SimilarityResult[]>([]);
+  let isLoading = $state<boolean>(false);
+  let error = $state<string | null>(null);
   async function performSemanticSearch(query: string) {
     if (!query.trim()) {
       similarDocuments = [];
@@ -28,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           query: query.trim(),
           limit: 5,
           threshold: 0.3,
@@ -49,12 +46,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Reactive search when query changes
-  // TODO: Convert to $derived: if (searchQuery && searchQuery.trim.length) {
   // simple reactive trigger (debounce could be added later)
-  performSemanticSearch(searchQuery)
-  }
   $effect(() => {
-  if (searchQuery && searchQuery.trim.length) {
+  if (searchQuery && searchQuery.trim().length) { // Added .trim() to ensure non-empty string
     performSemanticSearch(searchQuery);
   }
   });
@@ -187,4 +181,3 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-;

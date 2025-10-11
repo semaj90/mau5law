@@ -4,17 +4,15 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  // 'onMount' is declared but its value is never read.
+  // import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import Button from 'bits-ui';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  // Module '"$lib/components/ui/button"' has no exported member 'Root'.
+  import { Root as Button } from '$lib/components/ui/Button.svelte';
+  // Module '"$lib/components/ui/badge"' has no exported member 'Root'. Did you mean to use 'import Root from "$lib/components/ui/badge"' instead?
+  import { Root as Badge } from '$lib/components/ui/Badge.svelte';
+
   // System status state
   let systemHealth = $state<any>(null);
   let integrationTests = $state<any>({});
@@ -87,19 +85,21 @@ if (!browser) return;
     try {
       // Test gaming constants availability
       const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import('$lib/components/ui/gaming/constants/gaming-constants.js');
+      const nesCount = NES_COLOR_PALETTE ? (Array.isArray(NES_COLOR_PALETTE) ? NES_COLOR_PALETTE.length : Object.keys(NES_COLOR_PALETTE).length) : 0;
+      const n64Count = N64_TEXTURE_PRESETS ? (Array.isArray(N64_TEXTURE_PRESETS) ? N64_TEXTURE_PRESETS.length : Object.keys(N64_TEXTURE_PRESETS).length) : 0;
       if (NES_COLOR_PALETTE && N64_TEXTURE_PRESETS) {
         integrationTests['gaming'] = {
           status: 'success',
           message: 'Gaming components and constants loaded successfully',
           details: {
-            nesColors: Object.keys(errors).length,
-            n64Presets: Object.keys(errors).length
+            nesColors: nesCount,
+            n64Presets: n64Count
           }
         }
       } else {
         integrationTests['gaming'] = {
           status: 'error',
-          message: 'Gaming constants not properly loaded';
+          message: 'Gaming constants not properly loaded',
         }
       }
     } catch (error) {
@@ -111,26 +111,40 @@ if (!browser) return;
   }
   async function testPostgreSQLIntegration() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
-        const pgStatus = (data as { services?: unknown }).services?.databases?.postgres?.statu;
-        if (pgStatus === 'healthy') {
-          integrationTests['postgresql'] = {
-            status: 'success',
-            message: 'PostgreSQL + pgvector connected and healthy',
-            details: { host: (data as { services?: unknown }).services.databases.postgres.host, port: (data as { services?: unknown }).services.databases.postgres.port }
-          }
-        } else {
-          integrationTests['postgresql'] = {
-            status: 'error',
-            message: 'PostgreSQL connection failed or unhealthy';
-          }
+      // Use systemHealth if available for DB status; otherwise try a lightweight endpoint
+      let pgStatus = 'unknown';
+      let host = '';
+      let port = '';
+      if (systemHealth?.services?.databases?.postgres) {
+        const pg = systemHealth.services.databases.postgres as Record<string, any>;
+        pgStatus = pg.status;
+        host = pg.host;
+        port = String(pg.port ?? '');
+      } else {
+        // fallback to hitting a health endpoint
+        const resp = await fetch('/api/health/databases/postgres');
+        if (resp.ok) {
+          const data = await resp.json();
+          pgStatus = data?.status ?? 'unknown';
+          host = data?.host ?? '';
+          port = String(data?.port ?? '');
+        }
+      }
+      if (pgStatus === 'healthy') {
+        integrationTests['postgresql'] = {
+          status: 'success',
+          message: 'PostgreSQL + pgvector connected and healthy',
+          details: { host, port }
+        }
+      } else if (pgStatus === 'unknown') {
+        integrationTests['postgresql'] = {
+          status: 'warning',
+          message: 'PostgreSQL status unknown',
         }
       } else {
         integrationTests['postgresql'] = {
           status: 'error',
-          message: 'Unable to check PostgreSQL status';
+          message: 'PostgreSQL connection failed or unhealthy',
         }
       }
     } catch (error) {
@@ -148,11 +162,11 @@ if (!browser) return;
         '/api/v1/gpu-cache',
         '/api/v1/cluster'
       ];
-  let successCount = $state(0);
+      let successCount = 0;
       for (const endpoint of endpoints) {
         try {
-          // removed unused response assignment
-          if ((response as { ok?: unknown; json?: unknown; status?: unknown }).status !== 404) successCount++;
+          const resp = await fetch(endpoint, { method: 'HEAD' });
+          if (resp && resp.status !== 404) successCount++;
         } catch (e) {
           // Endpoint might not exist yet, that's ok
         }
@@ -169,7 +183,9 @@ if (!browser) return;
       }
     }
   }
-  function getStatusColor(status: string) {
+  // Replace the previous string-typed helpers with versions that accept unknown
+  function getStatusColor(status: unknown): string {
+    if (typeof status !== 'string') return 'text-gray-500';
     switch (status) {
       case 'success': return 'text-green-500';
       case 'warning': return 'text-yellow-500';
@@ -177,20 +193,24 @@ if (!browser) return;
       default: return 'text-gray-500';
     }
   }
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case 'success': return '✅';
-      case 'warning': return '⚠️';
-      case 'error': return '❌';
-      default: return '❓';
-    }
-  }
-  function getBadgeVariant(status: string) {
+
+  function getBadgeVariant(status: unknown): 'success' | 'warning' | 'destructive' | 'secondary' {
+    if (typeof status !== 'string') return 'secondary';
     switch (status) {
       case 'healthy': return 'success';
       case 'degraded': return 'warning';
       case 'unhealthy': return 'destructive';
       default: return 'secondary';
+    }
+  }
+
+  function getStatusIcon(status: unknown): string {
+    if (typeof status !== 'string') return '⚪';
+    switch (status) {
+      case 'success': return '🟢';
+      case 'warning': return '🟡';
+      case 'error': return '🔴';
+      default: return '⚪';
     }
   }
 </script>
@@ -207,13 +227,13 @@ if (!browser) return;
       </h1>
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
-        <Button.Root
+        <Button
           onclick={loadSystemStatus}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
         >
           {isLoading ? '🔄' : '🔃'} Refresh
-        </Button.Root>
+        </Button>
       </div>
     </div>
     {#if systemHealth?.overall}
@@ -257,7 +277,7 @@ if (!browser) return;
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify(details), null, 2)}
+{JSON.stringify((result as { details?: unknown }).details, null, 2)}
                 </pre>
               </details>
             {/if}
@@ -278,18 +298,19 @@ if (!browser) return;
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {#each Object.entries(systemHealth.services.databases) as [name, service]}
+              <!-- Cast service (unknown) to any for safe property access -->
               <div class="service-nier-bits-card p-3 bg-gray-900 rounded border border-gray-600">
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name}</h4>
                   <span class="text-sm">
-                    {service.status === 'healthy' ? '🟢' : '🔴'}
+                    {(service as Record<string, any>).status === 'healthy' ? '🟢' : '🔴'}
                   </span>
                 </div>
                 <p class="text-xs text-gray-400">
-                  {service.host}:{service.port}
+                  {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge variant={service.status === 'healthy' ? 'success' : 'destructive'} class="text-xs">
-                  {service.status}
+                <Badge variant={((service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive')} class="text-xs">
+                  {(service as Record<string, any>).status}
                 </Badge>
               </div>
             {/each}
@@ -308,14 +329,14 @@ if (!browser) return;
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name.replace('Service', '')}</h4>
                   <span class="text-sm">
-                    {service.status === 'healthy' ? '🟢' : '🔴'}
+                    {(service as Record<string, any>).status === 'healthy' ? '🟢' : '🔴'}
                   </span>
                 </div>
                 <p class="text-xs text-gray-400">
-                  {service.host}:{service.port}
+                  {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge variant={service.status === 'healthy' ? 'success' : 'destructive'} class="text-xs">
-                  {service.status}
+                <Badge variant={(((service as Record<string, any>).status === 'healthy') ? 'success' : 'destructive')} class="text-xs">
+                  {(service as Record<string, any>).status}
                 </Badge>
               </div>
             {/each}
@@ -334,17 +355,17 @@ if (!browser) return;
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name}</h4>
                   <span class="text-sm">
-                    {service.status === 'healthy' || service.status === 'ready' ? '🟢' : '🔴'}
+                    {((service as Record<string, any>).status === 'healthy' || (service as Record<string, any>).status === 'ready') ? '🟢' : '🔴'}
                   </span>
                 </div>
-                {#if service.host}
-                  <p class="text-xs text-gray-400">{service.host}:{service.port}</p>
+                {#if (service as Record<string, any>).host}
+                  <p class="text-xs text-gray-400">{(service as Record<string, any>).host}:{(service as Record<string, any>).port}</p>
                 {/if}
-                {#if service.vram}
-                  <p class="text-xs text-gray-400">VRAM: {service.vram}</p>
+                {#if (service as Record<string, any>).vram}
+                  <p class="text-xs text-gray-400">VRAM: {(service as Record<string, any>).vram}</p>
                 {/if}
-                <Badge variant={service.status === 'healthy' || service.status === 'ready' ? 'success' : 'destructive'} class="text-xs">
-                  {service.status}
+                <Badge variant={((service as Record<string, any>).status === 'healthy' || (service as Record<string, any>).status === 'ready') ? 'success' : 'destructive'} class="text-xs">
+                  {(service as Record<string, any>).status}
                 </Badge>
               </div>
             {/each}

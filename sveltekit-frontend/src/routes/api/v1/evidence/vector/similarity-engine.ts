@@ -3,7 +3,6 @@
  * Provides performSimilaritySearch used by unified evidence analysis route.
  * This is a mock / placeholder; replace with real vector DB + embedding logic.
  */
-}
 export interface PerformSimilaritySearchArgs {
   query: string
   evidenceIds: string[];
@@ -41,12 +40,15 @@ export class AdvancedSimilarityEngine {
         const groupSize = Math.min(1 + Math.floor(pseudoRandom(seed + i) * 3) + 1, evidenceIds.length - i)
         const slice = evidenceIds.slice(i, i + groupSize)
         i += groupSize
-        const coherence = Math.max(threshold, parseFloat((pseudoRandom(seed + i) * (1 - threshold) + threshold).toFixed(3))
+        const coherence = Math.max(
+          threshold,
+          parseFloat((pseudoRandom(seed + i) * (1 - threshold) + threshold).toFixed(3))
+        );
         clusters.push({
-          evidenceIds: slice
-            coherenceScore: coherence
-          themes: deriveThemes(slice)
-        })
+          evidenceIds: slice,
+          coherenceScore: coherence,
+          themes: deriveThemes(slice),
+        });
       }
     }
     return {

@@ -31,7 +31,12 @@
       "Bash(npx tsc:*)",
       "Bash(cut:*)",
       "Bash(npx svelte-check:*)",
-      "Bash(timeout 60 npx tsc --noEmit --pretty false)"
+      "Bash(timeout 60 npx tsc --noEmit --pretty false)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npx drizzle-kit push:*)",
+      "Bash(npm run dev)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run dev:quic:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

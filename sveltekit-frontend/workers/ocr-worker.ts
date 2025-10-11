@@ -13,7 +13,6 @@
 import amqp from 'amqplib';
 import Tesseract from 'tesseract.js';
 import { createWorker } from 'tesseract.js';
-import pdfParse from 'pdf-parse';
 import sharp from 'sharp';
 import { Pool } from 'pg';
 import { minioService } from '../src/lib/server/storage/minio-service.js';
@@ -106,6 +105,9 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
   console.log('📄 [OCR Worker] Processing PDF with pdfParse...');
 
   try {
+    // Dynamic import to avoid pdf-parse debug mode execution
+    const pdfParse = (await import('pdf-parse')).default;
+
     // First try native PDF text extraction
     const pdfData = await pdfParse(buffer);
 

@@ -38,9 +38,10 @@
 </script>
 
 {#if Trigger}
-  <svelte:component this={Trigger} class={triggerClasses} {disabled} {asChild}>
+  <!-- Use runes-mode dynamic component invocation (components are dynamic by default) -->
+  <Trigger class={triggerClasses} disabled={disabled} asChild={asChild}>
     {@render children?.()}
-  </svelte:component>
+  </Trigger>
 {:else}
   <!-- simple fallback while adapter resolves -->
   <button class={triggerClasses} {disabled} aria-haspopup="menu">

@@ -153,13 +153,13 @@ Displays detailed integrity verification results with AI analysis
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Original Hash</label>
+        <span class="block text-sm font-medium text-gray-700 mb-2">Original Hash</span>
         <div class="font-mono text-sm bg-gray-50 p-2 rounded border">
           {formatHash(originalHash)}
         </div>
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Current Hash</label>
+        <span class="block text-sm font-medium text-gray-700 mb-2">Current Hash</span>
         <div class="font-mono text-sm bg-gray-50 p-2 rounded border">
           {currentHash ? formatHash(currentHash) : 'Computing...'}
         </div>
@@ -197,9 +197,9 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.hashMatch)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.hashMatch)}`}
             />
-            <Badge variant={verificationResults.hashMatch ? 'success' : 'destructive'}>
+            <svelte:component this={BadgeComponent} variant={verificationResults.hashMatch ? 'success' : 'destructive'}>
               {verificationResults.hashMatch ? 'Pass' : 'Fail'}
-            </Badge>
+            </svelte:component>
           </div>
         </div>
 

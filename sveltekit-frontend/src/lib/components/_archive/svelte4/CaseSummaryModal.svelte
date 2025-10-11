@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -23,9 +20,9 @@ https://svelte.dev/e/js_parse_error -->
     Target,
     Users,
   } from "lucide-svelte";
-  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // boolean = false
-  // SSR-compatible: all dates as strings
-  let { caseData = $bindable()  }: { caseData = $bindable() : unknown } = $props(); // {
+
+  // Define the CaseItem type for clarity and reusability
+  interface CaseItem {
     id: string;
     title: string;
     description: string;
@@ -43,27 +40,35 @@ https://svelte.dev/e/js_parse_error -->
       riskAssessment: {
         level: "low" | "medium" | "high";
         factors: string[];
-      }
-      timeline: Array;
+      };
+      timeline: Array<{ date: string; event: string }>; // Explicitly type timeline events
       evidence: {
         total: number;
         admissible: number;
         questionable: number;
         inadmissible: number;
-      }
+      };
       nextSteps: string[];
-    }
+    };
     metrics?: {
       evidenceCount: number;
       documentsReviewed: number;
       witnessesInterviewed: number;
       daysActive: number;
       completionPercentage: number;
-    }
-  } | null = null;
-  let { useDrawer = $bindable()  }: { useDrawer = $bindable() : unknown } = $props(); // boolean = false
+    };
+  }
+
+  import { createEventDispatcher } from 'svelte'; // Import createEventDispatcher
+  const dispatch = createEventDispatcher(); // Initialize dispatcher
+
+  let { open = $bindable(false) } = $props<{ open?: boolean }>();
+  let { caseData = $bindable(null) } = $props<{ caseData?: CaseItem | null }>();
+  let { useDrawer = $bindable(false) } = $props<{ useDrawer?: boolean }>();
+
   let isGeneratingSummary = $state(false);
   let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
+
   async function generateSummary() {
     if (!caseData) return;
     isGeneratingSummary = true;
@@ -71,23 +76,25 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch("/api/cases/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Removed extra comma here
           caseId: caseData.id,
-          includeEvidence: true
-          includeTimeline: true
+          includeEvidence: true,
+          includeTimeline: true,
           analysisDepth: "comprehensive",
         }),
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; summary?: unknown }).success) {
-        caseData = { ...caseData, summary: (result as { success?: unknown; summary?: unknown }).summary }
-        ondispatch?.(caseData);
-  }
+      const result = await response.json(); // Simplified type assertion
+      if (result.success) { // Simplified type assertion
+        caseData = { ...caseData, summary: result.summary }
+        dispatch('summaryGenerated', caseData); // Use dispatch for event
+      }
     } catch (error) {
       console.error("Summary generation failed:", error);
     } finally {
       isGeneratingSummary = false;
-  }}
+    }
+  }
+
   function getStatusColor(status: string): string {
     switch (status) {
       case "active":
@@ -98,7 +105,9 @@ https://svelte.dev/e/js_parse_error -->
         return "bg-gray-100 text-gray-800 border-gray-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-300";
-  }}
+    }
+  }
+
   function getPriorityColor(priority: string): string {
     switch (priority) {
       case "critical":
@@ -111,7 +120,9 @@ https://svelte.dev/e/js_parse_error -->
         return "bg-green-100 text-green-800 border-green-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-300";
-  }}
+    }
+  }
+
   function getRiskColor(level: string): string {
     switch (level) {
       case "high":
@@ -122,13 +133,16 @@ https://svelte.dev/e/js_parse_error -->
         return "text-green-600";
       default:
         return "text-gray-600";
-  }}
+    }
+  }
+
   // SSR: parse date string only on client
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat.format(date);
+    return new Intl.DateTimeFormat().format(date); // Corrected Intl.DateTimeFormat usage
   }
 </script>
+
 {#if useDrawer}
   <Drawer
     bind:open
@@ -138,14 +152,14 @@ https://svelte.dev/e/js_parse_error -->
     size="xl"
   >
     {#snippet trigger}
-      {@render trigger?.()}
+      {$$slots.trigger?.()} <!-- Use $$slots.trigger for named slot -->
     {/snippet}
-    {#snippet default}
-      {@render content?.()}
+    {#snippet content}
+      {$$slots.content?.()} <!-- Use $$slots.content for default slot -->
     {/snippet}
   </Drawer>
 {:else}
-  <Dialog.Root open={isOpen} close={closeModal}>
+  <Dialog.Root bind:open> <!-- Bind to the 'open' prop -->
     <Dialog.Content size="lg">
       <Dialog.Header>
         <Dialog.Title>Case Summary</Dialog.Title>
@@ -164,8 +178,9 @@ https://svelte.dev/e/js_parse_error -->
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
-<Sparkles class="w-4 h-4 mr-2" /> Regenerate
+              <Button class="bits-btn" on:click={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
+                <Sparkles class="w-4 h-4 mr-2" /> Regenerate
+              </Button>
             </div>
             <p class="nes-text is-disabled">{caseData.summary.overview}</p>
             <h3 class="text-lg font-semibold">Key Findings</h3>
@@ -215,12 +230,12 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-col items-center justify-center h-48 nes-text is-disabled">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
-<Sparkles class="w-4 h-4 mr-2" /> Generate Summary
+            <Button on:click={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn">
+              <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
+            </Button>
           </div>
         {/if}
       </div>
     </Dialog.Content>
   </Dialog.Root>
 {/if}
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

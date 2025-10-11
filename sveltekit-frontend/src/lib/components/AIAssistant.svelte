@@ -1,15 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { createMachine, assign } from 'xstate';
+  import { createMachine, assign, fromPromise } from 'xstate';
   import { useMachine } from '@xstate/svelte';
+  import { writable, derived, get } from 'svelte/store';
   // Toast notifications removed - using simple state instead
-  import Button from '$lib/components/ui/Button.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
   // Legal AI Assistant State Machine (XState Best Practices)
@@ -19,41 +13,70 @@
     context: {
       prompt: '',
       response: '',
-      error: null
-      conversationHistory: [];
+      error: null,
+      conversationHistory: []
     },
     states: {
       idle: {
         on: {
           QUERY: {
             target: 'querying',
-            guard: ({ event }) => !!event.prompt?.trim(),
+            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
             actions: assign({
-              prompt: ({ event }) => event.prompt,
-              error: null;
+              prompt: (_ctx, evt) => (evt as any).prompt,
+              error: () => null
             })
           }
         }
       },
       querying: {
         invoke: {
-          src: 'queryGemma3Legal',
-          input: ({ context }) => ({ prompt: context.prompt }),
+          // wrap the async promise with fromPromise so XState accepts the actor logic type
+          src: fromPromise(async (ctx: any) => {
+            const payload = {
+              model: 'gemma3-legal:latest',
+              prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${ctx.prompt}`,
+              stream: false,
+              options: {
+                temperature: 0.3,
+                max_tokens: 2048,
+                top_p: 0.9,
+                frequency_penalty: 0.0,
+                presence_penalty: 0.0
+              }
+            };
+
+            const response = await fetch('http://localhost:11434/api/generate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return { response: data.response ?? data.output ?? JSON.stringify(data) };
+          }),
           onDone: {
             target: 'success',
-            actions: assign({
-              response: ({ event }) => event.output.response,
-              conversationHistory: ({ context, event }) => [
-                ...context.conversationHistory,
-                { prompt: context.prompt, response: event.output.response, timestamp: Date.now() }
-              ]
+            actions: assign((ctx: any, evt: any) => {
+              const result = (evt?.data as any)?.response ?? '';
+              return {
+                response: result,
+                conversationHistory: [
+                  ...(ctx?.conversationHistory ?? []),
+                  { prompt: ctx?.prompt ?? '', response: result, timestamp: Date.now() }
+                ]
+              };
             })
           },
           onError: {
             target: 'error',
-            actions: assign({
-              error: ({ event }) => event.error?.message || 'Failed to connect to Legal AI'
-            })
+            actions: assign((_ctx: any, evt: any) => ({
+              error: (evt?.data?.message as string) ?? (evt?.message as string) ?? 'Failed to connect to Legal AI'
+            }))
           }
         }
       },
@@ -61,18 +84,18 @@
         on: {
           QUERY: {
             target: 'querying',
-            guard: ({ event }) => !!event.prompt?.trim(),
+            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
             actions: assign({
-              prompt: ({ event }) => event.prompt,
-              error: null;
+              prompt: (_ctx, evt) => (evt as any).prompt,
+              error: () => null
             })
           },
           CLEAR: {
             target: 'idle',
             actions: assign({
-              prompt: '',
-              response: '',
-              error: null;
+              prompt: () => '',
+              response: () => '',
+              error: () => null
             })
           }
         }
@@ -80,68 +103,49 @@
       error: {
         on: {
           RETRY: {
-            target: 'querying';
+            target: 'querying'
           },
           QUERY: {
             target: 'querying',
-            guard: ({ event }) => !!event.prompt?.trim(),
+            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
             actions: assign({
-              prompt: ({ event }) => event.prompt,
-              error: null;
+              prompt: (_ctx, evt) => (evt as any).prompt,
+              error: () => null
             })
           }
         }
       }
     }
-  }, {
-    actors: {
-      queryGemma3Legal: async ({ input }: { input: { prompt: string } }) => {
-        const response = await fetch('http://localhost:11434/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            model: 'gemma3-legal:latest', // Updated to latest model;
-            prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${input.prompt}`,
-            stream: false;
-            options: {
-              temperature: 0.3, // Lower temperature for more consistent legal advice
-              max_tokens: 2048,  // Increased for detailed legal responses
-              top_p: 0.9,
-              frequency_penalty: 0.0,
-              presence_penalty: 0.0;
-            }
-          })
-        });
-        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-          throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
-        }
-        const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-        return { response: (data as { response?: any }).response }
-      }
-    }
-  });
-  // Initialize XState machine
+  } /* removed second-argument implementations; invoke uses inline src */);
+  // Initialize XState machine - use 'snapshot' returned by @xstate/svelte
   const { snapshot, send } = useMachine(legalAIMachine);
-  // Reactive state (Svelte 5 best practices)
-  let promptInput = $state('');
-  let isLoading = $derived(snapshot.matches('querying'));
-  let currentResponse = $derived(snapshot.context.response);
-  let errorMessage = $derived(snapshot.context.error);
-  let canSubmit = $derived(promptInput.trim.length > 0 && !isLoading);
-  // Simple notification state (using native implementation)
-  let notifications = $state([]);
+
+  // Use explicit Svelte stores for local UI state
+  // Local writable stores
+  const promptInput = writable('');
+  type Notification = { id: number; title: string; description: string };
+  const notifications = writable<Notification[]>([]);
+
+  // Derived stores based on the XState snapshot store
+  const isLoading = derived(snapshot, ($snapshot) => $snapshot.matches('querying'));
+  const currentResponse = derived(snapshot, ($snapshot) => $snapshot.context.response);
+  const errorMessage = derived(snapshot, ($snapshot) => $snapshot.context.error);
+  const canSubmit = derived(
+    [promptInput, isLoading],
+    ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading
+  );
+
   function showNotification(title: string, description: string) {
     const id = Date.now();
-    notifications.push({ id, title, description });
-    setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== id);
-    }, 5000);
+    notifications.update((n) => [...n, { id, title, description }]);
+    // remove after timeout (run outside update callback for safety)
+    setTimeout(() => notifications.update((m) => m.filter(item => item.id !== id)), 5000);
   }
   // Enhanced query function with error handling
   function handleQuery() {
-    if (!canSubmit) return;
-    send({ type: 'QUERY', prompt: promptInput });
-    // Show notification
+    const prompt = get(promptInput).trim();
+    if (!prompt || get(isLoading)) return;
+    send({ type: 'QUERY', prompt });
     showNotification('Legal AI Query', 'Processing your legal question...');
   }
   function handleRetry() {
@@ -149,40 +153,48 @@
   }
   function handleClear() {
     send({ type: 'CLEAR' });
-    promptInput = '';
+    promptInput.set('');
   }
   // Keyboard shortcuts (best practices)
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       handleQuery();
     }
   }
+
+  // Add a permissive alias to bypass strict component event typings for Textarea
+  const TextareaAny = Textarea as unknown as any;
+  // Add a permissive alias to bypass strict component prop/event typings
+  const EnhancedButtonAny = EnhancedButton as unknown as any;
 </script>
+
 <!-- Simple Notifications -->
-{#each notifications as notification ((notification as { id?: any; title?: any; description?: any }).id)}
+{#each $notifications as notification (notification.id)}
   <div class="fixed top-4 right-4 bg-blue-500 text-white p-4 rounded shadow-lg z-50">
-    <div class="font-semibold">{(notification as { id?: any; title?: any; description?: any }).title}</div>
-    <div class="text-sm">{(notification as { id?: any; title?: any; description?: any }).description}</div>
+    <div class="font-semibold">{notification.title}</div>
+    <div class="text-sm">{notification.description}</div>
     <button
       class="absolute top-2 right-2 text-white hover:text-gray-200"
-      onclick={() => notifications = notifications.filter(item => item.id))}
+      on:click={() => notifications.update(n => n.filter(item => item.id !== notification.id))}
     >
-      &time;
+      ×
     </button>
   </div>
 {/each}
 <div class="w-full max-w-4xl yorha-nier-bits-card nes-container">
   <div class="yorha-panel-header yorha-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
-      <div class="w-3 h-3 rounded-full" class:bg-green-500={snapshot.matches('idle')}
-           class:bg-yellow-500={isLoading} class:bg-red-500={snapshot.matches('error')}></div>
+      <div class="w-3 h-3 rounded-full"
+           class:bg-green-500={$snapshot.matches('idle')}
+           class:bg-yellow-500={$isLoading}
+           class:bg-red-500={$snapshot.matches('error')}></div>
       YoRHa Legal AI Assistant - Gemma3 Legal Latest
     </h3>
     <div class="text-sm nes-text is-disabled">
-      {#if isLoading}
+      {#if $isLoading}
         Processing legal query with Gemma3-Legal model...
-      {:else if snapshot.matches('error')}
+      {:else if $snapshot.matches('error')}
         Connection error - Please check Ollama service
       {:else}
         Ready for legal questions • Press Ctrl+Enter to submit
@@ -193,66 +205,67 @@
     <!-- Input Section -->
     <div class="space-y-2">
       <label for="legal-prompt" class="text-sm font-medium">Legal Question</label>
-      <Textarea
-        id="legal-prompt";
-        bind:value={promptInput}
-        onkeydown={handleKeydown}
+      <svelte:component
+        this={TextareaAny}
+        id="legal-prompt"
+        bind:value={$promptInput}
+        on:keydown={handleKeydown}
         placeholder="Ask a legal question (e.g., 'What are the key elements of a valid contract?', 'Explain force majeure clauses', etc.)"
         rows={4}
         class="yorha-textarea"
-        disabled={isLoading}
+        disabled={$isLoading}
       />
       <div class="flex justify-between text-xs nes-text is-disabled">
-        <span>Characters: {promptInput.length}</span>
+        <span>Characters: {$promptInput.length}</span>
         <span>Ctrl+Enter to submit</span>
       </div>
     </div>
     <!-- Action Buttons -->
     <div class="flex gap-2">
-      <EnhancedButton
+      <svelte:component
+        this={EnhancedButtonAny}
         variant="legal"
-        onclick={handleQuery}
-        disabled={!canSubmit}
-        loading={isLoading}
+        on:click={handleQuery}
+        disabled={!$canSubmit}
+        loading={$isLoading}
         loadingText="Analyzing..."
-        useMelt={true}
         class="flex-1"
       >
-        {isLoading ? 'Processing Legal Query...' : 'Ask Legal AI'}
-      </EnhancedButton>
-      {#if snapshot.matches('error')}
-        <EnhancedButton
+        {$isLoading ? 'Processing Legal Query...' : 'Ask Legal AI'}
+      </svelte:component>
+      {#if $snapshot.matches('error')}
+        <svelte:component
+          this={EnhancedButtonAny}
           variant="ghost"
-          onclick={handleRetry}
-          useMelt={true}
+          on:click={handleRetry}
         >
           Retry
-        </EnhancedButton>
+        </svelte:component>
       {/if}
-      {#if currentResponse}
-        <EnhancedButton
+      {#if $currentResponse}
+        <svelte:component
+          this={EnhancedButtonAny}
           variant="ghost"
-          onclick={handleClear}
-          useMelt={true}
+          on:click={handleClear}
         >
           Clear
-        </EnhancedButton>
+        </svelte:component>
       {/if}
     </div>
     <!-- Response Section -->
-    {#if errorMessage}
+    {#if $errorMessage}
       <div class="p-4 bg-red-50 border border-red-200 rounded-lg yorha-error">
         <div class="flex items-center gap-2 text-red-700">
           <div class="w-4 h-4 text-red-500">⚠️</div>
           <span class="font-medium">Error</span>
         </div>
-        <p class="mt-2 text-sm text-red-600">{errorMessage}</p>
+        <p class="mt-2 text-sm text-red-600">{$errorMessage}</p>
         <p class="mt-1 text-xs text-red-500">
           Please ensure Ollama is running with gemma3-legal:latest model
         </p>
       </div>
     {/if}
-    {#if currentResponse}
+    {#if $currentResponse}
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-medium">Legal AI Response</h3>
@@ -263,7 +276,7 @@
         </div>
         <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg yorha-response">
           <div class="prose max-w-none">
-            <p class="whitespace-pre-wrap text-sm leading-relaxed">{currentResponse}</p>
+            <p class="whitespace-pre-wrap text-sm leading-relaxed">{$currentResponse}</p>
           </div>
         </div>
         <!-- Response Actions -->
@@ -280,20 +293,20 @@
         </div>
       </div>
     {/if}
-    <!-- Conversation History Preview -->
-    {#if snapshot.context.conversationHistory.length > 0}
+    <!-- Conversation History Preview (defensive access) -->
+    {#if ($snapshot.context?.conversationHistory ?? []).length > 0}
       <details class="mt-6">
         <summary class="text-sm font-medium cursor-pointer hover:text-blue-600">
-          Conversation History ({snapshot.context.conversationHistory.length} queries)
+          Conversation History ({($snapshot.context?.conversationHistory ?? []).length} queries)
         </summary>
         <div class="mt-4 space-y-3 max-h-40 overflow-y-auto">
-          {#each snapshot.context.conversationHistory.slice(-3) as item}
+          {#each ($snapshot.context?.conversationHistory ?? []).slice(-3) as item}
             <div class="p-3 bg-gray-50 rounded border-l-4 border-blue-500">
               <div class="text-xs text-gray-500 mb-1">
-                {new Date((item as { timestamp?: any; prompt?: any; response?: any }).timestamp).toLocaleTimeString()}
+                {new Date(item.timestamp).toLocaleTimeString()}
               </div>
-              <div class="text-sm font-medium mb-1">Q: {(item as { timestamp?: any; prompt?: any; response?: any }).prompt.slice(0, 100)}...</div>
-              <div class="text-xs text-gray-600">A: {(item as { timestamp?: any; prompt?: any; response?: any }).response.slice(0, 150)}...</div>
+              <div class="text-sm font-medium mb-1">Q: {item.prompt.slice(0, 100)}...</div>
+              <div class="text-xs text-gray-600">A: {item.response.slice(0, 150)}...</div>
             </div>
           {/each}
         </div>
@@ -301,6 +314,7 @@
     {/if}
   </div>
 </div>
+
 <style>
   /* YoRHa Legal AI Assistant Styling */
   :global(.yorha-card) {
@@ -327,7 +341,7 @@
     position: relative;
     overflow: hidden;
   }
-  :global($1) {
+  :global(.yorha-response::after) {
     content: '';
     position: absolute;
     top: 0;
@@ -341,32 +355,9 @@
     border-left: 4px solid #ef4444;
     background: #fef2f2;
   }
-  /* Toast Styling */
-  :global(.yorha-toast) {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-    color: #ffd700;
-    border: 1px solid #ffbf00;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    min-width: 300px;
-  }
-  :global(.toast-close) {
-    background: none;
-    border: none;
-    color: #ffd700;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   @keyframes shimmer {
-    0% { left: -100%, }
-    100% { left: 100%, }
+    0% { left: -100%; }
+    100% { left: 100%; }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

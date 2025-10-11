@@ -9,9 +9,11 @@ const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379'
 const baseConfig = getRedisConfig();
 function buildRedisOptions() {
   const password = process.env.REDIS_PASSWORD || baseConfig.password;
+  // Only set password if it's a non-empty string
+  const finalPassword = (password && password.trim()) ? password : undefined;
   return {
     ...baseConfig,
-    password: password || undefined,
+    password: finalPassword,
     lazyConnect: true, // Changed to true to prevent immediate connection
     maxRetriesPerRequest: 1, // Limit retries to prevent flooding
   } as any;

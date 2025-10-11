@@ -21,7 +21,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     size = 'md',
   }: Props = $props();
 
-  let dialogEl: HTMLElement | null = null;
+  let dialogEl = $state<HTMLElement | null>(null);
 
   function handleClose() {
     open = false;

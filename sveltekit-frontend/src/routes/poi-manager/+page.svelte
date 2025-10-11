@@ -2,9 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List, Trash2, AlertCircle, UserPlus } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Card, Input, Label, Select, Dialog, Textarea } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Button, Card, Input, Label, Select, Dialog, Textarea } from '$lib/components/ui/enhanced-bits';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils.js';
@@ -435,12 +433,13 @@
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">{poi.name}</h3>
                 <div class="flex gap-1 mt-1">
-                  <Badge class={cn(statusColors[poi.status], 'text-xs')}>
+                  <!-- replaced Badge with span to avoid Svelte typing mismatch -->
+                  <span class={cn(statusColors[poi.status], 'text-xs rounded px-2 py-0.5 font-medium')}>
                     {poi.status.replace('_', ' ')}
-                  </Badge>
-                  <Badge class={cn(priorityColors[poi.priority], 'text-xs')}>
+                  </span>
+                  <span class={cn(priorityColors[poi.priority], 'text-xs rounded px-2 py-0.5 font-medium')}>
                     {poi.priority}
-                  </Badge>
+                  </span>
                 </div>
               </div>
             </div>
@@ -516,7 +515,7 @@
 <Dialog bind:open={showCreateDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Add New Person of Interest</h2>
-    <form onsubmit|preventDefault={createPoi} class="space-y-4">
+    <form on:submit|preventDefault={createPoi} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="name">Name *</Label>
@@ -595,7 +594,7 @@
 <Dialog bind:open={showEditDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Edit Person of Interest</h2>
-    <form onsubmit|preventDefault={updatePoi} class="space-y-4">
+    <form on:submit|preventDefault={updatePoi} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="edit-name">Name *</Label>
@@ -669,3 +668,4 @@
     </form>
   </div>
 </Dialog>
+

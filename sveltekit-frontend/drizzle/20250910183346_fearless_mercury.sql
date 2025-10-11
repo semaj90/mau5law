@@ -282,8 +282,8 @@ DROP TABLE "user_ai_queries" CASCADE;--> statement-breakpoint
 DROP TABLE "user_embeddings" CASCADE;--> statement-breakpoint
 DROP TABLE "users" CASCADE;--> statement-breakpoint
 DROP TABLE "vector_metadata" CASCADE;--> statement-breakpoint
-ALTER TABLE "cases" DROP CONSTRAINT "cases_case_number_unique";--> statement-breakpoint
-ALTER TABLE "evidence_vectors" DROP CONSTRAINT "evidence_vectors_evidence_id_evidence_id_fk";
+ALTER TABLE "cases" DROP CONSTRAINT IF EXISTS "cases_case_number_unique";--> statement-breakpoint
+ALTER TABLE "evidence_vectors" DROP CONSTRAINT IF EXISTS "evidence_vectors_evidence_id_evidence_id_fk";--> statement-breakpoint
 --> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "id" SET DATA TYPE serial;--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint

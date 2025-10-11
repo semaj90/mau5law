@@ -65,7 +65,10 @@ interface VectorResponse {
 export const GET: RequestHandler = async ({ params, url }) => {
   try {
     const endpoint = params.endpoint;
-    const limit = parseInt(url.searchParams.get('limit') || '10');
+    // parse limit, default 10, clamp to 1..100
+    let limit = Number(url.searchParams.get('limit') ?? 10);
+    if (Number.isNaN(limit)) limit = 10;
+    limit = Math.min(Math.max(limit, 1), 100);
     const response: VectorResponse = {
       success: true,
       data: [],
@@ -92,6 +95,10 @@ export const GET: RequestHandler = async ({ params, url }) => {
         break;
       default:
         return json({ success: false, error: 'Unknown endpoint' }, { status: 404 });
+    }
+    // apply the requested limit to array responses
+    if (Array.isArray(response.data)) {
+      response.data = response.data.slice(0, limit);
     }
     return json(response);
   } catch (error) {

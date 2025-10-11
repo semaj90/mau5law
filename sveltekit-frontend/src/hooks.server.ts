@@ -13,8 +13,8 @@ async function initializeRabbitMQ() {
 
   try {
     console.log('🐰 [hooks.server] Initializing RabbitMQ connection...');
-    const { rabbitMQService } = await import('$lib/services/rabbitmq-service');
-    await rabbitMQService.connect();
+    const { rabbitmqService } = await import('$lib/server/messaging/rabbitmq-service');
+    await rabbitmqService.connect();
     rabbitMQInitialized = true;
     console.log('✅ [hooks.server] RabbitMQ connected successfully');
     return { initialized: true };

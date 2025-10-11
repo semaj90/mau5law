@@ -9,7 +9,7 @@ import { db } from '$lib/server/db/unified-client';
 import { documents, document_chunks, cases } from '$lib/server/schema/documents';
 import { eq, sql } from 'drizzle-orm';
 import { redis } from '$lib/server/redis';
-}
+
 export interface EmbeddingJobPayload {
   entity_type: 'document' | 'case' | 'chunk';
   entity_id: string;
@@ -145,19 +145,19 @@ class RabbitMQEmbeddingWorker {
       const processingTime = Date.now() - startTime;
       console.log(`✅ Completed embedding job ${message.id} in ${processingTime}ms`);
       return {
-        success: true
+        success: true,
         result,
         processingTime
-      }
+      };
     } catch (error) {
       this.failedJobs++;
       const processingTime = Date.now() - startTime;
       console.error(`❌ Embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false;
-        error: error instanceof Error ? error.message: String(error),
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
         processingTime
-      }
+      };
     }
   }
   /**
@@ -185,7 +185,7 @@ class RabbitMQEmbeddingWorker {
         );
         try {
           const batchResults = await Promise.allSettled(
-            batch.map((entity) => this.processEntityEmbedding(entity)
+            batch.map((entity) => this.processEntityEmbedding(entity))
           );
           // Process batch results
           const batchProcessed = batchResults.map((result, index) => {
@@ -194,27 +194,27 @@ class RabbitMQEmbeddingWorker {
             } else {
               console.error(`❌ Entity ${batch[index].entity_id} failed:`, (result as { status?: any; value?: any; reason?: any }).reason);
               return {
-                success: false
+                success: false,
                 entity_id: batch[index].entity_id,
                 error:
-                  (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message: String((result as { status?: any; value?: any; reason?: any }).reason)
-              }
+                  (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message : String((result as { status?: any; value?: any; reason?: any }).reason)
+              };
             }
           });
           results.push(...batchProcessed);
           console.log(`✅ Batch ${batchNumber}/${totalBatches} completed`);
           // Small delay between batches to prevent overwhelming Ollama
           if (i + batchSize < payload.entities.length) {
-            await new Promise((resolve) => setTimeout(resolve, 1000);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
           }
         } catch (batchError) {
           console.error(`❌ Batch ${batchNumber} failed:`, batchError);
           // Add failure entries for the entire batch
           results.push(...batch.map((entity) => ({
-              success: false
+              success: false,
               entity_id: entity.entity_id,
               error: 'Batch processing failed'
-            })
+            }))
           );
         }
       }
@@ -227,24 +227,24 @@ class RabbitMQEmbeddingWorker {
         `📊 Bulk job ${message.id} completed: ${successCount}/${results.length} successful in ${processingTime}ms`
       );
       return {
-        success: successCount > 0
+        success: successCount > 0,
         result: {
           total: results.length,
-          successful: successCount;
-          failed: failCount
+          successful: successCount,
+          failed: failCount,
           results,
-          averageTimePerEntity: results.length > 0 ? processingTime / results.length: 0
+          averageTimePerEntity: results.length > 0 ? processingTime / results.length : 0
         },
         processingTime
-      }
+      };
     } catch (error) {
       const processingTime = Date.now() - startTime;
       console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false;
-        error: error instanceof Error ? error.message: String(error),
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
         processingTime
-      }
+      };
     }
   }
   /**
@@ -281,12 +281,12 @@ class RabbitMQEmbeddingWorker {
     );
     const embedding = await createEmbedding(textToEmbed);
     // Update document in database with the new embedding
-    const updateData: any = {}
+    const updateData: any = {};
     const columnMap = {
       content: 'embedding',
       title: 'title_embedding',
       summary: 'summary_embedding'
-    }
+    };
     const column = columnMap[embedding_type];
     if (column) {
       updateData[column] = sql`${JSON.stringify(embedding)}::vector`;
@@ -297,7 +297,7 @@ class RabbitMQEmbeddingWorker {
     const [updatedDoc] = await db
       .update(documents)
       .set(updateData)
-      .where(eq(documents.id, entity_id)
+      .where(eq(documents.id, entity_id))
       .returning();
     // Cache the embedding for quick access
     const cacheKey = `doc_embedding:${entity_id}:${embedding_type}`;
@@ -324,7 +324,7 @@ class RabbitMQEmbeddingWorker {
       text_length: textToEmbed.length,
       updated: !!updatedDoc,
       cached: true
-    }
+    };
   }
   /**
    * Process case embedding
@@ -358,12 +358,12 @@ class RabbitMQEmbeddingWorker {
     const embedding = await createEmbedding(textToEmbed);
     // Update case in database
     const [updatedCase] = await db
-      .update(cases);
+      .update(cases)
       .set({
         case_embedding: sql`${JSON.stringify(embedding)}::vector`,
         updated_at: new Date()
       })
-      .where(eq(cases.id, entity_id)
+      .where(eq(cases.id, entity_id))
       .returning();
     // Cache the embedding
     const cacheKey = `case_embedding:${entity_id}`;
@@ -386,7 +386,7 @@ class RabbitMQEmbeddingWorker {
       text_length: textToEmbed.length,
       updated: !!updatedCase,
       cached: true
-    }
+    };
   }
   /**
    * Process chunk embedding
@@ -399,7 +399,7 @@ class RabbitMQEmbeddingWorker {
       const [chunk] = await db
         .select()
         .from(document_chunks)
-        .where(eq(document_chunks.id, entity_id)
+        .where(eq(document_chunks.id, entity_id))
         .limit(1);
       if (!chunk) {
         throw new Error(`Document chunk ${entity_id} not found`);
@@ -414,11 +414,11 @@ class RabbitMQEmbeddingWorker {
     const embedding = await createEmbedding(textToEmbed);
     // Update chunk in database
     const [updatedChunk] = await db
-      .update(document_chunks);
+      .update(document_chunks)
       .set({
         embedding: sql`${JSON.stringify(embedding)}::vector`
       })
-      .where(eq(document_chunks.id, entity_id)
+      .where(eq(document_chunks.id, entity_id))
       .returning();
     console.log(`✨ Generated chunk embedding for ${entity_id} (${embedding.length}D)`);
     return {
@@ -427,7 +427,7 @@ class RabbitMQEmbeddingWorker {
       dimensions: embedding.length,
       text_length: textToEmbed.length,
       updated: !!updatedChunk
-    }
+    };
   }
   /**
    * Process individual entity embedding (for bulk jobs)
@@ -444,7 +444,7 @@ class RabbitMQEmbeddingWorker {
         entity_id: entity.entity_id,
         text_content: entity.text_content,
         embedding_type: entity.embedding_type || 'content'
-      }
+      };
       let result: any;
       switch (entity.entity_type) {
         case 'document':
@@ -459,13 +459,13 @@ class RabbitMQEmbeddingWorker {
         default:
           throw new Error(`Unsupported entity type: ${entity.entity_type}`);
       }
-      return { success: true, entity_id: entity.entity_id, result }
+      return { success: true, entity_id: entity.entity_id, result };
     } catch (error) {
       return {
-        success: false
+        success: false,
         entity_id: entity.entity_id,
-        error: error instanceof Error ? error.message: String(error)
-      }
+        error: error instanceof Error ? error.message : String(error)
+      };
     }
   }
   /**
@@ -489,7 +489,7 @@ class RabbitMQEmbeddingWorker {
       successRate,
       uptime,
       startTime: this.startTime
-    }
+    };
   }
   /**
    * Reset statistics
@@ -517,7 +517,7 @@ class RabbitMQEmbeddingWorker {
         success_rate: stats.successRate,
         uptime: stats.uptime
       }
-    }
+    };
   }
 }
 // Export singleton instance

@@ -127,7 +127,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
     const connection = await amqp.connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
 
-    const queues = ['legal_ai.documents.embedding', 'legal_ai.cases.embedding'];
+    const queues = ['legal_ai.document.embedding', 'legal_ai.case.embedding'];
     let totalQueueDepth = 0;
 
     for (const queueName of queues) {

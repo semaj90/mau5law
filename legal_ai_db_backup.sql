@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS btree_gin WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN';
@@ -41,7 +41,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
@@ -55,7 +55,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
@@ -69,7 +69,7 @@ CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION vector; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION vector; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access methods';
@@ -100,7 +100,7 @@ CREATE FUNCTION public.hybrid_search(query_embedding public.vector, search_text 
 BEGIN
   RETURN QUERY
   WITH vector_results AS (
-    SELECT 
+    SELECT
       dc.id,
       dc.content,
       1 - (dc.embedding <=> query_embedding) as similarity
@@ -109,16 +109,16 @@ BEGIN
     LIMIT match_count * 2
   ),
   text_results AS (
-    SELECT 
+    SELECT
       dc.id,
       dc.content,
-      ts_rank(to_tsvector('english', dc.content), 
+      ts_rank(to_tsvector('english', dc.content),
               plainto_tsquery('english', search_text)) as rank
     FROM document_chunks dc
     WHERE to_tsvector('english', dc.content) @@ plainto_tsquery('english', search_text)
     LIMIT match_count * 2
   )
-  SELECT 
+  SELECT
     COALESCE(v.id, t.id) as id,
     COALESCE(v.content, t.content) as content,
     COALESCE(v.similarity, 0) as vector_similarity,
@@ -143,13 +143,13 @@ CREATE FUNCTION public.search_similar_documents(query_embedding public.vector, m
     AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
+  SELECT
     dc.id,
     dc.content,
     1 - (dc.embedding <=> query_embedding) as similarity,
     dc.metadata
   FROM document_chunks dc
-  WHERE 
+  WHERE
     1 - (dc.embedding <=> query_embedding) > threshold
     AND (doc_type IS NULL OR dc.document_type = doc_type)
   ORDER BY dc.embedding <=> query_embedding
