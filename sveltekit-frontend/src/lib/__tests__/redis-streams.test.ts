@@ -3,33 +3,39 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as redisStreams from '../server/redis-streams';
 
 describe('redis-streams helpers', () => {
-  let holder: { redisClient?: { call?: (...a: unknown[]) => Promise<unknown> } } = {}
-
   beforeEach(() => {
     // reset mocks
     vi.restoreAllMocks();
-    holder = {};
   });
+
+  // Helper to install a fake redis client via spying on the exported redisClient getter
+  type RedisClient = { call?: (...a: unknown[]) => Promise<unknown> };
+
+  async function useFakeRedisClient(fake: RedisClient) {
+    // dynamic import works with Vitest/Esm
+    const mod = await import('../server/redis-streams');
+    // Spy on the exported binding (module export) and stub the getter to return our fake client
+    // Narrow the imported module to avoid `any`
+    vi.spyOn(mod as unknown as Record<string, unknown>, 'redisClient', 'get').mockReturnValue(fake as unknown);
+    return mod as typeof redisStreams;
+  }
 
   it('produceTokenChunk uses XADD and returns id', async () => {
     // mock redisClient.call to return a synthetic id
     const fakeId = '1736-0';
-    holder = redisStreams as unknown as { redisClient?: { call?: (...a: unknown[]) => Promise<unknown> } };
-    holder.redisClient = { call: vi.fn().mockResolvedValue(fakeId) };
+    const mod = await useFakeRedisClient({ call: vi.fn().mockResolvedValue(fakeId) });
 
-    const id = await redisStreams.produceTokenChunk('req1', 1, 'hello', { a: 1 });
+    const id = await mod.produceTokenChunk('req1', 1, 'hello', { a: 1 });
     expect(id).toBe(String(fakeId));
-  // Vitest mocks are similar to jest; access mock metadata using a safe narrow
-  const maybeMock = (holder.redisClient!.call as unknown) as { mock?: { calls?: unknown[] } };
-  expect((maybeMock.mock?.calls?.length ?? 0)).toBeGreaterThanOrEqual(0);
+    // Vitest mocks are similar to jest; access mock metadata using a safe narrow
+    const maybeMock = (mod.redisClient as any)['call'] as { mock?: { calls?: unknown[] } };
+    expect(maybeMock.mock?.calls?.length ?? 0).toBeGreaterThanOrEqual(0);
   });
 
   it('readTokenStream maps XRANGE results into TokenEntry[]', async () => {
-    const sampleRaw = [[
-      '1736-0', ['seq', '1', 'chunk', 'hello', 'meta', JSON.stringify({a:1})]
-    ]];
-    holder.redisClient = { call: vi.fn().mockResolvedValue(sampleRaw) };
-    const entries = await redisStreams.readTokenStream('req1', '0-0', 10);
+    const sampleRaw = [['1736-0', ['seq', '1', 'chunk', 'hello', 'meta', JSON.stringify({ a: 1 })]]];
+    const mod = await useFakeRedisClient({ call: vi.fn().mockResolvedValue(sampleRaw) });
+    const entries = await mod.readTokenStream('req1', '0-0', 10);
     expect(entries.length).toBe(1);
     expect(entries[0].id).toBe('1736-0');
     expect(entries[0].seq).toBe(1);

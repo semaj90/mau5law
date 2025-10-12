@@ -81,6 +81,25 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     );
   }
 };
+
+// Add a lightweight typed shape for `locals` to avoid `any` and keep flexibility
+type RequestLocals = {
+  session?: { user?: { id?: string | number } } | null;
+  user?: { id?: string | number } | null;
+  userId?: string | number | null;
+  // allow other runtime props preserved from SvelteKit or middleware
+  [key: string]: unknown;
+};
+
+// Helper: resolve user id from locals (throws 401 if not present)
+function getUserId(locals: RequestLocals): string {
+  const id = locals?.user?.id ?? locals?.session?.user?.id ?? locals?.userId ?? null;
+  if (!id) {
+    throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+  }
+  return String(id);
+}
+
 // Add lightweight types to avoid `any` usage
 type EvidenceItem = {
   id?: string;
@@ -118,7 +137,7 @@ async function generateDetectiveInsights(
   evidence: EvidenceItem[],
   insightType: InsightType,
   depth: DepthType,
-  userId: string
+  _userId: string
 ): Promise<InsightsResult> {
   const insights: InsightsResult = {
     overallConfidence: 0,
@@ -171,7 +190,8 @@ async function generateDetectiveInsights(
 /*
  * Generate summary insights
  */
-async function generateSummaryInsights(caseData: unknown, evidence: EvidenceItem[]): Promise<unknown> {
+// changed: caseData was unused -> rename to _caseData
+async function generateSummaryInsights(_caseData: unknown, evidence: EvidenceItem[]): Promise<unknown> {
   return {
     caseStrength: evidence.length > 5 ? 'strong' : evidence.length > 2 ? 'moderate' : 'weak',
     evidenceQuality: 'good', // Would analyze actual evidence quality
@@ -184,7 +204,8 @@ async function generateSummaryInsights(caseData: unknown, evidence: EvidenceItem
 /*
  * Generate pattern insights
  */
-async function generatePatternInsights(evidence: EvidenceItem[]): Promise<unknown[]> {
+// changed: evidence is unused -> rename to _evidence
+async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unknown[]> {
   return [
     {
       type: 'temporal',
@@ -212,7 +233,8 @@ async function generatePatternInsights(evidence: EvidenceItem[]): Promise<unknow
 /*
  * Generate risk assessment insights
  */
-async function generateRiskInsights(caseData: unknown, evidence: EvidenceItem[]): Promise<unknown> {
+// changed: both caseData and evidence unused -> prefix with underscore
+async function generateRiskInsights(_caseData: unknown, _evidence: EvidenceItem[]): Promise<unknown> {
   return {
     caseRisk: {
       level: 'medium',
@@ -239,9 +261,10 @@ async function generateRiskInsights(caseData: unknown, evidence: EvidenceItem[])
 /*
  * Generate recommendation insights
  */
+// changed: caseData and evidence unused -> prefix with underscore
 async function generateRecommendationInsights(
-  caseData: unknown,
-  evidence: EvidenceItem[],
+  _caseData: unknown,
+  _evidence: EvidenceItem[],
   depth: DepthType
 ): Promise<unknown[]> {
   const recommendations = [
@@ -295,7 +318,8 @@ async function generateRecommendationInsights(
 /*
  * Generate key findings
  */
-async function generateKeyFindings(caseData: unknown, evidence: EvidenceItem[]): Promise<string[]> {
+// changed: caseData unused -> prefix with underscore
+async function generateKeyFindings(_caseData: unknown, _evidence: EvidenceItem[]): Promise<string[]> {
   return [
     'Strong digital evidence trail established',
     'Timeline consistency across multiple evidence sources',
@@ -350,8 +374,9 @@ async function generateConnectionInsights(evidence: EvidenceItem[]): Promise<unk
       technical: Math.floor(evidence.length * 0.2),
     },
     centralNodes: evidence.slice(0, 3).map(item => ({
-      id: (item as { id?: any; title?: any }).id,
-      title: (item as { id?: any; title?: any }).title,
+      // use typed access from EvidenceItem instead of casting to any
+      id: item.id ?? null,
+      title: item.title ?? null,
       connectionCount: Math.floor(Math.random() * 10) + 1,
       significance: 'high',
     })),

@@ -65,8 +65,12 @@ const neo4jService: Neo4jServiceType = _neo4jModule.default ??
 import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
 import { cache } from '$lib/server/cache/redis.js';
 
-// Initialize all services
-await Promise.all([unifiedSearchService.initialize(), neo4jService.initialize(), ingestionService.initialize()]);
+// Initialize all services (guard optional `initialize` functions to avoid calling undefined)
+await Promise.all([
+	typeof unifiedSearchService.initialize === 'function' ? unifiedSearchService.initialize() : Promise.resolve(),
+	typeof neo4jService.initialize === 'function' ? neo4jService.initialize() : Promise.resolve(),
+	typeof ingestionService.initialize === 'function' ? ingestionService.initialize() : Promise.resolve(),
+]);
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -171,7 +175,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await unifiedSearchService.ingestDocument({
           title: file.originalName || `uploaded_${Date.now()}`,
           content,
-          filePath: null, // no persistent path at upload time
+          filePath: undefined, // no persistent path at upload time (use undefined to satisfy string | undefined)
           mimeType,
           fileSize: file.size || file.fileSize || fileBuffer.length,
           metadata: {
@@ -231,7 +235,19 @@ export const POST: RequestHandler = async ({ request }) => {
           searchResult.documents.length > 0
         ) {
           try {
-            const recs = await neo4jService.getRecommendations(searchResult.documents);
+            // runtime-guard: only invoke if the method exists and is callable
+            let recs: Recommendation[] | null = null;
+            if (isFunction(neo4jService.getRecommendations)) {
+              try {
+                recs = await neo4jService.getRecommendations(searchResult.documents);
+              } catch (invokeErr) {
+                console.warn('⚠️ Neo4j getRecommendations invocation failed:', invokeErr);
+                recs = null;
+              }
+            } else {
+              console.warn('⚠️ Neo4j getRecommendations not available on neo4jService; skipping recommendations.');
+            }
+
             if (recs) {
               // normalize any returned recommendation(s) into the expected shape:
               // - documents: string[] (prefer doc.id)
@@ -356,8 +372,27 @@ export const POST: RequestHandler = async ({ request }) => {
         type Neo4jDocument = { id: string; title?: string; content?: string; metadata?: Record<string, unknown> };
         const documents: Neo4jDocument[] = documentIds.map((id: unknown) => ({ id: String(id) }));
 
-        // Pass force option so caller can request forced re-sync if needed
-        const syncResultRaw = await neo4jService.bulkSyncDocuments(documents, { force: !!force });
+        // Guard the Neo4j bulk sync call
+        if (!isFunction(neo4jService.bulkSyncDocuments)) {
+          return json(
+            {
+              success: false,
+              error: 'Neo4j bulkSyncDocuments not available',
+            },
+            { status: 503 }
+          );
+        }
+
+        let syncResultRaw: unknown = null;
+        try {
+          syncResultRaw = await neo4jService.bulkSyncDocuments(documents, { force: !!force });
+        } catch (err) {
+          console.warn('Neo4j bulkSyncDocuments error:', err);
+          return json(
+            { success: false, error: 'Neo4j sync failed', details: err instanceof Error ? err.message : String(err) },
+            { status: 502 }
+          );
+        }
 
         // Narrow the unknown result to our SyncResult safely
         const syncResult: SyncResult = (syncResultRaw ?? {}) as SyncResult;
@@ -394,13 +429,45 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all'}`;
-        let recommendations = await neo4jService.getCachedRecommendations(cacheKey);
+
+        // Try cached recommendations if available
+        let recommendations: Recommendation[] | null = null;
+        if (isFunction(neo4jService.getCachedRecommendations)) {
+          try {
+            recommendations = await neo4jService.getCachedRecommendations(cacheKey);
+          } catch (err) {
+            console.warn('Neo4j getCachedRecommendations failed:', err);
+            recommendations = null;
+          }
+        }
+
         if (!recommendations) {
           // Minimal typed document used for recommendations; in production fetch full documents by ID
           type Neo4jDocument = { id: string; title?: string; content?: string; metadata?: Record<string, unknown> };
           const documents: Neo4jDocument[] = documentIds.map((id: unknown) => ({ id: String(id) }));
-          recommendations = await neo4jService.getRecommendations(documents);
-          await neo4jService.setCachedRecommendations(cacheKey, recommendations);
+
+          if (!isFunction(neo4jService.getRecommendations)) {
+            // Service not available — return a stable empty response instead of throwing
+            recommendations = [];
+          } else {
+            try {
+              const recs = await neo4jService.getRecommendations(documents);
+              recommendations = (recs as Recommendation[] | null) ?? [];
+            } catch (err) {
+              console.warn('Neo4j getRecommendations failed:', err);
+              recommendations = [];
+            }
+          }
+
+          // Cache the recommendations if caching method exists
+          if (isFunction(neo4jService.setCachedRecommendations)) {
+            try {
+              // setCachedRecommendations may accept null/[]; swallow cache errors
+              await neo4jService.setCachedRecommendations(cacheKey, recommendations);
+            } catch (err) {
+              console.warn('Neo4j setCachedRecommendations failed:', err);
+            }
+          }
         }
 
         return json({
@@ -423,7 +490,27 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
 
-        const networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds);
+        if (!isFunction(neo4jService.getDocumentNetworkAnalysis)) {
+          return json(
+            {
+              success: false,
+              error: 'Neo4j network analysis not available',
+            },
+            { status: 503 }
+          );
+        }
+
+        let networkAnalysis: unknown = null;
+        try {
+          networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds);
+        } catch (err) {
+          console.warn('Neo4j getDocumentNetworkAnalysis failed:', err);
+          networkAnalysis = {
+            error: 'network analysis failed',
+            details: err instanceof Error ? err.message : String(err),
+          };
+        }
+
         return json({
           success: true,
           analysis: networkAnalysis,
@@ -518,7 +605,8 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           search: await getSearchAnalytics(timeRange),
           ingestion: ingestionService.getDashboardData(),
-          neo4j: await neo4jService.getHealthStatus(),
+          // use guarded helper instead of calling possibly-undefined method directly
+          neo4j: await safeGetNeo4jHealth(),
           cache: await getCacheStats(),
           performance: await getPerformanceMetrics(timeRange),
         };
@@ -532,7 +620,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
       // === HEALTH CHECK ===
       case 'health': {
-        const neo4jHealth = await neo4jService.getHealthStatus().catch(() => ({ connected: false }));
+        // use guarded helper to avoid invoking undefined
+        const neo4jHealth = await safeGetNeo4jHealth();
         const health = {
           status: 'healthy',
           services: {
@@ -673,6 +762,75 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   }
 };
+
+// small helper to test for callable functions on the service
+function isFunction<T extends (...args: unknown[]) => unknown>(v: unknown): v is T {
+  return typeof v === 'function';
+}
+
+// Add a runtime-safe helper for neo4j health checks
+async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
+  if (!isFunction(neo4jService.getHealthStatus)) {
+    return { connected: false };
+  }
+
+  // Bind the function in case it relies on `this` and coerce to a promise-returning call
+  const fn = (neo4jService.getHealthStatus as unknown) as (() => unknown);
+
+  try {
+    const raw = await Promise.resolve().then(() => fn.call(neo4jService));
+
+    // small parser: returns boolean | null for unknown inputs
+    const parseBool = (v: unknown): boolean | null => {
+      if (v === null || v === undefined) return null;
+      if (typeof v === 'boolean') return v;
+      if (typeof v === 'number') return v !== 0;
+      if (typeof v === 'string') {
+        const s = v.trim().toLowerCase();
+        if (s === 'true') return true;
+        if (s === 'false') return false;
+        const n = Number(s);
+        if (!Number.isNaN(n)) return n !== 0;
+        return null;
+      }
+      return null;
+    };
+
+    // Normalize common return shapes.
+    if (raw === null || raw === undefined) return { connected: false };
+
+    if (typeof raw === 'boolean' || typeof raw === 'number' || typeof raw === 'string') {
+      const p = parseBool(raw);
+      return { connected: p === true };
+    }
+
+    if (typeof raw === 'object') {
+      const obj = raw as Record<string, unknown>;
+
+      // Check primary keys first
+      const keysToCheck = ['connected', 'isConnected', 'ok', 'status'];
+      for (const k of keysToCheck) {
+        if (k in obj) {
+          const v = parseBool(obj[k]);
+          if (v !== null) return { connected: v };
+        }
+      }
+
+      // Fallback: any truthy-ish property
+      const alt = obj.connected ?? obj.isConnected ?? obj.ok ?? obj.status;
+      const altParsed = parseBool(alt);
+      if (altParsed !== null) return { connected: altParsed };
+
+      return { connected: false };
+    }
+
+    // Default safe fallback
+    return { connected: false };
+  } catch (err) {
+    console.warn('Neo4j getHealthStatus failed:', err);
+    return { connected: false };
+  }
+}
 
 // === ANALYTICS HELPERS ===
 async function getSearchAnalytics(_timeRange: string) {

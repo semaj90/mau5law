@@ -56,12 +56,12 @@ class CitationsService {
         jurisdiction: 'Federal',
         court: 'U.S. Supreme Court',
         publicationDate: '1966-06-13T00:00:00Z',
-        verified: true
+        verified: true,
         relevantQuote: 'You have the right to remain silent...',
         contextNotes: 'Establishes Miranda rights precedent',
         tags: ['constitutional', 'criminal procedure'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString()
+        dateCreated: new Date().toISOString(),
       },
       {
         id: crypto.randomUUID(),
@@ -73,136 +73,162 @@ class CitationsService {
         relevanceScore: 8,
         citationPurpose: 'support',
         jurisdiction: 'Federal',
-        verified: true
+        verified: true,
         relevantQuote: 'Evidence having any tendency to make the existence of any fact...',
         contextNotes: 'Defines relevant evidence',
         tags: ['evidence', 'relevancy'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString()
-      }
-    ]
+        dateCreated: new Date().toISOString(),
+      },
+    ];
     // Apply filters
-    let filteredCitations = sampleCitations
+    let filteredCitations = sampleCitations;
     if (query.citationType) {
-      filteredCitations = filteredCitations.filter(c => c.citationType === query.citationType)
+      filteredCitations = filteredCitations.filter(c => c.citationType === query.citationType);
     }
     if (query.verified !== undefined) {
-      filteredCitations = filteredCitations.filter(c => c.verified === query.verified)
+      filteredCitations = filteredCitations.filter(c => c.verified === query.verified);
     }
     if (query.minRelevance) {
-      filteredCitations = filteredCitations.filter(c => c.relevanceScore >= query.minRelevance)
+      filteredCitations = filteredCitations.filter(c => c.relevanceScore >= query.minRelevance);
     }
     // Sort by relevance score (highest first)
-    filteredCitations.sort((a, b) => b.relevanceScore - a.relevanceScore)
+    filteredCitations.sort((a, b) => b.relevanceScore - a.relevanceScore);
     // Apply pagination
-    const offset = (query.page - 1) * query.limit
-    const paginatedCitations = filteredCitations.slice(offset, offset + query.limit)
+    const offset = (query.page - 1) * query.limit;
+    const paginatedCitations = filteredCitations.slice(offset, offset + query.limit);
     return {
-      data: paginatedCitations
+      data: paginatedCitations,
       pagination: {
         page: query.page,
         limit: query.limit,
         total: filteredCitations.length,
         totalPages: Math.max(1, Math.ceil(filteredCitations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredCitations.length / query.limit),
-        hasPrev: query.page > 1
-      }
-    }
+        hasPrev: query.page > 1,
+      },
+    };
   }
   async createCitation(data: z.infer<typeof CreateCitationSchema>) {
     // In production, insert into citations table
     const newCitation = {
       id: crypto.randomUUID(),
       ...data,
-      verified: false
+      verified: false,
       createdBy: this.userId,
       dateCreated: new Date().toISOString(),
-      dateModified: new Date().toISOString()
-    }
-    return newCitation
+      dateModified: new Date().toISOString(),
+    };
+    return newCitation;
   }
   async verifyCitation(citationId: string) {
     // In production, verify citation against legal databases
     // For now, return mock verification result
     return {
-      id: citationId
-      verified: true
+      id: citationId,
+      verified: true,
       verifiedDate: new Date().toISOString(),
-      verificationNotes: 'Citation verified against legal database'
-    }
+      verificationNotes: 'Citation verified against legal database',
+    };
   }
 }
+
+type RequestLocals = {
+  session?: unknown;
+  user?: {
+    id?: string;
+    email?: string;
+    role?: string;
+    // ...other user props if needed...
+  } | null;
+};
+
+// Add helper to extract user id from locals
+function getUserId(locals: RequestLocals): string {
+  // prefer explicit user id, fallback to anonymous for tests
+  return typeof locals?.user?.id === 'string' ? (locals.user as { id: string }).id : 'anonymous';
+}
+
 /**
  * GET /api/v1/citations
  * Get citations for a case
  */
-export const GET: RequestHandler = async ({ request, locals, url }) => {
+export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 })
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
-    const queryParams = Object.fromEntries(url.searchParams.entries()
-    const validatedQuery = CitationsQuerySchema.parse(queryParams)
-    const citationsService = new CitationsService(getUserId(locals))
-    const result = await citationsService.getCitations(validatedQuery)
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const validatedQuery = CitationsQuerySchema.parse(queryParams);
+    const citationsService = new CitationsService(getUserId(locals));
+    // provide a concrete type for the service response to avoid `any` casts
+    type GetCitationsResult = Awaited<ReturnType<CitationsService['getCitations']>>;
+    const result: GetCitationsResult = await citationsService.getCitations(validatedQuery);
     // Response validation
-    const CitationItem = z.object({
-      id: z.string(),
-      caseId: z.string().uuid(),
-      citationType: z.string(),
-      title: z.string().optional(),
-      citation: z.string().optional(),
-      author: z.string().optional(),
-      source: z.string().optional(),
-      relevanceScore: z.number().optional(),
-      citationPurpose: z.string().optional(),
-      jurisdiction: z.string().optional(),
-      court: z.string().optional(),
-      publicationDate: z.string().optional(),
-      verified: z.boolean().optional(),
-      relevantQuote: z.string().optional(),
-      contextNotes: z.string().optional(),
-      tags: z.array(z.string()).optional(),
-      createdBy: z.string().optional(),
-      dateCreated: z.string().optional()
-    }).passthrough()
-    const CitationsListResponse = z.object({
-      success: z.literal(true),
-      data: z.array(CitationItem),
-      pagination: z.object({
-        page: z.number(),
-        limit: z.number(),
-        total: z.number(),
-        totalPages: z.number(),
-        hasNext: z.boolean(),
-        hasPrev: z.boolean()
-      }),
-      meta: z.record(z.any()).optional()
-    }).passthrough()
+    const CitationItem = z
+      .object({
+        id: z.string(),
+        caseId: z.string().uuid(),
+        citationType: z.string(),
+        title: z.string().optional(),
+        citation: z.string().optional(),
+        author: z.string().optional(),
+        source: z.string().optional(),
+        relevanceScore: z.number().optional(),
+        citationPurpose: z.string().optional(),
+        jurisdiction: z.string().optional(),
+        court: z.string().optional(),
+        publicationDate: z.string().optional(),
+        verified: z.boolean().optional(),
+        relevantQuote: z.string().optional(),
+        contextNotes: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        createdBy: z.string().optional(),
+        dateCreated: z.string().optional(),
+      })
+      .passthrough();
+    const CitationsListResponse = z
+      .object({
+        success: z.literal(true),
+        data: z.array(CitationItem),
+        pagination: z.object({
+          page: z.number(),
+          limit: z.number(),
+          total: z.number(),
+          totalPages: z.number(),
+          hasNext: z.boolean(),
+          hasPrev: z.boolean(),
+        }),
+        meta: z.record(z.any()).optional(),
+      })
+      .passthrough();
     const payload = {
-      success: true,;
-      data: (result as { data?: any; pagination?: any }).data,
-      pagination: (result as { data?: any; pagination?: any }).pagination,
+      success: true,
+      data: result.data,
+      pagination: result.pagination,
       meta: {
         caseId: validatedQuery.caseId,
         userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      }
-    }
-    const validated = CitationsListResponse.safeParse(payload)
+        timestamp: new Date().toISOString(),
+      },
+    };
+    const validated = CitationsListResponse.safeParse(payload);
     if (!validated.success) {
-      console.error('Citations list response validation failed', validated.error)
-      return error(500, { message: 'Invalid response shape' })
+      console.error('Citations list response validation failed', validated.error);
+      return error(500, { message: 'Invalid response shape' });
     }
-    return json(payload)
-  } catch (err: any) {
-    console.error('Error fetching citations:', err)
+    return json(payload);
+  } catch (err: unknown) {
+    console.error('Error fetching citations:', err);
     if (err instanceof z.ZodError) {
-      return json({ success: false, message: 'Invalid query parameters', details: err.errors }, { status: 400 })
+      return json({ success: false, message: 'Invalid query parameters', details: err.errors }, { status: 400 });
     }
-    return json({ success: false, message: 'Failed to fetch citations', details: err.message }, { status: 500 })
+    if (err instanceof Error) {
+      return json({ success: false, message: 'Failed to fetch citations', details: err.message }, { status: 500 });
+    }
+    return json({ success: false, message: 'Failed to fetch citations', details: String(err) }, { status: 500 });
   }
-}
+};
 /**
  * POST /api/v1/citations
  * Add citation to case
@@ -210,41 +236,48 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 })
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
-    const body = await request.json()
-    const validatedData = CreateCitationSchema.parse(body)
-    const citationsService = new CitationsService(getUserId(locals))
-    const newCitation = await citationsService.createCitation(validatedData)
-    const CitationItem = z.object({
-      id: z.string(),
-      caseId: z.string().uuid(),
-      citationType: z.string()
-    }).passthrough()
-    const CreateCitationResponse = z.object({
-      success: z.literal(true),
-      data: CitationItem
-      meta: z.record(z.any()).optional()
-    }).passthrough()
+    const body = await request.json();
+    const validatedData = CreateCitationSchema.parse(body);
+    const citationsService = new CitationsService(getUserId(locals));
+    const newCitation = await citationsService.createCitation(validatedData);
+    const CitationItem = z
+      .object({
+        id: z.string(),
+        caseId: z.string().uuid(),
+        citationType: z.string(),
+      })
+      .passthrough();
+    const CreateCitationResponse = z
+      .object({
+        success: z.literal(true),
+        data: CitationItem,
+        meta: z.record(z.any()).optional(),
+      })
+      .passthrough();
     const payload = {
       success: true,
-      data: newCitation
+      data: newCitation,
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      }
-    }
-    const validated = CreateCitationResponse.safeParse(payload)
+        timestamp: new Date().toISOString(),
+      },
+    };
+    const validated = CreateCitationResponse.safeParse(payload);
     if (!validated.success) {
-      console.error('Create citation response validation failed', validated.error)
-      return error(500, { message: 'Invalid response shape' })
+      console.error('Create citation response validation failed', validated.error);
+      return error(500, { message: 'Invalid response shape' });
     }
-    return json(payload, { status: 201 })
-  } catch (err: any) {
-    console.error('Error creating citation:', err)
+    return json(payload, { status: 201 });
+  } catch (err: unknown) {
+    console.error('Error creating citation:', err);
     if (err instanceof z.ZodError) {
-      return json({ success: false, message: 'Invalid citation data', details: err.errors }, { status: 400 })
+      return json({ success: false, message: 'Invalid citation data', details: err.errors }, { status: 400 });
     }
-    return json({ success: false, message: 'Failed to create citation', details: err.message }, { status: 500 })
+    if (err instanceof Error) {
+      return json({ success: false, message: 'Failed to create citation', details: err.message }, { status: 500 });
+    }
+    return json({ success: false, message: 'Failed to create citation', details: String(err) }, { status: 500 });
   }
-}
+};

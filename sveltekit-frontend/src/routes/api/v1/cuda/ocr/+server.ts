@@ -7,6 +7,23 @@ import { join } from 'path';
 
 const execAsync = promisify(exec);
 
+/* Helper to safely extract useful info from unknown throwables */
+function normalizeError(err: unknown): { status?: number; message?: string; bodyMessage?: string } {
+	// Non-object errors (string, number, etc.)
+	if (err === null || typeof err !== 'object') {
+		return { message: typeof err === 'string' ? err : undefined };
+	}
+	const e = err as Record<string, unknown>;
+	const status = typeof e.status === 'number' ? e.status : undefined;
+	const message = typeof e.message === 'string' ? e.message : undefined;
+	let bodyMessage: string | undefined;
+	if (e.body && typeof e.body === 'object') {
+		const body = e.body as Record<string, unknown>;
+		if (typeof body.message === 'string') bodyMessage = body.message;
+	}
+	return { status, message, bodyMessage };
+}
+
 /**
  * POST /api/v1/cuda/ocr - GPU-accelerated OCR processing
  * Uses CUDA TensorRT for high-performance text extraction
@@ -89,23 +106,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     const processingTime = performance.now() - startTime;
     console.error('CUDA OCR error:', err);
 
+    const { status, message, bodyMessage } = normalizeError(err);
+
     const errorResponse = {
-      error: err.status ? err.body?.message || 'CUDA OCR failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      error: status ? bodyMessage ?? message ?? 'CUDA OCR failed' : 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? message : undefined,
       processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
-      status: err.status || 500,
+      status: status ?? 500,
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
 };
@@ -140,10 +159,10 @@ async function processCudaOCR(imagePath: string): Promise<{
           options: {
             model: 'gemma3:legal-latest',
             tensorOptimization: true,
-            batchSize: 1
-          }
+            batchSize: 1,
+          },
         }),
-        signal: AbortSignal.timeout(60000) // 60 second timeout for GPU processing
+        signal: AbortSignal.timeout(60000), // 60 second timeout for GPU processing
       });
 
       if (response.ok) {
@@ -153,17 +172,15 @@ async function processCudaOCR(imagePath: string): Promise<{
           confidence: result.confidence || 0,
           regions: result.regions || [],
           cudaVersion: result.metadata?.cudaVersion,
-          tensorrtVersion: result.metadata?.tensorrtVersion
+          tensorrtVersion: result.metadata?.tensorrtVersion,
         };
       }
-    } catch (fetchError) {
+    } catch (fetchError: unknown) {
       console.warn('CUDA service not available, falling back to local processing:', fetchError);
     }
 
     // Fallback: Use local CUDA executable if available
-    const cudaExecutable = process.platform === 'win32'
-      ? './cuda-service-worker.exe'
-      : './cuda-service-worker';
+    const cudaExecutable = process.platform === 'win32' ? './cuda-service-worker.exe' : './cuda-service-worker';
 
     try {
       const { stdout, stderr } = await execAsync(
@@ -173,8 +190,8 @@ async function processCudaOCR(imagePath: string): Promise<{
           env: {
             ...process.env,
             CUDA_VISIBLE_DEVICES: '0',
-            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt'
-          }
+            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt',
+          },
         }
       );
 
@@ -188,16 +205,16 @@ async function processCudaOCR(imagePath: string): Promise<{
         confidence: result.confidence || 0,
         regions: result.regions || [],
         cudaVersion: result.cuda_version,
-        tensorrtVersion: result.tensorrt_version
+        tensorrtVersion: result.tensorrt_version,
       };
-
-    } catch (execError) {
+    } catch (execError: unknown) {
       console.error('CUDA executable failed:', execError);
       throw new Error('CUDA OCR processing unavailable');
     }
-
-  } catch (error) {
-    console.error('CUDA OCR processing failed:', error);
-    throw new Error(`CUDA OCR failed: ${error.message}`);
+  } catch (err: unknown) {
+    console.error('CUDA OCR processing failed:', err);
+    // Safely extract a string representation for thrown Error
+    const { message } = normalizeError(err);
+    throw new Error(`CUDA OCR failed: ${message ?? String(err)}`);
   }
 }

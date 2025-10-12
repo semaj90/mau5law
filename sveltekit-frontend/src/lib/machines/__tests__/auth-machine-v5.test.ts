@@ -8,9 +8,9 @@ const authMachine = createMachine({
   id: 'authMachine',
   initial: 'idle',
   context: {
-    user: undefined
-    authToken: undefined
-    error: undefined
+    user: undefined,
+    authToken: undefined,
+    error: undefined,
     retryCount: 0,
     performanceMetrics: undefined
   },
@@ -37,7 +37,7 @@ const authMachine = createMachine({
             authToken: ({ event }) => event.output.token,
             error: undefined
             retryCount: 0,
-            performanceMetrics: ({ event }) => event.output.performanceMetrics
+            performanceMetrics: ({ event }) => event.output.performanceMetrics,
           })
         },
         onError: {
@@ -75,7 +75,7 @@ const authMachine = createMachine({
           target: 'authenticated',
           actions: assign({
             authToken: ({ event }) => event.output.token,
-            error: undefined
+            error: undefined,
             performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
@@ -124,7 +124,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: { email: 'test@example.com', password: 'password' }
       });
       // Wait for async completion
-      await new Promise(resolve => setTimeout(resolve, 100);
+  await new Promise(resolve => setTimeout(resolve, 100));
       const finalSnapshot = authActor.getSnapshot();
       // Assert final state
       expect(finalSnapshot.value).toBe('authenticated');

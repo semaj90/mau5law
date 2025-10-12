@@ -22,7 +22,7 @@ const ENHANCED_RAG_CONFIG = {
     fallback: 'llama2-legal'
   }
 }
-}
+// removed stray closing brace
 export interface EnhancedRAGRequest {
   query: string
   context?: string[]
@@ -170,11 +170,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       context: ragRequest.context || [],
       document_ids: ragRequest.documentIds || [],
       max_results: ragRequest.maxResults || 10,
-      model: ragRequest?.model || "unknown" // @ts-ignore - Model property access || ENHANCED_RAG_CONFIG.models.primary,
+      model: ragRequest?.model || ENHANCED_RAG_CONFIG.models.primary,
       temperature: ragRequest.temperature || 0.7,
       include_metadata: ragRequest.includeMetadata !== false,
-      use_vector_search: ragRequest.useVectorSearch !== false
-    }
+      use_vector_search: ragRequest.useVectorSearch !== false,
+    };
     let ragResponse: Response
     let responseData: any
     let vectorResults: any[] | null = null
@@ -207,24 +207,24 @@ export const POST: RequestHandler = async ({ request, url }) => {
             embedding,
             ragRequest.maxResults || 10
           )
-          vectorResults = results.map((r) => ({
+          vectorResults = results.map(r => ({
             id: r.id,
             content: r.content,
             score: r.similarity,
-            metadata: r.metadata
-          })
+            metadata: r.metadata,
+          }));
           responseData = {
             answer: `Based on vector similarity search, found ${vectorResults.length} relevant documents. (Fallback used while Enhanced RAG unavailable)`,
             confidence: 0.6,
-            sources: vectorResults.map((result) => ({,
-              id: (result as { id?: any; content?: any; score?: any; metadata?: any }).id,
-              content: (result as { id?: any; content?: any; score?: any; metadata?: any }).content,
-              score: (result as { id?: any; content?: any; score?: any; metadata?: any }).score,
-              metadata: (result as { id?: any; content?: any; score?: any; metadata?: any }).metadata
+            sources: vectorResults.map(result => ({
+              id: (result as { id?: any }).id,
+              content: (result as { content?: any }).content,
+              score: (result as { score?: any }).score,
+              metadata: (result as { metadata?: any }).metadata,
             })),
-            fallback: true
-            executionTime: 0
-          }
+            fallback: true,
+            executionTime: 0,
+          };
         } catch (vectorError) {
           console.error('Vector operations fallback also failed:', vectorError)
           throw error(503, 'Enhanced RAG service and vector fallback both unavailable')
@@ -237,13 +237,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       answer: responseData.answer || responseData.response,
       confidence: responseData.confidence || 0.8,
       sources: responseData.sources || [],
-      model: responseData?.model || "unknown" // @ts-ignore - Model property access || enhancedRequest?.model || "unknown" // @ts-ignore - Model property access,
+      model: responseData?.model || enhancedRequest?.model || 'unknown',
       executionTime: responseData.execution_time || responseData.executionTime || 0,
-      vectorResults: vectorResults || undefined
-    }
+      vectorResults: vectorResults || undefined,
+    };
     return json({
       success: true,
-      data: enhancedResponse
+      data: enhancedResponse,
       source: responseData.fallback ? 'vector-fallback' : 'enhanced-rag',
       timestamp: new Date().toISOString(),
       metrics: {
@@ -251,10 +251,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         sourcesFound: enhancedResponse.sources.length,
         executionTimeMs: enhancedResponse.executionTime,
         confidence: enhancedResponse.confidence,
-        model: enhancedResponse?.model || "unknown" // @ts-ignore - Model property access,
-        fallback: !!responseData.fallback
-      }
-    })
+        model: enhancedResponse?.model || 'unknown',
+        fallback: !!responseData.fallback,
+      },
+    });
   } catch (err: any) {
     console.error('Enhanced RAG operation failed:', err)
     throw error(500, 'Enhanced RAG operation failed')
@@ -267,7 +267,9 @@ export const PUT: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
-    const metadata = formData.get('metadata') ? JSON.parse(formData.get('metadata') as string) : { [key,: strin,g]: any }
+    const metadata = formData.get('metadata')
+      ? JSON.parse(formData.get('metadata') as string)
+      : ({} as Record<string, any>);
     if (!file) {
       throw error(400, 'File is required')
     }
@@ -278,15 +280,15 @@ export const PUT: RequestHandler = async ({ request }) => {
       'metadata',
       JSON.stringify({
         ...metadata,
-        processForRAG: true
-        source: 'sveltekit-frontend'
+        processForRAG: true,
+        source: 'sveltekit-frontend',
       })
-    )
+    );
     const uploadResponse = await fetch(`${ENHANCED_RAG_CONFIG.uploadServiceUrl}/upload`, {
       method: 'POST',
-      body: uploadFormData
+      body: uploadFormData,
       signal: AbortSignal.timeout(60000), // Longer timeout for file uploads
-    })
+    });
     if (!uploadResponse.ok) {
       throw new Error(
         `Upload service responded with ${uploadResponse.status}: ${uploadResponse.statusText}`
@@ -296,9 +298,9 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Document uploaded and queued for RAG processing',
-      data: uploadResult
-      timestamp: new Date().toISOString()
-    })
+      data: uploadResult,
+      timestamp: new Date().toISOString(),
+    });
   } catch (err: any) {
     console.error('Document upload for RAG failed:', err)
     throw error(500, 'Document upload failed')
@@ -309,32 +311,29 @@ export const PUT: RequestHandler = async ({ request }) => {
  */
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const documentId = url.searchParams.get('documentId')
+    const documentId = url.searchParams.get('documentId');
     if (!documentId) {
-      throw error(400, 'Document ID is required')
+      throw error(400, 'Document ID is required');
     }
-    const deleteResponse = await fetch(
-      `${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`,)
-      {
-        method: 'DELETE',
-        headers,: {
-          'X-Request-Source',: 'sveltekit-frontend'
-        },
-        signal: AbortSignal.timeout(10000)
-      }
-    )
+    const deleteResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Request-Source': 'sveltekit-frontend',
+      },
+      signal: AbortSignal.timeout(10000),
+    });
     if (!deleteResponse.ok) {
-      throw new Error(`Document deletion failed: ${deleteResponse.statusText}`)
+      throw new Error(`Document deletion failed: ${deleteResponse.statusText}`);
     }
-    const result = await deleteResponse.json()
+    const result = await deleteResponse.json();
     return json({
       success: true,
       message: `Document '${documentId}' removed from RAG index`,
       result,
-      timestamp: new Date().toISOString()
-    })
-  }, catch (err: any) {
-    console.error('Document deletion from RAG failed:', err)
-    throw error(500, 'Document deletion failed')
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err: any) {
+    console.error('Document deletion from RAG failed:', err);
+    throw error(500, 'Document deletion failed');
   }
 }

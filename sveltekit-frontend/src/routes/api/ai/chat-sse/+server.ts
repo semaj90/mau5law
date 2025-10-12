@@ -15,20 +15,25 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from '@sveltejs/kit';
 import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'
 import { ollamaService } from '$lib/server/services/OllamaService.js'
 import { logger } from '$lib/server/production-logger.js'
 import { conversationService } from '$lib/server/services/conversation-service'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 interface StreamLine {
-  response?: string
-  done?: boolean
-  [k: string]: any
+  response?: string;
+  done?: boolean;
+  // Replace `any` with `unknown` to avoid "Unexpected any" lint/TS error
+  [k: string]: unknown;
 }
+
+// add a typed shape for the RAG service response to avoid `any`
+type RAGResponse = { results?: unknown[]; [k: string]: unknown }
+
 const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
-  const requestId = getRequestId(event)
-  const body = await event.request.json().catch(() => ({})
+  const requestId = getRequestId(event);
+  const body = await event.request.json().catch(() => ({}));
   const {
     message,
     model = 'gemma3-legal:latest',
@@ -36,167 +41,229 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     conversationId,
     userId = 'mock-user-id',
     caseId,
-    useRAG = true
-  } = body
-  if (!message || !message.trim()
-    return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId)
-  if (!(await ollamaService.isHealthy())
-    return apiError(
-      'AI service is currently unavailable',
-      503,
-      'SERVICE_UNAVAILABLE',
-      undefined,
-      requestId
-    )
-  let currentConversationId = conversationId
+    useRAG = true,
+  } = body;
+
+  if (!message || !message.trim()) {
+    return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId);
+  }
+
+  if (!(await ollamaService.isHealthy())) {
+    return apiError('AI service is currently unavailable', 503, 'SERVICE_UNAVAILABLE', undefined, requestId);
+  }
+
+  let currentConversationId = conversationId;
   if (!currentConversationId) {
-    const title = message.length > 50 ? message.slice(0, 47) + '...' : message
+    const title = message.length > 50 ? message.slice(0, 47) + '...' : message;
     const created = await conversationService.create({
       userId,
       title,
       caseId,
-      context: { model, temperature, useRAG }
-    })
-    currentConversationId = created.id
+      context: { model, temperature, useRAG },
+    });
+    currentConversationId = created.id;
   }
+
   await conversationService.addMessage({
-    conversationId: currentConversationId
+    conversationId: currentConversationId,
     role: 'user',
-    content: message
-    metadata: { requestId, useRAG }
-  })
-  let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`
+    content: message,
+    metadata: { requestId, useRAG },
+  });
+
+  let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`;
+
   if (useRAG) {
     try {
+      // add a short timeout to avoid blocking the request indefinitely
+      const ac = new AbortController();
+      const timeout = setTimeout(() => ac.abort(), 5000);
       const ragResp = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 })
-      })
-      if (ragResp.ok) {
-        const ragData = await ragResp.json()
-        if (Array.isArray(ragData.results) && ragData.results.length) {
-          const ctx = ragData.results
-            .map((r: any) => `- ${r.content || r.text || 'Relevant legal information'}`)
-            .join('\n')
-          prompt += `\n\nRelevant legal context from your knowledge base:\n${ctx}\n\nUse this context to provide more accurate and specific answers.`
+        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 }),
+        signal: ac.signal,
+      }).catch(err => {
+        // normalize abort or network errors to undefined so we skip processing
+        logger.warn(
+          `RAG fetch failed or aborted (requestId=${requestId}): ${err instanceof Error ? err.message : String(err)}`
+        );
+        return undefined;
+      });
+      clearTimeout(timeout);
+
+      if (ragResp && ragResp.ok) {
+        // parse with a typed fallback instead of `any`
+        const raw = (await ragResp.json().catch(() => ({}) as RAGResponse)) as RAGResponse;
+        const results = Array.isArray(raw?.results) ? raw.results : [];
+
+        if (results.length) {
+          // resilient extractor: handle strings, arrays, nested objects and common field names
+          const extractRagText = (item: unknown): string => {
+            if (item == null) return 'Relevant legal information';
+            if (typeof item === 'string') {
+              const s = item.trim();
+              return s || 'Relevant legal information';
+            }
+            if (typeof item === 'number' || typeof item === 'boolean') {
+              return String(item);
+            }
+            if (Array.isArray(item)) {
+              const parts = item.map(extractRagText).filter(Boolean);
+              return parts.join(' ') || 'Relevant legal information';
+            }
+            if (typeof item === 'object') {
+              const o = item as Record<string, unknown>;
+              const keys = ['text', 'content', 'snippet', 'summary', 'payload', 'body', 'description'];
+              for (const k of keys) {
+                const v = o[k];
+                if (typeof v === 'string' && v.trim()) return v.trim();
+                if (Array.isArray(v)) {
+                  const joined = v.map(extractRagText).filter(Boolean).join(' ');
+                  if (joined) return joined;
+                }
+                if (v && typeof v === 'object') {
+                  const nested = extractRagText(v);
+                  if (nested && nested !== 'Relevant legal information') return nested;
+                }
+              }
+              // fall back to scanning values
+              const scanned = Object.values(o).map(extractRagText).filter(Boolean).join(' ');
+              if (scanned) return scanned;
+            }
+            return 'Relevant legal information';
+          };
+
+          const ctx = results
+            .map(extractRagText)
+            .map(s => `- ${s}`)
+            .join('\n');
+          if (ctx) {
+            prompt += `\n\nRelevant legal context from your knowledge base:\n${ctx}\n\nUse this context to provide more accurate and specific answers.`;
+          }
         }
       }
     } catch (e) {
-      logger.warn(
-        `RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
-      )
+      logger.warn(`RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
     }
   }
+
   const stream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder()
-      const send = (d: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`)
-      let, buffer = ''
-      let, tokens = 0
-      let, finished = false
+    start(controller) {
+      const encoder = new TextEncoder();
+      const send = (d: StreamLine) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`));
+
+      let buffer = '';
+      let tokens = 0;
+      let finished = false;
+
       const persist = async (incomplete = false) => {
-        if (!buffer) return
+        if (!buffer) return;
         try {
           await conversationService.addMessage({
             conversationId: currentConversationId!,
             role: 'assistant',
-            content: buffer
-            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete }
-          })
+            content: buffer,
+            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete },
+          });
         } catch (e) {
           logger.error(
-            `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
-          )
+            `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+          );
         }
-      }
+      };
+
       send({
         type: 'connection',
-        conversationId: currentConversationId
+        conversationId: currentConversationId,
         requestId,
-        timestamp: new Date().toISOString()
-      })
-      try {
-        const resp = await fetch('http://localhost:11436/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model,
-            prompt,
-            stream: true
-            options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 }
-          })
-        })
-        if (!resp.ok) throw new Error(`Ollama API error ${resp.status}`)
-        const reader = resp.body?.getReader()
-        if (!reader) throw new Error('Streaming response body not available')
-        const td = new TextDecoder()
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          const chunk = td.decode(value, { stream: true })
-          const lines = chunk
-            .split('\n')
-            .map((l) => l.trim()
-            .filter(Boolean)
-          for (const raw of lines) {
-            let line = raw.startsWith('data:') ? raw.slice(5).trim() : raw
-            try {
-              const data: StreamLine = JSON.parse(line)
-              if (data.response) {
-                buffer += data.response
-                tokens++
-                send({
-                  type: 'token',
-                  content: data.response,
-                  fullResponse: buffer
-                  tokenCount: tokens
-                })
+        timestamp: new Date().toISOString(),
+      });
+
+      (async () => {
+        try {
+          const resp = await fetch('http://localhost:11436/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model,
+              prompt,
+              stream: true,
+              options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 },
+            }),
+          });
+
+          if (!resp.ok) throw new Error(`Ollama API error ${resp.status}`);
+          const reader = resp.body?.getReader();
+          if (!reader) throw new Error('Streaming response body not available');
+
+          const td = new TextDecoder();
+          while (!finished) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = td.decode(value, { stream: true });
+            const lines = chunk
+              .split('\n')
+              .map(l => l.trim())
+              .filter(Boolean);
+            for (const raw of lines) {
+              const line = raw.startsWith('data:') ? raw.slice(5).trim() : raw;
+              try {
+                const data: StreamLine = JSON.parse(line);
+                if (data.response) {
+                  buffer += data.response;
+                  tokens++;
+                  send({
+                    type: 'token',
+                    content: data.response,
+                    fullResponse: buffer,
+                    tokenCount: tokens,
+                  });
+                }
+                if (data.done) {
+                  finished = true;
+                  await persist(false);
+                  send({
+                    type: 'complete',
+                    fullResponse: buffer,
+                    tokenCount: tokens,
+                    conversationId: currentConversationId,
+                    timestamp: new Date().toISOString(),
+                  });
+                }
+              } catch (e) {
+                logger.warn(
+                  `Stream parse error (requestId=${requestId}) lineSnippet='${String(line).slice(0, 120)}' err=${e instanceof Error ? e.message : String(e)}`
+                );
               }
-              if (data.done) {
-                finished = true
-                await persist(false)
-                send({
-                  type: 'complete',
-                  fullResponse: buffer
-                  tokenCount: tokens
-                  conversationId: currentConversationId
-                  timestamp: new Date().toISOString()
-                })
-              }
-            } catch (e) {
-              logger.warn(
-                `Stream parse error (requestId=${requestId}) lineSnippet='${line.slice(0, 120)}' err=${e instanceof Error ? e.message: String(e)}`
-              )
             }
+            if (finished) break;
           }
-          if (finished) break
+        } catch (e) {
+          logger.error(`Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
+          await persist(true);
+          send({
+            type: 'error',
+            error: e instanceof Error ? e.message : 'Streaming failed',
+            timestamp: new Date().toISOString(),
+          });
+        } finally {
+          if (!finished) await persist(true);
+          send({ type: 'close', timestamp: new Date().toISOString() });
+          controller.close();
         }
-      } catch (e) {
-        logger.error(
-          `Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
-        )
-        await persist(true)
-        send({
-          type: 'error',
-          error: e instanceof Error ? e.message: 'Streaming failed',
-          timestamp: new Date().toISOString()
-        })
-      } finally {
-        if (!finished) await persist(true)
-        send({ type: 'close', timestamp: new Date().toISOString() })
-        controller.close()
-      }
-    }
-  })
+      })();
+    },
+  });
+
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*'
-    }
-  })
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
 })
 export const OPTIONS: RequestHandler = async () =>
   new Response(null, {
