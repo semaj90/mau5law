@@ -1,109 +1,130 @@
-import { db } from '$lib/server/db'
-import { users } from '$lib/server/db/schema-postgres'
-import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+
+// Add a narrow local type for the insert payload to avoid relying on a missing export
+type NewUserInsert = {
+  email: string;
+  name: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  password: string;
+  avatar_url: string | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check if user is authenticated and has admin role
-    if (!locals.user || locals.user.role !== "admin") {
-      return json(
-        { error: "Unauthorized - Admin access required" },)
-        { status: 403 },
-      )
+    if (!locals.user || locals.user.role !== 'admin') {
+      return json({ error: 'Unauthorized - Admin access required' }, { status: 403 });
     }
-    const userData = await request.json()
+
+    const userData = await request.json();
+
     // Validate required fields
-    if (!userData.email || !userData.name) {
-      return json({
-          error: "Email and name are required fields"
-        },)
-        { status: 400 },
-      )
+    if (!userData?.email || !userData?.name) {
+      return json({ error: 'Email and name are required fields' }, { status: 400 });
     }
-    // Create the user
-    const newUser = {
+
+    // Map frontend fields to DB column names (adjust as needed for your schema)
+    const newUser: NewUserInsert = {
       email: userData.email,
       name: userData.name,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      role: userData.role || "prosecutor",
-      password: userData.password || "password123",
-      avatarUrl: userData.avatarUrl
-    } as const
-    const result = await db.insert(users).values(newUser as any).returning()
-    if ((result as { length?: any }).length > 0) {
-      return json({
-        success: true,
-        message: "User created successfully",
-        user: result[0]
-      })
+      first_name: userData.firstName || '',
+      last_name: userData.lastName || '',
+      role: userData.role || 'prosecutor',
+      // NOTE: In production, hash passwords before saving
+      password: userData.password || 'password123',
+      avatar_url: userData.avatarUrl || null,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+
+    const result = await db.insert(users).values(newUser).returning();
+
+    if (Array.isArray(result) && result.length > 0) {
+      return json(
+        {
+          success: true,
+          message: 'User created successfully',
+          user: result[0],
+        },
+        { status: 201 }
+      );
     } else {
-      return json({
+      return json(
+        {
           success: false,
-          message: "Failed to create user",
-          error: "Database insertion failed"
-        },)
-        { status: 500 },
-      )
+          message: 'Failed to create user',
+          error: 'Database insertion failed',
+        },
+        { status: 500 }
+      );
     }
-  }, catch (error: any) {
-    console.error("Error creating user:", error)
-    return json({
+  } catch (error: unknown) {
+    console.error('Error creating user:', error instanceof Error ? error.message : error);
+    return json(
+      {
         success: false,
-        message: "Failed to create user",
-        error: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
-    )
+        message: 'Failed to create user',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const GET: RequestHandler = async ({ locals }) => {
   // Check if user is authenticated
   if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 })
+    return json({ error: 'Unauthorized' }, { status: 401 });
   }
   return json({
-    message: "User creation endpoint",
+    message: 'User creation endpoint',
     usage: {
-      method: "POST",
-      endpoint: "/api/users/create",
+      method: 'POST',
+      endpoint: '/api/users/create',
       body: {
-        email: "user@example.com",
-        name: "Full Name",
-        firstName: "First (optional)",
-        lastName: "Last (optional)",
-        role: "prosecutor|detective|analyst|admin (optional, defaults to prosecutor)",
-        password: "password (optional, defaults to password123)",
-        avatarUrl: "URL to avatar image (optional)"
-      }
+        email: 'user@example.com',
+        name: 'Full Name',
+        firstName: 'First (optional)',
+        lastName: 'Last (optional)',
+        role: 'prosecutor|detective|analyst|admin (optional, defaults to prosecutor)',
+        password: 'password (optional, defaults to password123)',
+        avatarUrl: 'URL to avatar image (optional)',
+      },
     },
     examples: [
       {
-        description: "Create a prosecutor",
+        description: 'Create a prosecutor',
         body: {
-          email: "prosecutor@example.com",
-          name: "John Prosecutor",
-          role: "prosecutor"
-        }
+          email: 'prosecutor@example.com',
+          name: 'John Prosecutor',
+          role: 'prosecutor',
+        },
       },
       {
-        description: "Create a detective",
+        description: 'Create a detective',
         body: {
-          email: "detective@example.com",
-          name: "Sarah Detective",
-          role: "detective",
-          password: "customPassword123"
-        }
+          email: 'detective@example.com',
+          name: 'Sarah Detective',
+          role: 'detective',
+          password: 'customPassword123',
+        },
       },
       {
-        description: "Create an analyst",
+        description: 'Create an analyst',
         body: {
-          email: "analyst@example.com",
-          name: "Mike Analyst",
-          firstName: "Mike",
-          lastName: "Analyst",
-          role: "analyst"
-        }
-      }
-    ]
-  })
-}
+          email: 'analyst@example.com',
+          name: 'Mike Analyst',
+          firstName: 'Mike',
+          lastName: 'Analyst',
+          role: 'analyst',
+        },
+      },
+    ],
+  });
+};

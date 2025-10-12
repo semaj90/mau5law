@@ -1,67 +1,84 @@
 // src/lib/server/wsBroker.ts
 import WebSocket from 'ws';
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import type { ProgressMsg } from '$lib/types/progress';
+import type { Redis as IORedisRedis } from 'ioredis';
+
+// Use the exported Redis type so .on / .status are recognized by TS
+type RedisClient = IORedisRedis;
+
 // In-memory session registry
-const sessions = new Map<string, Set,<WebSocket>();
+const sessions = new Map<string, Set<WebSocket>>();
+
 // Redis client for pub/sub across instances
-let redis: Redis | null = null;
-let subscriber: Redis | null = null;
+let redis: RedisClient | null = null;
+let subscriber: RedisClient | null = null;
+
 export async function initializeWsBroker(): Promise<void> {
   try {
-    const redisUrl = import.meta.env.REDIS_URL || 'redis://localhost:6379'
+    // Narrowly type import.meta.env access to avoid `any`
+    const env = (import.meta as unknown as { env?: { REDIS_URL?: string } }).env;
+    const redisUrl = env?.REDIS_URL ?? 'redis://localhost:6379';
+
     // Publisher redis connection
     redis = new Redis(redisUrl);
     // Subscriber redis connection (separate connection required for pub/sub)
     subscriber = new Redis(redisUrl);
-    // ioredis connects automatically, no need to call connect()
-    // Subscribe to progress messages channel (defensive: older clients may not implement subscribe/on)
-    if (typeof (subscriber as any)?.subscribe === 'function') {
+
+    // Subscribe to progress messages channel (defensive but typed)
+    // Subscribe to progress messages channel (defensive but typed)
+    if (subscriber) {
       try {
-        await (subscriber as any).subscribe('evidence:progress');
-      } catch (err) {
+        await subscriber.subscribe('evidence:progress');
+      } catch (err: unknown) {
         // ignore subscribe failure - continue in local-only mode
+        console.warn('⚠️ Redis subscribe failed, running in local-only mode');
       }
-    }
-    if (typeof (subscriber as any)?.on === 'function') {
+
+      // Listen for messages
       subscriber.on('message', (channel: string, message: string) => {
         if (channel === 'evidence:progress') {
           try {
-            const data = JSON.parse(message);
-            const { sessionId, ...msg } = data;
-            // Send to local WebSocket connections
-            sendWsMessageToSessionLocal(sessionId, msg as any);
-          } catch (error: any) {
-            console.error('❌ Error parsing Redis pub/sub message:', error);
+            const data = JSON.parse(message) as Record<string, unknown> | null;
+            if (!data) return;
+            const sessionId = typeof data.sessionId === 'string' ? data.sessionId : '';
+            // Remove sessionId for payload - mark unused with $ prefix to satisfy linter
+            const { sessionId: $sid, ...payload } = data as Record<string, unknown>;
+            if (sessionId) {
+              // Cast after minimal runtime checks
+              sendWsMessageToSessionLocal(sessionId, payload as ProgressMsg);
+            }
+          } catch (err: unknown) {
+            console.error('❌ Error parsing Redis pub/sub message:', err);
           }
         }
       });
-    }
-    if (typeof (redis as any)?.on === 'function') {
-      (redis as any).on('error', (err: any) => {
-        console.error('❌ Redis publisher error:', err);
-      });
-    }
-    if (typeof (subscriber as any)?.on === 'function') {
-      (subscriber as any).on('error', (err: any) => {
+
+      subscriber.on('error', (err: unknown) => {
         console.error('❌ Redis subscriber error:', err);
       });
     }
+
+    if (redis) {
+      redis.on('error', (err: unknown) => {
+        console.error('❌ Redis publisher error:', err);
+      });
+    }
+
     console.log('✅ WebSocket broker initialized with Redis pub/sub');
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Failed to initialize WebSocket broker:', error);
     // Continue without Redis - local only mode
   }
 }
+
 // Register a WebSocket connection for a session
 export function registerWsConnection(sessionId: string, ws: WebSocket): void {
   if (!sessions.has(sessionId)) {
-    sessions.set(sessionId, new Set();
+    sessions.set(sessionId, new Set<WebSocket>());
   }
   sessions.get(sessionId)!.add(ws);
-  console.log(
-    `🔌 WebSocket connected for session: ${sessionId} (${sessions.get(sessionId)!.size} total)`
-  );
+  console.log(`🔌 WebSocket connected for session: ${sessionId} (${sessions.get(sessionId)!.size} total)`);
   // Setup cleanup on close
   ws.on('close', () => {
     const sessionSet = sessions.get(sessionId);
@@ -71,26 +88,26 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
       sessions.delete(sessionId);
       console.log(`🔌 Session ${sessionId} cleaned up - no active connections`);
     } else {
-      console.log(
-        `🔌 WebSocket disconnected for session: ${sessionId} (${sessionSet.size} remaining)`
-      );
+      console.log(`🔌 WebSocket disconnected for session: ${sessionId} (${sessionSet.size} remaining)`);
     }
   });
-  ws.on('error', (error) => {
+  ws.on('error', error => {
     console.error(`❌ WebSocket error for session ${sessionId}:`, error);
   });
   // Send initial connection confirmation
   try {
-    ws.send(JSON.stringify({
+    ws.send(
+      JSON.stringify({
         type: 'connection-established',
         sessionId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     );
-  } catch (error: any) {
-    console.error('❌ Error sending connection confirmation:', error);
+  } catch (err: unknown) {
+    console.error('❌ Error sending connection confirmation:', err);
   }
 }
+
 // Send message to local WebSocket connections only
 function sendWsMessageToSessionLocal(sessionId: string, msg: ProgressMsg): void {
   const sessionSet = sessions.get(sessionId);
@@ -101,74 +118,55 @@ function sendWsMessageToSessionLocal(sessionId: string, msg: ProgressMsg): void 
   const messageStr = JSON.stringify({
     ...msg,
     timestamp: new Date().toISOString(),
-    sessionId
+    sessionId,
   });
   // Send to all connections for this session
-  for (const ws of sessionSet) {
+  for (const ws of Array.from(sessionSet)) {
     try {
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(messageStr);
       } else {
         sessionSet.delete(ws); // Clean up dead connections
       }
-    } catch (error: any) {
-      console.error(`❌ Error sending WebSocket message to session ${sessionId}:`, error);
+    } catch (err: unknown) {
+      console.error(`❌ Error sending WebSocket message to session ${sessionId}:`, err);
       sessionSet.delete(ws); // Remove failed connection
     }
   }
-  console.log(
-    `📤 Sent message to ${sessionSet.size} WebSocket connections for session: ${sessionId}`
-  );
+  console.log(`📤 Sent message to ${sessionSet.size} WebSocket connections for session: ${sessionId}`);
 }
+
 // Send message to session (with Redis pub/sub for horizontal scaling)
 export function sendWsMessageToSession(sessionId: string, msg: ProgressMsg): void {
   // Send to local connections immediately
   sendWsMessageToSessionLocal(sessionId, msg);
+
   // Publish to Redis for other instances
-  if (redis && (redis as any).status === 'ready') {
-    const r = redis as any;
-    if (typeof r.publish === 'function') {
-      try {
-        r.publish('evidence:progress', JSON.stringify({ sessionId, ...msg });
-      } catch (error: any) {
-        console.error('❌ Error publishing to Redis:', error);
-      }
+  if (redis && redis.status === 'ready') {
+    try {
+      redis.publish('evidence:progress', JSON.stringify({ sessionId, ...msg }));
+    } catch (err: unknown) {
+      console.error('❌ Error publishing to Redis:', err);
     }
   }
+
   // Store message in Redis for offline clients (with TTL)
-  if (redis && (redis as any).status === 'ready') {
-    try {
-      const r = redis as any;
-      const key = `session:${sessionId}:messages`;
-      const messageData = JSON.stringify({ ...msg, timestamp: new Date().toISOString() });
-      if (typeof r.pipeline === 'function') {
-        try {
-          const pipe = r.pipeline();
-          // Only invoke pipeline methods if available
-          if (pipe && typeof pipe.lpush === 'function') {
-            pipe.lpush(key, messageData);
-            if (typeof pipe.ltrim === 'function') pipe.ltrim(key, 0, 49);
-            if (typeof pipe.expire === 'function') pipe.expire(key, 3600);
-            if (typeof pipe.exec === 'function') pipe.exec();
-          }
-        } catch (err) {
-          // swallow pipeline errors
-        }
-      } else if (typeof r.lpush === 'function') {
-        // Fallback to sequential commands if pipeline not present
-        try {
-          r.lpush(key, messageData);
-          if (typeof r.ltrim === 'function') r.ltrim(key, 0, 49);
-          if (typeof r.expire === 'function') r.expire(key, 3600);
-        } catch (err) {
-          // ignore
-        }
+  if (redis && redis.status === 'ready') {
+    (async () => {
+      try {
+        const key = `session:${sessionId}:messages`;
+        const messageData = JSON.stringify({ ...msg, timestamp: new Date().toISOString() });
+        // Sequential commands (typed) are simpler and avoid casting pipelines
+        await redis.lpush(key, messageData);
+        await redis.ltrim(key, 0, 49);
+        await redis.expire(key, 3600);
+      } catch (err: unknown) {
+        console.error('❌ Error storing message in Redis:', err);
       }
-    } catch (error: any) {
-      console.error('❌ Error storing message in Redis:', error);
-    }
+    })();
   }
 }
+
 // Get missed messages for a session (when client reconnects)
 export async function getMissedMessages(sessionId: string, since?: string): Promise<ProgressMsg[]> {
   if (!redis || redis.status !== 'ready') {
@@ -176,9 +174,9 @@ export async function getMissedMessages(sessionId: string, since?: string): Prom
   }
   try {
     const key = `session:${sessionId}:messages`;
-    const messages = await redis.lrange(key, 0, -1);
-    return messages;
-      .map((msg: any) => {
+    const messages: string[] = await redis.lrange(key, 0, -1);
+    const parsed = messages
+      .map((msg: string) => {
         try {
           return JSON.parse(msg);
         } catch {
@@ -186,38 +184,48 @@ export async function getMissedMessages(sessionId: string, since?: string): Prom
         }
       })
       .filter(Boolean)
-      .filter((msg: any) => !since || new Date(msg.timestamp) > new Date(since)
-      .reverse(); // Return in chronological order
-  } catch (error: any) {
-    console.error('❌ Error getting missed messages:', error);
+      .filter((m: unknown) => {
+        if (!since) return true;
+        if (m && typeof m === 'object' && 'timestamp' in m) {
+          const ts = (m as any).timestamp;
+          return !!ts && new Date(ts) > new Date(since);
+        }
+        return false;
+      })
+      .reverse(); // Return in chronological order (oldest first)
+    return parsed as ProgressMsg[];
+  } catch (err: unknown) {
+    console.error('❌ Error getting missed messages:', err);
     return [];
   }
 }
+
 // Get session connection count
 export function getSessionConnectionCount(sessionId: string): number {
   return sessions.get(sessionId)?.size || 0;
 }
+
 // Get all active sessions
 export function getActiveSessions(): string[] {
-  return Array.from(sessions.keys();
+  return Array.from(sessions.keys());
 }
+
 // Broadcast to all sessions (admin functionality)
 export function broadcastToAllSessions(msg: ProgressMsg): void {
   for (const sessionId of sessions.keys()) {
     sendWsMessageToSession(sessionId, msg);
   }
 }
+
 // Health check
 export function wsHealthCheck(): { local: number; redis: boolean } {
-  const localConnections = Array.from(sessions.values()).reduce(
-    (total, set) => total + set.size,
-    0
-  );
+  const localConnections = Array.from(sessions.values()).reduce((total, set) => total + set.size, 0);
   return {
-    local: localConnections;
-    redis: redis?.status === 'ready'
-  }
+    local: localConnections,
+    redis: redis?.status === 'ready',
+  };
 }
+
 // Graceful shutdown
 export async function closeWsBroker(): Promise<void> {
   try {
@@ -232,15 +240,23 @@ export async function closeWsBroker(): Promise<void> {
     sessions.clear();
     // Close Redis connections
     if (subscriber) {
-      await subscriber.quit();
+      try {
+        await subscriber.quit();
+      } catch (err: unknown) {
+        console.warn('⚠️ Error quitting subscriber:', err);
+      }
       subscriber = null;
     }
     if (redis) {
-      await redis.quit();
+      try {
+        await redis.quit();
+      } catch (err: unknown) {
+        console.warn('⚠️ Error quitting redis:', err);
+      }
       redis = null;
     }
     console.log('✅ WebSocket broker closed gracefully');
-  } catch (error: any) {
-    console.error('❌ Error closing WebSocket broker:', error);
+  } catch (err: unknown) {
+    console.error('❗ Error closing WebSocket broker:', err);
   }
 }

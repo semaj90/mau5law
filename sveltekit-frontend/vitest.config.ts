@@ -5,8 +5,23 @@ import { fileURLToPath } from 'url';
 export default defineConfig({
   plugins: [sveltekit()],
   test: {
-    include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
-    environment: 'node', // Changed to node for integration tests
+    // broaden includes to capture __tests__ folders and nested test files
+    include: [
+      'src/**/*.{test,spec}.{js,ts}',
+      'src/lib/**/*.test.{js,ts}',
+      'src/lib/**/__tests__/**/*.{test,spec}.{js,ts}',
+      // Keep Playwright E2E tests out of Vitest (Playwright uses its own runner)
+      // 'tests/**/*.{test,spec}.{js,ts}',
+    ],
+    // Exclude Playwright E2E tests and integration suites that require external services
+    exclude: [
+      'tests/**',
+      'tests/**/*.spec.{js,ts}',
+      'src/lib/services/**/__tests__/integration/**',
+      'src/lib/services/**/__tests__/shared/**',
+    ],
+    // Use jsdom for unit tests so SvelteKit components and $lib aliases resolve correctly
+    environment: 'jsdom',
     globals: true,
     setupFiles: ['src/tests/setup.ts'], // Updated setup file path
     testTimeout: 30000, // Increased timeout for integration tests
@@ -42,7 +57,7 @@ export default defineConfig({
           lines: 95,
           statements: 95,
         },
-      }
+      },
     },
     pool: 'threads',
     poolOptions: {

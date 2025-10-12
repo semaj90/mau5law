@@ -1,191 +1,221 @@
-import type { RequestHandler } from './$types.js'
-/*
- * Unified API Layer - Master Service Coordinator Endpoints
- * RESTful API for all 38 Go microservices with comprehensive error handling
- */
-import { json } from '@sveltejs/kit'
-import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
 
-/*
- * GET /api/v1/coordinator - Get comprehensive system status
- */
+// Add narrow types to avoid `any`
+type ServiceStatus = {
+  id: string;
+  status?: 'healthy' | 'unhealthy' | 'unknown' | string;
+  displayName?: string;
+  // allow extra read-only metadata
+  [key: string]: unknown;
+};
+
+type SystemHealth = {
+  status?: 'healthy' | 'degraded' | 'down' | string;
+  uptime?: number;
+  [s: string]: unknown;
+};
+
+type CoordinatorError = {
+  message: string;
+  priority?: 'critical' | 'high' | 'medium' | 'low' | string;
+  [t: string]: unknown;
+};
+
+type CoordinatorStatus = {
+  services: Map<string, ServiceStatus>;
+  systemHealth?: SystemHealth;
+  activeErrors?: CoordinatorError[];
+  performance?: Record<string, unknown>;
+};
+
+type MasterServiceCoordinator = {
+  getSystemStatus?: () => CoordinatorStatus;
+  services?: Map<string, ServiceStatus> | ServiceStatus[];
+  systemHealth?: SystemHealth;
+  activeErrors?: CoordinatorError[];
+  performance?: Record<string, unknown>;
+  startAllServices?: () => Promise<void>;
+  stopAllServices?: () => Promise<void>;
+  forceHealthCheck?: () => void;
+  clearNonCriticalErrors?: () => void;
+  // keep index signature for forward compatibility
+  [key: string]: unknown;
+};
+
+// Minimal, robust coordinator endpoint implementation (syntax-clean)
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'status'
-    const serviceId = url.searchParams.get('service')
-    // Snapshot system status once to avoid unassigned usage
-    const systemStatus = masterServiceCoordinator.getSystemStatus()
-    switch (action) {
-      case 'status':
-        return json({
-          success: true,
-          data: systemStatus
-          timestamp: new Date().toISOString()
-        })
-      case 'health':
-        return json({
-          success: true,
-          data: {
-            systemHealth: systemStatus.systemHealth,
-            healthyServices: Array.from(systemStatus.services.values()).filter(
-              (s) => s.status === 'healthy'
-            ).length,
-            totalServices: systemStatus.services.size,
-            criticalErrors: systemStatus.activeErrors.filter((e) => e.priority === 'critical')
-              .length,
-            performance: systemStatus.performance,
-            uptime: Date.now(), // Simplified uptime
-          },
-          timestamp: new Date().toISOString()
-        })
-      case 'services':
-        if (serviceId) {
-          const serviceStatus = systemStatus.services.get(serviceId)
-          if (!serviceStatus) {
-            return json()
-              {
-                success: false,
-                error,: `Service '${serviceId}' not found`,
-                timestamp,: new Date().toISOString()
-              },
-              { status: 404 }
-            )
-          }
-          return json({
-            success: true,
-            data: serviceStatus
-            timestamp: new Date().toISOString()
-          })
-        }
-        return json({
-          success: true,
-          data: Array.from(systemStatus.services.entries()).map(([id, status]) => {
-            const { id: _ignoredId, ...rest } = status as any
-            return { id, ...rest }
-          }),
-          timestamp: new Date().toISOString()
-        })
-      case 'metrics',:
-        return json({
-          success: true,
-          data: systemStatus.performance,
-          timestamp: new Date().toISOString()
-        })
-      case 'errors',:
-        return json({
-          success: true,
-          data: systemStatus.activeErrors,
-          timestamp: new Date().toISOString()
-        })
-      default:
-        return json()
-          {
-            success: false,
-            error,: `Unknown action: ${action}`,
-            availableActions,: ['status', 'health', 'services', 'metrics', 'errors'],
-            timestamp,: new Date().toISOString()
-          },
-          { status: 400 }
-        )
+    const action = (url.searchParams.get('action') || 'status').toString();
+    const serviceId = url.searchParams.get('service') || undefined;
+
+    // Use a typed narrow coordinator instead of `any`
+    const coordinator = masterServiceCoordinator as unknown as MasterServiceCoordinator;
+
+    let systemStatus: CoordinatorStatus;
+
+    if (typeof coordinator.getSystemStatus === 'function') {
+      systemStatus = coordinator.getSystemStatus();
+    } else {
+      const servicesSrc = coordinator.services;
+      let servicesMap: Map<string, ServiceStatus>;
+
+      if (servicesSrc instanceof Map) {
+        servicesMap = servicesSrc;
+      } else if (Array.isArray(servicesSrc)) {
+        servicesMap = new Map((servicesSrc || []).map((s: ServiceStatus) => [s.id, s]));
+      } else {
+        servicesMap = new Map<string, ServiceStatus>();
+      }
+
+      systemStatus = {
+        services: servicesMap,
+        systemHealth: coordinator.systemHealth ?? { status: 'unknown' },
+        activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
+        performance: coordinator.performance ?? {},
+      };
     }
-  }, catch (error: any) {
-    console.error('Coordinator API error:', error)
-    return json()
+
+    if (action === 'status') {
+      return json({ success: true, data: systemStatus, timestamp: new Date().toISOString() });
+    }
+
+    if (action === 'health') {
+      const healthyServices = Array.from(systemStatus.services.values()).filter(s => s.status === 'healthy');
+      const activeErrors = systemStatus.activeErrors ?? [];
+      return json({
+        success: true,
+        data: {
+          systemHealth: systemStatus.systemHealth,
+          healthyServices: healthyServices.length,
+          totalServices: systemStatus.services.size,
+          criticalErrors: activeErrors.filter(e => e.priority === 'critical').length,
+          performance: systemStatus.performance,
+          uptime: Date.now(),
+        },
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    if (action === 'services') {
+      if (serviceId) {
+        const serviceStatus = systemStatus.services.get(serviceId);
+        if (!serviceStatus) {
+          return json(
+            { success: false, error: `Service '${serviceId}' not found`, timestamp: new Date().toISOString() },
+            { status: 404 }
+          );
+        }
+        return json({ success: true, data: serviceStatus, timestamp: new Date().toISOString() });
+      }
+      const services = Array.from(systemStatus.services.entries()).map(([id, status]) => {
+        // use a "$"-prefixed unused variable name to satisfy lint rules for allowed unused vars
+        const { id: $id, ...rest } = status as ServiceStatus;
+        return { id, ...rest };
+      });
+      return json({ success: true, data: services, timestamp: new Date().toISOString() });
+    }
+
+    if (action === 'metrics') {
+      return json({ success: true, data: systemStatus.performance, timestamp: new Date().toISOString() });
+    }
+
+    if (action === 'errors') {
+      return json({ success: true, data: systemStatus.activeErrors ?? [], timestamp: new Date().toISOString() });
+    }
+
+    return json(
       {
         success: false,
-        error,: error instanceof Error ? error.message: 'Unknown error',
-        timestamp,: new Date().toISOString()
+        error: `Unknown action: ${action}`,
+        availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
+        timestamp: new Date().toISOString(),
       },
-      { status: 500 }
-    )
+      { status: 400 }
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('Coordinator GET error:', err);
+    return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
   }
-}
-/*
- * POST /api/v1/coordinator - Execute coordinator actions
- */
+};
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    const { action, target, parameters = {} } = body
-    switch (action) {
-      case 'start_all':
-        await masterServiceCoordinator.startAllServices()
-        return json({
-          success: true,
-          message: 'All services startup initiated',
-          timestamp: new Date().toISOString()
-        })
-      case 'stop_all':
-        await masterServiceCoordinator.stopAllServices()
-        return json({
-          success: true,
-          message: 'All services shutdown initiated',
-          timestamp: new Date().toISOString()
-        })
-      case 'restart_service':
-        if (!target) {
-          return json()
-            {
-              success: false,
-              error,: 'Service target required for restart action',
-              timestamp,: new Date().toISOString()
-            },
-            { status: 400 }
-          )
-        }
-        // Find and restart the specific service
-        const service = masterServiceCoordinator.services.find(s => s.id === target)
-        if (!service) {
-          return json()
-            {
-              success: false,
-              error,: `Service '${target}' not found`,
-              timestamp,: new Date().toISOString()
-            },
-            { status: 404 }
-          )
-        }
-        // Trigger service restart (this would be enhanced with actual restart logic)
-        return json({
-          success: true,
-          message: `Service restart initiated for ${service.displayName}`,
-          serviceId: target
-          timestamp: new Date().toISOString()
-        })
-      case 'force_health_check',:
-        // Trigger immediate health check across all services
-        return json({
-          success: true,
-          message: 'Forced health check initiated for all services',
-          timestamp: new Date().toISOString()
-        })
-      case 'clear_errors',:
-        // Clear non-critical active errors
-        return json({
-          success: true,
-          message: 'Non-critical errors cleared',
-          timestamp: new Date().toISOString()
-        })
-      default:
-        return json()
-          {
-            success: false,
-            error,: `Unknown action: ${action}`,
-            availableActions,: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
-            timestamp,: new Date().toISOString()
-          },
-          { status: 400 }
-        )
+    const body = await request.json();
+    const action = (body?.action || '').toString();
+    const target = body?.target;
+
+    // ensure typed coordinator for actions below
+    const coordinator = masterServiceCoordinator as unknown as MasterServiceCoordinator;
+
+    // helper to find service regardless of Map or array
+    const findServiceById = (id: string): ServiceStatus | undefined => {
+      const srvSrc = coordinator.services;
+      if (!srvSrc) return undefined;
+      if (srvSrc instanceof Map) return srvSrc.get(id);
+      if (Array.isArray(srvSrc)) return srvSrc.find(s => s.id === id);
+      return undefined;
+    };
+
+    if (action === 'start_all') {
+      await coordinator.startAllServices?.();
+      return json({ success: true, message: 'All services startup initiated', timestamp: new Date().toISOString() });
     }
-  }, catch (error: any) {
-    console.error('Coordinator POST API error:', error)
-    return json()
+
+    if (action === 'stop_all') {
+      await coordinator.stopAllServices?.();
+      return json({ success: true, message: 'All services shutdown initiated', timestamp: new Date().toISOString() });
+    }
+
+    if (action === 'restart_service') {
+      if (!target)
+        return json(
+          { success: false, error: 'Service target required for restart action', timestamp: new Date().toISOString() },
+          { status: 400 }
+        );
+      const service = findServiceById(target as string);
+      if (!service)
+        return json(
+          { success: false, error: `Service '${target}' not found`, timestamp: new Date().toISOString() },
+          { status: 404 }
+        );
+      // Note: actual restart logic omitted for safety in frontend code
+      return json({
+        success: true,
+        message: `Service restart initiated for ${service.displayName || service.id}`,
+        serviceId: target,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    if (action === 'force_health_check') {
+      coordinator.forceHealthCheck?.();
+      return json({
+        success: true,
+        message: 'Forced health check initiated for all services',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    if (action === 'clear_errors') {
+      coordinator.clearNonCriticalErrors?.();
+      return json({ success: true, message: 'Non-critical errors cleared', timestamp: new Date().toISOString() });
+    }
+
+    return json(
       {
         success: false,
-        error,: error instanceof Error ? error.message: 'Unknown error',
-        timestamp,: new Date().toISOString()
+        error: `Unknown action: ${action}`,
+        availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
+        timestamp: new Date().toISOString(),
       },
-      { status: 500 }
-    )
+      { status: 400 }
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('Coordinator POST error:', err);
+    return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
   }
-}
+};

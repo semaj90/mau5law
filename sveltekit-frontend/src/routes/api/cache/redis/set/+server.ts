@@ -1,14 +1,12 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { setCache, checkApiKey, checkRateLimit } from '$lib/server/cache';
+import { setCache, checkApiKey, redisRateLimit } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as { key?: string; value?: unknown; ttlMs?: number };
     const { key, value, ttlMs } = body ?? {};
-    if (!key) {
-      return json({ success: false, error: 'Key is required' }, { status: 400 });
-    }
+    if (!key) return json({ success: false, error: 'Key is required' }, { status: 400 });
 
     // Auth
     const auth = checkApiKey(request.headers);
@@ -16,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Rate limit per API key (or global)
     const rateKey = request.headers.get('x-api-key') ?? 'global';
-    const rate = checkRateLimit(rateKey);
+    const rate = await redisRateLimit(rateKey);
     if (!rate.ok) return json({ success: false, error: 'Rate limit exceeded' }, { status: 429 });
 
     await setCache(key, value ?? null, ttlMs);

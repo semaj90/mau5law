@@ -216,7 +216,7 @@
   }
 
   // add a component ref to attach runtime event listeners (typed as any to avoid TS component-event coupling)
-  let searchComponent: any = null;
+  let searchComponent = $state<any>(null);
 
   // attach the 'select' listener at runtime to avoid compile-time on: event type checks
   $effect(() => {

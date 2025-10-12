@@ -5,35 +5,23 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
-    "types": [
-      "svelte",
-      "vite/client",
-      "@sveltejs/kit",
-      "@webgpu/types",
-      "node"
-    ],
-    "lib": ["esnext", "DOM", "DOM.Iterable"],
     "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "isolatedModules": true,
     "sourceMap": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-    // baseUrl and paths removed - use svelte.config.js kit.alias instead
-    // This prevents conflicts with SvelteKit's auto-generated tsconfig.json
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": false,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "isolatedModules": true,
+    "types": ["svelte", "vite/client", "@sveltejs/kit", "@webgpu/types", "node"]
   },
-  "include": [
-    "src",
-    "src/**/*.ts",
-    "src/**/*.js",
-    "src/**/*.svelte",
-    "types.d.ts"
-  ],
+  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "exclude": [
     "node_modules",
     "build",
@@ -54,8 +42,6 @@
     "src/lib/services/webgpu-texture-streaming.ts",
     "src/lib/services/chr-rom-mipmap-integration.ts",
     "src/lib/types/drizzle-enhanced.d.ts",
-    // keep other shims included for TS resolution
-    // shim files are referenced via paths mapping above
     "src/proto/**",
     "src/grpc/**",
     "src/flatbuf/**",

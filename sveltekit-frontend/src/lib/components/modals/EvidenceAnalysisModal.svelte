@@ -18,13 +18,14 @@ https: //svelte.dev/e/js_parse_error -->
       suggestedTags: string[];
     }
     tags?: string[];
+    similarEvidence?: Array<{ similarity: number; content: string }>;
   }
   interface Props {
     open?: boolean;
-    evidence?: Evidence;
+    evidence?: Evidence | null;
     onevidenceUpdated?: (event?: unknown) => void;
     onsaveAnalysis?: (event?: unknown) => void;
-    similarEvidence?: Array;
+    similarEvidence?: Array<any> | null;
   }
   let {
     open = false,
@@ -32,17 +33,17 @@ https: //svelte.dev/e/js_parse_error -->
     similarEvidence = null
   }: Props = $props();
   import { fade, fly } from 'svelte/transition';
-  import { Dialog } from '$lib/components/ui/dialog/Dialog.svelte';
+  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
   import Button from "$lib/components/ui/button";
   import Input from '$lib/components/ui/Input.svelte';
-  // Badge replaced with span - not available in enhanced-bits
   // Icons
-  import { FileText, Brain, Tag, Scale, Zap, Download, Upload, Sparkles } from 'lucide-svelte';
+  import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles } from 'lucide-svelte';
   let isAnalyzing = $state(false);
-  let newTags = $state<string >('');
-  let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
+  let newTags = $state<string>('');
+  let analysisMode = $state<'quick' | 'detailed' | 'legal'>('detailed');
+
   async function analyzeEvidence() {
     if (!evidence) return;
     isAnalyzing = true;
@@ -50,53 +51,58 @@ https: //svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/evidence', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           caseId: evidence.caseId,
           content: evidence.content,
           type: evidence.type,
-          generateAnalysis: true;
+          generateAnalysis: true,
           metadata: { analysisMode }
         })
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; evidence?: unknown }).success) {
-        evidence = { ...evidence, ...result.evidence }
+      const result = await response.json() as any;
+      if (result?.success && result.evidence) {
+        evidence = { ...evidence, ...result.evidence };
         onevidenceUpdated?.();
-  }
-    } catch (error) {
-      console.error('Analysis failed:', error);
+      }
+    } catch (err) {
+      console.error('Analysis failed:', err);
     } finally {
       isAnalyzing = false;
-  }}
+    }
+  }
+
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
-    const tags = newTags.split.map(t => t.trim()).filter(Boolean);
+    const tags = newTags.split(',').map(t => t.trim()).filter(Boolean);
     try {
       const response = await fetch('/api/evidence', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           evidenceId: evidence.id,
           caseId: evidence.caseId,
-          tags: [...(evidence.tags || []), ...tags];
+          tags: [...(evidence.tags || []), ...tags]
         })
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; evidence?: unknown }).success) {
-        evidence = { ...evidence, tags: (result as { success?: unknown; evidence?: unknown }).evidence.tags }
+      const result = await response.json() as any;
+      if (result?.success && result.evidence) {
+        evidence = { ...evidence, tags: result.evidence.tags || (evidence.tags || []) };
         newTags = '';
         onevidenceUpdated?.();
+      }
+    } catch (err) {
+      console.error('Tag update failed:', err);
+    }
   }
-    } catch (error) {
-      console.error('Tag update failed:', error);
-  }}
+
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
       case 'admissible': return 'bg-green-100 text-green-800 border-green-300';
       case 'questionable': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'inadmissible': return 'bg-red-100 text-red-800 border-red-300';
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
-  }}
+    }
+  }
   function getRelevanceColor(relevance: number): string {
     if (relevance >= 8) return 'text-green-600';
     if (relevance >= 6) return 'text-yellow-600';
@@ -128,23 +134,25 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <div class="space-y-4">
-          <Button class="bits-btn" variant="secondary" size="sm">
-<Download class="space-y-4" />
-            Export
-          <Button class="bits-btn"
+          <Button class="bits-btn" variant="secondary" size="sm" on:click={() => { /* export handler placeholder */ }}>
+            <Download class="inline-block" />
+            <span>Export</span>
+          </Button>
+
+          <Button
+            class="bits-btn"
             variant="primary"
             size="sm"
-            onclick={() =>
-analyzeEvidence()}
+            on:click={() => analyzeEvidence()}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
-              <div class="space-y-4"></div>
-              Analyzing...
+              <span>Analyzing...</span>
             {:else}
-              <Brain class="space-y-4" />
-              Re-analyze
+              <Brain class="inline-block" />
+              <span>Re-analyze</span>
             {/if}
+          </Button>
         </div>
       </div>
       <!-- Grid Layout -->
@@ -245,9 +253,9 @@ analyzeEvidence()}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
               {/each}
               {#each evidence.analysis?.suggestedTags || [] as tag}
-                <Badge variant="secondary" class="space-y-4">
-                  {tag} <span class="space-y-4">(suggested)</span>
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                  {tag} <span class="text-xs text-gray-500"> (suggested)</span>
+                </span>
               {/each}
             </div>
             <!-- Add Tags -->
@@ -257,9 +265,9 @@ analyzeEvidence()}
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button class="bits-btn" size="sm" onclick={() =>
-updateTags()} disabled={!newTags.trim()}>
+              <Button class="bits-btn" size="sm" on:click={() => updateTags()} disabled={!newTags.trim()}>
                 Add
+              </Button>
             </div>
           </div>
         </GridItem>
@@ -283,11 +291,11 @@ updateTags()} disabled={!newTags.trim()}>
     </div>
   {/if}
   {#snippet footer({ close })}
-      <Button class="bits-btn" variant="secondary" onclick={() =>
-close()}>
-        Close
-      <Button class="bits-btn" variant="primary" onclick={() =>
-onsaveAnalysis?.()}>
-        Save Analysis
-  {/snippet}
+  <Button class="bits-btn" variant="secondary" on:click={() => close()}>
+    Close
+  </Button>
+  <Button class="bits-btn" variant="primary" on:click={() => onsaveAnalysis?.()}>
+    Save Analysis
+  </Button>
+{/snippet}
 </Dialog.Root>;

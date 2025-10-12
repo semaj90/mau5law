@@ -1,42 +1,38 @@
-import { json } from '@sveltejs/kit'
-import { readBodyFast } from '$lib/server/utils/json-fast'
-import { INGEST_SERVICE_URL } from '$env/static/private'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { INGEST_SERVICE_URL } from '$env/static/private';
+import type { RequestHandler } from './$types.js';
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
  * Integrates with your 37-service architecture
  * Follows your established patterns from Enhanced RAG service
  */
-const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227'
+const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
 const TIMEOUT = 30000; // 30 seconds for document processing
-}
 export interface DocumentIngestRequest {
-  title: string
-  content: string
-  case_id?: string
-  metadata?: { [key: string]: any }
+  title: string;
+  content: string;
+  case_id?: string;
+  metadata?: Record<string, unknown>;
 }
 export interface BatchIngestRequest {
-  documents: DocumentIngestRequest[]
+  documents: DocumentIngestRequest[];
 }
 export interface IngestResponse {
-  id: string
-  status: string
-  document_id: string
-  embedding_id: string
-  process_time_ms: number
-  timestamp: string
+  id: string;
+  status: string;
+  document_id: string;
+  embedding_id: string;
+  process_time_ms: number;
+  timestamp: string;
 }
 // Single document ingestion
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const requestData = await readBodyFast(request)
+    const requestData = await readBodyFast(request);
     // Validate request structure
     if (!requestData.title || !requestData.content) {
-      return json(
-        { error: 'Missing required fields: title and content are required' },)
-        { status: 400 }
-      )
+      return json({ error: 'Missing required fields: title and content are required' }, { status: 400 });
     }
     // Transform to Go service format
     const ingestRequest: DocumentIngestRequest = {
@@ -44,40 +40,43 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       content: requestData.content,
       case_id: requestData.case_id || requestData.caseId, // Support both formats
       metadata: {
-        ...requestData.metadata,
+        ...(typeof requestData.metadata === 'object' && requestData.metadata !== null
+          ? (requestData.metadata as Record<string, unknown>)
+          : {}),
         // Add SvelteKit-specific metadata
         source: 'sveltekit-frontend',
         api_version: 'v1',
         timestamp: new Date().toISOString(),
         // Inherit from your established patterns
         user_agent: request.headers.get('user-agent') || 'unknown',
-        ip_address: request.headers.get('x-forwarded-for') || 'unknown'
-      }
-    }
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT)
+        ip_address: request.headers.get('x-forwarded-for') || 'unknown',
+      },
+    };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
     try {
       // Call Go ingest service using SvelteKit's enhanced fetch
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(ingestRequest),
-        signal: controller.signal
-      })
-      clearTimeout(timeoutId)
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
       if (!response.ok) {
-        const errorText = await response.text()
-        return json({
+        const errorText = await response.text();
+        return json(
+          {
             error: `Ingest service error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
-            port: '8227'
-          },)
+            port: '8227',
+          },
           { status: response.status }
-        )
+        );
       }
-      const result: IngestResponse = await response.json()
+      const result: IngestResponse = await response.json();
       // Enhanced response with SvelteKit metadata
       return json({
         ...result,
@@ -85,68 +84,77 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-api',
-          architecture: 'multi-protocol'
+          architecture: 'multi-protocol',
         },
         // Follow your established success pattern
         success: true,
-        api_version: 'v1'
-      })
-    } catch (fetchError: any) {
-      clearTimeout(timeoutId)
-      if ((fetchError as any)?.name === 'AbortError') {
-        return json(
-          { error: 'Request timeout - document processing took too long' },)
-          { status: 504 }
-        )
+        api_version: 'v1',
+      });
+    } catch (fetchError: unknown) {
+      clearTimeout(timeoutId);
+      // Safely extract `name` property without using `any`
+      const fetchErrorName =
+        typeof fetchError === 'object' && fetchError !== null && 'name' in fetchError
+          ? String((fetchError as { name?: unknown }).name ?? '')
+          : '';
+      if (fetchErrorName === 'AbortError') {
+        return json({ error: 'Request timeout - document processing took too long' }, { status: 504 });
       }
-      throw fetchError
+      // rethrow unknown error to be handled by outer catch
+      throw fetchError;
     }
-  }, catch (error: any) {
-    console.error('Ingest API error:', error)
-    return json({
+  } catch (error: unknown) {
+    // Ensure we log and return a safe message string
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Ingest API error:', error);
+    return json(
+      {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message: 'Unknown error',
-        service: 'sveltekit-ingest-proxy'
-      },)
+        message,
+        service: 'sveltekit-ingest-proxy',
+      },
       { status: 500 }
-    )
+    );
   }
-}
+};
 // Health check endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!response.ok) {
-      return json({
+      return json(
+        {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: `Service unreachable: ${response.status}`
-        },)
+          error: `Service unreachable: ${response.status}`,
+        },
         { status: 503 }
-      )
+      );
     }
-    const health = await response.json()
+    const health = await response.json();
     return json({
       status: 'healthy',
       service: 'ingest-service',
       port: '8227',
       proxy: 'sveltekit-api',
-      upstream: health
+      upstream: health,
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
-      architecture: 'go-microservice'
-    })
-  }, catch (error: any) {
-    return json({
+      architecture: 'go-microservice',
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
+      {
         status: 'error',
         service: 'ingest-service',
-        error: error instanceof Error ? error.message: 'Connection failed'
-      },)
+        error: message || 'Connection failed',
+      },
       { status: 503 }
-    )
+    );
   }
-}
+};

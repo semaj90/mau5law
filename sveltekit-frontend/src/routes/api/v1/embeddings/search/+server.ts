@@ -12,19 +12,13 @@ import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const searchRequest: SemanticSearchRequest = await request.json()
+    const searchRequest: SemanticSearchRequest = await request.json();
     // Validate required fields
     if (!searchRequest.query) {
-      return json(
-        { error: 'Missing required field: query' },)
-        { status: 400 }
-      )
+      return json({ error: 'Missing required field: query' }, { status: 400 });
     }
     if (!searchRequest.documents || !Array.isArray(searchRequest.documents)) {
-      return json()
-        { error: 'Missing or invalid field: documents (must be array)' },
-        { status: 400 }
-      )
+      return json({ error: 'Missing or invalid field: documents (must be array)' }, { status: 400 });
     }
     if (searchRequest.documents.length === 0) {
       return json({
@@ -36,40 +30,128 @@ export const POST: RequestHandler = async ({ request }) => {
           resultsFound: 0,
           processingTime: 0,
           threshold: searchRequest.threshold || 0.3,
-          topK: searchRequest.topK || 10
-        }
-      })
+          topK: searchRequest.topK || 10,
+        },
+      });
     }
-    // Perform semantic search
-    const results = await gpuEmbeddingService.semanticSearch(searchRequest)
+
+    // Perform semantic search locally using generateEmbeddings (gpuEmbeddingService has no semanticSearch)
+    type SearchResult = { document: string; score: number; index: number };
+
+    const embedStart = performance.now();
+    // Safe guard to detect a string 'model' property without using `any`
+    const hasStringModel = (obj: unknown): obj is { model: string } =>
+      typeof obj === 'object' && obj !== null && typeof (obj as Record<string, unknown>)['model'] === 'string';
+
+    const modelName = hasStringModel(searchRequest) ? searchRequest.model : 'embeddinggemma:latest';
+    const useGPU = searchRequest.useGPU !== false;
+    const threshold = typeof searchRequest.threshold === 'number' ? searchRequest.threshold : 0.3;
+    const topK = typeof searchRequest.topK === 'number' ? searchRequest.topK : 10;
+
+    const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+
+    const extractFirstEmbedding = (resp: unknown): unknown | undefined => {
+      if (!isRecord(resp)) return undefined;
+      const maybeEmb = resp['embeddings'];
+      if (Array.isArray(maybeEmb) && maybeEmb.length) return maybeEmb[0];
+      const maybeData = resp['data'];
+      if (Array.isArray(maybeData) && maybeData.length) {
+        const first = maybeData[0];
+        if (isRecord(first) && Array.isArray(first['embedding'])) return first['embedding'];
+        return maybeData[0];
+      }
+      return undefined;
+    };
+
+    const toFloat = (v: unknown): Float32Array | null => {
+      if (!v) return null;
+      if (v instanceof Float32Array) return v;
+      if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as number[]);
+      return null;
+    };
+
+    // Request embeddings for documents in parallel
+    const docsEmbeddingsRaw = await Promise.all(
+      searchRequest.documents.map(async doc => {
+        const res: unknown = await gpuEmbeddingService
+          .generateEmbeddings({ text: doc as string, model: modelName })
+          .catch(() => ({}));
+        return extractFirstEmbedding(res);
+      })
+    );
+
+    // Query embedding
+    const queryResp: unknown = await gpuEmbeddingService
+      .generateEmbeddings({ text: searchRequest.query, model: modelName })
+      .catch(() => ({}));
+    const qEmbRaw = extractFirstEmbedding(queryResp);
+    const qVec = toFloat(qEmbRaw);
+    const docVecs = (docsEmbeddingsRaw as unknown[]).map(toFloat);
+
+    const cosine = (a: Float32Array, b: Float32Array): number => {
+      let dot = 0,
+        na = 0,
+        nb = 0;
+      const n = Math.min(a.length, b.length);
+      for (let i = 0; i < n; i++) {
+        dot += a[i] * b[i];
+        na += a[i] * a[i];
+        nb += b[i] * b[i];
+      }
+      if (na === 0 || nb === 0) return 0;
+      return dot / (Math.sqrt(na) * Math.sqrt(nb));
+    };
+
+    const scored: SearchResult[] = [];
+    if (qVec) {
+      for (let i = 0; i < docVecs.length; i++) {
+        const d = docVecs[i];
+        if (!d) continue;
+        const score = cosine(qVec, d);
+        scored.push({
+          index: i,
+          score,
+          document: typeof searchRequest.documents[i] === 'string' ? searchRequest.documents[i] : '',
+        });
+      }
+    }
+
+    const sorted = scored
+      .filter(s => s.score >= threshold)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    const processingTime = Math.round((performance.now() - embedStart) * 1000) / 1000;
+
     return json({
       success: true,
       query: searchRequest.query,
-      results: results.map(r => ({,
+      results: sorted.map((r: SearchResult) => ({
         document: r.document,
-        score: Math.round(r.score * 10000) / 10000, // Round to 4 decimal places
-        index: r.index
-        // Note: not including embeddings in response to reduce payload size
+        score: Math.round(r.score * 10000) / 10000,
+        index: r.index,
       })),
       metadata: {
         documentCount: searchRequest.documents.length,
-        resultsFound: results.length,
-        threshold: searchRequest.threshold || 0.3,
-        topK: searchRequest.topK || 10,
-        gpuUsed: searchRequest.useGPU !== false
+        resultsFound: sorted.length,
+        threshold,
+        topK,
+        gpuUsed: useGPU,
+        processingTime,
       },
-      timestamp: Date.now()
-    })
-  }, catch (error) {
-    console.error('Semantic search API error:', error)
-    return json({
+      timestamp: Date.now(),
+    });
+  } catch (error) {
+    console.error('Semantic search API error:', error);
+    return json(
+      {
         error: 'Failed to perform semantic search',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
-}
+};
 /*
  * GET /api/v1/embeddings/search
  * Get semantic search endpoint information
@@ -83,37 +165,39 @@ export const GET: RequestHandler = async () => {
       documents: { type: 'string[]', required: true, description: 'Array of documents to search' },
       threshold: { type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
       topK: { type: 'number', required: false, default: 10, description: 'Maximum number of results' },
-      useGPU: { type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' }
+      useGPU: { type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' },
     },
     response: {
       success: 'boolean',
       query: 'string',
-      results: [{,
-        document,: 'string',
-        score,: 'number',
-        index,: 'number'
-      },],
+      results: [
+        {
+          document: 'string',
+          score: 'number',
+          index: 'number',
+        },
+      ],
       metadata: {
         documentCount: 'number',
         resultsFound: 'number',
         threshold: 'number',
         topK: 'number',
-        gpuUsed: 'boolean'
-      }
+        gpuUsed: 'boolean',
+      },
     },
-    examples,: {
+    examples: {
       request: {
         query: 'legal contract terms',
         documents: [
           'This contract shall be governed by applicable law',
           'The parties agree to binding arbitration',
-          'Payment terms are net 30 days'
+          'Payment terms are net 30 days',
         ],
         threshold: 0.4,
         topK: 5,
-        useGPU: true
-      }
+        useGPU: true,
+      },
     },
-    timestamp,: Date.now()
-  },)
-}
+    timestamp: Date.now(),
+  });
+};

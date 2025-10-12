@@ -1,6 +1,11 @@
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
 
+// Derive the client options type from the createClient function parameters.
+// This avoids importing a type that may not be exported across redis package versions.
+// Use NonNullable to ensure the createClient symbol is treated as a function (fixes TS constraint error).
+type RedisClientOptions = Parameters<NonNullable<typeof createClient>>[0];
+
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
 export const memoryCache = new Map<string, { value: unknown; expires: number }>();
 
@@ -45,15 +50,37 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
 export async function getRedisClient(): Promise<RedisClientType | null> {
   if (redisConnected && redisClient) return redisClient;
   try {
-    const useRedis = process.env.CACHE_BACKEND === 'redis' || process.env.USE_REDIS === 'true' || Boolean(process.env.REDIS_URL);
+    const useRedis =
+      process.env.CACHE_BACKEND === 'redis' || process.env.USE_REDIS === 'true' || Boolean(process.env.REDIS_URL);
     if (!useRedis) return null;
 
     if (!redisClient) {
-      redisClient = createClient({ url: REDIS_URL, socket: { reconnectStrategy: () => 1000 } });
+      // cast to a typed factory to satisfy environments where default export shapes differ
+      const createClientFn = createClient as unknown as (opts?: RedisClientOptions) => RedisClientType;
+      redisClient = createClientFn({
+        url: REDIS_URL,
+        socket: {
+          // Use an unused-arg name that matches the linter rule (start with _).
+          // Accept the optional `_retries` parameter and return a number (ms).
+          reconnectStrategy: (_retries?: number) => {
+            // constant delay of 1s; adjust logic if exponential/backoff behavior is desired
+            return 1000;
+          },
+        },
+      });
       redisClient.on('error', (err: unknown) => console.error('Redis client error:', err));
     }
-    if (!redisConnected) {
-      await withBackoff(() => redisClient!.connect());
+    if (!redisConnected && redisClient) {
+      // Capture the client in a local variable and ensure `connect` is callable.
+      const client = redisClient;
+      if (typeof client.connect === 'function') {
+        // Safe typed invocation when connect exists
+        await withBackoff(() => (client.connect as () => Promise<void>)());
+      } else {
+        // Typings may be inconsistent across environments; fallback to any-call to avoid TS error.
+        // Use a narrow typed fallback instead of `any`
+        await withBackoff(() => (client as unknown as { connect: () => Promise<void> }).connect());
+      }
       redisConnected = true;
     }
     return redisClient;
@@ -135,4 +162,44 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: numbe
   bucket.tokens -= 1;
   buckets.set(key, bucket);
   return { ok: true, remaining: bucket.tokens };
+}
+
+/**
+ * Redis-backed rate limiter. Uses a fixed window counter in Redis with TTL equal to the window.
+ * Falls back to the in-memory token-bucket limiter when Redis is unavailable.
+ *
+ * Usage: await redisRateLimit('clientKey', maxRequests, windowMs)
+ */
+export async function redisRateLimit(
+  key = 'global',
+  maxRequests = RATE_LIMIT_TOKENS,
+  windowMs = RATE_LIMIT_REFILL_MS
+): Promise<{ ok: boolean; remaining?: number }> {
+  try {
+    const client = await getRedisClient();
+    if (!client) {
+      // Redis not available, fallback to in-memory limiter
+      return checkRateLimit(key);
+    }
+
+    const redisKey = `rate:${key}`;
+    // Use INCR and EXPIRE to implement fixed window
+    const cur = await withBackoff(async () => {
+      // Use typed high-level Redis commands instead of sendCommand to avoid `any`
+      // INCR returns the current counter as a number
+      const r = await client.incr(redisKey);
+      if (r === 1) {
+        // first increment in window, set expire (seconds)
+        const exSeconds = Math.max(1, Math.ceil(windowMs / 1000));
+        await client.expire(redisKey, exSeconds);
+      }
+      return r;
+    });
+
+    const remaining = Math.max(0, maxRequests - (Number(cur) || 0));
+    return { ok: Number(cur) <= maxRequests, remaining };
+  } catch (err) {
+    console.warn('Redis rate limit check failed, falling back to memory limiter:', err);
+    return checkRateLimit(key);
+  }
 }

@@ -285,7 +285,7 @@ DROP TABLE "vector_metadata" CASCADE;--> statement-breakpoint
 ALTER TABLE "cases" DROP CONSTRAINT IF EXISTS "cases_case_number_unique";--> statement-breakpoint
 ALTER TABLE "evidence_vectors" DROP CONSTRAINT IF EXISTS "evidence_vectors_evidence_id_evidence_id_fk";--> statement-breakpoint
 --> statement-breakpoint
-ALTER TABLE "cases" ALTER COLUMN "id" SET DATA TYPE serial;--> statement-breakpoint
+-- ALTER TABLE "cases" ALTER COLUMN "id" SET DATA TYPE serial;--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "status" SET DATA TYPE varchar(50);--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "status" SET DEFAULT 'active';--> statement-breakpoint
