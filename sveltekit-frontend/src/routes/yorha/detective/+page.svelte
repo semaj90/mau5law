@@ -165,10 +165,14 @@ https://svelte.dev/e/js_parse_error -->
       <nav class="space-y-2">
         {#each navigationSections as section}
           <button
-            class="nav-item w-full flex items-center space-x-3 p-3 text-left border border-transparent hover:border-amber-400 hover:border-opacity-30 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300 {selectedSection ===
-            section.id
-              ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400'
-              : 'text-amber-300'}"
+            class={`
+              nav-item w-full flex items-center space-x-3 p-3 text-left border border-transparent
+              hover:border-amber-400 hover:border-opacity-30 hover:bg-amber-600 hover:bg-opacity-10
+              transition-all duration-300
+              ${selectedSection === section.id
+                ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400'
+                : 'text-amber-300'}
+            `}
             on:click={() => navigateToSection(section.id)}
           >
             <span class="text-lg">{section.icon}</span>
@@ -217,21 +221,26 @@ https://svelte.dev/e/js_parse_error -->
                   {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
                     <div
                       class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300"
-                  >
-                    <div class="flex justify-between items-start">
-                      <div>
-                        <div class="font-medium text-amber-300">{evidence.title}</div>
-                        <div class="text-xs text-amber-400 opacity-70">{evidence.evidenceType}</div>
-                        {#if evidence.caseTitle}
-                          <div class="text-xs text-amber-400 opacity-60">Case: {evidence.caseTitle}</div>
-                        {/if}
-                      </div>
-                      <div class="text-xs text-amber-400 opacity-60">
-                        {new Date(evidence.createdAt).toLocaleDateString()}
+                    >
+                      <div class="flex justify-between items-start">
+                        <div>
+                          <div class="font-medium text-amber-300">{evidence.title}</div>
+                          <div class="text-xs text-amber-400 opacity-70">{evidence.evidenceType}</div>
+                          {#if evidence.caseTitle}
+                            <div class="text-xs text-amber-400 opacity-60">Case: {evidence.caseTitle}</div>
+                          {/if}
+                        </div>
+                        <div class="text-xs text-amber-400 opacity-60">
+                          {#if evidence.createdAt}
+                            {new Date(evidence.createdAt).toLocaleDateString()}
+                          {:else}
+                            Unknown date
+                          {/if}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                {/each}
+                  {/each}
+                {/if}
               </div>
             </div>
             <!-- Evidence Actions -->
@@ -302,12 +311,14 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                       <div class="flex flex-col items-end">
                         <span
-                          class="text-xs px-2 py-1 border border-amber-400 border-opacity-30 {case_.priority ===
-                          'critical'
-                            ? 'text-red-400'
-                            : case_.priority === 'high'
-                              ? 'text-orange-400'
-                              : 'text-amber-400'}"
+                          class={`
+                            text-xs px-2 py-1 border border-amber-400 border-opacity-30
+                            ${case_.priority === 'critical'
+                              ? 'text-red-400'
+                              : case_.priority === 'high'
+                                ? 'text-orange-400'
+                                : 'text-amber-400'}
+                          `}
                         >
                           {case_.priority}
                         </span>

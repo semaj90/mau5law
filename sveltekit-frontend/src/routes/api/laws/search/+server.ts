@@ -1,5 +1,5 @@
-
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [
   {
@@ -13,12 +13,13 @@ const mockLegalDatabase = [
     fullText: 'Murder is the unlawful killing of a human being, or a fetus, with malice aforethought...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=187&lawCode=PEN',
     keywords: ['murder', 'homicide', 'killing', 'malice', 'unlawful', 'criminal'],
-    relatedSections: ['PEN § 188', 'PEN § 189', 'PEN § 190']
+    relatedSections: ['PEN § 188', 'PEN § 189', 'PEN § 190'],
   },
   {
     id: 'ca-pen-211',
     title: 'California Penal Code Section 211 - Robbery',
-    description: 'Defines robbery as the felonious taking of personal property in the possession of another, from his person or immediate presence.',
+    description:
+      'Defines robbery as the felonious taking of personal property in the possession of another, from his person or immediate presence.',
     jurisdiction: 'california',
     category: 'criminal',
     code: 'PEN § 211',
@@ -26,7 +27,7 @@ const mockLegalDatabase = [
     fullText: 'Robbery is the felonious taking of personal property in the possession of another...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=211&lawCode=PEN',
     keywords: ['robbery', 'theft', 'felonious', 'taking', 'personal property', 'force', 'fear'],
-    relatedSections: ['PEN § 212', 'PEN § 213']
+    relatedSections: ['PEN § 212', 'PEN § 213'],
   },
   {
     id: 'ca-civ-1550',
@@ -36,15 +37,17 @@ const mockLegalDatabase = [
     category: 'civil',
     code: 'CIV § 1550',
     lastUpdated: '2023-01-01',
-    fullText: 'It is essential to the existence of a contract that there should be: 1. Parties capable of contracting...',
+    fullText:
+      'It is essential to the existence of a contract that there should be: 1. Parties capable of contracting...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1550&lawCode=CIV',
     keywords: ['contract', 'agreement', 'parties', 'consideration', 'lawful', 'consent'],
-    relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565']
+    relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565'],
   },
   {
     id: 'ca-evid-352',
     title: 'California Evidence Code Section 352 - Discretion to Exclude Evidence',
-    description: 'Grants courts discretion to exclude evidence if its probative value is substantially outweighed by prejudicial effect.',
+    description:
+      'Grants courts discretion to exclude evidence if its probative value is substantially outweighed by prejudicial effect.',
     jurisdiction: 'california',
     category: 'procedural',
     code: 'EVID § 352',
@@ -52,7 +55,7 @@ const mockLegalDatabase = [
     fullText: 'The court in its discretion may exclude evidence if its probative value is substantially outweighed...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=352&lawCode=EVID',
     keywords: ['evidence', 'probative', 'prejudicial', 'discretion', 'exclude', 'court'],
-    relatedSections: ['EVID § 351', 'EVID § 353', 'EVID § 354']
+    relatedSections: ['EVID § 351', 'EVID § 353', 'EVID § 354'],
   },
   {
     id: 'federal-const-4th',
@@ -65,7 +68,7 @@ const mockLegalDatabase = [
     fullText: 'The right of the people to be secure in their persons, houses, papers, and effects...',
     fullTextUrl: 'https://constitution.congress.gov/constitution/amendment-4/',
     keywords: ['search', 'seizure', 'warrant', 'probable cause', 'unreasonable', 'privacy'],
-    relatedSections: ['U.S. Const. Amend. V', 'U.S. Const. Amend. VI']
+    relatedSections: ['U.S. Const. Amend. V', 'U.S. Const. Amend. VI'],
   },
   {
     id: 'ca-corp-204',
@@ -78,90 +81,121 @@ const mockLegalDatabase = [
     fullText: 'The articles of incorporation shall set forth: (a) The name of the corporation...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=204&lawCode=CORP',
     keywords: ['corporation', 'articles', 'incorporation', 'business', 'entity', 'filing'],
-    relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202']
-  }
-]
+    relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202'],
+  },
+];
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const query = url.searchParams.get('q') || ''
-    const jurisdiction = url.searchParams.get('jurisdiction') || 'all'
-    const category = url.searchParams.get('category') || 'all'
-    const limit = parseInt(url.searchParams.get('limit') || '20')
-    let results = [...mockLegalDatabase]
+    const query = url.searchParams.get('q') || '';
+    const jurisdiction = url.searchParams.get('jurisdiction') || 'all';
+    const category = url.searchParams.get('category') || 'all';
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    let results = [...mockLegalDatabase];
+
     // Filter by jurisdiction
     if (jurisdiction !== 'all') {
-      results = results.filter(law => law.jurisdiction === jurisdiction)
+      results = results.filter(law => law.jurisdiction === jurisdiction);
     }
+
     // Filter by category
     if (category !== 'all') {
-      results = results.filter(law => law.category === category)
+      results = results.filter(law => law.category === category);
     }
+
     // Search by query (simple text search)
     if (query.trim()) {
-      const searchTerm = query.toLowerCase()
-      results = results.filter(item => item.includes)(searchTerm) ||
+      const searchTerm = query.toLowerCase();
+      results = results.filter(law => {
+        return (
+          law.title.toLowerCase().includes(searchTerm) ||
           law.description.toLowerCase().includes(searchTerm) ||
           law.code.toLowerCase().includes(searchTerm) ||
-          law.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm)
-        )
-      })
+          (Array.isArray(law.keywords) &&
+            law.keywords.some((keyword: string) => keyword.toLowerCase().includes(searchTerm))) ||
+          (typeof law.fullText === 'string' && law.fullText.toLowerCase().includes(searchTerm))
+        );
+      });
+
       // Sort by relevance (simple scoring)
       results.sort((a, b) => {
-        const aScore = calculateRelevanceScore(a, searchTerm)
-        const bScore = calculateRelevanceScore(b, searchTerm)
-        return bScore - aScore
-      })
+        const aScore = calculateRelevanceScore(a, searchTerm);
+        const bScore = calculateRelevanceScore(b, searchTerm);
+        return bScore - aScore;
+      });
     }
+
     // Limit results
-    results = results.slice(0, limit)
+    results = results.slice(0, Math.max(0, limit));
+
     return json({
       success: true,
-      laws: results
+      laws: results,
       count: results.length,
       query,
       filters: { jurisdiction, category },
-      timestamp: new Date().toISOString()
-    })
-  }, catch (error: any) {
-    console.error('Laws search error:', error)
-    return json({
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    console.error('Laws search error:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
+      {
         success: false,
-        error: 'Search failed',
+        error: 'Search failed: ' + message,
         laws: [],
-        count: 0
-      }, )
+        count: 0,
+      },
       { status: 500 }
-    )
+    );
   }
-}
-function calculateRelevanceScore(law: any, searchTerm: string): number {
-  let score = 0
+};
+
+// add: typed shape for legal entries / search results
+type Law = {
+  id: string;
+  title?: string;
+  description?: string;
+  jurisdiction?: string;
+  category?: string;
+  code?: string;
+  lastUpdated?: string;
+  fullText?: string;
+  fullTextUrl?: string;
+  keywords?: string[];
+  relatedSections?: string[];
+};
+
+function calculateRelevanceScore(law: Law, searchTerm: string): number {
+  let score = 0;
   // Title match gets highest score
-  if (law.title.toLowerCase().includes(searchTerm)) {
-    score += 10
+  if (law.title && law.title.toLowerCase().includes(searchTerm)) {
+    score += 10;
   }
   // Code match gets high score
-  if (law.code.toLowerCase().includes(searchTerm)) {
-    score += 8
+  if (law.code && law.code.toLowerCase().includes(searchTerm)) {
+    score += 8;
   }
   // Description match gets medium score
-  if (law.description.toLowerCase().includes(searchTerm)) {
-    score += 5
+  if (law.description && law.description.toLowerCase().includes(searchTerm)) {
+    score += 5;
   }
   // Keyword matches get lower score
-  law.keywords.forEach((keyword: string) => {
-    if (keyword.toLowerCase().includes(searchTerm)) {
-      score += 2
-    }
-  })
-  // Exact keyword match gets bonus
-  if (law.keywords.includes(searchTerm)) {
-    score += 5
+  if (Array.isArray(law.keywords)) {
+    law.keywords.forEach(keyword => {
+      if (keyword.toLowerCase().includes(searchTerm)) {
+        score += 2;
+      }
+    });
   }
-  return score
+  // Exact keyword match gets bonus
+  if (Array.isArray(law.keywords) && law.keywords.map(k => k.toLowerCase()).includes(searchTerm)) {
+    score += 5;
+  }
+  return score;
 }
+
 // For integration with vector search in the future
-async function performVectorSearch(query: string, jurisdiction: string, category: string): Promise<any> {
+export async function performVectorSearch(query: string, jurisdiction: string, category: string): Promise<Law[]> {
   try {
     // This would use your existing vector search endpoint
     const response = await fetch('/api/ai/vector-search', {
@@ -171,15 +205,16 @@ async function performVectorSearch(query: string, jurisdiction: string, category
         query,
         type: 'legal',
         filters: { jurisdiction, category },
-        limit: 10
-      })
-    })
-    if ((response as { ok?: any; json?: any }).ok) {
-      const result = await (response as { ok?: any; json?: any }).json()
-      return (result as { results?: any }).results || []
+        limit: 10,
+      }),
+    });
+    if (response.ok) {
+      const result = await response.json();
+      // assume the remote API returns array of objects compatible with Law
+      return Array.isArray(result.results) ? (result.results as Law[]) : [];
     }
-  } catch (error: any) {
-    console.error('Vector search error:', error)
+  } catch (error: unknown) {
+    console.error('Vector search error:', error instanceof Error ? error.message : String(error));
   }
-  return []
+  return [];
 }

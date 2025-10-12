@@ -1,43 +1,28 @@
-/**
- * Redis Set Endpoint
- * Store values in Redis distributed cache
- */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-// Simple in-memory cache for development
-const memoryCache = new Map<string, { value: any; expires: number }>()
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { setCache, checkApiKey, checkRateLimit } from '$lib/server/cache';
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { key, value, ttl = 3600 } = await request.json()
+    const body = (await request.json()) as { key?: string; value?: unknown; ttlMs?: number };
+    const { key, value, ttlMs } = body ?? {};
     if (!key) {
-      return json({
-        success: false,
-        error: 'Key is required'
-      }, { status: 400 })
+      return json({ success: false, error: 'Key is required' }, { status: 400 });
     }
-    // For development, use in-memory cache
-    // In production, this would use actual Redis
-    const expires = Date.now() + (ttl * 1000)
-    memoryCache.set(key, { value, expires })
-    // Clean up expired entries periodically
-    if (Math.random() < 0.01) { // 1% chance
-      const now = Date.now()
-      for (const [k, v] of memoryCache.entries()) {
-        if (v.expires < now) {
-          memoryCache.delete(k)
-        }
-      }
-    }
-    return json({
-      success: true,
-      key,
-      ttl,
-      message: 'Value stored in Redis cache'
-    })
-  } catch (error: any) {
-    return json({
-      success: false,
-      error: error.message
-    }, { status: 500 })
+
+    // Auth
+    const auth = checkApiKey(request.headers);
+    if (!auth.ok) return json({ success: false, error: auth.message ?? 'Unauthorized' }, { status: 401 });
+
+    // Rate limit per API key (or global)
+    const rateKey = request.headers.get('x-api-key') ?? 'global';
+    const rate = checkRateLimit(rateKey);
+    if (!rate.ok) return json({ success: false, error: 'Rate limit exceeded' }, { status: 429 });
+
+    await setCache(key, value ?? null, ttlMs);
+    return json({ success: true, key, message: 'Value set in cache (Redis+memory best-effort)' });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json({ success: false, error: message }, { status: 500 });
   }
-}
+};

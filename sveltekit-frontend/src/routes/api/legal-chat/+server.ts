@@ -8,35 +8,143 @@ import type { RequestHandler } from './$types.js'
 import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service'
 import { cachedVectorSearch } from '$lib/services/cached-vector-search'
 import { gemmaEmbeddingService } from '$lib/services/embedding-generator'
-import { callOllamaApi } from '$lib/services/ollama-client'
-import { RedisLegalOrchestrator, RedisLLMCache } from '$lib/services/redis-orchestrator'
-import type { LegalCategory } from '$lib/config/legal-priorities'
+import callOllamaApi from '$lib/services/ollama-client';
+// Import the redis orchestrator module as a namespace to tolerate different export shapes
+import * as redisOrchestratorModule from '$lib/services/redis-orchestrator';
+import type { LegalCategory } from '$lib/config/legal-priorities';
+
+// --- Replace fragile resolution with a safe runtime resolver ---
+const _redisModule = redisOrchestratorModule as unknown as Record<string, unknown>;
+const _defaultObj = (_redisModule['default'] as Record<string, unknown> | undefined) ?? undefined;
+
+function resolveExport<T>(keys: string[]): T | null {
+  // check top-level named exports first
+  for (const k of keys) {
+    if (Object.prototype.hasOwnProperty.call(_redisModule, k)) {
+      const v = _redisModule[k];
+      if (v !== undefined) return v as T;
+    }
+  }
+  // check inside default export object if present
+  if (_defaultObj) {
+    for (const k of keys) {
+      if (Object.prototype.hasOwnProperty.call(_defaultObj, k)) {
+        const v = _defaultObj[k];
+        if (v !== undefined) return v as T;
+      }
+    }
+    // if default object itself matches expected shape, allow it as a fallback
+    return _defaultObj as unknown as T;
+  }
+  return null;
+}
+
+// Resolve orchestrator-like and llm-cache-like exports safely (check common names)
+const redisOrchestrator = (resolveExport<RedisLegalOrchestratorLike>([
+  'RedisLegalOrchestrator',
+  'redisLegalOrchestrator',
+  'redisOrchestrator',
+]) ?? (_redisModule as unknown as RedisLegalOrchestratorLike)) as RedisLegalOrchestratorLike;
+
+const llmCache = (resolveExport<RedisLLMCacheLike>(['RedisLLMCache', 'LLMCache', 'llmCache']) ??
+  (_defaultObj as unknown as RedisLLMCacheLike) ??
+  (_redisModule as unknown as RedisLLMCacheLike)) as RedisLLMCacheLike;
+
 interface ChatRequest {
-  sessionId: string
-  message: string
-  caseId?: string
-  legalCategory?: LegalCategory
-  practiceArea?: string
-  useRAG?: boolean
-  maxHistoryContext?: number
+  sessionId: string;
+  message: string;
+  caseId?: string;
+  legalCategory?: LegalCategory;
+  practiceArea?: string;
+  useRAG?: boolean;
+  maxHistoryContext?: number;
 }
 interface ChatResponse {
-  response: string
-  sessionId: string
-  sources?: any[]
-  confidence?: number
-  processing_time: number
-  cache_stats?: any
-  conversation_context?: ConversationContext
+  response: string;
+  sessionId: string;
+  sources?: RagSource[]; // <- replaced any[] with RagSource[]
+  confidence?: number;
+  processing_time: number;
+  cache_stats?: Record<string, unknown>;
+  conversation_context?: ConversationContext;
 }
+
+// --- Added: top-level type declarations (moved out of function body) ---
+type SearchResult = {
+  documentId?: string;
+  content?: string;
+  similarity?: number;
+  memoryBank?: string;
+  priority?: number;
+  [key: string]: unknown;
+};
+
+// New: define VectorSearchStats so the name exists and matches usages elsewhere
+type VectorSearchStats = {
+  hitRate?: number;
+  totalQueries?: number;
+  cacheHits?: number;
+  avgLatencyMs?: number;
+  lastUpdated?: number;
+  [key: string]: unknown;
+};
+
+type CachedVectorSearchLike = {
+  // now refers to the newly added VectorSearchStats type
+  getStats?: () => VectorSearchStats;
+  searchSimilarEvidence?: (query: string, caseId?: string, opts?: Record<string, unknown>) => Promise<SearchResult[]>;
+};
+
+type EmbeddingStats = { hitRate: number; totalRequests: number; modelUsage: Record<string, number> };
+type EmbeddingServiceLike = {
+  getStats?: () => EmbeddingStats;
+  // other methods omitted
+};
+
+type RedisOrchestratorStats = {
+  llm_cache: Record<string, unknown>;
+  agent_memory: Record<string, unknown>;
+  task_queue: Record<string, unknown>;
+  redis_memory: number;
+};
+// --- Added typed surfaces for Redis helpers ---
+type RedisLegalOrchestratorLike = {
+  getRedisStats?: () => Promise<RedisOrchestratorStats> | RedisOrchestratorStats;
+  // deleteKeys removes given Redis keys; optional on implementations
+  deleteKeys?: (keys: string[]) => Promise<void> | void;
+};
+
+type RedisLLMCacheLike = {
+  // Return cached response structure if present
+  getCachedResponse?: (
+    prompt: string,
+    opts?: { caseId?: string; legalCategory?: string; practiceArea?: string }
+  ) => Promise<{ response: string; sources?: RagSource[]; confidence?: number; timestamp?: number } | null> | null; // <- sources typed
+  // Cache a response (optional)
+  cacheResponse?: (prompt: string, response: string, meta?: Record<string, unknown>) => Promise<void> | void;
+  // Delete session-scoped cache entries
+  deleteSessionCache?: (sessionId: string) => Promise<void> | void;
+};
+// --- end added types ---
+
+// --- Added: focused RAG source type to avoid `any[]` usage ---
+type RagSource = {
+  documentId?: string;
+  content?: string;
+  similarity?: number;
+  memoryBank?: string;
+  priority?: number;
+  [key: string]: unknown;
+};
+
 /**
  * POST /api/legal-chat
  * Process legal AI chat with Redis-based memory management
  */
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now()
+  const startTime = performance.now();
   try {
-    const body: ChatRequest = await request.json()
+    const body: ChatRequest = await request.json();
     const {
       sessionId,
       message,
@@ -44,21 +152,23 @@ export const POST: RequestHandler = async ({ request }) => {
       legalCategory = 'corporate',
       practiceArea,
       useRAG = true,
-      maxHistoryContext = 10
-    } = body
+      maxHistoryContext = 10,
+    } = body;
     // Validate required fields
     if (!sessionId || !message) {
-      throw error(400, 'sessionId and message are required')
+      throw error(400, 'sessionId and message are required');
     }
-    console.log(`🎮 Processing legal chat for session: ${sessionId}`)
+    console.log(`🎮 Processing legal chat for session: ${sessionId}`);
     // REDIS OPTIMIZATION: Check LLM cache first - fastest path
-    const cachedResponse = await RedisLLMCache.getCachedResponse(message, {
-      caseId,
-      legalCategory,
-      practiceArea
-    })
+    const cachedResponse =
+      (await llmCache.getCachedResponse?.(message, {
+        caseId,
+        legalCategory,
+        practiceArea,
+      })) ?? null;
+
     if (cachedResponse) {
-      console.log(`🎮 [REDIS CACHE HIT] Returning cached response in ${performance.now() - startTime}ms`)
+      console.log(`🎮 [REDIS CACHE HIT] Returning cached response in ${performance.now() - startTime}ms`);
       return json({
         response: cachedResponse.response,
         sessionId,
@@ -66,232 +176,445 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: cachedResponse.confidence,
         processing_time: performance.now() - startTime,
         cache_stats: { cache_hit: true, cached_at: cachedResponse.timestamp },
-        conversation_context: undefined
-      })
+        conversation_context: undefined,
+      });
     }
+    // Use a single typed local reference instead of repeated `as any` casts
+    const memory = legalChatMemory as LegalChatMemoryLike;
+
     // Step 1: Add user message to history
     const userMessage: ChatMessage = {
       role: 'user',
-      content: message
+      content: message,
       metadata: {
         caseId,
         legalCategory,
-        sources: []
-      }
-    }
+        sources: [],
+      },
+    };
     const conversationContext: Partial<ConversationContext> = {
       sessionId,
       caseId,
       legalCategory,
       practiceArea,
-      priority: 150 // Medium priority for chat
-    }
-    await legalChatMemory.addMessageToHistory(sessionId, userMessage, conversationContext)
+      priority: 150, // Medium priority for chat
+    };
+    await memory.addMessageToHistory?.(sessionId, userMessage, conversationContext);
+
     // Step 2: Get conversation history for context
-    const chatHistory = await legalChatMemory.getHistory(sessionId, maxHistoryContext, true)
-    console.log(`🎮 Retrieved ${chatHistory.length} messages from history`)
+    const chatHistory: ChatMessage[] = (await memory.getHistory?.(sessionId, maxHistoryContext, true)) ?? [];
+    console.log(`🎮 Retrieved ${chatHistory.length} messages from history`);
+
     // Step 3: Perform RAG search if enabled
-    let ragSources: any[] = []
-    let ragContext = ''
+    let ragSources: RagSource[] = []; // <- typed instead of any[]
+    let ragContext = '';
     if (useRAG && message.length > 10) {
       try {
-        console.log(`🎮 Performing RAG search for: "${message.substring(0, 50)}..."`)
-        const searchResults = await cachedVectorSearch.searchSimilarEvidence(
-          message,
-          caseId,)
-          {
+        console.log(`🎮 Performing RAG search for: "${message.substring(0, 50)}..."`);
+        // use the typed cachedVectorSearch interface and fallback to an empty array if the implementation is missing
+        const searchResults: SearchResult[] =
+          (await (cachedVectorSearch as CachedVectorSearchLike).searchSimilarEvidence?.(message, caseId, {
             maxResults: 5,
-            similarityThreshold,: 0.7,
-            includeCHRRomPatterns,: true
-          }
-        )
-        if (searchResults.length > 0) {
-          ragSources = searchResults.map(result => ({
-            documentId: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).documentId,
-            content: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 300) + '...',
-            similarity: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).similarity,
-            memoryBank: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).memoryBank,
-            priority: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).priority
-          })
-          // Build context from search results
+            similarityThreshold: 0.7,
+            includeCHRRomPatterns: true,
+          })) ?? [];
+
+        if (Array.isArray(searchResults) && searchResults.length > 0) {
+          ragSources = searchResults.map((result: SearchResult) => ({
+            documentId: result?.documentId,
+            content: (result?.content ?? '').substring(0, 300) + '...',
+            similarity: result?.similarity,
+            memoryBank: result?.memoryBank,
+            priority: result?.priority,
+          }));
+          // Build context from top 3 results
           ragContext = searchResults
-            .slice(0, 3) // Top 3 results
-            .map(result => (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 500)
-            .join('\n\n')
-          console.log(`🎮 RAG search found ${searchResults.length} relevant documents`)
+            .slice(0, 3)
+            .map((r: SearchResult) => (r?.content ?? '').substring(0, 500))
+            .join('\n\n');
+          console.log(`🎮 RAG search found ${searchResults.length} relevant documents`);
         }
-      }, catch (ragError) {
-        console.warn('🎮 RAG search failed, continuing without context:', ragError)
+      } catch (ragError) {
+        console.warn('🎮 RAG search failed, continuing without context:', ragError);
       }
     }
+
     // Step 4: Build conversation context for AI
     const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory} law.
     ${practiceArea ? `Your practice area focus is ${practiceArea}.` : ''}
     ${caseId ? `You are currently working on case: ${caseId}.` : ''}
     Provide accurate, helpful legal information while noting that this is not legal advice.
     Use the provided context and conversation history to give informed responses.
-    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : ''}`
+    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : ''}`;
+
     // Step 5: Build conversation messages for Ollama
     const conversationMessages = [
       { role: 'system', content: systemPrompt },
-      ...chatHistory.slice(-8).map(msg => ({ // Last 8 messages for context
+      ...chatHistory.slice(-8).map((msg: ChatMessage) => ({
+        // Last 8 messages for context
         role: msg.role,
-        content: msg.content
-      })
-    ]
+        content: (msg.content ?? '') as string,
+      })),
+    ];
+
     // Step 6: Generate AI response with Gemma
-    console.log('🎮 Generating AI response with Gemma model...')
-    const aiResponse = await callOllamaApi({
-      model: 'gemma3:legal-latest', // Use your legal-optimized Gemma model
-      messages: conversationMessages
+    console.log('🎮 Generating AI response with Gemma model...');
+    const rawAiResponse = await invokeOllama({
+      model: 'gemma3-legal:latest', // Use your legal-optimized Gemma model
+      messages: conversationMessages,
       options: {
         temperature: 0.7,
         top_p: 0.9,
         max_tokens: 1000,
-        num_ctx: 4096 // Larger context for legal conversations
-      }
-    })
-    if (!aiResponse || !aiResponse.message || !aiResponse.message.content) {
-      throw error(500, 'Invalid response from AI model')
+        num_ctx: 4096, // Larger context for legal conversations
+      },
+    });
+    // normalize response to expected shape
+    const normalizedContent = extractAIMessageContent(rawAiResponse);
+    // Use normalized content directly; ensure it's present
+    if (!normalizedContent) {
+      console.error('🎮 AI model returned an unrecognized shape:', rawAiResponse);
+      throw error(500, 'Invalid response from AI model');
     }
-    const responseContent = aiResponse.message.content
+    const responseContent = normalizedContent;
     const confidence = 0.85; // Could be calculated based on model confidence
+
     // Step 7: Add AI response to history
     const assistantMessage: ChatMessage = {
       role: 'assistant',
-      content: responseContent
+      content: responseContent,
       metadata: {
         caseId,
         legalCategory,
         confidence,
-        sources: ragSources.map(s => s.documentId)
-      }
-    }
-    await legalChatMemory.addMessageToHistory(sessionId, assistantMessage, conversationContext)
+        sources: ragSources.map(s => s.documentId),
+      },
+    };
+    await memory.addMessageToHistory?.(sessionId, assistantMessage, conversationContext);
+
     // REDIS OPTIMIZATION: Cache successful response for future queries
-    await RedisLLMCache.cacheResponse(message, responseContent, {
+    await llmCache.cacheResponse?.(message, responseContent, {
       confidence,
-      model_used: 'gemma3:legal-latest',
+      model_used: 'gemma3-legal:latest',
       processing_time: performance.now() - startTime,
-      sources: ragSources
-      context: { caseId, legalCategory, practiceArea }
-    })
-    console.log(`🎮 [REDIS CACHED] Response cached for future queries`)
+      sources: ragSources,
+      context: { caseId, legalCategory, practiceArea },
+    });
+    console.log(`🎮 [REDIS CACHED] Response cached for future queries`);
+
     // Step 8: Get updated conversation context
-    const updatedContext = await legalChatMemory.getConversationContext(sessionId)
-    // Step 9: Get service statistics including Redis
-    const chatStats = legalChatMemory.getStats()
-    const vectorSearchStats = cachedVectorSearch.getStats()
-    const embeddingStats = gemmaEmbeddingService.getStats()
-    const redisStats = await RedisLegalOrchestrator.getRedisStats()
-    const processingTime = performance.now() - startTime
-    console.log(`🎮 Legal chat response generated in ${processingTime.toFixed(2)}ms`)
+    const updatedContext = (await memory.getConversationContext?.(sessionId)) ?? undefined;
+
+    // Step 9: Get service statistics including Redis (use safe fallbacks)
+    const chatStats = (memory.getStats?.() ?? {
+      cacheHitRate: 0,
+      totalMessages: 0,
+      avgResponseTime: 0,
+    }) as { cacheHitRate: number; totalMessages: number; avgResponseTime: number };
+
+    const vectorSearchStats = (cachedVectorSearch as CachedVectorSearchLike).getStats?.() ?? {
+      hitRate: 0,
+      totalQueries: 0,
+      cacheHits: 0,
+    };
+
+    const embeddingStats = (gemmaEmbeddingService as EmbeddingServiceLike).getStats?.() ?? {
+      hitRate: 0,
+      totalRequests: 0,
+      modelUsage: {},
+    };
+
+    const redisStats = (await redisOrchestrator.getRedisStats?.()) ?? {
+      llm_cache: {},
+      agent_memory: {},
+      task_queue: {},
+      redis_memory: 0,
+    };
+
+    const processingTime = performance.now() - startTime;
+    console.log(`🎮 Legal chat response generated in ${processingTime.toFixed(2)}ms`);
+
+    // assemble response object that references the typed stats
     const response: ChatResponse = {
-      response: responseContent
+      response: responseContent,
       sessionId,
-      sources: ragSources
+      sources: ragSources,
       confidence,
-      processing_time: processingTime
+      processing_time: processingTime,
       cache_stats: {
         chat_memory: {
           hit_rate: chatStats.cacheHitRate,
           total_messages: chatStats.totalMessages,
-          avg_response_time: chatStats.avgResponseTime
+          avg_response_time: chatStats.avgResponseTime,
         },
         vector_search: {
           hit_rate: vectorSearchStats.hitRate,
           total_queries: vectorSearchStats.totalQueries,
-          cache_hits: vectorSearchStats.cacheHits
+          cache_hits: vectorSearchStats.cacheHits,
         },
         embeddings: {
           hit_rate: embeddingStats.hitRate,
           total_requests: embeddingStats.totalRequests,
-          model_usage: embeddingStats.modelUsage
+          model_usage: embeddingStats.modelUsage,
         },
         redis_orchestrator: {
           llm_cache: redisStats.llm_cache,
           agent_memory: redisStats.agent_memory,
           task_queue: redisStats.task_queue,
-          memory_usage: redisStats.redis_memory
-        }
+          memory_usage: redisStats.redis_memory,
+        },
       },
-      conversation_context: updatedContext || undefined
-    }
-    return json(response)
-  }, catch (err) {
-    console.error('🎮 Legal chat API error:', err)
+      conversation_context: updatedContext || undefined,
+    };
+    return json(response);
+  } catch (err) {
+    console.error('🎮 Legal chat API error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};
+// Add/update typed surface for the legalChatMemory service to include delete methods
+type LegalChatMemoryLike = {
+  addMessageToHistory?: (
+    sessionId: string,
+    message: ChatMessage,
+    context?: Partial<ConversationContext>
+  ) => Promise<void> | void;
+  getHistory?: (sessionId: string, limit?: number, includeMetadata?: boolean) => Promise<ChatMessage[]>;
+  getConversationContext?: (sessionId: string) => Promise<ConversationContext | null>;
+  generateConversationSummary?: (sessionId: string) => Promise<string | null>;
+  getStats?: () => Record<string, unknown>;
+  // optional clear/delete hooks that implementations may provide
+  clearHistory?: (sessionId: string) => Promise<void> | void;
+  deleteSession?: (sessionId: string) => Promise<void> | void;
+};
 /**
  * GET /api/legal-chat?sessionId=xxx&limit=20
  * Retrieve chat history for a session
  */
 export const GET: RequestHandler = async ({ url }) => {
-  const startTime = performance.now()
+  const startTime = performance.now();
   try {
-    const sessionId = url.searchParams.get('sessionId')
-    const limit = parseInt(url.searchParams.get('limit') || '20')
-    const includeMetadata = url.searchParams.get('metadata') !== 'false'
+    const sessionId = url.searchParams.get('sessionId');
+    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const includeMetadata = url.searchParams.get('metadata') !== 'false';
     if (!sessionId) {
-      throw error(400, 'sessionId parameter is required')
+      throw error(400, 'sessionId parameter is required');
     }
-    console.log(`🎮 Retrieving chat history for session: ${sessionId}`)
+    console.log(`🎮 Retrieving chat history for session: ${sessionId}`);
+
+    // Use typed memory reference here as well
+    const memory = legalChatMemory as LegalChatMemoryLike;
+
     // Get chat history
-    const messages = await legalChatMemory.getHistory(sessionId, limit, includeMetadata)
+    const messages = (await memory.getHistory?.(sessionId, limit, includeMetadata)) ?? [];
     // Get conversation context
-    const context = await legalChatMemory.getConversationContext(sessionId)
+    const context = (await memory.getConversationContext?.(sessionId)) ?? null;
     // Get conversation summary if available
-    const summary = await legalChatMemory.generateConversationSummary(sessionId)
-    const processingTime = performance.now() - startTime
+    const summaryRaw = await memory.generateConversationSummary?.(sessionId);
+    const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
+    const processingTime = performance.now() - startTime;
     return json({
       sessionId,
       messages,
       context,
-      summary: summary ? JSON.parse(summary) : null
+      summary,
       message_count: messages.length,
-      processing_time: processingTime
-      stats: legalChatMemory.getStats()
-    })
+      processing_time: processingTime,
+      stats: memory.getStats?.() ?? {},
+    });
   } catch (err) {
-    console.error('🎮 Chat history retrieval error:', err)
+    console.error('🎮 Chat history retrieval error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};
 /**
  * DELETE /api/legal-chat?sessionId=xxx
  * Clear chat history for a session
  */
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const sessionId = url.searchParams.get('sessionId')
+    const sessionId = url.searchParams.get('sessionId');
     if (!sessionId) {
-      throw error(400, 'sessionId parameter is required')
+      throw error(400, 'sessionId parameter is required');
     }
-    console.log(`🎮 Clearing chat history for session: ${sessionId}`)
-    // Clear specific session history
-    const historyKey = `legal_chat_history:${sessionId}`
-    const contextKey = `legal_chat_context:${sessionId}`
-    const summaryKey = `legal_chat_summary:${sessionId}`
-    // This would require importing redis directly
-    // For now, we'll use the service method
-    // await redis.del(historyKey, contextKey, summaryKey)
+    console.log(`🎮 Clearing chat history for session: ${sessionId}`);
+
+    // Clear specific session history keys (kept for compatibility and logging)
+    const historyKey = `legal_chat_history:${sessionId}`;
+    const contextKey = `legal_chat_context:${sessionId}`;
+    const summaryKey = `legal_chat_summary:${sessionId}`;
+    const keys = [historyKey, contextKey, summaryKey];
+
+    // Prefer using the typed memory service if available
+    const memory = legalChatMemory as LegalChatMemoryLike;
+
+    let cleared = false;
+
+    // Try memory-level clearing APIs first (safe optional calls)
+    if (typeof memory.clearHistory === 'function') {
+      await memory.clearHistory(sessionId);
+      cleared = true;
+      console.log(`🎮 Cleared session via memory.clearHistory for ${sessionId}`);
+    } else if (typeof memory.deleteSession === 'function') {
+      await memory.deleteSession(sessionId);
+      cleared = true;
+      console.log(`🎮 Cleared session via memory.deleteSession for ${sessionId}`);
+    } else {
+      // Fallback to Redis orchestrator or cache helpers if provided
+      if (typeof redisOrchestrator.deleteKeys === 'function') {
+        await redisOrchestrator.deleteKeys(keys);
+        cleared = true;
+        console.log(`🎮 Cleared keys via redisOrchestrator.deleteKeys for ${sessionId}`);
+      } else if (typeof llmCache.deleteSessionCache === 'function') {
+        await llmCache.deleteSessionCache(sessionId);
+        cleared = true;
+        console.log(`🎮 Cleared session cache via llmCache.deleteSessionCache for ${sessionId}`);
+      }
+    }
+
+    if (!cleared) {
+      // No delete helper available; log the keys so maintainers can remove them manually if needed
+      console.warn('🎮 No session-clear method available; keys were not deleted. Keys:', keys);
+    }
+
     return json({
       success: true,
       message: `Chat history cleared for session: ${sessionId}`,
-      sessionId
-    })
+      sessionId,
+      cleared,
+      keys_cleared: cleared ? keys : [],
+    });
   } catch (err) {
-    console.error('🎮 Chat history clear error:', err)
+    console.error('🎮 Chat history clear error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, `History clear failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `History clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
+};
+
+// --- Added: strongly-typed Ollama adapter types + helpers ---
+type OllamaPayload = Record<string, unknown>;
+type OllamaPrimitiveResponse = string | null;
+type OllamaStructuredResponse = Record<string, unknown> | Array<unknown>;
+type OllamaResponse = OllamaPrimitiveResponse | OllamaStructuredResponse;
+
+type OllamaCallable = (payload: OllamaPayload) => Promise<OllamaResponse> | OllamaResponse;
+type OllamaClientObject = Record<string, unknown> & {
+  // Common method names that various clients may expose
+  call?: OllamaCallable;
+  chat?: OllamaCallable;
+  create?: OllamaCallable;
+  generate?: OllamaCallable;
+  completion?: OllamaCallable;
+  request?: OllamaCallable;
+  send?: OllamaCallable;
+  instance?: OllamaCallable | { [k: string]: OllamaCallable } | unknown;
+  client?: OllamaCallable | { [k: string]: OllamaCallable } | unknown;
+};
+
+// runtime guards
+function isCallable(v: unknown): v is OllamaCallable {
+  return typeof v === 'function';
+}
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null;
+}
+
+// --- Replaced: adapter to support multiple Ollama client shapes (no `any`) ---
+async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
+  // tolerate different export shapes: function, instance methods, or default object
+  const clientUnknown = callOllamaApi as unknown;
+
+  // If the import is directly callable (function)
+  if (isCallable(clientUnknown)) {
+    return await Promise.resolve(clientUnknown(payload));
+  }
+
+  // If the import is an object, inspect for common method names
+  if (isRecord(clientUnknown)) {
+    const clientObj = clientUnknown as OllamaClientObject;
+    const methodCandidates = ['call', 'chat', 'create', 'generate', 'completion', 'request', 'send'];
+
+    for (const name of methodCandidates) {
+      const candidate = clientObj[name];
+      if (isCallable(candidate)) {
+        return await Promise.resolve(candidate(payload));
+      }
+    }
+
+    // If client exposes a `.instance` or `.client` wrapper (could be callable or hold callable methods)
+    const possibleWrappers = [clientObj.instance, clientObj.client];
+    for (const wrapper of possibleWrappers) {
+      if (isCallable(wrapper)) {
+        return await Promise.resolve(wrapper(payload));
+      }
+      if (isRecord(wrapper)) {
+        // try to find any callable property inside wrapper
+        for (const k of Object.keys(wrapper as Record<string, unknown>)) {
+          const inner = (wrapper as Record<string, unknown>)[k];
+          if (isCallable(inner)) {
+            return await Promise.resolve(inner(payload));
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error('Unsupported Ollama client shape — cannot invoke AI. Inspect $lib/services/ollama-client exports.');
+}
+
+// --- Replaced: normalize response extraction so downstream code can expect a consistent shape (no `any`) ---
+function extractAIMessageContent(resp: unknown): string | null {
+  if (resp === null || resp === undefined) return null;
+
+  // Direct string response
+  if (typeof resp === 'string') return resp;
+
+  // If primitive text field exists
+  if (isRecord(resp) && typeof (resp as Record<string, unknown>).text === 'string') {
+    return (resp as Record<string, unknown>).text as string;
+  }
+
+  // Chat-style: { message: { content: string } }
+  if (isRecord(resp) && isRecord((resp as Record<string, unknown>).message)) {
+    const msg = (resp as Record<string, unknown>).message as Record<string, unknown>;
+    if (typeof msg.content === 'string') return msg.content;
+  }
+
+  // OpenAI-style choices: { choices: [{ message: { content } }] }
+  if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).choices)) {
+    const choices = (resp as Record<string, unknown>).choices as Array<unknown>;
+    if (choices.length > 0 && isRecord(choices[0]) && isRecord((choices[0] as Record<string, unknown>).message)) {
+      const cMsg = (choices[0] as Record<string, unknown>).message as Record<string, unknown>;
+      if (typeof cMsg.content === 'string') return cMsg.content;
+    }
+  }
+
+  // Some libs: { output: [{ content: string }] } or { output: [{ text: string }] }
+  if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).output)) {
+    const output = (resp as Record<string, unknown>).output as Array<unknown>;
+    if (output.length > 0 && isRecord(output[0])) {
+      const out0 = output[0] as Record<string, unknown>;
+      if (typeof out0.content === 'string') return out0.content;
+      if (typeof out0.text === 'string') return out0.text;
+    }
+  }
+
+  // nested data arrays: { data: [{ text: string }] }
+  if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).data)) {
+    const data = (resp as Record<string, unknown>).data as Array<unknown>;
+    if (data.length > 0 && isRecord(data[0]) && typeof (data[0] as Record<string, unknown>).text === 'string') {
+      return (data[0] as Record<string, unknown>).text as string;
+    }
+  }
+
+  // fallback: couldn't extract
+  return null;
 }

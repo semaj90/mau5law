@@ -82,16 +82,16 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json({
       success: true,
-      bucket: bucketName
-      prefix: searchPrefix
+      bucket: bucketName,
+      prefix: searchPrefix,
       recursive,
-      objects: objectsList
+      objects: objectsList,
       folders: Array.from(folders),
       totalObjects: objectsList.length,
       maxKeys,
       truncated: objectsList.length >= maxKeys,
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error('MinIO list error:', error)
     return json(

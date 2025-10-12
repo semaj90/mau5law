@@ -51,13 +51,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		// In a real system, you might want to store this in a database
 		// or forward it to an actual RabbitMQ instance
 		return json(publishResult, {
-			status: 201,
-			headers: {
-				'X-Message-ID': messageId
-				'X-Exchange': exchange
-				'X-Routing-Key': routingKey
-			}
-		})
+      status: 201,
+      headers: {
+        'X-Message-ID': messageId,
+        'X-Exchange': exchange,
+        'X-Routing-Key': routingKey,
+      },
+    });
 	} catch (error) {
 		console.error('Failed to publish RabbitMQ message:', error)
 		return json({

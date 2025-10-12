@@ -23,23 +23,26 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000)
     // List files in bucket
     const files = await minioService.listFiles(bucket, prefix, limit)
-    return new Response(JSON.stringify({
-      success: true,
-      bucket,
-      prefix,
-      files: files.map(file => ({,
-        name: file.name,
-        size: file.size,
-        lastModified: file.lastModified,
-        contentType: file.contentType,
-        url: file.url
-      })),
-      total: files.length,
-      timestamp: new Date().toISOString()
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return new Response(
+      JSON.stringify({
+        success: true,
+        bucket,
+        prefix,
+        files: files.map(file => ({
+          name: file.name,
+          size: file.size,
+          lastModified: file.lastModified,
+          contentType: file.contentType,
+          url: file.url,
+        })),
+        total: files.length,
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
     console.error('File listing error:', error)
     return new Response(JSON.stringify({

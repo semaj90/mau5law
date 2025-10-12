@@ -1,51 +1,85 @@
 /**
  * Redis Get Endpoint
- * Retrieve values from Redis distributed cache
+ * Retrieve values from Redis distributed cache (or fallback to in-memory simulation)
  */
 import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-// Import the same memory cache from set endpoint
-// In production, this would be actual Redis
-const memoryCache = new Map<string, { value: any; expires: number }>()
+import type { RequestHandler } from './$types';
+
+// Use shared cache helpers
+import { getRedisClient, getFromMemoryCache, checkApiKey, checkRateLimit } from '$lib/server/cache';
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { key } = await request.json()
+    const body = (await request.json()) as { key?: string };
+    const key = body?.key;
     if (!key) {
-      return json({
+      return json(
+        {
+          success: false,
+          error: 'Key is required',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Auth check
+    const auth = checkApiKey(request.headers);
+    if (!auth.ok) return json({ success: false, error: auth.message ?? 'Unauthorized' }, { status: 401 });
+
+    // Rate limit per API key (or global)
+    const rateKey = request.headers.get('x-api-key') ?? 'global';
+    const rate = checkRateLimit(rateKey);
+    if (!rate.ok) return json({ success: false, error: 'Rate limit exceeded' }, { status: 429 });
+
+    // Try Redis first if enabled
+    const client = await getRedisClient();
+    if (client) {
+      try {
+        const raw = await client.get(key);
+        if (raw == null) {
+          return json({
+            success: true,
+            key,
+            value: null,
+            message: 'Key not found in Redis cache',
+          });
+        }
+        // Try to parse JSON-stored values, otherwise return raw string
+        let parsed: unknown = raw;
+        try {
+          const rawStr = String(raw);
+          parsed = JSON.parse(rawStr);
+        } catch {
+          // not JSON, leave as string
+          parsed = raw;
+        }
+        return json({
+          success: true,
+          key,
+          value: parsed,
+          message: 'Value retrieved from Redis cache',
+        });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('[cache/get] Redis GET error:', message);
+        // fallthrough to memoryCache handling below
+      }
+    }
+
+    // Memory fallback using shared helper
+    const mem = getFromMemoryCache(key);
+    if (!mem.found) {
+      return json({ success: true, key, value: null, message: 'Key not found in cache' });
+    }
+    return json({ success: true, key, value: mem.value, message: 'Value retrieved from cache (memory fallback)' });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
+      {
         success: false,
-        error: 'Key is required'
-      }, { status: 400 })
-    }
-    // Get from memory cache (Redis simulation)
-    const cached = memoryCache.get(key)
-    if (!cached) {
-      return json({
-        success: true,
-        key,
-        value: null
-        message: 'Key not found in cache'
-      })
-    }
-    // Check if expired
-    if (cached.expires < Date.now()) {
-      memoryCache.delete(key)
-      return json({
-        success: true,
-        key,
-        value: null
-        message: 'Key expired and removed from cache'
-      })
-    }
-    return json({
-      success: true,
-      key,
-      value: cached.value,
-      message: 'Value retrieved from Redis cache'
-    })
-  } catch (error: any) {
-    return json({
-      success: false,
-      error: error.message
-    }, { status: 500 })
+        error: message,
+      },
+      { status: 500 }
+    );
   }
 }

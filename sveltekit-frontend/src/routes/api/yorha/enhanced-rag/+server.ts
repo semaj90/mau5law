@@ -125,12 +125,12 @@ export const POST: RequestHandler = async ({ request }) => {
       version: '4.0.0',
     };
     return json(yorhaResponse);
-  } catch (error: any) {
-    console.error('YoRHa Enhanced RAG error:', error);
+  } catch (err: unknown) {
+    console.error('YoRHa Enhanced RAG error:', err);
     return json(
       {
         success: false,
-        error: error.message || 'Enhanced RAG analysis failed',
+        error: getErrorMessage(err),
         // Avoid accessing request.body in SvelteKit; body is a stream
         query: '',
         timestamp: new Date().toISOString(),
@@ -160,6 +160,16 @@ type AnalysisResult = {
   classification?: string;
   // allow extra fields returned from AI/db
   [key: string]: unknown;
+
+  // Added: structured yorha_analysis to provide typed access to weights/risk
+  yorha_analysis?: {
+    relevanceScore?: number;
+    legalWeight?: number;
+    riskFactor?: number;
+    actionRequired?: string;
+    classification?: string;
+    [key: string]: unknown;
+  };
 };
 
 type Recommendation = {
@@ -197,8 +207,8 @@ async function performYoRHaAnalysis(
       ...(r as unknown as Record<string, unknown>),
       source: 'enhanced-rag',
       yorha_type: 'AI_ANALYSIS',
-      // external reranker may not expose 'rerankScore' in its typed interface; use a safe any-cast
-      yorha_confidence: ((r as any).rerankScore ?? (r as any).score ?? 0.5) as number,
+      // safely extract numeric rerank/score fields without `any`
+      yorha_confidence: extractNumberField(r as unknown, ['rerankScore', 'score'], 0.5),
     })),
     ...dbResults.map((r: DBRecord) => ({
       ...(r as Record<string, unknown>),
@@ -341,4 +351,76 @@ function extractCitations(results: AnalysisResult[]): string[] {
     if (r.fullCitation && typeof r.fullCitation === 'string') citations.add(r.fullCitation);
   });
   return Array.from(citations);
+}
+
+// Helper: convert unknown error into a user-friendly string
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'string') return err;
+  try {
+    return JSON.stringify(err as object);
+  } catch {
+    return String(err ?? 'Unknown error');
+  }
+}
+
+// Helper: safely extract numeric fields from unknown objects (supports numbers and numeric strings)
+function extractNumberField(obj: unknown, keys: string[], fallback: number): number {
+  // handle null/undefined quickly
+  if (obj == null) return fallback;
+
+  // if it's already a number
+  if (typeof obj === 'number' && Number.isFinite(obj)) return obj;
+
+  // if it's a numeric string
+  if (typeof obj === 'string') {
+    const parsed = Number(obj);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  // handle objects: try provided keys (supports dot-separated nested keys)
+  if (typeof obj === 'object' && obj !== null) {
+    for (const key of keys) {
+      const parts = key.split('.');
+      let cur: unknown = obj;
+      for (const part of parts) {
+        if (cur == null || typeof cur !== 'object') {
+          cur = undefined;
+          break;
+        }
+        // Cast to a safe record after runtime narrowing so we can use `in` and index access.
+        const curRecord = cur as Record<string, unknown>;
+        if (part in curRecord) {
+          cur = curRecord[part];
+        } else {
+          cur = undefined;
+          break;
+        }
+      }
+      if (cur == null) continue;
+
+      // direct number
+      if (typeof cur === 'number' && Number.isFinite(cur)) return cur;
+
+      // numeric string
+      if (typeof cur === 'string') {
+        const parsed = Number(cur);
+        if (Number.isFinite(parsed)) return parsed;
+      }
+
+      // array containing numeric candidates
+      if (Array.isArray(cur) && cur.length) {
+        for (const item of cur) {
+          if (typeof item === 'number' && Number.isFinite(item)) return item;
+          if (typeof item === 'string') {
+            const parsed = Number(item);
+            if (Number.isFinite(parsed)) return parsed;
+          }
+        }
+      }
+    }
+  }
+
+  // fallback if nothing matched
+  return fallback;
 }
