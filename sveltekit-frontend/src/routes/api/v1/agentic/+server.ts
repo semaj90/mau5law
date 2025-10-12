@@ -9,7 +9,7 @@ import { join } from 'path';
  */
 
 // GET /api/v1/agentic - Get system status and recent errors
-export const GET: RequestHandler = async ({ url, getClientAddress }) => {
+export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<Response> => {
   const startTime = performance.now();
 
   try {
@@ -32,30 +32,41 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       default:
         throw error(400, `Unknown action: ${action}`);
     }
-
-  } catch (err: any) {
+  } catch (err: unknown) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic API error:', err);
 
+    // Safely extract status and message from unknown error
+    let statusCode: number | undefined = undefined;
+    let bodyMessage: string | undefined = undefined;
+    if (err && typeof err === 'object') {
+      const e = err as Record<string, unknown>;
+      if (typeof e.status === 'number') statusCode = e.status;
+      if (e.body && typeof e.body === 'object') {
+        const b = e.body as Record<string, unknown>;
+        if (typeof b.message === 'string') bodyMessage = b.message;
+      }
+    }
+
     const errorResponse = {
-      error: err.status ? err.body?.message || 'Agentic API request failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
+      error: statusCode ? bodyMessage || 'Agentic API request failed' : 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {
-      status: err.status || 500,
+      status: statusCode || 500,
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
-};
+}) as RequestHandler;
 
 // POST /api/v1/agentic - Process screenshot or trigger analysis
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const POST: RequestHandler = (async ({ request, getClientAddress }): Promise<Response> => {
   const startTime = performance.now();
 
   try {
@@ -83,89 +94,177 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           throw error(400, `Unknown action: ${action}`);
       }
     }
-
-  } catch (err: any) {
+  } catch (err: unknown) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic POST error:', err);
 
-    return json({
-      error: err.status ? err.body?.message || 'Agentic request failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
-    }, {
-      status: err.status || 500
-    });
-  }
-};
-
-// Helper Functions
-async function getSystemStatus(startTime: number, getClientAddress: () => string) {
-  try {
-    // Check if agentic controller is running by querying Redis
-    const redis = await import('redis').then(m => m.createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
-      password: process.env.REDIS_PASSWORD || 'redis'
-    }));
-
-    let redisConnected = false;
-    let recentActivity = 0;
-    let errorCount = 0;
-
-    try {
-      await redis.connect();
-      redisConnected = true;
-
-      // Get recent AST activity
-      const astKeys = await redis.keys('ast:*');
-      recentActivity = astKeys.length;
-
-      // Get recent errors
-      const errorKeys = await redis.keys('error:*');
-      errorCount = errorKeys.length;
-
-      await redis.disconnect();
-    } catch (redisError) {
-      console.warn('Redis connection failed:', redisError);
+    // Safely extract status and body message if present
+    let statusCode: number | undefined = undefined;
+    let bodyMessage: string | undefined = undefined;
+    if (err && typeof err === 'object') {
+      const e = err as Record<string, unknown>;
+      if (typeof e.status === 'number') statusCode = e.status;
+      if (e.body && typeof e.body === 'object') {
+        const b = e.body as Record<string, unknown>;
+        if (typeof b.message === 'string') bodyMessage = b.message;
+      }
     }
 
-    const processingTime = performance.now() - startTime;
+    return json(
+      {
+        error: statusCode ? bodyMessage || 'Agentic request failed' : 'Internal server error',
+        message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
+        processingTime: Math.round(processingTime),
+      },
+      {
+        status: statusCode || 500,
+      }
+    );
+  }
+}) as RequestHandler;
 
-    console.log(`📊 Agentic status check from ${getClientAddress()}`);
+// --- new helper to safely extract a message from unknown errors ---
+function getErrorMessage(err: unknown): string {
+  // Prioritize Error instances
+  if (err instanceof Error) return err.message;
+  // Strings
+  if (typeof err === 'string') return err;
+  // Objects with message property (type-safe access)
+  if (err && typeof err === 'object') {
+    const e = err as Record<string, unknown>;
+    if (typeof e['message'] === 'string') {
+      return e['message'] as string;
+    }
+  }
+  // Fallback to JSON / toString
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
+// --- end helper ---
 
-    return json({
+// Helper Functions
+async function getSystemStatus(startTime: number, getClientAddress: () => string): Promise<Response> {
+  // Check if agentic controller is running by querying Redis
+  // Safe dynamic import with explicit minimal types to avoid 'any'
+  type RedisClientMinimal = {
+    connect?: () => Promise<void>;
+    disconnect?: () => Promise<void>;
+    keys?: (pattern: string) => Promise<string[]>;
+  };
+
+  type CreateClientFn = (opts?: { url?: string; password?: string }) => RedisClientMinimal;
+
+  // dynamic import typed as unknown -> narrow to Record to access properties without 'any'
+  const redisModule = (await import('redis')) as unknown as Record<string, unknown>;
+
+  const createClient = (redisModule.createClient ??
+    (redisModule.default && (redisModule.default as Record<string, unknown>).createClient)) as unknown as
+    | CreateClientFn
+    | undefined;
+
+  let redis: RedisClientMinimal | null = null;
+
+  if (typeof createClient === 'function') {
+    try {
+      redis = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+        password: process.env.REDIS_PASSWORD || 'redis',
+      });
+    } catch (e) {
+      console.warn('Failed to create Redis client:', e);
+      redis = null;
+    }
+  } else {
+    console.warn('Redis createClient not available on imported module; skipping Redis checks.');
+  }
+
+  let redisConnected = false;
+  let recentActivity = 0;
+  let errorCount = 0;
+
+  // Use inner try/catch/finally to manage Redis lifecycle
+  try {
+    try {
+      if (redis && typeof redis.connect === 'function') {
+        await redis.connect();
+        redisConnected = true;
+
+        // Get recent AST activity and errors (guarded call)
+        let astKeys: string[] = [];
+        let errorKeys: string[] = [];
+        if (typeof redis.keys === 'function') {
+          try {
+            const astRes = await (redis.keys as (pattern: string) => Promise<string[]>)('ast:*');
+            astKeys = Array.isArray(astRes) ? astRes : [];
+
+            const errRes = await (redis.keys as (pattern: string) => Promise<string[]>)('error:*');
+            errorKeys = Array.isArray(errRes) ? errRes : [];
+          } catch (keysErr) {
+            console.warn('Redis keys() call failed:', keysErr);
+          }
+        }
+        recentActivity = astKeys.length;
+        errorCount = errorKeys.length;
+      } else {
+        // No redis client available; skip Redis-dependent checks
+        redisConnected = false;
+      }
+    } catch (redisError) {
+      console.warn('Redis connection failed:', redisError);
+    } finally {
+      if (redisConnected && redis && typeof redis.disconnect === 'function') {
+        await redis.disconnect();
+      }
+    }
+  } catch (err) {
+    // Safety net in case something unexpected happens above
+    console.warn('Unexpected error during Redis checks:', err);
+  }
+
+  // Centralized logging to Redis (example pattern)
+  await import('$lib/server/redis-logger').then(logger =>
+    logger.logInfo('Agentic status check', { clientAddress: getClientAddress() })
+  );
+
+  console.log(`📊 Agentic status check from ${getClientAddress()}`);
+
+  const processingTime = performance.now() - startTime;
+
+  return json(
+    {
       status: 'running',
       system: {
         redisConnected,
         agenticControllerActive: redisConnected, // Assume active if Redis works
-        watcherStatus: 'unknown' // Would need process check
+        watcherStatus: 'unknown', // Would need process check
       },
       activity: {
         recentASTProcessing: recentActivity,
         pendingErrors: errorCount,
-        lastActivity: new Date().toISOString()
+        lastActivity: new Date().toISOString(),
       },
-      processingTime: Math.round(processingTime)
-    }, {
+      processingTime: Math.round(processingTime),
+    },
+    {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`
-      }
-    });
-
-  } catch (error) {
-    throw error;
-  }
+        'X-Processing-Time': `${Math.round(processingTime)}ms`,
+      },
+    }
+  );
 }
 
-async function getRecentErrors(startTime: number) {
-  try {
-    // Query database for recent errors
-    const { Pool } = await import('pg');
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
-    });
+async function getRecentErrors(startTime: number): Promise<Response> {
+  const { Pool } = await import('pg');
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+  });
 
+  try {
     const result = await pool.query(`
       SELECT
         id,
@@ -179,50 +278,60 @@ async function getRecentErrors(startTime: number) {
       LIMIT 20
     `);
 
-    await pool.end();
+    // ---- changed code: add a typed row and cast result.rows to avoid implicit 'any' ----
+    type ErrorRow = {
+      id: number;
+      error_text: string;
+      screenshot_path: string | null;
+      confidence: number | null;
+      resolved: boolean;
+      created_at: string | Date;
+    };
+
+    const rows = result.rows as ErrorRow[];
 
     const processingTime = performance.now() - startTime;
 
     return json({
-      errors: result.rows.map(row => ({
+      errors: rows.map(row => ({
         id: row.id,
         text: row.error_text.substring(0, 200), // Truncated for display
         screenshotPath: row.screenshot_path,
         confidence: row.confidence,
         resolved: row.resolved,
-        createdAt: row.created_at
+        createdAt: row.created_at,
       })),
-      total: result.rows.length,
-      processingTime: Math.round(processingTime)
+      total: rows.length,
+      processingTime: Math.round(processingTime),
     });
-
-  } catch (error) {
-    throw error;
+    // ---- end changed code ----
+  } finally {
+    await pool.end();
   }
 }
 
-async function getFixSuggestions(query: string, startTime: number) {
+async function getFixSuggestions(query: string, startTime: number): Promise<Response> {
   try {
     // Use the controller's fix suggestion function via subprocess
     const controllerPath = join(process.cwd(), 'scripts', 'agentic-controller.mjs');
 
     return new Promise((resolve, reject) => {
       const process = spawn('node', [controllerPath, 'query', query], {
-        stdio: ['inherit', 'pipe', 'pipe']
+        stdio: ['inherit', 'pipe', 'pipe'],
       });
 
       let output = '';
       let errorOutput = '';
 
-      process.stdout.on('data', (data) => {
+      process.stdout.on('data', data => {
         output += data.toString();
       });
 
-      process.stderr.on('data', (data) => {
+      process.stderr.on('data', data => {
         errorOutput += data.toString();
       });
 
-      process.on('close', (code) => {
+      process.on('close', code => {
         const processingTime = performance.now() - startTime;
 
         if (code === 0) {
@@ -230,11 +339,13 @@ async function getFixSuggestions(query: string, startTime: number) {
             // Parse the JSON output from the controller
             const suggestions = JSON.parse(output.trim().split('\n').pop() || '[]');
 
-            resolve(json({
-              query: query,
-              suggestions: suggestions,
-              processingTime: Math.round(processingTime)
-            }));
+            resolve(
+              json({
+                query: query,
+                suggestions: suggestions,
+                processingTime: Math.round(processingTime),
+              })
+            );
           } catch (parseError) {
             reject(error(500, 'Failed to parse controller response'));
           }
@@ -250,13 +361,17 @@ async function getFixSuggestions(query: string, startTime: number) {
         reject(error(408, 'Fix suggestion request timed out'));
       }, 30000);
     });
-
-  } catch (err) {
-    throw error(500, `Fix suggestion failed: ${err.message}`);
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err);
+    throw error(500, `Fix suggestion failed: ${msg}`);
   }
 }
 
-async function processScreenshot(request: Request, startTime: number, getClientAddress: () => string) {
+async function processScreenshot(
+  request: Request,
+  startTime: number,
+  getClientAddress: () => string
+): Promise<Response> {
   try {
     // Parse form data
     const formData = await request.formData();
@@ -280,33 +395,54 @@ async function processScreenshot(request: Request, startTime: number, getClientA
 
     // Trigger analysis via controller
     const controllerPath = join(process.cwd(), 'scripts', 'agentic-controller.mjs');
+    // Spawn as a detached background process so analysis can continue asynchronously.
+    // Mark detached and call unref() so the parent can exit independently.
     const analysisProcess = spawn('node', [controllerPath, 'analyze', filepath], {
-      stdio: 'inherit'
+      stdio: 'inherit',
+      detached: true,
     });
 
-    const processingTime = performance.now() - startTime;
+    // Use the process variable to avoid "assigned but never used" errors and to log failures.
+    analysisProcess.unref();
+    analysisProcess.on('error', err => {
+      console.error('Agentic analysis process failed to start:', err);
+    });
+    analysisProcess.on('close', (code, signal) => {
+      console.log(`Agentic analysis process exited with code=${code} signal=${signal} file=${filepath}`);
+    });
+
+    // Centralized logging to Redis (example pattern)
+    await import('$lib/server/redis-logger').then(logger =>
+      logger.logInfo('Screenshot uploaded', { clientAddress: getClientAddress(), filename })
+    );
 
     console.log(`📸 Screenshot uploaded from ${getClientAddress()}: ${filename}`);
 
-    return json({
-      message: 'Screenshot uploaded and analysis started',
-      filename: filename,
-      filepath: filepath,
-      processingTime: Math.round(processingTime)
-    }, {
-      status: 202, // Accepted - processing asynchronously
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`
-      }
-    });
+    // compute processing time before responding
+    const processingTime = performance.now() - startTime;
 
-  } catch (err) {
-    throw error(500, `Screenshot processing failed: ${err.message}`);
+    return json(
+      {
+        message: 'Screenshot uploaded and analysis started',
+        filename: filename,
+        filepath: filepath,
+        processingTime: Math.round(processingTime),
+      },
+      {
+        status: 202, // Accepted - processing asynchronously
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Processing-Time': `${Math.round(processingTime)}ms`,
+        },
+      }
+    );
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err);
+    throw error(500, `Screenshot processing failed: ${msg}`);
   }
 }
 
-async function analyzeErrorText(errorText: string, startTime: number) {
+async function analyzeErrorText(errorText: string, startTime: number): Promise<Response> {
   try {
     // This would integrate with the controller's embedding system
     // For now, return a mock response
@@ -316,22 +452,23 @@ async function analyzeErrorText(errorText: string, startTime: number) {
       message: 'Error text analysis started',
       errorText: errorText.substring(0, 100),
       status: 'processing',
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     });
-
-  } catch (err) {
-    throw error(500, `Error text analysis failed: ${err.message}`);
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err);
+    throw error(500, `Error text analysis failed: ${msg}`);
   }
 }
 
-async function getContextualFixes(errorId: number, startTime: number) {
+async function getContextualFixes(errorId: number, startTime: number): Promise<Response> {
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
     });
 
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       SELECT
         cf.id as fix_id,
         cf.suggested_fix,
@@ -341,7 +478,9 @@ async function getContextualFixes(errorId: number, startTime: number) {
       FROM contextual_fixes cf
       WHERE cf.error_id = $1
       ORDER BY cf.created_at DESC
-    `, [errorId]);
+    `,
+      [errorId]
+    );
 
     await pool.end();
 
@@ -350,22 +489,23 @@ async function getContextualFixes(errorId: number, startTime: number) {
     return json({
       errorId: errorId,
       fixes: result.rows,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     });
-
-  } catch (err) {
-    throw error(500, `Contextual fixes retrieval failed: ${err.message}`);
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err);
+    throw error(500, `Contextual fixes retrieval failed: ${msg}`);
   }
 }
 
-async function markFixApplied(fixId: number, success: boolean, startTime: number) {
+async function markFixApplied(fixId: number, success: boolean, startTime: number): Promise<Response> {
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
     });
 
-    await pool.query(`
+    await pool.query(
+      `
       UPDATE contextual_fixes
       SET
         applied = TRUE,
@@ -374,7 +514,9 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
           ELSE GREATEST(success_rate - 0.1, 0.0)
         END
       WHERE id = $1
-    `, [fixId, success]);
+    `,
+      [fixId, success]
+    );
 
     await pool.end();
 
@@ -384,10 +526,10 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
       message: 'Fix status updated',
       fixId: fixId,
       success: success,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     });
-
-  } catch (err) {
-    throw error(500, `Fix status update failed: ${err.message}`);
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err);
+    throw error(500, `Fix status update failed: ${msg}`);
   }
 }

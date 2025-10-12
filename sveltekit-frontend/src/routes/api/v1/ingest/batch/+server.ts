@@ -1,9 +1,17 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
+import { INGEST_SERVICE_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-const SERVICE_URL = 'http://localhost:8227'; // INGEST_SERVICE_URL ||
+// Configurable service URL and batch size with safe defaults
+const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
 const TIMEOUT = 120000; // 2 minutes for batch processing
-const BATCH_SIZE_LIMIT = parseInt('10'); // MAX_BATCH_SIZE ||
+const BATCH_SIZE_LIMIT =
+  typeof env.MAX_BATCH_SIZE !== 'undefined' && Number.isFinite(Number(env.MAX_BATCH_SIZE))
+    ? parseInt(String(env.MAX_BATCH_SIZE), 10)
+    : 10;
+
+// MAX_BATCH_SIZE ||
 
 export type IngestDocument = {
   title: string;
@@ -36,6 +44,7 @@ export interface BatchIngestResponse {
 export const POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
+    // Read and validate request body
     const requestData: BatchIngestRequest = await request.json();
 
     // Validate request structure
@@ -70,6 +79,19 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       );
     }
 
+    // Normalize headers early (safe to access before/after body consumption)
+    const userAgent = request.headers?.get?.('user-agent') ?? 'unknown';
+
+    // Use crypto.randomUUID when available, fallback to a safe slice
+    // Use crypto.randomUUID if available, otherwise fallback to a less-unique random string
+    const randomId =
+      typeof globalThis === 'object' &&
+      typeof (globalThis as { crypto?: Crypto }).crypto === 'object' &&
+      typeof (globalThis as { crypto?: Crypto }).crypto?.randomUUID === 'function'
+        ? (globalThis as { crypto: Crypto }).crypto.randomUUID()
+        : Math.random().toString(36).slice(2, 11); // Fallback: not guaranteed unique
+    // Note: The fallback does not guarantee uniqueness. For production, consider a UUID polyfill or a more robust random string.
+
     // Transform to Go service format with enhanced metadata
     const batchRequest = {
       documents: requestData.documents.map((doc, index) => ({
@@ -82,10 +104,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           source: 'sveltekit-batch-ingest',
           batch_index: index,
           batch_size: requestData.documents.length,
-          batch_id: `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          batch_id: `batch_${Date.now()}_${randomId}`,
           api_version: 'v1',
           timestamp: new Date().toISOString(),
-          user_agent: request.headers.get('user-agent') || 'unknown',
+          user_agent: userAgent,
         },
       })),
     };

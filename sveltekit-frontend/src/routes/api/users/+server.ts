@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';
 
     // Build query with filters
-    const filters: any[] = [];
+    const filters: unknown[] = [];
 
     // Add search filter
     if (search) {
@@ -95,8 +95,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         total: totalCount,
       },
     });
-  } catch (error: any) {
-    console.error('Error fetching users:', error);
+  } catch (err: unknown) {
+    console.error('Error fetching users:', extractErrorMessage(err));
     return json({ error: 'Failed to fetch users' }, { status: 500 });
   }
 };
@@ -155,8 +155,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
 
     return json(newUser, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating user:', error);
+  } catch (err: unknown) {
+    console.error('Error creating user:', extractErrorMessage(err));
     return json({ error: 'Failed to create user' }, { status: 500 });
   }
 };
+
+// Add helper for safe error message extraction
+function extractErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'string') return err;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
