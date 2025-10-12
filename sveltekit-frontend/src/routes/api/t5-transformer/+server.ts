@@ -5,7 +5,7 @@ import { json } from '@sveltejs/kit';
  * Sequence-to-sequence processing for legal document transformation
  * Integrates with t5-transformer Go service on port 8122
  */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { productionServiceClient } from '$lib/api/production-service-client';
 
 interface T5TransformRequest {
   input: string;
@@ -108,22 +108,23 @@ export const POST: RequestHandler = async ({ request }) => {
       // Process different task types
       let structuredOutput: T5TransformResponse['structured'] = {};
       let confidence = 0.85;
+      const resultOutput = String(result.output ?? ''); // Guard undefined -> use empty string
 
       switch (task) {
         case 'summarize':
           structuredOutput = {
-            summary: result.output,
-            keyPoints: extractKeyPoints(result.output),
-            wordCount: result.output.split(' ').length,
-            compressionRatio: input.length / result.output.length,
+            summary: resultOutput,
+            keyPoints: extractKeyPoints(resultOutput),
+            wordCount: resultOutput.split(/\s+/).filter(Boolean).length,
+            compressionRatio: resultOutput.length ? input.length / resultOutput.length : 0,
           };
           confidence = 0.9;
           break;
         case 'analyze':
           structuredOutput = {
-            analysis: result.output,
-            entities: extractLegalEntities(result.output),
-            sentiment: analyzeSentiment(result.output),
+            analysis: resultOutput,
+            entities: extractLegalEntities(resultOutput),
+            sentiment: analyzeSentiment(resultOutput),
             complexity: assessComplexity(input),
             recommendations: generateRecommendations(result.output, domain),
           };
@@ -131,25 +132,25 @@ export const POST: RequestHandler = async ({ request }) => {
           break;
         case 'extract':
           structuredOutput = {
-            extracted: result.output,
-            entities: extractLegalEntities(result.output),
-            structuredData: parseStructuredData(result.output, domain),
-            confidence: calculateExtractionConfidence(input, result.output),
+            extracted: resultOutput,
+            entities: extractLegalEntities(resultOutput),
+            structuredData: parseStructuredData(resultOutput, domain),
+            confidence: calculateExtractionConfidence(input, resultOutput),
           };
           confidence = structuredOutput.confidence || 0.82;
           break;
         case 'generate':
           structuredOutput = {
-            generated: result.output,
+            generated: resultOutput,
             creativity: parameters.temperature || 0.7,
-            coherence: assessCoherence(result.output),
-            relevance: assessRelevance(input, result.output),
+            coherence: assessCoherence(resultOutput),
+            relevance: assessRelevance(input, resultOutput),
           };
           confidence = 0.85;
           break;
         default:
           structuredOutput = {
-            transformed: result.output,
+            transformed: resultOutput,
           };
       }
 
@@ -157,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         task,
         input: truncateInput(input),
-        output: result.output,
+        output: resultOutput,
         confidence,
         metadata: {
           modelVersion: result.modelVersion || 'T5-Legal-v2.1',
@@ -505,11 +506,7 @@ function getTaskInformation(_task: string): TaskInfo | null {
   };
   return taskMap[_task] || null;
 }
-async function generateMockT5Response(
-  input: string,
-  task: string,
-  domain: string
-): Promise<T5TransformResponse> {
+async function generateMockT5Response(input: string, task: string, domain: string): Promise<T5TransformResponse> {
   // Fallback mock responses for development
   const processingTime = 1500 + Math.random() * 1000;
   let output = '';
@@ -591,7 +588,11 @@ async function generateMockT5Response(
     structured,
   };
 }
-      },
-    },
-  };
+
+// Helper: safely truncate input for responses
+function truncateInput(text: string, max = 200) {
+  if (!text) return '';
+  return text.length > max ? text.substring(0, max) + '...' : text;
 }
+
+// EOF - removed trailing corrupted/duplicated code

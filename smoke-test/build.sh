@@ -11,14 +11,18 @@ mkdir -p "$WORKDIR/build"
 cd "$WORKDIR/build"
 
 cmake .. \
-  -DTENSORRT_LLMSDK_INCLUDE_DIR=/app/tensorrt_llm/include \
-  -DTENSORRT_LLMSDK_LIB_DIR=/app/tensorrt_llm/lib
+  -DTENSORRT_LLMSDK_INCLUDE_DIR=/usr/local/lib/python3.12/dist-packages/tensorrt_llm/include \
+  -DTENSORRT_LLMSDK_LIB_DIR=/app/lib
 
 cmake --build . -j$(nproc)
 
-if [ -x "tensorrt_smoketest" ]; then
-  echo "[smoke-test] Running tensorrt_smoketest"
-  ./tensorrt_smoketest || true
+# Find the built binary
+BINARY_PATH=$(find . -name "tensorrt_smoketest" -type f -executable | head -1)
+
+if [ -n "$BINARY_PATH" ] && [ -x "$BINARY_PATH" ]; then
+  echo "[smoke-test] Running $BINARY_PATH"
+  $BINARY_PATH || true
 else
-  echo "[smoke-test] Built target not found at ./tensorrt_smoketest"
+  echo "[smoke-test] Built target not found"
+  find . -name "tensorrt_smoketest" -type f
 fi

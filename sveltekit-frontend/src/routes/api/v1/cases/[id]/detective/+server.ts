@@ -14,6 +14,11 @@ const DetectiveModeSchema = z.object({
   reason: z.string().optional(),
   aiAssisted: z.boolean().default(true)
 })
+// Helper: safely extract user id from locals/session
+function getUserId(locals: any): string | null {
+  // Common shapes: locals.user?.id or locals.session?.user?.id
+  return (locals?.user?.id ?? locals?.session?.user?.id ?? null) as string | null
+}
 /*
  * POST /api/v1/cases/[id]/detective
  * Toggle detective mode for a specific case
@@ -44,7 +49,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     }
     // Update detective mode
     const updateData = {
-      detectiveMode: enabled
+      detectiveMode: enabled,
       metadata: {
         ...currentCase.metadata,
         detectiveMode: {
@@ -53,33 +58,37 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           toggledBy: getUserId(locals),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
           aiAssisted,
-          previousState: currentCase.metadata?.detectiveMode || null
-        }
-      }
-    }
-    await casesService.update(caseId, updateData)
+          previousState: currentCase.metadata?.detectiveMode || null,
+        },
+      },
+    };
+    await casesService.update(caseId, updateData);
     // Get updated case
-    const updatedCase = await casesService.getById(caseId)
+    const updatedCase = await casesService.getById(caseId);
     // Log detective mode change for audit trail
-    console.log(`Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${getUserId(locals)}`)
+    console.log(
+      `Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${
+        getUserId(locals) ?? 'unknown'
+      }`
+    );
     return json({
       success: true,
       data: {
-        case: updatedCase
+        case: updatedCase, // <-- fixed: added missing comma
         detectiveMode: {
           enabled,
           toggledAt: new Date().toISOString(),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
-          aiAssisted
-        }
+          aiAssisted,
+        },
       },
       meta: {
         userId: getUserId(locals),
         caseId,
         timestamp: new Date().toISOString(),
-        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated'
-      }
-    })
+        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated',
+      },
+    });
   } catch (err: any) {
     console.error('Error toggling detective mode:', err)
     if (err instanceof z.ZodError) {

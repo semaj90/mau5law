@@ -1,50 +1,218 @@
-import { json } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
-import { evidence } from '$lib/server/db/schema-postgres-enhanced'
-import { sql, ilike, and, or } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { evidence } from '$lib/server/db/schema-postgres-enhanced';
+import { ilike, or } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
+
+// deterministic text scoring fallback (Jaccard-like)
+function textScore(query: string, text: string): number {
+  if (!query || !text) return 0;
+  const qTokens = query.toLowerCase().split(/\W+/).filter(Boolean);
+  const tTokens = text.toLowerCase().split(/\W+/).filter(Boolean);
+  if (!qTokens.length || !tTokens.length) return 0;
+  const qSet = new Set(qTokens);
+  const tSet = new Set(tTokens);
+  let common = 0;
+  qSet.forEach(tok => {
+    if (tSet.has(tok)) common++;
+  });
+  const denom = qSet.size + tSet.size - common || 1;
+  const jaccard = common / denom;
+  const boost = Math.min(1, qTokens.length / Math.max(1, tTokens.length));
+  return Number((jaccard * 0.9 + boost * 0.1).toFixed(4));
+}
+
+function safeProsecutionScore(raw: unknown): number {
+  if (!raw) return 0;
+  if (typeof raw === 'number') return raw;
+  if (typeof raw === 'string') return Number(raw) || 0;
+
+  if (typeof raw === 'object' && raw !== null) {
+    // typed container to avoid `any`
+    type ScoreContainer = {
+      prosecutionScore?: number | string | null;
+      score?: number | string | null;
+      value?: number | string | null;
+      [key: string]: unknown;
+    };
+    const obj = raw as ScoreContainer;
+    const val = obj.prosecutionScore ?? obj.score ?? obj.value;
+    if (typeof val === 'number') return val;
+    if (typeof val === 'string') return Number(val) || 0;
+  }
+
+  return 0;
+}
+
+function safeString(raw: unknown): string | null {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === 'string') return raw;
+  if (typeof raw === 'number' || typeof raw === 'boolean' || typeof raw === 'bigint') return String(raw);
+  try {
+    const obj = raw as { toString?: unknown };
+    if (typeof obj?.toString === 'function') {
+      const maybe = (obj.toString as () => unknown)();
+      if (typeof maybe === 'string' && maybe !== '[object Object]') return maybe;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+type VectorSearchHit = {
+  id?: string;
+  _id?: string;
+  document_id?: string;
+  docId?: string;
+  fileName?: string | null;
+  filename?: string | null;
+  summary?: string | null;
+  aiSummary?: string | null;
+  content?: string | null;
+  metadata?: Record<string, unknown>;
+  tags?: unknown[];
+  prosecutionScore?: unknown;
+  aiAnalysis?: unknown;
+  similarity?: number;
+  score?: number;
+};
+
+// --- Added: explicit metadata shape to avoid `any` casts ---
+type VecMetadata = {
+  id?: string | number;
+  fileName?: string | null;
+  filename?: string | null;
+  content?: string | null;
+  text?: string | null;
+  tags?: unknown[];
+  prosecutionScore?: unknown;
+  aiAnalysis?: unknown;
+  analysis?: unknown;
+  [key: string]: unknown;
+};
+
+type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } | { results?: VectorSearchHit[] };
+
+function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
+  if (Array.isArray(res)) return res;
+  if (res && typeof res === 'object') {
+    const obj = res as { hits?: unknown; results?: unknown };
+    const hitsCandidate = obj.hits;
+    if (Array.isArray(hitsCandidate)) return hitsCandidate as VectorSearchHit[];
+    const resultsCandidate = obj.results;
+    if (Array.isArray(resultsCandidate)) return resultsCandidate as VectorSearchHit[];
+  }
+  return [];
+}
+
+type Match = {
+  id: string;
+  filename: string | null;
+  content: string;
+  similarity: number;
+  tags: unknown;
+  prosecutionScore: number;
+};
+
+type EvidenceRow = {
+  id: string;
+  fileName: string | null;
+  summary: string | null;
+  aiSummary: string | null;
+  tags: unknown;
+  prosecutionScore: unknown;
+};
+
+type VectorSearchOptions = { maxResults?: number; includeMetadata?: boolean };
+type VectorSearchService = {
+  search: (query: string, opts?: VectorSearchOptions) => Promise<VectorSearchResult>;
+};
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, useSemanticSearch, includeContext7, maxResults = 10 } = await request.json()
-    if (!query?.trim()) {
-      return json({ matches: [] }, { status: 200 })
+    const body = (await request.json()) as Record<string, unknown>;
+    const query = String(body.query ?? '').trim();
+    const useSemanticSearch = Boolean(body.useSemanticSearch);
+    const includeContext7 = Boolean(body.includeContext7);
+    const maxResults = Math.max(1, Number(body.maxResults ?? 10) || 10);
+    if (!query) return json({ matches: [] }, { status: 200 });
+
+    let matches: Match[] = [];
+
+    if (useSemanticSearch) {
+      try {
+        const vsMod = await import('$lib/services/real-vector-search-service');
+        const modTyped = vsMod as unknown as {
+          vectorSearchService?: VectorSearchService;
+          default?: { vectorSearchService?: VectorSearchService };
+        };
+        const vs = modTyped.vectorSearchService ?? modTyped.default?.vectorSearchService;
+        if (vs && typeof vs.search === 'function') {
+          const resp: VectorSearchResult = await vs.search(query, { maxResults, includeMetadata: true });
+          const results = normalizeVecResults(resp);
+          if (results.length > 0) {
+            matches = results.map((r: VectorSearchHit) => {
+              const meta = (r.metadata ?? {}) as VecMetadata;
+              // Use typed `meta` properties instead of `(meta as any)...`
+              return {
+                id: String(r.id ?? r._id ?? r.docId ?? r.document_id ?? meta.id ?? ''),
+                filename: safeString(meta.fileName ?? meta.filename ?? r.fileName ?? r.filename ?? null),
+                content: safeString(meta.content ?? r.content ?? meta.text ?? r.summary ?? r.aiSummary ?? '') ?? '',
+                similarity: typeof r.score === 'number' ? r.score : Number(r.similarity ?? r.score ?? 0),
+                tags: Array.isArray(meta.tags) ? meta.tags : (r.tags ?? null),
+                prosecutionScore: safeProsecutionScore(
+                  meta.prosecutionScore ?? meta.aiAnalysis ?? meta.analysis ?? r.prosecutionScore ?? r.aiAnalysis
+                ),
+              };
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Vector search failed or not available, falling back to text search', e);
+      }
     }
-    // Basic text search in evidence
-    const searchResults = await db
-      .select({
-        id: evidence.id,
-        filename: evidence.fileName,
-        summary: evidence.summary,
-        content: evidence.aiSummary,
-        tags: evidence.tags,
-        prosecutionScore: evidence.aiAnalysis,
-        similarity: sql<number>`1.0`, // Placeholder similarity
-      })
-      .from(evidence)
-      .where(
-        or(
-          ilike(evidence.fileName, `%${query}%`),
-          ilike(evidence.summary, `%${query}%`),
-          ilike(evidence.aiSummary, `%${query}%`)
+
+    if (!matches || matches.length === 0) {
+      const rows = (await db
+        .select({
+          id: evidence.id,
+          fileName: evidence.fileName,
+          summary: evidence.summary,
+          aiSummary: evidence.aiSummary,
+          tags: evidence.tags,
+          prosecutionScore: evidence.aiAnalysis,
+        })
+        .from(evidence)
+        .where(
+          or(
+            ilike(evidence.fileName, `%${query}%`),
+            ilike(evidence.summary, `%${query}%`),
+            ilike(evidence.aiSummary, `%${query}%`)
+          )
         )
-      )
-      .limit(maxResults)
-    const matches = searchResults.map(row => ({
-      id: row.id,
-      filename: row.filename,
-      content: row.summary || row.content,
-      similarity: 0.8, // Mock similarity score
-      tags: Array.isArray(row.tags) ? row.tags: [],
-      prosecutionScore: typeof row.prosecutionScore === 'object'
-        ? (row.prosecutionScore as any)?.prosecutionScore || 0
-        : 0
-    })
-    return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 })
-  } catch (error: any) {
-    console.error('Evidence search error:', error)
-    return json({
-      error: 'Search failed',
-      matches: []
-    }, { status: 500 })
+        .limit(Number(maxResults))) as EvidenceRow[];
+
+      matches = rows.map((row: EvidenceRow) => {
+        const tags = Array.isArray(row.tags) ? row.tags : [];
+        const prosecutionScore = safeProsecutionScore(row.prosecutionScore);
+        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? ''}`;
+        const similarity = textScore(query, combined);
+        return {
+          id: String(row.id),
+          filename: row.fileName ?? null,
+          content: row.summary ?? row.aiSummary ?? '',
+          similarity,
+          tags,
+          prosecutionScore,
+        };
+      });
+    }
+
+    return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
+  } catch (error: unknown) {
+    console.error('Evidence search error:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    return json({ error: 'Search failed', message, matches: [] }, { status: 500 });
   }
-}
+};

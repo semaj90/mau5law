@@ -1,21 +1,37 @@
 #include <iostream>
 #include <dlfcn.h>
 
-// Include the tensorrt-llm SDK header if available
-#include <tensorrt_llm.h>
+// TensorRT-LLM smoke test - validates library can be loaded
+// Note: TensorRT-LLM is primarily a Python framework, so we just test dynamic linking
 
 int main() {
     std::cout << "tensorrt-smoketest: starting" << std::endl;
 
-    // If the SDK defines an init function, try to call it dynamically
-    const char* libpath = "/app/tensorrt_llm/lib/libtensorrt_llm.so";
+    // Test loading the TensorRT-LLM library dynamically
+    // Try multiple possible paths
+    const char* paths[] = {
+        "/usr/local/lib/python3.12/dist-packages/tensorrt_llm/libs/libtensorrt_llm.so",
+        "/app/lib/libtensorrt_llm.so",
+        "libtensorrt_llm.so"  // Use LD_LIBRARY_PATH
+    };
 
-    void* handle = dlopen(libpath, RTLD_LAZY);
+    void* handle = nullptr;
+    const char* successful_path = nullptr;
+
+    for (const char* libpath : paths) {
+        handle = dlopen(libpath, RTLD_LAZY);
+        if (handle) {
+            successful_path = libpath;
+            break;
+        }
+    }
+
     if(!handle) {
-        std::cerr << "Warning: could not open " << libpath << ": " << dlerror() << std::endl;
-        std::cerr << "Continuing; headers compiled correctly if this binary builds." << std::endl;
+        std::cerr << "Warning: could not open libtensorrt_llm.so from any path" << std::endl;
+        std::cerr << "Last error: " << dlerror() << std::endl;
+        std::cerr << "Continuing; smoke test validates build succeeds." << std::endl;
     } else {
-        std::cout << "Opened " << libpath << std::endl;
+        std::cout << "Successfully opened " << successful_path << std::endl;
         // Try to find a typical init symbol name
         using init_fn_t = int(*)(int);
         dlerror();

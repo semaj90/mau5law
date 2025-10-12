@@ -37,6 +37,7 @@ const services = {
   redis: { running: false, docker: false },
   minio: { running: false, docker: false },
   ollama: { running: false },
+  tensorrt: { running: false, docker: false, optional: true },
   rabbitmq: { running: false, optional: true },
   workers: {
     ocr: { running: false, optional: false },
@@ -352,6 +353,67 @@ async function setupOllama() {
   return false;
 }
 
+async function setupTensorRT() {
+  console.log('\n⚡ Setting up TensorRT-LLM (optional GPU acceleration)...');
+
+  const port8096 = await checkPort(8096);
+  if (port8096) {
+    console.log('   ✅ TensorRT-LLM already running on port 8096');
+    services.tensorrt.running = true;
+    return true;
+  }
+
+  const dockerRunning = await isDockerRunning();
+
+  if (dockerRunning) {
+    console.log('   🐳 Starting TensorRT-LLM container with GPU...');
+    try {
+      // Check if NVIDIA runtime is available
+      const { stdout: runtimeCheck } = await execAsync('docker info --format "{{.Runtimes}}"');
+      const hasNvidiaRuntime = runtimeCheck.includes('nvidia');
+
+      if (!hasNvidiaRuntime) {
+        console.log('   ⚠️  NVIDIA Docker runtime not detected, TensorRT-LLM requires GPU');
+        return false;
+      }
+
+      // Start TensorRT-LLM container
+      const started = await startDockerContainer(
+        'legal-ai-tensorrt-llm',
+        'nvcr.io/nvidia/tensorrt-llm/release:latest',
+        ['8096:8096', '8097:8097', '8098:8098'],
+        [
+          'DATABASE_URL=postgresql://legal_admin:123456@host.docker.internal:5432/legal_ai_db',
+          'REDIS_URL=redis://:redis@host.docker.internal:6379/0',
+          'REDIS_PASSWORD=redis',
+          'TENSORRT_PORT=8096',
+          'CUDA_VISIBLE_DEVICES=0',
+          'NVIDIA_VISIBLE_DEVICES=all'
+        ]
+      );
+
+      if (started) {
+        // Enable GPU with --gpus all
+        await execAsync('docker update --gpus all legal-ai-tensorrt-llm').catch(() => {});
+
+        services.tensorrt.running = true;
+        services.tensorrt.docker = true;
+        console.log('   ✅ TensorRT-LLM container started with GPU');
+        console.log('   📊 TensorRT API: http://localhost:8096');
+        console.log('   🔌 WebSocket: ws://localhost:8097');
+        console.log('   ❤️  Health: http://localhost:8098/health');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        return true;
+      }
+    } catch (error) {
+      console.error(`   ❌ Failed to start TensorRT-LLM: ${error.message}`);
+    }
+  }
+
+  console.log('   ⚠️  TensorRT-LLM skipped (requires Docker + NVIDIA GPU)');
+  return false;
+}
+
 async function setupRabbitMQ() {
   console.log('\n📨 Setting up RabbitMQ (optional)...');
 
@@ -551,6 +613,10 @@ async function startSvelteKit() {
       // Ollama
       OLLAMA_URL: 'http://localhost:11434',
       OLLAMA_GPU_LAYERS: '30',
+      // TensorRT-LLM (NEW)
+      TENSORRT_API_URL: services.tensorrt.running ? 'http://localhost:8096' : '',
+      TENSORRT_WS_URL: services.tensorrt.running ? 'ws://localhost:8097' : '',
+      TENSORRT_ENABLED: services.tensorrt.running ? 'true' : 'false',
       // RabbitMQ
       RABBITMQ_URL: services.rabbitmq.running ? 'amqp://guest:guest@localhost:5672' : '',
       RABBITMQ_ENABLED: services.rabbitmq.running ? 'true' : 'false',
@@ -588,6 +654,13 @@ async function printServiceStatus() {
 
   console.log(`   ${services.ollama.running ? '✅' : '❌'} Ollama:         ${services.ollama.running ? 'http://localhost:11434 (30 GPU layers)' : 'Not Running'}`);
 
+  console.log(`   ${services.tensorrt.running ? '✅' : '⚠️ '} TensorRT-LLM:   ${services.tensorrt.running ? 'http://localhost:8096 (GPU acceleration)' : 'Skipped (optional)'}`);
+  if (services.tensorrt.running) {
+    console.log('      API: http://localhost:8096');
+    console.log('      WebSocket: ws://localhost:8097');
+    console.log('      Health: http://localhost:8098/health');
+  }
+
   console.log(`   ${services.rabbitmq.running ? '✅' : '⚠️ '} RabbitMQ:       ${services.rabbitmq.running ? 'amqp://localhost:5672' : 'Skipped (optional)'}`);
   if (services.rabbitmq.running) console.log('      Management: http://localhost:15672 (guest/guest)');
 
@@ -615,6 +688,7 @@ async function printServiceStatus() {
   if (services.redis.running) console.log('   ✅ Session caching');
   if (services.minio.running) console.log('   ✅ Evidence file storage');
   if (services.ollama.running) console.log('   ✅ AI chat with 30 GPU layers');
+  if (services.tensorrt.running) console.log('   ✅ TensorRT-LLM GPU inference (2-10x faster)');
   if (services.rabbitmq.running) console.log('   ✅ Async job processing');
   if (services.workers.ocr.running) console.log('   ✅ GPU-accelerated OCR processing');
   if (services.workers.embedding.running) console.log('   ✅ Vector embeddings & semantic search');
@@ -632,6 +706,7 @@ async function startFullStack() {
     await setupRedis();
     await setupMinIO();
     await setupOllama();
+    await setupTensorRT();  // NEW: TensorRT-LLM GPU acceleration
     await setupRabbitMQ();
 
     // Start workers (depends on infrastructure)

@@ -25,52 +25,28 @@
   let isExecuting = $state(false);
   let terminalRef = $state<HTMLElement | null>(null);
   // Terminal commands
-  const availableCommands: Record<string, {
+  type Command = {
+    name: string;
     description: string;
     usage: string;
     execute: (args: string[]) => void | Promise<void>;
-  }> = {
-    help: {
-      description: 'Show available commands',
-      usage: 'help [command]',
-      execute: (args) => showHelp(args);
-    },
-    status: {
-      description: 'Show system status',
-      usage: 'status',
-      execute: () => getSystemStatus();
-    },
-    rag: {
-      description: 'Execute RAG query',
-      usage: 'rag <query>',
-      execute: (args) => executeRAG(args.join(' '));
-    },
-    search: {
-      description: 'Search legal database',
-      usage: 'search <term>',
-      execute: (args) => searchDatabase(args.join(' '));
-    },
-    cluster: {
-      description: 'Cluster management',
-      usage: 'cluster <health|status|restart>',
-      execute: (args) => clusterCommand(args[0]);
-    },
-    clear: {
-      description: 'Clear terminal',
-      usage: 'clear',
-      execute: () => clearTerminal();
-    },
-    echo: {
-      description: 'Echo text',
-      usage: 'echo <text>',
-      execute: (args) => echoText(args.join(' '));
-    },
-    version: {
-      description: 'Show system version',
-      usage: 'version',
-      execute: () => showVersion();
-    }
+  };
+  // Replace Record with an array (list of dicts)
+  const commands: Command[] = [
+    { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: (args) => showHelp(args) },
+    { name: 'status', description: 'Show system status', usage: 'status', execute: () => getSystemStatus() },
+    { name: 'rag', description: 'Execute RAG query', usage: 'rag <query>', execute: (args) => executeRAG(args.join(' ')) },
+    { name: 'search', description: 'Search legal database', usage: 'search <term>', execute: (args) => searchDatabase(args.join(' ')) },
+    { name: 'cluster', description: 'Cluster management', usage: 'cluster <health|status|restart>', execute: (args) => clusterCommand(args[0]) },
+    { name: 'clear', description: 'Clear terminal', usage: 'clear', execute: () => clearTerminal() },
+    { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: (args) => echoText(args.join(' ')) },
+    { name: 'version', description: 'Show system version', usage: 'version', execute: () => showVersion() }
+  ];
+
+  function getCommand(name: string) {
+    return commands.find((c) => c.name === name);
   }
+
   $effect(() => {
     // Initialize terminal with welcome message
     addOutput('YORHA TERMINAL v1.0.0 - Legal AI System Interface', 'system');
@@ -79,23 +55,27 @@
   });
   function addOutput(text: string, type: 'system' | 'user' | 'success' | 'error' | 'info' = 'system') {
     const timestamp = new Date().toLocaleTimeString();
-    terminalHistory = [...terminalHistory, {
-      id: Date.now() + Math.random(),
-      timestamp,
-      text,
-      typ;
-    }];
+    terminalHistory = [
+      ...terminalHistory,
+      {
+        id: Date.now() + Math.random(),
+        timestamp,
+        text,
+        type, // fixed typo (was `typ;`)
+      },
+    ];
   }
   async function executeCommand(command: string) {
     if (!command.trim()) return;
     isExecuting = true;
     addOutput(`> ${command}`, 'user');
-    const parts = command.trim.split(' ');
+    const parts = command.trim().split(' '); // fixed: .trim()
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
-    if (availableCommands[cmd]) {
+    const cmdDef = getCommand(cmd);
+    if (cmdDef) {
       try {
-        await availableCommands[cmd].execute(args);
+        await cmdDef.execute(args);
       } catch (error) {
         const e = error as Error;
         addOutput(`Error executing ${cmd}: ${e?.message || String(error)}`, 'error');
@@ -109,16 +89,18 @@
   function showHelp(args: string[]) {
     if (args.length > 0) {
       const cmd = args[0].toLowerCase();
-      if (availableCommands[cmd]) {
-        addOutput(`${cmd}: ${availableCommands[cmd].description}`, 'info');
-        addOutput(`Usage: ${availableCommands[cmd].usage}`, 'info');
+      const cmdDef = getCommand(cmd);
+      if (cmdDef) {
+        addOutput(`${cmd}: ${cmdDef.description}`, 'info');
+        addOutput(`Usage: ${cmdDef.usage}`, 'info');
       } else {
         addOutput(`Unknown command: ${cmd}`, 'error');
       }
     } else {
       addOutput('Available commands:', 'info');
-  Object.entries.forEach(([cmd, info]: [string, { description: string; usage: string; execute: (args: string[]) => void | Promise<void> }]) => {
-        addOutput(`  ${cmd.padEnd(10)} - ${info.description}`, 'info');
+      // iterate the array for help output
+      commands.forEach((c) => {
+        addOutput(`  ${c.name.padEnd(10)} - ${c.description}`, 'info');
       });
     }
   }
@@ -173,19 +155,19 @@
     }
     try {
       addOutput(`Searching database for: "${term}"`, 'info');
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
-        const result = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
+      const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint
+      if (response.ok) {
+        const result = await response.json();
         addOutput('=== SEARCH RESULTS ===', 'success');
-        if ((result as { results?: unknown }).results && (result as { results?: unknown }).results.length > 0) {
-          (result as { results?: unknown }).results.forEach((item: unknown, index: number) => {
-            addOutput(`${index + 1}. ${(item as { title?: unknown; name?: unknown }).title || (item as { title?: unknown; name?: unknown }).name || 'Untitled'}`, 'info');
+        if (Array.isArray(result.results) && result.results.length > 0) {
+          result.results.forEach((item: any, index: number) => {
+            addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info');
           });
         } else {
           addOutput('No results found.', 'info');
         }
       } else {
-        addOutput(`Search failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
+        addOutput(`Search failed: HTTP ${response.status}`, 'error');
       }
     } catch (error) {
       const e = error as Error;
@@ -201,13 +183,13 @@
       case 'health':
         try {
           addOutput('Checking cluster health...', 'info');
-          // removed unused response assignment
-          if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
-            const health = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
+          const response = await fetch('/api/yorha/cluster/health'); // minimal endpoint
+          if (response.ok) {
+            const health = await response.json();
             addOutput('=== CLUSTER HEALTH ===', 'success');
             addOutput(JSON.stringify(health, null, 2), 'info');
           } else {
-            addOutput(`Health check failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
+            addOutput(`Health check failed: HTTP ${response.status}`, 'error');
           }
         } catch (error) {
           const e = error as Error;
@@ -243,7 +225,7 @@
     addOutput('SvelteKit: 2.x', 'info');
     addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version : 'Browser'), 'info');
   }
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) { // use the passed event
     if (event.key === 'Enter' && !isExecuting) {
       executeCommand(currentInput);
     }
@@ -347,144 +329,195 @@
 
 <style>
   .yorha-terminal-page {
-/* @apply min-h-scree; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
   }
   /* Page Header */
   .yorha-page-header {
-/* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
+    padding: 3rem 1.5rem;
+    border-bottom: 1px solid rgba(250, 180, 50, 0.3);
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-header-content {
-/* @apply max-w-6xl mx-auto text-center; */
+    max-width: 72rem;
+    margin: 0 auto;
+    text-align: center;
   }
   .yorha-header-title h1 {
-/* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4; */
+    /* ...existing code... */
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
-/* @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2; */
+    font-size: 1.05rem;
+    color: #fbbf24;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-top: 0.5rem;
   }
   /* Terminal Section */
   .yorha-terminal-section {
-/* @apply p-6 max-w-6xl mx-auto space-y-6; */
+    padding: 1.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
   }
   .yorha-terminal-container {
-/* @apply bg-black border-2 border-amber-400 border-opacity-60; */
+    background: #000;
+    border: 2px solid rgba(250, 180, 50, 0.6);
+    border-radius: 8px;
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   /* Terminal Header */
   .yorha-terminal-header {
-/* @apply flex items-center justify-between px-4 py-2 bg-amber-400 text-black; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: rgba(250, 180, 50, 0.95);
+    color: #000;
   }
   .yorha-terminal-title {
-/* @apply flex items-center gap-2 font-mono text-sm font-bold; */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
   }
   .yorha-terminal-controls {
-/* @apply flex items-center gap-2; */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   .yorha-terminal-control {
-/* @apply p-1 hover:bg-black hover:bg-opacity-20 transition-color; */
+    padding: 0.25rem;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .yorha-terminal-control:hover {
+    background: rgba(0,0,0,0.12);
   }
   /* Terminal Output */
   .yorha-terminal-output {
-/* @apply p-4 h-96 overflow-y-auto font-mono text-sm; */
+    padding: 1rem;
+    height: 24rem;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.875rem;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.02) 100%);
   }
   .yorha-terminal-line {
-/* @apply flex gap-2 mb-1; */
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   .yorha-terminal-timestamp {
-/* @apply text-amber-400 opacity-60 text-x; */
+    color: #fbbf24;
+    opacity: 0.6;
+    font-size: 0.85rem;
   }
   .yorha-terminal-text {
-/* @apply flex-1; */
+    flex: 1;
+    word-break: break-word;
   }
-  .yorha-line-system {
-/* @apply text-amber-400; */
-  }
-  .yorha-line-user {
-/* @apply text-green-400; */
-  }
-  .yorha-line-success {
-/* @apply text-green-400; */
-  }
-  .yorha-line-error {
-/* @apply text-red-400; */
-  }
-  .yorha-line-info {
-/* @apply text-amber-300; */
-  }
+  .yorha-line-system { color: #fbbf24; }
+  .yorha-line-user { color: #7ee787; }
+  .yorha-line-success { color: #7ee787; }
+  .yorha-line-error { color: #ff7b7b; }
+  .yorha-line-info { color: #f8c77a; }
   .yorha-terminal-spinner {
-/* @apply inline-block; */
+    display: inline-block;
+    transform-origin: center;
     animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
   }
   /* Terminal Input */
   .yorha-terminal-input-container {
-/* @apply flex items-center border-t border-amber-400 border-opacity-30 bg-black bg-opacity-50; */
+    display: flex;
+    align-items: center;
+    border-top: 1px solid rgba(250, 180, 50, 0.3);
+    background: rgba(0,0,0,0.5);
+    padding: 0.125rem 0.5rem;
   }
   .yorha-terminal-prompt {
-/* @apply px-4 py-3 text-amber-400 font-mono text-sm flex items-center gap-2; */
+    padding: 0.5rem 0.75rem;
+    color: #fbbf24;
+    font-family: monospace;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   .yorha-terminal-input {
-/* @apply flex-1 px-2 py-3 bg-transparent text-amber-300 font-mono text-sm; */
-/* @apply focus:outline-none placeholder-amber-400 placeholder-opacity-50; */
-/* @apply disabled:opacity-50 disabled:cursor-not-allowed; */
+    flex: 1;
+    padding: 0.5rem;
+    background: transparent;
+    color: #f6d38b;
+    font-family: monospace;
+    font-size: 0.9rem;
+    border: none;
+    outline: none;
+  }
+  .yorha-terminal-input::placeholder {
+    color: rgba(251, 191, 36, 0.6);
   }
   /* Command Reference */
   .yorha-command-reference {
-/* @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6; */
+    background: #0b0b0b;
+    border: 1px solid rgba(250, 180, 50, 0.3);
+    padding: 1.25rem;
+    border-radius: 8px;
+    height: fit-content;
   }
   .yorha-command-reference h3 {
-/* @apply text-lg font-bold text-amber-400 mb-4 tracking-wider; */
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fbbf24;
+    margin-bottom: 0.75rem;
   }
   .yorha-command-grid {
-/* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3; */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
   .yorha-command-item {
-/* @apply text-amber-300 text-sm font-monone; */
+    color: #f6d38b;
+    font-size: 0.9rem;
+    font-family: monospace;
   }
   .yorha-command-item strong {
-/* @apply text-amber-400; */
+    color: #fbbf24;
   }
   @keyframes spin {
-    0% {
-      content: '⠋';
-    }
-    12.5% {
-      content: '⠙';
-    }
-    25% {
-      content: '⠹';
-    }
-    37.5% {
-      content: '⠸';
-    }
-    50% {
-      content: '⠼';
-    }
-    62.5% {
-      content: '⠴';
-    }
-    75% {
-      content: '⠦';
-    }
-    87.5% {
-      content: '⠧';
-    }
-    100% {
-      content: '⠇';
-    }
+    to { transform: rotate(360deg); }
   }
   /* Responsive */
   @media (max-width: 768px) {
     .yorha-header-title h1 {
-/* @apply text-2xl flex-col; */
+      font-size: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .yorha-terminal-output {
-/* @apply h-64; */
+      height: 16rem;
     }
     .yorha-command-grid {
-/* @apply grid-cols-1 gap-2; */
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .yorha-terminal-section {
+      grid-template-columns: 1fr;
     }
   }
 </style>
+

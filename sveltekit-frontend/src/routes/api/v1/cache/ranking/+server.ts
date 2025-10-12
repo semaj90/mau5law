@@ -10,31 +10,39 @@ import {
   type CanonicalResult,
   type RankingSet
 } from '$lib/services/canonical-result-cache.js'
-import { enhancedRAGService } from '$lib/services/enhanced-rag-service.js'
+// Add a precise type for incoming results to avoid `any`
+type RawCanonicalResult = {
+	docId: string | number;
+	score: number;
+	flags?: number;
+	summaryHash?: string;
+	targetUrlId?: string | number | null;
+	metadata?: Record<string, unknown> | null;
+};
 // GET /api/v1/cache/ranking?key=X&metadata=true&limit=10
 export const GET: RequestHandler = async ({ url, request }) => {
-  const startTime = performance.now()
+  const startTime = performance.now();
   try {
     // Extract query parameters
-    const slotKey = url.searchParams.get('key')
-    const includeMetadata = url.searchParams.get('metadata') === 'true'
-    const limit = parseInt(url.searchParams.get('limit') || '0') || undefined
+    const slotKey = url.searchParams.get('key');
+    const includeMetadata = url.searchParams.get('metadata') === 'true';
+    const limit = parseInt(url.searchParams.get('limit') || '0') || undefined;
     // Validate slot key
     if (!slotKey || slotKey.length !== 1) {
       throw error(
         400,
         makeHttpErrorPayload({
           message: 'Invalid or missing slot key - must be single character',
-          code: 'INVALID_SLOT_KEY'
+          code: 'INVALID_SLOT_KEY',
         })
-      )
+      );
     }
     // Check if client prefers binary response
-    const acceptHeader = request.headers.get('accept') || ''
-    const preferBinary = acceptHeader.includes('application/octet-stream')
+    const acceptHeader = request.headers.get('accept') || '';
+    const preferBinary = acceptHeader.includes('application/octet-stream');
     // Attempt to retrieve from cache
-    const rankingSet = await canonicalResultCache.retrieveRankingSet(slotKey)
-    const latency = performance.now() - startTime
+    const rankingSet = await canonicalResultCache.retrieveRankingSet(slotKey);
+    const latency = performance.now() - startTime;
     if (!rankingSet) {
       // Cache miss - return 404 with metrics
       throw error(
@@ -43,14 +51,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
           message: 'Ranking set not found for slot key',
           code: 'CACHE_MISS',
           slotKey,
-          latencyMs: latency
+          latencyMs: latency,
         })
-      )
+      );
     }
     // Apply result limit if specified
-    let results = rankingSet.results
+    let results = rankingSet.results;
     if (limit && limit > 0 && limit < results.length) {
-      results = results.slice(0, limit)
+      results = results.slice(0, limit);
     }
     // Prepare response
     const responseData = {
@@ -59,23 +67,22 @@ export const GET: RequestHandler = async ({ url, request }) => {
       metadata: includeMetadata
         ? {
             slotKey,
-            cacheHit: true
-            latencyMs: latency
+            cacheHit: true,
+            latencyMs: latency,
             compressionRatio: undefined, // Will be calculated if binary
             resultCount: results.length,
             totalResultCount: rankingSet.results.length,
-            truncated: limit ? results.length < rankingSet.results.length: false
+            truncated: limit ? results.length < rankingSet.results.length : false,
           }
-        : undefined
-    }
+        : undefined,
+    };
     // Return binary response if requested
     if (preferBinary) {
-      const binaryData = await packRankingSetToBinary(responseData as RankingSet)
+      const binaryData = await packRankingSetToBinary(responseData as RankingSet);
       // Normalize to ArrayBuffer to avoid SharedArrayBuffer typing issues, then wrap in a Blob
       const arrayBuffer =
-        binaryData.buffer instanceof ArrayBuffer
-          ? binaryData.buffer: Uint8Array.from(binaryData).buffer
-      const body = new Blob([arrayBuffer])
+        binaryData.buffer instanceof ArrayBuffer ? binaryData.buffer : Uint8Array.from(binaryData).buffer;
+      const body = new Blob([arrayBuffer]);
       return new Response(body, {
         status: 200,
         headers: {
@@ -83,9 +90,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
           'X-Cache-Status': 'hit',
           'X-Latency-Ms': latency.toString(),
           'X-Result-Count': results.length.toString(),
-          'Cache-Control': 'max-age=30, public'
-        }
-      })
+          'Cache-Control': 'max-age=30, public',
+        },
+      });
     }
     // Return JSON response
     return json(responseData, {
@@ -94,110 +101,114 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Cache-Status': 'hit',
         'X-Latency-Ms': latency.toString(),
         'X-Result-Count': results.length.toString(),
-        'Cache-Control': 'max-age=30, public'
-      }
-    })
+        'Cache-Control': 'max-age=30, public',
+      },
+    });
   } catch (err) {
-    const latency = performance.now() - startTime
+    const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
       // SvelteKit error - re-throw
-      throw err
+      throw err;
     }
     // Unexpected error
-    console.error('Cache ranking retrieval failed:', err)
+    console.error('Cache ranking retrieval failed:', err);
     throw error(
       500,
       makeHttpErrorPayload({
         message: 'Internal cache error',
         code: 'CACHE_ERROR',
-        latencyMs: latency
+        latencyMs: latency,
       })
-    )
+    );
   }
-}
+};
 // POST /api/v1/cache/ranking - Store new ranking set
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now()
+  const startTime = performance.now();
   try {
-    const body = await request.json()
+    const body = await request.json();
     // Validate required fields
     if (!body.query || !Array.isArray(body.results)) {
       throw error(
         400,
         makeHttpErrorPayload({
           message: 'Missing required fields: query and results array',
-          code: 'INVALID_REQUEST_BODY'
+          code: 'INVALID_REQUEST_BODY',
         })
-      )
+      );
     }
     // Validate results format
-    const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
-      if (!(result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId || typeof (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score !== 'number') {
+    const results: CanonicalResult[] = body.results.map((result: unknown, index: number) => {
+      const r = result as Partial<RawCanonicalResult>;
+      // Validate required fields
+      if (!r.docId || typeof r.score !== 'number') {
         throw error(
           400,
           makeHttpErrorPayload({
             message: `Invalid result at index ${index}: missing docId or score`,
-            code: 'INVALID_RESULT_FORMAT'
+            code: 'INVALID_RESULT_FORMAT',
           })
-        )
+        );
       }
+      // Construct CanonicalResult with safe defaults and clamped score
+      const score = Math.max(0, Math.min(1, r.score as number));
       return {
-        docId: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId,
-        score: Math.max(0, Math.min(1, (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score)), // Clamp to [0, 1]
-        flags: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).flags || 0,
-        summaryHash: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).summaryHash || '',
-        targetUrlId: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).targetUrlId,
-        metadata: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).metadata
-      }
-    })
+        docId: String(r.docId),
+        score,
+        flags: typeof r.flags === 'number' ? r.flags : 0,
+        summaryHash: typeof r.summaryHash === 'string' ? r.summaryHash : '',
+        targetUrlId: r.targetUrlId ?? undefined,
+        metadata: (r.metadata ?? undefined) as Record<string, unknown> | undefined,
+      };
+    });
     // Create ranking set
     const rankingSet: RankingSet = {
       results,
       query: body.query,
       totalResults: body.totalResults || results.length,
       timestamp: Date.now(),
-      version: body.version || 1
-    }
+      version: body.version || 1,
+    };
     // Store in cache and get slot key
-    const slotKey = await canonicalResultCache.storeRankingSet(rankingSet)
-    const latency = performance.now() - startTime
-    // Return slot key and metadata
-    return json()
-      {
-        success: true,
-        slotKey,
-        metadata,: {
-          resultCount: results.length,
-          latencyMs,: latency
-          cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
-          expiresAt,: Date.now() + 30 * 1000, // 30 seconds TTL
-        }
+    const slotKey = await canonicalResultCache.storeRankingSet(rankingSet);
+    const latency = performance.now() - startTime;
+
+    // Return slot key and metadata (fixed payload and json(...) call)
+    const payload = {
+      success: true,
+      slotKey,
+      metadata: {
+        resultCount: results.length,
+        latencyMs: latency,
+        cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
+        expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL
       },
-      {
-        status: 201,
-        headers,: {
-          'X-Slot-Key',: slotKey
-          'X-Latency-Ms',: latency.toString(),
-          'X-Result-Count',: results.length.toString()
-        }
-      }
-    )
-  }, catch (err) {
-    const latency = performance.now() - startTime
+    };
+
+    return json(payload, {
+      status: 201,
+      headers: {
+        'X-Slot-Key': slotKey,
+        'X-Latency-Ms': latency.toString(),
+        'X-Result-Count': results.length.toString(),
+      },
+    });
+  } catch (err) {
+    const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
-      throw err
+      throw err;
     }
-    console.error('Cache ranking storage failed:', err)
+    console.error('Cache ranking storage failed:', err);
     throw error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to store ranking set',
         code: 'STORAGE_ERROR',
-        latencyMs: latency
+        latencyMs: latency,
       })
-    )
+    );
   }
-}
+};
 // DELETE /api/v1/cache/ranking - Clear cache
 export const DELETE: RequestHandler = async ({ url }) => {
   const startTime = performance.now()
