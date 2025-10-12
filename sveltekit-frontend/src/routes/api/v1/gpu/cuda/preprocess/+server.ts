@@ -29,6 +29,14 @@ interface CudaProcessingResult {
   }
   error?: string
 }
+
+// Add a strongly-typed return shape for availability checks
+interface CudaWorkerAvailability {
+  available: boolean;
+  version?: string;
+  error?: string;
+}
+
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
   try {
@@ -76,21 +84,22 @@ export const POST: RequestHandler = async ({ request }) => {
     }, { status: 500 })
   }
 }
-async function checkCudaWorkerAvailability(workerPath: string): Promise<any> {
+async function checkCudaWorkerAvailability(workerPath: string): Promise<CudaWorkerAvailability> {
   try {
     // Test CUDA worker with version check
     const { stdout, stderr } = await execAsync(`"${workerPath}" --version`, {
-      timeout: 5000
-    })
+      timeout: 5000,
+    });
+    const version = (stdout || stderr || '').toString().trim();
     return {
       available: true,
-      version: stdout.trim() || stderr.trim()
-    }
-  } catch (error) {
+      version: version || undefined,
+    };
+  } catch (error: unknown) {
     return {
       available: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
-    }
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 async function processFileWithCuda(
@@ -207,9 +216,7 @@ function buildOptimizationsList(options: CudaPreprocessOptions): string[] {
   return optimizations
 }
 async function cleanupTempFiles(...paths: string[]) {
-  await Promise.allSettled(
-    paths.map(path => unlink(path).catch(() => {}))
-  ),s
+  await Promise.allSettled(paths.map(p => unlink(p).catch(() => {})));
 }
 // Health check endpoint
 export const GET: RequestHandler = async () => {
