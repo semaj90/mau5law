@@ -16,15 +16,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // Optionally compute embedding synchronously for small chunks (and also enqueue)
     try {
       const model =
-        payload?.model ||
-        process.env.EMBED_MODEL ||
-        process.env.PUBLIC_EMBED_MODEL ||
-        'nomic-embed-text'
+        payload?.model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'embeddinggemma:latest';
       const { embeddings } = await embedText(fetch, [text], model)
       const embed = embeddings[0]
       await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000)
-    } catch (err: any) {
-      console.warn('embed failed (will enqueue):', err?.message || err)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.warn('embed failed (will enqueue):', msg)
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
     }
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
@@ -38,16 +36,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       // Fall back to Redis list-based queue
       try {
         if (cache.client) {
-          await cache.rpush('embedding:jobs', JSON.stringify(job)
-          console.log('📤 Enqueued job to Redis list: ', id)
+          await cache.rpush('embedding:jobs', JSON.stringify(job));
+          console.log('📤 Enqueued job to Redis list:', id);
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message: String(err)
+        const msg = err instanceof Error ? err.message : String(err);
         console.warn('Failed to enqueue job to Redis as fallback:', msg)
       }
     }
     return json({ ok: true, id }, { status: 202 })
-  } catch (err: any) {
-    return json({ ok: false, error: err.message || String(err) }, { status: 500 })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return json({ ok: false, error: msg }, { status: 500 })
   }
 }

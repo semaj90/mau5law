@@ -285,21 +285,139 @@ DROP TABLE "vector_metadata" CASCADE;--> statement-breakpoint
 ALTER TABLE "cases" DROP CONSTRAINT IF EXISTS "cases_case_number_unique";--> statement-breakpoint
 ALTER TABLE "evidence_vectors" DROP CONSTRAINT IF EXISTS "evidence_vectors_evidence_id_evidence_id_fk";--> statement-breakpoint
 --> statement-breakpoint
--- ALTER TABLE "cases" ALTER COLUMN "id" SET DATA TYPE serial;--> statement-breakpoint
+-- Migration intent: make cases.id use a sequence (serial shorthand). The following
+-- idempotent sequence steps are provided but left commented out to preserve intent.
+-- DO $$
+-- BEGIN
+--   IF NOT EXISTS (
+--     SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+--     WHERE c.relkind = 'S' AND c.relname = 'cases_id_seq'
+--   ) THEN
+--     CREATE SEQUENCE IF NOT EXISTS cases_id_seq;
+--   END IF;
+--   IF EXISTS (
+--     SELECT 1 FROM information_schema.columns
+--     WHERE table_name = 'cases' AND column_name = 'id'
+--   ) THEN
+--     ALTER TABLE "cases" ALTER COLUMN "id" TYPE integer USING "id"::integer;
+--     PERFORM setval('cases_id_seq', COALESCE((SELECT MAX(id) FROM "cases"), 0) + 1, false);
+--     ALTER SEQUENCE cases_id_seq OWNED BY "cases"."id";
+--     ALTER TABLE "cases" ALTER COLUMN "id" SET DEFAULT nextval('cases_id_seq');
+--   END IF;
+-- END
+-- $$;
+--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "status" SET DATA TYPE varchar(50);--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "status" SET DEFAULT 'active';--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "metadata" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "cases" ALTER COLUMN "metadata" DROP NOT NULL;--> statement-breakpoint
-ALTER TABLE "document_chunks" ALTER COLUMN "id" SET DATA TYPE serial;--> statement-breakpoint
+-- Make `id` use a sequence (serial is a convenience, not a real type).
+-- Use an idempotent block: create sequence if missing, ensure integer type, set ownership
+DO $$
+DECLARE
+	_col_type text;
+BEGIN
+	-- Only proceed if the table/column exist
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_name = 'document_chunks' AND column_name = 'id'
+	) THEN
+		SELECT data_type INTO _col_type FROM information_schema.columns
+		WHERE table_name = 'document_chunks' AND column_name = 'id' LIMIT 1;
+
+		-- Only convert/cast to integer if the current type is integer-compatible
+		IF _col_type IN ('integer','smallint','bigint','numeric') THEN
+			-- create sequence if it doesn't exist
+			IF NOT EXISTS (
+				SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+				WHERE c.relkind = 'S' AND c.relname = 'document_chunks_id_seq'
+			) THEN
+				CREATE SEQUENCE IF NOT EXISTS document_chunks_id_seq;
+			END IF;
+
+			-- Safe cast to integer using USING only when type is numeric-like
+			ALTER TABLE "document_chunks" ALTER COLUMN "id" TYPE integer USING "id"::integer;
+
+			-- Initialize sequence value to max(id)+1 or 1 when table empty
+			PERFORM setval('document_chunks_id_seq', COALESCE((SELECT MAX(id) FROM "document_chunks"), 0) + 1, false);
+
+			-- Make sequence owned by the table column and set default
+			ALTER SEQUENCE document_chunks_id_seq OWNED BY "document_chunks"."id";
+			ALTER TABLE "document_chunks" ALTER COLUMN "id" SET DEFAULT nextval('document_chunks_id_seq');
+		ELSE
+			RAISE NOTICE 'Skipping document_chunks.id -> integer/sequence migration because column type is %', _col_type;
+		END IF;
+	END IF;
+END
+$$;
+--> statement-breakpoint
 ALTER TABLE "document_chunks" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint
-ALTER TABLE "document_chunks" ALTER COLUMN "document_id" SET DATA TYPE integer;--> statement-breakpoint
-ALTER TABLE "document_chunks" ALTER COLUMN "embedding" SET DATA TYPE vector(384);--> statement-breakpoint
+DO $$
+DECLARE
+	_col_type text;
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_name = 'document_chunks' AND column_name = 'document_id'
+	) THEN
+		SELECT data_type INTO _col_type FROM information_schema.columns
+		WHERE table_name = 'document_chunks' AND column_name = 'document_id' LIMIT 1;
+
+		IF _col_type IN ('integer','smallint','bigint','numeric') THEN
+			ALTER TABLE "document_chunks" ALTER COLUMN "document_id" TYPE integer USING "document_id"::integer;
+		ELSE
+			RAISE NOTICE 'Skipping conversion of document_chunks.document_id to integer because column type is %', _col_type;
+		END IF;
+	END IF;
+END
+$$;
+--> statement-breakpoint
+DO $$
+DECLARE _col_type text;
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns WHERE table_name='document_chunks' AND column_name='embedding'
+	) THEN
+		SELECT data_type INTO _col_type FROM information_schema.columns WHERE table_name='document_chunks' AND column_name='embedding' LIMIT 1;
+		IF _col_type = 'ARRAY' OR _col_type = 'text' OR _col_type = 'json' OR _col_type = 'jsonb' THEN
+			-- Try a direct cast using USING, might still fail if incompatible
+			BEGIN
+				ALTER TABLE "document_chunks" ALTER COLUMN "embedding" TYPE vector(384) USING "embedding"::vector(384);
+			EXCEPTION WHEN others THEN
+				RAISE NOTICE 'Skipping embedding conversion for document_chunks: column type % cannot be cast to vector(384) automatically', _col_type;
+			END;
+		ELSE
+			RAISE NOTICE 'Skipping embedding conversion for document_chunks: unsupported column type %', _col_type;
+		END IF;
+	END IF;
+END
+$$;
+--> statement-breakpoint
 ALTER TABLE "document_chunks" ALTER COLUMN "embedding" DROP NOT NULL;--> statement-breakpoint
 ALTER TABLE "document_chunks" ALTER COLUMN "metadata" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "document_chunks" ALTER COLUMN "metadata" DROP NOT NULL;--> statement-breakpoint
 ALTER TABLE "evidence_vectors" ALTER COLUMN "evidence_id" SET NOT NULL;--> statement-breakpoint
-ALTER TABLE "evidence_vectors" ALTER COLUMN "embedding" SET DATA TYPE vector(384);--> statement-breakpoint
+DO $$
+DECLARE _col_type text;
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns WHERE table_name='evidence_vectors' AND column_name='embedding'
+	) THEN
+		SELECT data_type INTO _col_type FROM information_schema.columns WHERE table_name='evidence_vectors' AND column_name='embedding' LIMIT 1;
+		IF _col_type = 'ARRAY' OR _col_type = 'text' OR _col_type = 'json' OR _col_type = 'jsonb' THEN
+			BEGIN
+				ALTER TABLE "evidence_vectors" ALTER COLUMN "embedding" TYPE vector(384) USING "embedding"::vector(384);
+			EXCEPTION WHEN others THEN
+				RAISE NOTICE 'Skipping embedding conversion for evidence_vectors: column type % cannot be cast to vector(384) automatically', _col_type;
+			END;
+		ELSE
+			RAISE NOTICE 'Skipping embedding conversion for evidence_vectors: unsupported column type %', _col_type;
+		END IF;
+	END IF;
+END
+$$;
+--> statement-breakpoint
 ALTER TABLE "evidence_vectors" ALTER COLUMN "metadata" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "evidence_vectors" ALTER COLUMN "metadata" DROP NOT NULL;--> statement-breakpoint
 ALTER TABLE "cases" ADD COLUMN "uuid" varchar(36) NOT NULL;--> statement-breakpoint

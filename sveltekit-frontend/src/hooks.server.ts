@@ -1,8 +1,24 @@
 // src/hooks.server.ts - SvelteKit 2 hooks with production-ready error handling
 import type { Handle } from '@sveltejs/kit';
 
+// Minimal Lucia auth surface used by this file
+type SessionShape = { id: string; fresh?: boolean };
+interface CookieShape {
+  name: string;
+  value: string;
+  // widened to accept external cookie attribute shapes (e.g. Lucia's CookieAttributes)
+  // use `unknown` instead of `any` to satisfy lint/type rules while allowing arbitrary shapes
+  attributes?: Record<string, unknown>;
+}
+interface LuciaAuth {
+  sessionCookieName: string;
+  validateSession(sessionId: string): Promise<{ session: SessionShape | null; user: DatabaseUser | null }>;
+  createBlankSessionCookie(): CookieShape;
+  createSessionCookie(sessionId: string): CookieShape;
+}
+
 // SvelteKit 2 compatible: Dynamic auth and route config imports with fallback
-let lucia: any = null;
+let lucia: LuciaAuth | null = null;
 let authEnabled = false;
 let legacyRouteMapping: Record<string, string> = {};
 
@@ -30,15 +46,30 @@ async function initializeAuth() {
   if (authEnabled) return { lucia, enabled: true };
 
   try {
-    console.log('🔍 [hooks.server] Attempting to load auth module...');
+    console.log('[hooks.server] Loading auth module...');
     const authModule = await import('$lib/server/auth');
-    lucia = authModule.lucia;
+    lucia = authModule.lucia as unknown as LuciaAuth;
     authEnabled = true;
-    console.log('✅ [hooks.server] Lucia auth initialized');
+    console.log('[hooks.server] Auth module loaded');
     return { lucia, enabled: true };
   } catch (error) {
+    // Try to log the error to Redis, but don't let logging failure break auth fallback
+    try {
+      const { logErrorToRedis } = await import('$lib/server/logging/redis-logger');
+      await logErrorToRedis({
+        source: 'hooks.server',
+        level: 'error',
+        event: 'auth_load_failed',
+        message: 'Auth module failed to load',
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
+      });
+    } catch (logErr: unknown) {
+      console.error('[hooks.server] Failed to log error to Redis:', logErr);
+    }
+
     console.error('❌ [hooks.server] Auth module failed to load:', error);
-    console.warn('⚠️ [hooks.server] Auth unavailable, continuing without authentication');
+    console.warn('[hooks.server] Auth unavailable, continuing without authentication');
     return { lucia: null, enabled: false };
   }
 }
@@ -100,6 +131,23 @@ export const handle: Handle = async ({ event, resolve }) => {
     return resolve(event);
   }
 
+  // Dev bypass helper: populate locals.user when DEV_BYPASS_AUTH=true
+  try {
+    if (process.env.DEV_BYPASS_AUTH === 'true') {
+      // lightweight dev stub user - must match shape used by app
+      event.locals.user = {
+        id: 'dev-user-1',
+        email: 'dev@local.test',
+        role: 'admin',
+      };
+      event.locals.session = { id: 'dev-session-1', fresh: true };
+      return resolve(event);
+    }
+  } catch (e) {
+    // ignore dev bypass errors and continue to normal flow
+    console.warn('⚠️ [hooks.server] Dev bypass check failed:', e);
+  }
+
   const url = event.url;
   const pathname = url.pathname;
 
@@ -135,8 +183,8 @@ export const handle: Handle = async ({ event, resolve }) => {
     }
 
     // Validate session with nested error handling
-    let session = null;
-    let user = null;
+    let session: SessionShape | null = null;
+    let user: DatabaseUser | null = null;
 
     try {
       const result = await lucia.validateSession(sessionId);

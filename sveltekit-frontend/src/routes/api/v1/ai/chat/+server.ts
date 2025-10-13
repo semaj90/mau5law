@@ -1,12 +1,13 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { ensureError } from '$lib/utils/ensure-error';
 
 // Unified AI Chat Endpoint - Consolidates all chat variants
 // Supports multiple models, streaming, and backends
 
 interface ChatRequest {
   messages: ChatMessage[];
-  model?: 'gemma:legal' | 'gemma3:latest' | 'gemma-270m-fast' | 'gemma-270m-context';
+  model?: 'gemma3-legal:latest-optimized' | 'gemma3-legal:latest' | 'gemma-270m-fast' | 'gemma-270m-context';
   temperature?: number;
   maxTokens?: number;
   stream?: boolean;
@@ -33,6 +34,15 @@ interface ChatResponse {
     total: number;
   };
 }
+
+// Add a concrete type for inference results to avoid `any`
+type ChatInferenceResult = {
+  text: string;
+  model?: string;
+  backend?: string;
+  tokens?: number;
+  usage?: { prompt: number; completion: number; total: number };
+};
 
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = performance.now();
@@ -74,7 +84,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       maxTokens = 1000,
       stream = false,
       systemPrompt,
-      backend = 'ollama'
+      backend = 'ollama',
     } = requestData;
 
     // Validate parameters
@@ -102,7 +112,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       temperature,
       maxTokens,
       systemPrompt,
-      backend
+      backend,
     });
 
     const processingTime = performance.now() - startTime;
@@ -112,14 +122,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       message: {
         role: 'assistant',
         content: chatResult.text,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       model: chatResult.model || model,
       backend: chatResult.backend || backend,
       tokens: chatResult.tokens,
       processingTime: Math.round(processingTime),
       qualityScore: calculateChatQualityScore(chatResult.text, userMessage.content),
-      usage: chatResult.usage
+      usage: chatResult.usage,
     };
 
     return json(response, {
@@ -128,27 +138,50 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Model-Used': response.model,
-        'X-Backend-Used': response.backend
-      }
+        'X-Backend-Used': response.backend,
+      },
     });
-
-  } catch (err: any) {
+  } catch (err: unknown) {
     const processingTime = performance.now() - startTime;
-    console.error('Chat error:', err);
+    const e = ensureError(err);
+    console.error('Chat error:', e);
+
+    // Determine numeric HTTP status if present on the thrown object
+    let status = 500;
+    if (typeof err === 'object' && err !== null) {
+      const maybeStatus = (err as { status?: unknown }).status;
+      if (typeof maybeStatus === 'number') {
+        status = maybeStatus;
+      }
+    }
+
+    // Try to extract a public message (e.g. from SvelteKit HttpError body) without using `any`
+    let publicMessage: string | undefined;
+    if (typeof err === 'object' && err !== null) {
+      const maybeBody = (err as { body?: unknown }).body;
+      if (
+        maybeBody &&
+        typeof maybeBody === 'object' &&
+        'message' in maybeBody &&
+        typeof (maybeBody as { message?: unknown }).message === 'string'
+      ) {
+        publicMessage = (maybeBody as { message: string }).message;
+      }
+    }
 
     const errorResponse = {
-      error: err.status ? err.body?.message || 'Chat request failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
+      error: status !== 500 ? publicMessage || 'Chat request failed' : 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? e.message : undefined,
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {
-      status: err.status || 500,
+      status,
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
 };
@@ -177,12 +210,12 @@ async function handleStreamingChat(params: {
           const chunk = {
             delta: {
               role: i === 0 ? 'assistant' : undefined,
-              content: chunks[i]
+              content: chunks[i],
             },
             model: result.model,
             backend: result.backend,
             index: i,
-            finished: i === chunks.length - 1
+            finished: i === chunks.length - 1,
           };
 
           const chunkData = `data: ${JSON.stringify(chunk)}\n\n`;
@@ -196,13 +229,14 @@ async function handleStreamingChat(params: {
         const finalChunk = `data: {"finished": true, "usage": ${JSON.stringify(result.usage)}}\n\n`;
         controller.enqueue(encoder.encode(finalChunk));
         controller.close();
-
-      } catch (error) {
-        const errorChunk = `data: {"error": "${error.message}"}\n\n`;
-        controller.enqueue(encoder.encode(errorChunk));
+      } catch (err: unknown) {
+        // Normalize unknown error and send a JSON-safe SSE error chunk
+        const e = ensureError(err);
+        const payload = { error: e.message ?? 'Unknown error' };
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
         controller.close();
       }
-    }
+    },
   });
 
   return new Response(stream, {
@@ -211,8 +245,8 @@ async function handleStreamingChat(params: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*'
-    }
+      'Access-Control-Allow-Origin': '*',
+    },
   });
 }
 
@@ -224,13 +258,7 @@ async function executeChatInference(params: {
   maxTokens: number;
   systemPrompt?: string;
   backend: string;
-}): Promise<{
-  text: string;
-  model?: string;
-  backend?: string;
-  tokens?: number;
-  usage?: { prompt: number; completion: number; total: number };
-}> {
+}): Promise<ChatInferenceResult> {
   const { messages, model, temperature, maxTokens, systemPrompt, backend } = params;
 
   try {
@@ -260,7 +288,7 @@ async function executeOllamaChat(
   temperature: number,
   maxTokens: number,
   systemPrompt?: string
-): Promise<any> {
+): Promise<ChatInferenceResult> {
   const ollamaEndpoint = process.env.OLLAMA_URL || 'http://localhost:11434';
 
   // Build chat context
@@ -279,47 +307,155 @@ async function executeOllamaChat(
     prompt,
     options: {
       temperature,
-      num_predict: maxTokens
+      num_predict: maxTokens,
     },
-    stream: false
+    stream: false,
   };
 
   const response = await fetch(`${ollamaEndpoint}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(ollamaRequest),
-    signal: AbortSignal.timeout(60000) // 60 second timeout
+    signal: AbortSignal.timeout(60000), // 60 second timeout
   });
 
   if (!response.ok) {
     throw new Error(`Ollama API error: ${response.status}`);
   }
 
-  const result = await response.json();
+  // Narrow the shape of the response rather than using `any`
+  type OllamaResponse = {
+    response?: string;
+    model?: string;
+    eval_count?: number;
+    prompt_eval_count?: number;
+  };
+
+  const result = (await response.json()) as unknown as OllamaResponse;
+
+  const evalCount = typeof result.eval_count === 'number' ? result.eval_count : undefined;
+  const promptEval = typeof result.prompt_eval_count === 'number' ? result.prompt_eval_count : 0;
 
   return {
     text: result.response || 'No response generated',
     model: result.model || model,
     backend: 'ollama',
-    tokens: result.eval_count,
-    usage: result.eval_count ? {
-      prompt: result.prompt_eval_count || 0,
-      completion: result.eval_count || 0,
-      total: (result.prompt_eval_count || 0) + (result.eval_count || 0)
-    } : undefined
+    tokens: evalCount,
+    usage: evalCount
+      ? {
+          prompt: promptEval,
+          completion: evalCount,
+          total: promptEval + evalCount,
+        }
+      : undefined,
   };
 }
 
-// TensorRT chat implementation (placeholder)
+// TensorRT chat implementation
+// Calls a local TensorRT-backed LLM service. The service URL may be set via
+// the TRTLLM_URL environment variable (default: http://localhost:8000).
 async function executeTensorRTChat(
   messages: ChatMessage[],
   model: string,
   temperature: number,
   maxTokens: number,
   systemPrompt?: string
-): Promise<any> {
-  // TODO: Implement TensorRT-LLM integration
-  throw new Error('TensorRT backend not yet implemented');
+): Promise<ChatInferenceResult> {
+  const trtEndpoint = process.env.TRTLLM_URL || 'http://localhost:8000';
+
+  // --- Safe extractors to avoid `any` usage ---
+  function getField<T>(obj: unknown, path: string): T | undefined {
+    if (!obj || typeof obj !== 'object') return undefined;
+    const parts = path.split('.');
+    let cur: unknown = obj;
+    for (const part of parts) {
+      if (!cur || typeof cur !== 'object') return undefined;
+      cur = (cur as Record<string, unknown>)[part];
+    }
+    return cur as T | undefined;
+  }
+
+  try {
+    const res = await fetch(`${trtEndpoint.replace(/\/+$/, '')}/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        prompt: (() => {
+          let p = '';
+          if (systemPrompt) p += `System: ${systemPrompt}\n\n`;
+          for (const msg of messages) {
+            p += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n\n`;
+          }
+          p += 'Assistant: ';
+          return p;
+        })(),
+        options: { temperature, max_tokens: maxTokens },
+      }),
+      signal: AbortSignal.timeout(60000),
+    });
+
+    if (!res.ok) {
+      // Try to pick a helpful error message from the body when available
+      let bodyText: string | undefined;
+      try {
+        const t = await res.text();
+        bodyText = t && t.length > 0 ? t : undefined;
+      } catch {
+        /* ignore */
+      }
+      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : ''}`);
+    }
+
+    const data = (await res.json()) as unknown;
+
+    // Use the getField helper declared above (removed inner declaration)
+    const text =
+      getField<string>(data, 'text') ??
+      getField<string>(data, 'response') ??
+      getField<string>(data, 'result.text') ??
+      'No response generated';
+
+    const modelUsed = getField<string>(data, 'model') ?? model;
+
+    const tokensCandidate =
+      getField<number>(data, 'tokens') ?? getField<number>(data, 'token_count') ?? getField<number>(data, 'eval_count');
+    const tokens = typeof tokensCandidate === 'number' ? Number(tokensCandidate) : undefined;
+
+    const usageRaw = getField<unknown>(data, 'usage');
+    let usage: { prompt: number; completion: number; total: number } | undefined = undefined;
+
+    if (usageRaw && typeof usageRaw === 'object') {
+      const maybePrompt = (usageRaw as Record<string, unknown>)['prompt'];
+      const maybeCompletion = (usageRaw as Record<string, unknown>)['completion'];
+      const maybeTotal = (usageRaw as Record<string, unknown>)['total'];
+
+      const promptNum = typeof maybePrompt === 'number' ? maybePrompt : undefined;
+      const completionNum = typeof maybeCompletion === 'number' ? maybeCompletion : undefined;
+      const totalNum = typeof maybeTotal === 'number' ? maybeTotal : undefined;
+
+      if (promptNum !== undefined || completionNum !== undefined || totalNum !== undefined) {
+        usage = {
+          prompt: promptNum ?? 0,
+          completion: completionNum ?? 0,
+          total: totalNum ?? (promptNum ?? 0) + (completionNum ?? 0),
+        };
+      }
+    }
+
+    return {
+      text,
+      model: modelUsed,
+      backend: 'tensorrt',
+      tokens,
+      usage,
+    };
+  } catch (err: unknown) {
+    // Bubble up a normalized error for the caller to handle; keep details in logs
+    const e = ensureError(err);
+    console.error('TensorRT chat error:', e);
+    throw new Error(`TensorRT chat failed: ${e.message}`);
+  }
 }
 
 // Mock chat for development/fallback
@@ -327,7 +463,7 @@ async function executeMockChat(
   messages: ChatMessage[],
   model: string,
   maxTokens: number
-): Promise<any> {
+): Promise<ChatInferenceResult> {
   const userMessage = messages[messages.length - 1].content;
 
   // Simulate processing time
@@ -337,11 +473,14 @@ async function executeMockChat(
   let mockResponse = '';
 
   if (userMessage.toLowerCase().includes('legal')) {
-    mockResponse = 'I understand you\'re asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.';
+    mockResponse =
+      "I understand you're asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.";
   } else if (userMessage.toLowerCase().includes('contract')) {
-    mockResponse = 'Regarding the contract terms you\'ve mentioned, it\'s important to carefully review all clauses and obligations. Key areas to focus on include performance requirements, termination conditions, and dispute resolution mechanisms. Consider having a legal professional review the agreement before signing.';
+    mockResponse =
+      "Regarding the contract terms you've mentioned, it's important to carefully review all clauses and obligations. Key areas to focus on include performance requirements, termination conditions, and dispute resolution mechanisms. Consider having a legal professional review the agreement before signing.";
   } else if (userMessage.toLowerCase().includes('evidence')) {
-    mockResponse = 'The evidence you\'ve described could be significant to your case. Proper documentation and chain of custody are crucial for admissibility in legal proceedings. I recommend organizing all relevant materials chronologically and ensuring they\'re preserved in their original format.';
+    mockResponse =
+      "The evidence you've described could be significant to your case. Proper documentation and chain of custody are crucial for admissibility in legal proceedings. I recommend organizing all relevant materials chronologically and ensuring they're preserved in their original format.";
   } else {
     mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;
   }
@@ -362,8 +501,8 @@ async function executeMockChat(
     usage: {
       prompt: Math.ceil(userMessage.length / 4),
       completion: tokenCount,
-      total: Math.ceil(userMessage.length / 4) + tokenCount
-    }
+      total: Math.ceil(userMessage.length / 4) + tokenCount,
+    },
   };
 }
 

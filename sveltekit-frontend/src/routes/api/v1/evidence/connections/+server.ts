@@ -8,6 +8,33 @@ import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
 import { z } from 'zod'
+
+// Helper: safely extract user id from locals
+type LocalsWithUser = {
+	user?: { id?: string } | undefined;
+	session?: { user?: { id?: string } } | undefined;
+	[key: string]: unknown;
+};
+
+function getUserId(locals: unknown): string {
+	// try common shapes: locals.user.id or locals.session.user.id
+	const l = locals as LocalsWithUser;
+	if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
+	if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
+	// fallback to a stable anonymous id or empty string as appropriate
+	return 'unknown';
+}
+
+// Helper: convert unknown error to string message
+function getErrorMessage(err: unknown): string {
+	if (err instanceof Error) return err.message
+	try {
+		return JSON.stringify(err)
+	} catch {
+		return String(err)
+	}
+}
+
 // Evidence connection schema
 const EvidenceConnectionSchema = z.object({
   evidenceId1: z.string().uuid(),
@@ -97,7 +124,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: 'evidence_connection_created'
       }
     }, { status: 201 })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error creating evidence connection:', err)
     if (err instanceof z.ZodError) {
       return error(
@@ -114,7 +141,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to create evidence connection',
         code: 'CONNECTION_FAILED',
-        details: err.message
+        details: getErrorMessage(err)
       })
     )
   }
@@ -133,7 +160,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       )
     }
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries()
+    const queryParams = Object.fromEntries(url.searchParams.entries())
     const { evidenceId, caseId, connectionType, minStrength } = ConnectionsQuerySchema.parse(queryParams)
     // This would need to be implemented in the service to fetch connections
     // For now, return a mock structure to show the expected format
@@ -178,14 +205,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
     return json({
       success: true,
-      data: filteredConnections
+      data: filteredConnections,
       meta: {
         userId: getUserId(locals),
         filters: { evidenceId, caseId, connectionType, minStrength },
         timestamp: new Date().toISOString()
       }
     })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error fetching evidence connections:', err)
     if (err instanceof z.ZodError) {
       return error(
@@ -202,7 +229,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch evidence connections',
         code: 'FETCH_FAILED',
-        details: err.message
+        details: getErrorMessage(err)
       })
     )
   }

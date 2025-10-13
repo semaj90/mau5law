@@ -26,13 +26,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action } = await request.json()
     if (action === 'initialize') {
       const initialized = await minioService.initialize()
-      return new Response(JSON.stringify({
-        success: initialized
-        action: 'initialize',
-        timestamp: new Date().toISOString()
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          success: initialized,
+          action: 'initialize',
+          timestamp: new Date().toISOString(),
+        }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     return new Response(JSON.stringify({
       error: 'Invalid action',

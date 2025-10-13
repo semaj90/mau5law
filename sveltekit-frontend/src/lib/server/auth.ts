@@ -518,7 +518,7 @@ export class AuthService {
 export const authService = new AuthService();
 /**
  * Helper function to get user from request event
- */ export async function getUser(_event: RequestEvent): Promise<any> {
+ */ export async function getUser(event: RequestEvent): Promise<any> {
   const sessionId = event.cookies.get(lucia.sessionCookieName);
   if (!sessionId) {
     return { user: null, session: null }
@@ -542,7 +542,7 @@ export const authService = new AuthService();
 }
 /**
  * Require authenticated user middleware
- */ export async function requireAuth(_event: RequestEvent): Promise<any> {
+ */ export async function requireAuth(event: RequestEvent): Promise<any> {
   const { user, session } = await getUser(event);
   if (!user || !session) {
     throw new Error('Authentication required');
