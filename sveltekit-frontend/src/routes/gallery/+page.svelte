@@ -31,9 +31,9 @@ Displays all media: evidence, generated images, documents, uploads
       evidence: mediaItems.filter(item => item.category === 'evidence').length,
       images: mediaItems.filter(item => item.category === 'images').length,
       documents: mediaItems.filter(item => item.category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length
-    }
-    return stat;
+      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length,
+    };
+    return stats;
   });
   // Filtered and sorted items
   let processedItems = $derived(() => {
@@ -62,7 +62,7 @@ Displays all media: evidence, generated images, documents, uploads
     }
     // Sort items
     items.sort((a, b) => {
-  let comparison = $state(0);
+      let comparison = 0;
       switch (sortBy) {
         case 'date':
           comparison = new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime();
@@ -77,13 +77,13 @@ Displays all media: evidence, generated images, documents, uploads
           comparison = (a.caseTitle || '').localeCompare(b.caseTitle || '');
           break;
       }
-      return sortOrder === 'desc' ? -comparison : compariso;
+      return sortOrder === 'desc' ? -comparison : comparison;
     });
-    return item;
+    return items;
   });
   // Update filtered items when processedItems changes
   $effect(() => {
-    filteredItems = processedItem;
+    filteredItems = processedItems;
   });
   $effect(() => {
     loadGalleryData();

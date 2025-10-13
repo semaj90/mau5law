@@ -35,13 +35,13 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     // Simulate processing delay (Nintendo-style timing)
-    await new Promise(resolve => setTimeout(resolve, 50)
+    await new Promise(resolve => setTimeout(resolve, 50));
     return json({
       success: true,
-      data: nesResponse
+      data: nesResponse,
       processingTime: '50ms',
-      architecture: 'Nintendo Entertainment System Inspired'
-    })
+      architecture: 'Nintendo Entertainment System Inspired',
+    });
   } catch (error) {
     console.error('NES Chat API Error:', error)
     return json({

@@ -1,8 +1,34 @@
 import type * as Kit from '@sveltejs/kit';
 
-type RouteParams = {};
+type RouteParams = Record<string, never>;
 
-export type PageServerLoad = (event: Kit.ServerLoadEvent<RouteParams, Kit.ParentData, "/(authenticated)/all-routes">) => Promise<{
+// add a local ParentData type because `Kit.ParentData` is not exported
+type AppParentData = Record<string, unknown>;
+
+// New: light-weight types to avoid `any`
+type ServiceStatus = {
+  id?: string;
+  name?: string;
+  baseUrl?: string;
+  healthPath?: string;
+  status: 'healthy' | 'degraded' | 'unhealthy' | string;
+  lastChecked?: string;
+  responseTimeMs?: number;
+  protocols?: string[];
+  capabilities?: string[];
+  metadata?: Record<string, unknown>;
+};
+
+type RecommendedRouteLayout = {
+  layout: string;
+  regions?: Record<string, unknown>;
+  notes?: string;
+  score?: number;
+};
+
+export type PageServerLoad = (
+  event: Kit.ServerLoadEvent<RouteParams, AppParentData, '/(authenticated)/all-routes'>
+) => Promise<{
   availableRoutes: Array<{
     path: string;
     icon: string;
@@ -26,17 +52,20 @@ export type PageServerLoad = (event: Kit.ServerLoadEvent<RouteParams, Kit.Parent
       uptime_hours: number;
       last_updated: string;
     };
-    services: Array<any>;
+    services: ServiceStatus[]; // replaced `Array<any>` with ServiceStatus[]
     performance: {
       cpu_usage: number;
       memory_usage: number;
       disk_usage: number;
     };
   };
-  recommendedRouteLayout: any;
+  recommendedRouteLayout: RecommendedRouteLayout; // replaced `any` with concrete type
 }>;
 
-type PageParent = Kit.AwaitedProperties<Kit.ParentData>;
-export type PageServerData = Kit.AwaitedProperties<ReturnType<PageServerLoad>>;
+// Use the local AppParentData directly instead of non-existent Kit.AwaitedProperties
+type PageParent = AppParentData;
+
+// Unwrap the Promise return type using the built-in Awaited utility type
+export type PageServerData = Awaited<ReturnType<PageServerLoad>>;
 export type PageData = PageParent & PageServerData;
 export type ActionData = unknown;

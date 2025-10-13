@@ -1,54 +1,32 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-// Mock storage - in production, this would use a database
-const canvasStorage = new Map<string, any>()
-export const POST: RequestHandler = async ({ request }) => {
+import { json } from '@sveltejs/kit';
+
+/**
+ * POST /api/evidence-canvas/save
+ * Accepts a JSON payload describing a canvas and returns a saved record placeholder.
+ * TODO: Replace the in-memory/save-placeholder with real persistence (Postgres/MinIO/etc.)
+ */
+export async function POST({ request }) {
   try {
-    const { canvas_json, metadata, name } = await request.json()
-    if (!canvas_json) {
-      return json(
-        { error: 'Missing required field: canvas_json' },)
-        { status: 400 }
-      )
+    const body = await request.json();
+
+    // basic validation
+    if (!body || typeof body !== 'object') {
+      return json({ error: 'Invalid JSON body' }, { status: 400 });
     }
-    const canvasId = `canvas_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
+    if (!body.id && !body.metadata && !body.data) {
+      return json({ error: 'Missing required canvas fields (id, metadata or data)' }, { status: 400 });
+    }
+
+    // Construct a saved object placeholder. Replace with DB/minio persistence as needed.
     const savedCanvas = {
-      id: canvasId
-      canvas_json,
-      metadata: metadata || {},
-      name: name || `Evidence Canvas ${new Date().toLocaleDateString()}`,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-    // Save to mock storage
-    canvasStorage.set(canvasId, savedCanvas)
-    return json({
-      success: true,
-      canvas_id: canvasId
-      message: 'Canvas saved successfully',
-      saved_at: savedCanvas.created_at
-    })
-  }, catch (error) {
-    console.error('Canvas save error:', error)
-    return json({
-        error: 'Failed to save canvas',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
-      { status: 500 }
-    )
+      id: body.id || `canvas_${Date.now()}`,
+      metadata: body.metadata || {},
+      data: body.data || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    return json({ success: true, canvas: savedCanvas }, { status: 201 });
+  } catch (err) {
+    return json({ error: 'Unable to parse JSON or process request' }, { status: 400 });
   }
-}
-export const GET: RequestHandler = async () => {
-  // Return list of saved canvases
-  const canvases = Array.from(canvasStorage.values()).map(canvas => ({
-    id: canvas.id,
-    name: canvas.name,
-    created_at: canvas.created_at,
-    updated_at: canvas.updated_at,
-    object_count: canvas.metadata?.object_count || 0
-  })
-  return json({
-    canvases,
-    total: canvases.length
-  })
 }

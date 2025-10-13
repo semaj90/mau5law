@@ -5,120 +5,161 @@
 // (e.g. g++ -x c++ -DNO_CUDA -c som_cache.cu ). Use the provided build scripts/CMakeLists.txt
 // to auto-detect CUDA and choose the correct path.
 
-// Detect whether CUDA headers are actually present and allowed.
-// If NO_CUDA is defined, force CPU-only path.
-#if defined(__has_include)
-  #if !defined(NO_CUDA) && __has_include(<cuda_runtime.h>) && defined(__CUDACC__)
-    #define SOM_HAVE_CUDA 1
-  #else
+// Robust CUDA detection:
+#ifndef SOM_HAVE_CUDA
+  #if defined(NO_CUDA)
+    // Explicit override to disable CUDA
     #define SOM_HAVE_CUDA 0
-  #endif
-#else
-  #if defined(__CUDACC__) && !defined(NO_CUDA)
-    #define SOM_HAVE_CUDA 1
   #else
-    #define SOM_HAVE_CUDA 0
+    // If nvcc is present, check for required headers. If headers are missing,
+    // force CPU-only path to avoid nvcc attempting device compilation/linking
+    // (which can fail with missing libdevice / missing CUDA install).
+    #if defined(__CUDACC__)
+      #if defined(__has_include)
+        #if __has_include(<cuda_runtime.h>)
+          #define SOM_HAVE_CUDA 1
+        #else
+          // Header not found: force CPU-only build and inform the builder.
+          #pragma message("NVCC detected but <cuda_runtime.h> not found. For a CPU-only build define -DNO_CUDA or build with host compiler (e.g. g++ -x c++ -DNO_CUDA -c som_cache.cu).")
+          #pragma message("If you want NVCC to proceed, provide a valid CUDA installation via --cuda-path or pass -nocudainc -nocudalib to skip CUDA includes/libs.")
+          #define SOM_HAVE_CUDA 0
+        #endif
+      #else
+        // No __has_include support: be conservative and prefer CPU-only unless explicitly forced.
+        #if defined(SOM_FORCE_CUDA) || defined(SOM_HAVE_CUDA)
+          #define SOM_HAVE_CUDA 1
+        #else
+          #pragma message("NVCC detected but compiler lacks __has_include; defaulting to CPU-only. Define SOM_FORCE_CUDA or -DSOM_HAVE_CUDA=1 to force CUDA paths.")
+          #define SOM_HAVE_CUDA 0
+        #endif
+      #endif
+    #else
+      // Not compiling with nvcc -> no CUDA
+      #define SOM_HAVE_CUDA 0
+    #endif
   #endif
 #endif
 
 #if SOM_HAVE_CUDA
-#include <cuda_runtime.h>
-#include <cstring>
-#include <cstdlib>
+  // If NVCC is present but headers weren't found, compiler can still invoke nvcc.
+  // Emit an informational message to guide maintainers.
+  #if defined(__CUDACC__) && !defined(__has_include)
+    #pragma message("Compiling with __CUDACC__ and without __has_include support; ensure CUDA includes/libdevice are available or define NO_CUDA or SOM_FORCE_CUDA.")
+  #endif
 
-// Simple device kernel: copy input to output
-__global__ static void somCopyKernel(const float* in, float* out, int n) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i < n) out[i] = in[i];
-}
+  // Only use __has_include when it's available
+  #if defined(__CUDACC__) && defined(__has_include) && !__has_include(<cuda_runtime.h>)
+    #pragma message("NVCC detected but <cuda_runtime.h> not found; building CPU-only fallback. To avoid nvcc errors add -nocudainc -nocudalib or set --cuda-path when invoking nvcc.")
+  #endif
 
-extern "C" {
-    void runSOMCache(const float* in, float* out, int n) {
-        if (n <= 0 || !in || !out) return;
+  #include <cuda_runtime.h>
 
-        // Try to detect whether pointers are device pointers.
-        bool inIsDevice = false;
-        bool outIsDevice = false;
+  // Include host-only C++ headers when compiling host code (avoid C headers flagged as unused)
+  #if !defined(__CUDA_ARCH__)
+    #include <cstring>
+    #include <cstdlib>
+  #endif
 
-        // cudaPointerGetAttributes can behave differently across CUDA versions; handle failures gracefully.
-        cudaPointerAttributes attrIn, attrOut;
-        cudaError_t a1 = cudaPointerGetAttributes(&attrIn, (const void*)in);
-        cudaError_t a2 = cudaPointerGetAttributes(&attrOut, (const void*)out);
-        if (a1 == cudaSuccess) {
-            // For newer runtimes, devicePointer is non-null for device memory.
-            inIsDevice = (attrIn.devicePointer != nullptr);
-        }
-        if (a2 == cudaSuccess) {
-            outIsDevice = (attrOut.devicePointer != nullptr);
-        }
+  // Simple device kernel: copy input to output
+  __global__ static void somCopyKernel(const float* in, float* out, int n) {
+      int i = blockIdx.x * blockDim.x + threadIdx.x;
+      if (i < n) out[i] = in[i];
+  }
 
-        // If both are device pointers, launch kernel directly.
-        if (inIsDevice && outIsDevice) {
-            const int block = 256;
-            const int grid = (n + block - 1) / block;
-            somCopyKernel<<<grid, block>>>(in, out, n);
-            cudaError_t err = cudaGetLastError();
-            if (err != cudaSuccess) {
-                // Kernel launch failed -> fallback to CPU copy
-                cudaDeviceSynchronize();
-                for (int i = 0; i < n; ++i) out[i] = in[i];
-                return;
-            }
-            cudaDeviceSynchronize();
-            return;
-        }
+  static bool isDevicePointer(const void* p) {
+      if (!p) return false;
+      cudaPointerAttributes attr;
+      cudaError_t r = cudaPointerGetAttributes(&attr, p);
+      if (r != cudaSuccess) return false;
+      // Try common attribute fields across CUDA versions
+      #if defined(CUDART_VERSION) && CUDART_VERSION >= 10000
+          #if defined(cudaMemoryTypeDevice)
+              return (attr.type == cudaMemoryTypeDevice) || (attr.memoryType == cudaMemoryTypeDevice);
+          #else
+              return (attr.type == 1);
+          #endif
+      #else
+          #if defined(__CUDA_API_VERSION)
+              // Older runtimes may expose devicePointer/member checks
+              return (attr.devicePointer != nullptr);
+          #else
+              return true; // best-effort: assume device if attributes retrieved
+          #endif
+      #endif
+  }
 
-        // Mixed or host pointers: handle via memcpy between host/device as needed.
-        if (!inIsDevice && !outIsDevice) {
-            // Both host pointers -> CPU copy
-            for (int i = 0; i < n; ++i) out[i] = in[i];
-            return;
-        }
+  extern "C" {
+      void runSOMCache(const float* in, float* out, int n) {
+          if (n <= 0 || !in || !out) return;
 
-        // One is device, the other host. Use cudaMemcpy to bridge.
-        size_t bytes = static_cast<size_t>(n) * sizeof(float);
-        if (inIsDevice && !outIsDevice) {
-            // device -> host
-            if (cudaMemcpy((void*)out, in, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
-                float* tmp = (float*)malloc(bytes);
-                if (tmp) {
-                    if (cudaMemcpy(tmp, in, bytes, cudaMemcpyDeviceToHost) == cudaSuccess) {
-                        std::memcpy(out, tmp, bytes);
-                    }
-                    free(tmp);
-                }
-            }
-            return;
-        }
+          bool inIsDevice = isDevicePointer(in);
+          bool outIsDevice = isDevicePointer(out);
 
-        if (!inIsDevice && outIsDevice) {
-            // host -> device
-            if (cudaMemcpy(out, in, bytes, cudaMemcpyHostToDevice) != cudaSuccess) {
-                float* tmp = (float*)malloc(bytes);
-                if (tmp) {
-                    std::memcpy(tmp, in, bytes);
-                    if (cudaMemcpy(out, tmp, bytes, cudaMemcpyHostToDevice) != cudaSuccess) {
-                        // final fallback: no-op
-                    }
-                    free(tmp);
-                }
-            }
-            return;
-        }
-    }
-}
+          // Both device pointers -> launch kernel
+          if (inIsDevice && outIsDevice) {
+              const int block = 256;
+              const int grid = (n + block - 1) / block;
+              somCopyKernel<<<grid, block>>>(in, out, n);
+              cudaError_t err = cudaGetLastError();
+              if (err != cudaSuccess) {
+                  // Kernel launch failed -> fallback to CPU copy via host staging
+                  cudaDeviceSynchronize();
+                  for (int i = 0; i < n; ++i) out[i] = in[i];
+                  return;
+              }
+              cudaDeviceSynchronize();
+              return;
+          }
+
+          // Both host pointers -> simple CPU copy
+          if (!inIsDevice && !outIsDevice) {
+              for (int i = 0; i < n; ++i) out[i] = in[i];
+              return;
+          }
+
+          // Mixed pointers: bridge with cudaMemcpy and fallbacks
+          size_t bytes = static_cast<size_t>(n) * sizeof(float);
+
+          if (inIsDevice && !outIsDevice) {
+              // device -> host
+              if (cudaMemcpy((void*)out, in, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
+                  float* tmp = static_cast<float*>(std::malloc(bytes));
+                  if (tmp) {
+                      if (cudaMemcpy(tmp, in, bytes, cudaMemcpyDeviceToHost) == cudaSuccess) {
+                          std::memcpy(out, tmp, bytes);
+                      }
+                      std::free(tmp);
+                  }
+              }
+              return;
+          }
+
+          if (!inIsDevice && outIsDevice) {
+              // host -> device
+              if (cudaMemcpy(out, in, bytes, cudaMemcpyHostToDevice) != cudaSuccess) {
+                  float* tmp = static_cast<float*>(std::malloc(bytes));
+                  if (tmp) {
+                      std::memcpy(tmp, in, bytes);
+                      if (cudaMemcpy(out, tmp, bytes, cudaMemcpyHostToDevice) != cudaSuccess) {
+                          // final fallback: can't reach device; no-op
+                      }
+                      std::free(tmp);
+                  }
+              }
+              return;
+          }
+      }
+  }
 #else
-// No CUDA: CPU-only fallback. The CUDA-only headers (cstring/cstdlib) are not required here
-// because this branch only performs plain CPU copies and doesn't use malloc/free or memcpy.
-extern "C" {
-    void runSOMCache(const float* in, float* out, int n) {
-        if (n <= 0 || !in || !out) return;
-        for (int i = 0; i < n; ++i) {
-            out[i] = in[i];
-        }
-    }
-}
+  // No CUDA: CPU-only fallback.
+  extern "C" {
+      void runSOMCache(const float* in, float* out, int n) {
+          if (n <= 0 || !in || !out) return;
+          for (int i = 0; i < n; ++i) {
+              out[i] = in[i];
+          }
+      }
+  }
 #endif
-}
-#endif
+// End of som_cache.cu
 

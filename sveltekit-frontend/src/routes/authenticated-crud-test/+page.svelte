@@ -67,17 +67,31 @@
     const timestamp = new Date().toLocaleTimeString();
     testResults = [...testResults, `[${timestamp}] ${icons[type]} ${message}`];
   }
-  // Check authentication status
+  // --- ADDED/REPLACED HELPERS & AUTH CHECK ---
+  // Safe JSON parse helper to avoid repetitive casting and broken casts
+  async function readJson(resp: Response) {
+    try {
+      return (await resp.json()) as ApiResponse;
+    } catch {
+      return { success: false, error: 'Invalid JSON response' } as ApiResponse;
+    }
+  }
+
+  // Lucia v3 / SvelteKit session check
   async function checkAuth() {
     try {
-      // removed unused response assignment
-      const data = await response.json();
-      if (response.status === 401) {
+      // Lucia session endpoints typically live on the server; ensure credentials are sent
+      const response = await fetch('/api/auth/session', { credentials: 'include' });
+      const data = await readJson(response);
+
+      if (response.status === 401 || (!data || !data.user)) {
         isAuthenticated = false;
+        currentUser = null;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
         return false;
       }
+
       if (response.ok && data.user) {
         isAuthenticated = true;
         currentUser = data.user;
@@ -85,10 +99,76 @@
         addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
         return true;
       }
+
+      // Fallback: server did not provide expected shape
+      isAuthenticated = false;
+      authError = 'Unexpected auth response';
+      addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
       addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      isAuthenticated = false;
+      currentUser = null;
+      return false;
+    }
+  }
+
+  // Small helper: request a safe public env variable from the server
+  // Note: client code cannot access process.env directly — expose needed values via server endpoints only
+  async function fetchPublicEnvVar(key: string) {
+    try {
+      const resp = await fetch(`/api/public-env?key=${encodeURIComponent(key)}`, { credentials: 'include' });
+      if (!resp.ok) {
+        addResult(`Public env fetch failed for ${key} (status ${resp.status})`, 'warning');
+        return null;
+      }
+      const payload = await readJson(resp);
+      if (payload && payload.data) {
+        addResult(`Fetched public env ${key}: ${String(payload.data)}`, 'info');
+        return payload.data;
+      }
+      addResult(`Public env ${key} not provided by server`, 'warning');
+      return null;
+    } catch (err) {
+      addResult(`Error fetching public env ${key}: ${err instanceof Error ? err.message : 'Unknown'}`, 'error');
+      return null;
+    }
+  }
+  // --- END ADDED/REPLACED HELPERS & AUTH CHECK ---
+  // Check authentication status
+  async function checkAuth() {
+    try {
+      // Lucia session endpoints typically live on the server; ensure credentials are sent
+      const response = await fetch('/api/auth/session', { credentials: 'include' });
+      const data = await readJson(response);
+
+      if (response.status === 401 || (!data || !data.user)) {
+        isAuthenticated = false;
+        currentUser = null;
+        authError = 'Authentication required - please log in';
+        addResult('Authentication check failed - user not logged in', 'error');
+        return false;
+      }
+
+      if (response.ok && data.user) {
+        isAuthenticated = true;
+        currentUser = data.user;
+        authError = null;
+        addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
+        return true;
+      }
+
+      // Fallback: server did not provide expected shape
+      isAuthenticated = false;
+      authError = 'Unexpected auth response';
+      addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
+      return false;
+    } catch (error) {
+      authError = 'Failed to check authentication';
+      addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      isAuthenticated = false;
+      currentUser = null;
       return false;
     }
   }
@@ -102,11 +182,12 @@
     addResult('🔍 Testing authenticated GET operations...');
     try {
       // Test 1: Get user's cases
-      const listResponse = await fetch('/api/test-cases?limit=10');
-      const listData = await listResponse.json();
+      const listResponse = await fetch('/api/test-cases?limit=10', { credentials: 'include' });
+      const listData = await readJson(listResponse);
       if (listResponse.status === 401) {
         addResult('GET operation failed - session expired', 'error');
         isAuthenticated = false;
+        isLoading = false;
         return;
       }
       if (listResponse.ok && listData.success) {
@@ -114,26 +195,26 @@
         addResult(`User context: ${listData.user?.email} (role: ${listData.user?.role})`, 'info');
         cases = listData.data || [];
         // Test with search
-        const searchResponse = await fetch('/api/test-cases?search=test&limit=5');
-        const searchData = await searchResponse.json();
+        const searchResponse = await fetch('/api/test-cases?search=test&limit=5', { credentials: 'include' });
+        const searchData = await readJson(searchResponse);
         if (searchResponse.ok && searchData.success) {
           addResult(`GET with search - Found ${searchData.data?.length || 0} matching cases`, 'success');
         }
       } else {
-        addResult(`GET /api/test-cases - Failed: ${listData.error}`, 'error');
+        addResult(`GET /api/test-cases - Failed: ${listData.error || listData.message}`, 'error');
       }
       // Test 2: Get specific case (if any exist)
       if (cases.length > 0) {
         const testCaseId = cases[0].id;
-        const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`);
-        const singleData = await singleResponse.json();
+        const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`, { credentials: 'include' });
+        const singleData = await readJson(singleResponse);
         if (singleResponse.ok && singleData.success) {
           addResult(
             `GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`,
             'success',
           );
         } else {
-          addResult(`GET specific case - Failed: ${singleData.error}`, 'error');
+          addResult(`GET specific case - Failed: ${singleData.error || singleData.message}`, 'error');
         }
       }
     } catch (error) {
@@ -152,79 +233,44 @@
     try {
       const response = await fetch('/api/test-cases', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newCase,
           caseNumber: `AUTH-${Date.now()}`, // Unique case number
         }),
       });
-      const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
+      const data = await readJson(response);
+      if (response.status === 401) {
         addResult('POST operation failed - session expired', 'error');
         isAuthenticated = false;
+        isLoading = false;
         return null;
       }
-      if (
-        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
-        (
-          data as {
-            user?: unknown;
-            documents?: unknown;
-            activities?: unknown;
-            success?: unknown;
-            data?: unknown;
-            message?: unknown;
-            error?: unknown;
-            details?: unknown;
-          }
-        ).success
-      ) {
+      if (response.ok && data.success) {
         addResult(
-          `POST /api/test-cases - Success (ID: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.id})`,
+          `POST /api/test-cases - Success (ID: ${data.data?.id})`,
           'success',
         );
         addResult(
-          `Embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasEmbedding ? 'Yes' : 'No'}`,
+          `Embedding generated: ${data.data?.hasEmbedding ? 'Yes' : 'No'}`,
           'info',
         );
         addResult(
-          `Created by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.email}`,
+          `Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`,
           'info',
         );
         // Refresh cases list
         await testAuthenticatedGET();
-        return (
-          data as {
-            user?: unknown;
-            documents?: unknown;
-            activities?: unknown;
-            success?: unknown;
-            data?: unknown;
-            message?: unknown;
-            error?: unknown;
-            details?: unknown;
-          }
-        ).data.id;
+        isLoading = false;
+        return data.data.id;
       } else {
         addResult(
-          `POST /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          `POST /api/test-cases - Failed: ${data.message || data.error}`,
           'error',
         );
-        if (
-          (
-            data as {
-              user?: unknown;
-              documents?: unknown;
-              activities?: unknown;
-              success?: unknown;
-              data?: unknown;
-              message?: unknown;
-              error?: unknown;
-              details?: unknown;
-            }
-          ).details
-        ) {
-          addResult(`   Details: ${JSON.stringify(details)}`, 'error');
+        if ((data as any).details) {
+          addResult(`   Details: ${JSON.stringify((data as any).details)}`, 'error');
         }
       }
     } catch (error) {
@@ -261,52 +307,41 @@
       }
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData),
       });
-      const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
+      const data = await readJson(response);
+      if (response.status === 401) {
         addResult('PUT operation failed - session expired', 'error');
         isAuthenticated = false;
+        isLoading = false;
         return;
       }
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 403) {
+      if (response.status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
+        isLoading = false;
         return;
       }
-      if (
-        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
-        (
-          data as {
-            user?: unknown;
-            documents?: unknown;
-            activities?: unknown;
-            success?: unknown;
-            data?: unknown;
-            message?: unknown;
-            error?: unknown;
-            details?: unknown;
-          }
-        ).success
-      ) {
+      if (response.ok && data.success) {
         addResult(`PUT /api/test-cases - Success`, 'success');
         addResult(
-          `New embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasNewEmbedding ? 'Yes' : 'No'}`,
+          `New embedding generated: ${data.data?.hasNewEmbedding ? 'Yes' : 'No'}`,
           'info',
         );
         addResult(
-          `Updated by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.email}`,
+          `Updated by: ${data.data?.updatedBy?.name || data.data?.updatedBy?.email}`,
           'info',
         );
         addResult(
-          `Changed fields: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.changedFields?.join(', ')}`,
+          `Changed fields: ${Array.isArray(data.data?.changedFields) ? data.data.changedFields.join(', ') : ''}`,
           'info',
         );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
         addResult(
-          `PUT /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          `PUT /api/test-cases - Failed: ${data.message || data.error}`,
           'error',
         );
       }
@@ -331,46 +366,35 @@
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
-      const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
+      const data = await readJson(response);
+      if (response.status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
         isAuthenticated = false;
+        isLoading = false;
         return;
       }
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 403) {
+      if (response.status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
+        isLoading = false;
         return;
       }
-      if (
-        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
-        (
-          data as {
-            user?: unknown;
-            documents?: unknown;
-            activities?: unknown;
-            success?: unknown;
-            data?: unknown;
-            message?: unknown;
-            error?: unknown;
-            details?: unknown;
-          }
-        ).success
-      ) {
+      if (response.ok && data.success) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
         addResult(
-          `Deleted by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.email}`,
+          `Deleted by: ${data.data?.deletedBy?.name || data.data?.deletedBy?.email}`,
           'info',
         );
         addResult(
-          `Related data cleaned: timeline(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.timeline}), activities(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.activities}), docs(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.documents})`,
+          `Related data cleaned: timeline(${data.data?.relatedDataDeleted?.timeline}), activities(${data.data?.relatedDataDeleted?.activities}), docs(${data.data?.relatedDataDeleted?.documents})`,
           'info',
         );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
         addResult(
-          `DELETE /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          `DELETE /api/test-cases - Failed: ${data.message || data.error}`,
           'error',
         );
       }
@@ -419,6 +443,9 @@
       if (isAuthenticated) {
         await testAuthenticatedGET();
       }
+      // Diagnostic: attempt to get a server-exposed public env variable (client cannot use process.env)
+      // This will log a helpful message explaining why process.env can't be read from the browser.
+      await fetchPublicEnvVar('DB_ENV');
     })();
   });
 </script>

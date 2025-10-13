@@ -27,16 +27,16 @@ export const GET: RequestHandler = async ({ locals }) => {
         role: 'attorney',
         preferences: {
           theme: 'legal-console',
-          notifications: true
-          practiceAreas: ['employment', 'corporate']
+          notifications: true,
+          practiceAreas: ['employment', 'corporate'],
         },
         metadata: {
           lastLogin: new Date().toISOString(),
           caseCount: 15,
-          activeProjects: 3
-        }
-      }
-    }
+          activeProjects: 3,
+        },
+      },
+    };
     return json(mockUser, { status: 500 })
   }
 }

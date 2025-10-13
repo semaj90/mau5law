@@ -12,14 +12,15 @@ const LegalAnalysisSchema = z.object({
   document_id: z.string().optional(),
   case_id: z.string().optional(),
   model: z.enum(['gemma3:legal-latest', 'embeddinggemma:latest']).default('gemma3:legal-latest'),
-  options: z.object({
-    max_tokens: z.number().default(1024),
-    temperature: z.number().min(0).max(1).default(0.1),
-    include_precedents: z.boolean().default(true),
-    include_citations: z.boolean().default(true)
-  }).optional()
-})
-type LegalAnalysisRequest = z.infer<typeof LegalAnalysisSchema>
+  options: z
+    .object({
+      max_tokens: z.number().default(1024),
+      temperature: z.number().min(0).max(1).default(0.1),
+      include_precedents: z.boolean().default(true),
+      include_citations: z.boolean().default(true),
+    })
+    .optional(),
+});
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
@@ -30,10 +31,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const body = await request.json()
     const validatedData = LegalAnalysisSchema.safeParse(body)
     if (!validatedData.success) {
-      throw error(400, {
-        message: 'Invalid analysis request format',
-        errors: validatedData.error.errors
-      })
+      // Return structured JSON with validation errors (avoid passing an object to `error()`)
+      return json(
+        {
+          success: false,
+          message: 'Invalid analysis request format',
+          errors: validatedData.error.errors,
+        },
+        { status: 400 }
+      );
     }
     // Route to QUIC server legal analysis endpoint (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/legal/analyze`, {

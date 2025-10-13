@@ -1,86 +1,120 @@
-import { json } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
-import { cases } from '$lib/db/schema'
-import { eq } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { cases } from '$lib/db/schema';
+import type { RequestHandler } from './$types';
+
+// Helper to derive user id from locals (keeps behavior for tests)
+function getUserId(locals: unknown): string | undefined {
+  if (typeof locals !== 'object' || locals === null) return undefined;
+  const l = locals as Record<string, unknown>;
+
+  // try locals.user.id
+  const user = l.user as Record<string, unknown> | undefined;
+  if (user && typeof user.id === 'string') return user.id;
+
+  // try locals.session.user.id
+  const session = l.session as Record<string, unknown> | undefined;
+  const sessionUser = session?.user as Record<string, unknown> | undefined;
+  if (sessionUser && typeof sessionUser.id === 'string') return sessionUser.id;
+
+  return undefined;
+}
+
+// Helper to validate UUIDs (v4-ish, simple check)
+function isValidUuid(id: unknown): id is string {
+  if (typeof id !== 'string') return false;
+  // simple UUID v4 format check (allows other UUID versions too)
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+}
+
 // Production API endpoint for case creation - PostgreSQL integration
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const data = await request.json()
+    const data = await request.json();
     // Validate required fields
     if (!data.caseNumber || !data.title) {
-      return json({ error: 'Case number and title are required' }, { status: 400 })
+      return json({ error: 'Case number and title are required' }, { status: 400 });
     }
     // Validate priority enum
-    const validPriorities = ['low', 'medium', 'high']
+    const validPriorities = ['low', 'medium', 'high'];
     if (data.priority && !validPriorities.includes(data.priority)) {
-      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 })
+      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 });
     }
-    // Get user ID (mock for testing - in production would come from session)
-    const userId = getUserId(locals) || '00000000-0000-0000-0000-000000000001'; // Mock user ID
-    console.log('🔄 Creating case with data:', {
+    // Resolve user id: prefer locals, then X-User-Id header, then env TEST_USER_ID, then legacy mock
+    const localId = getUserId(locals);
+    const headerId = request.headers.get('x-user-id') ?? undefined;
+    const envId = typeof process !== 'undefined' ? (process.env.TEST_USER_ID as string | undefined) : undefined;
+    const resolved = localId ?? headerId ?? envId;
+    const userId = isValidUuid(resolved) ? resolved : '00000000-0000-0000-0000-000000000001';
+
+    console.log('🔄 Creating case (user resolved):', {
       caseNumber: data.caseNumber,
       title: data.title,
-      userId: userId
-      timestamp: new Date().toISOString()
-    })
+      userId,
+      timestamp: new Date().toISOString(),
+    });
     // ✅ REAL PostgreSQL DATABASE INSERT
     const [createdCase] = await db
       .insert(cases)
       .values({
-        case_number: data.caseNumber,
+        // use camelCase column names from drizzle schema
+        caseNumber: data.caseNumber,
         title: data.title,
         description: data.description || null,
         priority: data.priority || 'medium',
         status: 'draft',
-        user_id: userId
+        userId: userId,
         jurisdiction: 'test',
         metadata: {
           source: 'test-case-api',
           createdVia: 'form-submission',
-          userAgent: request.headers.get('user-agent') || 'unknown'
-        }
+          userAgent: request.headers.get('user-agent') || 'unknown',
+        },
       })
-      .returning()
+      .returning();
     console.log('✅ PostgreSQL Case Created Successfully:', {
       id: createdCase.id,
-      caseNumber: createdCase.case_number,
+      caseNumber: createdCase.caseNumber,
       title: createdCase.title,
       status: createdCase.status,
       priority: createdCase.priority,
-      userId: createdCase.user_id,
-      timestamp: createdCase.created_at
-    })
-    return json({
-      success: true,
-      message: 'Case created successfully in PostgreSQL database',
-      id: createdCase.id,
-      case: {
+      userId: createdCase.userId,
+      timestamp: createdCase.createdAt,
+    });
+    return json(
+      {
+        success: true,
+        message: 'Case created successfully in PostgreSQL database',
         id: createdCase.id,
-        caseNumber: createdCase.case_number,
-        title: createdCase.title,
-        description: createdCase.description,
-        priority: createdCase.priority,
-        status: createdCase.status,
-        userId: createdCase.user_id,
-        jurisdiction: createdCase.jurisdiction,
-        createdAt: createdCase.created_at,
-        updatedAt: createdCase.updated_at
-      }
-    })
+        case: {
+          id: createdCase.id,
+          caseNumber: createdCase.caseNumber,
+          title: createdCase.title,
+          description: createdCase.description,
+          priority: createdCase.priority,
+          status: createdCase.status,
+          userId: createdCase.userId,
+          jurisdiction: createdCase.jurisdiction,
+          createdAt: createdCase.createdAt,
+          updatedAt: createdCase.updatedAt,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('❌ PostgreSQL Case Creation Error:', error)
-    return json()
+    console.error('❌ PostgreSQL Case Creation Error:', error);
+    return json(
       {
         success: false,
-        error,: error instanceof Error ? error.message: 'Database error occurred',
-        details,: error instanceof Error ? error.stack : undefined
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message : 'Database error occurred',
+        details: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
+
 // GET endpoint for testing database connectivity
 export const GET: RequestHandler = async () => {
   try {
@@ -88,46 +122,47 @@ export const GET: RequestHandler = async () => {
     const recentCases = await db
       .select({
         id: cases.id,
-        case_number: cases.case_number,
+        // use camelCase column names from drizzle schema
+        caseNumber: cases.caseNumber,
         title: cases.title,
         status: cases.status,
         priority: cases.priority,
-        created_at: cases.created_at
+        createdAt: cases.createdAt,
       })
       .from(cases)
       .limit(5)
-      .orderBy(cases.created_at)
+      .orderBy(cases.createdAt);
     return json({
       status: 'PostgreSQL database connection successful',
       timestamp: new Date().toISOString(),
       database: {
         connection: 'Active',
         recent_cases_count: recentCases.length,
-        recent_cases: recentCases
+        recent_cases: recentCases,
       },
       features: {
         'postgresql-integration': '✅ Active',
         'drizzle-orm': '✅ Connected',
         'case-creation': '✅ Functional',
         'database-queries': '✅ Working',
-        'api-endpoints': '✅ Production Ready'
-      }
-    })
+        'api-endpoints': '✅ Production Ready',
+      },
+    });
   } catch (error) {
-    console.error('❌ Database connectivity test failed:', error)
-    return json()
+    console.error('❌ Database connectivity test failed:', error);
+    return json(
       {
         status: 'Database connection failed',
-        error,: error instanceof Error ? error.message: 'Unknown database error',
-        timestamp,: new Date().toISOString(),
-        features,: {
-          'postgresql-integration',: '❌ Failed',
-          'drizzle-orm',: '❌ Error',
-          'case-creation',: '❌ Unavailable',
-          'database-queries',: '❌ Failed'
-        }
+        error: error instanceof Error ? error.message : 'Unknown database error',
+        timestamp: new Date().toISOString(),
+        features: {
+          'postgresql-integration': '❌ Failed',
+          'drizzle-orm': '❌ Error',
+          'case-creation': '❌ Unavailable',
+          'database-queries': '❌ Failed',
+        },
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

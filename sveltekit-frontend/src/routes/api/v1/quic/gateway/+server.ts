@@ -1,89 +1,89 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 /*
  * QUIC Gateway API - HTTP/3 Gateway Proxy
  * Provides high-performance HTTP/3 connectivity to SvelteKit frontend
  * Port: 8443 (QUIC), 8444 (HTTP/2 fallback)
  */
-import { json, error } from '@sveltejs/kit'
-import { ensureError } from '$lib/utils/ensure-error'
-import { productionServiceClient } from '$lib/services/production-service-client.js'
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 
 const QUIC_GATEWAY_CONFIG = {
-  primaryPort: 8443,    // QUIC HTTP/3
-  fallbackPort: 8444,   // HTTP/2
+  primaryPort: 8443, // QUIC HTTP/3
+  fallbackPort: 8444, // HTTP/2
   baseUrl: 'http://localhost:8443',
   fallbackUrl: 'http://localhost:8444',
   timeout: 10000,
-  retryAttempts: 2
-}
+  retryAttempts: 2,
+};
 /*
  * GET /api/v1/quic/gateway - Gateway health and status
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url: _url }) => {
   try {
     // Check gateway health
     const healthResponse = await fetch(`${QUIC_GATEWAY_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
-    })
-    let gatewayStatus = 'healthy'
-    let responseData: any = {}
+      signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+    });
+    let gatewayStatus = 'healthy';
+    let responseData: Record<string, unknown> = {};
     if (healthResponse.ok) {
-      responseData = await healthResponse.json()
+      responseData = (await healthResponse.json()) as Record<string, unknown>;
     } else {
       // Try fallback HTTP/2
       const fallbackResponse = await fetch(`${QUIC_GATEWAY_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
-      })
+        signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+      });
       if (fallbackResponse.ok) {
-        responseData = await fallbackResponse.json()
-        gatewayStatus = 'fallback'
+        responseData = (await fallbackResponse.json()) as Record<string, unknown>;
+        gatewayStatus = 'fallback';
       } else {
-        gatewayStatus = 'unhealthy'
+        gatewayStatus = 'unhealthy';
       }
     }
     return json({
       service: 'quic-gateway',
-      status: gatewayStatus
+      status: gatewayStatus,
       protocol: gatewayStatus === 'healthy' ? 'HTTP/3' : gatewayStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: QUIC_GATEWAY_CONFIG.primaryPort,
-        fallback: QUIC_GATEWAY_CONFIG.fallbackPort
+        fallback: QUIC_GATEWAY_CONFIG.fallbackPort,
       },
-      backend: responseData.backend || 'http://localhost:5173',
+      backend: (responseData.backend as string) || 'http://localhost:5173',
       features: [
         'HTTP/3 (QUIC)',
         'HTTP/2 Fallback',
         'TLS Certificate Generation',
         'Proxy Headers',
-        'Health Monitoring'
+        'Health Monitoring',
       ],
       metrics: responseData.metrics || null,
-      timestamp: new Date().toISOString()
-    })
-  } catch (err: any) {
-    console.error('QUIC Gateway health check failed:', err)
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err: unknown) {
+    const e = err instanceof Error ? err : new Error(String(err));
+    console.error('QUIC Gateway health check failed:', e);
     return json({
       service: 'quic-gateway',
       status: 'error',
-      error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString()
-    })
+      error: e.message,
+      timestamp: new Date().toISOString(),
+    });
   }
-}
+};
 /*
  * POST /api/v1/quic/gateway - Route request through QUIC gateway
  */
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const body = await request.json()
-    const targetPath = url.searchParams.get('path') || '/'
-    let useHttp3 = url.searchParams.get('http3') !== 'false'
+    const body = (await request.json()) as Record<string, unknown>;
+    const targetPath = url.searchParams.get('path') || '/';
+    let useHttp3 = url.searchParams.get('http3') !== 'false';
     // Determine target URL
-    const targetUrl = useHttp3
+    let targetUrl = useHttp3
       ? `${QUIC_GATEWAY_CONFIG.baseUrl}${targetPath}`
-      : `${QUIC_GATEWAY_CONFIG.fallbackUrl}${targetPath}`
+      : `${QUIC_GATEWAY_CONFIG.fallbackUrl}${targetPath}`;
     // Forward request through QUIC gateway with retry logic
-    let lastError: Error | null = null
+    let lastError: Error | null = null;
     for (let attempt = 0; attempt < QUIC_GATEWAY_CONFIG.retryAttempts; attempt++) {
       try {
         const response = await fetch(targetUrl, {
@@ -92,71 +92,84 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'Content-Type': 'application/json',
             'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
             'X-Forwarded-Proto': useHttp3 ? 'https' : 'http',
-            'X-QUIC-Request': 'true'
+            'X-QUIC-Request': 'true',
           },
           body: JSON.stringify(body),
-          signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
-        })
+          signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+        });
         if (!response.ok) {
-          throw new Error(`Gateway responded with ${response.status}: ${response.statusText}`)
+          throw new Error(`Gateway responded with ${response.status}: ${response.statusText}`);
         }
-        const responseData = await response.json()
+        const responseData = (await response.json()) as Record<string, unknown>;
         return json({
           success: true,
-          data: responseData
+          data: responseData,
           protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2',
           gateway: 'quic-gateway',
           attempt: attempt + 1,
-          timestamp: new Date().toISOString()
-        })
-      } catch (attemptError) {
-        lastError = attemptError as Error
-        console.warn(`QUIC Gateway attempt ${attempt + 1} failed:`, attemptError)
+          timestamp: new Date().toISOString(),
+        });
+      } catch (attemptError: unknown) {
+        const normalized = attemptError instanceof Error ? attemptError : new Error(String(attemptError));
+        lastError = normalized;
+        console.warn(`QUIC Gateway attempt ${attempt + 1} failed:`, normalized);
         // On first attempt failure with HTTP/3, try HTTP/2 fallback
         if (attempt === 0 && useHttp3) {
-          useHttp3 = false
+          useHttp3 = false;
+          targetUrl = `${QUIC_GATEWAY_CONFIG.fallbackUrl}${targetPath}`;
         }
       }
     }
     // All attempts failed
-    throw lastError || new Error('All gateway attempts failed')
-  } catch (err: any) {
-    console.error('QUIC Gateway proxy error:', err)
-    error(500, ensureError({
-      message: 'Gateway proxy failed',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    })
+    throw lastError || new Error('All gateway attempts failed');
+  } catch (err: unknown) {
+    const e = err instanceof Error ? err : new Error(String(err));
+    console.error('QUIC Gateway proxy error:', e);
+    throw error(
+      500,
+      ensureError({
+        message: 'Gateway proxy failed',
+        error: e.message,
+      })
+    );
   }
-}
+};
 /*
  * PUT /api/v1/quic/gateway - Update gateway configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const config = await request.json()
-    // Validate configuration
-    if (config.primaryPort && (config.primaryPort < 1024 || config.primaryPort > 65535)) {
-      error(400, ensureError({ message: 'Invalid primary port' })
+    const config = (await request.json()) as Record<string, unknown>;
+    // Validate configuration with type guards
+    const primaryPort = typeof config.primaryPort === 'number' ? config.primaryPort : undefined;
+    const fallbackPort = typeof config.fallbackPort === 'number' ? config.fallbackPort : undefined;
+
+    if (primaryPort !== undefined && (primaryPort < 1024 || primaryPort > 65535)) {
+      throw error(400, ensureError({ message: 'Invalid primary port' }));
     }
-    if (config.fallbackPort && (config.fallbackPort < 1024 || config.fallbackPort > 65535)) {
-      error(400, ensureError({ message: 'Invalid fallback port' })
+    if (fallbackPort !== undefined && (fallbackPort < 1024 || fallbackPort > 65535)) {
+      throw error(400, ensureError({ message: 'Invalid fallback port' }));
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {
       ...QUIC_GATEWAY_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString()
-    }
+      lastUpdated: new Date().toISOString(),
+    };
     return json({
       success: true,
       message: 'Gateway configuration updated',
-      config: updatedConfig
-    })
-  } catch (err: any) {
-    console.error('Gateway configuration update failed:', err)
-    error(500, ensureError({
-      message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    })
+      config: updatedConfig,
+    });
+  } catch (err: unknown) {
+    const e = err instanceof Error ? err : new Error(String(err));
+    console.error('Gateway configuration update failed:', e);
+    throw error(
+      500,
+      ensureError({
+        message: 'Configuration update failed',
+        error: e.message,
+      })
+    );
   }
-}
+};

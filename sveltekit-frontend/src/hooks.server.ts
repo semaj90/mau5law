@@ -1,13 +1,76 @@
-// src/hooks.server.ts - SvelteKit 2 hooks with production-ready error handling
 import type { Handle } from '@sveltejs/kit';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import Redis from 'ioredis';
+
+// Lazy singletons initialized at module load so endpoints can reuse them
+type PgConnection = ReturnType<typeof postgres> | null;
+type DrizzleDB = ReturnType<typeof drizzle> | null;
+let _pgConnection: PgConnection = null;
+let _db: DrizzleDB = null;
+let _redis: Redis | null = null;
+
+function initPostgres() {
+  if (_pgConnection) return _pgConnection;
+  const host = process.env.POSTGRES_HOST || 'localhost';
+  const port = parseInt(process.env.POSTGRES_PORT || '5432', 10);
+  const database = process.env.POSTGRES_DB || 'legal_ai_db';
+  const user = process.env.POSTGRES_USER || 'legal_admin';
+  const password = process.env.POSTGRES_PASSWORD || '123456';
+  const connStr = process.env.DATABASE_URL || `postgres://${user}:${password}@${host}:${port}/${database}`;
+  // postgres() returns a client factory; cast via unknown to avoid blanket `any`
+  _pgConnection = postgres(connStr, { max: 10 } as unknown) as unknown as PgConnection;
+  try {
+    // drizzle accepts the postgres connection; keep the value typed as unknown and
+    // only assign if drizzle returns a truthy object. This avoids using `any`.
+    const maybeDb = drizzle(_pgConnection as unknown as any);
+    _db = maybeDb ?? null;
+  } catch (e: unknown) {
+    // drizzle can be optional depending on environment; swallow and allow direct pg usage
+    _db = null;
+  }
+  return _pgConnection;
+}
+
+function initRedis() {
+  if (_redis) return _redis;
+  try {
+    const host = process.env.REDIS_HOST || 'localhost';
+    const port = parseInt(process.env.REDIS_PORT || '6379', 10);
+    _redis = new Redis({ host, port });
+  } catch (_e) {
+    // ignore redis init failures; let consumers handle null
+    _redis = null;
+  }
+  return _redis;
+}
+
+// Initialize at module import so hooks can attach them quickly (best-effort)
+initPostgres();
+initRedis();
+
+// App.Locals augmentation so we can attach typed locals without `any`
+// module augmentation for SvelteKit's App namespace
+export {};
+declare global {
+  interface AppLocals {
+    db: DrizzleDB | null;
+    pg: PgConnection;
+    redis: Redis | null;
+    user?: { id: string; email?: string; role?: string } | null;
+    session?: { id: string; fresh?: boolean } | null;
+  }
+  // Provide typed alias for SvelteKit; some projects prefer App.Locals - keep both minimal
+  namespace App {
+    interface Locals extends AppLocals {}
+  }
+}
 
 // Minimal Lucia auth surface used by this file
 type SessionShape = { id: string; fresh?: boolean };
 interface CookieShape {
   name: string;
   value: string;
-  // widened to accept external cookie attribute shapes (e.g. Lucia's CookieAttributes)
-  // use `unknown` instead of `any` to satisfy lint/type rules while allowing arbitrary shapes
   attributes?: Record<string, unknown>;
 }
 interface LuciaAuth {
@@ -48,7 +111,13 @@ async function initializeAuth() {
   try {
     console.log('[hooks.server] Loading auth module...');
     const authModule = await import('$lib/server/auth');
-    lucia = authModule.lucia as unknown as LuciaAuth;
+    // authModule may be ESM; narrow unknown via basic checks instead of `any`
+    const maybeAuthModule = authModule as unknown;
+    if (maybeAuthModule && typeof (maybeAuthModule as any).lucia === 'object') {
+      lucia = (maybeAuthModule as any).lucia as unknown as LuciaAuth;
+    } else {
+      lucia = null;
+    }
     authEnabled = true;
     console.log('[hooks.server] Auth module loaded');
     return { lucia, enabled: true };
@@ -79,7 +148,12 @@ async function loadRouteConfig() {
   try {
     console.log('🔍 [hooks.server] Attempting to load route config...');
     const routeConfig = await import('$lib/data/route-groups-config');
-    legacyRouteMapping = routeConfig.legacyRouteMapping || {};
+    const maybeRC = routeConfig as unknown;
+    if (maybeRC && typeof (maybeRC as any).legacyRouteMapping === 'object') {
+      legacyRouteMapping = (maybeRC as any).legacyRouteMapping as Record<string, string>;
+    } else {
+      legacyRouteMapping = {};
+    }
     console.log('✅ [hooks.server] Route mappings loaded');
   } catch (error) {
     console.error('❌ [hooks.server] Route config failed to load:', error);
@@ -94,11 +168,7 @@ async function ensureInitialized() {
   if (!initialized) {
     console.log('🚀 [hooks.server] Starting initialization...');
     try {
-      await Promise.all([
-        initializeAuth(),
-        loadRouteConfig(),
-        initializeRabbitMQ(), // Add RabbitMQ initialization
-      ]);
+      await Promise.all([initializeAuth(), loadRouteConfig(), initializeRabbitMQ()]);
       initialized = true;
       console.log('✅ [hooks.server] All systems initialized successfully');
     } catch (error) {
@@ -111,12 +181,12 @@ async function ensureInitialized() {
 interface DatabaseUser {
   id: string;
   email: string;
-  firstName: string | null;
-  lastName: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   role: string;
-  isActive: boolean;
-  avatarUrl: string | null;
-  name: string | null;
+  isActive?: boolean;
+  avatarUrl?: string | null;
+  name?: string | null;
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -164,6 +234,11 @@ export const handle: Handle = async ({ event, resolve }) => {
       headers: { location: redirectUrl },
     });
   }
+
+  // Attach db/redis singletons to event.locals for server endpoints (typed via App.Locals)
+  event.locals.db = _db;
+  event.locals.pg = _pgConnection;
+  event.locals.redis = _redis;
 
   // Production-ready auth handling with comprehensive error recovery
   try {
@@ -241,7 +316,7 @@ export const handle: Handle = async ({ event, resolve }) => {
           id: user.id,
           email: user.email,
           role:
-            ((user as DatabaseUser).role as
+            (user.role as
               | 'admin'
               | 'lead_prosecutor'
               | 'prosecutor'
@@ -262,3 +337,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   return resolve(event);
 };
+
+export { _db as db, _pgConnection as pgConnection, _redis as redis };
