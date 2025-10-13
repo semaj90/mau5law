@@ -1,5 +1,9 @@
 // Minimal SOM cache with optional CUDA kernel. Compile with CUDA for GPU path,
 // or define NO_CUDA / compile without __CUDACC__ for CPU-only build.
+//
+// NOTE: If your environment does not have a CUDA toolchain, build with NO_CUDA defined
+// (e.g. g++ -x c++ -DNO_CUDA -c som_cache.cu ). Use the provided build scripts/CMakeLists.txt
+// to auto-detect CUDA and choose the correct path.
 
 // Detect whether CUDA headers are actually present and allowed.
 // If NO_CUDA is defined, force CPU-only path.
@@ -10,7 +14,6 @@
     #define SOM_HAVE_CUDA 0
   #endif
 #else
-  // Fallback: if NO_CUDA is set treat as no CUDA, otherwise rely on __CUDACC__.
   #if defined(__CUDACC__) && !defined(NO_CUDA)
     #define SOM_HAVE_CUDA 1
   #else
@@ -36,16 +39,18 @@ extern "C" {
         // Try to detect whether pointers are device pointers.
         bool inIsDevice = false;
         bool outIsDevice = false;
-    #if defined(CUDART_VERSION)
+
+        // cudaPointerGetAttributes can behave differently across CUDA versions; handle failures gracefully.
         cudaPointerAttributes attrIn, attrOut;
-        cudaError_t a1 = cudaPointerGetAttributes(&attrIn, in);
-        cudaError_t a2 = cudaPointerGetAttributes(&attrOut, out);
-        inIsDevice = (a1 == cudaSuccess && attrIn.devicePointer != nullptr);
-        outIsDevice = (a2 == cudaSuccess && attrOut.devicePointer != nullptr);
-    #else
-        // If runtime version unknown, assume host pointers to be safe.
-        (void)0;
-    #endif
+        cudaError_t a1 = cudaPointerGetAttributes(&attrIn, (const void*)in);
+        cudaError_t a2 = cudaPointerGetAttributes(&attrOut, (const void*)out);
+        if (a1 == cudaSuccess) {
+            // For newer runtimes, devicePointer is non-null for device memory.
+            inIsDevice = (attrIn.devicePointer != nullptr);
+        }
+        if (a2 == cudaSuccess) {
+            outIsDevice = (attrOut.devicePointer != nullptr);
+        }
 
         // If both are device pointers, launch kernel directly.
         if (inIsDevice && outIsDevice) {
@@ -103,10 +108,8 @@ extern "C" {
     }
 }
 #else
-#include <cstring>
-#include <cstdlib>
-
-// CPU-only fallback used when no CUDA headers/toolchain are available or NO_CUDA is defined.
+// No CUDA: CPU-only fallback. The CUDA-only headers (cstring/cstdlib) are not required here
+// because this branch only performs plain CPU copies and doesn't use malloc/free or memcpy.
 extern "C" {
     void runSOMCache(const float* in, float* out, int n) {
         if (n <= 0 || !in || !out) return;
@@ -114,6 +117,8 @@ extern "C" {
             out[i] = in[i];
         }
     }
+}
+#endif
 }
 #endif
 
