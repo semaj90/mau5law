@@ -2,12 +2,17 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  // onMount not used; Svelte 5 runes are used instead
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import * as THREE from 'three';
-  let layout = $state<any>(null);
-  let graphData = $state<any>({ nodes: [], links: [] });
+  let layout = $state(null) as any;
+  // --- added types to make node/link shapes explicit ---
+  type GraphNode = { id: string; type?: string; [key: string]: any };
+  type GraphLink = { source: string; target: string; kind?: string; [key: string]: any };
+  type GraphData = { nodes: GraphNode[]; links: GraphLink[] };
+
+  // CHANGED: narrow graphData typing
+  let graphData = $state({ nodes: [], links: [] }) as GraphData;
   const client = new YoRHaAPIClient({
     onData: (id, data) => {
       if (id === 'brainGraph') {
@@ -16,13 +21,14 @@ https://svelte.dev/e/js_parse_error -->
       }
     },
   });
-  let canvasContainer = $state<HTMLDivElement | null>(null);
-  let renderer = $state<THREE.WebGLRenderer | null>(null);
-  let scene: THREE.Sce;
-  let camera: THREE.PerspectiveCamera;
+  let canvasContainer = $state(null) as HTMLDivElement | null;
+  let renderer = $state(null) as THREE.WebGLRenderer | null;
+  let scene: THREE.Scene | undefined;
+  let camera: THREE.PerspectiveCamera | undefined;
   let animationId: number;
-  let nodeMeshes = $state < Record<string, THREE.Mesh>({});
-  let linkLines = $state<THREE.Line[]>([]);
+  // CHANGED: allow undefined entries when resetting/replacing meshes
+  let nodeMeshes = $state({}) as Record<string, THREE.Mesh | undefined>;
+  let linkLines = $state([]) as THREE.Line[];
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
   const typeColor: Record<string, number> = {
     db: 0x3b82f6,
@@ -52,14 +58,15 @@ https://svelte.dev/e/js_parse_error -->
     scene.add(new THREE.AmbientLight(0x404040));
   }
   function buildGraph() {
-    // Clear existing
-    Object.values(nodeMeshes).forEach(m => scene.remove(m));
-    linkLines.forEach(l => scene.remove(l));
-    nodeMeshes = {}
+  // Clear existing
+  Object.values(nodeMeshes).forEach(m => { if (m && scene) scene.remove(m); });
+    linkLines.forEach(l => { if (scene) scene.remove(l); });
+  nodeMeshes = {};
     linkLines = [];
     const radius = 4;
-    graphData.nodes.forEach((n: unknown, idx: number) => {
-      const mat = new THREE.MeshStandardMaterial({ color: typeColor[n.type] ?? typeColor.default, emissive: 0x111111 });
+    // CHANGED: use typed node and safe color lookup
+    graphData.nodes.forEach((n: GraphNode, idx: number) => {
+      const mat = new THREE.MeshStandardMaterial({ color: typeColor[n.type ?? 'default'], emissive: 0x111111 });
       const mesh = new THREE.Mesh(nodeGeometry, mat);
       // Initial circular placement; slight random Z for depth
       const a = (idx / graphData.nodes.length) * Math.PI * 2;
@@ -68,11 +75,11 @@ https://svelte.dev/e/js_parse_error -->
         Math.sin(a * 2) * 0.5,
         Math.sin(a) * radius * 0.5 + (Math.random() - 0.5),
       );
-      scene.add(mesh);
+      if (scene) scene.add(mesh);
       nodeMeshes[n.id] = mesh;
     });
     // Links
-    graphData.links.forEach((l: unknown) => {
+    graphData.links.forEach((l: any) => {
       const from = nodeMeshes[l.source];
       const to = nodeMeshes[l.target];
       if (!from || !to) return;
@@ -80,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
       const geom = new THREE.BufferGeometry();
       geom.setFromPoints(pts);
       const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 }));
-      scene.add(line);
+      if (scene) scene.add(line);
       linkLines.push(line);
     });
   }
@@ -89,21 +96,25 @@ https://svelte.dev/e/js_parse_error -->
   }
   function animate() {
     animationId = requestAnimationFrame(animate);
-    // Light weight drift animation
-    Object.values.forEach(m => {
+    // Light weight drift animation - guard undefined meshes
+    Object.values(nodeMeshes).forEach((m) => {
+      if (!m) return; // skip undefined entries
       m.rotation.y += 0.005;
     });
-    if (renderer) {
+    if (renderer && scene && camera) {
       renderer.render(scene, camera);
     }
   }
+
+  // Proper effect with synchronous cleanup. Async work happens inside but cleanup is returned synchronously.
   $effect(() => {
+    initThree();
+
     (async () => {
-      initThree();
       try {
         await client.loadLayout('/api/yorha/layout');
         layout = client.getLayout();
-        client.startDataStreams();
+        client.startDataStreams?.();
         const res = await fetch('/api/brain/graph');
         if (res.ok) {
           graphData = await res.json();
@@ -113,10 +124,14 @@ https://svelte.dev/e/js_parse_error -->
       } catch (e) {
         console.error('Brain page init failed', e);
       }
-      return () => {
-        cancelAnimationFrame(animationId);
-      }
     })();
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+      if (renderer && canvasContainer && canvasContainer.contains(renderer.domElement)) {
+        canvasContainer.removeChild(renderer.domElement);
+      }
+    };
   });
 </script>
 

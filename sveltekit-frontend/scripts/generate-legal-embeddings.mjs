@@ -8,10 +8,9 @@ import postgres from 'postgres';
 console.log(chalk.cyan('🔍 Legal AI Embedding Generation v1.0'));
 
 const config = {
-  databaseUrl:
-    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
+  databaseUrl: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435', // Updated to use correct running port
-  embeddingModel: process.env.LEGAL_EMBEDDING_MODEL || 'nomic-embed-text',
+  embeddingModel: process.env.LEGAL_EMBEDDING_MODEL || 'embeddinggemma:latest',
   batchSize: parseInt(process.env.BATCH_SIZE) || 32,
   gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS) || 35,
   maxRetries: 3,
@@ -56,7 +55,7 @@ async function generateEmbedding(text, retries = 0) {
   } catch (error) {
     if (retries < config.maxRetries) {
       console.log(chalk.yellow(`⚠️  Retry ${retries + 1}/${config.maxRetries}: ${error.message}`));
-      await new Promise((resolve) => setTimeout(resolve, 1000 * (retries + 1)));
+      await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)));
       return generateEmbedding(text, retries + 1);
     }
     throw error;
@@ -70,7 +69,7 @@ async function processEvidenceEmbeddings() {
   // Get evidence without embeddings
   const evidenceRows = await sql`
     SELECT id, title, description, ai_summary, file_name
-    FROM evidence 
+    FROM evidence
     WHERE title_embedding IS NULL OR content_embedding IS NULL
     LIMIT 100
   `;
@@ -89,16 +88,14 @@ async function processEvidenceEmbeddings() {
       const titleEmbedding = await generateEmbedding(titleText);
 
       // Generate content embedding
-      const contentText = [evidence.title, evidence.description, evidence.ai_summary]
-        .filter(Boolean)
-        .join(' ');
+      const contentText = [evidence.title, evidence.description, evidence.ai_summary].filter(Boolean).join(' ');
 
       const contentEmbedding = await generateEmbedding(contentText);
 
       // Update database with embeddings
       await sql`
-        UPDATE evidence 
-        SET 
+        UPDATE evidence
+        SET
           title_embedding = ${sql`${JSON.stringify(titleEmbedding)}::vector`},
           content_embedding = ${sql`${JSON.stringify(contentEmbedding)}::vector`}
         WHERE id = ${evidence.id}
@@ -124,7 +121,7 @@ async function processChatEmbeddings() {
   // Get chat messages without embeddings
   const chatRows = await sql`
     SELECT id, content, role
-    FROM chat_messages 
+    FROM chat_messages
     WHERE embedding IS NULL
     LIMIT 200
   `;
@@ -139,7 +136,7 @@ async function processChatEmbeddings() {
       const embedding = await generateEmbedding(message.content);
 
       await sql`
-        UPDATE chat_messages 
+        UPDATE chat_messages
         SET embedding = ${sql`${JSON.stringify(embedding)}::vector`}
         WHERE id = ${message.id}
       `;
@@ -164,7 +161,7 @@ async function processCaseEmbeddings() {
   // Get cases that need embeddings
   const caseRows = await sql`
     SELECT id, title, description
-    FROM cases 
+    FROM cases
     WHERE id NOT IN (SELECT DISTINCT case_id FROM case_embeddings WHERE case_id IS NOT NULL)
     LIMIT 50
   `;
@@ -183,8 +180,8 @@ async function processCaseEmbeddings() {
       await sql`
         INSERT INTO case_embeddings (case_id, content, embedding, metadata)
         VALUES (
-          ${caseDoc.id}, 
-          ${caseText}, 
+          ${caseDoc.id},
+          ${caseText},
           ${sql`${JSON.stringify(embedding)}::vector`},
           ${sql`${JSON.stringify({ source: 'case_summary', model: config.embeddingModel })}`}
         )

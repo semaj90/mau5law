@@ -3,22 +3,33 @@ import { librarySyncService } from '$lib/services/library-sync-service';
 import type { RequestHandler } from './$types.js';
 import crypto from 'crypto';
 
+// helper to safely stringify unknown errors
+function getErrorMessage(error: unknown): string {
+	if (error instanceof Error) return error.message;
+	try {
+		return JSON.stringify(error);
+	} catch {
+		return String(error);
+	}
+}
+
 // GET /api/agent-logs - Get recent agent logs
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const agentType = url.searchParams.get('agentType') || undefined;
+    const agentType = url.searchParams.get('agentType') ?? undefined;
     const limit = parseInt(url.searchParams.get('limit') || '50');
-    const logs = await librarySyncService.getRecentAgentLogs(agentType as any, limit);
+    // pass the typed value directly, avoid unsafe any cast
+    const logs = await librarySyncService.getRecentAgentLogs(agentType, limit);
     return json({
       success: true,
       logs,
       count: logs.length,
     });
-  } catch (error: any) {
-    console.error('Failed to get agent logs:', error);
+  } catch (error: unknown) {
+    console.error('Failed to get agent logs:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to get agent logs' }, { status: 500 });
   }
-}
+};
 // POST /api/agent-logs - Log a new agent call
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -27,15 +38,15 @@ export const POST: RequestHandler = async ({ request }) => {
       id: crypto.randomUUID(),
       timestamp: new Date(),
       ...logData,
-    }
+    };
     await librarySyncService.logAgentCall(agentLog);
     return json({
       success: true,
       message: 'Agent call logged successfully',
       logId: agentLog.id,
     });
-  } catch (error: any) {
-    console.error('Failed to log agent call:', error);
+  } catch (error: unknown) {
+    console.error('Failed to log agent call:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to log agent call' }, { status: 500 });
   }
-}
+};

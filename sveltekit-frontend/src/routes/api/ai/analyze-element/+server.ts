@@ -15,13 +15,19 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
-/*
- * Elemental Awareness API - YOLO-style hover analysis
- * Provides legal context for any UI element when hovered
- */
-import { json } from '@sveltejs/kit'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+
+type Analysis = {
+  relevance: string;
+  legalContext?: string;
+  actionable?: boolean;
+  raw?: unknown;
+  response?: unknown;
+  [key: string]: unknown;
+};
+
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json()
@@ -32,7 +38,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 })
     }
     // Quick legal relevance analysis
-    const response = await fetch('http://localhost:11434/api/generate', {
+    const response: Response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -43,46 +49,55 @@ Content: "${content}"
 Context: ${context}
 Provide a brief 1-sentence legal relevance assessment and classification.
 Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
-        stream: false
-      })
-    })
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
-      const text = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => '')
-      console.error('Remote analyze service returned non-OK:', (response as { ok?: any; text?: any; status?: any; json?: any }).status, text)
-      return json({ error: 'Remote analyze service failed' }, { status: 502 })
+        stream: false,
+      }),
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      console.error('Remote analyze service returned non-OK:', response.status, text);
+      return json({ error: 'Remote analyze service failed' }, { status: 502 });
     }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json().catch(() => null)
-    // Normalize result into a JS object
-    let analysis: any = null
+
+    const result: unknown = await response.json().catch(() => null);
+
+    // Normalize result into a typed object
+    let analysis: Analysis;
     if (!result) {
       analysis = {
         relevance: 'Content may have legal significance',
         legalContext: 'general',
-        actionable: false
-      }
+        actionable: false,
+      };
     } else if (typeof result === 'string') {
       try {
-        analysis = JSON.parse(result)
+        analysis = JSON.parse(result) as Analysis;
       } catch {
-        analysis = { raw: result }
+        analysis = { relevance: 'unknown', raw: result };
       }
-    } else if ((result as { response?: any }).response) {
-      // (result as { response?: any }).response might be a JSON string or already an object
-      if (typeof (result as { response?: any }).response === 'string') {
-        try {
-          analysis = JSON.parse((result as { response?: any }).response)
-        } catch {
-          analysis = { response: (result as { response?: any }).response }
+    } else if (typeof result === 'object' && result !== null) {
+      const r = result as Record<string, unknown>;
+      if ('response' in r) {
+        const inner = r.response;
+        if (typeof inner === 'string') {
+          try {
+            analysis = JSON.parse(inner) as Analysis;
+          } catch {
+            analysis = { relevance: 'unknown', response: inner };
+          }
+        } else {
+          analysis = inner as unknown as Analysis;
         }
       } else {
-        analysis = (result as { response?: any }).response
+        analysis = r as Analysis;
       }
     } else {
-      analysis = result
+      analysis = { relevance: 'unknown', raw: result };
     }
+
     return json(analysis)
-  } catch (error: any) {
-    console.error('Element analysis failed:', error)
+  } catch (error: unknown) {
+    // avoid using `any` for error; log safely
+    console.error('Element analysis failed:', error instanceof Error ? error.message : String(error))
     return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 })
   }
 }

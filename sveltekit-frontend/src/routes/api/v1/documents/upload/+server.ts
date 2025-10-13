@@ -56,11 +56,11 @@ export const POST = async ({ request, locals }) => {
 	if (!user && devBypass) {
 		// Inject a mock user for development/testing
 		user = {
-			id: 'dev-user',
-			email: 'dev@localhost',
-			name: 'Dev User',
-			role: 'developer'
-		};
+      id: 'dev-user',
+      email: 'dev@localhost',
+      name: 'Dev User',
+      role: 'user', // changed from 'developer' to permitted role 'user'
+    };
 	}
 	if (!user) {
 		return json({

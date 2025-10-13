@@ -8,7 +8,6 @@ import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
 import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
 import * as tf from '@tensorflow/tfjs';
 import { browser } from '$app/environment';
-}
 export interface SynthesizerConfig {
   enableLegalBERT: boolean;
   enableLanguageExtraction: boolean;
@@ -99,7 +98,7 @@ export interface SemanticMap {
   conceptNodes: ConceptNode[];
   relationshipEdges: RelationshipEdge[];
   clusters: ConceptCluster[];
-  centrality: { [concept: string]: number }
+  centrality: { [concept: string]: number };
 }
 export interface ConceptNode {
   id: string;
@@ -147,7 +146,8 @@ export interface PipelineStage {
   name: string;
   processingTime: number;
   success: boolean;
-  output?: any;
+  // narrowed from `any` to a safe object shape to avoid unexpected `any`
+  output?: Record<string, unknown>;
   error?: string;
 }
 export interface QualityMetrics {
@@ -162,54 +162,55 @@ export interface QualityMetrics {
 /**
  * TensorFlow.js Synthesizer Middleware
  * Advanced NLP pipeline for comprehensive legal document analysis
- */;
+ */
 export class TensorFlowSynthesizer {
   private config: SynthesizerConfig;
   private initialized = false;
   private analysisCache = new Map<string, SynthesizedAnalysis>();
   constructor(config: Partial<SynthesizerConfig> = {}) {
     this.config = {
-      enableLegalBERT: true
-      enableLanguageExtraction: true
-      enableSemanticSynthesis: true
-      enableMultiModalAnalysis: true
+      enableLegalBERT: true,
+      enableLanguageExtraction: true,
+      enableSemanticSynthesis: true,
+      enableMultiModalAnalysis: true,
       confidenceThreshold: 0.75,
       maxProcessingTime: 30000, // 30 seconds
-      parallelProcessing: true
+      parallelProcessing: true,
       cachingStrategy: 'memory',
-      ...config
-    }
+      ...config,
+    };
   }
   /**
    * Initialize the synthesizer middleware
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (!browser) {
       console.warn('[TF Synthesizer] Not running in browser environment');
       return false;
     }
-    if (this.initialized) {
-      return true;
-    }
+    if (this.initialized) return true;
+
     try {
       console.log('[TF Synthesizer] Initializing comprehensive NLP pipeline...');
-      // Initialize all components
-      const initPromises: Promise<boolean>[] = [];
+      const initPromises: Promise<unknown>[] = [];
+
       if (this.config.enableLegalBERT) {
-        initPromises.push(legalBERTMiddleware.initialize();
+        initPromises.push(legalBERTMiddleware.initialize());
       }
       if (this.config.enableLanguageExtraction) {
-        initPromises.push(langExtractTensorFlow.initialize();
+        initPromises.push(langExtractTensorFlow.initialize());
       }
-      // Initialize WebAssembly components
-      initPromises.push(webAssemblyAIAdapter.initialize();
-      initPromises.push(webAssemblyLangChainBridge.initialize();
-      // Wait for all initializations
+      // WebAssembly components (always attempt)
+      initPromises.push(webAssemblyAIAdapter.initialize());
+      initPromises.push(webAssemblyLangChainBridge.initialize());
+
       const results = await Promise.allSettled(initPromises);
-      const successCount = results.filter(item => item.length);
+      const successCount = results.filter(r => r.status === 'fulfilled').length;
+
       if (successCount === 0) {
         throw new Error('No components initialized successfully');
       }
+
       console.log(`[TF Synthesizer] Initialized ${successCount}/${initPromises.length} components`);
       this.initialized = true;
       return true;
@@ -221,11 +222,7 @@ export class TensorFlowSynthesizer {
   /**
    * Synthesize comprehensive legal analysis
    */
-  async synthesizeAnalysis(
-    text: string
-    query?: string
-    context?: any;
-  ): Promise<SynthesizedAnalysis> {
+  async synthesizeAnalysis(text: string, query?: string, context?: any): Promise<SynthesizedAnalysis> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -233,36 +230,36 @@ export class TensorFlowSynthesizer {
     if (this.analysisCache.has(cacheKey)) {
       return this.analysisCache.get(cacheKey)!;
     }
-    const startTime = performance.now();
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const pipeline: PipelineStage[] = [];
+
     try {
       console.log('[TF Synthesizer] Starting comprehensive analysis pipeline...');
       let legalBERTResults: LegalBERTAnalysis | undefined;
       let languageExtractionResults: AdvancedExtractionResult | undefined;
-      // Stage 1: Run parallel analysis if enabled
+
+      // Stage 1: Run analysis
       if (this.config.parallelProcessing) {
-        await this.runParallelAnalysis(text, pipeline, (results) => {
-          legalBERTResults = results.legalBERT);
+        await this.runParallelAnalysis(text, pipeline, results => {
+          legalBERTResults = results.legalBERT;
           languageExtractionResults = results.languageExtraction;
         });
       } else {
-        await this.runSequentialAnalysis(text, pipeline, (results) => {
-          legalBERTResults = results.legalBERT);
+        await this.runSequentialAnalysis(text, pipeline, results => {
+          legalBERTResults = results.legalBERT;
           languageExtractionResults = results.languageExtraction;
         });
       }
+
       // Stage 2: Synthesize insights
-      const synthesizedInsights = await this.synthesizeInsights(
-        legalBERTResults,
-        languageExtractionResults,
-        text
-      );
+      const synthesizedInsights = await this.synthesizeInsights(legalBERTResults, languageExtractionResults, text);
       pipeline.push({
         name: 'synthesize-insights',
-        processingTime: performance,.no,w() - startTime,
-        success,: true;
-        output: { insightsGenerated: Object.keys(synthesizedInsights).length }
+        processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
+        success: true,
+        output: { insightsGenerated: Object.keys(synthesizedInsights || {}).length },
       });
+
       // Stage 3: Generate enhanced response
       const enhancedResponse = await this.generateEnhancedResponse(
         text,
@@ -273,10 +270,11 @@ export class TensorFlowSynthesizer {
       );
       pipeline.push({
         name: 'enhanced-response',
-        processingTime: performance.now() - startTime,
-        success: true;
-        output: { responseLength: enhancedResponse.primaryResponse.length }
+        processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
+        success: true,
+        output: { responseLength: enhancedResponse.primaryResponse.length },
       });
+
       // Stage 4: Calculate quality metrics
       const qualityMetrics = this.calculateQualityMetrics(
         legalBERTResults,
@@ -286,34 +284,36 @@ export class TensorFlowSynthesizer {
       );
       pipeline.push({
         name: 'quality-metrics',
-        processingTime: performance.now() - startTime,
-        success: true;
-        output: qualityMetrics
+        processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
+        success: true,
+        output: qualityMetrics,
       });
-      const totalProcessingTime = performance.now() - startTime;
+
+      const totalProcessingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       const result: SynthesizedAnalysis = {
         legalBERTResults,
         languageExtractionResults,
         synthesizedInsights,
         enhancedResponse,
         processingPipeline: {
-          stages: pipeline
+          stages: pipeline,
           totalProcessingTime,
           parallelProcessing: this.config.parallelProcessing,
           fallbacksUsed: [],
-          optimizationsApplied: ['caching', 'parallel-processing']
+          optimizationsApplied: ['caching', 'parallel-processing'],
         },
-        qualityMetrics
-      }
-      // Cache the result
+        qualityMetrics,
+      };
+
       if (this.config.cachingStrategy === 'memory') {
         this.analysisCache.set(cacheKey, result);
       }
+
       console.log(`[TF Synthesizer] Analysis completed in ${totalProcessingTime.toFixed(2)}ms`);
       return result;
     } catch (error: any) {
       console.error('[TF Synthesizer] Analysis failed:', error);
-      // Return minimal result with error information
+      // Minimal fallback result
       return {
         synthesizedInsights: {
           keyLegalConcepts: [],
@@ -322,23 +322,23 @@ export class TensorFlowSynthesizer {
             specificRisks: [],
             mitigationStrategies: [],
             complianceGaps: [],
-            urgencyScore: 0.5
+            urgencyScore: 0.5,
           },
           complianceAnalysis: {
             applicableRegulations: [],
             complianceScore: 0.5,
             gapAnalysis: [],
             recommendedActions: [],
-            jurisdictionalComplexity: 0.5
+            jurisdictionalComplexity: 0.5,
           },
           recommendedActions: [],
           semanticMap: {
             conceptNodes: [],
             relationshipEdges: [],
             clusters: [],
-            centrality: { [key,: strin,g]: any }
+            centrality: {},
           },
-          crossReferences: []
+          crossReferences: [],
         },
         enhancedResponse: {
           primaryResponse: 'Analysis failed due to processing error. Please try again.',
@@ -347,14 +347,14 @@ export class TensorFlowSynthesizer {
           practicalImplications: [],
           nextSteps: [],
           confidenceLevel: 0.1,
-          sources: []
+          sources: [],
         },
         processingPipeline: {
-          stages: pipeline
-          totalProcessingTime: performance.now() - startTime,
-          parallelProcessing: false
+          stages: pipeline,
+          totalProcessingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
+          parallelProcessing: false,
           fallbacksUsed: ['error-fallback'],
-          optimizationsApplied: []
+          optimizationsApplied: [],
         },
         qualityMetrics: {
           overallQuality: 0.1,
@@ -363,211 +363,221 @@ export class TensorFlowSynthesizer {
           completeness: 0,
           coherence: 0,
           relevance: 0,
-          userSatisfactionPrediction: 0.1
-        }
-      }
+          userSatisfactionPrediction: 0.1,
+        },
+      };
     }
   }
   /**
    * Run parallel analysis for better performance
    */
   private async runParallelAnalysis(
-    text,: string
-    pipeline,: PipelineStage[,];
-    callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
+    text: string,
+    pipeline: PipelineStage[],
+    callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void
   ): Promise<void> {
-    const analysisPromise,s: Promise<an,y>,[], = [];
-    const stageStartTime = performance.now();
-    if (this.config.enableLegalBER,T) {
-      analysisPromises.push(legalBERTMiddleware.analyzeLegalText(text).catch(error => {
+    const analysisPromises: Promise<unknown>[] = [];
+    const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+
+    if (this.config.enableLegalBERT) {
+      analysisPromises.push(
+        legalBERTMiddleware.analyzeLegalText(text).catch(error => {
           console.warn('[TF Synthesizer] Legal-BERT analysis failed:', error);
           return null;
         })
       );
     }
     if (this.config.enableLanguageExtraction) {
-      analysisPromises.push(langExtractTensorFlow.extractAdvancedFeatures(text).catch(error => {
+      analysisPromises.push(
+        langExtractTensorFlow.extractAdvancedFeatures(text).catch(error => {
           console.warn('[TF Synthesizer] Language extraction failed:', error);
           return null;
         })
       );
     }
+
     const results = await Promise.allSettled(analysisPromises);
     pipeline.push({
       name: 'parallel-analysis',
-      processingTime: performance.now() - stageStartTime,
-      success: results.some(r => r.status === 'fulfilled' && r.value),
+      processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
+      success: results.some(r => r.status === 'fulfilled' && (r as PromiseFulfilledResult<any>).value != null),
       output: {
-        legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false
-        languageExtractionSuccess: this.config.enableLanguageExtraction ?
-          results[this.config.enableLegalBERT ? 1 : 0]?.status === 'fulfilled' : false
-      }
+        legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false,
+        languageExtractionSuccess: this.config.enableLanguageExtraction
+          ? results[this.config.enableLegalBERT ? 1 : 0]?.status === 'fulfilled'
+          : false,
+      },
     });
+
     // Extract results
     let resultIndex = 0;
-    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {}
+    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+
     if (this.config.enableLegalBERT) {
-      const result = results[resultIndex++];
-      if ((result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value) {
-        analysisResults.legalBERT = (result as { status?: any; value?: any }).value;
+      const res = results[resultIndex++] as PromiseSettledResult<any>;
+      if (res.status === 'fulfilled' && res.value != null) {
+        analysisResults.legalBERT = res.value;
       }
     }
     if (this.config.enableLanguageExtraction) {
-      const result = results[resultIndex++];
-      if ((result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value) {
-        analysisResults.languageExtraction = (result as { status?: any; value?: any }).value;
+      const res = results[resultIndex++] as PromiseSettledResult<any>;
+      if (res.status === 'fulfilled' && res.value != null) {
+        analysisResults.languageExtraction = res.value;
       }
     }
+
     callback(analysisResults);
   }
   /**
    * Run sequential analysis as fallback
    */
   private async runSequentialAnalysis(
-    text,: string
-    pipeline,: PipelineStage[,];
-    callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
+    text: string,
+    pipeline: PipelineStage[],
+    callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void
   ): Promise<void> {
-    const result,s: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {}
+    const resultsObj: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+
     if (this.config.enableLegalBERT) {
-      const stageStartTime = performance.now();
+      const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
-        results.legalBERT = await legalBERTMiddleware.analyzeLegalText(text);
+        resultsObj.legalBERT = await legalBERTMiddleware.analyzeLegalText(text);
         pipeline.push({
           name: 'legal-bert-analysis',
-          processingTime: performance.now() - stageStartTime,
-          success: true;
-          output: { entitiesFound: results.legalBERT.entities.length }
+          processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
+          success: true,
+          output: { entitiesFound: resultsObj.legalBERT?.entities?.length ?? 0 },
         });
       } catch (error: any) {
         pipeline.push({
           name: 'legal-bert-analysis',
-          processingTime: performance.now() - stageStartTime,
-          success: false;
-          error: error.message
+          processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
+          success: false,
+          error: error?.message ?? String(error),
         });
       }
     }
+
     if (this.config.enableLanguageExtraction) {
-      const stageStartTime = performance.now();
+      const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
-        results.languageExtraction = await langExtractTensorFlow.extractAdvancedFeatures(text);
+        resultsObj.languageExtraction = await langExtractTensorFlow.extractAdvancedFeatures(text);
         pipeline.push({
           name: 'language-extraction',
-          processingTime: performance.now() - stageStartTime,
-          success: true;
-          output: { conceptsExtracted: results.languageExtraction.extractedConcepts.length }
+          processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
+          success: true,
+          output: { conceptsExtracted: resultsObj.languageExtraction?.extractedConcepts?.length ?? 0 },
         });
       } catch (error: any) {
         pipeline.push({
           name: 'language-extraction',
-          processingTime: performance.now() - stageStartTime,
-          success: false;
-          error: error.message
+          processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
+          success: false,
+          error: error?.message ?? String(error),
         });
       }
     }
-    callback(results);
+
+    callback(resultsObj);
   }
   /**
    * Synthesize insights from multiple analysis sources
    */
   private async synthesizeInsights(
-    legalBERTResults?: LegalBERTAnalysis
-    languageExtractionResults?: AdvancedExtractionResult
-    text?: string;
+    legalBERTResults?: LegalBERTAnalysis,
+    languageExtractionResults?: AdvancedExtractionResult,
+    text?: string
   ): Promise<SynthesizedInsights> {
-    // Combine and synthesize key legal concepts
     const keyLegalConcepts = this.synthesizeConceptClusters(legalBERTResults, languageExtractionResults);
-    // Assess risk profile
     const riskAssessment = this.synthesizeRiskProfile(legalBERTResults, languageExtractionResults, text);
-    // Analyze compliance requirements
     const complianceAnalysis = this.synthesizeComplianceProfile(legalBERTResults, text);
-    // Generate action recommendations
     const recommendedActions = this.generateActionRecommendations(riskAssessment, complianceAnalysis);
-    // Build semantic map
     const semanticMap = this.buildSemanticMap(languageExtractionResults);
-    // Extract cross-references
     const crossReferences = this.extractCrossReferences(text, legalBERTResults);
+
     return {
       keyLegalConcepts,
       riskAssessment,
       complianceAnalysis,
       recommendedActions,
       semanticMap,
-      crossReferences
-    }
+      crossReferences,
+    };
   }
   /**
    * Generate enhanced response using WebAssembly AI
    */
   private async generateEnhancedResponse(
-    text,: string
-    query,: string | undefine,d;
-    insights: SynthesizedInsights
-    legalBERTResults?: LegalBERTAnalysis
-    languageExtractionResults?: AdvancedExtractionResult;
+    text: string,
+    query: string | undefined,
+    insights: SynthesizedInsights,
+    legalBERTResults?: LegalBERTAnalysis,
+    languageExtractionResults?: AdvancedExtractionResult
   ): Promise<EnhancedResponse> {
     try {
-      // Build enhanced prompt with synthesized insights
       const enhancedPrompt = this.buildEnhancedPrompt(text, query, insights);
-      // Use WebAssembly + LangChain for response generation
-      let primaryResponse: strin,g;
-      let confidenceLevel: numbe,r;
-      let sources: ResponseSource[] = [,];
-      if (webAssemblyLangChainBridge,.getHealthStatus().bridgeInitialize,d) {
-        const ragResult = await webAssemblyLangChainBridge.query(enhancedPrompt, {
-          useWebAssembly: true
-          useHybridMode: true
-          thinkingMode: true
-          maxRetrievedDocs: 5
-        });
-        primaryResponse = ragResult.answer;
-        confidenceLevel = ragResult.confidence;
+
+      let primaryResponse = '';
+      let confidenceLevel = 0;
+      const sources: ResponseSource[] = [];
+
+      const bridgeStatus = webAssemblyLangChainBridge.getHealthStatus?.() ?? { bridgeInitialized: false };
+      if (bridgeStatus.bridgeInitialized) {
+        const ragResult = (await webAssemblyLangChainBridge.query(enhancedPrompt, {
+          useWebAssembly: true,
+          useHybridMode: true,
+          thinkingMode: true,
+          maxRetrievedDocs: 5,
+        } as any)) as HybridRAGResult;
+
+        primaryResponse = ragResult?.answer ?? '';
+        confidenceLevel = ragResult?.confidence ?? 0;
         sources.push({
           type: 'webassembly',
-          content: primaryResponse
-          confidence: confidenceLevel;
-          relevance: 0.9
+          content: primaryResponse,
+          confidence: confidenceLevel,
+          relevance: 0.9,
         });
       } else {
-        // Fallback to direct WebAssembly
         const wasmResponse = await webAssemblyAIAdapter.sendMessage(enhancedPrompt);
-        primaryResponse = wasmResponse.content;
-        confidenceLevel = wasmResponse.metadata.confidence;
+        primaryResponse = wasmResponse?.content ?? '';
+        confidenceLevel = wasmResponse?.metadata?.confidence ?? 0;
         sources.push({
           type: 'webassembly',
-          content: primaryResponse
-          confidence: confidenceLevel;
-          relevance: 0.8
+          content: primaryResponse,
+          confidence: confidenceLevel,
+          relevance: 0.8,
         });
       }
-      // Add supporting analysis from various sources
+
       const supportingAnalysis: string[] = [];
+
       if (legalBERTResults) {
-        supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities.length} legal entities with ${legalBERTResults.classification.confidence.toFixed(2)} confidence.`);
+        supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} legal entities.`);
         sources.push({
           type: 'legal-bert',
-          content: `Classified as ${legalBERTResults.classification.documentType}`,
-          confidence: legalBERTResults.classification.confidence,
-          relevance: 0.7
+          content: `Classified as ${legalBERTResults.classification?.documentType ?? 'unknown'}`,
+          confidence: legalBERTResults.classification?.confidence ?? 0,
+          relevance: 0.7,
         });
       }
+
       if (languageExtractionResults) {
-        supportingAnalysis.push(`Concept Analysis: Extracted ${languageExtractionResults.extractedConcepts.length} key concepts and ${languageExtractionResults.semanticRelationships.length} relationships.`);
+        supportingAnalysis.push(
+          `Concept Analysis: Extracted ${languageExtractionResults.extractedConcepts?.length ?? 0} key concepts.`
+        );
         sources.push({
           type: 'language-extraction',
-          content: languageExtractionResults.abstractiveSummary,
+          content: languageExtractionResults.abstractiveSummary ?? '',
           confidence: 0.8,
-          relevance: 0.6
+          relevance: 0.6,
         });
       }
-      // Generate legal reasoning
+
       const legalReasoning = this.generateLegalReasoning(insights, legalBERTResults);
-      // Generate practical implications
       const practicalImplications = this.generatePracticalImplications(insights);
-      // Generate next steps
-      const nextSteps = insights.recommendedActions.slice(0, 5).map(action => action.action);
+      const nextSteps = insights.recommendedActions.slice(0, 5).map(a => a.action);
+
       return {
         primaryResponse,
         supportingAnalysis,
@@ -575,143 +585,148 @@ export class TensorFlowSynthesizer {
         practicalImplications,
         nextSteps,
         confidenceLevel,
-        sources
-      }
+        sources,
+      };
     } catch (error: any) {
       console.error('[TF Synthesizer] Enhanced response generation failed:', error);
       return {
-        primaryResponse: 'I apologize, but I encountered an error generating a comprehensive (response as { primaryResponse?: any; sources?: any }). Please try rephrasing your query.',
+        primaryResponse:
+          'I apologize, but I encountered an error generating a comprehensive response. Please try rephrasing your query.',
         supportingAnalysis: [],
         legalReasoning: '',
         practicalImplications: [],
         nextSteps: [],
         confidenceLevel: 0.1,
-        sources: []
-      }
+        sources: [],
+      };
     }
   }
-  // Helper methods for synthesis
+  // Helper methods for synthesis (cleaned signatures and implementations)
   private synthesizeConceptClusters(
-    legalBERTResults?: LegalBERTAnalysis
-    languageExtractionResults?: AdvancedExtractionResult;
-  ): ConceptCluster[], {
-    const clusters: ConceptCluster[] = [];
-    // Combine concepts from both sources
-    const allConcepts = new Map<string, ConceptCluster>();
+    legalBERTResults?: LegalBERTAnalysis,
+    languageExtractionResults?: AdvancedExtractionResult
+  ): ConceptCluster[] {
+    const clusters: Map<string, ConceptCluster> = new Map();
+
     if (legalBERTResults) {
-      legalBERTResults.entities.forEach(entity => {
-        if (entity.confidence >= this.config.confidenceThreshold) {
-          allConcepts.set(entity.text, {
+      (legalBERTResults.entities || []).forEach(entity => {
+        if ((entity.confidence ?? 0) >= this.config.confidenceThreshold) {
+          clusters.set(entity.text, {
             primaryConcept: entity.text,
             relatedConcepts: [],
-            legalImportance: entity.confidence,
+            legalImportance: entity.confidence ?? 0,
             contextualRelevance: 0.8,
-            semanticEmbedding: new Float32Array(768), // Would use actual embeddings
-            practiceAreaAlignment: [entity.category.toLowerCase()],
-            jurisdictionalRelevance: ['general']
-          });
-        }
-      });
-    }
-    if (languageExtractionResults) {
-      languageExtractionResults.extractedConcepts.forEach(concept => {
-        const existing = allConcepts.get(concept.concept);
-        if (existing) {
-          existing.contextualRelevance = Math.max(existing.contextualRelevance, concept.importance);
-          existing.relatedConcepts.push(...concept.relatedTerms);
-        } else if (concept.importance >= this.config.confidenceThreshold) {
-          allConcepts.set(concept.concept, {
-            primaryConcept: concept.concept,
-            relatedConcepts: concept.relatedTerms,
-            legalImportance: concept.importance,
-            contextualRelevance: concept.importance,
             semanticEmbedding: new Float32Array(768),
-            practiceAreaAlignment: [concept.category],
-            jurisdictionalRelevance: ['general']
+            practiceAreaAlignment: [(entity.category ?? '').toLowerCase()],
+            jurisdictionalRelevance: ['general'],
           });
         }
       });
     }
-    return Array.from(allConcepts.values()
-      .sort((a, b) => (b.legalImportance + b.contextualRelevance) - (a.legalImportance + a.contextualRelevance)
-      .slice(0, 20); // Top 20 concepts
+
+    if (languageExtractionResults) {
+      (languageExtractionResults.extractedConcepts || []).forEach(concept => {
+        const existing = clusters.get(concept.concept);
+        if (existing) {
+          existing.contextualRelevance = Math.max(existing.contextualRelevance, concept.importance ?? 0);
+          existing.relatedConcepts.push(...(concept.relatedTerms || []));
+        } else if ((concept.importance ?? 0) >= this.config.confidenceThreshold) {
+          clusters.set(concept.concept, {
+            primaryConcept: concept.concept,
+            relatedConcepts: concept.relatedTerms || [],
+            legalImportance: concept.importance ?? 0,
+            contextualRelevance: concept.importance ?? 0,
+            semanticEmbedding: new Float32Array(768),
+            practiceAreaAlignment: [concept.category || 'general'],
+            jurisdictionalRelevance: ['general'],
+          });
+        }
+      });
+    }
+
+    return Array.from(clusters.values())
+      .sort((a, b) => b.legalImportance + b.contextualRelevance - (a.legalImportance + a.contextualRelevance))
+      .slice(0, 20);
   }
   private synthesizeRiskProfile(
-    legalBERTResults?: LegalBERTAnalysis
-    languageExtractionResults?: AdvancedExtractionResult
-    text?: string;
+    legalBERTResults?: LegalBERTAnalysis,
+    languageExtractionResults?: AdvancedExtractionResult,
+    text?: string
   ): RiskProfile {
     const risks: RiskFactor[] = [];
     let overallRiskScore = 0;
-    // Risk assessment from Legal-BERT classification
+
     if (legalBERTResults) {
-      const riskLevel = legalBERTResults.classification.riskLevel;
-      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 }
-      overallRiskScore = Math.max(overallRiskScore, riskMapping[riskLevel]);
+      // Use a properly typed mapping and keyof for indexing
+      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 } as const;
+      const riskLevelKey = (legalBERTResults.classification?.riskLevel ?? 'LOW') as keyof typeof riskMapping;
+      overallRiskScore = Math.max(overallRiskScore, riskMapping[riskLevelKey] ?? 0);
     }
-    // Risk assessment from sentiment and language patterns
+
     if (languageExtractionResults) {
-      const negativeIndicators = languageExtractionResults.extractedConcepts.filter(c =>
-        c.concept.includes('breach') || c.concept.includes('terminate') || c.concept.includes('penalty')
+      const negativeIndicators = (languageExtractionResults.extractedConcepts || []).filter(
+        c =>
+          (c.concept || '').toLowerCase().includes('breach') ||
+          (c.concept || '').toLowerCase().includes('terminate') ||
+          (c.concept || '').toLowerCase().includes('penalty')
       );
       if (negativeIndicators.length > 0) {
-        overallRiskScore = Math.max(overallRiskScore, negativeIndicators.length * 0.2);
+        overallRiskScore = Math.max(overallRiskScore, Math.min(1, negativeIndicators.length * 0.2));
         risks.push({
           category: 'contractual',
           description: `High frequency of risk-related terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,
           likelihood: 0.7,
           impact: 0.8,
-          severity: negativeIndicators.length * 0.2,
-          mitigatable: true
+          severity: Math.min(1, negativeIndicators.length * 0.2),
+          mitigatable: true,
         });
       }
     }
-    // Determine overall risk level
-    let overallRiskLevel: RiskProfile['overallRiskLevel'];
+
+    let overallRiskLevel: RiskProfile['overallRiskLevel'] = 'LOW';
     if (overallRiskScore < 0.3) overallRiskLevel = 'LOW';
     else if (overallRiskScore < 0.6) overallRiskLevel = 'MEDIUM';
     else if (overallRiskScore < 0.9) overallRiskLevel = 'HIGH';
     else overallRiskLevel = 'CRITICAL';
+
     return {
       overallRiskLevel,
-      specificRisks: risks
+      specificRisks: risks,
       mitigationStrategies: this.generateMitigationStrategies(risks),
       complianceGaps: [],
-      urgencyScore: overallRiskScore
-    }
+      urgencyScore: overallRiskScore,
+    };
   }
-  private synthesizeComplianceProfile(
-    legalBERTResults?: LegalBERTAnalysis
-    text?: string;
-  ): ComplianceProfile {
+  private synthesizeComplianceProfile(legalBERTResults?: LegalBERTAnalysis, text?: string): ComplianceProfile {
     const regulations: RegulationAnalysis[] = [];
-    let complianceScore = 0.7; // Default neutral compliance
-    // Basic compliance analysis based on document type
+    let complianceScore = 0.7;
+
     if (legalBERTResults) {
-      const docType = legalBERTResults.classification.documentType;
+      const docType = legalBERTResults.classification?.documentType;
       if (docType === 'contract') {
         regulations.push({
           regulation: 'Contract Law Requirements',
           applicability: 0.9,
           complianceStatus: 'partial',
-          requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law']
+          requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law'],
         });
       }
     }
+
     return {
-      applicableRegulations: regulations
+      applicableRegulations: regulations,
       complianceScore,
       gapAnalysis: [],
       recommendedActions: [],
-      jurisdictionalComplexity: 0.5
-    }
+      jurisdictionalComplexity: 0.5,
+    };
   }
   private generateActionRecommendations(
-    riskAssessment,: RiskProfile
-    complianceAnalysis,: ComplianceProfil,e;
-  ): ActionRecommendation[], {
+    riskAssessment: RiskProfile,
+    complianceAnalysis: ComplianceProfile
+  ): ActionRecommendation[] {
     const actions: ActionRecommendation[] = [];
-    // Risk-based recommendations
+
     if (riskAssessment.overallRiskLevel === 'HIGH' || riskAssessment.overallRiskLevel === 'CRITICAL') {
       actions.push({
         category: 'immediate',
@@ -720,10 +735,10 @@ export class TensorFlowSynthesizer {
         priority: 1.0,
         estimatedEffort: '4-8 hours',
         expectedOutcome: 'Risk mitigation and compliance verification',
-        dependencies: []
+        dependencies: [],
       });
     }
-    // Compliance-based recommendations
+
     if (complianceAnalysis.complianceScore < 0.8) {
       actions.push({
         category: 'short-term',
@@ -732,112 +747,105 @@ export class TensorFlowSynthesizer {
         priority: 0.8,
         estimatedEffort: '2-4 hours',
         expectedOutcome: 'Improved regulatory compliance',
-        dependencies: []
+        dependencies: [],
       });
     }
+
     return actions.sort((a, b) => b.priority - a.priority);
   }
-  private buildSemanticMap(languageExtractionResults?: AdvancedExtractionResult),: SemanticMap {
+  private buildSemanticMap(languageExtractionResults?: AdvancedExtractionResult): SemanticMap {
     if (!languageExtractionResults) {
       return {
         conceptNodes: [],
         relationshipEdges: [],
         clusters: [],
-        centrality: { [key,: strin,g]: any }
-      }
+        centrality: {},
+      };
     }
-    const conceptNodes: ConceptNode[] = languageExtractionResults.extractedConcepts.map((concept, index) => ({
+
+    const conceptNodes: ConceptNode[] = (languageExtractionResults.extractedConcepts || []).map((concept, index) => ({
       id: `concept_${index}`,
       concept: concept.concept,
-      importance: concept.importance,
-      category: concept.category,
-      embedding: new Float32Array(768) // Would use actual embeddings
-    });
-    const relationshipEdges: RelationshipEdge[] = languageExtractionResults.semanticRelationships.map(rel => ({,
+      importance: concept.importance ?? 0,
+      category: concept.category ?? 'unknown',
+      embedding: new Float32Array(768),
+    }));
+
+    const relationshipEdges: RelationshipEdge[] = (languageExtractionResults.semanticRelationships || []).map(rel => ({
       source: rel.source,
       target: rel.target,
       relationship: rel.relationship,
-      strength: rel.confidence,
-      bidirectional: rel.relationship === 'synonyms'
-    });
+      strength: rel.confidence ?? 0,
+      bidirectional: rel.relationship === 'synonyms',
+    }));
+
     return {
       conceptNodes,
       relationshipEdges,
       clusters: [],
-      centrality: { [key,: strin,g]: any }
-    }
+      centrality: {},
+    };
   }
-  private extractCrossReferences(text?: string, legalBERTResults?: LegalBERTAnalysis),: CrossReferenceMap[], {
+  private extractCrossReferences(text?: string, legalBERTResults?: LegalBERTAnalysis): CrossReferenceMap[] {
     if (!text) return [];
     const references: CrossReferenceMap[] = [];
-    // Extract section references
     const sectionRefs = text.match(/(?:Section|Article|Part|Chapter)\s+[\dIVX]+(?:\.\d+)?/gi) || [];
     if (sectionRefs.length > 0) {
       references.push({
         sourceDocument: 'current',
-        targetReferences: sectionRefs
+        targetReferences: sectionRefs,
         relationshipType: 'citation',
-        confidence: 0.9
+        confidence: 0.9,
       });
     }
     return references;
   }
-  private buildEnhancedPrompt(text,: string, quer,y: string | undefined, insigh,ts: SynthesizedInsigh,ts): string {
-    let prompt = '<|system|>You are an advanced legal AI assistant with comprehensive analysis capabilities. ';
-    prompt += 'Provide detailed legal analysis based on the synthesized insights and document analysis.<|end|>\n\n';
-    // Add synthesized insights context
-    prompt += '<|context|>\n';
+  private buildEnhancedPrompt(text: string, query: string | undefined, insights: SynthesizedInsights): string {
+    let prompt = 'You are an advanced legal AI assistant with comprehensive analysis capabilities.\n\n';
     prompt += 'SYNTHESIZED LEGAL ANALYSIS:\n\n';
-    if (insights.keyLegalConcepts.length > 0) {
+    if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
       prompt += 'Key Legal Concepts:\n';
       insights.keyLegalConcepts.slice(0, 10).forEach(concept => {
-        prompt += `- ${concept.primaryConcept} (importance: ${concept.legalImportance.toFixed(2)})\n`;
+        prompt += `- ${concept.primaryConcept} (importance: ${(concept.legalImportance ?? 0).toFixed(2)})\n`;
       });
       prompt += '\n';
     }
-    prompt += `Risk Assessment: ${insights.riskAssessment.overallRiskLevel}\n`;
-    if (insights.riskAssessment.specificRisks.length > 0) {
-      prompt += 'Specific Risk Factors:\n';
-      insights.riskAssessment.specificRisks.forEach(risk => {
-        prompt += `- ${risk.category}: ${risk.description}\n`;
-      });
-      prompt += '\n';
-    }
-    if (insights.recommendedActions.length > 0) {
+    prompt += `Risk Assessment: ${insights.riskAssessment.overallRiskLevel}\n\n`;
+    if (insights.recommendedActions && insights.recommendedActions.length > 0) {
       prompt += 'Recommended Actions:\n';
       insights.recommendedActions.slice(0, 5).forEach(action => {
-        prompt += `- ${action.action} (${action.category}, priority: ${action.priority.toFixed(1)})\n`;
+        prompt += `- ${action.action} (${action.category}, priority: ${action.priority})\n`;
       });
     }
-    prompt += '<|end|>\n\n';
-    // Add original document
-    prompt += '<|document|>\n';
-    prompt += text.substring(0, 2000); // Limit document length
-    prompt += '\n<|end|>\n\n';
-    // Add user query if provided
+    prompt += '\nDOCUMENT:\n';
+    prompt += text.substring(0, 2000);
+    prompt += '\n\n';
     if (query) {
-      prompt += `<|user|>${query}<|end|>\n`;
+      prompt += `USER QUERY: ${query}\n`;
     } else {
-      prompt += '<|user|>Provide a comprehensive legal analysis of this document based on the synthesized insights.<|end|>\n';
+      prompt +=
+        'USER QUERY: Provide a comprehensive legal analysis of this document based on the synthesized insights.\n';
     }
-    prompt += '<|assistant|>';
     return prompt;
   }
-  private generateLegalReasoning(insights,: SynthesizedInsights, legalBERTResults?: LegalBERTAnalysis): string {
+  private generateLegalReasoning(insights: SynthesizedInsights, legalBERTResults?: LegalBERTAnalysis): string {
     let reasoning = 'Legal Analysis: ';
     if (legalBERTResults) {
-      reasoning += `This document has been classified as a ${legalBERTResults.classification.documentType} with ${(legalBERTResults.classification.confidence * 100).toFixed(1)}% confidence. `;
+      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown'} with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;
     }
     reasoning += `Risk assessment indicates a ${insights.riskAssessment.overallRiskLevel} risk level. `;
-    if (insights.keyLegalConcepts.length > 0) {
+    if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
       const topConcepts = insights.keyLegalConcepts.slice(0, 3).map(c => c.primaryConcept);
       reasoning += `Key legal concepts identified include: ${topConcepts.join(', ')}. `;
     }
     return reasoning;
   }
-  private generatePracticalImplications(insights,: SynthesizedInsights): string[,] {
+  private generatePracticalImplications(insights: SynthesizedInsights): string[] {
     const implications: string[] = [];
-    if (insights.riskAssessment.overallRiskLevel === 'HIGH' || insights.riskAssessment.overallRiskLevel === 'CRITICAL') {
+    if (
+      insights.riskAssessment.overallRiskLevel === 'HIGH' ||
+      insights.riskAssessment.overallRiskLevel === 'CRITICAL'
+    ) {
       implications.push('High risk level requires immediate legal review and potential mitigation measures.');
     }
     if (insights.complianceAnalysis.complianceScore < 0.7) {
@@ -848,7 +856,7 @@ export class TensorFlowSynthesizer {
     }
     return implications;
   }
-  private generateMitigationStrategies(risks,: RiskFactor[]): string[,] {
+  private generateMitigationStrategies(risks: RiskFactor[]): string[] {
     const strategies: string[] = [];
     risks.forEach(risk => {
       switch (risk.category) {
@@ -865,18 +873,17 @@ export class TensorFlowSynthesizer {
           strategies.push('Conduct thorough risk assessment and mitigation planning');
       }
     });
-    return Array.from(new Set(strategies);
+    return Array.from(new Set(strategies));
   }
   private calculateQualityMetrics(
-    legalBERTResults?: LegalBERTAnalysis
-    languageExtractionResults?: AdvancedExtractionResult
-    insights?: SynthesizedInsights
-    response?: EnhancedResponse;
+    legalBERTResults?: LegalBERTAnalysis,
+    languageExtractionResults?: AdvancedExtractionResult,
+    insights?: SynthesizedInsights,
+    response?: EnhancedResponse
   ): QualityMetrics {
-    let overallQuality = 0;
-    let factors = 0;
-    // Analysis depth
     let analysisDepth = 0;
+    let factors = 0;
+
     if (legalBERTResults) {
       analysisDepth += 0.3;
       factors++;
@@ -889,62 +896,63 @@ export class TensorFlowSynthesizer {
       analysisDepth += 0.3;
       factors++;
     }
-    // Response quality indicators
-    const completeness = response ? Math.min((response as { primaryResponse?: any; sources?: any }).primaryResponse.length / 500, 1.0) : 0;
-    const coherence = response ? ((response as { primaryResponse?: any; sources?: any }).sources.length > 0 ? 0.8 : 0.4) : 0;
-    const relevance = insights ? Math.min(insights.keyLegalConcepts.length / 10, 1.0) : 0;
-    overallQuality = (analysisDepth + completeness + coherence + relevance) / 4;
+
+    const completeness = response ? Math.min((response.primaryResponse?.length ?? 0) / 500, 1.0) : 0;
+    const coherence = response ? ((response.sources?.length ?? 0) > 0 ? 0.8 : 0.4) : 0;
+    const relevance = insights ? Math.min((insights.keyLegalConcepts?.length ?? 0) / 10, 1.0) : 0;
+
+    const overallQuality = (analysisDepth + completeness + coherence + relevance) / 4;
     return {
       overallQuality,
       analysisDepth,
-      factualAccuracy: 0.8, // Would require fact-checking
+      factualAccuracy: 0.8,
       completeness,
       coherence,
       relevance,
-      userSatisfactionPrediction: overallQuality * 0.9 // Slightly conservative
-    }
+      userSatisfactionPrediction: overallQuality * 0.9,
+    };
   }
-  private generateCacheKey(text,: string, query?: string): string {
+  private generateCacheKey(text: string, query?: string): string {
     const textHash = text.substring(0, 100).replace(/\s+/g, '');
     const queryHash = query ? query.substring(0, 50) : 'no-query';
     return `synth_${textHash}_${queryHash}`;
   }
   /**
    * Get health status
-   */;
-  getHealthStatus(),: {
+   */
+  getHealthStatus(): {
     initialized: boolean;
     legalBERTReady: boolean;
     languageExtractionReady: boolean;
     webAssemblyReady: boolean;
     cacheSize: number;
-    tfMemoryUsage: { numTensors: number; numBytes: number }
+    tfMemoryUsage: { numTensors: number; numBytes: number };
   } {
     return {
       initialized: this.initialized,
-      legalBERTReady: legalBERTMiddleware.getHealthStatus().initialized,
-      languageExtractionReady: langExtractTensorFlow.getHealthStatus().initialized,
-      webAssemblyReady: webAssemblyAIAdapter.getHealthStatus().initialized,
+      legalBERTReady: !!legalBERTMiddleware.getHealthStatus?.().initialized,
+      languageExtractionReady: !!langExtractTensorFlow.getHealthStatus?.().initialized,
+      webAssemblyReady: !!webAssemblyAIAdapter.getHealthStatus?.().initialized,
       cacheSize: this.analysisCache.size,
-      tfMemoryUsage: tf.memory()
-    }
+      tfMemoryUsage: tf.memory(),
+    };
   }
   /**
    * Clear cache
-   */;
-  clearCache(),: void {
+   */
+  clearCache(): void {
     this.analysisCache.clear();
-    legalBERTMiddleware,.dispose();
-    langExtractTensorFlow,.clearCache();
-    console,.log('[TF Synthesizer] Cache cleared');
+    if (typeof legalBERTMiddleware.dispose === 'function') legalBERTMiddleware.dispose();
+    if (typeof langExtractTensorFlow.clearCache === 'function') langExtractTensorFlow.clearCache();
+    console.log('[TF Synthesizer] Cache cleared');
   }
   /**
    * Dispose resources
-   */;
-  dispose(),: void {
+   */
+  dispose(): void {
     this.clearCache();
-    this.initialized = fals,e;
-    console,.log('[TF Synthesizer] Resources disposed');
+    this.initialized = false;
+    console.log('[TF Synthesizer] Resources disposed');
   }
 }
 // Export singleton instance

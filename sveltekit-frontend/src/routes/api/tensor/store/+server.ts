@@ -22,17 +22,24 @@ type TensorStoreRequest = z.infer<typeof TensorStoreSchema>
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    const sessionId = cookies.get('session_id')
+    const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      throw error(401, 'Authentication required for tensor operations')
+      throw error(401, 'Authentication required for tensor operations');
     }
-    const body = await request.json()
-    const validatedData = TensorStoreSchema.safeParse(body)
+    const body = await request.json();
+    // Use the declared type so it is not reported as unused
+    const bodyTyped = body as TensorStoreRequest;
+    const validatedData = TensorStoreSchema.safeParse(bodyTyped);
     if (!validatedData.success) {
-      throw error(400, {
-        message: 'Invalid tensor data format',
-        errors: validatedData.error.errors
-      })
+      // Return structured JSON for validation failures instead of using error() with an object
+      return json(
+        {
+          success: false,
+          message: 'Invalid tensor data format',
+          errors: validatedData.error.errors,
+        },
+        { status: 400 }
+      );
     }
     // Route to QUIC server with authentication (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/store`, {
@@ -41,16 +48,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown'
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown',
       },
-      body: JSON.stringify(validatedData.data)
-    })
+      body: JSON.stringify(validatedData.data),
+    });
     if (!response.ok) {
-      const errorData = await response.text()
-      console.error('QUIC server tensor store error:', errorData)
-      throw error(response.status, `Tensor storage failed: ${errorData}`)
+      const errorData = await response.text();
+      console.error('QUIC server tensor store error:', errorData);
+      throw error(response.status, `Tensor storage failed: ${errorData}`);
     }
-    const result = await response.json()
+    const result = await response.json();
     return json({
       success: true,
       data: {
@@ -60,9 +67,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         cache_tier: result.cache_tier,
         lod_versions: result.lod_versions,
         processing_time: result.processing_time,
-        storage_path: result.storage_path
-      }
-    })
+        storage_path: result.storage_path,
+      },
+    });
   } catch (err) {
     console.error('Tensor store API error:', err)
     if (err instanceof Error && 'status' in err) {

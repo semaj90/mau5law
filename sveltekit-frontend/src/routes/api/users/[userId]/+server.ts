@@ -75,7 +75,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       const duplicateUser = await db
         .select()
         .from(users)
-        .where(eq(users.email, data.email)
+        .where(eq(users.email, data.email))
         .limit(1)
       if (duplicateUser.length > 0) {
         return json({ error: 'Email already exists' }, { status: 409 })
@@ -114,7 +114,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         role: users.role,
         isActive: users.isActive,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt
+        updatedAt: users.updatedAt,
       })
     return json(updatedUser)
   } catch (error: any) {
@@ -234,7 +234,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
         role: users.role,
         isActive: users.isActive,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt
+        updatedAt: users.updatedAt,
       })
     return json(updatedUser)
   } catch (error: any) {

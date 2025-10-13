@@ -34,9 +34,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   let openClusterDialog = $state<boolean[]>([]);
   let openClusterDialogs = $state<{ [key: string]: boolean }>({}); // Declare openClusterDialogs here
   // K-means clustering logic for API endpoints
-  function clusterAPIEndpoints(routes: any[]) {
+  function clusterAPIEndpoints(routes: RouteItem[]) {
     const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
-    const clusters: { [key: string]: any[] } = {}
+  const clusters: { [key: string]: RouteItem[] } = {};
     apiRoutes.filter(Boolean).forEach(route => {
       const pathParts = route.path.split('/');
       let serviceName = 'other';
@@ -82,11 +82,42 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     return clusters;
   }
   // Clustered API routes
-  let clusteredAPIs = $derived(() => {
+  let clusteredAPIs = $derived<Record<string, RouteItem[]>>(() => {
     return clusterAPIEndpoints(allRoutes);
   });
+  // --- Add: lightweight types to avoid implicit any errors ---
+  type RouteItem = {
+    path: string;
+    name: string;
+    type: 'configured' | 'file-based';
+    icon?: string;
+    description?: string;
+    category: string;
+  };
+
+  type CategoryInfo = {
+    name: string;
+    icon: string;
+    color?: string;
+    priority: 'production' | 'testing' | 'consolidation' | 'demo' | 'other' | string;
+  };
+
+  type RouteStats = {
+    total: number;
+    byCategory: Record<string, number>;
+    byType: { configured: number; 'file-based': number };
+    byPriority: Record<string, number>;
+    sections: {
+      core: number;
+      api: number;
+      demo: number;
+      infrastructure: number;
+      other: number;
+    };
+  };
+
   // Enhanced route categorization with separation of core vs demo vs API testing
-  const routeCategories = {
+  const routeCategories: Record<string, CategoryInfo> = {
     'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
     'core-legal': { name: 'Legal Core', icon: '⚖️', color: 'indigo', priority: 'production' },
     'core-admin': { name: 'Administration', icon: '👨‍💼', color: 'red', priority: 'production' },
@@ -195,9 +226,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     }
     return 'other';
   }
-  // Enhanced route processing with categorization
-  let allRoutes = $derived(() => {
-    const routes = [];
+  // Enhanced route processing with categorization - typed
+  let allRoutes = $derived<RouteItem[]>(() => {
+    const routes: RouteItem[] = [];
     // Add configured routes
     if (data.availableRoutes) {
       data.availableRoutes.forEach(route => {
@@ -226,9 +257,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     }
     return routes.sort((a, b) => a.path.localeCompare(b.path));
   });
-  // Enhanced route statistics with section separation
-  let routeStats = $derived(() => {
-    const stats = {
+  // Enhanced route statistics with section separation - typed
+  let routeStats = $derived<RouteStats>(() => {
+    const stats: RouteStats = {
       total: allRoutes.length,
       byCategory: {},
       byType: { configured: 0, 'file-based': 0 },

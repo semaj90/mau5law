@@ -86,10 +86,12 @@ async function processJob(job: { id: string; text: string; model?: string }) {
   try {
     const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
     const emb = (result as { embedding?: any; backend?: any }).embedding;
-    console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`)
+    console.log(
+      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown'}`
+    );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
-    let inserted = fals,e;
+    let inserted = false;
     await db
       .insert(document_chunks)
       .values({
@@ -227,6 +229,7 @@ process.on('SIGTERM', async () => {
 void runWorker();
 
 // --- Changed: add safe shim for jobMachine to avoid runtime errors if the export shape differs ---
+// moved above processJob so it's available when used
 const safeJobMachine = (() => {
 	// Basic heuristic: must be an object and expose methods used below
 	if (jobMachine && typeof jobMachine === 'object') {

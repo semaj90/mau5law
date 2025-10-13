@@ -1,16 +1,20 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { EmbeddingResponse } from '../../../routes/api/embeddings/+server';
+	// Local client-side type for embedding response
+	type EmbeddingResponse = {
+		embedding: number[];
+		dimensions: number;
+		processing_time_ms: number;
+	};
 
-	// Svelte 5 runes
-	let documentText = $state('');
-	let documentTitle = $state('');
-	let clauseType = $state('general');
-	let riskLevel = $state('low');
-	let isProcessing = $state(false);
-	let processingStatus = $state('');
-	let uploadResult = $state<any>(null);
-	let selectedModel = $state('embeddinggemma:latest');
+	// Replace Svelte 5 rune usage with standard reactive vars
+	let documentText = '';
+	let documentTitle = '';
+	let clauseType = 'general';
+	let riskLevel = 'low';
+	let isProcessing = false;
+	let processingStatus = '';
+	let uploadResult: any = null;
+	let selectedModel = 'embeddinggemma:latest';
 
 	// Available clause types
 	const clauseTypes = [
@@ -79,10 +83,18 @@
 
 	// Auto-classify when text changes
 	function onTextChange() {
-		if (documentText.length > 20) {
+		// note: called on input events; guard against undefined
+		if (documentText && documentText.length > 20) {
 			clauseType = autoClassifyClause(documentText);
 			riskLevel = autoAssessRisk(documentText);
 		}
+	}
+
+	// helper for dynamic risk badge classes
+	function getRiskClass(level: string | undefined) {
+		if (level === 'high') return 'ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full';
+		if (level === 'medium') return 'ml-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full';
+		return 'ml-2 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full';
 	}
 
 	// Process and upload document
@@ -113,7 +125,7 @@
 			const embeddingData: EmbeddingResponse = await embeddingResponse.json();
 			processingStatus = 'Adding to vector database...';
 
-			// Create document entry
+			// Create document entry (capture current text before clearing)
 			const documentEntry = {
 				id: Date.now(), // Simple ID generation
 				title: documentTitle || 'Untitled Document',
@@ -148,12 +160,12 @@
 			clauseType = 'general';
 			riskLevel = 'low';
 
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Upload error:', error);
-			processingStatus = `Error: ${error.message}`;
+			processingStatus = `Error: ${error?.message ?? String(error)}`;
 			uploadResult = {
 				success: false,
-				error: error.message
+				error: error?.message ?? String(error)
 			};
 		} finally {
 			isProcessing = false;
@@ -199,7 +211,7 @@
 			<textarea
 				id="doc-text"
 				bind:value={documentText}
-				oninput={onTextChange}
+				on:input={onTextChange}
 				placeholder="Enter legal contract clause, terms, or document text..."
 				class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
 				rows="8"
@@ -260,7 +272,7 @@
 		<!-- Upload Button -->
 		<div class="upload-actions">
 			<button
-				onclick={uploadDocument}
+				on:click={uploadDocument}
 				disabled={isProcessing || !documentText.trim()}
 				class="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
 			>
@@ -292,7 +304,7 @@
 					<div class="success-result p-4 bg-green-50 border border-green-200 rounded-lg">
 						<div class="flex items-center justify-between mb-3">
 							<h3 class="text-lg font-semibold text-green-800">Document Added Successfully!</h3>
-							<button onclick={clearResults} class="text-green-600 hover:text-green-800">
+							<button type="button" on:click={clearResults} aria-label="Close result" class="text-green-600 hover:text-green-800">
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 								</svg>
@@ -330,16 +342,12 @@
 								<div>
 									<span class="font-medium text-gray-700">Clause Type:</span>
 									<span class="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-										{uploadResult.document.clause_type.replace('_', ' ')}
+										{uploadResult.document.clause_type.replaceAll('_', ' ')}
 									</span>
 								</div>
 								<div>
 									<span class="font-medium text-gray-700">Risk Level:</span>
-									<span class="ml-2 px-2 py-1 text-xs rounded-full {
-										uploadResult.document.risk_level === 'high' ? 'bg-red-100 text-red-800' :
-										uploadResult.document.risk_level === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-										'bg-green-100 text-green-800'
-									}">
+									<span class={getRiskClass(uploadResult.document.risk_level)}>
 										{uploadResult.document.risk_level} risk
 									</span>
 								</div>
@@ -350,7 +358,7 @@
 					<div class="error-result p-4 bg-red-50 border border-red-200 rounded-lg">
 						<div class="flex items-center justify-between mb-2">
 							<h3 class="text-lg font-semibold text-red-800">Upload Failed</h3>
-							<button onclick={clearResults} class="text-red-600 hover:text-red-800">
+							<button type="button" on:click={clearResults} aria-label="Close error" class="text-red-600 hover:text-red-800">
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 								</svg>

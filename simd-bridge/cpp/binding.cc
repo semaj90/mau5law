@@ -1,23 +1,133 @@
-#include <napi.h>
-#include <string> // added to ensure std::string is properly declared
+#include <cassert>
+#if __has_include(<node_api.h>)
+#include <node_api.h>
+#else
+// Minimal fallback types & declarations so static analysis / non-node builds
+// compile. These are intentionally minimal and only include what's needed by
+// this file. When building as a real Node addon, the real <node_api.h> will be
+// used instead.
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+
+typedef void *napi_env;
+typedef void *napi_value;
+typedef void *napi_callback_info;
+typedef int32_t napi_status;
+typedef int32_t napi_valuetype;
+
+enum { napi_ok = 0 };
+enum { napi_string = 1 };
+
+#define NAPI_AUTO_LENGTH ((size_t)-1)
+
+extern "C" {
+napi_status napi_get_cb_info(napi_env env, napi_callback_info info,
+                             size_t *argc, napi_value *argv,
+                             napi_value *this_arg, void **data);
+napi_status napi_throw_error(napi_env env, const char *code, const char *msg);
+napi_status napi_throw_type_error(napi_env env, const char *code,
+                                  const char *msg);
+napi_status napi_typeof(napi_env env, napi_value value, napi_valuetype *result);
+napi_status napi_get_value_string_utf8(napi_env env, napi_value value,
+                                       char *buf, size_t bufsize,
+                                       size_t *result);
+napi_status napi_create_int32(napi_env env, int32_t value, napi_value *result);
+napi_status napi_create_function(napi_env env, const char *utf8name,
+                                 size_t length,
+                                 napi_value (*cb)(napi_env, napi_callback_info),
+                                 void *data, napi_value *result);
+napi_status napi_set_named_property(napi_env env, napi_value object,
+                                    const char *utf8name, napi_value value);
+}
+
+// Add a simple stub so non-Node builds / static analysis won't fail on the
+// NAPI_MODULE(...) use at the bottom of this file.
+#ifndef NAPI_MODULE
+#define NAPI_MODULE(modname, regfunc) /* NAPI_MODULE stub for non-Node builds  \
+                                       */
+#endif
+
+#endif
+
+#include <vector>
 
 extern "C" int bridgeSIMDToTensorRT(const char* json);
 
-Napi::Value BridgeSIMD(const Napi::CallbackInfo& info) {
-  Napi::Env env = info.Env();
-  if (info.Length() < 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "Expected a JSON string").ThrowAsJavaScriptException();
-    return env.Null();
-  }
-  // Use ToString() for conversion to avoid potential As<T> pitfalls
-  std::string json = info[0].ToString().Utf8Value();
-  int r = bridgeSIMDToTensorRT(json.c_str());
-  return Napi::Number::New(env, r);
+// Helper: throw a JS TypeError and return nullptr for convenience
+static napi_value throw_type_error(napi_env env, const char *msg) {
+  napi_throw_type_error(env, nullptr, msg);
+  return nullptr;
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  exports.Set("bridgeSIMD", Napi::Function::New(env, BridgeSIMD));
+static napi_value BridgeSIMD(napi_env env, napi_callback_info info) {
+  size_t argc = 1;
+  napi_value argv[1];
+  napi_value this_arg;
+  void *data;
+
+  napi_status status =
+      napi_get_cb_info(env, info, &argc, argv, &this_arg, &data);
+  if (status != napi_ok) {
+    napi_throw_error(env, nullptr, "Failed to get callback info");
+    return nullptr;
+  }
+
+  if (argc < 1) {
+    return throw_type_error(env, "Expected one argument (JSON string)");
+  }
+
+  napi_valuetype t;
+  status = napi_typeof(env, argv[0], &t);
+  if (status != napi_ok) {
+    napi_throw_error(env, nullptr, "Failed to get argument type");
+    return nullptr;
+  }
+
+  if (t != napi_string)
+    return throw_type_error(env, "Expected a JSON string as first argument");
+
+  size_t str_len = 0;
+  status = napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_len);
+  if (status != napi_ok) {
+    napi_throw_error(env, nullptr, "Failed to get string length");
+    return nullptr;
+  }
+
+  // Allocate buffer for string + null
+  std::vector<char> buf(str_len + 1);
+  status = napi_get_value_string_utf8(env, argv[0], buf.data(), buf.size(),
+                                      &str_len);
+  if (status != napi_ok) {
+    napi_throw_error(env, nullptr, "Failed to get string value");
+    return nullptr;
+  }
+  buf[str_len] = '\0';
+
+  // Call into the native bridge (user-provided)
+  int r = bridgeSIMDToTensorRT(buf.data());
+
+  napi_value result;
+  status = napi_create_int32(env, r, &result);
+  if (status != napi_ok) {
+    napi_throw_error(env, nullptr, "Failed to create int32 result");
+    return nullptr;
+  }
+  return result;
+}
+
+static napi_value Init(napi_env env, napi_value exports) {
+  napi_status status;
+  napi_value fn;
+  status = napi_create_function(env, "bridgeSIMD", NAPI_AUTO_LENGTH, BridgeSIMD,
+                                nullptr, &fn);
+  if (status != napi_ok)
+    return nullptr;
+  status = napi_set_named_property(env, exports, "bridgeSIMD", fn);
+  if (status != napi_ok)
+    return nullptr;
   return exports;
 }
 
-NODE_API_MODULE(tensorrt_bridge, Init);
+NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
+NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
