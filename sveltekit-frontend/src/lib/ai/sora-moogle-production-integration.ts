@@ -90,8 +90,8 @@ export class ProductionSoraService {
     }
   }
   async traverseGraph(
-    startNodeId: string
-    query: string
+    startNodeId: string,
+    query: string,
     options: Partial<SoraTraversalOptions> = {}
   ): Promise<SoraTraversalPath[]> {
     await this.initialize();

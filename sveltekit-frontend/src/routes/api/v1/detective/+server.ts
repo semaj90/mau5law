@@ -19,89 +19,120 @@ const DetectiveAnalysisSchema = z.object({
     maxInsights: z.number().min(1).max(50).default(10)
   }).default({})
 })
+// Add a derived TypeScript type for clearer typing (replaces inline z.infer usage)
+type DetectiveAnalysis = z.infer<typeof DetectiveAnalysisSchema>;
 /**
  * Detective Mode Service
  */
 class DetectiveModeService {
   constructor(private userId: string) {}
-  async runAnalysis(data: z.infer<typeof DetectiveAnalysisSchema>) {
-    const { caseId, analysisType, evidenceIds, options } = data
+  // use the named type for clarity
+  async runAnalysis(data: DetectiveAnalysis) {
+    const { caseId, analysisType, evidenceIds, options } = data;
     // Get case details first
-    const caseResult = await db.execute(sql`
+    // Replace `any` cast with a typed assertion and runtime guard
+    const caseResult = (await db.execute(sql`
       SELECT * FROM cases WHERE id = ${caseId} LIMIT 1
-    `)
-    if (!(caseResult as any).length) {
-      throw new Error('Case not found')
+    `)) as Array<Record<string, unknown>> | undefined;
+    if (!Array.isArray(caseResult) || caseResult.length === 0) {
+      throw new Error('Case not found');
     }
     // Generate AI-powered insights
-    const insights = await this.generateInsights(analysisType, caseId, evidenceIds, options)
+    const insights = await this.generateInsights(analysisType, caseId, evidenceIds, options);
     return {
       analysisType,
       caseId,
       totalInsights: insights.length,
       insights,
       processingTime: Date.now(),
-      options
-    }
+      options,
+    };
   }
-  private async generateInsights(analysisType: string, caseId: string, evidenceIds?: string[], options?: any) {
+  // Rename unused args to start with underscore and type options properly
+  private async generateInsights(
+    analysisType: DetectiveAnalysis['analysisType'],
+    _caseId?: string,
+    _evidenceIds?: string[],
+    _options?: DetectiveAnalysis['options']
+  ) {
     // This would integrate with your local LLM for real detective analysis
     // For now, return sample insights
     const sampleInsights = {
       pattern_detection: [
         {
-          title: "Recurring Location Pattern",
-          description: "Multiple evidence pieces reference the same location",
+          title: 'Recurring Location Pattern',
+          description: 'Multiple evidence pieces reference the same location',
           confidence: 0.85,
-          priority: "high"
-        }
+          priority: 'high',
+        },
       ],
       anomaly_detection: [
         {
-          title: "Timeline Inconsistency",
+          title: 'Timeline Inconsistency',
           description: "Evidence timestamps don't align with witness statements",
           confidence: 0.78,
-          priority: "high"
-        }
+          priority: 'high',
+        },
       ],
       connection_analysis: [
         {
-          title: "Person of Interest Connection",
-          description: "Multiple POIs share common associates",
+          title: 'Person of Interest Connection',
+          description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: "critical"
-        }
+          priority: 'critical',
+        },
       ],
       timeline_gap: [
         {
-          title: "Missing Evidence Window",
-          description: "30-day gap in evidence collection",
+          title: 'Missing Evidence Window',
+          description: '30-day gap in evidence collection',
           confidence: 0.88,
-          priority: "medium"
-        }
+          priority: 'medium',
+        },
       ],
       risk_assessment: [
         {
-          title: "High-Stakes Case Risk",
-          description: "Case contains indicators requiring immediate attention",
+          title: 'High-Stakes Case Risk',
+          description: 'Case contains indicators requiring immediate attention',
           confidence: 0.94,
-          priority: "critical"
-        }
-      ]
-    }
-    return sampleInsights[analysisType as keyof typeof sampleInsights] || []
+          priority: 'critical',
+        },
+      ],
+    };
+    return sampleInsights[analysisType as keyof typeof sampleInsights] || [];
+  }
+}
+// -- add helper to extract user id safely from locals
+function getUserId(locals: unknown): string {
+  // locals shape may vary between adapters; handle common shapes
+  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined;
+  if (!l) return 'unknown';
+  // use the typed variable directly (no `any` casts)
+  if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
+  if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
+  return 'unknown';
+}
+
+// -- add helper to normalize unknown errors to string
+function getErrorMessage(err: unknown): string {
+  if (!err) return 'Unknown error';
+  if (err instanceof Error) return err.message;
+  try {
+    return String(JSON.stringify(err));
+  } catch {
+    return String(err);
   }
 }
 /**
  * GET /api/v1/detective
  * Get detective insights with filtering
  */
-export const GET: RequestHandler = async ({ request, locals, url }) => {
+export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 })
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
-    const caseId = url.searchParams.get('caseId')
+    const caseId = url.searchParams.get('caseId');
     // Return sample insights for now
     const insights = [
       {
@@ -112,22 +143,23 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         description: 'Multiple evidence pieces show correlation patterns',
         confidence: 0.87,
         priority: 'high',
-        createdAt: new Date().toISOString()
-      }
-    ]
+        createdAt: new Date().toISOString(),
+      },
+    ];
     return json({
       success: true,
-      data: insights
+      data: insights,
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      }
-    })
-  } catch (err: any) {
-    console.error('Error fetching detective insights:', err)
-    return json({ success: false, message: 'Failed to fetch insights', details: err.message }, { status: 500 })
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (err: unknown) {
+    const errMsg = getErrorMessage(err);
+    console.error('Error fetching detective insights:', errMsg);
+    return json({ success: false, message: 'Failed to fetch insights', details: errMsg }, { status: 500 });
   }
-}
+};
 /**
  * POST /api/v1/detective
  * Run detective analysis on a case
@@ -135,28 +167,37 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 })
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
-    const body = await request.json()
-    const validatedData = DetectiveAnalysisSchema.parse(body)
-    const detectiveService = new DetectiveModeService(getUserId(locals))
-    const result = await detectiveService.runAnalysis(validatedData)
-    return json({
-      success: true,
-      data: result
-      meta: {
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 201 })
-  } catch (err: any) {
-    console.error('Error running detective analysis:', err)
+    const body = await request.json();
+    const validatedData = DetectiveAnalysisSchema.parse(body);
+    const detectiveService = new DetectiveModeService(getUserId(locals));
+    const result = await detectiveService.runAnalysis(validatedData);
+    return json(
+      {
+        success: true,
+        data: result,
+        meta: {
+          userId: getUserId(locals),
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 201 }
+    );
+  } catch (err: unknown) {
+    const errMsg = getErrorMessage(err);
+    console.error('Error running detective analysis:', errMsg);
+
+    // z.ZodError detection and response
     if (err instanceof z.ZodError) {
-      return json({ success: false, message: 'Invalid analysis request', details: err.errors }, { status: 400 })
+      return json({ success: false, message: 'Invalid analysis request', details: err.errors }, { status: 400 });
     }
-    if (err.message === 'Case not found') {
-      return json({ success: false, message: 'Case not found' }, { status: 404 })
+
+    // Domain-specific error checks
+    if (errMsg === 'Case not found') {
+      return json({ success: false, message: 'Case not found' }, { status: 404 });
     }
-    return json({ success: false, message: 'Analysis failed', details: err.message }, { status: 500 })
+
+    return json({ success: false, message: 'Analysis failed', details: errMsg }, { status: 500 });
   }
 }

@@ -1,0 +1,22 @@
+EMPLOYMENT CONTRACT
+
+This Employment Contract is entered into on January 15, 2024, between:
+
+Employer: Acme Corporation
+Employee: John Doe
+
+Position: Software Engineer
+Salary: 20,000 per annum
+Start Date: February 1, 2024
+
+Terms:
+1. The employee will work full-time, 40 hours per week.
+2. The employee is entitled to 15 days paid vacation per year.
+3. Either party may terminate this contract with 30 days written notice.
+
+Signed:
+_________________
+Acme Corporation
+
+_________________
+John Doe

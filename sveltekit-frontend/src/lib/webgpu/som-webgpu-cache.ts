@@ -1364,39 +1364,397 @@ export class WebGPUSOMCache {
     return null;
   }
   private cacheResult(key: string, result: IntelligentTodo[]): void {
-      // Read results
+    // Ensure previous entries under the key are removed consistently
+    this.cacheCollection.removeWhere({ key });
+    this.cacheCollection.insert({
+      key,
+      result,
+      timestamp: Date.now(),
+    });
+  }
+
+  /**
+   * 🎯 GPU TRAINING API - Callable for Generative AI
+   * Train vector quantization model using WebGPU compute shaders
+   * Converts Float32 embeddings → Int8 quantized arrays (4x memory savings)
+   */
+  async trainVectorQuantization(vectors: Float32Array[], options?: {
+    dimensions?: number;
+    scaleFactor?: number;
+    offset?: number;
+  }): Promise<Int8Array[]> {
+    if (!this.device) {
+      console.warn('⚠️ WebGPU not available, falling back to CPU quantization');
+      return this.quantizeVectorsCPU(vectors);
+    }
+
+    const dimensions = options?.dimensions || 768;
+    const scaleFactor = options?.scaleFactor || 255.0;
+    const offset = options?.offset || 0.0;
+    const vectorCount = vectors.length;
+
+    try {
+      // Flatten vectors into single Float32Array for GPU batch processing
+      const flatVectors = new Float32Array(vectorCount * dimensions);
+      for (let i = 0; i < vectorCount; i++) {
+        flatVectors.set(vectors[i].slice(0, dimensions), i * dimensions);
+      }
+
+      // Create GPU buffers for training
+      const inputBuffer = this.device.createBuffer({
+        size: flatVectors.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const outputBuffer = this.device.createBuffer({
+        size: vectorCount * dimensions * 4, // Int32 buffer (4 bytes)
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const paramsBuffer = this.device.createBuffer({
+        size: 32, // 8 floats
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
       const resultBuffer = this.device.createBuffer({
-        size: totalElements * 4,
+        size: vectorCount * dimensions * 4,
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       });
-      const copyEncoder = this.device.createCommandEncoder();
-      copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, totalElements * 4);
-      this.device.queue.submit([copyEncoder.finish()]);
+
+      // Write training data to GPU
+      this.device.queue.writeBuffer(inputBuffer, 0, flatVectors);
+      this.device.queue.writeBuffer(
+        paramsBuffer,
+        0,
+        new Float32Array([vectorCount, dimensions, scaleFactor, offset, 0, 0, 0, 0])
+      );
+
+      // Create compute pipeline for quantization training
+      const shaderModule = this.device.createShaderModule({
+        code: this.vectorQuantizationShader,
+      });
+
+      const computePipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: shaderModule,
+          entryPoint: 'quantize_vectors',
+        },
+      });
+
+      // Create bind group
+      const bindGroup = this.device.createBindGroup({
+        layout: computePipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: inputBuffer } },
+          { binding: 1, resource: { buffer: outputBuffer } },
+          { binding: 2, resource: { buffer: paramsBuffer } },
+        ],
+      });
+
+      // Execute GPU compute (training phase)
+      const encoder = this.device.createCommandEncoder();
+      const computePass = encoder.beginComputePass();
+      computePass.setPipeline(computePipeline);
+      computePass.setBindGroup(0, bindGroup);
+      computePass.dispatchWorkgroups(Math.ceil((vectorCount * dimensions) / 64));
+      computePass.end();
+      encoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, vectorCount * dimensions * 4);
+      this.device.queue.submit([encoder.finish()]);
+
+      // Read trained results from GPU
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const quantizedData = new Int32Array(resultBuffer.getMappedRange());
-      // Convert to Int8Array per vector
-      const results: Int8Array[] = [];
+
+      // Convert to Int8Array format (one per vector) for array cache buffer
+      const quantizedVectors: Int8Array[] = [];
       for (let i = 0; i < vectorCount; i++) {
-        const quantizedVector = new Int8Array(vectorDim);
-        for (let j = 0; j < vectorDim; j++) {
-          quantizedVector[j] = quantizedData[i * vectorDim + j];
+        const vecStart = i * dimensions;
+        const vecEnd = vecStart + dimensions;
+        const int8Vec = new Int8Array(dimensions);
+        for (let j = 0; j < dimensions; j++) {
+          int8Vec[j] = quantizedData[vecStart + j];
         }
-        results.push(quantizedVector);
+        quantizedVectors.push(int8Vec);
       }
-      // Clean up
+
       resultBuffer.unmap();
+
+      // Cleanup GPU resources
       inputBuffer.destroy();
       outputBuffer.destroy();
       paramsBuffer.destroy();
       resultBuffer.destroy();
-      return results;
+
+      console.log(`✅ GPU quantization trained: ${vectorCount} vectors @ ${dimensions}D → Int8 (4x compression)`);
+      return quantizedVectors;
     } catch (error) {
-      console.error('Vector quantization failed:', error);
+      console.error('❌ GPU quantization training failed:', error);
       return this.quantizeVectorsCPU(vectors);
     }
   }
+
+  /**
+   * 🧠 GPU EMBEDDING API - Callable for Generative AI Legal Processing
+   * Compute legal document embeddings using WebGPU acceleration
+   * Applies legal-specific weighting for contracts, case law, citations
+   */
+  async computeLegalEmbeddingGPU(text: string, metadata?: {
+    legalWeight?: number;
+    caseWeight?: number;
+  }): Promise<Float32Array> {
+    if (!this.device) {
+      console.warn('⚠️ WebGPU not available, falling back to CPU embeddings');
+      return this.computeLegalEmbeddingCPU(text, metadata);
+    }
+
+    const legalWeight = metadata?.legalWeight || 150; // 1.5x boost for legal terms
+    const caseWeight = metadata?.caseWeight || 120; // 1.2x boost for case references
+    const embeddingDim = 768;
+
+    try {
+      const textData = new TextEncoder().encode(text);
+      const paddedText = new Uint32Array(4096); // 4KB max text
+      for (let i = 0; i < Math.min(textData.length, 4096); i++) {
+        paddedText[i] = textData[i];
+      }
+
+      // Create GPU buffers
+      const textBuffer = this.device.createBuffer({
+        size: paddedText.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const embeddingBuffer = this.device.createBuffer({
+        size: embeddingDim * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const configBuffer = this.device.createBuffer({
+        size: 32, // 8 uint32s
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
+      const resultBuffer = this.device.createBuffer({
+        size: embeddingDim * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+
+      // Write data to GPU
+      this.device.queue.writeBuffer(textBuffer, 0, paddedText);
+      this.device.queue.writeBuffer(
+        configBuffer,
+        0,
+        new Uint32Array([textData.length, embeddingDim, legalWeight, caseWeight, 0, 0, 0, 0])
+      );
+
+      // Create compute pipeline
+      const shaderModule = this.device.createShaderModule({
+        code: this.legalDocumentEmbeddingShader,
+      });
+
+      const computePipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: shaderModule,
+          entryPoint: 'compute_legal_embedding',
+        },
+      });
+
+      // Create bind group
+      const bindGroup = this.device.createBindGroup({
+        layout: computePipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: textBuffer } },
+          { binding: 1, resource: { buffer: embeddingBuffer } },
+          { binding: 2, resource: { buffer: configBuffer } },
+        ],
+      });
+
+      // Execute GPU compute
+      const encoder = this.device.createCommandEncoder();
+      const computePass = encoder.beginComputePass();
+      computePass.setPipeline(computePipeline);
+      computePass.setBindGroup(0, bindGroup);
+      computePass.dispatchWorkgroups(Math.ceil(embeddingDim / 64));
+      computePass.end();
+      encoder.copyBufferToBuffer(embeddingBuffer, 0, resultBuffer, 0, embeddingDim * 4);
+      this.device.queue.submit([encoder.finish()]);
+
+      // Read results from GPU
+      await resultBuffer.mapAsync(GPUMapMode.READ);
+      const embedding = new Float32Array(resultBuffer.getMappedRange());
+      const result = embedding.slice(); // Copy before unmap
+      resultBuffer.unmap();
+
+      // Cleanup GPU resources
+      textBuffer.destroy();
+      embeddingBuffer.destroy();
+      configBuffer.destroy();
+      resultBuffer.destroy();
+
+      console.log(`✅ GPU legal embedding: ${text.length} chars → ${embeddingDim}D (legal-weighted)`);
+      return result;
+    } catch (error) {
+      console.error('❌ GPU legal embedding failed:', error);
+      return this.computeLegalEmbeddingCPU(text, metadata);
+    }
+  }
+
+  /**
+   * 🔍 GPU SEARCH API - Callable for Generative AI RAG (Retrieval Augmented Generation)
+   * Search legal documents using GPU-accelerated similarity with domain-specific boosts
+   * Perfect for: case law search, contract comparison, citation matching
+   */
+  async searchLegalDocumentsGPU(
+    queryVector: Float32Array,
+    documentVectors: Float32Array[],
+    documentMetadata: Array<{
+      docType?: number; // 1=contract, 2=case law, 3=statute, 4=regulation
+      jurisdiction?: number; // 1=federal, 2=state, 3=local
+    }>,
+    options?: {
+      jurisdictionBoost?: number;
+      docTypeBoost?: number;
+      topK?: number;
+    }
+  ): Promise<Array<{ similarity: number; index: number; metadata: any }>> {
+    if (!this.device || documentVectors.length === 0) {
+      console.warn('⚠️ WebGPU not available, falling back to CPU search');
+      return this.searchLegalDocumentsCPU(queryVector, documentVectors, documentMetadata);
+    }
+
+    const vectorDim = queryVector.length;
+    const numDocs = documentVectors.length;
+    const jurisdictionBoost = options?.jurisdictionBoost || 120; // 1.2x boost
+    const docTypeBoost = options?.docTypeBoost || 115; // 1.15x boost
+    const topK = options?.topK || 10;
+
+    try {
+      // Flatten document vectors for GPU batch processing
+      const flatDocs = new Float32Array(numDocs * vectorDim);
+      for (let i = 0; i < numDocs; i++) {
+        flatDocs.set(documentVectors[i].slice(0, vectorDim), i * vectorDim);
+      }
+
+      // Encode metadata as uint32 array (docType | jurisdiction << 8)
+      const metadataArray = new Uint32Array(numDocs);
+      for (let i = 0; i < numDocs; i++) {
+        const docType = documentMetadata[i]?.docType || 0;
+        const jurisdiction = documentMetadata[i]?.jurisdiction || 0;
+        metadataArray[i] = docType | (jurisdiction << 8);
+      }
+
+      // Create GPU buffers
+      const queryBuffer = this.device.createBuffer({
+        size: queryVector.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const docsBuffer = this.device.createBuffer({
+        size: flatDocs.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const metadataBuffer = this.device.createBuffer({
+        size: metadataArray.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const similaritiesBuffer = this.device.createBuffer({
+        size: numDocs * 4, // Float32 per document
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const configBuffer = this.device.createBuffer({
+        size: 32, // 8 uint32s
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
+      const resultBuffer = this.device.createBuffer({
+        size: numDocs * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+
+      // Write data to GPU
+      this.device.queue.writeBuffer(queryBuffer, 0, queryVector);
+      this.device.queue.writeBuffer(docsBuffer, 0, flatDocs);
+      this.device.queue.writeBuffer(metadataBuffer, 0, metadataArray);
+      this.device.queue.writeBuffer(
+        configBuffer,
+        0,
+        new Uint32Array([vectorDim, numDocs, jurisdictionBoost, docTypeBoost, 0, 0, 0, 0])
+      );
+
+      // Create compute pipeline for legal similarity search
+      const shaderModule = this.device.createShaderModule({
+        code: this.legalSimilarityShader,
+      });
+
+      const computePipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: shaderModule,
+          entryPoint: 'compute_legal_similarity',
+        },
+      });
+
+      // Create bind group
+      const bindGroup = this.device.createBindGroup({
+        layout: computePipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: queryBuffer } },
+          { binding: 1, resource: { buffer: docsBuffer } },
+          { binding: 2, resource: { buffer: metadataBuffer } },
+          { binding: 3, resource: { buffer: similaritiesBuffer } },
+          { binding: 4, resource: { buffer: configBuffer } },
+        ],
+      });
+
+      // Execute GPU compute (similarity search)
+      const encoder = this.device.createCommandEncoder();
+      const computePass = encoder.beginComputePass();
+      computePass.setPipeline(computePipeline);
+      computePass.setBindGroup(0, bindGroup);
+      computePass.dispatchWorkgroups(Math.ceil(numDocs / 64));
+      computePass.end();
+      encoder.copyBufferToBuffer(similaritiesBuffer, 0, resultBuffer, 0, numDocs * 4);
+      this.device.queue.submit([encoder.finish()]);
+
+      // Read results from GPU
+      await resultBuffer.mapAsync(GPUMapMode.READ);
+      const similarities = new Float32Array(resultBuffer.getMappedRange());
+
+      // Create results array and sort by similarity
+      const results = Array.from({ length: numDocs }, (_, i) => ({
+        similarity: similarities[i],
+        index: i,
+        metadata: documentMetadata[i],
+      }))
+        .filter(r => r.similarity > 0.1)
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, topK);
+
+      resultBuffer.unmap();
+
+      // Cleanup GPU resources
+      queryBuffer.destroy();
+      docsBuffer.destroy();
+      metadataBuffer.destroy();
+      similaritiesBuffer.destroy();
+      configBuffer.destroy();
+      resultBuffer.destroy();
+
+      console.log(`✅ GPU legal search: ${numDocs} docs → top ${results.length} results (domain-boosted)`);
+      return results;
+    } catch (error) {
+      console.error('❌ GPU legal search failed:', error);
+      return this.searchLegalDocumentsCPU(queryVector, documentVectors, documentMetadata);
+    }
+  }
+
   // CPU fallback methods
-  private computeLegalEmbeddingCPU(text,: string, metadat,a: an,y): Float32Array {
+  private computeLegalEmbeddingCPU(text: string, metadata: any): Float32Array {
     const embedding = new Float32Array(768);
     const textBytes = new TextEncoder().encode(text);
     for (let i = 0; i < 768; i++) {
@@ -1412,10 +1770,10 @@ export class WebGPUSOMCache {
     return embedding;
   }
   private searchLegalDocumentsCPU(
-    query,: Float32Array,
-    docs,: Float32Array[],
-    metadata,: unknown[]
-  ),: Array<{ similarity: numbe,r; index: numb,er; metadata: unknown }> {
+    query: Float32Array,
+    docs: Float32Array[],
+    metadata: unknown[]
+  ): Array<{ similarity: number; index: number; metadata: unknown }> {
     return docs
       .map((doc, index) => {
         let dotProduct = 0;
@@ -1433,7 +1791,7 @@ export class WebGPUSOMCache {
       .filter(item => item.similarity > 0.1)
       .sort((a, b) => b.similarity - a.similarity);
   }
-  private quantizeVectorsCPU(vectors,: Float32Array[]): Int8Array[,] {
+  private quantizeVectorsCPU(vectors: Float32Array[]): Int8Array[] {
     return vectors.map(vector => {
       const min = Math.min(...vector);
       const max = Math.max(...vector);
@@ -1442,9 +1800,9 @@ export class WebGPUSOMCache {
     });
   }
 
-  dispose(),: void {
+  dispose(): void {
     this.lokiDB.close();
-    if (this.indexD,B) {
+    if (this.indexDB) {
       this.indexDB.close();
     }
     // Clean up Redis sync timer

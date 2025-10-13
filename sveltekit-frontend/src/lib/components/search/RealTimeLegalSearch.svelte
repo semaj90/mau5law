@@ -136,10 +136,12 @@
   });
 
   // Dynamically load client-only UI primitives to avoid SSR render errors
-  let CommandRoot: any = null;
-  let CommandInput: any = null;
-  let CommandContent: any = null;
-  let CommandItem: any = null;
+  // Use Svelte 5 reactive state ($state) so assignments from the dynamic
+  // import in onMount will trigger updates in the template.
+  let CommandRoot = $state<any>(null);
+  let CommandInput = $state<any>(null);
+  let CommandContent = $state<any>(null);
+  let CommandItem = $state<any>(null);
 
   onMount(async () => {
     // onMount only runs in the browser; explicit `browser` guard is redundant but harmless.

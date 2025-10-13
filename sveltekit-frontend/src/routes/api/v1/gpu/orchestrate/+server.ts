@@ -1,271 +1,412 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-/*
- * GPU Orchestration API - Advanced Task Dispatch & Automation
- * Handles legal document analysis, autosolve, and GPU task routing
- */
-import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js'
-import { GEMMA3_LEGAL_CONFIG } from '$lib/config/gemma3-legal-config.js'
-export const POST: RequestHandler = async ({ request, url }) => {
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
+
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, data, config } = await request.json()
+    // Handle various GPU orchestration actions
+    // Handle various GPU orchestration actions:
+    // Supported actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
+    const { action, data, config } = await request.json();
     switch (action) {
       case 'legal_analysis':
-        return handleLegalAnalysis(data, config)
+        return await handleLegalAnalysis(data, config);
       case 'document_processing':
-        return handleDocumentProcessing(data, config)
+        return await handleDocumentProcessing(data, config);
       case 'autosolve':
-        return handleAutosolve(data, config)
+        return await handleAutosolve(data, config);
       case 'gpu_task':
-        return handleGPUTask(data, config)
+        return await handleGPUTask(data, config);
       case 'cluster_status':
-        return handleClusterStatus()
+        return await handleClusterStatus();
       default:
-        return json({ error: 'Invalid action' }, { status: 400 })
-  }, catch (error: any) {
-    console.error('GPU orchestration error:', error)
+        return json({ error: 'Invalid action' }, { status: 400 });
+    }
+  } catch (error: unknown) {
+    const errMsg =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : (() => {
+              try {
+                return JSON.stringify(error ?? {});
+              } catch {
+                return 'Unknown error';
+              }
+            })();
+    console.error('GPU orchestration error:', errMsg);
     return json(
       {
         error: 'GPU orchestration failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: errMsg,
       },
       { status: 500 }
-    )
+    );
   }
-}
-}
-async function handleLegalAnalysis(data: any, config: any): Promise<any> {
-  const { document, context, options } = data
-  // Enhanced legal analysis with Gemma3 configuration
-  const analysisConfig = {
-    ...GEMMA3_LEGAL_CONFIG.generation,
-    ...config,
-    useGPU: true,
-    useRAG: options?.includeRAG !== false,
-    model: 'gemma3-legal'
-  }
-  const result = await mcpGPUOrchestrator.processLegalDocument(document, {
+};
+
+async function handleLegalAnalysis(
+  data: LegalAnalysisPayload | unknown,
+  config: GPUConfig = {}
+): Promise<ReturnType<typeof json>> {
+  const { document, context, options } = (data as LegalAnalysisPayload) || {};
+  // Build allowed options to pass to orchestrator (avoid unknown props)
+  const orchestratorOptions = {
     caseId: context?.caseId,
     userId: context?.userId,
     includeRAG: options?.includeRAG,
     includeGraph: options?.includeGraph,
-    generateSummary: options?.generateSummary
-  })
-  // Add legal-specific post-processing
-  if (result.success && options?.extractEntities) {
-    result.result.entities = extractLegalEntities(document)
+    generateSummary: options?.generateSummary,
+    // include incoming config so it's actually used (merged with defaults by orchestrator)
+    config: {
+      useGPU: true,
+      ...config,
+    },
+  };
+  // Ensure we pass a value of type `string | File` to the orchestrator.
+  // If `document` is undefined, coerce to empty string.
+  const documentArg = (typeof document === 'string' ? document : (document ?? '')) as string;
+  // Note: remove 'analysisConfig' key because the orchestrator's param type doesn't accept it
+  const result = (await mcpGPUOrchestrator.processLegalDocument(
+    documentArg,
+    orchestratorOptions
+  )) as OrchestratorResponse;
+
+  if (result?.success && options?.extractEntities) {
+    result.result = result.result || {};
+    (result.result as Record<string, unknown>).entities = extractLegalEntities(document || '');
   }
-  if (result.success && options?.riskAssessment) {
-    result.result.riskAssessment = await performRiskAssessment(result.result)
+  if (result?.success && options?.riskAssessment) {
+    result.result = result.result || {};
+    (result.result as Record<string, unknown>).riskAssessment = await performRiskAssessment(
+      result.result as AnalysisResult
+    );
   }
   return json({
-    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
-    analysis: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
-    metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
-    recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations,
-    timestamp: new Date().toISOString()
-  })
+    success: Boolean(result?.success),
+    analysis: result?.result ?? null,
+    metrics: result?.metrics ?? null,
+    recommendations: result?.recommendations ?? null,
+    timestamp: new Date().toISOString(),
+  });
 }
-async function handleDocumentProcessing(data: any, config: any): Promise<any> {
-  const { files, context, options } = data
-  const results = []
-  for (const file of files) {
-    const result = await mcpGPUOrchestrator.dispatchGPUTask({
-      id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+
+async function handleDocumentProcessing(
+  data: DocumentProcessingPayload | unknown,
+  config: GPUConfig = {}
+): Promise<ReturnType<typeof json>> {
+  const { files, context, options } = (data as DocumentProcessingPayload) || {};
+  const results: OrchestratorResponse[] = [];
+  for (const file of files ?? []) {
+    const result = (await mcpGPUOrchestrator.dispatchGPUTask({
+      id: `doc_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       type: 'document_processing',
       priority: 'high',
       data: { file },
       context: {
         userId: context?.userId,
         caseId: context?.caseId,
-        documentId: context?.documentId
+        documentId: context?.documentId,
       },
       config: {
         useGPU: true,
         useRAG: options?.enableRAG !== false,
-        protocol: 'http'
-      }
-    })
-    results.push(result)
+        protocol: 'http',
+        ...config,
+      },
+    })) as OrchestratorResponse;
+    results.push(result);
   }
   return json({
     success: true,
     results,
     processed: results.length,
-    failed: results.filter((r) => !r.success).length,
-    timestamp: new Date().toISOString()
-  })
+    failed: results.filter(r => !r?.success).length,
+    timestamp: new Date().toISOString(),
+  });
 }
-async function handleAutosolve(data: any, config: any): Promise<any> {
-  const { threshold, forceRun, includeClusterMetrics } = data
-  // Trigger autosolve maintenance cycle
+
+// --- Added types to avoid `any` ------------------------------------------------
+// New: explicit allowed task types and priority values
+type TaskType =
+  | 'document_processing'
+  | 'legal_analysis'
+  | 'vector_embedding'
+  | 'som_clustering'
+  | 'attention_analysis'
+  | 'error_remediation'
+  | 'security_analysis'
+  | 'security_validation';
+
+type PriorityType = 'high' | 'critical' | 'medium' | 'low';
+
+type AutosolvePayload = {
+  threshold?: number;
+  forceRun?: boolean;
+  includeClusterMetrics?: boolean;
+  [key: string]: unknown;
+};
+
+type GPUTaskPayload = {
+  taskType?: string; // incoming may be any string; we'll validate below
+  taskData?: unknown;
+  priority?: string; // incoming may be any string; we'll validate below
+  context?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+type GPUConfig = Record<string, unknown>;
+
+// New types for the corrected handlers
+type LegalAnalysisPayload = {
+  document?: string;
+  context?: { caseId?: string; userId?: string; [key: string]: unknown };
+  options?: {
+    includeRAG?: boolean;
+    includeGraph?: boolean;
+    generateSummary?: boolean;
+    extractEntities?: boolean;
+    riskAssessment?: boolean;
+    [key: string]: unknown;
+  };
+};
+
+type DocumentProcessingPayload = {
+  files?: Array<unknown>;
+  context?: { caseId?: string; userId?: string; documentId?: string; [key: string]: unknown };
+  options?: { enableRAG?: boolean; [key: string]: unknown };
+};
+
+type OrchestratorResponse = {
+  success?: boolean;
+  taskId?: string;
+  result?: unknown;
+  metrics?: unknown;
+  recommendations?: unknown;
+  error?: string | null;
+  [key: string]: unknown;
+};
+// -------------------------------------------------------------------------------
+
+async function handleAutosolve(
+  data: AutosolvePayload | unknown,
+  config: GPUConfig = {}
+): Promise<ReturnType<typeof json>> {
+  const { threshold, forceRun, includeClusterMetrics } = (data as AutosolvePayload) || {};
   const result = await mcpGPUOrchestrator.triggerAutosolve({
-    threshold: threshold || 5,
+    threshold: threshold ?? 5,
     includeClusterMetrics: includeClusterMetrics !== false,
-    forceRun: forceRun === true
-  })
-  // Get current cluster status for context
-  const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
+    forceRun: forceRun === true,
+    ...config,
+  });
+  const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
   return json({
-    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
+    success: Boolean(result?.success),
     autosolve: {
-      result: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
-      metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
-      recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations
+      result: result?.result ?? null,
+      metrics: result?.metrics ?? null,
+      recommendations: result?.recommendations ?? null,
     },
     cluster: clusterStatus,
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }
-async function handleGPUTask(data: any, config: any): Promise<any> {
-  const { taskType, taskData, priority, context } = data
+
+async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig = {}): Promise<ReturnType<typeof json>> {
+  const { taskType, taskData, priority, context } = (data as GPUTaskPayload) || {};
+
+  // Validate and coerce taskType into allowed TaskType union (default to document_processing)
+  const allowedTaskTypes: TaskType[] = [
+    'document_processing',
+    'legal_analysis',
+    'vector_embedding',
+    'som_clustering',
+    'attention_analysis',
+    'error_remediation',
+    'security_analysis',
+    'security_validation',
+  ];
+  const resolvedType: TaskType =
+    typeof taskType === 'string' && (allowedTaskTypes as string[]).includes(taskType)
+      ? (taskType as TaskType)
+      : 'document_processing';
+
+  // Validate and coerce priority into allowed PriorityType union (default to medium)
+  const allowedPriorities: PriorityType[] = ['high', 'critical', 'medium', 'low'];
+  const resolvedPriority: PriorityType =
+    typeof priority === 'string' && (allowedPriorities as string[]).includes(priority)
+      ? (priority as PriorityType)
+      : 'medium';
+
   const result = await mcpGPUOrchestrator.dispatchGPUTask({
-    id: `gpu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    type: taskType,
-    priority: priority || 'medium',
+    id: `gpu_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // use slice instead of deprecated substr
+    type: resolvedType,
+    priority: resolvedPriority,
     data: taskData,
     context,
     config: {
       useGPU: true,
-      ...config
-    }
-  })
+      ...config,
+    },
+  });
   return json({
-    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
-    taskId: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).taskId,
-    result: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
-    metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
-    error: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).error,
-    recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations,
-    timestamp: new Date().toISOString()
-  })
+    success: Boolean(result?.success),
+    taskId: result?.taskId ?? null,
+    result: result?.result ?? null,
+    metrics: result?.metrics ?? null,
+    error: result?.error ?? null,
+    recommendations: result?.recommendations ?? null,
+    timestamp: new Date().toISOString(),
+  });
 }
-async function handleClusterStatus(): Promise<any> {
-  const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
+
+async function handleClusterStatus(): Promise<ReturnType<typeof json>> {
+  const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
   return json({
     cluster: clusterStatus,
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
+}
+
 function extractLegalEntities(doc: string) {
   const entities = {
-    parties: [],
-    dates: [],
-    citations: [],
-    amounts: [],
-    clauses: []
-  }
-  // Import patterns from config
-  const patterns = {
+    parties: [] as string[],
+    dates: [] as string[],
+    citations: [] as string[],
+    amounts: [] as string[],
+    clauses: [] as string[],
+  };
+
+  // Use a mutable typed Record so the RegExp arrays are seen as RegExp[] (not readonly tuples)
+  const patterns: Record<keyof typeof entities, RegExp[]> = {
     parties: [
       /\b(plaintiff|defendant|appellant|appellee|petitioner|respondent)\b/gi,
       /\b([A-Z][a-z]+ (?:v\.|vs\.|versus) [A-Z][a-z]+)\b/g,
-      /\b([A-Z][A-Za-z\s&,.]+ (?:Inc\.|LLC|Corp\.|Corporation|Company|Co\.))\b/g
+      /\b([A-Z][A-Za-z\s&,.]+ (?:Inc\.|LLC|Corp\.|Corporation|Company|Co\.))\b/g,
     ],
-    dates: [
-      /\b(\d{1,2}\/\d{1,2}\/\d{4})\b/g,
-      /\b([A-Z][a-z]+ \d{1,2}, \d{4})\b/g,
-      /\b(\d{4}-\d{2}-\d{2})\b/g
-    ],
-    citations: [
-      /\b(\d+ [A-Z][a-z.]+ \d+(?:, \d+)? \(\d{4}\))\b/g,
-      /\b(\d+ U\.S\.C\. (?:§ )?\d+(?:\([a-z0-9]+\))?)\b/g
-    ],
+    dates: [/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/g, /\b([A-Z][a-z]+ \d{1,2}, \d{4})\b/g, /\b(\d{4}-\d{2}-\d{2})\b/g],
+    citations: [/\b(\d+ [A-Z][a-z.]+ \d+(?:, \d+)? \(\d{4}\))\b/g, /\b(\d+ U\.S\.C\. (?:§ )?\d+(?:\([a-z0-9]+\))?)\b/g],
     amounts: [/\$[\d]+(?:\.\d{2})?/g, /\b(\d+(?:,\d{3})*) dollars?\b/gi],
-    clauses: [
-      /\b(indemnification|limitation of liability|force majeure|termination|confidentiality)\b/gi
-    ]
-  }
-  // Extract entities using patterns
-  for (const [category, categoryPatterns] of Object.entries(patterns) as [
-    keyof typeof patterns,
-    RegExp[]
-  ][]) {
+    clauses: [/\b(indemnification|limitation of liability|force majeure|termination|confidentiality)\b/gi],
+  };
+
+  // Iterate keys in a typed way to avoid unsafe casts
+  for (const category of Object.keys(patterns) as Array<keyof typeof patterns>) {
+    const categoryPatterns = patterns[category];
     for (const pattern of categoryPatterns) {
-      const matches = (doc.match(pattern) || [])
-      (entities[category as keyof typeof entities] as string[]).push(...matches)
+      const matches = doc.match(pattern) || [];
+      (entities[category] as string[]).push(...matches);
     }
   }
-  return entities
+  return entities;
 }
-  return entities
-}
-async function performRiskAssessment(analysisResult: any): Promise<any> {
-  // Simplified risk assessment based on analysis
-  const risks = {
+
+// Types for risk assessment
+type AnalysisResult = { text?: string; summary?: string; [key: string]: unknown };
+type RiskScores = {
+  financial: number;
+  legal: number;
+  operational: number;
+  reputational: number;
+  overall: number;
+};
+type RiskAssessment = {
+  scores: RiskScores;
+  level: 'low' | 'medium' | 'high';
+  recommendations: string[];
+};
+
+async function performRiskAssessment(analysisResult: AnalysisResult): Promise<RiskAssessment> {
+  const risks: RiskScores = {
     financial: 0,
     legal: 0,
     operational: 0,
     reputational: 0,
-    overall: 0
-  }
-  const text = analysisResult.text || analysisResult.summary || ''
-  // Risk indicators
-  const riskKeywords = {
+    overall: 0,
+  };
+  const text = String(analysisResult?.text || analysisResult?.summary || '');
+
+  const riskKeywords: Record<keyof Omit<RiskScores, 'overall'>, string[]> = {
     financial: ['liability', 'damages', 'penalty', 'fine', 'cost', 'expense'],
     legal: ['violation', 'breach', 'non-compliance', 'lawsuit', 'litigation'],
     operational: ['disruption', 'delay', 'failure', 'inability', 'restriction'],
-    reputational: ['public', 'media', 'reputation', 'image', 'scandal']
-  }
-  // Calculate risk scores based on keyword frequency
-  for (const [category, keywords] of Object.entries(riskKeywords)) {
+    reputational: ['public', 'media', 'reputation', 'image', 'scandal'],
+  };
+
+  for (const [category, keywords] of Object.entries(riskKeywords) as [keyof typeof riskKeywords, string[]][]) {
     const score = keywords.reduce((sum, keyword) => {
-      const matches = (text.toLowerCase().match(new RegExp(keyword, 'g')) || []).length
-      return sum + matches
-    }, 0)
-    risks[category as keyof typeof risks] = Math.min(10, score); // Cap at 10
+      const matches = (text.toLowerCase().match(new RegExp(keyword, 'g')) || []).length;
+      return sum + matches;
+    }, 0);
+    risks[category as keyof Omit<RiskScores, 'overall'>] = Math.min(10, score);
   }
-  // Calculate overall risk
-  risks.overall = Math.round(
+
+  // Compute overall as average of four categories and round
+  risks.overall = Math.round((risks.financial + risks.legal + risks.operational + risks.reputational) / 4);
+
   return {
     scores: risks,
     level: risks.overall >= 7 ? 'high' : risks.overall >= 4 ? 'medium' : 'low',
-    recommendations: generateRiskRecommendations(risks)
-  }
-    recommendations: generateRiskRecommendations(risks)
-  }
+    recommendations: generateRiskRecommendations(risks),
+  };
 }
-function generateRiskRecommendations(risks: any): string[] {
-  const recommendations = []
+
+function generateRiskRecommendations(risks: RiskScores): string[] {
+  const recommendations: string[] = [];
   if (risks.financial >= 7) {
-    recommendations.push('Obtain financial insurance or bonding')
-    recommendations.push('Establish escrow or security deposits')
+    recommendations.push('Obtain financial insurance or bonding');
+    recommendations.push('Establish escrow or security deposits');
   }
   if (risks.legal >= 7) {
-    recommendations.push('Consult specialized legal counsel')
-    recommendations.push('Review compliance requirements')
+    recommendations.push('Consult specialized legal counsel');
+    recommendations.push('Review compliance requirements');
   }
   if (risks.operational >= 7) {
-    recommendations.push('Develop contingency plans')
-    recommendations.push('Implement monitoring systems')
+    recommendations.push('Develop contingency plans');
+    recommendations.push('Implement monitoring systems');
   }
   if (risks.reputational >= 7) {
-    recommendations.push('Prepare crisis communication plan')
-    recommendations.push('Implement stakeholder engagement strategy')
+    recommendations.push('Prepare crisis communication plan');
+    recommendations.push('Implement stakeholder engagement strategy');
   }
   if (risks.overall >= 7) {
-    recommendations.push('Consider risk transfer mechanisms')
-    recommendations.push('Establish risk monitoring dashboard')
+    recommendations.push('Consider risk transfer mechanisms');
+    recommendations.push('Establish risk monitoring dashboard');
   }
-  return recommendations
+  return recommendations;
 }
+
 // Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
-    const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
+    const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
     return json({
       status: 'healthy',
       service: 'gpu-orchestrator',
       cluster: clusterStatus,
-  }, catch (error: any) {
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    const errMsg =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : (() => {
+              try {
+                return JSON.stringify(error ?? {});
+              } catch {
+                return 'Unknown error';
+              }
+            })();
     return json(
       {
         status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        error: errMsg,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}   )
-  }
-}
+};

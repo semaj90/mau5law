@@ -602,12 +602,11 @@ $effect(() => {
             <div class="flex gap-2">
               <input
                 value={currentMessage}
-                on:input={e => currentMessage = e.target.value}
+                oninput={(e: Event) => currentMessage = (e.target as HTMLInputElement).value}
                 onkeydown={handleKeydown}
                 class="flex-1 p-2 border rounded-md"
                 placeholder="Ask a legal question..."
                 aria-label="Legal question input"
-              />
               />
               <Button
                 onclick={sendMessage}

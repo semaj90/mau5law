@@ -50,8 +50,39 @@ const OLLAMA_BASE_URL = 'http://localhost:11434';
 const LEGAL_MODEL_GPU = 'gemma3-legal:latest';
 const LEGAL_MODEL_FALLBACK = 'gemma3:270m';
 
+// Add TypeScript types inferred from the Zod schema
+type BatchInput = z.infer<typeof BatchAnalysisSchema>;
+type EvidenceFile = BatchInput['files'][number];
+type AnalysisOptions = BatchInput['analysisOptions'];
+
+// Structured analysis result shape (partial, extensible)
+type ImportantDate = { date: string; event?: string; confidence?: number };
+type TimelineEvent = { date: string; description?: string; importance?: number };
+
+type AnalysisResult = {
+  summary?: string;
+  confidence?: number;
+  document_type?: string;
+  key_entities?: string[];
+  important_dates?: ImportantDate[];
+  legal_issues?: string[];
+  evidence_strength?: number;
+  recommendations?: string[];
+  cross_references?: string[];
+  timeline_events?: TimelineEvent[];
+  [key: string]: unknown;
+};
+
+type IndividualResult = {
+  fileId: string;
+  filename: string;
+  success: boolean;
+  analysis: AnalysisResult | null;
+  error: string | null;
+};
+
 // AI Integration
-async function analyzeDocumentBatch(files: any[], options: any) {
+async function analyzeDocumentBatch(files: EvidenceFile[], options: AnalysisOptions) {
   const model = await getOptimalModel();
 
   // Process files in parallel if enabled
@@ -62,37 +93,47 @@ async function analyzeDocumentBatch(files: any[], options: any) {
   }
 }
 
-async function processBatchParallel(files: any[], model: string, options: any) {
+async function processBatchParallel(files: EvidenceFile[], model: string, options: AnalysisOptions) {
   const concurrency = Math.min(options.maxConcurrency, files.length);
-  const batches = [];
+  const batches: EvidenceFile[][] = [];
 
   // Split files into concurrent batches
   for (let i = 0; i < files.length; i += concurrency) {
     batches.push(files.slice(i, i + concurrency));
   }
 
-  const results = [];
+  const results: IndividualResult[] = [];
 
   for (const batch of batches) {
     const batchPromises = batch.map(file => analyzeSingleDocument(file, model));
     const batchResults = await Promise.allSettled(batchPromises);
 
     results.push(
-      ...batchResults.map((result, index) => ({
-        fileId: batch[index].id,
-        filename: batch[index].filename,
-        success: result.status === 'fulfilled',
-        analysis: result.status === 'fulfilled' ? result.value : null,
-        error: result.status === 'rejected' ? result.reason.message : null,
-      })),
+      ...batchResults.map((result, index) => {
+        const file = batch[index];
+        const errorMessage =
+          result.status === 'rejected'
+            ? result.reason instanceof Error
+              ? result.reason.message
+              : String(result.reason)
+            : null;
+
+        return {
+          fileId: file.id,
+          filename: file.filename,
+          success: result.status === 'fulfilled',
+          analysis: result.status === 'fulfilled' ? (result.value as AnalysisResult) : null,
+          error: errorMessage,
+        } as IndividualResult;
+      })
     );
   }
 
   return results;
 }
 
-async function processBatchSequential(files: any[], model: string, options: any) {
-  const results = [];
+async function processBatchSequential(files: EvidenceFile[], model: string, _options: AnalysisOptions) {
+  const results: IndividualResult[] = [];
 
   for (const file of files) {
     try {
@@ -105,12 +146,13 @@ async function processBatchSequential(files: any[], model: string, options: any)
         error: null,
       });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
       results.push({
         fileId: file.id,
         filename: file.filename,
         success: false,
         analysis: null,
-        error: error.message,
+        error: msg,
       });
     }
   }
@@ -118,7 +160,7 @@ async function processBatchSequential(files: any[], model: string, options: any)
   return results;
 }
 
-async function analyzeSingleDocument(file: any, model: string) {
+async function analyzeSingleDocument(file: EvidenceFile, model: string): Promise<AnalysisResult> {
   const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis:
 
 DOCUMENT: ${file.filename}
@@ -164,19 +206,28 @@ Provide analysis in this exact JSON format:
       throw new Error(`AI analysis failed: ${response.status}`);
     }
 
-    const data = await response.json();
+    const payload = (await response.json()) as Record<string, unknown>;
+    let textResponse = '';
+
+    if (typeof payload.response === 'string') {
+      textResponse = payload.response;
+    } else if (typeof payload.output === 'string') {
+      textResponse = payload.output;
+    } else {
+      textResponse = JSON.stringify(payload);
+    }
 
     // Parse AI response
-    let analysisResult;
+    let analysisResult: AnalysisResult;
     try {
-      const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+      const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        analysisResult = JSON.parse(jsonMatch[0]);
+        analysisResult = JSON.parse(jsonMatch[0]) as AnalysisResult;
       } else {
         throw new Error('No JSON found in AI response');
       }
     } catch (parseError) {
-      // Fallback analysis
+      // Fallback analysis (typed)
       analysisResult = {
         summary: `Analysis of ${file.filename}`,
         confidence: 0.5,
@@ -188,25 +239,24 @@ Provide analysis in this exact JSON format:
         recommendations: ['Manual legal review required'],
         cross_references: [],
         timeline_events: [],
-      }
+      };
     }
 
     return analysisResult;
   } catch (error) {
-    throw new Error(`Document analysis failed: ${error.message}`);
+    const msg = error instanceof Error ? error.message : String(error);
+    throw new Error(`Document analysis failed: ${msg}`);
   }
 }
 
-// Cross-document analysis
-async function performCrossDocumentAnalysis(analysisResults: any[]) {
+// Cross-document analysis (use typed IndividualResult[])
+async function performCrossDocumentAnalysis(analysisResults: IndividualResult[]) {
   const allEntities = analysisResults.flatMap(result => result.analysis?.key_entities || []);
-
   const allDates = analysisResults.flatMap(result => result.analysis?.important_dates || []);
-
   const allIssues = analysisResults.flatMap(result => result.analysis?.legal_issues || []);
 
   // Find entity correlations
-  const entityFrequency = allEntities.reduce((acc, entity) => {
+  const entityFrequency = allEntities.reduce<Record<string, number>>((acc, entity) => {
     acc[entity] = (acc[entity] || 0) + 1;
     return acc;
   }, {});
@@ -216,12 +266,12 @@ async function performCrossDocumentAnalysis(analysisResults: any[]) {
     .map(([entity, count]) => ({ entity, frequency: count }));
 
   // Find date patterns
-  const datePatterns = allDates
-    .filter(dateObj => dateObj.date)
+  const datePatterns = (allDates as ImportantDate[])
+    .filter(dateObj => dateObj && dateObj.date)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Find common legal issues
-  const issueFrequency = allIssues.reduce((acc, issue) => {
+  const issueFrequency = allIssues.reduce<Record<string, number>>((acc, issue) => {
     acc[issue] = (acc[issue] || 0) + 1;
     return acc;
   }, {});
@@ -244,11 +294,11 @@ async function performCrossDocumentAnalysis(analysisResults: any[]) {
       key_correlations: commonEntities.length + commonIssues.length,
       timeline_events: datePatterns.length,
     },
-  }
+  };
 }
 
-function generateDocumentRelationships(analysisResults: any[]) {
-  const relationships = [];
+function generateDocumentRelationships(analysisResults: IndividualResult[]) {
+  const relationships: Array<Record<string, unknown>> = [];
 
   for (let i = 0; i < analysisResults.length; i++) {
     for (let j = i + 1; j < analysisResults.length; j++) {
@@ -258,11 +308,11 @@ function generateDocumentRelationships(analysisResults: any[]) {
       if (!doc1.analysis || !doc2.analysis) continue;
 
       const commonEntities = (doc1.analysis.key_entities || []).filter(entity =>
-        (doc2.analysis.key_entities || []).includes(entity),
+        (doc2.analysis?.key_entities || []).includes(entity)
       );
 
       const commonIssues = (doc1.analysis.legal_issues || []).filter(issue =>
-        (doc2.analysis.legal_issues || []).includes(issue),
+        (doc2.analysis?.legal_issues || []).includes(issue)
       );
 
       if (commonEntities.length > 0 || commonIssues.length > 0) {
@@ -282,14 +332,14 @@ function generateDocumentRelationships(analysisResults: any[]) {
   return relationships;
 }
 
-function generateUnifiedTimeline(analysisResults: any[]) {
+function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
   const allTimelineEvents = analysisResults
     .filter(result => result.analysis?.timeline_events)
     .flatMap(result =>
-      result.analysis.timeline_events.map(event => ({
-        ...event,
+      (result.analysis?.timeline_events || []).map(event => ({
+        ...(event as TimelineEvent),
         source_document: result.filename,
-      })),
+      }))
     )
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -300,14 +350,16 @@ function generateUnifiedTimeline(analysisResults: any[]) {
       latest: allTimelineEvents[allTimelineEvents.length - 1]?.date || null,
     },
     event_count: allTimelineEvents.length,
-  }
+  };
 }
 
-// GPU detection
+// GPU detection - safe, environment-driven fallback (no undefined `response`)
 async function detectGPU(): Promise<boolean> {
   try {
-    // removed unused response assignment
-    return response.ok;
+    // Prefer explicit environment variable for CI/dev machines
+    if (process.env.USE_GPU === '1' || process.env.GPU === 'true') return true;
+    // Otherwise default to false (server-side endpoints typically cannot access browser GPU)
+    return false;
   } catch {
     return false;
   }
@@ -369,25 +421,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
       },
     });
-  } catch (error: any) {
-    console.error('Batch analysis failed:', error);
+  } catch (err: unknown) {
+    // Log raw error for diagnostics (keeps type-safety)
+    console.error('Batch analysis failed:', err);
 
-    if (error instanceof z.ZodError) {
+    // Zod validation errors -> 400 Bad Request
+    if (err instanceof z.ZodError) {
       return json(
         {
           message: 'Invalid batch analysis request',
-          details: error.errors,
+          details: err.errors,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
+
+    // Normalize message for non-Zod errors
+    const message = err instanceof Error ? err.message : String(err);
 
     return json(
       {
         message: 'Batch analysis failed',
-        details: error.message || 'Unknown error',
+        details: message || 'Unknown error',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
