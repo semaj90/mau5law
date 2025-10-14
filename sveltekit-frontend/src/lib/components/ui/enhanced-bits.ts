@@ -5,13 +5,7 @@ import DropdownItem from './BitsDropdown/Item.svelte';
 import DropdownSeparator from './BitsDropdown/Separator.svelte';
 
 // Named exports for new code
-export {
-  DropdownRoot,
-  DropdownTrigger,
-  DropdownContent,
-  DropdownItem,
-  DropdownSeparator
-};
+export { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator };
 
 // Compatibility namespace for legacy "bits.DropdownMenu.*" usage
 export const DropdownMenu = {
@@ -19,7 +13,7 @@ export const DropdownMenu = {
   Trigger: DropdownTrigger,
   Content: DropdownContent,
   Item: DropdownItem,
-  Separator: DropdownSeparator
+  Separator: DropdownSeparator,
 };
 
 // default export includes both for flexible imports
@@ -29,5 +23,5 @@ export default {
   DropdownContent,
   DropdownItem,
   DropdownSeparator,
-  DropdownMenu
+  DropdownMenu,
 };

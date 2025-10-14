@@ -26,7 +26,7 @@ export interface FormFieldConfig {
 }
 // Core validation functions
 export function createValidationResult(
-  isValid: boolean
+  isValid: boolean,
   errors: string[] = [],
   warnings: string[] = [],
   value?: unknown
@@ -34,7 +34,7 @@ export function createValidationResult(
   return { isValid, errors, warnings, value }
 }
 export function validateField(_value: any
-  config: FormFieldConfig
+  config: FormFieldConfig,
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -182,7 +182,7 @@ export interface CaseValidationConfig {
 export function validateCaseData(data: any): ValidationResult {
   const config: CaseValidationConfig = {
     title: {
-      required: true
+      required: true,
       minLength: 3,
       maxLength: 200,
       custom: [
@@ -194,7 +194,7 @@ export function validateCaseData(data: any): ValidationResult {
       ]
     },
     description: {
-      required: true
+      required: true,
       minLength: 10,
       maxLength: 5000
     },

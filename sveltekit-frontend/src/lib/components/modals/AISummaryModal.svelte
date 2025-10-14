@@ -62,7 +62,13 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <Button class="bits-btn" on:click={copyToClipboard} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
+              <Button
+                class="bits-btn"
+                on:click={copyToClipboard}
+                variant="ghost"
+                size="sm"
+                aria-label="Copy summary to clipboard"
+              >
                 <Copy class="w-4 h-4" />
                 <span>Copy</span>
               </Button>
@@ -78,7 +84,8 @@ https://svelte.dev/e/js_parse_error -->
 
           {#if $lastSummarizedContent}
             <div>
-              <strong>Source:</strong> {$lastSummarizedContent}
+              <strong>Source:</strong>
+              {$lastSummarizedContent}
             </div>
           {/if}
         </div>

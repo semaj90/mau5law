@@ -22,7 +22,7 @@
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     messages = [...messages, userMessage];
@@ -39,8 +39,8 @@
         body: JSON.stringify({
           message: messageToSend,
           model: 'gemma3-legal:latest',
-          useRAG: true
-        })
+          useRAG: true,
+        }),
       });
 
       if (!response.ok) {
@@ -51,7 +51,7 @@
         id: crypto.randomUUID(),
         role: 'assistant',
         content: '',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       messages = [...messages, aiMessage];
@@ -107,10 +107,10 @@
 
   // Quick legal queries
   const quickQueries = [
-    "Analyze this contract for potential issues",
-    "What are the key precedents for this case type?",
-    "Summarize the evidence presented",
-    "Generate a legal brief outline"
+    'Analyze this contract for potential issues',
+    'What are the key precedents for this case type?',
+    'Summarize the evidence presented',
+    'Generate a legal brief outline',
   ];
 
   async function handleQuickQuery(query: string) {
@@ -141,11 +141,7 @@
     <h2>⚡ Quick Legal Queries</h2>
     <div class="quick-buttons">
       {#each quickQueries as query}
-        <Button
-          onclick={() => handleQuickQuery(query)}
-          disabled={isStreaming}
-          class="quick-button"
-        >
+        <Button onclick={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
           {query}
         </Button>
       {/each}
@@ -195,11 +191,7 @@
             class="message-input"
             rows="3"
           ></textarea>
-          <Button
-            onclick={sendMessage}
-            disabled={!currentMessage.trim() || isStreaming}
-            class="send-button"
-          >
+          <Button onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
             {isStreaming ? '🔄' : '📤'} Send
           </Button>
         </div>
@@ -400,8 +392,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .input-container {

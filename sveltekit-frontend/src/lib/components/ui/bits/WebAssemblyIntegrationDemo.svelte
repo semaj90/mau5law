@@ -433,7 +433,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
 
 <style>
   .yorha-card {
-    /* Professional card styling with gaming accents */;
+    /* Professional card styling with gaming accents */
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.75rem;

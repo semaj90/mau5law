@@ -345,134 +345,134 @@
 
 <style>
   .evidence-analysis-visualization {
-/* @apply p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg; */
+    /* @apply p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg; */
   }
   .analysis-header {
-/* @apply flex justify-between items-start border-b pb-4; */
+    /* @apply flex justify-between items-start border-b pb-4; */
   }
   .metadata {
-/* @apply flex gap-3 items-center; */
+    /* @apply flex gap-3 items-center; */
   }
   .badge {
-/* @apply px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-sm; */
+    /* @apply px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-sm; */
   }
   .section-title {
-/* @apply text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3; */
+    /* @apply text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3; */
   }
   .summary-section {
-/* @apply bg-gray-50 dark:bg-gray-700 p-4 rounded-lg; */
+    /* @apply bg-gray-50 dark:bg-gray-700 p-4 rounded-lg; */
   }
   .summary-text {
-/* @apply text-gray-700 dark:text-gray-300 leading-relaxed; */
+    /* @apply text-gray-700 dark:text-gray-300 leading-relaxed; */
   }
   .charts-grid {
-/* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6; */
+    /* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6; */
   }
   .chart-container {
-/* @apply bg-gray-50 dark: bg-gray-700 p-4 rounded-lg; */
+    /* @apply bg-gray-50 dark: bg-gray-700 p-4 rounded-lg; */
     position: relative;
     min-height: 250px;
   }
   .chart-title {
-/* @apply text-sm font-medium text-gray-700 dark:text-gray-300 mb-2; */
+    /* @apply text-sm font-medium text-gray-700 dark:text-gray-300 mb-2; */
   }
   .risk-value {
-/* @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center; */
+    /* @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center; */
   }
   .risk-score {
-/* @apply text-3xl font-bold block; */
+    /* @apply text-3xl font-bold block; */
   }
   .risk-label {
-/* @apply text-sm text-gray-500 dark:text-gray-400; */
+    /* @apply text-sm text-gray-500 dark:text-gray-400; */
   }
   .findings-grid {
-/* @apply grid grid-cols-1 md:grid-cols-2 gap-4; */
+    /* @apply grid grid-cols-1 md:grid-cols-2 gap-4; */
   }
   .finding-card {
-/* @apply p-4 rounded-lg border; */
+    /* @apply p-4 rounded-lg border; */
   }
   .finding-card.pattern {
-/* @apply bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700; */
+    /* @apply bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700; */
   }
   .finding-card.anomaly {
-/* @apply bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700; */
+    /* @apply bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700; */
   }
   .finding-card.match {
-/* @apply bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700; */
+    /* @apply bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700; */
   }
   .finding-card.contradiction {
-/* @apply bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700; */
+    /* @apply bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700; */
   }
   .finding-card.gap {
-/* @apply bg-gray-50 dark:bg-gray-900/20 border-gray-300 dark:border-gray-700; */
+    /* @apply bg-gray-50 dark:bg-gray-900/20 border-gray-300 dark:border-gray-700; */
   }
   .finding-header {
-/* @apply flex items-center gap-2 mb-2; */
+    /* @apply flex items-center gap-2 mb-2; */
   }
   .finding-icon {
-/* @apply text-xl; */
+    /* @apply text-xl; */
   }
   .finding-type {
-/* @apply text-sm font-medium capitaliz; */
+    /* @apply text-sm font-medium capitaliz; */
   }
   .finding-confidence {
-/* @apply ml-auto text-sm text-gray-500; */
+    /* @apply ml-auto text-sm text-gray-500; */
   }
   .finding-description {
-/* @apply text-sm text-gray-700 dark:text-gray-300 mb-2; */
+    /* @apply text-sm text-gray-700 dark:text-gray-300 mb-2; */
   }
   .finding-relevance {
-/* @apply h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden; */
+    /* @apply h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden; */
   }
   .relevance-bar {
-/* @apply h-full bg-indigo-500 transition-all duration-300; */
+    /* @apply h-full bg-indigo-500 transition-all duration-300; */
   }
   .correlations-list {
-/* @apply space-y-3; */
+    /* @apply space-y-3; */
   }
   .correlation-item {
-/* @apply flex gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
+    /* @apply flex gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
   }
   .correlation-icon {
-/* @apply text-2xl; */
+    /* @apply text-2xl; */
   }
   .correlation-content {
-/* @apply flex-1; */
+    /* @apply flex-1; */
   }
   .correlation-description {
-/* @apply text-sm text-gray-700 dark:text-gray-300 mb-1; */
+    /* @apply text-sm text-gray-700 dark:text-gray-300 mb-1; */
   }
   .correlation-meta {
-/* @apply flex gap-3 text-xs text-gray-500 dark:text-gray-400; */
+    /* @apply flex gap-3 text-xs text-gray-500 dark:text-gray-400; */
   }
   .shared-entities {
-/* @apply flex flex-wrap gap-1 mt-2; */
+    /* @apply flex flex-wrap gap-1 mt-2; */
   }
   .entity-tag {
-/* @apply px-2 py-0.5 bg-gray-200 dark:bg-gray-600 text-xs rounded; */
+    /* @apply px-2 py-0.5 bg-gray-200 dark:bg-gray-600 text-xs rounded; */
   }
   .recommendations-list {
-/* @apply space-y-3; */
+    /* @apply space-y-3; */
   }
   .recommendation-item {
-/* @apply flex gap-3; */
+    /* @apply flex gap-3; */
   }
   .recommendation-number {
-/* @apply flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-medium; */
+    /* @apply flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-medium; */
   }
   .entities-grid {
-/* @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3; */
+    /* @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3; */
   }
   .entity-card {
-/* @apply p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
+    /* @apply p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
   }
   .entity-type {
-/* @apply text-xs text-gray-500 dark:text-gray-400 upperca; */
+    /* @apply text-xs text-gray-500 dark:text-gray-400 upperca; */
   }
   .entity-value {
-/* @apply block text-sm text-gray-800 dark:text-gray-200 my-1; */
+    /* @apply block text-sm text-gray-800 dark:text-gray-200 my-1; */
   }
   .entity-stats {
-/* @apply flex justify-between text-xs text-gray-500 dark:text-gray-400; */
+    /* @apply flex justify-between text-xs text-gray-500 dark:text-gray-400; */
   }
 </style>

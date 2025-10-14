@@ -1,6 +1,6 @@
 /**
  * TypeScript definitions for N64-Inspired Legal AI Integration
- */;
+ */
 }
 export interface LegalDocument {
   id: string;

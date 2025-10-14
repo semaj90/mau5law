@@ -99,7 +99,7 @@ export const userSessions = pgTable(
     userIdIdx: index('user_sessions_user_id_idx').on(table.userId),
     expiresAtIdx: index('user_sessions_expires_at_idx').on(table.expiresAt),
     isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive),
-  }),
+  })
 );
 // ============================================================================
 // USER PROFILES TABLE (Extended Information)
@@ -130,7 +130,7 @@ export const userProfiles = pgTable(
   },
   table => ({
     userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId),
-  }),
+  })
 );
 // ============================================================================
 // USER ACTIVITY LOG TABLE
@@ -164,7 +164,7 @@ export const userActivityLog = pgTable(
     actionIdx: index('user_activity_log_action_idx').on(table.action),
     timestampIdx: index('user_activity_log_timestamp_idx').on(table.timestamp),
     sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId),
-  }),
+  })
 );
 // ============================================================================
 // ZONT SCHEMAS FOR VALIDATION
@@ -200,13 +200,13 @@ export type NewUserProfile = typeof userProfiles.$inferInsert;
 export type UserActivity = typeof userActivityLog.$inferSelect;
 export type NewUserActivity = typeof userActivityLog.$inferInsert;
 // Enhanced types for API responses
-export type UserWithProfile = User & { profile?: UserProfile }
-export type UserWithSessions = User & { sessions?: UserSession[] }
+export type UserWithProfile = User & { profile?: UserProfile };
+export type UserWithSessions = User & { sessions?: UserSession[] };
 export type FullUserProfile = User & {
   profile?: UserProfile;
   sessions?: UserSession[];
   recentActivity?: UserActivity[];
-}
+};
 // ============================================================================
 // DATABASE RELATIONS (for Drizzle Relational Queries)
 // ============================================================================

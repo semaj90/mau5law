@@ -72,7 +72,7 @@ declare module 'lokijs' {
       simplesort(property: string, desc?: boolean): unknown;
       limit(qty: number): unknown;
       data(): T[];
-    }
+    };
     clear(): void;
     where(filter: (obj: T) => boolean): T[];
   }

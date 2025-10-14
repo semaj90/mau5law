@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
         message: `Processing failed: ${error.message}`,
         error: error.message,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

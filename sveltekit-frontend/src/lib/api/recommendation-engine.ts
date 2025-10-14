@@ -13,7 +13,7 @@ interface RecentCaseResponse {
     highestPriority: number;
     algorithm: string;
     cacheExpiry: number;
-  }
+  };
 }
 interface RecentCase {
   id: string;
@@ -31,7 +31,7 @@ interface RecentCase {
     daysOpen: number;
     documentCount: number;
     lastActivity: string;
-  }
+  };
 }
 /**
  * Fetch recent cases from recommendation engine
@@ -41,8 +41,8 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
     const response = await fetch(`/api/recommendations/recent-cases?limit=${limit}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -71,9 +71,9 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
           practiceArea: 'General Practice',
           daysOpen: 30,
           documentCount: 25,
-          lastActivity: 'Document review'
-        }
-      }
+          lastActivity: 'Document review',
+        },
+      },
     ];
   }
 }
@@ -81,19 +81,19 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
  * Update case recommendation data
  */
 export async function updateCaseRecommendation(
-  caseId: string
+  caseId: string,
   action: 'access' | 'boost' | 'dismiss'
 ): Promise<boolean> {
   try {
     const response = await fetch('/api/recommendations/recent-cases', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         caseId,
-        action
-      })
+        action,
+      }),
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -113,12 +113,12 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
     const response = await fetch('/api/recommendations/search', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         query,
-        limit
-      })
+        limit,
+      }),
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -133,21 +133,19 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
 /**
  * Get recommendations based on user context
  */
-export async function getContextualRecommendations(
-  context: {
-    currentCaseId?: string;
-    practiceArea?: string;
-    urgency?: string;
-    documentTypes?: string[];
-  }
-): Promise<RecentCase[]> {
+export async function getContextualRecommendations(context: {
+  currentCaseId?: string;
+  practiceArea?: string;
+  urgency?: string;
+  documentTypes?: string[];
+}): Promise<RecentCase[]> {
   try {
     const response = await fetch('/api/recommendations/contextual', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(context)
+      body: JSON.stringify(context),
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

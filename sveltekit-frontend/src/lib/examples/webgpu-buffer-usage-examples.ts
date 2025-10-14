@@ -23,7 +23,7 @@ import {
 } from '../utils/webgpu-buffer-uploader.js';
 /**
  * Example 1: Basic Legal Document Embedding Processing
- */;
+ */
 export async function basicLegalDocumentProcessing(device: GPUDevice) {
   // Simulate legal document embeddings (768-dimensional vectors)
   const documentEmbeddings = new Float32Array(1000 * 768); // 1000 documents
@@ -50,7 +50,7 @@ export async function basicLegalDocumentProcessing(device: GPUDevice) {
 }
 /**
  * Example 2: Multi-Resolution Legal Analysis Pipeline
- */;
+ */
 export async function multiResolutionLegalAnalysis(device: GPUDevice) {
   console.log('⚖️ Multi-resolution legal analysis...');
   // Different types of legal data requiring different precision levels
@@ -77,7 +77,7 @@ export async function multiResolutionLegalAnalysis(device: GPUDevice) {
 }
 /**
  * Example 3: Batch Legal Document Processing
- */;
+ */
 export async function batchLegalDocumentProcessing(device: GPUDevice) {
   console.log('📦 Batch legal document processing...');
   // Simulate multiple legal documents with varying sizes
@@ -109,7 +109,7 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
 }
 /**
  * Example 4: Legal AI Compute Pipeline with Quantization
- */;
+ */
 export async function legalAIComputePipeline(device: GPUDevice) {
   console.log('🧠 Legal AI compute pipeline...');
   // Large legal embedding matrix (simulating trained model weights)
@@ -157,7 +157,7 @@ export async function legalAIComputePipeline(device: GPUDevice) {
 }
 /**
  * Example 5: Legal Document Similarity Search with Mixed Precision
- */;
+ */
 export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   console.log('🔍 Legal document similarity search...');
   // Query document (high precision needed)
@@ -198,7 +198,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
 }
 /**
  * Example 6: Debug and Analysis Tools
- */;
+ */
 export async function debugAndAnalysisExample(device: GPUDevice) {
   console.log('🔧 Debug and analysis tools...');
   // Mixed buffer types to demonstrate utilities
@@ -231,7 +231,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
 }
 /**
  * Example 7: Real-world Legal AI Pipeline Integration
- */;
+ */
 export async function realWorldLegalAIPipeline(device: GPUDevice) {
   console.log('🏛️ Real-world legal AI pipeline...');
   // Simulate real legal AI workflow
@@ -288,7 +288,7 @@ export async function realWorldLegalAIPipeline(device: GPUDevice) {
 }
 /**
  * Run all examples
- */;
+ */
 export async function runAllExamples(device: GPUDevice) {
   console.log('🚀 Running WebGPU Legal AI Buffer System Examples...\n');
   try {

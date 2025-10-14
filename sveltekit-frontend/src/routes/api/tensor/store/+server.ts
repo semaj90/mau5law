@@ -3,8 +3,8 @@
  * Routes to QUIC /tensor/store → TensorManager.StoreTensor()
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
   tensor_id: z.string(),
@@ -15,11 +15,11 @@ const TensorStoreSchema = z.object({
     model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
-    lod_levels: z.number().min(1).max(5).default(3)
-  })
-})
-type TensorStoreRequest = z.infer<typeof TensorStoreSchema>
-const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
+    lod_levels: z.number().min(1).max(5).default(3),
+  }),
+});
+type TensorStoreRequest = z.infer<typeof TensorStoreSchema>;
+const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
@@ -71,29 +71,29 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
     });
   } catch (err) {
-    console.error('Tensor store API error:', err)
+    console.error('Tensor store API error:', err);
     if (err instanceof Error && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, 'Internal server error during tensor storage')
+    throw error(500, 'Internal server error during tensor storage');
   }
-}
+};
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
-    const sessionId = cookies.get('session_id')
+    const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      throw error(401, 'Authentication required')
+      throw error(401, 'Authentication required');
     }
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}`
-      }
-    })
+        'Authorization': `Bearer ${sessionId}`,
+      },
+    });
     if (!response.ok) {
-      throw error(response.status, 'Failed to retrieve tensor metrics')
+      throw error(response.status, 'Failed to retrieve tensor metrics');
     }
-    const metrics = await response.json()
+    const metrics = await response.json();
     return json({
       success: true,
       metrics: {
@@ -101,14 +101,14 @@ export const GET: RequestHandler = async ({ cookies }) => {
         total_tensors_stored: metrics.total_tensors_stored,
         storage_tiers: metrics.storage_tiers,
         memory_usage: metrics.memory_usage,
-        performance_stats: metrics.performance_stats
-      }
-    })
+        performance_stats: metrics.performance_stats,
+      },
+    });
   } catch (err) {
-    console.error('Tensor metrics error:', err)
+    console.error('Tensor metrics error:', err);
     if (err instanceof Error && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, 'Failed to retrieve tensor metrics')
+    throw error(500, 'Failed to retrieve tensor metrics');
   }
-}
+};

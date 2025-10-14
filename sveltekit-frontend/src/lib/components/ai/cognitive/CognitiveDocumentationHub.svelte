@@ -653,7 +653,7 @@
                         advanced?: any;
                         ultimate?: any;
                       }
-                    ).level,
+                    ).level
                   )}%"
                 ></div>
               </div>
@@ -679,7 +679,7 @@
                       advanced?: any;
                       ultimate?: any;
                     }
-                  ).level,
+                  ).level
                 )}%
               </div>
             </div>

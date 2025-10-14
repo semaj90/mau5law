@@ -126,9 +126,9 @@ const originalGETHandler: RequestHandler = async () => {
       service: 'ai-summarization',
       models: models.models?.map((m: any) => m.name) || [],
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
-      primaryModel: PRIMARY_MODEL
-      fallbackModel: FALLBACK_MODEL
-      timestamp: new Date().toISOString()
+      primaryModel: PRIMARY_MODEL,
+      fallbackModel: FALLBACK_MODEL,
+      timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
     return json({
@@ -136,7 +136,7 @@ const originalGETHandler: RequestHandler = async () => {
       error: 'Ollama service unreachable',
       service: 'ai-summarization',
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
-      primaryModel: PRIMARY_MODEL
+      primaryModel: PRIMARY_MODEL,
       fallbackModel: FALLBACK_MODEL,;
       timestamp: new Date().toISOString()
     }, { status: 503 })
@@ -176,7 +176,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           type,
           mode,
           structured: cached.entry.structured || null,
-          cached: true
+          cached: true,
           cacheKey,
           cacheSource: cached.source,
           originalLength: text.length,
@@ -248,13 +248,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           const meta: SummarizeResponseMeta = { duration, tokens: result?.eval_count || 0, promptTokens: result?.prompt_eval_count || 0, tokensPerSecond: 0, modelUsed: 'naive-local-fallback', fallbackUsed: true }
           return json({
             success: true,
-            summary: naive
+            summary: naive,
             model: meta.modelUsed,
             type,
             originalLength: text.length,
             summaryLength: naive.length,
             compressionRatio: (naive.length / text.length * 100).toFixed(1) + '%',
-            performance: meta
+            performance: meta,
             timestamp: new Date().toISOString(),
             suggestions: ['Ollama unavailable - using heuristic summary', 'Reduce input size or retry later', 'Install a small summarization model for stronger fallback']
           })
@@ -292,17 +292,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       summary,
-      model: modelUsed
+      model: modelUsed,
       type,
       mode,
-      structured: structured || null
+      structured: structured || null,
       originalLength: text.length,
       summaryLength: summary.length,
       compressionRatio: (summary.length / text.length * 100).toFixed(1) + '%',
       performance,
       timestamp: new Date().toISOString(),
-      cacheKey: cacheKey || undefined
-      cached: false
+      cacheKey: cacheKey || undefined,
+      cached: false,
       clientCacheHint: cacheKey && options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined
       suggestions: ['Try mode="bullets" or mode="structured" for different formats', 'Provide "bullets": N to control bullet count', 'Use smaller excerpts for more precise summaries']
     })

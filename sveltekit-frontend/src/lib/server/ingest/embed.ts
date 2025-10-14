@@ -37,7 +37,7 @@ export interface BatchEmbeddingResult {
 }
 /**
  * Text embedding using Gemma
- */;
+ */
 export async function embedText(texts: string | string[]): Promise<EmbeddingResult | BatchEmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -70,7 +70,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
     const embeddings = (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).embeddings || (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).data?.map((d: any) => d.embedding) || [];
     if (isBatch) {
       return {
-        success: true
+        success: true,
         embeddings,
         metadata: {
           batchSize: inputTexts.length,
@@ -81,8 +81,8 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
       }
     } else {
       return {
-        success: true
-        embedding: embeddings[0]
+        success: true,
+        embedding: embeddings[0],
         metadata: {
           model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma',
           dimensions: embeddings[0]?.length,
@@ -101,7 +101,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
 }
 /**
  * Image embedding using Gemma multimodal
- */;
+ */
 export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -137,7 +137,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
       throw new Error('No embedding returned from Gemma multimodal endpoint');
     }
     return {
-      success: true
+      success: true,
       embedding,
       metadata: {
         model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma-multimodal',
@@ -156,7 +156,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
 }
 /**
  * Audio embedding using Gemma audio endpoint
- */;
+ */
 export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -193,7 +193,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
       throw new Error('No embedding returned from Gemma audio endpoint');
     }
     return {
-      success: true
+      success: true,
       embedding,
       metadata: {
         model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma-audio',
@@ -212,7 +212,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
 }
 /**
  * Audio embedding from buffer (convenience method)
- */;
+ */
 export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promise<EmbeddingResult> {
   let audioPath = tempPath;
   let shouldCleanup = false;
@@ -239,7 +239,7 @@ export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promi
 }
 /**
  * Batch image embedding
- */;
+ */
 export async function embedImageBuffers(buffers: Buffer[], options: {
   concurrency?: number;
   failFast?: boolean;
@@ -296,7 +296,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
  * Unified embedding function that routes based on content type
  */
 export async function embedContent(
-  content: Buffer | string
+  content: Buffer | string,
   contentType: string;
   options: {
     audioPath?: string; // For audio content
@@ -328,7 +328,7 @@ export async function embedContent(
 }
 /**
  * Health check for Gemma embedding endpoint
- */;
+ */
 export async function checkEmbeddingEndpointHealth(): Promise<any> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -357,13 +357,13 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
     }
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).json();
     return {
-      healthy: true
+      healthy: true,
       responseTime: Date.now() - startTime,
       supportedModes: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).supportedModes || ['text', 'image', 'audio']
     }
   } catch (error) {
     return {
-      healthy: false
+      healthy: false,
       responseTime: Date.now() - startTime,
       error: error instanceof Error ? error.message: String(error)
     }

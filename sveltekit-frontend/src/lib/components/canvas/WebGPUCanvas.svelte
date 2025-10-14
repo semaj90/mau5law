@@ -16,7 +16,7 @@
     enableWebGPU = true,
     fallbackTo2D = true,
     onWebGPUStatus,
-    children
+    children,
   }: WebGPUCanvasProps = $props();
   let canvas: HTMLCanvasElement;
   let webgpuDevice: GPUDevice | null = null;
@@ -80,7 +80,7 @@
     return () => {
       mounted = false;
       // Cleanup
-    }
+    };
   });
   async function initializeWebGPU(): Promise<void> {
     try {
@@ -231,9 +231,9 @@
       { label: 'Evidence A', color: '#00ff41', angle: 0 },
       { label: 'Case B', color: '#00ccff', angle: Math.PI / 2 },
       { label: 'Document C', color: '#ff6b35', angle: Math.PI },
-      { label: 'Citation D', color: '#d63384', angle: 3 * Math.PI / 2 }
+      { label: 'Citation D', color: '#d63384', angle: (3 * Math.PI) / 2 },
     ];
-    nodes.forEach((node) => {
+    nodes.forEach(node => {
       const animatedAngle = node.angle + time * 0.5;
       const x = centerX + Math.cos(animatedAngle) * radius;
       const y = centerY + Math.sin(animatedAngle) * radius;

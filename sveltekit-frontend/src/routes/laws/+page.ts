@@ -107,9 +107,9 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         title: 'Legal Resources - Laws & Regulations',
         description: 'Browse California and state laws with AI-powered search and summaries',
       },
-    }
+    };
   } catch (err: any) {
     console.error('Failed to load laws page data:', err);
     error(500, 'Failed to load page data');
   }
-}
+};

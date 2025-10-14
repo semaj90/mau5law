@@ -20,11 +20,11 @@
   let lastUpdated = $state<string>('');
   $effect(() => {
     (async () => {
-if (!browser) return;
-    await loadSystemStatus();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(loadSystemStatus, 30000);
-    return () => clearInterval(interval);
+      if (!browser) return;
+      await loadSystemStatus();
+      // Auto-refresh every 30 seconds
+      const interval = setInterval(loadSystemStatus, 30000);
+      return () => clearInterval(interval);
     })();
   });
   async function loadSystemStatus() {
@@ -58,55 +58,65 @@ if (!browser) return;
         '--gpu-cache-bg-primary',
         '--gpu-cache-accent-primary',
         '--nes-prg-rom-color',
-        '--gpu-cache-state-idle'
+        '--gpu-cache-state-idle',
       ];
       const loadedVars = gpuVars.filter(item => item.trim() !== '');
       if (loadedVars.length === gpuVars.length) {
         integrationTests['gpu-cache'] = {
           status: 'success',
           message: 'GPU cache CSS integration fully loaded',
-          details: { loadedVars: loadedVars.length, totalVars: gpuVars.length }
-        }
+          details: { loadedVars: loadedVars.length, totalVars: gpuVars.length },
+        };
       } else {
         integrationTests['gpu-cache'] = {
           status: 'warning',
           message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
-          details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) }
-        }
+          details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) },
+        };
       }
     } catch (error) {
       integrationTests['gpu-cache'] = {
         status: 'error',
-        message: `GPU cache integration error: ${error}`
-      }
+        message: `GPU cache integration error: ${error}`,
+      };
     }
   }
   async function testGamingComponents() {
     try {
       // Test gaming constants availability
-      const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import('$lib/components/ui/gaming/constants/gaming-constants.js');
-      const nesCount = NES_COLOR_PALETTE ? (Array.isArray(NES_COLOR_PALETTE) ? NES_COLOR_PALETTE.length : Object.keys(NES_COLOR_PALETTE).length) : 0;
-      const n64Count = N64_TEXTURE_PRESETS ? (Array.isArray(N64_TEXTURE_PRESETS) ? N64_TEXTURE_PRESETS.length : Object.keys(N64_TEXTURE_PRESETS).length) : 0;
+      const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import(
+        '$lib/components/ui/gaming/constants/gaming-constants.js'
+      );
+      const nesCount = NES_COLOR_PALETTE
+        ? Array.isArray(NES_COLOR_PALETTE)
+          ? NES_COLOR_PALETTE.length
+          : Object.keys(NES_COLOR_PALETTE).length
+        : 0;
+      const n64Count = N64_TEXTURE_PRESETS
+        ? Array.isArray(N64_TEXTURE_PRESETS)
+          ? N64_TEXTURE_PRESETS.length
+          : Object.keys(N64_TEXTURE_PRESETS).length
+        : 0;
       if (NES_COLOR_PALETTE && N64_TEXTURE_PRESETS) {
         integrationTests['gaming'] = {
           status: 'success',
           message: 'Gaming components and constants loaded successfully',
           details: {
             nesColors: nesCount,
-            n64Presets: n64Count
-          }
-        }
+            n64Presets: n64Count,
+          },
+        };
       } else {
         integrationTests['gaming'] = {
           status: 'error',
           message: 'Gaming constants not properly loaded',
-        }
+        };
       }
     } catch (error) {
       integrationTests['gaming'] = {
         status: 'error',
-        message: `Gaming components error: ${error}`
-      }
+        message: `Gaming components error: ${error}`,
+      };
     }
   }
   async function testPostgreSQLIntegration() {
@@ -134,34 +144,29 @@ if (!browser) return;
         integrationTests['postgresql'] = {
           status: 'success',
           message: 'PostgreSQL + pgvector connected and healthy',
-          details: { host, port }
-        }
+          details: { host, port },
+        };
       } else if (pgStatus === 'unknown') {
         integrationTests['postgresql'] = {
           status: 'warning',
           message: 'PostgreSQL status unknown',
-        }
+        };
       } else {
         integrationTests['postgresql'] = {
           status: 'error',
           message: 'PostgreSQL connection failed or unhealthy',
-        }
+        };
       }
     } catch (error) {
       integrationTests['postgresql'] = {
         status: 'error',
-        message: `PostgreSQL test error: ${error}`
-      }
+        message: `PostgreSQL test error: ${error}`,
+      };
     }
   }
   async function testAPIEndpoints() {
     try {
-      const endpoints = [
-        '/api/v1/vector/search',
-        '/api/v1/rag',
-        '/api/v1/gpu-cache',
-        '/api/v1/cluster'
-      ];
+      const endpoints = ['/api/v1/vector/search', '/api/v1/rag', '/api/v1/gpu-cache', '/api/v1/cluster'];
       let successCount = 0;
       for (const endpoint of endpoints) {
         try {
@@ -174,46 +179,59 @@ if (!browser) return;
       integrationTests['api-endpoints'] = {
         status: successCount >= endpoints.length / 2 ? 'success' : 'warning',
         message: `API endpoints: ${successCount}/${endpoints.length} accessible`,
-        details: { endpoints, successCount }
-      }
+        details: { endpoints, successCount },
+      };
     } catch (error) {
       integrationTests['api-endpoints'] = {
         status: 'error',
-        message: `API endpoints test error: ${error}`
-      }
+        message: `API endpoints test error: ${error}`,
+      };
     }
   }
   // Replace the previous string-typed helpers with versions that accept unknown
   function getStatusColor(status: unknown): string {
     if (typeof status !== 'string') return 'text-gray-500';
     switch (status) {
-      case 'success': return 'text-green-500';
-      case 'warning': return 'text-yellow-500';
-      case 'error': return 'text-red-500';
-      default: return 'text-gray-500';
+      case 'success':
+        return 'text-green-500';
+      case 'warning':
+        return 'text-yellow-500';
+      case 'error':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
     }
   }
 
   function getBadgeVariant(status: unknown): 'success' | 'warning' | 'destructive' | 'secondary' {
     if (typeof status !== 'string') return 'secondary';
     switch (status) {
-      case 'healthy': return 'success';
-      case 'degraded': return 'warning';
-      case 'unhealthy': return 'destructive';
-      default: return 'secondary';
+      case 'healthy':
+        return 'success';
+      case 'degraded':
+        return 'warning';
+      case 'unhealthy':
+        return 'destructive';
+      default:
+        return 'secondary';
     }
   }
 
   function getStatusIcon(status: unknown): string {
     if (typeof status !== 'string') return '⚪';
     switch (status) {
-      case 'success': return '🟢';
-      case 'warning': return '🟡';
-      case 'error': return '🔴';
-      default: return '⚪';
+      case 'success':
+        return '🟢';
+      case 'warning':
+        return '🟡';
+      case 'error':
+        return '🔴';
+      default:
+        return '⚪';
     }
   }
 </script>
+
 <svelte:head>
   <title>System Status - YoRHa Legal AI Platform</title>
   <meta name="description" content="Real-time system status and integration monitoring for the Legal AI platform" />
@@ -222,9 +240,7 @@ if (!browser) return;
   <!-- Header -->
   <header class="mb-8">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-4xl font-bold text-white">
-        🎯 System Status
-      </h1>
+      <h1 class="text-4xl font-bold text-white">🎯 System Status</h1>
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
         <Button
@@ -266,11 +282,17 @@ if (!browser) return;
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary flex items-center justify-between text-white">
               <span class="capitalize">{testName.replace('-', ' ')}</span>
-              <span class="text-xl">{getStatusIcon((result as { status?: unknown; message?: unknown; details?: unknown }).status)}</span>
+              <span class="text-xl"
+                >{getStatusIcon((result as { status?: unknown; message?: unknown; details?: unknown }).status)}</span
+              >
             </h3>
           </div>
           <div class="yorha-panel-content">
-            <p class="text-sm {getStatusColor((result as { status?: unknown; message?: unknown; details?: unknown }).status)} mb-2">
+            <p
+              class="text-sm {getStatusColor(
+                (result as { status?: unknown; message?: unknown; details?: unknown }).status
+              )} mb-2"
+            >
               {(result as { status?: unknown; message?: unknown; details?: unknown }).message}
             </p>
             {#if (result as { status?: unknown; message?: unknown; details?: unknown }).details}
@@ -309,7 +331,10 @@ if (!browser) return;
                 <p class="text-xs text-gray-400">
                   {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge variant={((service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive')} class="text-xs">
+                <Badge
+                  variant={(service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive'}
+                  class="text-xs"
+                >
                   {(service as Record<string, any>).status}
                 </Badge>
               </div>
@@ -335,7 +360,10 @@ if (!browser) return;
                 <p class="text-xs text-gray-400">
                   {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge variant={(((service as Record<string, any>).status === 'healthy') ? 'success' : 'destructive')} class="text-xs">
+                <Badge
+                  variant={(service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive'}
+                  class="text-xs"
+                >
                   {(service as Record<string, any>).status}
                 </Badge>
               </div>
@@ -355,16 +383,27 @@ if (!browser) return;
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name}</h4>
                   <span class="text-sm">
-                    {((service as Record<string, any>).status === 'healthy' || (service as Record<string, any>).status === 'ready') ? '🟢' : '🔴'}
+                    {(service as Record<string, any>).status === 'healthy' ||
+                    (service as Record<string, any>).status === 'ready'
+                      ? '🟢'
+                      : '🔴'}
                   </span>
                 </div>
                 {#if (service as Record<string, any>).host}
-                  <p class="text-xs text-gray-400">{(service as Record<string, any>).host}:{(service as Record<string, any>).port}</p>
+                  <p class="text-xs text-gray-400">
+                    {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
+                  </p>
                 {/if}
                 {#if (service as Record<string, any>).vram}
                   <p class="text-xs text-gray-400">VRAM: {(service as Record<string, any>).vram}</p>
                 {/if}
-                <Badge variant={((service as Record<string, any>).status === 'healthy' || (service as Record<string, any>).status === 'ready') ? 'success' : 'destructive'} class="text-xs">
+                <Badge
+                  variant={(service as Record<string, any>).status === 'healthy' ||
+                  (service as Record<string, any>).status === 'ready'
+                    ? 'success'
+                    : 'destructive'}
+                  class="text-xs"
+                >
                   {(service as Record<string, any>).status}
                 </Badge>
               </div>
@@ -384,7 +423,9 @@ if (!browser) return;
             <div class="metric-group">
               <h4 class="font-semibold text-white mb-2">System Uptime</h4>
               <p class="text-2xl font-mono text-green-400">
-                {Math.floor(systemHealth.performance.systemUptime / 3600)}h {Math.floor((systemHealth.performance.systemUptime % 3600) / 60)}m
+                {Math.floor(systemHealth.performance.systemUptime / 3600)}h {Math.floor(
+                  (systemHealth.performance.systemUptime % 3600) / 60
+                )}m
               </p>
             </div>
             <div class="metric-group">
@@ -409,11 +450,7 @@ if (!browser) return;
     <h2 class="text-2xl font-bold text-white mb-6">GPU Cache Integration Demo</h2>
     <div class="bg-gray-800 border-gray-700 nes-container">
       <div class="yorha-panel-content p-6">
-        <GPUCacheIntegrationDemo
-          showProgressionDemo={true}
-          enableRealTimeMetrics={true}
-          debugMode={false}
-        />
+        <GPUCacheIntegrationDemo showProgressionDemo={true} enableRealTimeMetrics={true} debugMode={false} />
       </div>
     </div>
   </section>
@@ -440,7 +477,9 @@ if (!browser) return;
                   <h5 class="text-gray-400 mb-1">Protocols:</h5>
                   <div class="flex flex-wrap gap-2">
                     {#each systemHealth.architecture.protocols as protocol}
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{protocol}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{protocol}</span
+                      >
                     {/each}
                   </div>
                 </div>
@@ -460,6 +499,7 @@ if (!browser) return;
     </section>
   {/if}
 </div>
+
 <style>
   .status-page {
     font-family: 'Inter', sans-serif;

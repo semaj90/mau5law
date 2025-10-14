@@ -3,7 +3,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { avatarStore } from "../stores/avatarStore";
+  import { avatarStore } from '../stores/avatarStore';
 
   export let size: 'small' | 'medium' | 'large' = 'medium';
   export let clickable: boolean = false;
@@ -77,12 +77,12 @@ https://svelte.dev/e/props_duplicate -->
   }
 </script>
 
-<div class="avatar-wrapper" class:clickable={clickable} class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize}; height: {avatarSize};"
     on:click={handleAvatarClick}
-    on:keydown={(e) => {
+    on:keydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         handleAvatarClick();
@@ -121,12 +121,7 @@ https://svelte.dev/e/props_duplicate -->
 
   {#if showUploadButton}
     <div class="upload-controls">
-      <button
-        type="button"
-        class="upload-btn"
-        on:click={() => fileInput?.click()}
-        disabled={$avatarStore.isUploading}
-      >
+      <button type="button" class="upload-btn" on:click={() => fileInput?.click()} disabled={$avatarStore.isUploading}>
         {$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
       </button>
 
@@ -199,8 +194,12 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   .upload-overlay {
@@ -209,7 +208,7 @@ https://svelte.dev/e/props_duplicate -->
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     color: white;
   }
 
@@ -219,7 +218,8 @@ https://svelte.dev/e/props_duplicate -->
     flex-wrap: wrap;
   }
 
-  .upload-btn, .remove-btn {
+  .upload-btn,
+  .remove-btn {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;

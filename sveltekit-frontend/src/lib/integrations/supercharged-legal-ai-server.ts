@@ -3,15 +3,15 @@
  * Demonstrates the complete Redis + WebGPU + SIMD JSON integration
  * Maximum performance legal document processing
  */
-import { json, type RequestHandler } from '@sveltejs/kit' // Updated RequestHandler import
+import { json, type RequestHandler } from '@sveltejs/kit'; // Updated RequestHandler import
 import {
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
   computeVectorSimilarityOptimized,
   generateIntelligentTodosOptimized,
-} from '$lib/integrations/redis-webgpu-simd-integration' // Updated import path
-import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js' // Corrected import path for JobType
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration'
+} from '$lib/integrations/redis-webgpu-simd-integration'; // Updated import path
+import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Corrected import path for JobType
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
 
 // Extend the global Performance interface to include the non-standard 'memory' property
 // This declare global block is likely redundant and conflicting with lib.dom.d.ts
@@ -65,10 +65,12 @@ interface ComprehensivePerformanceTestSystemMetrics {
   webgpuComputations: number;
   simdOperations: number;
   cacheEfficiency: number;
-  memoryUsage: {
-    used: number;
-    total: number;
-  } | 'not_available';
+  memoryUsage:
+    | {
+        used: number;
+        total: number;
+      }
+    | 'not_available';
 }
 
 interface ComprehensivePerformanceTestResults {
@@ -438,7 +440,9 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
 /**
  * Run comprehensive performance test with real workload
  */
-async function runComprehensivePerformanceTest(testConfig: ComprehensivePerformanceTestConfig): Promise<ComprehensivePerformanceTestResults> {
+async function runComprehensivePerformanceTest(
+  testConfig: ComprehensivePerformanceTestConfig
+): Promise<ComprehensivePerformanceTestResults> {
   const { documentCount = 50, vectorDimensions = 768, candidateCount = 500, iterations = 10 } = testConfig;
   const results: ComprehensivePerformanceTestResults = {
     workload: { documentCount, vectorDimensions, candidateCount, iterations },

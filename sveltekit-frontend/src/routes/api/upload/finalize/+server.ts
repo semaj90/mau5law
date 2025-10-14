@@ -21,4 +21,4 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error(err);
     throw error(500, 'Failed to finalize upload.');
   }
-}
+};

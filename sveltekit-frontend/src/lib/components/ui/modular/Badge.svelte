@@ -86,7 +86,8 @@
   {/if}
 </span>
 
-<style>/* YoRHa-specific animations */ {}
+<style>
+/* YoRHa-specific animations */ {}
   .yorha-badge {
     position: relative;
     overflow: hidden;

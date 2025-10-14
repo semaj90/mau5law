@@ -58,7 +58,7 @@ class TodoAutogen {
   }
   /**
    * Log LLM misfire for review
-   */;
+   */
   async logLLMMisfire(data: LLMMisfireData, context?: unknown): Promise<string> {
     const id = `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
@@ -83,7 +83,7 @@ class TodoAutogen {
   }
   /**
    * Log TypeScript compilation errors
-   */;
+   */
   async logTypeScriptError(file: string, error: string, lineNumber?: number): Promise<string> {
     const id = `ts-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
@@ -104,7 +104,7 @@ class TodoAutogen {
   }
   /**
    * Log runtime exceptions
-   */;
+   */
   async logRuntimeError(error: Error, context?: unknown): Promise<string> {
     const id = `runtime-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
@@ -125,7 +125,7 @@ class TodoAutogen {
   }
   /**
    * Log performance/memory issues
-   */;
+   */
   async logPerformanceIssue(type: 'memory' | 'gpu' | 'timeout', details: any): Promise<string> {
     const id = `perf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
@@ -146,7 +146,7 @@ class TodoAutogen {
   }
   /**
    * Save TODO entry to appropriate directory
-   */;
+   */
   private async saveTodo(todo: TodoEntry, category: string): Promise<void> {
     const filename = `${todo.id}.json`;
     const filepath = join(this.unresolvedPath, category, filename);
@@ -159,7 +159,7 @@ class TodoAutogen {
   }
   /**
    * Queue TODO for AI review
-   */;
+   */
   private async queueForAIReview(todo: TodoEntry, agent: 'claude' | 'crewai' | 'autogen'): Promise<void> {
     const queueFile = join(this.todoBasePath, agent, `queue-${Date.now()}.json`);
     const queueEntry = {
@@ -177,7 +177,7 @@ class TodoAutogen {
   }
   /**
    * Generate AI review instructions based on TODO type
-   */;
+   */
   private generateReviewInstructions(todo: TodoEntry): string {
     switch (todo.category) {
       case 'llm-misfire':
@@ -194,7 +194,7 @@ class TodoAutogen {
   }
   /**
    * Get current memory usage
-   */;
+   */
   private getMemoryUsage() {
     if (typeof process !== 'undefined' && process.memoryUsage) {
       return process.memoryUsage();
@@ -210,7 +210,7 @@ export const todoAutogen = new TodoAutogen();
 export async function retryLLMCall<T>(
   llmCall: () => Promise<T>,
   model: string;
-  prompt: string
+  prompt: string,
   maxRetries = 3;
 ): Promise<T> {
   let lastError: Error;
@@ -246,7 +246,7 @@ export async function retryLLMCall<T>(
 }
 /**
  * Memory usage monitor
- */;
+ */
 export function startMemoryMonitoring() {
   if (typeof process === 'undefined') return;
   const interval = setInterval(async () => {

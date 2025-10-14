@@ -137,10 +137,10 @@ export class WebGPUTextureStreamer {
     if (!canvas) return false;
     try {
       this.gl = canvas.getContext('webgl2', {
-        alpha: true
+        alpha: true,
         antialias: false, // Disable for pixel-perfect NES style;
-        depth: true
-        premultipliedAlpha: true
+        depth: true,
+        premultipliedAlpha: true,
       });
       if (!this.gl) return false;
       // Configure WebGL2 for NES-style rendering
@@ -222,9 +222,9 @@ export class WebGPUTextureStreamer {
     });
   }
   async loadTexture(
-    id: string
-    data: BufferLike
-    width: number
+    id: string,
+    data: BufferLike,
+    width: number,
     height: number;
     options: {
       priority?: number;
@@ -267,7 +267,7 @@ export class WebGPUTextureStreamer {
       // Create NES texture metadata
       const nesTexture: NESTexture = {
         id,
-        data: finalData
+        data: finalData,
         width,
         height,
         format: 'rgba8unorm',
@@ -294,9 +294,9 @@ export class WebGPUTextureStreamer {
     }
   }
   private async compressTexture(
-    data: ArrayBuffer
+    data: ArrayBuffer,
     width: number;
-    height: number
+    height: number,
     legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {
     if (!this.compressionWorker) return data;
@@ -316,7 +316,7 @@ export class WebGPUTextureStreamer {
       }
       this.compressionWorker!.addEventListener('message', handleMessage);
       this.compressionWorker!.postMessage({
-        textureData: data
+        textureData: data,
         width,
         height,
         format: 'rgba8unorm',

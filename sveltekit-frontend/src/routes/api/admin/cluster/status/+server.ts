@@ -1,6 +1,6 @@
-import cluster from "node:cluster"
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import cluster from 'node:cluster';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import { cpus } from 'node:os';
 /*
  * Cluster Status API Endpoint

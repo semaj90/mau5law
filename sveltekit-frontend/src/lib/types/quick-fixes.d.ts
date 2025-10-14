@@ -13,7 +13,7 @@ declare module '$lib/server/db/drizzle' {
 }
 declare module '$lib/server/redis-service' {
   const redis: any;
-  export { redis }
+  export { redis };
 }
 declare module 'node-fetch' {
   const fetch: any;

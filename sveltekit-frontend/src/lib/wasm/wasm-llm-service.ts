@@ -133,7 +133,7 @@ export class WASMLLMService {
 			_free: (ptr: number) => {
 				// Mock free implementation
 			},
-			HEAPU8: memory
+			HEAPU8: memory,
 			UTF8ToString: (ptr: number) => this.readStringFromMemory(memory, ptr),
 			stringToUTF8: (str: string, ptr: number, maxBytes: number) => {
 				this.writeStringToMemory(memory, str, ptr);
@@ -211,9 +211,9 @@ export class WASMLLMService {
 			// Update statistics
 			this.updateStats(totalTokens, processingTime);
 			const response: WASMLLMResponse = {
-				text: processedResponse
-				tokens: totalTokens
-				processingTimeMs: processingTime
+				text: processedResponse,
+				tokens: totalTokens,
+				processingTimeMs: processingTime,
 				confidence: this.calculateConfidence(processedResponse, legalMetadata),
 				metadata: {
 					model: config.modelPath,

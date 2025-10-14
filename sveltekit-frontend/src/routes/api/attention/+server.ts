@@ -18,7 +18,7 @@ interface AttentionRequest {
     dimensions?: number;
     sequence_length?: number;
     batch_size?: number;
-  }
+  };
 }
 interface AttentionResponse {
   jobId: string;
@@ -35,7 +35,7 @@ interface AttentionResponse {
     dimensions?: number;
     kernelSplicing?: boolean;
     flashAttention?: boolean;
-  }
+  };
 }
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'jobId and text are required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const startTime = performance.now();
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     embeddings?: any;
                     attentionWeights?: any;
                   }
-                ).output || [],
+                ).output || []
               ),
               attentionWeights: new Float32Array(
                 (
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     embeddings?: any;
                     attentionWeights?: any;
                   }
-                ).attention || [],
+                ).attention || []
               ),
               metadata: {
                 type,
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
             processTime: performance.now() - startTime,
             timestamp: Date.now(),
           },
-          { status: 500 },
+          { status: 500 }
         );
       }
     }
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ? Array.from(
               (
                 result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }
-              ).embeddings.slice(0, 768),
+              ).embeddings.slice(0, 768)
             )
           : [],
       attention:
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ? Array.from(
               (
                 result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }
-              ).attentionWeights.slice(0, 64),
+              ).attentionWeights.slice(0, 64)
             )
           : [],
       cached,
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
         kernelSplicing: type === 'kernel-splicing',
         flashAttention: type === 'flash-attention',
       },
-    }
+    };
     return json({
       success: true,
       ...response,
@@ -183,10 +183,10 @@ export const POST: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now(),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const GET: RequestHandler = async () => {
   try {
     // Get service status
@@ -234,10 +234,10 @@ export const GET: RequestHandler = async () => {
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now(),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 // Helper functions for different attention types
 async function processKernelSplicingAttention(text: string, options: any) {
   // Simulate kernel splicing attention with <1ms processing
@@ -249,7 +249,7 @@ async function processKernelSplicingAttention(text: string, options: any) {
     memoryUsage: '1.8GB',
     confidence: 0.98,
     kernelSplicing: true,
-  }
+  };
 }
 async function processFlashAttention(text: string, options: any) {
   // Simulate flash attention processing
@@ -261,7 +261,7 @@ async function processFlashAttention(text: string, options: any) {
     memoryUsage: '2.1GB',
     confidence: 0.96,
     flashAttention: true,
-  }
+  };
 }
 async function processMultiHeadAttention(text: string, options: any) {
   // Simulate multi-head attention processing
@@ -275,7 +275,7 @@ async function processMultiHeadAttention(text: string, options: any) {
     confidence: 0.94,
     multiHead: true,
     heads: 8,
-  }
+  };
 }
 async function processBasicAttention(text: string, options: any) {
   // Simulate basic attention processing
@@ -286,5 +286,5 @@ async function processBasicAttention(text: string, options: any) {
     processTime,
     memoryUsage: '2.0GB',
     confidence: 0.92,
-  }
+  };
 }

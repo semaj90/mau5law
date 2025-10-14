@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const next = predictor.predictNext(action, topK);
   const patterns: any[] = [];
   for (const n of next) {
-    const ctx = { userId, ...mapActionToCHRContext(n.action) }
+    const ctx = { userId, ...mapActionToCHRContext(n.action) };
     if (ctx.docId || ctx.query) {
       const ps = await generateCHRPatterns(ctx);
       patterns.push(...ps);
@@ -26,4 +26,4 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   if (patterns.length) broadcastPatterns(patterns);
   return json({ ok: true, predictions: next, pushed: patterns.length });
-}
+};

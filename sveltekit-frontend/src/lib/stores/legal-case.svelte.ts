@@ -8,12 +8,12 @@ const initialSnapshot = legalCaseActor?.getSnapshot();
 export const legalCaseStore = $state({
   context: ((initialSnapshot && (initialSnapshot as any).context) as { [key: string]: any }) || {
     cases: [],
-    selectedCase: null
-    currentUser: null
+    selectedCase: null,
+    currentUser: null,
     loading: false;
-    error: null
-    generatingEmbedding: false
-    searchingRelatedEvidence: false
+    error: null,
+    generatingEmbedding: false,
+    searchingRelatedEvidence: false,
     relatedEvidence: [],
     lastEmbedding: null
   }

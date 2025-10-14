@@ -183,7 +183,8 @@
         <div class="color-palette">
           {#each yorhaColors as yorhaColor}
             <button
-              class="color-btn";
+              class="color-btn"
+              ;
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor}"
               onclick={() => setColor(yorhaColor)}
@@ -213,7 +214,8 @@
       bind:this={canvas as any}
       {width}
       {height}
-      class="yorha-canvas";
+      class="yorha-canvas"
+      ;
       class:drawing
       onmousedown={startDrawing}
       onmousemove={draw}

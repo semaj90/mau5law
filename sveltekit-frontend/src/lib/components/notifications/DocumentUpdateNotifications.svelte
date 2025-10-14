@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#if typedNotification.data.priority}
                   <span
                     class="inline-block px-2 py-1 text-xs rounded-full {getPriorityColor(
-                      typedNotification.data.priority,
+                      typedNotification.data.priority
                     )}"
                   >
                     {typedNotification.data.priority} priority
@@ -261,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .document-notifications {
-    /* Ensure notifications appear above other elements */;
+    /* Ensure notifications appear above other elements */
     z-index: 9999;
   }
   /* Custom scrollbar for notification history */

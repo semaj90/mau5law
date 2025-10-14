@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'status',
                 message: 'Initializing RAG query processing...',
-                progress: 10
+                progress: 10,
               })}\n\n`
             )
           );
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'status',
                 message: 'Performing vector similarity search...',
-                progress: 30
+                progress: 30,
               })}\n\n`
             )
           );
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'status',
                 message: 'Retrieving relevant documents...',
-                progress: 50
+                progress: 50,
               })}\n\n`
             )
           );
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'status',
                 message: 'Augmenting context with retrieved documents...',
-                progress: 70
+                progress: 70,
               })}\n\n`
             )
           );
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'status',
                 message: 'Generating AI response...',
-                progress: 90
+                progress: 90,
               })}\n\n`
             )
           );
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   type: 'response',
                   content: words[i] + ' ',
                   isComplete: i === words.length - 1,
-                  progress: 90 + (i / words.length) * 10
+                  progress: 90 + (i / words.length) * 10,
                 })}\n\n`
               )
             );
@@ -98,8 +98,8 @@ export const POST: RequestHandler = async ({ request }) => {
                 metadata: {
                   documentsAnalyzed: Math.floor(Math.random() * 50) + 10,
                   processingTime: Math.floor(Math.random() * 3000) + 1000,
-                  confidence: Math.floor(Math.random() * 20) + 80
-                }
+                  confidence: Math.floor(Math.random() * 20) + 80,
+                },
               })}\n\n`
             )
           );
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
           );
           controller.close();
         }
-      }
+      },
     });
 
     return new Response(stream, {
@@ -129,13 +129,12 @@ export const POST: RequestHandler = async ({ request }) => {
         'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
-
   } catch (error) {
     console.error('RAG stream error:', error);
     return json(
       {
         error: 'Failed to process RAG query stream',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

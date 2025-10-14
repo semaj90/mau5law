@@ -470,7 +470,8 @@
             <div class="flex items-center gap-2">
               <input
                 type="checkbox"
-                id="ui-layout-compression";
+                id="ui-layout-compression"
+                ;
                 bind:checked={neuralSpriteConfig.ui_layout_compression}
                 class="rounded"
               />

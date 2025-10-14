@@ -432,7 +432,7 @@ function getUserPermissions(role: string): string[] {
     prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
     investigator: ['view_cases', 'add_evidence', 'view_evidence'],
     analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
-    viewer: ['view_cases', 'view_evidence']
-  }
+    viewer: ['view_cases', 'view_evidence'],
+  };
   return permissions[role as keyof typeof permissions] || permissions.viewer;
 }

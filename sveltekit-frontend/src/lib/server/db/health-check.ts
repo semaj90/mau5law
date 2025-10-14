@@ -36,4 +36,4 @@ export async function validateDatabaseOnStartup() {
 }
 export default {
   validateDatabaseOnStartup,
-}
+};

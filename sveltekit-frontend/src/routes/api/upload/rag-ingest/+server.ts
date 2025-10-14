@@ -14,7 +14,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
-  
+
   try {
     const formData = await request.formData();
     const files = formData.getAll('files') as File[];
@@ -44,9 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await writeFile(filePath, buffer);
 
       // Extract text content (simple implementation)
-      const textContent = file.type.includes('text') 
-        ? buffer.toString('utf-8')
-        : `Binary file: ${file.name}`;
+      const textContent = file.type.includes('text') ? buffer.toString('utf-8') : `Binary file: ${file.name}`;
 
       // Generate embeddings using embeddinggemma:latest
       const embeddings = await generateEmbeddings(textContent, file.name);
@@ -62,8 +60,8 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           size: file.size,
           type: file.type,
-          uploadedAt: new Date().toISOString()
-        }
+          uploadedAt: new Date().toISOString(),
+        },
       });
 
       uploadedFiles.push({
@@ -71,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
         fileName: file.name,
         size: file.size,
         type: file.type,
-        embeddingsCount: embeddings.length
+        embeddingsCount: embeddings.length,
       });
     }
 
@@ -82,15 +80,17 @@ export const POST: RequestHandler = async ({ request }) => {
       files: uploadedFiles,
       embeddings_created: totalEmbeddings,
       processing_time_ms: processingTime,
-      context: uploadedFiles.map(f => f.fileName).join(', ')
+      context: uploadedFiles.map(f => f.fileName).join(', '),
     });
-
   } catch (error) {
     console.error('RAG ingest error:', error);
-    return json({
-      error: 'Failed to process files',
-      detail: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to process files',
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -106,14 +106,15 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
     // Generate embeddings using Ollama embeddinggemma:latest
     const embeddings: number[][] = [];
 
-    for (const chunk of chunks.slice(0, 10)) { // Limit to first 10 chunks
+    for (const chunk of chunks.slice(0, 10)) {
+      // Limit to first 10 chunks
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
-          prompt: chunk
-        })
+          prompt: chunk,
+        }),
       });
 
       if (response.ok) {
@@ -128,7 +129,6 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
 
     console.log(`✅ Generated ${embeddings.length} embeddings for ${fileName}`);
     return embeddings;
-
   } catch (error) {
     console.error('Embedding generation failed:', error);
     return [];
@@ -145,7 +145,7 @@ async function storeInVectorDB(data: any) {
         port: 5432,
         user: 'legal_admin',
         password: '123456',
-        database: 'legal_ai_db'
+        database: 'legal_ai_db',
       });
 
       await client.connect();
@@ -154,27 +154,30 @@ async function storeInVectorDB(data: any) {
         const embedding = data.embeddings[i];
         const chunkId = `${data.fileId}:chunk:${i}`;
 
-        await client.query(`
+        await client.query(
+          `
           INSERT INTO knowledge_base (chunk_id, content, embedding, metadata, chunk_type, source_file)
           VALUES ($1, $2, $3::vector, $4, $5, $6)
           ON CONFLICT (chunk_id) DO UPDATE SET
             content = EXCLUDED.content,
             embedding = EXCLUDED.embedding,
             metadata = EXCLUDED.metadata
-        `, [
-          chunkId,
-          data.content,
-          JSON.stringify(embedding),
-          JSON.stringify({
-            ...data.metadata,
-            fileId: data.fileId,
-            fileName: data.fileName,
-            chunkIndex: i,
-            totalChunks: data.embeddings.length
-          }),
-          'rag_document',
-          data.fileName
-        ]);
+        `,
+          [
+            chunkId,
+            data.content,
+            JSON.stringify(embedding),
+            JSON.stringify({
+              ...data.metadata,
+              fileId: data.fileId,
+              fileName: data.fileName,
+              chunkIndex: i,
+              totalChunks: data.embeddings.length,
+            }),
+            'rag_document',
+            data.fileName,
+          ]
+        );
       }
 
       await client.end();
@@ -182,7 +185,6 @@ async function storeInVectorDB(data: any) {
     } else {
       console.warn(`⚠️ No embeddings to store for ${data.fileName}`);
     }
-
   } catch (error) {
     console.error('Vector DB storage failed:', error);
     throw error;

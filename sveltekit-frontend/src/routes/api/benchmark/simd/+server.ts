@@ -174,14 +174,14 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     iterations,
     documentSize,
     standardJSON: {
-      totalTime: standardTotal
-      avgTime: standardAvg
-      opsPerSecond: standardOps
+      totalTime: standardTotal,
+      avgTime: standardAvg,
+      opsPerSecond: standardOps,
     },
     simdJSON: {
-      totalTime: simdTotal
-      avgTime: simdAvg
-      opsPerSecond: simdOps
+      totalTime: simdTotal,
+      avgTime: simdAvg,
+      opsPerSecond: simdOps,
     },
     performance: {
       speedupFactor,
@@ -202,8 +202,8 @@ export const PUT: RequestHandler = async () => {
     const stats = simdBodyParser.getPerformanceStats()
     const nodeStats = nodeSIMDJSON.getPerformanceStats()
     return json({
-      bodyParser: stats
-      nodeJSON: nodeStats
+      bodyParser: stats,
+      nodeJSON: nodeStats,
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage()
     })

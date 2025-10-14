@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
       expiredKeys: entries.filter(item => item.length),
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
-      newestEntry: Math.max(...entries.map(e => e.timestamp)
+      newestEntry: Math.max(...entries.map(e => e.timestamp),
     }
     return json({
       success: true,

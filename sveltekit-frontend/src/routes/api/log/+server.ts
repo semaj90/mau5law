@@ -6,7 +6,7 @@ const logQueue = {
     console.log('Queue operation (stub):', data);
     return Promise.resolve();
   },
-}
+};
 export async function POST({ request }): Promise<any> {
   try {
     const logData = await request.json();

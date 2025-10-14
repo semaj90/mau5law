@@ -40,7 +40,7 @@ const retryLLMCall = async (fn: () => Promise<any>, model: string, prompt: strin
 }
 /**
  * Enhanced LLM wrapper with retry logic and TODO generation
- */;
+ */
 export class OllamaRetryWrapper {
   private readonly baseUrl: string;
   private failureCount = 0;
@@ -82,7 +82,7 @@ export class OllamaRetryWrapper {
               stream: false;
               options: {
                 temperature,
-                num_predict: maxTokens
+                num_predict: maxTokens,
                 num_ctx: LOCAL_LLM_CONFIG.MAX_CONTEXT_LENGTH,
                 num_gpu: useGPU ? -1 : 0, // -1 = use all GPU layers
                 num_thread: useGPU ? 1 : 4 // Fewer threads when using GPU
@@ -145,7 +145,7 @@ export class OllamaRetryWrapper {
   }
   /**
    * Health check for Ollama service
-   */;
+   */
   async healthCheck(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
@@ -198,7 +198,7 @@ export class OllamaRetryWrapper {
   }
   /**
    * Get system performance metrics
-   */;
+   */
   getMetrics() {
     return {
       failureCount: this.failureCount,
@@ -218,7 +218,7 @@ export const ollamaWrapper = new OllamaRetryWrapper();
  * Convenience function for simple LLM calls
  */
 export async function promptLLM(
-  prompt: string
+  prompt: string,
   model?: string
   options?: Partial<LLMCallOptions>;
 ): Promise<string> {

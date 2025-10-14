@@ -75,7 +75,7 @@ export class QLoRAOllamaOrchestrator {
   }
   /**
    * Initialize specialized legal agents (AutoGen pattern)
-   */;
+   */
   private initializeAgents(): void {
     const agents: LegalAgent[] = [
       {
@@ -145,7 +145,7 @@ export class QLoRAOllamaOrchestrator {
   }
   /**
    * Setup agent crews for collaborative workflows (CrewAI pattern)
-   */;
+   */
   private setupAgentCrews(): void {
     // Contract Analysis Crew
     this.agentCrew.set('contract_analysis', [
@@ -174,7 +174,7 @@ export class QLoRAOllamaOrchestrator {
   }
   /**
    * Analyze query and determine orchestration plan
-   */;
+   */
   async analyzeQuery(query: string, context: any = {}): Promise<OrchestrationPlan> {
     console.log('🔍 Analyzing query for orchestration...', query.substring(0, 100);
     // Ensure router agent is loaded
@@ -217,7 +217,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Execute orchestration plan with multi-agent coordination
-   */;
+   */
   async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<any> {
     const startTime = performance.now();
     const results = new Map<string, string>();
@@ -258,12 +258,12 @@ Classify the query and respond with JSON:;
         queryId: plan.queryId,
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
-        success: true
+        success: true,
         duration
       });
       console.log('✅ Orchestration completed successfully in', Math.round(duration), 'ms');
       return {
-        success: true
+        success: true,
         results,
         finalSynthesis,
         duration,
@@ -293,7 +293,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Ensure agent model is loaded in Ollama/WASM
-   */;
+   */
   private async ensureAgentLoaded(agentId: string): Promise<void> {
     if (this.activeModels.has(agentId)) {
       return; // Already loaded
@@ -339,7 +339,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * List available models in Ollama
-   */;
+   */
   private async listOllamaModels(): Promise<OllamaModelInfo[]> {
     try {
       // removed unused response assignment
@@ -355,7 +355,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Pull model from Ollama registry
-   */;
+   */
   private async pullOllamaModel(modelName: string): Promise<void> {
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/pull`, {
@@ -374,7 +374,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Parse intent from router agent response
-   */;
+   */
   private parseIntentFromResponse(response: string): QueryIntent {
     try {
       // Try to extract JSON from response
@@ -398,7 +398,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Create orchestration plan based on intent
-   */;
+   */
   private async createOrchestrationPlan(query: string, intent: QueryIntent): Promise<OrchestrationPlan> {
     const selectedAgents: LegalAgent[] = [];
     // Always include router
@@ -443,7 +443,7 @@ Classify the query and respond with JSON:;
   }
   /**
    * Synthesize results from multiple agents
-   */;
+   */
   private async synthesizeResults(plan: OrchestrationPlan, results: Map<string, string>): Promise<string> {
     const synthesisAgent = plan.selectedAgents.find(a => a.role === 'synthesis');
     if (!synthesisAgent || !this.activeModels.has(synthesisAgent.id)) {
@@ -548,7 +548,7 @@ Synthesis:`;
   }
   /**
    * Get orchestrator performance statistics
-   */;
+   */
   getPerformanceStats(), {
     const successfulRuns = this.workflowHistory.filter(h => h.success);
     const avgDuration = successfulRuns.length > 0
@@ -556,7 +556,7 @@ Synthesis:`;
     return {
       totalQueries: this.workflowHistory.length,
       successRate: successfulRuns.length / Math.max(this.workflowHistory.length, 1),
-      averageDuration: avgDuration
+      averageDuration: avgDuration,
       activeAgents: Array.from(this.activeModels.keys()),
       agentLoadingTime: avgDuration * 0.3 // Estimate
     }

@@ -16,7 +16,7 @@ export interface ChatMessage {
     processing_time?: number;
     model?: string;
     tokens_used?: number;
-  }
+  };
 }
 
 export interface ChatSession {
@@ -59,14 +59,14 @@ const defaultPreferences: UserPreferences = {
   default_model: 'enhanced-rag',
   notification_sound: false,
   export_format: 'markdown',
-}
+};
 
 // Storage keys
 const STORAGE_KEYS = {
   SESSIONS: 'yorha-ai-chat-sessions',
   PREFERENCES: 'yorha-ai-chat-preferences',
   CURRENT_SESSION: 'yorha-ai-current-session',
-}
+};
 
 /**
  * AI Chat Store Manager with Svelte 5 Runes
@@ -109,7 +109,7 @@ class AIChatStore {
       created_at: new Date(),
       updated_at: new Date(),
       tags: ['yorha', 'legal-ai'],
-    }
+    };
 
     this.state.currentSession = session;
     this.state.sessions.unshift(session);
@@ -148,7 +148,7 @@ class AIChatStore {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: message.timestamp || new Date(),
-    }
+    };
 
     if (!this.state.currentSession) {
       this.state.currentSession = this.createNewSession();
@@ -177,7 +177,7 @@ class AIChatStore {
         this.state.currentSession.messages[messageIndex] = {
           ...this.state.currentSession.messages[messageIndex],
           ...updates,
-        }
+        };
         this.state.currentSession.updated_at = new Date();
       }
     }
@@ -279,8 +279,8 @@ class AIChatStore {
               ...m,
               timestamp: m.timestamp.toISOString(),
             })),
-          })),
-        ),
+          }))
+        )
       );
 
       localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(this.state.preferences));
@@ -301,7 +301,7 @@ class AIChatStore {
       const savedPreferences = localStorage.getItem(STORAGE_KEYS.PREFERENCES);
       if (savedPreferences) {
         const preferences = JSON.parse(savedPreferences);
-        this.state.preferences = { ...defaultPreferences, ...preferences }
+        this.state.preferences = { ...defaultPreferences, ...preferences };
       }
 
       // Load sessions
@@ -375,7 +375,7 @@ class AIChatStore {
   }
 
   updatePreferences(updates: Partial<UserPreferences>): void {
-    this.state.preferences = { ...this.state.preferences, ...updates }
+    this.state.preferences = { ...this.state.preferences, ...updates };
     this.saveToStorage();
   }
 

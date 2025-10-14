@@ -115,10 +115,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
       maxRequests: 1000, // per window
     },
     enableCors: true,
-    corsOrigins: [
-      'https://legal-ai.yourdomain.com',
-      'https://app.yourdomain.com',
-    ],
+    corsOrigins: ['https://legal-ai.yourdomain.com', 'https://app.yourdomain.com'],
     enableCsrfProtection: true,
     maxRequestSize: 50 * 1024 * 1024, // 50MB
   },
@@ -186,9 +183,7 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
 };
 // Environment-based configuration
 export function getConfig(): ProductionConfig {
-  const isDevelopment =
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'test';
+  const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
   return isDevelopment ? DEVELOPMENT_CONFIG : PRODUCTION_CONFIG;
 }
 // Configuration validation
@@ -236,7 +231,11 @@ if (validationErrors.length > 0) {
   }
 }
 console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development'} configuration`);
-console.log(`📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`);
+console.log(
+  `📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`
+);
 console.log(`🗄️  Database pool size: ${CONFIG.database.connectionPoolSize} connections`);
-console.log(`⚡ Cache settings: Redis TTL ${CONFIG.cache.redis.ttl}s, GPU buffer ${Math.round(CONFIG.cache.gpu.bufferSize / 1024 / 1024)}MB`);
+console.log(
+  `⚡ Cache settings: Redis TTL ${CONFIG.cache.redis.ttl}s, GPU buffer ${Math.round(CONFIG.cache.gpu.bufferSize / 1024 / 1024)}MB`
+);
 export default CONFIG;

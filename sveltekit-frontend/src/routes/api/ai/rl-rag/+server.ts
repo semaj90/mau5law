@@ -63,7 +63,7 @@ const EMBEDDING_MODEL = 'embeddinggemma:latest'
 // Redis-optimized RL-RAG endpoint with GPU acceleration
 export const POST: RequestHandler = redisOptimized({,
 	cacheKey: (request) => `rl-rag:${JSON.stringify(request)}`,
-	ttl: REDIS_CACHE_TTL
+	ttl: REDIS_CACHE_TTL,
 	memoryBank: 'PRG_ROM',
 	category: 'conservative'
 }, async ({ request }) => {
@@ -88,7 +88,7 @@ export const POST: RequestHandler = redisOptimized({,
 		// Step 2: GPU-accelerated vector search with Gemma embeddings
 		const vectorSearchStartTime = performance.now()
 		const searchResults = await performCudaVectorSearch({
-			query: preprocessedQuery
+			query: preprocessedQuery,
 			context,
 			max_results,
 			use_gpu,
@@ -105,13 +105,13 @@ export const POST: RequestHandler = redisOptimized({,
 		const rankingTime = performance.now() - rankingStartTime
 		const totalTime = performance.now() - startTime
 		const response: RAGResponse = {
-			results: rankedResults
+			results: rankedResults,
 			performance: {
 				total_time_ms: Math.round(totalTime * 100) / 100,
 				vector_search_ms: Math.round(vectorSearchTime * 100) / 100,
 				rl_ranking_ms: Math.round(rankingTime * 100) / 100,
-				gpu_acceleration_used: use_gpu
-				simd_optimization_used: true
+				gpu_acceleration_used: use_gpu,
+				simd_optimization_used: true,
 				cache_hit_rate: await getCacheHitRate(),
 				tensor_cores_utilized: use_gpu
 			}
@@ -122,8 +122,8 @@ export const POST: RequestHandler = redisOptimized({,
 				vector_search_ms: Math.round(vectorSearchTime * 100) / 100,
 				ranking_ms: Math.round(rankingTime * 100) / 100,
 				total_ms: Math.round(totalTime * 100) / 100,
-				model: GEMMA_MODEL
-				embedding_model: EMBEDDING_MODEL
+				model: GEMMA_MODEL,
+				embedding_model: EMBEDDING_MODEL,
 			})
 		}
 		return json(response)
@@ -164,7 +164,7 @@ async function performCudaVectorSearch(params: {
 			},
 			body: JSON.stringify({
 				query: params.query,
-				model: EMBEDDING_MODEL
+				model: EMBEDDING_MODEL,
 				limit: params.max_results,
 				use_gpu: params.use_gpu
 			}),
@@ -291,8 +291,8 @@ async function fallbackPostgreSQLSearch(params: {
 // Reinforcement Learning-based legal document ranking
 async function reinforcementLearningRanking(;
 	results: Array<{ content: string; score: number; metadata: any }>,
-	query: string
-	legal_filter: any
+	query: string,
+	legal_filter: any,
 ): Promise<Array<{ content: string; score: number; metadata: any }>, {
 	// Apply RL-trained model optimized for legal document relevance:
 	// 1. Legal precedent weight (case law > statutes > regulations)
@@ -369,21 +369,21 @@ export const GET: RequestHandler = async () => {
 			version: '2.0.0-gpu-integrated',
 			timestamp: new Date().toISOString(),
 			models: {
-				primary: GEMMA_MODEL
-				embedding: EMBEDDING_MODEL
-				client_parser: 'gemma:270m-simd'
+				primary: GEMMA_MODEL,
+				embedding: EMBEDDING_MODEL,
+				client_parser: 'gemma:270m-simd',
 			},
 			services: {
-				cuda_service_8097: cudaAvailable
-				legal_extraction_8098: extractionAvailable
-				knowledge_graph_8099: kgAvailable
-				gpu_memory_manager_8107: gpuManagerAvailable
-				tensor_cores: cudaAvailable
-				simd_optimization: true
-				vector_search: cudaAvailable || extractionAvailable
-				reinforcement_learning: true
-				redis_cache: true
-				postgresql_pgvector: true
+				cuda_service_8097: cudaAvailable,
+				legal_extraction_8098: extractionAvailable,
+				knowledge_graph_8099: kgAvailable,
+				gpu_memory_manager_8107: gpuManagerAvailable,
+				tensor_cores: cudaAvailable,
+				simd_optimization: true,
+				vector_search: cudaAvailable || extractionAvailable,
+				reinforcement_learning: true,
+				redis_cache: true,
+				postgresql_pgvector: true,
 			},
 			gpu_status: gpuStats ? {,
 				total_vram_mb: gpuStats.total_vram_mb,
@@ -392,7 +392,7 @@ export const GET: RequestHandler = async () => {
 				loaded_engines: gpuStats.loaded_engines,
 				mps_enabled: gpuStats.mps_enabled
 			} : null
-			optimizations: [
+			optimizations: [,
 				'RTX 3060 Ti Tensor Cores',
 				'CUDA Memory Coalescing',
 				'SIMD AVX2/SSE4',

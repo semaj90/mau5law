@@ -5,7 +5,7 @@ import http from "http";
  *
  * Supports HTTP, gRPC, QUIC, and WebSocket protocols
  * Using existing compiled Go binaries for maximum performance
- */;
+ */
 }
 export interface ServiceConfig {
   name: string;
@@ -466,14 +466,14 @@ export const PROTOCOL_CONFIG = {
   grpc: {
     timeout: 15000,
     retries: 3,
-    keepAlive: true
-    keepAliveTimeout: 30000
+    keepAlive: true,
+    keepAliveTimeout: 30000,
   },
   quic: {
     timeout: 5000,
     retries: 2,
-    keepAlive: true
-    maxStreams: 100
+    keepAlive: true,
+    maxStreams: 100,
   },
   ws: {
     timeout: 0, // No timeout for WebSocket
@@ -484,11 +484,11 @@ export const PROTOCOL_CONFIG = {
 }
 // Service Discovery Configuration
 export const SERVICE_DISCOVERY = {
-  enabled: true
+  enabled: true,
   refreshInterval: 60000, // 1 minute
-  healthCheckEnabled: true
-  autoFailover: true
-  circuitBreakerEnabled: true
+  healthCheckEnabled: true,
+  autoFailover: true,
+  circuitBreakerEnabled: true,
 }
 export default {
   SERVICES_CONFIG,

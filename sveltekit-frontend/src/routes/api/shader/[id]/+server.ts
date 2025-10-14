@@ -7,7 +7,7 @@ export const GET: RequestHandler = async ({ params }) => {
   const wgsl = await getCachedShader(id);
   if (!wgsl) return json({ id, wgsl: null });
   return json({ id, wgsl });
-}
+};
 export const POST: RequestHandler = async ({ params, request }) => {
   const id = params.id;
   if (!id) throw error(400, 'Missing shader id');
@@ -15,4 +15,4 @@ export const POST: RequestHandler = async ({ params, request }) => {
   if (typeof wgsl !== 'string' || !wgsl.trim()) throw error(400, 'Missing wgsl');
   await cacheShader(id, wgsl, ttlMs);
   return json({ id, stored: true });
-}
+};

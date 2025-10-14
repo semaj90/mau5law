@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       query: body.query,
-      results: searchResults
+      results: searchResults,
       metadata: {
         count: searchResults.length,
         processingTime,
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async () => {
       status: {
         overall: vectorHealth.status === 'healthy' && ollamaStatus === 'ready' ? 'ready' : 'degraded',
         ollama: {
-          status: ollamaStatus
+          status: ollamaStatus,
           embeddingModel: ollamaModels.includes('nomic-embed-text') ? 'available' : 'missing',
           availableModels: ollamaModels
         },

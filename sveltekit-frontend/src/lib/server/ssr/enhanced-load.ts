@@ -83,7 +83,7 @@ export const createEnhancedLayoutLoad = () => {
       // Create cache key for user-specific data
       const userCacheKey = user ? `user_layout_${user.id}` : 'anonymous_layout';
       // Try to get cached layout data
-      let cachedData = SSRCache.get(userCacheKey);
+      const cachedData = SSRCache.get(userCacheKey);
       if (cachedData) {
         metrics.cacheHits++;
         return {
@@ -103,7 +103,7 @@ export const createEnhancedLayoutLoad = () => {
       } else {
         metrics.cacheHits++;
       }
-      let layoutData: any = {
+      const layoutData: any = {
         dbHealth,
         userCases: [],
         recentEvidence: [],
@@ -209,7 +209,7 @@ export const createEnhancedCasePageLoad = () => {
       }
       // Check cache first
       const cacheKey = `case_${caseId}_${user.id}`;
-      let cachedData = SSRCache.get(cacheKey);
+      const cachedData = SSRCache.get(cacheKey);
       if (cachedData) {
         metrics.cacheHits++;
         metrics.loadTime = Date.now() - startTime;

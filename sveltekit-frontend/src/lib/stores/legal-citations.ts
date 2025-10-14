@@ -224,13 +224,13 @@ class LegalCitationsManager {
   private dbPrefix = "legal-citation-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 7200, // 2 hours for citations
-    compressionEnabled: true
-    enableMetrics: true
+    compressionEnabled: true,
+    enableMetrics: true,
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
-    enableSIMD: true
-    redisCache: true
+    enableSIMD: true,
+    redisCache: true,
   });
   static getInstance(): LegalCitationsManager {
     if (!LegalCitationsManager.instance) {
@@ -267,13 +267,13 @@ class LegalCitationsManager {
   }
   // Create citation from AI extraction
   private async createCitationFromExtraction(
-    extracted: any
-    sourceText: string
+    extracted: any,
+    sourceText: string,
     sourceDocId?: string
   ): Promise<LegalCitation> {
     const citationId = `cite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const citation: LegalCitation = {
-      id: citationId
+      id: citationId,
       type: extracted.type || 'case_law',
       citation: extracted.fullCitation,
       shortCitation: extracted.shortCitation,
@@ -292,9 +292,9 @@ class LegalCitationsManager {
       keyHoldings: extracted.keyHoldings || [],
       legalPrinciples: extracted.legalPrinciples || [],
       precedentialValue: extracted.precedentialValue || 'informational',
-      aiExtracted: true
+      aiExtracted: true,
       aiConfidence: extracted.confidence || 0.8,
-      extractionSource: sourceDocId
+      extractionSource: sourceDocId,
       contextSnippet: this.extractContext(sourceText, extracted.fullCitation),
       relevanceScore: extracted.relevance || 0.5,
       bookmarked: false;
@@ -386,7 +386,7 @@ class LegalCitationsManager {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           documentId: citation.id,
-          content: content
+          content: content,
           embeddings: citation.embeddings,
           metadata: {
             type: citation.type,
@@ -594,7 +594,7 @@ class LegalCitationsManager {
   private async createCitationFromImport(data: any): Promise<LegalCitation> {
     const citationId = `import-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return {
-      id: citationId
+      id: citationId,
       type: data.type || 'case_law',
       citation: data.citation,
       shortCitation: data.shortCitation,
@@ -610,7 +610,7 @@ class LegalCitationsManager {
       keyHoldings: data.keyHoldings || [],
       legalPrinciples: data.legalPrinciples || [],
       precedentialValue: data.precedentialValue || 'informational',
-      aiExtracted: false
+      aiExtracted: false,
       bookmarked: false;
       tags: data.tags || [],
       verificationStatus: 'unverified',

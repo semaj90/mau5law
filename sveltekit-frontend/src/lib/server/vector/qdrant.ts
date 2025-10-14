@@ -107,7 +107,7 @@ export async function initializeCollections(): Promise<void> {
         // Collection doesn't exist, create it with optimized config
         const config = {
           vectors: {
-            size: VECTOR_DIMENSION
+            size: VECTOR_DIMENSION,
             distance: "Cosine" as const,
             hnsw_config: {
               m: isWindows ? 16 : 12,                    // Slightly lower on non-Windows
@@ -142,9 +142,9 @@ export async function initializeCollections(): Promise<void> {
           component: 'QdrantService',
           service: 'qdrant'
         }, {
-          windowsOptimized: isWindows
-          vectorDimension: VECTOR_DIMENSION
-          quantizationEnabled: true
+          windowsOptimized: isWindows,
+          vectorDimension: VECTOR_DIMENSION,
+          quantizationEnabled: true,
         });
       }
     }
@@ -165,7 +165,7 @@ export interface SearchOptions {
 }
 // Search cases in Qdrant (using optimized service)
 export async function searchCases(
-  query: string
+  query: string,
   options: SearchOptions = {}
 ): Promise<any[]> {
   try {
@@ -190,7 +190,7 @@ export async function searchCases(
 }
 // Search evidence in Qdrant (using optimized service)
 export async function searchEvidence(
-  query: string
+  query: string,
   options: SearchOptions = {}
 ): Promise<any[]> {
   try {
@@ -215,7 +215,7 @@ export async function searchEvidence(
 }
 // Add or update a case in Qdrant (with optimized batching support)
 export async function upsertCase(
-  id: string
+  id: string,
   embedding: number[];
   payload: any;
 ): Promise<void> {
@@ -244,7 +244,7 @@ export async function upsertCase(
       component: 'QdrantService',
       service: 'qdrant'
     }, {
-      caseId: id
+      caseId: id,
       vectorDimension: embedding.length,
       payloadSize: JSON.stringify(payload).length
     });
@@ -253,14 +253,14 @@ export async function upsertCase(
       component: 'QdrantService',
       service: 'qdrant'
     }, {
-      caseId: id
-      vectorDimension: embedding.length
+      caseId: id,
+      vectorDimension: embedding.length,
     });
   }
 }
 // Add or update evidence in Qdrant (with optimized batching support)
 export async function upsertEvidence(
-  id: string
+  id: string,
   embedding: number[];
   payload: any;
 ): Promise<void> {
@@ -289,7 +289,7 @@ export async function upsertEvidence(
       component: 'QdrantService',
       service: 'qdrant'
     }, {
-      evidenceId: id
+      evidenceId: id,
       vectorDimension: embedding.length,
       payloadSize: JSON.stringify(payload).length
     });
@@ -298,8 +298,8 @@ export async function upsertEvidence(
       component: 'QdrantService',
       service: 'qdrant'
     }, {
-      evidenceId: id
-      vectorDimension: embedding.length
+      evidenceId: id,
+      vectorDimension: embedding.length,
     });
   }
 }
@@ -370,10 +370,10 @@ export const qdrant = {
   upsertEvidence,
   deletePoint,
   // Enhanced methods
-  isHealthy: isQdrantHealthy
+  isHealthy: isQdrantHealthy,
   initializeCollections,
   // Collection and client management
-  collections: COLLECTIONS
+  collections: COLLECTIONS,
   getCollections,
   getCollection,
   createCollection,

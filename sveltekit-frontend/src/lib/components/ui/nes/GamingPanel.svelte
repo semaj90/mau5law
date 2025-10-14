@@ -37,65 +37,56 @@
   		isClosed = true;
   	}
 </script>
+
 {#if !isClosed}
-<div
-	class="gaming-panel {variant}"
-	class:glow={borderGlow}
-	class:scan={scanEffect}
-	class:minimized={isMinimized}
->
-	<!-- Panel Header -->
-	{#if title || minimizable || closable}
-		<div class="panel-header">
-			<div class="header-content">
-				{#if title}
-					<div class="panel-title">
-						<span class="title-text">{title}</span>
-						{#if subtitle}
-							<span class="subtitle-text">{subtitle}</span>
-						{/if}
-					</div>
-				{/if}
-			</div>
-			<div class="header-controls">
-				{#if minimizable}
-					<button
-						class="control-button minimize"
-						onclick={toggleMinimize}
-						aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
-					>
-						{isMinimized ? '▲' : '▼'}
-					</button>
-				{/if}
-				{#if closable}
-					<button
-						class="control-button close"
-						onclick={closePanel}
-						aria-label="Close panel"
-					>
-						✕
-					</button>
-				{/if}
-			</div>
-		</div>
-	{/if}
-	<!-- Panel Content -->
-	{#if !isMinimized}
-		<div class="panel-content">
-			{@render children()}
-		</div>
-	{/if}
-	<!-- Gaming Effects -->
-	<div class="corner-decoration top-left"></div>
-	<div class="corner-decoration top-right"></div>
-	<div class="corner-decoration bottom-left"></div>
-	<div class="corner-decoration bottom-right"></div>
-	{#if scanEffect}
-		<div class="scan-line-horizontal"></div>
-		<div class="scan-line-vertical"></div>
-	{/if}
-</div>
+  <div class="gaming-panel {variant}" class:glow={borderGlow} class:scan={scanEffect} class:minimized={isMinimized}>
+    <!-- Panel Header -->
+    {#if title || minimizable || closable}
+      <div class="panel-header">
+        <div class="header-content">
+          {#if title}
+            <div class="panel-title">
+              <span class="title-text">{title}</span>
+              {#if subtitle}
+                <span class="subtitle-text">{subtitle}</span>
+              {/if}
+            </div>
+          {/if}
+        </div>
+        <div class="header-controls">
+          {#if minimizable}
+            <button
+              class="control-button minimize"
+              onclick={toggleMinimize}
+              aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
+            >
+              {isMinimized ? '▲' : '▼'}
+            </button>
+          {/if}
+          {#if closable}
+            <button class="control-button close" onclick={closePanel} aria-label="Close panel"> ✕ </button>
+          {/if}
+        </div>
+      </div>
+    {/if}
+    <!-- Panel Content -->
+    {#if !isMinimized}
+      <div class="panel-content">
+        {@render children()}
+      </div>
+    {/if}
+    <!-- Gaming Effects -->
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration top-right"></div>
+    <div class="corner-decoration bottom-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+    {#if scanEffect}
+      <div class="scan-line-horizontal"></div>
+      <div class="scan-line-vertical"></div>
+    {/if}
+  </div>
 {/if}
+
 <style>
 	.gaming-panel {
 position: relative;

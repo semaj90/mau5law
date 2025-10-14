@@ -23,8 +23,8 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
     // Set a development session cookie for consistency
     cookies.set('dev_session', 'dev_user_session_' + Date.now(), {
       path: '/',
-      httpOnly: false
-      secure: false
+      httpOnly: false,
+      secure: false,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     })
@@ -42,11 +42,11 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         practiceAreas: ['corporate', 'litigation'],
         barNumber: 'DEV123456',
         firmName: 'Legal AI Development',
-        avatarUrl: null
+        avatarUrl: null,
         lastLoginAt: new Date().toISOString(),
         permissions: ['read', 'write', 'analyze'],
-        isActive: true
-        emailVerified: true
+        isActive: true,
+        emailVerified: true,
         metadata: { [key,: strin,g]: any },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -56,8 +56,8 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         activeCases: 2,
         totalEvidence: 15
       },
-      authenticated: true
-      loadSource: 'development'
+      authenticated: true,
+      loadSource: 'development',
     }
     return createSSRResponse(mockUser)
   }
@@ -65,7 +65,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
     // Check cognitive cache for user profile data
     const cacheKey = `current_user_${userId}`
     const cacheRequest = {
-      key: cacheKey
+      key: cacheKey,
       type: 'legal-data' as const,
       context: {
         userId,
@@ -80,8 +80,8 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
     if (cachedUserData && cachedUserData.metadata.accessCount >= 0) {
       return createSSRResponse({
         ...cachedUserData.content,
-        authenticated: true
-        loadSource: 'cache'
+        authenticated: true,
+        loadSource: 'cache',
       }, { cached: true })
     }
     // Get comprehensive user data from database
@@ -147,8 +147,8 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         activeCases: stats?.activeCases || 0,
         totalEvidence: stats?.totalEvidence || 0
       },
-      authenticated: true
-      loadSource: 'database'
+      authenticated: true,
+      loadSource: 'database',
     }
     // Cache the user data for future requests
     await cognitiveCache.storeJsonbDocument(cacheKey, userData, {

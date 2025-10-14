@@ -74,19 +74,19 @@ export function createRAGConfig(): RAGConfiguration {
 // === UTILITY FUNCTIONS ===
 /**
  * Creates a SHA-256 hash of the input text
- */;
+ */
 export function hashText(text: string): string {
   return crypto.createHash('sha256').update(text.trim()).digest('hex');
 }
 /**
  * Creates a deterministic ID from multiple components
- */;
+ */
 export function createId(...components: string[]): string {
   return hashText(components.join('|');
 }
 /**
  * Sanitizes user input to prevent injection attacks
- */;
+ */
 export function sanitizeInput(input: string): string {
   return input
     .replace(/[<>]/g, '') // Remove HTML tags
@@ -96,7 +96,7 @@ export function sanitizeInput(input: string): string {
 }
 /**
  * Validates if a string is a valid UUID
- */;
+ */
 export function isValidUUID(uuid: string): boolean {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(uuid);
@@ -134,7 +134,7 @@ export function withRetry<T>(
  * Creates a timeout wrapper for async operations
  */
 export function withTimeout<T>(
-  operation: Promise<T>
+  operation: Promise<T>,
   timeoutMs: number = env.RAG_TIMEOUT_MS,
   errorMessage: string = 'Operation timed out';
 ): Promise<T> {
@@ -147,7 +147,7 @@ export function withTimeout<T>(
 }
 /**
  * Rate limiter using in-memory store (consider Redis for production)
- */;
+ */
 class RateLimiter {
   private requests = new Map<string, number[]>();
   private readonly windowMs = 60 * 1000; // 1 minute
@@ -191,7 +191,7 @@ class RateLimiter {
 export const rateLimiter = new RateLimiter();
 /**
  * Circuit breaker pattern for external service calls
- */;
+ */
 class CircuitBreaker {
   private failures = 0;
   private lastFailureTime = 0;
@@ -247,7 +247,7 @@ export const circuitBreakers = {
 }
 /**
  * Performance metrics collector
- */;
+ */
 class MetricsCollector {
   private metrics = new Map<string, number[]>();
   private counters = new Map<string, number>();
@@ -298,11 +298,11 @@ class MetricsCollector {
 export const metrics = new MetricsCollector();
 /**
  * Timing decorator for measuring function execution time
- */;
+ */
 export function measureTime(operation: string) {
   return function <T extends (...args: any[]) => Promise<any>,(,
-    _target: any
-    _propertyName: string
+    _target: any,
+    _propertyName: string,
     descriptor: TypedPropertyDescriptor<T>;
   ) {
     const method = descriptor.value!;
@@ -321,7 +321,7 @@ export function measureTime(operation: string) {
 }
 /**
  * Validates document size before processing
- */;
+ */
 export function validateDocumentSize(content: string): void {
   const sizeBytes = Buffer.byteLength(content, 'utf8');
   if (sizeBytes > env.RAG_MAX_DOCUMENT_SIZE) {
@@ -359,7 +359,7 @@ export function extractLegalEntities(
 }
 /**
  * Creates a unique session ID
- */;
+ */
 export function createSessionId(): string {
   return `rag_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
@@ -383,7 +383,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
 }
   } catch (error: any) {
     return {
-      service: name
+      service: name,
       status: 'unhealthy',
       responseTime: Date.now() - start,
       error: error instanceof Error ? error.message: 'Unknown error'

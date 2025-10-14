@@ -9,44 +9,26 @@
     onview?: (event?: any) => void;
     ondownload?: (event?: any) => void;
   }
-  let {
-    evidence,
-    disabled = false,
-    onedit,
-    ondelete,
-    onview,
-    ondownload
-  }: Props = $props();
+  let { evidence, disabled = false, onedit, ondelete, onview, ondownload }: Props = $props();
 
-  import { formatDistanceToNow } from "date-fns";
-  import {
-    Archive,
-    Calendar,
-    Download,
-    Edit,
-    Eye,
-    FileText,
-    Headphones,
-    Image,
-    Trash2,
-    Video,
-  } from "lucide-svelte";
+  import { formatDistanceToNow } from 'date-fns';
+  import { Archive, Calendar, Download, Edit, Eye, FileText, Headphones, Image, Trash2, Video } from 'lucide-svelte';
 
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case "document":
+      case 'document':
         return FileText;
-      case "photo":
+      case 'photo':
         return Image;
-      case "video":
+      case 'video':
         return Video;
-      case "audio":
+      case 'audio':
         return Headphones;
-      case "physical":
+      case 'physical':
         return Archive;
-      case "digital":
+      case 'digital':
         return FileText;
-      case "testimony":
+      case 'testimony':
         return FileText;
       default:
         return FileText;
@@ -55,29 +37,31 @@
 
   function getTypeColor(type: string) {
     switch (type) {
-      case "document":
-        return "bg-blue-100 text-blue-800";
-      case "photo":
-        return "bg-purple-100 text-purple-800";
-      case "video":
-        return "bg-red-100 text-red-800";
-      case "audio":
-        return "bg-green-100 text-green-800";
-      case "physical":
-        return "bg-yellow-100 text-yellow-800";
-      case "digital":
-        return "bg-indigo-100 text-indigo-800";
-      case "testimony":
-        return "bg-orange-100 text-orange-800";
+      case 'document':
+        return 'bg-blue-100 text-blue-800';
+      case 'photo':
+        return 'bg-purple-100 text-purple-800';
+      case 'video':
+        return 'bg-red-100 text-red-800';
+      case 'audio':
+        return 'bg-green-100 text-green-800';
+      case 'physical':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'digital':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'testimony':
+        return 'bg-orange-100 text-orange-800';
       default:
-        return "bg-gray-100 text-gray-800";
+        return 'bg-gray-100 text-gray-800';
     }
   }
 
   let evidenceIcon = $derived(getEvidenceIcon(evidence.evidenceType || evidence.type));
-  let formattedDate = $derived(formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {
-    addSuffix: true
-  }));
+  let formattedDate = $derived(
+    formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {
+      addSuffix: true,
+    })
+  );
 
   function handleEdit() {
     if (!disabled) {
@@ -120,7 +104,7 @@
       <div class="mt-1">
         <span
           class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTypeColor(
-            evidence.evidenceType || evidence.type,
+            evidence.evidenceType || evidence.type
           )}"
         >
           {evidence.evidenceType || evidence.type}

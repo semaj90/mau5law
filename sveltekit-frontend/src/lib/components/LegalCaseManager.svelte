@@ -59,32 +59,32 @@
       jurisdiction: '',
       priority: 'medium',
       description: '',
-      key_dates: []
+      key_dates: [],
     },
     documents: {
       uploaded_files: [],
       ocr_results: [],
-      processing_status: 'pending'
+      processing_status: 'pending',
     },
     evidence: {
       extracted_entities: [],
       key_facts: [],
       legal_issues: [],
-      precedents: []
+      precedents: [],
     },
     ai_analysis: {
       case_strength_score: 0,
       predicted_outcome: '',
       risk_factors: [],
       recommendations: [],
-      similar_cases: []
+      similar_cases: [],
     },
     review: {
       final_review: '',
       quality_score: 0,
       completeness_check: false,
-      ready_for_submission: false
-    }
+      ready_for_submission: false,
+    },
   });
 
   // Form step management
@@ -100,14 +100,14 @@
       2: $formData.documents.uploaded_files.length > 0 && $formData.documents.processing_status === 'completed',
       3: $formData.evidence.key_facts.length > 0 && $formData.evidence.legal_issues.length > 0,
       4: $formData.ai_analysis.case_strength_score > 0,
-      5: $formData.review.completeness_check && $formData.review.ready_for_submission
+      5: $formData.review.completeness_check && $formData.review.ready_for_submission,
     };
     return validations[$currentStep] || false;
   });
 
   // Auto-save (debounced)
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-  const unsubscribeAutoSave = formData.subscribe((value) => {
+  const unsubscribeAutoSave = formData.subscribe(value => {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(() => {
       try {
@@ -138,7 +138,7 @@
     try {
       formData.update(d => ({
         ...d,
-        documents: { ...d.documents, uploaded_files: files, processing_status: 'processing' }
+        documents: { ...d.documents, uploaded_files: files, processing_status: 'processing' },
       }));
 
       const ocrResults: OCRResult[] = [];
@@ -150,7 +150,7 @@
         uploadForm.append('file', file);
         const uploadResponse = await fetch('/api/upload-temp', {
           method: 'POST',
-          body: uploadForm
+          body: uploadForm,
         });
         if (!uploadResponse.ok) throw new Error(`Failed to upload ${file.name}`);
         const { filePath } = await uploadResponse.json();
@@ -161,13 +161,13 @@
         await fetch('/api/cleanup-temp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filePath })
+          body: JSON.stringify({ filePath }),
         });
       }
 
       formData.update(d => ({
         ...d,
-        documents: { ...d.documents, ocr_results: ocrResults, processing_status: 'completed' }
+        documents: { ...d.documents, ocr_results: ocrResults, processing_status: 'completed' },
       }));
 
       // auto-advance
@@ -188,12 +188,12 @@
     try {
       const payload = {
         ocr_results: get(formData).documents.ocr_results,
-        case_context: get(formData).caseInfo
+        case_context: get(formData).caseInfo,
       };
       const response = await fetch('/api/evidence/extract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('Evidence extraction failed');
       const evidenceData = await response.json();
@@ -214,12 +214,12 @@
       const payload = {
         case_info: get(formData).caseInfo,
         evidence: get(formData).evidence,
-        documents: get(formData).documents.ocr_results
+        documents: get(formData).documents.ocr_results,
       };
       const response = await fetch('/api/ai/analyze-case', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('AI analysis failed');
       const analysisData = await response.json();
@@ -251,7 +251,7 @@
       const response = await fetch('/api/cases/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(get(formData))
+        body: JSON.stringify(get(formData)),
       });
       if (!response.ok) throw new Error('Case submission failed');
       const result = await response.json();

@@ -89,22 +89,22 @@ const initialState: RecommendationState = {
   recommendations: [],
   activeRecommendations: [],
   dismissedRecommendations: [],
-  userAnalytics: null
+  userAnalytics: null,
   behaviorInsights: {
     patterns: [],
     suggestions: [],
     trends: []
   },
-  isAnalyzing: false
-  lastAnalysisTime: null
+  isAnalyzing: false,
+  lastAnalysisTime: null,
   aiModelsStatus: {
-    nvidia_llama: false
-    gemma3_legal: false
-    recommendation_engine: false
+    nvidia_llama: false,
+    gemma3_legal: false,
+    recommendation_engine: false,
   },
   analyticsLatency: 0,
   recommendationAccuracy: 0,
-  enableRealTimeAnalysis: true
+  enableRealTimeAnalysis: true,
   privacyLevel: 'standard',
   error: null
 }
@@ -134,7 +134,7 @@ export const userProductivityScore = derived(recommendationStore, ($store) => {
 export const recommendationActions = {
   /**
    * Generate AI-powered recommendations based on user behavior
-   */;
+   */
   async generateRecommendations(userId,: string, context?: {
     caseId?: string;
     currentTask?: string;
@@ -142,8 +142,8 @@ export const recommendationActions = {
   }),: Promise<void> {
     recommendationStore,.update(state => ({
       ...state,
-      isAnalyzing: true
-      error: null
+      isAnalyzing: true,
+      error: null,
     });
     const startTime = Date.now();
     try {
@@ -153,8 +153,8 @@ export const recommendationActions = {
         options: {
           model: 'nvidia-llama',
           analysisDepth: 'comprehensive',
-          includeUserAnalytics: true
-          maxRecommendations: 10
+          includeUserAnalytics: true,
+          maxRecommendations: 10,
         }
       });
       const latency = Date.now() - startTim,e;
@@ -163,7 +163,7 @@ export const recommendationActions = {
         recommendations: response.recommendations || [],
         activeRecommendations: (response.recommendations || []).filter((r: Recommendation) => !r.dismissed),
         behaviorInsights: response.insights || state.behaviorInsights,
-        analyticsLatency: latency
+        analyticsLatency: latency,
         lastAnalysisTime: Date.now(),
         isAnalyzing: false
       });
@@ -171,14 +171,14 @@ export const recommendationActions = {
       console.error('Recommendation generation failed:', error);
       recommendationStore.update(state => ({
         ...state,
-        isAnalyzing: false
-        error: error instanceof Error ? error.message: 'Failed to generate recommendations'
+        isAnalyzing: false,
+        error: error instanceof Error ? error.message: 'Failed to generate recommendations',
       });
     }
   },
   /**
    * Analyze user behavior and update analytics
-   */;
+   */
   async analyzeUserBehavior(userId,: string, activityDat,a: {
     action: string;
     context: any;
@@ -191,8 +191,8 @@ export const recommendationActions = {
         userId,
         activity: activityData;
         options: {
-          updateProfile: true
-          generateInsights: true
+          updateProfile: true,
+          generateInsights: true,
         }
       });
       recommendationStore,.update(state => ({
@@ -206,7 +206,7 @@ export const recommendationActions = {
   },
   /**
    * Accept a recommendation and provide feedback
-   */;
+   */
   async acceptRecommendation(recommendationId,: string, feedback?: {
     helpful: boolean;
     implemented: boolean;
@@ -231,7 +231,7 @@ export const recommendationActions = {
   },
   /**
    * Dismiss a recommendation
-   */;
+   */
   async dismissRecommendation(recommendationId,: string, reason?: string): Promise<void> {
     try {
       await productionServiceClien,t.execute('recommendations.feedback', {
@@ -256,14 +256,14 @@ export const recommendationActions = {
   },
   /**
    * Get user analytics and performance insights
-   */;
+   */
   async loadUserAnalytics(userId,: string): Promise<void> {
     try {
       const response = await productionServiceClient.execute('analytics.user', {
         userId,
-        includePerformance: true
-        includeBehavior: true
-        timeRange: '30d'
+        includePerformance: true,
+        includeBehavior: true,
+        timeRange: '30d',
       });
       recommendationStore,.update(state => ({
         ...state,
@@ -280,7 +280,7 @@ export const recommendationActions = {
   },
   /**
    * Track recommendation accuracy based on user feedback
-   */;
+   */
   updateAccuracyMetrics(feedback,: Array<): void {
     if (feedback,.length ===, 0) retu,rn;
     const accuracy = feedback.reduce((sum, f) =>
@@ -293,7 +293,7 @@ export const recommendationActions = {
   },
   /**
    * Update recommendation settings
-   */;
+   */
   updateSettings(settings,: Partial): void {
     recommendationStore,.update(state => ({
       ...state,
@@ -302,7 +302,7 @@ export const recommendationActions = {
   },
   /**
    * Check AI models status
-   */;
+   */
   async checkModelsStatus(),: Promise<void> {
     try {
       // removed unused response assignment
@@ -320,7 +320,7 @@ export const recommendationActions = {
   },
   /**
    * Clear all recommendations
-   */;
+   */
   clearRecommendations(),: void {
     recommendationStore,.update(state => ({
       ...state,

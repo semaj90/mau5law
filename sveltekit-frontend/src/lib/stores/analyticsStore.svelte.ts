@@ -28,11 +28,11 @@ export interface AnalyticsState {
 // Initialize analytics state
 const initialState: AnalyticsState = {
   events: [],
-  isEnabled: true
-  isLoading: false
+  isEnabled: true,
+  isLoading: false,
   bufferSize: 50,
   maxEvents: 1000,
-  autoFlush: true
+  autoFlush: true,
   flushInterval: 30000, // 30 seconds
   lastFlushAt: 0
 }
@@ -63,8 +63,8 @@ const createAnalyticsStore = () => {
         ...event,
         id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
-        url: browser ? window.location.href : undefined
-        userAgent: browser ? navigator.userAgent : undefined
+        url: browser ? window.location.href : undefined,
+        userAgent: browser ? navigator.userAgent : undefined,
       }
       analyticsState.events.push(fullEvent);
       // Limit events to prevent memory issues
@@ -171,7 +171,7 @@ const createAnalyticsStore = () => {
         type: 'error',
         action: 'error_occurred',
         metadata: {
-          error: errorMessage
+          error: errorMessage,
           stack,
           ...metadata
         }

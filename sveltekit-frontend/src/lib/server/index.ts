@@ -36,8 +36,8 @@ export interface ProcessingJob {
     documentId?: number;
     embeddings?: number[];
     extractedText?: string;
-    metadata?: { [key: string]: any }
-  }
+    metadata?: { [key: string]: any };
+  };
 }
 export interface MultimodalEmbedding {
   text?: number[];
@@ -49,5 +49,5 @@ export interface MultimodalEmbedding {
     frameCount?: number;
     audioLength?: number;
     processingTime: number;
-  }
+  };
 }

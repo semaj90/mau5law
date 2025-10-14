@@ -32,13 +32,13 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
   private serviceWorkerReady = false;
   // Feature detection
   private capabilities = {
-    webassembly: false
-    webgpu: false
-    webgl: false
-    serviceWorker: false
-    indexedDB: false
-    webWorkers: false
-    sharedArrayBuffer: false
+    webassembly: false,
+    webgpu: false,
+    webgl: false,
+    serviceWorker: false,
+    indexedDB: false,
+    webWorkers: false,
+    sharedArrayBuffer: false,
     atomics: false;
     streams: false
   }
@@ -105,7 +105,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         (globalThis as any).process = {
           env: { NODE_ENV: dev ? 'development' : 'production' },
           nextTick: (callback: () => void) => Promise.resolve().then(callback),
-          browser: true
+          browser: true,
           version: 'v18.0.0',
           versions: { node: '18.0.0' },
           platform: 'browser',
@@ -302,9 +302,9 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           open: (name: string, version?: number) => ({
             addEventListener: () => {},
             removeEventListener: () => {},
-            onsuccess: null
-            onerror: null
-            onupgradeneeded: null
+            onsuccess: null,
+            onerror: null,
+            onupgradeneeded: null,
             result: {
               createObjectStore: () => ({
                 createIndex: () => {},
@@ -321,8 +321,8 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                   delete: () => ({ onsuccess: null, onerror: null }),
                   openCursor: () => ({ onsuccess: null, onerror: null })
                 }),
-                oncomplete: null
-                onerror: null
+                oncomplete: null,
+                onerror: null,
               }),
               close: () => {}
             }
@@ -380,10 +380,10 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         registration.active.postMessage({
           type: 'init-legal-ai',
           config: {
-            enableWASMCache: true
-            enableVectorCache: true
-            enableDocumentProcessing: true
-            cacheStrategy: 'legal-optimized'
+            enableWASMCache: true,
+            enableVectorCache: true,
+            enableDocumentProcessing: true,
+            cacheStrategy: 'legal-optimized',
           }
         });
       }
@@ -432,7 +432,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       capabilities: this.capabilities,
       isInitialized: this.isInitialized,
       serviceWorkerReady: this.serviceWorkerReady,
-      webgpu: this.capabilities.webgpu ? webgpuPolyfill.getPerformanceStats() : null
+      webgpu: this.capabilities.webgpu ? webgpuPolyfill.getPerformanceStats() : null,
       wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null;
       cache: browser ? lokiRedisCache.getStats() : null
     }

@@ -87,7 +87,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     // Call Enhanced RAG directly (Go service)
     const ragUrl = `${ENHANCED_RAG_BASE}/api/rag`;
     const ragBody = {
-      query: summaryQuery
+      query: summaryQuery,
       document_ids: [ctx.docId],
       max_results: 5,
       temperature: 0.2,
@@ -112,9 +112,9 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       const summaryPattern = await readThrough(
         `chr:${patternKey}`,
         async () => ({
-          key: patternKey
+          key: patternKey,
           type: 'text' as const,
-          createdAt: now
+          createdAt: now,
           ttlMs: 60_000,
           meta: { precomputed: true, source: 'enhanced-rag' },
           payload: { text: summaryText, style: 'body' as const }
@@ -140,9 +140,9 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
         const glyphPattern = await readThrough(
           `chr:${patternKey}`,
           async () => ({
-            key: patternKey
+            key: patternKey,
             type: 'state' as const,
-            createdAt: now
+            createdAt: now,
             ttlMs: 180_000,
             meta: { style: 'legal', kind: 'glyph' },
             payload: {
@@ -175,9 +175,9 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
           const answerPattern = await readThrough(
             `chr:${patternKey}`,
             async () => ({
-              key: patternKey
+              key: patternKey,
               type: 'text' as const,
-              createdAt: now
+              createdAt: now,
               ttlMs: 45_000,
               meta: { source: 'enhanced-rag' },
               payload: { text: snippet, style: 'body' as const }
@@ -203,9 +203,9 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
             const glyphPattern = await readThrough(
               `chr:${patternKey}`,
               async () => ({
-                key: patternKey
+                key: patternKey,
                 type: 'state' as const,
-                createdAt: now
+                createdAt: now,
                 ttlMs: 120_000,
                 meta: { style: 'legal', kind: 'glyph' },
                 payload: {

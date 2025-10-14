@@ -52,9 +52,9 @@ export class WebGPUTensorAccelerator {
     this.config = {
       deviceType: 'auto',
       powerPreference: 'high-performance',
-      enableDebug: false
+      enableDebug: false,
       maxBufferSize: 256 * 1024 * 1024, // 256MB
-      shaderCacheEnabled: true
+      shaderCacheEnabled: true,
       ...config
     }
   }
@@ -283,8 +283,8 @@ export class WebGPUTensorAccelerator {
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shader
-          entryPoint: 'main'
+          module: shader,
+          entryPoint: 'main',
         }
       });
       const bindGroup = this.device.createBindGroup({
@@ -345,8 +345,8 @@ export class WebGPUTensorAccelerator {
    * This method demonstrates the gpuTile: true option in the hot path
    */
   async calculateVectorSimilarityWithSIMDTiling(
-    vectorA: Float32Array
-    vectorB: Float32Array
+    vectorA: Float32Array,
+    vectorB: Float32Array,
     options: {
       enableTiling?: boolean;
       tileSize?: number;
@@ -380,7 +380,7 @@ export class WebGPUTensorAccelerator {
             {
               tileSize,
               evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
-              enableCompression: true
+              enableCompression: true,
               priority: 'high',
               generateEmbeddings: false, // We already have embeddings
             }
@@ -407,12 +407,12 @@ export class WebGPUTensorAccelerator {
           );
           const totalTime = performance.now() - start;
           return {
-            similarity: enhancedSimilarity
+            similarity: enhancedSimilarity,
             gpuMeta: {
               standardSimilarity,
               confidenceBoost,
-              tilingEnabled: true
-              device: this.adapter?.name || 'Unknown GPU'
+              tilingEnabled: true,
+              device: this.adapter?.name || 'Unknown GPU',
             },
             tilingMeta,
             performanceMetrics: {
@@ -429,11 +429,11 @@ export class WebGPUTensorAccelerator {
       }
       const totalTime = performance.now() - start;
       return {
-        similarity: standardSimilarity
+        similarity: standardSimilarity,
         gpuMeta: {
           standardSimilarity,
-          tilingEnabled: false
-          device: this.adapter?.name || 'Unknown GPU'
+          tilingEnabled: false,
+          device: this.adapter?.name || 'Unknown GPU',
         },
         performanceMetrics: {
           totalTime,
@@ -506,8 +506,8 @@ export class WebGPUTensorAccelerator {
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shader
-        entryPoint: 'main'
+        module: shader,
+        entryPoint: 'main',
       }
     });
     const bindGroup = this.device.createBindGroup({
@@ -612,8 +612,8 @@ export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator | null
   if (!tensorAccelerator) {
     tensorAccelerator = new WebGPUTensorAccelerator({
       powerPreference: 'high-performance',
-      enableDebug: true
-      shaderCacheEnabled: true
+      enableDebug: true,
+      shaderCacheEnabled: true,
     });
     const success = await tensorAccelerator.initialize();
     if (!success) {

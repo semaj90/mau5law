@@ -168,8 +168,8 @@ class VectorPipelineTest {
           embedding,
           metadata: {
             title: doc.title,
-            testDocument: true
-            embeddingModel: testConfig.embeddingModel
+            testDocument: true,
+            embeddingModel: testConfig.embeddingModel,
           }
         })
         embeddedDocs.push({
@@ -258,7 +258,7 @@ class VectorPipelineTest {
         .from(documentVectors)
       this.testResults.steps.mcp = {
         status: 'success',
-        postgresConnected: true
+        postgresConnected: true,
         vectorCount: mcpTest[0].count,
         time: Date.now() - stepStart
       }
@@ -339,14 +339,14 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'ready',
       ollama: {
-        connected: true
+        connected: true,
         model: testConfig.embeddingModel,
         dimensions: testEmbedding.length,
         baseUrl: testConfig.ollamaBaseUrl
       },
       database: {
-        connected: true
-        vectorsStored: vectorCount.count
+        connected: true,
+        vectorsStored: vectorCount.count,
       },
       testConfig: {
         documentsToTest: testConfig.testDocuments.length,

@@ -55,12 +55,12 @@
         searchResults = [];
         console.error('Search failed:', result);
       }
-      } catch (error) {
-        console.error('Search error:', error);
-        searchResults = [];
-      } finally {
-        isSearching = false;
-      }
+    } catch (error) {
+      console.error('Search error:', error);
+      searchResults = [];
+    } finally {
+      isSearching = false;
+    }
   }
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {

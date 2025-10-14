@@ -246,11 +246,11 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   fileType: 'document',
   tags: [],
   confidentialityLevel: 'standard',
-  isAdmissible: true
-  enableAiAnalysis: true
-  enableOcr: true
-  enableEmbeddings: true
-  enableSummarization: true
+  isAdmissible: true,
+  enableAiAnalysis: true,
+  enableOcr: true,
+  enableEmbeddings: true,
+  enableSummarization: true,
   chainOfCustody: [],
   metadata: { [key,: strin,g]: any }
 }

@@ -1,42 +1,30 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Legal AI Chat API - Context7 Enhanced with Gemma3 Legal
-import { db } from "$lib/server/db/index"
+import { db } from '$lib/server/db/index';
 
 // Add schema / query helper imports (adjust path if your project exports them elsewhere)
-import {
-  legalAnalysisSessions,
-  legalDocuments,
-  legalPrecedents,
-  eq,
-  like,
-  and,
-  desc
-} from '$lib/server/db/schema'
+import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, desc } from '$lib/server/db/schema';
 
 // Replace loose types with strict ones
-type DBCondition = unknown
+type DBCondition = unknown;
 
 export interface InsertLegalAnalysisSession {
-  userId: string
-  prompt: string
-  response: string
-  caseId?: string
+  userId: string;
+  prompt: string;
+  response: string;
+  caseId?: string;
 }
 export interface LegalChatRequest {
-  prompt: string
-  caseId?: string
-  userId: string
-  sessionType?:
-    | "case_analysis"
-    | "legal_research"
-    | "document_review"
-    | "precedent_search"
+  prompt: string;
+  caseId?: string;
+  userId: string;
+  sessionType?: 'case_analysis' | 'legal_research' | 'document_review' | 'precedent_search';
   context?: {
-    caseDetails?: unknown
-    evidenceIds?: string[]
-    requestedAnalysis?: string[]
-  }
+    caseDetails?: unknown;
+    evidenceIds?: string[];
+    requestedAnalysis?: string[];
+  };
 }
 interface Source {
   id?: string;

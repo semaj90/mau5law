@@ -2,18 +2,18 @@
  * Vector Embeddings API - RAG Chunking with CUDA Parallel Processing
  * Handles text embedding, batch processing, and document chunking for legal AI
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js'
-import { MinIOService } from '$lib/server/minio-service'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from '$lib/server/minio-service';
 interface EmbeddingRequest {
-  texts: string[]
-  model?: string
-  normalize?: boolean
-  useCUDA?: boolean
-  chunkSize?: number
-  chunkOverlap?: number
-  batchSize?: number
+  texts: string[];
+  model?: string;
+  normalize?: boolean;
+  useCUDA?: boolean;
+  chunkSize?: number;
+  chunkOverlap?: number;
+  batchSize?: number;
   minioUrl?: string; // For large document processing
 }
 interface ChunkingRequest {
@@ -24,22 +24,22 @@ interface ChunkingRequest {
   extractMetadata?: boolean;
 }
 export const POST: RequestHandler = async ({ request, url }) => {
-  const startTime = performance.now()
-  const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const startTime = performance.now();
+  const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   try {
-    const endpoint = url.pathname.split('/').pop()
+    const endpoint = url.pathname.split('/').pop();
     if (endpoint === 'embeddings') {
-      return await handleEmbeddings(request, requestId, startTime)
+      return await handleEmbeddings(request, requestId, startTime);
     } else if (endpoint === 'chunk') {
-      return await handleChunking(request, requestId, startTime)
+      return await handleChunking(request, requestId, startTime);
     } else {
-      throw error(404, 'Unknown embedding endpoint')
+      throw error(404, 'Unknown embedding endpoint');
     }
   } catch (err) {
-    console.error('Embedding API error:', err)
-    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    console.error('Embedding API error:', err);
+    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};
 async function handleEmbeddings(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
   const startTime = Date.now();
   const body: EmbeddingRequest = await request.json();

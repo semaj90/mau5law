@@ -63,8 +63,8 @@ export function useToast() {
       type,
       title,
       message,
-      duration: duration || 5000
-      createdAt: Date.now()
+      duration: duration || 5000,
+      createdAt: Date.now(),
     }
     toasts = [...toasts, toast];
     // Auto-remove toast after duration
@@ -275,7 +275,7 @@ export function useSidebar(initialOpen = true) {
 }
 // Search state management
 export function useSearch<T>(
-  items: T[]
+  items: T[],
   searchFields: (keyof T)[],
   initialQuery = '';
 ) {

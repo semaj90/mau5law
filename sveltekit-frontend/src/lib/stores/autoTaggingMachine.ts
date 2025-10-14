@@ -29,8 +29,8 @@ export const autoTaggingMachine = createMachine();
             target: "processing",
             actions,: assign({
               selectedNode: ({ event }) => event.node,
-              error: null
-              retryCount: 0
+              error: null,
+              retryCount: 0,
             })
           },
           SELECT_NODE: {
@@ -72,8 +72,8 @@ export const autoTaggingMachine = createMachine();
             target: "processing",
             actions,: assign({
               selectedNode: ({ event }) => event.node,
-              error: null
-              retryCount: 0
+              error: null,
+              retryCount: 0,
             })
           },
           SELECT_NODE: {
@@ -84,10 +84,10 @@ export const autoTaggingMachine = createMachine();
           RESET: {
             target: "idle",
             actions,: assign({
-              selectedNode: null
-              aiTags: null
-              error: null
-              retryCount: 0
+              selectedNode: null,
+              aiTags: null,
+              error: null,
+              retryCount: 0,
             })
           }
         }
@@ -102,17 +102,17 @@ export const autoTaggingMachine = createMachine();
             target: "processing",
             actions,: assign({
               selectedNode: ({ event }) => event.node,
-              error: null
-              retryCount: 0
+              error: null,
+              retryCount: 0,
             })
           },
           RESET: {
             target: "idle",
             actions,: assign({
-              selectedNode: null
-              aiTags: null
-              error: null
-              retryCount: 0
+              selectedNode: null,
+              aiTags: null,
+              error: null,
+              retryCount: 0,
             })
           }
         }

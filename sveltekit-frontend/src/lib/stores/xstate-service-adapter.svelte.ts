@@ -23,7 +23,7 @@ export interface MachineService<TContext = any> {
 /**
  * XState v5 Service Adapter
  * Wraps XState v5 actors and provides Svelte-friendly reactive state
- */;
+ */
 export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
   private actor: Actor<TMachine> | null = null;
   private stateStore = writable<MachineState>();
@@ -106,7 +106,7 @@ export interface UploadMachineContext {
 }
 /**
  * Factory functions for creating typed service adapters
- */;
+ */
 export function createChatService(machine: AnyStateMachine): MachineService<ChatMachineContext> {
   const adapter = new XStateServiceAdapter(machine);
   return adapter.createService();
@@ -130,7 +130,7 @@ export function createMachineService<TContext = any>(
 }
 /**
  * Helper utilities for common XState patterns
- */;
+ */
 export const xstateUtils = {
   // Convert XState v4 style state access to v5
   getStateValue: (state: MachineState) => state.value,
@@ -149,7 +149,7 @@ export const xstateUtils = {
 }
 /**
  * Migration helpers for existing XState v4 code
- */;
+ */
 export const migrationHelpers = {
   // Convert old machine.state access to new pattern
   wrapLegacyMachine: (machine: AnyStateMachine) => {

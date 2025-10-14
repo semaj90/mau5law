@@ -407,7 +407,7 @@ export const ragWorkflowMachine = setup({
     setCachedResponse: assign({
       generatedResponse: ({ event }) => (event as any).response,
       sources: ({ event }) => (event as any).sources,
-      cached: true
+      cached: true,
       confidence: 1.0,
       processingTime: ({ context }) => Date.now() - context.processingTime
     }),
@@ -420,7 +420,7 @@ export const ragWorkflowMachine = setup({
       tokens: ({ event }) => (event as any).tokens,
       sources: ({ context }) =>
         context.searchResults.map(r => r.id || r.title).slice(0, 5),
-      cached: false
+      cached: false,
       processingTime: ({ context }) => Date.now() - context.processingTime
     })
   },
@@ -439,7 +439,7 @@ export const ragWorkflowMachine = setup({
     generatedResponse: '',
     confidence: 0,
     sources: [],
-    cached: false
+    cached: false,
     processingTime: 0,
     tokens: { input: 0, output: 0 }
   },

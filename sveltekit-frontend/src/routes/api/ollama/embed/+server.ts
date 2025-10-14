@@ -49,8 +49,8 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         originalTextLength: text.length,
         truncatedTextLength: truncatedText.length,
-        normalized: normalize
-        timestamp: new Date().toISOString()
+        normalized: normalize,
+        timestamp: new Date().toISOString(),
       }
     })
   } catch (error: any) {

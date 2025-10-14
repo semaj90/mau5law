@@ -2,7 +2,7 @@
 /**
  * SIMD-Optimized JSON Parser for Legal Documents
  * Uses typed arrays and vectorized operations for high-performance parsing
- */;
+ */
 }
 export interface SIMDParseOptions {
   batchSize?: number;
@@ -51,7 +51,7 @@ export class SIMDJSONParser {
   }
   /**
    * Initialize typed array buffers for SIMD-style operations
-   */;
+   */
   private initializeSIMDBuffers(): void {
     // Allocate buffers based on memory limit
     const textBufferSize = Math.floor(this.memoryLimit * 0.6); // 60% for text
@@ -95,7 +95,7 @@ export class SIMDJSONParser {
   }
   /**
    * Parse a single legal document with optimization
-   */;
+   */
   async parseDocument(jsonString: string): Promise<ParsedLegalDocument> {
     const startTime = performance.now();
     try {
@@ -116,7 +116,7 @@ export class SIMDJSONParser {
    * Enhanced document parsing with SIMD-style text processing
    */
   private async enhancedDocumentParsing(
-    rawData: any
+    rawData: any,
     jsonString: string;
   ): Promise<ParsedLegalDocument> {
     const document: ParsedLegalDocument = {
@@ -144,7 +144,7 @@ export class SIMDJSONParser {
   }
   /**
    * SIMD-style text chunking using typed arrays and vectorized operations
-   */;
+   */
   private async simdTextChunking(text: string): Promise<TextChunk[]> {
     const encoder = new TextEncoder();
     const textBytes = encoder.encode(text);
@@ -161,7 +161,7 @@ export class SIMDJSONParser {
    * Vectorized chunking using SIMD-style operations
    */
   private vectorizedChunking(
-    textBytes: Uint8Array
+    textBytes: Uint8Array,
     originalText: string;
   ): TextChunk[] {
     const chunks: TextChunk[] = [];
@@ -186,11 +186,11 @@ export class SIMDJSONParser {
       if (chunkText.trim().length > 0) {
         chunks.push({
           id: `chunk_${chunkIndex}`,
-          text: chunkText
-          startIndex: chunkStart
-          endIndex: chunkEnd
+          text: chunkText,
+          startIndex: chunkStart,
+          endIndex: chunkEnd,
           metadata: {
-            index: chunkIndex
+            index: chunkIndex,
             wordCount: chunkText.split(/\s+/).length,
             charCount: chunkText.length
           }
@@ -203,7 +203,7 @@ export class SIMDJSONParser {
   }
   /**
    * Find sentence boundaries using SIMD-style vectorized search
-   */;
+   */
   private findSentenceBoundariesSIMD(textBytes: Uint8Array): number[] {
     const boundaries: number[] = [];
     const sentenceEnders = [46, 33, 63]; // . ! ?
@@ -225,7 +225,7 @@ export class SIMDJSONParser {
   }
   /**
    * Streaming chunking for large documents
-   */;
+   */
   private async streamingChunking(text: string): Promise<TextChunk[]> {
     const chunks: TextChunk[] = [];
     const chunkSize = 1000;
@@ -237,9 +237,9 @@ export class SIMDJSONParser {
       const chunkText = text.substring(position, end);
       chunks.push({
         id: `stream_chunk_${chunkIndex}`,
-        text: chunkText
-        startIndex: position
-        endIndex: end
+        text: chunkText,
+        startIndex: position,
+        endIndex: end,
         metadata: {
           streamChunk: true;
           index: chunkIndex
@@ -256,7 +256,7 @@ export class SIMDJSONParser {
   }
   /**
    * Process embeddings using SIMD-style operations
-   */;
+   */
   private processSIMDEmbeddings(embeddingData: any): Float32Array {
     if (Array.isArray(embeddingData)) {
       // Convert array to Float32Array for SIMD operations
@@ -272,7 +272,7 @@ export class SIMDJSONParser {
   }
   /**
    * Normalize embedding vector using SIMD-style operations
-   */;
+   */
   private normalizeEmbeddingSIMD(embeddings: Float32Array): Float32Array {
     // Calculate magnitude using vectorized operations
     let magnitudeSquared = 0;
@@ -301,7 +301,7 @@ export class SIMDJSONParser {
   }
   /**
    * Create parallel chunks for SIMD processing
-   */;
+   */
   private createParallelChunks(jsonStrings: string[]): string[][] {
     const chunkSize = Math.ceil(jsonStrings.length / this.parallelChunks);
     const chunks: string[][] = [];
@@ -314,7 +314,7 @@ export class SIMDJSONParser {
    * Process a chunk using SIMD optimizations
    */
   private async processChunkSIMD(
-    chunk: string[]
+    chunk: string[],
     chunkIndex: number;
   ): Promise<ParsedLegalDocument[]> {
     const results: ParsedLegalDocument[] = [];
@@ -328,7 +328,7 @@ export class SIMDJSONParser {
    * Tolerant parsing for malformed JSON
    */
   private tolerantParse(
-    jsonString: string
+    jsonString: string,
     startTime: number;
   ): ParsedLegalDocument {
     console.warn("📝 Using tolerant parsing for malformed JSON");
@@ -347,7 +347,7 @@ export class SIMDJSONParser {
   }
   /**
    * Get parser statistics
-   */;
+   */
   getStats() {
     return {
       bufferSizes: {
@@ -365,7 +365,7 @@ export class SIMDJSONParser {
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose() {
     // Clear typed arrays (garbage collector will handle the rest)
     this.textBuffer.fill(0);
@@ -376,7 +376,7 @@ export class SIMDJSONParser {
 // Export singleton instance for easy use
 export const simdParser = new SIMDJSONParser({
   batchSize: 1024,
-  enableSIMD: true
+  enableSIMD: true,
   memoryLimit: 512 * 1024 * 1024, // 512MB
   parallelChunks: 4,
   validateStructure: true

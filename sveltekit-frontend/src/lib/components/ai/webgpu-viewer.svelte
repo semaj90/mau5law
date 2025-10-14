@@ -7,15 +7,15 @@ https://svelte.dev/e/js_parse_error -->
   import { Play, Pause, RotateCw, ZoomIn, ZoomOut, Layers } from 'lucide-svelte';
   // Props
   let {
-  embeddings = [],
-  labels = [],
-  docId = null,
-  autoRotate = true
+    embeddings = [],
+    labels = [],
+    docId = null,
+    autoRotate = true,
   }: {
-  embeddings?: number[][];
-  labels?: string[];
-  docId?: string | null;
-  autoRotate?: boolean;
+    embeddings?: number[][];
+    labels?: string[];
+    docId?: string | null;
+    autoRotate?: boolean;
   } = $props();
   // State
   let canvas = $state<HTMLCanvasElement | null>(null);
@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   let uniformBuffer = $state<GPUBuffer | null>(null);
   let bindGroup = $state<GPUBindGroup | null>(null);
   // WebSocket for real-time updates
-  let ws = $state<WebSocket | null >(null);
+  let ws = $state<WebSocket | null>(null);
   // Vertex shader (fixed WGSL)
   const vertexShaderCode = `
   struct Uniforms {
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     device = await adapter.requestDevice();
     if (!canvas || !device) return;
     // getContext may not be strongly typed in the environment; cast safely
-    context = (canvas.getContext('webgpu') as unknown) as GPUCanvasContext;
+    context = canvas.getContext('webgpu') as unknown as GPUCanvasContext;
     if (!context) {
       console.error('Failed to get WebGPU context');
       return;
@@ -145,9 +145,11 @@ https://svelte.dev/e/js_parse_error -->
       fragment: {
         module: fragmentShader,
         entryPoint: 'main',
-        targets: [{
-          format: presentationFormat,
-        }],
+        targets: [
+          {
+            format: presentationFormat,
+          },
+        ],
       },
       primitive: {
         topology: 'triangle-list',
@@ -169,7 +171,11 @@ https://svelte.dev/e/js_parse_error -->
     // Create embedding buffer
     const embeddingData = new Float32Array(points3D.flat());
     if (embedBuffer) {
-      try { embedBuffer.destroy(); } catch (e) { /* ignore */ }
+      try {
+        embedBuffer.destroy();
+      } catch (e) {
+        /* ignore */
+      }
       embedBuffer = null;
     }
     embedBuffer = device.createBuffer({
@@ -239,12 +245,14 @@ https://svelte.dev/e/js_parse_error -->
     const commandEncoder = device.createCommandEncoder();
     const textureView = context.getCurrentTexture().createView();
     const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{
-        view: textureView,
-        clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
-        loadOp: 'clear',
-        storeOp: 'store',
-      }],
+      colorAttachments: [
+        {
+          view: textureView,
+          clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
+          loadOp: 'clear',
+          storeOp: 'store',
+        },
+      ],
     });
     // Update uniforms
     const uniformData = new ArrayBuffer(72);

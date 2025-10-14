@@ -100,7 +100,7 @@ export class WebGPUPolyfill {
         queue: this.queue!,
         adapter: this.adapter,
         features: Array.from((this.device as any).features || []),
-        limits: Object.fromEntries(
+        limits: Object.fromEntries(,
           Object.entries((this.device as any).limits || {}).map(([key, value]) => [key, Number(value)])
         ),
         isAvailable: true,

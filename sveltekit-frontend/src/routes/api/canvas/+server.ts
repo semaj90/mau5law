@@ -49,10 +49,10 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Failed to save canvas state',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get('caseId');
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to load canvas state',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

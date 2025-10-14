@@ -8,11 +8,9 @@ export type {
   JobType,
   JobPriority,
   RetryConfig,
-  OptimizedRabbitMQOrchestrator
+  OptimizedRabbitMQOrchestrator,
 } from './optimized-rabbitmq-orchestrator.js';
-export {
-  optimizedOrchestrator
-} from './optimized-rabbitmq-orchestrator.js';
+export { optimizedOrchestrator } from './optimized-rabbitmq-orchestrator.js';
 // Sora Integration Exports
 export interface SoraMoogleIntegration {
   initialize(): Promise<void>;
@@ -35,26 +33,29 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
     console.log('[SoraMoogle] Processing document:', doc.id);
     return {
       id: doc.id,
-      processed: true
+      processed: true,
       analysis: 'Mock analysis result',
-      confidence: 0.85
-    }
+      confidence: 0.85,
+    };
   },
   async trainModel(data: any[]) {
     console.log('[SoraMoogle] Training with', data.length, 'samples');
   },
   async predict(input: any) {
-    return { prediction: 'mock_result', confidence: 0.9 }
-  }
-}
+    return { prediction: 'mock_result', confidence: 0.9 };
+  },
+};
 export const soraGraphTraversal: SoraGraphTraversal = {
   async buildUserJourneyGraphs(data: any, options?: any, config?: any) {
     console.log('[SoraGraph] Building user journey graphs');
     return {
       nodes: ['start', 'process', 'end'],
-      edges: [['start', 'process'], ['process', 'end']],
-      metadata: options || {}
-    }
+      edges: [
+        ['start', 'process'],
+        ['process', 'end'],
+      ],
+      metadata: options || {},
+    };
   },
   async traverse(startNode: string, endNode: string) {
     console.log(`[SoraGraph] Traversing from ${startNode} to ${endNode}`);
@@ -65,9 +66,9 @@ export const soraGraphTraversal: SoraGraphTraversal = {
   },
   async getNodeNeighbors(nodeId: string) {
     return [`neighbor_${nodeId}_1`, `neighbor_${nodeId}_2`];
-  }
-}
+  },
+};
 export default {
   soraMoogleIntegration,
-  soraGraphTraversal
-}
+  soraGraphTraversal,
+};

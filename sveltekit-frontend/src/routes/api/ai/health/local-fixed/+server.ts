@@ -83,7 +83,7 @@ export const GET: RequestHandler = async () => {
             }
           } catch (error: any) {
             return {
-              available: false
+              available: false,
               error:
                 error instanceof Error ? error.message: "Service check failed"
             }
@@ -101,8 +101,8 @@ export const GET: RequestHandler = async () => {
       executionTime,
       services: {
         ollama: {
-          service: ollamaServiceCheck
-          direct: ollamaDirectCheck
+          service: ollamaServiceCheck,
+          direct: ollamaDirectCheck,
         },
         llamaCpp: llamaCppCheck
       },
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
     console.error("Local AI health check failed:", error)
     return json({
         success: false,
-        available: false
+        available: false,
         error: error instanceof Error ? error.message: "Health check failed",
         services: {
           ollama: { available: false },
@@ -156,8 +156,8 @@ export const POST: RequestHandler = async ({ request }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             model: "gemma3-legal",
-            prompt: prompt
-            stream: false
+            prompt: prompt,
+            stream: false,
             options: {
               temperature: 0.7,
               num_predict: 200
@@ -183,8 +183,8 @@ export const POST: RequestHandler = async ({ request }) => {
               headers,: { "Content-Type,": "application/json" },
               body: JSON.stringify({
                 model: "gemma2:2b",
-                prompt: prompt
-                stream: false
+                prompt: prompt,
+                stream: false,
                 options: {
                   temperature: 0.7,
                   num_predict: 200

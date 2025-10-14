@@ -243,8 +243,8 @@ class MultidimensionalRoutingMatrix {
     averageLatencyByTool: Record<string, number>;
   } {
     const totalRoutes = Array.from(this.matrix.values()).reduce((sum, routes) => sum + routes.length, 0);
-    const routeDistribution: Record<string, number> = {}
-    const latencyByTool: Record<string, number[]> = {}
+    const routeDistribution: Record<string, number> = {};
+    const latencyByTool: Record<string, number[]> = {};
     // Analyze routing history
     for (const decision of this.routingHistory) {
       const tool = decision.route.tool;
@@ -255,7 +255,7 @@ class MultidimensionalRoutingMatrix {
       latencyByTool[tool].push(decision.route.latency);
     }
     // Calculate average latencies
-    const averageLatencyByTool: Record<string, number> = {}
+    const averageLatencyByTool: Record<string, number> = {};
     for (const [tool, latencies] of Object.entries(latencyByTool)) {
       averageLatencyByTool[tool] = latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length;
     }
@@ -265,7 +265,7 @@ class MultidimensionalRoutingMatrix {
       efficiencyScore: this.efficiencyScore,
       routeDistribution,
       averageLatencyByTool,
-    }
+    };
   }
   /**
    * Get all available routes for a specific task
@@ -306,10 +306,10 @@ class MultidimensionalRoutingMatrix {
       availableRoutes,
       totalRoutes,
       issues,
-    }
+    };
   }
 }
 // Export a singleton instance for use across the server
 export const multidimensionalRoutingMatrix = new MultidimensionalRoutingMatrix();
 // Also export the class type if needed for dependency injection
-export { MultidimensionalRoutingMatrix }
+export { MultidimensionalRoutingMatrix };

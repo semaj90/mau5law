@@ -3,21 +3,21 @@ import createClient from '$lib/shims/redis-shim';
 
 // Lightweight shape covering methods we use from the shim/ioredis surface
 type RedisClientLike = {
-	// connection & lifecycle
-	connect?: () => Promise<void> | void;
-	disconnect?: () => Promise<void> | void;
-	on?: (event: string, cb: (...args: any[]) => void) => void;
-	duplicate?: () => RedisClientLike;
+  // connection & lifecycle
+  connect?: () => Promise<void> | void;
+  disconnect?: () => Promise<void> | void;
+  on?: (event: string, cb: (...args: any[]) => void) => void;
+  duplicate?: () => RedisClientLike;
 
-	// pub/sub
-	publish?: (channel: string, message: string) => Promise<number> | void;
+  // pub/sub
+  publish?: (channel: string, message: string) => Promise<number> | void;
 
-	// cache commands (various shim/name permutations)
-	setEx?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
-	setex?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
-	set?: (key: string, value: string, opts?: any) => Promise<'OK' | null> | void;
-	get?: (key: string) => Promise<string | null> | void;
-	del?: (key: string) => Promise<number> | void;
+  // cache commands (various shim/name permutations)
+  setEx?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
+  setex?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
+  set?: (key: string, value: string, opts?: any) => Promise<'OK' | null> | void;
+  get?: (key: string) => Promise<string | null> | void;
+  del?: (key: string) => Promise<number> | void;
 };
 
 export interface RedisConfig {

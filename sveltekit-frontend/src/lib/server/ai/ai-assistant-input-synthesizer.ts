@@ -85,11 +85,11 @@ export interface RetrievalOptions {
 /**
  * Internal retrieval result structure used before further processing/ranking.
  */ interface RetrievalResult {
-   sources: Array<any>;
-   summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
-   totalSources: number;
-   searchStrategies: string[];
- }
+  sources: Array<any>;
+  summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
+  totalSources: number;
+  searchStrategies: string[];
+}
 import { generateEmbedding } from './embeddings-simple.js';
 // Input types for the synthesizer
 export interface SynthesizerInput {

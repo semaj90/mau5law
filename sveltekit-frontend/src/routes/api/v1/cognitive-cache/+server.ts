@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Cognitive Cache API Endpoint
  * Unified interface for Reinforcement Learning Cache + GPU Shader Cache
  * Provides intelligent caching with ML-driven decision making
  */
-import * as cognitiveIntegration from '$lib/services/cognitive-cache-integration'
-import { dev } from '$app/environment'
+import * as cognitiveIntegration from '$lib/services/cognitive-cache-integration';
+import { dev } from '$app/environment';
 
 // --- Added types to avoid `any` casts ---
 type CacheType = 'legal-data' | 'shader' | 'replay' | string;

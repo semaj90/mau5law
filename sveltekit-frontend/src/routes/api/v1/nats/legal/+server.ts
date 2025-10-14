@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
@@ -370,88 +370,91 @@ function validateSystemData(data: SystemEventData): void {
 }
 // Schema Functions
 function getCaseEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			case_id: { type: 'string' },
-			case_number: { type: 'string' },
-			title: { type: 'string' },
-			status: { type: 'string', enum: ['open', 'in_progress', 'closed', 'archived'] },
-			priority: { type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
-			assigned_to: { type: 'array', items: { type: 'string' } },
-			created_by: { type: 'string' },
-			metadata: { type: 'object' }
-		},
-		required: ['case_id', 'case_number', 'title', 'status']
-	}
+  return {
+    type: 'object',
+    properties: {
+      case_id: { type: 'string' },
+      case_number: { type: 'string' },
+      title: { type: 'string' },
+      status: { type: 'string', enum: ['open', 'in_progress', 'closed', 'archived'] },
+      priority: { type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
+      assigned_to: { type: 'array', items: { type: 'string' } },
+      created_by: { type: 'string' },
+      metadata: { type: 'object' },
+    },
+    required: ['case_id', 'case_number', 'title', 'status'],
+  };
 }
 function getDocumentEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			document_id: { type: 'string' },
-			case_id: { type: 'string' },
-			filename: { type: 'string' },
-			file_type: { type: 'string' },
-			file_size: { type: 'number' },
-			processing_status: { type: 'string', enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'] },
-			checksum: { type: 'string' },
-			metadata: { type: 'object' }
-		},
-		required: ['document_id', 'filename', 'file_type', 'processing_status']
-	}
+  return {
+    type: 'object',
+    properties: {
+      document_id: { type: 'string' },
+      case_id: { type: 'string' },
+      filename: { type: 'string' },
+      file_type: { type: 'string' },
+      file_size: { type: 'number' },
+      processing_status: { type: 'string', enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'] },
+      checksum: { type: 'string' },
+      metadata: { type: 'object' },
+    },
+    required: ['document_id', 'filename', 'file_type', 'processing_status'],
+  };
 }
 function getAIAnalysisEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			analysis_id: { type: 'string' },
-			analysis_type: { type: 'string', enum: ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment'] },
-			model_used: { type: 'string' },
-			confidence_score: { type: 'number', minimum: 0, maximum: 1 },
-			processing_time_ms: { type: 'number' },
-			results: { type: 'object' }
-		},
-		required: ['analysis_id', 'analysis_type', 'model_used']
-	}
+  return {
+    type: 'object',
+    properties: {
+      analysis_id: { type: 'string' },
+      analysis_type: {
+        type: 'string',
+        enum: ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment'],
+      },
+      model_used: { type: 'string' },
+      confidence_score: { type: 'number', minimum: 0, maximum: 1 },
+      processing_time_ms: { type: 'number' },
+      results: { type: 'object' },
+    },
+    required: ['analysis_id', 'analysis_type', 'model_used'],
+  };
 }
 function getChatEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			message_id: { type: 'string' },
-			session_id: { type: 'string' },
-			user_id: { type: 'string' },
-			message_type: { type: 'string', enum: ['user', 'assistant', 'system'] },
-			content: { type: 'string' },
-			is_streaming: { type: 'boolean' }
-		},
-		required: ['message_id', 'session_id', 'user_id', 'content']
-	}
+  return {
+    type: 'object',
+    properties: {
+      message_id: { type: 'string' },
+      session_id: { type: 'string' },
+      user_id: { type: 'string' },
+      message_type: { type: 'string', enum: ['user', 'assistant', 'system'] },
+      content: { type: 'string' },
+      is_streaming: { type: 'boolean' },
+    },
+    required: ['message_id', 'session_id', 'user_id', 'content'],
+  };
 }
 function getSearchEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			query_id: { type: 'string' },
-			user_id: { type: 'string' },
-			query_text: { type: 'string' },
-			search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
-			filters: { type: 'object' },
-			results: { type: 'array' }
-		},
-		required: ['query_id', 'user_id', 'query_text', 'search_type']
-	}
+  return {
+    type: 'object',
+    properties: {
+      query_id: { type: 'string' },
+      user_id: { type: 'string' },
+      query_text: { type: 'string' },
+      search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
+      filters: { type: 'object' },
+      results: { type: 'array' },
+    },
+    required: ['query_id', 'user_id', 'query_text', 'search_type'],
+  };
 }
 function getSystemEventSchema() {
-	return {
-		type: 'object',
-		properties: {
-			component: { type: 'string' },
-			status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
-			metrics: { type: 'object' },
-			uptime_seconds: { type: 'number' }
-		},
-		required: ['component', 'status']
-	}
+  return {
+    type: 'object',
+    properties: {
+      component: { type: 'string' },
+      status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
+      metrics: { type: 'object' },
+      uptime_seconds: { type: 'number' },
+    },
+    required: ['component', 'status'],
+  };
 }

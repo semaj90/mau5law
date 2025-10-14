@@ -32,7 +32,7 @@ export async function validateSessionToken(
       const user = await getUserById(payload.userId);
       if (user) {
         const session: Session = {
-          id: token
+          id: token,
           userId: user.id,
           expiresAt: new Date(payload.exp * 1000)
         }
@@ -55,12 +55,12 @@ export function invalidateSession(sessionId: string): void {
   sessions.delete(sessionId);
 }
 export function setSessionTokenCookie(_event: RequestEvent
-  token: string
-  expiresAt: Date
+  token: string,
+  expiresAt: Date,
 ): void {
   event.cookies.set("session", token, {
     path: "/",
-    expires: expiresAt
+    expires: expiresAt,
     httpOnly: true;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"

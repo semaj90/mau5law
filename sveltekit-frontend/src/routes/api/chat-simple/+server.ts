@@ -23,14 +23,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: lastUserMessage.content,
-        stream: false
+        stream: false,
       }),
-      signal: AbortSignal.timeout(60000)
+      signal: AbortSignal.timeout(60000),
     });
 
     if (!response.ok) {
@@ -46,14 +46,17 @@ export const POST: RequestHandler = async ({ request }) => {
         model: 'gemma3-legal:latest',
         eval_count: result.eval_count,
         eval_duration: result.eval_duration,
-        tokensPerSecond: result.eval_count ? Math.round(result.eval_count / (result.eval_duration / 1e9)) : 0
-      }
+        tokensPerSecond: result.eval_count ? Math.round(result.eval_count / (result.eval_duration / 1e9)) : 0,
+      },
     });
   } catch (error: any) {
     console.error('❌ Chat error:', error);
-    return json({
-      error: 'Failed to process chat request',
-      details: error.message
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to process chat request',
+        details: error.message,
+      },
+      { status: 500 }
+    );
   }
 };

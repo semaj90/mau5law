@@ -40,7 +40,8 @@
   let sidebarOpen = $state(false);
   let currentPath = $state('');
   // Navigation structure
-  const navItems: NavItem[] = [ // Modified: Applied NavItem interface
+  const navItems: NavItem[] = [
+    // Modified: Applied NavItem interface
     {
       path: '/yorha',
       label: 'Command Center',
@@ -263,7 +264,9 @@
     color: #f59e0b;
     background: transparent;
     border: 1px solid rgba(245, 158, 11, 0.3);
-    transition: color .15s ease, border-color .15s ease;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
     cursor: pointer;
   }
   :global(.yorha-menu-toggle:hover) {
@@ -320,7 +323,7 @@
     gap: 0.5rem;
     border-radius: 3px;
     cursor: pointer;
-    transition: background-color .15s ease;
+    transition: background-color 0.15s ease;
   }
   :global(.yorha-quick-btn:hover) {
     background: #fbbf24;
@@ -390,7 +393,9 @@
     text-decoration: none;
     border: none;
     cursor: pointer;
-    transition: background-color .15s ease, color .15s ease;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
   }
   :global(.yorha-nav-link:hover) {
     background: rgba(245, 158, 11, 0.1);
@@ -403,7 +408,7 @@
   }
   :global(.yorha-nav-arrow) {
     opacity: 0.4;
-    transition: opacity .15s ease;
+    transition: opacity 0.15s ease;
   }
   :global(.yorha-nav-link:hover .yorha-nav-arrow) {
     opacity: 1;

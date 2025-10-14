@@ -18,32 +18,32 @@ export interface SessionState {
     isValid: boolean;
     warningCount: number;
     lastCheck: Date | null;
-  }
+  };
   analytics: {
     loginTime: Date | null;
     activityCount: number;
     featuresUsed: string[];
-  }
+  };
 }
 // Create reactive session state using $state rune
 const sessionState = $state<SessionState>({
-  isActive: false
-  user: null
-  sessionId: null
-  expiresAt: null
+  isActive: false,
+  user: null,
+  sessionId: null,
+  expiresAt: null,
   securityLevel: 'standard',
   permissions: [],
-  lastActivity: null
+  lastActivity: null,
   health: {
-    isValid: false
+    isValid: false,
     warningCount: 0,
-    lastCheck: null
+    lastCheck: null,
   },
   analytics: {
-    loginTime: null
+    loginTime: null,
     activityCount: 0,
-    featuresUsed: []
-  }
+    featuresUsed: [],
+  },
 });
 // Create XState actor for session management
 const sessionActor = createActor(sessionMachine);
@@ -64,7 +64,7 @@ export class SessionManager {
     // Start the XState actor
     this.actor.start();
     // Subscribe to state changes
-    this.actor.subscribe((state) => {
+    this.actor.subscribe(state => {
       this.updateSessionState(state);
     });
     // Set up activity tracking
@@ -91,7 +91,7 @@ export class SessionManager {
       this.actor.send({
         type: 'AUTHENTICATE',
         user,
-        sessionId
+        sessionId,
       });
       // Start periodic health checks
       this.startHealthChecks();
@@ -143,8 +143,7 @@ export class SessionManager {
     if (!sessionState.isActive || !sessionState.permissions) {
       return false;
     }
-    return sessionState.permissions.includes('all') ||
-           sessionState.permissions.includes(permission);
+    return sessionState.permissions.includes('all') || sessionState.permissions.includes(permission);
   }
   // Require specific permission (throws if not authorized)
   requirePermission(permission: string) {
@@ -168,7 +167,7 @@ export class SessionManager {
     this.actor.send({
       type: 'ACTIVITY',
       route,
-      action
+      action,
     });
     // Track feature usage
     if (featureUsed && !sessionState.analytics.featuresUsed.includes(featureUsed)) {
@@ -188,11 +187,10 @@ export class SessionManager {
   getAnalytics() {
     return {
       ...sessionState.analytics,
-      sessionDuration: sessionState.analytics.loginTime ?
-        Date.now() - sessionState.analytics.loginTime.getTime() : 0,
+      sessionDuration: sessionState.analytics.loginTime ? Date.now() - sessionState.analytics.loginTime.getTime() : 0,
       isHealthy: sessionState.health.isValid,
-      warningCount: sessionState.health.warningCount
-    }
+      warningCount: sessionState.health.warningCount,
+    };
   }
   // Check for existing session on initialization
   private async checkExistingSession() {
@@ -212,13 +210,13 @@ export class SessionManager {
     // Track page navigation
     const trackNavigation = () => {
       this.recordActivity(window.location.pathname, 'navigation');
-    }
+    };
     // Track user interactions
     const trackInteraction = (_event: Event) => {
       // removed unused target assignment
       const action = `${event.type}:${target.tagName.toLowerCase()}`;
       this.recordActivity(window.location.pathname, action);
-    }
+    };
     // Set up event listeners
     window.addEventListener('popstate', trackNavigation);
     document.addEventListener('click', trackInteraction);
@@ -240,11 +238,14 @@ export class SessionManager {
   // Start periodic health checks
   private startHealthChecks() {
     // Health check every 5 minutes
-    setInterval(() => {
-      if (sessionState.isActive) {
-        this.actor.send({ type: 'HEALTH_CHECK' });
-      }
-    }, 5 * 60 * 1000);
+    setInterval(
+      () => {
+        if (sessionState.isActive) {
+          this.actor.send({ type: 'HEALTH_CHECK' });
+        }
+      },
+      5 * 60 * 1000
+    );
   }
   // Stop health checks
   private stopHealthChecks() {
@@ -281,7 +282,7 @@ export const hasPermission = (permission: string) => sessionManager.hasPermissio
 export const requirePermission = (permission: string) => sessionManager.requirePermission(permission);
 export const recordActivity = (route: string, action: string, feature?: string) => {
   sessionManager.recordActivity(route, action, feature);
-}
+};
 // Initialize session manager when module loads
 if (browser) {
   // Auto-cleanup on page unload

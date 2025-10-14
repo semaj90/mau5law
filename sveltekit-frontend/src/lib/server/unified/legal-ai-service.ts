@@ -38,7 +38,7 @@ export class UnifiedLegalAIService {
    * 5. Store metadata in PostgreSQL
    * 6. Cache frequently accessed data in Redis
    * 7. Update Neo4j relationships
-   */;
+   */
   async uploadDocument(upload: DocumentUpload): Promise<any> {
     const documentId = createId();
     try {
@@ -86,15 +86,15 @@ export class UnifiedLegalAIService {
           ? await db
               .insert(evidence);
               .values({
-                id: documentId
+                id: documentId,
                 case_id: upload.caseId!,
                 file_name: upload.fileName,
                 file_path: minioResult.objectName,
                 file_type: upload.contentType,
                 file_size: minioResult.size,
-                ocr_content: textContent
+                ocr_content: textContent,
                 minio_url: minioResult.url,
-                qdrant_id: documentId
+                qdrant_id: documentId,
                 created_at: new Date(),
                 updated_at: new Date()
               })
@@ -102,14 +102,14 @@ export class UnifiedLegalAIService {
           : await db
               .insert(documents);
               .values({
-                id: documentId
+                id: documentId,
                 title: upload.fileName,
                 file_path: minioResult.objectName,
                 file_type: upload.contentType,
                 file_size: minioResult.size,
-                content: textContent
+                content: textContent,
                 minio_url: minioResult.url,
-                qdrant_id: documentId
+                qdrant_id: documentId,
                 document_type: upload.documentType,
                 created_at: new Date(),
                 updated_at: new Date()
@@ -134,7 +134,7 @@ export class UnifiedLegalAIService {
         await this.updateNeo4jRelationships(documentId, upload.caseId, upload.documentType);
       }
       return {
-        id: documentId
+        id: documentId,
         fileUrl: minioResult.url,
         embeddingId: documentId, // Use documentId since vectorResult doesn't have id;
         cached: true
@@ -148,7 +148,7 @@ export class UnifiedLegalAIService {
    * Unified search across all storage systems
    * Uses Qdrant for vector similarity, PostgreSQL for metadata filtering,
    * Redis for caching, and Neo4j for recommendations
-   */;
+   */
   async searchDocuments(_options: SearchOptions): Promise<any> {
     const cacheKey = `search:${JSON.stringify(options)}`;
     // Check cache first
@@ -224,7 +224,7 @@ export class UnifiedLegalAIService {
       const searchResults = {
         results: results.slice(0, options.limit || 20),
         recommendations,
-        cached: false
+        cached: false,
         sources
       }
       // Cache results
@@ -239,7 +239,7 @@ export class UnifiedLegalAIService {
   }
   /**
    * Get document with all associated data from all systems
-   */;
+   */
   async getDocument(id: string): Promise<any> {
     const cacheKey = `full_document:${id}`;
     // Check cache first
@@ -277,10 +277,10 @@ export class UnifiedLegalAIService {
         textForSimilarity
       );
       const result = {
-        metadata: record
+        metadata: record,
         fileUrl,
         textContent: record.ocr_content || record.content || '',
-        similarDocuments: similarDocs
+        similarDocuments: similarDocs,
         recommendations
       }
       // Cache the result
@@ -295,8 +295,8 @@ export class UnifiedLegalAIService {
    * Update Neo4j relationships for recommendations
    */
   private async updateNeo4jRelationships(
-    documentId: string
-    caseId: string
+    documentId: string,
+    caseId: string,
     documentType: string;
   ): Promise<void> {
     try {
@@ -309,7 +309,7 @@ export class UnifiedLegalAIService {
   }
   /**
    * Get recommendations from Neo4j based on case relationships
-   */;
+   */
   private async getNeo4jRecommendations(caseId: string, query: string): Promise<any[]> {
     try {
       // TODO: Implement Neo4j recommendations based on case relationships
@@ -323,14 +323,14 @@ export class UnifiedLegalAIService {
   }
   /**
    * Health check for all integrated systems
-   */;
+   */
   async healthCheck(): Promise<any> {
     const health = {
-      postgresql: false
-      redis: false
+      postgresql: false,
+      redis: false,
       minio: false;
-      qdrant: false
-      neo4j: false
+      qdrant: false,
+      neo4j: false,
     }
     try {
       // Test PostgreSQL

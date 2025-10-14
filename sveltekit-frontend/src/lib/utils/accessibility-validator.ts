@@ -22,36 +22,34 @@ export class AccessibilityValidator {
       name: 'button-accessible-name',
       description: 'Buttons must have accessible names',
       severity: 'error',
-      validate: (element) => {
+      validate: element => {
         if (element.tagName.toLowerCase() !== 'button') return true;
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         const hasTextContent = element.textContent?.trim().length > 0;
         return hasAriaLabel || hasAriaLabelledBy || hasTextContent;
       },
-      fix: 'Add aria-label, aria-labelledby, or text content to the button'
+      fix: 'Add aria-label, aria-labelledby, or text content to the button',
     },
     // Focus Management Rules
     {
       name: 'focus-visible-indicator',
       description: 'Interactive elements must have visible focus indicators',
       severity: 'error',
-      validate: (element) => {
-        const isInteractive = ['button', 'a', 'input', 'select', 'textarea'].includes(
-          element.tagName.toLowerCase()
-        );
+      validate: element => {
+        const isInteractive = ['button', 'a', 'input', 'select', 'textarea'].includes(element.tagName.toLowerCase());
         if (!isInteractive) return true;
         const computedStyle = window.getComputedStyle(element, ':focus-visible');
         return computedStyle.outline !== 'none' || computedStyle.boxShadow !== 'none';
       },
-      fix: 'Add focus-visible styles with outline or box-shadow'
+      fix: 'Add focus-visible styles with outline or box-shadow',
     },
     // Color Contrast Rules
     {
       name: 'color-contrast',
       description: 'Text must have sufficient color contrast',
       severity: 'warning',
-      validate: (element) => {
+      validate: element => {
         // This is a simplified check - in production, use a proper contrast calculator
         const style = window.getComputedStyle(element);
         const backgroundColor = style.backgroundColor;
@@ -62,14 +60,14 @@ export class AccessibilityValidator {
         const isLegalTheme = style.getPropertyValue('--legal-ai-primary');
         return isLegalTheme ? true : backgroundColor !== color;
       },
-      fix: 'Ensure color contrast ratio is at least 4.5:1 for normal text'
+      fix: 'Ensure color contrast ratio is at least 4.5:1 for normal text',
     },
     // Dialog Accessibility Rules
     {
       name: 'dialog-aria-attributes',
       description: 'Dialogs must have proper ARIA attributes',
       severity: 'error',
-      validate: (element) => {
+      validate: element => {
         if (!element.hasAttribute('role') || element.getAttribute('role') !== 'dialog') {
           return true;
         }
@@ -78,14 +76,14 @@ export class AccessibilityValidator {
         const hasAriaDescribedBy = element.hasAttribute('aria-describedby');
         return (hasAriaLabel || hasAriaLabelledBy) && hasAriaDescribedBy;
       },
-      fix: 'Add aria-label/aria-labelledby and aria-describedby to dialogs'
+      fix: 'Add aria-label/aria-labelledby and aria-describedby to dialogs',
     },
     // Form Accessibility Rules
     {
       name: 'form-labels',
       description: 'Form inputs must have associated labels',
       severity: 'error',
-      validate: (element) => {
+      validate: element => {
         if (!['input', 'textarea', 'select'].includes(element.tagName.toLowerCase())) {
           return true;
         }
@@ -95,31 +93,30 @@ export class AccessibilityValidator {
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         return hasLabel || hasAriaLabel || hasAriaLabelledBy;
       },
-      fix: 'Associate form inputs with labels using for/id or aria-label'
+      fix: 'Associate form inputs with labels using for/id or aria-label',
     },
     // Legal AI Specific Rules
     {
       name: 'legal-ai-theme-compliance',
       description: 'Components should use legal AI design tokens',
       severity: 'info',
-      validate: (element) => {
+      validate: element => {
         const classList = Array.from(element.classList);
-        const hasLegalClasses = classList.some(cls =>
-          cls.startsWith('legal-') ||
-          cls.includes('legal-ai') ||
-          cls.includes('bg-legal-') ||
-          cls.includes('text-legal-')
+        const hasLegalClasses = classList.some(
+          cls =>
+            cls.startsWith('legal-') ||
+            cls.includes('legal-ai') ||
+            cls.includes('bg-legal-') ||
+            cls.includes('text-legal-')
         );
         // Only check for components with our enhanced classes
-        const isEnhancedComponent = classList.some(cls =>
-          cls.includes('legal-ai-btn') ||
-          cls.includes('legal-ai-card') ||
-          cls.includes('legal-ai-dialog')
+        const isEnhancedComponent = classList.some(
+          cls => cls.includes('legal-ai-btn') || cls.includes('legal-ai-card') || cls.includes('legal-ai-dialog')
         );
         return !isEnhancedComponent || hasLegalClasses;
       },
-      fix: 'Use legal AI design tokens and CSS variables'
-    }
+      fix: 'Use legal AI design tokens and CSS variables',
+    },
   ];
   /**
    * Validate accessibility for a single element
@@ -129,9 +126,9 @@ export class AccessibilityValidator {
       element,
       rule,
       passed: rule.validate(element),
-      message: rule.passed ?
-        `✅ ${rule.name}: Passed` :
-        `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : ''}`
+      message: rule.passed
+        ? `✅ ${rule.name}: Passed`
+        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : ''}`,
     }));
   }
   /**
@@ -167,7 +164,7 @@ export class AccessibilityValidator {
       errors: number;
       warnings: number;
       info: number;
-    }
+    };
     issues: AccessibilityReport[];
   } {
     const issues = this.validatePage();
@@ -176,19 +173,19 @@ export class AccessibilityValidator {
         total: issues.length,
         errors: issues.filter(i => i.rule.severity === 'error').length,
         warnings: issues.filter(i => i.rule.severity === 'warning').length,
-        info: issues.filter(i => i.rule.severity === 'info').length
+        info: issues.filter(i => i.rule.severity === 'info').length,
       },
-      issues
-    }
+      issues,
+    };
   }
   /**
    * Live accessibility monitoring
    */
   startLiveValidation(): void {
     if (typeof window === 'undefined') return;
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const issues = this.validateElement(node as Element);
             const errors = issues.filter(i => !i.passed && i.rule.severity === 'error');
@@ -202,8 +199,8 @@ export class AccessibilityValidator {
       });
     });
     observer.observe(document.body, {
-      childList: true
-      subtree: true
+      childList: true,
+      subtree: true,
     });
   }
 }
@@ -217,7 +214,7 @@ export class KeyboardNavigationHelper {
     'textarea:not([disabled])',
     'input:not([disabled])',
     'select:not([disabled])',
-    '[tabindex]:not([tabindex="-1"])'
+    '[tabindex]:not([tabindex="-1"])',
   ].join(',');
   /**
    * Get all focusable elements in container
@@ -247,13 +244,13 @@ export class KeyboardNavigationHelper {
           firstElement.focus();
         }
       }
-    }
+    };
     container.addEventListener('keydown', handleKeyDown);
     firstElement?.focus();
     // Return cleanup function
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
-    }
+    };
   }
   /**
    * Handle escape key for closing modals
@@ -263,11 +260,11 @@ export class KeyboardNavigationHelper {
       if (e.key === 'Escape') {
         callback();
       }
-    }
+    };
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    }
+    };
   }
 }
 // Export singleton instances

@@ -19,4 +19,4 @@ export { Badge } from '../badge/index.js';
 
 // Aliases for future migration (MeltUI → BitsUI)
 // These can point to stubs or current replacements
-export { default as Tabs } from '../tabs/Tabs.svelte'; 
+export { default as Tabs } from '../tabs/Tabs.svelte';

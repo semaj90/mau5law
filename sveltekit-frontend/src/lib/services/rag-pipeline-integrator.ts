@@ -52,20 +52,20 @@ export class RAGPipelineIntegrator {
   private resultCache: Map<string, RAGPipelineResult> = new Map();
   constructor(config: Partial<RAGPipelineConfig> = {}) {
     this.config = {
-      enableSentenceSplitting: true
-      enableMMRSummarization: true
-      enableCrossEncoderReranking: true
+      enableSentenceSplitting: true,
+      enableMMRSummarization: true,
+      enableCrossEncoderReranking: true,
       maxDocuments: 20,
       maxSummaryLength: 500,
       rerankThreshold: 0.5,
-      cacheResults: true
-      enableStreaming: true
+      cacheResults: true,
+      enableStreaming: true,
       ...config
     }
   }
   async processRAGQuery(
     query: string;
-    documents: LegalDocument[]
+    documents: LegalDocument[],
     request?: Partial<SummaryRequest>;
   ): Promise<RAGPipelineResult> {
     const startTime = Date.now();
@@ -88,7 +88,7 @@ export class RAGPipelineIntegrator {
       const filteredDocuments = processedDocuments.slice(0, this.config.maxDocuments);
       // Convert to SearchResult format for reranking
       const searchResults: SearchResult[] = filteredDocuments.map((doc, index) => ({
-        document: doc
+        document: doc,
         score: this.calculateInitialScore(doc, query),
         rank: index + 1,
         id: doc.id,
@@ -125,7 +125,7 @@ export class RAGPipelineIntegrator {
       }
       const result: RAGPipelineResult = {
         query,
-        documents: filteredDocuments
+        documents: filteredDocuments,
         rerankedResults,
         summary,
         metadata: {
@@ -152,7 +152,7 @@ export class RAGPipelineIntegrator {
         rerankedResults: documents.slice(0, 5).map(
           (doc, i) =>;
             ({
-              document: doc
+              document: doc,
               score: 0.5,
               rank: i + 1,
               id: doc.id,
@@ -206,9 +206,9 @@ export class RAGPipelineIntegrator {
               processingTime: 0,
               documentsProcessed: 0,
               sentencesExtracted: 0,
-              summaryGenerated: false
-              rerankingApplied: false
-              cacheHit: false
+              summaryGenerated: false,
+              rerankingApplied: false,
+              cacheHit: false,
             }
           }
           // Send initial state
@@ -241,7 +241,7 @@ export class RAGPipelineIntegrator {
             }) + '\n'
           );
           const searchResults: SearchResult[] = progress.documents.map((doc, index) => ({
-            document: doc
+            document: doc,
             score: this.calculateInitialScore(doc, query),
             rank: index + 1,
             id: doc.id,
@@ -312,8 +312,8 @@ export class RAGPipelineIntegrator {
         content: splitSentencesEnhanced(doc.content).join(' '),
         metadata: {
           ...doc.metadata,
-          sentenceSplittingApplied: true
-          originalLength: doc.content.length
+          sentenceSplittingApplied: true,
+          originalLength: doc.content.length,
         }
       });
     } catch (error: any) {
@@ -329,7 +329,7 @@ export class RAGPipelineIntegrator {
       const { rerankSearchResults } = await import('./cross-encoder-reranker');
       return await rerankSearchResults(query, searchResults, {
         maxResults: this.config.maxDocuments,
-        timeout: 5000
+        timeout: 5000,
       });
     } catch (error: any) {
       console.warn('[RAGPipeline] Cross-encoder reranking failed, using original ranking:', error);
@@ -414,7 +414,7 @@ export class RAGPipelineIntegrator {
 // Convenience functions
 export async function processLegalQuery(
   query: string;
-  documents: LegalDocument[]
+  documents: LegalDocument[],
   config?: Partial<RAGPipelineConfig>;
 ): Promise<RAGPipelineResult> {
   const pipeline = new RAGPipelineIntegrator(config);
@@ -422,7 +422,7 @@ export async function processLegalQuery(
 }
 export async function processLegalQueryStreaming(
   query: string;
-  documents: LegalDocument[]
+  documents: LegalDocument[],
   config?: Partial<RAGPipelineConfig>;
 ): Promise<ReadableStream<string>, {
   const pipeline = new RAGPipelineIntegrator(config);

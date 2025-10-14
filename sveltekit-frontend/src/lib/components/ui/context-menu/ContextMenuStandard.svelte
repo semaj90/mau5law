@@ -58,7 +58,14 @@
 
   type MenuItem =
     | { type?: 'separator' }
-    | { type?: 'checkbox' | 'radio' | 'item' | 'sub'; label?: string; value?: any; disabled?: boolean; onSelect?: (...args: any[]) => void; items?: MenuSubItem[] };
+    | {
+        type?: 'checkbox' | 'radio' | 'item' | 'sub';
+        label?: string;
+        value?: any;
+        disabled?: boolean;
+        onSelect?: (...args: any[]) => void;
+        items?: MenuSubItem[];
+      };
 
   interface Props {
     open?: boolean;
@@ -81,22 +88,14 @@
         {#if item.type === 'separator'}
           <ContextMenuSeparator />
         {:else if item.type === 'checkbox'}
-          <ContextMenuCheckboxItem
-            value={item.value}
-            disabled={item.disabled}
-            select={item.onSelect}
-          >
+          <ContextMenuCheckboxItem value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
               {#if checked}✓{/if}
               {item.label}
             {/snippet}
           </ContextMenuCheckboxItem>
         {:else if item.type === 'radio'}
-          <ContextMenuRadioItem
-            value={item.value}
-            disabled={item.disabled}
-            select={item.onSelect}
-          >
+          <ContextMenuRadioItem value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
               {#if checked}●{/if}
               {item.label}
@@ -116,11 +115,7 @@
             </ContextMenuPortal>
           </ContextMenuSub>
         {:else}
-          <ContextMenuItem
-            textValue={item.label}
-            disabled={item.disabled}
-            select={item.onSelect}
-          >
+          <ContextMenuItem textValue={item.label} disabled={item.disabled} select={item.onSelect}>
             {item.label}
           </ContextMenuItem>
         {/if}

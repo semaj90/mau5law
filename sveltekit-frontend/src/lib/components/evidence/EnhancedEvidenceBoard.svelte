@@ -82,12 +82,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   let dragCounter = 0;
   // Computed properties
   let totalEvidence = $derived(evidenceItems.length);
-  let processingCount = $derived(
-    evidenceItems.filter(item => item.status === 'processing').length
-  );
-  let readyCount = $derived(
-    evidenceItems.filter(item => item.status === 'ready').length
-  );
+  let processingCount = $derived(evidenceItems.filter(item => item.status === 'processing').length);
+  let readyCount = $derived(evidenceItems.filter(item => item.status === 'ready').length);
   $effect(() => {
     (async () => {
       try {
@@ -118,8 +114,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           evidenceId: 'health-check',
           filename: 'test.txt',
           content: 'health check',
-          type: 'document'
-        })
+          type: 'document',
+        }),
       });
       ollamaConnected = ollamaResponse.status !== 500;
       // Check MinIO connection
@@ -174,7 +170,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     let filtered = evidenceItems.slice();
     const q = (searchQuery || '').toString().trim().toLowerCase();
     if (q) {
-      filtered = filtered.filter((item) => {
+      filtered = filtered.filter(item => {
         const filename = (item.filename || '').toLowerCase();
         const summary = ((item as any).aiAnalysis?.summary || '').toLowerCase();
         const laws = ((item as any).aiAnalysis?.relevantLaws || []).join(' ').toLowerCase();
@@ -200,8 +196,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         body: JSON.stringify({
           query,
           type: 'legal',
-          limit: 5
-        })
+          limit: 5,
+        }),
       });
       if (response.ok) {
         const data = await response.json();
@@ -260,7 +256,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     const rect = dropZone.getBoundingClientRect();
     const position = {
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      y: e.clientY - rect.top,
     };
     await uploadFiles(files, position);
   }
@@ -280,9 +276,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           size: file.size,
           mimeType: file.type,
           position: {
-            x: position.x + (evidenceItems.length * 20),
-            y: position.y + (evidenceItems.length * 20)
-          }
+            x: position.x + evidenceItems.length * 20,
+            y: position.y + evidenceItems.length * 20,
+          },
         };
         if (file.type.startsWith('image/')) {
           (newEvidence as any).previewUrl = URL.createObjectURL(file);
@@ -301,7 +297,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               method: 'POST',
               credentials: 'include',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ key: keyCandidate, bucket: currentBucket })
+              body: JSON.stringify({ key: keyCandidate, bucket: currentBucket }),
             });
             if (signedResp.ok) {
               const signedJson = await signedResp.json();
@@ -310,46 +306,73 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               const putResp = await fetch(uploadUrl, { method: 'PUT', body: file });
               if (putResp.ok) {
                 // update item safely
-                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? ({
-                  ...item,
-                  status: 'processing',
-                  aiAnalysis: {
-                    ...((item as any).aiAnalysis || {}),
-                    storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
-                  }
-                }) : item);
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId
+                    ? {
+                        ...item,
+                        status: 'processing',
+                        aiAnalysis: {
+                          ...((item as any).aiAnalysis || {}),
+                          storage: {
+                            bucket: signedJson.bucket || currentBucket,
+                            key: namespacedKey,
+                            url: signedJson.url,
+                          },
+                        },
+                      }
+                    : item
+                );
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
-                setTimeout(() => { showToast = false; }, 4000);
+                setTimeout(() => {
+                  showToast = false;
+                }, 4000);
                 await analyzeEvidence(evidenceId, file);
               } else {
                 console.error('Direct PUT failed:', await putResp.text());
-                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                );
               }
             } else {
               // fallback to server upload
               console.warn('Signed URL request failed, falling back to server upload');
-              const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include', body: formData });
+              const uploadResp = await fetch('/api/v1/storage/upload', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData,
+              });
               if (uploadResp.ok) {
                 const uploadJson = await uploadResp.json();
-                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? ({
-                  ...item,
-                  status: 'processing',
-                  aiAnalysis: { ...((item as any).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
-                }) : item);
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId
+                    ? {
+                        ...item,
+                        status: 'processing',
+                        aiAnalysis: {
+                          ...((item as any).aiAnalysis || {}),
+                          storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url },
+                        },
+                      }
+                    : item
+                );
                 await analyzeEvidence(evidenceId, file);
               } else {
-                evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                );
               }
             }
           } catch (err) {
             console.error('Upload exception:', err);
-            evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
+            evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, status: 'error' } : item));
           }
         } else {
           // Fallback/demo mode
           setTimeout(async () => {
-            evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing' } : item);
+            evidenceItems = evidenceItems.map(item =>
+              item.id === evidenceId ? { ...item, status: 'processing' } : item
+            );
             await analyzeEvidence(evidenceId, file);
           }, 1000);
         }
@@ -376,22 +399,26 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           evidenceId,
           filename: file.name,
           content: content.substring(0, 2000),
-          type: detectFileType(file.type)
-        })
+          type: detectFileType(file.type),
+        }),
       });
       if (response.ok) {
         const analysisResult = await response.json();
-        evidenceItems = evidenceItems.map(item => item.id === evidenceId ? {
-          ...item,
-          status: 'ready',
-          aiAnalysis: analysisResult.data?.analysis || analysisResult.data || {}
-        } : item);
+        evidenceItems = evidenceItems.map(item =>
+          item.id === evidenceId
+            ? {
+                ...item,
+                status: 'ready',
+                aiAnalysis: analysisResult.data?.analysis || analysisResult.data || {},
+              }
+            : item
+        );
       } else {
-        evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
+        evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, status: 'error' } : item));
       }
     } catch (error) {
       console.error('AI analysis failed:', error);
-      evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' } : item);
+      evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, status: 'error' } : item));
     }
     filterEvidence();
   }
@@ -410,7 +437,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       video: '🎥',
       audio: '🎵',
       other: '📎',
-    }
+    };
     return icons[type];
   }
   // Revoke a preview URL if present
@@ -440,7 +467,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           method: 'DELETE',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
-          body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket, key: item.aiAnalysis.storage.key })
+          body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket, key: item.aiAnalysis.storage.key }),
         });
         const txt = await resp.text();
         if (!resp.ok) {
@@ -448,14 +475,18 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           console.warn('Remote delete failed:', txt);
           toastMessage = `Remote delete failed: ${txt}`;
           showToast = true;
-          setTimeout(() => { showToast = false; }, 4000);
+          setTimeout(() => {
+            showToast = false;
+          }, 4000);
         }
       } catch (err) {
         remoteOk = false;
         console.warn('Remote delete exception:', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
-        setTimeout(() => { showToast = false; }, 4000);
+        setTimeout(() => {
+          showToast = false;
+        }, 4000);
       }
     }
     // Only remove locally if remote deletion succeeded (or there was nothing remote)
@@ -474,7 +505,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
-    evidenceItems.forEach((item) => {
+    evidenceItems.forEach(item => {
       if ((item as any).previewUrl) revokePreview((item as any).previewUrl);
     });
   });
@@ -483,7 +514,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       uploading: '⬆️',
       processing: '🔄',
       ready: '✅',
-      error: '❌'
+      error: '❌',
     };
     return icons[status];
   }
@@ -501,7 +532,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             ...item,
             status: 'ready',
             aiAnalysis: {
-              ...(item as any).aiAnalysis || {},
+              ...((item as any).aiAnalysis || {}),
               summary: `AI analysis complete for ${(item as any).filename}`,
               confidence: Math.random() * 0.4 + 0.6,
               relevantLaws: ['Sample Law 1', 'Sample Law 2'],
@@ -509,8 +540,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               prosecutionScore: Math.random() * 0.5 + 0.5,
               legalRelevance: 'High - Contains relevant legal information',
               keyFindings: ['Key finding 1', 'Key finding 2'],
-              recommendations: ['Recommendation 1', 'Recommendation 2']
-            }
+              recommendations: ['Recommendation 1', 'Recommendation 2'],
+            },
           } as EvidenceItem;
         }
         return item;
@@ -534,33 +565,35 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             vectorSimilarity: true,
             strategyRecommendations: true,
             wasmProcessing: false,
-            correlationAnalysis: true
+            correlationAnalysis: true,
           },
           parameters: {
             similarityThreshold: 0.7,
             strategyType: 'comprehensive',
             correlationConfidence: 0.6,
-            includeVisualization: true
+            includeVisualization: true,
           },
           context: {
             caseType: 'commercial',
-            urgency: 'medium'
-          }
-        })
+            urgency: 'medium',
+          },
+        }),
       });
       if (response.ok) {
         const analysis = await response.json();
-        aiAnalysisResults = (analysis as any);
+        aiAnalysisResults = analysis as any;
         evidenceItems = evidenceItems.map(item => {
           const id = item.id;
-          const correlations = ((analysis as any).correlationAnalysis?.correlations || []).filter((c: any) =>
-            c.evidenceA === id || c.evidenceB === id
+          const correlations = ((analysis as any).correlationAnalysis?.correlations || []).filter(
+            (c: any) => c.evidenceA === id || c.evidenceB === id
           );
-          const vectorGroup = ((analysis as any).vectorAnalysis?.similarityGroups || []).find((g: any) =>
-            Array.isArray(g.evidenceIds) && g.evidenceIds.includes(id)
+          const vectorGroup = ((analysis as any).vectorAnalysis?.similarityGroups || []).find(
+            (g: any) => Array.isArray(g.evidenceIds) && g.evidenceIds.includes(id)
           );
           const recs = ((analysis as any).unifiedInsights?.recommendations || []).filter((r: any) =>
-            String(r.action || '').toLowerCase().includes(((item as any).filename || '').toLowerCase())
+            String(r.action || '')
+              .toLowerCase()
+              .includes(((item as any).filename || '').toLowerCase())
           );
           return {
             ...item,
@@ -570,9 +603,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 correlations,
                 vectorGroup,
                 strategicImportance: (analysis as any).strategyAnalysis?.primaryStrategy,
-                recommendations: recs
-              }
-            }
+                recommendations: recs,
+              },
+            },
           } as EvidenceItem;
         });
         showAnalysisModal = true;
@@ -593,7 +626,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     const newSuggestions: SearchSuggestion[] = [];
     if (analysis?.correlationAnalysis?.patterns) {
       (analysis.correlationAnalysis.patterns || []).forEach((pattern: any) => {
-        newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6, source: 'correlation' });
+        newSuggestions.push({
+          text: `${pattern.type}: ${pattern.description}`,
+          type: 'evidence',
+          confidence: 0.6,
+          source: 'correlation',
+        });
       });
     }
     if (analysis?.vectorAnalysis?.similarityGroups) {
@@ -604,7 +642,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       });
     }
     if (analysis?.strategyAnalysis?.primaryStrategy) {
-      newSuggestions.push({ text: `strategy:${analysis.strategyAnalysis.primaryStrategy}`, type: 'case', confidence: 0.6, source: 'strategy' });
+      newSuggestions.push({
+        text: `strategy:${analysis.strategyAnalysis.primaryStrategy}`,
+        type: 'case',
+        confidence: 0.6,
+        source: 'strategy',
+      });
     }
     const merged = [...searchSuggestions, ...newSuggestions];
     const dedup = Array.from(new Map(merged.map(s => [s.text, s])).values());
@@ -612,7 +655,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
   // Fabric.js Canvas Event Handlers
   function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
-    evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, position } : item);
+    evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, position } : item));
   }
   function handleEvidenceSelect(evidenceId: string | null) {
     if (evidenceId) {
@@ -629,13 +672,16 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
 </script>
+
 <svelte:head>
   <title>🎮 Evidence Board - NES×YoRHa×N64 Legal AI</title>
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
 </svelte:head>
-<div class="nes-yorha-evidence-board min-h-screen bg-gradient-to-br from-nier-bg-primary via-nier-bg-secondary to-nier-bg-tertiary"
-     class:retro-terminal={retroTerminalMode}
-     class:particle-effects={particleEffects}>
+<div
+  class="nes-yorha-evidence-board min-h-screen bg-gradient-to-br from-nier-bg-primary via-nier-bg-secondary to-nier-bg-tertiary"
+  class:retro-terminal={retroTerminalMode}
+  class:particle-effects={particleEffects}
+>
   <!-- NES×YoRHa Hybrid Header -->
   <header class="yorha-nier-bits-card border-b-4 border-nier-accent mb-6">
     <div class="w-full px-6 py-8">
@@ -644,17 +690,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div class="flex flex-col lg:flex-row items-start lg:items-center gap-6">
           <div class="flex items-center gap-4">
             <div class="nes-avatar is-large">
-              <div class="flex items-center justify-center w-16 h-16 bg-nier-accent rounded text-2xl">
-                ⚖️
-              </div>
+              <div class="flex items-center justify-center w-16 h-16 bg-nier-accent rounded text-2xl">⚖️</div>
             </div>
             <div>
-              <h1 class="text-4xl font-bold nes-text is-primary mb-2">
-                Evidence Board
-              </h1>
-              <p class="text-nier-text-secondary text-lg">
-                NES×YoRHa×N64 Legal AI Assistant
-              </p>
+              <h1 class="text-4xl font-bold nes-text is-primary mb-2">Evidence Board</h1>
+              <p class="text-nier-text-secondary text-lg">NES×YoRHa×N64 Legal AI Assistant</p>
             </div>
           </div>
           <!-- System Status with NES Badges -->
@@ -674,15 +714,21 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4">
           <!-- Evidence Stats with N64 Style -->
           <div class="flex gap-2">
-            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div
+              class="n64-stat-nier-bits-card bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all"
+            >
               <div class="text-xs opacity-80">Total</div>
               <div class="text-xl font-bold">{totalEvidence}</div>
             </div>
-            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-yellow-500 to-orange-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div
+              class="n64-stat-nier-bits-card bg-gradient-to-br from-yellow-500 to-orange-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all"
+            >
               <div class="text-xs opacity-80">Processing</div>
               <div class="text-xl font-bold">{processingCount}</div>
             </div>
-            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div
+              class="n64-stat-nier-bits-card bg-gradient-to-br from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all"
+            >
               <div class="text-xs opacity-80">Ready</div>
               <div class="text-xl font-bold">{readyCount}</div>
             </div>
@@ -692,7 +738,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {gamingMode ? 'is-success' : ''}"
-              onclick={() => gamingMode = !gamingMode}
+              onclick={() => (gamingMode = !gamingMode)}
               title="Toggle Gaming Mode"
             >
               🎮 Gaming
@@ -700,7 +746,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {retroTerminalMode ? 'is-primary' : ''}"
-              onclick={() => retroTerminalMode = !retroTerminalMode}
+              onclick={() => (retroTerminalMode = !retroTerminalMode)}
               title="Toggle Terminal Mode"
             >
               💻 Terminal
@@ -769,7 +815,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div>
           <label for="bucket-select" class="nes-text is-primary text-sm mb-2 block">Storage Bucket</label>
           <div class="nes-select">
-            <select id="bucket-select" bind:value={currentBucket} onchange={() => { /* selection handled by bind */ }}>
+            <select
+              id="bucket-select"
+              bind:value={currentBucket}
+              onchange={() => {
+                /* selection handled by bind */
+              }}
+            >
               {#if buckets.length === 0}
                 <option value="legal-documents">📁 Documents</option>
               {:else}
@@ -799,18 +851,18 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             {selectedEvidence.length === filteredEvidence.length ? '❌ Deselect All' : '✅ Select All'}
           </button>
           <label class="flex items-center gap-2">
-            <input type="checkbox" class="nes-checkbox" bind:checked={uploadToMinIO}>
+            <input type="checkbox" class="nes-checkbox" bind:checked={uploadToMinIO} />
             <span class="nes-text text-sm">📦 Upload to MinIO</span>
           </label>
         </div>
         <!-- Gaming Options -->
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
-            <input type="checkbox" class="nes-checkbox" bind:checked={particleEffects}>
+            <input type="checkbox" class="nes-checkbox" bind:checked={particleEffects} />
             <span class="nes-text text-sm">✨ Particle Effects</span>
           </label>
           <label class="flex items-center gap-2">
-            <input type="checkbox" class="nes-checkbox" bind:checked={spatialAudio}>
+            <input type="checkbox" class="nes-checkbox" bind:checked={spatialAudio} />
             <span class="nes-text text-sm">🔊 Spatial Audio</span>
           </label>
         </div>
@@ -835,9 +887,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           {/if}
         </div>
       </div>
-    </div>    <!-- Gaming-Themed Evidence Board -->
-    <div class="nes-container is-rounded relative {dragActive ? 'drag-active' : ''}"
-         class:retro-glow={gamingMode && particleEffects}>
+    </div>
+    <!-- Gaming-Themed Evidence Board -->
+    <div
+      class="nes-container is-rounded relative {dragActive ? 'drag-active' : ''}"
+      class:retro-glow={gamingMode && particleEffects}
+    >
       <div
         bind:this={dropZone}
         role="list"
@@ -866,8 +921,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               <div class="nes-container is-dark p-6 text-left max-w-2xl mx-auto font-mono">
                 <p class="text-green-400">$ ls -la /evidence/</p>
                 <p class="text-gray-400">total 0</p>
-                <p class="text-gray-400">drwxr-xr-x 2 legal legal 4096 Sep  8 15:30 .</p>
-                <p class="text-gray-400">drwxr-xr-x 3 legal legal 4096 Sep  8 15:30 ..</p>
+                <p class="text-gray-400">drwxr-xr-x 2 legal legal 4096 Sep 8 15:30 .</p>
+                <p class="text-gray-400">drwxr-xr-x 3 legal legal 4096 Sep 8 15:30 ..</p>
                 <p class="text-red-400 mt-2">ERROR: No evidence files found</p>
                 <p class="text-green-400 mt-2">$ drag-drop --upload-to=minio --analyze=ai</p>
                 <p class="text-yellow-400">Waiting for evidence upload...</p>
@@ -889,7 +944,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 {#if buckets.length > 0}
                   <div class="mt-4 flex flex-wrap justify-center gap-2">
                     {#each buckets as b}
-                      <button type="button" class="nes-btn is-primary text-sm" onclick={() => currentBucket = b} title={`Select bucket ${b}`}>
+                      <button
+                        type="button"
+                        class="nes-btn is-primary text-sm"
+                        onclick={() => (currentBucket = b)}
+                        title={`Select bucket ${b}`}
+                      >
                         📦 {b}
                       </button>
                     {/each}
@@ -923,11 +983,18 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           />
         </div>
         <!-- Gaming-Style Evidence Cards (Alternative Grid View) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"
+          style="display: none;"
+        >
           {#each filteredEvidence as evidence (evidence.id)}
-            <div class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
-                 class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
-                 class:yorha-selected={selectedEvidence.includes(evidence.id)}>
+            <div
+              class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id)
+                ? 'is-success'
+                : 'with-title'} relative"
+              class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
+              class:yorha-selected={selectedEvidence.includes(evidence.id)}
+            >
               {#if !selectedEvidence.includes(evidence.id)}
                 <p class="title">{getFileIcon(evidence.type)} Evidence File</p>
               {/if}
@@ -951,17 +1018,22 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                     />
                     <span></span>
                   </label>
-                <span class="w-10 h-10 flex items-center justify-center">
-                  {#if evidence.previewUrl}
-                    <img src={evidence.previewUrl} alt={evidence.filename} class="evidence-thumb rounded" />
-                  {:else}
-                    <span class="text-2xl">{getFileIcon(evidence.type)}</span>
-                  {/if}
-                </span>
+                  <span class="w-10 h-10 flex items-center justify-center">
+                    {#if evidence.previewUrl}
+                      <img src={evidence.previewUrl} alt={evidence.filename} class="evidence-thumb rounded" />
+                    {:else}
+                      <span class="text-2xl">{getFileIcon(evidence.type)}</span>
+                    {/if}
+                  </span>
                   <h4 class="font-medium text-gray-900 truncate text-sm" title={evidence.filename}>
                     {evidence.filename}
                   </h4>
-                  <button type="button" class="ml-2 nes-btn is-error is-small" onclick={() => removeEvidence(evidence.id)} title="Remove evidence">
+                  <button
+                    type="button"
+                    class="ml-2 nes-btn is-error is-small"
+                    onclick={() => removeEvidence(evidence.id)}
+                    title="Remove evidence"
+                  >
                     ✖
                   </button>
                   <p class="text-xs text-gray-500">
@@ -969,90 +1041,93 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   </p>
                 </div>
               </div>
-                  <span class="text-lg" title={evidence.status}>
+              <span class="text-lg" title={evidence.status}>
                 {getStatusIcon(evidence.status)}
               </span>
               <!-- AI Analysis -->
               {#if evidence.aiAnalysis}
                 <div class="space-y-2">
-                <!-- Prosecution Score -->
-                {#if evidence.aiAnalysis.prosecutionScore}
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-gray-600">Prosecution Score</span>
-                    <span class="text-xs px-2 py-1 rounded {getScoreColor(evidence.aiAnalysis.prosecutionScore)}">
-                      {(evidence.aiAnalysis.prosecutionScore * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                {/if}
-                <!-- Summary -->
-                <p class="text-xs text-gray-700 leading-relaxed">
-                  {evidence.aiAnalysis.summary}
-                </p>
-                <!-- Relevant Laws -->
-                {#if evidence.aiAnalysis?.relevantLaws && evidence.aiAnalysis.relevantLaws.length > 0}
-                  <div class="space-y-1">
-                    <span class="text-xs font-medium text-gray-600">Relevant Laws:</span>
+                  <!-- Prosecution Score -->
+                  {#if evidence.aiAnalysis.prosecutionScore}
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-medium text-gray-600">Prosecution Score</span>
+                      <span class="text-xs px-2 py-1 rounded {getScoreColor(evidence.aiAnalysis.prosecutionScore)}">
+                        {(evidence.aiAnalysis.prosecutionScore * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  {/if}
+                  <!-- Summary -->
+                  <p class="text-xs text-gray-700 leading-relaxed">
+                    {evidence.aiAnalysis.summary}
+                  </p>
+                  <!-- Relevant Laws -->
+                  {#if evidence.aiAnalysis?.relevantLaws && evidence.aiAnalysis.relevantLaws.length > 0}
+                    <div class="space-y-1">
+                      <span class="text-xs font-medium text-gray-600">Relevant Laws:</span>
+                      <div class="flex flex-wrap gap-1">
+                        {#each evidence.aiAnalysis.relevantLaws.slice(0, 2) as law}
+                          <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                            {law}
+                          </span>
+                        {/each}
+                        {#if evidence.aiAnalysis.relevantLaws.length > 2}
+                          <span class="text-xs text-gray-500">+{evidence.aiAnalysis.relevantLaws.length - 2} more</span>
+                        {/if}
+                      </div>
+                    </div>
+                  {/if}
+                  <!-- Tags -->
+                  {#if evidence.aiAnalysis?.suggestedTags && evidence.aiAnalysis.suggestedTags.length > 0}
                     <div class="flex flex-wrap gap-1">
-                      {#each evidence.aiAnalysis.relevantLaws.slice(0, 2) as law}
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                          {law}
+                      {#each evidence.aiAnalysis.suggestedTags.slice(0, 3) as tag}
+                        <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+                          #{tag}
                         </span>
                       {/each}
-                      {#if evidence.aiAnalysis.relevantLaws.length > 2}
-                        <span class="text-xs text-gray-500">+{evidence.aiAnalysis.relevantLaws.length - 2} more</span>
-                      {/if}
                     </div>
-                  </div>
-                {/if}
-                <!-- Tags -->
-                {#if evidence.aiAnalysis?.suggestedTags && evidence.aiAnalysis.suggestedTags.length > 0}
-                  <div class="flex flex-wrap gap-1">
-                    {#each evidence.aiAnalysis.suggestedTags.slice(0, 3) as tag}
-                      <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
-                        #{tag}
-                      </span>
-                    {/each}
-                  </div>
-                {/if}
-                <!-- Storage URL -->
-                {#if evidence.aiAnalysis?.storage?.url}
-                  <div class="mt-2 text-xs">
-                    <a class="text-blue-600 underline" href={evidence.aiAnalysis.storage.url} target="_blank" rel="noopener noreferrer">
-                      View file in storage
-                    </a>
-                  </div>
-                {/if}
-                <!-- Processing Status -->
-                {#if evidence.status === 'processing'}
-                  <div class="mt-3 flex items-center gap-2 text-xs text-blue-600">
-                    <div class="animate-spin w-3 h-3 border border-blue-500 border-t-transparent rounded-full"></div>
-                    Analyzing with AI...
-                  </div>
-                {:else if evidence.status === 'error'}
-                  <div class="mt-3 text-xs text-red-600">
-                    Analysis failed - manual review needed
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+                  <!-- Storage URL -->
+                  {#if evidence.aiAnalysis?.storage?.url}
+                    <div class="mt-2 text-xs">
+                      <a
+                        class="text-blue-600 underline"
+                        href={evidence.aiAnalysis.storage.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View file in storage
+                      </a>
+                    </div>
+                  {/if}
+                  <!-- Processing Status -->
+                  {#if evidence.status === 'processing'}
+                    <div class="mt-3 flex items-center gap-2 text-xs text-blue-600">
+                      <div class="animate-spin w-3 h-3 border border-blue-500 border-t-transparent rounded-full"></div>
+                      Analyzing with AI...
+                    </div>
+                  {:else if evidence.status === 'error'}
+                    <div class="mt-3 text-xs text-red-600">Analysis failed - manual review needed</div>
+                  {/if}
+                </div>
+              {/if}
             </div>
           {/each}
-      </div>
-    </div>
-    <!-- Upload Progress -->
-    {#if isUploading}
-      <div class="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
-        <div class="flex items-center gap-3">
-          <div class="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-          <div class="flex-1">
-            <div class="font-medium text-gray-900">Processing Evidence</div>
-            <div class="text-sm text-gray-500">AI analysis in progress...</div>
-          </div>
         </div>
       </div>
-    {/if}
+      <!-- Upload Progress -->
+      {#if isUploading}
+        <div class="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+          <div class="flex items-center gap-3">
+            <div class="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">Processing Evidence</div>
+              <div class="text-sm text-gray-500">AI analysis in progress...</div>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </div>
   </div>
-</div>
 </div>
 <!-- Toast confirmation -->
 {#if showToast}
@@ -1064,7 +1139,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
       <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
-      <p class="text-sm mb-4">Are you sure you want to permanently delete this evidence item? This will also remove the file from storage if present.</p>
+      <p class="text-sm mb-4">
+        Are you sure you want to permanently delete this evidence item? This will also remove the file from storage if
+        present.
+      </p>
       <div class="flex justify-end gap-2">
         <button class="nes-btn" onclick={cancelDelete}>Cancel</button>
         <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
@@ -1072,13 +1150,18 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     </div>
   </div>
 {/if}
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .evidence-thumb {
     width: 40px;
@@ -1113,20 +1196,23 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
   :global(.retro-glow) .evidence-canvas-container {
     position: relative;
-    --accent-a: 59 130 246;   /* blue */
-    --accent-b: 139 92 246;   /* purple */
-    --accent-c: 6 182 212;    /* cyan */
-    --accent-d: 16 185 129;   /* emerald */
+    --accent-a: 59 130 246; /* blue */
+    --accent-b: 139 92 246; /* purple */
+    --accent-c: 6 182 212; /* cyan */
+    --accent-d: 16 185 129; /* emerald */
     border-color: rgb(var(--accent-a) / 0.9);
     box-shadow:
       0 0 4px 2px rgb(var(--accent-a) / 0.35),
-      0 0 18px 4px rgb(var(--accent-b) / 0.30),
+      0 0 18px 4px rgb(var(--accent-b) / 0.3),
       0 0 34px 6px rgb(var(--accent-c) / 0.25),
       0 0 52px 10px rgb(var(--accent-d) / 0.22),
       inset 0 0 0 1px rgba(255 255 255 / 0.12),
       inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
     animation: canvasGlow 3.4s ease-in-out infinite alternate;
-    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400ms;
+    transition:
+      box-shadow 350ms ease,
+      border-color 350ms ease,
+      transform 400ms;
     will-change: box-shadow, transform;
   }
   /* Pixel / scanline / chromatic edge layering */
@@ -1157,15 +1243,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* NES-style pixel grid & edge glow */
   :global(.retro-glow) .evidence-canvas-container::after {
     background:
-      linear-gradient(145deg,
-        rgba(var(--accent-a) / 0.18),
-        rgba(var(--accent-b) / 0.12),
-        rgba(var(--accent-c) / 0.10)),
-      repeating-linear-gradient(
-        45deg,
-        rgba(255 255 255 / 0.05) 0 2px,
-        rgba(0 0 0 / 0.05) 2px 4px
-      );
+      linear-gradient(145deg, rgba(var(--accent-a) / 0.18), rgba(var(--accent-b) / 0.12), rgba(var(--accent-c) / 0.1)),
+      repeating-linear-gradient(45deg, rgba(255 255 255 / 0.05) 0 2px, rgba(0 0 0 / 0.05) 2px 4px);
     filter: brightness(1.05) saturate(1.15);
     mix-blend-mode: soft-light;
     opacity: 0.75;
@@ -1186,8 +1265,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
   :global(.yorha-glow) .evidence-canvas-container {
     outline: 2px solid rgba(var(--accent-c) / 0.8);
-    animation: canvasGlow 2.1s ease-in-out infinite alternate,
-             pulseRing 1.8s ease-in-out infinite;
+    animation:
+      canvasGlow 2.1s ease-in-out infinite alternate,
+      pulseRing 1.8s ease-in-out infinite;
   }
   /* Reduce intensity in retro terminal mode */
   :global(.retro-terminal) .evidence-canvas-container,
@@ -1208,18 +1288,37 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
   @keyframes scanDrift {
-    0% { transform: translateY(0); opacity: 0.55; }
-    50% { transform: translateY(-6px); opacity: 0.42; }
-    100% { transform: translateY(0); opacity: 0.55; }
+    0% {
+      transform: translateY(0);
+      opacity: 0.55;
+    }
+    50% {
+      transform: translateY(-6px);
+      opacity: 0.42;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 0.55;
+    }
   }
   @keyframes hueShift {
-    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
-    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg); }
-    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
+    0% {
+      filter: brightness(1.05) saturate(1.15) hue-rotate(0deg);
+    }
+    50% {
+      filter: brightness(1.1) saturate(1.25) hue-rotate(25deg);
+    }
+    100% {
+      filter: brightness(1.05) saturate(1.15) hue-rotate(0deg);
+    }
   }
   @keyframes pulseRing {
-    0% { outline-offset: 0; }
-    100% { outline-offset: 4px; }
+    0% {
+      outline-offset: 0;
+    }
+    100% {
+      outline-offset: 4px;
+    }
   }
   @keyframes canvasGlow {
     0% {

@@ -9,16 +9,16 @@ import { cudaCacheOptimizer } from '../ai/cuda-cache-memory-optimizer';
 
 // Demo queries representing different legal AI use cases
 const testQueries = [
-  "Review this contract for potential liability issues",
-  "What are the precedents for copyright infringement in software?",
-  "Hello, how are you today?",
-  "Search for cases involving data privacy violations",
-  "Analyze this employment agreement for compliance issues",
-  "Can you help me understand trademark law?",
-  "urgent: need immediate analysis of this merger document",
+  'Review this contract for potential liability issues',
+  'What are the precedents for copyright infringement in software?',
+  'Hello, how are you today?',
+  'Search for cases involving data privacy violations',
+  'Analyze this employment agreement for compliance issues',
+  'Can you help me understand trademark law?',
+  'urgent: need immediate analysis of this merger document',
   "What's the weather like today?",
-  "Find similar cases to Brown vs Board of Education",
-  "Draft a response to this cease and desist letter"
+  'Find similar cases to Brown vs Board of Education',
+  'Draft a response to this cease and desist letter',
 ];
 
 /**
@@ -46,7 +46,7 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
 
       // Neural network analysis
       const nnIntent = await cudaCacheOptimizer.analyzeIntentWithNN(query, {
-        deadline: Date.now() + (query.includes('urgent') ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000)
+        deadline: Date.now() + (query.includes('urgent') ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000),
       });
 
       // Compare results
@@ -67,7 +67,6 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
       console.log(`\n🎯 Recommended Model: ${recommendedModel}`);
 
       console.log('\n' + '='.repeat(80) + '\n');
-
     } catch (error) {
       console.error(`❌ Error analyzing query: ${error}`);
     }
@@ -92,7 +91,6 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
     console.log(`   Available: ${memoryState.availableMemoryMB} MB`);
     console.log(`   Utilization: ${memoryState.utilizationPercent.toFixed(1)}%`);
     console.log(`   Temperature: ${memoryState.temperatureC}°C`);
-
   } catch (error) {
     console.error(`❌ Error getting statistics: ${error}`);
   }
@@ -111,18 +109,13 @@ export async function demonstrateSOMClustering(): Promise<void> {
   console.log('=============================\n');
 
   const legalQueries = [
-    "contract review needed urgently",
-    "analyze patent application",
-    "copyright infringement case research",
-    "trademark dispute analysis"
+    'contract review needed urgently',
+    'analyze patent application',
+    'copyright infringement case research',
+    'trademark dispute analysis',
   ];
 
-  const chatQueries = [
-    "hello there",
-    "how are you doing",
-    "thanks for the help",
-    "have a great day"
-  ];
+  const chatQueries = ['hello there', 'how are you doing', 'thanks for the help', 'have a great day'];
 
   console.log('📋 Testing Legal Queries:');
   for (const query of legalQueries) {

@@ -207,19 +207,19 @@ const clearNotifications = assign({
 const setError = assign({
   error: ({ event }: { event: AppEvents }) =>
     'error' in event ? event.error: null
-  globalLoading: false
+  globalLoading: false,
 });
 const clearError = assign({
   error: null
 });
 const setGlobalLoading = assign({
-  globalLoading: true
+  globalLoading: true,
   loadingMessage: ({ event }: { event: AppEvents }) =>
     'message' in event ? event.message: undefined
 });
 const clearGlobalLoading = assign({
-  globalLoading: false
-  loadingMessage: undefined
+  globalLoading: false,
+  loadingMessage: undefined,
 });
 const updateSettings = assign({
   settings: ({ context, event }: { context: AppContext; event: AppEvents }) => ({
@@ -235,16 +235,16 @@ const setOffline = assign({
 });
 const connectWebSocket = assign({
   websocket: ({ event }: { event: AppEvents }) => ({
-    connected: true
-    connectionId: 'connectionId' in event ? event.connectionId: null
-    lastActivity: new Date()
+    connected: true,
+    connectionId: 'connectionId' in event ? event.connectionId: null,
+    lastActivity: new Date(),
   })
 });
 const disconnectWebSocket = assign({
   websocket: {
-    connected: false
-    connectionId: null
-    lastActivity: null
+    connected: false,
+    connectionId: null,
+    lastActivity: null,
   }
 });
 const spawnLegalCaseMachine = assign({
@@ -289,16 +289,16 @@ export const appMachine = createMachine({
     events: { [key,: strin,g]: any } as AppEvents
   },
   context: {
-    user: null
-    session: null
+    user: null,
+    session: null,
     theme: 'auto',
     language: 'en',
     layout: 'desktop',
     currentRoute: '/',
     breadcrumbs: [],
     notifications: [],
-    globalLoading: false
-    error: null
+    globalLoading: false,
+    error: null,
     performance: {
       pageLoadTime: 0,
       apiResponseTimes: { [key,: strin,g]: any },
@@ -307,11 +307,11 @@ export const appMachine = createMachine({
     },
     features: { [key,: strin,g]: any }
     }); const settings = {
-      autoSave: true
+      autoSave: true,
       autoSaveInterval: 30000,
-      enableAnalytics: true
-      enableNotifications: true
-      enableOfflineMode: true
+      enableAnalytics: true,
+      enableNotifications: true,
+      enableOfflineMode: true,
       maxFileUploadSize: 100 * 1024 * 1024, // 100MB
       defaultPageSize: 20
     },

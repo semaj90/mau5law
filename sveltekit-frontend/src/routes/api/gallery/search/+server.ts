@@ -137,7 +137,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     const suggestions = await generateSuggestions(filters.query)
     const searchTime = Date.now() - startTime
     const response: SearchResponse = {
-      results: processedResults
+      results: processedResults,
       totalCount,
       searchTime,
       facets,
@@ -377,11 +377,11 @@ async function generateFacets(filters: SearchFilters) {
       getTagFacets()
     ])
     return {
-      types: typeFacets
-      fileTypes: fileTypeFacets
-      cases: caseFacets
-      tags: tagFacets
-      dateRanges: [
+      types: typeFacets,
+      fileTypes: fileTypeFacets,
+      cases: caseFacets,
+      tags: tagFacets,
+      dateRanges: [,
         { range: 'Last 24 hours', count: 0 },
         { range: 'Last week', count: 0 },
         { range: 'Last month', count: 0 },
@@ -501,7 +501,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       query,
       types: type ? [type] : undefined
       caseIds: caseId ? [caseId] : undefined
-      contentSearch: true
+      contentSearch: true,
     }
     const options: SearchOptions = {
       page,

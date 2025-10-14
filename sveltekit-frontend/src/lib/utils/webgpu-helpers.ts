@@ -4,8 +4,8 @@
  */
 // Helper function to safely write buffers in WebGPU
 export function safeWriteBuffer(
-  queue: GPUQueue
-  buffer: GPUBuffer
+  queue: GPUQueue,
+  buffer: GPUBuffer,
   offset: number;
   data: ArrayBufferView | ArrayBuffer;
 ): void {
@@ -34,7 +34,7 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
 }
 // Helper to create Float32Array from ArrayBufferLike safely
 export function createFloat32Array(
-  source: ArrayBufferLike | ArrayBufferView
+  source: ArrayBufferLike | ArrayBufferView,
   offset = 0,
   length?: number;
 ): Float32Array {
@@ -84,7 +84,7 @@ export async function checkWebGPUSupport(): Promise<any> {
     const device = await adapter.requestDevice();
     const features = Array.from(adapter.features);
     return {
-      supported: true
+      supported: true,
       adapter,
       device,
       features

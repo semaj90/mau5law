@@ -6,73 +6,73 @@
  * - helper accessors for possible response shapes
  * - coherent control flow for analysisType routing
  * /**
-* Enhanced AI Analysis API Endpoint - Phase 2 Demonstration
-*
-* Showcases advanced NLP capabilities:
-* - Semantic document analysis with Gemma embeddings
-* - Legal entity extraction (cases, statutes, precedents)
-* - Multi-model AI orchestration with gRPC services
-* - Legal reasoning and case similarity analysis
-* - Binary protocol optimization for 60% performance gain
-*
-* Usage:
-* POST /api/ai/enhanced-analysis
-* {
-*   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract" }],
-*   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch",
-*   "options": { "includeReasoning": true, "enableStreaming": false }
-* }
-*** Usage (unchanged):* POST /api/ai/enhanced-analysis
+ * Enhanced AI Analysis API Endpoint - Phase 2 Demonstration
+ *
+ * Showcases advanced NLP capabilities:
+ * - Semantic document analysis with Gemma embeddings
+ * - Legal entity extraction (cases, statutes, precedents)
+ * - Multi-model AI orchestration with gRPC services
+ * - Legal reasoning and case similarity analysis
+ * - Binary protocol optimization for 60% performance gain
+ *
+ * Usage:
+ * POST /api/ai/enhanced-analysis
+ * {
+ *   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract" }],
+ *   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch",
+ *   "options": { "includeReasoning": true, "enableStreaming": false }
+ * }
+ *** Usage (unchanged):* POST /api/ai/enhanced-analysis
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
 
 interface LegalDocument {
-  id: string
-  content: string
-  type?: string
+  id: string;
+  content: string;
+  type?: string;
 }
 
 interface EnhancedAnalysisRequest {
-  documents: LegalDocument[]
-  analysisType?: 'full' | 'semantic' | 'entities' | 'reasoning' | 'batch'
+  documents: LegalDocument[];
+  analysisType?: 'full' | 'semantic' | 'entities' | 'reasoning' | 'batch';
   options?: {
-    useGRPCOptimization?: boolean
-  }
+    useGRPCOptimization?: boolean;
+  };
 }
 
 interface EnhancedAnalysisResponse {
-  success: boolean
+  success: boolean;
   results: {
-    documentCount: number
-    analysisType: string
-    processingTime: number
-    performanceGain?: number
-    data: unknown
-  }
+    documentCount: number;
+    analysisType: string;
+    processingTime: number;
+    performanceGain?: number;
+    data: unknown;
+  };
   metrics: {
-    protocol: string
-    totalEntities: number
-    averageComplexity: number
-    serviceChain: string[]
-  }
+    protocol: string;
+    totalEntities: number;
+    averageComplexity: number;
+    serviceChain: string[];
+  };
   orchestration: {
-    healthy: boolean
-    servicesUsed: string[]
-    compressionRatio?: number
-  }
+    healthy: boolean;
+    servicesUsed: string[];
+    compressionRatio?: number;
+  };
 }
 
 /**
  * Typed shape for orchestrator metrics used throughout the handler.
  */
 interface OrchestratorMetrics {
-  compressionRatio?: number
-  binaryProtocolSavings?: number
-  totalOperations?: number
-  averageLatency?: number
-  successRate?: number
+  compressionRatio?: number;
+  binaryProtocolSavings?: number;
+  totalOperations?: number;
+  averageLatency?: number;
+  successRate?: number;
 }
 
 /**
@@ -80,45 +80,46 @@ interface OrchestratorMetrics {
  * Many implementations return { data, serviceChain, performanceGain } or the raw data.
  */
 const safeGetData = (res: unknown): unknown => {
-  if (!res) return null
+  if (!res) return null;
   if (typeof res === 'object' && res !== null) {
-    const r = res as Record<string, unknown>
-    return r.data ?? r.result ?? r.output ?? r
+    const r = res as Record<string, unknown>;
+    return r.data ?? r.result ?? r.output ?? r;
   }
-  return res
-}
+  return res;
+};
 
 const safeGetServiceChain = (res: unknown): string[] => {
-  if (!res) return []
+  if (!res) return [];
   if (typeof res === 'object' && res !== null) {
-    const r = res as Record<string, unknown>
-    const sc = r.serviceChain ?? r.servicesUsed ?? r.chain
-    return Array.isArray(sc) ? (sc as string[]) : []
+    const r = res as Record<string, unknown>;
+    const sc = r.serviceChain ?? r.servicesUsed ?? r.chain;
+    return Array.isArray(sc) ? (sc as string[]) : [];
   }
-  return []
-}
+  return [];
+};
 
 const safeGetPerformanceGain = (res: unknown): number => {
-  if (!res) return 0
+  if (!res) return 0;
   if (typeof res === 'object' && res !== null) {
-    const r = res as Record<string, unknown>
-    const pg = r.performanceGain ?? r.performance ?? r.gain
-    return typeof pg === 'number' ? pg : 0
+    const r = res as Record<string, unknown>;
+    const pg = r.performanceGain ?? r.performance ?? r.gain;
+    return typeof pg === 'number' ? pg : 0;
   }
-  return 0
-}
+  return 0;
+};
 
-const asRecord = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null) ? (v as Record<string, unknown>) : {}
+const asRecord = (v: unknown): Record<string, unknown> =>
+  typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now()
+  const startTime = Date.now();
   try {
-    const requestData = await request.json().catch(() => {
-      throw error(400, 'Invalid JSON in request body')
-    }) as EnhancedAnalysisRequest
+    const requestData = (await request.json().catch(() => {
+      throw error(400, 'Invalid JSON in request body');
+    })) as EnhancedAnalysisRequest;
 
     if (!requestData?.documents || !Array.isArray(requestData.documents) || requestData.documents.length === 0) {
-      throw error(400, 'documents array is required and must not be empty')
+      throw error(400, 'documents array is required and must not be empty');
     }
 
     const documents = requestData.documents;
@@ -310,17 +311,21 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    const averageComplexity = documentCount > 0 ? totalComplexity / documentCount : 0
-    const processingTime = Date.now() - startTime
+    const averageComplexity = documentCount > 0 ? totalComplexity / documentCount : 0;
+    const processingTime = Date.now() - startTime;
 
     // Orchestrator health and metrics defensively
-    const orchestratorObj = grpcAIOrchestrator as unknown as Record<string, unknown>
-    const healthStatus = typeof orchestratorObj.healthCheck === 'function'
-      ? await (orchestratorObj.healthCheck as (..._args: unknown[]) => Promise<{ healthy: boolean; services: string[] }>)()
-      : { healthy: false, services: [] }
-    const orchestratorMetrics = typeof orchestratorObj.getMetrics === 'function'
-      ? await Promise.resolve((orchestratorObj.getMetrics as (..._args: unknown[]) => unknown)())
-      : { compressionRatio: 0, binaryProtocolSavings: 0, totalOperations: 0, averageLatency: 0, successRate: 0 }
+    const orchestratorObj = grpcAIOrchestrator as unknown as Record<string, unknown>;
+    const healthStatus =
+      typeof orchestratorObj.healthCheck === 'function'
+        ? await (
+            orchestratorObj.healthCheck as (..._args: unknown[]) => Promise<{ healthy: boolean; services: string[] }>
+          )()
+        : { healthy: false, services: [] };
+    const orchestratorMetrics =
+      typeof orchestratorObj.getMetrics === 'function'
+        ? await Promise.resolve((orchestratorObj.getMetrics as (..._args: unknown[]) => unknown)())
+        : { compressionRatio: 0, binaryProtocolSavings: 0, totalOperations: 0, averageLatency: 0, successRate: 0 };
 
     const response: EnhancedAnalysisResponse = {
       success: true,
@@ -329,72 +334,82 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisType,
         processingTime,
         performanceGain: performanceGain || undefined,
-        data: analysisResults
+        data: analysisResults,
       },
       metrics: {
         protocol: useGRPCOptimization ? 'grpc' : 'http',
         totalEntities,
         averageComplexity,
-        serviceChain
+        serviceChain,
       },
       orchestration: {
         healthy: Boolean((healthStatus as { healthy?: boolean })?.healthy),
         servicesUsed: serviceChain,
         compressionRatio: (() => {
-          const om = orchestratorMetrics as OrchestratorMetrics
-          return typeof om.compressionRatio === 'number' ? om.compressionRatio : undefined
-        })()
-      }
-    }
+          const om = orchestratorMetrics as OrchestratorMetrics;
+          return typeof om.compressionRatio === 'number' ? om.compressionRatio : undefined;
+        })(),
+      },
+    };
 
-    console.log(`✅ Enhanced AI Analysis complete: ${documents.length} docs, ${totalEntities} entities, ${processingTime}ms`)
+    console.log(
+      `✅ Enhanced AI Analysis complete: ${documents.length} docs, ${totalEntities} entities, ${processingTime}ms`
+    );
 
-    const om = orchestratorMetrics as OrchestratorMetrics
+    const om = orchestratorMetrics as OrchestratorMetrics;
     if (typeof om.binaryProtocolSavings === 'number' && om.binaryProtocolSavings > 0) {
-      console.log(`⚡ Binary protocol savings: ${(om.binaryProtocolSavings).toFixed(1)}%`)
+      console.log(`⚡ Binary protocol savings: ${om.binaryProtocolSavings.toFixed(1)}%`);
     }
 
-    return json(response)
+    return json(response);
   } catch (err) {
-    console.error('❌ Enhanced AI Analysis failed:', err)
+    console.error('❌ Enhanced AI Analysis failed:', err);
     if (err && typeof err === 'object' && 'status' in err) {
-      throw err
+      throw err;
     }
-    const processingTime = Date.now() - startTime
-    return json({
-      success: false,
-      error: {
-        message: String(err),
-        processingTime,
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 500 })
+    const processingTime = Date.now() - startTime;
+    return json(
+      {
+        success: false,
+        error: {
+          message: String(err),
+          processingTime,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 500 }
+    );
   }
-}
+};
 
 export const GET: RequestHandler = async () => {
-  console.log('🏥 Enhanced AI Analysis health check')
+  console.log('🏥 Enhanced AI Analysis health check');
   try {
-    interface OrchestratorHealth { healthy: boolean; services: string[] }
+    interface OrchestratorHealth {
+      healthy: boolean;
+      services: string[];
+    }
     interface OrchestratorMetrics {
-      totalOperations: number
-      averageLatency: number
-      binaryProtocolSavings: number
-      successRate: number
-      compressionRatio?: number
+      totalOperations: number;
+      averageLatency: number;
+      binaryProtocolSavings: number;
+      successRate: number;
+      compressionRatio?: number;
     }
     const orchestrator = grpcAIOrchestrator as unknown as {
-      healthCheck?: () => Promise<OrchestratorHealth>
-      getMetrics?: () => OrchestratorMetrics | Promise<OrchestratorMetrics>
-    }
+      healthCheck?: () => Promise<OrchestratorHealth>;
+      getMetrics?: () => OrchestratorMetrics | Promise<OrchestratorMetrics>;
+    };
 
-    const healthStatus = typeof orchestrator.healthCheck === 'function'
-      ? await orchestrator.healthCheck()
-      : { healthy: false, services: [] }
+    const healthStatus =
+      typeof orchestrator.healthCheck === 'function'
+        ? await orchestrator.healthCheck()
+        : { healthy: false, services: [] };
 
-    const metrics = typeof orchestrator.getMetrics === 'function'
-      ? await Promise.resolve(orchestrator.getMetrics())
-      : { totalOperations: 0, averageLatency: 0, binaryProtocolSavings: 0, successRate: 0 }
+    const metrics =
+      typeof orchestrator.getMetrics === 'function'
+        ? await Promise.resolve(orchestrator.getMetrics())
+        : { totalOperations: 0, averageLatency: 0, binaryProtocolSavings: 0, successRate: 0 };
 
     return json({
       healthy: healthStatus.healthy,
@@ -405,24 +420,27 @@ export const GET: RequestHandler = async () => {
         legalReasoning: true,
         batchProcessing: true,
         grpcOptimization: true,
-        binaryProtocol: true
+        binaryProtocol: true,
       },
       metrics: {
         totalOperations: metrics.totalOperations,
         averageLatency: Math.round(metrics.averageLatency),
         binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100,
-        successRate: Math.round(metrics.successRate * 100) / 100
+        successRate: Math.round(metrics.successRate * 100) / 100,
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2'
-    })
+      version: '2.0.0-phase2',
+    });
   } catch (err) {
-    console.error('❌ Health check failed:', err)
-    return json({
-      healthy: false,
-      error: String(err),
-      capabilities: {},
-      metrics: {}
-    }, { status: 503 })
+    console.error('❌ Health check failed:', err);
+    return json(
+      {
+        healthy: false,
+        error: String(err),
+        capabilities: {},
+        metrics: {},
+      },
+      { status: 503 }
+    );
   }
-}
+};

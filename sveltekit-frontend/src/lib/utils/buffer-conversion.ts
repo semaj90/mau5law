@@ -106,7 +106,7 @@ export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
  */
 export function copyBufferAligned(
   source: BufferLike;
-  target: ArrayBuffer
+  target: ArrayBuffer,
   targetOffset = 0
 ): void {
   const sourceUint8 = new Uint8Array(toArrayBuffer(source));
@@ -226,7 +226,7 @@ export class WebGPUBufferUtils_Advanced {
    * Create a Float32Array from WebGPU mapped buffer with quantization awareness
    */
   static createFloat32ArrayFromMappedRangeWithQuantization(
-    mappedRange: ArrayBuffer
+    mappedRange: ArrayBuffer,
     originalQuantization?: 'fp32' | 'fp16' | 'int8'
   ): Float32Array {
     // For now, treat all as Float32Array - quantization handling is in typed-array-quantization.ts

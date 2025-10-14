@@ -21,4 +21,4 @@ export const GET: RequestHandler = async ({ url }) => {
       'Cache-Control': 'no-store',
     },
   });
-}
+};

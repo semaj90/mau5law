@@ -54,7 +54,7 @@
       eventSource.onopen = () => {
         isConnected = true;
         console.log('🔗 Connected to cluster monitoring');
-      }
+      };
       eventSource.onmessage = event => {
         const data = JSON.parse(event.data);
         if (data.type === 'health') {
@@ -63,11 +63,11 @@
           workerMetrics = data.payload;
         }
         lastUpdate = new Date().toLocaleTimeString();
-      }
+      };
       eventSource.onerror = () => {
         isConnected = false;
         console.error('❌ Cluster monitoring connection lost');
-      }
+      };
       // Fallback polling
       updateInterval = setInterval(fetchClusterStatus, 10000);
     } catch (error) {
@@ -160,13 +160,13 @@
   }
   // Reactive computations
   let healthRatio = $derived(
-    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers : 0,
+    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers : 0
   );
   let memoryUsagePercent = $derived(
-    clusterHealth.memoryUsage.average > 0 ? (clusterHealth.memoryUsage.average / (512 * 1024 * 1024)) * 100 : 0,
+    clusterHealth.memoryUsage.average > 0 ? (clusterHealth.memoryUsage.average / (512 * 1024 * 1024)) * 100 : 0
   );
   let errorRateStatus = $derived(
-    clusterHealth.errors.rate > 10 ? 'high' : clusterHealth.errors.rate > 5 ? 'medium' : 'low',
+    clusterHealth.errors.rate > 10 ? 'high' : clusterHealth.errors.rate > 5 ? 'medium' : 'low'
   );
 </script>
 

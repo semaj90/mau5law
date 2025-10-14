@@ -113,7 +113,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     factors,
     recommendations,
     riskLevel: deriveRisk(score),
-  }
+  };
 }
 const originalGETHandler: RequestHandler = async () => {
   // Provide sample cases matching the frontend component structure
@@ -132,7 +132,7 @@ const originalGETHandler: RequestHandler = async () => {
     high: cases.filter(item => item.priority === 'high'),
     medium: cases.filter(item => item.priority === 'medium'),
     low: cases.filter(item => item.priority === 'low'),
-  }
+  };
   return json({
     cases,
     summary: {
@@ -148,7 +148,7 @@ const originalGETHandler: RequestHandler = async () => {
       cache_status: 'hit',
     },
   });
-}
+};
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { content = 'N/A', evidenceType = 'evidence', metadata = {} } = await request.json();
@@ -189,7 +189,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         : String(error);
     return json({ error: 'Scoring failed', details }, { status: 500 });
   }
-}
+};
 async function generateScoreReasoning(score: number, evidenceType: string): Promise<string> {
   if (score >= 80) return `High-value ${evidenceType} with strong legal admissibility and strategic relevance.`;
   if (score >= 60) return `Solid ${evidenceType} evidence with moderate legal value and clear procedural compliance.`;

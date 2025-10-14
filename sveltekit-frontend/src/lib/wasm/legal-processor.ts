@@ -103,7 +103,7 @@ export class WasmLegalProcessor {
       const readabilityScore = this.wasmModule!.calculate_readability_score(extractedText);
       const processingTime = performance.now() - startTime;
       return {
-        text: extractedText
+        text: extractedText,
         documentType,
         legalEntities,
         citations,
@@ -260,7 +260,7 @@ export class WasmLegalProcessor {
         while ((match = nameRegex.exec(text)) !== null) {
           entities.push({
             type: 'person',
-            text: match[0]
+            text: match[0],
             confidence: 0.8,
             startIndex: match.index,
             endIndex: match.index + match[0].length,
@@ -272,7 +272,7 @@ export class WasmLegalProcessor {
         while ((match = orgRegex.exec(text)) !== null) {
           entities.push({
             type: 'organization',
-            text: match[0]
+            text: match[0],
             confidence: 0.9,
             startIndex: match.index,
             endIndex: match.index + match[0].length,
@@ -296,7 +296,7 @@ export class WasmLegalProcessor {
         while ((match = caseRegex.exec(text)) !== null) {
           citations.push({
             type: 'case',
-            citation: match[0]
+            citation: match[0],
             jurisdiction: 'Federal',
             relevance: 0.8
           });
@@ -306,7 +306,7 @@ export class WasmLegalProcessor {
         while ((match = statuteRegex.exec(text)) !== null) {
           citations.push({
             type: 'statute',
-            citation: match[0]
+            citation: match[0],
             jurisdiction: 'Federal',
             relevance: 0.9
           });
@@ -332,7 +332,7 @@ export class WasmLegalProcessor {
         while ((match = ssnRegex.exec(text)) !== null) {
           sensitive.push({
             type: 'ssn',
-            value: match[0]
+            value: match[0],
             masked: 'XXX-XX-' + match[0].slice(-4),
             confidence: 0.95,
             location: { start: match.index, end: match.index + match[0].length }
@@ -343,7 +343,7 @@ export class WasmLegalProcessor {
         while ((match = emailRegex.exec(text)) !== null) {
           sensitive.push({
             type: 'email',
-            value: match[0]
+            value: match[0],
             masked: match[0].charAt(0) + '***@' + match[0].split('@')[1],
             confidence: 0.9,
             location: { start: match.index, end: match.index + match[0].length }

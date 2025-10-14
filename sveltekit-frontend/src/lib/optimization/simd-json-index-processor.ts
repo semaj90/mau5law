@@ -74,7 +74,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Process copilot.md with SIMD JSON parsing and vector embeddings
-   */;
+   */
   async processCopilotIndex(indexData: string | ArrayBuffer): Promise<CopilotIndex> {
     const startTime = performance.now();
     try {
@@ -89,7 +89,7 @@ export class SIMDJSONIndexProcessor {
       const processedIndex: CopilotIndex = {
         version: '2.0.0',
         indexType: 'enhanced_legal_ai',
-        entries: optimizedEntries
+        entries: optimizedEntries,
         statistics,
         clusters
       }
@@ -105,7 +105,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Generate vector embeddings using configured model
-   */;
+   */
   async generateEmbeddings(content: string): Promise<Float32Array> {
     const cacheKey = this.hashContent(content);
     // Check cache first
@@ -143,7 +143,7 @@ export class SIMDJSONIndexProcessor {
    * Semantic search using SIMD-optimized vector operations
    */
   async semanticSearch(
-    query: string
+    query: string,
     index: CopilotIndex;
     options: {
       limit?: number;
@@ -179,7 +179,7 @@ export class SIMDJSONIndexProcessor {
       metadata: entry.metadata,
       type: 'document' as const,
       document: this.convertToRAGDocument(entry),
-      score: similarity
+      score: similarity,
       relevantChunks: entry.semanticChunks.map((chunk, chunkIndex) => ({
         id: `chunk_${entry.id}_${chunkIndex}`,
         content: chunk.content,
@@ -196,21 +196,21 @@ export class SIMDJSONIndexProcessor {
       highlights: this.extractHighlights(entry.content, query),
       explanation: `Enhanced semantic search result (${entry.metadata.source})`,
       legalRelevance: {
-        overall: similarity
+        overall: similarity,
         factual: similarity * 0.9,
         procedural: similarity * 0.8,
         precedential: similarity * 0.85,
         jurisdictional: similarity * 0.95,
         confidence: entry.metadata.relevanceScore
       },
-      relevanceScore: similarity
+      relevanceScore: similarity,
       rank: index + 1,
       snippet: entry.content.substring(0, 200)
     });
   }
   /**
    * SIMD-optimized cosine similarity calculation
-   */;
+   */
   private calculateCosineSimilaritySIMD(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) {
       throw new Error('Vector dimensions must match');
@@ -238,7 +238,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Create SIMD-optimized JSON parser
-   */;
+   */
   private createSIMDParser(): SIMDJSONParser {
     return {
       parse: async (buffer: ArrayBuffer) => {
@@ -279,7 +279,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Parse data with SIMD optimization
-   */;
+   */
   private async parseWithSIMD(data: string | ArrayBuffer): Promise<any> {
     const startTime = performance.now();
     try {
@@ -294,7 +294,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Process index entries with optimization
-   */;
+   */
   private async processIndexEntries(rawIndex: any): Promise<CopilotIndexEntry[]> {
     const entries: CopilotIndexEntry[] = [];
     // Process in parallel batches for performance
@@ -328,7 +328,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Generate semantic chunks with overlapping windows
-   */;
+   */
   private async generateSemanticChunks(content: string) {
     const chunks = [];
     const { chunkSize, overlap } = this.vectorConfig;
@@ -338,9 +338,9 @@ export class SIMDJSONIndexProcessor {
       if (chunkContent.trim().length > 50) { // Skip very small chunks
         const embedding = await this.generateEmbeddings(chunkContent);
         chunks.push({
-          content: chunkContent
+          content: chunkContent,
           embedding,
-          startOffset: i
+          startOffset: i,
           endOffset: Math.min(i + chunkSize, content.length)
         });
       }
@@ -349,7 +349,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Generate semantic clusters using SOM algorithm - Fixed version
-   */;
+   */
   private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
     try {
       // Use the enhanced RAG store's SOM system
@@ -391,7 +391,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Calculate index statistics
-   */;
+   */
   private calculateIndexStatistics(entries: CopilotIndexEntry[]) {
     const totalTokens = entries.reduce((sum, entry) => sum + entry.metadata.tokens, 0);
     const totalSize = entries.reduce((sum, entry) => sum + entry.metadata.fileSize, 0);
@@ -405,7 +405,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Integrate with Enhanced RAG store
-   */;
+   */
   private async integrateWithRAGStore(_index: CopilotIndex) {
     const addDocument = enhancedRAGStore.addDocument;
     // Add entries as RAG documents
@@ -416,7 +416,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Convert index entry to RAG document
-   */;
+   */
   private convertToRAGDocument(entry: CopilotIndexEntry): import('$lib/types/rag').RAGDocument {
     return {
       id: entry.id,
@@ -439,7 +439,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Generate embeddings using different backends
-   */;
+   */
   private async generatePGVectorEmbedding(content: string): Promise<number[]> {
     // Integrate with existing pgvector setup
     try {
@@ -449,7 +449,7 @@ export class SIMDJSONIndexProcessor {
         body: JSON.stringify({
           content,
           model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
-          backend: 'pgvector'
+          backend: 'pgvector',
         })
       });
       if (!response.ok) {
@@ -471,7 +471,7 @@ export class SIMDJSONIndexProcessor {
         body: JSON.stringify({
           content,
           model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
-          backend: 'qdrant'
+          backend: 'qdrant',
         })
       });
       if (!response.ok) {
@@ -516,7 +516,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Utility functions
-   */;
+   */
   private hashContent(content: string): string {
     let hash = 0;
     for (let i = 0; i < content.length; i++) {
@@ -564,7 +564,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Performance monitoring
-   */;
+   */
   getPerformanceMetrics() {
     return {
       ...this.performanceMetrics,
@@ -576,7 +576,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Reset performance metrics
-   */;
+   */
   resetMetrics() {
     this.performanceMetrics = {
       parseTime: 0,
@@ -588,7 +588,7 @@ export class SIMDJSONIndexProcessor {
   }
   /**
    * Clear embedding cache
-   */;
+   */
   clearCache() {
     this.embeddingCache.clear();
   }

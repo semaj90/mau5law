@@ -13,47 +13,44 @@
   import { createActor } from 'xstate';
   // Removed legacy UI library component imports (Card, Form, Alert, Select, etc.)
   import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
-  import {
-    Eye, EyeOff, Shield, Loader2, AlertCircle,
-    Zap, UserPlus, Badge, Building, Scale
-  } from 'lucide-svelte';
+  import { Eye, EyeOff, Shield, Loader2, AlertCircle, Zap, UserPlus, Badge, Building, Scale } from 'lucide-svelte';
   import { authMachine } from '$lib/machines/auth-machine';
   // Replaced legacy GPU orchestrator with new security orchestrator client
   import { validateSecurity } from '$lib/clients/securityOrchestrator';
   import { z } from 'zod';
   // Enhanced registration schema for legal professionals
-  const registerSchema = z.object({
-    email: z.string().email('Please enter a valid email address'),
-    firstName: z.string().min(2, 'First name must be at least 2 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-    password: z.string().min(12, 'Password must be at least 12 characters').regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
-      'Password must include uppercase, lowercase, number, and special character'
-    ),
-    confirmPassword: z.string(),
-    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
-    department: z.string().min(2, 'Department is required'),
-    jurisdiction: z.string().min(2, 'Jurisdiction is required'),
-    badgeNumber: z.string().optional(),
-    agreeToTerms: z.boolean().refine((val) => val === true, { message: 'You must agree to the terms' }),
-    agreeToPrivacy: z.boolean().refine((val) => val === true, { message: 'You must agree to privacy policy' }),
-    enableTwoFactor: z.boolean().default(false)
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword']
-  });
+  const registerSchema = z
+    .object({
+      email: z.string().email('Please enter a valid email address'),
+      firstName: z.string().min(2, 'First name must be at least 2 characters'),
+      lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+      password: z
+        .string()
+        .min(12, 'Password must be at least 12 characters')
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
+          'Password must include uppercase, lowercase, number, and special character'
+        ),
+      confirmPassword: z.string(),
+      role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
+      department: z.string().min(2, 'Department is required'),
+      jurisdiction: z.string().min(2, 'Jurisdiction is required'),
+      badgeNumber: z.string().optional(),
+      agreeToTerms: z.boolean().refine(val => val === true, { message: 'You must agree to the terms' }),
+      agreeToPrivacy: z.boolean().refine(val => val === true, { message: 'You must agree to privacy policy' }),
+      enableTwoFactor: z.boolean().default(false),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: "Passwords don't match",
+      path: ['confirmPassword'],
+    });
   interface Props {
     data: any;
     redirectTo?: string;
     showLogin?: boolean;
     enableGPUValidation?: boolean;
   }
-  let {
-    data,
-    redirectTo = '/dashboard',
-    showLogin = true,
-    enableGPUValidation = true
-  }: Props = $props();
+  let { data, redirectTo = '/dashboard', showLogin = true, enableGPUValidation = true }: Props = $props();
   // Form state
   let showPassword = $state(false);
   let showConfirmPassword = $state(false);
@@ -67,13 +64,19 @@
     { value: 'prosecutor', label: 'Prosecutor', icon: Scale },
     { value: 'investigator', label: 'Investigator', icon: Badge },
     { value: 'analyst', label: 'Legal Analyst', icon: Building },
-    { value: 'admin', label: 'Administrator', icon: Shield }
+    { value: 'admin', label: 'Administrator', icon: Shield },
   ];
   // XState auth machine
   const authActor = createActor(authMachine);
   authActor.start();
   // Superform setup
-  const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {
+  const {
+    form,
+    errors,
+    enhance: formEnhance,
+    submitting,
+    message,
+  } = superForm(data, {
     validators: zod(registerSchema),
     resetForm: false,
     delayMs: 300,
@@ -109,7 +112,7 @@
               legalProfessionalCheck: true,
               clientTimestamp: new Date().toISOString(),
               userAgent: navigator.userAgent,
-            }
+            },
           });
           securityScore = validationResponse.securityScore || 0;
           if (validationResponse.status === 'deny' || validationResponse.riskScore > 0.9) {
@@ -145,9 +148,9 @@
             platform: navigator.platform,
             language: navigator.language,
             timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
-            securityScore: securityScore
-          }
-        }
+            securityScore: securityScore,
+          },
+        },
       });
     },
     onResult: ({ result }) => {
@@ -163,9 +166,11 @@
           }, 2000);
         }
       } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
-        errorMessage = (result as { type?: any; data?: any; error?: any }).error?.message || 'Registration failed. Please try again.';
+        errorMessage =
+          (result as { type?: any; data?: any; error?: any }).error?.message ||
+          'Registration failed. Please try again.';
       }
-    }
+    },
   });
   // Removed obsolete XState subscription block (direct state.matches usage) per refactor directive.
   // Helper to safely read the first validation error for a field
@@ -196,8 +201,8 @@
       onlineStatus: navigator.onLine,
       doNotTrack: navigator.doNotTrack,
       hardwareConcurrency: navigator.hardwareConcurrency,
-    }
-    return { raw, encoded: btoa(JSON.stringify(raw)) }
+    };
+    return { raw, encoded: btoa(JSON.stringify(raw)) };
   }
   // Password visibility toggles
   function togglePasswordVisibility() {
@@ -209,7 +214,7 @@
   // Real-time password strength checker
   let passwordStrength = $derived(calculatePasswordStrength($form.password || ''));
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
-    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' }
+    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
     let score = 0;
     if (password.length >= 12) score += 2;
     if (password.length >= 16) score += 1;
@@ -218,10 +223,10 @@
     if (/\d/.test(password)) score += 1;
     if (/[@$!%*?&]/.test(password)) score += 1;
     if (password.length >= 20) score += 1;
-    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' }
-    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' }
-    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' }
-    return { score, feedback: 'Excellent', color: 'text-green-500' }
+    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' };
+    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' };
+    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };
+    return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
 </script>
 
@@ -634,9 +639,11 @@
     padding: 8px;
   }
   /* focus styles for inputs/selects/textarea */
-  :global(.nes-legal-register-form input:focus,
-          .nes-legal-register-form textarea:focus,
-          .nes-legal-register-form select:focus) {
+  :global(
+    .nes-legal-register-form input:focus,
+    .nes-legal-register-form textarea:focus,
+    .nes-legal-register-form select:focus
+  ) {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 100, 200, 0.3);
   }
@@ -738,4 +745,3 @@
     text-overflow: ellipsis;
   }
 </style>
-

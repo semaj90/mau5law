@@ -98,11 +98,13 @@
 
   // Derived state using modular utilities
   const sizeStyles = $derived(getSizeStyles(size as any));
-  const variantGradient = $derived(generateGradient({
-    variant: variant as any,
-    direction: gradientDirection,
-    colorPalette: SNES_PALETTE
-  }));
+  const variantGradient = $derived(
+    generateGradient({
+      variant: variant as any,
+      direction: gradientDirection,
+      colorPalette: SNES_PALETTE,
+    })
+  );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
 
@@ -117,7 +119,9 @@
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onfocus={handleFocus}
-  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
+  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
+    ? 'mode7'
+    : ''} {plasmaEffect ? 'plasma' : ''}"
   style="--button-gradient: {variantGradient}; --button-padding: {sizeStyles.padding}; --button-font-size: {sizeStyles.fontSize}; --button-min-height: {sizeStyles.minHeight}; --mode7-transform: {mode7Transform};"
 >
   {#if loading}
@@ -188,9 +192,15 @@
   }
 
   @keyframes plasmaShift {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
   }
 
   :global(.snes-16bit-button.mode7) {
@@ -249,9 +259,18 @@
   }
 
   @keyframes enhancedSpin {
-    0% { transform: rotate(0deg); border-radius: 50%; }
-    50% { transform: rotate(180deg); border-radius: 30%; }
-    100% { transform: rotate(360deg); border-radius: 50%; }
+    0% {
+      transform: rotate(0deg);
+      border-radius: 50%;
+    }
+    50% {
+      transform: rotate(180deg);
+      border-radius: 30%;
+    }
+    100% {
+      transform: rotate(360deg);
+      border-radius: 50%;
+    }
   }
 
   @media (max-width: 480px) {

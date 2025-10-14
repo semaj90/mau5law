@@ -21,7 +21,7 @@
     title = '',
     description = '',
     analyticsLog = () => {},
-    onClose = () => {}
+    onClose = () => {},
   }: Props = $props();
   // Lightweight analytics effect when dialog opens
   $effect(() => {
@@ -71,12 +71,7 @@
         {children}
       {/if}
     </div>
-    <button
-      type="button"
-      class="modal-close"
-      onclick={handleClose}
-      aria-label="Close dialog"
-    >×</button>
+    <button type="button" class="modal-close" onclick={handleClose} aria-label="Close dialog">×</button>
   </div>
 {/if}
 
@@ -101,10 +96,10 @@
     max-width: 28rem; /* tailwind max-w-md */
     transform: translate(-50%, -50%);
     background-color: var(--nier-surface, #0b0b0b);
-    border: 1px solid var(--nier-border, rgba(255,255,255,0.06));
+    border: 1px solid var(--nier-border, rgba(255, 255, 255, 0.06));
     border-radius: 0.5rem;
     padding: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
     box-sizing: border-box;
   }
 
@@ -116,7 +111,7 @@
   }
 
   .modal-description {
-    color: var(--nier-text-muted, rgba(255,255,255,0.7));
+    color: var(--nier-text-muted, rgba(255, 255, 255, 0.7));
     margin-bottom: 1rem;
   }
 
@@ -132,9 +127,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--nier-text-muted, rgba(255,255,255,0.7));
+    color: var(--nier-text-muted, rgba(255, 255, 255, 0.7));
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
     font-size: 1rem;
     line-height: 1;
   }

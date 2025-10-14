@@ -21,11 +21,12 @@
 
 <input
   type="checkbox"
-  id={id}
-  name={name}
-  value={value}
-  bind:checked={checked}
-  disabled={disabled}
+  {id}
+  {name}
+  {value}
+  bind:checked
+  {disabled}
   aria-label={ariaLabel}
-  class={"h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed " + className}
+  class={'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed ' +
+    className}
 />

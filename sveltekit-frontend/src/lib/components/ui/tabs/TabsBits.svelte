@@ -90,7 +90,7 @@
             'legal-ai-tabs-trigger font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed',
             sizeClasses[size],
             variantClasses[variant].trigger,
-            value === tab.value ? variantClasses[variant].triggerActive : variantClasses[variant].triggerInactive,
+            value === tab.value ? variantClasses[variant].triggerActive : variantClasses[variant].triggerInactive
           )}
         >
           {tab.label}

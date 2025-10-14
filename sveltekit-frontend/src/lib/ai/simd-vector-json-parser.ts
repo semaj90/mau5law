@@ -74,9 +74,7 @@ export class SIMDVectorJsonParser {
       // Split into chunks for parallel processing
       const chunks = this.createParseChunks(jsonStrings);
       // Process chunks in parallel using SIMD workers
-      const chunkPromises = chunks.map((chunk, index) =>
-        this.parseChunkSIMD(chunk, index, alignedMemory)
-      );
+      const chunkPromises = chunks.map((chunk, index) => this.parseChunkSIMD(chunk, index, alignedMemory));
       const chunkResults = await Promise.all(chunkPromises);
       // Merge results from all chunks
       const mergedResult = this.mergeChunkResults(chunkResults);
@@ -129,7 +127,9 @@ export class SIMDVectorJsonParser {
     const poolSize = 10; // Pre-allocate 10 buffers
     for (let i = 0; i < poolSize; i++) {
       // Allocate aligned memory (32-byte alignment for AVX)
-      const buffer = new ArrayBuffer(this.config.batchSize * this.config.vectorDimensions * 4 + this.config.memoryAlignment);
+      const buffer = new ArrayBuffer(
+        this.config.batchSize * this.config.vectorDimensions * 4 + this.config.memoryAlignment
+      );
       this.memoryPool.push(buffer);
     }
     console.log(`💾 Initialized SIMD memory pool: ${poolSize} aligned buffers`);
@@ -159,7 +159,8 @@ export class SIMDVectorJsonParser {
    * Release aligned memory back to pool
    */
   private releaseAlignedMemory(buffer: ArrayBuffer): void {
-    if (this.memoryPool.length < 20) { // Cap pool size
+    if (this.memoryPool.length < 20) {
+      // Cap pool size
       this.memoryPool.push(buffer);
     }
   }
@@ -203,11 +204,16 @@ export class SIMDVectorJsonParser {
         // Parse JSON (would use SIMD-optimized parser in production)
         const parsed = JSON.parse(jsonString);
         // Extract vector data with SIMD processing
-        const vector = this.extractVectorSIMD(parsed, alignedMemory, alignedOffset + i * this.config.vectorDimensions * 4);
+        const vector = this.extractVectorSIMD(
+          parsed,
+          alignedMemory,
+          alignedOffset + i * this.config.vectorDimensions * 4
+        );
         vectors.push(vector);
         metadata.push(this.createMetadata(cacheKey, vector));
         // Cache the result
-        if (this.parseCache.size < 10000) { // Cap cache size
+        if (this.parseCache.size < 10000) {
+          // Cap cache size
           this.parseCache.set(cacheKey, vector);
         }
         simdOperations++;
@@ -228,11 +234,7 @@ export class SIMDVectorJsonParser {
   /**
    * Extract vector using SIMD operations
    */
-  private extractVectorSIMD(
-    parsed: any,
-    alignedMemory: ArrayBuffer,
-    offset: number
-  ): Float32Array {
+  private extractVectorSIMD(parsed: any, alignedMemory: ArrayBuffer, offset: number): Float32Array {
     // Create aligned view into memory
     const alignedView = new Float32Array(alignedMemory, offset, this.config.vectorDimensions);
     // Extract embedding array
@@ -316,7 +318,7 @@ export class SIMDVectorJsonParser {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);

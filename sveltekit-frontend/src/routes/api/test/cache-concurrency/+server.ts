@@ -62,30 +62,30 @@ export const GET: RequestHandler = async () => {
       tests: {
         concurrent_storage: {
           attempted: testDocuments.length,
-          successful: successfulStores
-          success_rate: (successfulStores / testDocuments.length) * 100
+          successful: successfulStores,
+          success_rate: (successfulStores / testDocuments.length) * 100,
         },
         concurrent_retrieval: {
           attempted: testDocuments.length,
-          successful: successfulRetrieves
-          success_rate: (successfulRetrieves / testDocuments.length) * 100
+          successful: successfulRetrieves,
+          success_rate: (successfulRetrieves / testDocuments.length) * 100,
         },
         jsonb_queries: {
           total_queries: queryPromises.length,
           results: queryResults.map((result, i) => ({
-            query_index: i
-            results_count: result?.length || 0
+            query_index: i,
+            results_count: result?.length || 0,
           })
         },
         gpu_acceleration: {
           enabled: cacheStats.threadSafe,
-          documents_processed: gpuProcessedCount
-          total_documents: cacheStats.totalEntries
+          documents_processed: gpuProcessedCount,
+          total_documents: cacheStats.totalEntries,
         }
       },
-      cache_statistics: cacheStats
+      cache_statistics: cacheStats,
       thread_safety: {
-        mutex_protected: true
+        mutex_protected: true,
         concurrent_access: 'tested',
         race_conditions: 'prevented'
       },
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Mix of storage, retrieval, and query operations
       const docId = `stress_test_${i}`
       const document = {
-        test_id: i
+        test_id: i,
         data: `Stress test document ${i}`,
         complexity: Array.from({ length: 50 }, (_, j) => ({
           field: `stress_${i}_${j}`,
@@ -137,13 +137,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const failed = results.filter(item => item.length)
     return json({
       stress_test: {
-        level: stress_level
+        level: stress_level,
         total_operations: operations.length,
-        successful_operations: successful
-        failed_operations: failed
+        successful_operations: successful,
+        failed_operations: failed,
         success_rate: (successful / operations.length) * 100,
         execution_time_ms: endTime - startTime,
-        operations_per_second: Math.round(operations.length / ((endTime - startTime) / 1000)
+        operations_per_second: Math.round(operations.length / ((endTime - startTime) / 1000),
       },
       thread_safety_verified: failed === 0,
       timestamp: new Date().toISOString()

@@ -35,8 +35,8 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
     }
   } catch (error) {
     return {
-      healthy: false
-      responseTime: Date.now() - startTime
+      healthy: false,
+      responseTime: Date.now() - startTime,
     }
   }
 }
@@ -51,8 +51,8 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
     return {
       service: 'Redis Cache (L3)',
       status: response?.ok ? 'healthy' : 'down',
-      response_time_ms: response ? 50 : undefined
-      details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed'
+      response_time_ms: response ? 50 : undefined,
+      details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed',
     }
   } catch {
     return {
@@ -112,8 +112,8 @@ export const GET: RequestHandler = async ({ url }) => {
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
-          response_time_ms: responseTime
-          details: healthy ? 'Service operational' : 'Service unreachable'
+          response_time_ms: responseTime,
+          details: healthy ? 'Service operational' : 'Service unreachable',
         } as ServiceHealth
       })
     )
@@ -145,10 +145,10 @@ export const GET: RequestHandler = async ({ url }) => {
       overallStatus = 'critical'
     }
     const healthResponse: HealthResponse = {
-      overall_status: overallStatus
-      services: serviceChecks
-      nintendo_memory_banks: memoryBanks
-      timestamp: new Date().toISOString()
+      overall_status: overallStatus,
+      services: serviceChecks,
+      nintendo_memory_banks: memoryBanks,
+      timestamp: new Date().toISOString(),
     }
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503

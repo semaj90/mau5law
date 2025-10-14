@@ -1,6 +1,6 @@
 /**
  * Enhanced Search and Document Types with backward compatibility
- */;
+ */
 }
 export interface SearchResult {
   id: string;

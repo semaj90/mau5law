@@ -2,7 +2,7 @@
  * Citations Manager Module
  * Authentication-aware citation saving and importing system
  * Compatible with SvelteKit and gaming aesthetic UI
- */;
+ */
 }
 export interface Citation {
   id: string;
@@ -396,7 +396,7 @@ export const citationsManager = new CitationsManager();
 // Utility functions for easy integration
 export const useCitationsManager = () => {
   return {
-    manager: citationsManager
+    manager: citationsManager,
     isAuthenticated: citationsManager.isAuthenticated(),
     currentUser: citationsManager.getCurrentUser(),
     saveCitation: citationsManager.saveCitation.bind(citationsManager),

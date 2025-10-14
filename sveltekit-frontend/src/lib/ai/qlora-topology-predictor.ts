@@ -996,6 +996,6 @@ class LocalLLMConnector {
 export const qloraTopologyPredictor = new QLoRATopologyPredictor({
   maxHistoryLength: 100,
   learningRate: 0.03,
-  cacheSize: 15000
+  cacheSize: 15000,
 });
 console.log('🎯 QLoRA Topology Predictor with enhanced HMM loaded - ready for topology prediction');

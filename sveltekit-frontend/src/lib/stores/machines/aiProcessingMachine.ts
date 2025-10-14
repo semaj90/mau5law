@@ -45,9 +45,9 @@ export const aiProcessingMachine = createMachine({
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
-              result: undefined
-              error: undefined
-              timestamp: Date.now()
+              result: undefined,
+              error: undefined,
+              timestamp: Date.now(),
             })
           }
         }
@@ -115,8 +115,8 @@ export const aiProcessingMachine = createMachine({
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
-              result: undefined
-              error: undefined
+              result: undefined,
+              error: undefined,
             })
           }
         }
@@ -143,9 +143,9 @@ export const aiProcessingMachine = createMachine({
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
-              result: undefined
-              error: undefined
-              retryCount: 0
+              result: undefined,
+              error: undefined,
+              retryCount: 0,
             })
           }
         }
@@ -158,8 +158,8 @@ export const aiProcessingMachine = createMachine({
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
-              result: undefined
-              error: undefined
+              result: undefined,
+              error: undefined,
             })
           }
         }
@@ -256,7 +256,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
       duration,
       metrics: {
-        processingTime: duration
+        processingTime: duration,
         memoryUsed: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.memory_used || "Unknown",
         throughput: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.throughput || 0
       }
@@ -264,8 +264,8 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
   } catch (error: any) {
     return {
       taskId: task.id,
-      success: false
-      result: null
+      success: false,
+      result: null,
       duration: Date.now() - startTime,
       metrics: {
         processingTime: Date.now() - startTime,
@@ -286,7 +286,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({,
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "nomic-embed-text",
-            prompt: task.payload.text
+            prompt: task.payload.text,
           })
         });
         break;
@@ -316,7 +316,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
       duration,
       metrics: {
-        processingTime: duration
+        processingTime: duration,
         memoryUsed: "Unknown",
         throughput: 0
       }
@@ -324,7 +324,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
   } catch (error: any) {
     return {
       taskId: task.id,
-      success: false
+      success: false,
       result: null;
       duration: Date.now() - startTime
     }
@@ -337,7 +337,7 @@ async function executeLocalLLMTask(_task: AITask): Promise<AITaskResult> {
   await new Promise((resolve: any) => setTimeout(resolve, 1000);
   return {
     taskId: task.id,
-    success: true
+    success: true,
     result: { message: "Local LLM processing not implemented yet" },
     duration: Date.now() - startTime
   }
@@ -345,7 +345,7 @@ async function executeLocalLLMTask(_task: AITask): Promise<AITaskResult> {
 // Utility functions for working with the AI processing machine
 export const createAITask = (
   type: AITask["type"],
-  payload: any
+  payload: any,
   options?: {
     priority?: AITask["priority"];
     estimatedDuration?: number;

@@ -4,25 +4,25 @@ import { createMachine, assign, fromPromise } from 'xstate';
 
 // New small, permissive types for uploaded files and AI results
 type UploadedFile = {
-	id: string;
-	name: string;
-	size?: number;
-	mimeType?: string;
-	// allow extra fields from backend
-	[key: string]: unknown;
+  id: string;
+  name: string;
+  size?: number;
+  mimeType?: string;
+  // allow extra fields from backend
+  [key: string]: unknown;
 };
 
 type AIProcessingResult = {
-	extractedText?: string;
-	metadata?: Record<string, unknown>;
-	// allow extra fields returned by AI service
-	[key: string]: unknown;
+  extractedText?: string;
+  metadata?: Record<string, unknown>;
+  // allow extra fields returned by AI service
+  [key: string]: unknown;
 };
 
 type ProcessingSummary = {
-	totalFiles: number;
-	successfulProcessing: number;
-	extractedTextLength: number;
+  totalFiles: number;
+  successfulProcessing: number;
+  extractedTextLength: number;
 };
 
 export interface DocumentUploadContext {
@@ -44,12 +44,12 @@ type DocUploadEvent =
   | { type: 'SELECT_FILES'; files: File[] }
   | { type: 'SUBMIT' }
   | { type: 'RETRY' }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Internal XState events are handled by helpers and not included here.
 
 // --- New: helper extractors / guards (avoid `any`) ---
 function asRecord(v: unknown): Record<string, unknown> {
-  return (typeof v === 'object' && v !== null) ? (v as Record<string, unknown>) : {};
+  return typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 }
 
 function isSelectFilesEvent(evt: unknown): evt is Extract<DocUploadEvent, { type: 'SELECT_FILES' }> {
@@ -93,7 +93,9 @@ function extractUploadedFilesFromInvoke(evt: unknown): UploadedFile[] {
   return [];
 }
 
-function extractAIResultsFromInvoke(evt: unknown): { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null {
+function extractAIResultsFromInvoke(
+  evt: unknown
+): { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as unknown;
   if (typeof maybe === 'object' && maybe !== null) {

@@ -10,7 +10,7 @@
     Trigger: ComboboxTrigger,
     Content: ComboboxContent,
     Item: ComboboxItem,
-    HiddenInput: ComboboxHiddenInput
+    HiddenInput: ComboboxHiddenInput,
   } = Combobox as any;
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -20,7 +20,7 @@
     description?: string;
     category?: string;
     disabled?: boolean;
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any };
   }
   export interface ComboboxProps {
     options: ComboboxOption[];
@@ -56,7 +56,7 @@
     error,
     class: className = '',
     onValueChange,
-    onCreateOption
+    onCreateOption,
   }: ComboboxProps = $props();
   let inputValue = $state('');
   let open = $state(false);
@@ -64,26 +64,30 @@
   let filteredOptions = $derived(() => {
     if (!inputValue) return options;
     const query = inputValue.toLowerCase();
-    return options.filter(item =>
-      item.label.toLowerCase().includes(query) ||
-      (item.description?.toLowerCase().includes(query) ?? false) ||
-      (item.category?.toLowerCase().includes(query) ?? false)
+    return options.filter(
+      item =>
+        item.label.toLowerCase().includes(query) ||
+        (item.description?.toLowerCase().includes(query) ?? false) ||
+        (item.category?.toLowerCase().includes(query) ?? false)
     );
   });
   // Group options by category if categories are enabled
   let groupedOptions = $derived(() => {
     if (!categories) return [{ category: null, options: filteredOptions }];
-    const grouped = filteredOptions.reduce((acc, option) => {
-      const category = option.category || 'Other';
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(option);
-      return acc;
-    }, {} as Record<string, ComboboxOption[]>);
+    const grouped = filteredOptions.reduce(
+      (acc, option) => {
+        const category = option.category || 'Other';
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(option);
+        return acc;
+      },
+      {} as Record<string, ComboboxOption[]>
+    );
     return Object.entries(grouped).map(([category, options]) => ({
       category: category === 'Other' ? null : category,
-      options
+      options,
     }));
   });
   // Find selected option(s) for display
@@ -98,9 +102,11 @@
   });
   // Check if option can be created
   let canCreateOption = $derived(() => {
-    return creatable &&
-           inputValue.trim().length > 0 &&
-           !filteredOptions.some(opt => opt.label.toLowerCase() === inputValue.toLowerCase());
+    return (
+      creatable &&
+      inputValue.trim().length > 0 &&
+      !filteredOptions.some(opt => opt.label.toLowerCase() === inputValue.toLowerCase())
+    );
   });
   function handleValueChange(newValue: string | undefined) {
     if (multiple) {
@@ -133,22 +139,15 @@
   // Generate unique ID for accessibility
   const inputId = `combobox-${Math.random().toString(36).substr(2, 9)}`;
 </script>
+
 <div class="legal-combobox-container w-full space-y-2">
   <!-- Label -->
-    {#if label}
-      <label
-        for={inputId}
-        class="block text-sm font-medium text-yorha-text-primary font-mono"
-      >
-        {label}
-      </label>
-    {/if}
-  <ComboboxRoot
-    bind:open={open}
-    {disabled}
-    {multiple}
-    on:selectedChange={handleValueChange}
-  >
+  {#if label}
+    <label for={inputId} class="block text-sm font-medium text-yorha-text-primary font-mono">
+      {label}
+    </label>
+  {/if}
+  <ComboboxRoot bind:open {disabled} {multiple} on:selectedChange={handleValueChange}>
     <div class="relative">
       <ComboboxInput
         id={inputId}
@@ -163,9 +162,7 @@
         )}
         {required}
       />
-      <ComboboxTrigger
-        class="absolute inset-y-0 right-0 flex h-full w-9 items-center justify-center"
-      >
+      <ComboboxTrigger class="absolute inset-y-0 right-0 flex h-full w-9 items-center justify-center">
         <ChevronDown class="h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>
     </div>
@@ -232,7 +229,9 @@
   {#if multiple && Array.isArray(value) && value.length > 0}
     <div class="flex flex-wrap gap-2 mt-2">
       {#each selectedOptions as option}
-        <div class="inline-flex items-center gap-1 bg-yorha-primary/10 text-yorha-primary text-xs font-mono px-2 py-1 rounded border border-yorha-primary/20">
+        <div
+          class="inline-flex items-center gap-1 bg-yorha-primary/10 text-yorha-primary text-xs font-mono px-2 py-1 rounded border border-yorha-primary/20"
+        >
           {option.label}
           <button
             type="button"
@@ -258,6 +257,7 @@
     </p>
   {/if}
 </div>
+
 <style>
   :global(.legal-combobox-container input) {
     transition: all 0.2s ease;

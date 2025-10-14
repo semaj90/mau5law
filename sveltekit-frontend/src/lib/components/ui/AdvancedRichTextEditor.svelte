@@ -3,20 +3,20 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
-  import { Editor } from "@tiptap/core";
-  import Color from "@tiptap/extension-color";
-  import FontFamily from "@tiptap/extension-font-family";
-  import Highlight from "@tiptap/extension-highlight";
-  import Image from "@tiptap/extension-image";
-  import Placeholder from "@tiptap/extension-placeholder";
-  import Table from "@tiptap/extension-table";
-  import TableCell from "@tiptap/extension-table-cell";
-  import TableHeader from "@tiptap/extension-table-header";
-  import TableRow from "@tiptap/extension-table-row";
-  import TextAlign from "@tiptap/extension-text-align";
-  import TextStyle from "@tiptap/extension-text-style";
-  import Typography from "@tiptap/extension-typography";
-  import StarterKit from "@tiptap/starter-kit";
+  import { Editor } from '@tiptap/core';
+  import Color from '@tiptap/extension-color';
+  import FontFamily from '@tiptap/extension-font-family';
+  import Highlight from '@tiptap/extension-highlight';
+  import Image from '@tiptap/extension-image';
+  import Placeholder from '@tiptap/extension-placeholder';
+  import Table from '@tiptap/extension-table';
+  import TableCell from '@tiptap/extension-table-cell';
+  import TableHeader from '@tiptap/extension-table-header';
+  import TableRow from '@tiptap/extension-table-row';
+  import TextAlign from '@tiptap/extension-text-align';
+  import TextStyle from '@tiptap/extension-text-style';
+  import Typography from '@tiptap/extension-typography';
+  import StarterKit from '@tiptap/starter-kit';
   import {
     AlignCenter,
     AlignJustify,
@@ -45,16 +45,16 @@ https://svelte.dev/e/js_parse_error -->
     Upload,
     ZoomIn,
     ZoomOut,
-  } from "lucide-svelte";
-  import { onDestroy, onMount } from "svelte";
-  import { writable } from "svelte/store";
+  } from 'lucide-svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import { writable } from 'svelte/store';
 
   // Props
   export let content: string | null = null;
-  export let placeholder: string = "Start writing your legal report...";
+  export let placeholder: string = 'Start writing your legal report...';
   export let autosave: boolean = true;
-  export let reportId: string = "";
-  export let caseId: string = "";
+  export let reportId: string = '';
+  export let caseId: string = '';
   let editor: any = null;
   let editorElement: HTMLElement;
   let isFullscreen = false;
@@ -71,34 +71,49 @@ https://svelte.dev/e/js_parse_error -->
     isItalic: false,
     isUnderline: false,
     isStrike: false,
-    currentAlignment: "left",
-    currentColor: "#000000",
-    currentHighlight: "",
-    currentFontFamily: "Inter",
+    currentAlignment: 'left',
+    currentColor: '#000000',
+    currentHighlight: '',
+    currentFontFamily: 'Inter',
     currentFontSize: 16,
     isTable: false,
     isCode: false,
     isList: false,
     isOrderedList: false,
-    isQuote: false
+    isQuote: false,
   });
 
   // Color palettes for quick access
   const colorPalettes = {
     text: [
-      "#000000", "#374151", "#6b7280", "#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899",
+      '#000000',
+      '#374151',
+      '#6b7280',
+      '#ef4444',
+      '#f97316',
+      '#eab308',
+      '#22c55e',
+      '#3b82f6',
+      '#8b5cf6',
+      '#ec4899',
     ],
-    highlight: [
-      "transparent", "#fef3c7", "#dcfce7", "#dbeafe", "#e0e7ff", "#f3e8ff", "#fce7f3", "#fed7d7", "#f0f9ff",
-    ],
-    legal: [
-      "#1e40af", "#7c2d12", "#991b1b", "#365314", "#581c87", "#831843", "#92400e", "#166534",
-    ],
+    highlight: ['transparent', '#fef3c7', '#dcfce7', '#dbeafe', '#e0e7ff', '#f3e8ff', '#fce7f3', '#fed7d7', '#f0f9ff'],
+    legal: ['#1e40af', '#7c2d12', '#991b1b', '#365314', '#581c87', '#831843', '#92400e', '#166534'],
   };
 
   // Font options
   const fontFamilies = [
-    "Inter", "Times New Roman", "Arial", "Helvetica", "Georgia", "Verdana", "Courier New", "Roboto", "Open Sans", "Lato", "Merriweather",
+    'Inter',
+    'Times New Roman',
+    'Arial',
+    'Helvetica',
+    'Georgia',
+    'Verdana',
+    'Courier New',
+    'Roboto',
+    'Open Sans',
+    'Lato',
+    'Merriweather',
   ];
 
   // Auto-save functionality
@@ -120,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
       extensions: [
         StarterKit.configure({ history: { depth: 100 } }),
         Image.configure({ inline: true, allowBase64: true }),
-        TextAlign.configure({ types: ["heading", "paragraph"] }),
+        TextAlign.configure({ types: ['heading', 'paragraph'] }),
         Highlight.configure({ multicolor: true }),
         Typography,
         Placeholder.configure({ placeholder }),
@@ -130,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
         TableCell,
         TextStyle,
         Color,
-        FontFamily.configure({ types: ["textStyle"] }),
+        FontFamily.configure({ types: ['textStyle'] }),
       ],
       content,
       onTransaction: updateEditorState,
@@ -140,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
       },
       editorProps: {
         attributes: {
-          class: "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",
+          class: 'prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6',
         },
       },
     });
@@ -152,26 +167,26 @@ https://svelte.dev/e/js_parse_error -->
     editorState.set({
       canUndo: editor.can().undo(),
       canRedo: editor.can().redo(),
-      isBold: editor.isActive("bold"),
-      isItalic: editor.isActive("italic"),
-      isUnderline: editor.isActive("underline"),
-      isStrike: editor.isActive("strike"),
-      currentAlignment: editor.isActive({ textAlign: "center" })
-        ? "center"
-        : editor.isActive({ textAlign: "right" })
-        ? "right"
-        : editor.isActive({ textAlign: "justify" })
-        ? "justify"
-        : "left",
-      currentColor: editor.getAttributes("color")?.color || "#000000",
-      currentHighlight: editor.getAttributes("highlight")?.color || "",
-      currentFontFamily: editor.getAttributes("fontFamily")?.fontFamily || "Inter",
-      currentFontSize: editor.getAttributes("fontSize")?.fontSize || 16,
-      isTable: editor.isActive("table"),
-      isCode: editor.isActive("codeBlock"),
-      isList: editor.isActive("bulletList"),
-      isOrderedList: editor.isActive("orderedList"),
-      isQuote: editor.isActive("blockquote"),
+      isBold: editor.isActive('bold'),
+      isItalic: editor.isActive('italic'),
+      isUnderline: editor.isActive('underline'),
+      isStrike: editor.isActive('strike'),
+      currentAlignment: editor.isActive({ textAlign: 'center' })
+        ? 'center'
+        : editor.isActive({ textAlign: 'right' })
+          ? 'right'
+          : editor.isActive({ textAlign: 'justify' })
+            ? 'justify'
+            : 'left',
+      currentColor: editor.getAttributes('color')?.color || '#000000',
+      currentHighlight: editor.getAttributes('highlight')?.color || '',
+      currentFontFamily: editor.getAttributes('fontFamily')?.fontFamily || 'Inter',
+      currentFontSize: editor.getAttributes('fontSize')?.fontSize || 16,
+      isTable: editor.isActive('table'),
+      isCode: editor.isActive('codeBlock'),
+      isList: editor.isActive('bulletList'),
+      isOrderedList: editor.isActive('orderedList'),
+      isQuote: editor.isActive('blockquote'),
     });
   }
 
@@ -194,9 +209,9 @@ https://svelte.dev/e/js_parse_error -->
     const content = editor.getJSON();
     const html = editor.getHTML();
     try {
-      const response = await fetch("/api/reports/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/reports/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reportId,
           caseId,
@@ -206,17 +221,17 @@ https://svelte.dev/e/js_parse_error -->
           characterCount,
         }),
       });
-      if (!response.ok) throw new Error("Failed to save");
+      if (!response.ok) throw new Error('Failed to save');
       showSaveIndicator();
     } catch (error) {
-      console.error("Auto-save failed:", error);
+      console.error('Auto-save failed:', error);
     }
   }
 
   function showSaveIndicator() {
-    const indicator = document.createElement("div");
-    indicator.textContent = "Saved";
-    indicator.className = "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
+    const indicator = document.createElement('div');
+    indicator.textContent = 'Saved';
+    indicator.className = 'fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50';
     document.body.appendChild(indicator);
     setTimeout(() => {
       document.body.removeChild(indicator);
@@ -224,14 +239,14 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function setupKeyboardShortcuts() {
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener('keydown', e => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case "s":
+          case 's':
             e.preventDefault();
             saveContent();
             break;
-          case "z":
+          case 'z':
             if (e.shiftKey) editor?.commands.redo();
             else editor?.commands.undo();
             break;
@@ -241,27 +256,43 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Toolbar actions
-  function toggleBold() { editor?.chain().focus().toggleBold().run(); }
-  function toggleItalic() { editor?.chain().focus().toggleItalic().run(); }
-  function toggleUnderline() { editor?.chain().focus().toggleUnderline().run(); }
-  function toggleStrike() { editor?.chain().focus().toggleStrike().run(); }
-  function setAlignment(align: string) { editor?.chain().focus().setTextAlign(align).run(); }
-  function setTextColor(color: string) { editor?.chain().focus().setColor(color).run(); }
+  function toggleBold() {
+    editor?.chain().focus().toggleBold().run();
+  }
+  function toggleItalic() {
+    editor?.chain().focus().toggleItalic().run();
+  }
+  function toggleUnderline() {
+    editor?.chain().focus().toggleUnderline().run();
+  }
+  function toggleStrike() {
+    editor?.chain().focus().toggleStrike().run();
+  }
+  function setAlignment(align: string) {
+    editor?.chain().focus().setTextAlign(align).run();
+  }
+  function setTextColor(color: string) {
+    editor?.chain().focus().setColor(color).run();
+  }
   function setHighlight(color: string) {
-    if (color === "transparent") editor?.chain().focus().unsetHighlight().run();
+    if (color === 'transparent') editor?.chain().focus().unsetHighlight().run();
     else editor?.chain().focus().setHighlight({ color }).run();
   }
-  function setFontFamily(family: string) { editor?.chain().focus().setFontFamily(family).run(); }
-  function insertTable() { editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); }
+  function setFontFamily(family: string) {
+    editor?.chain().focus().setFontFamily(family).run();
+  }
+  function insertTable() {
+    editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  }
   function insertImage() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = (e) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = e => {
       const file = (e.target as HTMLInputElement)?.files?.[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = e => {
           const src = e.target?.result as string;
           editor?.chain().focus().setImage({ src }).run();
         };
@@ -279,34 +310,34 @@ https://svelte.dev/e/js_parse_error -->
     currentZoom = Math.max(50, Math.min(200, currentZoom + delta));
     if (editor?.view.dom) (editor.view.dom as HTMLElement).style.zoom = `${currentZoom}%`;
   }
-  function exportDocument(format: "html" | "json" | "pdf") {
+  function exportDocument(format: 'html' | 'json' | 'pdf') {
     if (!editor) return;
     let content: string | object;
     let type: string;
-    if (format === "json") {
+    if (format === 'json') {
       content = editor.getJSON();
-      type = "application/json";
+      type = 'application/json';
     } else {
       content = editor.getHTML();
-      type = "text/html";
+      type = 'text/html';
     }
-    const blob = new Blob([format === "json" ? JSON.stringify(content, null, 2) : content as string], { type });
+    const blob = new Blob([format === 'json' ? JSON.stringify(content, null, 2) : (content as string)], { type });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `report-${reportId}.${format}`;
     a.click();
     URL.revokeObjectURL(url);
   }
   function importDocument() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json,.html";
-    input.onchange = (e) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.html';
+    input.onchange = e => {
       const file = (e.target as HTMLInputElement)?.files?.[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = e => {
           try {
             const content = JSON.parse(e.target?.result as string);
             editor?.commands.setContent(content);
@@ -325,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
     if (editor) editor.commands.setContent(content);
   }
   export function getContent() {
-    return editor ? editor.getHTML() : "";
+    return editor ? editor.getHTML() : '';
   }
   export function getJSON() {
     return editor ? editor.getJSON() : null;
@@ -697,7 +728,7 @@ https://svelte.dev/e/js_parse_error -->
   .color-picker {
     position: relative;
   }
-  .color-picker input[type="color"] {
+  .color-picker input[type='color'] {
     position: absolute;
     inset: 0;
     opacity: 0;
@@ -716,13 +747,7 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
   }
   .ruler {
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 10px,
-      #e5e7eb 10px,
-      #e5e7eb 11px
-    );
+    background: repeating-linear-gradient(90deg, transparent, transparent 10px, #e5e7eb 10px, #e5e7eb 11px);
   }
   .ruler-mark {
     height: 24px;
@@ -734,8 +759,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .editor-container.show-grid {
     background-image:
-      linear-gradient(to right, #f3f4f6 1px, transparent 1px),
-      linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
+      linear-gradient(to right, #f3f4f6 1px, transparent 1px), linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
     background-size: 20px 20px;
   }
   .editor-content {

@@ -29,7 +29,7 @@ const BatchAnalysisSchema = z.object({
             source: z.string().optional(),
           })
           .optional(),
-      }),
+      })
     )
     .min(1, 'At least one file is required'),
   analysisOptions: z
@@ -447,4 +447,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       { status: 500 }
     );
   }
-}
+};

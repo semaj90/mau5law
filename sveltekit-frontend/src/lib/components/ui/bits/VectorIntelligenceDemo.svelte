@@ -77,7 +77,8 @@
   const mockSearchResults: VectorSearchResult[] = [
     {
       id: '1',
-      content: 'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.',
+      content:
+        'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.',
       metadata: {
         caseNumber: 'CV-2024-001',
         court: 'Superior Court of California',
@@ -94,7 +95,8 @@
     },
     {
       id: '2',
-      content: 'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',
+      content:
+        'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',
       metadata: {
         caseNumber: 'EM-2024-042',
         jurisdiction: 'Federal District Court',
@@ -111,7 +113,8 @@
     },
     {
       id: '3',
-      content: 'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.',
+      content:
+        'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.',
       metadata: {
         patentNumber: 'US 10,123,456',
         filingDate: '2020-03-15',
@@ -146,7 +149,9 @@
     };
     const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
     const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
-    return searchResults.filter((item: VectorSearchResult) => (item.score ?? 0) >= minScore && (item.score ?? 0) < maxScore);
+    return searchResults.filter(
+      (item: VectorSearchResult) => (item.score ?? 0) >= minScore && (item.score ?? 0) < maxScore
+    );
   });
   // Entity type icons mapping
   const entityIcons = {
@@ -168,7 +173,7 @@
   };
   // Helpers for safe highlight injection
   function escapeHtml(str: string) {
-    return str.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]!));
+    return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]!);
   }
   function escapeRegExp(s: string) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -223,16 +228,18 @@
 
   // Add: spread-safe attribute objects to avoid TS errors for custom attributes on native elements
   const yorhaDivAttrs = { variant: 'yorha', legal: true } as Record<string, any>;
-  const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true, clickable: true } as Record<string, any>;
+  const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true, clickable: true } as Record<
+    string,
+    any
+  >;
 </script>
+
 <div class="vector-intelligence-demo yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="yorha-panel-header mb-6">
     <div class="flex items-center gap-3 mb-2">
       <Brain class="w-8 h-8 text-blue-600" />
-      <h1 class="text-2xl font-gothic tracking-wide text-nier-text-primary">
-        Vector Intelligence Demo
-      </h1>
+      <h1 class="text-2xl font-gothic tracking-wide text-nier-text-primary">Vector Intelligence Demo</h1>
     </div>
     <p class="text-nier-text-secondary">
       Advanced AI-powered search and semantic analysis for legal documents using vector embeddings and NLP.
@@ -286,7 +293,8 @@
         disabled={isSearching}
         class="flex-1"
       />
-      <Button class="bits-btn"
+      <Button
+        class="bits-btn"
         variant="primary"
         legal
         loading={isSearching}
@@ -302,12 +310,7 @@
         {/if}
       </Button>
       {#if searchResults.length > 0}
-        <Button class="bits-btn"
-          variant="ghost"
-          on:click={clearResults}
-        >
-          Clear
-        </Button>
+        <Button class="bits-btn" variant="ghost" on:click={clearResults}>Clear</Button>
       {/if}
     </div>
     <!-- Search Status -->
@@ -332,9 +335,7 @@
             {@const SvelteComponent = entityIcons[entity.type]}
             <div class={cn('semantic-entity-tag', entityColors[entity.type])}>
               <div class="flex items-center gap-1">
-                <SvelteComponent
-                  class="w-3 h-3"
-                />
+                <SvelteComponent class="w-3 h-3" />
                 <span class="text-xs font-medium">{entity.text}</span>
                 <span class="text-xs opacity-75">
                   {formatConfidence(entity.confidence)}
@@ -363,7 +364,8 @@
       </div>
       <div class="space-y-4">
         {#each filteredResults as result (result.id)}
-          {@const Icon = result.source?.type === 'case' ? Scale : result.source?.type === 'precedent' ? FileText : FileText}
+          {@const Icon =
+            result.source?.type === 'case' ? Scale : result.source?.type === 'precedent' ? FileText : FileText}
           <div {...resultItemDivAttrs} class="vector-result-item nes-container">
             <div class="space-y-3">
               <!-- Result Header -->
@@ -418,16 +420,15 @@
     <!-- Empty State -->
     <div class="text-center py-12">
       <Brain class="w-16 h-16 mx-auto text-nier-text-muted mb-4" />
-      <h3 class="text-lg font-medium text-nier-text-primary mb-2">
-        AI Vector Intelligence Ready
-      </h3>
+      <h3 class="text-lg font-medium text-nier-text-primary mb-2">AI Vector Intelligence Ready</h3>
       <p class="text-nier-text-secondary mb-4">
         Enter a search query to demonstrate advanced semantic analysis and vector similarity matching.
       </p>
       <div class="flex justify-center gap-2">
-        <Button class="bits-btn"
+        <Button
+          class="bits-btn"
           variant="ghost"
-          on:click={() => searchQuery = 'contract breach non-disclosure agreement'}
+          on:click={() => (searchQuery = 'contract breach non-disclosure agreement')}
         >
           Try Sample Query
         </Button>
@@ -457,32 +458,23 @@
           <div class="text-xs text-nier-text-muted">Entities</div>
         </div>
         <div class="agent-nier-bits-card p-3">
-          <div class="text-lg font-bold text-nier-text-primary">
-            1.2s
-          </div>
+          <div class="text-lg font-bold text-nier-text-primary">1.2s</div>
           <div class="text-xs text-nier-text-muted">Query Time</div>
         </div>
       </div>
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   /* Vector Intelligence specific styling */
   .vector-intelligence-demo {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
-    );
+    background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
   }
   /* Enhanced result highlighting */
   :global(.vector-highlight) {
-    background: linear-gradient(
-      120deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(16, 185, 129, 0.2) 100%
-    );
+    background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
     padding: 2px 4px;
     border-radius: 3px;
     font-weight: 600;
@@ -516,7 +508,8 @@
     animation: processing-pulse 2s ease-in-out infinite;
   }
   @keyframes processing-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.8;
     }
     50% {
@@ -536,12 +529,7 @@
     left: -100%;
     width: 100%;
     height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--color-ai-status-online),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, var(--color-ai-status-online), transparent);
     transition: left 0.5s ease;
   }
   :global(.vector-result-item:hover::after) {
@@ -559,21 +547,13 @@
   }
   /* Empty state styling */
   .text-center {
-    background: radial-gradient(
-      ellipse at center,
-      rgba(59, 130, 246, 0.05) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
     border-radius: 12px;
     padding: 3rem 2rem;
   }
   /* Performance metrics styling */
   :global(.agent-card) {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.6) 100%
-    );
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(58, 55, 47, 0.1);
   }

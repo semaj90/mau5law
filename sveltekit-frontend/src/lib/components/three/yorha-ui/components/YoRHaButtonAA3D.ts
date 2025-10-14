@@ -48,22 +48,22 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         samples: 8,
         edgeThreshold: 0.125, // More sensitive for UI elements
         subpixelQuality: 0.85,
-        enabled: true
-        adaptiveQuality: true
+        enabled: true,
+        adaptiveQuality: true,
         performanceTarget: 60,
         ...options.antiAliasing
       },
       // Shader enhancements for crisp UI
       shaderEnhancements: {
-        supersample: true
-        edgeSmoothing: true
-        gradientSmoothing: true
-        alphaToCoverage: true
+        supersample: true,
+        edgeSmoothing: true,
+        gradientSmoothing: true,
+        alphaToCoverage: true,
         customAASamples: 4,
         ...options.shaderEnhancements
       },
       shadow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.3,
         intensity: 0.4,
@@ -77,13 +77,13 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
           ...options.hover?.transform
         },
         shadow: {
-          enabled: true
+          enabled: true,
           offsetY: -0.08,
           intensity: 0.6,
           ...options.hover?.shadow
         },
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.2,
           animation: 'pulse'
@@ -158,8 +158,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3);
     const particleMaterial = new THREE.PointsMaterial({
       size: 0.05,
-      vertexColors: true
-      transparent: true
+      vertexColors: true,
+      transparent: true,
       opacity: 0.3,
       blending: THREE.AdditiveBlending
     });
@@ -337,8 +337,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     shape.lineTo(x, y + radius);
     shape.quadraticCurveTo(x, y, x + radius, y);
     const extrudeSettings = {
-      depth: depth
-      bevelEnabled: true
+      depth: depth,
+      bevelEnabled: true,
       bevelSegments: 8,
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1,
@@ -388,7 +388,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const textGeometry = new THREE.PlaneGeometry(1.5 * aspect, 1.5);
     const textMaterial = new THREE.MeshBasicMaterial({
       map: this.textTexture,
-      transparent: true
+      transparent: true,
       alphaTest: 0.1,
       side: THREE.DoubleSide
     });
@@ -401,8 +401,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const textGeometry = new THREE.PlaneGeometry(1.5, 0.3);
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.style.textColor || YORHA_COLORS.primary.black,
-      transparent: true
-      side: THREE.DoubleSide
+      transparent: true,
+      side: THREE.DoubleSide,
     });
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
     this.textMesh.position.z = (this.style.depth || 0.15) / 2 + 0.01;
@@ -470,7 +470,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const ringGeometry = new THREE.RingGeometry(0.15, 0.2, 32);
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true
+      transparent: true,
       opacity: 0.8,
       roughness: 0.2,
       metalness: 0.3
@@ -484,8 +484,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const particleGeometry = new THREE.SphereGeometry(0.02, 8, 8);
     const particleMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.amber,
-      transparent: true
-      opacity: 0.6
+      transparent: true,
+      opacity: 0.6,
     });
     for (let i = 0; i < particleCount; i++) {
       const particle = new THREE.Mesh(particleGeometry, particleMaterial);
@@ -578,7 +578,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         borderColor: YORHA_COLORS.accent.bronze,
         textColor: YORHA_COLORS.primary.black,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.amber,
           intensity: 0.3
         }
@@ -600,7 +600,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         borderColor: 0x16213e,
         textColor: 0x0f3460,
         glow: {
-          enabled: true
+          enabled: true,
           color: 0x0066cc,
           intensity: 0.4,
           animation: 'pulse' as const
@@ -611,7 +611,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         borderColor: 0x1a0f33,
         textColor: 0xffffff,
         glow: {
-          enabled: true
+          enabled: true,
           color: 0x8a2be2,
           intensity: 0.5,
           animation: 'scan' as const
@@ -686,7 +686,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const rippleGeometry = new THREE.RingGeometry(0, 0.1, 32);
     const rippleMaterial = new THREE.MeshBasicMaterial({
       color: this.style.borderColor || YORHA_COLORS.primary.black,
-      transparent: true
+      transparent: true,
       opacity: 0.5,
       side: THREE.DoubleSide
     });

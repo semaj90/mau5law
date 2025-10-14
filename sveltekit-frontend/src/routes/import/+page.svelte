@@ -23,13 +23,13 @@ https://svelte.dev/e/js_parse_error -->
       updated: number;
       skipped: number;
       errors: string[];
-    }
+    };
     error?: string;
   } | null = $state(null);
-  type CsvPreview = { type: 'csv'; data: string[] }
-  type JsonPreview = { type: 'json'; data: unknown }
-  type XmlPreview = { type: 'xml'; data: string }
-  type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string }
+  type CsvPreview = { type: 'csv'; data: string[] };
+  type JsonPreview = { type: 'json'; data: unknown };
+  type XmlPreview = { type: 'xml'; data: string };
+  type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
   let dragActive = $state(false);
   // File input reference
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   "case-uuid","document","Contract document","/files/contract.pdf"
   "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
     },
-  }
+  };
   $effect(() => {
     // Add drag and drop event listeners
     if (browser) {
@@ -83,9 +83,9 @@ https://svelte.dev/e/js_parse_error -->
         document.removeEventListener('dragover', handleDragOver);
         document.removeEventListener('drop', handleDrop);
         document.removeEventListener('dragleave', handleDragLeave);
-      }
+      };
     }
-    return () => {} // Return empty cleanup function if not in browser
+    return () => {}; // Return empty cleanup function if not in browser
   });
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
           type: 'json',
           data: JSON.parse(content),
           raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
-        }
+        };
       } else if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         // removed unused lines assignment
         filePreview = {
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
           type: 'csv',
           data: lines,
           raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
-        }
+        };
       } else {
         filePreview = {
           name: file.name,
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
           type: 'xml',
           data: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
           raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
-        }
+        };
       }
     } catch (error) {
       notifications.add({
@@ -532,9 +532,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+;
 
 <style>
   /* @unocss-include */
   /* Custom drag and drop styles */
 </style>
-;

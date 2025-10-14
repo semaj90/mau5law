@@ -55,16 +55,19 @@ export const GET: RequestHandler = async ({ url }) => {
         total: workers.length,
         online: workers.filter(w => w.status === 'online').length,
         offline: workers.filter(w => w.status === 'offline').length,
-        degraded: workers.filter(w => w.status === 'degraded').length
-      }
+        degraded: workers.filter(w => w.status === 'degraded').length,
+      },
     });
   } catch (error) {
     console.error('[Worker Health] Check failed:', error);
-    return json({
-      success: false,
-      error: 'Worker health check failed',
-      details: error instanceof Error ? error.message : String(error)
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: 'Worker health check failed',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -82,7 +85,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
         name: 'OCR Worker',
         status: 'offline',
         healthy: false,
-        details: 'No heartbeat found in Redis'
+        details: 'No heartbeat found in Redis',
       };
     }
 
@@ -102,8 +105,8 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       details: {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         gpuEnabled: parsedStats.gpuEnabled || false,
-        workerPoolSize: parsedStats.workerPoolSize || 4
-      }
+        workerPoolSize: parsedStats.workerPoolSize || 4,
+      },
     };
   } catch (error) {
     console.error('[OCR Worker Health] Check failed:', error);
@@ -111,7 +114,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       name: 'OCR Worker',
       status: 'offline',
       healthy: false,
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -152,7 +155,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         status: 'offline',
         healthy: false,
         queueDepth: totalQueueDepth,
-        details: 'No heartbeat found - worker may not be running'
+        details: 'No heartbeat found - worker may not be running',
       };
     }
 
@@ -174,8 +177,8 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         ollamaModel: 'embeddinggemma:latest',
         queuedJobs: totalQueueDepth,
-        failedJobs: parsedStats.failedJobs || 0
-      }
+        failedJobs: parsedStats.failedJobs || 0,
+      },
     };
   } catch (error) {
     console.error('[Embedding Worker Health] Check failed:', error);
@@ -183,7 +186,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
       name: 'Embedding Worker',
       status: 'offline',
       healthy: false,
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -202,7 +205,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
         name: 'Autotag Worker',
         status: 'offline',
         healthy: false,
-        details: 'Worker is optional - not critical'
+        details: 'Worker is optional - not critical',
       };
     }
 
@@ -221,8 +224,8 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       uptime: parsedStats.uptime || 0,
       details: {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
-        gemma3Legal: parsedStats.aiPowered || false
-      }
+        gemma3Legal: parsedStats.aiPowered || false,
+      },
     };
   } catch (error) {
     console.error('[Autotag Worker Health] Check failed:', error);
@@ -230,7 +233,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       name: 'Autotag Worker',
       status: 'offline',
       healthy: false,
-      details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error))
+      details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error)),
     };
   }
 }

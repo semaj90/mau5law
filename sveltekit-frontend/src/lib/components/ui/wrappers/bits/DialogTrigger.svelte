@@ -47,10 +47,8 @@
   <DT>
     {@render children?.()}
   </DT>
+{:else if asChild}
+  {@render children?.()}
 {:else}
-  {#if asChild}
-    {@render children?.()}
-  {:else}
-    <button type="button">{@render children?.()}</button>
-  {/if}
+  <button type="button">{@render children?.()}</button>
 {/if}

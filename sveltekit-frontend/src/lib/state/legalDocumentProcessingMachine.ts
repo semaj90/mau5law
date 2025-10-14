@@ -132,8 +132,8 @@ const services = {
     }
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
-      mcpAnalysis: mockMCPAnalysis
-      recommendations: mockMCPAnalysis.legalSpecificRecommendations
+      mcpAnalysis: mockMCPAnalysis,
+      recommendations: mockMCPAnalysis.legalSpecificRecommendations,
     }
   },
   storeDocument: async (context: LegalDocumentContext) => {
@@ -160,13 +160,13 @@ export const legalDocumentProcessingMachine = createMachine({
     retryCount: 0,
     maxRetries: 3,
     options: {
-      extractEntities: true
-      generateSummary: true
-      assessRisk: true
-      generateEmbedding: true
-      storeInQdrant: true
-      useContext7: true
-      useSemanticSearch: false
+      extractEntities: true,
+      generateSummary: true,
+      assessRisk: true,
+      generateEmbedding: true,
+      storeInQdrant: true,
+      useContext7: true,
+      useSemanticSearch: false,
     }
   },
   initial: 'idle',

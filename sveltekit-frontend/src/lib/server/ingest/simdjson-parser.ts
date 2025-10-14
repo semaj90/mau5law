@@ -49,8 +49,8 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     // Combine text fields with some structure
     const extractedText = textFields.slice(0, 100).join('\n\n'); // Limit to first 100 text fields
     return {
-      success: true
-      data: parsedData
+      success: true,
+      data: parsedData,
       extractedText,
       metadata: {
         parser,
@@ -61,7 +61,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     }
   } catch (error) {
     return {
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       metadata: {
         parser: 'native',
@@ -77,7 +77,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
  * Processes JSON in chunks to avoid memory issues
  */
 export async function parseJsonStream(
-  jsonString: string
+  jsonString: string,
   chunkSize = 1024 * 1024 // 1MB chunks
 ): Promise<any> {
   try {
@@ -110,13 +110,13 @@ export async function parseJsonStream(
       }
     }
     return {
-      success: true
+      success: true,
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
       totalChunks: chunks.length
     }
   } catch (error) {
     return {
-      success: false
+      success: false,
       extractedTexts: [],
       totalChunks: 0,
       error: error instanceof Error ? error.message: String(error)
@@ -125,7 +125,7 @@ export async function parseJsonStream(
 }
 /**
  * Extract text fields from a JSON object
- */;
+ */
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];
   function walk(_value: any, depth = 0): void {

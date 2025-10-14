@@ -54,14 +54,14 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Register a message handler for a specific queue
-   */;
+   */
   registerHandler(queueName: string, handler: MessageHandler): void {
     this.handlers.set(queueName, handler);
     this.log(`Handler registered for queue: ${queueName}`);
   }
   /**
    * Start the service worker and begin consuming messages
-   */;
+   */
   async start(): Promise<void> {
     if (this.isRunning) {
       this.log('Worker already running', 'info');
@@ -95,7 +95,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Stop the service worker
-   */;
+   */
   async stop(): Promise<void> {
     if (!this.isRunning) return;
     this.isRunning = false;
@@ -109,7 +109,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Start consuming messages from a specific queue
-   */;
+   */
   private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
     await rabbitmqService.consume(queueName, async (message, originalMessage) => {
       const startTime = Date.now();
@@ -136,7 +136,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Setup default message handlers for legal AI operations
-   */;
+   */
   private setupDefaultHandlers(): void {
     // Document processing handler
     this.registerHandler({}.DOCUMENT_PROCESSING, async (message) => {
@@ -183,7 +183,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue({}.CASE_UPDATES, {
         caseId: message.caseId,
         evidenceId: message.evidenceId,
-        analysisComplete: true
+        analysisComplete: true,
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
@@ -219,7 +219,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Update average processing time statistics
-   */;
+   */
   private updateAvgProcessingTime(processingTime: number): void {
     const currentAvg = this.processingStats.avgProcessingTime;
     const messageCount = this.processingStats.messagesProcessed;
@@ -228,7 +228,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Get worker performance statistics
-   */;
+   */
   getStats(): typeof this.processingStats & { uptime: number; isRunning: boolean } {
     return {
       ...this.processingStats,
@@ -238,7 +238,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Health check for the service worker
-   */;
+   */
   async healthCheck(): Promise<any> {
     const rabbitmqHealth = await rabbitmqService.healthCheck();
     const stats = this.getStats();
@@ -250,7 +250,7 @@ export class RabbitMQServiceWorker {
   }
   /**
    * Publish a message to a queue (convenience method)
-   */;
+   */
   async publishMessage(queueName: string, message: any): Promise<boolean> {
     try {
       const success = await rabbitmqService.publish(

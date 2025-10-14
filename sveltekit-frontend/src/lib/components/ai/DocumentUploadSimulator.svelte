@@ -67,7 +67,7 @@
         extractedText,
         summary,
         embeddings,
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString(),
       };
 
       let localStorageKey: string | undefined = undefined;
@@ -89,7 +89,7 @@
       const message = err instanceof Error ? err.message : 'Processing failed';
       await updateUpload(uploadId, {
         status: 'error',
-        error: message
+        error: message,
       });
       errorMessage = message;
     }
@@ -104,7 +104,11 @@
       if (depth > 6) return ''; // avoid infinite recursion
       if (typeof obj === 'string') return obj;
       if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
-      if (Array.isArray(obj)) return obj.map(item => extractTextFromObject(item, depth + 1)).filter(Boolean).join('\n\n');
+      if (Array.isArray(obj))
+        return obj
+          .map(item => extractTextFromObject(item, depth + 1))
+          .filter(Boolean)
+          .join('\n\n');
       if (obj && typeof obj === 'object') {
         // Prefer common textual fields first
         const commonKeys = ['text', 'content', 'body', 'description', 'summary', 'notes'];
@@ -134,7 +138,7 @@
 
         const response = await fetch(`${API_BASE}/upload`, {
           method: 'POST',
-          body: formData
+          body: formData,
         });
 
         if (!response.ok) {
@@ -177,8 +181,8 @@
       body: JSON.stringify({
         content: text,
         type: 'legal',
-        length: 'medium'
-      })
+        length: 'medium',
+      }),
     });
 
     if (!response.ok) {
@@ -229,9 +233,11 @@
               body: JSON.stringify({
                 source: 'simulator',
                 embedding: normalized,
-                meta: { preview: shortText.substring(0, 200) }
+                meta: { preview: shortText.substring(0, 200) },
               }),
-            }).catch(() => { /* ignore */ });
+            }).catch(() => {
+              /* ignore */
+            });
           } catch {}
           return normalized;
         }
@@ -260,7 +266,7 @@
 
     // Final fallback: deterministic-ish mock embedding of preferred size
     const rng = seededRandomFromString(text || 'fallback');
-    const mock = Array.from({ length: PREFERRED_DIM }, () => (rng() * 2 - 1));
+    const mock = Array.from({ length: PREFERRED_DIM }, () => rng() * 2 - 1);
     return mock;
   }
 
@@ -277,9 +283,9 @@
     for (let i = 0; i < seedStr.length; i++) {
       h = Math.imul(h ^ seedStr.charCodeAt(i), 16777619);
     }
-    return function() {
+    return function () {
       // xorshift
-      h += 0x6D2B79F5;
+      h += 0x6d2b79f5;
       let t = Math.imul(h ^ (h >>> 15), 1 | h);
       t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -287,11 +293,11 @@
   }
 
   async function updateProgress(id: string, status: DocumentUpload['status'], progress: number): Promise<void> {
-    uploads = uploads.map(upload => upload.id === id ? { ...upload, status, progress } : upload);
+    uploads = uploads.map(upload => (upload.id === id ? { ...upload, status, progress } : upload));
   }
 
   async function updateUpload(id: string, updates: Partial<DocumentUpload>): Promise<void> {
-    uploads = uploads.map(upload => upload.id === id ? { ...upload, ...updates } : upload);
+    uploads = uploads.map(upload => (upload.id === id ? { ...upload, ...updates } : upload));
   }
 
   function delay(ms: number): Promise<void> {
@@ -335,7 +341,9 @@
     if (upload?.localStorageKey) {
       try {
         localStorage.removeItem(upload.localStorageKey);
-      } catch (err) { /* ignore */ }
+      } catch (err) {
+        /* ignore */
+      }
     }
     uploads = uploads.filter(u => u.id !== id);
   }
@@ -346,7 +354,7 @@
       extractedText: upload.extractedText,
       summary: upload.summary,
       embeddings: upload.embeddings,
-      processedAt: new Date().toISOString()
+      processedAt: new Date().toISOString(),
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -359,24 +367,36 @@
 
   function getStatusColor(status: DocumentUpload['status']): string {
     switch (status) {
-      case 'uploading': return 'text-blue-400';
-      case 'processing': return 'text-yellow-400';
-      case 'embedding': return 'text-purple-400';
-      case 'completed': return 'text-green-400';
-      case 'error': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'uploading':
+        return 'text-blue-400';
+      case 'processing':
+        return 'text-yellow-400';
+      case 'embedding':
+        return 'text-purple-400';
+      case 'completed':
+        return 'text-green-400';
+      case 'error':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
     }
   }
 
   // Added: human-readable status labels used in the template
   function getStatusText(status: DocumentUpload['status']): string {
     switch (status) {
-      case 'uploading': return 'Uploading';
-      case 'processing': return 'Processing';
-      case 'embedding': return 'Generating Embeddings';
-      case 'completed': return 'Completed';
-      case 'error': return 'Error';
-      default: return 'Unknown';
+      case 'uploading':
+        return 'Uploading';
+      case 'processing':
+        return 'Processing';
+      case 'embedding':
+        return 'Generating Embeddings';
+      case 'completed':
+        return 'Completed';
+      case 'error':
+        return 'Error';
+      default:
+        return 'Unknown';
     }
   }
 </script>
@@ -396,18 +416,12 @@
     aria-label="File upload area. Press Enter or Space to open file picker, or drop files here."
     on:dragover|preventDefault
     on:dragenter={handleDragEnter}
-    on:dragleave={() => isDragging = false}
+    on:dragleave={() => (isDragging = false)}
     on:drop={handleDrop}
     on:click={() => fileInput?.click()}
     on:keydown={handleKeyDown}
   >
-    <input
-      type="file"
-      bind:this={fileInput}
-      class="hidden"
-      multiple
-      on:change={handleFileInput}
-    />
+    <input type="file" bind:this={fileInput} class="hidden" multiple on:change={handleFileInput} />
     <div class="text-center">
       <div class="text-6xl mb-4">
         {#if isDragging}
@@ -445,7 +459,12 @@
             </p>
           </div>
         </div>
-        <button type="button" class="text-gray-400 hover:text-red-400 transition-colors" on:click={() => removeUpload(upload.id)} aria-label="Remove upload">
+        <button
+          type="button"
+          class="text-gray-400 hover:text-red-400 transition-colors"
+          on:click={() => removeUpload(upload.id)}
+          aria-label="Remove upload"
+        >
           ✕
         </button>
       </div>
@@ -493,7 +512,10 @@
               <div class="text-xs text-gray-300">
                 Generated {upload.embeddings.length}D vector using Nomic-Embed-Text
                 <br />
-                First 5 dimensions: [{upload.embeddings.slice(0,5).map(n => n.toFixed(3)).join(', ')}...]
+                First 5 dimensions: [{upload.embeddings
+                  .slice(0, 5)
+                  .map(n => n.toFixed(3))
+                  .join(', ')}...]
               </div>
             </div>
           {/if}

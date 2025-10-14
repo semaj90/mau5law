@@ -51,8 +51,7 @@ export function getRoutesByCategory(category: string): RouteInfo[] {
 
 export function searchRoutes(query: string): RouteInfo[] {
   const lowercaseQuery = query.toLowerCase();
-  return discoverRoutes().filter(route =>
-    route.name.toLowerCase().includes(lowercaseQuery) ||
-    route.path.toLowerCase().includes(lowercaseQuery)
+  return discoverRoutes().filter(
+    route => route.name.toLowerCase().includes(lowercaseQuery) || route.path.toLowerCase().includes(lowercaseQuery)
   );
 }

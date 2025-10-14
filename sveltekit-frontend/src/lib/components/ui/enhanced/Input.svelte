@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* Enhanced Input with NieR styling */
   .yorha-input {
-    /* Base styles from UnoCSS shortcuts */;
+    /* Base styles from UnoCSS shortcuts */
     transition: all 0.2s ease;
   }
   .yorha-input:focus {

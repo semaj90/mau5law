@@ -29,7 +29,7 @@ export interface CompressedTextTile {
     patternId: string;
     frequency: number;
     categories: string[];
-  }
+  };
 }
 export interface TextEmbeddingResult {
   originalText: string;
@@ -41,14 +41,14 @@ export interface TextEmbeddingResult {
     componentData: ArrayBuffer;
     renderingInstructions: string;
     cssOptimized: string;
-  }
+  };
   processingStats: {
     compressionTime: number;
     totalCompressionRatio: number;
     gpuUtilization: number;
     cacheHits: number;
     semanticPreservationScore: number;
-  }
+  };
 }
 export class SIMDTextTilingEngine {
   private config: TextTileConfig;
@@ -65,7 +65,7 @@ export class SIMDTextTilingEngine {
       vectorDimensions: 384, // Matches nomic-embed-text
       preserveSemantics: true,
       ...config,
-    }
+    };
     console.log('🔧 SIMD Text Tiling Engine initialized:', this.config);
   }
   /**
@@ -107,7 +107,7 @@ export class SIMDTextTilingEngine {
         cacheHits: this.calculateCacheHits(compressedTiles),
         semanticPreservationScore: await this.calculateSemanticPreservation(text, compressedTiles),
       },
-    }
+    };
   }
   /**
    * Generate base embeddings using LangChain Ollama integration
@@ -222,7 +222,7 @@ export class SIMDTextTilingEngine {
           frequency: this.calculateFrequency(tileText),
           categories: this.categorizeContent(tileText),
         },
-      }
+      };
       tiles.push(tile);
       // Cache for reuse
       this.tileCache.set(tile.semanticHash, tile);
@@ -370,7 +370,7 @@ export class SIMDTextTilingEngine {
       narrative: ['story', 'character', 'plot', 'narrative', 'describes'],
       numeric: ['number', 'count', 'amount', 'total', 'sum'],
       mixed: ['and', 'or', 'but', 'however', 'therefore'],
-    }
+    };
     const patternWords = keywords[pattern as keyof typeof keywords] || [];
     const matches = patternWords.filter(word => text.toLowerCase().includes(word)).length;
     return matches / patternWords.length;
@@ -420,7 +420,7 @@ export class SIMDTextTilingEngine {
     texts: Array<{ text: string; metadata?: Record<string, unknown> }>,
     options: Partial<TextTileConfig> = {}
   ): Promise<TextEmbeddingResult[]> {
-    const _config = { ...this.config, ...options }
+    const _config = { ...this.config, ...options };
     console.log(`🚀 Batch processing ${texts.length} texts for SIMD tiling`);
     const results = await Promise.all(
       texts.map(async ({ text, metadata = {} }) => {

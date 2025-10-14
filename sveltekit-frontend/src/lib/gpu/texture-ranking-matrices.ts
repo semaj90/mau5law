@@ -163,16 +163,16 @@ export class TextureRankingMatrices {
             bindGroupLayouts: [bindGroupLayout]
           }),
           compute: {
-            module: shaderModule
-            entryPoint: 'main'
+            module: shaderModule,
+            entryPoint: 'main',
           }
         });
         const pipelineWrapper: ComputePipelineWrapper = {
-          pipeline: nativePipeline
+          pipeline: nativePipeline,
           bindGroupLayout,
           bindGroup: this.device.createBindGroup({,
-            layout: bindGroupLayout
-            entries: []
+            layout: bindGroupLayout,
+            entries: [],
           }),
           workgroupCount: dimension.workgroupSize
         }
@@ -286,13 +286,13 @@ export class TextureRankingMatrices {
       const outputTexture = this.device.createTexture({
         size: { width: paddedSize, height: paddedSize },
         format: dimension.textureFormat,
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
       });
       // Create query buffer
       const queryBuffer = this.device.createBuffer({
         size: queryEmbedding.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
       new, Float32Array(queryBuffer.getMappedRange()).set(queryEmbedding);
       queryBuffer,.unmap();
@@ -356,7 +356,7 @@ export class TextureRankingMatrices {
     const texture = this.device.createTexture({
       size: { width: textureSize, height: textureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
     });
     // Pack embeddings into RGBA32F texture (4 values per pixel)
     const textureData = new Float32Array(textureSize * textureSize * 4);
@@ -408,8 +408,8 @@ export class TextureRankingMatrices {
         rank: 0, // Will be set after sorting
         metadata: {
           processingTime: this.performanceMetrics.averageLatency,
-          cacheHit: false
-          bankId: node.bankId
+          cacheHit: false,
+          bankId: node.bankId,
         }
       });
     }
@@ -443,12 +443,12 @@ export class TextureRankingMatrices {
       results.push({
         nodeId: node.id,
         scores: new Map([['semantic_similarity', similarity]]),
-        combinedScore: similarity
+        combinedScore: similarity,
         rank: 0,
         metadata: {
           processingTime: 0,
-          cacheHit: false
-          bankId: node.bankId
+          cacheHit: false,
+          bankId: node.bankId,
         }
       });
     }
@@ -475,14 +475,14 @@ export class TextureRankingMatrices {
       toRemove.forEach(([key]) => this.rankingCache.delete(key);
     }
     this.rankingCache.set(key, {
-      result: results
+      result: results,
       timestamp: Date.now(),
       priority
     });
   }
   /**
    * WGSL Compute Shaders for each ranking dimension
-   */;
+   */
   private getSemanticSimilarityShader(),: string {
     return `
       @group(0) @binding(0) var inputTexture: texture_2d<f32>;
@@ -588,7 +588,7 @@ export class TextureRankingMatrices {
   }
   /**
    * Get performance metrics
-   */;
+   */
   getPerformanceMetrics(), {
     return {
       ...this.performanceMetrics,
@@ -599,7 +599,7 @@ export class TextureRankingMatrices {
   }
   /**
    * Cleanup GPU resources
-   */;
+   */
   async destroy(),: Promise<void> {
     // Cleanup textures
     for (const texture, o,f t,his.rankingTextures.valu,es()) {
@@ -626,7 +626,7 @@ export class TextureRankingMatrices {
  * 2. Binary FlatBuffers (flatbuffer-legal-schema.ts)
  * 3. GPU Texture Ranking (this file)
  * 4. NES-GPU Bridge (nes-gpu-memory-bridge.ts)
- */;
+ */
 export class NESSGPUBinaryRankingPipeline {
   private textureRanking: TextureRankingMatrices;
   private nesMemory: MemoryBank;
@@ -642,7 +642,7 @@ export class NESSGPUBinaryRankingPipeline {
    */
   async processLegalDocumentsBinary(
     documents: any[], // Raw legal documents
-    queryText: string
+    queryText: string,
     options: {
       maxResults?: number;
       dimensions?: string[];
@@ -703,7 +703,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Load binary documents into NES memory banks with legal document priority scoring
-   */;
+   */
   private async loadDocumentsToNESMemory(documents: LegalDocumentBinaryLayout[]): Promise<void> {
     for (let i = 0; i < documents.length; i++) {
       const doc = documents[i];
@@ -736,7 +736,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Select optimal NES memory bank based on document characteristics
-   */;
+   */
   private selectOptimalMemoryBank(doc: LegalDocumentBinaryLayout, priority: number): 'PRG_ROM' | 'CHR_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM' {
     // High priority documents (Supreme Court, recent statutes) → PRG_ROM (fast access)
     if (priority > 200) return 'PRG_ROM';
@@ -750,10 +750,10 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Convert binary legal documents to BinaryGraphData for GPU processing
-   */;
+   */
   private createBinaryGraphFromDocuments(documents: LegalDocumentBinaryLayout[]): any {
     const nodes = documents.map((doc, index) => ({
-      id: index
+      id: index,
       embedding: doc.embedding || new Float32Array(384),
       priority: doc.priority || 128,
       bankId: this.getBankIdForDocument(doc),
@@ -781,7 +781,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Generate query embedding using existing sentence transformer service
-   */;
+   */
   private async generateQueryEmbedding(queryText: string): Promise<Float32Array> {
     try {
       // This would integrate with your existing sentence transformer service
@@ -800,8 +800,8 @@ export class NESSGPUBinaryRankingPipeline {
    * CPU fallback that still uses binary data (faster than JSON fallback)
    */
   private async computeBinaryCPUFallback(
-    documents: LegalDocumentBinaryLayout[]
-    queryEmbedding: Float32Array
+    documents: LegalDocumentBinaryLayout[],
+    queryEmbedding: Float32Array,
     maxResults: number;
   ): Promise<RankingResult[]> {
     console.log('🔄 Using binary CPU fallback (still faster than JSON)');
@@ -825,14 +825,14 @@ export class NESSGPUBinaryRankingPipeline {
           : 0;
       }
       results.push({
-        nodeId: i
+        nodeId: i,
         scores: new Map([['semantic_similarity', similarity]]),
-        combinedScore: similarity
+        combinedScore: similarity,
         rank: 0,
         metadata: {
           processingTime: 0,
-          cacheHit: false
-          bankId: this.getBankIdForDocument(doc)
+          cacheHit: false,
+          bankId: this.getBankIdForDocument(doc),
         }
       });
     }
@@ -843,7 +843,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Initialize GPU device for high-performance operations
-   */;
+   */
   async initializeGPU(): Promise<boolean> {
     try {
       const adapter = await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance' });
@@ -861,7 +861,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Get comprehensive performance metrics
-   */;
+   */
   getPerformanceMetrics() {
     return {
       pipeline: 'NES-GPU Binary Ranking',
@@ -872,7 +872,7 @@ export class NESSGPUBinaryRankingPipeline {
   }
   /**
    * Cleanup all resources
-   */;
+   */
   async destroy(): Promise<void> {
     await this.textureRanking.destroy();
     (this.nesMemory as any).cleanup?.();

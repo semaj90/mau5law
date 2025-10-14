@@ -68,8 +68,8 @@ export async function POST({ request }): Promise<any> {
         role: user.role
       },
       session: {
-        id: sessionId
-        expiresAt: expiresAt.toISOString()
+        id: sessionId,
+        expiresAt: expiresAt.toISOString(),
       }
     })
   } catch (error: any) {

@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types';
 import {
   initializeIntegratedRAG,
   processDocument,
-  searchSimilarDocuments
+  searchSimilarDocuments,
 } from '$lib/server/services/integrated-rag-service';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -59,13 +59,13 @@ export const POST: RequestHandler = async ({ request }) => {
         filename: file.name,
         chunks: result.chunks,
         minioUrl: result.minioUrl,
-        qdrantStored: result.qdrantStored
+        qdrantStored: result.qdrantStored,
       },
       recommendations: similar.map(s => ({
         content: s.content.slice(0, 200) + '...',
         similarity: s.similarity,
-        source: s.metadata?.source_file
-      }))
+        source: s.metadata?.source_file,
+      })),
     });
   } catch (error) {
     console.error('❌ Upload processing failed:', error);
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to process document',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

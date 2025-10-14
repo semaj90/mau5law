@@ -12,7 +12,7 @@ const systemStatus = {
       currentTask: null,
       tasksCompleted: 15,
       successRate: 0.93,
-      lastActive: new Date().toISOString()
+      lastActive: new Date().toISOString(),
     },
     'demo-agent-2': {
       id: 'demo-agent-2',
@@ -22,8 +22,8 @@ const systemStatus = {
       currentTask: null,
       tasksCompleted: 8,
       successRate: 0.87,
-      lastActive: new Date(Date.now() - 600000).toISOString() // 10 minutes ago
-    }
+      lastActive: new Date(Date.now() - 600000).toISOString(), // 10 minutes ago
+    },
   },
   system: {
     status: 'operational',
@@ -34,7 +34,7 @@ const systemStatus = {
     totalTasksProcessed: 23,
     averageTaskDuration: '4m 15s',
     systemLoad: 0.35,
-    memoryUsage: '12.4GB / 30GB'
+    memoryUsage: '12.4GB / 30GB',
   },
   integration: {
     ragSystem: { status: 'connected', lastQuery: '2 minutes ago' },
@@ -42,8 +42,8 @@ const systemStatus = {
     tensorrt: { status: 'optimized', accelerated: true, speedup: '2.3x' },
     pgvector: { status: 'connected', embeddings: 15420 },
     redis: { status: 'connected', cached_items: 847 },
-    postgresql: { status: 'connected', uptime: '2d 14h 32m' }
-  }
+    postgresql: { status: 'connected', uptime: '2d 14h 32m' },
+  },
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
           {
             success: false,
             error: 'Agent not found',
-            message: `Agent with ID ${agentId} does not exist`
+            message: `Agent with ID ${agentId} does not exist`,
           },
           { status: 404 }
         );
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const response = {
         success: true,
         agent,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       if (detailed) {
@@ -82,8 +82,8 @@ export const GET: RequestHandler = async ({ url }) => {
           performance: {
             speed: agent.successRate > 0.9 ? 'excellent' : agent.successRate > 0.8 ? 'good' : 'needs_improvement',
             reliability: agent.successRate,
-            availability: agent.status === 'idle' ? 1.0 : 0.0
-          }
+            availability: agent.status === 'idle' ? 1.0 : 0.0,
+          },
         };
       }
 
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const response = {
       success: true,
       ...systemStatus,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     if (detailed) {
@@ -105,20 +105,20 @@ export const GET: RequestHandler = async ({ url }) => {
           averageQueueTime: '15s',
           peakMemoryUsage: '16.2GB',
           cpuUsage: '45%',
-          gpuUtilization: '23%'
+          gpuUtilization: '23%',
         },
         reliability: {
           systemUptime: 99.8,
           agentAvailability: 100.0,
           errorRate: 0.07,
-          lastIncident: '3 days ago'
+          lastIncident: '3 days ago',
         },
         capacity: {
           maxConcurrentTasks: 8,
           currentLoad: 0.35,
           scalingThreshold: 0.8,
-          autoScalingEnabled: true
-        }
+          autoScalingEnabled: true,
+        },
       };
 
       // Add recent activity log
@@ -128,26 +128,25 @@ export const GET: RequestHandler = async ({ url }) => {
           event: 'Task completed',
           agentId: 'demo-agent-1',
           taskId: 'implement-user-profile-page',
-          duration: '4m 32s'
+          duration: '4m 32s',
         },
         {
           timestamp: new Date(Date.now() - 300000).toISOString(),
           event: 'Patch applied',
           agentId: 'demo-agent-1',
           patchId: 'patch-navigation-logout',
-          result: 'success'
+          result: 'success',
         },
         {
           timestamp: new Date(Date.now() - 450000).toISOString(),
           event: 'Agent started',
           agentId: 'demo-agent-2',
-          taskId: 'create-case-management-tables'
-        }
+          taskId: 'create-case-management-tables',
+        },
       ];
     }
 
     return json(response);
-
   } catch (error) {
     console.error('Error getting agent status:', error);
     return json(
@@ -155,7 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: 'Failed to get agent status',
         message: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -172,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing agentId',
-          message: 'agentId is required to update status'
+          message: 'agentId is required to update status',
         },
         { status: 400 }
       );
@@ -184,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Agent not found',
-          message: `Agent with ID ${agentId} does not exist`
+          message: `Agent with ID ${agentId} does not exist`,
         },
         { status: 404 }
       );
@@ -209,16 +208,15 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       agent,
       message: `Agent ${agentId} status updated successfully`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Error updating agent status:', error);
     return json(
       {
         success: false,
         error: 'Failed to update agent status',
-        message: error.message
+        message: error.message,
       },
       { status: 500 }
     );

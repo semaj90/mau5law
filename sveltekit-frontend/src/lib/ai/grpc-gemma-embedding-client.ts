@@ -557,16 +557,16 @@ class GRPCGemmaEmbeddingClient {
   /**
    * Cleanup resources
    */ async cleanup(): Promise<void> {
-     // Close gRPC client
-     this.client.close();
-     // Close database connections (shim provides an optional end())
-     if (typeof this.db.end === 'function') {
-       await this.db.end();
-     }
-     // Close Redis connection (Redis has quit())
-     await this.redis.quit();
-     console.log('🧹 gRPC Gemma Embedding Client cleanup completed');
-   }
+    // Close gRPC client
+    this.client.close();
+    // Close database connections (shim provides an optional end())
+    if (typeof this.db.end === 'function') {
+      await this.db.end();
+    }
+    // Close Redis connection (Redis has quit())
+    await this.redis.quit();
+    console.log('🧹 gRPC Gemma Embedding Client cleanup completed');
+  }
 }
 // =============================================================================
 // CIRCUIT BREAKER IMPLEMENTATION

@@ -158,8 +158,8 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
         hasBeenVisible: false,
         intersectionRatio: 0,
       });
-    }
-  }
+    },
+  };
 }
 // Utility functions for common lazy loading patterns
 export function createComponentLazyLoader(element: Element, options: LazyLoadOptions = {}): Promise<LazyLoadEntry> {
@@ -174,7 +174,7 @@ export function createComponentLazyLoader(element: Element, options: LazyLoadOpt
 }
 export function lazyLoadImage(img: HTMLImageElement, src: string, options: LazyLoadOptions = {}): void {
   const loader = getLazyLoader({ once: true, ...options });
-  loader.observe(img, (entry) => {
+  loader.observe(img, entry => {
     if (entry.isIntersecting) {
       img.src = src;
       img.classList.add('lazy-loaded');
@@ -193,8 +193,8 @@ class LazyLoadProfiler {
     totalObserved: 0,
     totalLoaded: 0,
     averageLoadTime: 0,
-    loadTimes: []
-  }
+    loadTimes: [],
+  };
   private loadStartTimes = new Map<Element, number>();
   startObserving(element: Element): void {
     this.metrics.totalObserved++;
@@ -213,15 +213,15 @@ class LazyLoadProfiler {
     }
   }
   getMetrics(): LazyLoadMetrics {
-    return { ...this.metrics }
+    return { ...this.metrics };
   }
   reset(): void {
     this.metrics = {
       totalObserved: 0,
       totalLoaded: 0,
       averageLoadTime: 0,
-      loadTimes: []
-    }
+      loadTimes: [],
+    };
     this.loadStartTimes.clear();
   }
 }

@@ -19,25 +19,25 @@ declare module 'lokijs' {
     name: string;
     data: T[];
     idIndex: number[];
-    binaryIndices: { [key: string]: any }
+    binaryIndices: { [key: string]: any };
     objType: string;
     dirty: boolean;
     cachedIndex?: number[];
-    cachedBinaryIndex?: { [key: string]: any }
+    cachedBinaryIndex?: { [key: string]: any };
     cachedData?: T[];
     adaptiveBinaryIndices: boolean;
     transactional: boolean;
     asyncListeners: boolean;
     constraints: {
-      unique: { [key: string]: any }
-    }
+      unique: { [key: string]: any };
+    };
     uniqueNames: string[];
-    transforms: { [key: string]: any }
+    transforms: { [key: string]: any };
     ttl: {
       age?: number;
       ttlInterval?: number;
       daemon?: any;
-    }
+    };
     // Enhanced methods with proper typing
     insert(doc: T): T;
     insert(docs: T[]): T[];

@@ -1,4 +1,4 @@
-import { createMachine, assign, createActor, type StateFrom, fromPromise } from "xstate";
+import { createMachine, assign, createActor, type StateFrom, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 // Context interfaces
 export interface UploadContext {
@@ -15,19 +15,19 @@ export interface UploadContext {
     fileSize: number;
     contentType: string;
     expiresAt: Date;
-  }
+  };
   jobIds: {
     extraction?: string;
     embedding?: string;
     tensor?: string;
     indexing?: string;
-  }
+  };
   results: {
     extractedText?: string;
     embeddings?: number[][];
     tensorProcessing?: unknown;
     indexingComplete?: boolean;
-  }
+  };
 }
 // Event types
 type UploadEvent =
@@ -43,7 +43,7 @@ type UploadEvent =
   | { type: 'PROCESSING_FAILED'; stage: string; error: string }
   | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Upload and processing state machine
 export const uploadMachine = createMachine(
   {
@@ -493,7 +493,7 @@ export type UploadActor = ReturnType<typeof createActor<typeof uploadMachine>>;
 // Svelte store integration
 function createUploadStore() {
   const actor = createActor(uploadMachine);
-  const { subscribe } = writable(actor.getSnapshot(), (set) => {
+  const { subscribe } = writable(actor.getSnapshot(), set => {
     actor.subscribe(set);
     actor.start();
     return () => actor.stop();
@@ -501,7 +501,7 @@ function createUploadStore() {
   return {
     subscribe,
     send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor)
-  }
+    getSnapshot: actor.getSnapshot.bind(actor),
+  };
 }
 export const uploadStore = createUploadStore();

@@ -5,7 +5,7 @@
  *
  * Provides a unified API for tensor operations across all backends
  * with automatic fallback and performance optimization.
- */;
+ */
 }
 export interface TensorShape {
   rows: number;
@@ -202,8 +202,8 @@ class WebGPUBackend extends BaseBackend {
     this.matMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule
-        entryPoint: 'main'
+        module: shaderModule,
+        entryPoint: 'main',
       }
     });
     // Create batch matrix multiplication shader
@@ -243,8 +243,8 @@ class WebGPUBackend extends BaseBackend {
     this.batchMatMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: batchShaderModule
-        entryPoint: 'main'
+        module: batchShaderModule,
+        entryPoint: 'main',
       }
     });
     this.initialized = true;
@@ -264,7 +264,7 @@ class WebGPUBackend extends BaseBackend {
       buffer.unmap();
     }
     const tensor: Tensor = {
-      data: buffer
+      data: buffer,
       shape,
       backend: 'webgpu',
       id: this.generateId()
@@ -422,8 +422,8 @@ class WebGL2Backend extends BaseBackend {
     // Create offscreen canvas for compute
     this.canvas = document.createElement('canvas');
     this.gl = this.canvas.getContext('webgl2', {
-      antialias: false
-      preserveDrawingBuffer: true
+      antialias: false,
+      preserveDrawingBuffer: true,
     });
     if (!this.gl) {
       throw new Error('WebGL2 not available');
@@ -534,7 +534,7 @@ class WebGL2Backend extends BaseBackend {
       data
     );
     const tensor: Tensor = {
-      data: texture
+      data: texture,
       shape,
       backend: 'webgl2',
       id: this.generateId()
@@ -599,7 +599,7 @@ class WebGL2Backend extends BaseBackend {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
     this.gl.deleteFramebuffer(framebuffer);
     const result: Tensor = {
-      data: resultTexture
+      data: resultTexture,
       shape: { rows: M, cols: N },
       backend: 'webgl2',
       id: this.generateId()
@@ -948,7 +948,7 @@ class TensorRTBackend extends BaseBackend {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           session_id: this.sessionId,
-          tensor_id: tensorId
+          tensor_id: tensorId,
           shape: [shape.batch || 1, shape.rows, shape.cols],
           data: Array.from(data),
           data_type: 'float32'
@@ -1007,7 +1007,7 @@ class TensorRTBackend extends BaseBackend {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           session_id: this.sessionId,
-          engine_name: engineName
+          engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
             input_b: (b.data as any).serverTensorId
@@ -1055,7 +1055,7 @@ class TensorRTBackend extends BaseBackend {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           session_id: this.sessionId,
-          engine_name: engineName
+          engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
             input_b: (b.data as any).serverTensorId
@@ -1143,7 +1143,7 @@ class CPUJSBackend extends BaseBackend {
     const size = shape.rows * shape.cols * (shape.batch || 1);
     const tensorData = data ? new Float32Array(data) : new Float32Array(size);
     const tensor: Tensor = {
-      data: tensorData
+      data: tensorData,
       shape,
       backend: 'cpu-js',
       id: this.generateId()
@@ -1230,7 +1230,7 @@ export class UniversalGPURuntime {
   private backendType: BackendType | null = null;
   /**
    * Initialize the runtime with automatic backend detection
-   */;
+   */
   async initialize(preferredBackend?: BackendType): Promise<BackendType> {
     // Detect best available backend
     const detectedBackend = preferredBackend || await BackendDetector.detectBestBackend();
@@ -1274,62 +1274,62 @@ export class UniversalGPURuntime {
   }
   /**
    * Get current backend type
-   */;
+   */
   getBackendType(): BackendType | null {
     return this.backendType;
   }
   /**
    * Get backend requirements and limitations
-   */;
+   */
   getRequirements(): string[] {
     if (!this.backendType) return [];
     return BackendDetector.getRequirements(this.backendType);
   }
   /**
    * Allocate a new tensor
-   */;
+   */
   async allocate(shape: TensorShape, data?: Float32Array): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.allocate(shape, data);
   }
   /**
    * Free a tensor from memory
-   */;
+   */
   async free(tensor: Tensor): Promise<void> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.free(tensor);
   }
   /**
    * Perform matrix multiplication
-   */;
+   */
   async matMul(a: Tensor, b: Tensor): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.matMul(a, b);
   }
   /**
    * Perform batch matrix multiplication
-   */;
+   */
   async batchMatMul(a: Tensor, b: Tensor): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.batchMatMul(a, b);
   }
   /**
    * Convert Float32Array to tensor
-   */;
+   */
   async toTensor(data: Float32Array, shape: TensorShape): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.toTensor(data, shape);
   }
   /**
    * Read tensor data back to CPU
-   */;
+   */
   async readback(tensor: Tensor): Promise<Float32Array> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.readback(tensor);
   }
   /**
    * Dispose of all resources
-   */;
+   */
   async dispose(): Promise<void> {
     if (this.backend) {
       await this.backend.dispose();
@@ -1339,7 +1339,7 @@ export class UniversalGPURuntime {
   }
   /**
    * Benchmark matrix multiplication performance
-   */;
+   */
   async benchmark(size: number = 512): Promise<{,
     backend,: BackendType;
     matmulTime: number;
@@ -1371,7 +1371,7 @@ export class UniversalGPURuntime {
     await this.free(tensorB);
     return {
       backend: this.backendType,
-      matmulTime: avgTime
+      matmulTime: avgTime,
       throughput
     }
   }

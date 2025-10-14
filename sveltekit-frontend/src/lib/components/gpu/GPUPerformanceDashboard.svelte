@@ -19,7 +19,7 @@
   let maxDataPoints = 50;
   // Performance grade calculation
   let performanceGrade = $derived(() => {
-    if (!metrics) return { grade: 'N/A', score: 0, color: 'text-gray-400' }
+    if (!metrics) return { grade: 'N/A', score: 0, color: 'text-gray-400' };
     const factors = [
       { value: 100 - metrics.gpu.utilization, weight: 0.2 }, // Lower utilization = better for headroom
       { value: (1 - metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, weight: 0.25 }, // Memory availability
@@ -49,7 +49,7 @@
       grade = 'D';
       color = 'text-red-400';
     }
-    return { grade, score: Math.round(score), color }
+    return { grade, score: Math.round(score), color };
   });
   // Available optimization profiles
   let availableProfiles = $state<any[]>([]);
@@ -445,7 +445,7 @@
               <td class="text-right text-blue-400">{Math.round(metrics.gpu.utilization)}%</td>
               <td class="text-right text-slate-300"
                 >{Math.round(
-                  gpuUtilizationHistory.reduce((a, b) => a + b, 0) / Math.max(gpuUtilizationHistory.length, 1),
+                  gpuUtilizationHistory.reduce((a, b) => a + b, 0) / Math.max(gpuUtilizationHistory.length, 1)
                 )}%</td
               >
               <td class="text-right">
@@ -489,7 +489,7 @@
               <td class="text-right text-blue-400">{Math.round(metrics.gpu.temperature)}°C</td>
               <td class="text-right text-slate-300"
                 >{Math.round(
-                  temperatureHistory.reduce((a, b) => a + b, 0) / Math.max(temperatureHistory.length, 1),
+                  temperatureHistory.reduce((a, b) => a + b, 0) / Math.max(temperatureHistory.length, 1)
                 )}°C</td
               >
               <td class="text-right">

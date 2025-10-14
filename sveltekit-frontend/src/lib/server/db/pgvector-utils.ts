@@ -24,7 +24,7 @@ export interface VectorSearchOptions {
 }
 /**
  * Initialize pgvector extension and create necessary functions
- */;
+ */
 export async function initializePgVector(): Promise<boolean> {
   try {
     // Enable pgvector extension
@@ -111,7 +111,7 @@ export async function initializePgVector(): Promise<boolean> {
 }
 /**
  * Convert JavaScript array to PostgreSQL vector format
- */;
+ */
 export function arrayToVector(embedding: number[]): string {
   if (!Array.isArray(embedding) || embedding.length === 0) {
     throw new Error('Invalid embedding: must be a non-empty array');
@@ -125,7 +125,7 @@ export function arrayToVector(embedding: number[]): string {
 }
 /**
  * Convert PostgreSQL vector to JavaScript array
- */;
+ */
 export function vectorToArray(vectorString: string): number[] {
   if (!vectorString || typeof vectorString !== 'string') {
     return [];
@@ -143,7 +143,7 @@ export function vectorToArray(vectorString: string): number[] {
  * Search for similar chat messages using vector similarity
  */
 export async function searchSimilarMessages(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   options: VectorSearchOptions = {}
 ): Promise<VectorSearchResult[]> {
   const {
@@ -164,8 +164,8 @@ export async function searchSimilarMessages(
       id: row.id,
       content: row.content,
       similarity: row.similarity,
-      metadata: includeMetadata ? row.metadata: undefined
-      documentType: 'chat_message'
+      metadata: includeMetadata ? row.metadata: undefined,
+      documentType: 'chat_message',
     });
   } catch (error: any) {
     console.error('Vector search for messages failed:', error);
@@ -176,7 +176,7 @@ export async function searchSimilarMessages(
  * Search for similar evidence using vector similarity
  */
 export async function searchSimilarEvidence(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   caseId?: string
   options: VectorSearchOptions = {}
 ): Promise<VectorSearchResult[]> {
@@ -206,7 +206,7 @@ export async function searchSimilarEvidence(
         caseId: row.case_id,
         ...row.metadata
       } : undefined
-      documentType: 'evidence'
+      documentType: 'evidence',
     });
   } catch (error: any) {
     console.error('Vector search for evidence failed:', error);
@@ -215,7 +215,7 @@ export async function searchSimilarEvidence(
 }
 /**
  * Insert chat message with vector embedding
- */;
+ */
 export async function insertChatMessageWithEmbedding(messageData: {
     id: string;
     sessionId: string;
@@ -249,7 +249,7 @@ export async function insertChatMessageWithEmbedding(messageData: {
  * Update evidence with embeddings
  */
 export async function updateEvidenceEmbeddings(
-  evidenceId: string
+  evidenceId: string,
   titleEmbedding?: number[]
   contentEmbedding?: number[];
 ): Promise<boolean> {
@@ -282,7 +282,7 @@ export async function updateEvidenceEmbeddings(
  * Batch search across multiple vector tables
  */
 export async function searchAcrossAllVectors(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   options: VectorSearchOptions & {
     includeMessages?: boolean;
     includeEvidence?: boolean;
@@ -327,7 +327,7 @@ export async function searchAcrossAllVectors(
 }
 /**
  * Calculate cosine similarity between two vectors
- */;
+ */
 export function calculateCosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same dimension');
@@ -345,7 +345,7 @@ export function calculateCosineSimilarity(a: number[], b: number[]): number {
 }
 /**
  * Health check for pgvector functionality
- */;
+ */
 export async function pgvectorHealthCheck(): Promise<any> {
   try {
     // Check if pgvector extension exists
@@ -357,7 +357,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
     `);
     if (!extensionCheck[0]?.has_vector) {
       return {
-        available: false
+        available: false,
         functions: [],
         error: 'pgvector extension not installed'
       }
@@ -375,13 +375,13 @@ export async function pgvectorHealthCheck(): Promise<any> {
     `);
     const availableFunctions = functionsCheck.map((row: any) => row.routine_name);
     return {
-      available: true
+      available: true,
       version: (extensionCheck[0]?.version as string) || 'unknown',
       functions: availableFunctions
     }
   } catch (error: any) {
     return {
-      available: false
+      available: false,
       functions: [],
       error: error instanceof Error ? error.message: 'Unknown error'
     }

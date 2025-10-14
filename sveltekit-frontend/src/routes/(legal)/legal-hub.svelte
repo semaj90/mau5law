@@ -38,7 +38,7 @@
     activeCases: 23,
     documentsAnalyzed: 1847,
     citationsFound: 542,
-    complianceScore: 96.2
+    complianceScore: 96.2,
   };
 
   // Legal services
@@ -47,38 +47,38 @@
       name: 'Case Management',
       icon: '⚖️',
       href: '/legal/cases',
-      description: 'Comprehensive case tracking and management system'
+      description: 'Comprehensive case tracking and management system',
     },
     {
       name: 'Document Analysis',
       icon: '📄',
       href: '/legal/documents',
-      description: 'AI-powered legal document analysis and review'
+      description: 'AI-powered legal document analysis and review',
     },
     {
       name: 'Citation Research',
       icon: '📚',
       href: '/legal/citations',
-      description: 'Advanced legal citation search and verification'
+      description: 'Advanced legal citation search and verification',
     },
     {
       name: 'Compliance Check',
       icon: '✅',
       href: '/legal/compliance',
-      description: 'Automated compliance monitoring and reporting'
+      description: 'Automated compliance monitoring and reporting',
     },
     {
       name: 'Contract Review',
       icon: '📝',
       href: '/legal/contracts',
-      description: 'Smart contract analysis and risk assessment'
+      description: 'Smart contract analysis and risk assessment',
     },
     {
       name: 'Legal Research',
       icon: '🔍',
       href: '/legal/research',
-      description: 'Comprehensive legal research and case law analysis'
-    }
+      description: 'Comprehensive legal research and case law analysis',
+    },
   ];
 
   // Recent legal activities
@@ -86,7 +86,7 @@
     { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' },
     { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 },
     { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21 },
-    { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5, issues: 2 }
+    { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5, issues: 2 },
   ];
 </script>
 
@@ -373,7 +373,9 @@
     color: #a1a1aa;
   }
 
-  .status, .verified, .score {
+  .status,
+  .verified,
+  .score {
     color: #d4af37;
     font-weight: 600;
   }

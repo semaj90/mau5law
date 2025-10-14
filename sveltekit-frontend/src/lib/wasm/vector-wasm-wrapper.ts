@@ -15,12 +15,12 @@ export interface VectorWasmModule {
   // Vector operations
   normalize(vectorPtr: number, length: number): void;
   computeBatchSimilarity(
-    queryPtr: number
-    vectorsPtr: number
-    resultsPtr: number
-    vectorDim: number
-    vectorCount: number
-    algorithm: number
+    queryPtr: number,
+    vectorsPtr: number,
+    resultsPtr: number,
+    vectorDim: number,
+    vectorCount: number,
+    algorithm: number,
   ): void;
   // Hash embedding generator
   hashEmbedding(textPtr: number, textLen: number, embeddingPtr: number, embeddingDim: number): void;
@@ -49,7 +49,7 @@ export class VectorWasmWrapper {
   }
   /**
    * Compute cosine similarity between two vectors using WASM
-   */;
+   */
   async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -80,7 +80,7 @@ export class VectorWasmWrapper {
    * Compute batch similarities using WASM
    */
   async computeBatchSimilarities(
-    query: Float32Array
+    query: Float32Array,
     vectors: Float32Array[];
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
   ): Promise<Float32Array> {
@@ -136,7 +136,7 @@ export class VectorWasmWrapper {
   }
   /**
    * Generate a hash-based embedding for text using WASM
-   */;
+   */
   async generateHashEmbedding(text: string, dimensions: number = 256): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -162,7 +162,7 @@ export class VectorWasmWrapper {
   }
   /**
    * Normalize a vector in place using WASM
-   */;
+   */
   async normalizeVector(vector: Float32Array): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -184,13 +184,13 @@ export class VectorWasmWrapper {
   }
   /**
    * Check if module is initialized
-   */;
+   */
   isInitialized(): boolean {
     return this.initialized && this.module !== null;
   }
   /**
    * Get memory usage statistics
-   */;
+   */
   getMemoryStats(): { pages: number; bytes: number } | null {
     if (!this.module) return null;
     const pages = this.module.memory.buffer.byteLength / 65536;
@@ -201,7 +201,7 @@ export class VectorWasmWrapper {
   }
   /**
    * Force garbage collection
-   */;
+   */
   collectGarbage(): void {
     if (this.module) {
       this.module.__collect();

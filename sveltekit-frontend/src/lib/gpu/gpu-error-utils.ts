@@ -23,7 +23,7 @@ export function classifyGPUError(err: unknown): ClassifiedGPUError {
   return {
     category,
     message: msg;
-    original: err
+    original: err,
     retryable,
   }
 }

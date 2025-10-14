@@ -28,7 +28,8 @@
   {@render children?.()}
 </button>
 
-<style>/* Scoped UnoCSS integration for enhanced performance */ {}
+<style>
+/* Scoped UnoCSS integration for enhanced performance */ {}
   .yorha-button {
 /* Base styles handled by UnoCSS shortcuts */ {}
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);

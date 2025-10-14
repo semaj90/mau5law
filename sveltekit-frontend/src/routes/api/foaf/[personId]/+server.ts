@@ -104,8 +104,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
       limit: body.limit || 10,
       maxDepth: body.maxDepth || 3,
       caseContext: body.caseContext,
-      includeEmbedding: true
-      minConnectionStrength: 0.2
+      includeEmbedding: true,
+      minConnectionStrength: 0.2,
     })
     const enhancedResponse: FOAFResponse = {
       people: foafRecommendations.map(rec => ({
@@ -143,7 +143,7 @@ export interface DatabaseFOAFRecommendation {
   metadata?: any
 }
 async function generateDatabaseFOAFRecommendations(
-  personId: string
+  personId: string,
   options: {
     limit?: number
     maxDepth?: number
@@ -279,7 +279,7 @@ async function generateDatabaseFOAFRecommendations(
           handle: conn.email || undefined,
           role: conn.role || 'user',
           specialization: conn.role || 'general',
-          connectionStrength: evidenceScore
+          connectionStrength: evidenceScore,
           relationshipPath: `Legal Network → Evidence Collaboration → ${conn.role}`,
           sharedEvidence: conn.sharedEvidence || 0,
           reasoning: `Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : ''}`,
@@ -300,7 +300,7 @@ async function generateDatabaseFOAFRecommendations(
             handle: conn.email || undefined,
             role: conn.role || 'user',
             specialization: conn.role || 'general',
-            connectionStrength: roleScore
+            connectionStrength: roleScore,
             relationshipPath: `Legal Network → ${conn.role} Peers`,
             reasoning: `Same role (${conn.role}) with ${conn.caseCount} cases`,
             metadata: { connectionType: 'role_based', caseCount: conn.caseCount }
@@ -322,8 +322,8 @@ async function generateDatabaseFOAFRecommendations(
   }
 }
 async function enhanceRecommendationsWithEmbeddings(
-  personId: string
-  recommendations: DatabaseFOAFRecommendation[]
+  personId: string,
+  recommendations: DatabaseFOAFRecommendation[],
 ): Promise<void> {
   try {
     // Get the target person's case content for embedding
@@ -342,8 +342,8 @@ async function enhanceRecommendationsWithEmbeddings(
     if (targetProfile.length < 50) return
     const targetEmbedding = await generateEnhancedEmbedding(targetProfile, {
       provider: 'nomic-embed',
-      legalDomain: true
-      cache: true
+      legalDomain: true,
+      cache: true,
     }) as number[]
     // Enhance each recommendation
     for (const rec of recommendations) {

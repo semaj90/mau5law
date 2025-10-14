@@ -2,93 +2,93 @@
  * Embedding Worker Management API
  * Controls RabbitMQ embedding workers and job queuing
  */
-import { json, type RequestHandler } from '@sveltejs/kit'
-import { rabbitmqEmbeddingWorker } from '$lib/workers/rabbitmq-embedding-worker'
-import { rabbitMQService } from '$lib/services/rabbitmq-connection'
-import { QUEUES } from '$lib/config/rabbitmq-config'
-import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from '$lib/workers/rabbitmq-embedding-worker'
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { rabbitmqEmbeddingWorker } from '$lib/workers/rabbitmq-embedding-worker';
+import { rabbitMQService } from '$lib/services/rabbitmq-connection';
+import { QUEUES } from '$lib/config/rabbitmq-config';
+import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from '$lib/workers/rabbitmq-embedding-worker';
 // Worker status and control endpoints
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action')
+    const action = url.searchParams.get('action');
     switch (action) {
       case 'status':
-        return await getWorkerStatus()
+        return await getWorkerStatus();
       case 'health':
-        return await getWorkerHealth()
+        return await getWorkerHealth();
       case 'stats':
-        return await getWorkerStats()
+        return await getWorkerStats();
       case 'queues':
-        return await getQueueInfo()
+        return await getQueueInfo();
       default:
-        return await getWorkerStatus()
+        return await getWorkerStatus();
     }
   } catch (error) {
-    console.error('Error in embedding worker API:', error)
+    console.error('Error in embedding worker API:', error);
     return json(
       {
         error: 'Failed to get worker information',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const action = url.searchParams.get('action')
+    const action = url.searchParams.get('action');
     switch (action) {
       case 'start':
-        return await startWorker()
+        return await startWorker();
       case 'stop':
-        return await stopWorker()
+        return await stopWorker();
       case 'restart':
-        return await restartWorker()
+        return await restartWorker();
       case 'reset-stats':
-        return await resetWorkerStats()
+        return await resetWorkerStats();
       case 'queue-job':
-        return await queueEmbeddingJob(request)
+        return await queueEmbeddingJob(request);
       case 'queue-bulk':
-        return await queueBulkEmbeddingJob(request)
+        return await queueBulkEmbeddingJob(request);
       case 'test':
-        return await testWorker(request)
+        return await testWorker(request);
       default:
-        return json({ error: 'Unknown action' }, { status: 400 })
+        return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Error in embedding worker API:', error)
+    console.error('Error in embedding worker API:', error);
     return json(
       {
         error: 'Worker operation failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 // Get worker status
 async function getWorkerStatus(): Promise<Response> {
-  const stats = rabbitmqEmbeddingWorker.getStats()
-  const rabbitHealth = await rabbitMQService.healthCheck()
+  const stats = rabbitmqEmbeddingWorker.getStats();
+  const rabbitHealth = await rabbitMQService.healthCheck();
   return json({
     worker: {
       running: stats.isRunning,
       uptime: stats.uptime,
-      start_time: stats.startTime
+      start_time: stats.startTime,
     },
     jobs: {
       processed: stats.processedJobs,
       failed: stats.failedJobs,
-      success_rate: stats.successRate
+      success_rate: stats.successRate,
     },
-    rabbitmq: rabbitHealth
-  })
+    rabbitmq: rabbitHealth,
+  });
 }
 // Get worker health check
 async function getWorkerHealth(): Promise<Response> {
-  const health = await rabbitmqEmbeddingWorker.healthCheck()
-  const statusCode = health.status === 'healthy' ? 200 : 503
-  return json(health, { status: statusCode })
+  const health = await rabbitmqEmbeddingWorker.healthCheck();
+  const statusCode = health.status === 'healthy' ? 200 : 503;
+  return json(health, { status: statusCode });
 }
 // Get detailed worker statistics
 async function getWorkerStats(): Promise<Response> {
@@ -351,17 +351,17 @@ async function testWorker(request: Request): Promise<Response> {
 }
 // Utility function to format uptime
 function formatUptime(uptimeMs: number): string {
-  const seconds = Math.floor(uptimeMs / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
+  const seconds = Math.floor(uptimeMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
   if (days > 0) {
-    return `${days}d ${hours % 24}h ${minutes % 60}m`
+    return `${days}d ${hours % 24}h ${minutes % 60}m`;
   } else if (hours > 0) {
-    return `${hours}h ${minutes % 60}m ${seconds % 60}s`
+    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
   } else if (minutes > 0) {
-    return `${minutes}m ${seconds % 60}s`
+    return `${minutes}m ${seconds % 60}s`;
   } else {
-    return `${seconds}s`
+    return `${seconds}s`;
   }
 }

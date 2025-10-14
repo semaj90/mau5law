@@ -1,86 +1,71 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    aiSummaryMachine,
-    type SummarySection,
-  } from "$lib/machines/aiSummaryMachine";
-  import { useMachine } from "@xstate/svelte";
-  import {
-    Brain,
-    FileText,
-    Pause,
-    Play,
-    Settings,
-    SkipBack,
-    SkipForward,
-    Square,
-    Zap,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
-  import { fade, fly } from "svelte/transition";
+  import { aiSummaryMachine, type SummarySection } from '$lib/machines/aiSummaryMachine';
+  import { useMachine } from '@xstate/svelte';
+  import { Brain, FileText, Pause, Play, Settings, SkipBack, SkipForward, Square, Zap } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
 
   // Component props
-  export type DocumentType = "evidence" | "report" | "contract" | "case_law" | "general";
+  export type DocumentType = 'evidence' | 'report' | 'contract' | 'case_law' | 'general';
 
   let {
     documentId = null,
     caseId = null,
-    initialContent = "",
-    documentType = "evidence" as DocumentType | null,
-    compact = false
+    initialContent = '',
+    documentType = 'evidence' as DocumentType | null,
+    compact = false,
   }: {
-    documentId?: string | null,
-    caseId?: string | null,
-    initialContent?: string,
-    documentType?: DocumentType | null,
-    compact?: boolean
+    documentId?: string | null;
+    caseId?: string | null;
+    initialContent?: string;
+    documentType?: DocumentType | null;
+    compact?: boolean;
   } = $props();
 
   const { snapshot: state, send } = useMachine(aiSummaryMachine);
 
   // Reactive state helpers using Svelte 5 $derived
   let isLoading = $derived(
-    $state.matches("loading") ||
-    $state.matches("generating") ||
-    $state.matches("analyzing") ||
-    $state.matches("synthesizing")
+    $state.matches('loading') ||
+      $state.matches('generating') ||
+      $state.matches('analyzing') ||
+      $state.matches('synthesizing')
   );
 
-  let isReady = $derived($state.matches("ready"));
-  let isReading = $derived($state.matches("ready.reading"));
+  let isReady = $derived($state.matches('ready'));
+  let isReading = $derived($state.matches('ready.reading'));
   let isPlaying = $derived($state.context?.isPlaying ?? false);
   let progress = $derived($state.context?.progress ?? 0);
   let error = $derived($state.context?.error ?? null);
-  let currentSection = $derived(
-    $state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null
-  );
+  let currentSection = $derived($state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null);
 
   // Voice synthesis
   let speechSynthesis: SpeechSynthesis | null = null;
   let currentUtterance: SpeechSynthesisUtterance | null = null;
 
   onMount(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       // @ts-ignore - DOM global
       speechSynthesis = window.speechSynthesis as SpeechSynthesis;
     }
 
     // Auto-load if content provided
     if (initialContent && documentType) {
-      send({ type: "GENERATE_SUMMARY", content: initialContent, documentType });
+      send({ type: 'GENERATE_SUMMARY', content: initialContent, documentType });
     } else if (documentId) {
-      send({ type: "LOAD_DOCUMENT", documentId, caseId });
+      send({ type: 'LOAD_DOCUMENT', documentId, caseId });
     }
   });
 
   function toggleReading() {
     if (isPlaying) {
-      send({ type: "PAUSE_READING" });
+      send({ type: 'PAUSE_READING' });
       if (currentUtterance && speechSynthesis) {
         speechSynthesis.pause();
       }
     } else {
-      send({ type: "START_READING" });
+      send({ type: 'START_READING' });
       if ($state.context?.voiceEnabled && currentSection) {
         speakSection(currentSection);
       }
@@ -88,40 +73,28 @@
   }
 
   function stopReading() {
-    send({ type: "STOP_READING" });
+    send({ type: 'STOP_READING' });
     if (speechSynthesis) {
       speechSynthesis.cancel();
     }
   }
 
   function nextSection() {
-    send({ type: "NEXT_SECTION" });
+    send({ type: 'NEXT_SECTION' });
     if ($state.context?.voiceEnabled && isPlaying) {
-      setTimeout(
-        () =>
-          speakSection(
-            $state.context?.sections?.[$state.context?.currentSection ?? 0]
-          ),
-        100
-      );
+      setTimeout(() => speakSection($state.context?.sections?.[$state.context?.currentSection ?? 0]), 100);
     }
   }
 
   function previousSection() {
-    send({ type: "PREVIOUS_SECTION" });
+    send({ type: 'PREVIOUS_SECTION' });
     if ($state.context?.voiceEnabled && isPlaying) {
-      setTimeout(
-        () =>
-          speakSection(
-            $state.context?.sections?.[$state.context?.currentSection ?? 0]
-          ),
-        100
-      );
+      setTimeout(() => speakSection($state.context?.sections?.[$state.context?.currentSection ?? 0]), 100);
     }
   }
 
   function jumpToSection(index: number) {
-    send({ type: "JUMP_TO_SECTION", sectionIndex: index });
+    send({ type: 'JUMP_TO_SECTION', sectionIndex: index });
     if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context.sections[index]), 100);
     }
@@ -145,43 +118,43 @@
   }
 
   function analyzeDocument() {
-    send({ type: "ANALYZE_DOCUMENT" });
+    send({ type: 'ANALYZE_DOCUMENT' });
   }
 
   function synthesizeInsights() {
-    send({ type: "SYNTHESIZE_INSIGHTS" });
+    send({ type: 'SYNTHESIZE_INSIGHTS' });
   }
 
   function toggleVoice() {
     send({
-      type: "UPDATE_PREFERENCES",
+      type: 'UPDATE_PREFERENCES',
       preferences: { voiceEnabled: !($state.context?.voiceEnabled ?? false) },
     });
   }
 
   function getImportanceColor(importance: string) {
     switch (importance) {
-      case "critical":
-        return "text-red-600 border-red-200 bg-red-50";
-      case "high":
-        return "text-orange-600 border-orange-200 bg-orange-50";
-      case "medium":
-        return "text-yellow-600 border-yellow-200 bg-yellow-50";
-      case "low":
-        return "text-gray-600 border-gray-200 bg-gray-50";
+      case 'critical':
+        return 'text-red-600 border-red-200 bg-red-50';
+      case 'high':
+        return 'text-orange-600 border-orange-200 bg-orange-50';
+      case 'medium':
+        return 'text-yellow-600 border-yellow-200 bg-yellow-50';
+      case 'low':
+        return 'text-gray-600 border-gray-200 bg-gray-50';
       default:
-        return "text-gray-600 border-gray-200 bg-gray-50";
+        return 'text-gray-600 border-gray-200 bg-gray-50';
     }
   }
 
   function getAnalysisScoreColor(score: number) {
-    if (score >= 0.9) return "text-green-600 bg-green-100";
-    if (score >= 0.7) return "text-yellow-600 bg-yellow-100";
-    return "text-red-600 bg-red-100";
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
+    return 'text-red-600 bg-red-100';
   }
 </script>
 
-<div class="ai-summary-reader" class:compact={compact}>
+<div class="ai-summary-reader" class:compact>
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
     <!-- Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200">
@@ -207,15 +180,13 @@
           class="p-2 rounded-md hover:bg-gray-100 transition-colors"
           class:text-blue-600={$state.context?.voiceEnabled}
           class:text-gray-400={!$state.context?.voiceEnabled}
-          title={$state.context?.voiceEnabled ? "Disable voice" : "Enable voice"}
+          title={$state.context?.voiceEnabled ? 'Disable voice' : 'Enable voice'}
         >
           <Settings class="w-4 h-4" />
         </button>
         <!-- Confidence Score -->
         {#if ($state.context?.confidence ?? 0) > 0}
-          <div
-            class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
-          >
+          <div class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
             {Math.round(($state.context?.confidence ?? 0) * 100)}% confidence
           </div>
         {/if}
@@ -227,27 +198,22 @@
       {#if isLoading}
         <div class="flex items-center justify-center py-12">
           <div class="flex flex-col items-center gap-3">
-            <div
-              class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
-            ></div>
+            <div class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
             <p class="text-gray-600">
-              {#if $state.matches("loading")}
+              {#if $state.matches('loading')}
                 Loading document...
-              {:else if $state.matches("generating")}
+              {:else if $state.matches('generating')}
                 Generating AI summary...
-              {:else if $state.matches("analyzing")}
+              {:else if $state.matches('analyzing')}
                 Analyzing document...
-              {:else if $state.matches("synthesizing")}
+              {:else if $state.matches('synthesizing')}
                 Synthesizing insights...
               {/if}
             </p>
           </div>
         </div>
       {:else if error}
-        <div
-          class="bg-red-50 border border-red-200 rounded-lg p-4"
-          transition:fade
-        >
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
           <div class="flex items-center gap-2">
             <div class="text-red-600">⚠️</div>
             <div>
@@ -256,7 +222,7 @@
             </div>
           </div>
           <button
-            onclick={() => send({ type: "RETRY" })}
+            onclick={() => send({ type: 'RETRY' })}
             class="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
           >
             Retry
@@ -266,10 +232,7 @@
         <div class="space-y-6">
           <!-- Summary Overview -->
           {#if $state.context?.summary}
-            <div
-              class="bg-blue-50 border border-blue-200 rounded-lg p-4"
-              transition:fly={{ y: 20, duration: 300 }}
-            >
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" transition:fly={{ y: 20, duration: 300 }}>
               <h4 class="font-medium text-blue-900 mb-2">Executive Summary</h4>
               <p class="text-blue-800">{$state.context.summary}</p>
             </div>
@@ -306,7 +269,7 @@
                   Pause
                 {:else}
                   <Play class="w-4 h-4" />
-                  {isReading ? "Resume" : "Start Reading"}
+                  {isReading ? 'Resume' : 'Start Reading'}
                 {/if}
               </button>
               <button
@@ -334,7 +297,7 @@
               </div>
             </div>
             <div class="text-sm text-gray-600">
-              Section {($state.context?.currentSection ?? 0) + 1} of {($state.context?.sections?.length ?? 0)}
+              Section {($state.context?.currentSection ?? 0) + 1} of {$state.context?.sections?.length ?? 0}
               {#if ($state.context?.estimatedReadTime ?? 0) > 0}
                 • ~{$state.context.estimatedReadTime} min read
               {/if}
@@ -344,16 +307,13 @@
           <!-- Progress Bar -->
           {#if isReading}
             <div class="bg-gray-200 rounded-full h-2" transition:fade>
-              <div
-                class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style="width: {progress}%"
-              ></div>
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
             </div>
           {/if}
 
           <!-- Section Navigation -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {#each ($state.context?.sections ?? []) as section, index}
+            {#each $state.context?.sections ?? [] as section, index}
               <button
                 onclick={() => jumpToSection(index)}
                 class="text-left p-3 border rounded-lg transition-all hover:shadow-md"
@@ -363,15 +323,15 @@
                 class:border-gray-200={index !== ($state.context?.currentSection ?? 0)}
               >
                 <div class="flex items-center justify-between mb-2">
-                  <span class={"text-sm font-medium " + getImportanceColor(section.importance).split(" ")[0]}>
+                  <span class={'text-sm font-medium ' + getImportanceColor(section.importance).split(' ')[0]}>
                     {section.title}
                   </span>
-                  <span class={"text-xs px-2 py-1 rounded-full " + getImportanceColor(section.importance)}>
+                  <span class={'text-xs px-2 py-1 rounded-full ' + getImportanceColor(section.importance)}>
                     {section.importance}
                   </span>
                 </div>
                 <p class="text-xs text-gray-600 line-clamp-2">
-                  {section.content?.substring(0, 100) ?? ""}...
+                  {section.content?.substring(0, 100) ?? ''}...
                 </p>
                 <div class="text-xs text-gray-500 mt-1">
                   {section.wordCount ?? 0} words
@@ -382,15 +342,12 @@
 
           <!-- Current Section Content -->
           {#if currentSection}
-            <div
-              class="bg-white border border-gray-200 rounded-lg p-6"
-              transition:fly={{ y: 20, duration: 300 }}
-            >
+            <div class="bg-white border border-gray-200 rounded-lg p-6" transition:fly={{ y: 20, duration: 300 }}>
               <div class="flex items-center justify-between mb-4">
                 <h4 class="text-xl font-semibold text-gray-900">
                   {currentSection.title}
                 </h4>
-                <span class={"text-sm px-3 py-1 rounded-full " + getImportanceColor(currentSection.importance)}>
+                <span class={'text-sm px-3 py-1 rounded-full ' + getImportanceColor(currentSection.importance)}>
                   {currentSection.importance?.charAt(0).toUpperCase() + currentSection.importance?.slice(1)} Priority
                 </span>
               </div>
@@ -403,24 +360,22 @@
               <!-- Entities -->
               {#if (currentSection.entities ?? []).length > 0}
                 <div class="mt-6 pt-4 border-t border-gray-200">
-                  <h5 class="text-sm font-medium text-gray-900 mb-3">
-                    Key Entities
-                  </h5>
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">Key Entities</h5>
                   <div class="flex flex-wrap gap-2">
                     {#each currentSection.entities as entity}
                       <span
                         class="px-2 py-1 text-xs rounded-md"
-                        class:bg-blue-100={entity.type === "legal_term"}
-                        class:text-blue-800={entity.type === "legal_term"}
-                        class:bg-green-100={entity.type === "person"}
-                        class:text-green-800={entity.type === "person"}
-                        class:bg-purple-100={entity.type === "date"}
-                        class:text-purple-800={entity.type === "date"}
-                        class:bg-orange-100={entity.type === "organization"}
-                        class:text-orange-800={entity.type === "organization"}
-                        class:bg-gray-100={!["legal_term", "person", "date", "organization"].includes(entity.type)}
-                        class:text-gray-800={!["legal_term", "person", "date", "organization"].includes(entity.type)}
-                        title={"Confidence: " + Math.round((entity.confidence ?? 0) * 100) + "%"}
+                        class:bg-blue-100={entity.type === 'legal_term'}
+                        class:text-blue-800={entity.type === 'legal_term'}
+                        class:bg-green-100={entity.type === 'person'}
+                        class:text-green-800={entity.type === 'person'}
+                        class:bg-purple-100={entity.type === 'date'}
+                        class:text-purple-800={entity.type === 'date'}
+                        class:bg-orange-100={entity.type === 'organization'}
+                        class:text-orange-800={entity.type === 'organization'}
+                        class:bg-gray-100={!['legal_term', 'person', 'date', 'organization'].includes(entity.type)}
+                        class:text-gray-800={!['legal_term', 'person', 'date', 'organization'].includes(entity.type)}
+                        title={'Confidence: ' + Math.round((entity.confidence ?? 0) * 100) + '%'}
                       >
                         {entity.text}
                       </span>
@@ -454,17 +409,16 @@
           <!-- Analysis Results -->
           {#if ($state.context?.analysisResults ?? []).length > 0}
             <div class="space-y-4" transition:fly={{ y: 20, duration: 300 }}>
-              <h4 class="text-lg font-semibold text-gray-900">
-                Analysis Results
-              </h4>
+              <h4 class="text-lg font-semibold text-gray-900">Analysis Results</h4>
               {#each $state.context.analysisResults as result}
                 <div class="border border-gray-200 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-2">
                     <h5 class="font-medium text-gray-900 capitalize">
-                      {(result as any).type?.replace("_", " ")}
+                      {(result as any).type?.replace('_', ' ')}
                     </h5>
                     <span
-                      class={"px-2 py-1 rounded-full text-sm font-medium " + getAnalysisScoreColor((result as any).score ?? 0)}
+                      class={'px-2 py-1 rounded-full text-sm font-medium ' +
+                        getAnalysisScoreColor((result as any).score ?? 0)}
                     >
                       {Math.round(((result as any).score ?? 0) * 100)}%
                     </span>
@@ -472,12 +426,8 @@
                   <p class="text-gray-700 mb-3">{(result as any).explanation}</p>
                   {#if ((result as any).recommendations ?? []).length > 0}
                     <div>
-                      <h6 class="text-sm font-medium text-gray-900 mb-1">
-                        Recommendations:
-                      </h6>
-                      <ul
-                        class="text-sm text-gray-600 list-disc list-inside space-y-1"
-                      >
+                      <h6 class="text-sm font-medium text-gray-900 mb-1">Recommendations:</h6>
+                      <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
                         {#each (result as any).recommendations as recommendation}
                           <li>{recommendation}</li>
                         {/each}
@@ -492,9 +442,7 @@
           <!-- Synthesis Results -->
           {#if $state.context?.synthesisData}
             <div class="space-y-6" transition:fly={{ y: 20, duration: 300 }}>
-              <h4 class="text-lg font-semibold text-gray-900">
-                Synthesis & Strategic Analysis
-              </h4>
+              <h4 class="text-lg font-semibold text-gray-900">Synthesis & Strategic Analysis</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
                   <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -502,26 +450,18 @@
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.mainThemes as theme}
                         <li class="flex items-start gap-2">
-                          <div
-                            class="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"
-                          ></div>
+                          <div class="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-blue-800">{theme}</span>
                         </li>
                       {/each}
                     </ul>
                   </div>
-                  <div
-                    class="bg-green-50 border border-green-200 rounded-lg p-4"
-                  >
-                    <h5 class="font-medium text-green-900 mb-3">
-                      Supporting Evidence
-                    </h5>
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h5 class="font-medium text-green-900 mb-3">Supporting Evidence</h5>
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.supportingEvidence as evidence}
                         <li class="flex items-start gap-2">
-                          <div
-                            class="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"
-                          ></div>
+                          <div class="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-green-800">{evidence}</span>
                         </li>
                       {/each}
@@ -529,18 +469,12 @@
                   </div>
                 </div>
                 <div class="space-y-4">
-                  <div
-                    class="bg-yellow-50 border border-yellow-200 rounded-lg p-4"
-                  >
-                    <h5 class="font-medium text-yellow-900 mb-3">
-                      Gaps & Contradictions
-                    </h5>
+                  <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h5 class="font-medium text-yellow-900 mb-3">Gaps & Contradictions</h5>
                     <div class="space-y-3">
                       {#if ($state.context.synthesisData.gaps ?? []).length > 0}
                         <div>
-                          <h6 class="text-sm font-medium text-yellow-800">
-                            Information Gaps:
-                          </h6>
+                          <h6 class="text-sm font-medium text-yellow-800">Information Gaps:</h6>
                           <ul class="mt-1 space-y-1">
                             {#each $state.context.synthesisData.gaps as gap}
                               <li class="text-sm text-yellow-700">• {gap}</li>
@@ -550,9 +484,7 @@
                       {/if}
                       {#if ($state.context.synthesisData.contradictions ?? []).length > 0}
                         <div>
-                          <h6 class="text-sm font-medium text-yellow-800">
-                            Contradictions:
-                          </h6>
+                          <h6 class="text-sm font-medium text-yellow-800">Contradictions:</h6>
                           <ul class="mt-1 space-y-1">
                             {#each $state.context.synthesisData.contradictions as contradiction}
                               <li class="text-sm text-yellow-700">
@@ -564,18 +496,12 @@
                       {/if}
                     </div>
                   </div>
-                  <div
-                    class="bg-purple-50 border border-purple-200 rounded-lg p-4"
-                  >
-                    <h5 class="font-medium text-purple-900 mb-3">
-                      Legal Implications
-                    </h5>
+                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h5 class="font-medium text-purple-900 mb-3">Legal Implications</h5>
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.legalImplications as implication}
                         <li class="flex items-start gap-2">
-                          <div
-                            class="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"
-                          ></div>
+                          <div class="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-purple-800">{implication}</span>
                         </li>
                       {/each}
@@ -603,17 +529,11 @@
         </div>
       {:else}
         <div class="text-center py-12">
-          <div
-            class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-4"
-          >
+          <div class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-4">
             <FileText class="w-8 h-8 text-gray-400" />
           </div>
-          <h4 class="text-lg font-medium text-gray-900 mb-2">
-            No Document Loaded
-          </h4>
-          <p class="text-gray-600 mb-4">
-            Load a document or provide content to generate an AI summary.
-          </p>
+          <h4 class="text-lg font-medium text-gray-900 mb-2">No Document Loaded</h4>
+          <p class="text-gray-600 mb-4">Load a document or provide content to generate an AI summary.</p>
         </div>
       {/if}
     </div>

@@ -73,12 +73,12 @@
     }
     return () => {
       clearInterval(interval);
-    }
+    };
   });
   function enhanceComponentAccessibility() {
     if (!containerElement || !currentRouteConfig) return;
     const bitsUIElement = containerElement.querySelector(
-      '[data-bits-ui], .legal-ai-btn, .legal-ai-input, .legal-ai-card',
+      '[data-bits-ui], .legal-ai-btn, .legal-ai-input, .legal-ai-card'
     );
     if (!bitsUIElement) return;
     // Add route-specific enhancements
@@ -103,7 +103,7 @@
       bitsUIElement.setAttribute('aria-label', `${currentLabel} (${keyboardShortcut})`);
       bitsUIElement.setAttribute(
         'title',
-        `${bitsUIElement.getAttribute('title') || ''} Keyboard: ${keyboardShortcut}`.trim(),
+        `${bitsUIElement.getAttribute('title') || ''} Keyboard: ${keyboardShortcut}`.trim()
       );
     }
     // Add component-specific enhancements
@@ -176,7 +176,7 @@
     }
     // Focus management
     const focusableElements = element.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
     if (focusableElements.length > 0) {
       (focusableElements[0] as HTMLElement).focus();

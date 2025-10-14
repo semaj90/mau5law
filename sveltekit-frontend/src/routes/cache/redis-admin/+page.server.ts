@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       connectionStatus,
       performanceMetrics,
       timestamp: new Date().toISOString(),
-    }
+    };
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
     // Return mock data for development/demo
@@ -68,9 +68,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         memory_efficiency: 76.3,
       },
       timestamp: new Date().toISOString(),
-    }
+    };
   }
-}
+};
 export const actions: Actions = {
   flushCache: async ({ locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
@@ -79,7 +79,7 @@ export const actions: Actions = {
     try {
       // await redisService.flushall(); // Method not available in current redis service
       console.log('Redis cache flushed by admin:', locals.user.email);
-      return { success: true, message: 'Cache cleared successfully' }
+      return { success: true, message: 'Cache cleared successfully' };
     } catch (err) {
       console.error('Failed to flush Redis cache:', err);
       return fail(500, { error: 'Failed to clear cache' });
@@ -97,7 +97,7 @@ export const actions: Actions = {
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
-      return { success: true, message: `Key "${key}" deleted successfully` }
+      return { success: true, message: `Key "${key}" deleted successfully` };
     } catch (err) {
       console.error('Failed to delete Redis key:', err);
       return fail(500, { error: 'Failed to delete key' });
@@ -121,13 +121,13 @@ export const actions: Actions = {
         await redisService.set(key, value);
       }
       console.log(`Redis key set by admin: ${key}`);
-      return { success: true, message: `Key "${key}" set successfully` }
+      return { success: true, message: `Key "${key}" set successfully` };
     } catch (err) {
       console.error('Failed to set Redis key:', err);
       return fail(500, { error: 'Failed to set key' });
     }
   },
-}
+};
 async function getRedisInfo() {
   try {
     // Get Redis server info - replace with actual Redis client calls
@@ -145,7 +145,7 @@ async function getKeyStatistics() {
       avg_ttl: 3600,
       memory_usage: '0MB',
       fragmentation_ratio: 1.0,
-    }
+    };
   } catch (error) {
     throw new Error('Failed to get key statistics');
   }
@@ -183,7 +183,7 @@ async function getPerformanceMetrics() {
       ops_per_sec: 100,
       latency_avg: 1.0,
       memory_efficiency: 80.0,
-    }
+    };
   } catch (error) {
     throw new Error('Failed to get performance metrics');
   }

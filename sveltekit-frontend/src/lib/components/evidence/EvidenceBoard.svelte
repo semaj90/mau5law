@@ -16,10 +16,27 @@ https://svelte.dev/e/js_parse_error -->
   import { caseManagementService } from '$lib/services/case-management-service.js';
   import { apiFetch } from '$lib/api/clients/api-client.js';
   import {
-    Eye, EyeOff, Search, Filter, Plus, Link, Clock,
-    AlertTriangle, CheckCircle, FileText, Image,
-    Video, Music, Archive, Settings, Zap, Target,
-    Network, Brain, Lightbulb, BookOpen
+    Eye,
+    EyeOff,
+    Search,
+    Filter,
+    Plus,
+    Link,
+    Clock,
+    AlertTriangle,
+    CheckCircle,
+    FileText,
+    Image,
+    Video,
+    Music,
+    Archive,
+    Settings,
+    Zap,
+    Target,
+    Network,
+    Brain,
+    Lightbulb,
+    BookOpen,
   } from 'lucide-svelte';
   // Props - Svelte 5
   interface Props {
@@ -27,11 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     detectiveMode?: boolean;
     readOnly?: boolean;
   }
-  let {
-    caseId,
-    detectiveMode = false,
-    readOnly = false
-  }: Props = $props();
+  let { caseId, detectiveMode = false, readOnly = false }: Props = $props();
   // State management - Svelte 5 runes
   // state values as normal reactive variables (Svelte runes handle reactivity)
   let evidenceItems: any[] = [];
@@ -64,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
     enableEntityMapping: true,
     enableTimelineAnalysis: true,
     // use a 0..1 confidence scale (adjust if your code expects 0..100)
-    confidenceThreshold: 0.7
+    confidenceThreshold: 0.7,
   });
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null = null;
@@ -116,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
       const endpoint = searchProvider === 'pgvector' ? '/api/search/pgvector' : '/api/search/qdrant';
       const res = await apiFetch(endpoint, {
         method: 'POST',
-        body: JSON.stringify({ q: query, top_k: 10, tags: true })
+        body: JSON.stringify({ q: query, top_k: 10, tags: true }),
       });
       tagSearchResults = res?.results || [];
     } catch (err) {
@@ -130,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const presign = await apiFetch('/api/storage/presign', {
         method: 'POST',
-        body: JSON.stringify({ fileName: file.name, contentType: file.type })
+        body: JSON.stringify({ fileName: file.name, contentType: file.type }),
       });
       if (!presign?.url) throw new Error('Presign URL missing');
       const putResp = await fetch(presign.url, {
@@ -161,7 +174,8 @@ https://svelte.dev/e/js_parse_error -->
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Evidence service unavailable, using mock data';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Provide mock evidence data
@@ -193,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
           tags: ['email', 'communication', 'mock'],
           mockData: true,
           uploadedAt: new Date(Date.now() - 172800000).toISOString(),
-        }
+        },
       ];
     }
   }
@@ -218,34 +232,34 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Mock suspicious pattern: Unusual timing in document creation',
             severity: 'medium',
             evidence: ['mock-evidence-1'],
-            confidence: 0.72
-          }
+            confidence: 0.72,
+          },
         ],
         entityConnections: [
           {
             source: 'mock-evidence-1',
             target: 'mock-evidence-2',
             confidence: 0.85,
-            relationship: 'references'
-          }
+            relationship: 'references',
+          },
         ],
         crossReferences: [
           {
             sourceEvidence: 'mock-evidence-1',
             targetEvidence: 'mock-evidence-2',
             relevance: 0.75,
-            type: 'temporal'
-          }
+            type: 'temporal',
+          },
         ],
         timeline: {
           events: [
             {
               timestamp: new Date(Date.now() - 86400000).toISOString(),
               evidenceId: 'mock-evidence-1',
-              description: 'Mock contract document created'
-            }
-          ]
-        }
+              description: 'Mock contract document created',
+            },
+          ],
+        },
       };
       // Build connection map for mock data
       buildConnectionMap(detectiveInsights);
@@ -296,9 +310,15 @@ https://svelte.dev/e/js_parse_error -->
     return items.filter((evidence: any) => {
       const matchesSearch =
         !query ||
-        String(evidence.title || '').toLowerCase().includes(query) ||
-        String(evidence.description || '').toLowerCase().includes(query) ||
-        String(evidence.evidenceNumber || '').toLowerCase().includes(query);
+        String(evidence.title || '')
+          .toLowerCase()
+          .includes(query) ||
+        String(evidence.description || '')
+          .toLowerCase()
+          .includes(query) ||
+        String(evidence.evidenceNumber || '')
+          .toLowerCase()
+          .includes(query);
       const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
       return matchesSearch && matchesType;
     });
@@ -366,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
           target: targetId,
           strength: 1.0,
           label: 'User Created',
-        }
+        },
       ];
     } catch (error) {
       console.error('Failed to create connection:', error);
@@ -375,12 +395,18 @@ https://svelte.dev/e/js_parse_error -->
   // Get evidence type icon
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case 'document': return FileText;
-      case 'photo': return Image;
-      case 'video': return Video;
-      case 'audio': return Music;
-      case 'digital': return Archive;
-      default: return FileText;
+      case 'document':
+        return FileText;
+      case 'photo':
+        return Image;
+      case 'video':
+        return Video;
+      case 'audio':
+        return Music;
+      case 'digital':
+        return Archive;
+      default:
+        return FileText;
     }
   }
   // Get analysis status color
@@ -432,13 +458,15 @@ https://svelte.dev/e/js_parse_error -->
     // Draw node circle
     ctx.beginPath();
     ctx.arc(x, y, 20, 0, 2 * Math.PI);
-    ctx.fillStyle = (evidence?.analyzed) ? '#10b981' : '#6b7280';
+    ctx.fillStyle = evidence?.analyzed ? '#10b981' : '#6b7280';
     ctx.fill();
     // Draw evidence type indicator (use first character of title as placeholder)
     ctx.fillStyle = '#ffffff';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    const label = String(evidence?.title || '').charAt(0).toUpperCase();
+    const label = String(evidence?.title || '')
+      .charAt(0)
+      .toUpperCase();
     ctx.fillText(label, x, y + 4);
   }
   // Reactive updates for network view
@@ -712,25 +740,32 @@ https://svelte.dev/e/js_parse_error -->
                 </span>
               {/if}
               <!-- quick semantic search -->
-              <button class="search-related" onclick={() => performSemanticSearch(evidence.title || evidence.description || '')}>
+              <button
+                class="search-related"
+                onclick={() => performSemanticSearch(evidence.title || evidence.description || '')}
+              >
                 Search Related
               </button>
               {#if !readOnly}
                 <label class="upload-btn">
-                  <input type="file" style="display:none" onchange={async e => {
-                    const f = (e.target as HTMLInputElement).files?.[0];
-                    if (f) {
-                      const key = await uploadToMinio(f);
-                      if (key) {
-                        // notify backend to attach file to evidence (best-effort)
-                        await apiFetch('/api/evidence/attach-file', {
-                          method: 'POST',
-                          body: JSON.stringify({ evidenceId: evidence.id, objectKey: key })
-                        }).catch(err => console.warn('Attach file failed', err));
-                        await loadEvidence();
+                  <input
+                    type="file"
+                    style="display:none"
+                    onchange={async e => {
+                      const f = (e.target as HTMLInputElement).files?.[0];
+                      if (f) {
+                        const key = await uploadToMinio(f);
+                        if (key) {
+                          // notify backend to attach file to evidence (best-effort)
+                          await apiFetch('/api/evidence/attach-file', {
+                            method: 'POST',
+                            body: JSON.stringify({ evidenceId: evidence.id, objectKey: key }),
+                          }).catch(err => console.warn('Attach file failed', err));
+                          await loadEvidence();
+                        }
                       }
-                    }
-                  }} />
+                    }}
+                  />
                   Upload File
                 </label>
               {/if}
@@ -801,7 +836,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem 1.5rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .detective-mode .board-header {
     background: rgba(30, 27, 75, 0.9);
@@ -860,18 +895,20 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     color: #64748b;
-    transition: color 0.2s ease, background 0.2s ease;
+    transition:
+      color 0.2s ease,
+      background 0.2s ease;
   }
   /* Provide a minimal non-empty hover rule to fix empty ruleset error */
   .view-btn:hover {
-    background: rgba(59,130,246,0.06); /* subtle blue tint */
+    background: rgba(59, 130, 246, 0.06); /* subtle blue tint */
     color: #1e40af;
     transform: translateY(-1px);
   }
   .view-btn.active {
     background: white;
     color: #3b82f6;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .detective-toggle {
     display: flex;
@@ -925,7 +962,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Replaced empty ruleset with a minimal non-empty hover style to avoid "Do not use empty rulesets" error */
   .filter-toggle:hover {
-    background: rgba(59,130,246,0.04); /* subtle tint */
+    background: rgba(59, 130, 246, 0.04); /* subtle tint */
     color: #1e40af;
     transform: translateY(-1px);
   }
@@ -1147,7 +1184,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 0.5rem;
     padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .timeline-marker {
     position: absolute;
@@ -1202,14 +1239,18 @@ https://svelte.dev/e/js_parse_error -->
   .spinner {
     width: 1rem;
     height: 1rem;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -1234,5 +1275,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

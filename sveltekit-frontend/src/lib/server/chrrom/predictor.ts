@@ -23,8 +23,8 @@ class MarkovPredictorWithRedis {
     this.redis = new Redis(redisUrl, {
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
-      lazyConnect: true
-      password: redisPassword
+      lazyConnect: true,
+      password: redisPassword,
     });
     this.cacheEnabled = true;
     // Test Redis connection

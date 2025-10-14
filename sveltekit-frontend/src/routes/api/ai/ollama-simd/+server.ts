@@ -15,12 +15,12 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { ollamaService } from '$lib/server/ai/ollama-service.js'
-import { langchainSIMDBridge, type SIMDLangChainConfig } from '$lib/ai/langchain-simd-bridge.js'
-import { simdTextTilingEngine } from '$lib/ai/simd-text-tiling-engine.js'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaService } from '$lib/server/ai/ollama-service.js';
+import { langchainSIMDBridge, type SIMDLangChainConfig } from '$lib/ai/langchain-simd-bridge.js';
+import { simdTextTilingEngine } from '$lib/ai/simd-text-tiling-engine.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // --- New Interfaces for SIMD Processing Results ---
 interface SIMDTileMetadata {
@@ -85,24 +85,24 @@ interface XStateSessionUpdateData {
  */
 interface OllamaSIMDRequest {
   // Standard Ollama parameters;
-  prompt: string
-  model?: string
-  temperature?: number
-  stream?: boolean
-  system?: string
+  prompt: string;
+  model?: string;
+  temperature?: number;
+  stream?: boolean;
+  system?: string;
   // SIMD enhancement parameters
-  enable_simd?: boolean
+  enable_simd?: boolean;
   compression_target?: number; // 7, 25, 50, 109, 200
-  quality_tier?: 'nes' | 'snes' | 'n64'
-  generate_ui_components?: boolean
-  use_web_worker?: boolean
+  quality_tier?: 'nes' | 'snes' | 'n64';
+  generate_ui_components?: boolean;
+  use_web_worker?: boolean;
   // XState integration
-  session_id?: string
-  task_type?: 'legal-analysis' | 'generation' | 'embedding'
+  session_id?: string;
+  task_type?: 'legal-analysis' | 'generation' | 'embedding';
   // Performance options
-  batch_mode?: boolean
-  enable_caching?: boolean
-  preferred_protocol?: 'http' | 'grpc' | 'quic' | 'websocket'
+  batch_mode?: boolean;
+  enable_caching?: boolean;
+  preferred_protocol?: 'http' | 'grpc' | 'quic' | 'websocket';
 }
 interface OllamaSIMDResponse {
   // Standard Ollama response
@@ -492,47 +492,53 @@ function generateQuickDOM(tile: SIMDTile, index: number): string {
 }
 // Helper function: Calculate tokens per second
 function calculateTokensPerSecond(text: string, timeMs: number): number {
-  const estimatedTokens = text.split(/\s+/).length
-  return estimatedTokens / (timeMs / 1000)
+  const estimatedTokens = text.split(/\s+/).length;
+  return estimatedTokens / (timeMs / 1000);
 }
 // PUT - Update SIMD configuration
 const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
-    const config: Partial<SIMDLangChainConfig> = await request.json()
-    langchainSIMDBridge.updateConfig(config)
+    const config: Partial<SIMDLangChainConfig> = await request.json();
+    langchainSIMDBridge.updateConfig(config);
     return json({
       success: true,
       message: 'Ollama-SIMD configuration updated',
       config,
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to update configuration'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to update configuration',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // DELETE - Clear caches
 const originalDELETEHandler: RequestHandler = async () => {
   try {
     // Clear Ollama service cache
-    ollamaService.clearCache()
+    ollamaService.clearCache();
     // Clear SIMD engine caches (would implement cache clearing)
-    console.log('🗑️ Cleared Ollama-SIMD caches')
+    console.log('🗑️ Cleared Ollama-SIMD caches');
     return json({
       success: true,
       message: 'All caches cleared',
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to clear caches'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to clear caches',
+      },
+      { status: 500 }
+    );
   }
-}
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
-export const PUT = redisOptimized.aiAnalysis(originalPUTHandler)
+};
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

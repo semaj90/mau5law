@@ -47,12 +47,12 @@ export const GET: RequestHandler = async () => {
         }
       },
       capabilities: {
-        mlClassification: true
-        vectorSearch: true
+        mlClassification: true,
+        vectorSearch: true,
         knowledgeGraph: statusChecks[4].status === 'fulfilled',
-        realTimeStreaming: true
-        gpuAcceleration: true
-        contextRanking: true
+        realTimeStreaming: true,
+        gpuAcceleration: true,
+        contextRanking: true,
       },
       performance: {
         averageQueryTime: '~1.2s',

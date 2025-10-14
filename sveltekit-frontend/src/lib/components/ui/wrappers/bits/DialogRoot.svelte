@@ -4,7 +4,11 @@
   import { browser } from '$app/environment';
   import { getBitsOverrides } from './bits-overrides';
 
-  let { open = $bindable(false), onOpenChange, children }: { open?: boolean; onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
+  let {
+    open = $bindable(false),
+    onOpenChange,
+    children,
+  }: { open?: boolean; onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
 
   // Use $state for reactivity in Svelte 5
   let DialogRoot = $state<any>(null);
@@ -56,7 +60,7 @@
       <div
         class="fallback-dialog-overlay"
         onclick={() => handleOpenChange(false)}
-        onkeydown={(e) => {
+        onkeydown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             handleOpenChange(false);
           }
@@ -66,8 +70,8 @@
       >
         <div
           class="fallback-dialog"
-          onclick={(e) => e.stopPropagation()}
-          onkeydown={(e) => {
+          onclick={e => e.stopPropagation()}
+          onkeydown={e => {
             if (e.key === 'Escape') {
               handleOpenChange(false);
             }

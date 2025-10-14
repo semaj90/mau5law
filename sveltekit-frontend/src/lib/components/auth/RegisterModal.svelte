@@ -16,7 +16,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   let confirmPassword = $state('');
   let loading = $state(false);
   let error = $state('');
-  async function handleRegister(event: Event) { // Added event parameter
+  async function handleRegister(event: Event) {
+    // Added event parameter
     event.preventDefault(); // Explicitly prevent default form submission
     loading = true;
     error = '';
@@ -45,7 +46,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     <Content class="content">
       <Title class="title">Register</Title>
       {#if error}<div class="error">{error}</div>{/if}
-      <form onsubmit={handleRegister} class="form"> <!-- Changed to onsubmit -->
+      <form onsubmit={handleRegister} class="form">
+        <!-- Changed to onsubmit -->
         <label>
           <span>Email</span>
           <input type="email" bind:value={email} required autocomplete="email" />
@@ -110,7 +112,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     font-size: 0.9rem;
     cursor: pointer;
   }
-  button[type="submit"] {
+  button[type='submit'] {
     background: #6366f1;
     color: white;
   }

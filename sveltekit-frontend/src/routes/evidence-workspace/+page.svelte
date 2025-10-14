@@ -71,7 +71,7 @@ Features:
       reader.onload = e => {
         fileObj.content = e.target.result;
         fileObj.analyzed = false;
-      }
+      };
       reader.readAsText(fileObj.file);
     });
   }
@@ -88,7 +88,7 @@ Features:
       png: 'image',
       mp4: 'video',
       mp3: 'audio',
-    }
+    };
     return typeMap[ext] || 'other';
   }
 
@@ -227,7 +227,7 @@ Features:
       timeline: timelineData,
       citations: citationsData,
       canvas: canvasData,
-    }
+    };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: 'application/json',

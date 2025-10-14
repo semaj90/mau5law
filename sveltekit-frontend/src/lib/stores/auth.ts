@@ -17,9 +17,9 @@ export interface AuthState {
 }
 const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
-    isAuthenticated: false
-    user: null
-    isLoading: true
+    isAuthenticated: false,
+    user: null,
+    isLoading: true,
   });
   return {
     subscribe,

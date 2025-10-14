@@ -3,7 +3,7 @@
   import SimpleEvidenceBoard from '$lib/components/evidence/SimpleEvidenceBoard.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Corrected import
   // Ensure Card.svelte is a Svelte 5 component using runes (e.g., $props()) to resolve type issues.
-  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';     // Corrected import
+  import Card from '$lib/components/ui/enhanced-bits/Card.svelte'; // Corrected import
   import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
   import { submitWithProgress } from '$lib/api/submitWithProgress';
   import { isAuthenticated, currentUser } from '$lib/stores/authStore';
@@ -45,8 +45,8 @@
       const user = get(currentUser);
       if (auth) {
         submitWithProgress('/api/metadata/save', payload)
-          .then((res) => console.log('Metadata saved', res))
-          .catch((err) => console.warn('Metadata save failed', err));
+          .then(res => console.log('Metadata saved', res))
+          .catch(err => console.warn('Metadata save failed', err));
       } else {
         // Save unsynced upload metadata to localStorage
         try {
@@ -94,7 +94,13 @@
             </div>
           </div>
           <div class="nier-bits-yorha-panel-content">
-            <svelte:component this={ButtonComponent} variant="ghost" size="sm" class="nes-btn" on:click={() => (showWelcome = false)}>
+            <svelte:component
+              this={ButtonComponent}
+              variant="ghost"
+              size="sm"
+              class="nes-btn"
+              on:click={() => (showWelcome = false)}
+            >
               Get Started →
             </svelte:component>
           </div>
@@ -104,7 +110,12 @@
 
     <section>
       <h3 style="margin:0 0 8px 0">Upload evidence (dev)</h3>
-      <UploadProgress uploadUrl="/api/upload" fieldName="file" maxBytes={200 * 1024 * 1024} on:done={(e) => handleUploadDone((e as CustomEvent).detail)} />
+      <UploadProgress
+        uploadUrl="/api/upload"
+        fieldName="file"
+        maxBytes={200 * 1024 * 1024}
+        on:done={e => handleUploadDone((e as CustomEvent).detail)}
+      />
       {#if savedLocally}
         <div class="local-save-notice">Saved locally — will sync when you log in</div>
       {/if}

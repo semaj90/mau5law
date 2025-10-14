@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-// Type interfaces for the component
+  // Type interfaces for the component
   import { getContext, onMount } from 'svelte';
   // UI components (Svelte 5 + melt v0.39.0 compatible)
   import Button from '$lib/components/ui/Button.svelte';
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   let {
     contextItems = [],
     caseId = '',
-    evidenceText = ''
+    evidenceText = '',
   }: {
     contextItems?: any[];
     caseId?: string;
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
     legalCaseActions.generateEmbedding({
       caseId,
       evidenceText,
-      userId: user.id
+      userId: user.id,
     });
   }
   // Search for related evidence using embeddings
@@ -74,41 +74,41 @@ https://svelte.dev/e/js_parse_error -->
       caseId,
       query: evidenceText,
       userId: user.id,
-      limit: 10
+      limit: 10,
     });
   }
-    // Save summary to DB using the comprehensive summaries API
-    async function saveSummary() {
-      if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
-      try {
-        const response = await fetch('/api/summaries', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'case',
-            targetId: caseId,
-            depth: 'comprehensive',
-            includeRAG: true,
-            includeUserActivity: false,
-            enableStreaming: false,
-            userId: user.id
-          })
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        if (result.success) {
-          // Optionally show a success notification here
-          console.log('Summary saved successfully');
-        } else {
-          console.error('Failed to save summary:', result.error);
-        }
-      } catch (error) {
-        console.error('Error saving summary:', error);
-        errorMessage = error instanceof Error ? error.message: 'An error occurred';
+  // Save summary to DB using the comprehensive summaries API
+  async function saveSummary() {
+    if (!($aiGlobalStore as AIStore).context.summary || !caseId || !user?.id) return;
+    try {
+      const response = await fetch('/api/summaries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'case',
+          targetId: caseId,
+          depth: 'comprehensive',
+          includeRAG: true,
+          includeUserActivity: false,
+          enableStreaming: false,
+          userId: user.id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const result = await response.json();
+      if (result.success) {
+        // Optionally show a success notification here
+        console.log('Summary saved successfully');
+      } else {
+        console.error('Failed to save summary:', result.error);
+      }
+    } catch (error) {
+      console.error('Error saving summary:', error);
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
     }
+  }
 </script>
 
 <div class="nier-card p-6 nes-container">

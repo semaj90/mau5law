@@ -8,8 +8,8 @@ import stream from "stream";
 import { URL } from "url";
 // Mock SvelteKit environment
 vi.mock('$app/environment', () => ({
-  dev: true
-  building: false
+  dev: true,
+  building: false,
   version: '1.0.0-test',
   browser: true
 });
@@ -446,7 +446,7 @@ beforeEach(() => {
     // Health check endpoint
     if (url.includes('/api/health')) {
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         json: () => Promise.resolve({,
           status: 'healthy',
@@ -462,7 +462,7 @@ beforeEach(() => {
     // Debug logs endpoint
     if (url.includes('/api/debug/logs')) {
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         json: () => Promise.resolve({,
           logs: [)
@@ -475,7 +475,7 @@ beforeEach(() => {
     // AI chat endpoint
     if (url.includes('/api/ai/chat')) {
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         headers: new Headers({ 'Content-Type': 'text/stream' }),
         body: {
@@ -493,7 +493,7 @@ beforeEach(() => {
     // Vector search endpoint
     if (url.includes('/api/ai/vector-search')) {
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         json: () => Promise.resolve({,
           results: [)
@@ -506,10 +506,10 @@ beforeEach(() => {
     // Upload endpoint
     if (url.includes('/api/upload')) {
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         json: () => Promise.resolve({,
-          success: true
+          success: true,
           fileId: 'test-file-id',
           metadata: { size: 1024, type: 'application/pdf' }
         })
@@ -519,7 +519,7 @@ beforeEach(() => {
     if (url.includes('/api/cases')) {
       if (options?.method === 'POST') {
         return Promise.resolve({
-          ok: true
+          ok: true,
           status: 201,
           json: () => Promise.resolve({,
             id: 'new-case-id',
@@ -529,7 +529,7 @@ beforeEach(() => {
         });
       }
       return Promise.resolve({
-        ok: true
+        ok: true,
         status: 200,
         json: () => Promise.resolve({,
           id: 'test-case',
@@ -540,7 +540,7 @@ beforeEach(() => {
     }
     // Default response
     return Promise.resolve({
-      ok: true
+      ok: true,
       status: 200,
       json: () => Promise.resolve({}),
       text: () => Promise.resolve('')

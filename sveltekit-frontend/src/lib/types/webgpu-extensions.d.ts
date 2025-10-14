@@ -14,7 +14,7 @@ declare global {
       adapter?: GPUAdapter;
       device?: GPUDevice;
       context?: GPUCanvasContext;
-    }
+    };
   }
   interface HTMLCanvasElement {
     getContext(contextId: 'webgpu'): GPUCanvasContext | null;
@@ -69,12 +69,12 @@ export interface LegalRenderPipelineDescriptor {
     module: GPUShaderModule;
     entryPoint: string;
     buffers: GPUVertexBufferLayout[];
-  }
+  };
   fragment: {
     module: GPUShaderModule;
     entryPoint: string;
     targets: GPUColorTargetState[];
-  }
+  };
   primitive: GPUPrimitiveState;
   depthStencil?: GPUDepthStencilState;
 }
@@ -86,12 +86,12 @@ export interface WebGPUPerformanceMetrics {
     buffers: number;
     textures: number;
     total: number;
-  }
+  };
   pipelineStats: {
     drawCalls: number;
     computeDispatches: number;
     bufferUpdates: number;
-  }
+  };
 }
 // Error handling for WebGPU operations
 export class WebGPUError extends Error {
@@ -102,7 +102,7 @@ export class WebGPUError extends Error {
       pipeline?: string;
       buffer?: string;
       operation?: string;
-    },
+    }
   ) {
     super(message);
     this.name = 'WebGPUError';
@@ -118,7 +118,7 @@ export interface LegalDocumentTexture {
     width: number;
     height: number;
     depth?: number;
-  }
+  };
   mipLevels: number;
 }
 // CHR-ROM pattern cache integration
@@ -131,7 +131,7 @@ export interface CHRROMGPUPattern {
     tileIndex: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     documentType: string;
-  }
+  };
 }
 // WebGPU utility functions type definitions
 export interface WebGPUUtilities {
@@ -174,20 +174,20 @@ export interface LegalVisualizationState {
     fov: number;
     near: number;
     far: number;
-  }
+  };
   lighting: {
     ambient: [number, number, number];
     directional: {
       direction: [number, number, number];
       color: [number, number, number];
       intensity: number;
-    }
-  }
+    };
+  };
   interaction: {
     selectedDocument: string | null;
     hoveredDocument: string | null;
     filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
-  }
+  };
 }
 // WebGPU resource management
 export interface WebGPUResourceManager {
@@ -202,4 +202,4 @@ export interface WebGPUResourceManager {
 // Export utility type for buffer validation
 export type ValidateBuffer<T> = T extends GPUBufferCompatible ? T : never;
 // Export all types
-export default {}
+export default {};

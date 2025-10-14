@@ -33,7 +33,7 @@ export interface UserEvidence {
   uploadedAt: Date;
   tags: string[];
   notes?: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   aiAnalysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
 }
 export interface UserCitation {
@@ -95,7 +95,7 @@ export interface UserActivity {
   action: string;
   resourceType: 'case' | 'evidence' | 'citation' | 'report' | 'ai_chat' | 'system';
   resourceId?: string;
-  details: { [key: string]: any }
+  details: { [key: string]: any };
   timestamp: Date;
   ipAddress?: string;
   userAgent?: string;
@@ -148,7 +148,7 @@ const createUserDataStore = () => {
           isLoading: false,
           lastSyncAt: 0,
           cachedAt: 0,
-        }
+        };
         return;
       }
       currentUserId = userId;
@@ -254,21 +254,21 @@ const createUserDataStore = () => {
     // Update items
     updateCase: (caseId: string, updates: Partial<UserCase>) => {
       userDataState.cases = userDataState.cases.map(c =>
-        c.id === caseId ? { ...c, ...updates, updatedAt: new Date() } : c,
+        c.id === caseId ? { ...c, ...updates, updatedAt: new Date() } : c
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
     },
     updateCitation: (citationId: string, updates: Partial<UserCitation>) => {
       userDataState.citations = userDataState.citations.map(c =>
-        c.id === citationId ? { ...c, ...updates, updatedAt: new Date() } : c,
+        c.id === citationId ? { ...c, ...updates, updatedAt: new Date() } : c
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
     },
     updateReport: (reportId: string, updates: Partial<UserReport>) => {
       userDataState.reports = userDataState.reports.map(r =>
-        r.id === reportId ? { ...r, ...updates, updatedAt: new Date() } : r,
+        r.id === reportId ? { ...r, ...updates, updatedAt: new Date() } : r
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
@@ -302,7 +302,7 @@ const createUserDataStore = () => {
         isLoading: false,
         lastSyncAt: 0,
         cachedAt: 0,
-      }
+      };
       if (browser) {
         try {
           localStorage.removeItem('legal_ai_user_data_cache');
@@ -311,7 +311,7 @@ const createUserDataStore = () => {
         }
       }
     },
-  }
+  };
   // Helper functions
   async function loadFromCache(userId: string) {
     if (!browser) return;
@@ -347,7 +347,7 @@ const createUserDataStore = () => {
         fetch(`/api/user/${userId}/reports`),
         fetch(`/api/user/${userId}/ai-conversations`),
       ]);
-      const syncedData: Partial<UserDataState> = {}
+      const syncedData: Partial<UserDataState> = {};
       if (casesRes.status === 'fulfilled' && casesRes.value.ok) {
         syncedData.cases = await casesRes.value.json();
       }
@@ -384,14 +384,14 @@ const createUserDataStore = () => {
             userId: currentUserId,
             data: userDataState,
             cachedAt: Date.now(),
-          }),
+          })
         );
       }
     } catch (error) {
       console.warn('Failed to save user data to cache:', error);
     }
   }
-}
+};
 // ===== EXPORTS =====
 export const userDataStore = createUserDataStore();
 // Auto-sync initialization function (call this from a component with $effect)
@@ -403,7 +403,7 @@ export const initUserDataSync = (user?: { id: string } | null) => {
   } else if (!user) {
     userDataStore.clear();
   }
-}
+};
 // Helper functions for accessing reactive state
 export const getUserCases = () => userDataStore.state.cases;
 export const getUserEvidence = () => userDataStore.state.evidence;

@@ -2,10 +2,10 @@
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service'
-import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
+import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service';
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration

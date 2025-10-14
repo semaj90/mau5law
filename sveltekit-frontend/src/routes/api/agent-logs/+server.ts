@@ -5,12 +5,12 @@ import crypto from 'crypto';
 
 // helper to safely stringify unknown errors
 function getErrorMessage(error: unknown): string {
-	if (error instanceof Error) return error.message;
-	try {
-		return JSON.stringify(error);
-	} catch {
-		return String(error);
-	}
+  if (error instanceof Error) return error.message;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
 }
 
 // GET /api/agent-logs - Get recent agent logs

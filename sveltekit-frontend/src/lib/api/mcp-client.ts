@@ -193,7 +193,7 @@ export class MCPApiClient {
     } catch (error) {
       console.error('GPU status fetch failed:', error);
       return {
-        available: false
+        available: false,
         temperature: 0,
         memoryUsed: 0,
         memoryTotal: 0,

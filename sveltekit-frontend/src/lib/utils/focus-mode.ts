@@ -23,8 +23,8 @@ export const defaultFocusSettings: FocusSettings = {
     ".footer"
   ],
   exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"],
-  enableFullscreen: false
-  enableZenMode: false
+  enableFullscreen: false,
+  enableZenMode: false,
 }
 // Store for focus mode state
 export const focusMode = writable(false);
@@ -39,7 +39,7 @@ export class FocusManager {
   }
   /**
    * Activate focus mode
-   */;
+   */
   activate(): void {
     if (this.isActive) return;
     this.isActive = true;
@@ -59,7 +59,7 @@ export class FocusManager {
   }
   /**
    * Deactivate focus mode
-   */;
+   */
   deactivate(): void {
     if (!this.isActive) return;
     this.isActive = false;
@@ -82,7 +82,7 @@ export class FocusManager {
   }
   /**
    * Toggle focus mode
-   */;
+   */
   toggle(): void {
     if (this.isActive) {
       this.deactivate();
@@ -92,13 +92,13 @@ export class FocusManager {
   }
   /**
    * Check if focus mode is active
-   */;
+   */
   isActivated(): boolean {
     return this.isActive;
   }
   /**
    * Update focus settings
-   */;
+   */
   updateSettings(newSettings: Partial<FocusSettings>): void {
     this.settings = { ...this.settings, ...newSettings }
     focusSettings.set(this.settings);
@@ -110,7 +110,7 @@ export class FocusManager {
   }
   /**
    * Apply focus mode styles to all elements
-   */;
+   */
   private applyFocusStyles(): void {
     // Get all elements in the document
     const allElements = document.querySelectorAll("*");
@@ -136,7 +136,7 @@ export class FocusManager {
   }
   /**
    * Restore original styles to all modified elements
-   */;
+   */
   private restoreOriginalStyles(): void {
     this.originalStyles.forEach((originalStyle, element) => {
       const htmlElement = element as HTMLElement;
@@ -149,7 +149,7 @@ export class FocusManager {
   }
   /**
    * Check if element should be exempt from focus mode effects
-   */;
+   */
   private shouldExemptElement(element: HTMLElement): boolean {
     return this.settings.exemptElements.some(
       (selector) => element.matches(selector) || element.closest(selector),
@@ -157,7 +157,7 @@ export class FocusManager {
   }
   /**
    * Check if element should be hidden in focus mode
-   */;
+   */
   private shouldHideElement(element: HTMLElement): boolean {
     if (this.settings.enableZenMode) {
       return this.settings.hideElements.some(
@@ -168,7 +168,7 @@ export class FocusManager {
   }
   /**
    * Check if element should be dimmed in focus mode
-   */;
+   */
   private shouldDimElement(element: HTMLElement): boolean {
     // Don't dim if zen mode is enabled and element should be hidden
     if (this.settings.enableZenMode && this.shouldHideElement(element)) {
@@ -189,21 +189,21 @@ export class FocusManager {
   }
   /**
    * Handle mouse enter event for dimmed elements
-   */;
+   */
   private handleMouseEnter = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = "1";
   }
   /**
    * Handle mouse leave event for dimmed elements
-   */;
+   */
   private handleMouseLeave = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = this.settings.dimOpacity.toString();
   }
   /**
    * Set up mutation observer to handle dynamically added elements
-   */;
+   */
   private setupMutationObserver(): void {
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -216,13 +216,13 @@ export class FocusManager {
       });
     });
     this.observer.observe(document.body, {
-      childList: true
-      subtree: true
+      childList: true,
+      subtree: true,
     });
   }
   /**
    * Apply focus styles to a single element
-   */;
+   */
   private applyFocusStylesToElement(element: HTMLElement): void {
     if (this.shouldExemptElement(element)) {
       return;
@@ -240,7 +240,7 @@ export class FocusManager {
   }
   /**
    * Enter fullscreen mode
-   */;
+   */
   private enterFullscreen(): void {
     if (document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen();
@@ -309,7 +309,7 @@ export const focusModeStyles = `;
     box-shadow: 0 0 0 2px rgba(224, 224, 224, 0.2);
     border-radius: 8px;
   }
-  /* Smooth animations */;
+  /* Smooth animations */
   .focus-mode-transition {
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
@@ -345,23 +345,23 @@ export function setupFocusModeShortcut(
 export const focusPresets = {
   minimal: {
     dimOpacity: 0.7,
-    enableZenMode: false
-    hideElements: []
+    enableZenMode: false,
+    hideElements: [],
   },
   moderate: {
     dimOpacity: 0.5,
-    enableZenMode: false
-    hideElements: [".sidebar"]
+    enableZenMode: false,
+    hideElements: [".sidebar"],
   },
   intense: {
     dimOpacity: 0.3,
-    enableZenMode: true
+    enableZenMode: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar"]
   },
   zen: {
     dimOpacity: 0.1,
-    enableZenMode: true
-    enableFullscreen: true
+    enableZenMode: true,
+    enableFullscreen: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"]
   }
 }

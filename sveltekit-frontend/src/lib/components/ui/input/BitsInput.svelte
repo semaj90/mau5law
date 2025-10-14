@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
         // Error state
         error && 'border-red-500 focus-visible:ring-red-500',
         // Custom classes
-        className,
+        className
       )}
       {required}
       {...restProps}

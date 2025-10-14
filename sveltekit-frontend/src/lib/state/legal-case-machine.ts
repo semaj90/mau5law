@@ -162,7 +162,7 @@ const searchRelatedEvidenceService = async (context: LegalCaseContext, event: an
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      query: text
+      query: text,
       type: 'evidence',
       limit: 5,
       caseId: context.caseId,
@@ -268,22 +268,22 @@ const assignRelatedEvidence = assign({
 export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>({
   id: 'legalCase',
   context: {
-    case: null
-    caseId: null
+    case: null,
+    caseId: null,
     evidence: [],
-    selectedEvidence: null
+    selectedEvidence: null,
     uploadQueue: [],
     aiAnalysisProgress: 0,
-    aiSummary: null
+    aiSummary: null,
     similarCases: [],
     searchQuery: '',
     searchResults: [],
     relatedEvidence: [],
-    lastEmbedding: null
+    lastEmbedding: null,
     filters: { [key,: strin,g]: any },
     activeTab: 'overview',
-    isLoading: false
-    error: null
+    isLoading: false,
+    error: null,
     formData: {
       caseForm: { [key,: strin,g]: any },
       evidenceForm: { [key,: strin,g]: any }
@@ -339,7 +339,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     creatingCase: {
       invoke: {
         id: 'createCase',
-        src: createCaseService
+        src: createCaseService,
         onDone: {
           target: 'caseLoaded',
           actions: [
@@ -698,20 +698,20 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     RESET: {
       target: 'idle',
       actions,: assign(() => ({,
-        case: null
-        caseId: null
+        case: null,
+        caseId: null,
         evidence: [],
-        selectedEvidence: null
+        selectedEvidence: null,
         uploadQueue: [],
         aiAnalysisProgress: 0,
-        aiSummary: null
+        aiSummary: null,
         similarCases: [],
         searchQuery: '',
         searchResults: [],
         filters: { [key,: strin,g]: any },
         activeTab: 'overview',
-        isLoading: false
-        error: null
+        isLoading: false,
+        error: null,
         formData: {
           caseForm: { [key,: strin,g]: any },
           evidenceForm: { [key,: strin,g]: any }

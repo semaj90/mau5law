@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .insert(legalDocuments)
       .values({
         id: crypto.randomUUID(),
-        sessionId: finalSessionId
+        sessionId: finalSessionId,
         title: `${documentType} - ${new Date().toLocaleDateString()}`,
         content: text.substring(0, 10000), // Limit content size
         summary,
@@ -145,8 +145,8 @@ export const POST: RequestHandler = async ({ request }) => {
         processingMetadata: {
           processingTime,
           model: 'gemma3-legal',
-          cacheHit: false
-          timestamp: new Date().toISOString()
+          cacheHit: false,
+          timestamp: new Date().toISOString(),
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -156,9 +156,9 @@ export const POST: RequestHandler = async ({ request }) => {
     await db
       .insert(ragSessions)
       .values({
-        id: finalSessionId
+        id: finalSessionId,
         sessionName: `Legal Analysis - ${new Date().toLocaleDateString()}`,
-        isActive: true
+        isActive: true,
         messageCount: 1,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -177,8 +177,8 @@ export const POST: RequestHandler = async ({ request }) => {
       entities,
       contractTerms,
       processingTime,
-      cacheHit: false
-      sessionId: finalSessionId
+      cacheHit: false,
+      sessionId: finalSessionId,
     }
     return json(response)
   }, catch (error) {

@@ -1,7 +1,12 @@
 /// <reference types="vite/client" />
 
-import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProcessingJobData } from "$lib/services/queue-service"
-import type { RequestHandler } from './$types.js'
+import {
+  queueDocumentProcessing,
+  getJobStatus,
+  getQueueStats,
+  type DocumentProcessingJobData,
+} from '$lib/services/queue-service';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit'; // Import json helper
 // Types for Go server integration (kept for compatibility)
 export interface DocumentProcessRequest {
@@ -32,29 +37,29 @@ export interface GoProcessDocumentResponse {
   error?: string;
 }
 export interface DocumentProcessResponse {
-	success: boolean
-	document_id: string
-	summary?: string
-	entities?: LegalEntity[]
-	risk_assessment?: RiskAssessment
-	embedding?: number[]
-	processing_time: string
-	metadata: Record<string, unknown>
-	error?: string
+  success: boolean;
+  document_id: string;
+  summary?: string;
+  entities?: LegalEntity[];
+  risk_assessment?: RiskAssessment;
+  embedding?: number[];
+  processing_time: string;
+  metadata: Record<string, unknown>;
+  error?: string;
 }
 export interface LegalEntity {
-	type: string
-	value: string
-	confidence: number
-	start_pos: number
-	end_pos: number
+  type: string;
+  value: string;
+  confidence: number;
+  start_pos: number;
+  end_pos: number;
 }
 export interface RiskAssessment {
-	overall_risk: string
-	risk_score: number
-	risk_factors: string[]
-	recommendations: string[];
-	confidence: number
+  overall_risk: string;
+  risk_score: number;
+  risk_factors: string[];
+  recommendations: string[];
+  confidence: number;
 }
 
 export interface GoServerHealthResponse {

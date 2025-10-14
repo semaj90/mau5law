@@ -93,8 +93,8 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
 				options: {
 					chunkSize: 1000,
 					overlap: 100,
-					simdEnabled: true
-					fastJsonEnabled: true
+					simdEnabled: true,
+					fastJsonEnabled: true,
 				}
 			})
 		})
@@ -227,8 +227,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					'✅ Gemma embeddings generation',
 					'✅ PostgreSQL storage with pgvector'
 				],
-				searchable: true
-				ragReady: true
+				searchable: true,
+				ragReady: true,
 			},
 			message: `Successfully processed ${file.name} with Gemma embeddings pipeline`
 		})

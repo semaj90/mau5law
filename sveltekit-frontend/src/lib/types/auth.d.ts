@@ -17,7 +17,7 @@ declare module 'lucia' {
   export interface SessionCookie {
     name: string;
     value: string;
-    attributes: CookieAttributes & { path: string }
+    attributes: CookieAttributes & { path: string };
   }
   export class Lucia {
     createSessionCookie(sessionId: string): SessionCookie;

@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const embeddingVector = `[${embedding.join(',')}]`;
 
     // Build similarity search query
-    let queryBuilder = db
+    const queryBuilder = db
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseTitle: cases.title,
 
         // Similarity score (distance converted to similarity)
-        similarity: sql<number>`1 - (ocr_embedding <-> ${embeddingVector}::vector)`.as('similarity')
+        similarity: sql<number>`1 - (ocr_embedding <-> ${embeddingVector}::vector)`.as('similarity'),
       })
       .from(evidence)
       .leftJoin(cases, sql`${evidence.caseId} = ${cases.id}`)
@@ -81,44 +81,49 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ocrText: item.ocrText?.substring(0, 200) + (item.ocrText?.length > 200 ? '...' : ''), // Truncated preview
         ocrConfidence: item.ocrConfidence,
         processingMethod: item.processingMethod,
-        createdAt: item.createdAt
+        createdAt: item.createdAt,
       },
-      case: item.caseId ? {
-        id: item.caseId,
-        title: item.caseTitle
-      } : null,
+      case: item.caseId
+        ? {
+            id: item.caseId,
+            title: item.caseTitle,
+          }
+        : null,
       similarity: item.similarity,
-      relevanceScore: Math.round((item.similarity * 100) * 10) / 10 // Rounded percentage
+      relevanceScore: Math.round(item.similarity * 100 * 10) / 10, // Rounded percentage
     }));
 
     console.log(`🔍 Found ${results.length} similar evidence items (threshold: ${threshold})`);
 
-    return json({
-      results: results,
-      query: {
-        embeddingDimensions: embedding.length,
-        threshold: threshold,
-        limit: limit,
-        excludeId: excludeId
+    return json(
+      {
+        results: results,
+        query: {
+          embeddingDimensions: embedding.length,
+          threshold: threshold,
+          limit: limit,
+          excludeId: excludeId,
+        },
+        stats: {
+          totalFound: results.length,
+          highSimilarity: results.filter(r => r.similarity > 0.8).length,
+          mediumSimilarity: results.filter(r => r.similarity > 0.6 && r.similarity <= 0.8).length,
+          averageSimilarity:
+            results.length > 0
+              ? Math.round((results.reduce((sum, r) => sum + r.similarity, 0) / results.length) * 1000) / 1000
+              : 0,
+        },
+        processingTime: Math.round(processingTime),
       },
-      stats: {
-        totalFound: results.length,
-        highSimilarity: results.filter(r => r.similarity > 0.8).length,
-        mediumSimilarity: results.filter(r => r.similarity > 0.6 && r.similarity <= 0.8).length,
-        averageSimilarity: results.length > 0
-          ? Math.round((results.reduce((sum, r) => sum + r.similarity, 0) / results.length) * 1000) / 1000
-          : 0
-      },
-      processingTime: Math.round(processingTime)
-    }, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'Cache-Control': 'max-age=300' // Cache for 5 minutes
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Processing-Time': `${Math.round(processingTime)}ms`,
+          'Cache-Control': 'max-age=300', // Cache for 5 minutes
+        },
       }
-    });
-
+    );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Similar evidence search error:', err);
@@ -134,7 +139,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || errorMessage : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {
@@ -142,8 +147,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
 };

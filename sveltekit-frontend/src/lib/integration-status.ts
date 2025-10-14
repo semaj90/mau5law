@@ -50,35 +50,35 @@ export interface IntegrationStatus {
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
   const status: IntegrationStatus = {
     webassembly: {
-      available: false
-      simdSupport: false
-      runtimeConnected: false
+      available: false,
+      simdSupport: false,
+      runtimeConnected: false,
     },
     sveltekit: {
       version: '2.0',
-      svelte5Patterns: true
-      ssrReady: true
+      svelte5Patterns: true,
+      ssrReady: true,
     },
     database: {
-      drizzleOrm: true
-      pgvectorSupport: true
-      postgresqlReady: false
+      drizzleOrm: true,
+      pgvectorSupport: true,
+      postgresqlReady: false,
     },
     ui: {
-      enhancedBitsComponents: true
-      unoCSS: true
-      nesCSS: true
-      gamingTheme: true
+      enhancedBitsComponents: true,
+      unoCSS: true,
+      nesCSS: true,
+      gamingTheme: true,
     },
     webgpu: {
-      available: false
-      dawnBackend: false
-      unifiedRuntime: true
+      available: false,
+      dawnBackend: false,
+      unifiedRuntime: true,
     },
     cache: {
-      chrRomCache: true
-      redisConnected: false
-      wasmCache: true
+      chrRomCache: true,
+      redisConnected: false,
+      wasmCache: true,
     }
   }
   if (!browser) return status;

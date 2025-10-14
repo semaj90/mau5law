@@ -413,8 +413,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       return json({
         service,
-        health: serviceHealth
-        timestamp: new Date().toISOString()
+        health: serviceHealth,
+        timestamp: new Date().toISOString(),
       })
     }
     // If force is true or no specific service, do full health check

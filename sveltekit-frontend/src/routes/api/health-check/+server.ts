@@ -4,7 +4,7 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString(),
     services: {},
     overall: 'unknown',
-  }
+  };
   const checks = [
     // Redis Health Check
     {
@@ -16,9 +16,9 @@ export const GET: RequestHandler = async () => {
           await client.connect();
           await client.ping();
           await client.quit();
-          return { status: 'healthy', responseTime: Date.now() }
+          return { status: 'healthy', responseTime: Date.now() };
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message }
+          return { status: 'unhealthy', error: error.message };
         }
       },
     },
@@ -33,15 +33,15 @@ export const GET: RequestHandler = async () => {
           });
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
-            return { status: 'healthy', responseTime }
+            return { status: 'healthy', responseTime };
           } else {
             return {
               status: 'unhealthy',
               error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            }
+            };
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message }
+          return { status: 'unhealthy', error: error.message };
         }
       },
     },
@@ -61,15 +61,15 @@ export const GET: RequestHandler = async () => {
               status: 'healthy',
               responseTime,
               models: (data as { models?: any }).models?.length || 0,
-            }
+            };
           } else {
             return {
               status: 'unhealthy',
               error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            }
+            };
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message }
+          return { status: 'unhealthy', error: error.message };
         }
       },
     },
@@ -85,15 +85,15 @@ export const GET: RequestHandler = async () => {
           });
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
-            return { status: 'healthy', responseTime }
+            return { status: 'healthy', responseTime };
           } else {
             return {
               status: 'unhealthy',
               error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            }
+            };
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message }
+          return { status: 'unhealthy', error: error.message };
         }
       },
     },
@@ -114,9 +114,9 @@ export const GET: RequestHandler = async () => {
             layers: enabledLayers,
             avgHitRate: Math.round(avgHitRate * 100),
             stats,
-          }
+          };
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message }
+          return { status: 'unhealthy', error: error.message };
         }
       },
     },
@@ -125,8 +125,8 @@ export const GET: RequestHandler = async () => {
   const results = await Promise.allSettled(
     checks.map(async ({ name, check }) => {
       const result = await check();
-      return { name, ...result }
-    }),
+      return { name, ...result };
+    })
   );
   // Process results
   let healthyCount = 0;
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async () => {
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
         error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error',
-      }
+      };
     }
   });
   // Determine overall health
@@ -157,4 +157,4 @@ export const GET: RequestHandler = async () => {
   }
   const statusCode = health.overall === 'healthy' ? 200 : health.overall === 'degraded' ? 206 : 503;
   return json(health, { status: statusCode });
-}
+};

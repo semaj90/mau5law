@@ -5,7 +5,7 @@ import AIAssistantMachine from './AIAssistantMachineComponent.svelte.js';
 const meta: any = {
   title: 'XState/AI Assistant Machine',
   // @ts-expect-error Svelte 5 component typing mismatch with Storybook inferred component type
-  component: AIAssistantMachine
+  component: AIAssistantMachine,
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -54,7 +54,7 @@ export const Default: Story = {
       response: '',
       conversationHistory: [],
       sessionId: 'story-default-session',
-      isProcessing: false
+      isProcessing: false,
       model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
@@ -62,9 +62,9 @@ export const Default: Story = {
         { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'] },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
       ],
-      modelLoadBalancing: false
-      databaseConnected: true
-      vectorSearchEnabled: true
+      modelLoadBalancing: false,
+      databaseConnected: true,
+      vectorSearchEnabled: true,
       databasePerformance: {
         queryLatency: 45,
         connectionPool: 8,
@@ -75,12 +75,12 @@ export const Default: Story = {
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
-      context7Available: true
+      context7Available: true,
       context7Cache: new Map(),
       currentDocuments: [],
       currentImages: [],
       processingQueue: [],
-      gpuProcessingEnabled: true
+      gpuProcessingEnabled: true,
       serviceHealth: {
         overallHealth: 'excellent',
         services: {
@@ -96,13 +96,13 @@ export const Default: Story = {
         currentIndex: 0
       },
       circuitBreakers: new Map(),
-      natsConnected: true
-      activeStreaming: false
+      natsConnected: true,
+      activeStreaming: false,
       streamBuffer: '',
       collaborationUsers: []
     },
-    enableStreamingMode: false
-    preferredProtocol: 'http'
+    enableStreamingMode: false,
+    preferredProtocol: 'http',
   }
 }
 // Processing state with AI interaction
@@ -129,11 +129,11 @@ export const Processing: Story = {
           progress: 0.65
         }
       ],
-      activeStreaming: false
-      streamBuffer: 'Analyzing legal document structure...'
+      activeStreaming: false,
+      streamBuffer: 'Analyzing legal document structure...',
     },
-    enableStreamingMode: false
-    preferredProtocol: 'http'
+    enableStreamingMode: false,
+    preferredProtocol: 'http',
   },
   parameters: {
     docs: {
@@ -159,7 +159,7 @@ export const StreamingMode: Story = {
           timestamp: new Date(Date.now() - 10000)
         }
       ],
-      activeStreaming: true
+      activeStreaming: true,
       streamBuffer: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies a total consideration of $50M, payable in cash and stock...\n\n2. **Representations and Warranties**: Both parties have made extensive representations covering...',
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket',
@@ -172,8 +172,8 @@ export const StreamingMode: Story = {
         }
       ]
     },
-    enableStreamingMode: true
-    preferredProtocol: 'websocket'
+    enableStreamingMode: true,
+    preferredProtocol: 'websocket',
   },
   parameters: {
     docs: {
@@ -237,15 +237,15 @@ export const MultiDocumentAnalysis: Story = {
           documentsCount: 3
         }
       ],
-      vectorSearchEnabled: true
+      vectorSearchEnabled: true,
       vectorIndexStatus: {
         totalVectors: 23890,
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       }
     },
-    enableStreamingMode: false
-    preferredProtocol: 'grpc'
+    enableStreamingMode: false,
+    preferredProtocol: 'grpc',
   },
   parameters: {
     docs: {
@@ -261,10 +261,10 @@ export const HighPerformanceMode: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Perform deep semantic analysis on this 500-page legal brief',
-      isProcessing: true
+      isProcessing: true,
       response: '',
-      modelLoadBalancing: true
-      availableModels: [
+      modelLoadBalancing: true,
+      availableModels: [,
         { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'], status: 'active' },
         { name: 'gemma3-legal-backup', displayName: 'Gemma 3 Legal Backup', capabilities: ['text', 'legal'], status: 'active' },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'], status: 'active' }
@@ -283,8 +283,8 @@ export const HighPerformanceMode: Story = {
         strategy: 'least_latency',
         currentIndex: 0
       },
-      gpuProcessingEnabled: true
-      processingQueue: [
+      gpuProcessingEnabled: true,
+      processingQueue: [,
         {
           id: 'deep-analysis',
           type: 'semantic_analysis',
@@ -299,8 +299,8 @@ export const HighPerformanceMode: Story = {
         cacheHitRatio: 0.94
       }
     },
-    enableStreamingMode: true
-    preferredProtocol: 'quic'
+    enableStreamingMode: true,
+    preferredProtocol: 'quic',
   },
   parameters: {
     docs: {
@@ -360,8 +360,8 @@ export const ErrorRecovery: Story = {
         }
       ]
     },
-    enableStreamingMode: false
-    preferredProtocol: 'http'
+    enableStreamingMode: false,
+    preferredProtocol: 'http',
   },
   parameters: {
     docs: {
@@ -399,9 +399,9 @@ export const CollaborativeMode: Story = {
           timestamp: new Date(Date.now() - 60000)
         }
       ],
-      natsConnected: true
-      activeStreaming: true
-      collaborationUsers: [
+      natsConnected: true,
+      activeStreaming: true,
+      collaborationUsers: [,
         {
           id: 'user-1',
           name: 'Michael Torres',
@@ -427,8 +427,8 @@ export const CollaborativeMode: Story = {
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket'
     },
-    enableStreamingMode: true
-    preferredProtocol: 'websocket'
+    enableStreamingMode: true,
+    preferredProtocol: 'websocket',
   },
   parameters: {
     docs: {
@@ -454,7 +454,7 @@ export const Context7Integration: Story = {
           timestamp: new Date(Date.now() - 45000)
         }
       ],
-      context7Available: true
+      context7Available: true,
       context7Analysis: {
         framework: 'SvelteKit 2',
         version: 'Svelte 5',
@@ -480,8 +480,8 @@ export const Context7Integration: Story = {
         }
       ]
     },
-    enableStreamingMode: true
-    preferredProtocol: 'http'
+    enableStreamingMode: true,
+    preferredProtocol: 'http',
   },
   parameters: {
     docs: {

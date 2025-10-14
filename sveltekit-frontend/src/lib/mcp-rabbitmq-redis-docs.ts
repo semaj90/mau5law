@@ -10,7 +10,7 @@ export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): P
       format: 'typescript',
       tokens: 12000,
     },
-    fetchFn,
+    fetchFn
   );
 }
 // Get Redis (ioredis) documentation
@@ -22,7 +22,7 @@ export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Prom
       format: 'typescript',
       tokens: 10000,
     },
-    fetchFn,
+    fetchFn
   );
 }
 // Get Node Redis client documentation
@@ -34,7 +34,7 @@ export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): 
       format: 'typescript',
       tokens: 8000,
     },
-    fetchFn,
+    fetchFn
   );
 }
 // Get LokiJS documentation
@@ -46,7 +46,7 @@ export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Pro
       format: 'typescript',
       tokens: 8000,
     },
-    fetchFn,
+    fetchFn
   );
 }
 // Get best practices for RabbitMQ + Redis integration
@@ -58,7 +58,7 @@ export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch):
       format: 'typescript',
       tokens: 15000,
     },
-    fetchFn,
+    fetchFn
   );
 }
 // Helper functions for specific Redis topics
@@ -87,5 +87,5 @@ export async function getAllRedisDocs(fetchFn?: typeof fetch): Promise<any> {
     getNodeRedisDocs(undefined, fetchFn),
     getMessageQueueRedisBestPractices(fetchFn),
   ]);
-  return { ioredis, nodeRedis, patterns }
+  return { ioredis, nodeRedis, patterns };
 }

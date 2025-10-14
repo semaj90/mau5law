@@ -46,7 +46,7 @@ const createPackageBarrelStore = () => {
           set value(newValue: T) {
             state = newValue;
           },
-        }
+        };
       },
       createDerived: <T>(fn: () => T) => {
         return $derived(fn());
@@ -60,7 +60,7 @@ const createPackageBarrelStore = () => {
       postgres: {
         query: async (sql: string, params?: any[]) => {
           console.log('Mock postgres query:', sql, params);
-          return { rows: [], rowCount: 0 }
+          return { rows: [], rowCount: 0 };
         },
       },
       redis: {
@@ -83,13 +83,13 @@ const createPackageBarrelStore = () => {
             model: options.model,
             response: `Mock response for: ${options.prompt}`,
             done: true,
-          }
+          };
         },
         embeddings: async (_options: { model: string; prompt: string }) => {
           console.log('Mock ollama embeddings:', options);
           return {
             embedding: Array.from({ length: 384 }, () => Math.random()),
-          }
+          };
         },
       },
 
@@ -118,7 +118,7 @@ const createPackageBarrelStore = () => {
       forms: {
         enhance: (form: HTMLFormElement) => {
           console.log('Mock form enhance:', form);
-          return { destroy: () => {} }
+          return { destroy: () => {} };
         },
       },
     },
@@ -154,10 +154,10 @@ const createPackageBarrelStore = () => {
         development: config.development,
         testing: config.testing,
         production: config.production,
-      }
+      };
     },
-  }
-}
+  };
+};
 
 // Export singleton instance
 export const comprehensivePackageBarrelStore = createPackageBarrelStore();

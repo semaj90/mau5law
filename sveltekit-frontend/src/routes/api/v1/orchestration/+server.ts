@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // Comprehensive Service Orchestration System
 // Manages all 37 Go binaries with intelligent routing and health monitoring
-import { ServiceOrchestrator } from '$lib/services/service-orchestrator'
-import { json } from '@sveltejs/kit'
+import { ServiceOrchestrator } from '$lib/services/service-orchestrator';
+import { json } from '@sveltejs/kit';
 import type { OrchestrationRequest } from '$lib/types/orchestration';
 // Initialize the service orchestrator
 const orchestrator = new ServiceOrchestrator();

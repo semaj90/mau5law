@@ -68,7 +68,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
     componentNode.relationships.includes(n.id)
   );
   return {
-    component: componentNode
+    component: componentNode,
     variables: relatedNodes.filter(n => n.type === 'variable'),
     props: relatedNodes.filter(n => n.type === 'prop'),
     duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1)

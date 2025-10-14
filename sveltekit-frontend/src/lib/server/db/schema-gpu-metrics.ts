@@ -10,8 +10,8 @@ export type GPUMetricEnhanced = {
   memoryTotalMB?: number;
   temperatureC?: number;
   powerW?: number;
-  custom?: { [key: string]: any }
-}
+  custom?: { [key: string]: any };
+};
 export const GPUMetricEnhancedFields = [
   'id',
   'timestamp',

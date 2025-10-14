@@ -18,15 +18,15 @@ export const GET: RequestHandler = async ({ url }) => {
         const health = await legalAIIntegration.getSystemHealth()
         return json({
           success: true,
-          data: health
-          timestamp: new Date().toISOString()
+          data: health,
+          timestamp: new Date().toISOString(),
         })
       case 'autosolve':
         const autosolveResult = await legalAIIntegration.runAutosolve()
         return json({
           success: true,
-          data: autosolveResult
-          timestamp: new Date().toISOString()
+          data: autosolveResult,
+          timestamp: new Date().toISOString(),
         })
       default:
         return json({,

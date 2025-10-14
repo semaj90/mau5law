@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
     )
     return json({
       success: true,
-      discovery: discoveryResult
+      discovery: discoveryResult,
       timestamp: new Date().toISOString(),
       processingInfo: {
         service: 'legal-precedent-discovery',

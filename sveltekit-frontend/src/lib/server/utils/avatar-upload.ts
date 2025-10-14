@@ -36,7 +36,7 @@ export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
  * Comprehensive file validation for avatar uploads
  */
 export function validateAvatarFile(
-  file: File
+  file: File,
   config = AVATAR_UPLOAD_CONFIG,
 ): ValidationResult {
   // Check if file exists
@@ -88,8 +88,8 @@ export function validateAvatarFile(
  * Generate a secure, unique filename for avatar
  */
 export function generateAvatarFileName(
-  userId: string
-  originalFileName: string
+  userId: string,
+  originalFileName: string,
 ): string {
   const extension = originalFileName.split(".").pop()?.toLowerCase() || "jpg";
   const timestamp = Date.now();
@@ -101,7 +101,7 @@ export function generateAvatarFileName(
 }
 /**
  * Ensure upload directory exists with proper permissions
- */;
+ */
 export function ensureUploadDirectory(uploadDir: string): void {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
@@ -111,8 +111,8 @@ export function ensureUploadDirectory(uploadDir: string): void {
  * Handle avatar file upload with comprehensive error handling
  */
 export async function handleAvatarUpload(
-  file: File
-  userId: string
+  file: File,
+  userId: string,
   config = AVATAR_UPLOAD_CONFIG,
 ): Promise<UploadResult> {
   try {
@@ -141,7 +141,7 @@ export async function handleAvatarUpload(
     // Generate public URL
     const url = `/uploads/avatars/${fileName}`;
     return {
-      success: true
+      success: true,
       filePath,
       fileName,
       url
@@ -156,7 +156,7 @@ export async function handleAvatarUpload(
 }
 /**
  * Remove old avatar file from filesystem
- */;
+ */
 export function removeAvatarFile(avatarUrl: string | null): boolean {
   if (!avatarUrl || avatarUrl === "/images/default-avatar.svg") {
     return true; // Nothing to remove
@@ -177,7 +177,7 @@ export function removeAvatarFile(avatarUrl: string | null): boolean {
 }
 /**
  * Basic image validation using file headers
- */;
+ */
 function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
   const signatures: Record<string, number[]> = {
     "image/jpeg": [0xff, 0xd8, 0xff],
@@ -202,7 +202,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
 }
 /**
  * Get file size in human-readable format
- */;
+ */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -212,7 +212,7 @@ export function formatFileSize(bytes: number): string {
 }
 /**
  * Generate initials from user name for avatar fallback
- */;
+ */
 export function generateInitials(user: {
   name?: string;
   firstName?: string;

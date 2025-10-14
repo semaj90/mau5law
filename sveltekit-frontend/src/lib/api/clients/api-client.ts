@@ -10,13 +10,13 @@ export interface RequestOptions {
     backoffMs?: number; // base backoff in ms
     maxBackoffMs?: number; // cap backoff
     timeoutMs?: number; // per-attempt timeout
-  }
+  };
 }
 
 export async function apiFetch<T = unknown>(
   url: string,
   method: HttpMethod = 'GET',
-  opts: RequestOptions = {},
+  opts: RequestOptions = {}
 ): Promise<T> {
   const { headers, query, body, retry } = opts;
   let qs = '';
@@ -87,5 +87,5 @@ export async function apiFetch<T = unknown>(
   }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
-export const ApiClient = { fetch: apiFetch }
+export const ApiClient = { fetch: apiFetch };
 export default ApiClient;

@@ -8,10 +8,10 @@ export interface AvatarState {
   lastUpdated: number | null;
 }
 const initialState: AvatarState = {
-  url: null
+  url: null,
   isUploading: false;
-  error: null
-  lastUpdated: null
+  error: null,
+  lastUpdated: null,
 }
 function createAvatarStore() {
   const { subscribe, set, update } = writable<AvatarState>(initialState);
@@ -30,8 +30,8 @@ function createAvatarStore() {
         if (Date.now() - timestamp < cacheExpiry) {
           update((state) => ({
             ...state,
-            url: cachedAvatar
-            lastUpdated: timestamp
+            url: cachedAvatar,
+            lastUpdated: timestamp,
           });
         }
       }
@@ -52,8 +52,8 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: avatarUrl;
-            error: null
-            lastUpdated: now
+            error: null,
+            lastUpdated: now,
           });
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", avatarUrl);
@@ -103,10 +103,10 @@ function createAvatarStore() {
           const now = Date.now();
           update((state) => ({
             ...state,
-            url: newAvatarUrl
+            url: newAvatarUrl,
             isUploading: false;
-            error: null
-            lastUpdated: now
+            error: null,
+            lastUpdated: now,
           });
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", newAvatarUrl);
@@ -120,8 +120,8 @@ function createAvatarStore() {
           error instanceof Error ? error.message: "Upload failed";
         update((state) => ({
           ...state,
-          isUploading: false
-          error: errorMessage
+          isUploading: false,
+          error: errorMessage,
         });
         return { success: false, error: errorMessage }
       }
@@ -142,8 +142,8 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: defaultAvatar;
-            error: null
-            lastUpdated: now
+            error: null,
+            lastUpdated: now,
           });
           // Update local storage
           localStorage.setItem("user_avatar_url", defaultAvatar);

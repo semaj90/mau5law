@@ -4,8 +4,8 @@ import { createClient } from 'redis';
 // `RedisClientType` from 'redis' will find the type. This resolves
 // errors like: "Module 'redis' has no exported member 'RedisClientType'."
 declare module 'redis' {
-	// export type using the runtime createClient return type
-	export type RedisClientType = ReturnType<typeof import('redis').createClient>;
+  // export type using the runtime createClient return type
+  export type RedisClientType = ReturnType<typeof import('redis').createClient>;
 }
 
 // Provide an explicit local alias for the runtime client type returned by createClient()
@@ -26,27 +26,27 @@ let client: RedisClient = null;
  * Otherwise returns null so callers can fall back to memoryCache.
  */
 export async function getRedisClient(): Promise<RedisClient> {
-	// reuse existing connection if present
-	if (client) return client;
+  // reuse existing connection if present
+  if (client) return client;
 
-	// prefer environment variable; adapt to your env var naming if needed
-	const url = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? null;
-	if (!url) {
-		// Redis not configured — caller should fall back to memoryCache
-		return null;
-	}
+  // prefer environment variable; adapt to your env var naming if needed
+  const url = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? null;
+  if (!url) {
+    // Redis not configured — caller should fall back to memoryCache
+    return null;
+  }
 
-	try {
-		client = createClient({ url });
-		client.on('error', (err) => {
-			// log but don't throw — callers can fallback
-			console.error('[redis-client] client error', err);
-		});
-		await client.connect();
-		return client;
-	} catch (err) {
-		console.error('[redis-client] connect failed', err);
-		client = null;
-		return null;
-	}
+  try {
+    client = createClient({ url });
+    client.on('error', err => {
+      // log but don't throw — callers can fallback
+      console.error('[redis-client] client error', err);
+    });
+    await client.connect();
+    return client;
+  } catch (err) {
+    console.error('[redis-client] connect failed', err);
+    client = null;
+    return null;
+  }
 }

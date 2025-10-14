@@ -17,17 +17,17 @@
  */
 // Behavior Analysis API Endpoint
 // Analyzes user patterns and generates insights for legal workflows
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { validateAuthSession } from '$lib/server/auth'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { validateAuthSession } from '$lib/server/auth';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const session = await validateAuthSession(request)
+    const session = await validateAuthSession(request);
     if (!session) {
-      return json({ error: 'Unauthorized' }, { status: 401 })
+      return json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const { userAnalytics, context, legalContext } = await request.json()
+    const { userAnalytics, context, legalContext } = await request.json();
     // Enhanced legal behavior analysis prompt
     const behaviorPrompt = `
 You are an expert legal workflow analyst. Analyze the following user behavior data and legal context to provide insights and recommendations.
@@ -59,30 +59,30 @@ Provide analysis in JSON format:
   "recommendations": ["string"],
   "urgencyAwareness": 0.0-1.0,
   "nextBestActions": ["string"]
-}`
+}`;
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gemma2:9b',
-        prompt: behaviorPrompt
+        prompt: behaviorPrompt,
         format: 'json',
-        stream: false
+        stream: false,
         options: {
           temperature: 0.4,
-          top_p: 0.8
-        }
-      })
-    })
+          top_p: 0.8,
+        },
+      }),
+    });
     if (!ollamaResponse.ok) {
-      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`)
+      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
     }
-    const result = await ollamaResponse.json()
-    let analysis
+    const result = await ollamaResponse.json();
+    let analysis;
     try {
-      analysis = JSON.parse((result as { response?: any }).response)
+      analysis = JSON.parse((result as { response?: any }).response);
     } catch (error) {
       // Fallback analysis
       analysis = {
@@ -93,12 +93,12 @@ Provide analysis in JSON format:
         legalSpecificInsights: {
           documentPreparation: 'Standard preparation observed',
           caseManagement: 'Active case management detected',
-          timeManagement: 'Efficient workflow patterns'
+          timeManagement: 'Efficient workflow patterns',
         },
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
-        nextBestActions: ['Process selected documents']
-      }
+        nextBestActions: ['Process selected documents'],
+      };
     }
     // Update user analytics based on AI insights
     const updatedAnalytics = {
@@ -107,17 +107,17 @@ Provide analysis in JSON format:
       contextualPreferences: {
         ...userAnalytics.contextualPreferences,
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
-        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
-      }
-    }
+        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate',
+      },
+    };
     return json({
-      analytics: updatedAnalytics
-      insights: analysis
-      score: analysis.efficiencyScore
-    })
+      analytics: updatedAnalytics,
+      insights: analysis,
+      score: analysis.efficiencyScore,
+    });
   } catch (error) {
-    console.error('Behavior analysis error:', error)
-    return json({ error: 'Analysis failed' }, { status: 500 })
+    console.error('Behavior analysis error:', error);
+    return json({ error: 'Analysis failed' }, { status: 500 });
   }
-}
+};
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

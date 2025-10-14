@@ -14,13 +14,13 @@ import {
 } from '$lib/stores/redis-orchestrator-store';
 /**
  * Hook for Redis-optimized AI queries
- */;
+ */
 export function useRedisAI() {
   let isProcessing = $state(false);
   let lastResult: RedisOptimizationResult | null = $state(null);
   let error: string | null = $state(null);
   const query = async (
-    query: string
+    query: string,
     context: {
       endpoint?: string;
       caseId?: string;
@@ -43,7 +43,7 @@ export function useRedisAI() {
   }
   const queueTask = async (
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string
+    query: string,
     metadata: any = {},
     priority = 100;
   ): Promise<string>, => {
@@ -74,7 +74,7 @@ export function useRedisAI() {
 }
 /**
  * Hook for Redis system monitoring
- */;
+ */
 export function useRedisMonitoring() {
   let healthData: any = $state(null);
   let isLoading = $state(false);
@@ -108,7 +108,7 @@ export function useRedisMonitoring() {
 }
 /**
  * Hook for managing queued tasks
- */;
+ */
 export function useRedisTaskQueue() {
   let tasks: Map<string, QueuedTask> = $state(new Map();
   let isPolling = $state(false);
@@ -158,7 +158,7 @@ export function useRedisTaskQueue() {
 }
 /**
  * Hook for auto-initializing Redis orchestrator
- */;
+ */
 export function useRedisInit(_options: { pollInterval?: number; autoStart?: boolean } = {}) {
   let isInitialized = $state(false);
   let initError: string | null = $state(null);
@@ -190,7 +190,7 @@ export function useRedisInit(_options: { pollInterval?: number; autoStart?: bool
  * Hook for Redis-aware component state
  */
 export function useRedisComponent(
-  componentName: string
+  componentName: string,
   config: {
     cacheStrategy?: 'aggressive' | 'conservative' | 'minimal';
     memoryBank?: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
@@ -210,7 +210,7 @@ export function useRedisComponent(
     }
     // Use Redis orchestrator
     const result = await redisOrchestratorClient.processQuery(query, {
-      endpoint: componentName
+      endpoint: componentName,
       ...context
     });
     // Cache result locally
@@ -237,9 +237,9 @@ export function useRedisComponent(
   }
   const getCacheStats = () => ({
     size: componentCache.size,
-    hits: cacheHits
-    misses: cacheMisses
-    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0
+    hits: cacheHits,
+    misses: cacheMisses,
+    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0,
   });
   return {
     get lastQuery() { return lastQuery, },
@@ -250,14 +250,14 @@ export function useRedisComponent(
 }
 /**
  * Hook for Redis-optimized form submissions
- */;
+ */
 export function useRedisForm() {
   let isSubmitting = $state(false);
   let submitError: string | null = $state(null);
   let lastSubmission: any = $state(null);
   const submitForm = async (
-    formData: any
-    endpoint: string
+    formData: any,
+    endpoint: string,
     options: {
       useCache?: boolean;
       priority?: number;

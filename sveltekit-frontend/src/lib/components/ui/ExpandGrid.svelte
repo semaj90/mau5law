@@ -25,7 +25,7 @@
     expandOnFocus = true,
     onexpand,
     class: className = '',
-    children
+    children,
   }: Props = $props();
 
   // Guard: ensure expandedColumns is never less than columns (prevents shrink-on-expand bugs)
@@ -53,9 +53,15 @@
     }
   }
 
-  function handleMouseEnter() { if (expandOnHover) expand(); }
-  function handleMouseLeave() { if (expandOnHover) collapse(); }
-  function handleFocusIn() { if (expandOnFocus) expand(); }
+  function handleMouseEnter() {
+    if (expandOnHover) expand();
+  }
+  function handleMouseLeave() {
+    if (expandOnHover) collapse();
+  }
+  function handleFocusIn() {
+    if (expandOnFocus) expand();
+  }
   function handleFocusOut(e: FocusEvent) {
     if (expandOnFocus && containerElement && !containerElement.contains(e.relatedTarget as Node)) collapse();
   }
@@ -102,7 +108,8 @@
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     gap: var(--gap);
-    transition: grid-template-columns var(--expand-duration) var(--easing),
+    transition:
+      grid-template-columns var(--expand-duration) var(--easing),
       background-color var(--expand-duration) var(--easing),
       box-shadow var(--expand-duration) var(--easing);
     outline: none;
@@ -118,11 +125,13 @@
   .expand-grid.expanded {
     background: #f8fafc;
     border-color: #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
   /* Grid items (opt-in with .grid-item class) */
   .expand-grid :global(.grid-item) {
-    transition: transform var(--expand-duration) var(--easing), box-shadow var(--expand-duration) var(--easing);
+    transition:
+      transform var(--expand-duration) var(--easing),
+      box-shadow var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
     position: relative;
@@ -133,15 +142,22 @@
   .expand-grid.expanded :global(.grid-item:hover),
   .expand-grid.expanded :global(.grid-item:focus-within) {
     transform: scale(1.035);
-    box-shadow: 0 6px 18px -6px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.15);
     z-index: 10;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .expand-grid { grid-template-columns: 1fr; }
-    .expand-grid.expanded { grid-template-columns: repeat(min(var(--columns), 2), 1fr); }
+    .expand-grid {
+      grid-template-columns: 1fr;
+    }
+    .expand-grid.expanded {
+      grid-template-columns: repeat(min(var(--columns), 2), 1fr);
+    }
   }
   @media (max-width: 480px) {
-    .expand-grid, .expand-grid.expanded { grid-template-columns: 1fr; }
+    .expand-grid,
+    .expand-grid.expanded {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

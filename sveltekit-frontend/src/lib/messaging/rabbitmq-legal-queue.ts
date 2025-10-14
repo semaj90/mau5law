@@ -241,7 +241,7 @@ export class RabbitMQLegalQueue {
         documentId: document.id,
         operation,
         priority: options.priority || document.priority,
-        payload: binaryData
+        payload: binaryData,
         metadata: {
           caseId: options.caseId || document.metadata?.caseId,
           userId: options.userId,
@@ -266,7 +266,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Handle document processing messages
-   */;
+   */
   private async handleDocumentProcessing(message: LegalDocumentMessage): Promise<void> {
     const startTime = performance.now();
     try {
@@ -315,7 +315,7 @@ export class RabbitMQLegalQueue {
         this.metrics.messagesProcessed;
       // Send processing result
       await this.sendProcessingResult({
-        success: true
+        success: true,
         documentId: message.documentId,
         operation: message.operation,
         result,
@@ -328,7 +328,7 @@ export class RabbitMQLegalQueue {
     } catch (error: any) {
       console.error(`❌ Document processing failed for ${message.documentId}:`, error);
       await this.sendProcessingResult({
-        success: false
+        success: false,
         documentId: message.documentId,
         operation: message.operation,
         error: error instanceof Error ? error.message: String(error),
@@ -340,7 +340,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Handle GPU compute messages
-   */;
+   */
   private async handleGPUCompute(message: LegalDocumentMessage): Promise<void> {
     if (message.operation === 'rank') {
       await this.handleRankingComputation(message);
@@ -354,10 +354,10 @@ export class RabbitMQLegalQueue {
       const processingTime = performance.now() - startTime;
       this.metrics.gpuJobsProcessed++;
       await this.sendProcessingResult({
-        success: true
+        success: true,
         documentId: message.documentId,
         operation: message.operation,
-        result: computeResult
+        result: computeResult,
         processingTime,
         gpuUsed: true
       });
@@ -369,7 +369,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Handle ranking computation messages
-   */;
+   */
   private async handleRankingComputation(message: LegalDocumentMessage): Promise<void> {
     const startTime = performance.now();
     try {
@@ -378,10 +378,10 @@ export class RabbitMQLegalQueue {
       const rankings = await this.computeRankings(message);
       const processingTime = performance.now() - startTime;
       await this.sendProcessingResult({
-        success: true
+        success: true,
         documentId: message.documentId,
         operation: 'rank',
-        result: rankings
+        result: rankings,
         processingTime,
         gpuUsed: true
       });
@@ -393,7 +393,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Handle memory allocation events
-   */;
+   */
   private async handleMemoryAllocation(message: LegalDocumentMessage): Promise<void> {
     try {
       console.log(`💾 Processing memory allocation event for ${message.documentId}`);
@@ -435,7 +435,7 @@ export class RabbitMQLegalQueue {
   private async performGPUComputation(message: LegalDocumentMessage): Promise<any> {
     // Placeholder for GPU computation
     return {
-      computationCompleted: true
+      computationCompleted: true,
       gpuTime: Math.random() * 10 + 5, // 5-15ms
       result: `GPU computation result for ${message.documentId}`
     }
@@ -449,8 +449,8 @@ export class RabbitMQLegalQueue {
       rank: 1,
       metadata: {
         processingTime: 5.2,
-        cacheHit: false
-        bankId: 1
+        cacheHit: false,
+        bankId: 1,
       }
     }];
   }
@@ -524,7 +524,7 @@ export class RabbitMQLegalQueue {
   private async startConsumers(): Promise<void> {
     for (const [queueKey, config] of this.queueConfigs) {
       const frame = this.createSTOMPFrame('SUBSCRIBE', {
-        'id': queueKey
+        'id': queueKey,
         'destination': '/amq/queue/' + config.name,
         'ack': 'client'
       });
@@ -582,7 +582,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Get queue metrics and status
-   */;
+   */
   getMetrics() {
     return {
       ...this.metrics,
@@ -595,7 +595,7 @@ export class RabbitMQLegalQueue {
   }
   /**
    * Cleanup and close connections
-   */;
+   */
   async destroy(): Promise<void> {
     if (this.reconnectTimeout) {
       clearTimeout(this.reconnectTimeout);

@@ -12,7 +12,7 @@
           description: 'Intelligent legal research and document analysis with Gemma embeddings',
           features: ['Legal Research', 'Document Analysis', 'Case Recommendations'],
           status: 'active',
-          complexity: 'high'
+          complexity: 'high',
         },
         {
           slug: 'cuda-streaming',
@@ -20,7 +20,7 @@
           description: 'Real-time GPU-accelerated document processing pipeline',
           features: ['GPU Processing', 'Real-time Streaming', 'CUDA Integration'],
           status: 'active',
-          complexity: 'high'
+          complexity: 'high',
         },
         {
           slug: 'vector-search',
@@ -28,9 +28,9 @@
           description: 'Semantic search using vector embeddings and similarity matching',
           features: ['Vector Embeddings', 'Semantic Search', 'Similarity Scoring'],
           status: 'active',
-          complexity: 'medium'
-        }
-      ]
+          complexity: 'medium',
+        },
+      ],
     },
     {
       name: 'Legal Workflow',
@@ -42,7 +42,7 @@
           description: 'Interactive evidence organization and case visualization',
           features: ['Evidence Management', 'Visual Organization', 'Case Building'],
           status: 'active',
-          complexity: 'medium'
+          complexity: 'medium',
         },
         {
           slug: 'legal-research',
@@ -50,9 +50,9 @@
           description: 'Advanced legal document search with precedent matching',
           features: ['Document Search', 'Precedent Analysis', 'Legal Citations'],
           status: 'active',
-          complexity: 'medium'
-        }
-      ]
+          complexity: 'medium',
+        },
+      ],
     },
     {
       name: 'Performance & UI',
@@ -64,7 +64,7 @@
           description: 'Hardware-accelerated computing for legal AI processing',
           features: ['WebGPU Computing', 'Shader Programs', 'GPU Optimization'],
           status: 'active',
-          complexity: 'high'
+          complexity: 'high',
         },
         {
           slug: 'gaming-ui',
@@ -72,7 +72,7 @@
           description: 'YoRHa-inspired aesthetic with professional legal functionality',
           features: ['Gaming Aesthetics', 'Professional UI', 'Theme System'],
           status: 'active',
-          complexity: 'low'
+          complexity: 'low',
         },
         {
           slug: 'performance',
@@ -80,36 +80,47 @@
           description: 'Real-time system performance monitoring and optimization',
           features: ['Performance Metrics', 'Real-time Monitoring', 'System Health'],
           status: 'active',
-          complexity: 'medium'
-        }
-      ]
-    }
+          complexity: 'medium',
+        },
+      ],
+    },
   ];
 
   // Get status styling
   function getStatusClass(status: string) {
     switch (status) {
-      case 'active': return 'status-active';
-      case 'beta': return 'status-beta';
-      case 'coming-soon': return 'status-coming-soon';
-      default: return 'status-unknown';
+      case 'active':
+        return 'status-active';
+      case 'beta':
+        return 'status-beta';
+      case 'coming-soon':
+        return 'status-coming-soon';
+      default:
+        return 'status-unknown';
     }
   }
 
   // Get complexity styling
   function getComplexityClass(complexity: string) {
     switch (complexity) {
-      case 'low': return 'complexity-low';
-      case 'medium': return 'complexity-medium';
-      case 'high': return 'complexity-high';
-      default: return 'complexity-unknown';
+      case 'low':
+        return 'complexity-low';
+      case 'medium':
+        return 'complexity-medium';
+      case 'high':
+        return 'complexity-high';
+      default:
+        return 'complexity-unknown';
     }
   }
 </script>
 
 <svelte:head>
   <title>Demo Showcase - Legal AI Platform</title>
-  <meta name="description" content="Explore all available demos of the Legal AI Platform featuring gaming-inspired UI and professional legal tools" />
+  <meta
+    name="description"
+    content="Explore all available demos of the Legal AI Platform featuring gaming-inspired UI and professional legal tools"
+  />
 </svelte:head>
 
 <div class="showcase">
@@ -118,8 +129,8 @@
     <div class="header-content">
       <h1 class="showcase-title">🎮 Legal AI Demo Showcase</h1>
       <p class="showcase-subtitle">
-        Explore cutting-edge legal AI technology with gaming-inspired user experience.
-        Each demo showcases different aspects of our platform's capabilities.
+        Explore cutting-edge legal AI technology with gaming-inspired user experience. Each demo showcases different
+        aspects of our platform's capabilities.
       </p>
     </div>
 
@@ -177,9 +188,7 @@
               </div>
 
               <footer class="demo-card-footer">
-                <a href="/demo/{demo.slug}" class="demo-launch-btn">
-                  🚀 Launch Demo
-                </a>
+                <a href="/demo/{demo.slug}" class="demo-launch-btn"> 🚀 Launch Demo </a>
               </footer>
             </article>
           {/each}

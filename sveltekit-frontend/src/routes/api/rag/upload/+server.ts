@@ -56,7 +56,7 @@ async function initializeQdrantCollection() {
   // Check if collection exists
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
-      method: 'GET'
+      method: 'GET',
     });
 
     if (response.status === 404) {
@@ -67,9 +67,9 @@ async function initializeQdrantCollection() {
         body: JSON.stringify({
           vectors: {
             size: 384,
-            distance: 'Cosine'
-          }
-        })
+            distance: 'Cosine',
+          },
+        }),
       });
       console.log('✅ Created Qdrant collection');
     }
@@ -85,8 +85,8 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'embeddinggemma:latest',
-        prompt: text.slice(0, 2000) // Limit context
-      })
+        prompt: text.slice(0, 2000), // Limit context
+      }),
     });
 
     if (!response.ok) {
@@ -113,11 +113,11 @@ async function storeInQdrant(id: string, embedding: number[], metadata: any, tag
             vector: embedding,
             payload: {
               ...metadata,
-              tags: tags
-            }
-          }
-        ]
-      })
+              tags: tags,
+            },
+          },
+        ],
+      }),
     });
 
     if (!response.ok) {
@@ -189,26 +189,43 @@ function createSemanticChunks(content: string, filename: string): string[] {
   }
 
   // Add context to each chunk
-  return chunks.map((chunk, index) => `
+  return chunks.map((chunk, index) =>
+    `
 Document: ${filename}
 Chunk ${index + 1}/${chunks.length}
 
 ${chunk}
-  `.trim());
+  `.trim()
+  );
 }
 
 function extractTags(content: string, filename: string): string[] {
   const tags: string[] = [];
 
   // Extract tags from filename
-  const filenameParts = filename.toLowerCase().replace(/\.[^/.]+$/, '').split(/[_\-\s]/);
+  const filenameParts = filename
+    .toLowerCase()
+    .replace(/\.[^/.]+$/, '')
+    .split(/[_\-\s]/);
   tags.push(...filenameParts.filter(part => part.length > 2));
 
   // Extract common legal document keywords
   const legalKeywords = [
-    'contract', 'agreement', 'evidence', 'testimony', 'deposition',
-    'motion', 'brief', 'memorandum', 'affidavit', 'exhibit',
-    'plaintiff', 'defendant', 'witness', 'court', 'judge'
+    'contract',
+    'agreement',
+    'evidence',
+    'testimony',
+    'deposition',
+    'motion',
+    'brief',
+    'memorandum',
+    'affidavit',
+    'exhibit',
+    'plaintiff',
+    'defendant',
+    'witness',
+    'court',
+    'judge',
   ];
 
   const contentLower = content.toLowerCase();
@@ -239,16 +256,12 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'File too large' }, { status: 400 });
     }
 
-    const allowedTypes = [
-      'text/plain',
-      'text/markdown',
-      'application/json',
-      'text/csv',
-      'application/pdf'
-    ];
+    const allowedTypes = ['text/plain', 'text/markdown', 'application/json', 'text/csv', 'application/pdf'];
 
-    if (!allowedTypes.some(type => file.type.includes(type)) &&
-        !['.txt', '.md', '.json', '.csv'].some(ext => file.name.endsWith(ext))) {
+    if (
+      !allowedTypes.some(type => file.type.includes(type)) &&
+      !['.txt', '.md', '.json', '.csv'].some(ext => file.name.endsWith(ext))
+    ) {
       return json({ error: 'File type not supported' }, { status: 400 });
     }
 
@@ -260,7 +273,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const contentHash = createHash('sha256').update(content).digest('hex');
 
     // Check if already processed (using Drizzle)
-    const existingDoc = await db.select({ id: documents.id })
+    const existingDoc = await db
+      .select({ id: documents.id })
       .from(documents)
       .where(eq(documents.sourceUri, `hash:${contentHash}`))
       .limit(1);
@@ -284,7 +298,7 @@ export const POST: RequestHandler = async ({ request }) => {
     try {
       await putObject('legal-documents', minioObject, buffer, {
         'Content-Type': file.type,
-        'Original-Filename': file.name
+        'Original-Filename': file.name,
       });
       minioSuccess = true;
       console.log(`✅ Uploaded to MinIO: ${minioObject}`);
@@ -301,39 +315,45 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Extract tags
     const autoTags = extractTags(content, file.name);
-    const tags = customTags
-      ? [...autoTags, ...customTags.split(',').map(t => t.trim())]
-      : autoTags;
+    const tags = customTags ? [...autoTags, ...customTags.split(',').map(t => t.trim())] : autoTags;
 
     // Store main document (using Drizzle)
-    const [newDocument] = await db.insert(documents).values({
-      filename: file.name,
-      sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
-      mimeType: file.type,
-      fileSize: file.size,
-      extractedText: content,
-      processingStatus: 'completed',
-      uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
-      metadata: {
-        chunksCount: chunks.length,
-        uploadedAt: new Date().toISOString(),
-        extractionMethod: 'text_extraction',
-        tags,
-        contentHash
-      },
-      processedAt: new Date()
-    }).returning({ id: documents.id });
+    const [newDocument] = await db
+      .insert(documents)
+      .values({
+        filename: file.name,
+        sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
+        mimeType: file.type,
+        fileSize: file.size,
+        extractedText: content,
+        processingStatus: 'completed',
+        uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
+        metadata: {
+          chunksCount: chunks.length,
+          uploadedAt: new Date().toISOString(),
+          extractionMethod: 'text_extraction',
+          tags,
+          contentHash,
+        },
+        processedAt: new Date(),
+      })
+      .returning({ id: documents.id });
 
     const documentId = newDocument.id;
 
     // Store in Qdrant with tags
     const qdrantId = `doc-${documentId}`;
-    await storeInQdrant(qdrantId, embeddings[0], {
-      documentId,
-      filename: file.name,
-      fileType: file.type,
-      chunksCount: chunks.length
-    }, tags);
+    await storeInQdrant(
+      qdrantId,
+      embeddings[0],
+      {
+        documentId,
+        filename: file.name,
+        fileType: file.type,
+        chunksCount: chunks.length,
+      },
+      tags
+    );
 
     // Store individual chunks in documentChunks table (using Drizzle)
     const chunkInserts = chunks.map((chunk, i) => ({
@@ -349,20 +369,25 @@ export const POST: RequestHandler = async ({ request }) => {
         totalChunks: chunks.length,
         filename: file.name,
         fileType: file.type,
-        tags
-      }
+        tags,
+      },
     }));
 
     await db.insert(documentChunks).values(chunkInserts);
 
     // Store chunks in Qdrant for vector search
     for (let i = 0; i < chunks.length; i++) {
-      await storeInQdrant(`chunk-${documentId}-${i}`, embeddings[i], {
-        documentId,
-        chunkIndex: i,
-        filename: file.name,
-        chunkContent: chunks[i].slice(0, 200) // Preview
-      }, tags);
+      await storeInQdrant(
+        `chunk-${documentId}-${i}`,
+        embeddings[i],
+        {
+          documentId,
+          chunkIndex: i,
+          filename: file.name,
+          chunkContent: chunks[i].slice(0, 200), // Preview
+        },
+        tags
+      );
     }
 
     // Cache document for quick access
@@ -379,7 +404,7 @@ export const POST: RequestHandler = async ({ request }) => {
           tags,
           minioObject: minioSuccess ? minioObject : null,
           qdrantId,
-          processedAt: new Date().toISOString()
+          processedAt: new Date().toISOString(),
         })
       );
     } catch (redisError) {
@@ -399,15 +424,17 @@ export const POST: RequestHandler = async ({ request }) => {
       fileSize: file.size,
       minioStored: minioSuccess,
       qdrantStored: true,
-      processedAt: new Date().toISOString()
+      processedAt: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('❌ RAG upload failed:', error);
 
-    return json({
-      error: 'Failed to process document',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to process document',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 };

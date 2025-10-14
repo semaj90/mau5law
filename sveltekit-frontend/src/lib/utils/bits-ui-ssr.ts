@@ -6,15 +6,20 @@ import type { APIResponse } from '$lib/types/api-schemas';
 
 // new helper to safely extract messages from unknown errors
 function extractErrorMessage(err: unknown): string {
-	// Error instance
-	if (err instanceof Error) return err.message;
-	// string error
-	if (typeof err === 'string') return err;
-	// object with message property
-	if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
-		return (err as { message: string }).message;
-	}
-	return 'Unknown error';
+  // Error instance
+  if (err instanceof Error) return err.message;
+  // string error
+  if (typeof err === 'string') return err;
+  // object with message property
+  if (
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    typeof (err as { message?: unknown }).message === 'string'
+  ) {
+    return (err as { message: string }).message;
+  }
+  return 'Unknown error';
 }
 
 /**
@@ -231,7 +236,11 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
 /**
  * SSR-aware error boundary for Bits UI components
  */
-export function withSSRErrorBoundary<T>(fn: () => Promise<T>, fallback: T, onError?: (error: Error) => void): Promise<T> {
+export function withSSRErrorBoundary<T>(
+  fn: () => Promise<T>,
+  fallback: T,
+  onError?: (error: Error) => void
+): Promise<T> {
   return fn().catch(error => {
     console.error('SSR Error Boundary:', error);
     if (onError) {

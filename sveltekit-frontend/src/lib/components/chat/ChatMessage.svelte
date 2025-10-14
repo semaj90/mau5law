@@ -1,27 +1,25 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { ChatMessage } from "$lib/stores/chatStore";
-  import DOMPurify from "dompurify";
-  import { Bot, User } from "lucide-svelte";
-  import "./chat-message.css";
+  import type { ChatMessage } from '$lib/stores/chatStore';
+  import DOMPurify from 'dompurify';
+  import { Bot, User } from 'lucide-svelte';
+  import './chat-message.css';
   interface Props {
     message: ChatMessage;
     showTimestamp?: boolean;
     showAvatar?: boolean;
   }
-  let {
-    message,
-    showTimestamp = true,
-    showAvatar = true
-  }: Props = $props();
+  let { message, showTimestamp = true, showAvatar = true }: Props = $props();
   let sanitizedContent = $derived(() => DOMPurify.sanitize(message.content));
-  let isUser = $derived(message.role === "user");
-  let isAssistant = $derived(message.role === "assistant");
+  let isUser = $derived(message.role === 'user');
+  let isAssistant = $derived(message.role === 'assistant');
   let formattedTime = $derived(() =>
-    message.timestamp ? new Date(message.timestamp).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    }) : ""
+    message.timestamp
+      ? new Date(message.timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : ''
   );
 </script>
 

@@ -95,12 +95,12 @@ export interface GPUStoreState {
 // Create the unified GPU summary store using Svelte 5 runes
 function createGPUSummaryStore() {
   let state = $state<GPUStoreState>({
-    currentSummary: null
+    currentSummary: null,
     historicalMetrics: [],
     webAsmMetrics: [],
     vectorSearchMetrics: [],
     minioMetrics: [],
-    isCollecting: false
+    isCollecting: false,
     sessionId: '',
     startTime: Date.now()
   });
@@ -269,10 +269,10 @@ function createGPUSummaryStore() {
   }
   // Calculate system health score and identify issues
   function calculateHealthMetrics(
-    avgFps: number
-    memoryUsageMB: number
-    avgSearchTime: number
-    cacheHitRate: number
+    avgFps: number,
+    memoryUsageMB: number,
+    avgSearchTime: number,
+    cacheHitRate: number,
     effectsCount: number;
   ): { healthScore: number; bottlenecks: string[]; recommendations: string[] } {
     let healthScore = 100;
@@ -480,7 +480,7 @@ function createGPUSummaryStore() {
         tokensPerSecond: 0,
         memoryUsage: Math.round(metric.memoryBandwidth),
         wasmMemoryPages: 0,
-        simdInstructions: true
+        simdInstructions: true,
         threadCount: 0,
         timestamp: metric.timestamp
       });
@@ -503,13 +503,13 @@ if (typeof window !== 'undefined') {
  * Track WebASM inference performance
  */
 export function trackWebASMInference(
-  modelName: string
-  startTime: number
-  endTime: number
-  tokenCount: number
-  memoryUsage: number
-  wasmPages: number
-  simdSupported: boolean
+  modelName: string,
+  startTime: number,
+  endTime: number,
+  tokenCount: number,
+  memoryUsage: number,
+  wasmPages: number,
+  simdSupported: boolean,
   threadCount: number;
 ) {
   const inferenceTime = endTime - startTime;
@@ -519,8 +519,8 @@ export function trackWebASMInference(
     inferenceTime,
     tokensPerSecond,
     memoryUsage,
-    wasmMemoryPages: wasmPages
-    simdInstructions: simdSupported
+    wasmMemoryPages: wasmPages,
+    simdInstructions: simdSupported,
     threadCount,
     timestamp: Date.now()
   });
@@ -529,11 +529,11 @@ export function trackWebASMInference(
  * Track vector search performance
  */
 export function trackVectorSearch(
-  queryId: string
-  searchTime: number
-  vectorDimensions: number
-  candidateCount: number
-  resultCount: number
+  queryId: string,
+  searchTime: number,
+  vectorDimensions: number,
+  candidateCount: number,
+  resultCount: number,
   indexType: 'ivf' | 'hnsw' | 'flat',
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product',
   cacheHitRate: number;
@@ -555,10 +555,10 @@ export function trackVectorSearch(
  */
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
-  bucketName: string
+  bucketName: string,
   transferSize: number;
-  duration: number
-  cacheHit: boolean
+  duration: number,
+  cacheHit: boolean,
   objectKey?: string
   compressionRatio?: number;
 ) {
@@ -577,10 +577,10 @@ export function trackMinIOOperation(
  * Track WebASM-GPU bridge operations
  */
 export function trackGPUBridgeOperation(
-  transferTime: number
-  computeTime: number
-  memoryBandwidth: number
-  utilization: number
+  transferTime: number,
+  computeTime: number,
+  memoryBandwidth: number,
+  utilization: number,
   powerEfficiency: number;
 ) {
   gpuSummaryStore.updateGPUBridge({

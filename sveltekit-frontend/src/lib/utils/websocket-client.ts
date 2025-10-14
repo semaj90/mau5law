@@ -30,7 +30,7 @@ export class DynamicWebSocketClient {
       keepaliveInterval: 30000, // 30s ping to prevent public WiFi timeouts
       onMessage: () => {},
       onStatusChange: () => {},
-      ...config
+      ...config,
     };
   }
 
@@ -64,7 +64,7 @@ export class DynamicWebSocketClient {
         this.startKeepalive();
       };
 
-      this.ws.onmessage = (event) => {
+      this.ws.onmessage = event => {
         // Handle pong responses
         if (event.data === 'pong') return;
 
@@ -76,7 +76,7 @@ export class DynamicWebSocketClient {
         }
       };
 
-      this.ws.onerror = (error) => {
+      this.ws.onerror = error => {
         console.error('[WebSocket] Error:', error);
         this.updateStatus('error');
       };
@@ -157,6 +157,6 @@ export const createWSClient = (serviceName: string, config?: Partial<WSClientCon
   const endpoint = WSRegistry.getEndpoint(serviceName);
   return new DynamicWebSocketClient({
     endpoint,
-    ...config
+    ...config,
   });
 };

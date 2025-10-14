@@ -23,7 +23,7 @@
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
-    includeRAGResponse: true
+    includeRAGResponse: true,
   });
   $effect(() => {
     (async () => {
@@ -54,8 +54,8 @@
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
           // Optional filters can be added her;
-          filters: {}
-        })
+          filters: {},
+        }),
       });
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
@@ -73,12 +73,12 @@
                 query: searchQuery,
                 mode: 'semantic_search', // Use our enhanced semantic search mode
                 limit: searchConfig.limit,
-                threshold: searchConfig.threshold
-              })
+                threshold: searchConfig.threshold,
+              }),
             });
             if (ragResponseFetch.ok) {
               const ragData = await ragResponseFetch.json();
-              ragResponse = ragData.success ? ragData.answer: null;
+              ragResponse = ragData.success ? ragData.answer : null;
             }
           } catch (ragError) {
             console.warn('RAG response generation failed:', ragError);
@@ -91,7 +91,7 @@
           resultCount: Array.isArray(data.results) ? data.results.length : 0,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: data.processingTime || 0
+          processingTime: data.processingTime || 0,
         });
         // Keep only last 5 searches
         if (searchHistory.length > 5) {
@@ -115,7 +115,7 @@
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
-    fileInput.onchange = async (event) => {
+    fileInput.onchange = async event => {
       const input = event.currentTarget as HTMLInputElement | null;
       const file = input?.files?.[0];
       if (!file) return;
@@ -131,9 +131,9 @@
             metadata: {
               filename: file.name,
               filesize: file.size,
-              uploadedAt: new Date().toISOString()
-            }
-          })
+              uploadedAt: new Date().toISOString(),
+            },
+          }),
         });
         if (!response.ok) {
           throw new Error(`Ingestion failed: ${response.statusText}`);
@@ -144,7 +144,7 @@
       } catch (error) {
         errorMessage = `Document ingestion failed: ${(error as Error).message}`;
       }
-    }
+    };
     fileInput.click();
   }
   function formatTimestamp(date: Date) {
@@ -161,7 +161,7 @@
     'case precedents',
     'contract terms',
     'liability clauses',
-    'legal procedures'
+    'legal procedures',
   ];
 </script>
 

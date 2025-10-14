@@ -83,15 +83,15 @@ export class QLoRAWasmLoader {
   // Default configuration for legal domain
   private defaultConfig: Partial<QLoRAModelConfig> = {
     quantization: {
-      enabled: true
+      enabled: true,
       bits: 4,
       groupSize: 128
     },
     runtime: {
       maxThreads: navigator.hardwareConcurrency || 4,
       memoryLimit: 1024, // 1GB limit for browser
-      enableStreaming: true
-      batchSize: 1
+      enableStreaming: true,
+      batchSize: 1,
     }
   }
   constructor() {
@@ -99,7 +99,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Initialize WebAssembly module
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
     if (this.initializationPromise) return this.initializationPromise;
@@ -135,7 +135,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Check SIMD support for optimized inference
-   */;
+   */
   private async checkSIMDSupport(): Promise<boolean> {
     try {
       // Test SIMD with a simple WebAssembly module
@@ -154,7 +154,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Load WebAssembly module from URL
-   */;
+   */
   private async loadWasmModule(wasmPath: string): Promise<QLoRAWasmModule> {
     // In a real implementation, this would load the actual WASM binary
     // For now, we'll create a mock implementation
@@ -166,7 +166,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Load a distilled QLoRA model
-   */;
+   */
   async loadDistilledModel(config: Partial<QLoRAModelConfig>): Promise<string> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -236,7 +236,7 @@ export class QLoRAWasmLoader {
    * Generate text using loaded QLoRA model
    */
   async generateText(
-    modelKey: string
+    modelKey: string,
     prompt: string;
     options: {
       maxTokens?: number;
@@ -289,7 +289,7 @@ export class QLoRAWasmLoader {
       const totalTime = endTime - startTime;
       const tokensPerSecond = (tokens.length / totalTime) * 1000;
       const result: QLoRAInferenceResult = {
-        text: generatedText
+        text: generatedText,
         tokens,
         logProbs: tokens.map(() => Math.random() * -2), // Mock log probabilities
         timings: {
@@ -318,7 +318,7 @@ export class QLoRAWasmLoader {
    * Update QLoRA adapter with new training data
    */
   async updateAdapter(
-    modelKey: string
+    modelKey: string,
     trainingData: Array<;
   ): Promise<boolean> {
     console.log(`🔄 Updating QLoRA adapter with ${trainingData.length} examples...`);
@@ -338,7 +338,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Get model performance statistics
-   */;
+   */
   getModelStats(modelKey: string): {
     memoryUsage: number;
     inferenceCount: number;
@@ -360,7 +360,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Unload model to free memory
-   */;
+   */
   unloadModel(modelKey: string): boolean {
     const modelId = this.loadedModels.get(modelKey);
     if (!modelId || !this.wasmModule) return false;
@@ -382,7 +382,7 @@ export class QLoRAWasmLoader {
   // ===============================
   /**
    * Create mock WASM module for development
-   */;
+   */
   private createMockWasmModule(): QLoRAWasmModule {
     return {
       loadModel: (modelPath: string) => {
@@ -430,7 +430,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Mock response generator for development
-   */;
+   */
   private mockGenerateResponse(prompt: string): string {
     const legalResponses = [
       "Based on the contract analysis, the liability clause in Section 4.2 appears to have insufficient coverage for intellectual property disputes.",
@@ -443,7 +443,7 @@ export class QLoRAWasmLoader {
   }
   /**
    * Simple tokenization for mock implementation
-   */;
+   */
   private tokenizeResponse(text: string): string[] {
     return text.split(/\s+/).filter(token => token.length > 0);
   }
@@ -451,7 +451,7 @@ export class QLoRAWasmLoader {
    * Record inference for reinforcement learning
    */
   private async recordInference(
-    prompt: string
+    prompt: string,
     response: string;
     result: QLoRAInferenceResult;
   ): Promise<void> {

@@ -112,10 +112,10 @@ export class N64TextureLODSystem {
     this.subdivideAtlas(atlas, x + halfW, y + halfH, halfW, halfH, depth + 1);
   }
   async generateDocumentTexture(
-    documentId: string
+    documentId: string,
     content: string;
-    priority: number
-    docType: 'evidence' | 'contract' | 'brief' | 'citation'
+    priority: number,
+    docType: 'evidence' | 'contract' | 'brief' | 'citation',
   ): Promise<DocumentTexture | null> {
     // Check cache first
     if (this.textureCache.has(documentId)) {
@@ -177,8 +177,8 @@ export class N64TextureLODSystem {
       size,
       data,
       format: 'RGBA4', // N64-style 4-bit per channel;
-      compressed: false
-      memoryFootprint: data.length
+      compressed: false,
+      memoryFootprint: data.length,
     }
   }
   private generateLODChain(baseTexture: TextureLOD): TextureLOD[] {
@@ -214,11 +214,11 @@ export class N64TextureLODSystem {
     }
     return {
       level: sourceTexture.level + 1,
-      size: targetSize
-      data: targetData
+      size: targetSize,
+      data: targetData,
       format: sourceTexture.format,
-      compressed: false
-      memoryFootprint: targetData.length
+      compressed: false,
+      memoryFootprint: targetData.length,
     }
   }
   updateLOD(documentId: string, distance: number, priority: number): boolean {

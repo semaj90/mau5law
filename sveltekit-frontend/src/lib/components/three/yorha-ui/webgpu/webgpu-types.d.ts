@@ -59,8 +59,8 @@ declare global {
     STORAGE: number;
     COPY_SRC: number;
     COPY_DST: number;
-  }
+  };
   const GPUMapMode: {
     READ: number;
-  }
+  };
 }

@@ -33,8 +33,8 @@ class HTTPClient implements ProtocolClient {
         'Content-Type': 'application/json',
         ...options.headers
       },
-      body: options.body ? JSON.stringify(options.body) : undefined
-      signal: AbortSignal.timeout(options.timeout || 30000)
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: AbortSignal.timeout(options.timeout || 30000),
     });
     const data = await response.json();
     const latency = Date.now() - startTime;
@@ -139,7 +139,7 @@ export class ProductionAPIClient {
     }
   }
   private async executeRequest<T>(
-    service: ServiceDefinition
+    service: ServiceDefinition,
     protocol: 'http' | 'grpc' | 'quic' | 'websocket',
     options: ServiceRequest;
   ): Promise<ServiceResponse<T>, {
@@ -185,14 +185,14 @@ export class ProductionAPIClient {
     return {
       count: metrics.length,
       avgLatency: Math.round(metrics.reduce((sum, val) => sum + val, 0) / metrics.length),
-      p95Latency: sorted[p95Index] || 0
-      minLatency: sorted[0] || 0
-      maxLatency: sorted[sorted.length - 1] || 0
+      p95Latency: sorted[p95Index] || 0,
+      minLatency: sorted[0] || 0,
+      maxLatency: sorted[sorted.length - 1] || 0,
     }
   }
   async getClusterStatus(this: ProductionAPIClient): Promise<{,
     health,: any;
-    metrics: { [key: string]: any }
+    metrics: { [key: string]: any },
     activeRoutes: string[];
   }> {
     const health = await productionServiceRegistry.getClusterHealth();

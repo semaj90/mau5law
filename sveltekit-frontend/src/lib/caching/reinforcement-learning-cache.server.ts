@@ -28,7 +28,7 @@ class ReinforcementLearningCache {
       weights: new Map<string, number>(),
       learningRate: 0.01,
       lastUpdate: Date.now(),
-    }
+    };
     this.isInitialized = true;
     console.log('Reinforcement Learning Cache (server-only) initialized.');
   }
@@ -81,7 +81,7 @@ class ReinforcementLearningCache {
   private evictLeastValuable(): void {
     if (!this.learningModel) return;
     const sortedEntries: Array<[string, number]> = Array.from(this.learningModel.weights.entries()).sort(
-      (a, b) => a[1] - b[1],
+      (a, b) => a[1] - b[1]
     );
     const toEvict = sortedEntries.slice(0, 100);
     for (const [key] of toEvict) {
@@ -109,7 +109,7 @@ class ReinforcementLearningCache {
       hitRatio: this.hitRatio,
       modelWeights: this.learningModel?.weights.size ?? 0,
       lastUpdate: this.learningModel?.lastUpdate ?? 0,
-    }
+    };
   }
   /**
    * Clear all cache entries
@@ -124,4 +124,4 @@ class ReinforcementLearningCache {
 // Export a singleton instance for use across the server
 export const reinforcementLearningCache = new ReinforcementLearningCache();
 // Also export the class type if needed for dependency injection
-export { ReinforcementLearningCache }
+export { ReinforcementLearningCache };

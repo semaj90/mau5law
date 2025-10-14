@@ -155,7 +155,7 @@ async function comparePerformanceAtScale(documentCount: number) {
   )
   return {
     title: `⚡ Performance Comparison at ${documentCount.toLocaleString()} Documents`,
-    comparison_matrix: comparisons
+    comparison_matrix: comparisons,
     optimal_choice: {
       scenario: optimal.scenario,
       description: optimal.description,
@@ -169,16 +169,16 @@ async function comparePerformanceAtScale(documentCount: number) {
       documentCount >= 100000 ? "✅ FAISS GPU recommended for enterprise scale" : "pgvector suitable for current scale"
     ],
     faiss_advantage: documentCount >= 100000 ? {,
-      enabled: true
+      enabled: true,
       speed_multiplier: Math.round(50 + (documentCount - 100000) / 10000),
       memory_savings_percent: 75,
       gpu_utilization_percent: 95,
       sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"
     } : {
-      enabled: false
+      enabled: false,
       threshold: 100000,
-      current_count: documentCount
-      recommendation: "Scale to 100K+ documents to unlock FAISS GPU benefits"
+      current_count: documentCount,
+      recommendation: "Scale to 100K+ documents to unlock FAISS GPU benefits",
     }
   }
 }
@@ -203,7 +203,7 @@ async function demonstrateFAISSTraining(documentCount: number) {
       expected_memory: trainingConfig.expectedMemory,
       training_time_estimate: trainingConfig.trainingTime
     },
-    training_process: trainingSteps
+    training_process: trainingSteps,
     expected_results: {
       index_size_mb: Math.round(documentCount * 768 * 4 / (1024 * 1024) * 0.25), // PQ compression
       search_latency_ms: Math.max(1, 10 - Math.log10(documentCount / 100000)),
@@ -212,9 +212,9 @@ async function demonstrateFAISSTraining(documentCount: number) {
       throughput_qps: Math.min(1000, 100 + documentCount / 1000)
     },
     gpu_optimization: {
-      rtx_3060_ti_ready: true
-      tensor_cores_utilized: true
-      memory_bandwidth_optimized: true
+      rtx_3060_ti_ready: true,
+      tensor_cores_utilized: true,
+      memory_bandwidth_optimized: true,
       cuda_streams: 4,
       batch_processing: true
     },
@@ -246,7 +246,7 @@ async function assessEnterpriseReadiness(documentCount: number) {
       },
       scalability: {
         status: documentCount >= 100000 ? "✅ Horizontally Scalable" : "📈 Growth Potential",
-        current_capacity: documentCount
+        current_capacity: documentCount,
         scaling_headroom: `${Math.max(0, 10000000 - documentCount).toLocaleString()} documents`,
         architecture: documentCount >= 100000 ? "FAISS GPU Optimized" : "pgvector Foundation"
       },

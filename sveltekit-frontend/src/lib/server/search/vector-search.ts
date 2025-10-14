@@ -98,7 +98,7 @@ let fuseEvidence: any = null;
 async function initializeLocalDb(): Promise<any> {
   if (!loki || lokiDb) return;
   lokiDb = new loki("legal_search.db", {
-    autoload: true
+    autoload: true,
     autoloadCallback: () => {
       // Initialize collections if they don't exist
       let casesCollection = lokiDb.getCollection("cases");
@@ -114,8 +114,8 @@ async function initializeLocalDb(): Promise<any> {
         });
       }
     },
-    autosave: true
-    autosaveInterval: 4000
+    autosave: true,
+    autosaveInterval: 4000,
   });
 }
 // --- Legal documents pgvector search (uses Ollama 768-dim embeddings) ---
@@ -282,8 +282,8 @@ async function initializeFuzzySearch(cases: any[], evidence: any[]): Promise<any
   const fuseOptions = {
     keys: ["title", "description", "content"],
     threshold: 0.3,
-    includeScore: true
-    includeMatches: true
+    includeScore: true,
+    includeMatches: true,
   }
   fuseCases = new Fuse(cases, fuseOptions);
   fuseEvidence = new Fuse(evidence, fuseOptions);
@@ -428,7 +428,7 @@ export async function vectorSearch(
     const cached = (await cache.getSearchResults(query, 'vector', options)) as VectorSearchResult[] | null;
     if (cached) {
       return {
-        results: cached
+        results: cached,
         executionTime: Date.now() - startTime,
         source: "cache",
         totalResults: cached.length
@@ -781,7 +781,7 @@ async function searchWithTextFallback(
 }
 // Merge and deduplicate search results
 function mergeSearchResults(
-  pgResults: VectorSearchResult[]
+  pgResults: VectorSearchResult[],
   qdrantResults: VectorSearchResult[];
 ): VectorSearchResult[] {
   const merged = new Map<string, VectorSearchResult>();
@@ -799,8 +799,8 @@ function mergeSearchResults(
 }
 // Export convenience functions
 export const search = {
-  vector: vectorSearch
+  vector: vectorSearch,
   pgvector: searchWithPgVector;
-  qdrant: searchWithQdrant
-  textFallback: searchWithTextFallback
+  qdrant: searchWithQdrant,
+  textFallback: searchWithTextFallback,
 }

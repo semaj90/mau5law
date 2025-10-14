@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
       const r = await embedText(text, { simdParse, gpuTile });
       result = r;
     } catch (e: unknown) {
-      result = { error: e?.message || String(e) }
+      result = { error: e?.message || String(e) };
     } finally {
       runBusy = false;
     }

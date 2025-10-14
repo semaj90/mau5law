@@ -126,12 +126,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       recentCases,
       recentAIInteractions,
       activeSessions,
-    }
+    };
   } catch (err) {
     console.error('Error loading user details:', err);
     throw error(500, 'Failed to load user details');
   }
-}
+};
 export const actions: Actions = {
   updateProfile: async ({ request, params, locals }) => {
     if (!locals.session || !locals.user) {
@@ -142,7 +142,7 @@ export const actions: Actions = {
     const firstName = formData.get('firstName')?.toString() || '';
     const lastName = formData.get('lastName')?.toString() || '';
     if (!firstName || !lastName) {
-      return { success: false, error: 'First name and last name are required' }
+      return { success: false, error: 'First name and last name are required' };
     }
     try {
       // Check if profile exists
@@ -164,10 +164,10 @@ export const actions: Actions = {
           lastName,
         });
       }
-      return { success: true, message: 'Profile updated successfully' }
+      return { success: true, message: 'Profile updated successfully' };
     } catch (err) {
       console.error('Error updating profile:', err);
-      return { success: false, error: 'Failed to update profile' }
+      return { success: false, error: 'Failed to update profile' };
     }
   },
   revokeSession: async ({ request, params, locals }) => {
@@ -177,14 +177,14 @@ export const actions: Actions = {
     const formData = await request.formData();
     const sessionId = formData.get('sessionId')?.toString();
     if (!sessionId) {
-      return { success: false, error: 'Session ID is required' }
+      return { success: false, error: 'Session ID is required' };
     }
     try {
       await db.delete(sessions).where(eq(sessions.id, sessionId));
-      return { success: true, message: 'Session revoked successfully' }
+      return { success: true, message: 'Session revoked successfully' };
     } catch (err) {
       console.error('Error revoking session:', err);
-      return { success: false, error: 'Failed to revoke session' }
+      return { success: false, error: 'Failed to revoke session' };
     }
   },
   resetPassword: async ({ request, params, locals }) => {
@@ -195,7 +195,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const newPassword = formData.get('newPassword')?.toString();
     if (!newPassword || newPassword.length < 8) {
-      return { success: false, error: 'Password must be at least 8 characters' }
+      return { success: false, error: 'Password must be at least 8 characters' };
     }
     try {
       // Hash the new password
@@ -216,10 +216,10 @@ export const actions: Actions = {
         .where(eq(users.id, userId));
       // Revoke all existing sessions for this user
       await db.delete(sessions).where(eq(sessions.user_id, userId));
-      return { success: true, message: 'Password reset successfully. All sessions have been revoked.' }
+      return { success: true, message: 'Password reset successfully. All sessions have been revoked.' };
     } catch (err) {
       console.error('Error resetting password:', err);
-      return { success: false, error: 'Failed to reset password' }
+      return { success: false, error: 'Failed to reset password' };
     }
   },
-}
+};

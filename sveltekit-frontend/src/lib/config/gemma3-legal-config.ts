@@ -1,7 +1,7 @@
 /**
  * Gemma3 Legal Model Configuration
  * Optimized for RTX 3060 Ti and legal document analysis
- */;
+ */
 }
 export interface Gemma3LegalConfig {
   model: {
@@ -141,7 +141,7 @@ Subject matter:
 Provide detailed risk matrix with severity and likelihood ratings.`
   },
   gpu_optimization: {
-    enable_gpu: true
+    enable_gpu: true,
     gpu_memory_fraction: 0.85, // Use 85% of RTX 3060 Ti memory
     batch_size: 8,
     parallel_requests: 4,
@@ -149,7 +149,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     tensor_parallel: false // Single GPU setup
   },
   rag_integration: {
-    enable_rag: true
+    enable_rag: true,
     vector_db: 'postgresql', // Use pgvector
     embedding_model: 'nomic-embed-text',
     similarity_threshold: 0.7,
@@ -157,12 +157,12 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     rerank_results: true
   },
   legal_domains: {
-    contract_law: true
-    criminal_law: true
-    corporate_law: true
-    intellectual_property: true
-    employment_law: true
-    real_estate: true
+    contract_law: true,
+    criminal_law: true,
+    corporate_law: true,
+    intellectual_property: true,
+    employment_law: true,
+    real_estate: true,
     family_law: false, // Specialized domain
     tax_law: false     // Specialized domain
   }
@@ -197,22 +197,22 @@ export const LEGAL_ENTITY_PATTERNS = {
 export const PERFORMANCE_CONFIG = {
   // Model loading optimization
   model_loading: {
-    preload: true
+    preload: true,
     keep_alive: '30m',
-    offload_kqv: true
-    flash_attention: true
+    offload_kqv: true,
+    flash_attention: true,
   },
   // Memory management
   memory: {
-    mlock: true
-    mmap: true
+    mlock: true,
+    mmap: true,
     numa: false, // Single GPU setup
     low_vram: false // RTX 3060 Ti has sufficient VRAM
   },
   // Inference optimization
   inference: {
-    use_fast_tokenizer: true
-    use_cache: true
+    use_fast_tokenizer: true,
+    use_cache: true,
     cache_size: '2GB',
     beam_search: false, // Use sampling for legal creativity
     early_stopping: true

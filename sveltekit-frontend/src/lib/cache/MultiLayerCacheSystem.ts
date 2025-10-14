@@ -49,8 +49,8 @@ export class MultiLayerCacheSystem {
     // Initialize Loki.js in-memory database
     this.lokiDB = new Loki('legal-ai-cache.db', {
       env: 'BROWSER',
-      autosave: false
-      persistenceMethod: 'memory'
+      autosave: false,
+      persistenceMethod: 'memory',
     });
     // Create collection for cache entries
     this.memoryCollection = this.lokiDB.addCollection<CacheEntry>('cache', {
@@ -97,8 +97,8 @@ export class MultiLayerCacheSystem {
     const options: Fuse.IFuseOptions<CacheEntry> = {
       keys: ['key', 'value'],
       threshold: 0.3,
-      includeScore: true
-      minMatchCharLength: 2
+      includeScore: true,
+      minMatchCharLength: 2,
     }
     this.fuseIndex = new Fuse([], options);
   }
@@ -140,7 +140,7 @@ export class MultiLayerCacheSystem {
    * Multi-layer cache SET operation
    */
   async set<T>(_key: string
-    value: T
+    value: T,
     ttl: number = this.config.defaultTTL,
     priority: number = 100
   ): Promise<void> {
@@ -188,9 +188,9 @@ export class MultiLayerCacheSystem {
    * Set in Loki.js memory cache with eviction
    */
   private async setInMemory<T>(_key: string
-    value: T
-    ttl: number
-    priority: number
+    value: T,
+    ttl: number,
+    priority: number,
   ): Promise<void> {
     const sizeBytes = this.estimateSize(value);
     // Check if we need to evict
@@ -218,9 +218,9 @@ export class MultiLayerCacheSystem {
    * Set in IndexedDB
    */
   private async setInIndexedDB<T>(_key: string
-    value: T
-    ttl: number
-    priority: number
+    value: T,
+    ttl: number,
+    priority: number,
   ): Promise<void> {
     if (!this.indexedDB) return;
     return new Promise((resolve, reject) => {
@@ -244,9 +244,9 @@ export class MultiLayerCacheSystem {
    * Set in Redis simulation
    */
   private setInRedis<T>(_key: string
-    value: T
-    ttl: number
-    priority: number
+    value: T,
+    ttl: number,
+    priority: number,
   ): void {
     const entry: CacheEntry<T> = {
       key,

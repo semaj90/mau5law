@@ -61,18 +61,18 @@ export const POST: RequestHandler = (async ({ request, locals }) => {
     title: file.name,
     description,
     caseId,
-    criminalId: null
+    criminalId: null,
     evidenceType: ext.replace(".", "") || "document",
     fileUrl: `/uploads/${caseId}/${safeName}`,
     fileType: ext.replace(".", ""),
     fileSize: file.size,
     tags,
     uploadedBy: user.id,
-    uploadedAt: now
-    updatedAt: now
+    uploadedAt: now,
+    updatedAt: now,
     fileName: file.name,
-    summary: null
-    aiSummary: null
+    summary: null,
+    aiSummary: null,
   }
   try {
     await db.insert(evidence).values(newEvidence)

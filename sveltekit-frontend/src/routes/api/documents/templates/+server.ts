@@ -215,7 +215,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     }
     // Return all templates with metadata
     const templates = Object.entries(documentTemplates).map(([key, template]) => ({
-        id: key
+        id: key,
         name: template.title,
         documentType: template.documentType,
         tags: template.tags,
@@ -289,9 +289,9 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
     const newDocument = {
       id: `doc-${Date.now()}`,
       title: title || template.title,
-      content: customizedContent
+      content: customizedContent,
       documentType: template.documentType,
-      caseId: caseId || null
+      caseId: caseId || null,
       userId: userId || "user-1",
       citations: template.citations,
       tags: [...template.tags, "from-template"],

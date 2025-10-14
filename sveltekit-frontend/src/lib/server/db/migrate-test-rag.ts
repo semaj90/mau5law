@@ -8,8 +8,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { sql } from 'drizzle-orm';
 
-const connectionString = process.env.DATABASE_URL ||
-  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
+const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
 const migrationClient = postgres(connectionString, { max: 1 });
 const db = drizzle(migrationClient);
@@ -139,7 +138,6 @@ async function migrate() {
     console.log('  2. Embeddings will be auto-generated with Ollama (embeddinggemma)');
     console.log('  3. Search with /api/test-rag/search (semantic + text + hybrid)');
     console.log('  4. Qdrant sync for distributed vector search\n');
-
   } catch (error) {
     console.error('❌ Migration failed:', error);
     throw error;
@@ -148,7 +146,7 @@ async function migrate() {
   }
 }
 
-migrate().catch((err) => {
+migrate().catch(err => {
   console.error('Fatal error:', err);
   process.exit(1);
 });

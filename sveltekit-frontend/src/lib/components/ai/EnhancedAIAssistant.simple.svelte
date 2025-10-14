@@ -1,60 +1,53 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Brain,
-    Loader2,
-    Quote,
-    Search,
-    Settings,
-    Trash2,
-  } from "lucide-svelte";
+  import { Brain, Loader2, Quote, Search, Settings, Trash2 } from 'lucide-svelte';
 
   // Exported props (Svelte 5)
   export let caseId: string | undefined = undefined;
   export let evidenceIds: string[] = [];
-  export let placeholder: string = "Ask AI about this case...";
-  export let maxHeight: string = "400px";
+  export let placeholder: string = 'Ask AI about this case...';
+  export let maxHeight: string = '400px';
   export let showReferences: boolean = true;
   export let enableVoiceInput: boolean = false;
   export let ondispatch: ((citation: string) => void) | undefined;
 
   // State
-  let query = $state("");
+  let query = $state('');
   let isLoading = $state(false);
-  let messages = $state<any[] >([]);
+  let messages = $state<any[]>([]);
   let showSettings = $state(false);
   let showCitationDialog = $state(false);
-  let selectedCitation = $state("");
-  let selectedModel = $state("gpt-4");
+  let selectedCitation = $state('');
+  let selectedModel = $state('gpt-4');
   let searchThreshold = $state(0.7);
   let maxResults = $state(5);
   let temperature = $state(0.7);
-  let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
+  let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']);
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
-    const userMessage = { role: "user", content: query }
+    const userMessage = { role: 'user', content: query };
     messages = [...messages, userMessage];
-    query = "";
+    query = '';
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",
+        role: 'assistant',
         content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":\n  This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.\n  Key considerations:\n  1. Applicable statutory framework\n  2. Relevant case precedents\n  3. Jurisdictional variations\n  4. Current regulatory environment\n  Would you like me to elaborate on any of these aspects?`,
         references: [
           {
-            title: "Smith v. Jones",
-            citation: "123 F.3d 456 (2023)",
+            title: 'Smith v. Jones',
+            citation: '123 F.3d 456 (2023)',
             relevance: 0.9,
           },
           {
-            title: "42 U.S.C. § 1983",
-            citation: "Federal Civil Rights Statute",
+            title: '42 U.S.C. § 1983',
+            citation: 'Federal Civil Rights Statute',
             relevance: 0.8,
           },
         ],
-      }
+      };
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -84,10 +77,22 @@
         {/if}
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button type="button" class="btn-icon" onclick={() => (showSettings = !showSettings)} title="Settings" aria-label="Open settings">
+        <button
+          type="button"
+          class="btn-icon"
+          onclick={() => (showSettings = !showSettings)}
+          title="Settings"
+          aria-label="Open settings"
+        >
           <Settings aria-hidden="true" />
         </button>
-        <button type="button" class="btn-icon" onclick={() => clearMessages()} title="Clear conversation" aria-label="Clear conversation">
+        <button
+          type="button"
+          class="btn-icon"
+          onclick={() => clearMessages()}
+          title="Clear conversation"
+          aria-label="Clear conversation"
+        >
           <Trash2 aria-hidden="true" />
         </button>
       </div>
@@ -103,7 +108,12 @@
             <div class="references">
               <h4 class="references-title">References:</h4>
               {#each message.references as reference}
-                <button type="button" class="reference-item" onclick={() => handleReferenceClick(reference)} aria-label={`Open reference ${reference.title}`}>
+                <button
+                  type="button"
+                  class="reference-item"
+                  onclick={() => handleReferenceClick(reference)}
+                  aria-label={`Open reference ${reference.title}`}
+                >
                   <Quote aria-hidden="true" />
                   <span class="reference-title">{reference.title}</span>
                   <span class="reference-citation">{reference.citation}</span>
@@ -137,7 +147,9 @@
     <div class="settings-panel">
       <div class="settings-header">
         <h4 class="settings-title">AI Assistant Settings</h4>
-  <button type="button" class="btn-close" onclick={() => (showSettings = false)} aria-label="Close settings">×</button>
+        <button type="button" class="btn-close" onclick={() => (showSettings = false)} aria-label="Close settings"
+          >×</button
+        >
       </div>
       <div class="settings-content">
         <div class="setting-group">
@@ -169,7 +181,7 @@
       class="dialog-overlay"
       tabindex="0"
       onclick={() => (showCitationDialog = false)}
-      onkeydown={(e) => {
+      onkeydown={e => {
         if (e.key === 'Escape') showCitationDialog = false;
       }}
       role="dialog"
@@ -180,15 +192,20 @@
         class="dialog-content"
         role="document"
         tabindex="-1"
-        onclick={(e) => e.stopPropagation()}
-        onkeydown={(e) => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
+        onkeydown={e => e.stopPropagation()}
       >
         <div class="dialog-header">
           <h4 class="dialog-title" id="citation-dialog-title">
             <Quote />
             Legal Citation
           </h4>
-          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close citation dialog">×</button>
+          <button
+            type="button"
+            class="btn-close"
+            onclick={() => (showCitationDialog = false)}
+            aria-label="Close citation dialog">×</button
+          >
         </div>
 
         <div class="dialog-body">
@@ -196,7 +213,9 @@
             <p>{selectedCitation}</p>
           </div>
           <div class="dialog-actions">
-            <button type="button" class="btn-primary" onclick={() => insertCitation()} aria-label="Insert citation">Insert Citation</button>
+            <button type="button" class="btn-primary" onclick={() => insertCitation()} aria-label="Insert citation"
+              >Insert Citation</button
+            >
             <button
               type="button"
               class="btn-secondary"
@@ -209,12 +228,15 @@
         </div>
 
         <div class="dialog-footer">
-          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close dialog">Close</button>
+          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close dialog"
+            >Close</button
+          >
         </div>
       </div>
     </div>
   {/if}
 </div>
+and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Next message will show the patch.)
 
 <style>
   /* @unocss-include */
@@ -271,4 +293,5 @@
   .reference-item {
     display: flex;
     align-items: center;
-The create_file call created the new file with cleaned content. Now I should remove the duplicated trailing CSS in the original archived file to avoid confusion. I'll patch the archive file to remove the trailing stray CSS after the closing </style> and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Next message will show the patch.)
+The create_file call created the new file with cleaned content. Now I should remove the duplicated trailing CSS in the original archived file to avoid confusion. I'll patch the archive file to remove the trailing stray CSS after the closing
+</style>

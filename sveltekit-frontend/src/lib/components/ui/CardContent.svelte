@@ -16,7 +16,8 @@
   {/if}
 </div>
 
-<style>/* SSR-optimized CardContent for consistent rendering */ {}
+<style>
+/* SSR-optimized CardContent for consistent rendering */ {}
   .card-content-ssr {
 /* Ensure consistent spacing and layout in SSR context */ {}
     display: flex;

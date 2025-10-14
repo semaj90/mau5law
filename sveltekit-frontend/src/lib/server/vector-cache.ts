@@ -45,7 +45,7 @@ function getRedisClient(): any | null {
 }
 /**
  * Generate cache key for vector searches
- */;
+ */
 function generateVectorKey(query: string, options: any = {}): string {
   const keyData = {
     query: query.trim().toLowerCase(),
@@ -59,14 +59,14 @@ function generateVectorKey(query: string, options: any = {}): string {
 }
 /**
  * Generate cache key for embeddings
- */;
+ */
 function generateEmbeddingKey(text: string, model: string = 'default'): string {
   const keyData = { text: text.trim(), model }
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
 }
 /**
  * Evict expired and excess entries from vector cache
- */;
+ */
 function evictVectorCache() {
   const now = Date.now();
   // Remove expired entries
@@ -83,7 +83,7 @@ function evictVectorCache() {
 }
 /**
  * Evict expired and excess entries from embedding cache
- */;
+ */
 function evictEmbeddingCache() {
   const now = Date.now();
   // Remove expired entries
@@ -100,7 +100,7 @@ function evictEmbeddingCache() {
 }
 /**
  * Get cached vector search results
- */;
+ */
 export async function getVectorCache(query: string, options: any = {}): Promise<any> {
   const key = generateVectorKey(query, options);
   const now = Date.now();
@@ -137,8 +137,8 @@ export async function getVectorCache(query: string, options: any = {}): Promise<
  * Cache vector search results
  */
 export async function setVectorCache(
-  query: string
-  results: any[]
+  query: string,
+  results: any[],
   metadata: VectorCacheEntry['metadata'],
   options: any = {}
 ): Promise<void> {
@@ -148,9 +148,9 @@ export async function setVectorCache(
     results,
     query,
     metadata,
-    ts: now
-    lastAccess: now
-    ttlMs: VECTOR_TTL_MS
+    ts: now,
+    lastAccess: now,
+    ttlMs: VECTOR_TTL_MS,
   }
   // Store in memory
   vectorCache.set(key, entry);
@@ -169,7 +169,7 @@ export async function setVectorCache(
 }
 /**
  * Get cached embedding
- */;
+ */
 export async function getEmbeddingCache(text: string, model: string = 'default'): Promise<any> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
@@ -205,7 +205,7 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
  * Cache embedding result
  */
 export async function setEmbeddingCache(
-  text: string
+  text: string,
   embedding: number[];
   model: string = 'default';
 ): Promise<void> {
@@ -216,9 +216,9 @@ export async function setEmbeddingCache(
     text,
     model,
     dimensions: embedding.length,
-    ts: now
-    lastAccess: now
-    ttlMs: EMBEDDING_TTL_MS
+    ts: now,
+    lastAccess: now,
+    ttlMs: EMBEDDING_TTL_MS,
   }
   // Store in memory
   embeddingCache.set(key, entry);
@@ -237,7 +237,7 @@ export async function setEmbeddingCache(
 }
 /**
  * Clear vector cache
- */;
+ */
 export async function clearVectorCache(): Promise<void> {
   vectorCache.clear();
   embeddingCache.clear();
@@ -257,7 +257,7 @@ export async function clearVectorCache(): Promise<void> {
 }
 /**
  * Get cache statistics
- */;
+ */
 export function getVectorCacheStats() {
   return {
     memory: {
@@ -266,9 +266,9 @@ export function getVectorCacheStats() {
       maxItems: VECTOR_CACHE_MAX_ITEMS
     },
     config: {
-      vectorTtlMs: VECTOR_TTL_MS
-      embeddingTtlMs: EMBEDDING_TTL_MS
-      redisEnabled: !!getRedisClient()
+      vectorTtlMs: VECTOR_TTL_MS,
+      embeddingTtlMs: EMBEDDING_TTL_MS,
+      redisEnabled: !!getRedisClient(),
     }
   }
 }
@@ -276,7 +276,7 @@ export function getVectorCacheStats() {
  * Middleware helper for caching vector API responses
  */
 export function withVectorCache<T>(
-  cacheKey: string
+  cacheKey: string,
   operation: () => Promise<T>,
   ttlMs: number = VECTOR_TTL_MS;
 ) {

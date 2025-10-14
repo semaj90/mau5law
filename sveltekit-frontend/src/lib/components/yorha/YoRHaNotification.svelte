@@ -276,7 +276,8 @@
   }
   /* Animations */
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       transform: scale(1);
     }
@@ -286,7 +287,8 @@
     }
   }
   @keyframes systemPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
     }

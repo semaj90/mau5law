@@ -20,7 +20,7 @@ export interface AuditEntry {
 /**
  * Enhanced audit logging for storage operations
  * Supports both file-based and database logging
- */;
+ */
 export class StorageAuditLogger {
   private static logFile = path.resolve(process.cwd(), 'storage-audit.log');
   private static dbLogEnabled = !!process.env.DATABASE_URL;
@@ -29,11 +29,11 @@ export class StorageAuditLogger {
    */
   static async log(
     action: AuditEntry['action'],
-    user: AuthenticatedUser
-    bucket: string
-    key: string
+    user: AuthenticatedUser,
+    bucket: string,
+    key: string,
     request: Request;
-    success: boolean
+    success: boolean,
     error?: string
     metadata?: { [key: string]: any }
   ): Promise<void> {
@@ -70,7 +70,7 @@ export class StorageAuditLogger {
   }
   /**
    * Log to file system
-   */;
+   */
   private static async logToFile(entry: AuditEntry): Promise<void> {
     try {
       const logLine = JSON.stringify(entry) + '\n';
@@ -81,7 +81,7 @@ export class StorageAuditLogger {
   }
   /**
    * Log to database (if available)
-   */;
+   */
   private static async logToDatabase(entry: AuditEntry): Promise<void> {
     try {
       // This would integrate with your existing database setup
@@ -111,7 +111,7 @@ export class StorageAuditLogger {
   }
   /**
    * Query audit logs (for admin dashboard)
-   */;
+   */
   static async getAuditLogs(filters: {
       userId?: string;
       action?: string;
@@ -154,7 +154,7 @@ export class StorageAuditLogger {
   }
   /**
    * Simple file-based log querying
-   */;
+   */
   private static async queryLogFile(filters: any): Promise<AuditEntry[]> {
     try {
       const content = await fs.promises.readFile(this.logFile, 'utf-8');
@@ -197,7 +197,7 @@ export class StorageAuditLogger {
   }
   /**
    * Archive old logs (for maintenance)
-   */;
+   */
   static async archiveLogs(olderThanDays = 90): Promise<void> {
     try {
       const cutoffDate = new Date();

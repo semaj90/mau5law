@@ -212,7 +212,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     const metrics = llmOrchestratorBridge.getPerformanceMetrics();
     results.push({
       test: 'Bridge Status',
-      success: true
+      success: true,
       bridgeStatus: status.bridge.status,
       totalRequests: metrics.totalRequests,
       successRate: metrics.successfulRequests / Math.max(metrics.totalRequests, 1),
@@ -262,7 +262,7 @@ export async function quickHealthCheck(): Promise<any> {
     }
   } catch (error) {
     return {
-      healthy: false
+      healthy: false,
       status: { error: error instanceof Error ? error.message: 'Unknown error' },
       timestamp: new Date().toISOString()
     }
@@ -302,7 +302,7 @@ export async function testSpecificOrchestrator(
     return {
       success: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).success,
       orchestratorUsed: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed,
-      expectedOrchestrator: orchestratorType
+      expectedOrchestrator: orchestratorType,
       matchesExpected:
         (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === orchestratorType ||
         (orchestratorType === 'mcp' && (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'hybrid'),

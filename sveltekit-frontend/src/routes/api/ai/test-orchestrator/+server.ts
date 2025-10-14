@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       type: 'health_check',
       ...healthResult,
-      performance: metrics
+      performance: metrics,
       activeRequests: {
         count: activeRequests.length,
         requests: activeRequests.map(req => ({,
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentType: testRequest.documentType
       },
       options: {
-        model: orchestrator
+        model: orchestrator,
         priority,
         temperature,
         maxTokens,

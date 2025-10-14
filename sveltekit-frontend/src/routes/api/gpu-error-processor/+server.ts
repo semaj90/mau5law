@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit/utilities'; // Import json helper
 // ======================================================================
 // GPU ERROR PROCESSOR API ENDPOINT
@@ -353,29 +353,29 @@ async function simulateGPUProcessing(
   };
 }
 function getFixStrategy(code: string): string {
-	const strategies: Record<string, string> = {
-		TS1434: 'Remove unexpected keyword',
-		TS2304: 'Add missing import',
-		TS2307: 'Fix module path',
-		TS2457: 'Rename type alias',
-		TS1005: 'Add punctuation',
-		TS1128: 'Add declaration'
-	}
-	return strategies[code] || 'Manual fix required'
+  const strategies: Record<string, string> = {
+    TS1434: 'Remove unexpected keyword',
+    TS2304: 'Add missing import',
+    TS2307: 'Fix module path',
+    TS2457: 'Rename type alias',
+    TS1005: 'Add punctuation',
+    TS1128: 'Add declaration',
+  };
+  return strategies[code] || 'Manual fix required';
 }
 export const GET: RequestHandler = async ({ url }) => {
-	const action = url.searchParams.get('action') || 'status'
-	if (action === 'status') {
-		return json({
-			status: 'GPU Error Processor API is running',
-			endpoints: [
-				'POST ?action=check - Run TypeScript check',
-				'POST ?action=process - Process errors with GPU',
-				'POST ?action=test - Run system tests',
-				'GET ?action=stats - Get system statistics'
-			],
-			timestamp: new Date().toISOString()
-		})
-	}
-	return json({ error: 'Invalid action' }, { status: 400 })
-}
+  const action = url.searchParams.get('action') || 'status';
+  if (action === 'status') {
+    return json({
+      status: 'GPU Error Processor API is running',
+      endpoints: [
+        'POST ?action=check - Run TypeScript check',
+        'POST ?action=process - Process errors with GPU',
+        'POST ?action=test - Run system tests',
+        'GET ?action=stats - Get system statistics',
+      ],
+      timestamp: new Date().toISOString(),
+    });
+  }
+  return json({ error: 'Invalid action' }, { status: 400 });
+};

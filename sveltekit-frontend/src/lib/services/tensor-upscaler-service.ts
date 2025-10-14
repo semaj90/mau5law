@@ -44,7 +44,7 @@ export interface UpscaleOptions {
  * - upscale(...): accepts a Blob / ArrayBuffer / Uint8Array and returns a Blob.
  *
  * Replace the stubbed implementation with real upscaling logic or an API call.
- */;
+ */
 export class TensorUpscalerService {
   async isAvailable(): Promise<boolean> {
     // In a real implementation check WebGPU/WebGL or worker readiness here.

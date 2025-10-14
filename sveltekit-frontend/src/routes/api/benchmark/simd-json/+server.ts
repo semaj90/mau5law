@@ -206,8 +206,8 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           scenario: 'system_info',
           data: {
-            simd: simdStatus
-            metrics: stats
+            simd: simdStatus,
+            metrics: stats,
             system: {
               platform: typeof navigator !== 'undefined' ? navigator.platform: 'server',
               userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'node',
@@ -327,12 +327,12 @@ async function benchmarkCustomPayload(payload: any, iterations: number): Promise
   const simdTime = performance.now() - simdStart
   return {
     standard: {
-      totalTime: standardTime
+      totalTime: standardTime,
       avgTime: standardTime / iterations,
       parsesPerSecond: (iterations / standardTime) * 1000
     },
     simd: {
-      totalTime: simdTime
+      totalTime: simdTime,
       avgTime: simdTime / iterations,
       parsesPerSecond: (iterations / simdTime) * 1000
     },
@@ -350,7 +350,7 @@ async function runLoadTest(duration: number, concurrency: number, payloadSize: s
     failedRequests: 0,
     avgResponseTime: 0,
     maxResponseTime: 0,
-    minResponseTime: Infinity
+    minResponseTime: Infinity,
     responseTimes: [] as number[],
     throughput: 0
   }
@@ -388,7 +388,7 @@ async function runLoadTest(duration: number, concurrency: number, payloadSize: s
   return {
     ...results,
     payloadSize: `${Math.round(testData.length / 1024)}KB`,
-    testDuration: duration
+    testDuration: duration,
     concurrency
   }
 }
@@ -437,9 +437,9 @@ async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promi
   // Recovery phase
   const recoveryResults = await runConcurrentParsing(testData, 5, 1000)
   return {
-    baseline: baselineResults
-    spike: spikeResults
-    recovery: recoveryResults
+    baseline: baselineResults,
+    spike: spikeResults,
+    recovery: recoveryResults,
     spikeImpact: {
       responseTimeDegradation: spikeResults.avgTime / baselineResults.avgTime,
       throughputImpact: spikeResults.throughput / baselineResults.throughput,

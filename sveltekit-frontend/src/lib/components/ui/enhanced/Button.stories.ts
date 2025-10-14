@@ -2,157 +2,156 @@ import type { Meta, StoryObj } from '@storybook/svelte';
 import Button from './Button.svelte.js';
 const meta = {
   title: 'UI/Enhanced/Button',
-  component: Button
+  component: Button,
   parameters: {
     layout: 'centered',
     docs: {
       description: {
-        component:
-          'Enhanced button component with multiple variants and states for the Legal AI Platform'
-      }
-    }
+        component: 'Enhanced button component with multiple variants and states for the Legal AI Platform',
+      },
+    },
   },
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline']
+      options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline'],
     },
     size: {
       control: { type: 'select' },
-      options: ['sm', 'default', 'lg', 'xl']
+      options: ['sm', 'default', 'lg', 'xl'],
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     loading: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     fullWidth: {
       control: { type: 'boolean' },
-      description: 'Make button full width'
-    }
+      description: 'Make button full width',
+    },
   },
-  tags: ['autodocs']
+  tags: ['autodocs'],
 } satisfies Meta<Button>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     children: 'Button',
-    variant: 'default'
-  }
-}
+    variant: 'default',
+  },
+};
 export const Legal: Story = {
   args: {
     children: 'Legal Action',
-    variant: 'legal'
+    variant: 'legal',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Legal-themed button variant for law-related actions'
-      }
-    }
-  }
-}
+        story: 'Legal-themed button variant for law-related actions',
+      },
+    },
+  },
+};
 export const Evidence: Story = {
   args: {
     children: 'Add Evidence',
-    variant: 'evidence'
+    variant: 'evidence',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Evidence-themed button for evidence management'
-      }
-    }
-  }
-}
+        story: 'Evidence-themed button for evidence management',
+      },
+    },
+  },
+};
 export const Case: Story = {
   args: {
     children: 'Create Case',
-    variant: 'case'
+    variant: 'case',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Case-themed button for case management'
-      }
-    }
-  }
-}
+        story: 'Case-themed button for case management',
+      },
+    },
+  },
+};
 export const Loading: Story = {
   args: {
     children: 'Processing...',
-    loading: true
+    loading: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Button with loading state and spinner'
-      }
-    }
-  }
-}
+        story: 'Button with loading state and spinner',
+      },
+    },
+  },
+};
 export const Disabled: Story = {
   args: {
     children: 'Disabled',
-    disabled: true
-  }
-}
+    disabled: true,
+  },
+};
 export const Large: Story = {
   args: {
     children: 'Large Button',
-    size: 'lg'
-  }
-}
+    size: 'lg',
+  },
+};
 export const ExtraLarge: Story = {
   args: {
     children: 'Extra Large',
-    size: 'xl'
-  }
-}
+    size: 'xl',
+  },
+};
 export const Small: Story = {
   args: {
     children: 'Small',
-    size: 'sm'
-  }
-}
+    size: 'sm',
+  },
+};
 export const Outline: Story = {
   args: {
     children: 'Outline',
-    variant: 'outline'
-  }
-}
+    variant: 'outline',
+  },
+};
 export const Ghost: Story = {
   args: {
     children: 'Ghost',
-    variant: 'ghost'
-  }
-}
+    variant: 'ghost',
+  },
+};
 export const Destructive: Story = {
   args: {
     children: 'Delete',
-    variant: 'destructive'
+    variant: 'destructive',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Destructive button for dangerous actions'
-      }
-    }
-  }
-}
+        story: 'Destructive button for dangerous actions',
+      },
+    },
+  },
+};
 export const FullWidth: Story = {
   args: {
     children: 'Full Width Button',
-    fullWidth: true
+    fullWidth: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Button that takes full width of container'
-      }
-    }
-  }
-}
+        story: 'Button that takes full width of container',
+      },
+    },
+  },
+};

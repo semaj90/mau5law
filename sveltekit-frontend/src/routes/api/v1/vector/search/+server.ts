@@ -5,11 +5,11 @@
  * MIGRATION NOTE: Now uses the canonical database connection from $lib/server/db
  * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
 // Use canonical database connection (node-postgres adapter with connection pooling)
-import { db, sql } from '$lib/server/db'// Add concrete types to avoid `any`
+import { db, sql } from '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
@@ -384,8 +384,8 @@ function generateSearchClientHints(query: string, filters: SearchFilters, comple
 export const GET: RequestHandler = async () => {
   // Health check endpoint
   try {
-    const testQuery = `SELECT 1 as health_check`
-    await db.execute(sql.raw(testQuery))
+    const testQuery = `SELECT 1 as health_check`;
+    await db.execute(sql.raw(testQuery));
     return json({
       status: 'healthy',
       database: 'connected',
@@ -399,6 +399,6 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
-    throw error(500, `Health check failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `Health check failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};

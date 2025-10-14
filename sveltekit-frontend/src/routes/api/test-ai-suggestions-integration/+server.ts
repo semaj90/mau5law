@@ -53,15 +53,15 @@ export async function GET({ url }: RequestEvent): Promise<any> {
                        warningCount > 0 ? 'warning' : 'healthy'
   const totalTime = Date.now() - startTime
   return json({
-    status: overallStatus
+    status: overallStatus,
     summary: {
       total: testResults.length,
-      pass: passCount
-      fail: failCount
-      warning: warningCount
+      pass: passCount,
+      fail: failCount,
+      warning: warningCount,
       totalTime
     },
-    results: testResults
+    results: testResults,
     timestamp: new Date().toISOString(),
     recommendations: generateRecommendations(testResults)
   })
@@ -76,7 +76,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
         service: 'Database Connection',
         status: 'pass',
         message: 'Database connection successful',
-        details: health
+        details: health,
         responseTime
       }
     } else {
@@ -84,7 +84,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
         service: 'Database Connection',
         status: 'fail',
         message: 'Database connection failed',
-        details: health
+        details: health,
         responseTime,
         error: health.error
       }
@@ -109,7 +109,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
         service: 'pgvector Integration',
         status: 'pass',
         message: `pgvector is available with ${health.functions.length} custom functions`,
-        details: health
+        details: health,
         responseTime
       }
     } else {
@@ -117,7 +117,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
         service: 'pgvector Integration',
         status: 'fail',
         message: 'pgvector extension not available',
-        details: health
+        details: health,
         responseTime,
         error: health.error
       }
@@ -137,8 +137,8 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
   try {
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
-      legalDomain: true
-      cache: true
+      legalDomain: true,
+      cache: true,
     })
     const responseTime = Date.now() - startTime
     if (Array.isArray(embedding) && embedding.length > 0) {
@@ -194,7 +194,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         service: 'Ollama AI Service',
         status: 'fail',
         message: 'Ollama service not available',
-        details: result
+        details: result,
         responseTime,
         error: (result as any)?.error
       }
@@ -232,7 +232,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
         service: 'Enhanced RAG Service',
         status: (result as any)?.serviceAvailable ? 'warning' : 'fail',
         message: (result as any)?.serviceAvailable ? 'Service available but test failed' : 'Enhanced RAG service not available',
-        details: result
+        details: result,
         responseTime,
         error: (result as any)?.error
       }
@@ -258,7 +258,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
         service: 'Protocol Buffers gRPC',
         status: 'pass',
         message: 'gRPC service is healthy and connected',
-        details: status
+        details: status,
         responseTime
       }
     } else {
@@ -266,7 +266,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
         service: 'Protocol Buffers gRPC',
         status: 'warning',
         message: 'gRPC service not available (HTTP fallback will be used)',
-        details: status
+        details: status,
         responseTime
       }
     }
@@ -290,9 +290,9 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         content: "Test legal analysis request for evidence authentication",
         reportType: 'prosecution_memo',
         maxSuggestions: 3,
-        useVectorSearch: true
-        useOllamaAI: true
-        useEnhancedRAG: false // Disable to avoid timeout in tests
+        useVectorSearch: true,
+        useOllamaAI: true,
+        useEnhancedRAG: false, // Disable to avoid timeout in tests
       })
     })
     const responseTime = Date.now() - startTime
@@ -413,7 +413,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
         service: 'Health Check API',
         status: 'pass',
         message: `Health check API operational (${health.status})`,
-        details: health
+        details: health,
         responseTime
       }
     } else {

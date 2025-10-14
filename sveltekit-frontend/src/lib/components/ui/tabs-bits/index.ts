@@ -12,4 +12,4 @@ export {
   List as TabsBitsList,
   Trigger as TabsBitsTrigger,
   Content as TabsBitsContent,
-}
+};

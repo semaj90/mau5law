@@ -25,7 +25,7 @@ export interface CanvasState {
 }
 /**
  * Headless evidence canvas component using Svelte 5 runes
- */;
+ */
 export function useEvidenceCanvas() {
 	// Evidence items state
 	let evidenceItems = $state<Map<string, EvidenceItem>(new Map();
@@ -52,7 +52,7 @@ export function useEvidenceCanvas() {
 	let historyIndex = $state(-1);
 	/**
 	 * Add evidence item to canvas
-	 */;
+	 */
 	function addEvidenceItem(item: Omit<EvidenceItem, 'id'>) {
 		const id = `evidence_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 		const evidenceItem: EvidenceItem = {
@@ -69,7 +69,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Remove evidence item from canvas
-	 */;
+	 */
 	function removeEvidenceItem(itemId: string) {
 		evidenceItems.delete(itemId);
 		selectedItems.delete(itemId);
@@ -85,7 +85,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Update evidence item
-	 */;
+	 */
 	function updateEvidenceItem(itemId: string, updates: Partial<EvidenceItem>) {
 		const item = evidenceItems.get(itemId);
 		if (!item) return;
@@ -95,7 +95,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Select evidence items
-	 */;
+	 */
 	function selectItems(itemIds: string[], addToSelection = false) {
 		if (!addToSelection) {
 			selectedItems.clear();
@@ -109,14 +109,14 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Clear selection
-	 */;
+	 */
 	function clearSelection() {
 		selectedItems.clear();
 		canvasState.selectedItems = [];
 	}
 	/**
 	 * Create connection between evidence items
-	 */;
+	 */
 	function createConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
@@ -134,7 +134,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Remove connection between evidence items
-	 */;
+	 */
 	function removeConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
@@ -148,14 +148,14 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Pan canvas
-	 */;
+	 */
 	function panCanvas(deltaX: number, deltaY: number) {
 		canvasState.pan.x += deltaX;
 		canvasState.pan.y += deltaY;
 	}
 	/**
 	 * Zoom canvas
-	 */;
+	 */
 	function zoomCanvas(delta: number, centerX?: number, centerY?: number) {
 		const oldZoom = canvasState.zoom;
 		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta);
@@ -169,7 +169,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Fit canvas to show all evidence
-	 */;
+	 */
 	function fitToContent() {
 		if (evidenceItems.size === 0) return;
 		let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -189,7 +189,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Set canvas mode
-	 */;
+	 */
 	function setMode(mode: CanvasState['mode']) {
 		canvasState.mode = mode;
 		if (mode === 'present') {
@@ -198,19 +198,19 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Set filter
-	 */;
+	 */
 	function setFilter(filter: CanvasState['filter']) {
 		canvasState.filter = filter;
 	}
 	/**
 	 * Toggle connections visibility
-	 */;
+	 */
 	function toggleConnections() {
 		canvasState.showConnections = !canvasState.showConnections;
 	}
 	/**
 	 * Handle mouse/pointer events
-	 */;
+	 */
 	function handlePointerDown(x: number, y: number, itemId?: string) {
 		dragStartPos = { x, y }
 		if (itemId) {
@@ -256,14 +256,14 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Handle wheel events for zooming
-	 */;
+	 */
 	function handleWheel(deltaY: number, x: number, y: number) {
 		const zoomDelta = -deltaY * 0.001;
 		zoomCanvas(zoomDelta, x, y);
 	}
 	/**
 	 * Save current state to history
-	 */;
+	 */
 	function saveToHistory() {
 		// Remove future history if we're not at the end
 		if (historyIndex < history.length - 1) {
@@ -280,7 +280,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Undo last action
-	 */;
+	 */
 	function undo() {
 		if (historyIndex > 0) {
 			historyIndex--;
@@ -289,7 +289,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Redo last undone action
-	 */;
+	 */
 	function redo() {
 		if (historyIndex < history.length - 1) {
 			historyIndex++;
@@ -298,7 +298,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Export canvas data
-	 */;
+	 */
 	function exportCanvas() {
 		return {
 			evidenceItems: Array.from(evidenceItems.entries()),
@@ -309,7 +309,7 @@ export function useEvidenceCanvas() {
 	}
 	/**
 	 * Import canvas data
-	 */;
+	 */
 	function importCanvas(data: any) {
 		try {
 			evidenceItems.clear();

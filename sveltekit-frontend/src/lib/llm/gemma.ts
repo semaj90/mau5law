@@ -19,7 +19,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
   const body = {
     model,
     prompt,
-    stream: false
+    stream: false,
     options: {
       num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
@@ -50,7 +50,7 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
   const body = {
     model,
     prompt,
-    stream: true
+    stream: true,
     options: {
       num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0

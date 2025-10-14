@@ -19,7 +19,7 @@ export interface FeedbackState {
 }
 class FeedbackStore {
   private state = $state<FeedbackState>({
-    activeSession: null
+    activeSession: null,
     pendingFeedback: [],
     analytics: {
       totalInteractions: 0,
@@ -43,7 +43,7 @@ class FeedbackStore {
   get isCollecting() { return this.state.isCollecting, }
   /**
    * Initialize feedback session for user
-   */;
+   */
   initializeSession(userId: string, sessionId?: string): FeedbackSession {
     const session: FeedbackSession = {
       id: sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -67,7 +67,7 @@ class FeedbackStore {
   }
   /**
    * Track user interaction for feedback opportunities
-   */;
+   */
   trackInteraction(type: string, context: any = {}, options: {
     autoTrigger?: boolean;
     priority?: 'low' | 'medium' | 'high';
@@ -103,7 +103,7 @@ class FeedbackStore {
   }
   /**
    * Queue feedback trigger for later display
-   */;
+   */
   queueFeedbackTrigger(trigger: FeedbackTrigger) {
     // Remove any existing trigger for the same interaction
     this.state.pendingFeedback = this.state.pendingFeedback.filter(
@@ -124,7 +124,7 @@ class FeedbackStore {
   }
   /**
    * Show next feedback request if not already collecting
-   */;
+   */
   showNextFeedback(): FeedbackTrigger | null {
     if (this.state.isCollecting || this.state.pendingFeedback.length === 0) {
       return null;
@@ -137,8 +137,8 @@ class FeedbackStore {
    * Submit feedback and update analytics
    */
   async submitFeedback(
-    interactionId: string
-    rating: number
+    interactionId: string,
+    rating: number,
     feedback?: string
     ratingType: string = 'response_quality';
   ): Promise<boolean> {
@@ -151,7 +151,7 @@ class FeedbackStore {
           sessionId: this.state.userContext.sessionId,
           interactionId,
           ratingType,
-          score: rating
+          score: rating,
           feedback: feedback?.trim() || undefined,
           context: {
             page: window.location.pathname,
@@ -162,8 +162,8 @@ class FeedbackStore {
           metadata: {
             platform: navigator.platform,
             language: navigator.language,
-            featureUsed: ratingType
-            deviceType: this.state.userContext.deviceType
+            featureUsed: ratingType,
+            deviceType: this.state.userContext.deviceType,
           }
         })
       });
@@ -182,13 +182,13 @@ class FeedbackStore {
   }
   /**
    * Cancel current feedback collection
-   */;
+   */
   cancelFeedback() {
     this.state.isCollecting = false;
   }
   /**
    * Get feedback recommendations based on user behavior
-   */;
+   */
   async getRecommendations(): Promise<any[]> {
     if (!this.state.userContext.userId) return [];
     try {
@@ -206,7 +206,7 @@ class FeedbackStore {
   }
   /**
    * Clear feedback session
-   */;
+   */
   clearSession() {
     this.state.activeSession = null;
     this.state.pendingFeedback = [];

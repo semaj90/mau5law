@@ -50,8 +50,8 @@
           }
         }
       },
-    }
-  }
+    };
+  };
   const themeStore = createThemeStore();
   let currentTheme = $state<'light' | 'dark' | 'system'>(defaultMode);
   let resolvedTheme = $state<'light' | 'dark'>('light');
@@ -110,7 +110,7 @@
       const handleChange = () => {
         updateResolvedTheme();
         applyTheme();
-      }
+      };
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
@@ -119,17 +119,17 @@
     light: '☀️',
     dark: '🌙',
     system: '💻',
-  }
+  };
   const themeLabels = {
     light: 'Light',
     dark: 'Dark',
     system: 'System',
-  }
+  };
   const sizeClasses = {
     sm: 'h-6 w-6 text-xs',
     md: 'h-8 w-8 text-sm',
     lg: 'h-10 w-10 text-base',
-  }
+  };
   const gamingThemeClasses =
     resolvedTheme === 'dark'
       ? 'border-green-400 text-green-400 hover:bg-green-400/10 shadow-[0_0_10px_rgba(34,197,94,0.3)]'

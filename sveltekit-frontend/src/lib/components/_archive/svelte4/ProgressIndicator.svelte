@@ -40,7 +40,7 @@
           <div class="flex items-center">
             <div
               class="relative flex h-8 w-8 items-center justify-center rounded-full border-2 {getStepColor(
-                status,
+                status
               )} transition-all duration-200"
             >
               {#if status === 'completed'}
@@ -72,7 +72,7 @@
           {#if index !== labels.length - 1}
             <div
               class="absolute top-4 left-4 -ml-px mt-0.5 h-full w-0.5 {getConnectorColor(
-                index + 1,
+                index + 1
               )} transition-all duration-200"
               aria-hidden="true"
             ></div>
@@ -96,6 +96,7 @@
     </div>
   </div>
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>

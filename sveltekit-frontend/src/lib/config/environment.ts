@@ -1,7 +1,7 @@
 /**
  * Centralized Environment Configuration
  * Handles Ollama detection and configuration app-wide
- */;
+ */
 }
 export interface EnvironmentConfig {
   ollama: {
@@ -27,7 +27,7 @@ export interface EnvironmentConfig {
 }
 /**
  * Detect and configure Ollama environment
- */;
+ */
 async function detectOllamaConfig(): Promise<any> {
   // Check environment variable first
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
@@ -68,7 +68,7 @@ async function detectOllamaConfig(): Promise<any> {
 }
 /**
  * Initialize environment configuration
- */;
+ */
 export async function initializeEnvironment(): Promise<EnvironmentConfig> {
   const ollama = await detectOllamaConfig();
   return {
@@ -92,7 +92,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
 }
 /**
  * Get Ollama configuration with runtime detection
- */;
+ */
 export function getOllamaConfig(): { baseUrl: string; port: number } {
   // Check environment variables
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
@@ -100,8 +100,8 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
     try {
       const url = new URL(envUrl.startsWith('http') ? envUrl : `http://${envUrl}`)
       return {
-        baseUrl: envUrl
-        port: parseInt(url.port) || 11434
+        baseUrl: envUrl,
+        port: parseInt(url.port) || 11434,
       }
     } catch (error) {
       console.warn('Invalid OLLAMA_URL format:', envUrl);
@@ -115,7 +115,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
 }
 /**
  * Set Ollama environment variables
- */;
+ */
 export function setOllamaEnvironment(baseUrl: string, port: number): void {
   if (typeof process !== 'undefined' && process.env) {
     process.env.OLLAMA_URL = baseUrl;
@@ -129,7 +129,7 @@ export function setOllamaEnvironment(baseUrl: string, port: number): void {
 }
 /**
  * Get runtime configuration with smart defaults
- */;
+ */
 export const ENV_CONFIG = {
   get OLLAMA_URL() {
     return getOllamaConfig().baseUrl;

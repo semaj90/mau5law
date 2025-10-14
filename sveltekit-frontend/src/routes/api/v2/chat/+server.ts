@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { ollamaChatStream } from '$lib/services/ollamaChatStream'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats,
-  type VectorSearchResult
-} from '$lib/server/services/vectorDBService'
+  type VectorSearchResult,
+} from '$lib/server/services/vectorDBService';
 // Initialize database on startup
-let dbInitialized = false
+let dbInitialized = false;
 async function ensureDbInitialized() {
   if (!dbInitialized) {
-    await initializeChatEmbeddingsTable()
-    dbInitialized = true
+    await initializeChatEmbeddingsTable();
+    dbInitialized = true;
   }
 }
 
@@ -21,42 +21,40 @@ function parseSources(input: unknown): VectorSearchResult[] {
   return input
     .filter(
       (it): it is VectorSearchResult =>
-        typeof it === 'object' &&
-        it !== null &&
-        (('similarity' in it) || ('score' in it) || ('id' in it) || ('text' in it))
+        typeof it === 'object' && it !== null && ('similarity' in it || 'score' in it || 'id' in it || 'text' in it)
     )
     .map(it => it as VectorSearchResult);
 }
 
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant',
-  content: string
+  role: 'system' | 'user' | 'assistant';
+  content: string;
 }
 export interface EnhancedChatRequest {
-  message: string
-  messages?: ChatMessage[]
-  conversationId?: string
-  model?: string
-  temperature?: number
-  maxTokens?: number
-  stream?: boolean
-  useVectorSearch?: boolean
-  searchThreshold?: number
-  systemPrompt?: string
+  message: string;
+  messages?: ChatMessage[];
+  conversationId?: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  stream?: boolean;
+  useVectorSearch?: boolean;
+  searchThreshold?: number;
+  systemPrompt?: string;
 }
 export interface ChatResponse {
-  success: boolean
-  response?: string
-  conversationId?: string
-  sources?: VectorSearchResult[]
+  success: boolean;
+  response?: string;
+  conversationId?: string;
+  sources?: VectorSearchResult[];
   metadata?: {
-    model: string
-    temperature: number
-    processingTimeMs: number
-    vectorSearchUsed: boolean
-    timestamp: string
-  }
-  error?: string
+    model: string;
+    temperature: number;
+    processingTimeMs: number;
+    vectorSearchUsed: boolean;
+    timestamp: string;
+  };
+  error?: string;
 }
 // GET method for health check and service info
 export const GET: RequestHandler = async ({ url }) => {

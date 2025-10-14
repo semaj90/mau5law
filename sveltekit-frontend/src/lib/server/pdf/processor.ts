@@ -53,21 +53,21 @@ export async function extractPDFText(filePath: string): Promise<{
     max: 0, // Parse all pages
     pagerender: (pageData: any) => {
       // Custom page rendering for better text extraction
-      return pageData.getTextContent({
-        normalizeWhitespace: true,
-        disableCombineTextItems: false
-      }).then((textContent: any) => {
-        return textContent.items
-          .map((item: any) => item.str)
-          .join(' ');
-      });
-    }
+      return pageData
+        .getTextContent({
+          normalizeWhitespace: true,
+          disableCombineTextItems: false,
+        })
+        .then((textContent: any) => {
+          return textContent.items.map((item: any) => item.str).join(' ');
+        });
+    },
   });
 
   return {
     text: data.text,
     pages: data.numpages,
-    metadata: data.info || {}
+    metadata: data.info || {},
   };
 }
 
@@ -89,9 +89,10 @@ export async function performOCR(
   let imageBuffer: Buffer;
   if (optimize) {
     imageBuffer = await sharp(imagePath)
-      .resize(2000, 2000, { // Max 2000px
+      .resize(2000, 2000, {
+        // Max 2000px
         fit: 'inside',
-        withoutEnlargement: true
+        withoutEnlargement: true,
       })
       .grayscale() // Convert to grayscale for better OCR
       .normalize() // Normalize contrast
@@ -103,7 +104,7 @@ export async function performOCR(
 
   // Create Tesseract worker
   const worker = await createWorker(lang, 1, {
-    logger: (m) => {
+    logger: m => {
       if (m.status === 'recognizing text') {
         console.log(`OCR Progress: ${Math.round(m.progress * 100)}%`);
       }
@@ -112,7 +113,7 @@ export async function performOCR(
     gzip: false,
     // Use optimized model
     legacyCore: false,
-    legacyLang: false
+    legacyLang: false,
   });
 
   try {
@@ -124,7 +125,7 @@ export async function performOCR(
     return {
       text: result.data.text,
       confidence: result.data.confidence / 100, // Normalize to 0-1
-      processingTime
+      processingTime,
     };
   } finally {
     await worker.terminate();
@@ -149,8 +150,8 @@ export async function extractEntities(text: string): Promise<{
       body: JSON.stringify({
         text: text.slice(0, 10000), // Limit to 10k chars for performance
         extract_entities: true,
-        extract_legal: true
-      })
+        extract_legal: true,
+      }),
     });
 
     if (!response.ok) {
@@ -164,7 +165,7 @@ export async function extractEntities(text: string): Promise<{
       organizations: data.entities?.ORG || [],
       locations: data.entities?.GPE || data.entities?.LOC || [],
       dates: data.entities?.DATE || [],
-      legalCitations: data.legal?.citations || []
+      legalCitations: data.legal?.citations || [],
     };
   } catch (error) {
     console.warn('⚠️ langextract extraction failed, continuing without NLP:', error);
@@ -173,7 +174,7 @@ export async function extractEntities(text: string): Promise<{
       organizations: [],
       locations: [],
       dates: [],
-      legalCitations: []
+      legalCitations: [],
     };
   }
 }
@@ -199,7 +200,7 @@ export async function processPDF(
 
   // Step 1: Extract text from PDF
   const pdfData = await extractPDFText(filePath);
-  let finalText = pdfData.text;
+  const finalText = pdfData.text;
   let ocrResult: OCRResult | undefined;
 
   // Step 2: If text extraction yielded little content, perform OCR
@@ -229,11 +230,11 @@ export async function processPDF(
       title: pdfData.metadata.Title,
       author: pdfData.metadata.Author,
       subject: pdfData.metadata.Subject,
-      createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined
+      createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined,
     },
     entities,
     ocr: ocrResult,
-    processingTime
+    processingTime,
   };
 }
 
@@ -270,7 +271,7 @@ export async function processImage(
     metadata: {},
     entities,
     ocr: ocrResult,
-    processingTime
+    processingTime,
   };
 }
 

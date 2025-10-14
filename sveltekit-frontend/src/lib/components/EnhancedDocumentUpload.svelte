@@ -183,7 +183,7 @@
     </div>
     <!-- Upload Button -->
     <div class="upload-actions">
-  <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="secondary">
+      <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="secondary">
         {uploading ? '🔄 Processing...' : '🚀 Upload & Process'}
       </ModernButton>
     </div>

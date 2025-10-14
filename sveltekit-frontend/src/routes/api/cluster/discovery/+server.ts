@@ -93,15 +93,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           action: 'register',
-          service: registered
-          timestamp: Date.now()
+          service: registered,
+          timestamp: Date.now(),
         })
       }
       case 'deregister': {
         const { serviceId } = body
         const deregistered = await deregisterService(serviceId)
         return json({
-          success: deregistered
+          success: deregistered,
           action: 'deregister',
           serviceId,
           timestamp: Date.now()
@@ -125,8 +125,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: failoverResult.success,
           action: 'failover',
-          result: failoverResult
-          timestamp: Date.now()
+          result: failoverResult,
+          timestamp: Date.now(),
         })
       }
       case 'update-config': {
@@ -135,8 +135,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           action: 'update-config',
-          config: updated
-          timestamp: Date.now()
+          config: updated,
+          timestamp: Date.now(),
         })
       }
       case 'discover': {
@@ -146,8 +146,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'discover',
           discovered: discovered.length,
-          services: discovered
-          timestamp: Date.now()
+          services: discovered,
+          timestamp: Date.now(),
         })
       }
       default:

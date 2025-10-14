@@ -304,7 +304,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <div
               class="confidence-badge"
               style="background-color: {getConfidenceColor(confidence)}20; border-color: {getConfidenceColor(
-                confidence,
+                confidence
               )}"
             >
               {Math.round(confidence * 100)}% Confidence
@@ -332,7 +332,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div
                       class="confidence-meter"
                       style="background-color: {getConfidenceColor(
-                        recommendation.confidence,
+                        recommendation.confidence
                       )}20; border-color: {getConfidenceColor(recommendation.confidence)}"
                     >
                       {Math.round(recommendation.confidence * 100)}%
@@ -340,7 +340,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div
                       class="priority-indicator"
                       style="background-color: {getPriorityColor(
-                        recommendation.priority,
+                        recommendation.priority
                       )}20; border-color: {getPriorityColor(recommendation.priority)}"
                     >
                       P{Math.round(recommendation.priority / 50)}
@@ -387,7 +387,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       <span
                         class="action-priority"
                         style="background-color: {getActionPriorityColor(
-                          action.priority,
+                          action.priority
                         )}20; border-color: {getActionPriorityColor(action.priority)}"
                       >
                         {action.priority}

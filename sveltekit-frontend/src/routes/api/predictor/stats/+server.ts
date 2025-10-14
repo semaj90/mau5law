@@ -39,8 +39,8 @@ export const GET: RequestHandler = async ({ url }) => {
         pendingUpdates: stats.pendingUpdates,
         performance: {
           transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
-          uptimeMs: uptime
-          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated)
+          uptimeMs: uptime,
+          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated),
         }
       },
       // Redis cache status
@@ -69,9 +69,9 @@ export const GET: RequestHandler = async ({ url }) => {
       // Integration status
       integration: {
         postgresqlReady: true, // Assume ready if service is running
-        pgvectorEnabled: true
-        embeddinggemmaReady: cudaAvailable
-        simdAcceleration: cudaStats?.simd_capabilities?.avx2_enabled || false
+        pgvectorEnabled: true,
+        embeddinggemmaReady: cudaAvailable,
+        simdAcceleration: cudaStats?.simd_capabilities?.avx2_enabled || false,
       },
       timestamp: Date.now()
     }
@@ -79,9 +79,9 @@ export const GET: RequestHandler = async ({ url }) => {
     const includeDebug = url.searchParams.get('debug') === 'true'
     if (includeDebug) {
       detailedStats.debug = {
-        memoryBreakdown: estimatedMemoryUsage
-        cudaFullStats: cudaStats
-        rawPredictorStats: stats
+        memoryBreakdown: estimatedMemoryUsage,
+        cudaFullStats: cudaStats,
+        rawPredictorStats: stats,
       }
     }
     return json(detailedStats)
@@ -138,8 +138,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 }
 function determineHealthStatus(
-  stats: any
-  cudaAvailable: boolean
+  stats: any,
+  cudaAvailable: boolean,
 ): 'excellent' | 'good' | 'degraded' | 'poor' {
   if (stats.redisConnected && cudaAvailable && stats.totalTransitions > 0) {
     return 'excellent'

@@ -27,7 +27,7 @@ export interface GuardResult {
 export type RouteGuard = (context: RouteGuardContext) => Promise<GuardResult> | GuardResult;
 /**
  * Built-in route guards
- */;
+ */
 export class RouteGuards {
   private guards: Map<string, RouteGuard> = new Map();
   constructor() {
@@ -35,7 +35,7 @@ export class RouteGuards {
   }
   /**
    * Register built-in guards
-   */;
+   */
   private registerBuiltInGuards(): void {
     this.register('auth', this.authGuard);
     this.register('admin', this.adminGuard);
@@ -46,13 +46,13 @@ export class RouteGuards {
   }
   /**
    * Register a custom guard
-   */;
+   */
   public register(name: string, guard: RouteGuard): void {
     this.guards.set(name, guard);
   }
   /**
    * Get a guard by name
-   */;
+   */
   public get(name: string): RouteGuard | undefined {
     return this.guards.get(name);
   }
@@ -60,7 +60,7 @@ export class RouteGuards {
    * Execute guards for a route
    */
   public async executeGuards(
-    guardNames: string[]
+    guardNames: string[],
     context: RouteGuardContext;
   ): Promise<GuardResult> {
     for (const guardName of guardNames) {
@@ -82,7 +82,7 @@ export class RouteGuards {
   }
   /**
    * Authentication guard
-   */;
+   */
   private authGuard: RouteGuard = async (context) => {
     const { event } = context;
     const user = (event.locals as any).user;
@@ -99,7 +99,7 @@ export class RouteGuards {
   }
   /**
    * Admin role guard
-   */;
+   */
   private adminGuard: RouteGuard = async (context) => {
     const { event } = context;
     const user = (event.locals as any).user;
@@ -111,7 +111,7 @@ export class RouteGuards {
     }
     if (user.role !== 'admin' && user.role !== 'superuser') {
       return {
-        allowed: false
+        allowed: false,
         error: {
           status: 403,
           message: 'Admin access required'
@@ -122,13 +122,13 @@ export class RouteGuards {
   }
   /**
    * Development environment guard
-   */;
+   */
   private devGuard: RouteGuard = async (context) => {
     const isDevelopment = import.meta.env.NODE_ENV === 'development';
     const isDevUser = (context.event.locals as any).user?.role === 'developer';
     if (!isDevelopment && !isDevUser) {
       return {
-        allowed: false
+        allowed: false,
         error: {
           status: 404,
           message: 'Page not found'
@@ -139,7 +139,7 @@ export class RouteGuards {
   }
   /**
    * Feature flag guard
-   */;
+   */
   private featureGuard: RouteGuard = async (context) => {
     const { route, params } = context;
     const featureName = params.feature || (route as any).metadata?.feature;
@@ -151,7 +151,7 @@ export class RouteGuards {
     const isEnabled = featureFlags[featureName];
     if (!isEnabled) {
       return {
-        allowed: false
+        allowed: false,
         error: {
           status: 404,
           message: 'Feature not available'
@@ -162,7 +162,7 @@ export class RouteGuards {
   }
   /**
    * Rate limiting guard
-   */;
+   */
   private rateLimitGuard: RouteGuard = async (context) => {
     const { event } = context;
     const clientIP = event.getClientAddress();
@@ -173,7 +173,7 @@ export class RouteGuards {
     const window = 60 * 1000; // 1 minute
     if (requestCount >= limit) {
       return {
-        allowed: false
+        allowed: false,
         error: {
           status: 429,
           message: 'Too many requests'
@@ -185,7 +185,7 @@ export class RouteGuards {
   }
   /**
    * Maintenance mode guard
-   */;
+   */
   private maintenanceGuard: RouteGuard = async (context) => {
     const isMaintenanceMode = import.meta.env.MAINTENANCE_MODE === 'true';
     const isMaintenancePage = context.route.id === 'maintenance';
@@ -200,7 +200,7 @@ export class RouteGuards {
   }
   /**
    * Get rate limit count (simplified implementation)
-   */;
+   */
   private async getRateLimitCount(_key: string): Promise<number> {
     // In a real application, use Redis or another persistent store
     const stored = globalThis.rateLimitStore?.get(key);
@@ -211,7 +211,7 @@ export class RouteGuards {
   }
   /**
    * Increment rate limit (simplified implementation)
-   */;
+   */
   private async incrementRateLimit(_key: string, windowMs: number): Promise<void> {
     // In a real application, use Redis or another persistent store
     globalThis.rateLimitStore = globalThis.rateLimitStore || new Map();
@@ -230,7 +230,7 @@ export const routeGuards = new RouteGuards();
  * Create a guard-protected page loader
  */
 export function createGuardedLoader(
-  guards: string[]
+  guards: string[],
   loader?: ServerLoad;
 ): ServerLoad {
   return async (_event: any) => {
@@ -238,7 +238,7 @@ export function createGuardedLoader(
     const params = event.params;
     const context: RouteGuardContext = {
       event,
-      route: route as any
+      route: route as any,
       params,
       user: (event.locals as any).user,
       session: (event.locals as any).session
@@ -268,7 +268,7 @@ export function createGuardedLoader(
 }
 /**
  * Route guard decorator for automatic protection
- */;
+ */
 export function withGuards(guards: string[]) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalLoader = descriptor.value;
@@ -278,7 +278,7 @@ export function withGuards(guards: string[]) {
 }
 /**
  * Middleware for SvelteKit hooks to apply global guards
- */;
+ */
 export function createRouteGuardMiddleware(globalGuards: string[] = []) {
   return async function (_event: any, resolve: Function) {
     // Skip guard execution for API routes and static assets
@@ -291,7 +291,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
     const params = event.params;
     const context: RouteGuardContext = {
       event,
-      route: route as any
+      route: route as any,
       params,
       user: (event.locals as any).user,
       session: (event.locals as any).session
@@ -317,7 +317,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
 }
 /**
  * Route-specific guard configuration
- */;
+ */
 export interface RouteGuardConfig {
   guards: string[];
   skipGlobalGuards?: boolean;
@@ -327,7 +327,7 @@ export interface RouteGuardConfig {
  * Configure guards for a specific route
  */
 export function configureRouteGuards(
-  routeId: string
+  routeId: string,
   config: RouteGuardConfig;
 ): void {
   // Register custom guards if provided
@@ -342,7 +342,7 @@ export function configureRouteGuards(
 }
 /**
  * Get guard configuration for a route
- */;
+ */
 export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
   return globalThis.routeGuardConfigs?.get(routeId) || null;
 }
@@ -350,7 +350,7 @@ export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
  * Helper function to check if user has permission for a route
  */
 export async function checkRoutePermission(
-  routeId: string
+  routeId: string,
   user: any;
   params: Record<string, string> = {}
 ): Promise<boolean> {
@@ -363,7 +363,7 @@ export async function checkRoutePermission(
     route: { id: routeId }
   } as any;
   const context: RouteGuardContext = {
-    event: mockEvent
+    event: mockEvent,
     route: { id: routeId } as any,
     params,
     user,
@@ -376,7 +376,7 @@ export async function checkRoutePermission(
  * Batch permission checking for multiple routes
  */
 export async function checkMultipleRoutePermissions(
-  routeIds: string[]
+  routeIds: string[],
   user: any;
   params: Record<string, string> = {}
 ): Promise<Record<string, boolean>, {

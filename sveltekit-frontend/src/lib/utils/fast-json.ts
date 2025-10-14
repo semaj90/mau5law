@@ -133,7 +133,7 @@ export interface ParseOptions {
     return {
       size: FastJSON.cache.size,
       maxSize: FastJSON.maxCacheSize,
-    }
+    };
   }
 }
 // Convenience functions for common legal AI use cases

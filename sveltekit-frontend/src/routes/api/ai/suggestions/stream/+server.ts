@@ -85,8 +85,8 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         }
                       },
                       progress: {
-                        current: suggestionCount
-                        total: maxTotal
+                        current: suggestionCount,
+                        total: maxTotal,
                       }
                     })}\\n\\n`)
                   }
@@ -128,8 +128,8 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         }
                       },
                       progress: {
-                        current: suggestionCount
-                        total: maxTotal
+                        current: suggestionCount,
+                        total: maxTotal,
                       }
                     })}\\n\\n`)
                   }
@@ -150,8 +150,8 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'complete',
             message: 'All AI suggestion streams completed',
-            totalSuggestions: suggestionCount
-            timestamp: new Date().toISOString()
+            totalSuggestions: suggestionCount,
+            timestamp: new Date().toISOString(),
           })}\\n\\n`)
         } catch (error: any) {
           // Send error message

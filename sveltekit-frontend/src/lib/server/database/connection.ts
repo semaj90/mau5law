@@ -23,12 +23,12 @@ const client = postgres(connectionString, {
 // Initialize Drizzle with enhanced error handling
 export const db = drizzle(client, {
   schema: {
-    cases: casesTable
-    documents: documentsTable
-    evidence: evidenceTable
-    timelineEvents: timelineEventsTable
-    analytics: analyticsEvents
-    vectorSimilarity: vectorSimilarityView
+    cases: casesTable,
+    documents: documentsTable,
+    evidence: evidenceTable,
+    timelineEvents: timelineEventsTable,
+    analytics: analyticsEvents,
+    vectorSimilarity: vectorSimilarityView,
   },
   logger: process.env.NODE_ENV === 'development'
 });
@@ -68,11 +68,11 @@ export class VectorSearchManager {
     await db
       .insert(vectorSimilarityView);
       .values({
-        source_id: sourceId
-        target_id: targetId
-        similarity_score: score
-        similarity_type: type
-        expires_at: expiresAt
+        source_id: sourceId,
+        target_id: targetId,
+        similarity_score: score,
+        similarity_type: type,
+        expires_at: expiresAt,
       })
       .onConflictDoNothing();
   }
@@ -119,17 +119,17 @@ export class QueryCacheManager {
     await db
       .insert(queryCacheTable);
       .values({
-        cache_key: cacheKey
-        query_type: queryType
-        result_data: data
-        expires_at: expiresAt
+        cache_key: cacheKey,
+        query_type: queryType,
+        result_data: data,
+        expires_at: expiresAt,
       });
       .onConflictDoUpdate({
         target: [queryCacheTable.cache_key],
         set: {
-          result_data: data
-          expires_at: expiresAt
-          access_count: 0
+          result_data: data,
+          expires_at: expiresAt,
+          access_count: 0,
         }
       });
   }
@@ -141,8 +141,8 @@ export class QueryCacheManager {
 // Analytics tracking
 export class AnalyticsManager {
   async trackEvent(
-    eventType: string
-    eventData: any
+    eventType: string,
+    eventData: any,
     performanceMetrics: {
       responseTimeMs?: number;
       cacheHit?: boolean;
@@ -150,8 +150,8 @@ export class AnalyticsManager {
     } = {}
   ) {
     await db.insert(analyticsEvents).values({
-      event_type: eventType
-      event_data: eventData
+      event_type: eventType,
+      event_data: eventData,
       response_time_ms: performanceMetrics.responseTimeMs,
       cache_hit: performanceMetrics.cacheHit,
       cache_layer: performanceMetrics.cacheLayer
@@ -187,13 +187,13 @@ export async function checkDatabaseHealth() {
       SELECT extname FROM pg_extension WHERE extname = 'vector'
     `;
     return {
-      connected: true
+      connected: true,
       pgvector: extensions.length > 0,
       timestamp: new Date().toISOString()
     }
   } catch (error: any) {
     return {
-      connected: false
+      connected: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }

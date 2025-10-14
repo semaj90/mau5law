@@ -41,7 +41,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         server: status.serverOrchestrator,
         client: status.clientOrchestrator
       },
-      performance: metrics
+      performance: metrics,
       activeRequests: {
         count: activeRequests.length,
         requests: activeRequests.map(req => ({,
@@ -144,7 +144,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
     const errorResponse = {
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      details: error instanceof Error ? error.stack : undefined
+      details: error instanceof Error ? error.stack : undefined,
       orchestratorUsed: 'none',
       executionMetrics: {
         totalLatency: performance.now() - startTime,
@@ -168,8 +168,8 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       content: requestData.content || requestData.prompt || '',
       options: {
         ...requestData.options,
-        enableStreaming: true
-        priority: 'realtime'
+        enableStreaming: true,
+        priority: 'realtime',
       },
       metadata: {
         source: 'streaming_api',

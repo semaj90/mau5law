@@ -23,7 +23,7 @@ https://svelte.dev/e/props_duplicate -->
     Square,
     Download,
     Share,
-    AlertTriangle
+    AlertTriangle,
   } from 'lucide-svelte';
   // Props
   let {
@@ -32,7 +32,7 @@ https://svelte.dev/e/props_duplicate -->
     depth = $bindable('comprehensive'),
     enableStreaming = $bindable(true),
     enableUserActivity = $bindable(true),
-    enableRAG = $bindable(true)
+    enableRAG = $bindable(true),
   }: {
     targetId?: string;
     targetType?: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';
@@ -54,7 +54,7 @@ https://svelte.dev/e/props_duplicate -->
     totalTime: 0,
     tokensGenerated: 0,
     documentsRetrieved: 0,
-    confidenceScore: 0
+    confidenceScore: 0,
   });
   // Service Worker integration
   let serviceWorker = $state(null);
@@ -75,7 +75,7 @@ https://svelte.dev/e/props_duplicate -->
     enableTriton: true,
     fusejsThreshold: 0.6,
     ragDocumentLimit: 10,
-    userActivityDays: 30
+    userActivityDays: 30,
   });
   // Real-time metrics
   let metrics = $state({
@@ -84,17 +84,17 @@ https://svelte.dev/e/props_duplicate -->
     userActivityTime: 0,
     synthesisTime: 0,
     totalMemoryUsage: 0,
-    gpuUtilization: 0
+    gpuUtilization: 0,
   });
   $effect(() => {
     (async () => {
-await initializeServiceWorker();
-    setupEventListeners();
-    preloadRequiredData();
-    // Register for background notifications
-    if ('Notification' in window) {
-      await Notification.requestPermission();
-    }
+      await initializeServiceWorker();
+      setupEventListeners();
+      preloadRequiredData();
+      // Register for background notifications
+      if ('Notification' in window) {
+        await Notification.requestPermission();
+      }
     })();
   });
   onDestroy(() => {
@@ -163,8 +163,8 @@ await initializeServiceWorker();
         enableStreaming,
         enableUserActivity,
         enableRAG,
-        config
-      }
+        config,
+      },
     });
     try {
       const summaryRequest = {
@@ -175,7 +175,7 @@ await initializeServiceWorker();
         includeUserActivity: enableUserActivity,
         enableStreaming,
         chunkSize: config.chunkSize,
-        userId: 'current-user' // TODO: Get from auth context;
+        userId: 'current-user', // TODO: Get from auth context;
       };
       if (enableStreaming) {
         await handleStreamingSummary(summaryRequest);
@@ -192,10 +192,12 @@ await initializeServiceWorker();
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
-      throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
+      throw new Error(
+        `Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`
+      );
     }
     const reader = (response as { ok?: any; statusText?: any; body?: any; json?: any }).body?.getReader();
     const decoder = new TextDecoder();
@@ -224,39 +226,98 @@ await initializeServiceWorker();
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
-      throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
+      throw new Error(
+        `Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`
+      );
     }
     const result = await (response as { ok?: any; statusText?: any; body?: any; json?: any }).json();
-    if ((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).success) {
+    if (
+      (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).success
+    ) {
       synthesisResult.set((result as any).result);
       processingStats.set({
         totalTime: (result as any).metadata.processingTime,
         tokensGenerated: (result as any).result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
         documentsRetrieved: (result as any).result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
-        confidenceScore: (result as any).result.confidence
+        confidenceScore: (result as any).result.confidence,
       });
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
     } else {
-      throw new Error((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).error || 'Unknown error');
+      throw new Error(
+        (
+          result as {
+            success?: any;
+            result?: any;
+            metadata?: any;
+            error?: any;
+            summary?: any;
+            keyInsights?: any;
+            actionItems?: any;
+            confidence?: any;
+            sources?: any;
+            nextSteps?: any;
+          }
+        ).error || 'Unknown error'
+      );
     }
     isProcessing = false;
   }
   function handleStreamingChunk(data) {
-    switch ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).type) {
+    switch (
+      (
+        data as {
+          type?: any;
+          message?: any;
+          progress?: any;
+          content?: any;
+          result?: any;
+          error?: any;
+          chunkIndex?: any;
+          summary?: any;
+        }
+      ).type
+    ) {
       case 'status':
-        currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).message;
+        currentStep = (
+          data as {
+            type?: any;
+            message?: any;
+            progress?: any;
+            content?: any;
+            result?: any;
+            error?: any;
+            chunkIndex?: any;
+            summary?: any;
+          }
+        ).message;
         summaryProgress.set((data as any).progress);
         break;
       case 'llm_chunk':
-        streamingData.update(d => [...d, {
-          type: 'llm_chunk',
-          content: (data as any).content,
-          timestamp: Date.now()
-        }]);
+        streamingData.update(d => [
+          ...d,
+          {
+            type: 'llm_chunk',
+            content: (data as any).content,
+            timestamp: Date.now(),
+          },
+        ]);
         break;
       case 'complete':
         synthesisResult.set((data as any).result);
@@ -265,19 +326,57 @@ await initializeServiceWorker();
         isProcessing = false;
         break;
       case 'error':
-        errorMessage = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).error;
+        errorMessage = (
+          data as {
+            type?: any;
+            message?: any;
+            progress?: any;
+            content?: any;
+            result?: any;
+            error?: any;
+            chunkIndex?: any;
+            summary?: any;
+          }
+        ).error;
         isProcessing = false;
         break;
     }
   }
   function updateStreamingProgress(data) {
     summaryProgress.set((data as any).progress * 100);
-    if ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result) {
-      streamingData.update(d => [...d, {
-        content: (data as any).result.content,
-        chunkIndex: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).chunkIndex,
-        timestamp: Date.now()
-      }]);
+    if (
+      (
+        data as {
+          type?: any;
+          message?: any;
+          progress?: any;
+          content?: any;
+          result?: any;
+          error?: any;
+          chunkIndex?: any;
+          summary?: any;
+        }
+      ).result
+    ) {
+      streamingData.update(d => [
+        ...d,
+        {
+          content: (data as any).result.content,
+          chunkIndex: (
+            data as {
+              type?: any;
+              message?: any;
+              progress?: any;
+              content?: any;
+              result?: any;
+              error?: any;
+              chunkIndex?: any;
+              summary?: any;
+            }
+          ).chunkIndex,
+          timestamp: Date.now(),
+        },
+      ]);
     }
   }
   function handleSummaryCompletion(data) {
@@ -289,16 +388,28 @@ await initializeServiceWorker();
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Legal AI Summary Complete', {
         body: 'Your comprehensive summary is ready for review.',
-        icon: '/icons/ai-summary.png'
+        icon: '/icons/ai-summary.png',
       });
     }
   }
   function handleProcessingError(data) {
-    errorMessage = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).error || 'Unknown processing error';
+    errorMessage =
+      (
+        data as {
+          type?: any;
+          message?: any;
+          progress?: any;
+          content?: any;
+          result?: any;
+          error?: any;
+          chunkIndex?: any;
+          summary?: any;
+        }
+      ).error || 'Unknown processing error';
     isProcessing = false;
   }
   function updateMetrics(data) {
-    metrics = { ...metrics, ...data }
+    metrics = { ...metrics, ...data };
   }
   function updateUIBasedOnState(currentState) {
     // Update UI based on XState machine state
@@ -336,22 +447,100 @@ await initializeServiceWorker();
     const result = $synthesisResult;
     if (!result) return;
     const exportData = {
-      summary: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).summary,
-      keyInsights: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).keyInsights,
-      actionItems: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).actionItems,
-      confidence: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).confidence,
-      sources: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources,
-      nextSteps: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).nextSteps,
+      summary: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).summary,
+      keyInsights: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).keyInsights,
+      actionItems: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).actionItems,
+      confidence: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).confidence,
+      sources: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).sources,
+      nextSteps: (
+        result as {
+          success?: any;
+          result?: any;
+          metadata?: any;
+          error?: any;
+          summary?: any;
+          keyInsights?: any;
+          actionItems?: any;
+          confidence?: any;
+          sources?: any;
+          nextSteps?: any;
+        }
+      ).nextSteps,
       metadata: {
         targetId,
         targetType,
         depth,
         timestamp: new Date().toISOString(),
-        processingStats: $processingStats
-      }
+        processingStats: $processingStats,
+      },
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: exportFormat === 'json' ? 'application/json' : 'text/plain'
+      type: exportFormat === 'json' ? 'application/json' : 'text/plain',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -638,6 +827,7 @@ await initializeServiceWorker();
     </div>
   {/if}
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>

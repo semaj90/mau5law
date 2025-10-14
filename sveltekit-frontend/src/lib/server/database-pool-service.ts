@@ -53,7 +53,7 @@ class DatabasePoolService {
   }
   /**
    * Get or create a connection pool for a specific context
-   */;
+   */
   async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres>, {
     const poolKey = `${context}:${this.config.database}`;
     if (this.pools.has(poolKey)) {
@@ -142,7 +142,7 @@ class DatabasePoolService {
   }
   /**
    * Invalidate cache for specific patterns
-   */;
+   */
   async invalidateCache(pattern: string): Promise<void> {
     if (!redisService.isHealthy()) return;
     try {
@@ -159,7 +159,7 @@ class DatabasePoolService {
   }
   /**
    * Get connection statistics from Redis
-   */;
+   */
   private async getRedisConnectionStats(context: string): Promise<any> {
     if (!redisService.isHealthy()) return {}
     try {
@@ -177,7 +177,7 @@ class DatabasePoolService {
   }
   /**
    * Dynamically adjust pool size based on Redis stats
-   */;
+   */
   private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig>, {
     const baseSize = this.config.max;
     let adjustedSize = baseSize;
@@ -194,7 +194,7 @@ class DatabasePoolService {
   }
   /**
    * Record connection statistics to Redis
-   */;
+   */
   private async recordConnectionStats(context: string, operation: string): Promise<void> {
     if (!redisService.isHealthy()) return;
     try {
@@ -210,7 +210,7 @@ class DatabasePoolService {
   }
   /**
    * Generate cache key for query
-   */;
+   */
   private generateCacheKey(sql: string, params: any[]): string {
     const normalized = sql.replace(/\s+/g, ' ').trim();
     const paramsStr = JSON.stringify(params);
@@ -218,7 +218,7 @@ class DatabasePoolService {
   }
   /**
    * Close all connections and clean up
-   */;
+   */
   async close(): Promise<void> {
     console.log('🔌 Closing database pools...');
     for (const [key, pool] of this.pools) {
@@ -235,7 +235,7 @@ class DatabasePoolService {
   }
   /**
    * Health check for all pools
-   */;
+   */
   async healthCheck(): Promise<any> {
     const results: { [key: string]: boolean } = {}
     for (const [key, pool] of this.pools) {
@@ -251,7 +251,7 @@ class DatabasePoolService {
   }
   /**
    * Get pool statistics
-   */;
+   */
   getStats(): any {
     const stats = {
       totalPools: this.pools.size,

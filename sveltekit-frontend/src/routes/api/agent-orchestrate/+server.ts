@@ -438,4 +438,4 @@ export const GET: RequestHandler = async () => {
     context7Enabled: true,
     autoFixEnabled: true,
   });
-}
+};

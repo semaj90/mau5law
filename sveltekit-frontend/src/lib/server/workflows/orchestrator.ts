@@ -37,7 +37,7 @@ class WorkflowOrchestrator {
   }
   // Start a new document processing workflow
   async startDocumentProcessing(
-    documentId: string
+    documentId: string,
     content: string;
     metadata: { [key: string]: any } = {},
     parentWorkflow?: string;
@@ -52,7 +52,7 @@ class WorkflowOrchestrator {
       }
     });
     const workflow: WorkflowInstance = {
-      id: workflowId
+      id: workflowId,
       type: 'document-processing',
       status: 'pending',
       actor,
@@ -96,18 +96,18 @@ class WorkflowOrchestrator {
   }
   // Start a new legal case management workflow
   async startLegalCaseManagement(
-    title: string
-    description: string
+    title: string,
+    description: string,
     caseType: string;
-    jurisdiction: string
-    createdBy: string
+    jurisdiction: string,
+    createdBy: string,
     parentWorkflow?: string;
   ): Promise<string> {
     const workflowId = `case_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     console.log(`⚖️ Starting legal case workflow: ${workflowId}`);
     const actor = createActor(legalCaseManagementMachine);
     const workflow: WorkflowInstance = {
-      id: workflowId
+      id: workflowId,
       type: 'legal-case-management',
       status: 'pending',
       actor,

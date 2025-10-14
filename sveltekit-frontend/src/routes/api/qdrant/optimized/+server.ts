@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           success: true,
           data: {
             memory: {
-              usage: memoryUsage
+              usage: memoryUsage,
               efficiency:
                 ((memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) * 100).toFixed(
                   1
@@ -203,7 +203,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             data: {
               collection,
               query: {
-                type: typeof queryInput
+                type: typeof queryInput,
                 limit,
                 offset,
                 threshold,
@@ -256,8 +256,8 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           success: true,
           data: {
             cacheStats: {
-              memory: memoryUsage
-              performance: performanceMetrics
+              memory: memoryUsage,
+              performance: performanceMetrics,
               efficiency: {
                 hitRatio:
                   performanceMetrics.totalQueries > 0
@@ -446,9 +446,9 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             message: 'Cache cleared successfully',
             cacheType,
             memoryFreed: {
-              before: beforeMemory
-              after: afterMemory
-              freedKB: beforeMemory.total - afterMemory.total
+              before: beforeMemory,
+              after: afterMemory,
+              freedKB: beforeMemory.total - afterMemory.total,
             }
           }
         })
@@ -489,8 +489,8 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           data: {
             message: 'Memory optimization completed',
             optimization: {
-              before: beforeMemory
-              after: afterMemory
+              before: beforeMemory,
+              after: afterMemory,
               memoryFreed: beforeMemory.total - afterMemory.total,
               efficiencyGain:
                 beforeMemory.total > 0

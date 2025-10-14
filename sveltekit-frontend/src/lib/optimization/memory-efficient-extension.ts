@@ -5,4 +5,4 @@
 // File disabled to prevent TypeScript compilation errors
 export const memoryEfficientExtension = {
   disabled: true,
-}
+};

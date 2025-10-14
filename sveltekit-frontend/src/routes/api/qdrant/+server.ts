@@ -372,7 +372,8 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         try {
           collections = await qdrant.getCollections();
           collectionInfo = await qdrant.getCollection(collection);
-        } catch (err: unknown) { // Changed 'any' to 'unknown'
+        } catch (err: unknown) {
+          // Changed 'any' to 'unknown'
           logger.error('Failed to get Qdrant collections/info:', err instanceof Error ? err : new Error(String(err)));
           throw new QdrantAPIError(
             'Failed to get Qdrant collections/info',
@@ -681,14 +682,14 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
 };
 // Utility to convert unknown to Error so logger.error receives an Error instance
 function normalizeError(err: unknown): Error {
-	// Prefer existing Error instances
-	if (err instanceof Error) return err;
-	// If it's a string, wrap it
-	if (typeof err === 'string') return new Error(err);
-	// Try to JSON stringify other objects, fallback to toString
-	try {
-		return new Error(JSON.stringify(err));
-	} catch {
-		return new Error(String(err));
-	}
+  // Prefer existing Error instances
+  if (err instanceof Error) return err;
+  // If it's a string, wrap it
+  if (typeof err === 'string') return new Error(err);
+  // Try to JSON stringify other objects, fallback to toString
+  try {
+    return new Error(JSON.stringify(err));
+  } catch {
+    return new Error(String(err));
+  }
 }

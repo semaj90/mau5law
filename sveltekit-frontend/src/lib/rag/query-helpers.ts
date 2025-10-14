@@ -81,7 +81,7 @@ export class SOMGrid {
       this.grid[i] = [];
       for (let j = 0; j < width; j++) {
         this.grid[i][j] = {
-          x: j
+          x: j,
           y: i;
           intent: "unknown"
         }

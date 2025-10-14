@@ -1,9 +1,9 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 /**
  * XState State Machine for Document Upload Workflow
  * Handles file upload, validation, processing, and search indexing
  */
-import { createMachine, assign, fromPromise } from "xstate";
+import { createMachine, assign, fromPromise } from 'xstate';
 // TODO: Fix import - // Orphaned content: import {  import type { EvidenceProcessingContext } from './evidenceProcessingMachine.js'
 // Types for document upload
 export interface DocumentUploadContext {
@@ -38,7 +38,15 @@ export interface DocumentUploadContext {
   maxRetries: number;
 }
 export type DocumentUploadEvent =
-  | { type: 'SELECT_FILE'; file: File; caseId: string; userId: string; title: string; description?: string; tags?: string[] }
+  | {
+      type: 'SELECT_FILE';
+      file: File;
+      caseId: string;
+      userId: string;
+      title: string;
+      description?: string;
+      tags?: string[];
+    }
   | { type: 'VALIDATE_FILE' }
   | { type: 'UPLOAD_FILE' }
   | { type: 'RETRY_UPLOAD' }
@@ -48,7 +56,7 @@ export type DocumentUploadEvent =
   | { type: 'PROCESSING_COMPLETE' }
   | { type: 'PROCESSING_FAILED'; error: string }
   | { type: 'FORCE_COMPLETE' }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Configuration constants
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_MIME_TYPES = [
@@ -61,7 +69,7 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'image/jpeg',
   'image/png',
-  'image/tiff'
+  'image/tiff',
 ];
 // Service implementations
 const validateFileService = fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
@@ -504,36 +512,37 @@ export const documentUploadMachine = createMachine({
 // Helper functions
 export const createDocumentUploadActor = () => {
   return documentUploadMachine;
-}
+};
 export const isUploading = (state: any): boolean => {
   return ['uploading', 'processing'].includes(state.value);
-}
+};
 export const isValidating = (state: any): boolean => {
   return ['validating', 'calculatingHash', 'extractingText'].includes(state.value);
-}
+};
 export const hasValidationErrors = (state: any): boolean => {
   return state.context.validationErrors && state.context.validationErrors.length > 0;
-}
+};
 export const getValidationErrors = (state: any): string[] => {
   return state.context.validationErrors || [];
-}
+};
 export const getUploadProgress = (state: any): number => {
   return state.context.uploadProgress || 0;
-}
+};
 export const canRetryUpload = (state: any): boolean => {
-  return ['uploadError', 'processingError'].includes(state.value) &&
-         state.context.retryCount < state.context.maxRetries;
-}
+  return (
+    ['uploadError', 'processingError'].includes(state.value) && state.context.retryCount < state.context.maxRetries
+  );
+};
 export const getUploadMetrics = (state: any) => {
   const context = state.context;
   return {
-    uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime: 0,
+    uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime : 0,
     processingTime: context.processingEndTime ? context.processingEndTime - context.processingStartTime! : 0,
     totalTime: context.processingEndTime ? context.processingEndTime - context.uploadStartTime : 0,
     fileSize: context.fileSize,
-    filename: context.filename
-  }
-}
+    filename: context.filename,
+  };
+};
 // Export types
 export type DocumentUploadMachine = typeof documentUploadMachine;
 export type DocumentUploadState = Parameters<typeof documentUploadMachine.transition>[0];

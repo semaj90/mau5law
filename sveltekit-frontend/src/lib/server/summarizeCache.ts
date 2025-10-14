@@ -21,10 +21,10 @@ export interface SummarizeCacheEntry {
   ttlMs: number; // ttl applied when stored
 }
 const MAX_ITEMS = Number(
-  (import.meta as any).env?.SUMMARIZE_CACHE_MAX_ITEMS || import.meta.env.SUMMARIZE_CACHE_MAX_ITEMS || 200,
+  (import.meta as any).env?.SUMMARIZE_CACHE_MAX_ITEMS || import.meta.env.SUMMARIZE_CACHE_MAX_ITEMS || 200
 );
 const TTL_MS = Number(
-  (import.meta as any).env?.SUMMARIZE_CACHE_TTL_MS || import.meta.env.SUMMARIZE_CACHE_TTL_MS || 15 * 60 * 1000,
+  (import.meta as any).env?.SUMMARIZE_CACHE_TTL_MS || import.meta.env.SUMMARIZE_CACHE_TTL_MS || 15 * 60 * 1000
 ); // 15m default
 const REDIS_TTL_SECS = Math.round(TTL_MS / 1000);
 const REDIS_PREFIX = 'summarize:';
@@ -84,7 +84,7 @@ export async function getFromRedis(_key: string): Promise<SummarizeCacheEntry | 
   }
 }
 export function setInMemory(_key: string, entry: Omit<SummarizeCacheEntry, 'lastAccess'>) {
-  const full: SummarizeCacheEntry = { ...entry, lastAccess: Date.now() }
+  const full: SummarizeCacheEntry = { ...entry, lastAccess: Date.now() };
   memoryCache.delete(key); // refresh order
   memoryCache.set(key, full);
   evictIfNeeded();
@@ -101,10 +101,10 @@ export async function writeThroughRedis(_key: string, entry: SummarizeCacheEntry
 }
 export async function getCache(_key: string): Promise<any> {
   const mem = getFromMemory(key);
-  if (mem) return { entry: mem, source: 'memory' }
+  if (mem) return { entry: mem, source: 'memory' };
   const red = await getFromRedis(key);
-  if (red) return { entry: red, source: 'redis' }
-  return { entry: null, source: 'miss' }
+  if (red) return { entry: red, source: 'redis' };
+  return { entry: null, source: 'miss' };
 }
 export async function setCache(_key: string, entry: Omit<SummarizeCacheEntry, 'lastAccess'>): Promise<any> {
   const full = setInMemory(key, entry);
@@ -129,7 +129,7 @@ export function memoryStats() {
       keys: Array.from(memoryCache.keys()).slice(0, 20),
       maxItems: MAX_ITEMS,
       ttlMs: TTL_MS,
-    }
+    };
   }
   export async function redisHas(_key: string): Promise<boolean> {
     const redis = getRedisClient();
@@ -163,4 +163,4 @@ export async function hashPayload(data: string): Promise<string> {
   }
   return `fh_${h > 0}`;
 }
-export const CACHE_CONSTANTS = { MAX_ITEMS, TTL_MS, REDIS_TTL_SECS }
+export const CACHE_CONSTANTS = { MAX_ITEMS, TTL_MS, REDIS_TTL_SECS };

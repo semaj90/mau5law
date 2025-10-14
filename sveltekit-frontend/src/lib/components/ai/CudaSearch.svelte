@@ -416,7 +416,7 @@ function getDocumentTypeColor(type: string): string {
                   <div class="flex flex-wrap gap-2 mb-2">
                     <span
                       class="{getDocumentTypeColor(
-                        result.metadata.document_type,
+                        result.metadata.document_type
                       )} px-2 py-1 rounded text-sm font-medium"
                     >
                       {result.metadata.document_type}
@@ -469,7 +469,7 @@ function getDocumentTypeColor(type: string): string {
 
 <style>
   .cuda-search-container {
-/* @apply max-w-4xl mx-auto; */
+    /* @apply max-w-4xl mx-auto; */
   }
   .line-clamp-3 {
     display: -webkit-box;

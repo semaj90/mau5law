@@ -55,7 +55,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: {
         query,
-        results: formattedResults
+        results: formattedResults,
         totalResults: results.length,
         searchParams: {
           limit,

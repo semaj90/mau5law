@@ -284,6 +284,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
@@ -432,7 +433,8 @@ https://svelte.dev/e/js_parse_error -->
     font-style: italic;
     color: rgba(58, 55, 47, 0.8);
   }
-  .editor-content ul, .editor-content ol {
+  .editor-content ul,
+  .editor-content ol {
     margin: 1rem 0;
     padding-left: 2rem;
   }
@@ -542,12 +544,15 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   /* Focus indicators for accessibility */
-  .action-btn:focus, .format-btn:focus {
+  .action-btn:focus,
+  .format-btn:focus {
     outline: 2px solid #3a372f;
     outline-offset: 2px;
   }
   /* Smooth animations */
   .professional-editor * {
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
   }
 </style>

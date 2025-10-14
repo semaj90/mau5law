@@ -1,5 +1,5 @@
-import { json } from "@sveltejs/kit"
-import { caseActivities, cases } from "$lib/server/db/schema-postgres"
+import { json } from '@sveltejs/kit';
+import { caseActivities, cases } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index'; // Changed to default import
 import type { RequestHandler } from './$types.js';
 import { QdrantClient } from '@qdrant/qdrant-js';

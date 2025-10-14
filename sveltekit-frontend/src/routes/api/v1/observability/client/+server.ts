@@ -2,9 +2,9 @@
  * Client-side metrics collection endpoint
  * Integrates with server-side observability infrastructure
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics';
 // In-memory metrics store for development (replace with database/Redis in production)
 const metricsStore = {
   clientMetrics: [] as ClientMetricsPayload[],
@@ -17,17 +17,17 @@ const metricsStore = {
       lcp: 0,
       fid: 0,
       cls: 0,
-      fcp: 0
+      fcp: 0,
     },
-    lastUpdated: Date.now()
-  }
-}
+    lastUpdated: Date.now(),
+  },
+};
 function updateAggregatedStats() {
-  const allMetrics = metricsStore.clientMetrics.flatMap(payload => payload.metrics)
-  if (allMetrics.length === 0) return
+  const allMetrics = metricsStore.clientMetrics.flatMap(payload => payload.metrics);
+  if (allMetrics.length === 0) return;
   // Calculate averages
-  const totalLoadTime = allMetrics.reduce((sum, m) => sum + m.loadTime, 0)
-  const totalRenderTime = allMetrics.reduce((sum, m) => sum + m.renderTime, 0)
+  const totalLoadTime = allMetrics.reduce((sum, m) => sum + m.loadTime, 0);
+  const totalRenderTime = allMetrics.reduce((sum, m) => sum + m.renderTime, 0);
   metricsStore.aggregatedStats = {
     totalRequests: allMetrics.length,
     averageLoadTime: totalLoadTime / allMetrics.length,
@@ -36,19 +36,16 @@ function updateAggregatedStats() {
       lcp: calculateWebVitalAverage(allMetrics, 'lcp'),
       fid: calculateWebVitalAverage(allMetrics, 'fid'),
       cls: calculateWebVitalAverage(allMetrics, 'cls'),
-      fcp: calculateWebVitalAverage(allMetrics, 'fcp')
+      fcp: calculateWebVitalAverage(allMetrics, 'fcp'),
     },
-    lastUpdated: Date.now()
-  }
+    lastUpdated: Date.now(),
+  };
 }
 // Derive a typed alias for individual metric entries from the imported ClientMetricsPayload
 type MetricEntry = ClientMetricsPayload['metrics'][number];
 
 // Narrow the vital parameter to the keys of the webVitals object (if present)
-function calculateWebVitalAverage(
-  metrics: MetricEntry[],
-  vital: keyof NonNullable<MetricEntry['webVitals']>
-): number {
+function calculateWebVitalAverage(metrics: MetricEntry[], vital: keyof NonNullable<MetricEntry['webVitals']>): number {
   const validValues = metrics
     .map(m => m.webVitals?.[vital])
     .filter((v): v is number => typeof v === 'number' && !isNaN(v));
@@ -302,16 +299,19 @@ function calculateHealthScore(): number {
 }
 // Cleanup old metrics periodically (only in server environment)
 if (typeof setInterval !== 'undefined' && typeof process !== 'undefined') {
-  const cleanupInterval = setInterval(() => {
-    if (metricsStore.clientMetrics.length > 500) {
-      const removed = metricsStore.clientMetrics.length - 500
-      metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-500)
-      updateAggregatedStats()
-      console.log(`🧹 Auto-cleaned ${removed} old client metrics`)
-    }
-  }, 5 * 60 * 1000); // Every 5 minutes
+  const cleanupInterval = setInterval(
+    () => {
+      if (metricsStore.clientMetrics.length > 500) {
+        const removed = metricsStore.clientMetrics.length - 500;
+        metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-500);
+        updateAggregatedStats();
+        console.log(`🧹 Auto-cleaned ${removed} old client metrics`);
+      }
+    },
+    5 * 60 * 1000
+  ); // Every 5 minutes
   // Cleanup on process exit
   process.on('exit', () => {
-    clearInterval(cleanupInterval)
-  })
+    clearInterval(cleanupInterval);
+  });
 }

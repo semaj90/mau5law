@@ -31,7 +31,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         degraded: 0,
         down: 0,
       },
-    }
+    };
     // Calculate overall health metrics
     Object.values(healthStatus.services).forEach(service => {
       if (service.status === 'healthy') {
@@ -63,7 +63,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
           protobufGRPC: { status: 'unknown', error: 'Health check failed' },
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -77,12 +77,12 @@ async function checkOllamaService(): Promise<any> {
       config,
       availableModels: models.length,
       models: models.slice(0, 5), // Limit for response size
-    }
+    };
   } catch (error: any) {
     return {
       status: 'down',
       error: error instanceof Error ? error.message : 'Unknown error',
-    }
+    };
   }
 }
 async function checkEnhancedRAGService(): Promise<any> {
@@ -95,12 +95,12 @@ async function checkEnhancedRAGService(): Promise<any> {
       capabilities: health.capabilities,
       responseTime: health.responseTime,
       config,
-    }
+    };
   } catch (error: any) {
     return {
       status: 'down',
       error: error instanceof Error ? error.message : 'Unknown error',
-    }
+    };
   }
 }
 async function checkGRPCService(): Promise<any> {
@@ -111,12 +111,12 @@ async function checkGRPCService(): Promise<any> {
       status: isHealthy ? 'healthy' : 'down',
       connected: status.connected,
       serviceUrl: status.serviceUrl,
-    }
+    };
   } catch (error: any) {
     return {
       status: 'down',
       error: error instanceof Error ? error.message : 'Unknown error',
-    }
+    };
   }
 }
 function getHealthResult(promiseResult: PromiseSettledResult<any>) {
@@ -126,6 +126,6 @@ function getHealthResult(promiseResult: PromiseSettledResult<any>) {
     return {
       status: 'down',
       error: promiseResult.reason?.message || 'Service check failed',
-    }
+    };
   }
 }

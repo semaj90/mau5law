@@ -103,7 +103,7 @@ export class MatrixUICompiler {
    * Enhanced compilation with full Phase 8 features: JSON → WebGL + CSS + Events
    */
   async compileEnhanced(;
-    nodes: MatrixUINode[]
+    nodes: MatrixUINode[],
     xstateContext?: unknown
   ): Promise<any> {
     const optimizations: string[] = [];
@@ -131,16 +131,16 @@ export class MatrixUICompiler {
     // 6. Map events with matrix-aware coordinates
     const eventMappings = this.generateEventMappings(optimizedNodes);
     return {
-      compiled: compiledNodes
-      webgl: webglBuffer
+      compiled: compiledNodes,
+      webgl: webglBuffer,
       css: cssOutput;
-      events: eventMappings
+      events: eventMappings,
       optimizations
     }
   }
   /**
    * Legacy compile method for backward compatibility
-   */;
+   */
   async compile(uiDefinition: MatrixUINode[]): Promise<CompiledNode[]> {
     const result = await this.compileEnhanced(uiDefinition);
     return (result as { compiled?: any }).compiled;
@@ -202,7 +202,7 @@ export class MatrixUICompiler {
   }
   /**
    * Generate UnoCSS classes for a node
-   */;
+   */
   private generateNodeClasses(node: MatrixUINode): string[] {
     const classes: string[] = [];
     // Base styling
@@ -255,7 +255,7 @@ export class MatrixUICompiler {
     return nodes.map((node: any) => ({,
       nodeId: node.id,
       events: node.events?.map((eventType: any) => ({,
-        type: eventType
+        type: eventType,
         handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
         matrix: node.matrix || [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
         bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 }
@@ -264,7 +264,7 @@ export class MatrixUICompiler {
   }
   /**
    * Compile individual UI node
-   */;
+   */
   private async compileNode(node: MatrixUINode): Promise<CompiledNode> {
     // Create DOM element
     const element = this.createElement(node);
@@ -291,7 +291,7 @@ export class MatrixUICompiler {
   }
   /**
    * Create DOM element based on node type
-   */;
+   */
   private createElement(node: MatrixUINode): HTMLElement {
     let element: HTMLElement;
     switch (node.type) {
@@ -331,7 +331,7 @@ export class MatrixUICompiler {
   }
   /**
    * Generate CSS classes using UnoCSS patterns
-   */;
+   */
   private async generateCSS(node: MatrixUINode): Promise<string[]> {
     const cacheKey = `${node.type}-${JSON.stringify(node.styles)}`;
     if (this.cssCache.has(cacheKey)) {
@@ -381,7 +381,7 @@ export class MatrixUICompiler {
   }
   /**
    * Generate CSS transform from matrix
-   */;
+   */
   private generateTransformCSS(matrix: number[]): string {
     // Convert 4x4 matrix to CSS transform
     const [
@@ -477,7 +477,7 @@ export class MatrixUICompiler {
   }
   /**
    * Calculate Level of Detail based on viewport and AI context
-   */;
+   */
   private calculateLOD(node: MatrixUINode): "low" | "mid" | "high" {
     // High LOD for AI-flagged important elements
     if (
@@ -500,12 +500,12 @@ export class MatrixUICompiler {
   }
   /**
    * Handle UI events with matrix context
-   */;
+   */
   private handleEvent(_event: Event, node: MatrixUINode): void {
     // Emit custom event with matrix context
     const matrixEvent = new CustomEvent("matrix-ui-event", {
       detail: {
-        originalEvent: event
+        originalEvent: event,
         nodeId: node.id,
         nodeType: node.type,
         matrix: node.matrix,
@@ -516,7 +516,7 @@ export class MatrixUICompiler {
   }
   /**
    * Update node matrix and recompile
-   */;
+   */
   async updateMatrix(nodeId: string, newMatrix: number[]): Promise<void> {
     // Update buffer cache
     if (this.bufferCache.has(nodeId)) {
@@ -534,7 +534,7 @@ export class MatrixUICompiler {
   }
   /**
    * Cleanup WebGL resources
-   */;
+   */
   dispose(): void {
     if (this.gl) {
       this.bufferCache.forEach((buffer) => {

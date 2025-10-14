@@ -5,21 +5,14 @@
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaTerminal from '$lib/components/yorha/YoRHaTerminal.svelte';
-  import {
-    Terminal,
-    Play,
-    Square,
-    RotateCcw,
-    Settings,
-    ChevronRight
-  } from 'lucide-svelte';
+  import { Terminal, Play, Square, RotateCcw, Settings, ChevronRight } from 'lucide-svelte';
   // Terminal state
   type TerminalEntry = {
     id: number;
     timestamp: string;
     text: string;
     type: 'system' | 'user' | 'success' | 'error' | 'info';
-  }
+  };
   let terminalHistory = $state<TerminalEntry[]>([]);
   let currentInput = $state('');
   let isExecuting = $state(false);
@@ -33,18 +26,33 @@
   };
   // Replace Record with an array (list of dicts)
   const commands: Command[] = [
-    { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: (args) => showHelp(args) },
+    { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: args => showHelp(args) },
     { name: 'status', description: 'Show system status', usage: 'status', execute: () => getSystemStatus() },
-    { name: 'rag', description: 'Execute RAG query', usage: 'rag <query>', execute: (args) => executeRAG(args.join(' ')) },
-    { name: 'search', description: 'Search legal database', usage: 'search <term>', execute: (args) => searchDatabase(args.join(' ')) },
-    { name: 'cluster', description: 'Cluster management', usage: 'cluster <health|status|restart>', execute: (args) => clusterCommand(args[0]) },
+    {
+      name: 'rag',
+      description: 'Execute RAG query',
+      usage: 'rag <query>',
+      execute: args => executeRAG(args.join(' ')),
+    },
+    {
+      name: 'search',
+      description: 'Search legal database',
+      usage: 'search <term>',
+      execute: args => searchDatabase(args.join(' ')),
+    },
+    {
+      name: 'cluster',
+      description: 'Cluster management',
+      usage: 'cluster <health|status|restart>',
+      execute: args => clusterCommand(args[0]),
+    },
     { name: 'clear', description: 'Clear terminal', usage: 'clear', execute: () => clearTerminal() },
-    { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: (args) => echoText(args.join(' ')) },
-    { name: 'version', description: 'Show system version', usage: 'version', execute: () => showVersion() }
+    { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: args => echoText(args.join(' ')) },
+    { name: 'version', description: 'Show system version', usage: 'version', execute: () => showVersion() },
   ];
 
   function getCommand(name: string) {
-    return commands.find((c) => c.name === name);
+    return commands.find(c => c.name === name);
   }
 
   $effect(() => {
@@ -99,7 +107,7 @@
     } else {
       addOutput('Available commands:', 'info');
       // iterate the array for help output
-      commands.forEach((c) => {
+      commands.forEach(c => {
         addOutput(`  ${c.name.padEnd(10)} - ${c.description}`, 'info');
       });
     }
@@ -134,14 +142,17 @@
       const response = await fetch('/api/yorha/enhanced-rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, context: 'terminal' })
+        body: JSON.stringify({ query, context: 'terminal' }),
       });
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         addOutput('=== RAG RESULT ===', 'success');
         addOutput(JSON.stringify(result, null, 2), 'info');
       } else {
-        addOutput(`RAG query failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
+        addOutput(
+          `RAG query failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`,
+          'error'
+        );
       }
     } catch (error) {
       const e = error as Error;
@@ -225,7 +236,8 @@
     addOutput('SvelteKit: 2.x', 'info');
     addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version : 'Browser'), 'info');
   }
-  function handleKeydown(event: KeyboardEvent) { // use the passed event
+  function handleKeydown(event: KeyboardEvent) {
+    // use the passed event
     if (event.key === 'Enter' && !isExecuting) {
       executeCommand(currentInput);
     }
@@ -404,7 +416,7 @@
     transition: background-color 0.15s ease;
   }
   .yorha-terminal-control:hover {
-    background: rgba(0,0,0,0.12);
+    background: rgba(0, 0, 0, 0.12);
   }
   /* Terminal Output */
   .yorha-terminal-output {
@@ -429,11 +441,21 @@
     flex: 1;
     word-break: break-word;
   }
-  .yorha-line-system { color: #fbbf24; }
-  .yorha-line-user { color: #7ee787; }
-  .yorha-line-success { color: #7ee787; }
-  .yorha-line-error { color: #ff7b7b; }
-  .yorha-line-info { color: #f8c77a; }
+  .yorha-line-system {
+    color: #fbbf24;
+  }
+  .yorha-line-user {
+    color: #7ee787;
+  }
+  .yorha-line-success {
+    color: #7ee787;
+  }
+  .yorha-line-error {
+    color: #ff7b7b;
+  }
+  .yorha-line-info {
+    color: #f8c77a;
+  }
   .yorha-terminal-spinner {
     display: inline-block;
     transform-origin: center;
@@ -445,7 +467,7 @@
     display: flex;
     align-items: center;
     border-top: 1px solid rgba(250, 180, 50, 0.3);
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     padding: 0.125rem 0.5rem;
   }
   .yorha-terminal-prompt {
@@ -498,7 +520,9 @@
     color: #fbbf24;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Responsive */
   @media (max-width: 768px) {
@@ -520,4 +544,3 @@
     }
   }
 </style>
-

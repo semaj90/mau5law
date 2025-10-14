@@ -370,17 +370,18 @@
     }
   });
 </script>
+
 <div class="n64-switch-container {className}">
   <div
     bind:this={switchElement}
     class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-    class:checked={checked}
+    class:checked
     class:focused={isFocused}
     class:hovered={isHovered}
     class:pressed={isPressed}
     class:animating={isAnimating}
-    class:disabled={disabled}
-    class:readonly={readonly}
+    class:disabled
+    class:readonly
     style="
       --track-bg: {materialStyles.trackBackground};
       --knob-bg: {materialStyles.knobBackground};
@@ -448,25 +449,19 @@
   {#if label || description}
     <div class="switch-content">
       {#if label}
-        <label
-          id="switch-label"
-          class="switch-label"
-          for={id}
-        >
+        <label id="switch-label" class="switch-label" for={id}>
           {label}
         </label>
       {/if}
       {#if description}
-        <div
-          id="switch-description"
-          class="switch-description"
-        >
+        <div id="switch-description" class="switch-description">
           {description}
         </div>
       {/if}
     </div>
   {/if}
 </div>
+
 <style>
   .n64-switch-container {
     font-family: 'Rajdhani', 'Arial', sans-serif;
@@ -551,12 +546,7 @@
     left: 15%;
     right: 60%;
     bottom: 60%;
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
     border-radius: 50%;
     pointer-events: none;
     opacity: 0.7;
@@ -578,7 +568,9 @@
     animation: switchSpin 1s linear infinite;
   }
   @keyframes switchSpin {
-    to { transform: rotate(360deg), }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Track fog effect */
   .track-fog {
@@ -587,11 +579,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      ellipse at center,
-      transparent 0%,
-      var(--fog-color, #404040) 100%
-    );
+    background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
     opacity: 0.15;
     pointer-events: none;
     border-radius: calc(var(--switch-height) / 2);
@@ -615,7 +603,8 @@
     animation: toggleGlowPulse 2s ease-in-out infinite;
   }
   @keyframes toggleGlowPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: var(--glow-intensity);
       transform: scale(1);
     }
@@ -696,10 +685,7 @@
   }
   /* Enhanced texture filtering */
   .n64-switch.texture-ultra {
-    filter:
-      contrast(1.02)
-      brightness(1.01)
-      saturate(1.05);
+    filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
   .n64-switch.filtering-bilinear {
     filter: blur(0.25px) contrast(1.1);

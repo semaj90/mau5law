@@ -128,9 +128,9 @@ export class YoRHaUIExample {
       variant: 'terminal',
       width: 8,
       height: 1.2,
-      showCloseButton: false
+      showCloseButton: false,
       glow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.3
       }
@@ -162,8 +162,8 @@ export class YoRHaUIExample {
       variant: 'default',
       width: 8,
       height: 4.5,
-      scrollable: true
-      resizable: true
+      scrollable: true,
+      resizable: true,
     });
     // Form layout
     const formLayout = YoRHaLayoutPresets.createForm();
@@ -175,8 +175,8 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'user',
       iconPosition: 'left',
-      clearable: true
-      width: 6
+      clearable: true,
+      width: 6,
     });
     const passwordInput = new YoRHaInput3D({
       placeholder: 'Security passphrase...',
@@ -194,13 +194,13 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'email',
       iconPosition: 'left',
-      clearable: true
-      width: 6
+      clearable: true,
+      width: 6,
     });
     const messageInput = new YoRHaInput3D({
       placeholder: 'Mission parameters...',
       variant: 'filled',
-      multiline: true
+      multiline: true,
       rows: 3,
       maxLength: 500,
       width: 6
@@ -259,9 +259,9 @@ export class YoRHaUIExample {
       text: '3',
       variant: 'accent',
       size: 'small',
-      rounded: true
+      rounded: true,
       glow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.5
       }
@@ -280,9 +280,9 @@ export class YoRHaUIExample {
       title: 'Command Execution',
       variant: 'confirm',
       size: 'medium',
-      closable: true
-      showHeader: true
-      showFooter: true
+      closable: true,
+      showHeader: true,
+      showFooter: true,
     });
     // Add content to modal
     const modalLayout = YoRHaLayoutPresets.createDialog();

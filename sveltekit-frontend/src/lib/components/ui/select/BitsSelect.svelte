@@ -45,7 +45,7 @@
       'legal-select-trigger',
       'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
       'hover:bg-yorha-bg-secondary focus:ring-yorha-primary',
-      className,
+      className
     )}
   >
     <SelectValue class="text-sm font-mono" {placeholder}>
@@ -64,7 +64,7 @@
           class={cn(
             'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50',
             'legal-select-item',
-            'text-yorha-text-primary hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono',
+            'text-yorha-text-primary hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono'
           )}
           value={option.value}
           disabled={option.disabled}

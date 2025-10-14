@@ -4,4 +4,4 @@ export const userAnalyticsStore = {
     // Simple analytics tracking implementation
     console.log('Button click tracked:', event);
   },
-}
+};

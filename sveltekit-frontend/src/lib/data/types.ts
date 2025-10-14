@@ -19,7 +19,7 @@ export function extendUser(user: User): ExtendedUser {
   return {
     ...user,
     username: user.name || user.email || `${user.firstName} ${user.lastName}`.trim(),
-  }
+  };
 }
 export type Evidence = InferSelectModel<typeof evidence>;
 export type NewEvidence = InferInsertModel<typeof evidence>;
@@ -37,7 +37,7 @@ export function extendEvidence(evidence: Evidence): ExtendedEvidence {
     status: evidence.isAdmissible ? 'approved' : 'pending',
     type: evidence.evidenceType,
     createdAt: evidence.collectedAt || evidence.uploadedAt,
-  }
+  };
 }
 // Enhanced Report Builder types
 export type Report = InferSelectModel<typeof reports>;
@@ -79,7 +79,7 @@ export type SessionUser = {
   email?: string | null;
   image?: string | null;
   role?: string | null;
-}
+};
 // Extended Case type with Case Books functionality
 export interface CaseWithBooks extends Case {
   reports?: Report[];
@@ -103,7 +103,7 @@ export interface Book {
     createdDate: string;
     lastModified: string;
     completionStatus: 'draft' | 'review' | 'final' | 'archived';
-  }
+  };
   aiSummary?: string;
   aiTags: string[];
   createdBy: string;
@@ -121,7 +121,7 @@ export interface ReportSection {
     citations: string[]; // CitationPoint IDs,
     evidenceRefs: string[]; // Evidence IDs
     canvasStateId?: string; // CanvasState ID if type is 'canvas'
-  }
+  };
 }
 export interface ReportWithSections extends Report {
   sections: ReportSection[];
@@ -136,8 +136,8 @@ export interface AIAnalysis {
   result: {
     content: string;
     confidence: number;
-    metadata: { [key: string]: any }
-  }
+    metadata: { [key: string]: any };
+  };
   timestamp: Date;
 }
 export interface CitationSuggestion {
@@ -152,12 +152,12 @@ export interface CitationSuggestion {
 export interface CanvasObject {
   id: string;
   type: 'text' | 'image' | 'arrow' | 'shape' | 'highlight' | 'evidence-marker';
-  properties: { [key: string]: any } // Fabric.js object properties
+  properties: { [key: string]: any }; // Fabric.js object properties
   metadata?: {
     evidenceId?: string;
     citationId?: string;
     annotations?: string[];
-  }
+  };
 }
 export interface CanvasStateData {
   objects: CanvasObject[];
@@ -165,19 +165,19 @@ export interface CanvasStateData {
   dimensions: {
     width: number;
     height: number;
-  }
+  };
   viewport: {
     zoom: number;
     panX: number;
     panY: number;
-  }
+  };
   metadata: {
     title?: string;
     description?: string;
     tags: string[];
     evidenceIds: string[];
     citationIds: string[];
-  }
+  };
 }
 // Search and filtering types
 export interface SearchFilters {
@@ -187,7 +187,7 @@ export interface SearchFilters {
   dateRange?: {
     start: Date;
     end: Date;
-  }
+  };
   tags?: string[];
   jurisdiction?: string;
   confidentialityLevel?: string[];
@@ -199,7 +199,7 @@ export interface SearchResult {
   title: string;
   excerpt: string;
   relevanceScore: number;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   highlights: string[];
 }
 // Export types
@@ -212,7 +212,7 @@ export interface ExportOptions {
   headerFooter?: {
     header: string;
     footer: string;
-  }
+  };
 }
 export interface ExportResult {
   success: boolean;
@@ -222,7 +222,7 @@ export interface ExportResult {
     fileSize: number;
     pageCount?: number;
     generatedAt: Date;
-  }
+  };
 }
 // Legacy support for Loki.js (offline/local storage)
 export interface LegacyCitationPoint {
@@ -248,7 +248,7 @@ export interface EditorState {
   clipboardContent?: {
     type: 'text' | 'citation' | 'canvas-object';
     data: any;
-  }
+  };
   autoSaveEnabled: boolean;
   lastSaved?: Date;
   isDirty: boolean;
@@ -259,7 +259,7 @@ export interface SidebarState {
     type?: string;
     tags?: string[];
     searchQuery?: string;
-  }
+  };
   collapsed: boolean;
 }
 // Real-time collaboration types (future feature)
@@ -270,15 +270,15 @@ export interface CollaborationState {
     cursor?: {
       x: number;
       y: number;
-    }
+    };
     selection?: {
       reportId: string;
       sectionId: string;
       range: {
         start: number;
         end: number;
-      }
-    }
+      };
+    };
   }[];
   changes: {
     id: string;
@@ -301,7 +301,7 @@ export interface AIResponse {
     confidence: number;
     executionTime: number;
     fromCache: boolean;
-  }
+  };
 }
 // Gemma3 Configuration types
 export interface Gemma3Config {
@@ -339,5 +339,5 @@ export interface ConversationHistory {
     model?: string;
     confidence?: number;
     contextUsed?: boolean;
-  }
+  };
 }

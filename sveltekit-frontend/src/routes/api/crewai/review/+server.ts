@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         reviewType,
         priority,
         assignedAgents: assignedAgents.map((agentId: any) => ({,
-          id: agentId
+          id: agentId,
           name: LEGAL_AGENTS[agentId].name,
           role: LEGAL_AGENTS[agentId].role,
           expertise: LEGAL_AGENTS[agentId].expertise
@@ -168,7 +168,7 @@ export const GET: RequestHandler = async ({ url }) => {
               role: agent.role,
               expertise: agent.expertise,
               model: agent?.model || "unknown" // @ts-ignore - Model property access,
-              description: getAgentDescription(agent)
+              description: getAgentDescription(agent),
             })
           }
         })
@@ -219,7 +219,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const isHealthy = activeReviews.length < 10; // Arbitrary threshold
         return json({
           success: true,
-          healthy: isHealthy
+          healthy: isHealthy,
           data: {
             status: isHealthy ? 'healthy' : 'overloaded',
             activeReviews: activeReviews.length,

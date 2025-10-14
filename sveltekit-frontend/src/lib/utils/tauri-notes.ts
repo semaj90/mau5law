@@ -110,10 +110,10 @@ class TauriNotesService {
         return {
           id: this.generateId(),
           title,
-          content: markdown
+          content: markdown,
           markdown,
           html: "",
-          contentJson: null
+          contentJson: null,
           noteType: "general",
           tags: [],
           userId: "desktop-user",
@@ -176,8 +176,8 @@ class TauriNotesService {
   }
   // Search notes locally using Rust backend for better performance
   async searchNotesLocally(
-    query: string
-    notes: SavedNote[]
+    query: string,
+    notes: SavedNote[],
   ): Promise<SavedNote[]> {
     try {
       const searchData = notes.map((note) => ({

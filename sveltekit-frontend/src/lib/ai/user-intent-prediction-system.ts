@@ -74,7 +74,7 @@ class UserIntentPredictionSystem {
    * Main prediction method: Analyze user query and predict intentions
    */
   async predictUserIntent(;
-    query: string
+    query: string,
     userContext: {
       userId: string;
       sessionId: string;
@@ -130,7 +130,7 @@ class UserIntentPredictionSystem {
   }
   /**
    * Fast task assistance: Provide immediate help based on user query
-   */;
+   */
   async provideFastTaskAssistance(query: string, userContext: any): Promise<{,
     quickActions,: Array<any,>;
     contextualHelp: Array<any>;
@@ -166,7 +166,7 @@ class UserIntentPredictionSystem {
   }
   /**
    * Classify user intent using ML model and heuristics
-   */;
+   */
   private async classifyIntent(query,: string, userContex,t: an,y): Promise<UserIntentPrediction> {
     // Extract features from query
     const features = this.extractIntentFeatures(query, userContext);
@@ -201,7 +201,7 @@ class UserIntentPredictionSystem {
       const spellingCorrections = await this.spellingCorrector.correct(query);
       spellingCorrections,.forEach(correction => {
         suggestions.push({
-          originalQuery: query
+          originalQuery: query,
           suggestedQuery: correction.correctedText,
           suggestionType: 'spelling',
           confidence: correction.confidence,
@@ -217,7 +217,7 @@ class UserIntentPredictionSystem {
       const synonymExpansions = await this.synonymEngine.expand(query, intentPrediction.primaryIntent);
       synonymExpansions,.forEach(expansion => {
         suggestions.push({
-          originalQuery: query
+          originalQuery: query,
           suggestedQuery: expansion.expandedText,
           suggestionType: 'synonym',
           confidence: expansion.confidence,
@@ -233,7 +233,7 @@ class UserIntentPredictionSystem {
       const completions = this.generateQueryCompletions(query, intentPrediction);
       completions,.forEach(completion => {
         suggestions.push({
-          originalQuery: query
+          originalQuery: query,
           suggestedQuery: completion.completedQuery,
           suggestionType: 'completion',
           confidence: completion.confidence,
@@ -250,7 +250,7 @@ class UserIntentPredictionSystem {
         const clarifications = this.generateClarificationSuggestions(query, intentPrediction);
         clarifications.forEach(clarification => {
           suggestions.push({
-            originalQuery: query
+            originalQuery: query,
             suggestedQuery: clarification.clarifiedQuery,
             suggestionType: 'clarification',
             confidence: clarification.confidence,
@@ -268,7 +268,7 @@ class UserIntentPredictionSystem {
         const expansions = this.generateExpansionSuggestions(query, intentPrediction);
         expansions.forEach(expansion => {
           suggestions.push({
-            originalQuery: query
+            originalQuery: query,
             suggestedQuery: expansion.expandedQuery,
             suggestionType: 'expansion',
             confidence: expansion.confidence,
@@ -286,7 +286,7 @@ class UserIntentPredictionSystem {
         const simplifications = this.generateSimplificationSuggestions(query, intentPrediction);
         simplifications.forEach(simplification => {
           suggestions.push({
-            originalQuery: query
+            originalQuery: query,
             suggestedQuery: simplification.simplifiedQuery,
             suggestionType: 'simplification',
             confidence: simplification.confidence,
@@ -314,7 +314,7 @@ class UserIntentPredictionSystem {
   }
   /**
    * Extract features for intent classification
-   */;
+   */
   private extractIntentFeatures(query,: string, userContex,t: an,y): Float32Array {
     const features = new Float32Array(128); // Feature vector
     const words = query.toLowerCase().split(/\s+/);
@@ -363,16 +363,16 @@ class UserIntentPredictionSystem {
       actions.push({
         action: 'analyze_contract',
         description: 'Analyze contract terms and conditions',
-        oneClickExecute: true
-        estimatedTime: '2-3 minutes'
+        oneClickExecute: true,
+        estimatedTime: '2-3 minutes',
       });
     }
     if (query.toLowerCase().includes('search') || query.toLowerCase().includes('find')) {
       actions.push({
         action: 'smart_search',
         description: 'Perform enhanced legal search',
-        oneClickExecute: true
-        estimatedTime: '1-2 minutes'
+        oneClickExecute: true,
+        estimatedTime: '1-2 minutes',
       });
     }
     return actions.slice(0, 3);
@@ -463,7 +463,7 @@ class UserIntentPredictionSystem {
   }
   private async buildFastCachedResponse(cached,: any, quer,y: string, userConte,xt: any, startT,ime: num,ber): Promise<any> {
     return {
-      intentPrediction: cached
+      intentPrediction: cached,
       didYouMeanSuggestions: this.suggestionCache.get(this.generateCacheKey(query, userContext.userId)) || [],
       taskCompletion: this.createFallbackTaskPrediction(),
       userInsights: this.userInsightCache.get(userContext.userId) || this.createFallbackUserInsights(),
@@ -497,7 +497,7 @@ class UserIntentPredictionSystem {
   }
   /**
    * Get system performance statistics
-   */;
+   */
   async getSystemStats(),: Promise<any> {
     const totalPredictions = this.feedbackHistory.lengt,h;
     const cacheHitRate = this.intentCache.size > 0 ? 0.75 :, 0; // Estimated
@@ -545,9 +545,9 @@ class SpellingCorrectionEngine {
       if (replacement) {
         corrections.push({
           correctedText: query.replace(word, replacement),
-            originalWord: cleanWord
-            correctedWord: replacement
-            confidence: 0.9
+            originalWord: cleanWord,
+            correctedWord: replacement,
+            confidence: 0.9,
         });
       }
     });
@@ -568,9 +568,9 @@ class SynonymExpansionEngine {
       if (query.toLowerCase().includes(original)) {
         expansions.push({
           expandedText: query.replace(new RegExp(original, 'gi'), legal),
-          originalTerm: original
-          legalTerm: legal
-          confidence: 0.8
+          originalTerm: original,
+          legalTerm: legal,
+          confidence: 0.8,
         });
       }
     });

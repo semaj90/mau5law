@@ -34,7 +34,7 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
       event.preventDefault();
       handler(event);
     }
-  }
+  };
   // Attach the event listener for keyboard interaction.
   node.addEventListener('keydown', onKeyDown);
   // The 'destroy' function is called when the element is removed from the DOM.
@@ -60,8 +60,8 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
         node.removeAttribute('aria-describedby');
       }
     },
-  }
-}
+  };
+};
 /**
  * Specialized variant for button-like interactions
  */ export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {

@@ -111,8 +111,8 @@ export const GET: RequestHandler = async () => {
     healthData.health_score = 0
   }
   healthData.summary = {
-    total_services: totalServices
-    healthy_services: healthyCount
+    total_services: totalServices,
+    healthy_services: healthyCount,
     degraded_services: serviceStatuses.filter(item => item.length),
     unavailable_services: serviceStatuses.filter(item => item.length),
     total_check_time: Date.now() - startTime

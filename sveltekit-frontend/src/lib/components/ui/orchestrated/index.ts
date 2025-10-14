@@ -33,38 +33,38 @@ export interface AIAnalysisResult {
 }
 // Orchestrated Dialog - combines headless functionality with enhanced styling
 export const OrchestratedDialog = Object.assign(HeadlessDialog, {
-  Root: HeadlessDialog
-  Content: HeadlessDialog
-  Enhanced: EnhancedDialog
+  Root: HeadlessDialog,
+  Content: HeadlessDialog,
+  Enhanced: EnhancedDialog,
   // Legal AI specific dialog variants
-  EvidenceAnalysis: HeadlessDialog
-  CaseManagement: HeadlessDialog
-  AIInsights: HeadlessDialog
+  EvidenceAnalysis: HeadlessDialog,
+  CaseManagement: HeadlessDialog,
+  AIInsights: HeadlessDialog,
 });
 // Orchestrated Select - combines accessibility with legal categories
 export const OrchestratedSelect = Object.assign(HeadlessSelectField, {
-  Root: HeadlessSelectField
-  Enhanced: EnhancedSelect
+  Root: HeadlessSelectField,
+  Enhanced: EnhancedSelect,
   // Legal AI specific variants
-  EvidenceType: HeadlessSelectField
-  PriorityLevel: HeadlessSelectField
-  CaseStatus: HeadlessSelectField
+  EvidenceType: HeadlessSelectField,
+  PriorityLevel: HeadlessSelectField,
+  CaseStatus: HeadlessSelectField,
 });
 // Orchestrated Button - combines loading states with legal actions
 export const OrchestratedButton = Object.assign(LoadingButton, {
   Enhanced: Button
   // Legal AI specific button variants
-  AnalyzeEvidence: LoadingButton
-  ProcessDocument: LoadingButton
-  GenerateReport: LoadingButton
-  SearchSimilar: LoadingButton
+  AnalyzeEvidence: LoadingButton,
+  ProcessDocument: LoadingButton,
+  GenerateReport: LoadingButton,
+  SearchSimilar: LoadingButton,
 });
 // Orchestrated Card - legal evidence display
 export const OrchestratedCard = Object.assign(Card, {
-  Evidence: Card
-  Analysis: Card
-  CaseFile: Card
-  AIInsight: Card
+  Evidence: Card,
+  Analysis: Card,
+  CaseFile: Card,
+  AIInsight: Card,
 });
 // State management integration
 export interface OrchestrationState {
@@ -83,9 +83,9 @@ export const OrchestrationContext = {
   // Cache coordination
   cacheService: null as any
   // GPU acceleration status
-  webgpuService: null as any
+  webgpuService: null as any,
   // Vector search integration
-  vectorService: null as any
+  vectorService: null as any,
 }
 // Legal AI utility functions
 export function getConfidenceClass(confidence: number): string {
@@ -105,10 +105,10 @@ export function formatAnalysisDate(date: Date): string {
 }
 // Component registration for orchestration system
 export const ORCHESTRATED_COMPONENTS = {
-  Dialog: OrchestratedDialog
-  Select: OrchestratedSelect
-  Button: OrchestratedButton
-  Card: OrchestratedCard
+  Dialog: OrchestratedDialog,
+  Select: OrchestratedSelect,
+  Button: OrchestratedButton,
+  Card: OrchestratedCard,
   Input
 } as const;
 // Type exports already defined above - no need to re-export

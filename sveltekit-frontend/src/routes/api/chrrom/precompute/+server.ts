@@ -7,4 +7,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   if (!ctx.userId && getUserId(locals)) ctx.userId = getUserId(locals);
   const patterns = await generateCHRPatterns(ctx);
   return json({ ok: true, patterns });
-}
+};

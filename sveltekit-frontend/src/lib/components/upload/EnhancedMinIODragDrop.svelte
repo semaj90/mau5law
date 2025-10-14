@@ -321,6 +321,7 @@
     target.value = '';
   }
 </script>
+
 <!-- Enhanced drag-and-drop UI with Clang/LLVM performance indicators -->
 <div class="enhanced-minio-upload relative w-full">
   <!-- Performance Stats -->
@@ -362,14 +363,12 @@
   >
     <!-- Drag overlay -->
     {#if dragOver}
-      <div class="drag-overlay absolute inset-0 bg-blue-100 bg-opacity-90 flex items-center justify-center border-2 border-dashed border-blue-400 rounded-lg">
+      <div
+        class="drag-overlay absolute inset-0 bg-blue-100 bg-opacity-90 flex items-center justify-center border-2 border-dashed border-blue-400 rounded-lg"
+      >
         <div class="text-center">
-          <div class="text-blue-600 text-lg font-semibold mb-2">
-            🚀 Drop files for CUDA acceleration
-          </div>
-          <div class="text-blue-500 text-sm">
-            Clang/LLVM optimized • Visual Studio 2022 native
-          </div>
+          <div class="text-blue-600 text-lg font-semibold mb-2">🚀 Drop files for CUDA acceleration</div>
+          <div class="text-blue-500 text-sm">Clang/LLVM optimized • Visual Studio 2022 native</div>
         </div>
       </div>
     {/if}
@@ -377,30 +376,26 @@
     <div class="drop-content p-8 text-center">
       {#if uploading}
         <div class="uploading-state">
-          <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <div class="font-semibold text-gray-700">
-            Uploading with MinIO sync...
-          </div>
+          <div
+            class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
+          ></div>
+          <div class="font-semibold text-gray-700">Uploading with MinIO sync...</div>
           <div class="text-sm text-gray-500 mt-2">
             Progress: {uploadProgress.toFixed(1)}%
           </div>
           {#if enableCudaAcceleration}
-            <div class="text-xs text-blue-600 mt-1">
-              CUDA preprocessing enabled
-            </div>
+            <div class="text-xs text-blue-600 mt-1">CUDA preprocessing enabled</div>
           {/if}
         </div>
       {:else}
         <div class="default-state">
           <div class="text-4xl mb-4">📁</div>
-          <div class="font-semibold text-gray-700 mb-2">
-            Drag & drop files here
-          </div>
-          <div class="text-sm text-gray-500 mb-4">
-            or click to select files
-          </div>
+          <div class="font-semibold text-gray-700 mb-2">Drag & drop files here</div>
+          <div class="text-sm text-gray-500 mb-4">or click to select files</div>
           {#if enableCudaAcceleration}
-            <div class="flex items-center justify-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block">
+            <div
+              class="flex items-center justify-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block"
+            >
               ⚡ CUDA GPU acceleration enabled
             </div>
           {/if}
@@ -416,11 +411,7 @@
     <div class="file-list mt-4 space-y-2">
       <div class="flex justify-between items-center">
         <h4 class="font-semibold text-gray-700">Upload Queue</h4>
-        <button
-          class="text-xs text-red-600 hover:text-red-800"
-          onclick={clearFiles}
-          disabled={uploading}
-        >
+        <button class="text-xs text-red-600 hover:text-red-800" onclick={clearFiles} disabled={uploading}>
           Clear All
         </button>
       </div>
@@ -490,29 +481,30 @@
     </div>
   {/if}
 </div>
+
 <style>
   .drop-zone {
-/* @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48; */
+    /* @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48; */
   }
   .drop-zone.drag-over {
-/* @apply border-blue-400 bg-blue-50; */
+    /* @apply border-blue-400 bg-blue-50; */
   }
   .drop-zone.disabled {
-/* @apply opacity-50 cursor-not-allowed; */
+    /* @apply opacity-50 cursor-not-allowed; */
   }
   .drop-zone.uploading {
-/* @apply border-blue-300 bg-blue-25; */
+    /* @apply border-blue-300 bg-blue-25; */
   }
   .drop-overlay {
     z-index: 10;
   }
   .file-item {
-/* @apply transition-all duration-200; */
+    /* @apply transition-all duration-200; */
   }
   .file-item:hover {
-/* @apply shadow-sm border-gray-300; */
+    /* @apply shadow-sm border-gray-300; */
   }
   .performance-stats {
-/* @apply transition-all duration-300; */
+    /* @apply transition-all duration-300; */
   }
 </style>

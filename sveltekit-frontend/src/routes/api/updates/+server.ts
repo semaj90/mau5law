@@ -43,7 +43,7 @@ class SSEConnectionManager {
       channel,
       data: JSON.parse(message),
       timestamp: new Date().toISOString(),
-    }
+    };
     // Broadcast to all active SSE connections
     for (const [connectionId, response] of this.connections) {
       try {
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         userId,
         subscriptions,
         timestamp: new Date().toISOString(),
-      }
+      };
       controller.enqueue(`data: ${JSON.stringify(initialMessage)}\n\n`);
       // Store connection for broadcasting
       // Note: This is a simplified approach - in production, you'd store the controller
@@ -118,15 +118,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Access-Control-Allow-Headers': 'Cache-Control',
     },
   });
-}
+};
 // Health check endpoint
 export const POST: RequestHandler = async () => {
   const status = {
     sseConnections: sseManager.getConnectionCount(),
     redisInitialized: sseManager['isInitialized'],
     timestamp: new Date().toISOString(),
-  }
+  };
   return new Response(JSON.stringify(status), {
     headers: { 'Content-Type': 'application/json' },
   });
-}
+};

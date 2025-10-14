@@ -35,9 +35,9 @@ export interface WorkflowValidationResponse {
 }
 // Helper to run a test with timing
 async function runTest(
-  name: string
-  description: string
-  testFn: () => Promise<any>
+  name: string,
+  description: string,
+  testFn: () => Promise<any>,
 ): Promise<WorkflowTest> {
   const startTime = Date.now()
   try {
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
           return {
             message: 'Authentication endpoints configured',
-            endpoints: authEndpoints
+            endpoints: authEndpoints,
             sessionProvider: 'lucia-auth',
             security: ['bcrypt', 'csrf-protection', 'rate-limiting']
           }
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ],)
         return {
           message: 'Document upload system configured',
-          endpoints: uploadEndpoints
+          endpoints: uploadEndpoints,
           storage: 'MinIO (port 9000)',
           processors: ['OCR', 'Text Extraction', 'Metadata Extraction'],
           supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE']
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
           return {
             message: 'Document processing pipeline operational',
-            services: processingServices
+            services: processingServices,
             pipeline: ['Upload', 'Extract', 'Analyze', 'Embed', 'Index', 'Store'],
             aiModels: ['gemma3-legal', 'nomic-embed-text']
           }
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ],)
         return {
           message: 'AI chat system operational',
-          endpoints: aiEndpoints
+          endpoints: aiEndpoints,
           models: {
             primary: 'gemma3-legal (Ollama)',
             embedding: 'nomic-embed-text',
@@ -228,7 +228,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ]
         return {
           message: 'Legal AI analysis capabilities active',
-          features: legalFeatures
+          features: legalFeatures,
           models: 'Domain-specific legal training',
           accuracy: 'High confidence scoring with variance matrices'
         }
@@ -264,7 +264,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
           return {
             message: 'Semantic search fully functional',
-            endpoints: searchEndpoints
+            endpoints: searchEndpoints,
             features: ['Cosine Similarity', 'Hybrid Search', 'Faceted Search', 'Relevance Ranking'],
             indexing: 'Real-time with batch processing'
           }
@@ -303,7 +303,7 @@ export const GET: RequestHandler = async ({ url }) => {
               ],)
               return {
                 message: 'Complete workflow integration validated',
-                steps: workflow
+                steps: workflow,
                 duration: '< 5 seconds end-to-end',
                 reliability: '99.9% uptime target'
               }
@@ -342,7 +342,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const response: WorkflowValidationResponse = {
       timestamp: new Date().toISOString(),
       overall: {
-        status: overallStatus
+        status: overallStatus,
         score,
         totalTests,
         passed,
@@ -350,11 +350,11 @@ export const GET: RequestHandler = async ({ url }) => {
         skipped
       },
       workflows: {
-        userManagement: userManagementTests
-        documentProcessing: documentProcessingTests
-        aiFeatures: aiFeatureTests
-        vectorSearch: vectorSearchTests
-        integration: integrationTests
+        userManagement: userManagementTests,
+        documentProcessing: documentProcessingTests,
+        aiFeatures: aiFeatureTests,
+        vectorSearch: vectorSearchTests,
+        integration: integrationTests,
       },
       processingTime: Date.now() - startTime
     }
@@ -364,7 +364,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(response, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503,
       headers: {
-        'X-Workflow-Status': overallStatus
+        'X-Workflow-Status': overallStatus,
         'X-Test-Score': score.toString(),
         'X-Test-Count': `${passed}/${totalTests}`,
         'X-Processing-Time': `${Date.now() - startTime}ms`,
@@ -420,8 +420,8 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'User workflow simulation completed',
-          data: result
-          processingTime: Date.now() - startTime
+          data: result,
+          processingTime: Date.now() - startTime,
         })
       }
       case 'test_document_processing': {
@@ -430,8 +430,8 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Document processing pipeline tested',
-          data: result
-          processingTime: Date.now() - startTime
+          data: result,
+          processingTime: Date.now() - startTime,
         })
       }
       default:

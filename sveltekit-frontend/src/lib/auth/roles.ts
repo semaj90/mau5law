@@ -54,8 +54,8 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'System Administrator',
     description: 'Full system access with all administrative privileges',
     hierarchyLevel: 100,
-    canDelegate: true
-    permissions: [
+    canDelegate: true,
+    permissions: [,
       'create_case', 'edit_case', 'delete_case', 'view_case',
       'upload_evidence', 'edit_evidence', 'delete_evidence', 'view_evidence',
       'generate_report', 'edit_report', 'delete_report', 'view_report',
@@ -71,7 +71,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Lead Prosecutor',
     description: 'Senior prosecutor with case management and team oversight responsibilities',
     hierarchyLevel: 80,
-    canDelegate: true
+    canDelegate: true,
     maxCasesAssigned: 50,
     permissions: [
       'create_case', 'edit_case', 'delete_case', 'view_case',
@@ -87,7 +87,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Prosecutor',
     description: 'Licensed attorney handling prosecution cases',
     hierarchyLevel: 60,
-    canDelegate: false
+    canDelegate: false,
     maxCasesAssigned: 30,
     permissions: [
       'create_case', 'edit_case', 'view_case',
@@ -102,7 +102,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Paralegal',
     description: 'Legal assistant with case preparation and evidence management duties',
     hierarchyLevel: 40,
-    canDelegate: false
+    canDelegate: false,
     maxCasesAssigned: 20,
     permissions: [
       'view_case', 'edit_case',
@@ -117,7 +117,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Criminal Investigator',
     description: 'Law enforcement investigator with evidence collection responsibilities',
     hierarchyLevel: 50,
-    canDelegate: false
+    canDelegate: false,
     maxCasesAssigned: 15,
     permissions: [
       'view_case', 'edit_case',
@@ -131,7 +131,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Data Analyst',
     description: 'Specialized analyst with advanced AI and data analysis capabilities',
     hierarchyLevel: 45,
-    canDelegate: false
+    canDelegate: false,
     maxCasesAssigned: 25,
     permissions: [
       'view_case', 'view_evidence',
@@ -191,33 +191,33 @@ export const PERMISSION_CATEGORIES = {
 export class AccessControl {
   /**
    * Check if a user has a specific permission
-   */;
+   */
   static hasPermission(userRole: UserRole, permission: Permission): boolean {
     const role = ROLES[userRole];
     return role ? role.permissions.includes(permission) : false;
   }
   /**
    * Check if a user has any of the specified permissions
-   */;
+   */
   static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
     return permissions.some(permission => this.hasPermission(userRole, permission);
   }
   /**
    * Check if a user has all of the specified permissions
-   */;
+   */
   static hasAllPermissions(userRole: UserRole, permissions: Permission[]): boolean {
     return permissions.every(permission => this.hasPermission(userRole, permission);
   }
   /**
    * Get all permissions for a role
-   */;
+   */
   static getRolePermissions(userRole: UserRole): Permission[] {
     const role = ROLES[userRole];
     return role ? [...role.permissions] : [];
   }
   /**
    * Check if one role has higher authority than another
-   */;
+   */
   static hasHigherAuthority(userRole: UserRole, targetRole: UserRole): boolean {
     const userHierarchy = ROLES[userRole]?.hierarchyLevel || 0;
     const targetHierarchy = ROLES[targetRole]?.hierarchyLevel || 0;
@@ -225,14 +225,14 @@ export class AccessControl {
   }
   /**
    * Check if a user can delegate tasks (assign work to others)
-   */;
+   */
   static canDelegate(userRole: UserRole): boolean {
     const role = ROLES[userRole];
     return role ? role.canDelegate: false;
   }
   /**
    * Get the maximum number of cases a user can be assigned
-   */;
+   */
   static getMaxCaseAssignment(userRole: UserRole): number | null {
     const role = ROLES[userRole];
     return role ? role.maxCasesAssigned || null : null;
@@ -241,8 +241,8 @@ export class AccessControl {
    * Check if a user can access a specific resource based on ownership and permissions
    */
   static canAccessResource(
-    userRole: UserRole
-    permission: Permission
+    userRole: UserRole,
+    permission: Permission,
     resourceOwnerId?: string
     userId?: string
     isPublic?: boolean;
@@ -273,7 +273,7 @@ export class AccessControl {
   }
   /**
    * Get user-friendly permission description
-   */;
+   */
   static getPermissionDescription(permission: Permission): string {
     const descriptions: Record<Permission, string> = {
       create_case: 'Create new legal cases',
@@ -309,7 +309,7 @@ export class AccessControl {
   }
   /**
    * Get roles that have a specific permission
-   */;
+   */
   static getRolesWithPermission(permission: Permission): UserRole[] {
     return (Object.keys(ROLES) as UserRole[]).filter(role =>
       this.hasPermission(role, permission)
@@ -317,7 +317,7 @@ export class AccessControl {
   }
   /**
    * Check if role can be assigned by current user
-   */;
+   */
   static canAssignRole(currentUserRole: UserRole, targetRole: UserRole): boolean {
     // Only admin can assign admin role
     if (targetRole === 'admin') {

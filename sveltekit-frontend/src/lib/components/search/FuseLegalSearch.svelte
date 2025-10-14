@@ -9,7 +9,7 @@
     placeholder = 'Search laws and regulations...',
     onResultSelect,
     showAIActions = true,
-    maxResults = 10
+    maxResults = 10,
   }: {
     data?: any[];
     placeholder?: string;
@@ -29,7 +29,7 @@
       { name: 'title', weight: 0.4 },
       { name: 'description', weight: 0.3 },
       { name: 'code', weight: 0.2 },
-      { name: 'keywords', weight: 0.1 }
+      { name: 'keywords', weight: 0.1 },
     ],
     threshold: 0.3,
     distance: 100,
@@ -37,7 +37,7 @@
     includeScore: true,
     includeMatches: true,
     ignoreLocation: true,
-    useExtendedSearch: true
+    useExtendedSearch: true,
   };
 
   // Initialize Fuse when data changes
@@ -81,13 +81,13 @@
       // --- fixed: actually call fuse.search and then slice ---
       const rawResults = fuse.search(query).slice(0, maxResults);
 
-      searchResults = rawResults.map((result) => {
+      searchResults = rawResults.map(result => {
         const res: any = result as any;
         return {
           ...res.item,
           fuseScore: res.score,
           matches: res.matches || [],
-          highlighted: highlightMatches(res.item, res.matches || [])
+          highlighted: highlightMatches(res.item, res.matches || []),
         };
       });
     } catch (error) {
@@ -100,7 +100,7 @@
 
   function highlightMatches(item, matches) {
     const highlighted = { ...item };
-    matches.forEach((match) => {
+    matches.forEach(match => {
       if (match.key && typeof highlighted[match.key] === 'string') {
         let text = highlighted[match.key];
         const indices = Array.isArray(match.indices) ? [...match.indices].sort((a, b) => b[0] - a[0]) : [];
@@ -172,7 +172,9 @@
                 {@html law.highlighted?.title || law.title}
               </h3>
               <div class="flex items-center gap-2 ml-2">
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{getScoreLabel(law.fuseScore)}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                  >{getScoreLabel(law.fuseScore)}</span
+                >
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{law.jurisdiction}</span>
               </div>
             </div>
@@ -195,18 +197,31 @@
           {#if showAIActions}
             <div class="px-4 pb-4 pt-0">
               <div class="flex gap-2 flex-wrap">
-                <button type="button" class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm bg-indigo-600 text-white hover:bg-indigo-700" on:click={() => handleAIAction(law, 'summary')}>
+                <button
+                  type="button"
+                  class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm bg-indigo-600 text-white hover:bg-indigo-700"
+                  on:click={() => handleAIAction(law, 'summary')}
+                >
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
                 </button>
 
-                <button type="button" class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50" on:click={() => handleAIAction(law, 'chat')}>
+                <button
+                  type="button"
+                  class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50"
+                  on:click={() => handleAIAction(law, 'chat')}
+                >
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
                 </button>
 
                 {#if law.fullTextUrl}
-                  <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50">
+                  <a
+                    href={law.fullTextUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50"
+                  >
                     <ExternalLink class="h-3 w-3 mr-1" />
                     Full Text
                   </a>
@@ -222,9 +237,7 @@
       <p class="nes-text is-disabled">
         No results found for "{searchQuery}".
       </p>
-      <p class="text-sm nes-text is-disabled mt-1">
-        Try adjusting your search terms or use more general keywords.
-      </p>
+      <p class="text-sm nes-text is-disabled mt-1">Try adjusting your search terms or use more general keywords.</p>
     </div>
   {/if}
 </div>

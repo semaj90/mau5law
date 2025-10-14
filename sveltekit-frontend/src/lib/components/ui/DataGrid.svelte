@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { Props } from "$lib/types/global";
+  import type { Props } from '$lib/types/global';
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
 
@@ -19,10 +19,10 @@ https://svelte.dev/e/js_parse_error -->
     multiSelect = false,
     sortable = true,
     filterable = true,
-    className = '',              // renamed from `class` to avoid parse error
+    className = '', // renamed from `class` to avoid parse error
     emptyMessage = 'No data available',
     children,
-    onSelectionChange
+    onSelectionChange,
   }: DataGridProps = $props();
 
   // Fixed $state generics and initializers
@@ -37,8 +37,10 @@ https://svelte.dev/e/js_parse_error -->
 
     const q = searchQuery?.trim().toLowerCase();
     if (q) {
-      filtered = filtered.filter((item) =>
-        JSON.stringify(item || '').toLowerCase().includes(q)
+      filtered = filtered.filter(item =>
+        JSON.stringify(item || '')
+          .toLowerCase()
+          .includes(q)
       );
     }
 
@@ -46,8 +48,8 @@ https://svelte.dev/e/js_parse_error -->
     for (const [column, filter] of columnFilters) {
       const f = filter?.trim();
       if (f) {
-        filtered = filtered.filter((item) => {
-          const val = (item && item[column]);
+        filtered = filtered.filter(item => {
+          const val = item && item[column];
           return val != null && String(val).toLowerCase().includes(f.toLowerCase());
         });
       }
@@ -74,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
     if (sortConfig?.column === column) {
       sortConfig = {
         column,
-        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc'
+        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc',
       };
     } else {
       sortConfig = { column, direction: 'asc' };
@@ -103,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
     if (selectedRows.size === rows.length && rows.length > 0) {
       selectedRows = new Set();
     } else {
-      selectedRows = new Set(rows.map((row) => row.id));
+      selectedRows = new Set(rows.map(row => row.id));
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
@@ -125,12 +127,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid-toolbar">
       <div class="search-container">
         <Search class="search-icon" />
-        <input
-          type="text"
-          placeholder="Search all columns..."
-          bind:value={searchQuery}
-          class="search-input"
-        />
+        <input type="text" placeholder="Search all columns..." bind:value={searchQuery} class="search-input" />
       </div>
       <div class="filter-actions">
         <button class="filter-button" type="button">
@@ -150,7 +147,8 @@ https://svelte.dev/e/js_parse_error -->
             <th class="select-header">
               <input
                 type="checkbox"
-                checked={selectedRows.size === (Array.isArray(sortedData) ? sortedData.length : 0) && (Array.isArray(sortedData) ? sortedData.length : 0) > 0}
+                checked={selectedRows.size === (Array.isArray(sortedData) ? sortedData.length : 0) &&
+                  (Array.isArray(sortedData) ? sortedData.length : 0) > 0}
                 onchange={handleSelectAll}
                 class="checkbox-input"
               />
@@ -211,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
               class={cn('data-row', {
                 'row-selected': selectedRows.has(row.id),
                 'row-even': index % 2 === 0,
-                'row-clickable': selectable
+                'row-clickable': selectable,
               })}
               onclick={() => handleRowSelect(row.id)}
             >
@@ -257,8 +255,14 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 12px;
     position: relative;
     overflow: hidden;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
+    box-shadow:
+      0 1px 3px 0 rgb(0 0 0 / 0.1),
+      0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
   .grid-toolbar {
     display: flex;
@@ -335,7 +339,8 @@ https://svelte.dev/e/js_parse_error -->
   .header-row {
     border-bottom: 1px solid rgb(229 231 235);
   }
-  .select-header, .actions-header {
+  .select-header,
+  .actions-header {
     width: 3rem;
     padding: 0.75rem;
     text-align: center;
@@ -394,7 +399,8 @@ https://svelte.dev/e/js_parse_error -->
   .row-clickable {
     cursor: pointer;
   }
-  .select-cell, .actions-cell {
+  .select-cell,
+  .actions-cell {
     width: 3rem;
     padding: 0.75rem;
     text-align: center;
@@ -421,11 +427,13 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgb(59 130 246);
     border-color: rgb(59 130 246);
   }
-  .loading-cell, .empty-cell {
+  .loading-cell,
+  .empty-cell {
     padding: 3rem 1.5rem;
     text-align: center;
   }
-  .loading-content, .empty-content {
+  .loading-content,
+  .empty-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -440,7 +448,8 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  .loading-text, .empty-text {
+  .loading-text,
+  .empty-text {
     font-weight: 500;
   }
   .empty-icon {
@@ -448,7 +457,9 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.5;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -463,7 +474,8 @@ https://svelte.dev/e/js_parse_error -->
     .data-table {
       font-size: 0.75rem;
     }
-    .data-cell, .header-cell {
+    .data-cell,
+    .header-cell {
       padding: 0.5rem;
     }
   }

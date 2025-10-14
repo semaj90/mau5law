@@ -152,9 +152,9 @@ class RealTimeServer {
   }
   // Utility methods for specific updates
   public async publishEvidenceUpdate(
-    evidenceId: string
+    evidenceId: string,
     action: string;
-    data: any
+    data: any,
     userId?: string;
   ) {
     await this.publishUpdate(

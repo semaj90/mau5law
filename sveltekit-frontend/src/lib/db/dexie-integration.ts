@@ -288,7 +288,7 @@ export class LegalAIDatabase extends Dexie {
     });
   }
   async addSessionActivity(
-    sessionId: string
+    sessionId: string,
     activity: { type: "search" | "chat" | "document_view" | "graph_explore"; data: { [key: string]: any } }
   ): Promise<void> {
     const session = await this.userSessions.where('sessionId').equals(sessionId).first();
@@ -336,14 +336,14 @@ export class LegalAIDatabase extends Dexie {
       entries.reduce((total, entry) => total + entry.size, 0)
     );
     return {
-      chatHistory: chatCount
-      legalDocuments: documentsCount
-      graphNodes: nodesCount
-      graphEdges: edgesCount
-      userSessions: sessionsCount
+      chatHistory: chatCount,
+      legalDocuments: documentsCount,
+      graphNodes: nodesCount,
+      graphEdges: edgesCount,
+      userSessions: sessionsCount,
       cache: {
-        entries: cacheCount
-        totalSize: cacheSize
+        entries: cacheCount,
+        totalSize: cacheSize,
       },
       estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate
     }

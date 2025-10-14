@@ -30,7 +30,7 @@
     activeSearches: 0,
     workInProgress: 0,
     aiRecommendations: 0,
-    loading: true
+    loading: true,
   };
   // Recent activity summary
   let recentActivity: Array<{
@@ -56,17 +56,13 @@
       const [casesRes, searchRes, workRes] = await Promise.all([
         fetch('/api/recommendations/recent-cases?limit=5'),
         fetch('/api/recommendations/last-searched?limit=5'),
-        fetch('/api/recommendations/last-worked?limit=5')
+        fetch('/api/recommendations/last-worked?limit=5'),
       ]);
       // Check if any requests failed
       if (!casesRes.ok || !searchRes.ok || !workRes.ok) {
         throw new Error('One or more API endpoints failed');
       }
-      const [cases, searches, work] = await Promise.all([
-        casesRes.json(),
-        searchRes.json(),
-        workRes.json()
-      ]);
+      const [cases, searches, work] = await Promise.all([casesRes.json(), searchRes.json(), workRes.json()]);
       // Verify all responses are successful
       if (!cases.success || !searches.success || !work.success) {
         throw new Error('API responses indicate failure');
@@ -77,7 +73,7 @@
         activeSearches: (searches.data || []).filter((s: any) => (s.confidence ?? 0) > 0.7).length || 0,
         workInProgress: (work.data || []).filter((w: any) => w.status === 'in-progress').length || 0,
         aiRecommendations: 12, // AI recommendation count
-        loading: false
+        loading: false,
       };
       // Compile recent activity
       recentActivity = [
@@ -87,7 +83,7 @@
           title: c.title,
           timestamp: c.dateUpdated,
           priority: (c.urgency as any) ?? 'medium',
-          confidence: (c.priority ?? 0) / 250
+          confidence: (c.priority ?? 0) / 250,
         })) || []),
         ...(searches.data?.slice(0, 2).map((s: any) => ({
           id: s.id,
@@ -95,17 +91,18 @@
           title: s.query,
           timestamp: s.lastSearched,
           priority: (s.confidence ?? 0) > 0.8 ? 'high' : 'medium',
-          confidence: s.confidence ?? 0
+          confidence: s.confidence ?? 0,
         })) || []),
         ...(work.data?.slice(0, 2).map((w: any) => ({
           id: w.id,
           type: 'work' as const,
           title: w.title,
           timestamp: w.lastWorked,
-          priority: (w.priority ?? 0) > 200 ? 'high' : 'medium'
-        })) || [])
-      ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-       .slice(0, 6);
+          priority: (w.priority ?? 0) > 200 ? 'high' : 'medium',
+        })) || []),
+      ]
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, 6);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
       usingMockData = true;
@@ -115,7 +112,7 @@
         activeSearches: 3,
         workInProgress: 2,
         aiRecommendations: 8,
-        loading: false
+        loading: false,
       };
       recentActivity = [
         {
@@ -140,13 +137,14 @@
           title: 'Patent Prior Art Research',
           timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
           priority: 'medium',
-        }
+        },
       ];
       // Display fallback notice (guard DOM access for SSR)
       if (typeof document !== 'undefined') {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        notice.style.cssText =
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -156,20 +154,30 @@
   }
   function getActivityIcon(type: string) {
     switch (type) {
-      case 'case': return '⚖️';
-      case 'search': return '🔍';
-      case 'work': return '💼';
-      case 'ai': return '🤖';
-      default: return '📋';
+      case 'case':
+        return '⚖️';
+      case 'search':
+        return '🔍';
+      case 'work':
+        return '💼';
+      case 'ai':
+        return '🤖';
+      default:
+        return '📋';
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'critical': return 'text-red-400';
-      case 'high': return 'text-orange-400';
-      case 'medium': return 'text-yellow-400';
-      case 'low': return 'text-green-400';
-      default: return 'text-gray-400';
+      case 'critical':
+        return 'text-red-400';
+      case 'high':
+        return 'text-orange-400';
+      case 'medium':
+        return 'text-yellow-400';
+      case 'low':
+        return 'text-green-400';
+      default:
+        return 'text-gray-400';
     }
   }
   function formatTimeAgo(timestamp: string) {
@@ -196,35 +204,22 @@
   });
 </script>
 
-<DiamondModal open={isOpen} title="🎯 Recommendation Engine" size="large" on:close={() => { isOpen = false; }}>
+<DiamondModal
+  open={isOpen}
+  title="🎯 Recommendation Engine"
+  size="large"
+  on:close={() => {
+    isOpen = false;
+  }}
+>
   <div class="space-y-6">
     <!-- Tab Navigation -->
     <div class="flex space-x-2 p-1 bg-slate-800/50 rounded-lg border border-slate-600">
       <!-- changed: use getTabClass and on:click -->
-      <button
-        class={getTabClass('overview')}
-        on:click={() => (activeTab = 'overview')}
-      >
-        📊 Overview
-      </button>
-      <button
-        class={getTabClass('search')}
-        on:click={() => (activeTab = 'search')}
-      >
-        🔍 Search History
-      </button>
-      <button
-        class={getTabClass('work')}
-        on:click={() => (activeTab = 'work')}
-      >
-        💼 Work Activity
-      </button>
-      <button
-        class={getTabClass('ai')}
-        on:click={() => (activeTab = 'ai')}
-      >
-        🤖 AI Assistant
-      </button>
+      <button class={getTabClass('overview')} on:click={() => (activeTab = 'overview')}> 📊 Overview </button>
+      <button class={getTabClass('search')} on:click={() => (activeTab = 'search')}> 🔍 Search History </button>
+      <button class={getTabClass('work')} on:click={() => (activeTab = 'work')}> 💼 Work Activity </button>
+      <button class={getTabClass('ai')} on:click={() => (activeTab = 'ai')}> 🤖 AI Assistant </button>
     </div>
     <!-- Overview Tab -->
     {#if activeTab === 'overview'}
@@ -336,7 +331,11 @@
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🔍 Search History & Insights</h3>
             <p class="text-slate-300 mb-6">View your recent searches, patterns, and AI-powered search suggestions.</p>
-            <button type="button" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white" on:click={() => (showSearchModal = true)}>
+            <button
+              type="button"
+              class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white"
+              on:click={() => (showSearchModal = true)}
+            >
               Open Search Dashboard
             </button>
           </div>
@@ -351,7 +350,11 @@
             <p class="text-slate-300 mb-6">
               Monitor your case work, time tracking, and progress across all legal matters.
             </p>
-            <button type="button" class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white" on:click={() => (showWorkModal = true)}>
+            <button
+              type="button"
+              class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white"
+              on:click={() => (showWorkModal = true)}
+            >
               Open Work Dashboard
             </button>
           </div>
@@ -366,7 +369,11 @@
             <p class="text-slate-300 mb-6">
               Get intelligent insights, case analysis, and workflow optimization from Gemma3 Legal AI.
             </p>
-            <button type="button" class="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white" on:click={() => (showAIModal = true)}>
+            <button
+              type="button"
+              class="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white"
+              on:click={() => (showAIModal = true)}
+            >
               Launch AI Assistant
             </button>
           </div>
@@ -375,8 +382,15 @@
     {/if}
   </div>
   <div slot="footer" class="flex justify-between">
-    <button type="button" class="px-3 py-2 border border-slate-600 rounded text-slate-300" on:click={close}>Close Dashboard</button>
-    <button type="button" class="px-3 py-2 bg-slate-700 rounded text-white" on:click={() => loadDashboardData()} disabled={stats.loading}>
+    <button type="button" class="px-3 py-2 border border-slate-600 rounded text-slate-300" on:click={close}
+      >Close Dashboard</button
+    >
+    <button
+      type="button"
+      class="px-3 py-2 bg-slate-700 rounded text-white"
+      on:click={() => loadDashboardData()}
+      disabled={stats.loading}
+    >
       {stats.loading ? '⚡ Loading...' : '🔄 Refresh'}
     </button>
   </div>

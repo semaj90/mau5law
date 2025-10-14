@@ -15,7 +15,7 @@ import { browser } from '$app/environment';
     // Update matches when media query changes
     const updateMatches = (e: MediaQueryListEvent) => {
       matches = e.matches;
-    }
+    };
     mediaQuery.addEventListener('change', updateMatches);
     // Cleanup function
     $effect(() => {
@@ -23,14 +23,14 @@ import { browser } from '$app/environment';
         if (mediaQuery) {
           mediaQuery.removeEventListener('change', updateMatches);
         }
-      }
+      };
     });
   }
   return {
     get matches() {
       return matches;
     },
-  }
+  };
 }
 /**
  * Common breakpoint queries

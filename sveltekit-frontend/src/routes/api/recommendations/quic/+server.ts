@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const benchmarkResults = await engine.benchmarkPerformance(query)
       return json({
         success: true,
-        benchmark: benchmarkResults
+        benchmark: benchmarkResults,
         connection: engine.getConnectionInfo(),
         message: 'QUIC Neo4j Recommendation Engine benchmark completed'
       })
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
       query,
       ...recommendations,
       performance: {
-        totalApiTime: totalTime
+        totalApiTime: totalTime,
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
         targetMet: recommendations.processingTime <= 15,
@@ -141,14 +141,14 @@ export const POST: RequestHandler = async ({ request }) => {
       const successful = batchResults.filter((r) => r.status === 'fulfilled')
       return json({
         success: true,
-        batch: true
+        batch: true,
         totalQueries: batchQueries.length,
         successfulQueries: successful.length,
         results: batchResults.map((result) =>
           (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value:  { error: (result as { status?: any; value?: any; reason?: any }).reason?.message }
         ),
         performance: {
-          totalBatchTime: totalTime
+          totalBatchTime: totalTime,
           averagePerQuery: totalTime / batchQueries.length,
           successRate: successful.length / batchQueries.length
         }
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       ...recommendations,
       performance: {
-        totalApiTime: totalTime
+        totalApiTime: totalTime,
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
         targetMet: recommendations.processingTime <= 15

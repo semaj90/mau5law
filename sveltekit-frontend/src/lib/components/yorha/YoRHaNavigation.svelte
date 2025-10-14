@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#each sectionRoutes as route}
                   <button
                     class="nav-item w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(
-                      route.route,
+                      route.route
                     )
                       ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm'
                       : 'text-yorha-light'}"

@@ -74,7 +74,7 @@
       class={cn(
         'thinking-toggle-btn transition-all duration-300',
         enabled && 'animate-crimson-glow',
-        loading && 'animate-nier-pulse',
+        loading && 'animate-nier-pulse'
       )}
     >
       <div class="icon-container">

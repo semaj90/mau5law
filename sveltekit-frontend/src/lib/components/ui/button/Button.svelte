@@ -48,7 +48,7 @@
 
   // When rendering an anchor, restProps may contain button-specific handlers/types;
   // cast them to HTMLAnchorAttributes to satisfy the type system for the <a> spread.
-  let anchorProps = $derived(() => (restProps as unknown as HTMLAnchorAttributes));
+  let anchorProps = $derived(() => restProps as unknown as HTMLAnchorAttributes);
 
   let classes = [
     'nier-btn',
@@ -56,9 +56,10 @@
     `btn-${size}`,
     fullWidth && 'w-full',
     loading && 'btn-loading',
-    className
-  ].filter(Boolean).join(' ');
-
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 </script>
 
 {#if to}

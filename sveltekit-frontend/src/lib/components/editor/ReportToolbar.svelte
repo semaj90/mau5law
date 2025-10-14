@@ -1,13 +1,8 @@
 <script lang="ts">
   import { get } from 'svelte/store';
   import EnhancedBits from '$lib/components/ui/enhanced-bits';
-  const {
-    DropdownRoot,
-    DropdownTrigger,
-    DropdownContent,
-    DropdownItem,
-    DropdownSeparator
-  } = (EnhancedBits as any) || {};
+  const { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator } =
+    (EnhancedBits as any) || {};
   import {
     Download,
     Eye,
@@ -22,40 +17,36 @@
     Sidebar,
     Undo,
     Upload,
-  } from "lucide-svelte";
-  import { slide } from "svelte/transition";
-  import {
-    editorState,
-    report,
-    reportActions,
-    reportUI,
-  } from '$lib/stores/report';
+  } from 'lucide-svelte';
+  import { slide } from 'svelte/transition';
+  import { editorState, report, reportActions, reportUI } from '$lib/stores/report';
 
   // Actions
   const handleSave = () => {
     reportActions.save();
-  }
+  };
   const handleExport = () => {
     // TODO: Implement export functionality
-    console.log("Export report");
-  }
+    console.log('Export report');
+  };
   const handlePreview = () => {
     // TODO: Implement preview functionality
-    console.log("Preview report");
-  }
+    console.log('Preview report');
+  };
   const toggleSidebar = () => {
-    reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
-  }
+    reportUI.update(ui => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
+  };
   const toggleFullscreen = () => {
-    reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
-  }
+    reportUI.update(ui => ({ ...ui, fullscreen: !ui.fullscreen }));
+  };
   const toggleLayout = () => {
-    const layouts = ["single", "dual", "masonry"] as const;
-    const currentLayout = ((get(report) as { settings?: { layout?: typeof layouts[number] } })?.settings?.layout) ?? "single";
+    const layouts = ['single', 'dual', 'masonry'] as const;
+    const currentLayout =
+      (get(report) as { settings?: { layout?: (typeof layouts)[number] } })?.settings?.layout ?? 'single';
     const currentIndex = layouts.indexOf(currentLayout as any);
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
-  }
+  };
 </script>
 
 <div class="report-toolbar container mx-auto px-4">
@@ -70,11 +61,19 @@
         <DropdownItem onclick={() => handleSave()}>
           <Save size={16} /> Save Report <span class="shortcut">Ctrl+S</span>
         </DropdownItem>
-        <DropdownItem onclick={() => { /* new */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* new */
+          }}
+        >
           <FileText size={16} /> New Report <span class="shortcut">Ctrl+N</span>
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem onclick={() => { /* import */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* import */
+          }}
+        >
           <Upload size={16} /> Import
         </DropdownItem>
         <DropdownItem onclick={() => handleExport()}>
@@ -91,17 +90,33 @@
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem onclick={() => { /* undo */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* undo */
+          }}
+        >
           <Undo size={16} /> Undo <span class="shortcut">Ctrl+Z</span>
         </DropdownItem>
-        <DropdownItem onclick={() => { /* redo */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* redo */
+          }}
+        >
           <Redo size={16} /> Redo <span class="shortcut">Ctrl+Y</span>
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem onclick={() => { /* find */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* find */
+          }}
+        >
           <Search size={16} /> Find <span class="shortcut">Ctrl+F</span>
         </DropdownItem>
-        <DropdownItem onclick={() => { /* replace */ }}>
+        <DropdownItem
+          onclick={() => {
+            /* replace */
+          }}
+        >
           <Replace size={16} /> Replace <span class="shortcut">Ctrl+H</span>
         </DropdownItem>
       </DropdownContent>
@@ -140,26 +155,14 @@
       <Save size={16} />
     </button>
     <div class="separator"></div>
-    <button
-      class="action-button nes-btn"
-      onclick={toggleSidebar}
-      title="Toggle Sidebar"
-    >
+    <button class="action-button nes-btn" onclick={toggleSidebar} title="Toggle Sidebar">
       <Sidebar size={16} />
     </button>
-    <button
-      class="action-button nes-btn"
-      onclick={toggleLayout}
-      title="Switch Layout"
-    >
+    <button class="action-button nes-btn" onclick={toggleLayout} title="Switch Layout">
       <Layout size={16} />
     </button>
     <div class="separator"></div>
-    <button
-      class="action-button nes-btn"
-      onclick={handlePreview}
-      title="Preview Report"
-    >
+    <button class="action-button nes-btn" onclick={handlePreview} title="Preview Report">
       <Eye size={16} />
     </button>
   </div>
@@ -170,12 +173,10 @@
       {$editorState.wordCount} words
     </span>
     {#if $editorState.hasUnsavedChanges}
-      <span class="unsaved-indicator" transition:slide={{ duration: 200 }}>
-        Unsaved changes
-      </span>
+      <span class="unsaved-indicator" transition:slide={{ duration: 200 }}> Unsaved changes </span>
     {:else}
       <span class="saved-indicator" transition:slide={{ duration: 200 }}>
-        Saved { $editorState.lastSaved ? $editorState.lastSaved.toLocaleTimeString() : 'never' }
+        Saved {$editorState.lastSaved ? $editorState.lastSaved.toLocaleTimeString() : 'never'}
       </span>
     {/if}
   </div>

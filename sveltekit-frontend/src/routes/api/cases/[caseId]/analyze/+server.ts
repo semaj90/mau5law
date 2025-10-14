@@ -140,9 +140,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const processingTime = Date.now() - startTime
     return json({
       success: true,
-      analysis: analysisResult
+      analysis: analysisResult,
       metadata: {
-        processingTimeMs: processingTime
+        processingTimeMs: processingTime,
         evidenceCount: evidenceData.length,
         documentCount: documentsWithEmbeddings.length,
         similarCasesFound: similarCases.length,

@@ -29,7 +29,7 @@
     <input
       name="email"
       type="email"
-  placeholder="Email"
+      placeholder="Email"
       bind:value={$form.email}
       aria-invalid={$errors.email ? 'true' : undefined}
       required
@@ -52,10 +52,14 @@
     {/if}
   </div>
   <button type="submit">Login</button>
-  <button type="button" class="demo-login" onclick={() => {
-    $form.email = 'demo@legal-ai.com';
-    $form.password = 'demo123';
-  }}>
+  <button
+    type="button"
+    class="demo-login"
+    onclick={() => {
+      $form.email = 'demo@legal-ai.com';
+      $form.password = 'demo123';
+    }}
+  >
     🎯 Fill Demo Credentials
   </button>
 </form>

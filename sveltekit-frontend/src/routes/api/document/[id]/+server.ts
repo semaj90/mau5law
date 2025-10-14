@@ -54,8 +54,8 @@ export const GET: RequestHandler = async ({ params, url }) => {
           similarity: 1 - doc.similarity_distance, // Convert distance to similarity score
           metadata: {
             source: 'pgvector_similarity',
-            vector_search: true
-            similarity_distance: doc.similarity_distance
+            vector_search: true,
+            similarity_distance: doc.similarity_distance,
           }
         })
       } catch (vectorError) {
@@ -170,16 +170,16 @@ export const GET: RequestHandler = async ({ params, url }) => {
         has_embedding: !!document.content_embedding,
         content_hash: document.content_hash
       },
-      related_documents: relatedDocuments
-      graph_connections: graphConnections
-      case_associations: caseAssociations
-      gpu_analysis: gpuAnalysis
-      enhanced_metadata: enhancedMetadata
+      related_documents: relatedDocuments,
+      graph_connections: graphConnections,
+      case_associations: caseAssociations,
+      gpu_analysis: gpuAnalysis,
+      enhanced_metadata: enhancedMetadata,
       cache_instructions: {
         cache_duration: 5 * 60 * 1000, // 5 minutes
         cache_key: enhancedMetadata.cache_key,
-        auto_refresh: false
-        priority: 'normal'
+        auto_refresh: false,
+        priority: 'normal',
       }
     }
     console.log(`[API] Document ${docId} processed successfully with ${relatedDocuments.length} related docs`)

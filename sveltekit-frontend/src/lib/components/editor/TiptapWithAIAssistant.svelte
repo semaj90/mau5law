@@ -9,9 +9,9 @@ https://svelte.dev/e/script_duplicate -->
 export default ;
 </script>` element
   https://svelte.dev/e/script_duplicate -->
-  <!-- Tiptap Editor with AI Assistant Integration -->
-  <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
-  <script lang="ts">
+<!-- Tiptap Editor with AI Assistant Integration -->
+<!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
+<script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -393,12 +393,14 @@ await initializeEditor();
     });
   }
 </script>
+
 <!-- Editor Container -->
 <div class="tiptap-container relative">
   <!-- Editor Element -->
   <div
     bind:this={editorElement}
-    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within: border-blue-500 transition-colors";
+    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within: border-blue-500 transition-colors"
+    ;
     class:opacity-50={readOnly}
   />
   <!-- Status Bar -->
@@ -433,12 +435,7 @@ await initializeEditor();
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-gray-800">AI Assistant</h3>
-        <button
-          onclick={() => aiAssistantVisible = false}
-          class="text-gray-500 hover:text-gray-700"
-        >
-          ✕
-        </button>
+        <button onclick={() => (aiAssistantVisible = false)} class="text-gray-500 hover:text-gray-700"> ✕ </button>
       </div>
       <!-- Quick Actions -->
       <div class="space-y-2 mb-4">
@@ -461,10 +458,7 @@ await initializeEditor();
         <div class="recommendations">
           <h4 class="font-medium text-gray-700 mb-2">Recommendations</h4>
           {#each $state.context.currentRecommendations as rec (rec.id)}
-            <div
-              class="recommendation-item p-2 border border-gray-200 rounded mb-2"
-              transitionfade={{ duration: 150 }}
-            >
+            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transitionfade={{ duration: 150 }}>
               <div class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="text-sm text-gray-800">{rec.text}</div>
@@ -510,10 +504,7 @@ await initializeEditor();
     >
       <div class="text-sm text-gray-800 mb-2">{currentRecommendation}</div>
       <div class="flex justify-end space-x-2">
-        <button
-          onclick={() => showSuggestions = false}
-          class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1"
-        >
+        <button onclick={() => (showSuggestions = false)} class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1">
           Dismiss
         </button>
         <button
@@ -533,6 +524,7 @@ await initializeEditor();
     <span>Esc: Hide suggestions</span>
   </div>
 </div>
+
 <style>
   .tiptap-editor {
     outline: none;
@@ -567,4 +559,3 @@ await initializeEditor();
     }
   }
 </style>
-

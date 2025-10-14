@@ -14,10 +14,10 @@ import { logger } from '$lib/server/logger';
 async function findOrCreateDevUser(): Promise<any> {
   // Attempt fetch existing dev user
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, 'dev@example.com')).limit(1);
-  if (existing.length) return { id: existing[0].id, created: false, passwordColumn: 'hashed_password' }
+  if (existing.length) return { id: existing[0].id, created: false, passwordColumn: 'hashed_password' };
   // Fallback: any admin user
   const anyAdmin = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
-  if (anyAdmin.length) return { id: anyAdmin[0].id, created: false, passwordColumn: 'hashed_password' }
+  if (anyAdmin.length) return { id: anyAdmin[0].id, created: false, passwordColumn: 'hashed_password' };
   // Create dev user
   const inserted = await db
     .insert(users)
@@ -30,7 +30,7 @@ async function findOrCreateDevUser(): Promise<any> {
     })
     .returning({ id: users.id });
   if (!inserted.length) throw new Error('Failed to create dev user');
-  return { id: inserted[0].id, created: true, passwordColumn: 'password_hash' }
+  return { id: inserted[0].id, created: true, passwordColumn: 'password_hash' };
 }
 export const GET: RequestHandler = async ({ cookies, url }) => {
   if (!dev) return json({ error: 'Not available in production' }, { status: 403 });
@@ -82,10 +82,10 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
         details: error instanceof Error ? error.message : 'Unknown error',
         stack: dev && error instanceof Error ? error.stack : undefined,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const POST: RequestHandler = async ({ cookies }) => {
   if (!dev) return json({ error: 'Not available in production' }, { status: 403 });
   const sessionId = cookies.get('session');
@@ -99,4 +99,4 @@ export const POST: RequestHandler = async ({ cookies }) => {
     logger.info('dev-auth.session.cleared', { sessionId });
   }
   return json({ success: true, message: 'Development session cleared' });
-}
+};

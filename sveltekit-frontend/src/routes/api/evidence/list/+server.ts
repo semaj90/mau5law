@@ -23,4 +23,4 @@ export const GET: RequestHandler = async () => {
     console.error('Evidence list error', err);
     return new Response(JSON.stringify({ error: 'Failed to list evidence' }), { status: 500 });
   }
-}
+};

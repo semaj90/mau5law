@@ -1,6 +1,6 @@
 // globals.d.ts
 // Comprehensive ambient types to reduce noisy 'property does not exist on type unknown' errors
-type AnyObject = { [key: string]: any }
+type AnyObject = { [key: string]: any };
 // Lightweight LokiJS collection/database helpers used in tests and stores
 export interface LokiCollection<T = any> {
   name: string;
@@ -24,10 +24,10 @@ declare global {
     lokiDB?: LokiDB;
     SpeechRecognition?: {
       new (): SpeechRecognition;
-    }
+    };
     webkitSpeechRecognition?: {
       new (): SpeechRecognition;
-    }
+    };
   }
 }
 // Minimal SpeechRecognition interface for browser APIs
@@ -56,7 +56,7 @@ export interface DocChunk {
     jurisdiction?: string;
     date?: string | number;
     [k: string]: any;
-  }
+  };
   [k: string]: any;
 }
 // Generic message/export interfaces used in tests
@@ -158,7 +158,7 @@ declare global {
     tags?: () => Promise<Array<any>>;
     health?: () => Promise<any>;
     [k: string]: any;
-  }
+  };
   // Vector operations shim used by many modules
   interface EnhancedVectorOperations {
     generateEmbedding: (input: any) => Promise<number[]>;

@@ -19,30 +19,30 @@ declare interface RAGSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 declare interface TextChunk {
   text: string;
   index: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 declare interface RAGDocument {
   id: string;
   content: string;
   embedding?: number[];
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 // Store types
 declare const enhancedRAGStore: {
   search: (query: string) => Promise<RAGSearchResult[]>;
   add: (doc: RAGDocument) => Promise<void>;
-}
+};
 declare const documentVectors: any;
 // Routing types
 declare interface DynamicRouteConfig {
   path: string;
   component: any;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 declare interface GeneratedRoute {
   path: string;
@@ -120,11 +120,11 @@ declare module 'xstate' {
   export interface Actor<T = any> {
     send(_event: any): void;
     getSnapshot(): T;
-    subscribe(callback: (snapshot: T) => void): { unsubscribe(): void }
+    subscribe(callback: (snapshot: T) => void): { unsubscribe(): void };
     stop(): void;
-    onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void }
-    onDone?: (listener: (_event: any) => void) => { unsubscribe(): void }
-    onStop?: (listener: () => void) => { unsubscribe(): void }
+    onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void };
+    onDone?: (listener: (_event: any) => void) => { unsubscribe(): void };
+    onStop?: (listener: () => void) => { unsubscribe(): void };
     withConfig?: (config: any) => any;
   }
   export function createActor<T>(machine: any): Actor<T>;
@@ -178,7 +178,7 @@ export interface MetricData {
   metric: string;
   value: number;
   timestamp: Date;
-  labels?: { [key: string]: any }
+  labels?: { [key: string]: any };
   source?: string;
   level?: string;
   category?: string;

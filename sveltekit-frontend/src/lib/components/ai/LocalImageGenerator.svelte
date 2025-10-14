@@ -8,7 +8,7 @@ Production-ready with native Windows support
   import { onMount } from 'svelte';
   import {
     imageGenerationService,
-    imageGenerationStore
+    imageGenerationStore,
     // removed problematic `type` imports to avoid TS namespace errors when importing from .js
   } from '$lib/services/local-image-generation-service.js';
 
@@ -46,13 +46,15 @@ Production-ready with native Windows support
     caseId = '',
     onImageGenerated = (result: ImageGenerationResult) => {}, // fixed default
     initialPrompt = '',
-    compact = false
+    compact = false,
   }: Props = $props();
 
   // Component state
   let prompt = $state(initialPrompt);
   let negativePrompt = $state('blurry, low quality, distorted, text, watermark, signature');
-  let selectedStyle = $state<'realistic' | 'artistic' | 'anime' | 'sketch' | 'legal-diagram' | 'evidence-recreation'>('realistic');
+  let selectedStyle = $state<'realistic' | 'artistic' | 'anime' | 'sketch' | 'legal-diagram' | 'evidence-recreation'>(
+    'realistic'
+  );
   let selectedProvider = $state<'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback'>('fallback');
   let advancedMode = $state(false);
   // Advanced parameters
@@ -98,7 +100,7 @@ Production-ready with native Windows support
         cfgScale,
         seed: seed === -1 ? undefined : seed,
         style: selectedStyle,
-        provider: selectedProvider
+        provider: selectedProvider,
       };
       const result = await imageGenerationService.generateImage(request);
       // Update history
@@ -124,9 +126,9 @@ Production-ready with native Windows support
           aiGenerated: true,
           provider: result.provider,
           parameters: result.parameters,
-          generatedAt: result.timestamp
+          generatedAt: result.timestamp,
         },
-        tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle]
+        tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle],
       };
       // parent callback — still call with result (evidence creation handled outside)
       onImageGenerated(result);
@@ -156,12 +158,32 @@ Production-ready with native Windows support
   }
   // Legal/evidence specific prompts
   const legalPromptTemplates = [
-    { name: 'Crime Scene Recreation', prompt: 'detailed crime scene recreation, professional forensic photography style, accurate lighting, evidence markers' },
-    { name: 'Suspect Identification', prompt: 'police sketch style, facial composite, professional law enforcement illustration' },
-    { name: 'Traffic Accident Diagram', prompt: 'traffic accident scene diagram, aerial view, clear road markings, vehicle positions, technical illustration' },
-    { name: 'Property Damage Documentation', prompt: 'property damage documentation, insurance photo style, clear details, professional lighting' },
-    { name: 'Evidence Visualization', prompt: 'forensic evidence visualization, scientific illustration, detailed analysis, laboratory setting' },
-    { name: 'Legal Diagram', prompt: 'legal process diagram, flowchart style, professional presentation, clear annotations' }
+    {
+      name: 'Crime Scene Recreation',
+      prompt:
+        'detailed crime scene recreation, professional forensic photography style, accurate lighting, evidence markers',
+    },
+    {
+      name: 'Suspect Identification',
+      prompt: 'police sketch style, facial composite, professional law enforcement illustration',
+    },
+    {
+      name: 'Traffic Accident Diagram',
+      prompt:
+        'traffic accident scene diagram, aerial view, clear road markings, vehicle positions, technical illustration',
+    },
+    {
+      name: 'Property Damage Documentation',
+      prompt: 'property damage documentation, insurance photo style, clear details, professional lighting',
+    },
+    {
+      name: 'Evidence Visualization',
+      prompt: 'forensic evidence visualization, scientific illustration, detailed analysis, laboratory setting',
+    },
+    {
+      name: 'Legal Diagram',
+      prompt: 'legal process diagram, flowchart style, professional presentation, clear annotations',
+    },
   ];
 </script>
 
@@ -432,7 +454,7 @@ Production-ready with native Windows support
                       timestamp?: any;
                       metadata?: any;
                     }
-                  ).timestamp,
+                  ).timestamp
                 ).toLocaleTimeString()}
               </p>
             </div>
@@ -592,7 +614,9 @@ Production-ready with native Windows support
     margin-right: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .current-generation {
     margin: 1rem 0;

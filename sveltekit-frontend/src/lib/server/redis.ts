@@ -5,12 +5,12 @@
 import Redis from 'ioredis';
 import { getRedisConfig } from '$lib/config/redis-config';
 // Get optimized Redis configuration
-const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379'
+const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
 const baseConfig = getRedisConfig();
 function buildRedisOptions() {
   const password = process.env.REDIS_PASSWORD || baseConfig.password;
   // Only set password if it's a non-empty string
-  const finalPassword = (password && password.trim()) ? password : undefined;
+  const finalPassword = password && password.trim() ? password : undefined;
   return {
     ...baseConfig,
     password: finalPassword,
@@ -27,15 +27,13 @@ redis.on('connect', () => {
   console.log('[redis] ✅ Connected successfully');
 });
 redis.on('ready', () => {
-  const masked = redisOptions.password
-    ? redisOptions.password.replace(/.(?=.{2})/g, '*')
-    : '(none)';
+  const masked = redisOptions.password ? redisOptions.password.replace(/.(?=.{2})/g, '*') : '(none)';
   console.log('[redis] 🚀 Client ready for operations');
   console.log(
     `[redis] config host=${baseConfig.host || 'in-url'} port=${baseConfig.port} db=${baseConfig.db ?? 0} password=${masked}`
   );
 });
-redis.on('error', (error) => {
+redis.on('error', error => {
   console.error('[redis] ❌ Connection error:', error.message);
   if (error.message.includes('ECONNREFUSED')) {
     console.error('[redis] 💡 Tip: Start Redis server with: npm run redis:start');
@@ -43,7 +41,7 @@ redis.on('error', (error) => {
     console.error('[redis] 💡 Tip: Check REDIS_PASSWORD environment variable');
   }
 });
-redis.on('reconnecting', (delay) => {
+redis.on('reconnecting', delay => {
   console.log(`[redis] 🔄 Reconnecting in ${delay}ms...`);
 });
 redis.on('close', () => {
@@ -53,7 +51,7 @@ export const createRedisInstance = () => {
   const opts = buildRedisOptions();
   (opts as any).url = url;
   return new Redis(opts as any);
-}
+};
 // Thin interface describing only commands we actually use broadly
 export interface RedisBasicCommands {
   get(_key: string): Promise<string | null>;
@@ -90,11 +88,9 @@ export function createRedisClientSet(): RedisClientSet {
     subscriber,
     publisher,
     async closeAll() {
-      await Promise.all(
-        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {}))
-      );
-    }
-  }
+      await Promise.all([primary.quit(), subscriber.quit(), publisher.quit()].map(p => p.catch(() => {})));
+    },
+  };
 }
 let legacyClient: Redis | null = null;
 export async function createRedisClient(): Promise<Redis> {
@@ -111,10 +107,7 @@ export async function getFromCache(_key: string): Promise<string | null> {
     return null;
   }
 }
-export async function setCache(_key: string,
-  value: string,
-  expireInSeconds?: number
-): Promise<boolean> {
+export async function setCache(_key: string, value: string, expireInSeconds?: number): Promise<boolean> {
   try {
     const client = await createRedisClient();
     if (expireInSeconds) {

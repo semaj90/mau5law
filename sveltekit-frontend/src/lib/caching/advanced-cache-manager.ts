@@ -48,6 +48,6 @@ export class AdvancedCacheManager implements CacheLayerInterface {
       ttl: this.config.ttl,
       hitRate: 0.85,
       missRate: 0.15,
-    }
+    };
   }
 }

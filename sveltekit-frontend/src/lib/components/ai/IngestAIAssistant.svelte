@@ -26,7 +26,7 @@ https://svelte.dev/e/attribute_duplicate -->
     isProcessing,
     systemHealth,
     performanceMetrics,
-    currentConversation
+    currentConversation,
   } from '$lib/stores/ai-agent';
   import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
   // Component state following your patterns
@@ -42,18 +42,18 @@ https://svelte.dev/e/attribute_duplicate -->
   let processingStatus = writable('idle');
   let errors = writable([] as any[]);
   // Derived states following your patterns
-  const canIngest = derived([processingStatus], ([$status]) => $status === 'idle' && documentTitle.trim() !== '' && documentContent.trim() !== '');
-  const hasResults = derived(
-    ingestResults,
-    ($results) => $results.length > 0
+  const canIngest = derived(
+    [processingStatus],
+    ([$status]) => $status === 'idle' && documentTitle.trim() !== '' && documentContent.trim() !== ''
   );
+  const hasResults = derived(ingestResults, $results => $results.length > 0);
   // Document types following your legal AI patterns
   const documentTypes = [
     { value: 'legal', label: 'Legal Document', icon: '⚖️' },
     { value: 'evidence', label: 'Evidence', icon: '🔍' },
     { value: 'case', label: 'Case File', icon: '📁' },
     { value: 'contract', label: 'Contract', icon: '📜' },
-    { value: 'precedent', label: 'Legal Precedent', icon: '📚' }
+    { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
   ];
   // Enhanced ingest function with AI integration
   async function ingestDocument() {
@@ -83,14 +83,25 @@ https://svelte.dev/e/attribute_duplicate -->
       }
       currentProgress.set(100);
       // Update results
-      ingestResults.update(results => [...results, { ...(result as any), title: documentTitle, type: selectedDocumentType, timestamp: new Date() }]);
+      ingestResults.update(results => [
+        ...results,
+        { ...(result as any), title: documentTitle, type: selectedDocumentType, timestamp: new Date() },
+      ]);
       // Clear form
       clearForm();
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
     } catch (error) {
       console.error('Ingest failed:', error);
-      errors.update(errs => [...errs, { id: Date.now(), message: (error as any)?.message || String(error), timestamp: new Date(), type: 'ingest_error' }]);
+      errors.update(errs => [
+        ...errs,
+        {
+          id: Date.now(),
+          message: (error as any)?.message || String(error),
+          timestamp: new Date(),
+          type: 'ingest_error',
+        },
+      ]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
     }
@@ -100,7 +111,11 @@ https://svelte.dev/e/attribute_duplicate -->
     try {
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
       // Use your existing AI agent for summary
-      await aiAgentStore.sendMessage(prompt, { document_id: documentId, analysis_type: 'legal_summary', source: 'ingest_assistant' });
+      await aiAgentStore.sendMessage(prompt, {
+        document_id: documentId,
+        analysis_type: 'legal_summary',
+        source: 'ingest_assistant',
+      });
     } catch (error) {
       console.warn('AI summary generation failed:', error);
     }
@@ -113,7 +128,12 @@ https://svelte.dev/e/attribute_duplicate -->
     processingStatus.set('batch_processing');
     currentProgress.set(0);
     try {
-      const batchRequest = documents.map(doc => ({ title: doc.title, content: doc.content, case_id: doc.case_id, metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' } }));
+      const batchRequest = documents.map(doc => ({
+        title: doc.title,
+        content: doc.content,
+        case_id: doc.case_id,
+        metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' },
+      }));
       // TODO: Restore batch functionality when `ingestBatch` is available on the service
       console.warn('Batch ingestion is currently disabled.');
       const result = { success: false, message: 'Batch ingestion not implemented.' };
@@ -125,7 +145,15 @@ https://svelte.dev/e/attribute_duplicate -->
       setTimeout(() => processingStatus.set('idle'), 2000);
     } catch (error) {
       console.error('Batch processing failed:', error);
-      errors.update(errs => [...errs, { id: Date.now(), message: `Batch processing failed: ${(error as any)?.message || String(error)}`, timestamp: new Date(), type: 'batch_error' }]);
+      errors.update(errs => [
+        ...errs,
+        {
+          id: Date.now(),
+          message: `Batch processing failed: ${(error as any)?.message || String(error)}`,
+          timestamp: new Date(),
+          type: 'batch_error',
+        },
+      ]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
     }
@@ -137,7 +165,10 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function addToBatch() {
     if (!documentTitle.trim() || !documentContent.trim()) return;
-    batchDocuments.update(docs => [...docs, { id: Date.now(), title: documentTitle, content: documentContent, case_id: caseId, type: selectedDocumentType }]);
+    batchDocuments.update(docs => [
+      ...docs,
+      { id: Date.now(), title: documentTitle, content: documentContent, case_id: caseId, type: selectedDocumentType },
+    ]);
     clearForm();
   }
   function removeFromBatch(id: number) {
@@ -146,23 +177,30 @@ https://svelte.dev/e/attribute_duplicate -->
   function dismissError(errorId: number) {
     errors.update(errs => errs.filter(err => err.id !== errorId));
   }
-    onMount(async () => {
-      // Initialize AI agent connection following your patterns
-      try {
-        await aiAgentStore.connect();
-      } catch (e) {
-        console.error('Failed to connect to AI Agent Store:', e);
-      }
-    });
+  onMount(async () => {
+    // Initialize AI agent connection following your patterns
+    try {
+      await aiAgentStore.connect();
+    } catch (e) {
+      console.error('Failed to connect to AI Agent Store:', e);
+    }
+  });
   // Add this typed constructor alias so TypeScript treats Input as a component constructor
   const InputCtor = Input as unknown as ComponentType;
 </script>
+
 <!-- Component HTML following your UI patterns -->
 <div class="w-full max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header with system status -->
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <div class="w-3 h-3 rounded-full {$systemHealth === 'healthy' ? 'bg-green-500' : $systemHealth === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'}"></div>
+      <div
+        class="w-3 h-3 rounded-full {$systemHealth === 'healthy'
+          ? 'bg-green-500'
+          : $systemHealth === 'degraded'
+            ? 'bg-yellow-500'
+            : 'bg-red-500'}"
+      ></div>
       <h1 class="text-2xl font-bold">AI-Powered Document Ingest</h1>
       <span
         class="px-2 py-1 rounded text-xs font-medium {$systemHealth === 'healthy'
@@ -173,9 +211,13 @@ https://svelte.dev/e/attribute_duplicate -->
       </span>
     </div>
     <div class="flex items-center space-x-2">
-      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$isProcessing ? 'Processing...' : 'Ready'}</span>
+      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+        >{$isProcessing ? 'Processing...' : 'Ready'}</span
+      >
       {#if $performanceMetrics.totalRequests > 0}
-        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{$performanceMetrics.successRate.toFixed(1)}% Success</span>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+          >{$performanceMetrics.successRate.toFixed(1)}% Success</span
+        >
       {/if}
     </div>
   </div>
@@ -184,9 +226,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>
-          ✕
-        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>✕</Button>
       </AlertDescription>
     </Alert>
   {/each}
@@ -196,10 +236,13 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">
-            {$processingStatus === 'processing' ? 'Processing Document...' :
-             $processingStatus === 'batch_processing' ? 'Processing Batch...' :
-             $processingStatus === 'completed' ? 'Completed Successfully!' :
-             'Processing Failed'}
+            {$processingStatus === 'processing'
+              ? 'Processing Document...'
+              : $processingStatus === 'batch_processing'
+                ? 'Processing Batch...'
+                : $processingStatus === 'completed'
+                  ? 'Completed Successfully!'
+                  : 'Processing Failed'}
           </span>
           <span class="text-sm nes-text is-disabled">{$currentProgress}%</span>
         </div>
@@ -227,19 +270,16 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="space-y-2">
           <Label for="case-id">Case ID (Optional)</Label>
           <!-- replaced direct component with svelte:component using typed constructor -->
-          <InputCtor
-            id="case-id"
-            bind:value={caseId}
-            placeholder="CASE-2024-001"
-            disabled={$isProcessing}
-          />
+          <InputCtor id="case-id" bind:value={caseId} placeholder="CASE-2024-001" disabled={$isProcessing} />
         </div>
         <div class="space-y-2">
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
               <button
-                class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value ? 'is-primary' : ''}"
+                class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value
+                  ? 'is-primary'
+                  : ''}"
                 onclick={() => (selectedDocumentType = type.value)}
                 disabled={$isProcessing}
               >
@@ -260,11 +300,7 @@ https://svelte.dev/e/attribute_duplicate -->
           />
         </div>
         <div class="flex space-x-2">
-          <Button
-            onclick={ingestDocument}
-            disabled={!$canIngest || $isProcessing}
-            class="flex-1 bits-btn bits-btn"
-          >
+          <Button onclick={ingestDocument} disabled={!$canIngest || $isProcessing} class="flex-1 bits-btn bits-btn">
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
           </Button>
           <Button
@@ -306,23 +342,12 @@ https://svelte.dev/e/attribute_duplicate -->
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <Button class="bits-btn"
-                  variant="ghost"
-                  size="sm"
-                  onclick={() =>
-removeFromBatch(doc.id)}
-                >
-                  ✕
-                </Button>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFromBatch(doc.id)}>✕</Button>
               </div>
             {/each}
           </div>
           <div class="space-y-2">
-            <Button
-              onclick={processBatch}
-              disabled={$isProcessing}
-              class="w-full bits-btn bits-btn"
-            >
+            <Button onclick={processBatch} disabled={$isProcessing} class="w-full bits-btn bits-btn">
               {$processingStatus === 'batch_processing'
                 ? 'Processing Batch...'
                 : `🔥 Process ${$batchDocuments.length} Documents`}
@@ -354,10 +379,56 @@ removeFromBatch(doc.id)}
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <div class="font-medium">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).is_batch ? `Batch: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processed} documents` : (result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).title}
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).is_batch
+                      ? `Batch: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processed} documents`
+                      : (
+                          result as {
+                            success?: any;
+                            documentId?: any;
+                            batchId?: any;
+                            is_batch?: any;
+                            processed?: any;
+                            title?: any;
+                            successRate?: any;
+                            type?: any;
+                            processingTime?: any;
+                            embeddingId?: any;
+                            timestamp?: any;
+                          }
+                        ).title}
                   </div>
                   <div class="text-sm nes-text is-disabled">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).is_batch ? `Success Rate: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).successRate}` : `Type: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).type}`}
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).is_batch
+                      ? `Success Rate: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).successRate}`
+                      : `Type: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).type}`}
                   </div>
                 </div>
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">✓ Completed</span>
@@ -366,25 +437,98 @@ removeFromBatch(doc.id)}
                 <div>
                   <div class="nes-text is-disabled">Processing Time</div>
                   <div class="font-medium">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processingTime ? `${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processingTime.toFixed(1)}ms` : 'N/A'}
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).processingTime
+                      ? `${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processingTime.toFixed(1)}ms`
+                      : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Document ID</div>
                   <div class="font-mono text-xs">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).documentId?.substring(0, 8) || (result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).batchId?.substring(0, 8)}...
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).documentId?.substring(0, 8) ||
+                      (
+                        result as {
+                          success?: any;
+                          documentId?: any;
+                          batchId?: any;
+                          is_batch?: any;
+                          processed?: any;
+                          title?: any;
+                          successRate?: any;
+                          type?: any;
+                          processingTime?: any;
+                          embeddingId?: any;
+                          timestamp?: any;
+                        }
+                      ).batchId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Embedding ID</div>
                   <div class="font-mono text-xs">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).embeddingId?.substring(0, 8)}...
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).embeddingId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Timestamp</div>
                   <div class="text-xs">
-                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).timestamp.toLocaleTimeString()}
+                    {(
+                      result as {
+                        success?: any;
+                        documentId?: any;
+                        batchId?: any;
+                        is_batch?: any;
+                        processed?: any;
+                        title?: any;
+                        successRate?: any;
+                        type?: any;
+                        processingTime?: any;
+                        embeddingId?: any;
+                        timestamp?: any;
+                      }
+                    ).timestamp.toLocaleTimeString()}
                   </div>
                 </div>
               </div>
@@ -404,7 +548,11 @@ removeFromBatch(doc.id)}
         <div class="space-y-4 max-h-60 overflow-y-auto">
           {#each $currentConversation.slice(-2) as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-              <div class="max-w-[80%] p-3 rounded-lg {message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
+              <div
+                class="max-w-[80%] p-3 rounded-lg {message.role === 'user'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted'}"
+              >
                 <div class="text-sm">
                   {message.content}
                 </div>
@@ -421,6 +569,7 @@ removeFromBatch(doc.id)}
     </div>
   {/if}
 </div>
+
 <style>
   /* Custom styles following your YoRHa theme patterns */
   :global(.progress-bar) {

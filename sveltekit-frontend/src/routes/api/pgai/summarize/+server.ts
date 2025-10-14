@@ -11,6 +11,6 @@ export const POST: RequestHandler = async ({ request }) => {
   const primary = sentences.slice(0, 3).join(' ');
   const summary = primary.length > 50 ? primary : trimmed.slice(0, 200);
   return json({ success: true, summary, format, originalLength: text.length });
-}
+};
 export const GET: RequestHandler = async () => json({ success: true, status: 'ok' });
 export const prerender = false;

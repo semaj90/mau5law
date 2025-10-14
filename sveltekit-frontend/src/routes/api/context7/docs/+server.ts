@@ -225,7 +225,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       query: req.query,
       results: searchResults.results || searchResults,
       count: searchResults.count || searchResults.length,
-      memory_context: memoryContext
+      memory_context: memoryContext,
       service: req.useEnhancedRAG ? 'enhanced-rag' : 'go-rag',
       timestamp: new Date().toISOString()
     })

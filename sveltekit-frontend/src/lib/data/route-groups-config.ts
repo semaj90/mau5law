@@ -478,7 +478,5 @@ export function getRouteById(id: string): RouteDefinition | undefined {
 
 // Get route group containing a specific route
 export function getRouteGroup(routeId: string): RouteGroupDefinition | undefined {
-  return routeGroups.find(group =>
-    group.routes.some(route => route.id === routeId)
-  );
+  return routeGroups.find(group => group.routes.some(route => route.id === routeId));
 }

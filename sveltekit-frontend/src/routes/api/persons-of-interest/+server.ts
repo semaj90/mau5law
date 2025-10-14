@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db, personsOfInterest } from '$lib/server/db'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db, personsOfInterest } from '$lib/server/db';
 import { eq, and, desc, asc, sql } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {

@@ -485,4 +485,3 @@ legalAIActor.subscribe(snapshot => {
 // Start the actor
 legalAIActor.start();
 export default legalAIActor;
-

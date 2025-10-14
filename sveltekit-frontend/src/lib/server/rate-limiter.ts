@@ -22,7 +22,7 @@ class InMemoryRateLimiter {
     }
     if (existing.count >= options.max) {
       return {
-        allowed: false
+        allowed: false,
         remaining: 0,
         reset: existing.expires,
         retryAfter: Math.max(0, Math.ceil((existing.expires - now) / 1000)

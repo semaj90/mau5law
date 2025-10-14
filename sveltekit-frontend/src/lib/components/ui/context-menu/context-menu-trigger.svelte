@@ -33,11 +33,13 @@
     return {
       destroy() {
         node.removeEventListener('contextmenu', handleContextMenu);
-      }
+      },
     };
   }
 
-  const emptySnippet = { "{@render ...} must be called with a Snippet": "import type { Snippet } from 'svelte'" } as unknown as Snippet;
+  const emptySnippet = {
+    '{@render ...} must be called with a Snippet': "import type { Snippet } from 'svelte'",
+  } as unknown as Snippet;
   function renderChild(props?: any): Snippet {
     if (!children) return emptySnippet;
     if (typeof children === 'function') return (children as ChildRenderer)(props);

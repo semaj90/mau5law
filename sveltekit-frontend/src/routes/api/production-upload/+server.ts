@@ -1,44 +1,44 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Production-Quality Document Upload API
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j
-import { db } from '$lib/server/db/index'
-import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema'
-import { randomUUID } from 'node:crypto'
-import path from 'path'
-import { qdrantService } from '$lib/services/qdrantService'
+import { db } from '$lib/server/db/index';
+import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema';
+import { randomUUID } from 'node:crypto';
+import path from 'path';
+import { qdrantService } from '$lib/services/qdrantService';
 // Placeholder services to avoid compile errors if originals missing
-import { cases, legalDocuments } from '$lib/server/db/schema-postgres'
-import { eq } from 'drizzle-orm'
-import { writeFile, mkdir } from 'fs/promises'
-import pdf from 'pdf-parse'
-import { createWorker } from 'tesseract.js'
-import { ollamaService } from '$lib/server/ai/ollama-service'
-import { legalBERT } from '$lib/server/ai/legalbert-middleware'
+import { cases, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { writeFile, mkdir } from 'fs/promises';
+import pdf from 'pdf-parse';
+import { createWorker } from 'tesseract.js';
+import { ollamaService } from '$lib/server/ai/ollama-service';
+import { legalBERT } from '$lib/server/ai/legalbert-middleware';
 // import { interpret
 // import { documentUploadMachine } from '$lib/state/documentUploadMachine'
 // Production logging
 const logger = {
   info: (msg: string, data?: unknown) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
   error: (msg: string, error?: unknown) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, error || ''),
-  warn: (msg: string, data?: unknown) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || '')
-}
+  warn: (msg: string, data?: unknown) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || ''),
+};
 // File type validation
-const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg']
+const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg'];
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 // Upload directory
-const UPLOAD_DIR = path.join(process.cwd(), 'uploads')
+const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
 
 export interface UploadResult {
-  success: boolean
-  documentId?: string
-  evidenceId?: string
-  analysis?: unknown
-  embeddings?: number[]
-  ocrResult?: unknown
-  error?: string
-  processingTime: number
+  success: boolean;
+  documentId?: string;
+  evidenceId?: string;
+  analysis?: unknown;
+  embeddings?: number[];
+  ocrResult?: unknown;
+  error?: string;
+  processingTime: number;
 }
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now();

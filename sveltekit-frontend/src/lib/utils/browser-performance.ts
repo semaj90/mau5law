@@ -152,7 +152,7 @@ export class BrowserErrorHandler {
       hardwareAcceleration: isChromeWindows(),
       errors: this.errors.length,
       recommendations,
-    }
+    };
   }
 }
 // Singleton instances

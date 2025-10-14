@@ -31,7 +31,7 @@
     }
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
-    }
+    };
   });
   async function loadMetrics() {
     try {

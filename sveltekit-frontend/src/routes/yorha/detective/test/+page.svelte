@@ -10,13 +10,13 @@
       const response = await fetch('/api/cases', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           title: 'Test Case from YoRHa Detective',
           description: 'This is a test case created from the YoRHa Detective interface',
-          priority: 'medium'
-        })
+          priority: 'medium',
+        }),
       });
       const result = await response.json();
       if (response.ok) {

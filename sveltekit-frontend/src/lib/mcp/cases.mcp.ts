@@ -41,7 +41,7 @@ export interface EvidenceData {
 /**
  * MCP Tool: Load Case
  * Retrieves case data with caching layer
- */;
+ */
 export async function loadCase(caseId: string): Promise<CaseData | null> {
   try {
     console.log(`🔍 MCP Tool: loadCase(${caseId})`);
@@ -78,7 +78,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
 /**
  * MCP Tool: Create Case
  * Creates new case with auto-generated case number
- */;
+ */
 export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'>): Promise<any> {
   try {
     console.log('🆕 MCP Tool: createCase', caseData.title);
@@ -111,7 +111,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
 /**
  * MCP Tool: Update Case
  * Updates case with optimistic locking
- */;
+ */
 export async function updateCase(caseId: string, updates: Partial<CaseData>): Promise<any> {
   try {
     console.log(`📝 MCP Tool: updateCase(${caseId})`);
@@ -145,7 +145,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
 /**
  * MCP Tool: Add Evidence
  * Adds evidence to case with file upload support
- */;
+ */
 export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, 'id' | 'createdAt'>): Promise<any> {
   try {
     console.log(`📋 MCP Tool: addEvidence to case ${caseId}`);
@@ -165,8 +165,8 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       evidenceType: evidence.evidenceType,
       createdBy: 'system', // TODO: get from context
       tags: evidence.tags ? JSON.stringify(evidence.tags) : null;
-      metadata: evidence
-      createdAt: new Date()
+      metadata: evidence,
+      createdAt: new Date(),
     }).returning();
     // Invalidate case cache
     await cache.del(`case:${caseId}`);
@@ -187,7 +187,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
 /**
  * MCP Tool: Search Cases
  * Vector-enhanced case search with semantic similarity
- */;
+ */
 export async function searchCases(query: string, userId: string, filters?: {
   status?: string;
   priority?: string;
@@ -227,8 +227,8 @@ export async function searchCases(query: string, userId: string, filters?: {
       }
     });
     const searchResult = {
-      cases: results as CaseData[]
-      totalCount: results.length
+      cases: results as CaseData[],
+      totalCount: results.length,
     }
     // Cache results using specialized search cache
     await cache.setSearchResults(query, 'cases', searchResult.cases, filters);
@@ -242,7 +242,7 @@ export async function searchCases(query: string, userId: string, filters?: {
 /**
  * MCP Tool: Get User Cases
  * Retrieves all cases for a user with pagination
- */;
+ */
 export async function getUserCases(userId: string, options: {
   limit?: number;
   offset?: number;
@@ -284,7 +284,7 @@ export async function getUserCases(userId: string, options: {
 /**
  * Helper: Generate Case Number
  * Creates unique case number with format: CASE-YYYY-NNNN
- */;
+ */
 async function generateCaseNumber(): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `CASE-${year}-`;
@@ -307,7 +307,7 @@ async function generateCaseNumber(): Promise<string> {
 /**
  * MCP Tool: Health Check
  * Verifies database connectivity and performance
- */;
+ */
 export async function healthCheck(): Promise<any> {
   try {
     const start = Date.now();

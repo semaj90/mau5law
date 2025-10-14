@@ -27,7 +27,7 @@
     disabled = false,
     voiceEnabled = true,
     class: className = '',
-    onclick
+    onclick,
   }: Props = $props();
 
   // AI Assistant state
@@ -50,19 +50,19 @@
       floating: 'fixed z-50 rounded-full shadow-2xl hover:shadow-yorha-accent/20 border-2',
       inline: 'relative rounded-lg shadow-md hover:shadow-lg border',
       compact: 'relative rounded-md shadow-sm hover:shadow-md border',
-      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4'
+      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4',
     };
     const positions = {
       'bottom-right': 'bottom-6 right-6',
       'bottom-left': 'bottom-6 left-6',
       'top-right': 'top-6 right-6',
-      'top-left': 'top-6 left-6'
+      'top-left': 'top-6 left-6',
     };
     const statusColors = {
       idle: 'bg-yorha-bg-secondary border-yorha-border-primary text-yorha-text-primary',
       processing: 'bg-yorha-primary/10 border-yorha-primary text-yorha-primary animate-pulse',
       listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',
-      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold'
+      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold',
     };
     let classes = `${base} ${variants[variant]} ${statusColors[aiStatus]}`;
     if (variant === 'floating') {
@@ -98,19 +98,26 @@
       idle: { color: 'bg-gray-400', pulse: false },
       processing: { color: 'bg-yorha-primary', pulse: true },
       listening: { color: 'bg-red-500', pulse: true },
-      connected: { color: 'bg-yorha-accent-gold', pulse: false }
-    }
+      connected: { color: 'bg-yorha-accent-gold', pulse: false },
+    };
     const config = statusConfig[aiStatus];
     return {
       class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse' : ''}`,
-      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1)
+      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1),
     };
   }
 </script>
 
 <!-- Floating Variant -->
 {#if variant === 'floating'}
-    <button type="button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled} aria-label="Open assistant">
+  <button
+    type="button"
+    class={buttonClasses}
+    data-status={aiStatus}
+    onclick={handleClick}
+    {disabled}
+    aria-label="Open assistant"
+  >
     <div class="relative p-4">
       <Brain class="w-8 h-8" />
       {#if showStatus}
@@ -127,7 +134,14 @@
   </button>
   <!-- Inline Variant -->
 {:else if variant === 'inline'}
-  <button type="button" aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
+  <button
+    type="button"
+    aria-label="Action button"
+    class={buttonClasses}
+    data-status={aiStatus}
+    onclick={handleClick}
+    {disabled}
+  >
     <div class="flex items-center gap-3 px-4 py-3">
       <div class="relative">
         <Brain class="w-6 h-6" />
@@ -199,7 +213,14 @@
   </button>
   <!-- Full Variant -->
 {:else if variant === 'full'}
-  <button type="button" aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
+  <button
+    type="button"
+    aria-label="Action button"
+    class={buttonClasses}
+    data-status={aiStatus}
+    onclick={handleClick}
+    {disabled}
+  >
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-4">
         <div class="relative">

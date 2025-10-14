@@ -81,8 +81,8 @@ class GPUWorker {
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
-                module: shaderModule
-                entryPoint: 'main'
+                module: shaderModule,
+                entryPoint: 'main',
             }
         });
     }
@@ -125,8 +125,8 @@ class GPUWorker {
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
-                module: shaderModule
-                entryPoint: 'main'
+                module: shaderModule,
+                entryPoint: 'main',
             }
         });
     }
@@ -282,8 +282,8 @@ class GPUWorker {
     }
     cacheResult(_key: string, buffer: Float32Array) {
         this.vertexCache.set(key, {
-            url: key
-            buffer: buffer
+            url: key,
+            buffer: buffer,
             timestamp: Date.now(),
             score: 1
         });

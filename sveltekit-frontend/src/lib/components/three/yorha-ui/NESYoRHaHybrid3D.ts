@@ -86,7 +86,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       borderColor: NES_YORHA_PALETTE.nesBlack,
       borderWidth: 0.1, // Thicker borders for NES aesthetic
       borderRadius: 0,   // Sharp corners like NES
-      pixelPerfect: true
+      pixelPerfect: true,
       renderMode: 'hybrid-sync',
       animationStyle: 'hybrid-morphing',
       ...hybridStyle
@@ -193,7 +193,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       (this.hybridStyle.height || 1) * 1.1
     );
     const scanlineMaterial = new THREE.ShaderMaterial({
-      transparent: true
+      transparent: true,
       uniforms: {
         time: { value: 0 }
       },
@@ -248,15 +248,15 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   /**
    * Initialize hybrid GPU context for NES pixel processing acceleration
    * Uses advanced context provider with type narrowing
-   */;
+   */
   private async initializeGPUAcceleration(): Promise<void> {
     if (!this.useGPUAcceleration) return;
     try {
       // Initialize GPU context provider
       const success = await gpuContextProvider.initialize({
         preferredBackend: 'webgpu',
-        requireCompute: false
-        memoryLimit: 64 * 1024 * 1024 // 64MB for NES processing
+        requireCompute: false,
+        memoryLimit: 64 * 1024 * 1024, // 64MB for NES processing
       });
       if (!success) {
         console.warn('⚠️ GPU Context Provider initialization failed, using CPU fallback');
@@ -284,7 +284,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   /**
    * Load backend-specific shader resources with type narrowing
-   */;
+   */
   private async loadShaderResources(): Promise<void> {
     // Load NES pixel processing shaders for different backends
     const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', {
@@ -329,7 +329,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   /**
    * Initialize WebGPU pixel buffer for NES-style processing
-   */;
+   */
   private async initializeWebGPUPixelBuffer(): Promise<void> {
     if (!this.hybridGPU || this.hybridGPU.getActiveContextType() !== 'webgpu') return;
     const device = this.hybridGPU.getActiveContext() as GPUDevice;
@@ -341,7 +341,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   /**
    * GPU-accelerated pixel processing for NES-style effects
-   */;
+   */
   async processPixelsGPU(pixelData: Float32Array, effect: 'quantize' | 'scanlines' | 'crt'): Promise<Float32Array> {
     if (!this.hybridGPU || !this.useGPUAcceleration) {
       return this.processPixelsCPU(pixelData, effect);
@@ -349,7 +349,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     try {
       const pixelShader = this.createPixelProcessingShader(effect);
       const results = await this.hybridGPU.runComputeShader(pixelShader, {
-        inputPixels: pixelData
+        inputPixels: pixelData,
         config: new Float32Array([
           256, 240, // Resolution
           this.hybridStyle.pixelScale || 1,
@@ -365,7 +365,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   /**
    * Create GPU compute shader for different NES pixel effects
-   */;
+   */
   private createPixelProcessingShader(effect: 'quantize' | 'scanlines' | 'crt'): string {
     const baseShader = `
       @group(0) @binding(0) var<storage, read> inputPixels: array<vec4f>;
@@ -420,7 +420,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   /**
    * CPU fallback for pixel processing
-   */;
+   */
   private processPixelsCPU(pixelData: Float32Array, effect: 'quantize' | 'scanlines' | 'crt'): Float32Array {
     const output = new Float32Array(pixelData.length);
     const width = 256;
@@ -692,7 +692,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   private async cacheCurrentState(): Promise<void> {
     const stateId = `hybrid_${this.hybridStyle.variant || 'default'}_${Date.now()}`;
     const canvasState: InteractiveCanvasState = {
-      id: stateId
+      id: stateId,
       nodes: [],
       connections: [],
       viewport: { x: 0, y: 0, zoom: 1 },
@@ -753,7 +753,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         fabricJSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
         metadata: {
           renderMode: this.hybridStyle.renderMode,
-          predictive: true
+          predictive: true,
           variant
         }
       }
@@ -926,10 +926,10 @@ export function createNESButton(_options: {
     nesButton: options.variant || 'is-primary',
     variant: 'default',
     renderMode: 'hybrid-sync',
-    pixelPerfect: true
-    crtEffect: true
-    scanlines: true
-    animationStyle: 'hybrid-morphing'
+    pixelPerfect: true,
+    crtEffect: true,
+    scanlines: true,
+    animationStyle: 'hybrid-morphing',
   });
 }
 export function createNESContainer(_options: {
@@ -964,7 +964,7 @@ export function createNESProgressBar(_options: {
     variant: 'filled',
     renderMode: 'hybrid-sync',
     backgroundColor: NES_YORHA_PALETTE.yorhaGold,
-    pixelPerfect: true
+    pixelPerfect: true,
     animation: {
       type: 'pulse',
       duration: 1000,

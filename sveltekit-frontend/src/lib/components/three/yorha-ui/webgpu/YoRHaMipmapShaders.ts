@@ -38,10 +38,10 @@ export class YoRHaMipmapShaders {
   private readonly DEFAULT_CONFIG: MipmapConfig = {
     maxMipLevels: 12,
     filterMode: 'linear',
-    enableOptimizations: true
-    rtxOptimized: true
-    enableStreaming: true
-    maxTextureSize: 4096
+    enableOptimizations: true,
+    rtxOptimized: true,
+    enableStreaming: true,
+    maxTextureSize: 4096,
   }
   async initialize(device?: GPUDevice): Promise<boolean> {
     if (this.isInitialized) return true;
@@ -63,7 +63,7 @@ export class YoRHaMipmapShaders {
   /**
    * Initialize headless WebGPU device for server-side processing
    * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
-   */;
+   */
   async initializeHeadless(): Promise<boolean> {
     if (this.isInitialized) return true;
     try {
@@ -124,7 +124,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Setup optimized compute pipelines based on NVIDIA vk_compute_mipmaps approach
-   */;
+   */
   private async setupMipmapPipelines(): Promise<void> {
     if (!this.device) return;
     // 1. Box filter downsample (fastest, good for thumbnails)
@@ -178,7 +178,7 @@ export class YoRHaMipmapShaders {
    * Generate complete mipmap chain with NVIDIA-style optimizations
    */
   async generateMipmapChain(
-    sourceTexture: GPUTexture
+    sourceTexture: GPUTexture,
     config: Partial<MipmapConfig> = {}
   ): Promise<MipmapChainResult> {
     if (!this.device || !this.isInitialized) {
@@ -233,8 +233,8 @@ export class YoRHaMipmapShaders {
       console.log(`💾 Memory used: ${(totalMemoryUsed / 1024 / 1024).toFixed(2)}MB`);
       return {
         mipmapLevels,
-        totalGenerationTime: totalTime
-        memoryUsed: totalMemoryUsed
+        totalGenerationTime: totalTime,
+        memoryUsed: totalMemoryUsed,
         optimization: {
           levelsGenerated: mipmapLevels.length,
           streamingUsed: finalConfig.enableStreaming && sourceWidth > 2048,
@@ -250,8 +250,8 @@ export class YoRHaMipmapShaders {
    * NVIDIA-style multi-level batch generation (parallel mip level computation)
    */
   private async generateMultiLevelBatch(
-    sourceTexture: GPUTexture
-    maxLevels: number
+    sourceTexture: GPUTexture,
+    maxLevels: number,
     config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
@@ -292,8 +292,8 @@ export class YoRHaMipmapShaders {
    * Streaming mipmap generation for very large textures
    */
   private async generateStreamingMipmaps(
-    sourceTexture: GPUTexture
-    maxLevels: number
+    sourceTexture: GPUTexture,
+    maxLevels: number,
     config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
@@ -339,8 +339,8 @@ export class YoRHaMipmapShaders {
    * Standard sequential mipmap generation
    */
   private async generateSequentialMipmaps(
-    sourceTexture: GPUTexture
-    maxLevels: number
+    sourceTexture: GPUTexture,
+    maxLevels: number,
     config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
@@ -369,8 +369,8 @@ export class YoRHaMipmapShaders {
    * Generate single mip level using compute shader
    */
   private async generateSingleMipLevel(
-    sourceTexture: GPUTexture
-    targetTexture: GPUTexture
+    sourceTexture: GPUTexture,
+    targetTexture: GPUTexture,
     pipeline: GPUComputePipeline;
     config: MipmapConfig;
   ): Promise<void> {
@@ -406,8 +406,8 @@ export class YoRHaMipmapShaders {
    * Generate mip level with texture streaming for memory optimization
    */
   private async generateMipLevelWithStreaming(
-    sourceTexture: GPUTexture
-    targetTexture: GPUTexture
+    sourceTexture: GPUTexture,
+    targetTexture: GPUTexture,
     pipeline: GPUComputePipeline;
     options: TextureStreamingOptions;
   ): Promise<void> {
@@ -471,7 +471,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Box filter shader - fastest, good for thumbnails
-   */;
+   */
   private createBoxFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -498,7 +498,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Bilinear filter shader - balanced quality/performance
-   */;
+   */
   private createBilinearFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -521,7 +521,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Gaussian filter shader - high quality, slower
-   */;
+   */
   private createGaussianFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -559,7 +559,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * RTX-optimized shader with tensor core acceleration hints
-   */;
+   */
   private createRTXOptimizedShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -605,7 +605,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Multi-level batch shader for parallel mip generation
-   */;
+   */
   private createMultiLevelBatchShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -669,7 +669,7 @@ export class YoRHaMipmapShaders {
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose(): void {
     this.mipmapPipelines.clear();
     // Cleanup streaming buffers

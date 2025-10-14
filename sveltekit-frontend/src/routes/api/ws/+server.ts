@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { Server } from 'socket.io'
-import { dev } from "$app/environment"
+import { Server } from 'socket.io';
+import { dev } from '$app/environment';
 import { createRedisInstance } from '$lib/server/redis';
 import { createPubSubHelper } from '$lib/server/redisPubSub';
 import { registerCleanup } from '$lib/server/shutdown';
@@ -214,8 +214,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
     }
   } catch (error: unknown) {
     // Narrow unknown to preserve useful logging without using `any`
-    const errForLog =
-      error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
+    const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
     console.error('❌ AI context switching failed:', errForLog);
   }
 }
@@ -356,5 +355,5 @@ function hasQuit(obj: unknown): obj is { quit: () => void | Promise<unknown> } {
 }
 // Expose metrics endpoint data (can be imported by health/metrics route)
 export function _getWsMetrics() {
-  return { ...metrics }
+  return { ...metrics };
 }

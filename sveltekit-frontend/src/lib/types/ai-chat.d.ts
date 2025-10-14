@@ -5,7 +5,7 @@ export interface AIMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: Date;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export interface AIChat {
   id: string;

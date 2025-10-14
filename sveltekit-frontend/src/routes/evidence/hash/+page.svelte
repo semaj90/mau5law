@@ -315,7 +315,7 @@
                                     description?: unknown;
                                     fileUrl?: unknown;
                                   }
-                                ).uploadedAt,
+                                ).uploadedAt
                               ).toLocaleString()
                             : 'N/A'}
                         </p>
@@ -357,7 +357,7 @@
                                 description?: unknown;
                                 fileUrl?: unknown;
                               }
-                            ).hash,
+                            ).hash
                           )}
                         class="space-y-4"
                         title="Copy hash"
@@ -404,7 +404,7 @@
                                 description?: unknown;
                                 fileUrl?: unknown;
                               }
-                            ).id,
+                            ).id
                           )}
                         disabled={loading}
                         class="space-y-4"

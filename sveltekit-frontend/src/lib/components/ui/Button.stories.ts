@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/svelte';
 import Button from './Button.svelte.js';
 const meta = {
   title: 'UI/Button',
-  component: Button
+  component: Button,
   parameters: {
     layout: 'centered',
     docs: {
@@ -132,8 +132,8 @@ export const Disabled: Story = {
 }
 export const Loading: Story = {
   args: {
-    loading: true
-    children: 'Loading...'
+    loading: true,
+    children: 'Loading...',
   },
   parameters: {
     docs: {

@@ -9,7 +9,7 @@
       relevance: number;
       quality: number;
       strategic: number;
-    }
+    };
     reasoning: string;
     confidence: number;
     lastUpdated: string;

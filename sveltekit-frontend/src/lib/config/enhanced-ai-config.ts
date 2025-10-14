@@ -14,7 +14,7 @@ export const ENHANCED_AI_CONFIG = {
   getOpenAIHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-    }
+    };
     if (ENV_CONFIG.OPENAI_API_KEY) {
       headers.Authorization = `Bearer ${ENV_CONFIG.OPENAI_API_KEY}`;
     }

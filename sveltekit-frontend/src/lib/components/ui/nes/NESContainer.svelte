@@ -49,7 +49,7 @@
     dragOffset = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
-    }
+    };
   }
   function handleDrag(_event: MouseEvent) {
     if (!isDragging) return;

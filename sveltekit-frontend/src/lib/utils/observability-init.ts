@@ -11,15 +11,15 @@ let isInitialized = false;
 let currentRouteId: string | null = null;
 /**
  * Initialize observability system with SvelteKit integration
- */;
+ */
 export function initializeObservability() {
   if (!browser || isInitialized) return;
   console.log('🔍 Initializing observability system...');
   // Configure observability client with development-friendly settings
   observabilityClient.initialize({
-    enableMetrics: true
-    enablePerformanceTracking: true
-    enableWebVitals: true
+    enableMetrics: true,
+    enablePerformanceTracking: true,
+    enableWebVitals: true,
     metricsEndpoint: '/api/v1/observability/client',
     batchSize: 5, // Smaller batch for development visibility
     flushInterval: 15000, // 15 seconds for development
@@ -163,14 +163,14 @@ function get(store: any) {
 }
 /**
  * Create an enhanced fetch function with observability
- */;
+ */
 export function createObservableFetch() {
   if (!browser) return fetch;
   return observabilityClient.createObservableFetch();
 }
 /**
  * Track a custom performance event
- */;
+ */
 export function trackCustomEvent(name: string, data?: any) {
   if (!browser || !isInitialized) return;
   timingMetrics.mark(`custom-${name}`);
@@ -180,14 +180,14 @@ export function trackCustomEvent(name: string, data?: any) {
 }
 /**
  * Get current observability status
- */;
+ */
 export function getObservabilityStatus() {
   if (!browser) {
     return { initialized: false, browser: false }
   }
   return {
-    initialized: isInitialized
-    browser: true
+    initialized: isInitialized,
+    browser: true,
     currentRoute: currentRouteId;
     capabilities: observabilityClient.getCapabilities(),
     performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null

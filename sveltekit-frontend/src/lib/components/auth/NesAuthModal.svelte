@@ -11,7 +11,7 @@
     open = false,
     title = 'Sign in',
     onClose = () => {}, // Corrected: added empty function body
-    onSubmit = () => {} // Corrected: added empty function body
+    onSubmit = () => {}, // Corrected: added empty function body
   }: Props = $props();
   let email = $state('');
   let password = $state('');
@@ -25,6 +25,7 @@
     }
   }
 </script>
+
 {#if open}
   <div
     class="fixed inset-0 z-50 grid place-items-center"
@@ -39,7 +40,7 @@
       if (e.key === 'Escape') onClose();
     }}
   >
-  >
+    >
     <form
       class="w-[28rem] rounded-md border border-neutral-700 bg-neutral-900 p-4 text-neutral-100 shadow-xl"
       role="document"
@@ -78,4 +79,3 @@
     --modal-bg: rgba(0, 0, 0, 0.5);
   }
 </style>
-

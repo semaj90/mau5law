@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ params }) => {
   } catch (e) {
     return json({ ok: false, error: 'corrupted-json' }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ params, request }) => {
   const slug = Array.isArray(params.slug) ? params.slug.join('/') : String(params.slug ?? 'index');
   const key = `doc:${slug}`;
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   if (!body || typeof body !== 'object') {
     return json({ ok: false, error: 'invalid-json-body' }, { status: 400 });
   }
-  const payload = { updatedAt: new Date().toISOString(), ...body }
+  const payload = { updatedAt: new Date().toISOString(), ...body };
   await redis.set(key, JSON.stringify(payload), { EX: 3600 });
   return json({ ok: true, key: key }, { status: 201 });
-}
+};

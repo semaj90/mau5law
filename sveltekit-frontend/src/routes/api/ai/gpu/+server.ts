@@ -57,13 +57,13 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }, {
 		// Check NVIDIA LLaMA service
 		const nvidiaStats = await nvidiaLlamaService.getGpuMetrics()
 		health.nvidia_llama = {
-			available: true
+			available: true,
 			status: 'healthy',
 			...nvidiaStats
 		}
 	} catch (error: any) {
 		health.nvidia_llama = {
-			available: false
+			available: false,
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}
@@ -79,7 +79,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }, {
 		}
 	} catch (error: any) {
 		health.gpu_service_integration = {
-			available: false
+			available: false,
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}
@@ -93,7 +93,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }, {
 		}
 	} catch (error: any) {
 		health.wasm_llvm = {
-			available: false
+			available: false,
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}
@@ -113,7 +113,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }, {
 		}
 	} catch (error: any) {
 		health.wasm_llvm_service = {
-			available: false
+			available: false,
 			status: 'error',
 			note: 'External WASM-LLVM service not running on port 8225',
 			error: error instanceof Error ? error.message: 'Unknown error'
@@ -151,8 +151,8 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 				const wasmResult = await llvmWasmBridge.processLegalText(
 					(data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).prompt || (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).query || '',
 					{
-						extractCitations: true
-						riskAssessment: true
+						extractCitations: true,
+						riskAssessment: true,
 					}
 				)
 				result = wasmResult
@@ -226,7 +226,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 			try {
 				const task = await gpuServiceIntegration.processTask({
 					id: `task_${Date.now()}`,
-					type: operationType as any
+					type: operationType as any,
 					data,
 					priority: options.priority || 'medium',
 					metadata: { [key,: strin,g]: any }
@@ -282,7 +282,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 			return json({
 				success: true,
 				operation: 'health',
-				result: health
+				result: health,
 				serviceUsed: 'health_aggregator',
 				performance: {
 					processingTime: 0,
@@ -433,7 +433,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				response = {
 					success: true,
 					operation,
-					result: health
+					result: health,
 					serviceUsed: 'health_aggregator',
 					performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 					metadata: { timestamp: new Date().toISOString() }

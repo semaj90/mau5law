@@ -124,15 +124,15 @@ export const vectorJobMachine = createMachine({
 	id: 'vectorJob',
 	initial: 'idle',
 	context: {
-		jobId: null
-		ownerType: null
-		ownerId: null
-		operation: null
+		jobId: null,
+		ownerType: null,
+		ownerId: null,
+		operation: null,
 		priority: 'medium',
 		attempts: 0,
 		maxAttempts: 3,
-		useWebGPU: false
-		webGPUAvailable: false
+		useWebGPU: false,
+		webGPUAvailable: false,
 	},
 	states: {
 		idle: {
@@ -148,8 +148,8 @@ export const vectorJobMachine = createMachine({
 						priority: (event.priority as any) || 'medium',
 						startTime: new Date(),
 						attempts: 0,
-						error: undefined
-						result: undefined
+						error: undefined,
+						result: undefined,
 					})
 				}
 			}
@@ -355,9 +355,9 @@ export type VectorJobMachine = typeof vectorJobMachine;
 export type VectorJobActor = ActorRefFrom<VectorJobMachine>;
 // Helper function to create and start a vector job
 export async function createVectorJob(
-	ownerType: string
-	ownerId: string
-	operation: string
+	ownerType: string,
+	ownerId: string,
+	operation: string,
 	data?: any;
 	priority: string = 'medium';
 ): Promise<any> {

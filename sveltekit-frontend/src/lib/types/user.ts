@@ -19,6 +19,6 @@ export interface UserSession {
   user?: User; // Optional complete user object
 }
 export interface UserProfile extends User {
-  preferences?: { [key: string]: any }
-  settings?: { [key: string]: any }
+  preferences?: { [key: string]: any };
+  settings?: { [key: string]: any };
 }

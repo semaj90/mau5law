@@ -14,20 +14,20 @@ export const buttonVariants = cva(
         legal: 'bg-blue-600 text-white hover:bg-blue-700',
         evidence: 'bg-green-600 text-white hover:bg-green-700',
         caseItem: 'bg-purple-600 text-white hover:bg-purple-700',
-        yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold'
+        yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold',
       },
       size: {
         default: 'h-10 px-4',
         sm: 'h-8 px-3 text-sm',
         lg: 'h-12 px-6 text-base',
         icon: 'h-10 w-10 p-0',
-        xs: 'h-7 px-2 text-xs'
-      }
+        xs: 'h-7 px-2 text-xs',
+      },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default'
-    }
+      size: 'default',
+    },
   }
 );
 

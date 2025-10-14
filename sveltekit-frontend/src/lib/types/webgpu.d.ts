@@ -33,7 +33,7 @@ export interface WebGPUTensorOperation {
   operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';
   inputTensors: WebGPUTensor[];
   outputTensor: WebGPUTensor;
-  parameters?: { [key: string]: any }
+  parameters?: { [key: string]: any };
 }
 export interface WebGPUTensor {
   data: Float32Array | Uint32Array | Int32Array;
@@ -75,7 +75,7 @@ export interface WebGPULegalProcessor {
 export interface WebGPUProcessingResult {
   success: boolean;
   processedText: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   performanceMetrics: WebGPUPerformanceMetrics;
 }
 export interface WebGPUEntityResult {
@@ -172,7 +172,7 @@ export interface WebGPUError extends Error {
   code: string;
   details: string;
   recoverable: boolean;
-  context: { [key: string]: any }
+  context: { [key: string]: any };
 }
 export interface WebGPUValidationError extends WebGPUError {
   shaderSource?: string;

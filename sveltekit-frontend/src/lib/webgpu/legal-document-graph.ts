@@ -96,7 +96,7 @@ export class WebGPULegalDocumentGraph {
       maxEdges: 50000,
       canvasWidth: canvas.width || 800,
       canvasHeight: canvas.height || 600,
-      enablePhysics: true
+      enablePhysics: true,
       renderDistance: 1000,
       lodLevels: 4,
       ...config
@@ -107,7 +107,7 @@ export class WebGPULegalDocumentGraph {
       cameraPosition: [0, 0, 10],
       cameraTarget: [0, 0, 0],
       zoom: 1.0,
-      selectedNode: null
+      selectedNode: null,
       highlightedNodes: new Set(),
       filterType: 'all',
       timeRange: [0, Date.now()]
@@ -115,7 +115,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Initialize WebGPU device and resources
-   */;
+   */
   async initialize(): Promise<void> {
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported in this browser');
@@ -138,7 +138,7 @@ export class WebGPULegalDocumentGraph {
     const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({
       device: this.device,
-      format: canvasFormat
+      format: canvasFormat,
       alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
     });
@@ -149,7 +149,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Initialize compute and render shaders
-   */;
+   */
   private async initializeShaders(): Promise<void> {
     if (!this.device) throw new Error('WebGPU device not initialized');
     // Compute shader for graph physics and layout
@@ -325,8 +325,8 @@ export class WebGPULegalDocumentGraph {
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: computeShaderModule
-        entryPoint: 'computeForces'
+        module: computeShaderModule,
+        entryPoint: 'computeForces',
       }
     });
     // Create render shader modules
@@ -344,7 +344,7 @@ export class WebGPULegalDocumentGraph {
   private fragmentShaderModule: GPUShaderModule | null = null;
   /**
    * Create GPU tensor stores for graph data
-   */;
+   */
   private async createTensorStores(): Promise<void> {
     if (!this.device) throw new Error('WebGPU device not initialized');
     // Calculate buffer sizes
@@ -401,7 +401,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Setup render pipeline for graph visualization
-   */;
+   */
   private async setupRenderPipeline(): Promise<void> {
     if (!this.device || !this.vertexShaderModule || !this.fragmentShaderModule) {
       throw new Error('Shaders not initialized');
@@ -454,7 +454,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Load graph data from IndexedDB
-   */;
+   */
   async loadGraphFromDB(graphId,: string): Promise<void> {
     const { legalDB } = await import('$lib/db/client-db');
     try {
@@ -487,8 +487,8 @@ export class WebGPULegalDocumentGraph {
         const sourceIndex = this.nodes.findIndex(n => n.id === edge.source);
         const targetIndex = this.nodes.findIndex(n => n.id === edge.target);
         return {
-          source: sourceIndex
-          target: targetIndex
+          source: sourceIndex,
+          target: targetIndex,
           weight: edge.weight || 1.0,
           type: this.parseEdgeType(edge.type),
           strength: 1.0,
@@ -509,7 +509,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Upload graph data to GPU buffers
-   */;
+   */
   private async uploadGraphDataToGPU(),: Promise<void> {
     if (!this.device || !this.tensorStor,e) {
       throw new Error('WebGPU not properly initialized');
@@ -563,7 +563,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Start the render loop
-   */;
+   */
   startRenderLoop(),: void {
     if (this.animationId !== nul,l) {
       return; // Already running
@@ -581,7 +581,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Stop the render loop
-   */;
+   */
   stopRenderLoop(),: void {
     if (this.animationId !== nul,l) {
       cancelAnimationFrame(this.animationId);
@@ -590,7 +590,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Update physics simulation
-   */;
+   */
   private updatePhysics(deltaTime,: number): void {
     if (!this.device || !this.computePipeline || !this.tensorStore || !this.config.enablePhysic,s) {
       return;
@@ -620,7 +620,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Render the graph
-   */;
+   */
   private render(),: void {
     if (!this.device || !this.context || !this.renderPipelin,e) {
       return;
@@ -686,7 +686,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getPerformanceStats(),: {
     fps: number;
     frameTime: number;
@@ -704,7 +704,7 @@ export class WebGPULegalDocumentGraph {
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose(),: void {
     this.stopRenderLoop();
     if (this.tensorStor,e) {

@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const totalResult = await totalQuery
     const total = Number(totalResult[0].count)
     const response = {
-      documents: results
+      documents: results,
       pagination: {
         page,
         limit,
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await redis.del(...keys)
     }
     return json({
-      document: newDocument
+      document: newDocument,
       embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
       message: 'Document created successfully'
     }, { status: 201 })
@@ -281,7 +281,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       await redis.del(...keys)
     }
     return json({
-      document: updatedDocument
+      document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
       message: 'Document updated successfully'
     })
@@ -303,8 +303,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const [deletedDocument] = await db
       .update(documents)
       .set({
-        is_active: false
-        updated_at: new Date()
+        is_active: false,
+        updated_at: new Date(),
       })
       .where(eq(documents.id, documentId)
       .returning()

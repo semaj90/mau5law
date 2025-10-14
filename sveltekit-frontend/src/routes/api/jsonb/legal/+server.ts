@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       endpoint: `/api/jsonb/legal/${path}`,
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries()
+      headers: Object.fromEntries(request.headers.entries(),
     })
     switch (path) {
       case 'analytics':
@@ -154,16 +154,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(analytics).length,
-          processingTime: duration
+          processingTime: duration,
           success: true,
         })
         return json({
           success: true,
-          data: analytics
+          data: analytics,
           metadata: {
             requestId,
-            processingTime: duration
-            timestamp: new Date().toISOString()
+            processingTime: duration,
+            timestamp: new Date().toISOString(),
           }
         })
       case 'performance':
@@ -173,16 +173,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(performance_metrics).length,
-          processingTime: perfDuration
+          processingTime: perfDuration,
           success: true,
         })
         return json({
           success: true,
-          data: performance_metrics
+          data: performance_metrics,
           metadata: {
             requestId,
-            processingTime: perfDuration
-            timestamp: new Date().toISOString()
+            processingTime: perfDuration,
+            timestamp: new Date().toISOString(),
           }
         })
       default:
@@ -195,12 +195,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
       requestId,
       statusCode: 500,
       responseSize: 0,
-      processingTime: duration
+      processingTime: duration,
       success: false,
       error: errorMessage
     })
     await logger.logError({
-      error: errorMessage
+      error: errorMessage,
       context: 'jsonb_legal_api_get',
       requestId,
       severity: 'high',
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       requestBody,
-      headers: Object.fromEntries(request.headers.entries()
+      headers: Object.fromEntries(request.headers.entries(),
     })
     switch (operation) {
       case 'documents':
@@ -246,16 +246,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 201,
           responseSize: JSON.stringify(document).length,
-          processingTime: docDuration
+          processingTime: docDuration,
           success: true,
         })
         return json({
           success: true,
-          data: document
+          data: document,
           metadata: {
             requestId,
-            processingTime: docDuration
-            timestamp: new Date().toISOString()
+            processingTime: docDuration,
+            timestamp: new Date().toISOString(),
           }
         }, { status: 201 })
       case 'cases',:
@@ -271,16 +271,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 201,
           responseSize: JSON.stringify(caseRecord).length,
-          processingTime: caseDuration
+          processingTime: caseDuration,
           success: true,
         })
         return json({
           success: true,
-          data: caseRecord
+          data: caseRecord,
           metadata: {
             requestId,
-            processingTime: caseDuration
-            timestamp: new Date().toISOString()
+            processingTime: caseDuration,
+            timestamp: new Date().toISOString(),
           }
         }, { status: 201 })
       case 'evidence',:
@@ -303,16 +303,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 201,
           responseSize: JSON.stringify(evidence).length,
-          processingTime: evidenceDuration
+          processingTime: evidenceDuration,
           success: true,
         })
         return json({
           success: true,
-          data: evidence
+          data: evidence,
           metadata: {
             requestId,
-            processingTime: evidenceDuration
-            timestamp: new Date().toISOString()
+            processingTime: evidenceDuration,
+            timestamp: new Date().toISOString(),
           }
         }, { status: 201 })
       case 'search',:
@@ -331,16 +331,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(searchResults).length,
-          processingTime: searchDuration
+          processingTime: searchDuration,
           success: true,
         })
         return json({
           success: true,
-          data: searchResults
+          data: searchResults,
           metadata: {
             requestId,
-            processingTime: searchDuration
-            timestamp: new Date().toISOString()
+            processingTime: searchDuration,
+            timestamp: new Date().toISOString(),
           }
         })
       case 'concepts',:
@@ -354,16 +354,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(conceptAnalysis).length,
-          processingTime: conceptDuration
+          processingTime: conceptDuration,
           success: true,
         })
         return json({
           success: true,
-          data: conceptAnalysis
+          data: conceptAnalysis,
           metadata: {
             requestId,
-            processingTime: conceptDuration
-            timestamp: new Date().toISOString()
+            processingTime: conceptDuration,
+            timestamp: new Date().toISOString(),
           }
         })
       case 'similar-cases',:
@@ -378,16 +378,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(similarCases).length,
-          processingTime: similarDuration
+          processingTime: similarDuration,
           success: true,
         })
         return json({
           success: true,
-          data: similarCases
+          data: similarCases,
           metadata: {
             requestId,
-            processingTime: similarDuration
-            timestamp: new Date().toISOString()
+            processingTime: similarDuration,
+            timestamp: new Date().toISOString(),
           }
         })
       case 'citation-network',:
@@ -402,16 +402,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           requestId,
           statusCode: 200,
           responseSize: JSON.stringify(citationNetwork).length,
-          processingTime: networkDuration
+          processingTime: networkDuration,
           success: true,
         })
         return json({
           success: true,
-          data: citationNetwork
+          data: citationNetwork,
           metadata: {
             requestId,
-            processingTime: networkDuration
-            timestamp: new Date().toISOString()
+            processingTime: networkDuration,
+            timestamp: new Date().toISOString(),
           }
         })
       default:
@@ -434,12 +434,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       requestId,
       statusCode,
       responseSize: 0,
-      processingTime: duration
+      processingTime: duration,
       success: false,
       error: errorMessage
     })
     await logger.logError({
-      error: errorMessage
+      error: errorMessage,
       context: 'jsonb_legal_api_post',
       requestId,
       requestBody,
@@ -448,7 +448,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     })
     return json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
       metadata: {
         requestId,
         processingTime: duration,;
@@ -473,7 +473,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       requestBody,
-      headers: Object.fromEntries(request.headers.entries()
+      headers: Object.fromEntries(request.headers.entries(),
     })
     if (operation === 'cases' && action === 'timeline') {
       // Add timeline event to case
@@ -491,16 +491,16 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         requestId,
         statusCode: 200,
         responseSize: JSON.stringify(updatedCase).length,
-        processingTime: duration
+        processingTime: duration,
         success: true,
       })
       return json({
         success: true,
-        data: updatedCase
+        data: updatedCase,
         metadata: {
           requestId,
-          processingTime: duration
-          timestamp: new Date().toISOString()
+          processingTime: duration,
+          timestamp: new Date().toISOString(),
         }
       })
     } else if (operation === 'evidence' && action === 'custody') {
@@ -521,16 +521,16 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         requestId,
         statusCode: 200,
         responseSize: JSON.stringify(updatedEvidence).length,
-        processingTime: duration
+        processingTime: duration,
         success: true,
       })
       return json({
         success: true,
-        data: updatedEvidence
+        data: updatedEvidence,
         metadata: {
           requestId,
-          processingTime: duration
-          timestamp: new Date().toISOString()
+          processingTime: duration,
+          timestamp: new Date().toISOString(),
         }
       })
     } else if (operation === 'evidence' && action === 'verify') {
@@ -544,16 +544,16 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         requestId,
         statusCode: 200,
         responseSize: JSON.stringify(verification).length,
-        processingTime: duration
+        processingTime: duration,
         success: true,
       })
       return json({
         success: true,
-        data: verification
+        data: verification,
         metadata: {
           requestId,
-          processingTime: duration
-          timestamp: new Date().toISOString()
+          processingTime: duration,
+          timestamp: new Date().toISOString(),
         }
       })
     } else {
@@ -576,12 +576,12 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       requestId,
       statusCode,
       responseSize: 0,
-      processingTime: duration
+      processingTime: duration,
       success: false,
       error: errorMessage
     })
     await logger.logError({
-      error: errorMessage
+      error: errorMessage,
       context: 'jsonb_legal_api_put',
       requestId,
       requestBody,
@@ -590,11 +590,11 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     })
     return json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
       metadata: {
         requestId,
-        processingTime: duration
-        timestamp: new Date().toISOString()
+        processingTime: duration,
+        timestamp: new Date().toISOString(),
       }
     }, { status: statusCode })
   }
@@ -610,7 +610,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       endpoint: '/api/jsonb/legal',
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries()
+      headers: Object.fromEntries(request.headers.entries(),
     })
     // Update case counters
     await jsonbLegalService.updateCaseCounters()
@@ -619,7 +619,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       requestId,
       statusCode: 200,
       responseSize: 0,
-      processingTime: duration
+      processingTime: duration,
       success: true,
     })
     return json({
@@ -627,8 +627,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
       message: 'Case counters updated successfully',
       metadata: {
         requestId,
-        processingTime: duration
-        timestamp: new Date().toISOString()
+        processingTime: duration,
+        timestamp: new Date().toISOString(),
       }
     })
   } catch (err: any) {
@@ -638,12 +638,12 @@ export const PATCH: RequestHandler = async ({ request }) => {
       requestId,
       statusCode: 500,
       responseSize: 0,
-      processingTime: duration
+      processingTime: duration,
       success: false,
       error: errorMessage
     })
     await logger.logError({
-      error: errorMessage
+      error: errorMessage,
       context: 'jsonb_legal_api_patch',
       requestId,
       severity: 'high',
@@ -651,11 +651,11 @@ export const PATCH: RequestHandler = async ({ request }) => {
     })
     return json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
       metadata: {
         requestId,
-        processingTime: duration
-        timestamp: new Date().toISOString()
+        processingTime: duration,
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 })
   }

@@ -140,12 +140,12 @@ type FlashAttentionStatus = {
 
 // Insert a small cross-environment timing helper near the top (after imports / types)
 function now(): number {
-	// Prefer high-resolution performance.now() if available (browsers, some runtimes)
-	if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-		return performance.now();
-	}
-	// Fallback to Date.now() (works in Node / SSR)
-	return Date.now();
+  // Prefer high-resolution performance.now() if available (browsers, some runtimes)
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+    return performance.now();
+  }
+  // Fallback to Date.now() (works in Node / SSR)
+  return Date.now();
 }
 
 export class FullStackLegalAIWorkflow {
@@ -796,7 +796,6 @@ export class FullStackLegalAIWorkflow {
       ].filter(Boolean) as string[],
     };
   }
-
 } // end class FullStackLegalAIWorkflow
 
 // Global workflow instance

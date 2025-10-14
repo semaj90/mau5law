@@ -8,13 +8,13 @@
     onopen,
     onclose,
     trigger,
-    children
+    children,
   }: {
     align?: 'left' | 'right';
     closeOnSelect?: boolean;
     onopen?: () => void;
     onclose?: () => void;
-    trigger?: Snippet<[{ open: boolean }]>
+    trigger?: Snippet<[{ open: boolean }]>;
     children?: Snippet;
   } = $props();
 
@@ -63,8 +63,16 @@
   <button
     type="button"
     class="dropdown-trigger"
-    onclick={(e) => { e.stopPropagation(); toggle(); }}
-    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } }}
+    onclick={e => {
+      e.stopPropagation();
+      toggle();
+    }}
+    onkeydown={e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    }}
     aria-haspopup="true"
     aria-expanded={open}
   >
@@ -76,8 +84,10 @@
       role="menu"
       tabindex="-1"
       class="dropdown-menu"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => { if (e.key === 'Escape') close(); }}
+      onclick={e => e.stopPropagation()}
+      onkeydown={e => {
+        if (e.key === 'Escape') close();
+      }}
       style="position: absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
       transition:fly={{ y: -6, duration: 140 }}
     >
@@ -88,7 +98,19 @@
 
 <style>
   /* Minimal encapsulated styles; toolbar reuses classes (menu-trigger, dropdown-menu, dropdown-item) */
-  .dropdown-root { font-size: 0.95rem; }
-  .dropdown-trigger { display: inline-flex; align-items: center; }
-  .dropdown-menu { background: var(--dropdown-bg, #fff); border-radius: 0.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 0.35rem; border: 1px solid #e6edf3; min-width: 12rem; }
+  .dropdown-root {
+    font-size: 0.95rem;
+  }
+  .dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+  }
+  .dropdown-menu {
+    background: var(--dropdown-bg, #fff);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    padding: 0.35rem;
+    border: 1px solid #e6edf3;
+    min-width: 12rem;
+  }
 </style>

@@ -25,4 +25,4 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     return json({ ok: false, source: 'shim', temperature: null });
   }
-}
+};

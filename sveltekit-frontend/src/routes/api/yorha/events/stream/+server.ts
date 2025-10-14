@@ -3,7 +3,9 @@ import type { RequestHandler } from './$types.js';
 const DEFAULT_INTERVAL = 3000;
 
 // --- Specific type definitions ---
-interface HelloData { message: string; }
+interface HelloData {
+  message: string;
+}
 
 interface SystemMetricsData {
   cpu: number;

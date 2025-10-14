@@ -722,6 +722,7 @@ https://svelte.dev/e/js_parse_error -->
     updatePerformanceMetrics();
   });
 </script>
+
 <svelte:head>
   <title>YoRHa API Testing Interface | Legal AI Platform</title>
 </svelte:head>
@@ -729,7 +730,10 @@ https://svelte.dev/e/js_parse_error -->
 <div class="min-h-screen bg-black text-gray-100 font-mono">
   <!-- Animated grid background -->
   <div class="fixed inset-0 opacity-5">
-    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(251,191,36,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
+    <div
+      class="absolute inset-0"
+      style="background-image: linear-gradient(rgba(251,191,36,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.1) 1px, transparent 1px); background-size: 20px 20px;"
+    ></div>
   </div>
   <!-- Header -->
   <header class="relative z-10 border-b border-amber-900/30 bg-black/90 backdrop-blur-sm">
@@ -746,7 +750,9 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Real-time status indicators -->
           <div class="flex items-center space-x-4 text-sm">
             <div class="flex items-center space-x-1">
-              <div class="w-2 h-2 bg-green-400 rounded-full {realTimeStats.activeConnections > 0 ? 'animate-pulse' : ''}"></div>
+              <div
+                class="w-2 h-2 bg-green-400 rounded-full {realTimeStats.activeConnections > 0 ? 'animate-pulse' : ''}"
+              ></div>
               <span class="text-green-400">{realTimeStats.totalRequests} requests</span>
             </div>
             <div class="flex items-center space-x-1">
@@ -760,7 +766,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <!-- Control buttons -->
           <button
-            class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover: bg-amber-400/10 text-amber-400";
+            class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover: bg-amber-400/10 text-amber-400"
+            ;
             class:animate-spin={autoRefresh}
             onclick={toggleAutoRefresh}
             title={autoRefresh ? 'Disable auto-refresh' : 'Enable auto-refresh'}
@@ -806,7 +813,9 @@ https://svelte.dev/e/js_parse_error -->
             <div>
               <p class="text-gray-400 text-sm">Success Rate</p>
               <p class="text-2xl font-bold text-green-400">
-                {performanceMetrics.totalTests > 0 ? Math.round((performanceMetrics.passedTests / performanceMetrics.totalTests) * 100) : 0}%
+                {performanceMetrics.totalTests > 0
+                  ? Math.round((performanceMetrics.passedTests / performanceMetrics.totalTests) * 100)
+                  : 0}%
               </p>
             </div>
             <CheckCircle class="w-8 h-8 text-green-400" />
@@ -906,7 +915,7 @@ https://svelte.dev/e/js_parse_error -->
             </button>
             <button
               class="px-4 py-2 rounded-lg bg-gray-700/50 border border-gray-600 hover:bg-gray-600/50 text-gray-300"
-              onclick={() => showAdvanced = !showAdvanced}
+              onclick={() => (showAdvanced = !showAdvanced)}
             >
               {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
             </button>
@@ -914,7 +923,9 @@ https://svelte.dev/e/js_parse_error -->
           <!-- API Endpoints -->
           <div class="space-y-3 max-h-96 overflow-y-auto">
             {#each apiEndpoints as endpoint}
-              <div class="flex items-center justify-between p-3 bg-black/30 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors">
+              <div
+                class="flex items-center justify-between p-3 bg-black/30 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
+              >
                 <div class="flex items-center space-x-3">
                   <div>
                     <p class="font-medium text-gray-200">{endpoint.name}</p>
@@ -951,8 +962,7 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  {#if suite.status !== 'pending'}
-                  {/if}
+                  {#if suite.status !== 'pending'}{/if}
                   <button
                     class="px-3 py-1 rounded-lg bg-purple-900/20 border border-purple-400/30 hover:bg-purple-400/10 text-purple-400 disabled:opacity-50"
                     onclick={() => runTestSuite(suite)}
@@ -986,7 +996,8 @@ https://svelte.dev/e/js_parse_error -->
               <Search class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search results...";
+                placeholder="Search results..."
+                ;
                 bind:value={searchTerm}
                 class="pl-10 pr-4 py-2 bg-black/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:border-amber-400 focus:outline-none"
               />
@@ -1032,29 +1043,214 @@ https://svelte.dev/e/js_parse_error -->
                   <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
                     <td class="py-3 px-4">
                       <div class="flex items-center space-x-2">
-                        <span class="text-sm {getStatusColor((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status)} capitalize">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status}</span>
+                        <span
+                          class="text-sm {getStatusColor(
+                            (
+                              result as {
+                                startTime?: unknown;
+                                passed?: unknown;
+                                errors?: unknown;
+                                endpointId?: unknown;
+                                status?: unknown;
+                                endpoint?: unknown;
+                                category?: unknown;
+                                url?: unknown;
+                                method?: unknown;
+                                latency?: unknown;
+                                statusCode?: unknown;
+                                responseSize?: unknown;
+                              }
+                            ).status
+                          )} capitalize"
+                          >{(
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).status}</span
+                        >
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <div>
-                        <p class="text-gray-200 font-medium">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpoint}</p>
-                        <p class="text-xs text-gray-400">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url}</p>
+                        <p class="text-gray-200 font-medium">
+                          {(
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).endpoint}
+                        </p>
+                        <p class="text-xs text-gray-400">
+                          {(
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).url}
+                        </p>
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">
-                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).method}
+                        {(
+                          result as {
+                            startTime?: unknown;
+                            passed?: unknown;
+                            errors?: unknown;
+                            endpointId?: unknown;
+                            status?: unknown;
+                            endpoint?: unknown;
+                            category?: unknown;
+                            url?: unknown;
+                            method?: unknown;
+                            latency?: unknown;
+                            statusCode?: unknown;
+                            responseSize?: unknown;
+                          }
+                        ).method}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-blue-400 font-mono">
-                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).latency ? formatLatency((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).latency) : '-'}
+                        {(
+                          result as {
+                            startTime?: unknown;
+                            passed?: unknown;
+                            errors?: unknown;
+                            endpointId?: unknown;
+                            status?: unknown;
+                            endpoint?: unknown;
+                            category?: unknown;
+                            url?: unknown;
+                            method?: unknown;
+                            latency?: unknown;
+                            statusCode?: unknown;
+                            responseSize?: unknown;
+                          }
+                        ).latency
+                          ? formatLatency(
+                              (
+                                result as {
+                                  startTime?: unknown;
+                                  passed?: unknown;
+                                  errors?: unknown;
+                                  endpointId?: unknown;
+                                  status?: unknown;
+                                  endpoint?: unknown;
+                                  category?: unknown;
+                                  url?: unknown;
+                                  method?: unknown;
+                                  latency?: unknown;
+                                  statusCode?: unknown;
+                                  responseSize?: unknown;
+                                }
+                              ).latency
+                            )
+                          : '-'}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       {#if (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode}
-                        <span class="px-2 py-1 rounded text-xs font-mono {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode >= 200 && (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode < 300 ? 'bg-green-900/30 text-green-400' : (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode >= 400 ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'}">
-                          {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode}
+                        <span
+                          class="px-2 py-1 rounded text-xs font-mono {(
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).statusCode >= 200 &&
+                          (
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).statusCode < 300
+                            ? 'bg-green-900/30 text-green-400'
+                            : (
+                                  result as {
+                                    startTime?: unknown;
+                                    passed?: unknown;
+                                    errors?: unknown;
+                                    endpointId?: unknown;
+                                    status?: unknown;
+                                    endpoint?: unknown;
+                                    category?: unknown;
+                                    url?: unknown;
+                                    method?: unknown;
+                                    latency?: unknown;
+                                    statusCode?: unknown;
+                                    responseSize?: unknown;
+                                  }
+                                ).statusCode >= 400
+                              ? 'bg-red-900/30 text-red-400'
+                              : 'bg-yellow-900/30 text-yellow-400'}"
+                        >
+                          {(
+                            result as {
+                              startTime?: unknown;
+                              passed?: unknown;
+                              errors?: unknown;
+                              endpointId?: unknown;
+                              status?: unknown;
+                              endpoint?: unknown;
+                              category?: unknown;
+                              url?: unknown;
+                              method?: unknown;
+                              latency?: unknown;
+                              statusCode?: unknown;
+                              responseSize?: unknown;
+                            }
+                          ).statusCode}
                         </span>
                       {:else}
                         <span class="text-gray-500">-</span>
@@ -1062,12 +1258,61 @@ https://svelte.dev/e/js_parse_error -->
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime.toLocaleTimeString()}
+                        {(
+                          result as {
+                            startTime?: unknown;
+                            passed?: unknown;
+                            errors?: unknown;
+                            endpointId?: unknown;
+                            status?: unknown;
+                            endpoint?: unknown;
+                            category?: unknown;
+                            url?: unknown;
+                            method?: unknown;
+                            latency?: unknown;
+                            statusCode?: unknown;
+                            responseSize?: unknown;
+                          }
+                        ).startTime.toLocaleTimeString()}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).responseSize ? formatBytes((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).responseSize) : '-'}
+                        {(
+                          result as {
+                            startTime?: unknown;
+                            passed?: unknown;
+                            errors?: unknown;
+                            endpointId?: unknown;
+                            status?: unknown;
+                            endpoint?: unknown;
+                            category?: unknown;
+                            url?: unknown;
+                            method?: unknown;
+                            latency?: unknown;
+                            statusCode?: unknown;
+                            responseSize?: unknown;
+                          }
+                        ).responseSize
+                          ? formatBytes(
+                              (
+                                result as {
+                                  startTime?: unknown;
+                                  passed?: unknown;
+                                  errors?: unknown;
+                                  endpointId?: unknown;
+                                  status?: unknown;
+                                  endpoint?: unknown;
+                                  category?: unknown;
+                                  url?: unknown;
+                                  method?: unknown;
+                                  latency?: unknown;
+                                  statusCode?: unknown;
+                                  responseSize?: unknown;
+                                }
+                              ).responseSize
+                            )
+                          : '-'}
                       </span>
                     </td>
                   </tr>
@@ -1080,6 +1325,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </main>
 </div>
+
 <style>
   /* Custom scrollbar for YoRHa theme */
   :global($1) {
@@ -1097,7 +1343,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Glowing animation for active connections */
   @keyframes glow {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 // lib/server/ai/streaming-service.ts
 // Real-time streaming service for AI synthesis with progressive updates
 import { logger } from './logger.js';

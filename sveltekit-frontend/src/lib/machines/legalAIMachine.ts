@@ -15,7 +15,7 @@ export interface Evidence {
   type: string;
   description?: string;
   fileUrl?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   [key: string]: unknown;
 }
 export interface LegalAIContext {
@@ -25,7 +25,7 @@ export interface LegalAIContext {
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
-  }
+  };
   cases: {
     items: Case[];
     currentCase: Case | null;
@@ -34,15 +34,15 @@ export interface LegalAIContext {
       status: string;
       priority: string;
       category: string;
-    }
+    };
     pagination: {
       page: number;
       limit: number;
       total: number;
-    }
+    };
     loading: boolean;
     error: string | null;
-  }
+  };
   ai: {
     isProcessing: boolean;
     currentQuery: string;
@@ -52,8 +52,8 @@ export interface LegalAIContext {
       primary: string;
       embedding: string;
       available: string[];
-    }
-  }
+    };
+  };
   system: {
     connected: boolean;
     services: {
@@ -61,13 +61,13 @@ export interface LegalAIContext {
       redis: boolean;
       ollama: boolean;
       gpu: boolean;
-    }
+    };
     metrics: {
       errorCount: number;
       performanceScore: number;
       uptime: number;
-    }
-  }
+    };
+  };
 }
 export type LegalAIEvent =
   | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }
@@ -78,7 +78,7 @@ export type LegalAIEvent =
   | { type: 'CASES.CREATE'; caseData: any }
   | { type: 'CASES.SEARCH'; query: string }
   | { type: 'AI.QUERY'; prompt: string; context?: any }
-  | { type: 'SYSTEM.CHECK_STATUS' }
+  | { type: 'SYSTEM.CHECK_STATUS' };
 const initialContext: LegalAIContext = {
   user: {
     id: null,
@@ -339,7 +339,7 @@ export const legalAIActor = createActor(legalAIMachine);
 // Create Svelte store for reactive state
 export const legalAIState = writable(legalAIActor.getSnapshot());
 // Update store when state changes
-legalAIActor.subscribe((snapshot) => {
+legalAIActor.subscribe(snapshot => {
   legalAIState.set(snapshot);
 });
 // Start the actor

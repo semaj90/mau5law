@@ -18,7 +18,7 @@ export interface SSRResponse<T = any> {
     timestamp: string;
     cached: boolean;
     source: 'ssr' | 'api';
-  }
+  };
   error?: string;
 }
 export interface BitsUICompatibleData {
@@ -38,7 +38,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     gpuAccelerated?: boolean;
     threadSafe?: boolean;
     cacheKey?: string;
-  },
+  }
 ): Promise<Response> {
   let sanitizedData: T;
   let serializedResponse: string;
@@ -72,7 +72,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       cached: options?.cached ?? false,
       source: 'ssr',
     },
-  }
+  };
   // Use concurrent serializer for better performance
   try {
     serializedResponse = await serializeForAPI(response, {
@@ -114,7 +114,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       source: 'ssr',
     },
     error,
-  }
+  };
   return json(response, { status });
 }
 /**
@@ -134,7 +134,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     return (data as { toISOString?: any; map?: any }).map(sanitizeForSSR) as unknown as T;
   }
   if (typeof data === 'object') {
-    const sanitized: any = {}
+    const sanitized: any = {};
     for (const [key, value] of Object.entries(data)) {
       sanitized[key] = sanitizeForSSR(value);
     }
@@ -162,7 +162,7 @@ export async function loadWithSSR<T extends BitsUICompatibleData>(loader: () => 
  */
 export async function batchSSRRequests<T extends { [key: string]: any }>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
-  timeout = 5000,
+  timeout = 5000
 ): Promise<T> {
   const results = {} as T;
   const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
@@ -170,7 +170,7 @@ export async function batchSSRRequests<T extends { [key: string]: any }>(
     requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout')), timeout),
+          setTimeout(() => reject(new Error('Request timeout')), timeout)
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
         results[key] = sanitizeForSSR(result);
@@ -178,7 +178,7 @@ export async function batchSSRRequests<T extends { [key: string]: any }>(
         console.error(`SSR batch request failed for ${String(key)}:`, error);
         results[key] = null;
       }
-    }),
+    })
   );
   return results;
 }
@@ -222,7 +222,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
     gpuAccelerated?: boolean;
     cacheKey?: (_event: Parameters<RequestHandler>[0]) => string;
     threadSafe?: boolean;
-  },
+  }
 ): RequestHandler {
   return async event => {
     const threadId = `handler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -244,7 +244,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
       console.error('SSR API Handler Error:', error);
       return createSSRErrorResponse(error.message || 'Internal server error', error.status || 500);
     }
-  }
+  };
 }
 /**
  * Thread-safe JSONB query wrapper for legal documents
@@ -253,14 +253,14 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
     path?: string;
     operator?: '@>' | '@?' | '@@' | '->' | '->>';
     value?: any;
-    conditions?: { [key: string]: any }
+    conditions?: { [key: string]: any };
   },
   options?: {
     limit?: number;
     offset?: number;
     useGPU?: boolean;
     cacheResults?: boolean;
-  },
+  }
 ): Promise<any[]> {
   try {
     const cacheKey = options?.cacheResults
@@ -309,7 +309,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
     gpuAccelerated?: boolean;
     cacheResults?: boolean;
     threadSafe?: boolean;
-  } = {},
+  } = {}
 ): Promise<T> {
   const { timeout = 5000, gpuAccelerated = false, cacheResults = false, threadSafe = true } = options;
   const results = {} as T;
@@ -330,7 +330,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
             atomic: false,
             gpuSerialize: true,
             threadSafe,
-          },
+          }
         );
         if (batchResult.result?.success) {
           console.log(`🚀 GPU batch processing completed for ${requestEntries.length} requests`);
@@ -344,7 +344,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
     requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout')), timeout),
+          setTimeout(() => reject(new Error('Request timeout')), timeout)
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
         // Use concurrent serializer if GPU acceleration is enabled
@@ -371,7 +371,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
         console.error(`SSR batch request failed for ${String(key)}:`, error);
         results[key] = null;
       }
-    }),
+    })
   );
   return results;
 }
@@ -401,7 +401,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       serializer: serializerStats,
       gpu_coordinator: gpuHealth,
       overall_status: overallStatus,
-    }
+    };
   } catch (error) {
     console.error('Health check failed:', error);
     return {
@@ -410,6 +410,6 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
       overall_status: 'unhealthy',
-    }
+    };
   }
 }

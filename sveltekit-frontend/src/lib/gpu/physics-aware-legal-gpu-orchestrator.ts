@@ -101,7 +101,7 @@ export interface LegalDocumentPhysics {
 /**
  * The Ultimate GPU Orchestrator for Legal AI
  * Integrates RTX acceleration, physics simulation, and neural visualization
- */;
+ */
 export class PhysicsAwareLegalGPUOrchestrator {
   private config: PhysicsAwareGPUConfig;
   private metrics: GPUPerformanceMetrics;
@@ -128,7 +128,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
   }
   /**
    * Initialize the complete GPU orchestration system
-   */;
+   */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     console.log('🔥 Initializing Physics-Aware GPU System...');
@@ -164,8 +164,8 @@ export class PhysicsAwareLegalGPUOrchestrator {
    * Process legal document with full GPU acceleration
    */
   async processLegalDocumentWithPhysics(
-    documentContent: string
-    documentId: string
+    documentContent: string,
+    documentId: string,
     options: {
       useFlashAttention2?: boolean;
       enablePhysicsSimulation?: boolean;
@@ -213,19 +213,19 @@ export class PhysicsAwareLegalGPUOrchestrator {
   }
   /**
    * Get real-time GPU performance metrics
-   */;
+   */
   getGPUMetrics(): GPUPerformanceMetrics {
     return { ...this.metrics }
   }
   /**
    * Get legal document physics simulation state
-   */;
+   */
   getLegalPhysicsState(): Map<string, LegalDocumentPhysics> {
     return new Map(this.physicsDocuments);
   }
   /**
    * Update anti-aliasing quality in real-time
-   */;
+   */
   async updateVisualQuality(config: Partial<AntiAliasingConfig>): Promise<void> {
     this.config.visualQuality.antiAliasing = {
       ...this.config.visualQuality.antiAliasing,
@@ -236,7 +236,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
   }
   /**
    * Private implementation methods
-   */;
+   */
   private async detectRTXHardware(): Promise<void> {
     // RTX hardware detection logic
     try {
@@ -290,11 +290,11 @@ export class PhysicsAwareLegalGPUOrchestrator {
       glowIntensity: 0.8,
       antiAliasing: this.config.visualQuality.antiAliasing,
       shaderEnhancements: {
-        supersample: true
-        edgeSmoothing: true
-        gradientSmoothing: true
-        alphaToCoverage: true
-        customAASamples: 4
+        supersample: true,
+        edgeSmoothing: true,
+        gradientSmoothing: true,
+        alphaToCoverage: true,
+        customAASamples: 4,
       },
       renderQuality: 'ultra'
     }
@@ -371,7 +371,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       tensorCores: 76,
       vramGB: 8,
       flashAttention: {
-        enabled: true
+        enabled: true,
         quantization: '4bit',
         batchSize: 32,
         sequenceLength: 4096,
@@ -381,13 +381,13 @@ export class PhysicsAwareLegalGPUOrchestrator {
         pythonWorker: 'http://localhost:3001',
         goService: 'http://localhost:8080',
         cudaKernels: ['legal_analysis', 'vector_similarity', 'tensor_upscale'],
-        batchProcessing: true
-        realTimeMonitoring: true
+        batchProcessing: true,
+        realTimeMonitoring: true,
       },
       legalPhysics: {
         documentGravity: 1.0,
         citationForces: 2.0,
-        jurisdictionBoundaries: true
+        jurisdictionBoundaries: true,
         temporalDecay: 0.1,
         complexityResistance: 0.5
       },
@@ -396,14 +396,14 @@ export class PhysicsAwareLegalGPUOrchestrator {
           type: 'smaa',
           quality: 'ultra',
           samples: 8,
-          enabled: true
+          enabled: true,
           edgeThreshold: 0.1,
           subpixelQuality: 1.0
         },
-        neuralSpriteUpscaling: true
-        rtxTensorUpscaling: true
-        legalGraphSmoothing: true
-        evidenceTextureFiltering: true
+        neuralSpriteUpscaling: true,
+        rtxTensorUpscaling: true,
+        legalGraphSmoothing: true,
+        evidenceTextureFiltering: true,
       },
       ...config
     }

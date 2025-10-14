@@ -156,17 +156,17 @@ export function createEnhancedRAGStore() {
     currentQuery: '',
     selectedDocuments: [],
     status: {
-      isOnline: false
-      modelsLoaded: false
-      vectorDBConnected: false
-      lastSync: null
+      isOnline: false,
+      modelsLoaded: false,
+      vectorDBConnected: false,
+      lastSync: null,
       version: '2.0.0',
       health: 'healthy' as const,
       activeConnections: 0,
       memoryUsage: { current: 0, peak: 0, limit: 512 },
-      isInitialized: false
-      isIndexing: false
-      isSearching: false
+      isInitialized: false,
+      isIndexing: false,
+      isSearching: false,
       documentsCount: 0,
       lastUpdate: 0,
       cacheHitRate: 0,
@@ -192,7 +192,7 @@ export function createEnhancedRAGStore() {
     recommendations: [],
     didYouMean: [],
     isLoading: false;
-    error: null
+    error: null,
     somClusters: [],
     neuralPredictions: [],
     cachingLayers: { [key,: strin,g]: any },
@@ -289,15 +289,15 @@ export function createEnhancedRAGStore() {
       const recommendations = await generateRecommendations(query, optimizedResults);
       state.update((s) => ({
         ...s,
-        searchResults: optimizedResults
-        somClusters: clusters
+        searchResults: optimizedResults,
+        somClusters: clusters,
         neuralPredictions: [memoryPrediction],
         recommendations,
         didYouMean
       });
       // Cache results in multiple layers
       await cacheResultsMultiLayer(query, {
-        results: optimizedResults
+        results: optimizedResults,
         clusters,
         predictions: [memoryPrediction],
         recommendations
@@ -307,7 +307,7 @@ export function createEnhancedRAGStore() {
       updatePerformanceMetrics();
       ragActor.send({ type: 'SEARCH_SUCCESS', results: optimizedResults });
       return {
-        results: optimizedResults
+        results: optimizedResults,
         recommendations
       }
     } catch (error: any) {

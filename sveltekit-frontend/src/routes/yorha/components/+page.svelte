@@ -438,7 +438,8 @@ https://svelte.dev/e/js_parse_error -->
               <div class="yorha-config-group">
                 <label for="title">Title</label><input
                   id="title"
-                  type="text";
+                  type="text"
+                  ;
                   bind:value={modalConfig.title}
                   oninput={onConfigChange}
                 />
@@ -526,165 +527,165 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .yorha-components-page {
-/* @apply min-h-scree; */
+    /* @apply min-h-scree; */
   }
   /* Page Header */
   .yorha-page-header {
-/* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
+    /* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-header-content {
-/* @apply max-w-6xl mx-auto text-center; */
+    /* @apply max-w-6xl mx-auto text-center; */
   }
   .yorha-header-title h1 {
-/* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4; */
+    /* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4; */
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
-/* @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2; */
+    /* @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2; */
   }
   /* Layout */
   .yorha-components-layout {
-/* @apply flex min-h-scree; */
+    /* @apply flex min-h-scree; */
   }
   /* Sidebar */
   .yorha-controls-sidebar {
-/* @apply w-80 bg-gray-900 border-r border-amber-400 border-opacity-30 p-6 space-y-6 overflow-y-auto; */
+    /* @apply w-80 bg-gray-900 border-r border-amber-400 border-opacity-30 p-6 space-y-6 overflow-y-auto; */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-control-section {
-/* @apply space-y-4; */
+    /* @apply space-y-4; */
   }
   .yorha-control-title {
-/* @apply text-lg font-bold text-amber-400 tracking-wider flex items-center gap-2; */
+    /* @apply text-lg font-bold text-amber-400 tracking-wider flex items-center gap-2; */
   }
   /* Component List */
   .yorha-component-list {
-/* @apply space-y-2; */
+    /* @apply space-y-2; */
   }
   .yorha-component-btn {
-/* @apply w-full p-4 text-left flex items-center gap-3 border border-amber-400 border-opacity-30; */
-/* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
+    /* @apply w-full p-4 text-left flex items-center gap-3 border border-amber-400 border-opacity-30; */
+    /* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
   }
   .yorha-component-active {
-/* @apply border-amber-400 bg-amber-400 bg-opacity-20; */
+    /* @apply border-amber-400 bg-amber-400 bg-opacity-20; */
   }
   .yorha-component-info {
-/* @apply flex-1 min-w-0; */
+    /* @apply flex-1 min-w-0; */
   }
   .yorha-component-label {
-/* @apply block font-semibold text-amber-400; */
+    /* @apply block font-semibold text-amber-400; */
   }
   .yorha-component-desc {
-/* @apply block text-xs text-amber-300 opacity-60 truncat; */
+    /* @apply block text-xs text-amber-300 opacity-60 truncat; */
   }
   /* Mode Buttons */
   .yorha-mode-buttons {
-/* @apply grid grid-cols-3 gap-2; */
+    /* @apply grid grid-cols-3 gap-2; */
   }
   .yorha-mode-btn {
-/* @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30; */
-/* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
-/* @apply flex items-center justify-center gap-2; */
+    /* @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30; */
+    /* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
+    /* @apply flex items-center justify-center gap-2; */
   }
   .yorha-mode-active {
-/* @apply border-amber-400 bg-amber-400 bg-opacity-20 text-amber-400; */
+    /* @apply border-amber-400 bg-amber-400 bg-opacity-20 text-amber-400; */
   }
   /* Configuration Form */
   .yorha-config-form {
-/* @apply space-y-4; */
+    /* @apply space-y-4; */
   }
   .yorha-config-group {
-/* @apply space-y-2; */
+    /* @apply space-y-2; */
   }
   .yorha-config-group label {
-/* @apply block text-sm font-semibold text-amber-400; */
+    /* @apply block text-sm font-semibold text-amber-400; */
   }
   .yorha-config-group input,
   .yorha-config-group select {
-/* @apply w-full px-3 py-2 bg-black border border-amber-400 border-opacity-30 text-amber-300; */
-/* @apply focus:border-opacity-60 focus:outline-none font-mono text-sm; */
+    /* @apply w-full px-3 py-2 bg-black border border-amber-400 border-opacity-30 text-amber-300; */
+    /* @apply focus:border-opacity-60 focus:outline-none font-mono text-sm; */
   }
   .yorha-checkbox {
-/* @apply flex items-center gap-2 cursor-pointer; */
+    /* @apply flex items-center gap-2 cursor-pointer; */
   }
   .yorha-checkbox input[type='checkbox'] {
-/* @apply w-auto; */
+    /* @apply w-auto; */
   }
   /* Config Actions */
   .yorha-config-actions {
-/* @apply grid grid-cols-3 gap-2 pt-4 border-t border-amber-400 border-opacity-30; */
+    /* @apply grid grid-cols-3 gap-2 pt-4 border-t border-amber-400 border-opacity-30; */
   }
   .yorha-config-btn {
-/* @apply px-3 py-2 text-xs font-mono border transition-all; */
+    /* @apply px-3 py-2 text-xs font-mono border transition-all; */
   }
   .yorha-btn-save {
-/* @apply border-green-400 text-green-400 hover:bg-green-400 hover:text-black; */
+    /* @apply border-green-400 text-green-400 hover:bg-green-400 hover:text-black; */
   }
   .yorha-btn-reset {
-/* @apply border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black; */
+    /* @apply border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black; */
   }
   .yorha-btn-export {
-/* @apply border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black; */
+    /* @apply border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black; */
   }
   /* Preview Area */
   .yorha-preview-area {
-/* @apply flex-1 relative; */
+    /* @apply flex-1 relative; */
   }
   .yorha-3d-container {
-/* @apply h-full relative; */
+    /* @apply h-full relative; */
   }
   .yorha-canvas-container {
-/* @apply w-full h-full min-h-scree; */
+    /* @apply w-full h-full min-h-scree; */
   }
   .yorha-3d-loading {
-/* @apply absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 space-y-4; */
+    /* @apply absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 space-y-4; */
   }
   .yorha-loading-spinner {
-/* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
+    /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
     animation: spin 1s linear infinite;
   }
   /* Code View */
   .yorha-code-view {
-/* @apply p-6 h-full; */
+    /* @apply p-6 h-full; */
   }
   .yorha-code-view h3 {
-/* @apply text-xl font-bold text-amber-400 mb-4; */
+    /* @apply text-xl font-bold text-amber-400 mb-4; */
   }
   .yorha-code-block {
-/* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
-/* @apply whitespace-pre-wrap overflow-auto max-h-96; */
+    /* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
+    /* @apply whitespace-pre-wrap overflow-auto max-h-96; */
   }
   /* Config Preview */
   .yorha-config-preview {
-/* @apply p-6 h-full; */
+    /* @apply p-6 h-full; */
   }
   .yorha-config-preview h3 {
-/* @apply text-xl font-bold text-amber-400 mb-4; */
+    /* @apply text-xl font-bold text-amber-400 mb-4; */
   }
   .yorha-config-display p {
-/* @apply text-amber-300 mb-4; */
+    /* @apply text-amber-300 mb-4; */
   }
   .yorha-config-summary h4 {
-/* @apply text-lg font-semibold text-amber-400 mb-2; */
+    /* @apply text-lg font-semibold text-amber-400 mb-2; */
   }
   .yorha-config-summary pre {
-/* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
-/* @apply whitespace-pre-wrap overflow-auto max-h-64; */
+    /* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
+    /* @apply whitespace-pre-wrap overflow-auto max-h-64; */
   }
   /* Component Info Panel */
   .yorha-component-info-panel {
-/* @apply absolute bottom-6 right-6 bg-gray-900 border border-amber-400 border-opacity-30 p-4; */
-/* @apply backdrop-blur-sm; */
+    /* @apply absolute bottom-6 right-6 bg-gray-900 border border-amber-400 border-opacity-30 p-4; */
+    /* @apply backdrop-blur-sm; */
   }
   .yorha-info-content {
-/* @apply flex items-center gap-3; */
+    /* @apply flex items-center gap-3; */
   }
   .yorha-info-content h4 {
-/* @apply font-semibold text-amber-400; */
+    /* @apply font-semibold text-amber-400; */
   }
   .yorha-info-content p {
-/* @apply text-xs text-amber-300 opacity-80; */
+    /* @apply text-xs text-amber-300 opacity-80; */
   }
   @keyframes spin {
     to {
@@ -694,10 +695,10 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive */
   @media (max-width: 1024px) {
     .yorha-components-layout {
-/* @apply flex-col; */
+      /* @apply flex-col; */
     }
     .yorha-controls-sidebar {
-/* @apply w-full border-r-0 border-b; */
+      /* @apply w-full border-r-0 border-b; */
     }
   }
 </style>

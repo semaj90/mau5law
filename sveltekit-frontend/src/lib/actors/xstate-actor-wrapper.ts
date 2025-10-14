@@ -57,7 +57,7 @@ export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
-  embeddings?: { chunks: number; dimensions: number }
+  embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
   success: boolean;
 }
@@ -168,7 +168,7 @@ export function createEmbeddingActor(input: EmbeddingActorInput): ActorRefFrom<t
   return createActor(embeddingActor, { input });
 }
 export function createDocumentProcessingActor(
-  input: DocumentProcessingInput,
+  input: DocumentProcessingInput
 ): ActorRefFrom<typeof documentProcessingActor> {
   return createActor(documentProcessingActor, { input });
 }
@@ -184,14 +184,14 @@ export interface WorkflowInput {
   parallel?: boolean;
 }
 export interface WorkflowOutput {
-  results: { [key: string]: any }
+  results: { [key: string]: any };
   totalTime: number;
   success: boolean;
   errors: Array<any>;
 }
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
-  const results: { [key: string]: any } = {}
+  const results: { [key: string]: any } = {};
   const errors: Array<any> = [];
   try {
     if (input.parallel) {

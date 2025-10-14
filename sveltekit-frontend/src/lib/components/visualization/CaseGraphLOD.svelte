@@ -19,8 +19,18 @@
   import * as Card from '$lib/components/ui/card';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import {
-    Network, Eye, Layers, ZoomIn, ZoomOut, RotateCcw,
-    Users, FileText, Calendar, MapPin, Search, Filter
+    Network,
+    Eye,
+    Layers,
+    ZoomIn,
+    ZoomOut,
+    RotateCcw,
+    Users,
+    FileText,
+    Calendar,
+    MapPin,
+    Search,
+    Filter,
   } from 'lucide-svelte';
 
   interface GraphNode {
@@ -101,7 +111,7 @@
     entity: true,
     document: true,
     event: true,
-    location: true
+    location: true,
   };
   let importanceThreshold = 0.1;
 
@@ -113,7 +123,7 @@
       minImportance: 0.0,
       clusterDistance: 0,
       description: 'Ultra High (All Nodes)',
-      renderComplexity: 1.0
+      renderComplexity: 1.0,
     },
     1: {
       maxNodes: 500,
@@ -121,7 +131,7 @@
       minImportance: 0.2,
       clusterDistance: 5,
       description: 'High Detail',
-      renderComplexity: 0.7
+      renderComplexity: 0.7,
     },
     2: {
       maxNodes: 200,
@@ -129,7 +139,7 @@
       minImportance: 0.4,
       clusterDistance: 15,
       description: 'Medium Detail',
-      renderComplexity: 0.4
+      renderComplexity: 0.4,
     },
     3: {
       maxNodes: 50,
@@ -137,8 +147,8 @@
       minImportance: 0.7,
       clusterDistance: 30,
       description: 'Low Detail (N64 Style)',
-      renderComplexity: 0.2
-    }
+      renderComplexity: 0.2,
+    },
   } as const;
 
   // Derived values
@@ -160,7 +170,7 @@
       maxNodes: config?.maxNodes || 50,
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
-      frameTime: estimateFrameTime()
+      frameTime: estimateFrameTime(),
     };
   })();
 
@@ -197,12 +207,12 @@
     const device = await adapter.requestDevice();
     gpuDevice = device;
     if (!canvasElement) throw new Error('Canvas element not found');
-    const context = (canvasElement.getContext('webgpu') as unknown) as GPUCanvasContext;
+    const context = canvasElement.getContext('webgpu') as unknown as GPUCanvasContext;
     const format = (navigator as any).gpu.getPreferredCanvasFormat?.() ?? 'bgra8unorm';
     context.configure({
       device: gpuDevice,
       format,
-      alphaMode: 'premultiplied'
+      alphaMode: 'premultiplied',
     });
     isWebGPUReady = true;
     console.log('[CaseGraphLOD] WebGPU initialized for graph rendering');
@@ -249,8 +259,8 @@
     allNodes = allNodes.map(node => {
       const connectionWeight = (node.connections?.length || 0) / Math.max(1, allNodes.length * 0.1);
       const typeWeight = getNodeTypeImportance(node.type);
-      const metadataWeight = (node.metadata && node.metadata.priority) ? node.metadata.priority : 0.5;
-      const importance = Math.min(1.0, (connectionWeight * 0.4) + (typeWeight * 0.3) + (metadataWeight * 0.3));
+      const metadataWeight = node.metadata && node.metadata.priority ? node.metadata.priority : 0.5;
+      const importance = Math.min(1.0, connectionWeight * 0.4 + typeWeight * 0.3 + metadataWeight * 0.3);
       return { ...node, importance };
     });
   }
@@ -261,7 +271,7 @@
       entity: 0.8,
       document: 0.6,
       event: 0.7,
-      location: 0.5
+      location: 0.5,
     };
     return typeWeights[type] ?? 0.5;
   }
@@ -283,21 +293,26 @@
         center,
         radius,
         importance,
-        label: `${type.charAt(0).toUpperCase() + type.slice(1)}s (${nodes.length})`
+        label: `${type.charAt(0).toUpperCase() + type.slice(1)}s (${nodes.length})`,
       };
     });
   }
 
   function calculateClusterCenter(nodes: GraphNode[]): { x: number; y: number } {
     if (nodes.length === 0) return { x: 0, y: 0 };
-    const sum = nodes.reduce((acc, node) => ({ x: acc.x + (node.position?.x || 0), y: acc.y + (node.position?.y || 0) }), { x: 0, y: 0 });
+    const sum = nodes.reduce(
+      (acc, node) => ({ x: acc.x + (node.position?.x || 0), y: acc.y + (node.position?.y || 0) }),
+      { x: 0, y: 0 }
+    );
     return { x: sum.x / nodes.length, y: sum.y / nodes.length };
   }
 
   function calculateClusterRadius(nodes: GraphNode[], center: { x: number; y: number }): number {
     if (nodes.length === 0) return 0;
     return Math.max(
-      ...nodes.map(node => Math.sqrt(((node.position?.x || 0) - center.x) ** 2 + ((node.position?.y || 0) - center.y) ** 2))
+      ...nodes.map(node =>
+        Math.sqrt(((node.position?.x || 0) - center.x) ** 2 + ((node.position?.y || 0) - center.y) ** 2)
+      )
     );
   }
 
@@ -327,7 +342,7 @@
         node.position = {
           x: Math.cos(angle) * radius,
           y: Math.sin(angle) * radius,
-          z: (node.position && node.position.z) ? node.position.z : 0
+          z: node.position && node.position.z ? node.position.z : 0,
         };
       }
     });
@@ -354,12 +369,13 @@
     const repulsionStrength = forceStrength * (config?.renderComplexity ?? 1);
     for (let i = 0; i < visibleNodes.length; i++) {
       const nodeA = visibleNodes[i];
-      let forceX = 0, forceY = 0;
+      let forceX = 0,
+        forceY = 0;
       for (let j = 0; j < visibleNodes.length; j++) {
         if (i === j) continue;
         const nodeB = visibleNodes[j];
-        const dx = (nodeA.position!.x) - (nodeB.position!.x);
-        const dy = (nodeA.position!.y) - (nodeB.position!.y);
+        const dx = nodeA.position!.x - nodeB.position!.x;
+        const dy = nodeA.position!.y - nodeB.position!.y;
         const distance = Math.sqrt(dx * dx + dy * dy) || 1;
         const force = repulsionStrength / (distance * distance);
         forceX += (dx / distance) * force;
@@ -428,7 +444,7 @@
       const source = visibleNodes.find(n => n.id === edge.source);
       const target = visibleNodes.find(n => n.id === edge.target);
       if (source && target) {
-        const alpha = Math.max(0.1, (lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity || 0.2));
+        const alpha = Math.max(0.1, lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity || 0.2);
         ctx.strokeStyle = edge.color;
         ctx.globalAlpha = alpha;
         ctx.lineWidth = Math.max(1, edge.strength * 3);
@@ -442,7 +458,7 @@
 
     // Nodes
     visibleNodes.forEach(node => {
-      const size = Math.max(2, node.size * Math.max(0.5, 1 - (currentLOD * 0.2)));
+      const size = Math.max(2, node.size * Math.max(0.5, 1 - currentLOD * 0.2));
       ctx.fillStyle = node.color;
       ctx.beginPath();
       switch (node.type) {
@@ -546,7 +562,7 @@
   function calculateMemoryUsage(): number {
     const nodeSize = 128;
     const edgeSize = 64;
-    return ((visibleNodes.length * nodeSize) + (visibleEdges.length * edgeSize)) / (1024 * 1024);
+    return (visibleNodes.length * nodeSize + visibleEdges.length * edgeSize) / (1024 * 1024);
   }
   function estimateFrameTime(): number {
     const baseTime = 16.67;
@@ -566,7 +582,7 @@
         position: { x: 0, y: 0 },
         size: 15,
         color: '#4ade80',
-        metadata: { role: 'defendant' }
+        metadata: { role: 'defendant' },
       },
       {
         id: 'entity_1',
@@ -577,8 +593,8 @@
         position: { x: 50, y: 50 },
         size: 12,
         color: '#3b82f6',
-        metadata: { type: 'corporation' }
-      }
+        metadata: { type: 'corporation' },
+      },
     ];
     const demoEdges: GraphEdge[] = [
       {
@@ -588,8 +604,8 @@
         type: 'relationship',
         strength: 0.8,
         color: '#6b7280',
-        metadata: { relationship: 'employee' }
-      }
+        metadata: { relationship: 'employee' },
+      },
     ];
     allNodes = demoNodes;
     allEdges = demoEdges;
@@ -867,8 +883,12 @@
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;

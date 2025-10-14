@@ -50,9 +50,9 @@ class SSRLegalAPICache {
     defaultTTL: 5 * 60 * 1000, // 5 minutes
     maxAge: 3600, // 1 hour
     staleWhileRevalidate: 86400, // 24 hours
-    quantizeResponses: true
-    enableRAG: true
-    legalOptimizations: true
+    quantizeResponses: true,
+    enableRAG: true,
+    legalOptimizations: true,
   }
   private responseQuantizer = new ResponseQuantizer();
   private ragContextCache = new Map<string, any[]>();
@@ -60,7 +60,7 @@ class SSRLegalAPICache {
    * Cache GET request with intelligent key generation
    */
   async cacheGet(
-    endpoint: string
+    endpoint: string,
     params: { [key: string]: any } = {},
     options: {
       ttl?: number;
@@ -105,9 +105,9 @@ class SSRLegalAPICache {
    * Store response with intelligent caching strategy
    */
   async cacheSet(
-    endpoint: string
+    endpoint: string,
     params: { [key: string]: any },
-    response: LegalAPIResponse
+    response: LegalAPIResponse,
     options: {
       ttl?: number;
       quantize?: boolean;
@@ -128,8 +128,8 @@ class SSRLegalAPICache {
       }
       // Create cache entry
       const cacheEntry: SSRCacheEntry = {
-        key: cacheKey
-        data: processedResponse
+        key: cacheKey,
+        data: processedResponse,
         timestamp: Date.now(),
         ttl: options.ttl || this.config.defaultTTL,
         etag: this.generateETag(processedResponse),
@@ -157,7 +157,7 @@ class SSRLegalAPICache {
    * Execute cached API call with automatic caching
    */
   async cachedApiCall<T = LegalAPIResponse>(
-    endpoint: string
+    endpoint: string,
     options: {
       method?: 'GET' | 'POST';
       params?: { [key: string]: any }
@@ -199,7 +199,7 @@ class SSRLegalAPICache {
       await this.cacheSet(endpoint, params, response, {
         ttl,
         quantize,
-        ragContext: ragContextData
+        ragContext: ragContextData,
         userId
       });
     }
@@ -207,7 +207,7 @@ class SSRLegalAPICache {
   }
   /**
    * Generate HTTP cache headers for SSR
-   */;
+   */
   generateCacheHeaders(endpoint: string, response: LegalAPIResponse): Record<string, string> {
     const headers: Record<string, string> = {}
     if (this.isCacheable(endpoint, response)) {
@@ -231,7 +231,7 @@ class SSRLegalAPICache {
   }
   /**
    * Invalidate cache entries by pattern
-   */;
+   */
   async invalidatePattern(pattern: string, userId?: string): Promise<number> {
     // This would need to be implemented in the parallel cache orchestrator
     // For now, we'll clear specific known patterns
@@ -250,7 +250,7 @@ class SSRLegalAPICache {
   }
   /**
    * Get cache statistics
-   */;
+   */
   async getCacheStats(): Promise<any> {
     const perfStats = await parallelCacheOrchestrator.getPerformanceStats();
     return {
@@ -371,7 +371,7 @@ class SSRLegalAPICache {
 }
 /**
  * Response Quantizer - Compress API responses
- */;
+ */
 class ResponseQuantizer {
   async quantize(response: LegalAPIResponse): Promise<LegalAPIResponse> {
     // Simple quantization - in production this would use more sophisticated compression

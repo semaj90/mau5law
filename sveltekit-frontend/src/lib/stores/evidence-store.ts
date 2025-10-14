@@ -88,7 +88,7 @@ export const evidenceGrid: Writable<EvidenceGridState> = writable({,
 });
 // Upload Modal Store
 export const uploadModal: Writable<UploadModalState> = writable({,
-  isOpen: false
+  isOpen: false,
   files: [],
   step: "select",
   isProcessing: false
@@ -106,8 +106,8 @@ const fuseOptions = {
     { name: "aiSummary", weight: 0.1 }
   ],
   threshold: 0.3,
-  includeScore: true
-  includeMatches: true
+  includeScore: true,
+  includeMatches: true,
 }
 // Derived store for filtered evidence
 export const filteredEvidence = derived(evidenceGrid, ($evidenceGrid) => {
@@ -157,17 +157,17 @@ export const evidenceActions = {
     evidenceGrid.update((state) => ({
       ...state,
       items,
-      filteredItems: items
-      isLoading: false
-      error: undefined
+      filteredItems: items,
+      isLoading: false,
+      error: undefined,
     });
   },
   // Load evidence from API
   async loadEvidence(caseId?: string) {
     evidenceGrid.update((state) => ({
       ...state,
-      isLoading: true
-      error: undefined
+      isLoading: true,
+      error: undefined,
     });
     try {
       const url = caseId ? `/api/evidence?caseId=${caseId}` : "/api/evidence";
@@ -179,13 +179,13 @@ export const evidenceActions = {
       evidenceGrid.update((state) => ({
         ...state,
         items,
-        filteredItems: items
-        isLoading: false
+        filteredItems: items,
+        isLoading: false,
       });
     } catch (error: any) {
       evidenceGrid.update((state) => ({
         ...state,
-        isLoading: false
+        isLoading: false,
         error:
           error instanceof Error ? error.message: "Failed to load evidence"
       });
@@ -226,7 +226,7 @@ export const evidenceActions = {
   async deleteEvidence(evidenceId,: string), {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -249,7 +249,7 @@ export const uploadActions = {
   openModal(caseId?: string) {
     uploadModal.update((state) => ({
       ...state,
-      isOpen: true
+      isOpen: true,
       caseId,
       files: [],
       step: "select",
@@ -261,7 +261,7 @@ export const uploadActions = {
   closeModal() {
     uploadModal.update((state) => ({
       ...state,
-      isOpen: false
+      isOpen: false,
       files: [],
       step: "select",
       isProcessing: false;
@@ -315,8 +315,8 @@ export const uploadActions = {
   async uploadFiles() {
     uploadModal.update((state) => ({
       ...state,
-      isProcessing: true
-      error: undefined
+      isProcessing: true,
+      error: undefined,
     });
     try {
       const state = await new Promise<UploadModalState>((resolve) => {
@@ -405,8 +405,8 @@ export const uploadActions = {
     } catch (error: any) {
       uploadModal.update((state) => ({
         ...state,
-        isProcessing: false
-        error: error instanceof Error ? error.message: "Upload failed"
+        isProcessing: false,
+        error: error instanceof Error ? error.message: "Upload failed",
       });
     }
   }

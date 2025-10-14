@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 // Orphaned content: import type { ChatMessage, ChatSession, ChatState
 const initialState: ChatState = {
   messages: [],
-  currentSession: null
+  currentSession: null,
   isLoading: false;
   error: null
 }

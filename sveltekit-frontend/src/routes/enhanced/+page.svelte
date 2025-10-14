@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     loading = true;
     controller?.abort();
     controller = new AbortController();
-    const body: unknown = { query, limit, mode }
+    const body: unknown = { query, limit, mode };
     if (threshold !== null && threshold >= 0) body.threshold = threshold;
     if (model.trim()) body.model = model.trim();
     if (caseId.trim()) body.caseId = caseId.trim();
@@ -124,14 +124,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleStreamEvent(_event: string, data: unknown) {
     if (event === 'meta') {
-      responseMeta = { ...(responseMeta || {}), ...data }
+      responseMeta = { ...(responseMeta || {}), ...data };
     } else if (event === 'result') {
       results = [...results, data];
       streamedCount = results.length;
     } else if (event === 'error') {
       errorMsg = data.message || 'Stream error';
     } else if (event === 'done') {
-      responseMeta = { ...(responseMeta || {}), ...data, count: results.length }
+      responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
     }
   }
   function submit(e: Event) {
@@ -186,7 +186,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col gap-1">
       <label for="streaming-toggle" class="text-xs font-medium uppercase tracking-wide">Streaming</label>
       <select
-        id="streaming-toggle";
+        id="streaming-toggle"
+        ;
         bind:value={useStreaming}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
       >
@@ -197,7 +198,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col gap-1">
       <label for="mode-select" class="text-xs font-medium uppercase tracking-wide">Mode</label>
       <select
-        id="mode-select";
+        id="mode-select"
+        ;
         bind:value={mode}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
       >
@@ -211,7 +213,8 @@ https://svelte.dev/e/js_parse_error -->
         id="limit-input"
         type="number"
         min="1"
-        max="50";
+        max="50"
+        ;
         bind:value={limit}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
       />
@@ -223,7 +226,8 @@ https://svelte.dev/e/js_parse_error -->
         type="number"
         step="0.01"
         min="0"
-        max="1";
+        max="1"
+        ;
         bind:value={threshold}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
         placeholder="optional"
@@ -232,7 +236,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col gap-1">
       <label for="model-input" class="text-xs font-medium uppercase tracking-wide">Model</label>
       <input
-        id="model-input";
+        id="model-input"
+        ;
         bind:value={model}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
         placeholder="(auto)"
@@ -241,7 +246,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col gap-1">
       <label for="case-input" class="text-xs font-medium uppercase tracking-wide">Case ID</label>
       <input
-        id="case-input";
+        id="case-input"
+        ;
         bind:value={caseId}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
         placeholder="optional"
@@ -291,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
           <pre class="mt-2 p-2 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto text-[11px]">{JSON.stringify(
               responseMeta.errors,
               null,
-              2,
+              2
             )}</pre>
         </details>
       {/if}
@@ -319,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="mt-1 p-2 bg-neutral-50 dark:bg-neutral-900 rounded overflow-auto max-h-48 text-[11px]">{JSON.stringify(
                     r.metadata,
                     null,
-                    2,
+                    2
                   )}</pre>
               </details>
             {/if}

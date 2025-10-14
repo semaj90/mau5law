@@ -114,7 +114,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
     interactive && 'hover:border-yorha-primary/30 transition-colors',
     precedent.overruled && 'opacity-75',
-    className,
+    className
   )}
 >
   <!-- Card Header -->
@@ -134,7 +134,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <span
         className={cn(
           'px-2 py-1 text-xs font-mono rounded border shrink-0',
-          precedentTypeConfig[precedent.precedentType].className,
+          precedentTypeConfig[precedent.precedentType].className
         )}
       >
         {precedentTypeConfig[precedent.precedentType].label}
@@ -171,7 +171,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                   ? 'text-green-400'
                   : similarityLevel === 'medium'
                     ? 'text-yellow-400'
-                    : 'text-red-400',
+                    : 'text-red-400'
               )}
             >
               {precedent.similarityScore}%
@@ -188,7 +188,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                   ? 'text-green-400'
                   : relevanceLevel === 'medium'
                     ? 'text-yellow-400'
-                    : 'text-red-400',
+                    : 'text-red-400'
               )}
             >
               {precedent.relevanceScore}%

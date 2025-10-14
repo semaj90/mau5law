@@ -34,4 +34,4 @@ export const GET: RequestHandler = async () => {
     console.error('Error fetching recent cases:', error);
     return json({ error: 'Failed to fetch recent cases' }, { status: 500 });
   }
-}
+};

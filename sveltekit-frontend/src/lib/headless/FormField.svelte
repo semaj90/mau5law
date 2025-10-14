@@ -32,6 +32,7 @@
 </div>
 <!-- Hint snippet rendering -->
 {@render hint?.({ inputId, fieldName: name })}
+
 <!-- Usage example:
 <FormField
   name="email"

@@ -27,14 +27,14 @@ const performanceMetrics = new Map<string, PerformanceMetrics>();
  * Register a component for lazy loading
  */
 export function registerComponent(
-  name: string
+  name: string,
   loader: () => Promise<ComponentModule>,
 ): void {
   componentRegistry.set(name, loader);
 }
 /**
  * Lazy load a component with performance tracking
- */;
+ */
 export async function loadComponent(name: string): Promise<ComponentModule> {
   const loader = componentRegistry.get(name);
   if (!loader) {
@@ -46,7 +46,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
     const loadTime = performance.now() - startTime;
     // Track performance metrics
     performanceMetrics.set(name, {
-      componentLoadTime: loadTime
+      componentLoadTime: loadTime,
       renderTime: 0, // Will be updated during render
       memoryUsage: getMemoryUsage(),
       bundleSize: module.size || 0,
@@ -60,7 +60,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
 }
 /**
  * Get current memory usage (if available)
- */;
+ */
 function getMemoryUsage(): number {
   if ("memory" in performance && performance.memory) {
     return (performance.memory as any).usedJSHeapSize;
@@ -69,7 +69,7 @@ function getMemoryUsage(): number {
 }
 /**
  * Component factory with tree-shaking optimization
- */;
+ */
 export class OptimizedComponentFactory {
   private loadedComponents = new Map<string, ComponentModule>();
   private loadingPromises = new Map<string, Promise<ComponentModule>();
@@ -112,7 +112,7 @@ export class OptimizedComponentFactory {
 }
 /**
  * Virtual scrolling for large lists of legal documents/evidence
- */;
+ */
 export interface VirtualScrollOptions {
   itemHeight: number;
   bufferSize?: number;
@@ -150,8 +150,8 @@ export class VirtualScrollManager {
     const visibleEnd = Math.min(this.totalItems, endIndex + overscan);
     const offset = visibleStart * itemHeight;
     return {
-      start: visibleStart
-      end: visibleEnd
+      start: visibleStart,
+      end: visibleEnd,
       offset
     }
   }
@@ -210,7 +210,7 @@ export function memoize<Args extends unknown[], Return>(
 }
 /**
  * Intersection Observer for lazy loading evidence cards
- */;
+ */
 export class LazyLoadManager {
   private observer: IntersectionObserver;
   private loadingCallbacks = new Map<Element, () => void>();
@@ -250,7 +250,7 @@ export class LazyLoadManager {
 }
 /**
  * Resource pool for managing expensive resources
- */;
+ */
 export class ResourcePool<T> {
   private available: T[] = [];
   private inUse = new Set<T>();
@@ -306,7 +306,7 @@ export class ResourcePool<T> {
 }
 /**
  * Bundle analyzer for component dependencies
- */;
+ */
 export interface BundleAnalysis {
   totalSize: number;
   gzippedSize: number;
@@ -362,7 +362,7 @@ export function analyzeBundleSize(): BundleAnalysis {
 }
 /**
  * Performance monitoring utilities
- */;
+ */
 export class PerformanceMonitor {
   private metrics: Map<string, number[]> = new Map();
   private observers: PerformanceObserver[] = [];

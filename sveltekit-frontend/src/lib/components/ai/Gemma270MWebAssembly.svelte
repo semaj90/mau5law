@@ -450,7 +450,7 @@ await initializeWebAssembly();
                 onclick={() =>
                   processText(
                     'This is a long legal document that needs to be summarized for better understanding...',
-                    'summarize',
+                    'summarize'
                   )}
               >
                 📝 Summarize
@@ -460,7 +460,7 @@ await initializeWebAssembly();
                 onclick={() =>
                   processText(
                     'Extract entities from this legal contract between John Doe and ABC Corporation...',
-                    'extract',
+                    'extract'
                   )}
               >
                 🔍 Extract

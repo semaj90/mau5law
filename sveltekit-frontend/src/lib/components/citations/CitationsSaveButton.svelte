@@ -8,7 +8,13 @@
 
   // Use Svelte 5 runes $props() instead of export let
   type OnDispatch = (payload: { citation: Citation; success?: boolean; error?: string }) => void;
-  let { citation, size = 'sm', variant = 'ghost', showText = true, ondispatch = undefined } = $props<{
+  let {
+    citation,
+    size = 'sm',
+    variant = 'ghost',
+    showText = true,
+    ondispatch = undefined,
+  } = $props<{
     citation: Citation;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
@@ -34,7 +40,7 @@
   });
 
   // Listen for authentication changes
-  citationsManager.onAuthChange((user) => {
+  citationsManager.onAuthChange(user => {
     isAuthenticated = user?.isAuthenticated ?? false;
     if (isAuthenticated) {
       const savedCitations = citationsManager.getSavedCitations();
@@ -50,7 +56,7 @@
     if (!isAuthenticated) {
       ondispatch?.({
         citation,
-        error: 'Please sign in to save citations'
+        error: 'Please sign in to save citations',
       });
       return;
     }
@@ -63,13 +69,13 @@
       } else {
         ondispatch?.({
           citation,
-          error: 'Failed to save citation'
+          error: 'Failed to save citation',
         });
       }
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
       isSaving = false;
@@ -88,7 +94,7 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message : 'Failed to remove citation'
+        error: error instanceof Error ? error.message : 'Failed to remove citation',
       });
     } finally {
       isSaving = false;
@@ -111,20 +117,14 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message : 'Failed to save to collection'
+        error: error instanceof Error ? error.message : 'Failed to save to collection',
       });
     }
   }
 </script>
 
 {#if !isAuthenticated}
-  <ButtonCtor
-    {variant}
-    {size}
-    class="citation-save-btn disabled"
-    disabled={true}
-    title="Sign in to save citations"
-  >
+  <ButtonCtor {variant} {size} class="citation-save-btn disabled" disabled={true} title="Sign in to save citations">
     🔒 {showText ? 'Sign in to Save' : ''}
   </ButtonCtor>
 {:else}
@@ -150,7 +150,7 @@
       variant="ghost"
       {size}
       class="collection-selector-btn"
-      onclick={() => showCollectionSelector = !showCollectionSelector}
+      onclick={() => (showCollectionSelector = !showCollectionSelector)}
       title="Save to collection"
     >
       📁
@@ -160,14 +160,11 @@
       <div class="collection-selector">
         <div class="collection-header">
           <h4>Save to Collection</h4>
-          <button class="close-btn" onclick={() => showCollectionSelector = false}>✕</button>
+          <button class="close-btn" onclick={() => (showCollectionSelector = false)}>✕</button>
         </div>
         <div class="collection-list">
           {#each collections as collection}
-            <button
-              class="collection-item"
-              onclick={() => handleSaveToCollection(collection.id)}
-            >
+            <button class="collection-item" onclick={() => handleSaveToCollection(collection.id)}>
               <span class="collection-name">{collection.name}</span>
               <span class="collection-count">
                 {collection.citations.length} citations

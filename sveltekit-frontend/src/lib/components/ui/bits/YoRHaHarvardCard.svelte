@@ -32,7 +32,7 @@
       onclick && 'interactive',
     ]
       .filter(Boolean)
-      .join(' '),
+      .join(' ')
   );
 </script>
 

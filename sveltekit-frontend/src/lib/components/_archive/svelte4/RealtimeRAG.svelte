@@ -190,7 +190,8 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1" for="document-types"> Document Types </label>
             <select
-              id="document-types";
+              id="document-types"
+              ;
               bind:value={selectedDocumentTypes}
               multiple
               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
@@ -364,6 +365,7 @@
     </div>
   {/if}
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>

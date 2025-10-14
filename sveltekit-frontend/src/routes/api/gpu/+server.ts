@@ -99,10 +99,10 @@ async function getGPUStatus(): Promise<Response> {
 	const data = await response.json()
 	const enrichedData = {
 		...data,
-		frontend_integration: true
+		frontend_integration: true,
 		api_version: '1.0.0',
-		sveltekit_ready: true
-		last_check: new Date().toISOString()
+		sveltekit_ready: true,
+		last_check: new Date().toISOString(),
 	}
 	return json(enrichedData)
 }
@@ -147,8 +147,8 @@ async function getServiceRegistry(): Promise<Response> {
 	const data = await response.json()
 	return json({
 		...data,
-		frontend_managed: true
-		integration_layer: 'sveltekit'
+		frontend_managed: true,
+		integration_layer: 'sveltekit',
 	})
 }
 // GPU Overview (default GET response)
@@ -236,8 +236,8 @@ async function processGPUTask(taskData: any): Promise<Response> {
 	const result = await response.json()
 	return json({
 		...result,
-		frontend_processed: true
-		api_version: '1.0.0'
+		frontend_processed: true,
+		api_version: '1.0.0',
 	})
 }
 // Process Batch GPU Tasks
@@ -265,8 +265,8 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 			total: tasks.length,
 			successful: successful.length,
 			failed: failed.length,
-			results: successful
-			errors: failed
+			results: successful,
+			errors: failed,
 		},
 		frontend_batch_processed: true
 	})

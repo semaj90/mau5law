@@ -16,12 +16,12 @@ export interface CHRROMPattern {
     cacheHits: number;
     lastAccessed: number;
     compressionRatio: number;
-  }
+  };
   renderData?: {
     colors: [number, number, number, number][]; // RGBA colors
     positions: [number, number][]; // Tile positions
     attributes: number[]; // Sprite attributes
-  }
+  };
 }
 export interface CHRROMCache {
   patterns: Map<string, CHRROMPattern>;
@@ -33,7 +33,7 @@ export interface CHRROMCache {
     totalRequests: number;
     averageResponseTime: number;
     bankUtilization: number[];
-  }
+  };
 }
 export interface PatternGenerationOptions {
   documentType: 'contract' | 'evidence' | 'brief' | 'citation';
@@ -50,23 +50,27 @@ export class CHRROMPatternCache {
   private readonly MAX_BANKS = 8; // NES had 8 CHR-ROM banks
   private readonly PATTERN_SIZE = 64; // 8x8 pixels = 64 bytes
   constructor(redisConfig?: any) {
-    this.redis = new Redis(redisConfig || {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-      password: process.env.REDIS_PASSWORD
-    });
+    this.redis = new Redis(
+      redisConfig || {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+      }
+    );
     this.cache = {
       patterns: new Map(),
-      banks: Array(this.MAX_BANKS).fill(null).map(() => new ArrayBuffer(this.BANK_SIZE)),
+      banks: Array(this.MAX_BANKS)
+        .fill(null)
+        .map(() => new ArrayBuffer(this.BANK_SIZE)),
       hotPatterns: [],
       metrics: {
         cacheHits: 0,
         cacheMisses: 0,
         totalRequests: 0,
         averageResponseTime: 0,
-        bankUtilization: Array(this.MAX_BANKS).fill(0)
-      }
-    }
+        bankUtilization: Array(this.MAX_BANKS).fill(0),
+      },
+    };
     this.initializeBanks();
     this.startMetricsCollection();
   }
@@ -83,23 +87,18 @@ export class CHRROMPatternCache {
     }
     console.log('🎮 Initialized 8 CHR-ROM banks (64KB total) with default patterns');
   }
-  private generateDefaultTilePattern(
-    bankView: Uint8Array,
-    offset: number,
-    bankId: number,
-    tileIndex: number
-  ): void {
+  private generateDefaultTilePattern(bankView: Uint8Array, offset: number, bankId: number, tileIndex: number): void {
     // Generate NES-style 8x8 tile patterns
     const patterns: { [key: number]: number[] } = {
-      0: [0x3C, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3C], // Circle
-      1: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF], // Rectangle with border
-      2: [0x18, 0x3C, 0x7E, 0xFF, 0xFF, 0x7E, 0x3C, 0x18], // Diamond
-      3: [0x00, 0x24, 0x42, 0xFF, 0xFF, 0x42, 0x24, 0x00], // Arrow up
-      4: [0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA], // Checkerboard
-      5: [0x00, 0x00, 0x3C, 0x3C, 0x3C, 0x3C, 0x00, 0x00], // Small square
-      6: [0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E], // Solid block
-      7: [0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81]  // X pattern
-    }
+      0: [0x3c, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3c], // Circle
+      1: [0xff, 0x81, 0x81, 0xbd, 0xbd, 0x81, 0x81, 0xff], // Rectangle with border
+      2: [0x18, 0x3c, 0x7e, 0xff, 0xff, 0x7e, 0x3c, 0x18], // Diamond
+      3: [0x00, 0x24, 0x42, 0xff, 0xff, 0x42, 0x24, 0x00], // Arrow up
+      4: [0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa], // Checkerboard
+      5: [0x00, 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x00, 0x00], // Small square
+      6: [0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e], // Solid block
+      7: [0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81], // X pattern
+    };
     const patternData = patterns[bankId] || patterns[0];
     // Each tile is 8x8, but we store it as 64 bytes for easier manipulation
     for (let row = 0; row < 8; row++) {
@@ -113,10 +112,7 @@ export class CHRROMPatternCache {
   /**
    * Get pattern with CHR-ROM-style caching
    */
-  async getCachedPattern(
-    patternId: string,
-    options: PatternGenerationOptions,
-  ): Promise<CHRROMPattern | null> {
+  async getCachedPattern(patternId: string, options: PatternGenerationOptions): Promise<CHRROMPattern | null> {
     const startTime = performance.now();
     this.cache.metrics.totalRequests++;
     try {
@@ -162,7 +158,7 @@ export class CHRROMPatternCache {
   async generateAndCachePattern(
     patternId: string,
     options: PatternGenerationOptions,
-    sourceDocument?: LegalDocumentJSON,
+    sourceDocument?: LegalDocumentJSON
   ): Promise<CHRROMPattern> {
     const startTime = performance.now();
     try {
@@ -182,10 +178,10 @@ export class CHRROMPatternCache {
           riskLevel: options.riskLevel,
           cacheHits: 0,
           lastAccessed: Date.now(),
-          compressionRatio: this.calculateCompressionRatio(tileData)
+          compressionRatio: this.calculateCompressionRatio(tileData),
         },
-        renderData
-      }
+        renderData,
+      };
       // Store in CHR-ROM bank
       await this.storePattternInBank(pattern);
       // Cache in Redis with expiration
@@ -209,7 +205,8 @@ export class CHRROMPatternCache {
   /**
    * Generate legal document tile pattern (NES-style 8x8 tiles)
    */
-  private generateLegalDocumentTilePattern(_options: PatternGenerationOptions,
+  private generateLegalDocumentTilePattern(
+    _options: PatternGenerationOptions,
     sourceDocument?: LegalDocumentJSON
   ): Uint8Array {
     const tileData = new Uint8Array(this.PATTERN_SIZE);
@@ -218,8 +215,8 @@ export class CHRROMPatternCache {
       contract: this.generateContractPattern(_options.riskLevel),
       evidence: this.generateEvidencePattern(_options.riskLevel),
       brief: this.generateBriefPattern(_options.riskLevel),
-      citation: this.generateCitationPattern(_options.riskLevel)
-    }
+      citation: this.generateCitationPattern(_options.riskLevel),
+    };
     let basePattern = basePatterns[_options.documentType];
     // Apply risk level modifications
     basePattern = this.applyRiskLevelModifications(basePattern, _options.riskLevel);
@@ -234,14 +231,25 @@ export class CHRROMPatternCache {
     // Contract: Document with signature line
     const pattern = new Uint8Array(64);
     const lines = [
-      0xFF, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xFF, // Border
+      0xff,
+      0x81,
+      0x81,
+      0x81,
+      0x81,
+      0x81,
+      0x81,
+      0xff, // Border
     ];
     // Add risk-based internal pattern
     if (riskLevel === 'critical') {
       // Dense pattern for critical risk
-      lines[2] = 0xBD; lines[3] = 0xDB; lines[4] = 0xBD; lines[5] = 0xDB;
+      lines[2] = 0xbd;
+      lines[3] = 0xdb;
+      lines[4] = 0xbd;
+      lines[5] = 0xdb;
     } else if (riskLevel === 'high') {
-      lines[2] = 0xA5; lines[4] = 0xA5;
+      lines[2] = 0xa5;
+      lines[4] = 0xa5;
     } else if (riskLevel === 'medium') {
       lines[3] = 0x99;
     }
@@ -249,30 +257,28 @@ export class CHRROMPatternCache {
   }
   private generateEvidencePattern(riskLevel: string): Uint8Array {
     // Evidence: File folder with contents
-    const lines = [
-      0x7E, 0xFE, 0x82, 0x82, 0x82, 0x82, 0x82, 0xFE
-    ];
+    const lines = [0x7e, 0xfe, 0x82, 0x82, 0x82, 0x82, 0x82, 0xfe];
     // Risk-based modifications
     if (riskLevel === 'critical') {
-      lines[2] = 0xBA; lines[3] = 0xAB; lines[4] = 0xBA;
+      lines[2] = 0xba;
+      lines[3] = 0xab;
+      lines[4] = 0xba;
     }
     return this.expandLinesToTile(lines);
   }
   private generateBriefPattern(riskLevel: string): Uint8Array {
     // Brief: Text document with paragraphs
-    const lines = [
-      0xFF, 0x81, 0xBD, 0x81, 0xBD, 0x81, 0xBD, 0xFF
-    ];
+    const lines = [0xff, 0x81, 0xbd, 0x81, 0xbd, 0x81, 0xbd, 0xff];
     if (riskLevel === 'critical') {
-      lines[2] = 0xFF; lines[4] = 0xFF; lines[6] = 0xFF;
+      lines[2] = 0xff;
+      lines[4] = 0xff;
+      lines[6] = 0xff;
     }
     return this.expandLinesToTile(lines);
   }
   private generateCitationPattern(riskLevel: string): Uint8Array {
     // Citation: Reference with link symbol
-    const lines = [
-      0x3C, 0x42, 0x99, 0x81, 0x81, 0x99, 0x42, 0x3C
-    ];
+    const lines = [0x3c, 0x42, 0x99, 0x81, 0x81, 0x99, 0x42, 0x3c];
     return this.expandLinesToTile(lines);
   }
   private expandLinesToTile(lines: number[]): Uint8Array {
@@ -337,18 +343,21 @@ export class CHRROMPatternCache {
         }
       }
     }
-    return { colors, positions, attributes }
+    return { colors, positions, attributes };
   }
   private getRiskColor(riskLevel: string): [number, number, number, number] {
     const colors: { [key: string]: [number, number, number, number] } = {
       low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
       medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
       high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
-      critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
-    }
+      critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number],
+    };
     return colors[riskLevel] || colors.low;
   }
-  private determinePatternType(_options: PatternGenerationOptions, sourceDocument?: LegalDocumentJSON): CHRROMPattern['patternType'] {
+  private determinePatternType(
+    _options: PatternGenerationOptions,
+    sourceDocument?: LegalDocumentJSON
+  ): CHRROMPattern['patternType'] {
     if (sourceDocument) return 'document_layout';
     if (_options.animated) return 'visualization';
     return 'ui_component';
@@ -369,7 +378,7 @@ export class CHRROMPatternCache {
     const bank = this.cache.banks[pattern.bankId];
     const bankView = new Uint8Array(bank);
     // Find free space in bank (simplified allocation)
-  const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE));
+    const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE));
     const offset = tileIndex * this.PATTERN_SIZE;
     // Store pattern data
     bankView.set(pattern.tileData, offset);
@@ -402,7 +411,7 @@ export class CHRROMPatternCache {
     // Serialize pattern for Redis storage
     return JSON.stringify({
       ...pattern,
-      tileData: Array.from(pattern.tileData) // Convert Uint8Array to array
+      tileData: Array.from(pattern.tileData), // Convert Uint8Array to array
     });
   }
   private deserializePattern(data: string): CHRROMPattern {
@@ -410,8 +419,8 @@ export class CHRROMPatternCache {
     const parsed = JSON.parse(data);
     return {
       ...parsed,
-      tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array
-    }
+      tileData: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
+    };
   }
   private startMetricsCollection(): void {
     // Collect and log metrics every 30 seconds
@@ -421,8 +430,7 @@ export class CHRROMPatternCache {
   }
   private logMetrics(): void {
     const metrics = this.cache.metrics;
-    const hitRate = metrics.totalRequests > 0 ?
-      (metrics.cacheHits / metrics.totalRequests * 100).toFixed(2) : '0.00';
+    const hitRate = metrics.totalRequests > 0 ? ((metrics.cacheHits / metrics.totalRequests) * 100).toFixed(2) : '0.00';
     console.log(`📊 CHR-ROM Cache Metrics:`);
     console.log(`   Hit Rate: ${hitRate}% (${metrics.cacheHits}/${metrics.totalRequests})`);
     console.log(`   Avg Response: ${metrics.averageResponseTime.toFixed(2)}ms`);
@@ -466,8 +474,8 @@ export class CHRROMPatternCache {
       ...this.cache.metrics,
       totalPatterns: this.cache.patterns.size,
       hotPatterns: [...this.cache.hotPatterns],
-      hitRate: this.cache.metrics.totalRequests > 0 ?
-        this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0
+      hitRate:
+        this.cache.metrics.totalRequests > 0 ? this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0,
     };
   }
 

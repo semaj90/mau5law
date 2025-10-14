@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   let isInitialized = $state(false);
   let isTraining = $state(false);
   let visualizationData = $state<SOMNode[]>([]);
-  let stats = $state<(IngestionStats & { queue_size: number; is_processing: boolean; som_visualization: any[] })>({
+  let stats = $state<IngestionStats & { queue_size: number; is_processing: boolean; som_visualization: any[] }>({
     total_processed: 0,
     successful: 0,
     failed: 0,
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     evidence_type_distribution: {},
     queue_size: 0,
     is_processing: false,
-    som_visualization: []
+    som_visualization: [],
   });
   // Configuration
   let somConfig: SOMConfig = $state({
@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
         upload_timestamp: Date.now() - 86400000,
         file_size: 1024,
         mime_type: 'application/pdf',
-      }
+      },
     },
     {
       id: 'doc-2',
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
         upload_timestamp: Date.now() - 172800000,
         file_size: 512,
         mime_type: 'application/msword',
-      }
+      },
     },
     {
       id: 'doc-3',
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
         upload_timestamp: Date.now() - 259200000,
         file_size: 2048,
         mime_type: 'text/plain',
-      }
+      },
     },
     {
       id: 'doc-4',
@@ -96,14 +96,14 @@ https://svelte.dev/e/js_parse_error -->
         upload_timestamp: Date.now() - 345600000,
         file_size: 768,
         mime_type: 'application/pdf',
-      }
-    }
+      },
+    },
   ];
   $effect(() => {
     (async () => {
-await initializeSOMSystem();
-    setupCanvas();
-    startVisualizationLoop();
+      await initializeSOMSystem();
+      setupCanvas();
+      startVisualizationLoop();
     })();
   });
   async function initializeSOMSystem(): Promise<void> {
@@ -168,14 +168,11 @@ await initializeSOMSystem();
       const x = node.position.x * cellWidth;
       const y = node.position.y * cellHeight;
       // Color based on cluster
-      const clusterColors = [
-        '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4',
-        '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'
-      ];
+      const clusterColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
       const clusterColor = clusterColors[node.cluster % clusterColors.length] || '#666666';
       // Node background
       ctx.fillStyle = clusterColor;
-      ctx.globalAlpha = 0.3 + (node.confidence * 0.7);
+      ctx.globalAlpha = 0.3 + node.confidence * 0.7;
       ctx.fillRect(x, y, cellWidth - 1, cellHeight - 1);
       // Document count indicator
       if (node.documents > 0) {
@@ -183,20 +180,16 @@ await initializeSOMSystem();
         ctx.globalAlpha = 0.8;
         ctx.font = '10px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(
-          node.documents.toString(),
-          x + cellWidth / 2,
-          y + cellHeight / 2
-        );
+        ctx.fillText(node.documents.toString(), x + cellWidth / 2, y + cellHeight / 2);
       }
       // Evidence type indicator
       const evidenceColors = {
-        'forensic': '#ff4757',
-        'testimony': '#5352ed',
-        'digital': '#2ed573',
-        'physical': '#ffa502',
-        'unknown': '#747d8c'
-      }
+        forensic: '#ff4757',
+        testimony: '#5352ed',
+        digital: '#2ed573',
+        physical: '#ffa502',
+        unknown: '#747d8c',
+      };
       ctx.fillStyle = evidenceColors[node.evidenceType as keyof typeof evidenceColors] || evidenceColors.unknown;
       ctx.globalAlpha = 0.6;
       ctx.fillRect(x + cellWidth - 6, y + 2, 4, 4);
@@ -253,11 +246,11 @@ await initializeSOMSystem();
       { type: 'forensic', color: '#ff4757', label: 'Forensic' },
       { type: 'testimony', color: '#5352ed', label: 'Testimony' },
       { type: 'digital', color: '#2ed573', label: 'Digital' },
-      { type: 'physical', color: '#ffa502', label: 'Physical' }
+      { type: 'physical', color: '#ffa502', label: 'Physical' },
     ];
     ctx.font = '12px sans-serif';
     evidenceTypes.forEach((item, index) => {
-      const y = legendY + 35 + (index * 20);
+      const y = legendY + 35 + index * 20;
       // Color indicator
       ctx.fillStyle = (item as { color?: any; label?: any }).color;
       ctx.fillRect(legendX, y - 8, 12, 12);
@@ -288,8 +281,8 @@ await initializeSOMSystem();
         upload_timestamp: Date.now(),
         file_size: 1024,
         mime_type: 'application/pdf',
-      }
-    }
+      },
+    };
     try {
       await ingestionPipeline.queueDocuments([testDoc]);
       // Update stats
@@ -475,7 +468,7 @@ await initializeSOMSystem();
       </div>
     </div>
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
-  <canvas bind:this={canvas as any} {width} {height} class="w-full h-auto"></canvas>
+      <canvas bind:this={canvas as any} {width} {height} class="w-full h-auto"></canvas>
       {#if !isInitialized}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">

@@ -49,12 +49,12 @@ const resolvers = {
             position: (
               result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }
             ).position,
-          }
+          };
         })
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
     },
   },
-}
+};
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 export default createServer({ schema });

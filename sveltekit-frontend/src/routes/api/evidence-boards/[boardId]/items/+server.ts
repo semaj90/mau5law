@@ -11,15 +11,17 @@ const createBoardItemSchema = z.object({
   itemType: z.enum(['evidence', 'poi', 'note', 'connection', 'image']),
   position: z.object({
     x: z.number(),
-    y: z.number()
+    y: z.number(),
   }),
-  size: z.object({
-    width: z.number(),
-    height: z.number()
-  }).optional(),
+  size: z
+    .object({
+      width: z.number(),
+      height: z.number(),
+    })
+    .optional(),
   content: z.string().optional(),
   metadata: z.any().optional(),
-  zIndex: z.number().default(0)
+  zIndex: z.number().default(0),
 });
 
 const updateBoardItemSchema = createBoardItemSchema.partial();
@@ -38,10 +40,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const [board] = await db
       .select()
       .from(evidenceBoards)
-      .where(and(
-        eq(evidenceBoards.id, boardId),
-        eq(evidenceBoards.isActive, true)
-      ));
+      .where(and(eq(evidenceBoards.id, boardId), eq(evidenceBoards.isActive, true)));
 
     if (!board) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
@@ -51,14 +50,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const items = await db
       .select()
       .from(evidenceBoardItems)
-      .where(and(
-        eq(evidenceBoardItems.boardId, boardId),
-        eq(evidenceBoardItems.isVisible, true)
-      ));
+      .where(and(eq(evidenceBoardItems.boardId, boardId), eq(evidenceBoardItems.isVisible, true)));
 
     return json({
       success: true,
-      data: items
+      data: items,
     });
   } catch (error) {
     console.error('Error fetching board items:', error);
@@ -82,10 +78,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const [board] = await db
       .select()
       .from(evidenceBoards)
-      .where(and(
-        eq(evidenceBoards.id, boardId),
-        eq(evidenceBoards.isActive, true)
-      ));
+      .where(and(eq(evidenceBoards.id, boardId), eq(evidenceBoards.isActive, true)));
 
     if (!board) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
@@ -104,14 +97,17 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       .values({
         ...validatedData,
         boardId,
-        createdBy: session.user.id
+        createdBy: session.user.id,
       })
       .returning();
 
-    return json({
-      success: true,
-      data: newItem
-    }, { status: 201 });
+    return json(
+      {
+        success: true,
+        data: newItem,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating board item:', error);
     if (error instanceof z.ZodError) {

@@ -52,12 +52,12 @@ export interface NavigationGuard {
 export class DynamicNavigation {
   private state: Writable<NavigationState> = writable({,
     currentPath: '/',
-    previousPath: null
+    previousPath: null,
     navigationHistory: [],
     breadcrumbs: [],
-    canGoBack: false
-    canGoForward: false
-    isNavigating: false
+    canGoBack: false,
+    canGoForward: false,
+    isNavigating: false,
   });
   private guards: Map<string, NavigationGuard> = new Map();
   private maxHistorySize = 100;
@@ -67,7 +67,7 @@ export class DynamicNavigation {
   }
   /**
    * Initialize navigation system
-   */;
+   */
   private initialize(): void {
     if (browser) {
       // Subscribe to page changes
@@ -82,13 +82,13 @@ export class DynamicNavigation {
   }
   /**
    * Get navigation state
-   */;
+   */
   public getState(): Readable<NavigationState> {
     return this.state;
   }
   /**
    * Navigate to a path
-   */;
+   */
   public async navigate(path: string, options: NavigationOptions = {}): Promise<void> {
     const currentState = get(this.state);
     // Check navigation guards
@@ -125,7 +125,7 @@ export class DynamicNavigation {
    * Navigate to a route by ID
    */
   public async navigateToRoute(
-    routeId: string
+    routeId: string,
     params: Record<string, string> = {},
     options: NavigationOptions = {}
   ): Promise<void> {
@@ -143,7 +143,7 @@ export class DynamicNavigation {
   }
   /**
    * Go back in history
-   */;
+   */
   public async goBack(): Promise<void> {
     const currentState = get(this.state);
     if (!currentState.canGoBack) return;
@@ -157,7 +157,7 @@ export class DynamicNavigation {
   }
   /**
    * Go forward in history
-   */;
+   */
   public async goForward(): Promise<void> {
     const currentState = get(this.state);
     if (!currentState.canGoForward) return;
@@ -171,36 +171,36 @@ export class DynamicNavigation {
   }
   /**
    * Refresh current page
-   */;
+   */
   public async refresh(invalidateAll = true): Promise<void> {
     const currentState = get(this.state);
     await this.navigate(currentState.currentPath, {
-      replaceState: true
+      replaceState: true,
       invalidateAll,
       keepHistory: false
     });
   }
   /**
    * Replace current URL without navigation
-   */;
+   */
   public async replace(path: string, state?: any): Promise<void> {
     await this.navigate(path, { replaceState: true, state });
   }
   /**
    * Add navigation guard
-   */;
+   */
   public addGuard(guard: NavigationGuard): void {
     this.guards.set(guard.name, guard);
   }
   /**
    * Remove navigation guard
-   */;
+   */
   public removeGuard(name: string): boolean {
     return this.guards.delete(name);
   }
   /**
    * Clear all navigation guards
-   */;
+   */
   public clearGuards(): void {
     this.guards.clear();
   }
@@ -242,7 +242,7 @@ export class DynamicNavigation {
       return {
         ...state,
         previousPath: state.currentPath,
-        currentPath: path
+        currentPath: path,
         breadcrumbs,
         canGoBack: this.historyIndex > 0 || state.navigationHistory.length > 1,
         canGoForward: this.historyIndex < state.navigationHistory.length - 1
@@ -251,7 +251,7 @@ export class DynamicNavigation {
   }
   /**
    * Add entry to navigation history
-   */;
+   */
   private addToHistory(path: string, state?: any, routeId?: string): void {
     this.state.update((navState) => {
       const entry: NavigationHistoryEntry = {
@@ -275,7 +275,7 @@ export class DynamicNavigation {
       }
       return {
         ...navState,
-        navigationHistory: newHistory
+        navigationHistory: newHistory,
         canGoBack: this.historyIndex > 0,
         canGoForward: false
       }
@@ -283,7 +283,7 @@ export class DynamicNavigation {
   }
   /**
    * Generate breadcrumbs for current path
-   */;
+   */
   private generateBreadcrumbs(path: string, routeId?: string): BreadcrumbItem[] {
     const segments = path.split('/').filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [];
@@ -312,8 +312,8 @@ export class DynamicNavigation {
       }
       breadcrumbs.push({
         label,
-        path: currentPath
-        routeId: isActive ? routeId : undefined
+        path: currentPath,
+        routeId: isActive ? routeId : undefined,
         isActive
       });
     }
@@ -321,7 +321,7 @@ export class DynamicNavigation {
   }
   /**
    * Build path with parameters
-   */;
+   */
   private buildPath(template: string, params: Record<string, string>): string {
     let path = template;
     // Replace route parameters
@@ -336,14 +336,14 @@ export class DynamicNavigation {
   }
   /**
    * Handle browser popstate event
-   */;
+   */
   private handlePopState(_event: PopStateEvent): void {
     const currentState = get(this.state);
     this.updateCurrentPath(window.location.pathname);
   }
   /**
    * Handle beforeunload event
-   */;
+   */
   private handleBeforeUnload(_event: BeforeUnloadEvent): string | void {
     // Check if there are any guards that might prevent navigation
     for (const guard of this.guards.values()) {
@@ -356,43 +356,43 @@ export class DynamicNavigation {
   }
   /**
    * Get navigation history
-   */;
+   */
   public getHistory(): NavigationHistoryEntry[] {
     return get(this.state).navigationHistory;
   }
   /**
    * Clear navigation history
-   */;
+   */
   public clearHistory(): void {
     this.state.update((state) => ({
       ...state,
       navigationHistory: [],
-      canGoBack: false
-      canGoForward: false
+      canGoBack: false,
+      canGoForward: false,
     });
     this.historyIndex = -1;
   }
   /**
    * Get current breadcrumbs
-   */;
+   */
   public getBreadcrumbs(): BreadcrumbItem[] {
     return get(this.state).breadcrumbs;
   }
   /**
    * Check if currently navigating
-   */;
+   */
   public isNavigating(): boolean {
     return get(this.state).isNavigating;
   }
   /**
    * Get current path
-   */;
+   */
   public getCurrentPath(): string {
     return get(this.state).currentPath;
   }
   /**
    * Get previous path
-   */;
+   */
   public getPreviousPath(): string | null {
     return get(this.state).previousPath;
   }
@@ -413,7 +413,7 @@ export function navigate(path: string, options?: NavigationOptions): Promise<voi
   return dynamicNavigation.navigate(path, options);
 }
 export function navigateToRoute(
-  routeId: string
+  routeId: string,
   params?: Record<string, string>,
   options?: NavigationOptions;
 ): Promise<void> {
@@ -442,7 +442,7 @@ export function clearNavigationGuards(): void {
 }
 /**
  * Higher-order component for route-aware navigation
- */;
+ */
 export function createRouteAwareNavigation(routeId: string) {
   return {
     navigate: (params: Record<string, string> = {}, options?: NavigationOptions) =>

@@ -8,32 +8,32 @@ import * as THREE from 'three';
 export const YORHA_COLORS = {
   // Primary gothic palette
   primary: {
-    black: 0x0a0a0a,           // Deep gothic black
-    white: 0xfaf6ed,           // Warm off-white
-    beige: 0xd4c5a9,           // Desert sand
-    grey: 0x8b8680,            // Stone grey
+    black: 0x0a0a0a, // Deep gothic black
+    white: 0xfaf6ed, // Warm off-white
+    beige: 0xd4c5a9, // Desert sand
+    grey: 0x8b8680, // Stone grey
   },
   // Accent colors
   accent: {
-    gold: 0xd4af37,            // Golden highlights
-    amber: 0xffc649,           // Amber glow
-    bronze: 0xcd7f32,          // Bronze metallic
-    copper: 0xb87333,          // Copper warm
+    gold: 0xd4af37, // Golden highlights
+    amber: 0xffc649, // Amber glow
+    bronze: 0xcd7f32, // Bronze metallic
+    copper: 0xb87333, // Copper warm
   },
   // Status colors
   status: {
-    success: 0x90ee90,         // Light green
-    warning: 0xffa500,         // Orange warning
-    error: 0xff6b6b,           // Soft red error
-    info: 0x87ceeb,            // Sky blue info
+    success: 0x90ee90, // Light green
+    warning: 0xffa500, // Orange warning
+    error: 0xff6b6b, // Soft red error
+    info: 0x87ceeb, // Sky blue info
   },
   // UI states
   interaction: {
-    hover: 0xe8dcc0,           // Warm hover
-    active: 0xffd700,          // Gold active
-    disabled: 0x4a4a4a,        // Disabled grey;
-    focus: 0xf0e68c,           // Khaki focus
-  }
+    hover: 0xe8dcc0, // Warm hover
+    active: 0xffd700, // Gold active
+    disabled: 0x4a4a4a, // Disabled grey;
+    focus: 0xf0e68c, // Khaki focus
+  },
 } as const;
 // 3D CSS-like styling system
 export interface YoRHaStyle {
@@ -73,7 +73,23 @@ export interface YoRHaStyle {
   active?: Partial<YoRHaStyle>;
   disabled?: Partial<YoRHaStyle>;
   // Component variants
-  variant?: 'default' | 'primary' | 'secondary' | 'quantum' | 'consciousness' | 'reality' | 'glass' | 'ghost' | 'danger' | 'accent' | 'outlined' | 'filled' | 'terminal' | 'alert' | 'confirm' | 'fullscreen';
+  variant?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'quantum'
+    | 'consciousness'
+    | 'reality'
+    | 'glass'
+    | 'ghost'
+    | 'danger'
+    | 'accent'
+    | 'outlined'
+    | 'filled'
+    | 'terminal'
+    | 'alert'
+    | 'confirm'
+    | 'fullscreen';
 }
 export interface YoRHaPadding {
   top?: number;
@@ -178,8 +194,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       opacity: this.style.opacity,
       transparent: (this.style.opacity || 1) < 1,
       metalness: this.style.metalness,
-      roughness: this.style.roughness
-    }
+      roughness: this.style.roughness,
+    };
     // Apply gradient if specified
     if (this.style.gradient) {
       this.material = this.createGradientMaterial(materialProps);
@@ -249,7 +265,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const borderMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
       opacity: this.style.opacity,
-      transparent: (this.style.opacity || 1) < 1
+      transparent: (this.style.opacity || 1) < 1,
     });
     const borderMesh = new THREE.Mesh(borderGeometry, borderMaterial);
     this.add(borderMesh);
@@ -273,7 +289,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const shadowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.shadow.color || YORHA_COLORS.primary.black,
       opacity: this.style.shadow.intensity || 0.3,
-      transparent: true
+      transparent: true,
     });
     const shadowMesh = new THREE.Mesh(shadowGeometry, shadowMaterial);
     shadowMesh.position.set(
@@ -355,7 +371,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     });
     borderMesh.material = scanMaterial;
     // Add to animation system
-    this.addCustomAnimation('borderScan', (deltaTime) => {
+    this.addCustomAnimation('borderScan', deltaTime => {
       (scanMaterial.uniforms.time as any).value += deltaTime;
     });
   }
@@ -384,8 +400,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       top: padding.top ?? padding.all ?? 0,
       right: padding.right ?? padding.all ?? 0,
       bottom: padding.bottom ?? padding.all ?? 0,
-      left: padding.left ?? padding.all ?? 0
-    }
+      left: padding.left ?? padding.all ?? 0,
+    };
     // Store padding for child components to use
     this.userData.padding = paddingValues;
   }
@@ -396,8 +412,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       top: margin.top ?? margin.all ?? 0,
       right: margin.right ?? margin.all ?? 0,
       bottom: margin.bottom ?? margin.all ?? 0,
-      left: margin.left ?? margin.all ?? 0
-    }
+      left: margin.left ?? margin.all ?? 0,
+    };
     // Apply margin to position
     this.position.x += marginValues.left - marginValues.right;
     this.position.y += marginValues.top - marginValues.bottom;
@@ -439,22 +455,22 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const time = Date.now() * 0.001 + delay;
       const pulse = Math.sin(time * 2) * 0.1 + 1;
       target.scale.setScalar(pulse);
-    }
+    };
     this.addCustomAnimation('pulse', pulseAnimation);
   }
   protected createRotateAnimation(animation: YoRHaAnimation): void {
     const rotateAnimation = (deltaTime: number) => {
       const speed = (2 * Math.PI) / (animation.duration || 2000);
       this.mesh.rotation.y += speed * deltaTime * 1000;
-    }
+    };
     this.addCustomAnimation('rotate', rotateAnimation);
   }
   protected createScaleAnimation(animation: YoRHaAnimation): void {
     const scaleAnimation = () => {
       const time = Date.now() * 0.001;
-      const scale = Math.sin(time * (2 * Math.PI) / (animation.duration || 1000)) * 0.2 + 1;
+      const scale = Math.sin((time * (2 * Math.PI)) / (animation.duration || 1000)) * 0.2 + 1;
       this.mesh.scale.setScalar(scale);
-    }
+    };
     this.addCustomAnimation('scale', scaleAnimation);
   }
   protected createScanAnimation(animation: YoRHaAnimation): void {
@@ -485,7 +501,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       `,
     });
     this.mesh.material = scanMaterial;
-    this.addCustomAnimation('scan', (deltaTime) => {
+    this.addCustomAnimation('scan', deltaTime => {
       (scanMaterial.uniforms.time as any).value += deltaTime;
     });
   }
@@ -493,7 +509,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
       glitchTime += deltaTime;
-      if (Math.random() < 0.02) { // 2% chance per frame
+      if (Math.random() < 0.02) {
+        // 2% chance per frame
         // Random position offset
         this.mesh.position.x += (Math.random() - 0.5) * 0.02;
         this.mesh.position.y += (Math.random() - 0.5) * 0.02;
@@ -507,7 +524,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           this.mesh.scale.setScalar(1);
         }, 50);
       }
-    }
+    };
     this.addCustomAnimation('glitch', glitchAnimation);
   }
   public update(deltaTime: number): void {
@@ -574,7 +591,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   // Utility methods
   public setStyle(newStyle: Partial<YoRHaStyle>): void {
-    this.style = { ...this.style, ...newStyle }
+    this.style = { ...this.style, ...newStyle };
     this.applyStyle();
   }
   public setDisabled(disabled: boolean): void {

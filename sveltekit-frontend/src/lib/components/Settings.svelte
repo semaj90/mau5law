@@ -28,11 +28,11 @@ https: //svelte.dev/e/props_duplicate -->
     enableNotifications: true,
     fontFamily: 'Arial',
     fontSize: '16px',
-  }
+  };
   // Bindable props with defaults
   let {
     isOpen = $bindable(false),
-    settings = $bindable<Settings>(defaultSettings)
+    settings = $bindable<Settings>(defaultSettings),
   }: {
     isOpen?: boolean;
     settings?: Settings;

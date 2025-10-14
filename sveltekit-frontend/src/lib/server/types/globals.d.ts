@@ -50,11 +50,11 @@ declare const hashPassword: any;
 declare const FileLike: any;
 // Allow importing environment-like objects with arbitrary properties used in code
 declare module '$env/static/private' {
-  const env: { [key: string]: any }
+  const env: { [key: string]: any };
   export = env;
 }
 declare module '$env/static/public' {
-  const env: { [key: string]: any }
+  const env: { [key: string]: any };
   export = env;
 }
 // Auto-generated development global declarations to reduce TS noise while

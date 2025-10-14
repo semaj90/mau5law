@@ -1,64 +1,65 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // Unified Vector Processing API Endpoint
 // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
-import { json } from '@sveltejs/kit'
-import type { VectorOperationRequest, VectorOperationResponse } from '$lib/types/vector-jobs'
-import { URL } from "url"
+import { json } from '@sveltejs/kit';
+import type { VectorOperationRequest, VectorOperationResponse } from '$lib/types/vector-jobs';
+import { URL } from 'url';
 // Environment configuration
-const VECTOR_SERVICE_URL = import.meta.env.VECTOR_SERVICE_URL || 'http://localhost:8095'
-const USE_WEBGPU_FALLBACK = import.meta.env.USE_WEBGPU_FALLBACK === 'true'
+const VECTOR_SERVICE_URL = import.meta.env.VECTOR_SERVICE_URL || 'http://localhost:8095';
+const USE_WEBGPU_FALLBACK = import.meta.env.USE_WEBGPU_FALLBACK === 'true';
 export const POST: RequestHandler = async ({ request, url }) => {
-  const operation = url.searchParams.get('operation') || 'embedding'
+  const operation = url.searchParams.get('operation') || 'embedding';
   try {
-    const requestData: VectorOperationRequest = await request.json()
+    const requestData: VectorOperationRequest = await request.json();
     // Validate request
     if (!requestData.ownerType || !requestData.ownerId) {
-      return json({
-          error: 'Missing required fields: ownerType, ownerId'
+      return json(
+        {
+          error: 'Missing required fields: ownerType, ownerId',
         },
         { status: 400 }
-      )
+      );
     }
     // Route to vector processing service
-    const response = await routeVectorRequest(requestData, operation)
-    return json(response)
+    const response = await routeVectorRequest(requestData, operation);
+    return json(response);
   } catch (error: any) {
-    console.error('Vector API error:', error)
+    console.error('Vector API error:', error);
     return json(
       {
         error: 'Vector processing failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'health'
+  const action = url.searchParams.get('action') || 'health';
   try {
     switch (action) {
       case 'health':
-        return await getHealthStatus()
+        return await getHealthStatus();
       case 'metrics':
-        return await getSystemMetrics()
+        return await getSystemMetrics();
       case 'queues':
-        return await getQueueStatus()
+        return await getQueueStatus();
       case 'performance':
-        return await getPerformanceMetrics()
+        return await getPerformanceMetrics();
       default:
-        return json({ error: 'Unknown action' }, { status: 400 })
+        return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Vector API GET error:', error)
+    console.error('Vector API GET error:', error);
     return json(
       {
         error: 'Request failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 async function routeVectorRequest(
   request: VectorOperationRequest,
   operation: string
@@ -241,80 +242,81 @@ async function getHealthStatus(): Promise<any> {
     const healthChecks = await Promise.allSettled([
       checkServiceHealth(VECTOR_SERVICE_URL),
       checkDatabaseHealth(),
-      checkRedisHealth()
-    ])
+      checkRedisHealth(),
+    ]);
     const health: {
-      overall: 'healthy' | 'degraded' | 'unhealthy'
-      services: Record<string, 'connected' | 'error'>
-      timestamp: string
+      overall: 'healthy' | 'degraded' | 'unhealthy';
+      services: Record<string, 'connected' | 'error'>;
+      timestamp: string;
     } = {
       overall: 'healthy',
       services: {
         vectorService: resolveServiceStatus(healthChecks[0]),
         database: resolveServiceStatus(healthChecks[1]),
-        redis: resolveServiceStatus(healthChecks[2])
+        redis: resolveServiceStatus(healthChecks[2]),
       },
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
     // Determine overall health
-    const serviceValues = Object.values(health.services)
-    if (serviceValues.every((s) => s === 'connected')) {
-      health.overall = 'healthy'
-    } else if (serviceValues.some((s) => s === 'connected')) {
-      health.overall = 'degraded'
+    const serviceValues = Object.values(health.services);
+    if (serviceValues.every(s => s === 'connected')) {
+      health.overall = 'healthy';
+    } else if (serviceValues.some(s => s === 'connected')) {
+      health.overall = 'degraded';
     } else {
-      health.overall = 'unhealthy'
+      health.overall = 'unhealthy';
     }
-    return json(health)
+    return json(health);
   } catch (error: any) {
     return json(
       {
         overall: 'unhealthy',
-        error: error instanceof Error ? error.message: String(error),
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
 }
 async function getSystemMetrics(): Promise<any> {
   try {
     const [queueMetrics, performanceMetrics] = await Promise.allSettled([
       fetchQueueMetrics(),
-      fetchPerformanceMetrics()
-    ])
+      fetchPerformanceMetrics(),
+    ]);
     const metrics = {
-      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : {} as { [key: string]: any },
-      performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : {} as { [key: string]: any },
-      timestamp: new Date().toISOString()
-    }
-    return json(metrics)
+      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : ({} as { [key: string]: any }),
+      performance:
+        performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : ({} as { [key: string]: any }),
+      timestamp: new Date().toISOString(),
+    };
+    return json(metrics);
   } catch (error: any) {
     return json(
       {
-        error: error instanceof Error ? error.message: String(error),
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
 }
 async function getQueueStatus(): Promise<any> {
   try {
-    const response = await fetch(`${VECTOR_SERVICE_URL}/api/queue/status`)
+    const response = await fetch(`${VECTOR_SERVICE_URL}/api/queue/status`);
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`Queue service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`)
+      throw new Error(`Queue service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-    const queueData = await (response as { ok?: any; statusText?: any; json?: any }).json()
-    return json(queueData)
+    const queueData = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return json(queueData);
   } catch (error: any) {
     return json(
       {
         error: 'Queue status unavailable',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 503 }
-    )
+    );
   }
 }
 async function getPerformanceMetrics(): Promise<any> {
@@ -323,58 +325,58 @@ async function getPerformanceMetrics(): Promise<any> {
       totalOperations: 0,
       averageLatency: 0,
       successRate: 0.99,
-      errorRate: 0.01
+      errorRate: 0.01,
     },
     resources: {
       cpuUsage: 0.45,
       memoryUsage: 0.67,
-      gpuUtilization: 0.23
+      gpuUtilization: 0.23,
     },
     throughput: {
       operationsPerSecond: 15.5,
       vectorsPerSecond: 120.3,
-      tokensPerSecond: 45.2
+      tokensPerSecond: 45.2,
     },
-    timestamp: new Date().toISOString()
-  }
-  return json(metrics)
+    timestamp: new Date().toISOString(),
+  };
+  return json(metrics);
 }
 // Helper functions
 async function checkServiceHealth(serviceUrl: string): Promise<any> {
-  const response = await fetch(`${serviceUrl}/health`)
-  return (response as { ok?: any; statusText?: any; json?: any }).ok
+  const response = await fetch(`${serviceUrl}/health`);
+  return (response as { ok?: any; statusText?: any; json?: any }).ok;
 }
 async function checkDatabaseHealth(): Promise<any> {
   try {
-    const db = await import('$lib/server/db/drizzle')
+    const db = await import('$lib/server/db/drizzle');
     // Simple query to test connection
-    await db.default.execute('SELECT 1')
-    return true
+    await db.default.execute('SELECT 1');
+    return true;
   } catch (error: any) {
-    return false
+    return false;
   }
 }
 async function checkRedisHealth(): Promise<any> {
   // Would implement actual Redis health check
   // For now, return true
-  return true
+  return true;
 }
 async function fetchQueueMetrics(): Promise<any> {
   try {
-    const response = await fetch(`${VECTOR_SERVICE_URL}/api/metrics/queues`)
+    const response = await fetch(`${VECTOR_SERVICE_URL}/api/metrics/queues`);
     if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
-      return await (response as { ok?: any; statusText?: any; json?: any }).json()
+      return await (response as { ok?: any; statusText?: any; json?: any }).json();
     }
   } catch (error: any) {
-    console.warn('Queue metrics unavailable:', error)
+    console.warn('Queue metrics unavailable:', error);
   }
   // Return mock data
   return {
     embeddings: { depth: 5, consumers: 1, processingRate: 2.5 },
     similarities: { depth: 12, consumers: 2, processingRate: 8.1 },
     indexing: { depth: 3, consumers: 1, processingRate: 1.2 },
-    clustering: { depth: 0, consumers: 1, processingRate: 0.5 }
-  }
+    clustering: { depth: 0, consumers: 1, processingRate: 0.5 },
+  };
 }
 async function fetchPerformanceMetrics(): Promise<any> {
   return {
@@ -382,31 +384,35 @@ async function fetchPerformanceMetrics(): Promise<any> {
     averageProcessingTimeMs: 234,
     successRate: 0.987,
     errorRate: 0.013,
-    throughputPerSecond: 12.4
-  }
+    throughputPerSecond: 12.4,
+  };
 }
 function resolveServiceStatus(result: PromiseSettledResult<any>) {
-  if ((result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).status === 'fulfilled' && (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).value) {
-    return 'connected'
+  if (
+    (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any })
+      .status === 'fulfilled' &&
+    (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).value
+  ) {
+    return 'connected';
   }
-  return 'error'
+  return 'error';
 }
 // Job status endpoint
 export const GET_STATUS: RequestHandler = async ({ params, url }) => {
-  const jobId = (params as any)?.jobId || url.searchParams.get('jobId')
+  const jobId = (params as any)?.jobId || url.searchParams.get('jobId');
   if (!jobId) {
-    return json({ error: 'Job ID required' }, { status: 400 })
+    return json({ error: 'Job ID required' }, { status: 400 });
   }
   try {
     // Check job status in database
-    const db = await import('$lib/server/db/drizzle')
-    const { vectorJobs } = await import('$lib/server/db/schema-postgres')
-    const { eq } = await import('drizzle-orm')
-    const job = await db.default.select().from(vectorJobs).where(eq(vectorJobs.id, jobId)).limit(1)
+    const db = await import('$lib/server/db/drizzle');
+    const { vectorJobs } = await import('$lib/server/db/schema-postgres');
+    const { eq } = await import('drizzle-orm');
+    const job = await db.default.select().from(vectorJobs).where(eq(vectorJobs.id, jobId)).limit(1);
     if (job.length === 0) {
-      return json({ error: 'Job not found' }, { status: 404 })
+      return json({ error: 'Job not found' }, { status: 404 });
     }
-    const jobData = job[0]
+    const jobData = job[0];
     return json({
       jobId: jobData.id,
       status: jobData.status,
@@ -418,16 +424,16 @@ export const GET_STATUS: RequestHandler = async ({ params, url }) => {
       processingTimeMs:
         jobData.updatedAt && jobData.createdAt
           ? new Date(jobData.updatedAt).getTime() - new Date(jobData.createdAt).getTime()
-          : null
-    })
+          : null,
+    });
   } catch (error: any) {
-    console.error('Job status query failed:', error)
+    console.error('Job status query failed:', error);
     return json(
       {
         error: 'Status query failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

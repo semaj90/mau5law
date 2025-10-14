@@ -3,12 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly, typewriter } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import {
-    Card,
-    CardContent,
-    Button,
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits';
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';
@@ -28,20 +23,21 @@
       id: '1',
       sender: 'assistant',
       content: 'YoRHa AI Assistant Online - Detective Support System Active',
-      timestamp: '19:02:52'
+      timestamp: '19:02:52',
     },
     {
       id: '2',
       sender: 'assistant',
-      content: 'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-      timestamp: '19:02:52'
+      content:
+        'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
+      timestamp: '19:02:52',
     },
     {
       id: '3',
       sender: 'assistant',
       content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',
-      timestamp: '19:02:57'
-    }
+      timestamp: '19:02:57',
+    },
   ]);
   let currentInput = $state('');
   let isTyping = $state(false);
@@ -58,7 +54,7 @@
     { icon: '🔍', label: 'ANALYSIS CENTER' },
     { icon: '🌐', label: 'GLOBAL SEARCH' },
     { icon: '💻', label: 'TERMINAL', active: false },
-    { icon: '⚙️', label: 'SYSTEM CONFIGURATION' }
+    { icon: '⚙️', label: 'SYSTEM CONFIGURATION' },
   ]);
   let messagesContainer: HTMLElement;
   // Update time periodically
@@ -66,7 +62,7 @@
     const updateTime = () => {
       const now = new Date();
       currentTime = now.toTimeString().slice(0, 5);
-    }
+    };
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
@@ -86,7 +82,7 @@
       id: crypto.randomUUID(),
       sender: 'detective',
       content: currentInput,
-      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0')
+      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0'),
     };
     messages = [...messages, userMessage];
     const messageContent = currentInput;
@@ -99,7 +95,7 @@
       sender: 'assistant',
       content: '9S is ANALYZING...',
       timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
-      isTyping: true
+      isTyping: true,
     };
     messages = [...messages, typingMessage];
 
@@ -110,8 +106,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: messageContent,
-          sessionId
-        })
+          sessionId,
+        }),
       });
 
       if (!response.ok) {
@@ -126,7 +122,7 @@
         id: crypto.randomUUID(),
         sender: 'assistant',
         content: '',
-        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0')
+        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0'),
       };
       messages = [...messages, aiMessage];
 
@@ -197,7 +193,9 @@
         } catch (streamError) {
           console.error('Stream error:', streamError);
         } finally {
-          try { reader.cancel(); } catch {}
+          try {
+            reader.cancel();
+          } catch {}
         }
       }
     } catch (error) {
@@ -210,7 +208,7 @@
         id: crypto.randomUUID(),
         sender: 'assistant',
         content: `⚠️ Error connecting to AI service. ${error instanceof Error ? error.message : 'Unknown error'}. Using test mode.`,
-        timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0')
+        timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0'),
       };
       messages = [...messages, errorMessage];
       isTyping = false;
@@ -222,14 +220,15 @@
         id: '1',
         sender: 'assistant',
         content: 'YoRHa AI Assistant Online - Detective Support System Active',
-        timestamp: currentTime + ':52'
+        timestamp: currentTime + ':52',
       },
       {
         id: '2',
         sender: 'assistant',
-        content: 'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-        timestamp: currentTime + ':52'
-      }
+        content:
+          'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
+        timestamp: currentTime + ':52',
+      },
     ];
     sessionId = null;
     isTestMode = false;
@@ -237,7 +236,7 @@
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
       ...item,
-      active: i === index
+      active: i === index,
     }));
   }
   function handleKeyPress(event: KeyboardEvent) {
@@ -556,7 +555,8 @@
     font-family: inherit;
     font-size: 0.875rem;
   }
-  .search-btn, .auth-btn {
+  .search-btn,
+  .auth-btn {
     background: #333333;
     border: 1px solid #555555;
     color: #ffffff;
@@ -566,7 +566,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .search-btn:hover, .auth-btn:hover {
+  .search-btn:hover,
+  .auth-btn:hover {
     border-color: #00ff41;
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
   }
@@ -621,7 +622,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .control-btn:hover, .control-btn.active {
+  .control-btn:hover,
+  .control-btn.active {
     border-color: #00ff41;
     color: #00ff41;
     background: rgba(0, 255, 65, 0.1);
@@ -764,8 +766,13 @@
     cursor: not-allowed;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
   /* Scrollbar Styles */
   .messages-container::-webkit-scrollbar {

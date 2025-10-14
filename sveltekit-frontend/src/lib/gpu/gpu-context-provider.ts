@@ -12,7 +12,7 @@ export interface ShaderResources {
   compute?: string;
   vertex?: string;
   fragment?: string;
-  uniforms?: { [key: string]: any }
+  uniforms?: { [key: string]: any };
   buffers?: Record<string, ArrayBufferView>;
 }
 export interface GPUContextOptions {
@@ -30,7 +30,7 @@ export class GPUContextProvider {
   private capabilities: GPUCapabilities | null = null;
   private canvas: HTMLCanvasElement;
   private initialized = false;
-  private memory: MemoryUsageTracker = { allocatedBytes: 0, peakBytes: 0, allocations: 0, deallocations: 0 }
+  private memory: MemoryUsageTracker = { allocatedBytes: 0, peakBytes: 0, allocations: 0, deallocations: 0 };
   private buffers: Map<string, TrackedBuffer> = new Map();
   private reinitLock = false;
   private constructor() {
@@ -59,7 +59,7 @@ export class GPUContextProvider {
         requireCompute: options.requireCompute ?? GPU_CONFIG.requireCompute,
         lodSystemIntegration: GPU_CONFIG.lodSystemIntegration,
         nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization,
-      }
+      };
       const { createHybridGPUContext } = await import('./hybrid-gpu-context.js');
       this.hybridContext = await createHybridGPUContext(this.canvas, config);
       // Detect capabilities
@@ -77,13 +77,13 @@ export class GPUContextProvider {
       // CPU fallback
       this.capabilities = {
         backend: 'cpu',
-        supportsCompute: false
-        supportsFloat32: true
-        supportsInteger: true
+        supportsCompute: false,
+        supportsFloat32: true,
+        supportsInteger: true,
         maxTextureSize: 2048,
         maxBufferSize: 16 * 1024 * 1024, // 16MB
         memoryBudget: 64 * 1024 * 1024, // 64MB
-      }
+      };
       this.initialized = true;
       return false;
     }
@@ -104,7 +104,7 @@ export class GPUContextProvider {
   /** Force switch backend best-effort (does not guarantee chosen backend if unsupported). */
   async forceBackend(preferred: GPUBackendType): Promise<any> {
     const ok = await this.reinitialize({ preferredBackend: preferred, requireCompute: false, debug: false });
-    return { success: ok, active: this.getActiveBackend() }
+    return { success: ok, active: this.getActiveBackend() };
   }
   /**
    * Get active backend type for type narrowing
@@ -123,7 +123,7 @@ export class GPUContextProvider {
    * Type-narrowed resource loading based on backend
    */
   async loadShaderResources(
-    name: string
+    name: string,
     resources: {
       webgpu?: ShaderResources;
       webgl2?: ShaderResources;
@@ -181,7 +181,7 @@ export class GPUContextProvider {
    * Execute compute operation with backend-specific optimization
    */
   async runComputeOperation(
-    shaderCode: string
+    shaderCode: string,
     data: Record<string, ArrayBufferView>,
     options: {
       workgroupSize?: number;
@@ -234,15 +234,15 @@ export class GPUContextProvider {
       this.memory.allocations++;
       this.buffers.set(id, { id, size, backend, resource });
       return resource;
-    }
+    };
     switch (backend) {
       case 'webgpu':
         const device = context as GPUDevice;
         const gpuUsage = this.mapWebGPUUsage(usage);
         const buffer = device.createBuffer({
           size: data.byteLength,
-          usage: gpuUsage
-          mappedAtCreation: true
+          usage: gpuUsage,
+          mappedAtCreation: true,
         });
         trackAllocation(buffer);
         return buffer;
@@ -271,7 +271,7 @@ export class GPUContextProvider {
     this.buffers.delete(id);
   }
   getMemoryUsage(): MemoryUsageTracker {
-    return { ...this.memory }
+    return { ...this.memory };
   }
   /**
    * Detect GPU capabilities for the active backend
@@ -298,49 +298,49 @@ export class GPUContextProvider {
   private detectWebGPUCapabilities(device: GPUDevice): GPUCapabilities {
     return {
       backend: 'webgpu',
-      supportsCompute: true
-      supportsFloat32: true
-      supportsInteger: true
+      supportsCompute: true,
+      supportsFloat32: true,
+      supportsInteger: true,
       maxTextureSize: 8192, // WebGPU typical limit
       maxBufferSize: 256 * 1024 * 1024, // 256MB
       maxWorkgroupSize: 256,
       memoryBudget: GPU_CONFIG.memoryLimit,
-    }
+    };
   }
   private detectWebGL2Capabilities(gl: WebGL2RenderingContext): GPUCapabilities {
     return {
       backend: 'webgl2',
       supportsCompute: false, // Simulated via transform feedback
       supportsFloat32: !!gl.getExtension('EXT_color_buffer_float'),
-      supportsInteger: true
+      supportsInteger: true,
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
       maxBufferSize: 64 * 1024 * 1024, // 64MB typical
       memoryBudget: GPU_CONFIG.memoryLimit * 0.75, // Leave some headroom
-    }
+    };
   }
   private detectWebGL1Capabilities(gl: WebGLRenderingContext): GPUCapabilities {
     return {
       backend: 'webgl1',
-      supportsCompute: false
+      supportsCompute: false,
       supportsFloat32: !!gl.getExtension('OES_texture_float'),
-      supportsInteger: false
+      supportsInteger: false,
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
       maxBufferSize: 32 * 1024 * 1024, // 32MB typical
       memoryBudget: GPU_CONFIG.memoryLimit * 0.5, // Conservative limit
-    }
+    };
   }
   // Backend-specific compute implementations
   private async runWebGL2Compute(
-    shaderCode: string
+    shaderCode: string,
     data: Record<string, ArrayBufferView>,
     options: any
   ): Promise<Record<string, ArrayBufferView>> {
     // Simplified transform feedback based compute simulation
-    if (!this.hybridContext) return {}
+    if (!this.hybridContext) return {};
     const gl = (this.hybridContext as any).webgl2Context as WebGL2RenderingContext;
-    if (!gl) return {}
+    if (!gl) return {};
     // Expect pseudo shaderCode formatted with /*VERTEX*/ and /*FRAGMENT*/ separators when passed from processor.
-    const vertexSourceMatch = /\/\*VERTEX\*\/[\s\S]*?\/\*FRAGMENT\*\//.exec(shaderCode)
+    const vertexSourceMatch = /\/\*VERTEX\*\/[\s\S]*?\/\*FRAGMENT\*\//.exec(shaderCode);
     let vertexSource = '';
     if (vertexSourceMatch) {
       vertexSource = vertexSourceMatch[0].replace('/*VERTEX*/', '').replace('/*FRAGMENT*/', '').trim();
@@ -361,7 +361,7 @@ export class GPUContextProvider {
         throw new Error('Shader compile: ' + info);
       }
       return sh;
-    }
+    };
     const vs = compile(gl.VERTEX_SHADER, tfVertex);
     const fs = compile(
       gl.FRAGMENT_SHADER,
@@ -411,25 +411,25 @@ export class GPUContextProvider {
     gl.deleteProgram(program);
     gl.deleteShader(vs);
     gl.deleteShader(fs);
-    return { transform: result }
+    return { transform: result };
   }
   private async runWebGL1Compute(
-    shaderCode: string
+    shaderCode: string,
     data: Record<string, ArrayBufferView>,
     options: any
   ): Promise<Record<string, ArrayBufferView>> {
     // Simulate compute using texture-based processing
     console.log('🔄 Simulating compute with WebGL1 texture processing');
-    return {} // Placeholder
+    return {}; // Placeholder
   }
   private async runCPUCompute(
-    shaderCode: string
+    shaderCode: string,
     data: Record<string, ArrayBufferView>,
     options: any
   ): Promise<Record<string, ArrayBufferView>> {
     // CPU fallback implementation
     console.log('🔄 Running compute on CPU fallback');
-    return {} // Placeholder
+    return {}; // Placeholder
   }
   // Helper methods for buffer creation
   private mapWebGPUUsage(usage: string): number {
@@ -440,7 +440,7 @@ export class GPUContextProvider {
       INDEX: 0x10,
       COPY_SRC: 0x04,
       COPY_DST: 0x08,
-    }
+    };
     switch (usage) {
       case 'uniform':
         return GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
@@ -482,7 +482,7 @@ export class GPUContextProvider {
     this.capabilities = null;
     this.initialized = false;
     this.buffers.clear();
-    this.memory = { allocatedBytes: 0, peakBytes: 0, allocations: 0, deallocations: 0 }
+    this.memory = { allocatedBytes: 0, peakBytes: 0, allocations: 0, deallocations: 0 };
   }
   /**
    * Demote backend to next available tier (webgpu -> webgl2 -> webgl1 -> cpu)
@@ -514,9 +514,9 @@ export class GPUContextProvider {
       this.dispose();
       this.capabilities = {
         backend: 'cpu',
-        supportsCompute: false
-        supportsFloat32: true
-        supportsInteger: true
+        supportsCompute: false,
+        supportsFloat32: true,
+        supportsInteger: true,
         maxTextureSize: 2048,
         maxBufferSize: 16 * 1024 * 1024,
         memoryBudget: 64 * 1024 * 1024,
@@ -533,5 +533,5 @@ export const gpuContextProvider = GPUContextProvider.getInstance();
 // Factory helper to ensure initialization before use
 export async function ensureGPUContext(options?: GPUContextOptions) {
   const ok = await gpuContextProvider.initialize(options);
-  return { provider: gpuContextProvider, ok }
+  return { provider: gpuContextProvider, ok };
 }

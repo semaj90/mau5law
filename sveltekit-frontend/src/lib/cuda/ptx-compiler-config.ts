@@ -62,7 +62,7 @@ export const AMPERE_ARCHITECTURES = {
     globalMemorySize: 80 * 1024 * 1024 * 1024, // 80GB
     memoryBusWidth: 5120,
     memoryClock: 3352, // 3.35 Gbps HBM3
-  }
+  },
 };
 
 export class PTXCompiler {
@@ -80,33 +80,19 @@ export class PTXCompiler {
         enableFastMath: true,
         enableDebugging: false,
         generateLineInfo: false,
-        ...options.ptxOptions
+        ...options.ptxOptions,
       },
       nvccFlags: [
         '-O3',
         '--use_fast_math',
         '--ptxas-options=-v',
         '--gpu-architecture=' + (options.ptxOptions?.architecture || 'sm_86'),
-        ...options.nvccFlags || []
+        ...(options.nvccFlags || []),
       ],
-      includePaths: [
-        '/usr/local/cuda/include',
-        './src/lib/cuda/include',
-        ...options.includePaths || []
-      ],
-      libraryPaths: [
-        '/usr/local/cuda/lib64',
-        './build/cuda',
-        ...options.libraryPaths || []
-      ],
-      libraries: [
-        'cudart',
-        'cublas',
-        'curand',
-        'cusparse',
-        ...options.libraries || []
-      ],
-      outputFormat: options.outputFormat || 'ptx'
+      includePaths: ['/usr/local/cuda/include', './src/lib/cuda/include', ...(options.includePaths || [])],
+      libraryPaths: ['/usr/local/cuda/lib64', './build/cuda', ...(options.libraryPaths || [])],
+      libraries: ['cudart', 'cublas', 'curand', 'cusparse', ...(options.libraries || [])],
+      outputFormat: options.outputFormat || 'ptx',
     };
   }
 
@@ -521,7 +507,7 @@ echo "WASM: static/wasm/cuda-rag-kernels.js"
       sharedMemorySize: 49152,
       enableFastMath: true,
       enableDebugging: false,
-      generateLineInfo: false
+      generateLineInfo: false,
     };
   }
 
@@ -532,12 +518,16 @@ echo "WASM: static/wasm/cuda-rag-kernels.js"
     const arch = AMPERE_ARCHITECTURES.RTX_30_SERIES; // Default validation
 
     if (this.config.ptxOptions.maxRegisterCount! > arch.registersPerThread) {
-      console.warn(`Register count ${this.config.ptxOptions.maxRegisterCount} exceeds limit ${arch.registersPerThread}`);
+      console.warn(
+        `Register count ${this.config.ptxOptions.maxRegisterCount} exceeds limit ${arch.registersPerThread}`
+      );
       return false;
     }
 
     if (this.config.ptxOptions.sharedMemorySize! > arch.sharedMemoryPerBlock) {
-      console.warn(`Shared memory ${this.config.ptxOptions.sharedMemorySize} exceeds limit ${arch.sharedMemoryPerBlock}`);
+      console.warn(
+        `Shared memory ${this.config.ptxOptions.sharedMemorySize} exceeds limit ${arch.sharedMemoryPerBlock}`
+      );
       return false;
     }
 
@@ -558,7 +548,7 @@ export const productionBuildConfig: CUDABuildConfig = {
   includePaths: ['/usr/local/cuda/include', './src/lib/cuda/include'],
   libraryPaths: ['/usr/local/cuda/lib64'],
   libraries: ['cudart', 'cublas', 'curand', 'cusparse'],
-  outputFormat: 'ptx'
+  outputFormat: 'ptx',
 };
 
 export const debugBuildConfig: CUDABuildConfig = {
@@ -567,7 +557,7 @@ export const debugBuildConfig: CUDABuildConfig = {
     ...defaultPTXConfig,
     optimizationLevel: 0,
     enableDebugging: true,
-    generateLineInfo: true
+    generateLineInfo: true,
   },
-  nvccFlags: ['-G', '-g', '--ptxas-options=-v', '-lineinfo']
+  nvccFlags: ['-G', '-g', '--ptxas-options=-v', '-lineinfo'],
 };

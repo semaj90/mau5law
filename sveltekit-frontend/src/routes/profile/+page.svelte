@@ -25,7 +25,7 @@
         email: user?.email || '',
         firstName: '', // Not available in SessionUser
         lastName: '', // Not available in SessionUser;
-      }
+      };
     }
     // Load avatar
     avatarStore.loadAvatar();
@@ -148,17 +148,14 @@
       <div class="space-y-4">
         <div class="rag-section-header">
           <h2>🧠 AI Knowledge Base</h2>
-          <button
-            class="rag-toggle-button"
-            onclick={() => showRagUpload = !showRagUpload}
-          >
+          <button class="rag-toggle-button" onclick={() => (showRagUpload = !showRagUpload)}>
             {showRagUpload ? '▼ Hide Upload' : '▶ Upload Documents'}
           </button>
         </div>
 
         <p class="rag-description">
-          Upload documents to enhance AI understanding for better case analysis and recommendations.
-          Supports text files, PDFs, Markdown, JSON, and CSV formats.
+          Upload documents to enhance AI understanding for better case analysis and recommendations. Supports text
+          files, PDFs, Markdown, JSON, and CSV formats.
         </p>
 
         {#if showRagUpload}

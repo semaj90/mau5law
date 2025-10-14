@@ -3,11 +3,11 @@ import type { RequestHandler } from './$types';
 import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
 
 // Global patch applicator instance (shared with apply-patch)
-let patchApplicator = new DiffPatchApplicator();
+const patchApplicator = new DiffPatchApplicator();
 
 // Demo patches storage (in production, this would be in a database)
 // This should be shared with apply-patch endpoint
-let demoPatchStorage = new Map();
+const demoPatchStorage = new Map();
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing patchId',
-          message: 'patchId is required to rollback a patch'
+          message: 'patchId is required to rollback a patch',
         },
         { status: 400 }
       );
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found`
+          message: `Patch with ID ${patchId} was not found`,
         },
         { status: 404 }
       );
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not applicable for rollback',
-          message: `Patch ${patchId} is in status: ${demoPatch.status}. Only applied patches can be rolled back.`
+          message: `Patch ${patchId} is in status: ${demoPatch.status}. Only applied patches can be rolled back.`,
         },
         { status: 400 }
       );
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: `Successfully rolled back patch: ${demoPatch.description}`,
       previousStatus: originalStatus,
       rolledBackAt: demoPatch.rolledBackAt,
-      backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup`
+      backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup`,
     };
 
     // Log the rollback for monitoring
@@ -82,10 +82,9 @@ export const POST: RequestHandler = async ({ request }) => {
         description: demoPatch.description,
         confidence: demoPatch.confidence,
         appliedAt: demoPatch.appliedAt,
-        rolledBackAt: demoPatch.rolledBackAt
-      }
+        rolledBackAt: demoPatch.rolledBackAt,
+      },
     });
-
   } catch (error) {
     console.error('Error rolling back patch:', error);
     return json(
@@ -93,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Patch rollback failed',
         message: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -114,13 +113,13 @@ export const GET: RequestHandler = async ({ url }) => {
           filePath: patch.filePath,
           description: patch.description,
           appliedAt: patch.appliedAt,
-          confidence: patch.confidence
+          confidence: patch.confidence,
         }));
 
       return json({
         success: true,
         rollbackEligiblePatches: rollbackEligible,
-        count: rollbackEligible.length
+        count: rollbackEligible.length,
       });
     }
 
@@ -132,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found`
+          message: `Patch with ID ${patchId} was not found`,
         },
         { status: 404 }
       );
@@ -147,24 +146,21 @@ export const GET: RequestHandler = async ({ url }) => {
       canRollback,
       hasBackup,
       currentStatus: demoPatch.status,
-      message: canRollback
-        ? 'Patch can be rolled back'
-        : `Cannot rollback patch with status: ${demoPatch.status}`,
+      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with status: ${demoPatch.status}`,
       patchDetails: {
         filePath: demoPatch.filePath,
         description: demoPatch.description,
         appliedAt: demoPatch.appliedAt,
-        confidence: demoPatch.confidence
-      }
+        confidence: demoPatch.confidence,
+      },
     });
-
   } catch (error) {
     console.error('Error checking rollback eligibility:', error);
     return json(
       {
         success: false,
         error: 'Failed to check rollback eligibility',
-        message: error.message
+        message: error.message,
       },
       { status: 500 }
     );

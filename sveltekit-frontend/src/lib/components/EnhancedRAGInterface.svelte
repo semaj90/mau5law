@@ -88,7 +88,9 @@
 <div class="enhanced-rag-interface nes-container">
   <div class="search-bar bits-row">
     <Input bind:value={searchQuery} placeholder="Ask about case documents..." class="bits-input" />
-    <Button onclick={handleSearch} disabled={isLoading} class="bits-btn ml-2">{isLoading ? 'Searching...' : 'Search'}</Button>
+    <Button onclick={handleSearch} disabled={isLoading} class="bits-btn ml-2"
+      >{isLoading ? 'Searching...' : 'Search'}</Button
+    >
     <Button onclick={handleOptimize} class="bits-btn ml-2">Optimize</Button>
   </div>
 
@@ -99,7 +101,13 @@
       <div class="mb-2"><strong>Suggestions</strong></div>
       <div class="suggestions">
         {#each intelligentSuggestions as s}
-          <Button onclick={() => { searchQuery = s; handleSearch(); }} class="bits-chip mr-2">{s}</Button>
+          <Button
+            onclick={() => {
+              searchQuery = s;
+              handleSearch();
+            }}
+            class="bits-chip mr-2">{s}</Button
+          >
         {/each}
       </div>
     </div>
@@ -110,8 +118,12 @@
       <div class="results-header nes-container p-3">
         <div class="flex items-center justify-between">
           <div>
-            <h3 class="is-primary">{optimizedResults.length} results {#if ragState.currentQuery}for "{ragState.currentQuery}"{/if}</h3>
-            <p class="text-sm">Found in {searchDuration}ms • Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%</p>
+            <h3 class="is-primary">
+              {optimizedResults.length} results {#if ragState.currentQuery}for "{ragState.currentQuery}"{/if}
+            </h3>
+            <p class="text-sm">
+              Found in {searchDuration}ms • Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
+            </p>
           </div>
         </div>
       </div>
@@ -126,13 +138,17 @@
                   <div class="highlights mt-2">{@html result.highlights[0]}</div>
                 {/if}
               </div>
-              <div class="result-meta"><div class="badge">Relevance: {Math.round((result?.score || 0) * 100)}%</div></div>
+              <div class="result-meta">
+                <div class="badge">Relevance: {Math.round((result?.score || 0) * 100)}%</div>
+              </div>
             </div>
           </div>
         {/each}
       </div>
     {:else}
-      <div class="nes-container p-4 mt-3"><p class="text-sm text-gray-600">No results yet. Try searching for a case term or document title.</p></div>
+      <div class="nes-container p-4 mt-3">
+        <p class="text-sm text-gray-600">No results yet. Try searching for a case term or document title.</p>
+      </div>
     {/if}
   </div>
 
@@ -142,11 +158,32 @@
 </div>
 
 <style>
-  .enhanced-rag-interface { padding: 0.75rem; }
-  .search-bar { display:flex; gap:8px; align-items:center; }
-  .bits-row :global(.bits-input) { min-width: 320px; }
-  .bits-chip { margin-bottom: 6px; }
-  .result-row { display:flex; justify-content:space-between; gap:12px; }
-  .result-main h4 { margin:0 0 6px 0; }
-  .badge { font-size: 0.85rem; background:#edf2ff; padding:4px 8px; border-radius:6px; }
+  .enhanced-rag-interface {
+    padding: 0.75rem;
+  }
+  .search-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .bits-row :global(.bits-input) {
+    min-width: 320px;
+  }
+  .bits-chip {
+    margin-bottom: 6px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .result-main h4 {
+    margin: 0 0 6px 0;
+  }
+  .badge {
+    font-size: 0.85rem;
+    background: #edf2ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
 </style>

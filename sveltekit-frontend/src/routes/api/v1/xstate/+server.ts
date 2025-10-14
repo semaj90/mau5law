@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 /*
  * XState API Endpoint - State Management & Orchestration

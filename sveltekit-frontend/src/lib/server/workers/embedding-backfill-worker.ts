@@ -36,7 +36,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Process all evidence files that don't have embeddings yet
-   */;
+   */
   async processAll(): Promise<BackfillResult> {
     if (this.isRunning) {
       throw new Error('Backfill worker is already running');
@@ -91,7 +91,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Process a single evidence file and generate its embeddings
-   */;
+   */
   private async processEvidenceFile(file: EvidenceFile): Promise<void> {
     // Extract text content from the file
     const textContent = await this.extractTextContent(file);
@@ -120,7 +120,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Extract text content from evidence file
-   */;
+   */
   private async extractTextContent(file: EvidenceFile): Promise<string> {
     // Initialize MinIO service
     await minioService.initialize();
@@ -165,7 +165,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Generate embedding for text content
-   */;
+   */
   private async generateEmbedding(text: string): Promise<any> {
     // Call our embedding API endpoint
     const response = await fetch('http://localhost:5174/api/ai/embed', {
@@ -188,7 +188,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Store embedding vector in database
-   */;
+   */
   private async storeEmbedding(fileId: number, embedding: number[]): Promise<void> {
     // Convert embedding array to PostgreSQL vector format
     const embeddingVector = `[${embedding.join(',')}]`;
@@ -203,7 +203,7 @@ export class EmbeddingBackfillWorker {
   }
   /**
    * Get statistics about embedding status
-   */;
+   */
   async getStats(): Promise<any> {
     const [totalResult, withEmbeddingsResult] = await Promise.all([
       query('SELECT COUNT(*) as count FROM evidence_files'),

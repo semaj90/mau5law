@@ -16,18 +16,18 @@ export async function POST({ request }): Promise<any> {
     const files = [`${directoryPath}/example1.txt`, `${directoryPath}/example2.txt`]; // Mock files
     console.log(`Mock found ${files.length} files. Would delegate to Go microservice...`);
     // TODO: Implement actual HTTP client for Go microservice communication
-    const goResponse = { status: 200, data: { processed: files.length, success: true } } // Mock response
+    const goResponse = { status: 200, data: { processed: files.length, success: true } }; // Mock response
     if (goResponse.status === 200) {
       console.log('Go microservice successfully processed files.');
       return json(
         { status: 'success', message: 'Indexing initiated and delegated to Go microservice', details: goResponse.data },
-        { status: 200 },
+        { status: 200 }
       );
     } else {
       console.error('Go microservice returned an error:', goResponse.data);
       return json(
         { status: 'error', message: 'Go microservice failed to process files', details: goResponse.data },
-        { status: goResponse.status },
+        { status: goResponse.status }
       );
     }
   } catch (error: any) {

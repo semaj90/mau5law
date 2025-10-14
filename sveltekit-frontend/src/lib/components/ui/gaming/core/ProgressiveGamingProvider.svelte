@@ -15,11 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { GamingEvolutionManager } from './GamingEvolutionManager-minimal.js';
-  import type {
-    GamingEra,
-    GamingThemeState,
-    ProgressiveGamingConfig
-  } from '../types/gaming-types-minimal.js';
+  import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js';
   import { GAMING_CSS_VARS } from '../constants/gaming-constants-minimal.js';
   interface Props {
     // Configuration
@@ -46,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     enableGlobalCSS = true,
     showDebugInfo = false,
     children,
-    class: className = ''
+    class: className = '',
   }: Props = $props();
   // Gaming context stores
   const gamingState: Writable<GamingThemeState> = writable({
@@ -59,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'],
     soundEnabled: true,
     particleEffects: true,
-    retroShaders: true
+    retroShaders: true,
   });
   const gamingConfig: Writable<ProgressiveGamingConfig> = writable({
     defaultEra: initialEra,
@@ -73,12 +69,12 @@ https://svelte.dev/e/js_parse_error -->
     nesSettings: {
       strictPalette: true,
       enableScanlines: false,
-      pixelScale: 2
+      pixelScale: 2,
     },
     snesSettings: {
       enableGradients: true,
       enableModeViitColors: true,
-      layerCount: 4
+      layerCount: 4,
     },
     n64Settings: {
       enableAntiAliasing: true,
@@ -91,37 +87,37 @@ https://svelte.dev/e/js_parse_error -->
       enableZBuffer: true,
       depthTesting: true,
       enableRealTimeReflections: false,
-      textureQuality: 'medium'
+      textureQuality: 'medium',
     },
     yorhaIntegration: integrateWithYorha,
     bitsUICompatibility: true,
-    ...config
+    ...config,
   });
   let evolutionManager = $state<GamingEvolutionManager>();
-  let unsubscribe = $state<(() => void)>();
+  let unsubscribe = $state<() => void>();
   let debugInfo = $state<Record<string, unknown>>();
 
   const setEra = async (era: GamingEra) => {
     if (evolutionManager) {
       await evolutionManager.setEra(era);
     }
-  }
+  };
   const upgradeEra = async () => {
     if (evolutionManager) {
       await evolutionManager.upgradeEra();
     }
-  }
+  };
   const downgradeEra = async () => {
     if (evolutionManager) {
       await evolutionManager.downgradeEra();
     }
-  }
+  };
   const updateConfig = (updates: Partial<ProgressiveGamingConfig>) => {
     gamingConfig.update(current => ({ ...current, ...updates }));
     if (evolutionManager) {
       evolutionManager.updateConfig(updates);
     }
-  }
+  };
   // Apply CSS custom properties based on current era
   const applyCSSVariables = (era: GamingEra) => {
     if (!enableGlobalCSS || typeof document === 'undefined') return;
@@ -159,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
       root.style.setProperty('--yorha-gaming-era', era);
       root.style.setProperty('--yorha-gaming-active', 'true');
     }
-  }
+  };
   // Update debug information
   const updateDebugInfo = () => {
     if (!showDebugInfo || !evolutionManager) return;
@@ -167,14 +163,14 @@ https://svelte.dev/e/js_parse_error -->
       currentState: evolutionManager.getCurrentState(),
       capabilities: evolutionManager.getCapabilities(),
       config: evolutionManager.getConfig(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-  }
+  };
   $effect(() => {
     // Initialize gaming evolution manager
     evolutionManager = GamingEvolutionManager.getInstance($gamingConfig);
     // Subscribe to state changes
-    unsubscribe = evolutionManager.subscribe((state) => {
+    unsubscribe = evolutionManager.subscribe(state => {
       gamingState.set(state);
       applyCSSVariables(state.currentEra);
       if (showDebugInfo) {
@@ -202,9 +198,10 @@ https://svelte.dev/e/js_parse_error -->
     downgradeEra,
     updateConfig,
     getState: () => $gamingState,
-    getConfig: () => $gamingConfig
+    getConfig: () => $gamingConfig,
   });
 </script>
+
 <div
   class="progressive-gaming-provider {className}"
   class:era-8bit={$gamingState.currentEra === '8bit'}
@@ -221,13 +218,16 @@ https://svelte.dev/e/js_parse_error -->
       <h4>Gaming Evolution Debug</h4>
       <div class="debug-grid">
         <div class="debug-item">
-          <strong>Era:</strong> {$gamingState.currentEra}
+          <strong>Era:</strong>
+          {$gamingState.currentEra}
         </div>
         <div class="debug-item">
-          <strong>Performance:</strong> {$gamingState.performanceLevel}
+          <strong>Performance:</strong>
+          {$gamingState.performanceLevel}
         </div>
         <div class="debug-item">
-          <strong>Transitioning:</strong> {$gamingState.isTransitioning ? 'Yes' : 'No'}
+          <strong>Transitioning:</strong>
+          {$gamingState.isTransitioning ? 'Yes' : 'No'}
         </div>
         <div class="debug-item">
           <strong>Memory:</strong> 8 GB
@@ -264,23 +264,30 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
+
 <style>
   .progressive-gaming-provider {
-/* Base provider styles */ position: relative;
+    /* Base provider styles */
+    position: relative;
     display: block;
     min-height: 100%;
-/* Era-specific base styling */ --current-era: var(--gaming-current-era, '8bit');
+    /* Era-specific base styling */
+    --current-era: var(--gaming-current-era, '8bit');
     --pixel-rendering: var(--gaming-pixel-rendering, pixelated);
     --font-smoothing: var(--gaming-font-smoothing, none);
     --border-radius: var(--gaming-border-radius, 0px);
     --transition-speed: var(--gaming-transition-speed, 0ms);
-/* Apply era-specific rendering */ image-rendering: var(--pixel-rendering);
+    /* Apply era-specific rendering */
+    image-rendering: var(--pixel-rendering);
     -webkit-font-smoothing: var(--font-smoothing);
     -moz-osx-font-smoothing: var(--font-smoothing);
-/* Transitions */ transition: all var(--transition-speed) ease;
+    /* Transitions */
+    transition: all var(--transition-speed) ease;
   }
-/* Era-specific provider styles */ .progressive-gaming-provider.era-8bit {
-/* 8-bit NES styling */ font-family: 'Press Start 2P', monospace;
+  /* Era-specific provider styles */
+  .progressive-gaming-provider.era-8bit {
+    /* 8-bit NES styling */
+    font-family: 'Press Start 2P', monospace;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
@@ -289,37 +296,52 @@ https://svelte.dev/e/js_parse_error -->
     image-rendering: inherit;
   }
   .progressive-gaming-provider.era-16bit {
-/* 16-bit SNES styling */ font-family: 'Orbitron', sans-serif;
+    /* 16-bit SNES styling */
+    font-family: 'Orbitron', sans-serif;
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
   }
   .progressive-gaming-provider.era-n64 {
-/* N64 3D styling */ font-family: 'Rajdhani', sans-serif;
+    /* N64 3D styling */
+    font-family: 'Rajdhani', sans-serif;
     font-weight: 500;
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-/* YoRHa integration styles */ .progressive-gaming-provider.yorha-integration {
+  /* YoRHa integration styles */
+  .progressive-gaming-provider.yorha-integration {
     background: var(--yorha-bg-primary, #0a0a0a);
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .progressive-gaming-provider.yorha-integration.era-8bit {
-/* Blend YoRHa with 8-bit aesthetic */ background: linear-gradient( 135deg, var(--yorha-bg-primary, #0a0a0a) 0%, #0a0a1a 100% );
+    /* Blend YoRHa with 8-bit aesthetic */
+    background: linear-gradient(135deg, var(--yorha-bg-primary, #0a0a0a) 0%, #0a0a1a 100%);
   }
   .progressive-gaming-provider.yorha-integration.era-16bit {
-/* Blend YoRHa with 16-bit aesthetic */ background: linear-gradient( 135deg, var(--yorha-bg-primary, #0a0a0a) 0%, var(--yorha-bg-secondary, #1a1a1a) 50%, var(--yorha-bg-tertiary, #2a2a2a) 100% );
+    /* Blend YoRHa with 16-bit aesthetic */
+    background: linear-gradient(
+      135deg,
+      var(--yorha-bg-primary, #0a0a0a) 0%,
+      var(--yorha-bg-secondary, #1a1a1a) 50%,
+      var(--yorha-bg-tertiary, #2a2a2a) 100%
+    );
   }
   .progressive-gaming-provider.yorha-integration.era-n64 {
-/* Full YoRHa theming for N64 era */ background: var(--yorha-bg-primary, #0a0a0a);
-background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+    /* Full YoRHa theming for N64 era */
+    background: var(--yorha-bg-primary, #0a0a0a);
+    background-image:
+      linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
     background-size: 24px 24px;
   }
-/* Main content area */ .gaming-content {
+  /* Main content area */
+  .gaming-content {
     position: relative;
     z-index: 1;
   }
-/* Transition overlay */ .transition-overlay {
+  /* Transition overlay */
+  .transition-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -355,16 +377,29 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
     animation: transitionSpin 1s linear infinite;
   }
   @keyframes fadeInOut {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
   @keyframes transitionSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-/* Debug panel */ .debug-panel {
+  /* Debug panel */
+  .debug-panel {
     position: fixed;
     top: 10px;
     right: 10px;
@@ -418,14 +453,16 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
     background: var(--yorha-secondary, #ffd700);
     color: black;
   }
-/* Transitioning state */ .progressive-gaming-provider.transitioning {
+  /* Transitioning state */
+  .progressive-gaming-provider.transitioning {
     pointer-events: none;
   }
   .progressive-gaming-provider.transitioning .gaming-content {
     filter: blur(1px);
     opacity: 0.8;
   }
-/* Responsive adjustments */ @media (max-width: 768px) {
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
     .debug-panel {
       position: static;
       margin: 1rem;
@@ -439,8 +476,11 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
       margin-bottom: 1rem;
     }
   }
-/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
-.progressive-gaming-provider, .transition-overlay, .transition-spinner {
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .progressive-gaming-provider,
+    .transition-overlay,
+    .transition-spinner {
       animation: none !important;
       transition: none !important;
     }
@@ -449,7 +489,8 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
       opacity: 1;
     }
   }
-/* High contrast mode */ @media (prefers-contrast: high) {
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
     .debug-panel {
       background: black;
       border: 2px solid white;

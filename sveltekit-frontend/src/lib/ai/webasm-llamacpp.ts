@@ -48,7 +48,7 @@ export interface WebLlamaResponse {
     inferenceTime: number;
     cacheTime: number;
     totalTime: number;
-  }
+  };
 }
 class WebAssemblyLlamaService {
   private module: any = null;
@@ -79,8 +79,8 @@ class WebAssemblyLlamaService {
     cacheMisses: 0,
     evictions: 0,
     memoryUsage: 0,
-    lastUpdated: Date.now()
-  }
+    lastUpdated: Date.now(),
+  };
   constructor(config: Partial<WebLlamaConfig> = {}) {
     this.config = {
       modelUrl: '/models/gemma3:270m',
@@ -97,23 +97,22 @@ class WebAssemblyLlamaService {
       maxCacheSize: 500,
       enableServiceWorker: true,
       quicEndpoint: '/api/cache/ranking',
-      ...config
-    }
+      ...config,
+    };
     this.initializeWebGPU();
     this.initializeWorker();
     this.initializeRankingCache();
   }
   /**
    * Initialize WebGPU for hardware acceleration
-   */;
-  private async initializeWebGPU(): Promise<any> {
+   */ private async initializeWebGPU(): Promise<any> {
     if (!this.config.enableWebGPU || !navigator.gpu) {
       console.log('[WebLlama] WebGPU not available, falling back to CPU');
       return;
     }
     try {
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
       if (!adapter) {
         console.warn('[WebLlama] No WebGPU adapter found');
@@ -124,27 +123,24 @@ class WebAssemblyLlamaService {
         requiredLimits: {
           maxBufferSize: 1024 * 1024 * 1024, // 1GB
           maxStorageBufferBindingSize: 512 * 1024 * 1024, // 512MB
-        }
+        },
       });
       console.log('[WebLlama] WebGPU initialized successfully');
       // Set up error handling
       (this.webgpuDevice as any).onuncapturederror = (_event: any) => {
         console.error('[WebLlama] WebGPU error:', event.error);
-      }
+      };
     } catch (error: any) {
       console.error('[WebLlama] WebGPU initialization failed:', error);
     }
   }
   /**
    * Initialize WebAssembly Ranking Cache with service worker support
-   */;
-  private async initializeRankingCache(): Promise<void> {
+   */ private async initializeRankingCache(): Promise<void> {
     if (!this.config.enableRankingCache) return;
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
-      console.log(
-        '[WebLlama] Browser environment not available, skipping ranking cache initialization'
-      );
+      console.log('[WebLlama] Browser environment not available, skipping ranking cache initialization');
       return;
     }
     try {
@@ -155,17 +151,16 @@ class WebAssemblyLlamaService {
         maxEntries: this.config.maxCacheSize,
         ttlSeconds: 300,
         enableServiceWorker: this.config.enableServiceWorker,
-        wasmModulePath: '/webasm/ranking-cache.wasm'
+        wasmModulePath: '/webasm/ranking-cache.wasm',
       });
       await this.rankingCache.initialize();
       // Set up service worker for concurrent processing
       if (this.config.enableServiceWorker && 'serviceWorker' in navigator) {
         // Register lightweight SW; ignore failures in dev;
         try {
-          this.serviceWorkerRegistration = await navigator.serviceWorker.register(
-            '/sw-webasm-cache.js',
-            { scope: '/' }
-          );
+          this.serviceWorkerRegistration = await navigator.serviceWorker.register('/sw-webasm-cache.js', {
+            scope: '/',
+          });
         } catch (e) {
           console.warn('[WebLlama] Service Worker registration failed (dev-safe):', e);
         }
@@ -179,8 +174,7 @@ class WebAssemblyLlamaService {
   }
   /**
    * Initialize Web Worker for multi-threading
-   */;
-  private initializeWorker(): void {
+   */ private initializeWorker(): void {
     // Only initialize workers in browser context
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       console.log('[WebLlama] Skipping worker initialization - not in browser context');
@@ -189,12 +183,12 @@ class WebAssemblyLlamaService {
     try {
       // Create a module worker for parallel generation
       this.worker = new Worker(new URL('../../workers/webllama.worker.ts', import.meta.url), {
-        type: 'module'
+        type: 'module',
       } as WorkerOptions);
       if (this.worker) {
-        this.worker.onerror = (error) => {
+        this.worker.onerror = error => {
           console.error('[WebLlama Worker] Error:', error);
-        }
+        };
         // Optionally send init messages
         this.worker.postMessage({ type: 'init', data: { wasmUrl: this.config.wasmUrl } });
         this.worker.postMessage({ type: 'load_model', data: { modelUrl: this.config.modelUrl } });
@@ -205,8 +199,7 @@ class WebAssemblyLlamaService {
   }
   /**
         console.log('[WebLlama] Optional ranking cache setup (SW only) complete');
-   */;
-  async loadModel(): Promise<boolean> {
+   */ async loadModel(): Promise<boolean> {
     try {
       console.log('[WebLlama] Connecting to Ollama API...');
       // Check if Ollama is available
@@ -246,8 +239,8 @@ class WebAssemblyLlamaService {
       embeddingTime: 0,
       inferenceTime: 0,
       cacheTime: 0,
-      totalTime: 0
-    }
+      totalTime: 0,
+    };
     // Enhanced cache lookup with ranking (disabled in this build; using legacy cache below)
     // Fallback to legacy cache
     if (options.useCache !== false) {
@@ -258,7 +251,7 @@ class WebAssemblyLlamaService {
           ...cached,
           fromCache: true,
           cacheHit: true,
-          processingPath: 'cache'
+          processingPath: 'cache',
         };
       }
     }
@@ -278,13 +271,76 @@ class WebAssemblyLlamaService {
       metrics.inferenceTime = performance.now() - inferenceStart;
       metrics.totalTime = performance.now() - startTime;
       // Enhanced result metadata
-      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime = metrics.totalTime;
-      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).fromCache = false;
-      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).cacheHit = false;
-      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingPath = this.worker && this.config.enableMultiCore ? 'worker' : 'wasm';
-      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).metrics = metrics;
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).processingTime = metrics.totalTime;
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).fromCache = false;
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).cacheHit = false;
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).processingPath = this.worker && this.config.enableMultiCore ? 'worker' : 'wasm';
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).metrics = metrics;
       // Store in enhanced ranking cache
-      if (options.useCache !== false && (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).confidence > 0.7) {
+      if (
+        options.useCache !== false &&
+        (
+          result as {
+            processingTime?: any;
+            fromCache?: any;
+            cacheHit?: any;
+            processingPath?: any;
+            metrics?: any;
+            confidence?: any;
+            text?: any;
+          }
+        ).confidence > 0.7
+      ) {
         await this.storeInRankingCache(prompt, result, options);
         this.addToCache(prompt, options, result); // Legacy cache backup
       }
@@ -318,9 +374,21 @@ class WebAssemblyLlamaService {
     const result = await this.generate(prompt, {
       maxTokens: 2048,
       temperature: 0.1,
-      useCache: true
+      useCache: true,
     });
-    const analysis = this.parseLegalAnalysisResponse((result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).text) as any;
+    const analysis = this.parseLegalAnalysisResponse(
+      (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).text
+    ) as any;
     return {
       summary: analysis?.summary || '',
       keyTerms: analysis?.keyTerms || [],
@@ -328,14 +396,23 @@ class WebAssemblyLlamaService {
       risks: analysis?.risks || [],
       recommendations: analysis?.recommendations || [],
       confidence: analysis?.confidence || 0,
-      processingTime: (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime,
-      method: 'WebAssembly llama.cpp + Gemma 3 Legal'
-    }
+      processingTime: (
+        result as {
+          processingTime?: any;
+          fromCache?: any;
+          cacheHit?: any;
+          processingPath?: any;
+          metrics?: any;
+          confidence?: any;
+          text?: any;
+        }
+      ).processingTime,
+      method: 'WebAssembly llama.cpp + Gemma 3 Legal',
+    };
   }
   /**
    * Generate embedding for semantic similarity
-   */;
-  private async generateEmbedding(text: string): Promise<Float32Array> {
+   */ private async generateEmbedding(text: string): Promise<Float32Array> {
     try {
       // Use WebGPU for embedding if available
       if (this.webgpuDevice) {
@@ -389,11 +466,7 @@ class WebAssemblyLlamaService {
   /**
    * Store result in enhanced ranking cache
    */
-  private async storeInRankingCache(
-    prompt: string,
-    result: WebLlamaResponse,
-    options: any
-  ): Promise<void> {
+  private async storeInRankingCache(prompt: string, result: WebLlamaResponse, options: any): Promise<void> {
     // Deferred: the ranking cache API doesn't expose direct set/get; storage not supported in this build
     void prompt;
     void result;
@@ -405,8 +478,7 @@ class WebAssemblyLlamaService {
   private updateCacheMetrics(): void {
     const now = Date.now();
     this.cacheMetrics.hitRatio =
-      this.cacheMetrics.totalRequests > 0
-        ? this.cacheMetrics.cacheHits / this.cacheMetrics.totalRequests: 0;
+      this.cacheMetrics.totalRequests > 0 ? this.cacheMetrics.cacheHits / this.cacheMetrics.totalRequests : 0;
     this.cacheMetrics.lastUpdated = now;
     // Optionally pull memory usage from ranking cache metrics
     if (this.rankingCache) {
@@ -416,8 +488,7 @@ class WebAssemblyLlamaService {
   }
   /**
    * Get comprehensive service health and capabilities
-   */;
-  getHealthStatus(): {
+   */ getHealthStatus(): {
     modelLoaded: boolean;
     webgpuAvailable: boolean;
     webgpuEnabled: boolean;
@@ -437,12 +508,12 @@ class WebAssemblyLlamaService {
       evictions: number;
       memoryUsage: number;
       lastUpdated: number;
-    }
+    };
     performance: {
       avgLatency: number;
       hitRatio: number;
       throughput: number;
-    }
+    };
   } {
     return {
       modelLoaded: this.modelLoaded,
@@ -459,29 +530,28 @@ class WebAssemblyLlamaService {
       performance: {
         avgLatency: this.cacheMetrics.avgLatency,
         hitRatio: this.cacheMetrics.hitRatio,
-        throughput: this.cacheMetrics.totalRequests
-      }
-    }
+        throughput: this.cacheMetrics.totalRequests,
+      },
+    };
   }
   /**
    * Get detailed cache analytics
-   */;
-  getCacheAnalytics(): {
-    legacy: { size: number; maxSize: number }
+   */ getCacheAnalytics(): {
+    legacy: { size: number; maxSize: number };
     ranking: RankingCacheMetrics | null;
-    serviceWorker: { registered: boolean; active: boolean }
+    serviceWorker: { registered: boolean; active: boolean };
   } {
     return {
       legacy: {
         size: this.cache.size,
-        maxSize: this.maxCacheSize
+        maxSize: this.maxCacheSize,
       },
       ranking: this.rankingCache ? this.rankingCache.getMetrics() : null,
       serviceWorker: {
         registered: !!this.serviceWorkerRegistration,
-        active: !!this.serviceWorkerRegistration?.active
-      }
-    }
+        active: !!this.serviceWorkerRegistration?.active,
+      },
+    };
   }
   /**
    * Clear all caches
@@ -500,8 +570,8 @@ class WebAssemblyLlamaService {
       cacheMisses: 0,
       evictions: 0,
       memoryUsage: 0,
-      lastUpdated: Date.now()
-    }
+      lastUpdated: Date.now(),
+    };
     console.log('[WebLlama] All caches cleared');
   }
   // Private helper methods
@@ -509,7 +579,7 @@ class WebAssemblyLlamaService {
     const memory = new WebAssembly.Memory({
       initial: 256,
       maximum: 1024,
-      shared: this.config.enableMultiCore
+      shared: this.config.enableMultiCore,
     });
     return {
       env: {
@@ -544,7 +614,7 @@ class WebAssemblyLlamaService {
         Math_sqrt: Math.sqrt,
         Math_exp: Math.exp,
         Math_log: Math.log,
-        Math_pow: Math.pow
+        Math_pow: Math.pow,
       },
       wasi_snapshot_preview1: {
         // WASI interface stubs
@@ -554,9 +624,9 @@ class WebAssemblyLlamaService {
         fd_write: (fd: number, iovs: number, iovs_len: number, nwritten: number) => {
           // File descriptor write (stdout/stderr)
           return 0;
-        }
-      }
-    }
+        },
+      },
+    };
   }
   private async generateWithWorker(prompt: string, options: any): Promise<WebLlamaResponse> {
     return new Promise((resolve, reject) => {
@@ -575,18 +645,18 @@ class WebAssemblyLlamaService {
           resolve({
             ...result,
             confidence: 0.9,
-            fromCache: false
+            fromCache: false,
           });
         } else if (type === 'generation_error') {
           clearTimeout(timeout);
           this.worker!.removeEventListener('message', messageHandler);
           reject(new Error(error));
         }
-      }
+      };
       this.worker.addEventListener('message', messageHandler);
       this.worker.postMessage({
         type: 'generate',
-        data: { prompt, options }
+        data: { prompt, options },
       });
     });
   }
@@ -599,20 +669,22 @@ class WebAssemblyLlamaService {
       const response = await fetch('/api/ai/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           model: this.currentModel,
           prompt: prompt,
           options: {
             num_predict: maxTokens,
-            temperature: temperature
+            temperature: temperature,
           },
-          stream: false
-        })
+          stream: false,
+        }),
       });
       if (!(response as { ok?: any; statusText?: any; json?: any; match?: any }).ok) {
-        throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any; match?: any }).statusText}`);
+        throw new Error(
+          `Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any; match?: any }).statusText}`
+        );
       }
       const data = await (response as { ok?: any; statusText?: any; json?: any; match?: any }).json();
       const resultText = (data as { response?: any }).response || '';
@@ -623,7 +695,7 @@ class WebAssemblyLlamaService {
         confidence: 0.85,
         fromCache: false,
         cacheHit: false,
-        processingPath: 'ollama'
+        processingPath: 'ollama',
       };
     } catch (error: any) {
       console.error('[WebLlama] Ollama API call failed:', error);
@@ -634,8 +706,8 @@ class WebAssemblyLlamaService {
     const instructions = {
       comprehensive: 'Provide detailed analysis of all legal aspects',
       quick: 'Provide concise summary of key legal points',
-      'risk-focused': 'Focus on identifying legal risks and compliance issues'
-    }
+      'risk-focused': 'Focus on identifying legal risks and compliance issues',
+    };
     return `<|system|>You are a specialized legal AI assistant. Analyze the following legal document.
 Instructions: ${instructions[analysisType as keyof typeof instructions]}
 Document Title: ${title}
@@ -660,57 +732,69 @@ Provide analysis in structured format:
       entities: [] as Array<any>,
       risks: [] as Array<any>,
       recommendations: [] as string[],
-      confidence: 0.8
-    }
+      confidence: 0.8,
+    };
     try {
       // Extract sections using regex
-      const summaryMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<summary>(.*?)<\/summary>/s);
+      const summaryMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<summary>(.*?)<\/summary>/s
+      );
       if (summaryMatch) analysis.summary = summaryMatch[1].trim();
-      const keyTermsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<key_terms>(.*?)<\/key_terms>/s);
+      const keyTermsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<key_terms>(.*?)<\/key_terms>/s
+      );
       if (keyTermsMatch) {
         analysis.keyTerms = keyTermsMatch[1]
           .split(',')
-          .map((t) => t.trim())
-          .filter((t) => t);
+          .map(t => t.trim())
+          .filter(t => t);
       }
-      const entitiesMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<entities>(.*?)<\/entities>/s);
+      const entitiesMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<entities>(.*?)<\/entities>/s
+      );
       if (entitiesMatch) {
         analysis.entities = entitiesMatch[1]
           .split('\n')
-          .filter((line) => line.trim())
-          .map((line) => {
+          .filter(line => line.trim())
+          .map(line => {
             const [type, value, confidenceStr] = line.split(':');
             return {
               type: type?.trim() || 'unknown',
               value: value?.trim() || '',
-              confidence: parseFloat(confidenceStr?.trim() || '0.8')
+              confidence: parseFloat(confidenceStr?.trim() || '0.8'),
             };
           })
-          .filter((e) => e.value);
+          .filter(e => e.value);
       }
-      const risksMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<risks>(.*?)<\/risks>/s);
+      const risksMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<risks>(.*?)<\/risks>/s
+      );
       if (risksMatch) {
         analysis.risks = risksMatch[1]
           .split('\n')
-          .filter((line) => line.trim())
-          .map((line) => {
+          .filter(line => line.trim())
+          .map(line => {
             const [type, severity, description] = line.split(':');
             return {
               type: type?.trim() || 'general',
               severity: severity?.trim() || 'medium',
-              description: description?.trim() || ''
+              description: description?.trim() || '',
             };
           })
-          .filter((r) => r.description);
+          .filter(r => r.description);
       }
-      const recommendationsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<recommendations>(.*?)<\/recommendations>/s);
+      const recommendationsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<recommendations>(.*?)<\/recommendations>/s
+      );
       if (recommendationsMatch) {
         analysis.recommendations = recommendationsMatch[1]
           .split('\n')
-          .map((r) => r.trim())
-          .filter((r) => r);
+          .map(r => r.trim())
+          .filter(r => r);
       }
-      const confidenceMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<confidence>(.*?)<\/confidence>/s);
+      const confidenceMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(
+        /<confidence>(.*?)<\/confidence>/s
+      );
       if (confidenceMatch) {
         analysis.confidence = parseFloat(confidenceMatch[1].trim()) || 0.8;
       }
@@ -739,8 +823,7 @@ Provide analysis in structured format:
   }
   /**
    * Clean up resources
-   */;
-  async dispose(): Promise<void> {
+   */ async dispose(): Promise<void> {
     console.log('[WebLlama] Disposing resources...');
     // Terminate worker
     if (this.worker) {
@@ -773,4 +856,4 @@ Provide analysis in structured format:
 // Export singleton for global use
 export const webLlamaService = new WebAssemblyLlamaService();
 // Export class for custom instances
-export { WebAssemblyLlamaService }
+export { WebAssemblyLlamaService };

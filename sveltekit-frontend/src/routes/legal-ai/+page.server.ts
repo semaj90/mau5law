@@ -15,7 +15,7 @@ export interface LegalAIPageData {
       isAvailable: boolean;
       models: string[];
       error: string | null;
-    }
+    };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
     serviceStatus: {
@@ -23,13 +23,13 @@ export interface LegalAIPageData {
       ollama: boolean;
       redis: boolean;
       lastChecked: string;
-    }
-  }
+    };
+  };
   meta: {
     totalDocuments: number;
     totalSessions: number;
     serverRenderTime: number;
-  }
+  };
 }
 export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageData> => {
   const startTime = Date.now();
@@ -83,8 +83,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           lastActivity:
             session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
           documentsProcessed: parseInt(count as string) || 0,
-        }
-      }),
+        };
+      })
     );
     // Get total counts for metadata
     const [totalDocumentsResult, totalSessionsResult] = await Promise.all([
@@ -140,7 +140,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         totalSessions,
         serverRenderTime,
       },
-    }
+    };
     return pageData;
   } catch (error) {
     console.error('Failed to load legal AI page data:', error);
@@ -166,6 +166,6 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         totalSessions: 0,
         serverRenderTime: Date.now() - startTime,
       },
-    }
+    };
   }
-}
+};

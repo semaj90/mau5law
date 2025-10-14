@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     Network,
     AlertTriangle,
     CheckCircle,
-    TrendingUp
+    TrendingUp,
   } from 'lucide-svelte';
 
   let { data }: { data: PageData } = $props();
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     cpuHistory: [] as number[],
     memoryHistory: [] as number[],
     networkHistory: [] as number[],
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
   let isLoading = $state(!data.initialLoad);
   let lastUpdate = $state(new Date(data.timestamp));
@@ -53,10 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   async function loadSystemData() {
     try {
       // Load system status from API
-      const [status, graph] = await Promise.all([
-        yorhaAPI.getSystemStatus(),
-        yorhaAPI.getGraphData()
-      ]);
+      const [status, graph] = await Promise.all([yorhaAPI.getSystemStatus(), yorhaAPI.getGraphData()]);
       systemMetrics = status;
       graphData = graph;
       // Initialize realtime data
@@ -64,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
         memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage),
         networkHistory: generateHistoryData(systemMetrics.database.latency),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       isLoading = false;
     } catch (error) {
@@ -76,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: generateHistoryData(45),
         memoryHistory: generateHistoryData(62),
         networkHistory: generateHistoryData(23),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       isLoading = false;
     }
@@ -95,23 +92,14 @@ https://svelte.dev/e/js_parse_error -->
           ...systemMetrics,
           backend: {
             ...systemMetrics.backend,
-            cpuUsage: Math.max(
-              20,
-              Math.min(80, systemMetrics.backend.cpuUsage + (Math.random() - 0.5) * 10)
-            ),
-            memoryUsage: Math.max(
-              30,
-              Math.min(85, systemMetrics.backend.memoryUsage + (Math.random() - 0.5) * 8)
-            )
+            cpuUsage: Math.max(20, Math.min(80, systemMetrics.backend.cpuUsage + (Math.random() - 0.5) * 10)),
+            memoryUsage: Math.max(30, Math.min(85, systemMetrics.backend.memoryUsage + (Math.random() - 0.5) * 8)),
           },
           database: {
             ...systemMetrics.database,
-            latency: Math.max(
-              10,
-              Math.min(100, systemMetrics.database.latency + (Math.random() - 0.5) * 5)
-            ),
-            queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5)
-          }
+            latency: Math.max(10, Math.min(100, systemMetrics.database.latency + (Math.random() - 0.5) * 5)),
+            queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5),
+          },
         };
         lastUpdate = new Date();
       }
@@ -122,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage],
         memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage],
         networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency],
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }, 2000);
   }
@@ -140,21 +128,21 @@ https://svelte.dev/e/js_parse_error -->
         connected: true,
         latency: 23,
         activeConnections: 12,
-        queryCount: 15847
+        queryCount: 15847,
       },
       backend: {
         healthy: true,
         uptime: 98.7,
         activeServices: 8,
         cpuUsage: 45,
-        memoryUsage: 62
+        memoryUsage: 62,
       },
       frontend: {
         renderFPS: 60,
         componentCount: 127,
         activeComponents: 89,
-        webGPUEnabled: true
-      }
+        webGPUEnabled: true,
+      },
     };
   }
 
@@ -167,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
           label: 'PostgreSQL',
           position: { x: 0, y: 0, z: 0 },
           metrics: { connections: 12, queries: 15847 },
-          status: 'healthy'
+          status: 'healthy',
         },
         {
           id: 'redis',
@@ -175,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
           label: 'Redis',
           position: { x: 1, y: 0, z: 0 },
           metrics: { memory: '2.1GB', keys: 45823 },
-          status: 'healthy'
+          status: 'healthy',
         },
         {
           id: 'ollama',
@@ -183,7 +171,7 @@ https://svelte.dev/e/js_parse_error -->
           label: 'Ollama AI',
           position: { x: 0, y: 1, z: 0 },
           metrics: { models: 3, requests: 1847 },
-          status: 'healthy'
+          status: 'healthy',
         },
         {
           id: 'sveltekit',
@@ -191,8 +179,8 @@ https://svelte.dev/e/js_parse_error -->
           label: 'SvelteKit',
           position: { x: 1, y: 1, z: 0 },
           metrics: { components: 127, fps: 60 },
-          status: 'healthy'
-        }
+          status: 'healthy',
+        },
       ],
       edges: [
         {
@@ -200,23 +188,23 @@ https://svelte.dev/e/js_parse_error -->
           to: 'postgres',
           type: 'api',
           traffic: 85,
-          latency: 23
+          latency: 23,
         },
         {
           from: 'sveltekit',
           to: 'redis',
           type: 'api',
           traffic: 65,
-          latency: 12
+          latency: 12,
         },
         {
           from: 'postgres',
           to: 'ollama',
           type: 'data',
           traffic: 45,
-          latency: 34
-        }
-      ]
+          latency: 34,
+        },
+      ],
     };
   }
 
@@ -444,168 +432,168 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-.yorha-dashboard-page {
-  padding-bottom: 4rem;
-  /* space-y-8: add margin-bottom to children if needed */
-}
-.yorha-page-header {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  border-bottom: 1px solid rgba(255, 191, 0, 0.3);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
-}
-.yorha-header-content {
-  max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: center;
-  justify-content: space-between;
-}
-@media (min-width: 768px) {
+  .yorha-dashboard-page {
+    padding-bottom: 4rem;
+    /* space-y-8: add margin-bottom to children if needed */
+  }
+  .yorha-page-header {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border-bottom: 1px solid rgba(255, 191, 0, 0.3);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
+  }
   .yorha-header-content {
-    flex-direction: row;
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
   }
-}
-.yorha-header-title {
-  @apply text-center md:text-left space-y-2;
-}
-.yorha-header-title h1 {
-  @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center gap-4;
-  text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
-}
-.yorha-header-subtitle {
-  @apply text-lg text-amber-300 tracking-wide opacity-80;
-}
-.yorha-header-status {
-  @apply flex items-center gap-4;
-}
-.yorha-status-item {
-  @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
-}
-/* Loading */
-.yorha-loading {
-  @apply flex flex-col items-center justify-center py-32 space-y-4;
-}
-.yorha-loading-spinner {
-  @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
-  animation: spin 1s linear infinite;
-}
-/* Overview Metrics */
-.yorha-overview {
-  @apply px-6;
-}
-.yorha-metrics-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto;
-}
-.yorha-metric-card {
-  @apply bg-gray-900 border-2 p-6 space-y-4;
-}
-  .yorha-metric-header {
-/* @apply flex items-center justify-between; */
+  @media (min-width: 768px) {
+    .yorha-header-content {
+      flex-direction: row;
+    }
   }
-.yorha-metric-header h3 {
-  @apply font-bold tracking-wider text-lg;
-}
-.yorha-metric-stats {
-  @apply grid grid-cols-3 gap-2 text-center;
-}
-.yorha-stat-value {
-  @apply block text-xl font-bold;
-}
-.yorha-stat-label {
-  @apply block text-xs opacity-60 mt-1;
-}
-/* Charts */
-.yorha-charts {
-  @apply px-6 space-y-6;
-}
-.yorha-section-title {
-  @apply text-2xl font-bold text-amber-400 tracking-wider flex items-center gap-3 max-w-6xl mx-auto;
-}
-.yorha-charts-grid {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto;
-}
-.yorha-chart-card {
-  @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6;
-}
-.yorha-chart-card h3 {
-  @apply text-sm font-bold text-amber-400 mb-4 tracking-wider;
-}
-.yorha-chart {
-  @apply relative h-32 bg-black border border-amber-400 border-opacity-20 flex items-end justify-center;
-}
-.yorha-chart-line {
-  @apply w-full bg-gradient-to-t from-amber-400 to-amber-300 transition-all duration-1000;
-  height: var(--height, 100%);
-}
-.yorha-chart-value {
-  @apply absolute top-2 right-2 text-xs text-amber-400 font-mono;
-}
-/* System Status */
-.yorha-system-status {
-  @apply px-6;
-}
-.yorha-data-viz {
-  @apply px-6;
-}
-/* Graph */
-.yorha-graph {
-  @apply px-6 space-y-6;
-}
-.yorha-graph-container {
-  @apply relative bg-gray-900 border border-amber-400 border-opacity-30 p-8 max-w-6xl mx-auto;
-  min-height: 400px;
-}
-.yorha-graph-node {
-  @apply absolute flex flex-col items-center space-y-2 p-3 border border-opacity-60;
-}
-.yorha-node-database {
-  @apply border-blue-400 bg-blue-400 bg-opacity-10;
-}
-.yorha-node-service {
-  @apply border-green-400 bg-green-400 bg-opacity-10;
-}
-.yorha-node-component {
-  @apply border-purple-400 bg-purple-400 bg-opacity-10;
-}
-.yorha-node-icon {
-  @apply text-current;
-}
-.yorha-node-label {
-  @apply text-xs font-mono text-current;
-}
-.yorha-node-status {
-  @apply w-2 h-2 rounded-full;
-}
-.yorha-status-healthy {
-  @apply bg-green-400;
-}
-.yorha-status-warning {
-  @apply bg-yellow-400;
-}
-.yorha-status-error {
-  @apply bg-red-400;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  .yorha-header-title {
+    @apply text-center md:text-left space-y-2;
   }
-}
-/* Responsive */
-@media (max-width: 768px) {
   .yorha-header-title h1 {
-    @apply text-2xl flex-col;
+    @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center gap-4;
+    text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
+  }
+  .yorha-header-subtitle {
+    @apply text-lg text-amber-300 tracking-wide opacity-80;
+  }
+  .yorha-header-status {
+    @apply flex items-center gap-4;
+  }
+  .yorha-status-item {
+    @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
+  }
+  /* Loading */
+  .yorha-loading {
+    @apply flex flex-col items-center justify-center py-32 space-y-4;
+  }
+  .yorha-loading-spinner {
+    @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
+    animation: spin 1s linear infinite;
+  }
+  /* Overview Metrics */
+  .yorha-overview {
+    @apply px-6;
   }
   .yorha-metrics-grid {
-    @apply grid-cols-1 gap-4;
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto;
+  }
+  .yorha-metric-card {
+    @apply bg-gray-900 border-2 p-6 space-y-4;
+  }
+  .yorha-metric-header {
+    /* @apply flex items-center justify-between; */
+  }
+  .yorha-metric-header h3 {
+    @apply font-bold tracking-wider text-lg;
+  }
+  .yorha-metric-stats {
+    @apply grid grid-cols-3 gap-2 text-center;
+  }
+  .yorha-stat-value {
+    @apply block text-xl font-bold;
+  }
+  .yorha-stat-label {
+    @apply block text-xs opacity-60 mt-1;
+  }
+  /* Charts */
+  .yorha-charts {
+    @apply px-6 space-y-6;
+  }
+  .yorha-section-title {
+    @apply text-2xl font-bold text-amber-400 tracking-wider flex items-center gap-3 max-w-6xl mx-auto;
   }
   .yorha-charts-grid {
-    @apply grid-cols-1 gap-4;
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto;
   }
-}
+  .yorha-chart-card {
+    @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6;
+  }
+  .yorha-chart-card h3 {
+    @apply text-sm font-bold text-amber-400 mb-4 tracking-wider;
+  }
+  .yorha-chart {
+    @apply relative h-32 bg-black border border-amber-400 border-opacity-20 flex items-end justify-center;
+  }
+  .yorha-chart-line {
+    @apply w-full bg-gradient-to-t from-amber-400 to-amber-300 transition-all duration-1000;
+    height: var(--height, 100%);
+  }
+  .yorha-chart-value {
+    @apply absolute top-2 right-2 text-xs text-amber-400 font-mono;
+  }
+  /* System Status */
+  .yorha-system-status {
+    @apply px-6;
+  }
+  .yorha-data-viz {
+    @apply px-6;
+  }
+  /* Graph */
+  .yorha-graph {
+    @apply px-6 space-y-6;
+  }
+  .yorha-graph-container {
+    @apply relative bg-gray-900 border border-amber-400 border-opacity-30 p-8 max-w-6xl mx-auto;
+    min-height: 400px;
+  }
+  .yorha-graph-node {
+    @apply absolute flex flex-col items-center space-y-2 p-3 border border-opacity-60;
+  }
+  .yorha-node-database {
+    @apply border-blue-400 bg-blue-400 bg-opacity-10;
+  }
+  .yorha-node-service {
+    @apply border-green-400 bg-green-400 bg-opacity-10;
+  }
+  .yorha-node-component {
+    @apply border-purple-400 bg-purple-400 bg-opacity-10;
+  }
+  .yorha-node-icon {
+    @apply text-current;
+  }
+  .yorha-node-label {
+    @apply text-xs font-mono text-current;
+  }
+  .yorha-node-status {
+    @apply w-2 h-2 rounded-full;
+  }
+  .yorha-status-healthy {
+    @apply bg-green-400;
+  }
+  .yorha-status-warning {
+    @apply bg-yellow-400;
+  }
+  .yorha-status-error {
+    @apply bg-red-400;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  /* Responsive */
+  @media (max-width: 768px) {
+    .yorha-header-title h1 {
+      @apply text-2xl flex-col;
+    }
+    .yorha-metrics-grid {
+      @apply grid-cols-1 gap-4;
+    }
+    .yorha-charts-grid {
+      @apply grid-cols-1 gap-4;
+    }
+  }
 </style>

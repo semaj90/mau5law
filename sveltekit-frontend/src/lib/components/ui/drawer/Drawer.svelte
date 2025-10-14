@@ -13,13 +13,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     size?: 'sm' | 'md' | 'lg' | 'xl';
   }
 
-  let {
-    open = $bindable(false),
-    title = '',
-    description = '',
-    side = 'right',
-    size = 'md',
-  }: Props = $props();
+  let { open = $bindable(false), title = '', description = '', side = 'right', size = 'md' }: Props = $props();
 
   let dialogEl = $state<HTMLElement | null>(null);
 
@@ -57,21 +51,23 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     class="drawer-overlay"
     role="button"
     tabindex="0"
-    aria-label={title ? `${title} overlay - click or press Enter/Space to close` : "Drawer overlay - press Enter/Space or click to close"}
+    aria-label={title
+      ? `${title} overlay - click or press Enter/Space to close`
+      : 'Drawer overlay - press Enter/Space or click to close'}
     onclick={handleBackdropClick}
     onkeydown={handleBackdropKey}
   >
-  <div
-    class="drawer drawer-{size} drawer-{side}"
-    class:is-open={open}
-    role="dialog"
-    aria-modal="true"
-    aria-label={title ? title : "Drawer"}
-    tabindex="0"
-    bind:this={dialogEl}
-    onclick={(e) => e.stopPropagation()}
-    onkeydown={handleDialogKey}
-  >
+    <div
+      class="drawer drawer-{size} drawer-{side}"
+      class:is-open={open}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title ? title : 'Drawer'}
+      tabindex="0"
+      bind:this={dialogEl}
+      onclick={e => e.stopPropagation()}
+      onkeydown={handleDialogKey}
+    >
       <div class="drawer-header">
         <div>
           {#if title}
@@ -81,11 +77,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
             <p class="drawer-description">{description}</p>
           {/if}
         </div>
-        <button
-          class="drawer-close"
-          aria-label="Close drawer"
-          onclick={handleClose}
-        >
+        <button class="drawer-close" aria-label="Close drawer" onclick={handleClose}>
           <X size="24" />
         </button>
       </div>
@@ -95,7 +87,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     </div>
   </div>
 {/if}
-<style>/* @unocss-include */
+
+<style>
+  /* @unocss-include */
   .drawer-overlay {
     position: fixed;
     top: 0;
@@ -154,16 +148,48 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 
   /* Size-specific dimensions and responsiveness */
   /* For left/right drawers (width) */
-  .drawer-left.drawer-sm, .drawer-right.drawer-sm { width: 300px; max-width: 90vw; }
-  .drawer-left.drawer-md, .drawer-right.drawer-md { width: 500px; max-width: 90vw; }
-  .drawer-left.drawer-lg, .drawer-right.drawer-lg { width: 700px; max-width: 90vw; }
-  .drawer-left.drawer-xl, .drawer-right.drawer-xl { width: 900px; max-width: 90vw; }
+  .drawer-left.drawer-sm,
+  .drawer-right.drawer-sm {
+    width: 300px;
+    max-width: 90vw;
+  }
+  .drawer-left.drawer-md,
+  .drawer-right.drawer-md {
+    width: 500px;
+    max-width: 90vw;
+  }
+  .drawer-left.drawer-lg,
+  .drawer-right.drawer-lg {
+    width: 700px;
+    max-width: 90vw;
+  }
+  .drawer-left.drawer-xl,
+  .drawer-right.drawer-xl {
+    width: 900px;
+    max-width: 90vw;
+  }
 
   /* For top/bottom drawers (height) */
-  .drawer-top.drawer-sm, .drawer-bottom.drawer-sm { height: 200px; max-height: 90vh; }
-  .drawer-top.drawer-md, .drawer-bottom.drawer-md { height: 300px; max-height: 90vh; }
-  .drawer-top.drawer-lg, .drawer-bottom.drawer-lg { height: 400px; max-height: 90vh; }
-  .drawer-top.drawer-xl, .drawer-bottom.drawer-xl { height: 500px; max-height: 90vh; }
+  .drawer-top.drawer-sm,
+  .drawer-bottom.drawer-sm {
+    height: 200px;
+    max-height: 90vh;
+  }
+  .drawer-top.drawer-md,
+  .drawer-bottom.drawer-md {
+    height: 300px;
+    max-height: 90vh;
+  }
+  .drawer-top.drawer-lg,
+  .drawer-bottom.drawer-lg {
+    height: 400px;
+    max-height: 90vh;
+  }
+  .drawer-top.drawer-xl,
+  .drawer-bottom.drawer-xl {
+    height: 500px;
+    max-height: 90vh;
+  }
 
   .drawer-header {
     display: flex;

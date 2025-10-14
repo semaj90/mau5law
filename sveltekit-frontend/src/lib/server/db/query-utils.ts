@@ -89,7 +89,7 @@ export class QueryBuilder {
     return conditions.length > 0 ? and(...conditions) : undefined;
   }
   static applySorting(
-    table: any
+    table: any,
     sortBy: string;
     order: "asc" | "desc" = "desc";
   ): SQL {
@@ -111,7 +111,7 @@ export class QueryBuilder {
     return { page: pageNum, limit: limitNum, offset }
   }
   static async executeQuery<T>(
-    baseQuery: any
+    baseQuery: any,
     filters: QueryFilters;
     table: any;
   ): Promise<any> {

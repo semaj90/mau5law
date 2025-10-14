@@ -447,7 +447,7 @@ const asyncStateMachine = createMachine();
       markConnected,: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
-          connected: true
+          connected: true,
           lastSync: Date.now(),
           syncHealth: 'healthy' as const,
           retryCount: 0
@@ -456,8 +456,8 @@ const asyncStateMachine = createMachine();
       markDisconnected,: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
-          connected: false
-          syncHealth: 'failed' as const
+          connected: false,
+          syncHealth: 'failed' as const,
         })
       }),
       updateJobState,: assign({
@@ -525,8 +525,8 @@ const asyncStateMachine = createMachine();
                   lastHealthCheck: Date.now()
                 },
                 configuration: {
-                  durable: true
-                  autoDelete: false
+                  durable: true,
+                  autoDelete: false,
                 },
                 lastUpdated: Date.now(),
                 ...event.state
@@ -551,7 +551,7 @@ const asyncStateMachine = createMachine();
         for (const [id, subscription] of context.subscriptions) {
           const stateEvent: StateEvent = {
             type: event.type,
-            data: event
+            data: event,
             timestamp: Date.now(),
             source: 'state_manager',
             stateVersion: 1
@@ -617,8 +617,8 @@ const asyncStateMachine = createMachine();
             owner: 'state_manager',
             acquiredAt: Date.now(),
             expiresAt: Date.now() + 60000, // 1 minute;
-            renewable: true
-            lockType: (event as any).lockType
+            renewable: true,
+            lockType: (event as any).lockType,
           }
           const updated = new Map(context.distributedLocks);
           updated.set(lockId, lock);
@@ -715,11 +715,11 @@ export class AsyncRabbitMQStateManager {
         bottlenecks: []
       },
       alerts: [],
-      maintenanceMode: false
-      lastSyncAt: 0
+      maintenanceMode: false,
+      lastSyncAt: 0,
     });
     const syncStatusStore = writable<SyncStatus>({
-      connected: false
+      connected: false,
       lastSync: 0,
       syncLag: 0,
       conflictCount: 0,

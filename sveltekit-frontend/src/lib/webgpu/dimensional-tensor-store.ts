@@ -623,69 +623,69 @@ class CompressionPipeline {
   /**
    * Compress data using GPU compute shader
    */ async compress(data: Float32Array, lodLevel: number): Promise<Float32Array> {
-     if (!this.compressShader) {
-       return data; // Fallback to uncompressed
-     }
-     const compressionLevel = Math.pow(2, lodLevel + 4); // Quantization levels
-     const inputBuffer = this.device.createBuffer({
-       size: data.byteLength,
-       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-     });
-     const outputBuffer = this.device.createBuffer({
-       size: data.byteLength,
-       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-     });
-     const paramsBuffer = this.device.createBuffer({
-       size: 16,
-       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-     });
+    if (!this.compressShader) {
+      return data; // Fallback to uncompressed
+    }
+    const compressionLevel = Math.pow(2, lodLevel + 4); // Quantization levels
+    const inputBuffer = this.device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    });
+    const outputBuffer = this.device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    });
+    const paramsBuffer = this.device.createBuffer({
+      size: 16,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
 
-     // Ensure we pass an ArrayBufferView backed by a real ArrayBuffer.
-     // If data.buffer is not a plain ArrayBuffer, create a safe view/copy.
-     const inputView =
-       data.buffer instanceof ArrayBuffer
-         ? new Float32Array(data.buffer, data.byteOffset, data.length)
-         : new Float32Array(data); // fallback copy if necessary
+    // Ensure we pass an ArrayBufferView backed by a real ArrayBuffer.
+    // If data.buffer is not a plain ArrayBuffer, create a safe view/copy.
+    const inputView =
+      data.buffer instanceof ArrayBuffer
+        ? new Float32Array(data.buffer, data.byteOffset, data.length)
+        : new Float32Array(data); // fallback copy if necessary
 
-     // Write input data and params using ArrayBufferView overload (with explicit lengths)
-     this.device.queue.writeBuffer(inputBuffer, 0, inputView, 0, inputView.byteLength);
+    // Write input data and params using ArrayBufferView overload (with explicit lengths)
+    this.device.queue.writeBuffer(inputBuffer, 0, inputView, 0, inputView.byteLength);
 
-     const paramsView = new Float32Array([compressionLevel, 0, 0, 0]);
-     this.device.queue.writeBuffer(paramsBuffer, 0, paramsView, 0, paramsView.byteLength);
+    const paramsView = new Float32Array([compressionLevel, 0, 0, 0]);
+    this.device.queue.writeBuffer(paramsBuffer, 0, paramsView, 0, paramsView.byteLength);
 
-     const commandEncoder = this.device.createCommandEncoder();
-     const computePass = commandEncoder.beginComputePass();
-     computePass.setPipeline(this.compressShader);
-     const bindGroup = this.device.createBindGroup({
-       layout: this.compressShader.getBindGroupLayout(0),
-       entries: [
-         { binding: 0, resource: { buffer: inputBuffer } },
-         { binding: 1, resource: { buffer: outputBuffer } },
-         { binding: 2, resource: { buffer: paramsBuffer } },
-       ],
-     });
-     computePass.setBindGroup(0, bindGroup);
-     computePass.dispatchWorkgroups(Math.ceil(data.length / 64));
-     computePass.end();
-     this.device.queue.submit([commandEncoder.finish()]);
+    const commandEncoder = this.device.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+    computePass.setPipeline(this.compressShader);
+    const bindGroup = this.device.createBindGroup({
+      layout: this.compressShader.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: inputBuffer } },
+        { binding: 1, resource: { buffer: outputBuffer } },
+        { binding: 2, resource: { buffer: paramsBuffer } },
+      ],
+    });
+    computePass.setBindGroup(0, bindGroup);
+    computePass.dispatchWorkgroups(Math.ceil(data.length / 64));
+    computePass.end();
+    this.device.queue.submit([commandEncoder.finish()]);
 
-     // Read back result
-     const readBuffer = this.device.createBuffer({
-       size: data.byteLength,
-       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-     });
-     const copyEncoder = this.device.createCommandEncoder();
-     copyEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, data.byteLength);
-     this.device.queue.submit([copyEncoder.finish()]);
-     await readBuffer.mapAsync(GPUMapMode.READ);
-     const mapped = readBuffer.getMappedRange();
-     const result = new Float32Array(mapped.slice(0));
-     readBuffer.unmap();
-     // Cleanup
-     inputBuffer.destroy();
-     outputBuffer.destroy();
-     paramsBuffer.destroy();
-     readBuffer.destroy();
-     return result;
-   }
+    // Read back result
+    const readBuffer = this.device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+    const copyEncoder = this.device.createCommandEncoder();
+    copyEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, data.byteLength);
+    this.device.queue.submit([copyEncoder.finish()]);
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const mapped = readBuffer.getMappedRange();
+    const result = new Float32Array(mapped.slice(0));
+    readBuffer.unmap();
+    // Cleanup
+    inputBuffer.destroy();
+    outputBuffer.destroy();
+    paramsBuffer.destroy();
+    readBuffer.destroy();
+    return result;
+  }
 }

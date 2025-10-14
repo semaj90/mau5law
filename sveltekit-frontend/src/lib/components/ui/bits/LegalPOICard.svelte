@@ -189,7 +189,7 @@
             {#if poi.metadata.personality.psychologicalProfile}
               <div class="psych-profile">
                 Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% | Cooperation: {Math.round(
-                  poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100,
+                  poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100
                 )}%
               </div>
             {/if}

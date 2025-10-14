@@ -6,18 +6,22 @@ import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 
 const updateBoardItemSchema = z.object({
-  position: z.object({
-    x: z.number(),
-    y: z.number()
-  }).optional(),
-  size: z.object({
-    width: z.number(),
-    height: z.number()
-  }).optional(),
+  position: z
+    .object({
+      x: z.number(),
+      y: z.number(),
+    })
+    .optional(),
+  size: z
+    .object({
+      width: z.number(),
+      height: z.number(),
+    })
+    .optional(),
   content: z.string().optional(),
   metadata: z.any().optional(),
   zIndex: z.number().optional(),
-  isVisible: z.boolean().optional()
+  isVisible: z.boolean().optional(),
 });
 
 // PUT /api/evidence-boards/[boardId]/items/[itemId] - Update board item
@@ -36,11 +40,13 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [existingItem] = await db
       .select()
       .from(evidenceBoardItems)
-      .where(and(
-        eq(evidenceBoardItems.id, itemId),
-        eq(evidenceBoardItems.boardId, boardId),
-        eq(evidenceBoardItems.isVisible, true)
-      ));
+      .where(
+        and(
+          eq(evidenceBoardItems.id, itemId),
+          eq(evidenceBoardItems.boardId, boardId),
+          eq(evidenceBoardItems.isVisible, true)
+        )
+      );
 
     if (!existingItem) {
       return json({ error: 'Board item not found' }, { status: 404 });
@@ -51,14 +57,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .update(evidenceBoardItems)
       .set({
         ...validatedData,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(evidenceBoardItems.id, itemId))
       .returning();
 
     return json({
       success: true,
-      data: updatedItem
+      data: updatedItem,
     });
   } catch (error) {
     console.error('Error updating board item:', error);
@@ -83,11 +89,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const [existingItem] = await db
       .select()
       .from(evidenceBoardItems)
-      .where(and(
-        eq(evidenceBoardItems.id, itemId),
-        eq(evidenceBoardItems.boardId, boardId),
-        eq(evidenceBoardItems.isVisible, true)
-      ));
+      .where(
+        and(
+          eq(evidenceBoardItems.id, itemId),
+          eq(evidenceBoardItems.boardId, boardId),
+          eq(evidenceBoardItems.isVisible, true)
+        )
+      );
 
     if (!existingItem) {
       return json({ error: 'Board item not found' }, { status: 404 });
@@ -98,13 +106,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(evidenceBoardItems)
       .set({
         isVisible: false,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(evidenceBoardItems.id, itemId));
 
     return json({
       success: true,
-      message: 'Board item deleted successfully'
+      message: 'Board item deleted successfully',
     });
   } catch (error) {
     console.error('Error deleting board item:', error);

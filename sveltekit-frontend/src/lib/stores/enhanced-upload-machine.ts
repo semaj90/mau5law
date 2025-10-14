@@ -1,4 +1,4 @@
-import { createMachine, assign, createActor, type StateFrom, fromPromise } from "xstate";
+import { createMachine, assign, createActor, type StateFrom, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 // Enhanced Context interfaces with OCR, AI Assistant, Neo4j, RAG integration
 export interface EnhancedUploadContext {
@@ -16,7 +16,7 @@ export interface EnhancedUploadContext {
     contentType: string;
     expiresAt: Date;
     documentType?: 'legal_brief' | 'evidence' | 'contract' | 'deposition' | 'other';
-  }
+  };
   jobIds: {
     extraction?: string;
     ocr?: string;
@@ -26,7 +26,7 @@ export interface EnhancedUploadContext {
     neo4j?: string;
     rag?: string;
     rabbitMQ?: string;
-  }
+  };
   results: {
     extractedText?: string;
     ocrText?: string;
@@ -41,13 +41,13 @@ export interface EnhancedUploadContext {
     ragSummary?: string;
     ragKeyPoints?: string[];
     pgvectorId?: string;
-  }
+  };
   rabbitMQ: {
     queueName?: string;
     messageIds?: string[];
     processingStatus?: 'queued' | 'processing' | 'completed' | 'failed';
     routingKey?: string;
-  }
+  };
   aiAssistant: {
     sessionId?: string;
     chatHistory?: any[];
@@ -55,13 +55,13 @@ export interface EnhancedUploadContext {
     confidence?: number;
     analysis?: string;
     recommendations?: string[];
-  }
+  };
   database: {
     postgresqlId?: string;
     neo4jNodeId?: string;
     pgvectorIndex?: string;
     ragDocumentId?: string;
-  }
+  };
 }
 // Enhanced Event types with OCR and AI processing
 type EnhancedUploadEvent =
@@ -85,7 +85,7 @@ type EnhancedUploadEvent =
   | { type: 'RABBITMQ_QUEUED'; messageId: string }
   | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Enhanced Upload and processing state machine with comprehensive legal AI pipeline
 export const enhancedUploadMachine = createMachine(
   {
@@ -948,7 +948,7 @@ export type EnhancedUploadActor = ReturnType<typeof createActor<typeof enhancedU
 // Enhanced Svelte store integration
 function createEnhancedUploadStore() {
   const actor = createActor(enhancedUploadMachine);
-  const { subscribe } = writable(actor.getSnapshot(), (set) => {
+  const { subscribe } = writable(actor.getSnapshot(), set => {
     actor.subscribe(set);
     actor.start();
     return () => actor.stop();
@@ -956,7 +956,7 @@ function createEnhancedUploadStore() {
   return {
     subscribe,
     send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor)
-  }
+    getSnapshot: actor.getSnapshot.bind(actor),
+  };
 }
 export const enhancedUploadStore = createEnhancedUploadStore();

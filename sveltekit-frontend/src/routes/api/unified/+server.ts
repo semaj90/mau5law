@@ -67,9 +67,9 @@ import { cache } from '$lib/server/cache/redis.js';
 
 // Initialize all services (guard optional `initialize` functions to avoid calling undefined)
 await Promise.all([
-	typeof unifiedSearchService.initialize === 'function' ? unifiedSearchService.initialize() : Promise.resolve(),
-	typeof neo4jService.initialize === 'function' ? neo4jService.initialize() : Promise.resolve(),
-	typeof ingestionService.initialize === 'function' ? ingestionService.initialize() : Promise.resolve(),
+  typeof unifiedSearchService.initialize === 'function' ? unifiedSearchService.initialize() : Promise.resolve(),
+  typeof neo4jService.initialize === 'function' ? neo4jService.initialize() : Promise.resolve(),
+  typeof ingestionService.initialize === 'function' ? ingestionService.initialize() : Promise.resolve(),
 ]);
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -775,7 +775,7 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
   }
 
   // Bind the function in case it relies on `this` and coerce to a promise-returning call
-  const fn = (neo4jService.getHealthStatus as unknown) as (() => unknown);
+  const fn = neo4jService.getHealthStatus as unknown as () => unknown;
 
   try {
     const raw = await Promise.resolve().then(() => fn.call(neo4jService));

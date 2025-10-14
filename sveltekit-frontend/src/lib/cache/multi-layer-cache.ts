@@ -52,7 +52,7 @@ export class MultiLayerCacheSystem {
     });
   }
   async set<T>(_key: string
-    value: T
+    value: T,
     layerName?: string
   ): Promise<boolean> {
     const targetLayer = layerName || this.selectOptimalLayer(value);

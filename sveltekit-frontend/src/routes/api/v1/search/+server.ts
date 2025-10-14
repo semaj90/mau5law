@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 import { orchestrator } from '$lib/services/unified-legal-orchestrator';
 import { qdrant } from '$lib/server/vector/qdrant-manager';
 import { db, vectorSearch } from '$lib/server/database/connection';
@@ -344,13 +344,13 @@ function extractCommonTerms(results: any[]): string[] {
 }
 async function getSearchHistory(user_id: string, limit: number): Promise<any[]> {
   // Implementation would query analytics or search history table
-  return []
+  return [];
 }
 async function getSearchSuggestions(query: string): Promise<string[]> {
   // Implementation would use Fuse.js or similar for fuzzy suggestions
-  return []
+  return [];
 }
 async function getTrendingSearches(limit: number): Promise<any[]> {
   // Implementation would analyze recent search analytics
-  return []
+  return [];
 }

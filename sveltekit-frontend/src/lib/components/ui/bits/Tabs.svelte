@@ -187,7 +187,8 @@
   {/each}
 </BitsTabs.Root>
 
-<style>/* Gaming theme animations */ {}
+<style>
+/* Gaming theme animations */ {}
   :global([data-bits-tabs-trigger][data-theme='gaming']) {
     transition: all 0.3s ease;
   }

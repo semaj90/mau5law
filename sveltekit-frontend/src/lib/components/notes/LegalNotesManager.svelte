@@ -16,7 +16,7 @@
     performSemanticSearch,
     exportLegalNotes,
     type LegalNote,
-    type NoteFilters
+    type NoteFilters,
   } from '$lib/stores/enhanced-saved-notes';
   import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -24,8 +24,8 @@
   // Import components into intermediate names and cast to any to avoid TS errors
   import Input_ from '$lib/components/ui/input/Input.svelte';
   import Textarea_ from '$lib/components/ui/textarea/Textarea.svelte';
-  const Input = (Input_ as unknown) as any;
-  const Textarea = (Textarea_ as unknown) as any;
+  const Input = Input_ as unknown as any;
+  const Textarea = Textarea_ as unknown as any;
   import {
     FileText,
     Search,
@@ -45,7 +45,7 @@
     Trash2,
     Edit3,
     Save,
-    X
+    X,
   } from 'lucide-svelte';
   // Component state
   let searchQuery: string = '';
@@ -72,7 +72,7 @@
     tags: [],
     caseId: '',
     priority: 'medium',
-    riskLevel: 'low'
+    riskLevel: 'low',
   };
   // Stats and filters reactive
   let stats: any = {};
@@ -81,22 +81,22 @@
     search: '',
     noteType: '',
     tags: [],
-    caseId: undefined
+    caseId: undefined,
   };
   onMount(() => {
     // call async loader but don't make the onMount callback async (so we can return a cleanup)
-    loadLegalNotes().catch((err) => {
+    loadLegalNotes().catch(err => {
       console.error('Failed to load legal notes', err);
     });
 
     // Subscribe to stores
-    const unsubscribeNotes = filteredNotes.subscribe((value) => {
+    const unsubscribeNotes = filteredNotes.subscribe(value => {
       notes = value;
     });
-    const unsubscribeStats = noteStats.subscribe((value) => {
+    const unsubscribeStats = noteStats.subscribe(value => {
       stats = value;
     });
-    const unsubscribeFilters = noteFilters.subscribe((value) => {
+    const unsubscribeFilters = noteFilters.subscribe(value => {
       currentFilters = value;
     });
 
@@ -112,7 +112,7 @@
     setNoteFilter({
       search: searchQuery,
       noteType: selectedNoteType,
-      riskLevel: selectedRiskLevel
+      riskLevel: selectedRiskLevel,
     });
   }
   function clearAllFilters() {
@@ -130,9 +130,7 @@
     // cast to any to avoid TS error if getGlobalState is not declared on the integration type
     const maybeGetGlobalState = (xstateIntegration as any).getGlobalState;
     const globalState =
-      typeof maybeGetGlobalState === 'function'
-        ? maybeGetGlobalState()
-        : get((xstateIntegration as any).globalState);
+      typeof maybeGetGlobalState === 'function' ? maybeGetGlobalState() : get((xstateIntegration as any).globalState);
     // Read user id from the plain object (fallback to anonymous)
     const userId = globalState?.context?.auth?.user?.id ?? 'anonymous';
 
@@ -154,8 +152,8 @@
         riskLevel: newNote.riskLevel,
         starred: false,
         aiGenerated: false,
-        processingStatus: 'completed'
-      }
+        processingStatus: 'completed',
+      },
     };
     await saveLegalNote(note);
     resetNewNoteForm();
@@ -170,18 +168,18 @@
       caseId: '',
       priority: 'medium',
       riskLevel: 'low',
-    }
+    };
   }
   // Note editing
   function startEditNote(note: LegalNote) {
-    editingNote = { ...note }
+    editingNote = { ...note };
   }
   async function saveEditedNote() {
     if (!editingNote) return;
     await saveLegalNote({
       ...editingNote,
       markdown: editingNote.content,
-      html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>`
+      html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>`,
     });
     editingNote = null;
   }
@@ -194,8 +192,8 @@
       ...note,
       metadata: {
         ...note.metadata,
-        starred: !note.metadata.starred
-      }
+        starred: !note.metadata.starred,
+      },
     };
     await saveLegalNote(updated);
   }
@@ -222,31 +220,36 @@
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
   function getRiskBadgeVariant(riskLevel?: string) {
     // Only return badge variants that exist in the Badge component's type.
     // Avoid returning 'primary' which is not part of the BadgeVariant type in this codebase.
     switch (riskLevel) {
-      case 'critical': return 'destructive';
-      case 'high': return 'destructive';
-      case 'medium': return 'outline';
-      case 'low': return 'outline';
-      default: return 'outline';
+      case 'critical':
+        return 'destructive';
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'outline';
+      case 'low':
+        return 'outline';
+      default:
+        return 'outline';
     }
   }
   function getTypeBadgeColor(noteType: string): string {
     const colors: Record<string, string> = {
-      'legal_analysis': 'bg-blue-500',
-      'case_note': 'bg-green-500',
-      'evidence_note': 'bg-purple-500',
-      'research': 'bg-orange-500',
-      'ai_generated': 'bg-pink-500',
-      'ocr_extracted': 'bg-cyan-500',
-      'todo': 'bg-yellow-500',
-      'general': 'bg-gray-500'
-    }
+      legal_analysis: 'bg-blue-500',
+      case_note: 'bg-green-500',
+      evidence_note: 'bg-purple-500',
+      research: 'bg-orange-500',
+      ai_generated: 'bg-pink-500',
+      ocr_extracted: 'bg-cyan-500',
+      todo: 'bg-yellow-500',
+      general: 'bg-gray-500',
+    };
     return colors[noteType] || 'bg-gray-500';
   }
   function addTag(tag: string) {
@@ -359,19 +362,31 @@
             type="text"
             placeholder="Search notes, content, citations..."
             bind:value={searchQuery}
-            onkeydown={(e: KeyboardEvent) => (e.key === 'Enter') && applyFilters()}
+            onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && applyFilters()}
           />
         </div>
         <!-- native buttons replace problematic Button component usages -->
-        <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-white border hover:bg-slate-50 text-sm" onclick={applyFilters}>
+        <button
+          type="button"
+          class="inline-flex items-center px-3 py-1 rounded-md bg-white border hover:bg-slate-50 text-sm"
+          onclick={applyFilters}
+        >
           <Search class="h-4 w-4 mr-2" />
           Search
         </button>
-        <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={performSemSearch}>
+        <button
+          type="button"
+          class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+          onclick={performSemSearch}
+        >
           <Brain class="h-4 w-4 mr-2" />
           Semantic
         </button>
-        <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={clearAllFilters}>
+        <button
+          type="button"
+          class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+          onclick={clearAllFilters}
+        >
           Clear
         </button>
       </div>
@@ -403,15 +418,27 @@
             </select>
           </div>
           <div class="flex items-end gap-2">
-            <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => exportNotes('json')}>
+            <button
+              type="button"
+              class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+              onclick={() => exportNotes('json')}
+            >
               <Download class="h-4 w-4 mr-2" />
               JSON
             </button>
-            <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => exportNotes('markdown')}>
+            <button
+              type="button"
+              class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+              onclick={() => exportNotes('markdown')}
+            >
               <Download class="h-4 w-4 mr-2" />
               Markdown
             </button>
-            <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => exportNotes('legal_brief')}>
+            <button
+              type="button"
+              class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+              onclick={() => exportNotes('legal_brief')}
+            >
               <Gavel class="h-4 w-4 mr-2" />
               Brief
             </button>
@@ -487,11 +514,19 @@
           />
         </div>
         <div class="flex gap-2">
-          <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm" onclick={createNote}>
+          <button
+            type="button"
+            class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
+            onclick={createNote}
+          >
             <Save class="h-4 w-4 mr-2" />
             Save Note
           </button>
-          <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => (showCreateNote = false)}>
+          <button
+            type="button"
+            class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+            onclick={() => (showCreateNote = false)}
+          >
             Cancel
           </button>
         </div>
@@ -505,7 +540,11 @@
         <CardTitle class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Semantic Search Results
-          <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm ml-2" onclick={() => (showSemanticSearch = false)}>
+          <button
+            type="button"
+            class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm ml-2"
+            onclick={() => (showSemanticSearch = false)}
+          >
             <X class="h-4 w-4" />
           </button>
         </CardTitle>
@@ -550,11 +589,19 @@
               <Input type="text" bind:value={editingNote.title} class="font-semibold" />
               <Textarea bind:value={editingNote.content} rows={6} />
               <div class="flex gap-2">
-                <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-blue-600 text-white text-sm" onclick={saveEditedNote}>
+                <button
+                  type="button"
+                  class="inline-flex items-center px-2 py-1 rounded-md bg-blue-600 text-white text-sm"
+                  onclick={saveEditedNote}
+                >
                   <Save class="h-4 w-4 mr-2" />
                   Save
                 </button>
-                <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={cancelEdit}>Cancel</button>
+                <button
+                  type="button"
+                  class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+                  onclick={cancelEdit}>Cancel</button
+                >
               </div>
             </div>
           {:else}
@@ -627,17 +674,29 @@
                   </div>
                 </div>
                 <div class="flex gap-2">
-                  <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => toggleStar(note)}>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+                    onclick={() => toggleStar(note)}
+                  >
                     {#if note.metadata.starred}
                       <Star class="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {:else}
                       <StarOff class="h-4 w-4" />
                     {/if}
                   </button>
-                  <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm" onclick={() => startEditNote(note)}>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
+                    onclick={() => startEditNote(note)}
+                  >
                     <Edit3 class="h-4 w-4" />
                   </button>
-                  <button type="button" class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm text-red-600" onclick={() => deleteNote(note.id)}>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm text-red-600"
+                    onclick={() => deleteNote(note.id)}
+                  >
                     <Trash2 class="h-4 w-4" />
                   </button>
                 </div>
@@ -672,7 +731,11 @@
               : 'Create your first note to get started.'}
           </p>
           {#if !showCreateNote}
-            <button type="button" class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm" onclick={() => (showCreateNote = true)}>
+            <button
+              type="button"
+              class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
+              onclick={() => (showCreateNote = true)}
+            >
               <Plus class="h-4 w-4 mr-2" />
               Create Note
             </button>
@@ -680,5 +743,6 @@
         </CardContent>
       </Card>
     {/if}
-  </div> <!-- end .space-y-4 (notes list) -->
+  </div>
+  <!-- end .space-y-4 (notes list) -->
 </div>

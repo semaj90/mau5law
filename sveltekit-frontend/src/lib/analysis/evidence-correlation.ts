@@ -110,8 +110,8 @@ interface CausalEvent {
 export class EvidenceCorrelationEngine {
   // Main correlation analysis
   static analyzeCorrelations(
-    evidence: EvidenceItem[]
-    analysisType: string
+    evidence: EvidenceItem[],
+    analysisType: string,
     confidenceThreshold: number;
   ): CorrelationResult[] {
     const correlations: CorrelationResult[] = [];
@@ -153,7 +153,7 @@ export class EvidenceCorrelationEngine {
   }
   // Temporal correlation analysis
   static analyzeTemporalCorrelation(
-    evidenceA: EvidenceItem
+    evidenceA: EvidenceItem,
     evidenceB: EvidenceItem;
   ): CorrelationResult {
     const timeA = new Date(evidenceA.uploadedAt);
@@ -191,14 +191,14 @@ export class EvidenceCorrelationEngine {
           timeline: [
             {
               id: evidenceA.id,
-              timestamp: timeA
+              timestamp: timeA,
               type: evidenceA.type || evidenceA.evidenceType || 'unknown',
               description: evidenceA.filename,
               evidenceIds: [evidenceA.id]
             },>;
             {
               id: evidenceB.id,
-              timestamp: timeB
+              timestamp: timeB,
               type: evidenceB.type || evidenceB.evidenceType || 'unknown',
               description: evidenceB.filename,
               evidenceIds: [evidenceB.id]
@@ -210,7 +210,7 @@ export class EvidenceCorrelationEngine {
   }
   // Semantic correlation analysis
   static analyzeSemanticCorrelation(
-    evidenceA: EvidenceItem
+    evidenceA: EvidenceItem,
     evidenceB: EvidenceItem;
   ): CorrelationResult {
     const tagsA = evidenceA.aiAnalysis?.tags || [];
@@ -244,7 +244,7 @@ export class EvidenceCorrelationEngine {
   }
   // Entity correlation analysis
   static analyzeEntityCorrelation(
-    evidenceA: EvidenceItem
+    evidenceA: EvidenceItem,
     evidenceB: EvidenceItem;
   ): CorrelationResult {
     // Extract entities from filenames and analysis (simplified)
@@ -273,7 +273,7 @@ export class EvidenceCorrelationEngine {
   }
   // Causal correlation analysis
   static analyzeCausalCorrelation(
-    evidenceA: EvidenceItem
+    evidenceA: EvidenceItem,
     evidenceB: EvidenceItem;
   ): CorrelationResult {
     const timeA = new Date(evidenceA.uploadedAt);
@@ -336,7 +336,7 @@ export class EvidenceCorrelationEngine {
         patterns.push({
           patternId: `sequence_${i}`,
           patternType: 'sequence',
-          confidence: sequenceStrength
+          confidence: sequenceStrength,
           evidenceIds: sequence.map((e) => e.id),
           description: `Sequential pattern: ${sequence.map((e) => e.filename).join(' → ')}`,
           significance: sequenceStrength > 0.8 ? 'high' : 'medium',
@@ -361,7 +361,7 @@ export class EvidenceCorrelationEngine {
         patterns.push({
           patternId: `cluster_${window}`,
           patternType: 'cluster',
-          confidence: clusterStrength
+          confidence: clusterStrength,
           evidenceIds: evidenceGroup.map((e) => e.id),
           description: `Evidence cluster: ${evidenceGroup.length} items in ${window}`,
           significance: evidenceGroup.length > 5 ? 'high' : 'medium',
@@ -525,7 +525,7 @@ export class EvidenceCorrelationEngine {
     return comparisons > 0 ? totalSimilarity / comparisons : 0.5;
   }
   static groupEvidenceByTimeWindows(
-    evidence: EvidenceItem[]
+    evidence: EvidenceItem[],
     windowHours: number;
   ): Record<string, EvidenceItem[]> {
     const windows: Record<string, EvidenceItem[]> = {}

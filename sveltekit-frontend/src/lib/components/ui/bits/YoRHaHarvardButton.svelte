@@ -33,7 +33,7 @@
     sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base',
-  }
+  };
 
   const variantClasses = {
     primary: 'yorha-harvard-btn-primary',
@@ -43,7 +43,7 @@
     badge: 'harvard-gaming-badge',
     grey: 'yorha-harvard-grey enhanced-btn-grey',
     'crimson-grey': 'enhanced-btn-crimson-grey',
-  }
+  };
 
   function handleClick() {
     if (disabled || loading) return;
@@ -65,18 +65,20 @@
     }
   }
 
-  let buttonClasses = $derived([
-    'yorha-harvard-btn',
-    variantClasses[variant],
-    sizeClasses[size],
-    pixelated && 'pixelated',
-    glowing && 'harvard-glow',
-    isPressed && 'pressed',
-    disabled && 'disabled',
-    loading && 'loading',
-  ]
-    .filter(Boolean)
-    .join(' '));
+  let buttonClasses = $derived(
+    [
+      'yorha-harvard-btn',
+      variantClasses[variant],
+      sizeClasses[size],
+      pixelated && 'pixelated',
+      glowing && 'harvard-glow',
+      isPressed && 'pressed',
+      disabled && 'disabled',
+      loading && 'loading',
+    ]
+      .filter(Boolean)
+      .join(' ')
+  );
 </script>
 
 <button
@@ -175,12 +177,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-background: repeating-linear-gradient( {}
-0deg, {}
-transparent 0px, {}
-transparent 2px, {}
-rgba(0, 255, 65, 0.1) 2px, {}
-rgba(0, 255, 65, 0.1) 4px {}
+    background: repeating-linear-gradient(
+      {} 0deg,
+      {} transparent 0px,
+      {} transparent 2px,
+      {} rgba(0, 255, 65, 0.1) 2px,
+      {} rgba(0, 255, 65, 0.1) 4px {}
     );
     pointer-events: none;
   }

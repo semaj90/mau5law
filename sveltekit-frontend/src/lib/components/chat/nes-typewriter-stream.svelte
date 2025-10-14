@@ -3,7 +3,7 @@
   Cached alphabet texture streaming for enhanced AI chat
   Uses quantized cached text with Nintendo-inspired styling
 -- // Svelte 5 runes are auto-imported -->
-  <script lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { base64FP32Quantizer } from '../../text/base64-fp32-quantizer';
   import { chrRomPatternCache } from '../../cache/chr-rom-pattern-cache';
@@ -26,7 +26,7 @@
     cacheTextures = true,
     quantizeText = true,
     maxWidth = '100%',
-    onComplete
+    onComplete,
   }: TypewriterProps = $props();
   // State management
   let currentIndex = $state(0);
@@ -105,7 +105,7 @@
           scalingMethod: 'sigmoid',
           targetLength: 64,
           cudaThreads: 64,
-          cacheStrategy: 'aggressive'
+          cacheStrategy: 'aggressive',
         });
         // Fix type assignment for quantizedData (handle ArrayBufferLike)
         const qd = quantizationResult.quantizedData;
@@ -123,20 +123,17 @@
         quantizedData,
         nesPattern,
         cached: true,
-      }
+      };
       alphabetCache.set(char, alphabetTexture);
       // Cache in CHR-ROM system if available
       if (cacheTextures && chrRomPatternCache) {
-        await chrRomPatternCache.generateAndCachePattern(
-          `char_${char.charCodeAt(0)}`,
-          {
-            documentType: 'citation', // Use citation type for characters
-            riskLevel: 'low',
-            visualStyle: 'classic',
-            colorScheme: 'default',
-            animated: false,
-          }
-        );
+        await chrRomPatternCache.generateAndCachePattern(`char_${char.charCodeAt(0)}`, {
+          documentType: 'citation', // Use citation type for characters
+          riskLevel: 'low',
+          visualStyle: 'classic',
+          colorScheme: 'default',
+          animated: false,
+        });
       }
       return alphabetTexture;
     } catch (error) {
@@ -148,7 +145,7 @@
         quantizedData: new Float32Array(64),
         nesPattern: new Uint8Array(64),
         cached: false,
-      }
+      };
     }
   }
   function generateNESPattern(char: string): Uint8Array {
@@ -163,16 +160,16 @@
           pattern[index] = 0; // Space is empty
         } else if (char.match(/[A-Z]/)) {
           // Uppercase letters - bold pattern
-          pattern[index] = ((x + y + charCode) % 3 === 0) ? 255 : 0;
+          pattern[index] = (x + y + charCode) % 3 === 0 ? 255 : 0;
         } else if (char.match(/[a-z]/)) {
           // Lowercase letters - lighter pattern
-          pattern[index] = ((x + y + charCode) % 4 === 0) ? 192 : 0;
+          pattern[index] = (x + y + charCode) % 4 === 0 ? 192 : 0;
         } else if (char.match(/[0-9]/)) {
           // Numbers - geometric pattern
-          pattern[index] = ((x === y) || (x + y === 7)) ? 255 : 0;
+          pattern[index] = x === y || x + y === 7 ? 255 : 0;
         } else {
           // Special characters - unique patterns
-          pattern[index] = ((x * y + charCode) % 7 === 0) ? 255 : 128;
+          pattern[index] = (x * y + charCode) % 7 === 0 ? 255 : 128;
         }
       }
     }
@@ -187,8 +184,8 @@
       const themeColors = {
         classic: '#FFFFFF',
         modern: '#00FF00',
-        legal: '#FFD700' // Gold for legal them;
-      }
+        legal: '#FFD700', // Gold for legal them;
+      };
       textureCtx.fillStyle = themeColors[nesTheme] || themeColors.legal;
       // Render character using pattern
       for (let y = 0; y < 8; y++) {
@@ -338,6 +335,7 @@
     }
   });
 </script>
+
 <div
   bind:this={containerElement}
   class="nes-typewriter-container"
@@ -346,22 +344,14 @@
   class:nes-legal={nesTheme === 'legal'}
   style="max-width: {maxWidth}"
 >
-  <span
-    bind:this={textElement}
-    class="nes-typewriter-text"
-    class:typing={isTyping}
-  >
+  <span bind:this={textElement} class="nes-typewriter-text" class:typing={isTyping}>
     {visibleText}
   </span>
-  <span
-    bind:this={cursorElement}
-    class="nes-typewriter-cursor"
-    class:visible={cursor}
-    class:blinking={!isTyping}
-  >
+  <span bind:this={cursorElement} class="nes-typewriter-cursor" class:visible={cursor} class:blinking={!isTyping}>
     █
   </span>
 </div>
+
 <style>
   /* NES.css inspired typewriter styling */
   .nes-typewriter-container {
@@ -377,21 +367,21 @@
   }
   /* Theme variations */
   .nes-classic {
-    color: #FFFFFF;
+    color: #ffffff;
     background: #000000;
-    border-color: #FFFFFF;
+    border-color: #ffffff;
   }
   .nes-modern {
-    color: #00FF00;
+    color: #00ff00;
     background: #001100;
-    border-color: #00FF00;
-    text-shadow: 0 0 2px #00FF00;
+    border-color: #00ff00;
+    text-shadow: 0 0 2px #00ff00;
   }
   .nes-legal {
-    color: #FFD700;
+    color: #ffd700;
     background: #1a1a2e;
-    border-color: #FFD700;
-    text-shadow: 0 0 1px #FFD700;
+    border-color: #ffd700;
+    text-shadow: 0 0 1px #ffd700;
   }
   .nes-typewriter-text {
     display: inli;
@@ -407,9 +397,15 @@
     animation: emphasize 0.3s ease-out;
   }
   @keyframes emphasize {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
   .nes-typewriter-cursor {
     display: inline-block;
@@ -422,11 +418,17 @@
     opacity: 1;
   }
   .nes-typewriter-cursor.blinking {
-  animation: blink 1s infinite;
+    animation: blink 1s infinite;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
   /* Pixel-perfect rendering for retro look */
   .nes-classic .nes-typewriter-text,
@@ -455,7 +457,7 @@
       border-width: 3px;
     }
     .nes-legal {
-      color: #FFFF00;
+      color: #ffff00;
       text-shadow: 0 0 2px #000000;
     }
   }
@@ -465,7 +467,7 @@
       animation: none;
       opacity: 1;
     }
-  .nes-typewriter-text :global(.nes-text-emphasis) {
+    .nes-typewriter-text :global(.nes-text-emphasis) {
       animation: none;
     }
   }

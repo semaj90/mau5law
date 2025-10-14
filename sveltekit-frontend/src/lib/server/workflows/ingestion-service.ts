@@ -20,8 +20,8 @@ export class IngestionService {
   private workflowActor = ingestionWorkflowActor;
   constructor(config: Partial<IngestionServiceConfig> = {}) {
     this.config = {
-      enableRabbitMQ: true
-      enableRedisQueues: true
+      enableRabbitMQ: true,
+      enableRedisQueues: true,
       maxConcurrency: 3,
       retryAttempts: 3,
       jobTimeout: 300000, // 5 minutes
@@ -54,8 +54,8 @@ export class IngestionService {
     console.log('✅ Ingestion Service initialized');
   }
   async submitDocument(
-    documentId: string
-    chunks: string[]
+    documentId: string,
+    chunks: string[],
     metadata?: { [key: string]: any }
   ): Promise<any> {
     if (!this.isInitialized) {
@@ -87,7 +87,7 @@ export class IngestionService {
       });
       const workflowState = this.workflowActor.getSnapshot();
       return {
-        success: true
+        success: true,
         jobId: job.id,
         queuePosition: (workflowState.context as any).jobQueue.length,
         estimatedTime: chunks.length * 2, // Rough estimate: 2 seconds per chunk
@@ -107,8 +107,8 @@ export class IngestionService {
         const chunkJob = {
           jobId: job.id,
           documentId: job.documentId,
-          chunkIndex: index
-          chunkText: chunk
+          chunkIndex: index,
+          chunkText: chunk,
           metadata: {
             ...job.metadata,
             totalChunks: job.chunks.length,
@@ -137,7 +137,7 @@ export class IngestionService {
         const chunkJob = {
           jobId: job.id,
           documentId: job.documentId,
-          chunkIndex: index
+          chunkIndex: index,
           text: chunk, // Note: Redis worker expects 'text' field,
           metadata: {
             ...job.metadata,
@@ -227,7 +227,7 @@ export class IngestionService {
       const workflowState = this.workflowActor.getSnapshot();
       const isCurrentJob = (workflowState.context as any).currentJob?.id === jobId;
       return {
-        success: true
+        success: true,
         job,
         workflow: {
           isCurrentJob,
@@ -252,7 +252,7 @@ export class IngestionService {
       if (currentJob) {
         jobTracker.updateJob(jobId, {
           state: 'queued',
-          error: undefined
+          error: undefined,
           retryCount: (currentJob.retryCount || 0) + 1,
           metadata: {
             ...currentJob.metadata,

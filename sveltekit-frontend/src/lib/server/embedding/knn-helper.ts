@@ -2,7 +2,7 @@
 export type Vector = number[];
 /**
  * Compute dot product of two vectors.
- */;
+ */
 export function dot(a: Vector, b: Vector): number {
   if (a.length !== b.length) throw new Error('dot: vectors must have same length');
   let sum = 0;
@@ -11,7 +11,7 @@ export function dot(a: Vector, b: Vector): number {
 }
 /**
  * Compute L2 norm (magnitude) of a vector.
- */;
+ */
 export function norm(a: Vector): number {
   let sum = 0;
   for (let i = 0; i < a.length; i++) sum += a[i] * a[i];
@@ -19,7 +19,7 @@ export function norm(a: Vector): number {
 }
 /**
  * Cosine similarity in range [-1, 1]. Returns 0 for zero-length vectors.
- */;
+ */
 export function cosineSimilarity(a: Vector, b: Vector): number {
   if (a.length !== b.length) throw new Error('cosineSimilarity: vectors must have same length');
   const na = norm(a);
@@ -29,7 +29,7 @@ export function cosineSimilarity(a: Vector, b: Vector): number {
 }
 /**
  * Euclidean distance between two vectors.
- */;
+ */
 export function euclideanDistance(a: Vector, b: Vector): number {
   if (a.length !== b.length) throw new Error('euclideanDistance: vectors must have same length');
   let sum = 0;

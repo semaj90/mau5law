@@ -5,7 +5,7 @@ import crypto from "crypto";
 /**
  * SIMD JSON Parser for Legal AI Applications
  * Optimized for processing large legal documents, case files, and evidence
- */;
+ */
 export class SIMDJSONParser {
   private worker: Worker | null = null;
   private initialized = false;
@@ -26,7 +26,7 @@ export class SIMDJSONParser {
   /**
    * Parse large JSON buffer with SIMD acceleration
    * Target: 4-6 GB/s throughput for legal document processing
-   */;
+   */
   async parseBuffer(buffer: ArrayBuffer | SharedArrayBuffer): Promise<any> {
     if (!this.initialized || !this.worker) {
       return this.fallbackParse(buffer);
@@ -53,7 +53,7 @@ export class SIMDJSONParser {
   }
   /**
    * Parse legal document JSON with validation and optimization
-   */;
+   */
   async parseLegalDocument(jsonString: string): Promise<LegalDocument> {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
@@ -63,7 +63,7 @@ export class SIMDJSONParser {
   }
   /**
    * Parse evidence collection with SIMD optimization
-   */;
+   */
   async parseEvidenceCollection(jsonString: string): Promise<Evidence[]> {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
@@ -75,7 +75,7 @@ export class SIMDJSONParser {
   }
   /**
    * Parse streaming legal case data (for real-time processing)
-   */;
+   */
   async parseStreamingCaseData(chunks: string[]): Promise<any[]> {
     const results = [];
     // Process chunks in parallel using SIMD
@@ -97,7 +97,7 @@ export class SIMDJSONParser {
   }
   /**
    * Fallback parser for environments without SIMD support
-   */;
+   */
   private fallbackParse(buffer: ArrayBuffer | SharedArrayBuffer): unknown {
     // TextDecoder can handle both ArrayBuffer and SharedArrayBuffer via Uint8Array
     const uint8Array = new Uint8Array(buffer);
@@ -106,7 +106,7 @@ export class SIMDJSONParser {
   }
   /**
    * Validate legal document structure and sanitize sensitive data
-   */;
+   */
   private validateLegalDocument(data: any): LegalDocument {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid legal document format');
@@ -126,7 +126,7 @@ export class SIMDJSONParser {
   }
   /**
    * Validate evidence structure
-   */;
+   */
   private validateEvidence(data: any): Evidence {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid evidence format');
@@ -139,7 +139,7 @@ export class SIMDJSONParser {
   }
   /**
    * Mask sensitive data for compliance
-   */;
+   */
   private maskSensitiveData(_value: string): string {
     if (typeof value !== 'string') return '';
     // Mask all but last 4 characters
@@ -150,7 +150,7 @@ export class SIMDJSONParser {
   }
   /**
    * Performance metrics for monitoring SIMD efficiency
-   */;
+   */
   getPerformanceMetrics() {
     return {
       simdEnabled: this.initialized,
@@ -171,7 +171,7 @@ export class SIMDJSONParser {
   }
   /**
    * Cleanup worker resources
-   */;
+   */
   destroy() {
     if (this.worker) {
       this.worker.terminate();

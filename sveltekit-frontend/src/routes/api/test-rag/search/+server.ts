@@ -66,7 +66,9 @@ async function vectorSearch(
         confidence: testRagDocuments.confidence,
         legalAnalysis: testRagDocuments.legalAnalysis,
         createdAt: testRagDocuments.createdAt,
-        similarity: sql<number>`1 - (${testRagEmbeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`.as('similarity')
+        similarity: sql<number>`1 - (${testRagEmbeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
+          'similarity'
+        ),
       })
       .from(testRagEmbeddings)
       .innerJoin(testRagDocuments, sql`${testRagEmbeddings.documentId} = ${testRagDocuments.id}`)
@@ -88,7 +90,7 @@ async function vectorSearch(
       confidence: r.confidence || undefined,
       metadata: r.metadata,
       legalAnalysis: r.legalAnalysis,
-      rank: index + 1
+      rank: index + 1,
     }));
   } catch (err: unknown) {
     console.error('[Test RAG Search] Vector search failed:', err);
@@ -99,10 +101,7 @@ async function vectorSearch(
 /**
  * Perform text search using PostgreSQL full-text search
  */
-async function textSearch(
-  query: string,
-  limit: number = 10
-): Promise<SearchResult[]> {
+async function textSearch(query: string, limit: number = 10): Promise<SearchResult[]> {
   try {
     console.log(`📝 [Test RAG Search] Performing text search for: "${query.substring(0, 50)}..."`);
 
@@ -114,11 +113,15 @@ async function textSearch(
         metadata: testRagDocuments.metadata,
         confidence: testRagDocuments.confidence,
         legalAnalysis: testRagDocuments.legalAnalysis,
-        rank: sql<number>`ts_rank(to_tsvector('english', ${testRagDocuments.content}), plainto_tsquery('english', ${query}))`.as('rank')
+        rank: sql<number>`ts_rank(to_tsvector('english', ${testRagDocuments.content}), plainto_tsquery('english', ${query}))`.as(
+          'rank'
+        ),
       })
       .from(testRagDocuments)
       .where(sql`to_tsvector('english', ${testRagDocuments.content}) @@ plainto_tsquery('english', ${query})`)
-      .orderBy(desc(sql`ts_rank(to_tsvector('english', ${testRagDocuments.content}), plainto_tsquery('english', ${query}))`))
+      .orderBy(
+        desc(sql`ts_rank(to_tsvector('english', ${testRagDocuments.content}), plainto_tsquery('english', ${query}))`)
+      )
       .limit(limit);
 
     console.log(`✅ [Test RAG Search] Found ${results.length} results from text search`);
@@ -135,7 +138,7 @@ async function textSearch(
       confidence: r.confidence || undefined,
       metadata: r.metadata,
       legalAnalysis: r.legalAnalysis,
-      rank: index + 1
+      rank: index + 1,
     }));
   } catch (err: unknown) {
     console.error('[Test RAG Search] Text search failed:', err);
@@ -146,25 +149,21 @@ async function textSearch(
 /**
  * Hybrid search: Combine semantic and text search results
  */
-function hybridSearch(
-  vectorResults: SearchResult[],
-  textResults: SearchResult[],
-  limit: number = 10
-): SearchResult[] {
+function hybridSearch(vectorResults: SearchResult[], textResults: SearchResult[], limit: number = 10): SearchResult[] {
   // Merge results, dedup by documentId, and re-rank
   const merged = new Map<string, SearchResult>();
 
   // Add vector results with high weight
-  vectorResults.forEach((r) => {
+  vectorResults.forEach(r => {
     merged.set(r.documentId, {
       ...r,
       score: r.similarity * 0.7 + (r.score || 0) * 0.3,
-      searchType: 'hybrid' as const
+      searchType: 'hybrid' as const,
     });
   });
 
   // Add/update with text results
-  textResults.forEach((r) => {
+  textResults.forEach(r => {
     const existing = merged.get(r.documentId);
     if (existing) {
       // Boost score if found in both
@@ -173,7 +172,7 @@ function hybridSearch(
       merged.set(r.documentId, {
         ...r,
         score: r.score * 0.6,
-        searchType: 'hybrid' as const
+        searchType: 'hybrid' as const,
       });
     }
   });
@@ -230,19 +229,19 @@ export const POST: RequestHandler = async ({ request }) => {
         await db.insert(testRagSearchSessions).values({
           query,
           queryEmbedding,
-          results: results.map((r) => ({
+          results: results.map(r => ({
             documentId: r.documentId,
             filename: r.filename,
             similarity: r.similarity,
             score: r.score,
-            rank: r.rank
+            rank: r.rank,
           })),
           searchType,
           resultCount: results.length,
           metadata: {
             processingTime: `${processingTime}ms`,
-            threshold
-          }
+            threshold,
+          },
         });
         console.log('✅ [Test RAG Search] Search session saved');
       } catch (e) {
@@ -261,9 +260,9 @@ export const POST: RequestHandler = async ({ request }) => {
         searchType,
         processingTime: `${processingTime}ms`,
         hasEmbedding: !!queryEmbedding,
-        threshold
+        threshold,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
     console.error('[Test RAG Search] Search error:', error);
@@ -271,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Search failed',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -291,9 +290,18 @@ export const GET: RequestHandler = async ({ url }) => {
       let embCount = -1;
       let sesCount = -1;
       try {
-        const docCountRows = (await db.select({ count: sql<number>`COUNT(*)` }).from(testRagDocuments).limit(1)) as Array<{ count: number }>;
-        const embCountRows = (await db.select({ count: sql<number>`COUNT(*)` }).from(testRagEmbeddings).limit(1)) as Array<{ count: number }>;
-        const sesCountRows = (await db.select({ count: sql<number>`COUNT(*)` }).from(testRagSearchSessions).limit(1)) as Array<{ count: number }>;
+        const docCountRows = (await db
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(testRagDocuments)
+          .limit(1)) as Array<{ count: number }>;
+        const embCountRows = (await db
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(testRagEmbeddings)
+          .limit(1)) as Array<{ count: number }>;
+        const sesCountRows = (await db
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(testRagSearchSessions)
+          .limit(1)) as Array<{ count: number }>;
 
         docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
         embCount = Array.isArray(embCountRows) && embCountRows[0] ? Number(embCountRows[0].count) : 0;
@@ -317,24 +325,21 @@ export const GET: RequestHandler = async ({ url }) => {
         stats: {
           documents: docCount,
           embeddings: embCount,
-          searchSessions: sesCount
+          searchSessions: sesCount,
         },
         services: {
           pgvector: '✅ PostgreSQL pgvector',
           ollama: '✅ Ollama embeddinggemma',
           qdrant: qdrantHealthy ? '✅ Qdrant vector DB' : '❌ Qdrant unreachable',
-          langextract: '✅ langextract-go entities'
+          langextract: '✅ langextract-go entities',
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     return json({ success: true, action });
   } catch (err: unknown) {
     console.error('[Test RAG Search] GET error:', err);
-    return json(
-      { error: 'Failed', details: err instanceof Error ? err.message : String(err) },
-      { status: 500 }
-    );
+    return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 };

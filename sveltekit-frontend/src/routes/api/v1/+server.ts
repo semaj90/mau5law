@@ -3,32 +3,32 @@
  * Integrates all 37 Go microservices with production-quality endpoints
  * Windows-native deployment with comprehensive error handling
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit'
-import { dev } from '$app/environment'
-import { ensureError } from '$lib/utils/ensure-error'
-import type { APIResponse } from '$lib/types/index'
-import type { HealthCheckResult } from '$lib/types/api'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { dev } from '$app/environment';
+import { ensureError } from '$lib/utils/ensure-error';
+import type { APIResponse } from '$lib/types/index';
+import type { HealthCheckResult } from '$lib/types/api';
 
 // Add a concrete ServiceConfig type to avoid any casts
 type ServiceConfig = {
-  http?: string
-  grpc?: string
-  quic?: string
-  websocket?: string
-  tier?: 'ULTRA_FAST' | 'HIGH_PERF' | 'STANDARD' | 'EXPERIMENTAL'
-  health?: string
-  status?: 'active' | 'experimental' | 'inactive'
-  primary?: string
-  secondary?: string
-  embeddings?: string
-  host?: string
-  port?: number
-  database?: string
-  dev?: string
-  server?: string
-  monitor?: string
-}
+  http?: string;
+  grpc?: string;
+  quic?: string;
+  websocket?: string;
+  tier?: 'ULTRA_FAST' | 'HIGH_PERF' | 'STANDARD' | 'EXPERIMENTAL';
+  health?: string;
+  status?: 'active' | 'experimental' | 'inactive';
+  primary?: string;
+  secondary?: string;
+  embeddings?: string;
+  host?: string;
+  port?: number;
+  database?: string;
+  dev?: string;
+  server?: string;
+  monitor?: string;
+};
 
 // Production Service Configuration - typed to ServiceConfig
 const PRODUCTION_ENDPOINTS: Record<string, ServiceConfig> = {

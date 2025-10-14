@@ -67,7 +67,9 @@ export async function requireAuth(event: RequestEvent, allowTestMode = true): Pr
  */
 export function hasRole(
   user: AuthResult['user'],
-  roles: Array<'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'>
+  roles: Array<
+    'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'
+  >
 ): boolean {
   return roles.includes(user.role);
 }
@@ -77,7 +79,9 @@ export function hasRole(
  */
 export async function requireRole(
   event: RequestEvent,
-  roles: Array<'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'>,
+  roles: Array<
+    'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'
+  >,
   allowTestMode = true
 ): Promise<AuthResult> {
   const auth = await requireAuth(event, allowTestMode);

@@ -8,7 +8,7 @@
     loggingService,
     type LogEntry,
     type LogLevel,
-    type LogFilter
+    type LogFilter,
   } from '$lib/services/logging-aggregation-service';
   // removed Button/Badge imports to avoid constructor-typing issues
   // Modern Svelte 5 props via $props rune
@@ -19,23 +19,25 @@
   let autoScroll = $state(true);
   let showDetails = $state(false);
   let selectedEntry = $state<LogEntry | null>(null);
-  let filteredEntries = $derived(() => $logEntries.filter((entry: LogEntry) => {
-    const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
-    const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
+  let filteredEntries = $derived(() =>
+    $logEntries.filter((entry: LogEntry) => {
+      const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
+      const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
 
-    // Defensive: normalize search query and entry fields to avoid calling toLowerCase on undefined
-    const sq = (searchQuery ?? '').toString().trim().toLowerCase();
-    if (!sq) {
-      return matchesLevel && matchesCategory;
-    }
+      // Defensive: normalize search query and entry fields to avoid calling toLowerCase on undefined
+      const sq = (searchQuery ?? '').toString().trim().toLowerCase();
+      if (!sq) {
+        return matchesLevel && matchesCategory;
+      }
 
-    const msg = (entry.message ?? '').toString().toLowerCase();
-    const cat = (entry.category ?? '').toString().toLowerCase();
-    const svc = (entry.service ?? '').toString().toLowerCase();
+      const msg = (entry.message ?? '').toString().toLowerCase();
+      const cat = (entry.category ?? '').toString().toLowerCase();
+      const svc = (entry.service ?? '').toString().toLowerCase();
 
-    const matchesSearch = msg.includes(sq) || cat.includes(sq) || svc.includes(sq);
-    return matchesLevel && matchesCategory && matchesSearch;
-  }));
+      const matchesSearch = msg.includes(sq) || cat.includes(sq) || svc.includes(sq);
+      return matchesLevel && matchesCategory && matchesSearch;
+    })
+  );
   // hardened categories derivation to avoid undefined values
   let categories = $derived(() =>
     Array.from(new Set($logEntries.map((e: LogEntry) => (e.category ?? 'unknown').toString()))).sort()
@@ -70,7 +72,7 @@
       info: 'bg-blue-100 text-blue-600',
       warn: 'bg-yellow-100 text-yellow-600',
       error: 'bg-red-100 text-red-600',
-      fatal: 'bg-red-200 text-red-800'
+      fatal: 'bg-red-200 text-red-800',
     };
     return colors[level] || 'bg-gray-100 text-gray-600';
   }
@@ -80,7 +82,7 @@
       info: 'ℹ️',
       warn: '⚠️',
       error: '❌',
-      fatal: '💀'
+      fatal: '💀',
     };
     return icons[level] || 'ℹ️';
   }
@@ -94,7 +96,7 @@
       frontend: '🎨',
       backend: '🖥️',
       security: '🛡️',
-      console: '📟'
+      console: '📟',
     };
     return icons[category] || '📋';
   }
@@ -104,7 +106,7 @@
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      fractionalSecondDigits: 3
+      fractionalSecondDigits: 3,
     });
   }
   function formatData(data: unknown): string {
@@ -123,7 +125,7 @@
   }
   function exportLogs() {
     // Build export payload from current filtered view or fallback to full entries
-    const payload = (filteredEntries && filteredEntries.length > 0) ? filteredEntries : $logEntries;
+    const payload = filteredEntries && filteredEntries.length > 0 ? filteredEntries : $logEntries;
     const exportData = JSON.stringify(payload, null, 2);
     const blob = new Blob([exportData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -193,10 +195,7 @@
           bind:value={searchQuery}
           class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400"
         />
-        <select
-          bind:value={selectedLevel}
-          class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
-        >
+        <select bind:value={selectedLevel} class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white">
           <option value="all">All Levels</option>
           <option value="debug">Debug</option>
           <option value="info">Info</option>
@@ -204,31 +203,21 @@
           <option value="error">Error</option>
           <option value="fatal">Fatal</option>
         </select>
-        <select
-          bind:value={selectedCategory}
-          class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
-        >
+        <select bind:value={selectedCategory} class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white">
           <option value="all">All Categories</option>
           {#each categories as category}
             <option value={category}>{category}</option>
           {/each}
         </select>
         <label class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            bind:checked={autoScroll}
-            class="w-4 h-4"
-          />
+          <input type="checkbox" bind:checked={autoScroll} class="w-4 h-4" />
           <span class="text-sm">Auto-scroll</span>
         </label>
       </div>
     </div>
 
     <!-- Log Entries -->
-    <div
-      class="flex-1 overflow-y-auto p-2"
-      bind:this={logContainer}
-    >
+    <div class="flex-1 overflow-y-auto p-2" bind:this={logContainer}>
       {#if filteredEntries.length === 0}
         <div class="text-center text-gray-400 mt-8">
           <div class="text-4xl mb-2">📝</div>
@@ -249,47 +238,56 @@
                 }
               }}
             >
-               <div class="flex items-start gap-3">
-                 <!-- Timestamp -->
-                 <div class="text-xs text-gray-400 font-mono min-w-[80px]">
-                   {formatTimestamp(entry.timestamp)}
-                 </div>
-                 <!-- Level Badge -->
-                 <div class="min-w-[60px]">
-                   <span class={'inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ' + getLevelColor(entry.level)}>
-                     {getLevelIcon(entry.level)} {entry.level.toUpperCase()}
-                   </span>
-                 </div>
-                 <!-- Category -->
-                 <div class="text-xs text-gray-300 min-w-[80px] flex items-center gap-1">
-                   <span>{getCategoryIcon(entry.category)}</span>
-                   <span>{entry.category}</span>
-                 </div>
-                 <!-- Message -->
-                 <div class="flex-1 text-sm">
-                   <span class="text-white">{entry.message}</span>
-                   {#if entry.service}
-                     <span class="text-gray-400 text-xs ml-2">({entry.service})</span>
-                   {/if}
-                   {#if entry.data}
-                     <div class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                       📎 Has additional data
-                     </div>
-                   {/if}
-                   {#if entry.error}
-                     <div class="text-xs text-red-400 mt-1">
-                       🐛 {entry.error.message}
-                     </div>
-                   {/if}
-                 </div>
-                 <!-- Actions -->
-                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                   <!-- replaced Button component with native button and stopPropagation handler -->
-                   <button class="bits-btn px-2 py-1 text-sm" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
-                     👁️
-                   </button>
-                 </div>
-               </div>
+              <div class="flex items-start gap-3">
+                <!-- Timestamp -->
+                <div class="text-xs text-gray-400 font-mono min-w-[80px]">
+                  {formatTimestamp(entry.timestamp)}
+                </div>
+                <!-- Level Badge -->
+                <div class="min-w-[60px]">
+                  <span
+                    class={'inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ' + getLevelColor(entry.level)}
+                  >
+                    {getLevelIcon(entry.level)}
+                    {entry.level.toUpperCase()}
+                  </span>
+                </div>
+                <!-- Category -->
+                <div class="text-xs text-gray-300 min-w-[80px] flex items-center gap-1">
+                  <span>{getCategoryIcon(entry.category)}</span>
+                  <span>{entry.category}</span>
+                </div>
+                <!-- Message -->
+                <div class="flex-1 text-sm">
+                  <span class="text-white">{entry.message}</span>
+                  {#if entry.service}
+                    <span class="text-gray-400 text-xs ml-2">({entry.service})</span>
+                  {/if}
+                  {#if entry.data}
+                    <div class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      📎 Has additional data
+                    </div>
+                  {/if}
+                  {#if entry.error}
+                    <div class="text-xs text-red-400 mt-1">
+                      🐛 {entry.error.message}
+                    </div>
+                  {/if}
+                </div>
+                <!-- Actions -->
+                <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <!-- replaced Button component with native button and stopPropagation handler -->
+                  <button
+                    class="bits-btn px-2 py-1 text-sm"
+                    onclick={e => {
+                      e.stopPropagation();
+                      selectEntry(entry);
+                    }}
+                  >
+                    👁️
+                  </button>
+                </div>
+              </div>
             </div>
           {/each}
         </div>
@@ -299,14 +297,16 @@
     <!-- Details Modal -->
     {#if showDetails && selectedEntry}
       <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="w-full max-w-4xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border border-gray-700 rounded-lg">
+        <div
+          class="w-full max-w-4xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border border-gray-700 rounded-lg"
+        >
           <div class="p-6 overflow-y-auto max-h-[80vh]">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-xl font-bold text-green-400 flex items-center gap-2">
                 {getLevelIcon(selectedEntry.level)} Log Entry Details
               </h3>
               <!-- modal close using native button -->
-              <button class="bits-btn px-2 py-1" onclick={() => showDetails = false}>✕</button>
+              <button class="bits-btn px-2 py-1" onclick={() => (showDetails = false)}>✕</button>
             </div>
 
             <div role="group" aria-label="Timestamp">
@@ -319,7 +319,10 @@
             <div role="group" aria-label="Level" class="mt-3">
               <div class="text-sm text-gray-400">Level</div>
               <div>
-                <span class={'inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm ' + getLevelColor(selectedEntry.level)}>
+                <span
+                  class={'inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm ' +
+                    getLevelColor(selectedEntry.level)}
+                >
                   {selectedEntry.level.toUpperCase()}
                 </span>
               </div>
@@ -328,7 +331,8 @@
             <div role="group" aria-label="Category" class="mt-3">
               <div class="text-sm text-gray-400">Category</div>
               <div class="text-white flex items-center gap-2">
-                {getCategoryIcon(selectedEntry.category)} {selectedEntry.category}
+                {getCategoryIcon(selectedEntry.category)}
+                {selectedEntry.category}
               </div>
             </div>
 
@@ -390,7 +394,8 @@
                 <div class="bg-red-900 p-3 rounded border border-red-700">
                   <div class="text-red-300 font-bold">{selectedEntry.error.message}</div>
                   {#if selectedEntry.error.stack}
-                    <pre class="text-red-200 text-xs mt-2 overflow-x-auto"><code>{selectedEntry.error.stack}</code></pre>
+                    <pre class="text-red-200 text-xs mt-2 overflow-x-auto"><code>{selectedEntry.error.stack}</code
+                      ></pre>
                   {/if}
                 </div>
               </div>
@@ -412,7 +417,8 @@
                 <div class="text-sm text-gray-400">Tags</div>
                 <div class="flex flex-wrap gap-2 mt-2">
                   {#each selectedEntry.tags as tag}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span
+                    >
                   {/each}
                 </div>
               </div>
@@ -420,8 +426,12 @@
 
             <!-- Actions -->
             <div class="flex gap-2 mt-6">
-              <button class="bits-btn px-3 py-1" onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}>📋 Copy JSON</button>
-              <button class="bits-btn px-3 py-1" onclick={() => showDetails = false}>Close</button>
+              <button
+                class="bits-btn px-3 py-1"
+                onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
+                >📋 Copy JSON</button
+              >
+              <button class="bits-btn px-3 py-1" onclick={() => (showDetails = false)}>Close</button>
             </div>
           </div>
         </div>

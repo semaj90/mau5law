@@ -13,4 +13,4 @@ export const GET: RequestHandler = async () => {
     status: 200,
     headers: { 'content-type': 'text/csv', 'cache-control': 'no-store' },
   });
-}
+};

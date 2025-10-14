@@ -95,13 +95,13 @@ export type NewSemanticSearchCache = typeof semanticSearchCache.$inferInsert;
 export interface EmbeddingOptions {
   caseId?: string;
   userId?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export interface VectorSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 // Aliases for backward compatibility
 export const searchQueries = semanticSearchCache;

@@ -286,7 +286,11 @@ function calculateFrequencyScore(result: RerankResult | ResultLike, neo4jContext
   return Math.min(timeSpent / 1000, 2.0); // Max boost of 2.0 points
 }
 // Legacy function for backward compatibility
-export async function enhancedSearch(query: string, userContext: UserContext, limit: number = 10): Promise<RerankResult[]> {
+export async function enhancedSearch(
+  query: string,
+  userContext: UserContext,
+  limit: number = 10
+): Promise<RerankResult[]> {
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);
 }
 // Export for use in components

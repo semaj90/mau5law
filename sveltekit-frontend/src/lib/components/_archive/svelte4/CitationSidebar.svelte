@@ -3,10 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Replace problematic import/namespace usage with a local type alias
-  import type { Citation } from "$lib/types/api";
+  import type { Citation } from '$lib/types/api';
   type CitationType = Citation;
 
-  import { Copy, Search, Star, Trash2 } from "lucide-svelte";
+  import { Copy, Search, Star, Trash2 } from 'lucide-svelte';
   import Input from '$lib/components/ui/Input.svelte';
 
   // Props
@@ -14,32 +14,32 @@ https://svelte.dev/e/js_parse_error -->
   export let ondispatch: ((c: CitationType, action?: string) => void) | undefined = undefined;
 
   // Use standard Svelte reactive variables instead of Svelte 5 runes
-  let searchQuery = "";
-  let selectedCategory = "all";
+  let searchQuery = '';
+  let selectedCategory = 'all';
   let filteredCitations: CitationType[] = [];
 
   const categories = [
-    { value: "all", label: "All Citations" },
-    { value: "general", label: "General" },
-    { value: "report-citations", label: "From Reports" },
-    { value: "statutes", label: "Statutes" },
-    { value: "case-law", label: "Case Law" },
-    { value: "evidence", label: "Evidence" },
+    { value: 'all', label: 'All Citations' },
+    { value: 'general', label: 'General' },
+    { value: 'report-citations', label: 'From Reports' },
+    { value: 'statutes', label: 'Statutes' },
+    { value: 'case-law', label: 'Case Law' },
+    { value: 'evidence', label: 'Evidence' },
   ];
 
   // Reactive filtering (Svelte $: block)
   $: {
     const list = citations ?? [];
-    const q = (searchQuery ?? "").toLowerCase();
-    filteredCitations = list.filter((citation) => {
+    const q = (searchQuery ?? '').toLowerCase();
+    filteredCitations = list.filter(citation => {
       const matchesSearch =
-        q === "" ||
-        (citation.title || "").toLowerCase().includes(q) ||
-        (citation.content || "").toLowerCase().includes(q) ||
-        (citation.source || "").toLowerCase().includes(q) ||
+        q === '' ||
+        (citation.title || '').toLowerCase().includes(q) ||
+        (citation.content || '').toLowerCase().includes(q) ||
+        (citation.source || '').toLowerCase().includes(q) ||
         // explicitly type `tag` to avoid implicit any
-        ((citation.tags || []).some((tag: string | undefined) => (tag || "").toLowerCase().includes(q)));
-      const matchesCategory = selectedCategory === "all" || citation.category === selectedCategory;
+        (citation.tags || []).some((tag: string | undefined) => (tag || '').toLowerCase().includes(q));
+      const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }
@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function copyCitation(citation: CitationType) {
     try {
-      const citationText = `${citation.content ?? ""}\n\nSource: ${citation.source ?? ""}`;
+      const citationText = `${citation.content ?? ''}\n\nSource: ${citation.source ?? ''}`;
       await navigator.clipboard.writeText(citationText);
       ondispatch?.(citation, 'copy');
     } catch (e) {
@@ -70,31 +70,27 @@ https://svelte.dev/e/js_parse_error -->
     if (!event) return;
     const dt = event.dataTransfer;
     if (dt) {
-      dt.setData("text/plain", citation.content ?? "");
+      dt.setData('text/plain', citation.content ?? '');
       try {
-        dt.setData("application/json", JSON.stringify(citation));
+        dt.setData('application/json', JSON.stringify(citation));
       } catch {}
-      dt.effectAllowed = "copy";
+      dt.effectAllowed = 'copy';
     }
   }
 </script>
+
 <div class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <h2 class="container mx-auto px-4">Saved Citations</h2>
     <p class="container mx-auto px-4">
-      {filteredCitations.length} of { (citations ?? []).length } citations
+      {filteredCitations.length} of {(citations ?? []).length} citations
     </p>
   </div>
   <!-- Search and Filters -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
       <Search class="container mx-auto px-4" />
-      <Input
-        type="text"
-        placeholder="Search citations..."
-        bind:value={searchQuery}
-        class="container mx-auto px-4"
-      />
+      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container mx-auto px-4" />
     </div>
     <select bind:value={selectedCategory} class="container mx-auto px-4">
       {#each categories as category}
@@ -126,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="bits-btn copy-btn"
                 title="Copy citation"
-                on:click={(e) => {
+                on:click={e => {
                   e.stopPropagation();
                   copyCitation(citation);
                 }}
@@ -168,9 +164,9 @@ https://svelte.dev/e/js_parse_error -->
             draggable={true}
             role="button"
             tabindex={0}
-            on:dragstart={(e) => handleDragStart(e, citation)}
-            on:keydown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+            on:dragstart={e => handleDragStart(e, citation)}
+            on:keydown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 (e.currentTarget as HTMLElement).click();
               }
@@ -199,9 +195,16 @@ https://svelte.dev/e/js_parse_error -->
 
     {#if filteredCitations.length === 0}
       <div class="container mx-auto px-4 empty-state">
-        {#if searchQuery || selectedCategory !== "all"}
+        {#if searchQuery || selectedCategory !== 'all'}
           <p class="empty-message">No citations match your search criteria.</p>
-          <button class="bits-btn" size="sm" on:click={() => { searchQuery = ""; selectedCategory = "all"; }}>
+          <button
+            class="bits-btn"
+            size="sm"
+            on:click={() => {
+              searchQuery = '';
+              selectedCategory = 'all';
+            }}
+          >
             Clear filters
           </button>
         {:else}
@@ -214,6 +217,9 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
+
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   /* @unocss-include */
   .citation-sidebar {
@@ -405,4 +411,3 @@ https://svelte.dev/e/js_parse_error -->
     line-height: 1.4;
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

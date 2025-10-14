@@ -2,11 +2,7 @@
  * Gaming Evolution Manager - Minimal Working Version
  */
 
-import type {
-  GamingEra,
-  GamingThemeState,
-  ProgressiveGamingConfig
-} from '../types/gaming-types-minimal.js';
+import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js';
 
 export class GamingEvolutionManager {
   private static instance: GamingEvolutionManager | null = null;
@@ -26,7 +22,7 @@ export class GamingEvolutionManager {
       colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'],
       soundEnabled: true,
       particleEffects: true,
-      retroShaders: true
+      retroShaders: true,
     };
   }
 
@@ -42,7 +38,7 @@ export class GamingEvolutionManager {
       ...this.currentState,
       currentEra: era,
       era: era,
-      isTransitioning: true
+      isTransitioning: true,
     };
     this.notifySubscribers();
 
@@ -51,7 +47,7 @@ export class GamingEvolutionManager {
 
     this.currentState = {
       ...this.currentState,
-      isTransitioning: false
+      isTransitioning: false,
     };
     this.notifySubscribers();
   }
@@ -81,7 +77,7 @@ export class GamingEvolutionManager {
       memory: 8,
       gpu: 'integrated',
       webgl: true,
-      webgpu: false
+      webgpu: false,
     };
   }
 

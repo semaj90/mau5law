@@ -24,20 +24,20 @@
     { name: 'Corporate Espionage Investigation', status: 'active', color: 'green' },
     { name: 'Missing Person: Dr. Sarah Chen', status: 'active', color: 'green' },
     { name: 'Financial Fraud Analysis', status: 'pending', color: 'yellow' },
-    { name: 'Security Breach Analysis', status: 'active', color: 'green' }
+    { name: 'Security Breach Analysis', status: 'active', color: 'green' },
   ]);
   interface EvidenceCard {
     id: string;
     title: string;
     type: 'VIDEO' | 'DOCUMENT' | 'PHOTO' | 'AUDIO';
     description: string;
-    position: { x: number; y: number }
+    position: { x: number; y: number };
     connections: string[];
     metadata?: {
       timestamp?: string;
       location?: string;
       source?: string;
-    }
+    };
   }
   $effect(() => {
     initializeEvidenceBoard();
@@ -56,7 +56,7 @@
           timestamp: '2024-03-15 14:32',
           location: 'Main Entrance',
           source: 'Security System', // Fixed: Removed trailing semicolon
-        }
+        },
       },
       {
         id: 'doc-001',
@@ -68,28 +68,35 @@
         metadata: {
           timestamp: '2024-03-16 09:15',
           source: 'Detective Interview', // Fixed: Removed trailing semicolon
-        }
-      }
+        },
+      },
     ];
-    connections = [
-      { from: 'video-001', to: 'doc-001', type: 'correlation' }
-    ];
+    connections = [{ from: 'video-001', to: 'doc-001', type: 'correlation' }];
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case 'VIDEO': return '🎥';
-      case 'DOCUMENT': return '📄';
-      case 'PHOTO': return '📷';
-      case 'AUDIO': return '🎵';
-      default: return '📋';
+      case 'VIDEO':
+        return '🎥';
+      case 'DOCUMENT':
+        return '📄';
+      case 'PHOTO':
+        return '📷';
+      case 'AUDIO':
+        return '🎵';
+      default:
+        return '📋';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'pending': return 'bg-yellow-500';
-      case 'completed': return 'bg-blue-500';
-      default: return 'bg-gray-500';
+      case 'active':
+        return 'bg-green-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      case 'completed':
+        return 'bg-blue-500';
+      default:
+        return 'bg-gray-500';
     }
   }
   function addEvidence() {
@@ -100,28 +107,30 @@
       description: 'New evidence item',
       position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
       connections: [], // Fixed: Removed trailing semicolon
-    }
+    };
     canvasItems = [...canvasItems, newEvidence];
   }
   function startConnection(item: EvidenceCard) {
     if (!isConnecting) {
       isConnecting = true;
       selectedItem = item;
-    } else if (selectedItem && selectedItem.id !== item.id) { // Simplified type access
+    } else if (selectedItem && selectedItem.id !== item.id) {
+      // Simplified type access
       // Create connection
       const newConnection = {
         from: selectedItem.id,
         to: item.id, // Simplified type access
         type: 'correlation', // Fixed: Removed trailing semicolon
-      }
+      };
       connections = [...connections, newConnection];
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
-          return { ...i, connections: [...i.connections, item.id] } // Simplified type access
+          return { ...i, connections: [...i.connections, item.id] }; // Simplified type access
         }
-        if (i.id === item.id) { // Simplified type access
-          return { ...i, connections: [...i.connections, selectedItem.id] }
+        if (i.id === item.id) {
+          // Simplified type access
+          return { ...i, connections: [...i.connections, selectedItem.id] };
         }
         return i;
       });
@@ -141,8 +150,8 @@
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    }
+      y: event.clientY - rect.top,
+    };
   }
   function handleMouseMove(event: MouseEvent) {
     if (draggedItem) {
@@ -151,10 +160,10 @@
       const rect = canvas.getBoundingClientRect();
       const newX = event.clientX - rect.left - dragOffset.x;
       const newY = event.clientY - rect.top - dragOffset.y;
-      canvasItems = canvasItems.map((item: EvidenceCard) => // Fixed: Correct map syntax and added type for item
-        item.id === draggedItem.id
-          ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
-          : item
+      canvasItems = canvasItems.map(
+        (
+          item: EvidenceCard // Fixed: Correct map syntax and added type for item
+        ) => (item.id === draggedItem.id ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } } : item)
       );
     }
   }
@@ -162,33 +171,46 @@
     draggedItem = null;
   }
 </script>
+
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 <!-- Main Evidence Board Layout -->
 <div class="flex h-screen bg-gray-100 font-mono">
   <!-- Left Sidebar Navigation -->
   <div class="w-16 bg-gray-800 flex flex-col items-center py-4 space-y-4">
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       🏠
     </button>
-    <button class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white">
-      📋
-    </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white"> 📋 </button>
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       🏢
     </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       📄
     </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       ⚙️
     </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       👤
     </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       💼
     </button>
-    <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors">
+    <button
+      class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
+    >
       🔍
     </button>
   </div>
@@ -208,42 +230,26 @@
           <span class="text-sm font-medium text-gray-700">Case:</span>
           <span class="px-3 py-1 bg-gray-800 text-white text-sm rounded">{caseData.id}</span>
         </div>
-        <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">
-          📚 LIBRARY
-        </Button> <!-- Fixed: Added closing tag -->
-        <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">
-          📊 ANALYSIS
-        </Button> <!-- Fixed: Added closing tag -->
+        <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">📚 LIBRARY</Button>
+        <!-- Fixed: Added closing tag -->
+        <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">📊 ANALYSIS</Button>
+        <!-- Fixed: Added closing tag -->
       </div>
     </div>
     <!-- Main Canvas and Controls -->
     <div class="flex-1 flex">
       <!-- Canvas Controls -->
       <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
-        <Button
-          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-          disabled
-        >
-          🔒 100%
-        </Button> <!-- Fixed: Added closing tag -->
-        <Button
-          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-          disabled
-        >
-          📎 CONNECT
-        </Button> <!-- Fixed: Added closing tag -->
-        <Button
-          onclick={addEvidence}
-          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
-        >
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>🔒 100%</Button>
+        <!-- Fixed: Added closing tag -->
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button>
+        <!-- Fixed: Added closing tag -->
+        <Button onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
           + ADD EVIDENCE
-        </Button> <!-- Fixed: Added closing tag -->
-        <Button
-          class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
-          disabled
-        >
-          📚 LIBRARY (0)
-        </Button> <!-- Fixed: Added closing tag -->
+        </Button>
+        <!-- Fixed: Added closing tag -->
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📚 LIBRARY (0)</Button>
+        <!-- Fixed: Added closing tag -->
       </div>
       <!-- Connection Status -->
       <div class="absolute bottom-4 left-4 z-10">
@@ -261,8 +267,10 @@
         <!-- SVG for connection lines -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
           {#each connections as connection}
-            {@const fromItem = canvasItems.find((i: EvidenceCard) => i.id === connection.from)} <!-- Fixed: Correct find syntax and added type -->
-            {@const toItem = canvasItems.find((i: EvidenceCard) => i.id === connection.to)}     <!-- Fixed: Correct find syntax and added type -->
+            {@const fromItem = canvasItems.find((i: EvidenceCard) => i.id === connection.from)}
+            <!-- Fixed: Correct find syntax and added type -->
+            {@const toItem = canvasItems.find((i: EvidenceCard) => i.id === connection.to)}
+            <!-- Fixed: Correct find syntax and added type -->
             {#if fromItem && toItem}
               <line
                 x1={fromItem.position.x + 120}
@@ -278,45 +286,65 @@
           {/each}
         </svg>
         <!-- Evidence Cards -->
-        {#each canvasItems as item (item.id)} <!-- Fixed: Simplified keying and removed redundant type cast -->
+        {#each canvasItems as item (item.id)}
+          <!-- Fixed: Simplified keying and removed redundant type cast -->
           <div
             class="absolute cursor-pointer select-none"
             style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
             onmousedown={(e: MouseEvent) => handleMouseDown(e, item)}
             onclick={() => startConnection(item)}
           >
-            <Card.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"> <!-- Fixed: Changed div.Root to Card.Root and simplified type access -->
-              <Card.Header class="pb-2"> <!-- Fixed: Changed div.Header to Card.Header -->
+            <Card.Root
+              class="w-60 bg-white border-2 {selectedItem?.id === item.id
+                ? 'border-blue-500'
+                : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"
+            >
+              <!-- Fixed: Changed div.Root to Card.Root and simplified type access -->
+              <Card.Header class="pb-2">
+                <!-- Fixed: Changed div.Header to Card.Header -->
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-gray-800">{item.type}</span> <!-- Simplified type access -->
+                  <span class="text-sm font-bold text-gray-800">{item.type}</span>
+                  <!-- Simplified type access -->
                   <span class="text-xs text-gray-500">!</span>
                 </div>
               </Card.Header>
-              <Card.Content class="pt-0"> <!-- Fixed: Changed div.Content to Card.Content -->
+              <Card.Content class="pt-0">
+                <!-- Fixed: Changed div.Content to Card.Content -->
                 <!-- Main Content Area -->
                 <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
-                  <span class="text-white text-2xl">{getTypeIcon(item.type)}</span> <!-- Simplified type access -->
+                  <span class="text-white text-2xl">{getTypeIcon(item.type)}</span>
+                  <!-- Simplified type access -->
                 </div>
                 <!-- Title -->
-                <div class="text-sm font-bold text-blue-600 mb-1">{item.title}</div> <!-- Simplified type access -->
+                <div class="text-sm font-bold text-blue-600 mb-1">{item.title}</div>
+                <!-- Simplified type access -->
                 <!-- Description -->
-                <div class="text-xs text-gray-700 mb-2">{item.description}</div> <!-- Simplified type access -->
+                <div class="text-xs text-gray-700 mb-2">{item.description}</div>
+                <!-- Simplified type access -->
                 <!-- Metadata -->
-                {#if item.metadata} <!-- Simplified type access -->
+                {#if item.metadata}
+                  <!-- Simplified type access -->
                   <div class="text-xs text-gray-500 space-y-1">
-                    {#if item.metadata.timestamp} <!-- Simplified type access -->
-                      <div>📅 {item.metadata.timestamp}</div> <!-- Simplified type access -->
+                    {#if item.metadata.timestamp}
+                      <!-- Simplified type access -->
+                      <div>📅 {item.metadata.timestamp}</div>
+                      <!-- Simplified type access -->
                     {/if}
-                    {#if item.metadata.location} <!-- Simplified type access -->
-                      <div>📍 {item.metadata.location}</div> <!-- Simplified type access -->
+                    {#if item.metadata.location}
+                      <!-- Simplified type access -->
+                      <div>📍 {item.metadata.location}</div>
+                      <!-- Simplified type access -->
                     {/if}
-                    {#if item.metadata.source} <!-- Simplified type access -->
-                      <div>🔗 {item.metadata.source}</div> <!-- Simplified type access -->
+                    {#if item.metadata.source}
+                      <!-- Simplified type access -->
+                      <div>🔗 {item.metadata.source}</div>
+                      <!-- Simplified type access -->
                     {/if}
                   </div>
                 {/if}
                 <!-- Connection indicators -->
-                {#if item.connections.length > 0} <!-- Simplified type access -->
+                {#if item.connections.length > 0}
+                  <!-- Simplified type access -->
                   <div class="flex items-center mt-2 text-xs text-green-600">
                     <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
                     {item.connections.length} connections <!-- Simplified type access -->
@@ -334,12 +362,13 @@
               <div class="text-center">
                 <div class="text-lg font-bold text-blue-600 mb-2">Connection Mode</div>
                 <div class="text-sm text-gray-600 mb-4">
-                  Selected: {selectedItem?.title}<br>
+                  Selected: {selectedItem?.title}<br />
                   Click another evidence item to create connection
                 </div>
                 <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
                   Cancel Connection
-                </Button> <!-- Fixed: Added closing tag -->
+                </Button>
+                <!-- Fixed: Added closing tag -->
               </div>
             </div>
           </div>
@@ -394,12 +423,16 @@
             {#each canvasItems as item}
               <div class="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                 <div class="flex items-center space-x-2">
-                  <span class="text-lg">{getTypeIcon(item.type)}</span> <!-- Simplified type access -->
+                  <span class="text-lg">{getTypeIcon(item.type)}</span>
+                  <!-- Simplified type access -->
                   <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-800">{item.title}</div> <!-- Simplified type access -->
-                    <div class="text-xs text-gray-600">{item.type}</div> <!-- Simplified type access -->
+                    <div class="text-sm font-medium text-gray-800">{item.title}</div>
+                    <!-- Simplified type access -->
+                    <div class="text-xs text-gray-600">{item.type}</div>
+                    <!-- Simplified type access -->
                   </div>
-                  {#if item.connections.length > 0} <!-- Simplified type access -->
+                  {#if item.connections.length > 0}
+                    <!-- Simplified type access -->
                     <span class="text-xs text-green-600">🔗</span>
                   {/if}
                 </div>
@@ -409,20 +442,18 @@
         </div>
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
-            + Add Evidence
-          </Button> <!-- Fixed: Added closing tag -->
-          <Button class="w-full bg-green-600 hover:bg-green-700 text-white">
-            🔍 Analyze All
-          </Button> <!-- Fixed: Added closing tag -->
-          <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">
-            📊 Generate Report
-          </Button> <!-- Fixed: Added closing tag -->
+          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
+          <!-- Fixed: Added closing tag -->
+          <Button class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button>
+          <!-- Fixed: Added closing tag -->
+          <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">📊 Generate Report</Button>
+          <!-- Fixed: Added closing tag -->
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   /* Grid background pattern */

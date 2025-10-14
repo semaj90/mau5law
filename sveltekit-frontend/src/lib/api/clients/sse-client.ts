@@ -2,4 +2,4 @@
 export function connectSSE(url: string): EventSource {
   return new EventSource(url);
 }
-export default { connectSSE }
+export default { connectSSE };

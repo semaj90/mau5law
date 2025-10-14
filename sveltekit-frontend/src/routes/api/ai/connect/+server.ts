@@ -34,8 +34,8 @@ export const POST: RequestHandler = async ({ request }) => {
           body: JSON.stringify({
             model,
             prompt: 'Test connection',
-            stream: false
-            options: { max_tokens: 1 }
+            stream: false,
+            options: { max_tokens: 1 },
           })
         },
         15000
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       model: model || modelList[0] || 'none',
-      availableModels: modelList
+      availableModels: modelList,
       status: 'connected',
       timestamp: new Date().toISOString()
     })

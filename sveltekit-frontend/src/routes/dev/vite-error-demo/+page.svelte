@@ -225,7 +225,7 @@
                       <div class="flex items-center space-x-2">
                         <span
                           class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
-                            error.level,
+                            error.level
                           )} border"
                         >
                           {error.level.toUpperCase()}

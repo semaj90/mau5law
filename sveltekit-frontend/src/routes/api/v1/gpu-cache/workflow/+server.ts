@@ -1,16 +1,13 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Legal Workflow Optimization API
  * Integrates binary encoding, GPU caching, and NES orchestration for legal workflows
  */
-import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js'
-import { nesCacheOrchestrator } from '../../../../../lib/services/nes-cache-orchestrator.js'
-import * as webgpuRAGService from '../../../../../lib/webgpu/webgpu-rag-service.js'
-import {
-  binaryEncoder,
-  type EncodingFormat
-} from '../../../../../lib/middleware/binary-encoding.js'
+import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { nesCacheOrchestrator } from '../../../../../lib/services/nes-cache-orchestrator.js';
+import * as webgpuRAGService from '../../../../../lib/webgpu/webgpu-rag-service.js';
+import { binaryEncoder, type EncodingFormat } from '../../../../../lib/middleware/binary-encoding.js';
 
 // Add a typed WebGPU result and a type-guard to avoid `any` casts
 type WebGPUResult = {
@@ -35,28 +32,28 @@ export type LegalWorkflowType =
   | 'compliance_audit';
 
 export interface LegalWorkflowContext {
-  type: LegalWorkflowType
-  jurisdiction?: string
+  type: LegalWorkflowType;
+  jurisdiction?: string;
   practiceArea?: string;
-  complexity: 'low' | 'medium' | 'high' | 'critical'
-  documentCount?: number
-  estimatedDataSize?: number
-  requiresEncryption?: boolean
+  complexity: 'low' | 'medium' | 'high' | 'critical';
+  documentCount?: number;
+  estimatedDataSize?: number;
+  requiresEncryption?: boolean;
   retentionPeriod?: number; // days
-  collaborators?: number
-  urgency: 'low' | 'medium' | 'high' | 'emergency'
+  collaborators?: number;
+  urgency: 'low' | 'medium' | 'high' | 'emergency';
 }
 export interface WorkflowOptimizationResult {
-  recommendedEncoding: EncodingFormat
-  cacheStrategy: 'memory' | 'nes' | 'hybrid' | 'distributed'
-  compressionLevel: number
-  estimatedPerformanceGain: number
+  recommendedEncoding: EncodingFormat;
+  cacheStrategy: 'memory' | 'nes' | 'hybrid' | 'distributed';
+  compressionLevel: number;
+  estimatedPerformanceGain: number;
   memoryOptimization: {
-    nesRegions: string[]
-    allocation: Record<string, number>
-  }
-  webgpuAcceleration: boolean
-  securityLevel: 'standard' | 'enhanced' | 'maximum'
+    nesRegions: string[];
+    allocation: Record<string, number>;
+  };
+  webgpuAcceleration: boolean;
+  securityLevel: 'standard' | 'enhanced' | 'maximum';
 }
 
 // Add typed interfaces to replace `any` usages
@@ -114,7 +111,9 @@ type BaseOptimization = {
 };
 
 type BinaryOptimizationProvider = {
-  optimizeForLegalWorkflow?: (workflowType: LegalWorkflowType) => Promise<BaseOptimization | null> | BaseOptimization | null;
+  optimizeForLegalWorkflow?: (
+    workflowType: LegalWorkflowType
+  ) => Promise<BaseOptimization | null> | BaseOptimization | null;
   retrieveShader?: (key: string) => Promise<{ sourceCode?: string; [k: string]: unknown } | null>;
 };
 
@@ -728,5 +727,5 @@ function getSecurityRecommendation(optimization: WorkflowOptimizationResult): st
 }
 
 function getPerformanceRecommendation(optimization: WorkflowOptimizationResult): string {
-  return `Expected ${(optimization.estimatedPerformanceGain * 100).toFixed(1)}% performance improvement with ${optimization.webgpuAcceleration ? 'WebGPU acceleration enabled' : 'CPU-based processing'}`
+  return `Expected ${(optimization.estimatedPerformanceGain * 100).toFixed(1)}% performance improvement with ${optimization.webgpuAcceleration ? 'WebGPU acceleration enabled' : 'CPU-based processing'}`;
 }

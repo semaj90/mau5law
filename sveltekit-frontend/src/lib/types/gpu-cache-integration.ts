@@ -375,7 +375,7 @@ export interface IntegrationEvent {
 // === Error Types ===
 export class EnhancedGPUCacheError extends Error {
   constructor(
-    message: string
+    message: string,
     public code: string
     public integration?: keyof IntegrationStatus
     public context?: any;
@@ -423,39 +423,39 @@ export function createDefaultEnhancedGPUCacheConfig(): EnhancedGPUCacheConfig {
   return {
     binaryEncoding: {
       format: 'msgpack',
-      compression: true
-      validation: true
-      fallback: true
-      performance: true
-      workflowOptimized: true
+      compression: true,
+      validation: true,
+      fallback: true,
+      performance: true,
+      workflowOptimized: true,
     },
     nesCache: {
-      enablePredictiveLoading: true
-      enableCompression: true
-      enableCoherence: true
+      enablePredictiveLoading: true,
+      enableCompression: true,
+      enableCoherence: true,
       memoryBudget: 59424, // NES total budget
       garbageCollectionThreshold: 0.8,
       defaultPriority: 1
     },
     webgpu: {
-      enabled: true
+      enabled: true,
       memoryLimit: 1024 * 1024 * 1024, // 1GB
       features: ['gpu-accelerated-rag', 'vector-ops']
     },
     shaderCache: {
-      enabled: true
+      enabled: true,
       maxEntries: 1000,
-      compressionEnabled: true
-      predictiveLoading: true
+      compressionEnabled: true,
+      predictiveLoading: true,
     },
     legalWorkflows: {
-      enabled: true
+      enabled: true,
       defaultComplexity: 'medium',
       securityLevel: 'standard',
       retentionPeriod: 365
     },
     performance: {
-      enableAnalytics: true
+      enableAnalytics: true,
       metricsInterval: 60000, // 1 minute
       optimizationThreshold: 0.7
     }
@@ -485,7 +485,7 @@ export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): n
   return Math.min(Math.max(score, 0), 1);
 }
 export function createCacheKey(
-  baseKey: string
+  baseKey: string,
   workflowType?: LegalWorkflowType
   format?: EncodingFormat;
 ): string {

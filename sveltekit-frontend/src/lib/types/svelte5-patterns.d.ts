@@ -45,7 +45,7 @@ export interface UserState {
     avatarUrl?: string;
     role: 'attorney' | 'paralegal' | 'investigator' | 'admin';
     specializations: string[];
-  }
+  };
 }
 // Case Management State (replaces generic Case any type)
 export interface CaseState {
@@ -74,7 +74,7 @@ export interface EvidenceState {
     extractedText?: string;
     ocrConfidence?: number;
     tags: string[];
-  }
+  };
 }
 // === AI SERVICE TYPES ===
 // AI Task Interface (replaces generic AITask any type)
@@ -86,12 +86,12 @@ export interface AITask {
     query?: string;
     document?: string;
     context?: Record<string, unknown>;
-  }
+  };
   output?: {
     result: unknown;
     confidence?: number;
     processingTime?: number;
-  }
+  };
   providerId?: string;
   model?: string;
   createdAt: Date;
@@ -106,7 +106,7 @@ export interface AIResponse<T = unknown> {
     code: string;
     message: string;
     details?: Record<string, unknown>;
-  }
+  };
   metadata: {
     taskId: string;
     processingTime: number;
@@ -114,8 +114,8 @@ export interface AIResponse<T = unknown> {
     tokens?: {
       input: number;
       output: number;
-    }
-  }
+    };
+  };
 }
 // Worker Status Interface (replaces generic WorkerStatus any type)
 export interface WorkerStatus {
@@ -127,7 +127,7 @@ export interface WorkerStatus {
     averageResponseTime: number;
     successRate: number;
     totalProcessed: number;
-  }
+  };
   lastActivity: Date;
 }
 // === API REQUEST/RESPONSE TYPES ===
@@ -150,7 +150,7 @@ export interface CaseSearchRequest {
   dateRange?: {
     start: Date;
     end: Date;
-  }
+  };
   limit?: number;
   offset?: number;
 }
@@ -161,7 +161,7 @@ export interface CaseSearchResponse {
   pagination: {
     limit: number;
     offset: number;
-  }
+  };
 }
 // Evidence API Types
 export interface EvidenceCreateRequest {
@@ -179,7 +179,7 @@ export interface EvidenceSearchRequest {
   dateRange?: {
     start: Date;
     end: Date;
-  }
+  };
   limit?: number;
   offset?: number;
 }
@@ -251,17 +251,17 @@ export interface StoreState {
     sidebarOpen: boolean;
     loading: boolean;
     notifications: Array<unknown>;
-  }
+  };
   cases: {
     current?: CaseState;
     list: CaseState[];
     loading: boolean;
     error?: string;
-  }
+  };
   evidence: {
     items: EvidenceState[];
     loading: boolean;
     uploadProgress: Record<string, number>;
-  }
+  };
 }
 // (Removed invalid default export of types; types should be imported individually)

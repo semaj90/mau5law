@@ -14,14 +14,14 @@
 
   // Demo component mapping
   const demoComponents = {
-    'webgpu': () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
+    webgpu: () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
     'cuda-streaming': () => import('$lib/components/ai/OCRTensorDemo.svelte'),
     'ai-assistant': () => import('$lib/components/ai/EnhancedRAGDemo.svelte'),
     'evidence-canvas': () => import('$lib/components/evidence/EnhancedEvidenceBoard.svelte'),
     'legal-research': () => import('$lib/components/ai/LegalAIPipelineDemo.svelte'),
     'vector-search': () => import('$lib/components/ai/VectorIntelligenceDemo.svelte'),
     'gaming-ui': () => import('$lib/components/cache/CacheDemo.svelte'),
-    'performance': () => import('$lib/components/ai/CachePerformanceDashboard.svelte'),
+    performance: () => import('$lib/components/ai/CachePerformanceDashboard.svelte'),
     'neural-topology': () => import('$lib/components/ai/NeuralTopology3DDemo.svelte'),
     'simd-ai': () => import('$lib/components/ai/SIMDAIAssistantDemo.svelte'),
     'realtime-comm': () => import('$lib/components/ai/RealtimeCommunicationDemo.svelte'),
@@ -70,66 +70,66 @@
 
   // Demo metadata
   const demoMetadata = {
-    'webgpu': {
+    webgpu: {
       title: 'WebGPU Cache Optimizer',
       description: 'Hardware-accelerated cache optimization with WebGPU',
-      tags: ['WebGPU', 'Cache', 'Performance']
+      tags: ['WebGPU', 'Cache', 'Performance'],
     },
     'cuda-streaming': {
       title: 'CUDA OCR & Tensor Processing',
       description: 'Real-time GPU-accelerated document OCR and tensor operations',
-      tags: ['CUDA', 'OCR', 'GPU']
+      tags: ['CUDA', 'OCR', 'GPU'],
     },
     'ai-assistant': {
       title: 'Enhanced RAG AI Assistant',
       description: 'Retrieval-Augmented Generation for legal research',
-      tags: ['RAG', 'AI', 'Legal']
+      tags: ['RAG', 'AI', 'Legal'],
     },
     'evidence-canvas': {
       title: 'Evidence Board Canvas',
       description: 'Interactive evidence organization and visualization',
-      tags: ['Evidence', 'Canvas', 'Visualization']
+      tags: ['Evidence', 'Canvas', 'Visualization'],
     },
     'legal-research': {
       title: 'Legal AI Pipeline',
       description: 'End-to-end legal document processing pipeline',
-      tags: ['Pipeline', 'Legal', 'AI']
+      tags: ['Pipeline', 'Legal', 'AI'],
     },
     'vector-search': {
       title: 'Vector Intelligence Search',
       description: 'Semantic search using vector embeddings and SIMD',
-      tags: ['Vector', 'Search', 'SIMD']
+      tags: ['Vector', 'Search', 'SIMD'],
     },
     'gaming-ui': {
       title: 'Gaming Cache Demo',
       description: 'YoRHa-inspired caching system with Redis integration',
-      tags: ['Cache', 'Gaming', 'Redis']
+      tags: ['Cache', 'Gaming', 'Redis'],
     },
-    'performance': {
+    performance: {
       title: 'Cache Performance Dashboard',
       description: 'Real-time cache performance monitoring and optimization',
-      tags: ['Performance', 'Cache', 'Monitoring']
+      tags: ['Performance', 'Cache', 'Monitoring'],
     },
     'neural-topology': {
       title: 'Neural Topology 3D Visualization',
       description: '3D visualization of neural network topology',
-      tags: ['3D', 'Neural', 'Visualization']
+      tags: ['3D', 'Neural', 'Visualization'],
     },
     'simd-ai': {
       title: 'SIMD AI Assistant',
       description: 'CPU-optimized AI assistant using SIMD instructions',
-      tags: ['SIMD', 'AI', 'Performance']
+      tags: ['SIMD', 'AI', 'Performance'],
     },
     'realtime-comm': {
       title: 'Real-time Communication',
       description: 'WebSocket-based real-time AI communication',
-      tags: ['WebSocket', 'Real-time', 'Communication']
+      tags: ['WebSocket', 'Real-time', 'Communication'],
     },
     'autonomous-eng': {
       title: 'Autonomous Engineering Copilot',
       description: 'AI-powered autonomous code generation and engineering',
-      tags: ['Copilot', 'Autonomous', 'Engineering']
-    }
+      tags: ['Copilot', 'Autonomous', 'Engineering'],
+    },
   };
 
   let metadata = $derived(demoMetadata[demoSlug] || { title: 'Unknown Demo', description: '', tags: [] });
@@ -297,8 +297,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   /* Error State */

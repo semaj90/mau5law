@@ -108,7 +108,7 @@ export interface BatchVectorSearchResult {
 export interface VectorSearchHealthStatus {
   /** Overall health status */
   status: 'healthy' | 'degraded' | 'unhealthy';
-  /** Detailed health information */;
+  /** Detailed health information */
   details: {
     /** Whether pgvector extension is installed */
     hasVector?: boolean;
@@ -116,7 +116,7 @@ export interface VectorSearchHealthStatus {
     vectorCount?: number;
     /** Information about vector indexes */
     indexes?: Array<any>;
-    /** Performance metrics */;
+    /** Performance metrics */
     performance?: {
       countQueryTime?: number;
       sampleQueryTime?: number;
@@ -132,13 +132,13 @@ export interface VectorSearchHealthStatus {
   }
 }
 export interface VectorSearchStats {
-  /** Count of vectors by entity type */;
+  /** Count of vectors by entity type */
   vectorCounts: {
     evidence: number;
     cases: number;
     chunks?: number;
   }
-  /** PostgreSQL index usage statistics */;
+  /** PostgreSQL index usage statistics */
   indexStats: {
     [indexName: string]: {
       table: string;
@@ -147,13 +147,13 @@ export interface VectorSearchStats {
       tuplesFetched: number;
     }
   }
-  /** Vector dimensions by entity type */;
+  /** Vector dimensions by entity type */
   dimensions: {
     evidence: number;
     cases?: number;
     chunks?: number;
   }
-  /** Recent activity and status */;
+  /** Recent activity and status */
   recentActivity: {
     lastUpdated: string;
     healthStatus: string;
@@ -206,7 +206,7 @@ export interface VectorIndexInfo {
   columnName: string;
   /** Index type (ivfflat, hnsw, etc.) */
   indexType: string;
-  /** Index parameters */;
+  /** Index parameters */
   parameters: {
     lists?: number;
     probes?: number;
@@ -218,7 +218,7 @@ export interface VectorIndexInfo {
   sizeBytes?: number;
   /** Number of index scans */
   scans?: number;
-  /** Index effectiveness metrics */;
+  /** Index effectiveness metrics */
   effectiveness?: {
     tuplesRead: number;
     tuplesFetched: number;
@@ -252,13 +252,13 @@ export interface VectorEmbeddingMetadata {
   createdAt: Date;
   /** Source text that was embedded */
   sourceText?: string;
-  /** Processing parameters used */;
+  /** Processing parameters used */
   parameters?: {
     chunkSize?: number;
     overlap?: number;
     normalization?: string;
   }
-  /** Quality metrics */;
+  /** Quality metrics */
   quality?: {
     confidence: number;
     completeness: number;
@@ -273,7 +273,7 @@ export type SearchStrategy = 'vector_only' | 'hybrid' | 'text_only';
 // Error types for better error handling
 export class VectorSearchError extends Error {
   constructor(
-    message: string
+    message: string,
     public code: string
     public details?: any
   ) {

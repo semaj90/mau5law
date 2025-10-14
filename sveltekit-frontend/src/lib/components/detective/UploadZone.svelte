@@ -221,6 +221,7 @@
   </div>
 {/if}
 <div class="sr-only" aria-live="polite">{statusMessage}</div>
+
 <!-- Telemetry markers (kept minimal) -->
 <!-- Events emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error -->
 

@@ -92,8 +92,8 @@ export class LegalDatabaseBridge {
       document_type: document.document_type || 'contract',
       jurisdiction: document.jurisdiction || 'federal',
       metadata: document.metadata || {},
-      created_at: now
-      updated_at: now
+      created_at: now,
+      updated_at: now,
       case_id: document.case_id,
       client_id: document.client_id,
       status: document.status || 'draft'
@@ -156,7 +156,7 @@ export class LegalDatabaseBridge {
       const documents = await queryLegalDocumentsSSR({
           path: query.searchTerm ? 'title,content' : undefined
           operator: '@>',
-          value: query
+          value: query,
           conditions: {
             document_type: query.documentType,
             jurisdiction: query.jurisdiction,
@@ -209,8 +209,8 @@ export class LegalDatabaseBridge {
       jurisdiction: caseData.jurisdiction || 'federal',
       status: caseData.status || 'active',
       client_id: caseData.client_id || 'default_client',
-      created_at: now
-      updated_at: now
+      created_at: now,
+      updated_at: now,
       metadata: caseData.metadata || {},
       priority: caseData.priority || 'medium'
     }
@@ -270,8 +270,8 @@ export class LegalDatabaseBridge {
       case_id: evidenceData.case_id || '',
       relevance_score: evidenceData.relevance_score || 0.5,
       admissibility_status: evidenceData.admissibility_status || 'unknown',
-      created_at: now
-      updated_at: now
+      created_at: now,
+      updated_at: now,
     }
     try {
       await this.executeQuery(
@@ -319,8 +319,8 @@ export class LegalDatabaseBridge {
       title: conversationData.title || 'New Conversation',
       case_id: conversationData.case_id,
       context: conversationData.context || {},
-      created_at: now
-      updated_at: now
+      created_at: now,
+      updated_at: now,
       message_count: 0,
       last_activity: now
     }
@@ -511,8 +511,8 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
   try {
     const document = await legalDB.createLegalDocument(documentData);
     return {
-      success: true
-      data: document
+      success: true,
+      data: document,
       meta: {
         timestamp: new Date().toISOString(),
         cached: false;
@@ -521,12 +521,12 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
     }
   } catch (error) {
     return {
-      success: false
-      data: null as any
+      success: false,
+      data: null as any,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
-        source: 'api'
+        cached: false,
+        source: 'api',
       },
       error: error instanceof Error ? error.message: 'Document creation failed'
     }
@@ -536,8 +536,8 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
   try {
     const legalCase = await legalDB.createLegalCase(caseData);
     return {
-      success: true
-      data: legalCase
+      success: true,
+      data: legalCase,
       meta: {
         timestamp: new Date().toISOString(),
         cached: false;
@@ -546,26 +546,26 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
     }
   } catch (error) {
     return {
-      success: false
-      data: null as any
+      success: false,
+      data: null as any,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
-        source: 'api'
+        cached: false,
+        source: 'api',
       },
       error: error instanceof Error ? error.message: 'Case creation failed'
     }
   }
 }
 export async function apiSearchDocuments(
-  searchQuery: any
+  searchQuery: any,
   options: any = {}
 ): Promise<SSRResponse<LegalDocument[]>, {
   try {
     const documents = await legalDB.searchLegalDocuments(searchQuery, options);
     return {
-      success: true
-      data: documents
+      success: true,
+      data: documents,
       meta: {
         timestamp: new Date().toISOString(),
         cached: false;
@@ -574,12 +574,12 @@ export async function apiSearchDocuments(
     }
   } catch (error) {
     return {
-      success: false
+      success: false,
       data: [],
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
-        source: 'api'
+        cached: false,
+        source: 'api',
       },
       error: error instanceof Error ? error.message: 'Document search failed'
     }

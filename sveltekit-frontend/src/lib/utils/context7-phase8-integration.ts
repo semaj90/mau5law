@@ -157,7 +157,7 @@ export class Context7Phase8Integrator {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({,
-        query: ragQuery
+        query: ragQuery,
         context: "legal-ai",
         limit: 5
       })
@@ -327,8 +327,8 @@ const adaptiveLOD = {
    * Rerank recommendations using AI context
    */
   private async rerankRecommendations(
-    recommendations: Phase8Recommendation[]
-    query: Context7Phase8Query
+    recommendations: Phase8Recommendation[],
+    query: Context7Phase8Query,
   ): Promise<Phase8Recommendation[]> {
     // Convert to rerank format
     const rerankInput: RerankResult[] = recommendations.map((rec) => ({,
@@ -380,7 +380,7 @@ const adaptiveLOD = {
   }
   /**
    * Helper functions
-   */;
+   */
   private buildRagQuery(query: Context7Phase8Query): string {
     let ragQuery = `${query.component} optimization`;
     if (query.context === "legal-ai") {
@@ -469,7 +469,7 @@ export const commonContext7Phase8Queries = {
   }),
   /**
    * Get performance recommendations for Matrix UI
-   */;
+   */
   optimizeMatrixUI: (matrixNodes: MatrixUINode[]) => ({,
     component: "MatrixUICompiler",
     context: "performance" as const,
@@ -491,7 +491,7 @@ export const commonContext7Phase8Queries = {
   }),
   /**
    * Get AI enhancement recommendations
-   */;
+   */
   enhanceAIFeatures: (component: string, requirements: string) => ({
     component,
     context: "legal-ai" as const,

@@ -704,7 +704,7 @@ export class CopilotIndexOptimizer {
       searchTime: 0,
       cacheHits: 0,
       totalOptimizations: 0,
-      patternMatches: 0
+      patternMatches: 0,
     };
   }
 }

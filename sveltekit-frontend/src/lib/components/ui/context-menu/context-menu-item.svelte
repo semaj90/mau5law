@@ -22,7 +22,7 @@
 
 <button
   class="context-menu-item"
-  class:disabled={disabled}
+  class:disabled
   role="menuitem"
   tabindex={disabled ? -1 : 0}
   onclick={handleClick}
@@ -31,7 +31,8 @@
   <slot />
 </button>
 
-<style>/* @unocss-include */
+<style>
+  /* @unocss-include */
   .context-menu-item {
     display: flex;
     align-items: center;

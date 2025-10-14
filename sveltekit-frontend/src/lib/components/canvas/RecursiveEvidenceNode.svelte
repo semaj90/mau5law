@@ -19,7 +19,7 @@
       processingTime: number;
       recursionPath: string[];
       analysisTimestamp: string;
-    }
+    };
   }
   interface Props {
     evidence: EvidenceNod;
@@ -39,38 +39,27 @@
     showDetails = true,
     enableInteraction = true,
     onEvidenceSelect,
-    onChainAnalysis
+    onChainAnalysis,
   }: Props = $props();
   // Prevent infinite loops in evidence graphs
   let isCircular = $derived(visitedIds.has(evidence.evidenceId));
   let isMaxDepth = $derived(depth >= maxDepth);
-  let shouldRenderChildren = $derived(
-    evidence.children &&
-    evidence.children.length > 0 &&
-    !isMaxDepth &&
-    !isCircular
-  );
+  let shouldRenderChildren = $derived(evidence.children && evidence.children.length > 0 && !isMaxDepth && !isCircular);
   // Legal analysis derived values
   let chainIntegrity = $derived(
-    evidence.chainOfCustody?.length > 0
-      ? calculateChainIntegrity(evidence.chainOfCustody)
-      : 0
+    evidence.chainOfCustody?.length > 0 ? calculateChainIntegrity(evidence.chainOfCustody) : 0
   );
   let relationshipStrength = $derived(
     evidence.relationships?.length > 0
-      ? evidence.relationships.reduce((sum, rel) => sum + rel.strength, 0) / evidence.relationships.length : 0
+      ? evidence.relationships.reduce((sum, rel) => sum + rel.strength, 0) / evidence.relationships.length
+      : 0
   );
   let criticalImplications = $derived(
-    evidence.legalImplications?.filter(impl =>
-      impl.includes('critical') ||
-      impl.includes('chain_integrity') ||
-      impl.includes('timeline_gap')
+    evidence.legalImplications?.filter(
+      impl => impl.includes('critical') || impl.includes('chain_integrity') || impl.includes('timeline_gap')
     ) || []
   );
-  let confidenceLevel = $derived(
-    evidence.confidence > 0.8 ? 'high' :
-    evidence.confidence > 0.6 ? 'medium' : 'low'
-  );
+  let confidenceLevel = $derived(evidence.confidence > 0.8 ? 'high' : evidence.confidence > 0.6 ? 'medium' : 'low');
   // Expand/collapse state for children
   let isExpanded = $state(depth < 3); // Auto-expand first 3 levels
   let showChainDetails = $state(false);
@@ -101,14 +90,14 @@
   }
   function getRelationshipTypeIcon(type: string): string {
     const icons: Record<string, string> = {
-      'chain_link': '🔗',
-      'temporal': '⏰',
-      'location': '📍',
-      'causal': '🔄',
-      'documentary': '📄',
-      'financial': '💰',
-      'communication': '💬'
-    }
+      chain_link: '🔗',
+      temporal: '⏰',
+      location: '📍',
+      causal: '🔄',
+      documentary: '📄',
+      financial: '💰',
+      communication: '💬',
+    };
     return icons[type] || '🔗';
   }
   function getLegalImplicationIcon(implication: string): string {
@@ -145,6 +134,7 @@
     showRelationshipDetails = !showRelationshipDetail;
   }
 </script>
+
 <!-- Evidence node container -->
 <div
   class="evidence-node"
@@ -228,11 +218,7 @@
             <div class="metadata-row">
               <span class="label">Relationships:</span>
               <span class="value">{evidence.relationships.length}</span>
-              <button
-                class="detail-toggle"
-                onclick={toggleRelationshipDetails}
-                title="Show relationship details"
-              >
+              <button class="detail-toggle" onclick={toggleRelationshipDetails} title="Show relationship details">
                 {getRelationshipTypeIcon('chain_link')}
               </button>
             </div>
@@ -268,11 +254,7 @@
       <!-- Chain of custody details (expandable) -->
       {#if evidence.chainOfCustody?.length > 0}
         <div class="chain-section">
-          <button
-            class="chain-toggle"
-            onclick={toggleChainDetails}
-            aria-expanded={showChainDetails}
-          >
+          <button class="chain-toggle" onclick={toggleChainDetails} aria-expanded={showChainDetails}>
             🔗 Chain of Custody ({evidence.chainOfCustody.length} entries)
             {showChainDetails ? '▼' : '▶'}
           </button>
@@ -339,18 +321,19 @@
           <RecursiveEvidenceNode
             evidence={childEvidence}
             depth={depth + 1}
-            maxDepth={maxDepth}
+            {maxDepth}
             visitedIds={updatedVisitedIds}
-            showDetails={showDetails}
-            enableInteraction={enableInteraction}
-            onEvidenceSelect={onEvidenceSelect}
-            onChainAnalysis={onChainAnalysis}
+            {showDetails}
+            {enableInteraction}
+            {onEvidenceSelect}
+            {onChainAnalysis}
           />
         {/each}
       </div>
     {/if}
   {/if}
 </div>
+
 <style>
   .evidence-node {
     margin: 8px 0;

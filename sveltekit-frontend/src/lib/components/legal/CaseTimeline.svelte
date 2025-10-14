@@ -134,7 +134,7 @@
                 'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
                 config.bg,
                 config.border,
-                interactive && 'group-hover:scale-110 transition-transform',
+                interactive && 'group-hover:scale-110 transition-transform'
               )}
             >
               <IconComponent class={cn('w-5 h-5', config.color)} />
@@ -146,7 +146,7 @@
                   'bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4',
                   interactive &&
                     'group-hover:border-yorha-primary/30 group-hover:bg-yorha-bg-tertiary transition-colors',
-                  compactMode && 'p-3',
+                  compactMode && 'p-3'
                 )}
               >
                 <!-- Event Header -->
@@ -155,7 +155,7 @@
                     <h4
                       class={cn(
                         'font-semibold text-yorha-text-primary font-mono',
-                        compactMode ? 'text-sm' : 'text-base',
+                        compactMode ? 'text-sm' : 'text-base'
                       )}
                     >
                       {event.title}
@@ -165,7 +165,7 @@
                         class={cn(
                           'font-mono text-yorha-text-secondary',
                           compactMode ? 'text-xs' : 'text-sm',
-                          isToday(event.date) && 'text-yorha-accent font-medium',
+                          isToday(event.date) && 'text-yorha-accent font-medium'
                         )}
                       >
                         {formatDate(event.date)} • {formatTime(event.date)}
@@ -179,7 +179,7 @@
                             'px-2 py-0.5 text-xs font-mono rounded',
                             event.priority === 'critical' && 'bg-red-500/20 text-red-400 border border-red-500/30',
                             event.priority === 'high' && 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
-                            event.priority === 'low' && 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
+                            event.priority === 'low' && 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                           )}
                         >
                           {event.priority.toUpperCase()}

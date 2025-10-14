@@ -6,14 +6,14 @@ import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
  * - Writes a JSON log to .vscode/vite-errors.json
  * - Listens for devServer ws 'vite:error' and 'vite:warning'
  * - Records buildStart/buildEnd events
- */;
+ */
 export function vscodeErrorLogger(_options: any = {}) {
   const config = {
-    enabled: true
+    enabled: true,
     logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
     maxEntries: 500,
-    includeWarnings: true
-    includeSourceMaps: true
+    includeWarnings: true,
+    includeSourceMaps: true,
     ...options
   }
   let server: any = undefined;
@@ -105,13 +105,13 @@ export function vscodeErrorLogger(_options: any = {}) {
   }
 }
 export const defaultVSCodeErrorConfig = {
-  enabled: true
+  enabled: true,
   logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
   maxEntries: 1000,
-  includeWarnings: true
-  includeSourceMaps: true
-  autoOpenProblems: false
+  includeWarnings: true,
+  includeSourceMaps: true,
+  autoOpenProblems: false,
   notificationLevel: 'errors-only',
-  integrateTasks: true
-  generateDiagnostics: true
+  integrateTasks: true,
+  generateDiagnostics: true,
 }

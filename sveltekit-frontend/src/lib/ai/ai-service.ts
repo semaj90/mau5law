@@ -26,7 +26,7 @@ export interface AIServiceResponse {
     model: string;
     tokensUsed: number;
     processingTime: number;
-  }
+  };
 }
 class AIService {
   private baseUrl = '/api/ai';
@@ -46,19 +46,19 @@ class AIService {
         caseContext,
         evidenceIds,
         context,
-        includeHistory
+        includeHistory,
       });
       // Add user message to store immediately
       aiAssistant.addMessage(caseId, {
         role: 'user',
         content: prompt,
-        evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined
+        evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined,
       });
       // Make API call to AI service
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           caseId,
@@ -68,8 +68,8 @@ class AIService {
           evidenceIds,
           maxTokens: options.maxTokens || 2048,
           temperature: options.temperature || 0.7,
-          stream: false // For now, we'll use non-streaming
-        })
+          stream: false, // For now, we'll use non-streaming
+        }),
       });
       if (!response.ok) {
         throw new Error(`AI service error: ${response.status} ${response.statusText}`);
@@ -84,8 +84,8 @@ class AIService {
           confidence: result.confidence,
           source: result.metadata?.model || this.defaultModel,
           reasoning: result.reasoning,
-          suggestions: result.suggestedActions?.map(action => action.description)
-        }
+          suggestions: result.suggestedActions?.map(action => action.description),
+        },
       });
       // Process AI insights and suggestions
       if (result.suggestedActions && result.suggestedActions.length > 0) {
@@ -97,16 +97,16 @@ class AIService {
           type: this.getInsightType(context),
           description: this.extractInsightFromResponse(result.text),
           confidence: result.confidence,
-          evidenceIds: evidenceIds
+          evidenceIds: evidenceIds,
         });
       }
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message: 'Unknown AI service error';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown AI service error';
       // Add error message to store
       aiAssistant.addMessage(caseId, {
         role: 'system',
-        content: `Error: ${errorMessage}`
+        content: `Error: ${errorMessage}`,
       });
       aiAssistant.setError(errorMessage);
       throw error;
@@ -214,13 +214,15 @@ class AIService {
   }
   // Specialized methods for common use cases
   async analyzeEvidence(caseId: string, evidenceId: string, specificQuestion?: string): Promise<AIServiceResponse> {
-    const prompt = specificQuestion || `Analyze this evidence and provide key insights, potential legal implications, and relevance to the case.`;
+    const prompt =
+      specificQuestion ||
+      `Analyze this evidence and provide key insights, potential legal implications, and relevance to the case.`;
     return this.sendToAI({
       caseId,
       prompt,
       evidenceIds: [evidenceId],
       context: 'analysis',
-      includeHistory: false
+      includeHistory: false,
     });
   }
   async findConnections(caseId: string, evidenceIds: string[]): Promise<AIServiceResponse> {
@@ -230,7 +232,7 @@ class AIService {
       prompt,
       evidenceIds,
       context: 'connection',
-      includeHistory: true
+      includeHistory: true,
     });
   }
   async suggestInvestigation(caseId: string, currentFocus?: string): Promise<AIServiceResponse> {
@@ -241,7 +243,7 @@ class AIService {
       caseId,
       prompt,
       context: 'investigation',
-      includeHistory: true
+      includeHistory: true,
     });
   }
   async annotateEvidence(caseId: string, evidenceId: string, annotation: string): Promise<AIServiceResponse> {
@@ -251,7 +253,7 @@ class AIService {
       prompt,
       evidenceIds: [evidenceId],
       context: 'annotation',
-      includeHistory: false
+      includeHistory: false,
     });
   }
   // Streaming support for real-time responses
@@ -268,10 +270,14 @@ export async function sendToAI(caseId: string, prompt: string, evidenceIds?: str
     caseId,
     prompt,
     evidenceIds,
-    context: 'general'
+    context: 'general',
   });
 }
-export async function analyzeEvidence(caseId: string, evidenceId: string, question?: string): Promise<AIServiceResponse> {
+export async function analyzeEvidence(
+  caseId: string,
+  evidenceId: string,
+  question?: string
+): Promise<AIServiceResponse> {
   return aiService.analyzeEvidence(caseId, evidenceId, question);
 }
 export async function findEvidenceConnections(caseId: string, evidenceIds: string[]): Promise<AIServiceResponse> {

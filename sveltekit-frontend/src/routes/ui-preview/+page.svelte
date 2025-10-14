@@ -80,7 +80,7 @@
     setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
     clearSession: () => console.log('Mock clearSession'),
     init: (data: any) => console.log('Mock init:', data),
-  }
+  };
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
@@ -123,7 +123,7 @@
           totalDocuments: 0,
           totalCitations: 0,
           totalReports: 0,
-        },
+        }
   );
   // Mock data for formatting demos
   const mockTimestamps = [

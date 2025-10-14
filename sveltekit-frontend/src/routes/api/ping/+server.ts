@@ -6,4 +6,4 @@ export const GET: RequestHandler = async () => {
     message: 'pong',
     timestamp: new Date().toISOString(),
   });
-}
+};

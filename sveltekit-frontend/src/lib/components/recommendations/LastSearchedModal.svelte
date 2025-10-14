@@ -38,9 +38,8 @@
     }
     if (searchFilter.trim()) {
       const query = searchFilter.toLowerCase();
-      filtered = filtered.filter(search =>
-        search.query.toLowerCase().includes(query) ||
-        search.searchType.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        search => search.query.toLowerCase().includes(query) || search.searchType.toLowerCase().includes(query)
       );
     }
     return filtered;
@@ -89,7 +88,7 @@
           confidence: 0.92,
           clickedResults: ['patent-789'],
           timeSpent: 180,
-        }
+        },
       ];
       await generateAISuggestions();
     } finally {
@@ -98,7 +97,8 @@
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        notice.style.cssText =
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -115,7 +115,7 @@
       'Updated precedents for patent law',
       'Contract templates for employment disputes',
       'Evidence analysis for Smith case',
-      'Recent decisions in intellectual property'
+      'Recent decisions in intellectual property',
     ];
     aiSuggestions = suggestions.slice(0, 3);
   }
@@ -128,8 +128,8 @@
         body: JSON.stringify({
           query: searchItem.query,
           searchType: searchItem.searchType,
-          filters: searchItem.filters
-        })
+          filters: searchItem.filters,
+        }),
       });
       if (!response.ok) {
         throw new Error('API request failed');
@@ -143,7 +143,8 @@
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - search repeated locally';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
@@ -156,12 +157,18 @@
   }
   function getSearchIcon(type: SearchItem['searchType']): string {
     switch (type) {
-      case 'cases': return '⚖️';
-      case 'documents': return '📄';
-      case 'evidence': return '🔍';
-      case 'precedents': return '📚';
-      case 'clients': return '👤';
-      default: return '🔍';
+      case 'cases':
+        return '⚖️';
+      case 'documents':
+        return '📄';
+      case 'evidence':
+        return '🔍';
+      case 'precedents':
+        return '📚';
+      case 'clients':
+        return '👤';
+      default:
+        return '🔍';
     }
   }
   function getConfidenceColor(confidence: number): string {
@@ -198,7 +205,7 @@
     <!-- Header Controls -->
     <div class="modal-header">
       <div class="search-controls">
-  <input type="text" placeholder="Filter searches..." bind:value={searchFilter} class="search-input" />
+        <input type="text" placeholder="Filter searches..." bind:value={searchFilter} class="search-input" />
         <select bind:value={typeFilter} class="type-filter">
           <option value="all">All Types</option>
           <option value="cases">Cases</option>
@@ -250,7 +257,7 @@
               tabindex="0"
               aria-expanded={selectedSearch?.id === searchItem.id}
               onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
-              onkeydown={(e) => {
+              onkeydown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem;
@@ -271,7 +278,7 @@
                   <div
                     class="confidence-badge"
                     style="background-color: {getConfidenceColor(
-                      searchItem.confidence,
+                      searchItem.confidence
                     )}20; border-color: {getConfidenceColor(searchItem.confidence)}"
                   >
                     {Math.round(searchItem.confidence * 100)}%

@@ -195,7 +195,8 @@
   </SelectItem>
 {/snippet}
 
-<style>/* @unocss-include */ {}
+<style>
+/* @unocss-include */ {}
   .select-wrapper {
     position: relative;
   }

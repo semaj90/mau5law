@@ -101,6 +101,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     </ul>
   {/if}
 </div>
+
 <!-- #context7 #Phase10 #todo: Wire up agent trigger, improve UI, connect to real backend after test -->
 
 <!-- TODO: After initial test, wire up agent action buttons, live updates, and best practice docs. -->

@@ -27,7 +27,9 @@
   }
 
   async function runQuery() {
-    loading = true; error = null; result = null;
+    loading = true;
+    error = null;
+    result = null;
     try {
       const resp = await fetch('/api/dev/qdrant?' + buildQuery());
       const body = await resp.json();
@@ -35,14 +37,14 @@
       result = body;
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
-    } finally { loading = false; }
+    } finally {
+      loading = false;
+    }
   }
 
   function extractTitle(payload: any): string {
     if (!payload) return '';
-    return (
-      payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || ''
-    );
+    return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || '';
   }
   function extractSnippet(payload: any): string {
     if (!payload) return '';
@@ -69,7 +71,8 @@
       } else {
         // fallback for older browsers: use temporary input
         const tmp = document.createElement('input');
-        tmp.style.position = 'fixed'; tmp.style.left = '-10000px';
+        tmp.style.position = 'fixed';
+        tmp.style.left = '-10000px';
         tmp.value = id;
         document.body.appendChild(tmp);
         tmp.select();
@@ -78,7 +81,10 @@
       }
       copiedId = id;
       if (copyTimeout) clearTimeout(copyTimeout);
-      copyTimeout = setTimeout(() => { copiedId = null; copyTimeout = null; }, 2500);
+      copyTimeout = setTimeout(() => {
+        copiedId = null;
+        copyTimeout = null;
+      }, 2500);
     } catch (err) {
       console.warn('Copy failed', err);
     }
@@ -99,8 +105,13 @@
         markdownToHtml = (md: string) => markedMod.parse(md || '');
       } catch (err) {
         // If dynamic import fails (no node_modules), keep the simple sanitizer
-        purified = (html: string) => html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        markdownToHtml = (md: string) => md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
+        purified = (html: string) =>
+          html
+            .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        markdownToHtml = (md: string) =>
+          md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
       }
     }
   }
@@ -108,7 +119,10 @@
     if (!html) return '';
     if (purified) return purified(html);
     // fallback
-    return html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return html
+      .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
   function renderMarkdownToHtmlAsync(md: string) {
     if (!md) return '';
@@ -121,8 +135,13 @@
     if (e.key === 'Escape' && previewOpen) previewOpen = false;
   }
 
-  onMount(() => { runQuery(); window.addEventListener('keydown', escHandler); });
-  onDestroy(() => { window.removeEventListener('keydown', escHandler); });
+  onMount(() => {
+    runQuery();
+    window.addEventListener('keydown', escHandler);
+  });
+  onDestroy(() => {
+    window.removeEventListener('keydown', escHandler);
+  });
 
   // Focus trap state
   let lastActiveElement: Element | null = null;
@@ -130,7 +149,9 @@
     if (!modalRoot) return;
     lastActiveElement = document.activeElement;
     // focus first focusable element
-    const focusable = modalRoot.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const focusable = modalRoot.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
     (focusable[0] as HTMLElement | undefined)?.focus?.();
   }
   function restoreFocus() {
@@ -145,7 +166,8 @@
     <div class="flex flex-wrap gap-2 items-center">
       <label class="text-sm">Limit <input type="number" min="1" bind:value={limit} class="ml-1 w-20" /></label>
       <label class="text-sm">Page <input type="number" min="1" bind:value={page} class="ml-1 w-20" /></label>
-      <label class="text-sm">CaseId <input type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label>
+      <label class="text-sm">CaseId <input type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label
+      >
       <label class="text-sm">Tag <input type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
       <button class="bits-btn" onclick={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
     </div>
@@ -167,15 +189,30 @@
                   <div class="text-xs text-muted truncate">ID: {item.id}</div>
                   <div class="text-sm text-muted">Score: {item.score}</div>
                   {#if extractSnippet(item.payload)}
-                    <div class="text-xs text-muted truncate">{extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? '…' : ''}</div>
+                    <div class="text-xs text-muted truncate">
+                      {extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? '…' : ''}
+                    </div>
                   {/if}
                 </div>
                 <div class="flex flex-col items-end gap-2">
                   <div class="relative">
-                    <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button>
+                    <button
+                      class="bits-btn bits-ghost text-xs px-2 py-1"
+                      title="Copy ID"
+                      onclick={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button
+                    >
                   </div>
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" onclick={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}>Preview</button>
-                  <a class="text-primary hover:underline text-xs" href={`/api/evidence-files?download=${item.id}`} target="_blank">Download</a>
+                  <button
+                    class="bits-btn bits-ghost text-xs px-2 py-1"
+                    title="Preview"
+                    onclick={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}
+                    >Preview</button
+                  >
+                  <a
+                    class="text-primary hover:underline text-xs"
+                    href={`/api/evidence-files?download=${item.id}`}
+                    target="_blank">Download</a
+                  >
                   <a class="text-primary hover:underline text-xs" href={`/evidence/${item.id}`} target="_blank">Open</a>
                 </div>
               </li>
@@ -192,16 +229,37 @@
             {#each result.pgvector.rows as row}
               <li class="py-2 flex justify-between items-start">
                 <div class="min-w-0">
-                  <div class="font-medium truncate">{row.title || row.payload?.title || row.metadata?.title || 'ID: ' + row.id}</div>
+                  <div class="font-medium truncate">
+                    {row.title || row.payload?.title || row.metadata?.title || 'ID: ' + row.id}
+                  </div>
                   <div class="text-xs text-muted truncate">ID: {row.id}</div>
                   <div class="text-sm text-muted">Similarity: {row.similarity}</div>
                   {#if row.payload || row.metadata}
-                    <div class="text-xs text-muted truncate">{(row.payload?.snippet || row.metadata?.snippet || row.snippet || '')?.slice?.(0,400)}{(row.payload?.snippet || row.metadata?.snippet || row.snippet || '').length > 400 ? '…' : ''}</div>
+                    <div class="text-xs text-muted truncate">
+                      {(row.payload?.snippet || row.metadata?.snippet || row.snippet || '')?.slice?.(0, 400)}{(
+                        row.payload?.snippet ||
+                        row.metadata?.snippet ||
+                        row.snippet ||
+                        ''
+                      ).length > 400
+                        ? '…'
+                        : ''}
+                    </div>
                   {/if}
                 </div>
                 <div class="flex flex-col items-end gap-2">
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(row.id)}>{copiedId === row.id ? 'Copied' : 'Copy ID'}</button>
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" onclick={() => openPreview(row.title || row.payload?.title || row.metadata?.title || 'Preview', (row.payload?.snippet || row.metadata?.snippet || row.snippet || '') )}>Preview</button>
+                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(row.id)}
+                    >{copiedId === row.id ? 'Copied' : 'Copy ID'}</button
+                  >
+                  <button
+                    class="bits-btn bits-ghost text-xs px-2 py-1"
+                    title="Preview"
+                    onclick={() =>
+                      openPreview(
+                        row.title || row.payload?.title || row.metadata?.title || 'Preview',
+                        row.payload?.snippet || row.metadata?.snippet || row.snippet || ''
+                      )}>Preview</button
+                  >
                   <a class="text-primary hover:underline text-xs" href={`/evidence/${row.id}`} target="_blank">Open</a>
                 </div>
               </li>
@@ -209,44 +267,80 @@
           </ul>
           {#if result.pgvector?.page}
             <div class="mt-2 flex items-center gap-2">
-              <button class="bits-btn bits-ghost" onclick={() => { if (page>1) { page--; runQuery(); } }} disabled={page<=1}>Prev</button>
+              <button
+                class="bits-btn bits-ghost"
+                onclick={() => {
+                  if (page > 1) {
+                    page--;
+                    runQuery();
+                  }
+                }}
+                disabled={page <= 1}>Prev</button
+              >
               <div>Page {result.pgvector.page} (limit {result.pgvector.limit})</div>
-              <button class="bits-btn bits-ghost" onclick={() => { page++; runQuery(); }}>Next</button>
+              <button
+                class="bits-btn bits-ghost"
+                onclick={() => {
+                  page++;
+                  runQuery();
+                }}>Next</button
+              >
             </div>
           {/if}
         {:else}
           <pre class="bg-black/5 p-3 rounded overflow-auto">{JSON.stringify(result.pgvector, null, 2)}</pre>
         {/if}
       </div>
-  {#if previewOpen}
-  <div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" tabindex="-1" onclick={() => { previewOpen = false; restoreFocus(); }} aria-hidden={!previewOpen}>
-      <div in:fade out:fade class="absolute inset-0"></div>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={previewTitle || 'Preview'}
-        class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
-        tabindex="-1"
-        onclick={() => {}}
-        in:scale={{ duration: 160 }}
-        out:scale={{ duration: 120 }}
-      >
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-black" onclick={() => { previewOpen = false; restoreFocus(); }} aria-label="Close">✕</button>
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
-          <div class="flex items-center gap-2">
-            <label class="text-xs text-muted flex items-center gap-1"><input type="checkbox" bind:checked={previewRenderMarkdown}/> Render Markdown</label>
-            <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}>Copy Title</button>
+      {#if previewOpen}
+        <div
+          class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+          tabindex="-1"
+          onclick={() => {
+            previewOpen = false;
+            restoreFocus();
+          }}
+          aria-hidden={!previewOpen}
+        >
+          <div in:fade out:fade class="absolute inset-0"></div>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={previewTitle || 'Preview'}
+            class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
+            tabindex="-1"
+            onclick={() => {}}
+            in:scale={{ duration: 160 }}
+            out:scale={{ duration: 120 }}
+          >
+            <button
+              class="absolute top-2 right-2 text-gray-500 hover:text-black"
+              onclick={() => {
+                previewOpen = false;
+                restoreFocus();
+              }}
+              aria-label="Close">✕</button
+            >
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
+              <div class="flex items-center gap-2">
+                <label class="text-xs text-muted flex items-center gap-1"
+                  ><input type="checkbox" bind:checked={previewRenderMarkdown} /> Render Markdown</label
+                >
+                <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}
+                  >Copy Title</button
+                >
+              </div>
+            </div>
+            {#if previewRenderMarkdown}
+              <div class="text-sm whitespace-pre-wrap text-muted">
+                {@html sanitizeHtml(renderMarkdownToHtmlAsync(previewSnippet))}
+              </div>
+            {:else}
+              <div class="text-sm whitespace-pre-wrap text-muted">{previewSnippet || 'No snippet available.'}</div>
+            {/if}
           </div>
         </div>
-        {#if previewRenderMarkdown}
-          <div class="text-sm whitespace-pre-wrap text-muted">{@html sanitizeHtml(renderMarkdownToHtmlAsync(previewSnippet))}</div>
-        {:else}
-          <div class="text-sm whitespace-pre-wrap text-muted">{previewSnippet || 'No snippet available.'}</div>
-        {/if}
-      </div>
-    </div>
-  {/if}
+      {/if}
     </section>
   {/if}
 </div>

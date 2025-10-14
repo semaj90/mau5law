@@ -34,9 +34,9 @@ export interface RouteMetrics {
 }
 class ObservabilityClient {
   private config: ObservabilityConfig = {
-    enableMetrics: true
-    enablePerformanceTracking: true
-    enableWebVitals: true
+    enableMetrics: true,
+    enablePerformanceTracking: true,
+    enableWebVitals: true,
     metricsEndpoint: '/api/v1/metrics/client',
     batchSize: 10,
     flushInterval: 30000, // 30 seconds
@@ -48,7 +48,7 @@ class ObservabilityClient {
   private currentRoute?: string;
   /**
    * Initialize observability client with configuration
-   */;
+   */
   initialize(config?: Partial<ObservabilityConfig>): void {
     if (!browser || this.initialized) return;
     this.config = { ...this.config, ...config }
@@ -80,7 +80,7 @@ class ObservabilityClient {
   }
   /**
    * Track route navigation with comprehensive metrics
-   */;
+   */
   trackRouteNavigation(routeId: string, pathname: string): void {
     if (!browser || !this.config.enableMetrics) return;
     const startTime = performance.now();
@@ -93,7 +93,7 @@ class ObservabilityClient {
   }
   /**
    * Track component mount performance
-   */;
+   */
   trackComponentMount(componentName: string): () => void {
     if (!browser || !this.config.enablePerformanceTracking) return () => {}
     const startTime = performance.now();
@@ -114,7 +114,7 @@ class ObservabilityClient {
   }
   /**
    * Track API call performance
-   */;
+   */
   trackAPICall(endpoint: string, method: string = 'GET'): {
     start: () => void;
     end: (response?: Response) => void;
@@ -149,14 +149,14 @@ class ObservabilityClient {
   }
   /**
    * Create enhanced fetch with observability
-   */;
+   */
   createObservableFetch(): typeof fetch {
     if (!browser) return fetch;
     return createTimedFetch(fetch);
   }
   /**
    * Get current performance snapshot
-   */;
+   */
   getPerformanceSnapshot(): {
     timing: TimingMetrics;
     route: string | undefined;
@@ -181,7 +181,7 @@ class ObservabilityClient {
   }
   /**
    * Manually flush metrics to server
-   */;
+   */
   async flushMetrics(): Promise<void> {
     if (!browser || this.metricsBuffer.length === 0) return;
     const metricsToSend = [...this.metricsBuffer];
@@ -193,7 +193,7 @@ class ObservabilityClient {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({,
-          metrics: metricsToSend
+          metrics: metricsToSend,
           timestamp: Date.now(),
           userAgent: navigator.userAgent,
           url: window.location.href
@@ -212,7 +212,7 @@ class ObservabilityClient {
   }
   /**
    * Collect comprehensive route metrics
-   */;
+   */
   private collectRouteMetrics(routeId: string, pathname: string, startTime: number): void {
     const endTime = performance.now();
     const loadTime = endTime - startTime;
@@ -250,7 +250,7 @@ class ObservabilityClient {
   }
   /**
    * Cleanup and destroy observability client
-   */;
+   */
   destroy(): void {
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
@@ -274,9 +274,9 @@ if (browser) {
                    localStorage.getItem('observability-debug') === 'true';
   observabilityClient.initialize({
     debugMode,
-    enableMetrics: true
-    enablePerformanceTracking: true
-    enableWebVitals: true
+    enableMetrics: true,
+    enablePerformanceTracking: true,
+    enableWebVitals: true,
   });
 }
 // SvelteKit integration helpers

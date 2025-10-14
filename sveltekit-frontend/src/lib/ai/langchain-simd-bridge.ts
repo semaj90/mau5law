@@ -5,7 +5,12 @@
  * enabling ultra-compressed 7-bit text processing with instantaneous UI generation.
  * This bridge eliminates intermediate processing steps for maximum performance.
  */
-import { langChainOllamaService, type LangChainConfig, type ProcessingResult, type QueryResult } from './langchain-ollama-service.js';
+import {
+  langChainOllamaService,
+  type LangChainConfig,
+  type ProcessingResult,
+  type QueryResult,
+} from './langchain-ollama-service.js';
 import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
 import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
 

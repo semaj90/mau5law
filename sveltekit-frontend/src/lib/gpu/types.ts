@@ -98,7 +98,7 @@ export interface AdaptiveGPUConfig extends GPUContextFactoryConfig {
     maxRenderTime: number; // milliseconds
     maxMemoryUsage: number; // percentage 0-100,
     maxTemperature: number; // celsius
-  }
+  };
 }
 export interface VectorEncodingConfig {
   dimensions: VectorDimensions;
@@ -129,7 +129,7 @@ export interface MemoryBankStatus {
 export function validateVectorDimensions(dimensions: number): VectorDimensions {
   const validDimensions: VectorDimensions[] = [128, 256, 512, 768, 1024, 1536, 2048];
   const closest = validDimensions.reduce((prev, curr) =>
-    Math.abs(curr - dimensions) < Math.abs(prev - dimensions) ? curr : prev,
+    Math.abs(curr - dimensions) < Math.abs(prev - dimensions) ? curr : prev
   );
   return closest;
 }
@@ -139,7 +139,7 @@ export function calculateOptimalQuantization(dimensions: VectorDimensions, memor
     'int8': dimensions * 1, // int8
     'int4': dimensions * 0.5, // int4
     'binary': dimensions / 8, // 1 bit per dimension
-  }
+  };
   for (const [level, memory] of Object.entries(memoryPerVector)) {
     if (memory <= memoryBudget) {
       return level as QuantizationLevel;
@@ -150,7 +150,7 @@ export function calculateOptimalQuantization(dimensions: VectorDimensions, memor
 export function adaptiveScalingDecision(
   metrics: GPUPerformanceMetrics,
   thresholds: AdaptiveGPUConfig['performanceThresholds'],
-  mode: AdaptiveScalingMode,
+  mode: AdaptiveScalingMode
 ): {
   shouldScale: boolean;
   recommendedDimensions: VectorDimensions;
@@ -163,7 +163,7 @@ export function adaptiveScalingDecision(
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
       reason: 'Adaptive scaling disabled',
-    }
+    };
   }
   const isOverThreshold =
     metrics.renderTime > thresholds.maxRenderTime ||
@@ -175,21 +175,21 @@ export function adaptiveScalingDecision(
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
       reason: 'Performance within thresholds',
-    }
+    };
   }
   // Scaling recommendations based on mode
   const scalingStrategies = {
     'conservative': { dimensions: 512 as VectorDimensions, quantization: 'int8' as QuantizationLevel },
     'balanced': { dimensions: 256 as VectorDimensions, quantization: 'int4' as QuantizationLevel },
     'aggressive': { dimensions: 128 as VectorDimensions, quantization: 'binary' as QuantizationLevel },
-  }
+  };
   const strategy = scalingStrategies[mode] || scalingStrategies.balanced;
   return {
     shouldScale: true,
     recommendedDimensions: strategy.dimensions,
     recommendedQuantization: strategy.quantization,
     reason: `Performance threshold exceeded (${mode} scaling)`,
-  }
+  };
 }
 export function validateNintendoMemoryBudget(budget: Partial<NintendoMemoryBudget>): NintendoMemoryBudget {
   return {
@@ -198,7 +198,7 @@ export function validateNintendoMemoryBudget(budget: Partial<NintendoMemoryBudge
     l3RedisBudget: clampMemoryMB(budget.l3RedisBudget || 1048576) * 1024,
     chrRomSize: Math.max(budget.chrRomSize || 32768, 8192), // Minimum 8KB CHR-ROM
     chrRomBanks: Math.max(budget.chrRomBanks || 4, 1), // Minimum 1 bank
-  }
+  };
 }
 // Utility type guards
 export function isValidGPUBackend(backend: string): backend is GPUBackend {

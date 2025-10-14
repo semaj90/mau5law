@@ -2,34 +2,34 @@
  * Advanced Evidence Analysis API Endpoint
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer'
-import { websocketBroadcast } from '$lib/services/websocket-manager'
-import { dbClient } from '$lib/server/db/drizzle-config'
-import { evidence, analysisResults } from '$lib/server/db/schema'
-import { eq } from 'drizzle-orm'
-const analyzer = new AdvancedEvidenceAnalyzer()
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer';
+import { websocketBroadcast } from '$lib/services/websocket-manager';
+import { dbClient } from '$lib/server/db/drizzle-config';
+import { evidence, analysisResults } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+const analyzer = new AdvancedEvidenceAnalyzer();
 
 // Add typed request/row shapes to avoid `any`
 type GetAnalysisRequest = {
-	evidenceId?: string;
-	analysisId?: string;
+  evidenceId?: string;
+  analysisId?: string;
 };
 
 type AnalysisResultRow = {
-	analysisId: string;
-	evidenceId: string;
-	results: string | Record<string, unknown>;
-	createdAt: Date;
-	analysisTypes: string | string[];
+  analysisId: string;
+  evidenceId: string;
+  results: string | Record<string, unknown>;
+  createdAt: Date;
+  analysisTypes: string | string[];
 };
 
 type SynthesisRequest = {
-	evidenceIds: string[];
-	caseId?: string;
-	synthesisType?: string;
-	options?: Record<string, unknown>;
+  evidenceIds: string[];
+  caseId?: string;
+  synthesisType?: string;
+  options?: Record<string, unknown>;
 };
 
 // Add lightweight request/progress/result types to replace `any`

@@ -293,12 +293,12 @@
         <h4>Metadata</h4>
         <p>
           Request ID: {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).metadata.requestId}
         </p>
         <p>
           Processing Time: {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).metadata.processingTime}ms
         </p>
         <p>
@@ -310,7 +310,7 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).metadata.confidence * 100
           ).toFixed(1)}%
         </p>
@@ -323,13 +323,13 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).metadata.qualityScore * 100
           ).toFixed(1)}%
         </p>
         <p>
           Cached: {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).metadata.cached
             ? 'Yes'
             : 'No'}
@@ -340,19 +340,19 @@
         <p>
           <strong>Original:</strong>
           {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).processedQuery.original}
         </p>
         <p>
           <strong>Enhanced:</strong>
           {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).processedQuery.enhanced}
         </p>
         <p>
           <strong>Intent:</strong>
           {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).processedQuery.intent}
         </p>
         <p>
@@ -365,7 +365,7 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).processedQuery.complexity * 100
           ).toFixed(0)}%
         </p>
@@ -379,7 +379,7 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).processedQuery.legalConcepts.join(', ')}
           </p>
         {/if}
@@ -388,12 +388,12 @@
         <h4>Retrieved Context</h4>
         <p>
           Total Sources: {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).retrievedContext.totalSources}
         </p>
         <p>
           Strategies: {$(
-            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }
           ).retrievedContext.searchStrategies.join(', ')}
         </p>
         {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary}
@@ -407,7 +407,7 @@
                   processedQuery?: any;
                   retrievedContext?: any;
                   enhancedPrompt?: any;
-                },
+                }
               ).retrievedContext.summary.abstractive}
             </p>
             {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.keyPoints.length > 0}
@@ -445,7 +445,7 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).enhancedPrompt.systemPrompt}</pre>
         </details>
         <details>
@@ -457,7 +457,7 @@
                 processedQuery?: any;
                 retrievedContext?: any;
                 enhancedPrompt?: any;
-              },
+              }
             ).enhancedPrompt.contextPrompt}</pre>
         </details>
         <details>

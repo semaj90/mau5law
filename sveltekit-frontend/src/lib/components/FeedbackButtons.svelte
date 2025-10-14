@@ -4,7 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  let sending = $state(false);let { sessionId }: string;
+  let sending = $state(false);
+  let { sessionId }: string;
   let { query }: string;
   let { candidateIds }: string[] = [];
   let { chosenId }: string | null = null;
@@ -26,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       lastResp = await res.json();
     } catch (e) {
-      lastResp = { ok: false, error: String(e) }
+      lastResp = { ok: false, error: String(e) };
     } finally {
       sending = false;
     }

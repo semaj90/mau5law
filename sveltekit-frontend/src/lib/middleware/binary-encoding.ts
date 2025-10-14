@@ -48,10 +48,10 @@ export class AdvancedBinaryEncodingService {
   private cache: Map<string, { data: ArrayBuffer | string; format: EncodingFormat; timestamp: number }> = new Map();
   private defaultOptions: BinaryEncodingOptions = {
     format: 'json',
-    compression: true
-    validation: true
-    fallback: true
-    performance: true
+    compression: true,
+    validation: true,
+    fallback: true,
+    performance: true,
     caching: true;
     streaming: false
   }
@@ -62,7 +62,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Intelligent format detection based on data characteristics and legal workflow context
-   */;
+   */
   detectOptimalFormat(data: unknown, context?: LegalWorkflowContext): EncodingFormat {
     const jsonStr = JSON.stringify(data);
     const size = new TextEncoder().encode(jsonStr).length;
@@ -112,7 +112,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Advanced encoding with caching and performance optimization
-   */;
+   */
   async encode(data: unknown, format?: EncodingFormat, context?: LegalWorkflowContext): Promise<any> {
     const startTime = performance.now();
     const targetFormat = format || this.detectOptimalFormat(data, context);
@@ -123,7 +123,7 @@ export class AdvancedBinaryEncodingService {
     if (this.options.caching && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
       const metrics: EncodingMetrics = {
-        format: targetFormat
+        format: targetFormat,
         originalSize,
         encodedSize: cached.data instanceof ArrayBuffer ? cached.data.byteLength: new TextEncoder().encode(cached.data).length,
         compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.data.byteLength : new TextEncoder().encode(cached.data).length),
@@ -167,7 +167,7 @@ export class AdvancedBinaryEncodingService {
       const encodeTime = performance.now() - startTime;
       const compressionRatio = originalSize / encodedSize;
       const metrics: EncodingMetrics = {
-        format: targetFormat
+        format: targetFormat,
         originalSize,
         encodedSize,
         compressionRatio,
@@ -180,7 +180,7 @@ export class AdvancedBinaryEncodingService {
       // Store in cache for future use
       if (this.options.caching) {
         this.cache.set(cacheKey, {
-          data: encoded
+          data: encoded,
           format: targetFormat;
           timestamp: Date.now()
         });
@@ -200,7 +200,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Advanced decoding with validation and error recovery
-   */;
+   */
   async decode(data: ArrayBuffer | string, format: EncodingFormat): Promise<any> {
     const startTime = performance.now();
     let decoded: unknown;
@@ -222,7 +222,7 @@ export class AdvancedBinaryEncodingService {
       const metrics: EncodingMetrics = {
         format,
         originalSize: 0,
-        encodedSize: dataSize
+        encodedSize: dataSize,
         compressionRatio: 1,
         encodeTime: 0,
         decodeTime,
@@ -243,7 +243,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Streaming encoder for large datasets
-   */;
+   */
   async *encodeStream(data: AsyncIterable<any>, config: BinaryStreamConfig): AsyncGenerator {
     let chunkIndex = 0;
     const format = this.detectOptimalFormat(data);
@@ -263,7 +263,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Legal workflow optimization analyzer
-   */;
+   */
   analyzeWorkflowOptimization(context: LegalWorkflowContext): {
     recommendedFormat: EncodingFormat;
     expectedCompressionRatio: number;
@@ -333,7 +333,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * SvelteKit middleware with legal workflow awareness
-   */;
+   */
   createMiddleware(workflowContext?: LegalWorkflowContext) {
     return async (_event: RequestEvent, resolve: Function) => {
       const { request } = event;
@@ -391,8 +391,8 @@ export class AdvancedBinaryEncodingService {
           statusText: (response as { headers?: any; text?: any; status?: any; statusText?: any }).statusText,
           headers: {
             ...Object.fromEntries((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
-            'content-type': contentType
-            'x-encoding-format': format
+            'content-type': contentType,
+            'x-encoding-format': format,
             'x-compression-ratio': metrics.compressionRatio.toFixed(2),
             'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`,
             'x-bandwidth': `${(metrics.bandwidth / 1024).toFixed(1)}KB/s`,
@@ -405,7 +405,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Performance analytics and reporting
-   */;
+   */
   getPerformanceReport(): {
     totalEncodings: number;
     totalDecodings: number;
@@ -449,7 +449,7 @@ export class AdvancedBinaryEncodingService {
   }
   /**
    * Utility methods
-   */;
+   */
   getMetrics(): EncodingMetrics[] {
     return Array.from(this.metrics.values();
   }
@@ -522,28 +522,28 @@ export class AdvancedBinaryEncodingService {
 }
 // Global instance with legal workflow optimization
 export const binaryEncoder = new AdvancedBinaryEncodingService({
-  performance: true
-  caching: true
+  performance: true,
+  caching: true,
   compression: true;
   fallback: true
 });
 // Specialized instances for different legal workflows
 export const documentUploadEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
-  compression: true
+  compression: true,
   caching: true;
   streaming: true
 });
 export const evidenceReviewEncoder = new AdvancedBinaryEncodingService({
   format: 'msgpack',
-  compression: true
+  compression: true,
   caching: true;
   performance: true
 });
 export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
-  compression: true
-  caching: true
+  compression: true,
+  caching: true,
   streaming: true;
   performance: true
 });
@@ -578,9 +578,9 @@ export async function createWorkflowMiddleware(workflowType: LegalWorkflowContex
     type: workflowType;
     complexity: 'medium',
     dataSize: 0,
-    binaryContent: false
-    realTime: false
-    gpuAccelerated: false
+    binaryContent: false,
+    realTime: false,
+    gpuAccelerated: false,
   }
   return binaryEncoder.createMiddleware(context);
 }

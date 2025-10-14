@@ -101,10 +101,10 @@ Respond in JSON format with the following structure:
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: model
-        prompt: legalAnalysisPrompt
+        model: model,
+        prompt: legalAnalysisPrompt,
         format: 'json',
-        stream: false
+        stream: false,
         options: {
           temperature: 0.3, // Lower temperature for more consistent legal analysis
           top_p: 0.9,
@@ -126,8 +126,8 @@ Respond in JSON format with the following structure:
         entities: [],
         citations: [],
         evidenceType: 'other',
-        privileged: false
-        needsRedaction: false
+        privileged: false,
+        needsRedaction: false,
         relevanceScore: 0.5,
         riskFactors: [],
         suggestedTags: ['legal_document'],
@@ -136,19 +136,19 @@ Respond in JSON format with the following structure:
     }
     // Store document in database
     await db.insert(documents).values({
-      id: documentId
+      id: documentId,
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      hash: hash
-      caseId: caseId || null
+      hash: hash,
+      caseId: caseId || null,
       userId: session.userId,
       textContent: textContent.slice(0, 50000), // Store up to 50k chars
-      aiAnalysis: analysisResult
+      aiAnalysis: analysisResult,
       uploadedAt: new Date(),
       metadata: {
         legalContext,
-        analysisModel: model
+        analysisModel: model,
         analysisType,
         chainOfCustody: [{,
           timestamp,: new Date().toISOString(),
@@ -175,7 +175,7 @@ Respond in JSON format with the following structure:
           const embeddingResult = await embeddingResponse.json()
           await db.insert(embeddings).values({
             id: nanoid(),
-            documentId: documentId
+            documentId: documentId,
             embedding: embeddingResult.embedding,
             content: textContent.slice(0, 2000),
             metadata: {

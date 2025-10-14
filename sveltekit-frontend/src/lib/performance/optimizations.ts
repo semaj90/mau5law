@@ -28,7 +28,7 @@ export class OptimizedQueries {
       WHERE row_num > ${offset} AND row_num <= ${offset + limit}
     `);
     return {
-      cases: result
+      cases: result,
       totalCount: result[0]?.total_count || 0,
       hasMore: Number(result[0]?.total_count || 0) > offset + limit
     }

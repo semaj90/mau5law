@@ -23,16 +23,16 @@ export const GET: RequestHandler = async ({ url }) => {
           url: 'http://localhost:6333',
           collectionName: 'legal_documents',
           vectorDimensions: 384,
-          enableBatching: true
-          enableSOMClustering: true
-          enableNESCache: true
-          memoryLimit: '32MB'
+          enableBatching: true,
+          enableSOMClustering: true,
+          enableNESCache: true,
+          memoryLimit: '32MB',
         }
         results.push({
           test: 'qdrant_config',
           status: 'success',
-          data: config
-          duration: Date.now() - startTime
+          data: config,
+          duration: Date.now() - startTime,
         })
       } catch (error: any) {
         results.push({
@@ -96,8 +96,8 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'memory_efficiency',
           status: 'success',
-          data: memoryStats
-          duration: Date.now() - startTime
+          data: memoryStats,
+          duration: Date.now() - startTime,
         })
       } catch (error: any) {
         results.push({
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       timestamp: new Date().toISOString(),
       service: 'qdrant_simple_test',
-      tests: results
+      tests: results,
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
@@ -125,9 +125,9 @@ export const GET: RequestHandler = async ({ url }) => {
       configuration: {
         vector_dimensions: 384,
         embedding_model: 'nomic-embed-text',
-        memory_efficient: true
-        clustering_enabled: true
-        caching_enabled: true
+        memory_efficient: true,
+        clustering_enabled: true,
+        caching_enabled: true,
       }
     })
   } catch (error: any) {

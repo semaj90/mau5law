@@ -1,22 +1,20 @@
 <script lang="ts">
-  import { getContext } from "svelte";
-  import { writable } from "svelte/store";
-  import type { SelectContext } from "./types";
+  import { getContext } from 'svelte';
+  import { writable } from 'svelte/store';
+  import type { SelectContext } from './types';
   interface Props {
     class_?: string;
     children?: import('svelte').Snippet;
   }
-  let {
-    class_ = "",
-    children
-  }: Props = $props();
+  let { class_ = '', children }: Props = $props();
   const context =
-    getContext<SelectContext>("select") ||
+    getContext<SelectContext>('select') ||
     ({
       open: writable(false),
       selected: writable(null),
       onSelect: () => {},
-      onToggle: () => {} } satisfies SelectContext);
+      onToggle: () => {},
+    } satisfies SelectContext);
   const { open } = context;
 </script>
 
@@ -28,7 +26,8 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
+<style>
+/* @unocss-include */ {}
   .select-content {
     position: absolute;
     top: 100%;

@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
   // Current step tracking
   let currentStep = $derived(
-    steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25),
+    steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25)
   );
   // File upload handler
   function handleFileUpload(event) {
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
       const reader = new FileReader();
       reader.onload = e => {
         evidenceContent = e.target?.result as string;
-      }
+      };
       reader.readAsText(evidenceFile);
     }
   }
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
           model: data.data?.model || 'gemma3-legal',
           processedAt: data.data?.processedAt,
         },
-      }
+      };
     } catch (err) {
       console.error('Evidence analysis error:', err);
       // Show fallback notice
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
           processingTime: '45 seconds',
           model: 'Legal Evidence AI v2.0 (Simulated)',
         },
-      }
+      };
       error = '';
     }
   }

@@ -5,20 +5,17 @@
     content?: string;
     placeholder?: string;
   }
-  let {
-    content = "",
-    placeholder = "Initialize data input..."
-  }: Props = $props();
+  let { content = '', placeholder = 'Initialize data input...' }: Props = $props();
 
-  import { Editor } from "@tiptap/core";
-  import StarterKit from "@tiptap/starter-kit";
+  import { Editor } from '@tiptap/core';
+  import StarterKit from '@tiptap/starter-kit';
 
   // Use InstanceType<typeof Editor> to get the Editor instance type from the runtime constructor
   let editor = $state<InstanceType<typeof Editor> | null>(null);
   let editorElement: HTMLElement | null = null;
 
   // Selected font for the editor (native select)
-  let selectedFont = $state<string>("Inter");
+  let selectedFont = $state<string>('Inter');
 
   $effect(() => {
     if (!editorElement) return;
@@ -29,10 +26,10 @@
       content,
       editorProps: {
         attributes: {
-          class: "nier-editor-content focus:outline-none",
-          placeholder: placeholder
-        }
-      }
+          class: 'nier-editor-content focus:outline-none',
+          placeholder: placeholder,
+        },
+      },
     });
 
     // apply initial selected font to ProseMirror container if present
@@ -57,9 +54,9 @@
   });
 
   const fontOptions = [
-    { value: "JetBrains Mono", label: "JetBrains Mono" },
-    { value: "Courier New", label: "Courier New" },
-    { value: "Inter", label: "Inter" }
+    { value: 'JetBrains Mono', label: 'JetBrains Mono' },
+    { value: 'Courier New', label: 'Courier New' },
+    { value: 'Inter', label: 'Inter' },
   ];
 </script>
 
@@ -68,20 +65,10 @@
   <div class="nier-toolbar">
     <div class="nier-toolbar-group">
       <!-- Replaced custom ButtonRoot with native button -->
-      <button
-        type="button"
-        class="nier-toolbar-btn bits-btn"
-        aria-label="Undo"
-        onclick={() => editor?.commands.undo()}
-      >
+      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Undo" onclick={() => editor?.commands.undo()}>
         ↶
       </button>
-      <button
-        type="button"
-        class="nier-toolbar-btn bits-btn"
-        aria-label="Redo"
-        onclick={() => editor?.commands.redo()}
-      >
+      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Redo" onclick={() => editor?.commands.redo()}>
         ↷
       </button>
     </div>

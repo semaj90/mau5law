@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        query: query
+        query: query,
         results: filteredResults.map(result => ({,
           id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
           manifest: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest,

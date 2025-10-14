@@ -1,7 +1,7 @@
 export class MultidimensionalRoutingMatrix {
   async calculateRoute(source: string, destination: string, context: any) {
     console.log('🗺️ Multidimensional routing matrix calculating route:', { source, destination });
-    return { path: [source, destination], cost: 1, optimized: true }
+    return { path: [source, destination], cost: 1, optimized: true };
   }
   async updateMatrix(routeData: any) {
     console.log('🔄 Multidimensional routing matrix update:', routeData);

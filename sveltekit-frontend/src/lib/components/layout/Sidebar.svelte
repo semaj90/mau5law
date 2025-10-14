@@ -45,7 +45,7 @@
     icon: any;
     current: boolean;
     badge?: string;
-  }
+  };
   let navigation = $derived([
     {
       name: '🎮 Command Center',
@@ -133,17 +133,13 @@
 
 <!-- Mobile backdrop -->
 {#if open}
-  <button
-    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-    onclick={closeSidebar}
-    aria-label="Close sidebar"
-  ></button>
+  <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" onclick={closeSidebar} aria-label="Close sidebar"></button>
 {/if}
 <!-- Sidebar -->
 <aside
   class={cn(
     'fixed top-0 left-0 z-50 h-full w-64 transform bg-nier-surface border-r border-nier-gray transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0',
-    open ? 'translate-x-0' : '-translate-x-full',
+    open ? 'translate-x-0' : '-translate-x-full'
   )}
 >
   <div class="flex h-full flex-col">
@@ -210,7 +206,7 @@
                 'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                 item.current
                   ? 'bg-harvard-crimson text-white shadow-nier-glow'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
+                  : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
               )}
               onclick={closeSidebar}
             >
@@ -218,7 +214,7 @@
                 <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
-                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
+                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
                 {item.name}
@@ -227,7 +223,7 @@
                 <span
                   class={cn(
                     'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-                    item.current ? 'bg-white/20 text-white' : 'bg-harvard-crimson text-white',
+                    item.current ? 'bg-white/20 text-white' : 'bg-harvard-crimson text-white'
                   )}
                 >
                   {item.badge}
@@ -251,14 +247,14 @@
                   'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
                     ? 'bg-harvard-crimson text-white shadow-nier-glow'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
+                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
                 onclick={closeSidebar}
               >
                 <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
-                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
+                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
                 {item.name}
@@ -279,7 +275,7 @@
                     'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                     item.current
                       ? 'bg-console-error text-white shadow-nier-glow'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20',
+                      : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20'
                   )}
                   onclick={closeSidebar}
                 >
@@ -287,7 +283,7 @@
                     <IconComponent
                       class={cn(
                         'mr-3 h-5 w-5 flex-shrink-0',
-                        item.current ? 'text-white' : 'text-console-error group-hover:text-foreground',
+                        item.current ? 'text-white' : 'text-console-error group-hover:text-foreground'
                       )}
                     />
                     {item.name}
@@ -296,7 +292,7 @@
                     <span
                       class={cn(
                         'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-                        item.current ? 'bg-white/20 text-white' : 'bg-console-error text-white',
+                        item.current ? 'bg-white/20 text-white' : 'bg-console-error text-white'
                       )}
                     >
                       {item.badge}
@@ -320,14 +316,14 @@
                   'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
                     ? 'bg-console-primary text-console-bg shadow-nier-glow'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
+                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
                 onclick={closeSidebar}
               >
                 <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
-                    item.current ? 'text-console-bg' : 'text-muted-foreground group-hover:text-foreground',
+                    item.current ? 'text-console-bg' : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
                 {item.name}
@@ -458,5 +454,5 @@
       opacity: 0;
       pointer-events: none;
     }
-}
+  }
 </style>

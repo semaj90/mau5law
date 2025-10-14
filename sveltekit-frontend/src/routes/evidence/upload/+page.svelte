@@ -12,7 +12,7 @@
     validateFileSize,
     validateFileType,
     generateMetadataFromFile,
-    type EvidenceMetadata
+    type EvidenceMetadata,
   } from '$lib/schemas/evidence-upload';
   import type { PageData } from './$types.js';
 
@@ -28,7 +28,7 @@
 
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
     validators: zod(evidenceUploadSchema),
-    resetForm: false
+    resetForm: false,
   });
 
   // Svelte 5 reactive state wrappers so updates correctly trigger reactivity
@@ -48,7 +48,11 @@
   async function handleFileSelect(file: File) {
     // revoke previous preview if present
     if (filePreview) {
-      try { URL.revokeObjectURL(filePreview); } catch { /* ignore */ }
+      try {
+        URL.revokeObjectURL(filePreview);
+      } catch {
+        /* ignore */
+      }
     }
     selectedFile = file;
     if (!validateFileSize(file)) {
@@ -111,7 +115,9 @@
   // Revoke preview when user removes file or component is destroyed
   onDestroy(() => {
     if (filePreview) {
-      try { URL.revokeObjectURL(filePreview); } catch {}
+      try {
+        URL.revokeObjectURL(filePreview);
+      } catch {}
       filePreview = null;
     }
   });
@@ -147,7 +153,9 @@
           <option value="">Choose a case...</option>
           {#each data.cases as caseItem}
             <option value={caseItem.id}>
-              {caseItem.case_number ? `${caseItem.case_number}: ` : ''}{caseItem.title}{caseItem.status !== 'active' ? ` (${caseItem.status})` : ''}
+              {caseItem.case_number ? `${caseItem.case_number}: ` : ''}{caseItem.title}{caseItem.status !== 'active'
+                ? ` (${caseItem.status})`
+                : ''}
             </option>
           {/each}
         </select>
@@ -167,13 +175,27 @@
 
     <div class="nes-field" style="margin: 15px 0;">
       <label for="description">📄 Description</label>
-      <textarea id="description" name="description" rows="3" class="nes-textarea" disabled={$submitting} bind:value={$form.description} placeholder="Brief description of the evidence..."></textarea>
+      <textarea
+        id="description"
+        name="description"
+        rows="3"
+        class="nes-textarea"
+        disabled={$submitting}
+        bind:value={$form.description}
+        placeholder="Brief description of the evidence..."
+      ></textarea>
     </div>
 
     <div class="nes-field" style="margin: 15px 0;">
       <label for="evidence_type">🗂️ Evidence Type</label>
       <div class="nes-select">
-        <select id="evidence_type" name="evidence_type" disabled={$submitting} bind:value={$form.evidence_type} onchange={onEvidenceTypeChange}>
+        <select
+          id="evidence_type"
+          name="evidence_type"
+          disabled={$submitting}
+          bind:value={$form.evidence_type}
+          onchange={onEvidenceTypeChange}
+        >
           <option value="UNKNOWN">🔍 Auto-detect from file</option>
           <option value="PDF">📄 PDF Document</option>
           <option value="IMAGE">🖼️ Image/Photo</option>
@@ -207,24 +229,63 @@
               {#if filePreview}
                 <img src={filePreview} alt="Preview" style="max-width: 240px; border-radius: 6px;" />
               {:else}
-                <div style="width:64px;height:64px;margin:0 auto;background:#f3f3f3;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                  <svg style="width:28px;height:28px;color:#9ca3af" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M9 12h6M9 16h6M7 21h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-5l-4-4H7a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <div
+                  style="width:64px;height:64px;margin:0 auto;background:#f3f3f3;border-radius:8px;display:flex;align-items:center;justify-content:center;"
+                >
+                  <svg
+                    style="width:28px;height:28px;color:#9ca3af"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M9 12h6M9 16h6M7 21h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-5l-4-4H7a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2z"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </div>
               {/if}
               <div>
                 <p style="font-weight:600;margin:0">{selectedFile.name}</p>
-                <p style="color:#6b7280;margin:0;font-size:0.9rem;">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
+                <p style="color:#6b7280;margin:0;font-size:0.9rem;">
+                  {formatFileSize(selectedFile.size)} • {selectedFile.type}
+                </p>
               </div>
-              <button type="button" onclick={() => { selectedFile = null; filePreview = null; metadata = null; }} class="nes-btn is-error" title="Remove uploaded file">Remove file</button>
+              <button
+                type="button"
+                onclick={() => {
+                  selectedFile = null;
+                  filePreview = null;
+                  metadata = null;
+                }}
+                class="nes-btn is-error"
+                title="Remove uploaded file">Remove file</button
+              >
             </div>
           {:else}
             <div class="space-y-4">
               <svg class="mx-auto" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
-              <p class="text-gray-600">Drag and drop your file here, or <label for="file" style="color:#00a0ff;cursor:pointer">click to browse<input id="file" name="file" type="file" class="sr-only" onchange={onFileChange} disabled={$submitting} /></label></p>
+              <p class="text-gray-600">
+                Drag and drop your file here, or <label for="file" style="color:#00a0ff;cursor:pointer"
+                  >click to browse<input
+                    id="file"
+                    name="file"
+                    type="file"
+                    class="sr-only"
+                    onchange={onFileChange}
+                    disabled={$submitting}
+                  /></label
+                >
+              </p>
               <p style="font-size:0.85rem;color:#6b7280;margin:0;">Maximum file size: 100MB</p>
             </div>
           {/if}
@@ -237,7 +298,15 @@
     {:else}
       <div class="nes-field" style="margin: 15px 0;">
         <label for="link_url">URL *</label>
-        <input id="link_url" name="link_url" type="url" required disabled={$submitting} bind:value={$form.link_url} placeholder="https://example.com/document" />
+        <input
+          id="link_url"
+          name="link_url"
+          type="url"
+          required
+          disabled={$submitting}
+          bind:value={$form.link_url}
+          placeholder="https://example.com/document"
+        />
         {#if hasError('link_url')}
           <p class="mt-1" style="color:#dc3545;">{getError('link_url')}</p>
         {/if}
@@ -247,7 +316,14 @@
     <!-- Minimal enhanced fields -->
     <div style="margin: 15px 0;">
       <label for="tags">Tags (comma-separated)</label>
-      <input id="tags" name="tags" type="text" disabled={$submitting} bind:value={$form.tags} placeholder="e.g., contract, confidential" />
+      <input
+        id="tags"
+        name="tags"
+        type="text"
+        disabled={$submitting}
+        bind:value={$form.tags}
+        placeholder="e.g., contract, confidential"
+      />
     </div>
 
     {#if metadata}

@@ -174,7 +174,8 @@
           <div class="w-full h-10 bg-gray-100 animate-pulse rounded-md"></div>
         {:else}
           <Dropdown
-            id="automationTypeSelect";
+            id="automationTypeSelect"
+            ;
             bind:selected={selectedAutomationType}
             options={automationTypeOptions}
             placeholder="Select automation type..."
@@ -226,7 +227,8 @@
             <label for="batchSize" class="block text-sm font-medium text-gray-700"> Batch Size </label>
             <input
               id="batchSize"
-              type="number";
+              type="number"
+              ;
               bind:value={batchSize}
               min="1"
               max="100"

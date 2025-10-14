@@ -145,8 +145,8 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
         status: flashStatus
       },
       errorProcessor: {
-        available: true
-        cacheStats: errorStats
+        available: true,
+        cacheStats: errorStats,
       },
       overall: {
         healthy: integrationScore > 0.7,
@@ -269,9 +269,9 @@ async function handleLegalAnalysis(body: any): Promise<any> {
     const [gpuResult, wasmResult] = await Promise.allSettled([
       gpuServiceIntegration.processLegalText(text, context, analysisType),
       llvmWasmBridge.processLegalText(text, {
-        extractCitations: true
-        analyzePrecedents: true
-        riskAssessment: false
+        extractCitations: true,
+        analyzePrecedents: true,
+        riskAssessment: false,
       })
     ])
     const response: any = {

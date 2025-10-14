@@ -46,7 +46,7 @@ export class AdvisoryLockService {
   /**
    * Generate a numeric lock ID from entity type and ID
    * PostgreSQL advisory locks require numeric IDs
-   */;
+   */
   private generateLockId(entityType: LockType, entityId: string): number {
     // Create a hash of the entity type and ID
     const str = `${entityType}:${entityId}`;
@@ -63,8 +63,8 @@ export class AdvisoryLockService {
    * Blocks until lock is available or timeout
    */
   async acquireLock(
-    entityType: LockType
-    entityId: string
+    entityType: LockType,
+    entityId: string,
     mode: LockMode = LOCK_MODES.EXCLUSIVE,
     options: LockOptions = {}
   ): Promise<LockInfo | null> {
@@ -109,7 +109,7 @@ export class AdvisoryLockService {
         userId,
         sessionId,
         acquiredAt: new Date(),
-        expiresAt: timeout ? new Date(Date.now() + timeout) : undefined
+        expiresAt: timeout ? new Date(Date.now() + timeout) : undefined,
         metadata
       }
       // Store lock info for tracking
@@ -125,8 +125,8 @@ export class AdvisoryLockService {
    * Release an advisory lock
    */
   async releaseLock(
-    entityType: LockType
-    entityId: string
+    entityType: LockType,
+    entityId: string,
     mode: LockMode = LOCK_MODES.EXCLUSIVE;
   ): Promise<boolean> {
     const lockKey = `${entityType}:${entityId}:${mode}`;
@@ -161,8 +161,8 @@ export class AdvisoryLockService {
    * Execute a function with an exclusive lock
    */
   async withLock<T>(
-    entityType: LockType
-    entityId: string
+    entityType: LockType,
+    entityId: string,
     fn: () => Promise<T>,
     mode: LockMode = LOCK_MODES.EXCLUSIVE,
     options: LockOptions = {}
@@ -179,7 +179,7 @@ export class AdvisoryLockService {
   }
   /**
    * Check if an entity is currently locked
-   */;
+   */
   async isLocked(entityType: LockType, entityId: string, mode?: LockMode): Promise<boolean> {
     const numericLockId = this.generateLockId(entityType, entityId);
     try {
@@ -208,7 +208,7 @@ export class AdvisoryLockService {
   }
   /**
    * Get information about current locks
-   */;
+   */
   async getLockInfo(entityType?: LockType, entityId?: string): Promise<LockInfo[]> {
     if (entityType && entityId) {
       const lockKey = `${entityType}:${entityId}`;
@@ -221,7 +221,7 @@ export class AdvisoryLockService {
   }
   /**
    * Release all locks held by a session
-   */;
+   */
   async releaseSessionLocks(sessionId: string): Promise<number> {
     let releasedCount = 0;
     for (const [key, lockInfo] of this.locks.entries()) {
@@ -242,7 +242,7 @@ export class AdvisoryLockService {
   }
   /**
    * Health check - clean up expired locks
-   */;
+   */
   async healthCheck(): Promise<any> {
     const now = new Date();
     let active = 0;

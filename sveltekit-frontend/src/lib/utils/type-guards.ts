@@ -214,9 +214,9 @@ export function discriminateWorkerMessage(message: WorkerMessage): {
   apiResponse?: APIResponse<any>;
 } {
   const result = {
-    isAITask: false
-    isWorkerStatus: false
-    isAPIResponse: false
+    isAITask: false,
+    isWorkerStatus: false,
+    isAPIResponse: false,
   } as any;
   if (message.payload) {
     if (isAITask(message.payload)) {

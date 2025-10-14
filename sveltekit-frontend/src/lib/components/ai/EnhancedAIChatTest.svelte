@@ -443,7 +443,8 @@ if (browser) {
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Custom styles for enhanced appearance */ {}
+<style>
+/* Custom styles for enhanced appearance */ {}
   :global(.chat-message-content) {
     line-height: 1.6;
   }

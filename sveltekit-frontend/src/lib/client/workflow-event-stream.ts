@@ -254,16 +254,16 @@ export function createWorkflowStore(sessionId: string): {
   const stream = new WorkflowEventStream(sessionId);
 
   // Register listeners for all event types
-  stream.on('SSE_CONNECTED', (event) => {
-    update((state) => ({
+  stream.on('SSE_CONNECTED', event => {
+    update(state => ({
       ...state,
       connected: true,
       lastEvent: event,
     }));
   });
 
-  stream.on('SSE_ERROR', (event) => {
-    update((state) => ({
+  stream.on('SSE_ERROR', event => {
+    update(state => ({
       ...state,
       connected: false,
       errors: [...state.errors, event.error || 'Unknown error'],
@@ -285,9 +285,9 @@ export function createWorkflowStore(sessionId: string): {
     'WORKFLOW_ERROR',
   ];
 
-  workflowEventTypes.forEach((eventType) => {
-    stream.on(eventType, (event) => {
-      update((state) => ({
+  workflowEventTypes.forEach(eventType => {
+    stream.on(eventType, event => {
+      update(state => ({
         ...state,
         events: [...state.events, event],
         lastEvent: event,

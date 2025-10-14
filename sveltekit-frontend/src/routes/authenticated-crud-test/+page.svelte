@@ -60,10 +60,10 @@
       failed,
       warnings,
       successRate: total > 0 ? ((passed / total) * 100).toFixed(1) : '0',
-    }
+    };
   });
   function addResult(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
-    const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' }
+    const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' };
     const timestamp = new Date().toLocaleTimeString();
     testResults = [...testResults, `[${timestamp}] ${icons[type]} ${message}`];
   }
@@ -84,7 +84,7 @@
       const response = await fetch('/api/auth/session', { credentials: 'include' });
       const data = await readJson(response);
 
-      if (response.status === 401 || (!data || !data.user)) {
+      if (response.status === 401 || !data || !data.user) {
         isAuthenticated = false;
         currentUser = null;
         authError = 'Authentication required - please log in';
@@ -143,7 +143,7 @@
       const response = await fetch('/api/auth/session', { credentials: 'include' });
       const data = await readJson(response);
 
-      if (response.status === 401 || (!data || !data.user)) {
+      if (response.status === 401 || !data || !data.user) {
         isAuthenticated = false;
         currentUser = null;
         authError = 'Authentication required - please log in';
@@ -211,7 +211,7 @@
         if (singleResponse.ok && singleData.success) {
           addResult(
             `GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`,
-            'success',
+            'success'
           );
         } else {
           addResult(`GET specific case - Failed: ${singleData.error || singleData.message}`, 'error');
@@ -248,27 +248,15 @@
         return null;
       }
       if (response.ok && data.success) {
-        addResult(
-          `POST /api/test-cases - Success (ID: ${data.data?.id})`,
-          'success',
-        );
-        addResult(
-          `Embedding generated: ${data.data?.hasEmbedding ? 'Yes' : 'No'}`,
-          'info',
-        );
-        addResult(
-          `Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`,
-          'info',
-        );
+        addResult(`POST /api/test-cases - Success (ID: ${data.data?.id})`, 'success');
+        addResult(`Embedding generated: ${data.data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
+        addResult(`Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`, 'info');
         // Refresh cases list
         await testAuthenticatedGET();
         isLoading = false;
         return data.data.id;
       } else {
-        addResult(
-          `POST /api/test-cases - Failed: ${data.message || data.error}`,
-          'error',
-        );
+        addResult(`POST /api/test-cases - Failed: ${data.message || data.error}`, 'error');
         if ((data as any).details) {
           addResult(`   Details: ${JSON.stringify((data as any).details)}`, 'error');
         }
@@ -304,7 +292,7 @@
           timestamp: Date.now(),
           updatedViaTest: true,
         },
-      }
+      };
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'PUT',
         credentials: 'include',
@@ -325,25 +313,16 @@
       }
       if (response.ok && data.success) {
         addResult(`PUT /api/test-cases - Success`, 'success');
-        addResult(
-          `New embedding generated: ${data.data?.hasNewEmbedding ? 'Yes' : 'No'}`,
-          'info',
-        );
-        addResult(
-          `Updated by: ${data.data?.updatedBy?.name || data.data?.updatedBy?.email}`,
-          'info',
-        );
+        addResult(`New embedding generated: ${data.data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
+        addResult(`Updated by: ${data.data?.updatedBy?.name || data.data?.updatedBy?.email}`, 'info');
         addResult(
           `Changed fields: ${Array.isArray(data.data?.changedFields) ? data.data.changedFields.join(', ') : ''}`,
-          'info',
+          'info'
         );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(
-          `PUT /api/test-cases - Failed: ${data.message || data.error}`,
-          'error',
-        );
+        addResult(`PUT /api/test-cases - Failed: ${data.message || data.error}`, 'error');
       }
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
@@ -382,21 +361,15 @@
       }
       if (response.ok && data.success) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
-        addResult(
-          `Deleted by: ${data.data?.deletedBy?.name || data.data?.deletedBy?.email}`,
-          'info',
-        );
+        addResult(`Deleted by: ${data.data?.deletedBy?.name || data.data?.deletedBy?.email}`, 'info');
         addResult(
           `Related data cleaned: timeline(${data.data?.relatedDataDeleted?.timeline}), activities(${data.data?.relatedDataDeleted?.activities}), docs(${data.data?.relatedDataDeleted?.documents})`,
-          'info',
+          'info'
         );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(
-          `DELETE /api/test-cases - Failed: ${data.message || data.error}`,
-          'error',
-        );
+        addResult(`DELETE /api/test-cases - Failed: ${data.message || data.error}`, 'error');
       }
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');

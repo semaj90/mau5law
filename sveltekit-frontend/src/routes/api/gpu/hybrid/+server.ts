@@ -63,17 +63,17 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
       }
       return {
         [name]: {
-          service: name
-          healthy: isHealthy
-          response_time: responseTime
+          service: name,
+          healthy: isHealthy,
+          response_time: responseTime,
           load
         }
       }
     } catch (error: any) {
       return {
         [name]: {
-          service: name
-          healthy: false
+          service: name,
+          healthy: false,
           response_time: 999999,
           load: 100
         }
@@ -87,7 +87,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
  * Intelligently route request to optimal GPU service
  */
 function selectOptimalService(;
-  request: GPURequest
+  request: GPURequest,
   healthStatus: Record<string, ServiceHealthStatus>
 ): string {
   // Filter healthy services
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
     const systemStatus = {
       status: 'hybrid_gpu_system',
       timestamp: new Date().toISOString(),
-      services: healthStatus
+      services: healthStatus,
       configuration: {
         total_services: Object.keys(GPU_SERVICES).length,
         healthy_services: Object.values(healthStatus).filter(item => item.length),
@@ -209,9 +209,9 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       result,
       metadata: {
-        service_used: serviceName
-        service_url: selectedService
-        execution_time_ms: executionTime
+        service_used: serviceName,
+        service_url: selectedService,
+        execution_time_ms: executionTime,
         operation: gpuRequest.operation,
         priority: gpuRequest.priority,
         timestamp: new Date().toISOString()

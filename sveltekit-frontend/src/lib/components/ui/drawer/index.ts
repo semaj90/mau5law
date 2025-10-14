@@ -8,11 +8,11 @@ export { default as DrawerTrigger } from './drawer-trigger.svelte';
 export type DrawerProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-}
+};
 export type DrawerContentProps = {
   class?: string;
-}
+};
 export type DrawerTriggerProps = {
   class?: string;
   asChild?: boolean;
-}
+};

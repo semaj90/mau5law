@@ -17,7 +17,7 @@ export function apiSuccess<T>(data: T, status = 200): Response {
     {
       success: true,
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     },
     { status }
   );
@@ -29,7 +29,7 @@ export function apiError(error: string | object, status = 500, requestId?: strin
       success: false,
       error,
       timestamp: Date.now(),
-      requestId
+      requestId,
     },
     { status }
   );
@@ -54,10 +54,10 @@ export const apiResponses = {
   badGateway: (error = 'Bad gateway') => apiError(error, 502),
   serviceUnavailable: (error = 'Service unavailable') => apiError(error, 503),
   // 2xx Success
-  ok: <T,>(data: T) => apiSuccess<T>(data, 200),
-  created: <T,>(data: T) => apiSuccess<T>(data, 201),
-  accepted: <T,>(data: T) => apiSuccess<T>(data, 202),
-  noContent: () => new Response(null, { status: 204 })
+  ok: <T>(data: T) => apiSuccess<T>(data, 200),
+  created: <T>(data: T) => apiSuccess<T>(data, 201),
+  accepted: <T>(data: T) => apiSuccess<T>(data, 202),
+  noContent: () => new Response(null, { status: 204 }),
 };
 
 /**
@@ -80,9 +80,12 @@ export const legalApiResponses = {
   invalidCaseData: (details: object) => apiError({ message: 'Invalid case data', details }, 422),
   invalidEvidenceFormat: (format: string) => apiError(`Unsupported evidence format: ${format}`, 400),
   // Success responses (made generic)
-  caseCreated: <T,>(caseData: T) => apiSuccess<{ case: T; message: string }>({ case: caseData, message: 'Case created successfully' }, 201),
-  evidenceProcessed: <T,>(result: T) => apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
-  aiAnalysisComplete: <T,>(analysis: T) => apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200)
+  caseCreated: <T>(caseData: T) =>
+    apiSuccess<{ case: T; message: string }>({ case: caseData, message: 'Case created successfully' }, 201),
+  evidenceProcessed: <T>(result: T) =>
+    apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
+  aiAnalysisComplete: <T>(analysis: T) =>
+    apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200),
 };
 
 /**
@@ -100,7 +103,9 @@ export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: P
       const err = error as { name?: string; details?: unknown; message?: string };
 
       if (err.name === 'ValidationError') {
-        return apiResponses.validationFailed((err.details as object) ?? { message: err.message ?? 'Validation failed' });
+        return apiResponses.validationFailed(
+          (err.details as object) ?? { message: err.message ?? 'Validation failed' }
+        );
       }
       if (err.name === 'UnauthorizedError') {
         return apiResponses.unauthorized(err.message ?? 'Unauthorized');
@@ -119,8 +124,11 @@ export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: P
 /**
  * Request validation helper
  */
-export function validateRequest(data: Record<string, unknown> | null | undefined, requiredFields: string[]): string | null {
-  const missing = requiredFields.filter((field) => {
+export function validateRequest(
+  data: Record<string, unknown> | null | undefined,
+  requiredFields: string[]
+): string | null {
+  const missing = requiredFields.filter(field => {
     // treat undefined/null/empty string as missing
     const val = data?.[field];
     return val === undefined || val === null || (typeof val === 'string' && val.trim() === '');
@@ -141,7 +149,7 @@ export function paginatedResponse<T>(data: T[], total: number, page: number, lim
       total,
       pages,
       hasNext: page * limit < total,
-      hasPrev: page > 1
-    }
+      hasPrev: page > 1,
+    },
   });
 }

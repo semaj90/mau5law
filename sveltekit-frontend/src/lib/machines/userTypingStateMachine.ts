@@ -339,7 +339,7 @@ export const userTypingStateMachine = createMachine({
         mcpWorkerStatus: 'processing'
       }),
       invoke: {
-        src: processContextualContent
+        src: processContextualContent,
         input: ({ context }) => ({
           text: context.currentText,
           context
@@ -377,7 +377,7 @@ export const userTypingStateMachine = createMachine({
         mcpWorkerStatus: 'processing'
       }),
       invoke: {
-        src: processContextualContent
+        src: processContextualContent,
         input: ({ context }) => ({
           text: context.currentText,
           context

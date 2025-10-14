@@ -1,6 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
-const LANGEXTRACT_BASE = process.env.LANGEXTRACT_URL ? process.env.LANGEXTRACT_URL.replace(/\/analyze$/, '') : 'http://localhost:8081';
+const LANGEXTRACT_BASE = process.env.LANGEXTRACT_URL
+  ? process.env.LANGEXTRACT_URL.replace(/\/analyze$/, '')
+  : 'http://localhost:8081';
 const LANGEXTRACT_PREDICT = `${LANGEXTRACT_BASE}/predict`;
 
 export const GET: RequestHandler = async ({ url }) => {

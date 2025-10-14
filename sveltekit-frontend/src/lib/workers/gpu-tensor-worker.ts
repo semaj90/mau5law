@@ -40,8 +40,8 @@ class GPUTensorWorker {
     totalProcessed: 0,
     cacheHitRate: 0,
     averageProcessingTime: 0,
-    webgpuSupported: false
-    lastProcessedTime: 0
+    webgpuSupported: false,
+    lastProcessedTime: 0,
   }
   private goServiceUrl = 'http://localhost:8095'; // GPU tensor service
     async initialize(): Promise<boolean> {
@@ -213,8 +213,8 @@ class GPUTensorWorker {
       this.computePipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule
-          entryPoint: 'main'
+          module: shaderModule,
+          entryPoint: 'main',
         }
       });
     }
@@ -292,7 +292,7 @@ class GPUTensorWorker {
     resultBuffer.destroy();
     return {
       ...tensorData,
-      data: processedData
+      data: processedData,
       layout: 'webgpu_processed',
       timestamp: Date.now()
     }

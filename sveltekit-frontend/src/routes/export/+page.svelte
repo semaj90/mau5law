@@ -52,7 +52,7 @@
               }
             : undefined,
         caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined,
-      }
+      };
       const response = await fetch('/api/export', {
         method: 'POST',
         headers: {

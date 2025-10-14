@@ -44,13 +44,13 @@ export const canvasEditorMachine = createMachine({
     historyIndex: -1,
     error: null,
     isCollaborating: false,
-    lastSaved: null
+    lastSaved: null,
   } as CanvasEditorContext,
   states: {
     idle: {
       on: {
-        CANVAS_INITIALIZED: 'ready'
-      }
+        CANVAS_INITIALIZED: 'ready',
+      },
     },
     ready: {
       type: 'parallel',
@@ -63,28 +63,28 @@ export const canvasEditorMachine = createMachine({
                 SELECT_OBJECT: {
                   target: 'selected',
                   actions: assign({
-                    selectedObjects: ({ event }) => [event.object]
-                  })
-                }
-              }
+                    selectedObjects: ({ event }) => [event.object],
+                  }),
+                },
+              },
             },
             selected: {
               on: {
                 SELECT_OBJECT: {
                   target: 'selected',
                   actions: assign({
-                    selectedObjects: ({ event }) => [event.object]
-                  })
+                    selectedObjects: ({ event }) => [event.object],
+                  }),
                 },
                 DESELECT: {
                   target: 'none',
                   actions: assign({
-                    selectedObjects: []
-                  })
-                }
-              }
-            }
-          }
+                    selectedObjects: [],
+                  }),
+                },
+              },
+            },
+          },
         },
         history: {
           initial: 'idle',
@@ -98,31 +98,30 @@ export const canvasEditorMachine = createMachine({
                       newHistory.push(event.state);
                       return newHistory;
                     },
-                    historyIndex: ({ context }) => context.historyIndex + 1
-                  })
+                    historyIndex: ({ context }) => context.historyIndex + 1,
+                  }),
                 },
                 UNDO: {
                   actions: assign({
-                    historyIndex: ({ context }) => Math.max(0, context.historyIndex - 1)
-                  })
+                    historyIndex: ({ context }) => Math.max(0, context.historyIndex - 1),
+                  }),
                 },
                 REDO: {
                   actions: assign({
-                    historyIndex: ({ context }) =>
-                      Math.min(context.history.length - 1, context.historyIndex + 1)
-                  })
-                }
-              }
-            }
-          }
+                    historyIndex: ({ context }) => Math.min(context.history.length - 1, context.historyIndex + 1),
+                  }),
+                },
+              },
+            },
+          },
         },
         saving: {
           initial: 'idle',
           states: {
             idle: {
               on: {
-                SAVE_START: 'saving'
-              }
+                SAVE_START: 'saving',
+              },
             },
             saving: {
               on: {
@@ -131,23 +130,23 @@ export const canvasEditorMachine = createMachine({
                   actions: assign({
                     canvasState: ({ event }) => event.state,
                     lastSaved: () => new Date(),
-                    error: null
-                  })
+                    error: null,
+                  }),
                 },
                 SAVE_ERROR: {
                   target: 'error',
                   actions: assign({
-                    error: ({ event }) => event.error?.message || 'Save failed'
-                  })
-                }
-              }
+                    error: ({ event }) => event.error?.message || 'Save failed',
+                  }),
+                },
+              },
             },
             error: {
               on: {
-                SAVE_START: 'saving'
-              }
-            }
-          }
+                SAVE_START: 'saving',
+              },
+            },
+          },
         },
         collaboration: {
           initial: 'disabled',
@@ -157,18 +156,18 @@ export const canvasEditorMachine = createMachine({
                 COLLABORATION_ENABLED: {
                   target: 'enabled',
                   actions: assign({
-                    isCollaborating: true
-                  })
-                }
-              }
+                    isCollaborating: true,
+                  }),
+                },
+              },
             },
             enabled: {
               on: {
                 COLLABORATION_DISABLED: {
                   target: 'disabled',
                   actions: assign({
-                    isCollaborating: false
-                  })
+                    isCollaborating: false,
+                  }),
                 },
                 REMOTE_CHANGE: {
                   actions: assign({
@@ -176,27 +175,27 @@ export const canvasEditorMachine = createMachine({
                     canvasState: ({ context, event }) => {
                       // Merge remote changes
                       return { ...context.canvasState, ...event.change };
-                    }
-                  })
-                }
-              }
-            }
-          }
-        }
+                    },
+                  }),
+                },
+              },
+            },
+          },
+        },
       },
       on: {
         STATE_LOADED: {
           actions: assign({
-            canvasState: ({ event }) => event.state
-          })
+            canvasState: ({ event }) => event.state,
+          }),
         },
         TOOL_CHANGED: {
           // Tool changes don't affect state, just trigger side effects
         },
         TAGS_GENERATED: {
           // Tags are handled in component state
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 });

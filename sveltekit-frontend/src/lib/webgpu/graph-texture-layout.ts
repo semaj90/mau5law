@@ -218,7 +218,7 @@ export class GraphTextureManager {
   }
   /**
    * Load graph data with optimal memory layout
-   */;
+   */
   async loadGraphData(bounds?: { x: number; y: number; width: number; height: number }): Promise<void> {
     if (!this.device) await this.initialize();
     // Load nodes and edges from database
@@ -241,7 +241,7 @@ export class GraphTextureManager {
       level: 0,
       bounds: bounds || { x: 0, y: 0, width: 1000, height: 1000 },
       nodeCount: nodes.length,
-      loaded: true
+      loaded: true,
       gpuData
     }
     this.lodLevels.push(lodLevel);
@@ -252,7 +252,7 @@ export class GraphTextureManager {
    */
   private async createGPUDataStructures(
     nodes: GraphNode[];
-    edges: GraphEdge[]
+    edges: GraphEdge[],
     memoryLayout: Map<string, number>;
   ): Promise<GPUTextureData> {
     if (!this.device) throw new Error('WebGPU device not initialized');
@@ -393,7 +393,7 @@ export class GraphTextureManager {
   }
   /**
    * Stream new data based on viewport changes (LOD system)
-   */;
+   */
   async updateViewport(bounds: { x: number; y: number; width: number; height: number }): Promise<void> {
     this.currentViewport = bounds;
     // Check if we need to load new data
@@ -410,7 +410,7 @@ export class GraphTextureManager {
   }
   /**
    * Create compute shader for graph traversal
-   */;
+   */
   createGraphTraversalShader(): string {
     return `;
       struct NodeData {
@@ -466,7 +466,7 @@ export class GraphTextureManager {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getPerformanceStats() {
     return {
       lodLevels: this.lodLevels.length,
@@ -481,7 +481,7 @@ export class GraphTextureManager {
   }
   /**
    * Cleanup GPU resources
-   */;
+   */
   async cleanup(): Promise<void> {
     for (const level of this.lodLevels) {
       if (level.gpuData) {

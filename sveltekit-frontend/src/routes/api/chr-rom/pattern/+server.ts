@@ -139,14 +139,14 @@ async function handleBatchPatterns(data: any, startTime: number) {
     success: true,
     operation: 'get_batch',
     result: {
-      patterns: batchResults
+      patterns: batchResults,
       statistics: {
         total: batchResults.length,
         cacheHits,
         hitRate: cacheHits / batchResults.length,
-        avgLatency: avgLatency
+        avgLatency: avgLatency,
         fastestResponse: Math.min(...batchResults.map(r => r.latency)),
-        slowestResponse: Math.max(...batchResults.map(r => r.latency)
+        slowestResponse: Math.max(...batchResults.map(r => r.latency),
       }
     },
     total_latency: performance.now() - startTime
@@ -200,8 +200,8 @@ async function handleGetStats(startTime: number) {
   return json({
     success: true,
     operation: 'get_stats',
-    result: enhancedStats
-    total_latency: performance.now() - startTime
+    result: enhancedStats,
+    total_latency: performance.now() - startTime,
   })
 }
 /**

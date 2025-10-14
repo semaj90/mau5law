@@ -18,9 +18,15 @@ export { default as goMicroserviceMachine } from './enhanced-legal-case-machine'
 
 // Define specific data interfaces for each AI task type
 // These can be expanded with actual properties as needed.
-export interface AnalysisData { /* Add specific properties for analysis tasks here */ }
-export interface ProcessingData { /* Add specific properties for processing tasks here */ }
-export interface SearchData { /* Add specific properties for search tasks here */ }
+export interface AnalysisData {
+  /* Add specific properties for analysis tasks here */
+}
+export interface ProcessingData {
+  /* Add specific properties for processing tasks here */
+}
+export interface SearchData {
+  /* Add specific properties for search tasks here */
+}
 
 // Union type for all possible AI task data types
 export type AITaskPayload = AnalysisData | ProcessingData | SearchData;
@@ -55,4 +61,3 @@ export type { SearchContext } from './search-machine';
 export type { AIAnalysisContext } from './ai-analysis-machine';
 
 // NOTE: file touched to trigger Vite rebuild after machine cleanup
-

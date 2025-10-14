@@ -31,7 +31,7 @@
     theme = 'yorha',
     onFileClick,
     onFileHover,
-    children
+    children,
   }: Props = $props();
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
@@ -67,8 +67,8 @@
       warning: '#ff6b35',
       danger: '#ff0041',
       border: '#b0b0b0',
-    }
-  }
+    },
+  };
   const currentTheme = $derived(themes[theme]);
   onMount(() => {
     if (!canvas) return;
@@ -80,7 +80,7 @@
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    }
+    };
   });
   function setupCanvas() {
     if (!canvas || !ctx) return;
@@ -110,39 +110,64 @@
     if ((file.fileSize || 0) > 10000000) risk += 20;
     // Risk from confidentiality level
     switch (file.confidentialityLevel) {
-      case 'classified': risk += 40; break;
-      case 'confidential': risk += 25; break;
-      case 'restricted': risk += 15; break;
-      default: risk += 0;
+      case 'classified':
+        risk += 40;
+        break;
+      case 'confidential':
+        risk += 25;
+        break;
+      case 'restricted':
+        risk += 15;
+        break;
+      default:
+        risk += 0;
     }
     // Risk from chain of custody issues
     if (!file.chainOfCustody) risk += 30;
     // Risk from evidence type
     switch (file.evidenceType) {
-      case 'digital': risk += 10; break;
-      case 'witness': risk += 15; break;
-      case 'forensic': risk += 5; break;
-      default: risk += 0;
+      case 'digital':
+        risk += 10;
+        break;
+      case 'witness':
+        risk += 15;
+        break;
+      case 'forensic':
+        risk += 5;
+        break;
+      default:
+        risk += 0;
     }
     return Math.min(risk + Math.random() * 15, 100);
   }
   function getEvidenceColor(evidenceType: string): string {
     switch (evidenceType) {
-      case 'forensic': return currentTheme.success;
-      case 'document': return currentTheme.accent;
-      case 'witness': return currentTheme.warning;
-      case 'digital': return '#00ccff';
-      case 'physical': return '#9c88ff';
-      default: return currentTheme.text;
+      case 'forensic':
+        return currentTheme.success;
+      case 'document':
+        return currentTheme.accent;
+      case 'witness':
+        return currentTheme.warning;
+      case 'digital':
+        return '#00ccff';
+      case 'physical':
+        return '#9c88ff';
+      default:
+        return currentTheme.text;
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'verified': return currentTheme.success;
-      case 'pending': return currentTheme.warning;
-      case 'disputed': return currentTheme.danger;
-      case 'archived': return currentTheme.border;
-      default: return currentTheme.text;
+      case 'verified':
+        return currentTheme.success;
+      case 'pending':
+        return currentTheme.warning;
+      case 'disputed':
+        return currentTheme.danger;
+      case 'archived':
+        return currentTheme.border;
+      default:
+        return currentTheme.text;
     }
   }
   function renderScene() {
@@ -195,7 +220,7 @@
       const isHovered = hoveredFile?.id === file.id;
       const isSelected = selectedFile?.id === file.id;
       // File container background
-      const bgAlpha = isHovered ? '40' : (isSelected ? '30' : '20');
+      const bgAlpha = isHovered ? '40' : isSelected ? '30' : '20';
       ctx.fillStyle = currentTheme.accent + bgAlpha;
       ctx.fillRect(padding, y, width - padding * 2, itemHeight - 5);
       // Risk indicator bar
@@ -291,7 +316,7 @@
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
       chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length,
-    }
+    };
     // Stats background
     ctx.fillStyle = currentTheme.background + 'E0';
     ctx.fillRect(width - 200, 10, 190, 130);
@@ -363,57 +388,57 @@
     }
   }
   // Generate sample data if none provided
-    $effect(() => {
-      if (caseFiles.length === 0) {
-        const sampleFiles: CaseFile[] = [
-          {
-            id: 'EV001',
-            title: 'Crime Scene Photos',
-            evidenceType: 'forensic',
-            status: 'verified',
-            riskScore: 25,
-            chainOfCustody: true,
-            confidentialityLevel: 'restricted',
-            fileSize: 15728640,
-            createdAt: new Date('2024-01-15'),
-          },
-          {
-            id: 'EV002',
-            title: 'Witness Statement - John Doe',
-            evidenceType: 'witness',
-            status: 'pending',
-            riskScore: 45,
-            chainOfCustody: true,
-            confidentialityLevel: 'confidential',
-            fileSize: 2097152,
-            createdAt: new Date('2024-01-16'),
-          },
-          {
-            id: 'EV003',
-            title: 'Digital Communications Log',
-            evidenceType: 'digital',
-            status: 'disputed',
-            riskScore: 75,
-            chainOfCustody: false,
-            confidentialityLevel: 'classified',
-            fileSize: 52428800,
-            createdAt: new Date('2024-01-17'),
-          },
-          {
-            id: 'EV004',
-            title: 'Contract Agreement Document',
-            evidenceType: 'document',
-            status: 'verified',
-            riskScore: 35,
-            chainOfCustody: true,
-            confidentialityLevel: 'public',
-            fileSize: 1048576,
-            createdAt: new Date('2024-01-18'),
-          }
-        ];
-        caseFiles = sampleFiles;
-      }
-    });
+  $effect(() => {
+    if (caseFiles.length === 0) {
+      const sampleFiles: CaseFile[] = [
+        {
+          id: 'EV001',
+          title: 'Crime Scene Photos',
+          evidenceType: 'forensic',
+          status: 'verified',
+          riskScore: 25,
+          chainOfCustody: true,
+          confidentialityLevel: 'restricted',
+          fileSize: 15728640,
+          createdAt: new Date('2024-01-15'),
+        },
+        {
+          id: 'EV002',
+          title: 'Witness Statement - John Doe',
+          evidenceType: 'witness',
+          status: 'pending',
+          riskScore: 45,
+          chainOfCustody: true,
+          confidentialityLevel: 'confidential',
+          fileSize: 2097152,
+          createdAt: new Date('2024-01-16'),
+        },
+        {
+          id: 'EV003',
+          title: 'Digital Communications Log',
+          evidenceType: 'digital',
+          status: 'disputed',
+          riskScore: 75,
+          chainOfCustody: false,
+          confidentialityLevel: 'classified',
+          fileSize: 52428800,
+          createdAt: new Date('2024-01-17'),
+        },
+        {
+          id: 'EV004',
+          title: 'Contract Agreement Document',
+          evidenceType: 'document',
+          status: 'verified',
+          riskScore: 35,
+          chainOfCustody: true,
+          confidentialityLevel: 'public',
+          fileSize: 1048576,
+          createdAt: new Date('2024-01-18'),
+        },
+      ];
+      caseFiles = sampleFiles;
+    }
+  });
   // Update canvas size when dimensions change
   $effect(() => {
     if (canvas) {
@@ -556,7 +581,7 @@
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-/* Animation for canvas */
+  /* Animation for canvas */
   .canvas-wrapper {
     animation: borderGlow 4s ease-in-out infinite alternate;
   }
@@ -568,7 +593,7 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
   }
-/* Responsive design */
+  /* Responsive design */
   @media (max-width: 768px) {
     .controls-panel {
       flex-direction: column;

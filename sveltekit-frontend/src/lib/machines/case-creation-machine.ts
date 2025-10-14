@@ -9,7 +9,7 @@ export interface CaseCreationContext {
     status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
     location?: string;
     jurisdiction?: string;
-  }
+  };
   validationErrors: Record<string, string[]>;
   createdCase: any;
   error: string | null;

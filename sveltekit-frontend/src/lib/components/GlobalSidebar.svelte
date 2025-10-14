@@ -62,9 +62,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         c =>
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase())),
+          (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-      .slice(0, 10),
+      .slice(0, 10)
   );
   let filteredEvidence = $derived(
     userEvidence
@@ -72,9 +72,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         e =>
           e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (e.notes && e.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+          e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-      .slice(0, 10),
+      .slice(0, 10)
   );
   let filteredCitations = $derived(
     userCitations
@@ -82,9 +82,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         c =>
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase())),
+          (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-      .slice(0, 10),
+      .slice(0, 10)
   );
   let filteredReports = $derived(
     userReports
@@ -92,9 +92,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         r =>
           r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+          r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-      .slice(0, 10),
+      .slice(0, 10)
   );
   // Initialize sidebar when component mounts
   onMount(() => {

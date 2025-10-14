@@ -73,7 +73,8 @@
         <span>Cases</span>
       </button>
       <button
-        class="nav-button";
+        class="nav-button"
+        ;
         class:active={isActiveRoute('/interactive-canvas')}
         onclick={() => handleNavigation('/interactive-canvas')}
         aria-label="Interactive Canvas"
@@ -163,93 +164,93 @@
 <style lang="postcss">
   /* @unocss-include */
   .app-header {
-/* @apply fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-30; */
+    /* @apply fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-30; */
     backdrop-filter: blur(8px);
   }
   .header-content {
-/* @apply flex items-center h-full px-4 max-w-7xl mx-auto gap-4; */
+    /* @apply flex items-center h-full px-4 max-w-7xl mx-auto gap-4; */
   }
   .brand-section {
-/* @apply flex items-center flex-shrink-0; */
+    /* @apply flex items-center flex-shrink-0; */
   }
   .brand-button {
-/* @apply flex items-center gap-3 px-4 py-2 font-semibold text-blue-600 bg-transparent border-none cursor-pointer rounded-md transition-colors duration-200 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
+    /* @apply flex items-center gap-3 px-4 py-2 font-semibold text-blue-600 bg-transparent border-none cursor-pointer rounded-md transition-colors duration-200 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
   }
   .brand-text {
-/* @apply text-lg font-bold; */
+    /* @apply text-lg font-bold; */
   }
   .main-nav {
-/* @apply flex items-center gap-1 flex-shrink-0; */
+    /* @apply flex items-center gap-1 flex-shrink-0; */
   }
   .nav-button {
-/* @apply flex items-center gap-2 px-4 py-2 text-muted-foreground bg-transparent border-none cursor-pointer rounded-md transition-all duration-200 hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
+    /* @apply flex items-center gap-2 px-4 py-2 text-muted-foreground bg-transparent border-none cursor-pointer rounded-md transition-all duration-200 hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
   }
   .nav-button.active {
-/* @apply text-blue-600 bg-accent; */
+    /* @apply text-blue-600 bg-accent; */
   }
   .search-section {
-/* @apply flex-1 max-w-md mx-8; */
+    /* @apply flex-1 max-w-md mx-8; */
   }
   .user-section {
-/* @apply flex items-center flex-shrink-0; */
+    /* @apply flex items-center flex-shrink-0; */
   }
   .user-menu-container {
-/* @apply relative; */
+    /* @apply relative; */
   }
   .user-button {
-/* @apply flex items-center gap-3 px-4 py-2 bg-transparent border-none cursor-pointer rounded-md transition-colors duration-200 text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
+    /* @apply flex items-center gap-3 px-4 py-2 bg-transparent border-none cursor-pointer rounded-md transition-colors duration-200 text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
   }
   .user-avatar {
-/* @apply w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-secondary text-blue-600; */
+    /* @apply w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-secondary text-blue-600; */
   }
   .user-avatar img {
-/* @apply w-full h-full object-cover; */
+    /* @apply w-full h-full object-cover; */
   }
   .avatar-fallback {
-/* @apply font-semibold text-sm; */
+    /* @apply font-semibold text-sm; */
   }
   .user-name {
-/* @apply font-medium text-foreground; */
+    /* @apply font-medium text-foreground; */
   }
   .user-menu {
-/* @apply absolute top-full right-0 min-w-45 bg-card border border-border rounded-lg shadow-lg p-2 z-1000 mt-2; */
+    /* @apply absolute top-full right-0 min-w-45 bg-card border border-border rounded-lg shadow-lg p-2 z-1000 mt-2; */
   }
   .menu-item {
-/* @apply flex items-center gap-3 p-2 w-full bg-transparent border-none cursor-pointer rounded text-foreground text-left transition-colors duration-200 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
+    /* @apply flex items-center gap-3 p-2 w-full bg-transparent border-none cursor-pointer rounded text-foreground text-left transition-colors duration-200 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
   }
   .menu-separator {
-/* @apply border-none border-t border-border my-2; */
+    /* @apply border-none border-t border-border my-2; */
   }
   .sign-in-button {
-/* @apply px-4 py-2 bg-transparent border border-blue-600 text-blue-600 rounded-md cursor-pointer transition-all duration-200 hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
+    /* @apply px-4 py-2 bg-transparent border border-blue-600 text-blue-600 rounded-md cursor-pointer transition-all duration-200 hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/50; */
   }
   .menu-overlay {
-/* @apply fixed top-0 left-0 right-0 bottom-0 z-999 bg-transparent; */
+    /* @apply fixed top-0 left-0 right-0 bottom-0 z-999 bg-transparent; */
   }
   /* Responsive */
   @media (max-width: 768px) {
     .header-content {
-/* @apply px-2 gap-2; */
+      /* @apply px-2 gap-2; */
     }
     .brand-text {
-/* @apply hidden; */
+      /* @apply hidden; */
     }
     .search-section {
-/* @apply mx-4; */
+      /* @apply mx-4; */
     }
     .nav-button span {
-/* @apply hidden; */
+      /* @apply hidden; */
     }
     .user-name {
-/* @apply hidden; */
+      /* @apply hidden; */
     }
   }
   @media (max-width: 480px) {
     .main-nav {
-/* @apply gap-0; */
+      /* @apply gap-0; */
     }
     .search-section {
-/* @apply max-w-50 mx-2; */
+      /* @apply max-w-50 mx-2; */
     }
   }
 </style>

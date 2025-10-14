@@ -189,7 +189,7 @@ export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb'
 export class LegalJsonbOperations {
   /**
    * Find documents by practice area with semantic filtering
-   */;
+   */
   static findDocumentsByPracticeArea(practiceArea: string, minRelevance = 0.7) {
     return sql`
       SELECT id, title, metadata, content_embedding
@@ -201,7 +201,7 @@ export class LegalJsonbOperations {
   }
   /**
    * Complex legal entity search with JSONB path queries
-   */;
+   */
   static findDocumentsByParty(partyName: string, role?: string) {
     const roleFilter = role
       ? sql`AND party->>'role' = ${role}`
@@ -217,7 +217,7 @@ export class LegalJsonbOperations {
   }
   /**
    * Citation network analysis with graph-like JSONB queries
-   */;
+   */
   static findCitationNetwork(documentId: string, depth = 2) {
     return sql`
       WITH RECURSIVE citation_tree AS (
@@ -248,7 +248,7 @@ export class LegalJsonbOperations {
   }
   /**
    * Advanced evidence chain of custody verification
-   */;
+   */
   static verifyEvidenceChain(evidenceId: string) {
     return sql`
       SELECT
@@ -285,7 +285,7 @@ export class LegalJsonbOperations {
   }
   /**
    * Semantic case similarity with JSONB metadata scoring
-   */;
+   */
   static findSimilarCases(caseId: string, threshold = 0.8) {
     return sql`
       WITH target_case AS (
@@ -343,7 +343,7 @@ export class LegalJsonbOperations {
   }
   /**
    * Legal concept extraction and clustering
-   */;
+   */
   static extractLegalConcepts(documentIds: string[]) {
     return sql`
       WITH concept_extraction AS (

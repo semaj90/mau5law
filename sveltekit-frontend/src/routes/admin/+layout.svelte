@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     sidebar: 'w-80 bg-slate-900/90 backdrop-blur-sm border-r border-amber-500/20 p-6 shadow-2xl',
     content: 'flex-1 p-8 max-w-7xl mx-auto',
     glitch: 'relative overflow-hidden',
-  }
+  };
   // Executive navigation items for admin panel
   const navItems: { path: string; label: string; icon: string; permission: Permission; description: string }[] = [
     {
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   // Derived display values for safer template usage
   let userEmail = $derived(currentUserValue?.email ?? '');
   let userRoleLabel = $derived(
-    currentUserValue?.role ? currentUserValue.role.toUpperCase.replace(/_/g, ' ') : 'UNKNOWN',
+    currentUserValue?.role ? currentUserValue.role.toUpperCase.replace(/_/g, ' ') : 'UNKNOWN'
   );
   $effect(() => {
     visibleNavItems =
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
   function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
     return (
       (isActivePath(
-        (item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path,
+        (item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path
       )
         ? executiveClasses.navLinkActive
         : executiveClasses.navLink) + ' w-full block text-left group'
@@ -361,7 +361,8 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 {/if}
 
-<style>/* Professional Executive Theme Effects */ {}
+<style>
+/* Professional Executive Theme Effects */ {}
   @keyframes professional-glow {
 0%, {}
     100% {

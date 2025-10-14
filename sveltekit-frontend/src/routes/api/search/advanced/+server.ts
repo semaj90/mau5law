@@ -12,7 +12,7 @@ export interface AdvancedSearchFilters {
   sortOrder?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
-  dateRange?: { start: string; end: string }
+  dateRange?: { start: string; end: string };
 }
 // Placeholder service (replace with real advancedSearch.search)
 async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
@@ -21,7 +21,7 @@ async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
     queryTime: 0,
     items: [],
     applied: filters,
-  }
+  };
 }
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
@@ -39,26 +39,26 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       offset: parseInt(sp.get('offset') || '0', 10),
       dateRange:
         sp.get('dateStart') && sp.get('dateEnd') ? { start: sp.get('dateStart')!, end: sp.get('dateEnd')! } : undefined,
-    }
+    };
     const results = await fakeSearch(filters);
     return json({ success: true, data: results, timestamp: new Date().toISOString() });
   } catch (error: any) {
     return json({ success: false, error: 'Search failed', message: (error as Error).message }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) return json({ error: 'Unauthorized' }, { status: 401 });
     const body = await request.json();
-    const { query, filters: customFilters } = body || {}
-    const filters: AdvancedSearchFilters = { query, ...(customFilters || {}) }
+    const { query, filters: customFilters } = body || {};
+    const filters: AdvancedSearchFilters = { query, ...(customFilters || {}) };
     const results = await fakeSearch(filters);
     return json({ success: true, data: results, timestamp: new Date().toISOString() });
   } catch (error: any) {
     return json(
       { success: false, error: 'Advanced search failed', message: (error as Error).message },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const prerender = false;

@@ -395,6 +395,7 @@ try {
     }
   }
 </script>
+
 <div
   class="sora-graph-visualization"
   class:loading={$loading}
@@ -430,10 +431,10 @@ try {
     <div class="canvas-container" class:hidden={mode === '3d'}>
       <canvas
         bind:this={canvas2D}
-        width={width}
-        height={height}
+        {width}
+        {height}
         class="visualization-canvas canvas-2d"
-        onclick={(e) => handleCanvasClick(e, false)}
+        onclick={e => handleCanvasClick(e, false)}
       ></canvas>
       <!-- 2D Controls -->
       <div class="canvas-controls">
@@ -449,10 +450,10 @@ try {
     <div class="canvas-container" class:hidden={mode === '2d'}>
       <canvas
         bind:this={canvas3D}
-        width={width}
-        height={height}
+        {width}
+        {height}
         class="visualization-canvas canvas-3d"
-        onclick={(e) => handleCanvasClick(e, true)}
+        onclick={e => handleCanvasClick(e, true)}
       ></canvas>
       <!-- 3D Controls -->
       <div class="canvas-controls">
@@ -476,17 +477,13 @@ try {
       <h4>🛤️ Traversal Paths ({$paths.length})</h4>
       <div class="path-list">
         {#each $paths.slice(0, 5) as path, index}
-          <div
-            class="path-item"
-            class:high-score={path.totalScore > 0.8}
-            onclick={() => handlePathSelection(index)}
-          >
+          <div class="path-item" class:high-score={path.totalScore > 0.8} onclick={() => handlePathSelection(index)}>
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>
               <span class="path-length">Nodes: {path.nodes.length}</span>
             </div>
             <div class="path-preview">
-              {path.nodes.slice.map-join(' → ')}
+              {path.nodes.slice.map - join(' → ')}
               {path.nodes.length > 3 ? '...' : ''}
             </div>
           </div>
@@ -519,6 +516,7 @@ try {
     </div>
   {/if}
 </div>
+
 <style>
   .sora-graph-visualization {
     position: relative;
@@ -552,8 +550,12 @@ try {
     margin-bottom: 16px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .loading-stats {
     display: flex;
@@ -737,15 +739,15 @@ try {
     font-family: monospace;
   }
   /* Theme overrides */
-  :global(.sora-graph-visualization[data-theme="light"]) {
+  :global(.sora-graph-visualization[data-theme='light']) {
     --bg-color: #ffffff;
     --border-color: #e0e0e0;
   }
-  :global(.sora-graph-visualization[data-theme="dark"]) {
+  :global(.sora-graph-visualization[data-theme='dark']) {
     --bg-color: #1a1a1a;
     --border-color: #333333;
   }
-  :global(.sora-graph-visualization[data-theme="legal"]) {
+  :global(.sora-graph-visualization[data-theme='legal']) {
     --bg-color: #0f1419;
     --border-color: #2a2a2a;
   }

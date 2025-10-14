@@ -17,10 +17,10 @@ import crypto from 'crypto';
 const CACHE_CONFIG = {
   // Loki.js settings
   loki: {
-    autosave: true
+    autosave: true,
     autosaveInterval: 5000, // 5 seconds
-    autoload: true
-    throttledSaves: true
+    autoload: true,
+    throttledSaves: true,
     serializationMethod: 'pretty',
   },
   // Redis settings
@@ -66,7 +66,7 @@ export interface CacheStats {
     queries: number;
     hits: number;
     misses: number;
-  }
+  };
   redis: {
     connected: boolean;
     keys: number;
@@ -74,18 +74,18 @@ export interface CacheStats {
     operations: number;
     hits: number;
     misses: number;
-  }
+  };
   nes: {
     documentsStored: number;
     memoryUsage: number;
     bankSwitches: number;
-  }
+  };
   overall: {
     hitRatio: number;
     avgResponseTime: number;
     totalDocuments: number;
     syncConflicts: number;
-  }
+  };
 }
 export class LokiRedisCache extends EventEmitter {
   private loki: Loki | null = null;
@@ -99,7 +99,7 @@ export class LokiRedisCache extends EventEmitter {
     redis: { connected: false, keys: 0, memoryUsage: 0, operations: 0, hits: 0, misses: 0 },
     nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },
     overall: { hitRatio: 0, avgResponseTime: 0, totalDocuments: 0, syncConflicts: 0 },
-  }
+  };
   private responseTimeTracker: number[] = [];
   private isInitialized = false;
   // Expose health status via getter to align with integration tests
@@ -242,9 +242,9 @@ export class LokiRedisCache extends EventEmitter {
         cacheTimestamp: Date.now(),
         accessCount: 1,
         cacheLocation: 'loki',
-        compressed: false
+        compressed: false,
         syncStatus: 'synced',
-      }
+      };
       // Store in Loki.js first (fastest access)
       await this.storeLokiDocument(cachedDoc);
       // Store in Redis for distribution
@@ -282,7 +282,7 @@ export class LokiRedisCache extends EventEmitter {
     const key = `${CACHE_CONFIG.redis.keyPrefix}doc:${document.id}`;
     const value = JSON.stringify({
       document,
-      data: data ? Array.from(new Uint8Array(data)) : null
+      data: data ? Array.from(new Uint8Array(data)) : null,
     });
     const r: any = this.redis;
     try {
@@ -412,12 +412,12 @@ export class LokiRedisCache extends EventEmitter {
         cacheLocation: 'nes',
         compressed: nesDoc.compressed,
         syncStatus: 'synced',
-      }
+      };
     }
     return null;
   }
   async searchDocuments(
-    query: string
+    query: string,
     filters: {
       type?: string[];
       riskLevel?: string[];
@@ -446,15 +446,15 @@ export class LokiRedisCache extends EventEmitter {
         if (type === 'searches') continue;
         if (filters.type && !filters.type.includes(type as any)) continue;
         // Build Loki.js query
-        let lokiQuery: any = {}
+        const lokiQuery: any = {};
         if (filters.riskLevel) {
-          lokiQuery.riskLevel = { $in: filters.riskLevel }
+          lokiQuery.riskLevel = { $in: filters.riskLevel };
         }
         if (filters.confidenceMin) {
-          lokiQuery.confidenceLevel = { $gte: filters.confidenceMin }
+          lokiQuery.confidenceLevel = { $gte: filters.confidenceMin };
         }
         if (filters.priorityMin) {
-          lokiQuery.priority = { $gte: filters.priorityMin }
+          lokiQuery.priority = { $gte: filters.priorityMin };
         }
         // Text search (simple contains for now, could be enhanced with full-text search)
         if (query) {
@@ -468,7 +468,7 @@ export class LokiRedisCache extends EventEmitter {
         for (const doc of documents) {
           results.push({
             id: doc.id,
-            document: doc
+            document: doc,
             score: this.calculateRelevanceScore(doc, query),
             matchType: 'fuzzy',
           });
@@ -662,10 +662,10 @@ export class LokiRedisCache extends EventEmitter {
       documentsStored: nesStats.documentCount,
       memoryUsage: nesStats.usedRAM + nesStats.usedCHR + nesStats.usedPRG,
       bankSwitches: nesStats.bankSwitches,
-    }
+    };
   }
   getStats(): CacheStats {
-    return { ...this.stats }
+    return { ...this.stats };
   }
   // Public methods for accessing cached data
   async get(_key: string): Promise<string | null> {
@@ -733,7 +733,7 @@ export class LokiRedisCache extends EventEmitter {
         },
         nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },
         overall: { hitRatio: 0, avgResponseTime: 0, totalDocuments: 0, syncConflicts: 0 },
-      }
+      };
       console.log('✅ Cache cleared successfully');
     } catch (error: any) {
       console.error('❌ Failed to clear cache:', error);

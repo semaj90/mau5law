@@ -8,7 +8,7 @@
     key: string;
     fallback?: string;
     errorFallback?: string;
-    props?: { [key: string]: any }
+    props?: { [key: string]: any };
   }
   let {
     loader,

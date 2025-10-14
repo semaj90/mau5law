@@ -44,7 +44,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       borderColor: options.borderColor || YORHA_COLORS.primary.black,
       borderWidth: options.borderWidth || 0.03,
       shadow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 1.0,
         intensity: 0.8,
@@ -103,8 +103,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     shape.lineTo(x, y + radius);
     shape.quadraticCurveTo(x, y, x + radius, y);
     const extrudeSettings = {
-      depth: depth
-      bevelEnabled: true
+      depth: depth,
+      bevelEnabled: true,
       bevelSegments: 4,
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1
@@ -120,29 +120,29 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       case 'blur':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.white,
-          transparent: true
-          opacity: 0.2
+          transparent: true,
+          opacity: 0.2,
         });
         break;
       case 'dark':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true
-          opacity: 0.7
+          transparent: true,
+          opacity: 0.7,
         });
         break;
       case 'transparent':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true
-          opacity: 0.3
+          transparent: true,
+          opacity: 0.3,
         });
         break;
       default:
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true
-          opacity: 0.5
+          transparent: true,
+          opacity: 0.5,
         });
     }
     this.backdrop = new THREE.Mesh(backdropGeometry, backdropMaterial);
@@ -150,8 +150,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     // Add click handler for backdrop
     if (!this.options.persistent) {
       this.backdrop.userData = {
-        interactive: true
-        onClick: () => this.close()
+        interactive: true,
+        onClick: () => this.close(),
       }
     }
     this.add(this.backdrop);
@@ -164,8 +164,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: this.options.variant === 'terminal'
         ? YORHA_COLORS.primary.black: YORHA_COLORS.primary.grey,
-      transparent: true
-      opacity: 0.9
+      transparent: true,
+      opacity: 0.9,
     });
     this.headerMesh = new THREE.Mesh(headerGeometry, headerMaterial);
     this.headerMesh.position.set(
@@ -227,7 +227,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     );
     // Add hover effects
     buttonGroup.userData = {
-      interactive: true
+      interactive: true,
       onClick: () => this.close(),
       onHover: () => {
         buttonGroup.children.forEach(child => {
@@ -254,8 +254,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const footerGeometry = new THREE.PlaneGeometry(width - 0.1, footerHeight);
     const footerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true
-      opacity: 0.8
+      transparent: true,
+      opacity: 0.8,
     });
     this.footerMesh = new THREE.Mesh(footerGeometry, footerMaterial);
     this.footerMesh.position.set(
@@ -275,8 +275,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       );
       const lineMaterial = new THREE.MeshBasicMaterial({
         color: YORHA_COLORS.accent.gold,
-        transparent: true
-        opacity: 0.1
+        transparent: true,
+        opacity: 0.1,
       });
       const line = new THREE.Mesh(lineGeometry, lineMaterial);
       line.position.y = ((this.style.height || 3) / 10) * i - (this.style.height || 3) / 2;
@@ -309,7 +309,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         borderColor: YORHA_COLORS.status.error,
         borderWidth: 0.04,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.status.error,
           intensity: 0.4
         }
@@ -319,7 +319,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.03,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.3
         }
@@ -336,7 +336,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         borderWidth: 0.04,
         textColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.5
         },

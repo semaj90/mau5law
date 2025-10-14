@@ -30,7 +30,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       redis: {
-        healthy: isHealthy
+        healthy: isHealthy,
         connected: stats.connected,
         status: stats.status
       },

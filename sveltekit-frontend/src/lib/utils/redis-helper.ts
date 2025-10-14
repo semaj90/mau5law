@@ -13,18 +13,18 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   // Merge with custom options if provided
   const finalConfig: RedisOptions = {
     ...config,
-    ...options
-  }
+    ...options,
+  };
   const client = new Redis(finalConfig);
   // Enhanced error handling and logging
   client.on('connect', () => {
     console.log('✅ Redis connected successfully', {
       host: finalConfig.host,
       port: finalConfig.port,
-      db: finalConfig.db
+      db: finalConfig.db,
     });
   });
-  client.on('error', (error) => {
+  client.on('error', error => {
     console.error('❌ Redis connection error:', error.message);
     // Provide helpful error messages
     if (error.message.includes('ECONNREFUSED')) {
@@ -37,7 +37,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   client.on('ready', () => {
     console.log('🚀 Redis client ready for operations');
   });
-  client.on('reconnecting', (delay) => {
+  client.on('reconnecting', delay => {
     console.log(`🔄 Redis reconnecting in ${delay}ms...`);
   });
   client.on('close', () => {
@@ -67,7 +67,7 @@ export async function checkRedisHealth(): Promise<boolean> {
       client.ping(),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Health check timeout')), HEALTH_CHECK_CONFIG.timeout)
-      )
+      ),
     ]);
     const responseTime = Date.now() - start;
     if (result === 'PONG') {
@@ -90,11 +90,11 @@ export async function getRedisInfo(): Promise<any> {
     const client = getRedisClient();
     // Best-effort readiness check (types may not expose status)
     const isReady = (client as any)?.status ? (client as any).status === 'ready' : true;
-    if (!isReady) return { connected: false }
+    if (!isReady) return { connected: false };
     const [info, memory, stats] = await Promise.all([
       (client as any).info?.() ?? '',
       (client as any).info?.('memory') ?? '',
-      (client as any).info?.('stats') ?? ''
+      (client as any).info?.('stats') ?? '',
     ]);
     return {
       connected: true,
@@ -104,15 +104,15 @@ export async function getRedisInfo(): Promise<any> {
     };
   } catch (error) {
     console.error('❌ Failed to get Redis info:', error);
-    return { connected: false }
+    return { connected: false };
   }
 }
 /**
  * Parse Redis INFO response into key-value pairs
  */
 function parseRedisInfo(infoString: string): Record<string, string> {
-  const info: Record<string, string> = {}
-  infoString.split('\r\n').forEach((line) => {
+  const info: Record<string, string> = {};
+  infoString.split('\r\n').forEach(line => {
     if (line && !line.startsWith('#')) {
       const [key, value] = line.split(':');
       if (key && value !== undefined) {

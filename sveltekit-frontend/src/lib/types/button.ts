@@ -6,13 +6,29 @@ import { cva, type VariantProps } from 'class-variance-authority';
 const buttonVariantsType = cva('', {
   variants: {
     variant: {
-      default: '', destructive: '', outline: '', secondary: '', ghost: '', link: '',
-      legal: '', evidence: '', case: '', success: '', yorha: '', neural: ''
+      default: '',
+      destructive: '',
+      outline: '',
+      secondary: '',
+      ghost: '',
+      link: '',
+      legal: '',
+      evidence: '',
+      case: '',
+      success: '',
+      yorha: '',
+      neural: '',
     },
     size: {
-      default: '', sm: '', lg: '', icon: '', icon_sm: '', icon_lg: '', xs: ''
-    }
-  }
+      default: '',
+      sm: '',
+      lg: '',
+      icon: '',
+      icon_sm: '',
+      icon_lg: '',
+      xs: '',
+    },
+  },
 });
 
 export type ButtonVariant = VariantProps<typeof buttonVariantsType>['variant'];

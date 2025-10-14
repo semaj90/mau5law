@@ -11,7 +11,7 @@ items.insert([
 ]);
 // 3. Configure Fuse.js
 const options = {
-  includeScore: true
+  includeScore: true,
   keys: ['title', 'type']
 }
 const fuse = new Fuse(items.data, options);

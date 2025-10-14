@@ -283,7 +283,7 @@ class EnhancedLokiDB {
     return null;
   }
   async searchEvidenceByCaseId(
-    caseId: string
+    caseId: string,
     options: { limit?: number; minConfidence?: number } = {}
   ) {
     const col = this.collections.get('evidence');

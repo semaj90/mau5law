@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Evidence analysis failed:', err);
     throw error(500, `Analysis failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};
 // GET endpoint to retrieve analysis by evidence ID
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
@@ -50,10 +50,10 @@ export const GET: RequestHandler = async ({ url }) => {
         evidenceId,
         status: 'not_found',
       },
-      { status: 404 },
+      { status: 404 }
     );
   } catch (err: unknown) {
     console.error('Failed to fetch analysis:', err);
     throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};

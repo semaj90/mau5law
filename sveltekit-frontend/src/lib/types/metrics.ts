@@ -1,6 +1,6 @@
 /**
  * Shared metric types for client and server-side observability
- */;
+ */
 }
 export interface CognitiveMetrics {
   routingEfficiency: number;
@@ -126,14 +126,14 @@ export interface PartialCognitiveMetrics {
 }
 /**
  * Normalize a raw metric (0-100 nominal) into bounded range with optional clamping.
- */;
+ */
 export function clampMetric(_value: number | undefined, min = 0, max = 100): number {
   if (value == null || Number.isNaN(value)) return 0;
   return Math.min(max, Math.max(min, value);
 }
 /**
  * Build a complete CognitiveMetrics object, filling defaults and timestamp.
- */;
+ */
 export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): CognitiveMetrics {
   return {
     routingEfficiency: clampMetric(partial.routingEfficiency),
@@ -148,7 +148,7 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
  * Derive synthetic emergent cognitive fields if not supplied by server subsystems.
  * consciousnessLevel: weighted mean of efficiency & cache quality signals.
  * quantumCoherence: sinusoidal temporal modulation blended with GPU utilization (for demo UX).
- */;
+ */
 export function deriveEmergentCognitiveSignals(base: CognitiveMetrics): CognitiveMetrics {
   const derivedConsciousness = base.consciousnessLevel || clampMetric((base.routingEfficiency * 0.5 + base.cacheHitRatio * 0.5);
   const timeFactor = Date.now() / 12000; // slow oscillation

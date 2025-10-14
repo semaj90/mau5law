@@ -474,5 +474,5 @@ export async function minifyJSON(jsonString: string, useCache = true): Promise<s
   return cache.minify(jsonString, useCache);
 }
 // Export types
-export type { CacheConfig, ParseMetrics, SIMDJSONModule }
-export { SIMDJSONCache }
+export type { CacheConfig, ParseMetrics, SIMDJSONModule };
+export { SIMDJSONCache };

@@ -118,7 +118,7 @@
         summary: `Analysis of ${evidence.title}`,
         recommendations: ['Review clause 3.2', 'Verify signatures'],
         timestamp: Date.now(),
-      }
+      };
       const processingTime = performance.now() - startTime;
       // Cache the result
       await cacheAnalysis(evidence.id, 'classification', analysisResult, {
@@ -152,7 +152,7 @@
       cacheHitRate: cacheStats.hitRate || 0,
       totalAnalysisCached: cacheStats.hitCount || 0,
       bundleSize: await componentMetadataCache.calculateBundleSize('EvidenceBoard'),
-    }
+    };
   }
   // Initialize on mount
   onMount(async () => {
@@ -170,7 +170,7 @@
     const metricsInterval = setInterval(updatePerformanceMetrics, 5000);
     return () => {
       clearInterval(metricsInterval);
-    }
+    };
   });
   // Optimized search with debouncing
   let searchTimeout: ReturnType<typeof setTimeout>;
@@ -188,7 +188,7 @@
     return $evidenceList.filter(
       evidence =>
         evidence.title.toLowerCase().includes($searchQuery.toLowerCase()) ||
-        evidence.content.toLowerCase().includes($searchQuery.toLowerCase()),
+        evidence.content.toLowerCase().includes($searchQuery.toLowerCase())
     );
   });
 </script>

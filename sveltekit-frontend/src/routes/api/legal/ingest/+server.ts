@@ -141,7 +141,7 @@ async function disconnectHandler() {
   try {
     if (redisClient && redisConnected) {
       console.info('Disconnecting Redis client due to shutdown signal...');
-      await redisClient.disconnect().catch((e) => console.warn('Redis disconnect error during shutdown:', e));
+      await redisClient.disconnect().catch(e => console.warn('Redis disconnect error during shutdown:', e));
       redisConnected = false;
     }
   } catch (e) {
@@ -227,7 +227,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     try {
       // Ensure we don't hold a broken client reference
       if (redisClient) {
-        await redisClient.disconnect().catch((e) => console.warn('Error disconnecting broken Redis client:', e));
+        await redisClient.disconnect().catch(e => console.warn('Error disconnecting broken Redis client:', e));
       }
     } catch (e) {
       console.warn('Error while cleaning up Redis client after failed connect:', e);
@@ -455,8 +455,9 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
   });
   // Remove duplicates and sort by confidence
   return entities
-    .filter((entity: LegalEntity, index: number, self: LegalEntity[]) =>
-      self.findIndex((e: LegalEntity) => e.text === entity.text && e.type === entity.type) === index
+    .filter(
+      (entity: LegalEntity, index: number, self: LegalEntity[]) =>
+        self.findIndex((e: LegalEntity) => e.text === entity.text && e.type === entity.type) === index
     )
     .sort((a, b) => b.confidence - a.confidence);
 }
@@ -747,7 +748,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       };
 
       // Perform a safe assertion to a narrow shape instead of `any`
-      const clientWithMulti = (client as unknown) as { multi?: () => RedisPipeline | null | undefined };
+      const clientWithMulti = client as unknown as { multi?: () => RedisPipeline | null | undefined };
       if (typeof clientWithMulti.multi === 'function') {
         const pipeline = clientWithMulti.multi();
         if (pipeline) {

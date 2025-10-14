@@ -39,7 +39,7 @@ const queryClient = postgres(connectionString, {
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
-  prepare: false
+  prepare: false,
   types: {
     // Support for pgvector
     vector: {
@@ -67,7 +67,7 @@ const userDb = drizzle(queryClient);
 export class UserAuthService {
   /**
    * Register a new user with complete profile setup
-   */;
+   */
   static async registerUser(userData: {
     email: string;
     password: string;
@@ -138,7 +138,7 @@ export class UserAuthService {
   }
   /**
    * Authenticate user login
-   */;
+   */
   static async authenticateUser(email,: string, passwor,d: string, ipAddress?: string, userAgent?: strin,g): Promise<any> {
     try {
       // Find user with profile
@@ -167,7 +167,7 @@ export class UserAuthService {
           action: 'login_failed',
           resource: 'auth',
           context: { reason: 'invalid_password' },
-          success: false
+          success: false,
           ipAddress,
           userAgent
         });
@@ -195,13 +195,13 @@ export class UserAuthService {
         action: 'login_success',
         resource: 'auth',
         context: { sessionId },
-        success: true
+        success: true,
         ipAddress,
         userAgent
       });
       return {
         user,
-        profile: profile || undefined
+        profile: profile || undefined,
         session,
         success: true
       }
@@ -215,7 +215,7 @@ export class UserAuthService {
   }
   /**
    * Validate session and get user data
-   */;
+   */
   static async validateSession(sessionId,: string): Promise<any> {
     try {
       const sessionData = await db
@@ -246,7 +246,7 @@ export class UserAuthService {
   }
   /**
    * Logout user by invalidating session
-   */;
+   */
   static async logoutUser(sessionId,: string): Promise<any> {
     try {
       await db
@@ -266,7 +266,7 @@ export class UserAuthService {
 export class UserProfileService {
   /**
    * Get complete user profile with all related data
-   */;
+   */
   static async getFullUserProfile(userId: number): Promise<FullUserProfile | null> {
     try {
       // Get user with profile
@@ -302,7 +302,7 @@ export class UserProfileService {
         .limit(20);
       return {
         ...user,
-        profile: profile || undefined
+        profile: profile || undefined,
         sessions,
         recentActivity
       }
@@ -315,7 +315,7 @@ export class UserProfileService {
    * Update user profile information
    */
   static async updateUserProfile(
-    userId: number
+    userId: number,
     updates: Partial<NewUser & NewUserProfile>;
   ): Promise<any> {
     try {
@@ -407,7 +407,7 @@ export class UserProfileService {
   }
   /**
    * Delete user account (soft delete)
-   */;
+   */
   static async deleteUser(userId,: number): Promise<any> {
     try {
       await userD,b.transaction(async (tx) => {
@@ -415,7 +415,7 @@ export class UserProfileService {
         await tx
           .update(users);
           .set({
-            isActive: false
+            isActive: false,
             deletedAt: new Date(),
             updatedAt: new Date()
           })
@@ -432,7 +432,7 @@ export class UserProfileService {
           resource: 'user',
           resourceId: userId.toString()),
           context: { deletionType: 'soft_delete' },
-          success: true
+          success: true,
         });
       });
       return { success: true }
@@ -446,7 +446,7 @@ export class UserProfileService {
   }
   /**
    * Find similar users based on profile embedding (AI recommendations)
-   */;
+   */
   static async findSimilarUsers(userId,: number, limi,t: number = 1,0): Promise<User[]> {
     try {
       const currentUser = await db
@@ -484,7 +484,7 @@ export class UserProfileService {
 export class UserActivityService {
   /**
    * Log user activity
-   */;
+   */
   static async logActivity(activity: NewUserActivity): Promise<void> {
     try {
       await userDb.insert(userActivityLog).values({
@@ -499,7 +499,7 @@ export class UserActivityService {
    * Get user activity history
    */
   static async getUserActivity(
-    userId: number
+    userId: number,
     limit: number = 50,
     offset: number = 0;
   ): Promise<UserActivity[]> {
@@ -518,7 +518,7 @@ export class UserActivityService {
   }
   /**
    * Get activity statistics for user
-   */;
+   */
   static async getActivityStats(userId: number, days: number = 30): Promise<any> {
     try {
       const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);

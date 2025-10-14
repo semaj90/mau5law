@@ -10,7 +10,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
   interface Props extends GamingComponentProps {
@@ -101,8 +101,8 @@
     enableTextureFiltering,
     enableMipMapping,
     enableFog,
-    ...renderOptions
-  }
+    ...renderOptions,
+  };
   // Create spatial audio feedback
   const dispatch = createEventDispatcher();
   const playInputSound = async (frequency: number, duration: number = 0.1) => {
@@ -140,7 +140,7 @@
     } catch (error) {
       console.warn('Could not play input sound:', error);
     }
-  }
+  };
   const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (!target) return;
@@ -149,25 +149,25 @@
     // Play typing sound
     playInputSound(440 + Math.random() * 200, 0.05);
     dispatch('input', { value: target.value, originalEvent: event });
-  }
+  };
   const handleFocus = () => {
     isFocused = true;
     playInputSound(660, 0.15);
     dispatch('focus');
-  }
+  };
   const handleBlur = () => {
     isFocused = false;
     playInputSound(440, 0.1);
     dispatch('blur');
-  }
+  };
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     playInputSound(550, 0.08);
-  }
+  };
   const handleUnhover = () => {
     isHovered = false;
-  }
+  };
   const handleKeyDown = (event: KeyboardEvent) => {
     // Play different sounds for different key types
     if (event.key === 'Enter') {
@@ -176,7 +176,7 @@
       playInputSound(330, 0.1);
     }
     dispatch('keydown', { key: event.key, originalEvent: event });
-  }
+  };
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -185,8 +185,8 @@
       success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', border: '#28a745' },
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', border: '#ffc107' },
       error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' },
-      info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', border: '#17a2b8' }
-    }
+      info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', border: '#17a2b8' },
+    };
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     // Modify colors based on state
     if (hasError) {
@@ -197,8 +197,8 @@
     const materialMap = {
       basic: {
         background: colors.base,
-        borderColor: isFocused ? colors.border: colors.highlight,
-        boxShadow: `inset 0 ${depth}px 0 ${colors.shadow}`
+        borderColor: isFocused ? colors.border : colors.highlight,
+        boxShadow: `inset 0 ${depth}px 0 ${colors.shadow}`,
       },
       phong: {
         background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`,
@@ -208,7 +208,7 @@
           inset 0 1px 0 rgba(255,255,255,0.2),
           inset 0 -1px 0 rgba(0,0,0,0.3),
           0 4px 8px rgba(0,0,0,0.3)
-        `
+        `,
       },
       pbr: {
         background: `
@@ -222,20 +222,20 @@
           inset 0 -2px 0 rgba(0,0,0,0.4),
           0 6px 12px rgba(0,0,0,0.4),
           0 0 0 1px rgba(255,255,255,0.05)
-        `
-      }
-    }
+        `,
+      },
+    };
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  }
+  };
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
       large: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' },
-      xl: { padding: '24px 28px', fontSize: '18px', minHeight: '64px' }
-    }
+      xl: { padding: '24px 28px', fontSize: '18px', minHeight: '64px' },
+    };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  }
+  };
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -276,18 +276,18 @@
   <div class="n64-input-wrapper">
     <input
       bind:this={inputElement}
-      type={type}
-      name={name}
-      id={id}
-      required={required}
-      minlength={minlength}
-      maxlength={maxlength}
-      pattern={pattern}
-      readonly={readonly}
-      disabled={disabled}
-      autocomplete={autocomplete}
-      bind:value={value}
-      placeholder={placeholder}
+      {type}
+      {name}
+      {id}
+      {required}
+      {minlength}
+      {maxlength}
+      {pattern}
+      {readonly}
+      {disabled}
+      {autocomplete}
+      bind:value
+      {placeholder}
       oninput={handleInput}
       onfocus={handleFocus}
       onblur={handleBlur}
@@ -303,7 +303,7 @@
         --input-font-size: ${sizeStyles.fontSize};
         --input-min-height: ${sizeStyles.minHeight};
         --transform-3d: ${transform3D};
-        --fog-color: ${((effectiveRenderOptions as any)?.fogColor) ?? '#404040'};
+        --fog-color: ${(effectiveRenderOptions as any)?.fogColor ?? '#404040'};
         --glow-intensity: ${typeof glowIntensity !== 'undefined' ? glowIntensity : 0};
         --input-depth: ${typeof depth !== 'undefined' ? depth + 'px' : '8px'};
       `}
@@ -377,8 +377,7 @@
     overflow: hidden;
     /* Fog effect background */
     background-image:
-      var(--material-bg),
-      radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
+      var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
 
   /* Placeholder styling */
@@ -420,12 +419,7 @@
     left: 15%;
     right: 70%;
     bottom: 70%;
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
     border-radius: 2px;
     pointer-events: none;
     z-index: 3;
@@ -439,12 +433,7 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(
-      45deg,
-      rgba(74, 144, 226, 0.3),
-      rgba(74, 144, 226, 0.1),
-      rgba(74, 144, 226, 0.3)
-    );
+    background: linear-gradient(45deg, rgba(74, 144, 226, 0.3), rgba(74, 144, 226, 0.1), rgba(74, 144, 226, 0.3));
     border-radius: 6px;
     pointer-events: none;
     z-index: 0;
@@ -453,8 +442,13 @@
   }
 
   @keyframes inputGlow {
-    0%, 100% { opacity: var(--glow-intensity); }
-    50% { opacity: calc(var(--glow-intensity) * 1.5); }
+    0%,
+    100% {
+      opacity: var(--glow-intensity);
+    }
+    50% {
+      opacity: calc(var(--glow-intensity) * 1.5);
+    }
   }
 
   /* Material type variations */
@@ -487,8 +481,8 @@
     transform: perspective(1000px) scale(0.98);
     box-shadow:
       inset 0 4px 0 #1a202c,
-      inset 0 1px 0 rgba(255,255,255,0.05),
-      0 2px 4px rgba(0,0,0,0.2);
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   /* Focus styles */
@@ -501,7 +495,7 @@
   }
 
   /* Error state */
-  :global(.n64-input[aria-invalid="true"]) {
+  :global(.n64-input[aria-invalid='true']) {
     border-color: #dc3545;
     box-shadow:
       var(--material-shadow),
@@ -527,7 +521,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Input message styling */
@@ -549,10 +545,7 @@
   :global(.n64-input.texture-ultra) {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    filter:
-      contrast(1.02)
-      brightness(1.01)
-      saturate(1.05);
+    filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
   :global(.n64-input.filtering-bilinear) {
     filter: blur(0.25px) contrast(1.1);
@@ -578,11 +571,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      ellipse at center bottom,
-      var(--fog-color, #404040) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70%);
     opacity: 0.2;
     pointer-events: none;
     z-index: 0;
@@ -606,7 +595,9 @@
   @media (prefers-reduced-motion: reduce) {
     :global(.n64-input) {
       transform: none !important;
-      transition: border-color 150ms ease, box-shadow 150ms ease;
+      transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
     }
     .input-glow-effect {
       animation: none;

@@ -29,7 +29,7 @@ class RedisComponentStore {
       const { createClient } = await import('redis');
       this.redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis'
+        password: process.env.REDIS_PASSWORD || 'redis',
       });
       await this.redis.connect();
       console.log('✅ Redis connected for Enhanced-Bits component store');
@@ -56,16 +56,16 @@ class RedisComponentStore {
     store.set = (_value: T) => {
       originalSet(value);
       this.saveToCache(fullKey, value, options);
-    }
+    };
     // Override store's update method to update cache
     const originalUpdate = store.update;
     store.update = (updater: (_value: T) => T) => {
-      originalUpdate((currentValue) => {
+      originalUpdate(currentValue => {
         const newValue = updater(currentValue);
         this.saveToCache(fullKey, newValue, options);
         return newValue;
       });
-    }
+    };
     return store;
   }
   /**
@@ -111,14 +111,14 @@ class RedisComponentStore {
     return await this.loadFromCache(key);
   }
   private async saveToCache(_key: string, data: any, options?: CacheOptions) {
-    const mergedOptions = { ...this.options, ...options }
+    const mergedOptions = { ...this.options, ...options };
     const serializer = mergedOptions.serialize || JSON.stringify;
     const state: ComponentState = {
-      id: key
+      id: key,
       data,
       timestamp: Date.now(),
-      ttl: mergedOptions.ttl
-    }
+      ttl: mergedOptions.ttl,
+    };
     // Save to local cache
     this.localCache.set(key, state);
     // Save to Redis if available
@@ -194,14 +194,14 @@ class RedisComponentStore {
     return {
       localCacheSize: this.localCache.size,
       redisConnected: !!this.redis,
-      stores: this.stores.size
-    }
+      stores: this.stores.size,
+    };
   }
 }
 // Create singleton instance
 export const redisComponentStore = new RedisComponentStore({
   keyPrefix: 'enhanced-bits',
-  ttl: 3600 // Default 1 hour TTL
+  ttl: 3600, // Default 1 hour TTL
 });
 // Export helper functions for easy use in components
 export function createRedisBackedState<T>(_key: string, initialValue: T, ttl?: number) {

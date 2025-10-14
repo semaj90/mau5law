@@ -60,7 +60,7 @@ export function arrayToPgVector(embedding: number[]): string {
 }
 // Vector similarity search in legal documents
 export async function searchSimilarDocuments(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   limit: number = 10,
   similarityThreshold: number = 0.7;
 ): Promise<SimilarityResult[]> {
@@ -121,11 +121,11 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
 }
 // Store AI query with embedding for future similarity search
 export async function storeAiQueryWithEmbedding(
-  userId: string
-  caseId: string | null
-  query: string
-  response: string
-  embedding: number[]
+  userId: string,
+  caseId: string | null,
+  query: string,
+  response: string,
+  embedding: number[],
   metadata: any = {}
 ): Promise<void> {
   try {
@@ -153,7 +153,7 @@ export async function storeAiQueryWithEmbedding(
 }
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
-  textHash: string
+  textHash: string,
   embedding: number[];
   model: string = 'nomic-embed-text';
 ): Promise<void> {
@@ -190,7 +190,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 }
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
-  queryText: string
+  queryText: string,
   queryEmbedding: number[];
   limit: number = 10;
 ): Promise<SimilarityResult[]> {
@@ -285,9 +285,9 @@ export class GRPMOOrchestrator {
   }
   // Main extended thinking orchestration
   async processExtendedThinking(
-    query: string
-    queryEmbedding: number[]
-    userId: string
+    query: string,
+    queryEmbedding: number[],
+    userId: string,
     caseId?: string;
   ): Promise<any> {
     const startTime = Date.now();
@@ -430,11 +430,11 @@ class PPOAgent {
       ...item,
       similarity: (item as { id?: any; similarity?: any; metadata?: any }).similarity * currentPolicy[index],
       reinforcementContext: {
-        stateVector: currentPolicy
+        stateVector: currentPolicy,
         actionHistory: [stateKey],
         rewardSignal: (item as { id?: any; similarity?: any; metadata?: any }).similarity,
-        policyGradient: currentPolicy
-        valueFunction: this.valueNetwork.get(stateKey) || 0.5
+        policyGradient: currentPolicy,
+        valueFunction: this.valueNetwork.get(stateKey) || 0.5,
       }
     });
   }

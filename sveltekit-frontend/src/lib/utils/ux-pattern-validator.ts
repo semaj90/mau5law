@@ -26,13 +26,14 @@ export class UXPatternValidator {
         const legalElements = document.querySelectorAll('[class*="legal-"]');
         const inconsistentElements = Array.from(legalElements).filter(el => {
           const computedStyle = window.getComputedStyle(el);
-          const hasLegalVars = computedStyle.getPropertyValue('--legal-ai-primary') ||
-                              computedStyle.getPropertyValue('--color-legal-primary');
+          const hasLegalVars =
+            computedStyle.getPropertyValue('--legal-ai-primary') ||
+            computedStyle.getPropertyValue('--color-legal-primary');
           return !hasLegalVars;
         });
         return inconsistentElements.length === 0;
       },
-      recommendation: 'Update components to use CSS variables from the legal AI theme'
+      recommendation: 'Update components to use CSS variables from the legal AI theme',
     },
     {
       name: 'button-variant-consistency',
@@ -42,16 +43,14 @@ export class UXPatternValidator {
         const buttons = document.querySelectorAll('button, [role="button"]');
         const inconsistentButtons = Array.from(buttons).filter(btn => {
           const classList = Array.from(btn.classList);
-          const hasVariantClass = classList.some(cls =>
-            cls.includes('btn-') ||
-            cls.includes('legal-ai-btn') ||
-            cls.includes('nes-btn')
+          const hasVariantClass = classList.some(
+            cls => cls.includes('btn-') || cls.includes('legal-ai-btn') || cls.includes('nes-btn')
           );
           return !hasVariantClass && btn.textContent?.trim();
         });
         return inconsistentButtons.length < buttons.length * 0.1; // Allow 10% variance
       },
-      recommendation: 'Apply consistent button variant classes to all interactive buttons'
+      recommendation: 'Apply consistent button variant classes to all interactive buttons',
     },
     // Usability Patterns
     {
@@ -66,7 +65,7 @@ export class UXPatternValidator {
         const hasLoadingStates = document.querySelectorAll('[aria-busy="true"], .btn-loading').length >= 0;
         return hasLoadingIndicators || hasLoadingStates || forms.length === 0;
       },
-      recommendation: 'Add loading indicators for all async operations and form submissions'
+      recommendation: 'Add loading indicators for all async operations and form submissions',
     },
     {
       name: 'error-message-visibility',
@@ -81,7 +80,7 @@ export class UXPatternValidator {
         // If there are error elements, they should be visible
         return errorElements.length === 0 || validErrors.length === errorElements.length;
       },
-      recommendation: 'Ensure error messages are visible and provide clear guidance for resolution'
+      recommendation: 'Ensure error messages are visible and provide clear guidance for resolution',
     },
     // Performance Patterns
     {
@@ -94,7 +93,7 @@ export class UXPatternValidator {
         // Most images should use lazy loading (except above-the-fold)
         return images.length === 0 || lazyImages.length >= images.length * 0.7;
       },
-      recommendation: 'Add loading="lazy" to images that are not immediately visible'
+      recommendation: 'Add loading="lazy" to images that are not immediately visible',
     },
     {
       name: 'animation-performance',
@@ -107,7 +106,8 @@ export class UXPatternValidator {
           const style = window.getComputedStyle(el);
           const transitionProperty = style.transitionProperty;
           // Performant properties: transform, opacity, filter
-          const hasPerformantTransitions = !transitionProperty ||
+          const hasPerformantTransitions =
+            !transitionProperty ||
             transitionProperty.includes('transform') ||
             transitionProperty.includes('opacity') ||
             transitionProperty.includes('filter') ||
@@ -115,7 +115,7 @@ export class UXPatternValidator {
           return hasPerformantTransitions;
         });
       },
-      recommendation: 'Use transform and opacity for animations instead of layout properties'
+      recommendation: 'Use transform and opacity for animations instead of layout properties',
     },
     // Accessibility Patterns
     {
@@ -136,7 +136,7 @@ export class UXPatternValidator {
         }
         return true;
       },
-      recommendation: 'Maintain proper heading hierarchy without skipping levels'
+      recommendation: 'Maintain proper heading hierarchy without skipping levels',
     },
     {
       name: 'legal-ai-terminology-consistency',
@@ -149,12 +149,13 @@ export class UXPatternValidator {
           'case management': ['case handling', 'case processing'],
           'legal analysis': ['legal review', 'legal examination'],
           'evidence': ['proof', 'documentation'],
-        }
+        };
         let consistencyScore = 1;
         Object.entries(terminologyMappings).forEach(([preferred, alternatives]) => {
           const preferredCount = (textContent.match(new RegExp(preferred, 'g')) || []).length;
-          const alternativeCount = alternatives.reduce((sum, alt) =>
-            sum + (textContent.match(new RegExp(alt, 'g')) || []).length, 0
+          const alternativeCount = alternatives.reduce(
+            (sum, alt) => sum + (textContent.match(new RegExp(alt, 'g')) || []).length,
+            0
           );
           if (alternativeCount > preferredCount && preferredCount > 0) {
             consistencyScore -= 0.2;
@@ -162,8 +163,8 @@ export class UXPatternValidator {
         });
         return consistencyScore >= 0.8;
       },
-      recommendation: 'Use consistent legal AI terminology throughout the interface'
-    }
+      recommendation: 'Use consistent legal AI terminology throughout the interface',
+    },
   ];
   /**
    * Validate all UX patterns
@@ -176,17 +177,17 @@ export class UXPatternValidator {
         results.push({
           pattern,
           passed,
-          message: passed ?
-            `✅ ${pattern.name}: Follows best practices` :
-            `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,
-          timestamp: new Date()
+          message: passed
+            ? `✅ ${pattern.name}: Follows best practices`
+            : `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,
+          timestamp: new Date(),
         });
       } catch (error) {
         results.push({
           pattern,
-          passed: false
+          passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
     }
@@ -204,17 +205,17 @@ export class UXPatternValidator {
         results.push({
           pattern,
           passed,
-          message: passed ?
-            `✅ ${pattern.name}: Follows best practices` :
-            `⚠️ ${pattern.name}: ${pattern.recommendation}`,
-          timestamp: new Date()
+          message: passed
+            ? `✅ ${pattern.name}: Follows best practices`
+            : `⚠️ ${pattern.name}: ${pattern.recommendation}`,
+          timestamp: new Date(),
         });
       } catch (error) {
         results.push({
           pattern,
-          passed: false
+          passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
     }
@@ -229,7 +230,7 @@ export class UXPatternValidator {
       passedPatterns: number;
       failedPatterns: number;
       scorePercentage: number;
-    }
+    };
     byCategory: Record<string, UXValidationResult[]>;
     recommendations: string[];
   }> {
@@ -238,22 +239,23 @@ export class UXPatternValidator {
       totalPatterns: results.length,
       passedPatterns: results.filter(r => r.passed).length,
       failedPatterns: results.filter(r => !r.passed).length,
-      scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100)
-    }
-    const byCategory = results.reduce((acc, result) => {
-      const category = result.pattern.category;
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(result);
-      return acc;
-    }, {} as Record<string, UXValidationResult[]>);
-    const recommendations = results
-      .filter(r => !r.passed)
-      .map(r => r.pattern.recommendation);
+      scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100),
+    };
+    const byCategory = results.reduce(
+      (acc, result) => {
+        const category = result.pattern.category;
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(result);
+        return acc;
+      },
+      {} as Record<string, UXValidationResult[]>
+    );
+    const recommendations = results.filter(r => !r.passed).map(r => r.pattern.recommendation);
     return {
       summary,
       byCategory,
-      recommendations
-    }
+      recommendations,
+    };
   }
   /**
    * Monitor UX patterns in real-time
@@ -265,19 +267,17 @@ export class UXPatternValidator {
       const failedPatterns = results.filter(r => !r.passed);
       if (failedPatterns.length > 0) {
         console.group('🎨 UX Pattern Issues Detected');
-        failedPatterns.forEach(pattern =>
-          console.warn(pattern.message)
-        );
+        failedPatterns.forEach(pattern => console.warn(pattern.message));
         console.groupEnd();
       }
-    }
+    };
     // Run initial check
     runMonitoring();
     // Set up periodic monitoring
     monitoringInterval = setInterval(runMonitoring, 30000); // Every 30 seconds
     return () => {
       clearInterval(monitoringInterval);
-    }
+    };
   }
 }
 /**
@@ -292,20 +292,20 @@ export class PerformanceMetrics {
     fid?: number; // First Input Delay
     cls?: number; // Cumulative Layout Shift
   }> {
-    return new Promise((resolve) => {
-      const metrics: any = {}
+    return new Promise(resolve => {
+      const metrics: any = {};
       // Largest Contentful Paint
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         metrics.lcp = entries[entries.length - 1].startTime;
       }).observe({ entryTypes: ['largest-contentful-paint'] });
       // First Input Delay
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         metrics.fid = entries[0].processingStart - entries[0].startTime;
       }).observe({ entryTypes: ['first-input'] });
       // Cumulative Layout Shift
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         let clsValue = 0;
         for (const entry of list.getEntries()) {
           if (!entry.hadRecentInput) {
@@ -327,10 +327,11 @@ export class PerformanceMetrics {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
       console.log(`⚡ ${componentName} render time: ${renderTime.toFixed(2)}ms`);
-      if (renderTime > 16) { // More than one frame at 60fps
+      if (renderTime > 16) {
+        // More than one frame at 60fps
         console.warn(`🐌 ${componentName} render is slow (${renderTime.toFixed(2)}ms)`);
       }
-    }
+    };
   }
 }
 // Export singleton instances

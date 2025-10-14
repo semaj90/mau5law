@@ -135,23 +135,23 @@ export const GET: RequestHandler = async () => {
       (health.status === "fulfilled" && Boolean(health.value?.services?.gpu)
     const details: Details = {
       ollama: {
-        ok: ollama_ok
+        ok: ollama_ok,
         models_count: models.length,
-        required_model: requiredModel
+        required_model: requiredModel,
         model_present
       },
       go_service: {
-        ok: gpu_ok
+        ok: gpu_ok,
         endpoint: `${GO_BASE}/api/gpu-status`,
         source: gpuStatus.status === "fulfilled" ? "go" : "shim",
         version: "v1",
-        raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined
-        health: health.status === "fulfilled" ? health.value : undefined
+        raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined,
+        health: health.status === "fulfilled" ? health.value : undefined,
       },
       ai_summarize_checks: {
-        gpu: gpu_ok
-        ollama: ollama_ok
-        model: model_present
+        gpu: gpu_ok,
+        ollama: ollama_ok,
+        model: model_present,
       }
     }
     const ai_ready = details.ai_summarize_checks.gpu &&
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async () => {
                     details.ai_summarize_checks?.model || "unknown" // @ts-ignore - Model property access
     const message = !model_present ? "Please download local LLM model" : undefined
     const payload: CachePayload = {
-      ok: ai_ready
+      ok: ai_ready,
       details,
       message
     }

@@ -278,7 +278,8 @@ await refreshSystemStatus();
               type="range"
               min="0"
               max="1"
-              step="0.1";
+              step="0.1"
+              ;
               bind:value={processingOptions.priority}
               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
@@ -312,7 +313,8 @@ await refreshSystemStatus();
             </div>
             <div>
               <label class="block text-sm text-gray-400 mb-2" for="court-level">Court Level</label><select
-                id="court-level";
+                id="court-level"
+                ;
                 bind:value={testDocument.metadata.court_level}
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
               >
@@ -357,7 +359,7 @@ await refreshSystemStatus();
                           document?: unknown;
                           processingTime?: unknown;
                         }
-                      ).result.processingPath,
+                      ).result.processingPath
                     )}</span
                   >
                   <span
@@ -372,7 +374,7 @@ await refreshSystemStatus();
                   {new Date(
                     (
                       result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }
-                    ).timestamp,
+                    ).timestamp
                   ).toLocaleTimeString()}
                 </span>
               </div>

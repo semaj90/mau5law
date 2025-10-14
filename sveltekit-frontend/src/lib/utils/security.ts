@@ -89,15 +89,15 @@ class SessionManager {
     const now = Date.now();
     this.session = {
       ...user,
-      loginTime: now
-      lastActivity: now
-      sessionId: this.generateSessionId()
+      loginTime: now,
+      lastActivity: now,
+      sessionId: this.generateSessionId(),
     }
     this.startSessionMonitoring();
     this.logSecurityEvent({
       type: "login",
       userId: user.userId,
-      timestamp: now
+      timestamp: now,
       details: { username: user.username, role: user.role },
       severity: "low"
     });
@@ -175,7 +175,7 @@ export function encryptSensitiveData(data: string, key?: string): string {
   return btoa(result);
 }
 export function decryptSensitiveData(
-  encryptedData: string
+  encryptedData: string,
   key?: string;
 ): string {
   try {
@@ -344,9 +344,9 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
 class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
   isAllowed(
-    identifier: string
-    maxAttempts: number
-    windowMs: number
+    identifier: string,
+    maxAttempts: number,
+    windowMs: number,
   ): boolean {
     const now = Date.now();
     const windowStart = now - windowMs;
@@ -366,9 +366,9 @@ class RateLimiter {
     return true;
   }
   getRemainingAttempts(
-    identifier: string
-    maxAttempts: number
-    windowMs: number
+    identifier: string,
+    maxAttempts: number,
+    windowMs: number,
   ): number {
     const now = Date.now();
     const windowStart = now - windowMs;
@@ -473,7 +473,7 @@ export interface ChainOfCustodyEvent {
   }
 }
 export function addChainOfCustodyEvent(
-  evidenceId: string
+  evidenceId: string,
   event: Omit<ChainOfCustodyEvent, "timestamp">;
 ): void {
   const fullEvent: ChainOfCustodyEvent = {
@@ -499,7 +499,7 @@ export function secureDataExport(data: any, userId: string, legalContext?: unkno
     type: "data_export",
     userId,
     details: {
-      dataType: typeof data
+      dataType: typeof data,
       recordCount: Array.isArray(data) ? data.length: 1,
       fields:
         Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : []
@@ -533,8 +533,8 @@ export function addCSRFToken(formData: FormData): FormData {
 }
 // Legal-specific security functions
 export function checkAttorneyClientPrivilege(
-  userId: string
-  documentId: string
+  userId: string,
+  documentId: string,
   action: string;
 ): boolean {
   const session = sessionManager.getSession();
@@ -554,7 +554,7 @@ export function checkAttorneyClientPrivilege(
   return true;
 }
 export function validateLegalAccess(
-  requiredPermission: string
+  requiredPermission: string,
   caseId?: string;
 ): boolean {
   const session = sessionManager.getSession();
@@ -579,7 +579,7 @@ export function validateLegalAccess(
 }
 // Privileged document access tracking
 export function trackPrivilegedAccess(
-  documentId: string
+  documentId: string,
   action: "view" | "edit" | "download" | "print",
   caseId?: string;
 ): void {

@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.results.database = {
           status: 'connected',
           version: dbVersion.rows[0].version,
-          pgvectorWorking: true
+          pgvectorWorking: true,
           vectorDistance: vectorTest.rows[0].distance,
           documentsCount: docCount[0].count
         }
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
         results.results.nats = {
           status: 'success',
-          health: healthCheck
+          health: healthCheck,
           searchTest: {
             resultCount: testSearch.results?.length || 0,
             processingTime: testSearch.analytics?.processingTime || 0,
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url }) => {
     ).length
     results.summary = {
       testsRun: Object.keys(results.results).length,
-      testsPassed: passedTests
+      testsPassed: passedTests,
       testsFailed: results.errors.length,
       overallStatus: results.status,
       totalTime: totalTime
@@ -281,13 +281,13 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
     // Step 1: Create test document
     results.steps.push('Creating test document')
     const testDoc = {
-      id: testId
+      id: testId,
       title: 'End-to-End Test Document',
       documentType: 'contract',
       content:
         'This is a comprehensive test of the legal AI system integration. It includes contract terms, liability clauses, and termination provisions.',
-      isActive: true
-      createdAt: new Date().toISOString()
+      isActive: true,
+      createdAt: new Date().toISOString(),
     }
     await db.insert(schema.legalDocuments).values(testDoc)
     // Step 2: Index document
@@ -310,7 +310,7 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
         testId,
         steps: results.steps,
         results: {
-          documentCreated: true
+          documentCreated: true,
           indexedChunks: indexResult.chunksCreated,
           searchResults: searchResults.length,
           cleanedUp: true

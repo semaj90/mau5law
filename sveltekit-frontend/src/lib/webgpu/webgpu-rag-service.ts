@@ -41,7 +41,7 @@ export async function initializeWebGPU(): Promise<any> {
   }
 }
 export async function processQuery(
-  query: string
+  query: string,
   options?: {
     embeddings?: Float32Array | number[];
     context?: any;
@@ -82,13 +82,13 @@ export async function processQuery(
       query,
       answer: `WebGPU-accelerated RAG result for: ${query}`,
       tokensUsed: 128,
-      cacheHit: false
-      webgpuAccelerated: true
+      cacheHit: false,
+      webgpuAccelerated: true,
       embeddingDimensions: queryEmbeddings?.length || 0,
       quantizationApplied: conversionResult ? {,
         precision: options?.quantization?.precision || 'adaptive',
         compressionRatio: conversionResult.compressionRatio,
-        memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024)
+        memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024),
       } : null;
       profiling: {
         ttfbMs: Math.round(processingTime * 0.3),
@@ -106,8 +106,8 @@ function fallbackProcessing(query: string, options?: any) {
     query,
     answer: `Fallback RAG result for: ${query}`,
     tokensUsed: 128,
-    cacheHit: false
-    webgpuAccelerated: false
+    cacheHit: false,
+    webgpuAccelerated: false,
     fallbackReason: 'WebGPU unavailable',
     profiling: { ttfbMs: 20, totalMs: 45, gpuProcessingMs: 0 }
   }
@@ -125,13 +125,13 @@ export const webgpuRAGService = {
       mockEmbeddings[i] = Math.random() * 2 - 1; // [-1, 1] range
     }
     const result = await processQuery(query, {
-      embeddings: mockEmbeddings
+      embeddings: mockEmbeddings,
       context: contextArray;
       quantization: { precision: 'fp16' }, // Default to FP16 for legal AI
       memoryBudgetMB: 512 // Default 512MB budget
     });
     return {
-      processed: true
+      processed: true,
       results: contextArray.map((item) => ({ ...item, score: Math.random() })),
       performance: {
         webgpuAccelerated: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).webgpuAccelerated,
@@ -157,7 +157,7 @@ export const webgpuRAGService = {
       adapter: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).adapter?.constructor.name || 'null',
       device: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).device?.constructor.name || 'null',
       features: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).device ? ['gpu-accelerated-rag', 'vector-ops', 'quantized-inference'] : [],
-      arrayUtilsAvailable: true
+      arrayUtilsAvailable: true,
       maxBufferSize: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).device ? '128MB' : '0MB'
     }
   },

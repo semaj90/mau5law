@@ -1,12 +1,8 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // GPU-Accelerated TypeScript Error Processing
 // NVIDIA RTX 3060 Ti optimized processing for high-performance TypeScript error fixing
-import type {
-  OptimizedFixRequest,
-  OptimizedFixResponse,
-  GPUProcessingStats
-} from '$lib/types/typescript-optimizer'
-const ENHANCED_API_BASE_URL = 'http://localhost:8094'
+import type { OptimizedFixRequest, OptimizedFixResponse, GPUProcessingStats } from '$lib/types/typescript-optimizer';
+const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer/gpu - GPU-accelerated error processing */
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -203,19 +199,19 @@ function calculateGPUEfficiency(processingTime: number, errorCount: number, succ
   return Math.round(throughputScore + accuracyScore);
 }
 function calculatePerformanceGrade(efficiencyScore: number): string {
-	if (efficiencyScore >= 95) return 'A+'
-	if (efficiencyScore >= 85) return 'A'
-	if (efficiencyScore >= 75) return 'B+'
-	if (efficiencyScore >= 65) return 'B'
-	if (efficiencyScore >= 55) return 'C'
-	return 'D'
+  if (efficiencyScore >= 95) return 'A+';
+  if (efficiencyScore >= 85) return 'A';
+  if (efficiencyScore >= 75) return 'B+';
+  if (efficiencyScore >= 65) return 'B';
+  if (efficiencyScore >= 55) return 'C';
+  return 'D';
 }
 function estimateSpeedupVsCPU(errorCount: number): number {
-	// Estimated GPU speedup based on workload characteristics
-	// Larger batches benefit more from GPU parallelization
-	if (errorCount >= 100) return 8.0
-	if (errorCount >= 50) return 6.0
-	if (errorCount >= 20) return 4.5
-	if (errorCount >= 10) return 3.5
-	return 2.8; // Minimum speedup for small batches
+  // Estimated GPU speedup based on workload characteristics
+  // Larger batches benefit more from GPU parallelization
+  if (errorCount >= 100) return 8.0;
+  if (errorCount >= 50) return 6.0;
+  if (errorCount >= 20) return 4.5;
+  if (errorCount >= 10) return 3.5;
+  return 2.8; // Minimum speedup for small batches
 }

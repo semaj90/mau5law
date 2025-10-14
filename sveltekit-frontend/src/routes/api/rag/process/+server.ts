@@ -140,9 +140,9 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
     }
     // Store in PostgreSQL (pgvector)
     await db.insert(embeddings).values({
-      documentId: documentId
+      documentId: documentId,
       content: content.substring(0, 1000),
-      embedding: embeddingArray
+      embedding: embeddingArray,
       metadata: {
         model: 'nomic-embed-text',
         contentLength: content.length,
@@ -158,14 +158,14 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
       else if (qdrantVector.length < TARGET_QDRANT_DIM) qdrantVector = qdrantVector.concat(Array(TARGET_QDRANT_DIM - qdrantVector.length).fill(0)
     }
     await qdrantService.upsert('legal-documents', [{
-      id: documentId
-      vector: qdrantVector
+      id: documentId,
+      vector: qdrantVector,
       payload: {
         content: content.substring(0, 1000),
-        documentId: documentId
+        documentId: documentId,
         model: 'nomic-embed-text',
-        dbEmbeddingDim: TARGET_DB_DIM
-        qdrantEmbeddingDim: TARGET_QDRANT_DIM
+        dbEmbeddingDim: TARGET_DB_DIM,
+        qdrantEmbeddingDim: TARGET_QDRANT_DIM,
       }
     }])
     return result
@@ -266,9 +266,9 @@ export const POST: RequestHandler = async ({ request }) => {
             enableOCR,
             enableEmbedding,
             enableRAG,
-            localPath: filePath
-            ocrProcessed: enableOCR
-            contentLength: content.length
+            localPath: filePath,
+            ocrProcessed: enableOCR,
+            contentLength: content.length,
           },
           confidence: legalAnalysis?.confidence || 0.7,
           legalAnalysis,
@@ -289,8 +289,8 @@ export const POST: RequestHandler = async ({ request }) => {
           documentId: documentRecord.id,
           filename: file.name,
           status: 'processed',
-          localPath: filePath
-          ocrProcessed: enableOCR
+          localPath: filePath,
+          ocrProcessed: enableOCR,
           embeddingGenerated: !!embeddingResult,
           legalAnalysisComplete: !!legalAnalysis,
           contentLength: content.length,

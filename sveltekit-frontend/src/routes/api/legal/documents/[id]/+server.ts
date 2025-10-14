@@ -1,5 +1,5 @@
-import { db } from "$lib/server/db/index"
-import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types.js';
 import { eq } from 'drizzle-orm';
 // Individual Legal Document API - SvelteKit Server Endpoint
 import { json } from '@sveltejs/kit';

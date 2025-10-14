@@ -65,23 +65,10 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
   },
 };
 export const EMBEDDING_FALLBACK_CHAINS = {
-  'legal-general': [
-    'embeddinggemma:latest',
-    'embeddinggemma',
-    'nomic-embed-text',
-    'legal-bert-embeddings'
-  ],
-  'legal-fast': [
-    'embeddinggemma',
-    'legal-bert-embeddings',
-    'nomic-embed-text'
-  ],
-  'general': [
-    'embeddinggemma:latest',
-    'embeddinggemma',
-    'nomic-embed-text'
-  ]
-}
+  'legal-general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text', 'legal-bert-embeddings'],
+  'legal-fast': ['embeddinggemma', 'legal-bert-embeddings', 'nomic-embed-text'],
+  'general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'],
+};
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',
   availableModels: string[] = []
@@ -101,5 +88,5 @@ export function getEmbeddingModelConfig(modelId: string): EmbeddingModelConfig |
 }
 export function isLegalSpecializedEmbedding(modelId: string): boolean {
   const config = getEmbeddingModelConfig(modelId);
-  return config?.specialized && config.capabilities.includes('legal-text') || false;
+  return (config?.specialized && config.capabilities.includes('legal-text')) || false;
 }

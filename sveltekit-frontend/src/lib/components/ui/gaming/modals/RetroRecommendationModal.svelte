@@ -264,7 +264,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <div
               class="recommendation-item"
               class:selected={index === selectedIndex}
-              style:border-color="{index === selectedIndex ? currentTheme.colors.selected : 'transparent'}"
+              style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button"
               onclick={() => {

@@ -56,7 +56,7 @@ class RecursiveEvidenceChainProcessor {
     return this.maxDepth;
   }
   async processEvidenceHierarchy(
-    rootEvidenceId: string
+    rootEvidenceId: string,
     currentDepth: number = 0,
     recursionPath: string[] = [];
   ): Promise<EvidenceChainNode> {
@@ -64,8 +64,8 @@ class RecursiveEvidenceChainProcessor {
     // Russian Nesting Dolls Base Case - prevent infinite recursion
     if (currentDepth >= this.maxDepth || this.visitedEvidence.has(rootEvidenceId)) {
       return {
-        evidenceId: rootEvidenceId
-        depth: currentDepth
+        evidenceId: rootEvidenceId,
+        depth: currentDepth,
         chainOfCustody: await this.getChainOfCustody(rootEvidenceId),
         children: [],
         relationships: [],
@@ -108,8 +108,8 @@ class RecursiveEvidenceChainProcessor {
       );
       const processingTime = performance.now() - startTime;
       return {
-        evidenceId: rootEvidenceId
-        depth: currentDepth
+        evidenceId: rootEvidenceId,
+        depth: currentDepth,
         chainOfCustody,
         children,
         relationships,
@@ -124,8 +124,8 @@ class RecursiveEvidenceChainProcessor {
     } catch (error) {
       console.error(`Error processing evidence ${rootEvidenceId}:`, error);
       return {
-        evidenceId: rootEvidenceId
-        depth: currentDepth
+        evidenceId: rootEvidenceId,
+        depth: currentDepth,
         chainOfCustody: [],
         children: [],
         relationships: [],
@@ -233,7 +233,7 @@ class RecursiveEvidenceChainProcessor {
       relationshipType,
       strength,
       description: this.generateRelationshipDescription(relationshipType, strength),
-      legalSignificance: significance
+      legalSignificance: significance,
       supportingEvidence: [evidenceId, related.evidenceId],
       confidence: this.calculateRelationshipConfidence(strength, relationshipType)
     }
@@ -388,7 +388,7 @@ self.addEventListener('message', async (event) => {
       // Send success response
       self.postMessage({
         messageId,
-        success: true
+        success: true,
         result,
         metadata: {
           totalNodesProcessed: processor.visitedEvidenceSize,
@@ -405,7 +405,7 @@ self.addEventListener('message', async (event) => {
     } catch (error) {
       self.postMessage({
         messageId,
-        success: false
+        success: false,
         error: error.message,
         stack: error.stack
       });

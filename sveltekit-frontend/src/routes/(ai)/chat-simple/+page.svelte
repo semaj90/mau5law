@@ -30,7 +30,7 @@
       role: 'user' as const,
       content: currentMessage.trim(),
       timestamp: new Date(),
-    }
+    };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage.trim();
     currentMessage = '';
@@ -51,7 +51,7 @@
         role: 'assistant' as const,
         content: data.response || 'Sorry, I encountered an error processing your request.',
         timestamp: new Date(),
-      }
+      };
       messages = [...messages, aiMessage];
     } catch (error) {
       console.error('Error sending message:', error);
@@ -61,7 +61,7 @@
         content:
           'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',
         timestamp: new Date(),
-      }
+      };
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;

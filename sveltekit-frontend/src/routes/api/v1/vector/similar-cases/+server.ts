@@ -22,4 +22,4 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: 'Invalid upstream response' }, { status: 502 });
   }
   return json(validated.data);
-}
+};

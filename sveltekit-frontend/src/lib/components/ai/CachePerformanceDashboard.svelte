@@ -15,7 +15,7 @@
     CheckCircle,
     Target,
     Cpu,
-    HardDrive
+    HardDrive,
   } from 'lucide-svelte';
   // Sample cache metrics - replace with real data
   let cacheMetrics = $state({
@@ -24,27 +24,27 @@
       misses: 0,
       hitRate: 0,
       totalQueries: 0,
-      averageResponseTime: 0
+      averageResponseTime: 0,
     },
     embedding: {
       hits: 0,
       misses: 0,
       hitRate: 0,
       totalRequests: 0,
-      costSavings: 0
+      costSavings: 0,
     },
     memory: {
       l1Usage: 0,
       l2Usage: 0,
       l3Usage: 0,
-      totalCachedItems: 0
+      totalCachedItems: 0,
     },
     performance: {
       averageQueryTime: 0,
       p95ResponseTime: 0,
       throughputQPS: 0,
-      errorRate: 0
-    }
+      errorRate: 0,
+    },
   });
   let nintendoStats = $state({
     memoryUsage: 0,
@@ -53,7 +53,7 @@
     textureCount: 0,
     activeStreams: 0,
     evictions: 0,
-    bankSwitches: 0
+    bankSwitches: 0,
   });
   let recentQueries = $state([]);
   let systemHealth = $state('healthy');
@@ -73,10 +73,10 @@
   });
   let performanceGrade = $derived(() => {
     const hitRate = totalHitRate();
-    if (hitRate >= 80) return { grade: 'A', color: 'text-green-500' }
-    if (hitRate >= 60) return { grade: 'B', color: 'text-yellow-500' }
-    if (hitRate >= 40) return { grade: 'C', color: 'text-orange-500' }
-    return { grade: 'D', color: 'text-red-500' }
+    if (hitRate >= 80) return { grade: 'A', color: 'text-green-500' };
+    if (hitRate >= 60) return { grade: 'B', color: 'text-yellow-500' };
+    if (hitRate >= 40) return { grade: 'C', color: 'text-orange-500' };
+    return { grade: 'D', color: 'text-red-500' };
   });
   $effect(() => {
     // Load initial data
@@ -102,14 +102,14 @@
         cache: '/api/cache/metrics',
         nintendo: '/api/cache/nintendo',
         recent: '/api/cache/recent-queries',
-        health: '/api/health/system'
+        health: '/api/health/system',
       };
 
       const [cacheResp, nintendoResp, recentResp, healthResp] = await Promise.allSettled([
         fetch(endpoints.cache, { headers: { Accept: 'application/json' } }),
         fetch(endpoints.nintendo, { headers: { Accept: 'application/json' } }),
         fetch(endpoints.recent, { headers: { Accept: 'application/json' } }),
-        fetch(endpoints.health, { headers: { Accept: 'application/json' } })
+        fetch(endpoints.health, { headers: { Accept: 'application/json' } }),
       ]);
 
       // Handle cache metrics
@@ -191,28 +191,28 @@
         misses: Math.floor(Math.random() * 300) + 100,
         hitRate: 70 + Math.random() * 25,
         totalQueries: Math.floor(Math.random() * 1500) + 800,
-        averageResponseTime: 45 + Math.random() * 30
+        averageResponseTime: 45 + Math.random() * 30,
       },
       embedding: {
         hits: Math.floor(Math.random() * 2000) + 800,
         misses: Math.floor(Math.random() * 200) + 50,
         hitRate: 85 + Math.random() * 10,
         totalRequests: Math.floor(Math.random() * 2500) + 1000,
-        costSavings: (Math.random() * 50 + 25).toFixed(2)
+        costSavings: (Math.random() * 50 + 25).toFixed(2),
       },
       memory: {
         l1Usage: Math.random() * 80,
         l2Usage: Math.random() * 60,
         l3Usage: Math.random() * 90,
-        totalCachedItems: Math.floor(Math.random() * 500) + 200
+        totalCachedItems: Math.floor(Math.random() * 500) + 200,
       },
       performance: {
         averageQueryTime: 120 + Math.random() * 80,
         p95ResponseTime: 300 + Math.random() * 200,
         throughputQPS: 15 + Math.random() * 10,
-        errorRate: Math.random() * 2
-      }
-    }
+        errorRate: Math.random() * 2,
+      },
+    };
   }
   async function updateNintendoStats() {
     performance.mark('function-start');
@@ -224,8 +224,8 @@
       textureCount: Math.floor(Math.random() * 50) + 10,
       activeStreams: Math.floor(Math.random() * 5),
       evictions: Math.floor(Math.random() * 10),
-      bankSwitches: Math.floor(Math.random() * 3)
-    }
+      bankSwitches: Math.floor(Math.random() * 3),
+    };
   }
   async function updateRecentQueries() {
     performance.mark('function-start');
@@ -234,7 +234,7 @@
       { query: 'negligence standard of care', cached: false, responseTime: 145 },
       { query: 'fiduciary duty breach', cached: true, responseTime: 31 },
       { query: 'contract formation requirements', cached: true, responseTime: 18 },
-      { query: 'tort damages calculation', cached: false, responseTime: 167 }
+      { query: 'tort damages calculation', cached: false, responseTime: 167 },
     ];
     recentQueries = sampleQueries.slice(0, Math.floor(Math.random() * 3) + 3);
   }
@@ -270,10 +270,14 @@
   function getHealthIcon() {
     performance.mark('function-start');
     switch (systemHealth) {
-      case 'healthy': return { icon: CheckCircle, color: 'text-green-500' }
-      case 'warning': return { icon: AlertTriangle, color: 'text-yellow-500' }
-      case 'critical': return { icon: AlertTriangle, color: 'text-red-500' }
-      default: return { icon: AlertTriangle, color: 'text-gray-500' }
+      case 'healthy':
+        return { icon: CheckCircle, color: 'text-green-500' };
+      case 'warning':
+        return { icon: AlertTriangle, color: 'text-yellow-500' };
+      case 'critical':
+        return { icon: AlertTriangle, color: 'text-red-500' };
+      default:
+        return { icon: AlertTriangle, color: 'text-gray-500' };
     }
   }
 </script>

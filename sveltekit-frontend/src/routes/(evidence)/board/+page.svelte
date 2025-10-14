@@ -42,9 +42,7 @@
           </div>
         </div>
         <div class="nier-bits-yorha-panel-content">
-          <Button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
-            Get Started →
-          </Button>
+          <Button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>Get Started →</Button>
         </div>
       </Card>
     </div>

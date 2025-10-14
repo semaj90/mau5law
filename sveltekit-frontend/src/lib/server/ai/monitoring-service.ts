@@ -66,7 +66,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Track incoming request
-   */;
+   */
   trackRequest(data: {
     requestId: string;
     userId: string;
@@ -85,7 +85,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Track stage completion within a request
-   */;
+   */
   trackStage(requestId: string, stage: string, duration: number, metadata?: unknown): void {
     const request = this.requestTracking.get(requestId);
     if (request) {
@@ -109,7 +109,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Track metrics for completed request
-   */;
+   */
   trackMetrics(metrics: MetricData): void {
     this.counters.successfulRequests++;
     this.performanceHistory.push(metrics.processingTime);
@@ -137,21 +137,21 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Track cache hit
-   */;
+   */
   trackCacheHit(requestId: string): void {
     this.counters.cacheHits++;
     this.emit('cache:hit', { requestId, timestamp: Date.now() });
   }
   /**
    * Track cache miss
-   */;
+   */
   trackCacheMiss(requestId: string): void {
     this.counters.cacheMisses++;
     this.emit('cache:miss', { requestId, timestamp: Date.now() });
   }
   /**
    * Track stream completion
-   */;
+   */
   trackStreamCompletion(data: { streamId: string; requestId: string; duration: number }): void {
     this.counters.streamRequests++;
     this.storeMetric('stream_duration', data.duration);
@@ -159,7 +159,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Track errors
-   */;
+   */
   trackError(data: { requestId: string; error: string; stack?: string; userId: string }): void {
     this.counters.failedRequests++;
     this.errorLog.push({
@@ -193,14 +193,14 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Register health check
-   */;
+   */
   registerHealthCheck(name: string, check: () => Promise<boolean>): void {
     this.healthChecks.set(name, check);
     logger.info(`[Monitoring] Registered health check: ${name}`);
   }
   /**
    * Get current statistics
-   */;
+   */
   getStats(): unknown {
     const cacheHitRate =
       this.counters.cacheHits / (this.counters.cacheHits + this.counters.cacheMisses) || 0;
@@ -220,8 +220,8 @@ class MonitoringService extends EventEmitter {
         errorRate: ((1 - successRate) * 100).toFixed(2) + '%'
       },
       performance: {
-        overall: performanceMetrics
-        stages: stageMetrics
+        overall: performanceMetrics,
+        stages: stageMetrics,
       },
       recentErrors: this.errorLog.slice(-10),
       activeRequests: this.requestTracking.size,
@@ -231,7 +231,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Get detailed metrics for analysis
-   */;
+   */
   getDetailedMetrics(timeRange?: { start: Date; end: Date }): unknown {
     const metrics = {}
     for (const [name, values] of this.metrics) {
@@ -251,7 +251,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Export metrics for external monitoring systems
-   */;
+   */
   exportPrometheusMetrics(): string {
     // removed unused lines assignment
     // Counter metrics
@@ -424,7 +424,7 @@ class MonitoringService extends EventEmitter {
    */
   async recordMetric(
     metric: string;
-    value: number
+    value: number,
     labels?: Record<string, string>;
   ): Promise<void> {
     const data = {
@@ -454,7 +454,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Get all metrics
-   */;
+   */
   async getMetrics(): Promise<MetricData[]> {
     const allMetrics: MetricData[] = [];
     for (const [key, values] of this.metrics) {
@@ -462,8 +462,8 @@ class MonitoringService extends EventEmitter {
         values.forEach(value => {
           if (typeof value === 'number') {
             allMetrics.push({
-              requestId: key
-              processingTime: value
+              requestId: key,
+              processingTime: value,
               confidence: 0.8,
               sourceCount: 1,
               strategies: ['default'],
@@ -477,7 +477,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Get aggregated metrics by name
-   */;
+   */
   async getMetricStats(metricName: string): Promise<any> {
     const metricData = Array.from((this.metrics as any).values()
       .flat()
@@ -495,7 +495,7 @@ class MonitoringService extends EventEmitter {
   }
   /**
    * Shutdown monitoring service
-   */;
+   */
   async shutdown(): Promise<void> {
     // Export final metrics
     const finalStats = this.getStats();

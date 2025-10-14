@@ -78,17 +78,17 @@ export interface RegistrationData {
   deviceInfo?: unknown;
 }
 const initialContext: AuthContext = {
-  user: null
+  user: null,
   session: null;
-  error: undefined
-  isLoading: false
-  deviceInfo: undefined
+  error: undefined,
+  isLoading: false,
+  deviceInfo: undefined,
   loginAttempts: 0,
   maxLoginAttempts: 5,
-  lastLoginAttempt: undefined
-  lockoutUntil: undefined
-  twoFactorRequired: false
-  registrationData: undefined
+  lastLoginAttempt: undefined,
+  lockoutUntil: undefined,
+  twoFactorRequired: false,
+  registrationData: undefined,
 }
 export const authMachine = setup({
   types: { [key,: strin,g]: any } as {
@@ -233,7 +233,7 @@ export const authMachine = setup({
 }).createMachine({
   id: 'auth',
   initial: 'idle',
-  context: initialContext
+  context: initialContext,
   states: {
     idle: {
       on: {

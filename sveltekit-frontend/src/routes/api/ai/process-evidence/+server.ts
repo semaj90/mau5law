@@ -110,14 +110,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-User-ID': userId
-        'X-Case-ID': caseId
+        'X-User-ID': userId,
+        'X-Case-ID': caseId,
       },
       body: JSON.stringify({
-        input_data: enhancedContext
+        input_data: enhancedContext,
         operation: 'legal_analysis',
-        model: model
-        context: enhancedContext
+        model: model,
+        context: enhancedContext,
       })
     })
     if (!ragResponse.ok) {

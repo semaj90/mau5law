@@ -9,15 +9,16 @@ import crypto from 'crypto';
 
 // Password reset request schema
 const ResetPasswordRequestSchema = z.object({
-  email: z.string().email('Invalid email address')
+  email: z.string().email('Invalid email address'),
 });
 
 // Password reset confirmation schema
 const ResetPasswordConfirmSchema = z.object({
   token: z.string().min(32, 'Invalid reset token'),
-  newPassword: z.string()
+  newPassword: z
+    .string()
     .min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
 });
 
 /**
@@ -48,7 +49,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const [user] = await db
       .select({
         id: users.id,
-        email: users.email
+        email: users.email,
       })
       .from(users)
       .where(eq(users.email, email))
@@ -56,18 +57,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     if (!user) {
       // Don't reveal if email exists or not for security
-      return json({
-        success: true,
-        message: 'If an account with this email exists, a reset link has been sent',
-        email,
-        processingTime: Math.round(performance.now() - startTime)
-      }, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(performance.now() - startTime)}ms`
+      return json(
+        {
+          success: true,
+          message: 'If an account with this email exists, a reset link has been sent',
+          email,
+          processingTime: Math.round(performance.now() - startTime),
+        },
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Processing-Time': `${Math.round(performance.now() - startTime)}ms`,
+          },
         }
-      });
+      );
     }
 
     // Generate secure reset token
@@ -76,18 +80,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
     // Delete any existing tokens for this user
-    await db
-      .delete(passwordResetTokens)
-      .where(eq(passwordResetTokens.userId, user.id));
+    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, user.id));
 
     // Insert new reset token
-    await db
-      .insert(passwordResetTokens)
-      .values({
-        tokenHash,
-        userId: user.id,
-        expiresAt: expiresAt.toISOString()
-      });
+    await db.insert(passwordResetTokens).values({
+      tokenHash,
+      userId: user.id,
+      expiresAt: expiresAt.toISOString(),
+    });
 
     const processingTime = performance.now() - startTime;
 
@@ -96,21 +96,23 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     console.log(`🔑 Password reset requested from ${getClientAddress()}: ${email} (${user.id})`);
 
-    return json({
-      success: true,
-      message: 'Password reset link sent to email',
-      email,
-      // In development, return the token for testing. Remove in production!
-      ...(process.env.NODE_ENV === 'development' && { resetToken }),
-      processingTime: Math.round(processingTime)
-    }, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`
+    return json(
+      {
+        success: true,
+        message: 'Password reset link sent to email',
+        email,
+        // In development, return the token for testing. Remove in production!
+        ...(process.env.NODE_ENV === 'development' && { resetToken }),
+        processingTime: Math.round(processingTime),
+      },
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Processing-Time': `${Math.round(processingTime)}ms`,
+        },
       }
-    });
-
+    );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Password reset request error:', err);
@@ -118,7 +120,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || 'Password reset request failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {
@@ -126,8 +128,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
 };
@@ -145,16 +147,11 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
     .select({
       tokenHash: passwordResetTokens.tokenHash,
       userId: passwordResetTokens.userId,
-      expiresAt: passwordResetTokens.expiresAt
+      expiresAt: passwordResetTokens.expiresAt,
     })
     .from(passwordResetTokens)
     .innerJoin(users, eq(passwordResetTokens.userId, users.id))
-    .where(
-      and(
-        eq(passwordResetTokens.tokenHash, tokenHash),
-        sql`${passwordResetTokens.expiresAt} > NOW()`
-      )
-    )
+    .where(and(eq(passwordResetTokens.tokenHash, tokenHash), sql`${passwordResetTokens.expiresAt} > NOW()`))
     .limit(1);
 
   if (!resetRecord) {
@@ -166,7 +163,7 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
     memoryCost: 19456,
     timeCost: 2,
     outputLen: 32,
-    parallelism: 1
+    parallelism: 1,
   });
 
   // Update user password
@@ -174,29 +171,30 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
     .update(users)
     .set({
       passwordHash,
-      updatedAt: sql`now()`
+      updatedAt: sql`now()`,
     })
     .where(eq(users.id, resetRecord.userId));
 
   // Delete used reset token
-  await db
-    .delete(passwordResetTokens)
-    .where(eq(passwordResetTokens.tokenHash, tokenHash));
+  await db.delete(passwordResetTokens).where(eq(passwordResetTokens.tokenHash, tokenHash));
 
   const processingTime = performance.now() - startTime;
 
   console.log(`✅ Password reset completed from ${getClientAddress()}: User ${resetRecord.userId}`);
 
-  return json({
-    success: true,
-    message: 'Password reset successfully',
-    userId: resetRecord.userId,
-    processingTime: Math.round(processingTime)
-  }, {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Processing-Time': `${Math.round(processingTime)}ms`
+  return json(
+    {
+      success: true,
+      message: 'Password reset successfully',
+      userId: resetRecord.userId,
+      processingTime: Math.round(processingTime),
+    },
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Processing-Time': `${Math.round(processingTime)}ms`,
+      },
     }
-  });
+  );
 }

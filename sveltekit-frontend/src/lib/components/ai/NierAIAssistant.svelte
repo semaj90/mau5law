@@ -12,20 +12,26 @@
   let currentMessage = $state<string>('');
   function sendMessage() {
     if (!currentMessage.trim()) return;
-    messages = [...messages, {
-      id: Date.now(),
-      text: currentMessage,
-      sender: 'user',
-      timestamp: new Date(),
-    }];
+    messages = [
+      ...messages,
+      {
+        id: Date.now(),
+        text: currentMessage,
+        sender: 'user',
+        timestamp: new Date(),
+      },
+    ];
     // Mock AI response
     setTimeout(() => {
-      messages = [...messages, {
-        id: Date.now() + 1,
-        text: "I understand your request. Let me analyze that for you.",
-        sender: 'ai',
-        timestamp: new Date(),
-      }];
+      messages = [
+        ...messages,
+        {
+          id: Date.now() + 1,
+          text: 'I understand your request. Let me analyze that for you.',
+          sender: 'ai',
+          timestamp: new Date(),
+        },
+      ];
     }, 1000);
     currentMessage = '';
   }

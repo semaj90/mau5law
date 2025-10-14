@@ -76,9 +76,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const evidenceId = uuidv4()
         // Insert test evidence into PostgreSQL
         const [createdEvidence] = await db.insert(evidence).values({
-          id: evidenceId
-          userId: userId
-          caseId: caseId
+          id: evidenceId,
+          userId: userId,
+          caseId: caseId,
           title: SAMPLE_EVIDENCE.title,
           description: SAMPLE_EVIDENCE.description,
           evidenceType: SAMPLE_EVIDENCE.evidenceType,
@@ -88,13 +88,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingStatus: 'completed',
           ingestStatus: 'pending',
           tags: ['contract', 'legal-agreement'],
-          isAdmissible: true
-          confidentialityLevel: 'internal'
+          isAdmissible: true,
+          confidentialityLevel: 'internal',
         }).returning()
         results.postgresql = {
           status: 'success',
-          evidenceId: evidenceId
-          createdAt: createdEvidence.createdAt
+          evidenceId: evidenceId,
+          createdAt: createdEvidence.createdAt,
         }
         results.steps.push({
           step: 'postgresql_evidence_creation',
@@ -112,11 +112,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
             await redisClient.connect()
             const eventData = {
               type: 'evidence',
-              id: evidenceId
+              id: evidenceId,
               action: 'tag',
-              caseId: caseId
-              userId: userId
-              correlationId: correlationId
+              caseId: caseId,
+              userId: userId,
+              correlationId: correlationId,
               priority: 'high',
               timestamp: new Date().toISOString()
             }
@@ -149,9 +149,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const ingestPayload = {
               title: SAMPLE_EVIDENCE.title,
               content: SAMPLE_EVIDENCE.content,
-              case_id: caseId
+              case_id: caseId,
               metadata: {
-                evidence_id: evidenceId
+                evidence_id: evidenceId,
                 source: 'test_workflow',
                 correlation_id: correlationId
               }
@@ -206,8 +206,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             if (syncResult) {
               results.qdrantSync = {
                 status: 'success',
-                synced: true
-                evidenceId: evidenceId
+                synced: true,
+                evidenceId: evidenceId,
               }
               results.steps.push({
                 step: 'qdrant_sync',
@@ -406,10 +406,10 @@ async function getPostgreSQLStats(): Promise<any> {
       FROM document_embeddings
     `)
     return {
-      evidence: evidenceStats
-      documents: documentStats
-      embeddings: embeddingStats
-      timestamp: new Date().toISOString()
+      evidence: evidenceStats,
+      documents: documentStats,
+      embeddings: embeddingStats,
+      timestamp: new Date().toISOString(),
     }
   } catch (error: any) {
     throw new Error(`Failed to get PostgreSQL stats: ${error.message}`)

@@ -24,7 +24,7 @@ export interface LibraryDocsResponse {
   }[];
 }
 export async function mcpContext72GetLibraryDocs(
-  libraryId: string
+  libraryId: string,
   topic?: string
   options: Partial<LibraryDocsRequest> = {},
   fetchFn: typeof fetch = fetch;
@@ -34,7 +34,7 @@ export async function mcpContext72GetLibraryDocs(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({,
-      context7CompatibleLibraryID: libraryId
+      context7CompatibleLibraryID: libraryId,
       topic,
       tokens: options.tokens || 10000,
       format: options.format || 'markdown',
@@ -98,7 +98,7 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
 /**
  * WebGPU documentation helper (TypeScript snippets preferred).
  * Useful for WebGPU / WebAssembly integration guidance.
- */;
+ */
 export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, {
     format: 'typescript',
@@ -108,7 +108,7 @@ export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Pro
 /**
  * WebAssembly (wasm) documentation helper.
  * Returns practical guides and TS/markdown examples for wasm + JS interop.
- */;
+ */
 export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, {
     format: 'markdown',
@@ -118,7 +118,7 @@ export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch)
 /**
  * SvelteKit v2 documentation helper.
  * Targets SvelteKit-specific APIs, routing and adapter guidance.
- */;
+ */
 export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, {
     format: 'typescript',

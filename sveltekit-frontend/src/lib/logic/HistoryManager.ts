@@ -9,7 +9,7 @@ export interface ContentNode {
 /**
  * History Manager for undo/redo functionality in reports
  * Manages snapshots of document state for version control
- */;
+ */
 export class HistoryManager {
   private history: ContentNode[][] = [];
   private currentIndex = -1;
@@ -21,7 +21,7 @@ export class HistoryManager {
   }
   /**
    * Add a new snapshot to history
-   */;
+   */
   addSnapshot(_value: ContentNode[]): void {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
@@ -36,7 +36,7 @@ export class HistoryManager {
   }
   /**
    * Undo to previous state
-   */;
+   */
   undo(): ContentNode[] | null {
     if (this.canUndo()) {
       this.currentIndex--;
@@ -46,7 +46,7 @@ export class HistoryManager {
   }
   /**
    * Redo to next state
-   */;
+   */
   redo(): ContentNode[] | null {
     if (this.canRedo()) {
       this.currentIndex++;
@@ -56,19 +56,19 @@ export class HistoryManager {
   }
   /**
    * Check if undo is possible
-   */;
+   */
   canUndo(): boolean {
     return this.currentIndex > 0;
   }
   /**
    * Check if redo is possible
-   */;
+   */
   canRedo(): boolean {
     return this.currentIndex < this.history.length - 1;
   }
   /**
    * Get current snapshot
-   */;
+   */
   getCurrentSnapshot(): ContentNode[] | null {
     if (this.currentIndex >= 0 && this.currentIndex < this.history.length) {
       return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
@@ -77,14 +77,14 @@ export class HistoryManager {
   }
   /**
    * Clear all history
-   */;
+   */
   clear(): void {
     this.history = [];
     this.currentIndex = -1;
   }
   /**
    * Get history stats
-   */;
+   */
   getStats() {
     return {
       totalSnapshots: this.history.length,

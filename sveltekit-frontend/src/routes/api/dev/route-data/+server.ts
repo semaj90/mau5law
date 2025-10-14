@@ -12,8 +12,8 @@ export async function GET() {
     // Execute the route export script with analytics from the frontend directory
     const command = 'node scripts/export-routes-map.mjs --analytics --format=json'
     const { stdout, stderr } = await execAsync(command, {
-      cwd: frontendRoot
-      maxBuffer: 1024 * 1024 * 2 // 2MB buffer for large route data
+      cwd: frontendRoot,
+      maxBuffer: 1024 * 1024 * 2, // 2MB buffer for large route data
     })
     if (stderr) {
       console.warn('Route export script warnings:', stderr)
@@ -124,8 +124,8 @@ function generateEnhancedAnalytics(routeData: any) {
       apiRoutes,
       staticPages,
       deepestNesting,
-      totalConfiguredRoutes: totalRoutes
-      totalFileRoutes: fileRoutes.length
+      totalConfiguredRoutes: totalRoutes,
+      totalFileRoutes: fileRoutes.length,
     },
     recommendations,
     lastUpdated: new Date().toISOString()

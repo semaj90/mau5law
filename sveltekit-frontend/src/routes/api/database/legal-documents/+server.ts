@@ -1,8 +1,8 @@
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
 import { json } from '@sveltejs';
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/database'
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/database';
 import {
   Document as documents,
   Case as cases,
@@ -10,7 +10,7 @@ import {
   UserSession as userSessions,
   Embedding as embeddings,
 } from '$lib/server/database/schema';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import { eq } from 'drizzle-orm';
 
 interface UploadResult {
@@ -209,18 +209,21 @@ async function generateSearchEmbeddings(documentIds: string[]) {
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection
-    await db.select().from(users).limit(1)
+    await db.select().from(users).limit(1);
     return json({
       status: 'healthy',
       database: 'connected',
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    return json({
-      status: 'unhealthy',
-      database: 'disconnected',
-      error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return json(
+      {
+        status: 'unhealthy',
+        database: 'disconnected',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
-}
+};

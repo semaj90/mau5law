@@ -4,8 +4,16 @@
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card';
   import {
-    Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
-    Save, Download, Image as ImageIcon, FileText
+    Upload,
+    Move,
+    RotateCcw,
+    Trash2,
+    ZoomIn,
+    ZoomOut,
+    Save,
+    Download,
+    Image as ImageIcon,
+    FileText,
   } from 'lucide-svelte';
 
   interface Props {
@@ -29,7 +37,7 @@
     snapToGrid = false,
     onSave,
     onDelete,
-    onSelect
+    onSelect,
   }: Props = $props();
 
   // Fabric.js canvas instance
@@ -62,12 +70,14 @@
   let hasUploadProgress = $derived(uploadProgress.size > 0);
   let zoomPercentage = $derived(Math.round(zoomLevel * 100));
   let minioStatusText = $derived(
-    minioStatus === 'connected' ? 'MinIO' :
-    minioStatus === 'disconnected' ? 'Demo' : 'Checking...'
+    minioStatus === 'connected' ? 'MinIO' : minioStatus === 'disconnected' ? 'Demo' : 'Checking...'
   );
   let minioStatusColor = $derived(
-    minioStatus === 'connected' ? 'bg-green-500' :
-    minioStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
+    minioStatus === 'connected'
+      ? 'bg-green-500'
+      : minioStatus === 'disconnected'
+        ? 'bg-red-500'
+        : 'bg-yellow-500 animate-pulse'
   );
 
   // Helper to normalize dynamic import of Fabric.js across bundlers
@@ -104,11 +114,15 @@
     const lines: any[] = [];
     for (let i = 0; i < Math.ceil(width / gridSize); i++) {
       const distance = i * gridSize;
-      lines.push(new fabric.Line([ distance, 0, distance, height ], { stroke: '#edf2f7', selectable: false, evented: false }));
+      lines.push(
+        new fabric.Line([distance, 0, distance, height], { stroke: '#edf2f7', selectable: false, evented: false })
+      );
     }
     for (let j = 0; j < Math.ceil(height / gridSize); j++) {
       const distance = j * gridSize;
-      lines.push(new fabric.Line([ 0, distance, width, distance ], { stroke: '#edf2f7', selectable: false, evented: false }));
+      lines.push(
+        new fabric.Line([0, distance, width, distance], { stroke: '#edf2f7', selectable: false, evented: false })
+      );
     }
     lines.forEach(line => fabricCanvas.add(line));
     fabricCanvas.sendToBack(...lines);
@@ -197,7 +211,7 @@
         body: JSON.stringify({
           bucket: evidence.metadata?.bucket,
           fileName: evidence.metadata?.fileName,
-        })
+        }),
       });
       if (response.ok) {
         const result = await response.json();
@@ -220,20 +234,24 @@
           return;
         }
         // fromURL is callback-based in many builds
-        fabric.Image.fromURL(imageUrl, (img: any) => {
-          img.set({
-            left: evidence.x,
-            top: evidence.y,
-            scaleX: 0.5,
-            scaleY: 0.5,
-            selectable: !readOnly,
-            evidenceId: evidence.id,
-            evidenceType: evidence.type,
-          });
-          fabricCanvas.add(img);
-          fabricCanvas.renderAll();
-          updateCanvasObjects();
-        }, { crossOrigin: 'anonymous' });
+        fabric.Image.fromURL(
+          imageUrl,
+          (img: any) => {
+            img.set({
+              left: evidence.x,
+              top: evidence.y,
+              scaleX: 0.5,
+              scaleY: 0.5,
+              selectable: !readOnly,
+              evidenceId: evidence.id,
+              evidenceType: evidence.type,
+            });
+            fabricCanvas.add(img);
+            fabricCanvas.renderAll();
+            updateCanvasObjects();
+          },
+          { crossOrigin: 'anonymous' }
+        );
       } else if (evidence.type === 'document') {
         const rect = new fabric.Rect({
           left: evidence.x,
@@ -309,7 +327,7 @@
         type: file.type.startsWith('image/') ? 'image' : 'document',
         title: file.name,
         url: uploadResult.url,
-        urlExpiry: uploadResult.bucket ? Date.now() + (23 * 60 * 60 * 1000) : undefined,
+        urlExpiry: uploadResult.bucket ? Date.now() + 23 * 60 * 60 * 1000 : undefined,
         x: Math.random() * (width - 200) + 100,
         y: Math.random() * (height - 200) + 100,
         metadata: {
@@ -318,7 +336,7 @@
           uploadDate: new Date().toISOString(),
           bucket: uploadResult.bucket || 'demo',
           fileName: uploadResult.fileName || uploadResult.filename,
-        }
+        },
       };
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);

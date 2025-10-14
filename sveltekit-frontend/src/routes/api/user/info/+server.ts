@@ -46,8 +46,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       user: {
-        data: safeUserData
-        profile: userProfile
+        data: safeUserData,
+        profile: userProfile,
       }
     })
   }, catch (error: any) {

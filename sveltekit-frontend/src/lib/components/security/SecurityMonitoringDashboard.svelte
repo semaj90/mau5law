@@ -42,7 +42,7 @@
   const criticalEvents = $derived(() => securityEvents.filter(e => e.severity === 'critical').length);
   const highEvents = $derived(() => securityEvents.filter(e => e.severity === 'high').length);
   const recentEvents = $derived(
-    () => securityEvents.filter(e => Date.now() - e.timestamp < 24 * 60 * 60 * 1000).length,
+    () => securityEvents.filter(e => Date.now() - e.timestamp < 24 * 60 * 60 * 1000).length
   );
   const loginAttempts = $derived(() => securityEvents.filter(e => e.type === 'login').length);
   const accessDeniedEvents = $derived(() => securityEvents.filter(e => e.type === 'access_denied').length);
@@ -418,7 +418,11 @@
                         {#if e(vent as CustomEvent).details}
                           <div>
                             <strong>Details:</strong>
-                            <pre class="container mx-auto px-4">{JSON.stringify(e(vent as CustomEvent).details, null, 2)}</pre>
+                            <pre class="container mx-auto px-4">{JSON.stringify(
+                                e(vent as CustomEvent).details,
+                                null,
+                                2
+                              )}</pre>
                           </div>
                         {/if}
                         {#if event.ipAddress}

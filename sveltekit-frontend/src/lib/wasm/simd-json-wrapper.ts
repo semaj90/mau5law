@@ -407,69 +407,69 @@ export const simdJSONAccelerator = new SIMDJSONAccelerator();
     });
 }
 
- /**
-  * Init wrapper to allow manual initialization with timeout
-  */
- export async function initWASM(timeoutMs = 3000): Promise<boolean> {
-   try {
-     const initPromise = simdJSONAccelerator.initialize();
-     const timeoutPromise = new Promise((_, reject) =>
-       setTimeout(() => reject(new Error('WASM init timeout')), timeoutMs)
-     );
-     await Promise.race([initPromise, timeoutPromise]);
-     isWASMReady = true;
-     return true;
-   } catch (err) {
-     isWASMReady = false;
-     return false;
-   }
- }
+/**
+ * Init wrapper to allow manual initialization with timeout
+ */
+export async function initWASM(timeoutMs = 3000): Promise<boolean> {
+  try {
+    const initPromise = simdJSONAccelerator.initialize();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('WASM init timeout')), timeoutMs)
+    );
+    await Promise.race([initPromise, timeoutPromise]);
+    isWASMReady = true;
+    return true;
+  } catch (err) {
+    isWASMReady = false;
+    return false;
+  }
+}
 
- /**
-  * Utility functions for integration
-  */
- export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
-   if (isWASMReady) return simdJSONAccelerator.parseDocumentJSON(jsonString);
-   // fallback to JS parse if not ready
-   return JSON.parse(jsonString) as LegalDocumentJSON;
- }
+/**
+ * Utility functions for integration
+ */
+export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
+  if (isWASMReady) return simdJSONAccelerator.parseDocumentJSON(jsonString);
+  // fallback to JS parse if not ready
+  return JSON.parse(jsonString) as LegalDocumentJSON;
+}
 
- export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
-   if (isWASMReady) return simdJSONAccelerator.batchParseDocuments(jsonStrings);
-   return jsonStrings.map(s => JSON.parse(s) as LegalDocumentJSON);
- }
+export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+  if (isWASMReady) return simdJSONAccelerator.batchParseDocuments(jsonStrings);
+  return jsonStrings.map(s => JSON.parse(s) as LegalDocumentJSON);
+}
 
- export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
-   if (isWASMReady) return simdJSONAccelerator.validateDocument(jsonString);
-   try {
-     const doc = JSON.parse(jsonString);
-     if (typeof doc === 'object' && doc !== null) {
-       const record = doc as Record<string, unknown>;
-       return (
-         typeof record.caseId === 'string' &&
-         (record.documentType === 'contract' ||
-           record.documentType === 'evidence' ||
-           record.documentType === 'brief' ||
-           record.documentType === 'citation') &&
-         typeof record.metadata === 'object' &&
-         record.metadata !== null
-       );
-     }
-     return false;
-   } catch {
-     return false;
-   }
- }
+export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
+  if (isWASMReady) return simdJSONAccelerator.validateDocument(jsonString);
+  try {
+    const doc = JSON.parse(jsonString);
+    if (typeof doc === 'object' && doc !== null) {
+      const record = doc as Record<string, unknown>;
+      return (
+        typeof record.caseId === 'string' &&
+        (record.documentType === 'contract' ||
+          record.documentType === 'evidence' ||
+          record.documentType === 'brief' ||
+          record.documentType === 'citation') &&
+        typeof record.metadata === 'object' &&
+        record.metadata !== null
+      );
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
 
- export async function compressEmbeddingsWithSIMD(
-   embeddings: number[]
- ): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
-   if (isWASMReady) return simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
-   // Fallback: encode embeddings as float32 bytes
-   const float32 = new Float32Array(embeddings);
-   const compressed = new Uint8Array(float32.buffer.slice(0));
-   return { compressed, compressionRatio: 1.0 };
- }
+export async function compressEmbeddingsWithSIMD(
+  embeddings: number[]
+): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
+  if (isWASMReady) return simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
+  // Fallback: encode embeddings as float32 bytes
+  const float32 = new Float32Array(embeddings);
+  const compressed = new Uint8Array(float32.buffer.slice(0));
+  return { compressed, compressionRatio: 1.0 };
+}
 
 export function getSIMDMetrics(): SIMDParsingMetrics {
   return simdJSONAccelerator.getMetrics();

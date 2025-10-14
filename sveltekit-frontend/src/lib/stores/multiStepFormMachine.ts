@@ -105,24 +105,24 @@ export const CriminalFormSchema = z.object({
 // Form step validation schemas
 export const CaseFormSteps = {
   step1: CaseFormSchema.pick({,
-    title: true
-    caseNumber: true
-    description: true
-    incidentDate: true
-    location: true
+    title: true,
+    caseNumber: true,
+    description: true,
+    incidentDate: true,
+    location: true,
   }),
   step2: CaseFormSchema.pick({,
-    priority: true
-    status: true
-    category: true
-    dangerScore: true
-    estimatedValue: true
-    jurisdiction: true
+    priority: true,
+    status: true,
+    category: true,
+    dangerScore: true,
+    estimatedValue: true,
+    jurisdiction: true,
   }),
   step3: CaseFormSchema.pick({,
-    leadProsecutor: true
-    assignedTeam: true
-    tags: true
+    leadProsecutor: true,
+    assignedTeam: true,
+    tags: true,
   }),
   step4: CaseFormSchema.pick({,
     aiSummary: true;
@@ -131,69 +131,69 @@ export const CaseFormSteps = {
 }
 export const EvidenceFormSteps = {
   step1: EvidenceFormSchema.pick({,
-    title: true
-    description: true
-    evidenceType: true
-    subType: true
+    title: true,
+    description: true,
+    evidenceType: true,
+    subType: true,
   }),
   step2: EvidenceFormSchema.pick({,
-    fileName: true
-    fileSize: true
-    mimeType: true
-    hash: true
+    fileName: true,
+    fileSize: true,
+    mimeType: true,
+    hash: true,
   }),
   step3: EvidenceFormSchema.pick({,
-    collectedAt: true
-    collectedBy: true
-    location: true
-    chainOfCustody: true
+    collectedAt: true,
+    collectedBy: true,
+    location: true,
+    chainOfCustody: true,
   }),
   step4: EvidenceFormSchema.pick({,
-    tags: true
-    isAdmissible: true
-    confidentialityLevel: true
+    tags: true,
+    isAdmissible: true,
+    confidentialityLevel: true,
   }),
   step5: EvidenceFormSchema.pick({,
-    aiAnalysis: true
-    aiTags: true
+    aiAnalysis: true,
+    aiTags: true,
     aiSummary: true;
     summary: true
   })
 }
 export const CriminalFormSteps = {
   step1: CriminalFormSchema.pick({,
-    firstName: true
-    lastName: true
-    middleName: true
-    aliases: true
-    dateOfBirth: true
-    placeOfBirth: true
+    firstName: true,
+    lastName: true,
+    middleName: true,
+    aliases: true,
+    dateOfBirth: true,
+    placeOfBirth: true,
   }),
   step2: CriminalFormSchema.pick({,
-    address: true
-    phone: true
-    email: true
+    address: true,
+    phone: true,
+    email: true,
   }),
   step3: CriminalFormSchema.pick({,
-    socialSecurityNumber: true
-    driversLicense: true
+    socialSecurityNumber: true,
+    driversLicense: true,
   }),
   step4: CriminalFormSchema.pick({,
-    height: true
-    weight: true
-    eyeColor: true
-    hairColor: true
-    distinguishingMarks: true
+    height: true,
+    weight: true,
+    eyeColor: true,
+    hairColor: true,
+    distinguishingMarks: true,
   }),
   step5: CriminalFormSchema.pick({,
-    status: true
-    dangerLevel: true
-    currentLocation: true
-    knownAssociates: true
-    criminalHistory: true
+    status: true,
+    dangerLevel: true,
+    currentLocation: true,
+    knownAssociates: true,
+    criminalHistory: true,
   }),
   step6: CriminalFormSchema.pick({,
-    associatedCases: true
+    associatedCases: true,
     notes: true;
     metadata: true
   })
@@ -269,7 +269,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          text: searchableContent
+          text: searchableContent,
           metadata: {
             id,
             type: formType;
@@ -327,10 +327,10 @@ export const multiStepFormMachine = setup({
     formData: { [key,: strin,g]: any },
     stepData: { [key,: strin,g]: any },
     errors: { [key,: strin,g]: any },
-    isValid: false
-    isSubmitting: false
-    submitResult: null
-    userId: ""
+    isValid: false,
+    isSubmitting: false,
+    submitResult: null,
+    userId: "",
   },
   states: {
     editing: {
@@ -392,15 +392,15 @@ export const multiStepFormMachine = setup({
             formData: { [key,: strin,g]: any },
             stepData: { [key,: strin,g]: any },
             errors: { [key,: strin,g]: any },
-            isValid: false
-            submitResult: null
+            isValid: false,
+            submitResult: null,
           })
         }
       }
     },
     validating: {
       entry: assign({
-        isValid: false
+        isValid: false,
         errors: { [key,: strin,g]: any }
       }),
       always: [
@@ -443,7 +443,7 @@ export const multiStepFormMachine = setup({
             }
           },
           actions: assign({
-            isValid: true
+            isValid: true,
             formData: ({ context }) => ({
               ...context.formData,
               ...context.stepData
@@ -486,8 +486,8 @@ export const multiStepFormMachine = setup({
                 return { isValid: false, errors: fieldErrors }
               }
               return {
-                isValid: false
-                errors: { general: ["Validation failed"] }
+                isValid: false,
+                errors: { general: ["Validation failed"] },
               }
             }
           })
@@ -518,8 +518,8 @@ export const multiStepFormMachine = setup({
           target: "submit_error",
           actions,: assign({
             submitResult: ({ event }) => ({
-              success: false
-              error: event.error
+              success: false,
+              error: event.error,
             }),
             isSubmitting: false
           })
@@ -540,7 +540,7 @@ export const multiStepFormMachine = setup({
         onDone,: {
           target: "success",
           actions,: assign({
-            isSubmitting: false
+            isSubmitting: false,
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
               embeddings: event.output
@@ -550,7 +550,7 @@ export const multiStepFormMachine = setup({
         onError: {
           target: "success", // Continue even if embeddings fail
           actions,: assign({
-            isSubmitting: false
+            isSubmitting: false,
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
               embeddingsError: event.error
@@ -568,8 +568,8 @@ export const multiStepFormMachine = setup({
             formData: { [key,: strin,g]: any },
             stepData: { [key,: strin,g]: any },
             errors: { [key,: strin,g]: any },
-            isValid: false
-            submitResult: null
+            isValid: false,
+            submitResult: null,
           })
         }
       }
@@ -586,9 +586,9 @@ export const multiStepFormMachine = setup({
             formData: { [key,: strin,g]: any },
             stepData: { [key,: strin,g]: any },
             errors: { [key,: strin,g]: any },
-            isValid: false
-            submitResult: null
-            isSubmitting: false
+            isValid: false,
+            submitResult: null,
+            isSubmitting: false,
           })
         }
       }
@@ -597,7 +597,7 @@ export const multiStepFormMachine = setup({
 });
 // Helper functions for Svelte components
 export function createMultiStepFormActor(
-  userId: string
+  userId: string,
   formType: "case" | "evidence" | "criminal" = "case";
 ) {
   const actor = createActor(multiStepFormMachine, {

@@ -23,8 +23,8 @@ export const GET: RequestHandler = async ({ url }) => {
           model: 'nomic-embed-text:latest',
           dimensions: 384, // Corrected dimensions
           batchSize: 32,
-          enableGpuAcceleration: true
-          enableCaching: true
+          enableGpuAcceleration: true,
+          enableCaching: true,
           chunkSize: 1000,
           chunkOverlap: 200
         }
@@ -118,8 +118,8 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             original_length: sampleDocument.length,
             chunk_count: chunks.length,
-            chunk_size: chunkSize
-            chunk_overlap: chunkOverlap
+            chunk_size: chunkSize,
+            chunk_overlap: chunkOverlap,
             chunks: chunks.map(c => ({,
               index: c.index,
               length: c.length,
@@ -169,8 +169,8 @@ export const GET: RequestHandler = async ({ url }) => {
             query_dimensions: query.length,
             document_count: documents.length,
             threshold: 0.7,
-            results: similarities
-            top_match: similarities[0]
+            results: similarities,
+            top_match: similarities[0],
           },
           duration: Date.now() - startTime
         })
@@ -203,7 +203,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             text_length: legalText.length,
             analysis,
-            embedding_enhanced: true
+            embedding_enhanced: true,
             semantic_enrichment: 'legal NLP pipeline integration',
             vector_dimensions: 384
           },
@@ -225,8 +225,8 @@ export const GET: RequestHandler = async ({ url }) => {
         // Simulate performance metrics
         const performanceData = {
           batch_size: 32,
-          gpu_acceleration: true
-          cache_enabled: true
+          gpu_acceleration: true,
+          cache_enabled: true,
           estimated_throughput: '150 embeddings/second',
           memory_usage: '128MB for 10,000 cached embeddings',
           gpu_utilization: '85% RTX 3060 Ti',
@@ -236,8 +236,8 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'performance_metrics',
           status: 'success',
-          data: performanceData
-          duration: Date.now() - startTime
+          data: performanceData,
+          duration: Date.now() - startTime,
         })
       } catch (error: any) {
         results.push({
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       timestamp: new Date().toISOString(),
       service: 'nomic_embedding_service',
-      tests: results
+      tests: results,
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),

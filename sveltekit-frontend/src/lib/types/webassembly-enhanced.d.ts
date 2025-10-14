@@ -27,7 +27,7 @@ export const webAssemblyGPUUtils = {
         ...additionalImports,
       },
       ...additionalImports,
-    }
+    };
   },
   // Type assertion helper for GPU device conversion
   assertGPUDevice: (device: unknown): device is GPUDevice => {
@@ -46,7 +46,7 @@ export const webAssemblyGPUUtils = {
         processingTime: (analysis as any).processingTime || 0,
         method: (analysis as any).method || 'unknown',
         ...analysis,
-      }
+      };
     }
     return {
       summary: 'Analysis failed',
@@ -57,9 +57,9 @@ export const webAssemblyGPUUtils = {
       confidence: 0,
       processingTime: 0,
       method: 'error',
-    }
+    };
   },
-}
+};
 // Module declaration for WebAssembly enhancements
 declare module 'webassembly' {
   interface ImportValue {
@@ -78,11 +78,11 @@ declare global {
         memory?: WebAssembly.Memory;
         getGPUDevice?: () => GPUDevice;
         [key: string]: any;
-      }
+      };
       gpu?: {
         device?: GPUDevice;
         [key: string]: any;
-      }
+      };
       [key: string]: any;
     }
   }
@@ -96,4 +96,4 @@ declare global {
     dispatchEvent(_event: any): boolean;
   }
 }
-export { webAssemblyGPUUtils }
+export { webAssemblyGPUUtils };

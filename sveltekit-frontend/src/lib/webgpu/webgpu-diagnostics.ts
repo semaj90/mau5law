@@ -33,7 +33,7 @@ export class WebGPUDiagnosticsService {
   private device: GPUDevice | null = null;
   async runDiagnostics(): Promise<WebGPUDiagnostics> {
     const diagnostics: WebGPUDiagnostics = {
-      isSupported: false
+      isSupported: false,
       browserSupport: this.getBrowserSupport(),
       errors: [],
       recommendations: []

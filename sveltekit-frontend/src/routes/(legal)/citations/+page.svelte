@@ -77,9 +77,7 @@
             <option value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button onclick={handleSearch} class="search-button">
-          🔍 Search
-        </Button>
+        <Button onclick={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
   </Card>
@@ -121,7 +119,8 @@
 
             {#if citation.legalPrinciple}
               <div class="legal-principle">
-                <strong>Legal Principle:</strong> {citation.legalPrinciple}
+                <strong>Legal Principle:</strong>
+                {citation.legalPrinciple}
               </div>
             {/if}
 
@@ -130,12 +129,8 @@
                 Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
               </div>
               <div class="citation-actions">
-                <Button size="sm" class="copy-button">
-                  📋 Copy
-                </Button>
-                <Button size="sm" class="edit-button">
-                  ✏️ Edit
-                </Button>
+                <Button size="sm" class="copy-button">📋 Copy</Button>
+                <Button size="sm" class="edit-button">✏️ Edit</Button>
               </div>
             </div>
           </CardContent>
@@ -177,7 +172,8 @@
     align-items: center;
   }
 
-  .search-field, .citation-type-select {
+  .search-field,
+  .citation-type-select {
     background: var(--surface-primary, #0a0a0a);
     border: 1px solid rgba(0, 255, 0, 0.3);
     border-radius: 4px;
@@ -186,13 +182,15 @@
     font-family: inherit;
   }
 
-  .search-field:focus, .citation-type-select:focus {
+  .search-field:focus,
+  .citation-type-select:focus {
     outline: none;
     border-color: var(--text-primary, #00ff00);
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
   }
 
-  .loading-state, .empty-state {
+  .loading-state,
+  .empty-state {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--text-secondary, #888888);
@@ -209,8 +207,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   .empty-icon {

@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       convertedAt: new Date().toISOString(),
-      data: structuredData
+      data: structuredData,
       stats: {
         jsonSize: JSON.stringify(structuredData).length,
         sections: structuredData.document.structure.sections.length,
@@ -199,9 +199,9 @@ function identifyDocumentSections(text: string): unknown[] {
       return pattern.test(text)
     })
     .map(section => ({
-      name: section
+      name: section,
       found: true,;
-      position: text.toLowerCase().indexOf(section.toLowerCase()
+      position: text.toLowerCase().indexOf(section.toLowerCase(),
     })
     .sort((a, b) => a.position - b.position)
 }

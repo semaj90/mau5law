@@ -211,7 +211,7 @@ export class TransactionManager {
         ctx,.locks.push({
           entityType: entity.type,
           entityId: entity.id,
-          mode: entity.mode || LOCK_MODES.EXCLUSIVE
+          mode: entity.mode || LOCK_MODES.EXCLUSIVE,
         });
       }
       try {
@@ -226,19 +226,19 @@ export class TransactionManager {
   }
   /**
    * Get active transaction information
-   */;
+   */
   getActiveTransactions(),: TransactionContext[], {
     return Array.from(this.activeTransactions.values();
   }
   /**
    * Get transaction by ID
-   */;
+   */
   getTransaction(transactionId,: string): TransactionContext | undefine,d {
     return this.activeTransactions.get(transactionId);
   }
   /**
    * Clean up expired transactions
-   */;
+   */
   async cleanupExpiredTransactions(),: Promise<number> {
     const now = Date.now();
     let cleanedCount =, 0;
@@ -257,7 +257,7 @@ export class TransactionManager {
   }
   /**
    * Clean up a specific transaction
-   */;
+   */
   private async cleanupTransaction(transactionId,: string): Promise<void> {
     const ctx = this.activeTransactions.get(transactionId);
     if (!ctx), retur,n;
@@ -275,7 +275,7 @@ export class TransactionManager {
   }
   /**
    * Health check
-   */;
+   */
   async healthCheck(),: Promise<any> {
     const transactions = Array.from(this.activeTransactions.values();
     const now = Date.now();

@@ -1,39 +1,35 @@
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Enhanced Document Search API with PostgreSQL + pgvector + Cognitive Cache
-import { db, getDatabaseHealth } from '$lib/server/db'
-import { legal_documents, evidence, cases } from '$lib/server/db/schema-postgres'
-import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration'
-import { sql, eq, and, or, gte, lte } from "drizzle-orm"
+import { db, getDatabaseHealth } from '$lib/server/db';
+import { legal_documents, evidence, cases } from '$lib/server/db/schema-postgres';
+import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
+import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
 // Ensure database is initialized
-let dbInitialized = false
+const dbInitialized = false;
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    console.log('[Search] Processing document search request...')
+    console.log('[Search] Processing document search request...');
     // Check database health before proceeding
-    const dbHealth = await getDatabaseHealth()
+    const dbHealth = await getDatabaseHealth();
     if (dbHealth.overall !== 'healthy') {
-      return json({
-        success: false,
-        error: 'Database temporarily unavailable',
-        healthStatus: dbHealth
-      }, { status: 503 })
+      return json(
+        {
+          success: false,
+          error: 'Database temporarily unavailable',
+          healthStatus: dbHealth,
+        },
+        { status: 503 }
+      );
     }
-    const body = await request.json()
-    const {
-      query,
-      embedding,
-      limit = 10,
-      threshold = 0.7,
-      searchType = 'hybrid',
-      filters = {}
-    } = body
+    const body = await request.json();
+    const { query, embedding, limit = 10, threshold = 0.7, searchType = 'hybrid', filters = {} } = body;
     if (!query && !embedding) {
-      throw error(400, 'Query or embedding is required')
+      throw error(400, 'Query or embedding is required');
     }
-    console.log(`[Search] Performing ${searchType} search for: "${query}"`)
+    console.log(`[Search] Performing ${searchType} search for: "${query}"`);
     // Check cognitive cache for search results
-    const cacheKey = `document_search_${searchType}_${Buffer.from(JSON.stringify({ query, filters, limit, threshold })).toString('base64').substring(0, 32)}`
+    const cacheKey = `document_search_${searchType}_${Buffer.from(JSON.stringify({ query, filters, limit, threshold })).toString('base64').substring(0, 32)}`;
     const cacheRequest = {
       key: cacheKey,
       type: 'legal-data' as const,
@@ -46,18 +42,18 @@ export const POST: RequestHandler = async ({ request }) => {
         semanticTags: ['document-search', 'legal-ai', searchType],
       },
     };
-    const cachedResult = await cognitiveCacheManager.get(cacheRequest)
+    const cachedResult = await cognitiveCacheManager.get(cacheRequest);
     if (cachedResult && cachedResult.confidence > 0.75) {
-      console.log('[Search] Cognitive cache hit')
-      return json({ ...cachedResult.data, cached: true, cacheConfidence: cachedResult.confidence })
+      console.log('[Search] Cognitive cache hit');
+      return json({ ...cachedResult.data, cached: true, cacheConfidence: cachedResult.confidence });
     }
-    let results: any[] = []
-    let searchMethod = ''
+    let results: any[] = [];
+    let searchMethod = '';
     // Generate embedding for the query if not provided
-    let queryEmbedding = embedding
+    let queryEmbedding = embedding;
     if (query && !queryEmbedding) {
       try {
-        console.log('[Search] Generating query embedding...')
+        console.log('[Search] Generating query embedding...');
         const embResponse = await fetch('/api/embeddings/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -67,45 +63,45 @@ export const POST: RequestHandler = async ({ request }) => {
           }),
         });
         if (embResponse.ok) {
-          const embResult = await embResponse.json()
-          queryEmbedding = embResult.embedding
+          const embResult = await embResponse.json();
+          queryEmbedding = embResult.embedding;
         }
       } catch (embError) {
-        console.warn('[Search] Failed to generate query embedding:', embError)
+        console.warn('[Search] Failed to generate query embedding:', embError);
       }
     }
     // Perform search based on type
     switch (searchType) {
       case 'vector':
         if (queryEmbedding) {
-          results = await vectorSearch(queryEmbedding, limit, threshold, filters)
-          searchMethod = 'Vector Similarity'
+          results = await vectorSearch(queryEmbedding, limit, threshold, filters);
+          searchMethod = 'Vector Similarity';
         } else {
-          throw error(400, 'Embedding required for vector search')
+          throw error(400, 'Embedding required for vector search');
         }
-        break
+        break;
       case 'keyword':
-        results = await keywordSearch(query, limit, filters)
-        searchMethod = 'Full-text Search'
-        break
+        results = await keywordSearch(query, limit, filters);
+        searchMethod = 'Full-text Search';
+        break;
       case 'hybrid':
-        results = await hybridSearch(query, queryEmbedding, limit, threshold, filters)
-        searchMethod = 'Hybrid (Vector + Keyword)'
-        break
+        results = await hybridSearch(query, queryEmbedding, limit, threshold, filters);
+        searchMethod = 'Hybrid (Vector + Keyword)';
+        break;
       case 'semantic':
         if (queryEmbedding) {
-          results = await semanticSearch(query, queryEmbedding, limit, threshold, filters)
-          searchMethod = 'Semantic + Context'
+          results = await semanticSearch(query, queryEmbedding, limit, threshold, filters);
+          searchMethod = 'Semantic + Context';
         } else {
-          results = await keywordSearch(query, limit, filters)
-          searchMethod = 'Keyword (fallback)'
+          results = await keywordSearch(query, limit, filters);
+          searchMethod = 'Keyword (fallback)';
         }
-        break
+        break;
       default:
-        throw error(400, 'Invalid search type')
+        throw error(400, 'Invalid search type');
     }
     // Log search session (simplified - could be extended to user activity table)
-    console.log(`[Search] Query: "${query || 'embedding-only'}", Type: ${searchType}, Results: ${results.length}`)
+    console.log(`[Search] Query: "${query || 'embedding-only'}", Type: ${searchType}, Results: ${results.length}`);
     const finalResult = {
       success: true,
       results,
@@ -122,11 +118,11 @@ export const POST: RequestHandler = async ({ request }) => {
       cognitiveValue: results.length > 0 ? 0.8 : 0.6,
       ttl: 300, // 5 minutes
     });
-    console.log('[Search] Results cached with cognitive cache')
-    console.log(`[Search] Found ${results.length} results using ${searchMethod}`)
-    return json(finalResult)
+    console.log('[Search] Results cached with cognitive cache');
+    console.log(`[Search] Found ${results.length} results using ${searchMethod}`);
+    return json(finalResult);
   } catch (err: any) {
-    console.error('[Search] Error:', err)
+    console.error('[Search] Error:', err);
     return json(
       {
         success: false,
@@ -136,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: err.status || 500 }
     );
   }
-}
+};
 // Vector similarity search with pgvector
 async function vectorSearch(
   embedding: number[], // Added comma
@@ -262,8 +258,8 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
       searchType: 'keyword',
     })); // Added closing parenthesis
   } catch (err: any) {
-    console.error('[Search] Keyword search error:', err)
-    return []
+    console.error('[Search] Keyword search error:', err);
+    return [];
   }
 }
 // Hybrid search combining vector and keyword
@@ -379,40 +375,40 @@ async function semanticSearch(
 }
 // Extract relevant excerpt from content based on query
 function extractExcerpt(content: string, query: string): string {
-  const words = query.toLowerCase().split(' ')
-  const sentences = content.split(/[.!?]+/)
+  const words = query.toLowerCase().split(' ');
+  const sentences = content.split(/[.!?]+/);
   // Find sentence containing query terms
   for (const sentence of sentences) {
-    const lowerSentence = sentence.toLowerCase()
-    if (words.some((word) => lowerSentence.includes(word))) {
-      return sentence.trim().substring(0, 200) + '...'
+    const lowerSentence = sentence.toLowerCase();
+    if (words.some(word => lowerSentence.includes(word))) {
+      return sentence.trim().substring(0, 200) + '...';
     }
   }
   // Fallback to first 200 characters
-  return content.substring(0, 200) + '...'
+  return content.substring(0, 200) + '...';
 }
 // Calculate context relevance score
 function calculateContextScore(query: string, content: string): number {
-  const queryWords = query.toLowerCase().split(' ')
-  const contentWords = content.toLowerCase().split(' ')
-  let matches = 0
+  const queryWords = query.toLowerCase().split(' ');
+  const contentWords = content.toLowerCase().split(' ');
+  let matches = 0;
   for (const queryWord of queryWords) {
     if (contentWords.includes(queryWord)) {
-      matches++
+      matches++;
     }
   }
-  return matches / queryWords.length
+  return matches / queryWords.length;
 }
 // Calculate legal relevance score
 function calculateLegalRelevance(query: string, legalAnalysis: any): number {
-  if (!legalAnalysis) return 0
-  const queryLower = query.toLowerCase()
-  let relevanceScore = 0
+  if (!legalAnalysis) return 0;
+  const queryLower = query.toLowerCase();
+  let relevanceScore = 0;
   // Check legal entities
   if (legalAnalysis.entities) {
     for (const entity of legalAnalysis.entities) {
       if (queryLower.includes(entity.text.toLowerCase())) {
-        relevanceScore += entity.confidence || 0.5
+        relevanceScore += entity.confidence || 0.5;
       }
     }
   }
@@ -420,11 +416,11 @@ function calculateLegalRelevance(query: string, legalAnalysis: any): number {
   if (legalAnalysis.concepts) {
     for (const concept of legalAnalysis.concepts) {
       if (queryLower.includes(concept.toLowerCase())) {
-        relevanceScore += 0.3
+        relevanceScore += 0.3;
       }
     }
   }
-  return Math.min(relevanceScore, 1.0)
+  return Math.min(relevanceScore, 1.0);
 }
 // Store document endpoint (renamed to avoid duplicate POST export)
 // Note: Document storage is handled by the dedicated /api/documents/upload endpoint
@@ -433,10 +429,10 @@ function calculateLegalRelevance(query: string, legalAnalysis: any): number {
 export const GET: RequestHandler = async () => {
   try {
     // Get comprehensive database health status
-    const dbHealth = await getDatabaseHealth()
+    const dbHealth = await getDatabaseHealth();
     // Count documents with embeddings
-    let documentCount = 0
-    let embeddingCount = 0
+    let documentCount = 0;
+    let embeddingCount = 0;
     try {
       const [docResult] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
       documentCount = docResult?.count || 0;
@@ -446,15 +442,15 @@ export const GET: RequestHandler = async () => {
         .where(legal_documents.content_embedding.isNotNull()); // Added closing parenthesis
       embeddingCount = embResult?.count || 0;
     } catch (err: any) {
-      console.warn('[Search] Failed to count documents:', err)
+      console.warn('[Search] Failed to count documents:', err);
     }
     // Test cognitive cache
-    let cacheStatus = false
+    let cacheStatus = false;
     try {
-      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: { action: 'health-test' } })
-      cacheStatus = true
+      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: { action: 'health-test' } });
+      cacheStatus = true;
     } catch (err: any) {
-      console.warn('[Search] Cognitive cache health check failed:', err)
+      console.warn('[Search] Cognitive cache health check failed:', err);
     }
     return json({
       status: dbHealth.overall === 'healthy' ? 'healthy' : 'unhealthy',
@@ -495,4 +491,4 @@ export const GET: RequestHandler = async () => {
       { status: 503 }
     );
   }
-}
+};

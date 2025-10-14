@@ -1,6 +1,6 @@
 /**
  * Type definitions for vector operations and API interfaces
- */;
+ */
 }
 export interface VectorSimilarityRequest {
   operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';

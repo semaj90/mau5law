@@ -18,7 +18,7 @@
 
       const res = await fetch('/api/upload', {
         method: 'POST',
-        body: fd
+        body: fd,
       });
 
       const data = await res.json();
@@ -37,12 +37,19 @@
 
 <div class="minio-upload">
   <label for="file">Evidence file</label>
-  <input id="file" type="file" onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
+  <input id="file" type="file" onchange={e => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
   <button onclick={upload} disabled={$uploading}>Upload to MinIO</button>
   <p>{$message}</p>
 </div>
 
 <style>
-  .minio-upload { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
-  button[disabled] { opacity: 0.6; }
+  .minio-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 480px;
+  }
+  button[disabled] {
+    opacity: 0.6;
+  }
 </style>

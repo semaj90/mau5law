@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 interface SystemHealthResponse {
   system_overview: {
@@ -22,8 +22,8 @@ interface SystemHealthResponse {
 }
 
 interface APIOperationRequest {
-  operation: string
-  data?: any
+  operation: string;
+  data?: any;
 }
 
 interface APIOperationResponse {
@@ -83,7 +83,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
 }
 
 async function performOperation(operation: string, data?: any): Promise<APIOperationResponse> {
-  const startTime = Date.now()
+  const startTime = Date.now();
 
   try {
     let result: any = {};

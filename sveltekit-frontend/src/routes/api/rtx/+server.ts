@@ -12,10 +12,10 @@ const PIPELINE_CONFIG = {
   goMicroservicePort: 8080,
   cudaWorkerPort: 8084,
   postgresqlPort: 5432,
-  webGPUEnabled: true
-  rtx3060TiOptimization: true
-  flashAttention2: true
-  tensorCoreAcceleration: true
+  webGPUEnabled: true,
+  rtx3060TiOptimization: true,
+  flashAttention2: true,
+  tensorCoreAcceleration: true,
 }
 // Benchmark targets from your specifications
 const BENCHMARK_TARGETS = {
@@ -111,7 +111,7 @@ async function handleStatusRequest() {
       quantizationMode: status.quantizationMode,
       tensorCoreAcceleration: PIPELINE_CONFIG.tensorCoreAcceleration
     },
-    metrics: systemInfo
+    metrics: systemInfo,
     benchmark: {
       vs_target: {
         performance: `${Math.round((status.tensorCorePerformance / BENCHMARK_TARGETS.tensorCorePerformance) * 100)}%`,
@@ -369,9 +369,9 @@ async function handleRunBenchmarkRequest(request: Request) {
     }
     return json({
       benchmark: {
-        executed: true
+        executed: true,
         iterations,
-        testSizeBytes: testSize
+        testSizeBytes: testSize,
         results: {
           tensorCorePerformanceGFLOPS: benchmarkResults.tensorCorePerformance,
           averageOperationTimeμs: benchmarkResults.averageOperationTime,

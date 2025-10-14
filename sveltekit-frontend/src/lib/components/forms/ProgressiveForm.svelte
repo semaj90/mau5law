@@ -315,7 +315,8 @@
         {...getFieldAria('confirmPassword')}
         type="password"
         name="confirmPassword"
-        class="form-input {hasError('confirmPassword') ? 'error' : ''}";
+        class="form-input {hasError('confirmPassword') ? 'error' : ''}"
+        ;
         bind:value={formState.data.confirmPassword}
         oninput={e => handleFieldChange('confirmPassword', e.target.value)}
         onblur={() => (formState.touched.confirmPassword = true)}

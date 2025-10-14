@@ -15,10 +15,10 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from "$lib/server/services/ai-service.js"
-import { evidence } from "$lib/server/db/schema.js"
-import { z } from "zod"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { aiService } from '$lib/server/services/ai-service.js';
+import { evidence } from '$lib/server/db/schema.js';
+import { z } from 'zod';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { db } from '$lib/server/db';

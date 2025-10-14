@@ -40,9 +40,9 @@ class Logger {
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = {
       level: LogLevel.INFO,
-      enableConsole: true
-      enableFile: false
-      enableDatabase: true
+      enableConsole: true,
+      enableFile: false,
+      enableDatabase: true,
       maxRetries: 3,
       ...config
     }
@@ -336,9 +336,9 @@ class Logger {
 // Global logger instance
 export const logger = new Logger({
   level: LogLevel.INFO,
-  enableConsole: true
-  enableDatabase: true
-  enableFile: false
+  enableConsole: true,
+  enableDatabase: true,
+  enableFile: false,
 });
 // Initialize logs table on startup
 logger.initializeLogTable();

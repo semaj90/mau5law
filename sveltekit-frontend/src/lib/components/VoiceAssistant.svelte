@@ -21,7 +21,7 @@
       recognition.onstart = () => {
         isListening = true;
         speak("I'm listening. You can ask me legal questions or give voice commands.");
-      }
+      };
       recognition.onresult = (_event: unknown) => {
         let interim = $state('');
         let final = $state('');
@@ -36,13 +36,13 @@
         finalTranscript = final;
         interimTranscript = interim;
         currentTranscript = final + interim;
-      }
+      };
       recognition.onend = () => {
         isListening = false;
         if (finalTranscript === '') {
           speak('No speech detected. Please try again.');
         }
-      }
+      };
       recognition.onerror = (_event: unknown) => {
         isListening = false;
         if (event.error === 'no-speech') {
@@ -54,7 +54,7 @@
         } else {
           speak('Error occurred in recognition: ' + event.error);
         }
-      }
+      };
     } else {
       isSupported = false;
     }

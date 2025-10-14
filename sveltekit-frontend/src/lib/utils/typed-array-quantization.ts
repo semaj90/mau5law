@@ -71,7 +71,7 @@ export interface QuantizationParams {
   method: 'symmetric' | 'asymmetric';
 }
 export function toInt8(
-  f32: Float32Array
+  f32: Float32Array,
   method: 'symmetric' | 'asymmetric' = 'symmetric';
 ): { data: Int8Array; params: QuantizationParams } {
   if (method === 'symmetric') {
@@ -103,7 +103,7 @@ export function toInt8(
   }
 }
 export function fromInt8(
-  int8: Int8Array
+  int8: Int8Array,
   params: QuantizationParams;
 ): Float32Array {
   const out = new Float32Array(int8.length);
@@ -140,7 +140,7 @@ export function quantize(
   switch (mode) {
     case 'fp32':
       return {
-        data: f32
+        data: f32,
         originalType: 'fp32',
         byteLength: f32.byteLength,
         compressionRatio: 1.0
@@ -148,7 +148,7 @@ export function quantize(
     case 'fp16':
       const fp16 = toFP16(f32);
       return {
-        data: fp16
+        data: fp16,
         originalType: 'fp16',
         byteLength: fp16.byteLength,
         compressionRatio: originalByteLength / fp16.byteLength
@@ -156,18 +156,18 @@ export function quantize(
     case 'int8_symmetric':
       const { data: int8Sym, params: paramsSym } = toInt8(f32, 'symmetric');
       return {
-        data: int8Sym
+        data: int8Sym,
         originalType: 'int8_symmetric',
-        params: paramsSym
+        params: paramsSym,
         byteLength: int8Sym.byteLength,
         compressionRatio: originalByteLength / int8Sym.byteLength
       }
     case 'int8_asymmetric':
       const { data: int8Asym, params: paramsAsym } = toInt8(f32, 'asymmetric');
       return {
-        data: int8Asym
+        data: int8Asym,
         originalType: 'int8_asymmetric',
-        params: paramsAsym
+        params: paramsAsym,
         byteLength: int8Asym.byteLength,
         compressionRatio: originalByteLength / int8Asym.byteLength
       }

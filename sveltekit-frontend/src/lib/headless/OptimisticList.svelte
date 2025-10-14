@@ -34,7 +34,7 @@
       item,
       index,
       isOptimistic: !!(item as { __optimistic?: unknownn }).__optimistic || optimistic.includes(item),
-    })),
+    }))
   );
 </script>
 
@@ -120,12 +120,14 @@
   .error-message {
     font-weight: 500;
   }
-.optimistic-list__loading, {}
+  .optimistic-list__loading {
+  }
   .optimistic-list__empty {
     padding: 2rem;
     text-align: center;
   }
-.loading-placeholder, {}
+  .loading-placeholder {
+  }
   .empty-placeholder {
     display: flex;
     flex-direction: column;
@@ -190,7 +192,8 @@
     }
   }
   @keyframes optimisticPulse {
-0%, {}
+    0% {
+    }
     100% {
       background-color: rgba(59, 130, 246, 0.05);
     }

@@ -1,7 +1,7 @@
 
 /**
  * Demo Data Generator for Legal AI System Testing
- */;
+ */
 }
 export interface DemoCase {
   id: string;
@@ -49,7 +49,7 @@ class DemoDataGenerator {
   private personCounter = 1;
   /**
    * Generate sample cases
-   */;
+   */
   generateCases(count: number = 5): DemoCase[] {
     const caseTemplates = [
       {
@@ -111,7 +111,7 @@ class DemoDataGenerator {
   }
   /**
    * Generate sample evidence for a case
-   */;
+   */
   generateEvidence(caseId: string, count: number = 8): DemoEvidence[] {
     const evidenceTemplates = [
       {
@@ -327,7 +327,7 @@ Legal Review: Prosecutor Williams`,
   }
   /**
    * Generate sample persons of interest
-   */;
+   */
   generatePersons(caseId: string, count: number = 6): DemoPerson[] {
     const personTemplates = [
       {
@@ -400,7 +400,7 @@ Legal Review: Prosecutor Williams`,
   }
   /**
    * Generate a complete case with all related data
-   */;
+   */
   generateCompleteCase(): {
     case: DemoCase;
     evidence: DemoEvidence[];
@@ -409,14 +409,14 @@ Legal Review: Prosecutor Williams`,
     const cases = this.generateCases(1);
     const caseData = cases[0];
     return {
-      case: caseData
+      case: caseData,
       evidence: this.generateEvidence(caseData.id, 4),
       persons: this.generatePersons(caseData.id, 4)
     }
   }
   /**
    * Generate sample analysis results for testing
-   */;
+   */
   generateAnalysisResults(caseId: string, evidenceId: string) {
     return {
       sessionId: `analysis_${caseId}_${Date.now()}`,

@@ -20,29 +20,25 @@ type StartProcessingEvent = {
   file: File;
   evidenceId: string;
   caseId: string;
-}
-type RetryEvent = { type: 'RETRY' }
-type ResetEvent = { type: 'RESET' }
-type EvidenceEvents =
-  | StartProcessingEvent
-  | RetryEvent
-  | ResetEvent
-  | { type: string; [key: string]: any }
+};
+type RetryEvent = { type: 'RETRY' };
+type ResetEvent = { type: 'RESET' };
+type EvidenceEvents = StartProcessingEvent | RetryEvent | ResetEvent | { type: string; [key: string]: any };
 const evidenceProcessingMachine = createMachine({
   id: 'evidenceProcessor',
   initial: 'idle',
   // Using xstate v5 generic types requires runtime noop; cast for compile-time only
   types: {} as { context: EvidenceContext; events: EvidenceEvents },
   context: {
-    file: null
+    file: null,
     evidenceId: '',
     caseId: '',
-    metadata: null
-    pngArtifact: null
+    metadata: null,
+    pngArtifact: null,
     uploadProgress: 0,
     processingSteps: [],
-    error: null
-    artifactUrl: null
+    error: null,
+    artifactUrl: null,
   },
   states: {
     idle: {
@@ -53,11 +49,11 @@ const evidenceProcessingMachine = createMachine({
             file: ({ event }) => (event as StartProcessingEvent).file,
             evidenceId: ({ event }) => (event as StartProcessingEvent).evidenceId,
             caseId: ({ event }) => (event as StartProcessingEvent).caseId,
-            error: null
-            processingSteps: []
-          })
-        }
-      }
+            error: null,
+            processingSteps: [],
+          }),
+        },
+      },
     },
     validating: {
       invoke: {
@@ -75,16 +71,17 @@ const evidenceProcessingMachine = createMachine({
         onDone: {
           target: 'analyzing',
           actions: assign({
-            processingSteps: ({ context }) => [...context.processingSteps, 'File validated']
-          })
+            processingSteps: ({ context }) => [...context.processingSteps, 'File validated'],
+          }),
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Validation failed')
-          })
-        }
-      }
+            error: ({ event }) =>
+              (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Validation failed',
+          }),
+        },
+      },
     },
     analyzing: {
       invoke: {
@@ -96,7 +93,7 @@ const evidenceProcessingMachine = createMachine({
           formData.append('case_id', context.caseId);
           const response = await fetch('/api/ai/analyze-evidence', {
             method: 'POST',
-            body: formData
+            body: formData,
           });
           if (!response.ok) {
             throw new Error(`AI analysis failed: ${response.statusText}`);
@@ -107,16 +104,16 @@ const evidenceProcessingMachine = createMachine({
           target: 'embedding',
           actions: assign({
             metadata: ({ event }) => (event as any).output ?? (event as any).data,
-            processingSteps: ({ context }) => [...context.processingSteps, 'AI analysis completed']
-          })
+            processingSteps: ({ context }) => [...context.processingSteps, 'AI analysis completed'],
+          }),
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Analysis failed')
-          })
-        }
-      }
+            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Analysis failed',
+          }),
+        },
+      },
     },
     embedding: {
       invoke: {
@@ -134,16 +131,16 @@ const evidenceProcessingMachine = createMachine({
           target: 'uploading',
           actions: assign({
             pngArtifact: ({ event }) => (event as any).output ?? (event as any).data,
-            processingSteps: ({ context }) => [...context.processingSteps, 'Metadata embedded in PNG']
-          })
+            processingSteps: ({ context }) => [...context.processingSteps, 'Metadata embedded in PNG'],
+          }),
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed')
-          })
-        }
-      }
+            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed',
+          }),
+        },
+      },
     },
     uploading: {
       invoke: {
@@ -156,18 +153,18 @@ const evidenceProcessingMachine = createMachine({
             file_data: Array.from(new Uint8Array(context.pngArtifact!)),
             metadata: {
               original_filename: context.file!.name,
-              processing_timestamp: new Date().toISOString()
+              processing_timestamp: new Date().toISOString(),
             },
             ai_analysis: context.metadata,
             risk_assessment: context.metadata?.riskAssessment || 'unknown',
-            confidence: context.metadata?.confidence || 0.5
-          }
+            confidence: context.metadata?.confidence || 0.5,
+          };
           const response = await fetch('http://localhost:8095/api/artifacts/upload', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify(uploadData)
+            body: JSON.stringify(uploadData),
           });
           if (!response.ok) {
             throw new Error(`Upload failed: ${response.statusText}`);
@@ -178,29 +175,29 @@ const evidenceProcessingMachine = createMachine({
           target: 'completed',
           actions: assign({
             artifactUrl: ({ event }) => ((event as any).output ?? (event as any).data)?.downloadUrl,
-            processingSteps: ({ context }) => [...context.processingSteps, 'Artifact uploaded and indexed']
-          })
+            processingSteps: ({ context }) => [...context.processingSteps, 'Artifact uploaded and indexed'],
+          }),
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Upload failed')
-          })
-        }
-      }
+            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Upload failed',
+          }),
+        },
+      },
     },
     completed: {
       on: {
-        RESET: 'idle'
-      }
+        RESET: 'idle',
+      },
     },
     error: {
       on: {
         RETRY: 'validating',
-        RESET: 'idle'
-      }
-    }
-  }
+        RESET: 'idle',
+      },
+    },
+  },
 } as any);
 // Svelte Stores for State Management
 export const evidenceService = interpret(evidenceProcessingMachine);
@@ -209,7 +206,7 @@ export const isProcessing = derived(currentState, function deriveIsProcessing($s
   const v = $state?.value as string;
   return v !== 'idle' && v !== 'completed' && v !== 'error';
 });
-export const processingProgress = derived(currentState, ($state) => {
+export const processingProgress = derived(currentState, $state => {
   const steps = (($state as any).context?.processingSteps?.length ?? 0) as number;
   const totalSteps = 5; // validate, analyze, embed, upload, complete
   return Math.round((steps / totalSteps) * 100);
@@ -225,15 +222,15 @@ export const processEvidence = (file: File, evidenceId: string, caseId: string) 
     type: 'START_PROCESSING',
     file,
     evidenceId,
-    caseId
+    caseId,
   });
-}
+};
 export const retryProcessing = () => {
   evidenceService.send('RETRY');
-}
+};
 export const resetProcessor = () => {
   evidenceService.send('RESET');
-}
+};
 // Evidence Search and Retrieval
 export const searchArtifacts = async (searchParams: {
   query?: string;
@@ -247,22 +244,22 @@ export const searchArtifacts = async (searchParams: {
   const response = await fetch('http://localhost:8095/api/artifacts/search', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(searchParams)
+    body: JSON.stringify(searchParams),
   });
   if (!response.ok) {
     throw new Error(`Search failed: ${response.statusText}`);
   }
   return await response.json();
-}
+};
 export const getArtifact = async (evidenceId: string) => {
-  const response = await fetch(`http://localhost:8095/api/artifacts/${evidenceId}`)
+  const response = await fetch(`http://localhost:8095/api/artifacts/${evidenceId}`);
   if (!response.ok) {
     throw new Error(`Retrieval failed: ${response.statusText}`);
   }
   return await response.json();
-}
+};
 // PNG Metadata Extraction (client-side)
 export const extractPNGMetadata = async (file: File | ArrayBuffer): Promise<LegalAIMetadata | null> => {
   let buffer: ArrayBuffer;
@@ -272,7 +269,7 @@ export const extractPNGMetadata = async (file: File | ArrayBuffer): Promise<Lega
     buffer = file;
   }
   return await PNGEmbedExtractor.extractMetadata(buffer);
-}
+};
 // Utility Functions
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
@@ -280,12 +277,12 @@ export const formatFileSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+};
 export const formatProcessingTime = (startTime: Date): string => {
   const elapsed = Date.now() - startTime.getTime();
   if (elapsed < 1000) return `${elapsed}ms`;
   return `${(elapsed / 1000).toFixed(1)}s`;
-}
+};
 // Types for component props
 export interface EvidenceUploadProps {
   caseId: string;

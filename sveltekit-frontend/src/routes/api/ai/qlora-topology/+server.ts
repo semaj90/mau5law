@@ -60,9 +60,9 @@ const cache = new Map<string, CacheEntry>();
 // --- Caching and Compression Utilities ---
 
 function generateCacheKey(errorText: string): string {
-    const hash = createHash('sha256');
-    hash.update(errorText); // Key is based purely on the error content
-    return `npm-todo:${hash.digest('hex').substring(0, 16)}`;
+  const hash = createHash('sha256');
+  hash.update(errorText); // Key is based purely on the error content
+  return `npm-todo:${hash.digest('hex').substring(0, 16)}`;
 }
 
 function isExpired(entry: CacheEntry): boolean {
@@ -79,113 +79,111 @@ function decompressResponse(buffer: Uint8Array): IntelligentTodo {
   return JSON.parse(decompressed);
 }
 
-
 // --- Main POST Handler with RAG Pipeline ---
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
-    try {
-      const body: IntelligentTodoRequest = await request.json();
-      const { errors, useCache = true, binaryResponse = false } = body;
+  try {
+    const body: IntelligentTodoRequest = await request.json();
+    const { errors, useCache = true, binaryResponse = false } = body;
 
-      if (!errors || !Array.isArray(errors) || errors.length === 0) {
-        return json({ error: 'Request body must be a non-empty array of NPMError objects.' }, { status: 400 });
-      }
-
-      const intelligentTodos = await Promise.all(
-        errors.map(async (error): Promise<IntelligentTodo> => {
-          const startTime = Date.now();
-          const cacheKey = generateCacheKey(error.errorText);
-
-          // 1. CHECK CACHE (Cache-Aside Pattern)
-          if (useCache) {
-            const cachedEntry = cache.get(cacheKey);
-            if (cachedEntry && !isExpired(cachedEntry)) {
-              console.log(`[Intelligent Todo] L1 Cache HIT for key: ${cacheKey}`);
-              const cachedResponse = decompressResponse(cachedEntry.data);
-              cachedResponse.cacheHit = true;
-              cachedResponse.processingTime = Date.now() - startTime;
-              return cachedResponse;
-            }
-          }
-
-          console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.`);
-
-          // 2. EMBED (Triton Server)
-          const errorEmbedding = await tritonClient.getEmbedding(error.errorText);
-
-          // 3. RETRIEVE (Qdrant Vector DB)
-          const similarErrorVectors = await qdrantClient.search('npm_errors', {
-            vector: errorEmbedding,
-            limit: 3,
-          });
-          const similarErrorIds = similarErrorVectors.map((v: { id: number | string }) => v.id as number);
-
-          // 4. AUGMENT (PostgreSQL via Drizzle)
-          let contextText = 'No similar errors found in the database.';
-          if (similarErrorIds.length > 0) {
-            const similarSolutions = await db
-              .select()
-              .from(solvedErrors)
-              .where(sql`${solvedErrors.id} in ${similarErrorIds}`);
-
-            contextText = similarSolutions
-              .map(
-                (s: { rawErrorText: string; solutionText: string }) =>
-                  `SIMILAR ERROR:\n${s.rawErrorText}\nSOLUTION:\n${s.solutionText}`
-              )
-              .join('\n\n---\n\n');
-          }
-
-          // 5. GENERATE (Triton Server with Fine-Tuned Gemma)
-          const finalPrompt = `You are an expert software engineer. A user has an NPM error. Based on the error and context from similar past solutions, generate a step-by-step todo list to resolve it.\n\n---ERROR---\n${error.errorText}\n\n---CONTEXT---\n${contextText}\n\n---SOLUTION STEPS---`;
-          const generatedSolution = await tritonClient.generateText(finalPrompt);
-
-          const response: Omit<IntelligentTodo, 'cacheHit' | 'processingTime'> = {
-            errorId: error.id,
-            originalError: error.errorText,
-            suggestedSteps: generatedSolution
-              .split('\n')
-              .filter((step: string) => step.trim().length > 0 && !step.startsWith('---')),
-            contextUsed: similarErrorIds.length,
-          };
-
-          const processingTime = Date.now() - startTime;
-          const finalResponse = { ...response, cacheHit: false, processingTime };
-
-          // 6. POPULATE CACHE
-          if (useCache) {
-            const compressedData = compressResponse(finalResponse);
-            cache.set(cacheKey, {
-              data: compressedData,
-              timestamp: Date.now(),
-              ttl: 15 * 60 * 1000, // 15 minute TTL
-            });
-            console.log(`[Intelligent Todo] Cached response for key: ${cacheKey} (${compressedData.length} bytes)`);
-          }
-
-          return finalResponse;
-        })
-      );
-
-      if (binaryResponse) {
-        const compressedData = compressResponse(intelligentTodos);
-        return new Response(compressedData.buffer, {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/octet-stream',
-            'Content-Encoding': 'gzip',
-          },
-        });
-      } else {
-        return json(intelligentTodos);
-      }
-    } catch (error) {
-      console.error('[Intelligent Todo API] Error processing request:', error);
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      return json({ error: 'Failed to process intelligent todo generation', details: message }, { status: 500 });
+    if (!errors || !Array.isArray(errors) || errors.length === 0) {
+      return json({ error: 'Request body must be a non-empty array of NPMError objects.' }, { status: 400 });
     }
-};
 
+    const intelligentTodos = await Promise.all(
+      errors.map(async (error): Promise<IntelligentTodo> => {
+        const startTime = Date.now();
+        const cacheKey = generateCacheKey(error.errorText);
+
+        // 1. CHECK CACHE (Cache-Aside Pattern)
+        if (useCache) {
+          const cachedEntry = cache.get(cacheKey);
+          if (cachedEntry && !isExpired(cachedEntry)) {
+            console.log(`[Intelligent Todo] L1 Cache HIT for key: ${cacheKey}`);
+            const cachedResponse = decompressResponse(cachedEntry.data);
+            cachedResponse.cacheHit = true;
+            cachedResponse.processingTime = Date.now() - startTime;
+            return cachedResponse;
+          }
+        }
+
+        console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.`);
+
+        // 2. EMBED (Triton Server)
+        const errorEmbedding = await tritonClient.getEmbedding(error.errorText);
+
+        // 3. RETRIEVE (Qdrant Vector DB)
+        const similarErrorVectors = await qdrantClient.search('npm_errors', {
+          vector: errorEmbedding,
+          limit: 3,
+        });
+        const similarErrorIds = similarErrorVectors.map((v: { id: number | string }) => v.id as number);
+
+        // 4. AUGMENT (PostgreSQL via Drizzle)
+        let contextText = 'No similar errors found in the database.';
+        if (similarErrorIds.length > 0) {
+          const similarSolutions = await db
+            .select()
+            .from(solvedErrors)
+            .where(sql`${solvedErrors.id} in ${similarErrorIds}`);
+
+          contextText = similarSolutions
+            .map(
+              (s: { rawErrorText: string; solutionText: string }) =>
+                `SIMILAR ERROR:\n${s.rawErrorText}\nSOLUTION:\n${s.solutionText}`
+            )
+            .join('\n\n---\n\n');
+        }
+
+        // 5. GENERATE (Triton Server with Fine-Tuned Gemma)
+        const finalPrompt = `You are an expert software engineer. A user has an NPM error. Based on the error and context from similar past solutions, generate a step-by-step todo list to resolve it.\n\n---ERROR---\n${error.errorText}\n\n---CONTEXT---\n${contextText}\n\n---SOLUTION STEPS---`;
+        const generatedSolution = await tritonClient.generateText(finalPrompt);
+
+        const response: Omit<IntelligentTodo, 'cacheHit' | 'processingTime'> = {
+          errorId: error.id,
+          originalError: error.errorText,
+          suggestedSteps: generatedSolution
+            .split('\n')
+            .filter((step: string) => step.trim().length > 0 && !step.startsWith('---')),
+          contextUsed: similarErrorIds.length,
+        };
+
+        const processingTime = Date.now() - startTime;
+        const finalResponse = { ...response, cacheHit: false, processingTime };
+
+        // 6. POPULATE CACHE
+        if (useCache) {
+          const compressedData = compressResponse(finalResponse);
+          cache.set(cacheKey, {
+            data: compressedData,
+            timestamp: Date.now(),
+            ttl: 15 * 60 * 1000, // 15 minute TTL
+          });
+          console.log(`[Intelligent Todo] Cached response for key: ${cacheKey} (${compressedData.length} bytes)`);
+        }
+
+        return finalResponse;
+      })
+    );
+
+    if (binaryResponse) {
+      const compressedData = compressResponse(intelligentTodos);
+      return new Response(compressedData.buffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Encoding': 'gzip',
+        },
+      });
+    } else {
+      return json(intelligentTodos);
+    }
+  } catch (error) {
+    console.error('[Intelligent Todo API] Error processing request:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return json({ error: 'Failed to process intelligent todo generation', details: message }, { status: 500 });
+  }
+};
 
 // --- Health Check GET Handler ---
 

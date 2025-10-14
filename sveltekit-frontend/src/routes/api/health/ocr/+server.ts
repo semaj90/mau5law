@@ -110,9 +110,9 @@ export const GET: RequestHandler = async () => {
     const overallStatus = determineOverallStatus(ocrHealth)
     const checkDuration = Date.now() - startTime
     const response: OCRHealthResponse = {
-      status: overallStatus
+      status: overallStatus,
       timestamp,
-      ocr: ocrHealth
+      ocr: ocrHealth,
       metadata: {
         checkDuration,
         environment: process.env.NODE_ENV || 'development'
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
     const httpStatus = overallStatus === 'healthy' ? 200 :
                       overallStatus === 'degraded' ? 206 : 503
     return json(response, {
-      status: httpStatus
+      status: httpStatus,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -171,8 +171,8 @@ export const POST: RequestHandler = async ({ request }) => {
         formData.append('file', testBlob, 'health-check-test.txt')
         const response = await fetch(`${ocrBaseUrl}/extract`, {
           method: 'POST',
-          body: formData
-          signal: AbortSignal.timeout(timeout || 15000)
+          body: formData,
+          signal: AbortSignal.timeout(timeout || 15000),
         })
         const responseTime = Date.now() - startTime
         if (response.ok) {
@@ -182,8 +182,8 @@ export const POST: RequestHandler = async ({ request }) => {
             status: 'success',
             message: 'OCR processing test completed successfully',
             responseTime,
-            testResult: result
-            timestamp: new Date().toISOString()
+            testResult: result,
+            timestamp: new Date().toISOString(),
           })
         } else {
           return json({
@@ -237,7 +237,7 @@ export const HEAD: RequestHandler = async () => {
     const httpStatus = overallStatus === 'healthy' ? 200 :
                       overallStatus === 'degraded' ? 206 : 503
     return new Response(null, {
-      status: httpStatus
+      status: httpStatus,
       headers: {
         'X-OCR-Status': ocrHealth.status,
         'X-Response-Time': ocrHealth.responseTime.toString(),

@@ -196,7 +196,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
       },
       optimization_rules: [],
       auto_scaling: {
-        enabled: true
+        enabled: true,
         min_workers: 2,
         max_workers: 16,
         scale_up_threshold: 0.8,

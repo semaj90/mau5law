@@ -13,11 +13,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = Number(url.searchParams.get('limit') || '20');
     // Query sample embeddings from pgvector table
     const rows = await db.select().from(embeddingTable).limit(limit);
-  type RowShape = { id: string; embedding?: number[]; metadata?: Record<string, unknown> | null };
-  const sample = (rows as RowShape[]).map((r) => ({ id: r.id, embeddingLength: (r.embedding || []).length, metadata: r.metadata || null }));
+    type RowShape = { id: string; embedding?: number[]; metadata?: Record<string, unknown> | null };
+    const sample = (rows as RowShape[]).map(r => ({
+      id: r.id,
+      embeddingLength: (r.embedding || []).length,
+      metadata: r.metadata || null,
+    }));
 
     // If Qdrant configured, run a health ping
-  let qdrant: { ok?: boolean; status?: number; error?: string } | null = null;
+    let qdrant: { ok?: boolean; status?: number; error?: string } | null = null;
     if (QDRANT_URL) {
       try {
         const resp = await fetch(`${QDRANT_URL}/collections/legal_evidence`, { method: 'GET' });

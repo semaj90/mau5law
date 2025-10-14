@@ -126,8 +126,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     return json({
       success: true,
       data: {
-        citation: updatedCitation
-        message: 'Citation updated successfully'
+        citation: updatedCitation,
+        message: 'Citation updated successfully',
       },
       meta: {
         userId: getUserId(locals),
@@ -192,13 +192,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       data: {
         message: 'Citation deleted successfully',
         deletedCitation: {
-          id: citationId
-          title: existingCitation.title
+          id: citationId,
+          title: existingCitation.title,
         }
       },
       meta: {
         userId: getUserId(locals),
-        deletedCitationId: citationId
+        deletedCitationId: citationId,
         timestamp: new Date().toISOString(),
         action: 'citation_deleted'
       }

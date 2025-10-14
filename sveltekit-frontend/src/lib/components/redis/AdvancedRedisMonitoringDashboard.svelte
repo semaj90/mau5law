@@ -275,7 +275,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     <div class="status-text">
       {$liveMetrics.endpoints.optimized} / {$liveMetrics.endpoints.total} endpoints optimized ({formatNumber(
         ($liveMetrics.endpoints.optimized / $liveMetrics.endpoints.total) * 100,
-        0,
+        0
       )}%)
     </div>
     <div class="performance-gain">

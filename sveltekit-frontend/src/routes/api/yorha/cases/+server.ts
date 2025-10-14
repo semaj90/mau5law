@@ -6,25 +6,25 @@ import * as databaseConnection from '$lib/database/connection';
 // Minimal DB shape used in this module to avoid `any`
 // Lightweight query builder shape used by this module to allow method chaining
 interface QueryBuilder<T = unknown> {
-	from: (table: unknown) => QueryBuilder<T>;
-	where: (cond?: unknown) => QueryBuilder<T>;
-	orderBy: (o: unknown) => QueryBuilder<T>;
-	limit: (n: number) => QueryBuilder<T>;
-	offset: (n: number) => QueryBuilder<T>;
-	returning: (sel: unknown) => Promise<T[]>;
-	// optional helpers used for insert/update
-	values?: (v: unknown) => { returning: (sel: unknown) => Promise<T[]> };
-	set?: (u: unknown) => QueryBuilder<T>;
+  from: (table: unknown) => QueryBuilder<T>;
+  where: (cond?: unknown) => QueryBuilder<T>;
+  orderBy: (o: unknown) => QueryBuilder<T>;
+  limit: (n: number) => QueryBuilder<T>;
+  offset: (n: number) => QueryBuilder<T>;
+  returning: (sel: unknown) => Promise<T[]>;
+  // optional helpers used for insert/update
+  values?: (v: unknown) => { returning: (sel: unknown) => Promise<T[]> };
+  set?: (u: unknown) => QueryBuilder<T>;
 
-	// Make the builder awaitable/promise-like so `await builder` yields T[]
-	then<TResult1 = T[], TResult2 = never>(
-		onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null,
-		onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
-	): Promise<TResult1 | TResult2>;
+  // Make the builder awaitable/promise-like so `await builder` yields T[]
+  then<TResult1 = T[], TResult2 = never>(
+    onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
+  ): Promise<TResult1 | TResult2>;
 
-	catch?<TResult = never>(
-		onrejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | null
-	): Promise<T[] | TResult>;
+  catch?<TResult = never>(
+    onrejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | null
+  ): Promise<T[] | TResult>;
 }
 
 type MinimalDrizzleDB = {
@@ -163,103 +163,103 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 };
 // PUT - Update existing case
 export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
-	try {
-		const body = await request.json();
-		if (!body.id) {
-			return error(
-				400,
-				ensureError({
-					message: 'Case ID is required for updates',
-				})
-			);
-		}
-		// Check if case exists
-		const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, body.id)).limit(1);
-		if (existingCase.length === 0) {
-			return error(
-				404,
-				ensureError({
-					message: 'Case not found',
-				})
-			);
-		}
-		// Prepare update data
-		const updateData: Record<string, unknown> = {
-			updatedAt: new Date(),
-		};
-		if (body.title) updateData.title = body.title;
-		if (body.description) updateData.description = body.description;
-		if (body.status) updateData.status = body.status;
-		if (body.priority) updateData.priority = body.priority;
-		if (body.tags) updateData.tags = body.tags;
-		if (body.metadata) updateData.metadata = body.metadata;
-		// Update case
-		const updatedCase = await db.update(cases).set(updateData).where(eq(cases.id, body.id)).returning({
-			id: cases.id,
-			title: cases.title,
-			description: cases.description,
-			status: cases.status,
-			priority: cases.priority,
-			updatedAt: cases.updatedAt,
-		});
-		return json({
-			success: true,
-			data: updatedCase[0],
-			message: 'Case updated successfully',
-		});
-	} catch (err: unknown) {
-		const e = ensureError(err);
-		console.error('Error updating case:', e);
-		return error(
-			500,
-			ensureError({
-				message: 'Failed to update case',
-			})
-		);
-	}
+  try {
+    const body = await request.json();
+    if (!body.id) {
+      return error(
+        400,
+        ensureError({
+          message: 'Case ID is required for updates',
+        })
+      );
+    }
+    // Check if case exists
+    const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, body.id)).limit(1);
+    if (existingCase.length === 0) {
+      return error(
+        404,
+        ensureError({
+          message: 'Case not found',
+        })
+      );
+    }
+    // Prepare update data
+    const updateData: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
+    if (body.title) updateData.title = body.title;
+    if (body.description) updateData.description = body.description;
+    if (body.status) updateData.status = body.status;
+    if (body.priority) updateData.priority = body.priority;
+    if (body.tags) updateData.tags = body.tags;
+    if (body.metadata) updateData.metadata = body.metadata;
+    // Update case
+    const updatedCase = await db.update(cases).set(updateData).where(eq(cases.id, body.id)).returning({
+      id: cases.id,
+      title: cases.title,
+      description: cases.description,
+      status: cases.status,
+      priority: cases.priority,
+      updatedAt: cases.updatedAt,
+    });
+    return json({
+      success: true,
+      data: updatedCase[0],
+      message: 'Case updated successfully',
+    });
+  } catch (err: unknown) {
+    const e = ensureError(err);
+    console.error('Error updating case:', e);
+    return error(
+      500,
+      ensureError({
+        message: 'Failed to update case',
+      })
+    );
+  }
 };
 // DELETE - Delete case
 export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
-	try {
-		const caseId = url.searchParams.get('id');
-		if (!caseId) {
-			return error(
-				400,
-				ensureError({
-					message: 'Case ID is required',
-				})
-			);
-		}
-		// Check if case exists
-		const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, caseId)).limit(1);
-		if (existingCase.length === 0) {
-			return error(
-				404,
-				ensureError({
-					message: 'Case not found',
-				})
-			);
-		}
-		// Soft delete by updating status
-		await db
-			.update(cases)
-			.set({
-				status: 'deleted',
-				updatedAt: new Date(),
-			})
-			.where(eq(cases.id, caseId));
-		return json({
-			success: true,
-			message: 'Case deleted successfully',
-		});
-	} catch (err: unknown) {
-		const e = ensureError(err);
-		console.error('Error deleting case:', e);
-		return error(
-			500,
-			ensureError({
-				message: 'Failed to delete case',
-			})
-		);
-	}
+  try {
+    const caseId = url.searchParams.get('id');
+    if (!caseId) {
+      return error(
+        400,
+        ensureError({
+          message: 'Case ID is required',
+        })
+      );
+    }
+    // Check if case exists
+    const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, caseId)).limit(1);
+    if (existingCase.length === 0) {
+      return error(
+        404,
+        ensureError({
+          message: 'Case not found',
+        })
+      );
+    }
+    // Soft delete by updating status
+    await db
+      .update(cases)
+      .set({
+        status: 'deleted',
+        updatedAt: new Date(),
+      })
+      .where(eq(cases.id, caseId));
+    return json({
+      success: true,
+      message: 'Case deleted successfully',
+    });
+  } catch (err: unknown) {
+    const e = ensureError(err);
+    console.error('Error deleting case:', e);
+    return error(
+      500,
+      ensureError({
+        message: 'Failed to delete case',
+      })
+    );
+  }
 };

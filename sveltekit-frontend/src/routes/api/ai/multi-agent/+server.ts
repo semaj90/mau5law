@@ -230,8 +230,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         performance: {
           totalTime,
           memoryUsage: requestData.memoryProfile,
-          tokensGenerated: totalTokens
-          confidence: overallConfidence
+          tokensGenerated: totalTokens,
+          confidence: overallConfidence,
         },
         recommendations: Array.from(new Set(allRecommendations)).slice(0, 10), // Remove duplicates, limit to 10
         nextSteps: generateNextSteps(results, requestData)
@@ -255,8 +255,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 }
 async function runAutogenAnalysis(
-  request: MultiAgentRequest
-  sessionId: string
+  request: MultiAgentRequest,
+  sessionId: string,
 ): Promise<any> {
   if (!autogenTeam) {
     throw new Error("Autogen team not initialized")
@@ -271,8 +271,8 @@ async function runAutogenAnalysis(
   return await autogenTeam.analyzeCase(autogenRequest)
 }
 async function runCrewAIWorkflow(
-  request: MultiAgentRequest
-  sessionId: string
+  request: MultiAgentRequest,
+  sessionId: string,
 ): Promise<WorkflowResult> {
   if (!crewaiTeam) {
     throw new Error("CrewAI team not initialized")
@@ -317,8 +317,8 @@ async function runVLLMAnalysis(request: MultiAgentRequest, sessionId: string): P
   }
 }
 async function synthesizeHybridResults(
-  autogenResult: any
-  crewaiResult: WorkflowResult
+  autogenResult: any,
+  crewaiResult: WorkflowResult,
 ): Promise<any> {
   // Combine insights from both systems
   const combinedAnalysis = `
@@ -338,7 +338,7 @@ CrewAI Average Confidence: ${crewaiResult.results?.reduce((acc: number, r: any) 
 Combined Confidence: ${((autogenResult.confidence + (crewaiResult.results?.reduce((acc: number, r: any) => acc + r.confidence, 0) / (crewaiResult.results?.length || 1) || 0)) / 2).toFixed(2)}
 `
   return {
-    synthesizedAnalysis: combinedAnalysis
+    synthesizedAnalysis: combinedAnalysis,
     convergentFindings: findCommonThemes(autogenResult, crewaiResult),
     divergentPerspectives: findDivergentViews(autogenResult, crewaiResult),
     riskAssessment: synthesizeRiskAssessment(autogenResult, crewaiResult),
@@ -350,8 +350,8 @@ Combined Confidence: ${((autogenResult.confidence + (crewaiResult.results?.reduc
   }
 }
 function findCommonThemes(
-  autogenResult: any
-  crewaiResult: WorkflowResult
+  autogenResult: any,
+  crewaiResult: WorkflowResult,
 ): string[] {
   // Simple keyword matching to find common themes
   const autogenText = (autogenResult.finalAnalysis || "").toLowerCase()
@@ -373,8 +373,8 @@ function findCommonThemes(
   )
 }
 function findComplementaryInsights(
-  autogenResult: any
-  crewaiResult: WorkflowResult
+  autogenResult: any,
+  crewaiResult: WorkflowResult,
 ): string[] {
   // Extract unique insights from each system
   const autogenRecommendations = autogenResult.recommendations || []
@@ -385,8 +385,8 @@ function findComplementaryInsights(
   ]
 }
 function findDivergentViews(
-  autogenResult: any
-  crewaiResult: WorkflowResult
+  autogenResult: any,
+  crewaiResult: WorkflowResult,
 ): string[] {
   // Identify areas where the systems might have different perspectives
   return [
@@ -396,8 +396,8 @@ function findDivergentViews(
   ]
 }
 function synthesizeRiskAssessment(
-  autogenResult: any
-  crewaiResult: WorkflowResult
+  autogenResult: any,
+  crewaiResult: WorkflowResult,
 ): string {
   const autogenConfidence = autogenResult.confidence || 0.7
   const crewaiConfidence =

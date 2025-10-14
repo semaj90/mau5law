@@ -53,8 +53,8 @@
           }
         }
       },
-    }
-  }
+    };
+  };
   const themeStore = createThemeStore();
   let currentTheme = $state<'light' | 'dark' | 'system'>(defaultTheme);
   let resolvedTheme = $state<'light' | 'dark'>('light');
@@ -90,7 +90,7 @@
           animation-duration: 0.01ms !important;
           animation-delay: -0.01ms !important;
         }
-      `),
+      `)
       );
       document.head.appendChild(css);
       requestAnimationFrame(() => {
@@ -146,7 +146,7 @@
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handleChange = () => {
         applyTheme('system');
-      }
+      };
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
@@ -163,7 +163,8 @@
 <!-- Theme Provider doesn't render its own content, just provides context -->
 {@render children?.()}
 
-<style>/* Global theme variables */ {}
+<style>
+/* Global theme variables */ {}
   :global(:root) {
 /* Light theme colors */ {}
     --enhanced-bits-bg: #ffffff;

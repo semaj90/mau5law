@@ -112,7 +112,7 @@ export class MinIOService {
   private static client = minioClient;
   /**
    * Parse MinIO URL and extract bucket and key
-   */;
+   */
   static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } {
     const match = minioUrl.match(/^minio:\/\/([^\/]+)\/(.+)$/);
     if (!match) {
@@ -125,7 +125,7 @@ export class MinIOService {
    * Load and extract text content from MinIO object
    */
   static async getTextContent(
-    minioUrl: string
+    minioUrl: string,
     options: {
       maxSize?: number;
       timeout?: number;
@@ -172,7 +172,7 @@ export class MinIOService {
   }
   /**
    * Extract plain text from various file formats
-   */;
+   */
   private static async extractPlainText(content: string, fileType: string): Promise<string> {
     switch (fileType) {
       case 'json':
@@ -213,16 +213,16 @@ export class MinIOService {
    * Store text content in MinIO
    */
   static async storeTextContent(
-    bucket: string
+    bucket: string,
     key: string;
-    content: string
+    content: string,
     metadata?: Record<string, string>;
   ): Promise<string> {
     try {
       const command = new PutObjectCommand({
-        Bucket: bucket
-        Key: key
-        Body: content
+        Bucket: bucket,
+        Key: key,
+        Body: content,
         ContentType: 'text/plain',
         Metadata: metadata
       });
@@ -237,19 +237,19 @@ export class MinIOService {
    * Upload large file using multipart upload
    */
   static async uploadLargeFile(
-    bucket: string
+    bucket: string,
     key: string;
-    content: Buffer | Uint8Array | string
+    content: Buffer | Uint8Array | string,
     contentType?: string;
   ): Promise<string> {
     try {
       const upload = new Upload({
         client: this.client,
         params: {
-          Bucket: bucket
-          Key: key
-          Body: content
-          ContentType: contentType || 'application/octet-stream'
+          Bucket: bucket,
+          Key: key,
+          Body: content,
+          ContentType: contentType || 'application/octet-stream',
         }
       });
       await upload.done();
@@ -263,15 +263,15 @@ export class MinIOService {
    * List objects in bucket with optional prefix filter
    */
   static async listObjects(
-    bucket: string
+    bucket: string,
     prefix?: string
     maxKeys: number = 1000;
   ): Promise<FileMetadata[]> {
     try {
       const command = new ListObjectsV2Command({
-        Bucket: bucket
-        Prefix: prefix
-        MaxKeys: maxKeys
+        Bucket: bucket,
+        Prefix: prefix,
+        MaxKeys: maxKeys,
       });
       // removed unused response assignment
       return (response.Contents || []).map(obj => ({
@@ -287,7 +287,7 @@ export class MinIOService {
   }
   /**
    * Check if object exists in MinIO
-   */;
+   */
   static async objectExists(bucket: string, key: string): Promise<boolean> {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
@@ -299,7 +299,7 @@ export class MinIOService {
   }
   /**
    * Get object metadata without downloading content
-   */;
+   */
   static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
@@ -319,7 +319,7 @@ export class MinIOService {
    * Batch process multiple MinIO URLs for text extraction
    */
   static async batchExtractText(
-    minioUrls: string[]
+    minioUrls: string[],
     options: { concurrency?: number; maxSize?: number } = {}
   ): Promise<Array<any>, {
     const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options;

@@ -1,4 +1,4 @@
-export type XhrUploadResult = { status: number; responseText?: string }
+export type XhrUploadResult = { status: number; responseText?: string };
 
 export function uploadWithXhr(
   url: string,
@@ -14,7 +14,7 @@ export function uploadWithXhr(
       signal.addEventListener('abort', () => xhr.abort());
     }
 
-    xhr.upload.onprogress = (ev) => {
+    xhr.upload.onprogress = ev => {
       if (ev.lengthComputable && typeof onProgress === 'function') onProgress(ev.loaded, ev.total);
     };
 

@@ -106,23 +106,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     // Save to database as evidence
     const evidenceData = {
-      id: fileId
+      id: fileId,
       title: title || file.name,
-      description: description || null
-      fileName: filename
+      description: description || null,
+      fileName: filename,
       originalFileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      filePath: relativePath
-      caseId: caseId || null
+      filePath: relativePath,
+      caseId: caseId || null,
       tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       metadata,
       isPublic,
       uploadedAt: new Date(),
-      processedAt: null
-      ocrText: null
-      contentText: null
-      embedding: null
+      processedAt: null,
+      ocrText: null,
+      contentText: null,
+      embedding: null,
     }
     await db.insert(evidence).values(evidenceData).execute()
     // Generate thumbnail if it's an image
@@ -137,25 +137,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       fileType: file.type,
       caseId,
       needsOCR: needsOCR(file.type),
-      needsEmbedding: true
-      needsThumbnail: !thumbnailUrl
+      needsEmbedding: true,
+      needsThumbnail: !thumbnailUrl,
     })
     const response: UploadResponse = {
       success: true,
       file: {
-        id: fileId
+        id: fileId,
         filename,
         originalName: file.name,
         size: file.size,
         type: file.type,
         url: `/uploads/${relativePath}`,
-        uploadPath: relativePath
+        uploadPath: relativePath,
         thumbnailUrl
       }
     }
     return json(response, {
       headers: {
-        'X-Upload-ID': fileId
+        'X-Upload-ID': fileId,
         'X-File-Size': file.size.toString(),
         'Cache-Control': 'no-cache'
       }
@@ -279,9 +279,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         throw error(404, 'File not found')
       }
       return json({
-        file: fileData[0]
+        file: fileData[0],
         processingStatus: {
-          uploaded: true
+          uploaded: true,
           ocrComplete: !!fileData[0].ocrText,
           embeddingComplete: !!fileData[0].embedding,
           processed: !!fileData[0].processedAt
@@ -308,8 +308,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
     const recentUploads = await query.execute()
     return json({
-      uploads: recentUploads
-      total: recentUploads.length
+      uploads: recentUploads,
+      total: recentUploads.length,
     })
   } catch (err) {
     console.error('Upload status error:', err)

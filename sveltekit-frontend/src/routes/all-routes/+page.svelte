@@ -36,7 +36,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   // K-means clustering logic for API endpoints
   function clusterAPIEndpoints(routes: RouteItem[]) {
     const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
-  const clusters: { [key: string]: RouteItem[] } = {};
+    const clusters: { [key: string]: RouteItem[] } = {};
     apiRoutes.filter(Boolean).forEach(route => {
       const pathParts = route.path.split('/');
       let serviceName = 'other';
@@ -129,7 +129,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     'demo-games': { name: 'Game Demos', icon: '🎮', color: 'cyan', priority: 'demo' },
     infrastructure: { name: 'Infrastructure', icon: '🏗️', color: 'gray', priority: 'production' },
     other: { name: 'Other', icon: '📄', color: 'slate', priority: 'other' },
-  }
+  };
   function categorizeRoute(path: string): string {
     // Core User Routes - Main user-facing functionality
     if (
@@ -277,7 +277,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         infrastructure: 0,
         other: 0,
       },
-    }
+    };
     allRoutes.forEach(route => {
       const categoryInfo = routeCategories[route.category];
       // Category stats
@@ -326,7 +326,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       routes = routes.filter(
         route =>
           route.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          route.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+          route.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     return routes;
@@ -357,7 +357,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-blue-200',
       border300: 'border-blue-300',
       bg500: 'bg-blue-500',
-      hover500: 'hover:bg-blue-600'
+      hover500: 'hover:bg-blue-600',
     },
     green: {
       bg50: 'bg-green-50',
@@ -367,7 +367,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-green-200',
       border300: 'border-green-300',
       bg500: 'bg-green-500',
-      hover500: 'hover:bg-green-600'
+      hover500: 'hover:bg-green-600',
     },
     purple: {
       bg50: 'bg-purple-50',
@@ -377,7 +377,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-purple-200',
       border300: 'border-purple-300',
       bg500: 'bg-purple-500',
-      hover500: 'hover:bg-purple-600'
+      hover500: 'hover:bg-purple-600',
     },
     yellow: {
       bg50: 'bg-yellow-50',
@@ -387,7 +387,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-yellow-200',
       border300: 'border-yellow-300',
       bg500: 'bg-yellow-500',
-      hover500: 'hover:bg-yellow-600'
+      hover500: 'hover:bg-yellow-600',
     },
     gray: {
       bg50: 'bg-gray-50',
@@ -397,7 +397,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-gray-200',
       border300: 'border-gray-300',
       bg500: 'bg-gray-500',
-      hover500: 'hover:bg-gray-600'
+      hover500: 'hover:bg-gray-600',
     },
     orange: {
       bg50: 'bg-orange-50',
@@ -407,7 +407,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-orange-200',
       border300: 'border-orange-300',
       bg500: 'bg-orange-500',
-      hover500: 'hover:bg-orange-600'
+      hover500: 'hover:bg-orange-600',
     },
     pink: {
       bg50: 'bg-pink-50',
@@ -417,7 +417,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-pink-200',
       border300: 'border-pink-300',
       bg500: 'bg-pink-500',
-      hover500: 'hover:bg-pink-600'
+      hover500: 'hover:bg-pink-600',
     },
     indigo: {
       bg50: 'bg-indigo-50',
@@ -427,7 +427,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-indigo-200',
       border300: 'border-indigo-300',
       bg500: 'bg-indigo-500',
-      hover500: 'hover:bg-indigo-600'
+      hover500: 'hover:bg-indigo-600',
     },
     emerald: {
       bg50: 'bg-emerald-50',
@@ -437,7 +437,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-emerald-200',
       border300: 'border-emerald-300',
       bg500: 'bg-emerald-500',
-      hover500: 'hover:bg-emerald-600'
+      hover500: 'hover:bg-emerald-600',
     },
     cyan: {
       bg50: 'bg-cyan-50',
@@ -447,8 +447,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       border200: 'border-cyan-200',
       border300: 'border-cyan-300',
       bg500: 'bg-cyan-500',
-      hover500: 'hover:bg-cyan-600'
-    }
+      hover500: 'hover:bg-cyan-600',
+    },
   };
 
   function getCategoryClasses(color: string | undefined) {
@@ -565,10 +565,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             {#each Object.entries(routeCategories) as [key, category]}
               {@const count = routeStats.byCategory[key] || 0}
               {@const cls = getCategoryClasses(category.color)}
-              <div class={"text-center p-3 rounded-lg " + cls.bg50 + " " + cls.border200}>
+              <div class={'text-center p-3 rounded-lg ' + cls.bg50 + ' ' + cls.border200}>
                 <div class="text-2xl mb-1">{category.icon}</div>
-                <div class={"font-bold " + cls.text800}>{count}</div>
-                <div class={"text-xs " + cls.text600}>{category.name}</div>
+                <div class={'font-bold ' + cls.text800}>{count}</div>
+                <div class={'text-xs ' + cls.text600}>{category.name}</div>
               </div>
             {/each}
           </div>
@@ -851,9 +851,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       </div>
                     {/each}
                     {#if endpoints.length > 5}
-                    <div class="endpoint-item">
-                      <code class="endpoint-code">...and {endpoints.length - 5} more</code>
-                    </div>
+                      <div class="endpoint-item">
+                        <code class="endpoint-code">...and {endpoints.length - 5} more</code>
+                      </div>
                     {/if}
                   </div>
                   <div class="action-buttons">
@@ -901,7 +901,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                           {/each}
                         </div>
                         <div class="mt-4 flex justify-end">
-                          <button onclick={() => closeCluster(serviceName)} class="px-3 py-1 bg-gray-100 rounded">Close</button>
+                          <button onclick={() => closeCluster(serviceName)} class="px-3 py-1 bg-gray-100 rounded"
+                            >Close</button
+                          >
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -918,8 +920,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <div class="ssr-flexbox-container flex flex-wrap gap-4 {isLoaded ? '' : 'loading'}">
         {#each filteredRoutes as route, index}
           {@const categoryInfo = routeCategories[route.category]}
-          {@const columnClass =
-            index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
+          {@const columnClass = index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
           <button
             type="button"
             class="w-full h-full p-0 border-none bg-transparent text-left"
@@ -928,31 +929,31 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             <Card
               class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group border-2"
             >
-            {#snippet children()}
-              <CardHeader>
-                {#snippet children()}
-                  <CardTitle class="text-{categoryInfo.color}-700 text-lg group-hover:text-{categoryInfo.color}-900">
-                    {categoryInfo.icon}
-                    {route.path}
-                  </CardTitle>
-                {/snippet}
-              </CardHeader>
-              <CardContent>
-                {#snippet children()}
-                  {#if route.description}
-                    <p class="text-sm text-gray-600 mb-3">{route.description}</p>
-                  {/if}
-                  <div class="flex flex-wrap gap-2">
-                    <span
-                      class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800"
-                    >
-                      {categoryInfo.name}
-                    </span>
-                  </div>
-                {/snippet}
-              </CardContent>
-            {/snippet}
-          </Card>
+              {#snippet children()}
+                <CardHeader>
+                  {#snippet children()}
+                    <CardTitle class="text-{categoryInfo.color}-700 text-lg group-hover:text-{categoryInfo.color}-900">
+                      {categoryInfo.icon}
+                      {route.path}
+                    </CardTitle>
+                  {/snippet}
+                </CardHeader>
+                <CardContent>
+                  {#snippet children()}
+                    {#if route.description}
+                      <p class="text-sm text-gray-600 mb-3">{route.description}</p>
+                    {/if}
+                    <div class="flex flex-wrap gap-2">
+                      <span
+                        class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800"
+                      >
+                        {categoryInfo.name}
+                      </span>
+                    </div>
+                  {/snippet}
+                </CardContent>
+              {/snippet}
+            </Card>
           </button>
         {/each}
       </div>
@@ -967,74 +968,81 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card class={"hover:" + cls.border300 + " group"}>
-            {#snippet children()}
-              <CardContent class="p-4">
-                <!-- Route Header -->
-                <div class="flex items-start justify-between mb-3">
-                  <div class="flex items-center flex-1 min-w-0">
-                    <span class="text-2xl mr-3 flex-shrink-0">{categoryInfo.icon}</span>
-                    <div class="min-w-0 flex-1">
-                      <h3
-                        class="font-semibold text-lg truncate group-hover:text-{categoryInfo.color}-700 transition-colors"
-                      >
-                        {route.name}
-                      </h3>
-                      <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                        {categoryInfo.name}
-                      </p>
+            <Card class={'hover:' + cls.border300 + ' group'}>
+              {#snippet children()}
+                <CardContent class="p-4">
+                  <!-- Route Header -->
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center flex-1 min-w-0">
+                      <span class="text-2xl mr-3 flex-shrink-0">{categoryInfo.icon}</span>
+                      <div class="min-w-0 flex-1">
+                        <h3
+                          class="font-semibold text-lg truncate group-hover:text-{categoryInfo.color}-700 transition-colors"
+                        >
+                          {route.name}
+                        </h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                          {categoryInfo.name}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <!-- Route Path -->
-                <div class="mb-3">
-                  <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700 break-all">
-                    {route.path}
-                  </code>
-                </div>
-                <!-- Route Description -->
-                {#if route.description}
-                  <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {route.description}
-                  </p>
-                {/if}
-                <!-- Route Tags -->
-                <div class="flex flex-wrap gap-2 mb-3">
-                  <span class={"px-2 py-1 rounded-full text-xs " + cls.bg100 + " " + cls.text800 + " " + cls.border200}>
-                    {categoryInfo.name}
-                  </span>
-                  <span
-                    class={"px-2 py-1 rounded-full text-xs " + (route.type === 'configured'
-                      ? 'bg-green-100 text-green-800 border border-green-200'
-                      : 'bg-purple-100 text-purple-800 border border-purple-200')}
-                  >
-                    {route.type}
-                  </span>
-                </div>
-                <!-- Route Actions -->
-                <div class="flex gap-2">
-                  <button
-                    onclick={e => {
-                      e.stopPropagation();
-                      visitRoute(route.path);
-                    }}
-                    class={"flex-1 px-3 py-2 " + cls.bg500 + " text-white rounded " + cls.hover500 + " text-sm font-medium transition-colors flex items-center justify-center gap-1"}
-                  >
-                    🚀 Visit
-                  </button>
-                  <button
-                    onclick={e => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(route.path);
-                    }}
-                    class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
-                  >
-                    📋
-                  </button>
-                </div>
-              </CardContent>
-            {/snippet}
-          </Card>
+                  <!-- Route Path -->
+                  <div class="mb-3">
+                    <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700 break-all">
+                      {route.path}
+                    </code>
+                  </div>
+                  <!-- Route Description -->
+                  {#if route.description}
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {route.description}
+                    </p>
+                  {/if}
+                  <!-- Route Tags -->
+                  <div class="flex flex-wrap gap-2 mb-3">
+                    <span
+                      class={'px-2 py-1 rounded-full text-xs ' + cls.bg100 + ' ' + cls.text800 + ' ' + cls.border200}
+                    >
+                      {categoryInfo.name}
+                    </span>
+                    <span
+                      class={'px-2 py-1 rounded-full text-xs ' +
+                        (route.type === 'configured'
+                          ? 'bg-green-100 text-green-800 border border-green-200'
+                          : 'bg-purple-100 text-purple-800 border border-purple-200')}
+                    >
+                      {route.type}
+                    </span>
+                  </div>
+                  <!-- Route Actions -->
+                  <div class="flex gap-2">
+                    <button
+                      onclick={e => {
+                        e.stopPropagation();
+                        visitRoute(route.path);
+                      }}
+                      class={'flex-1 px-3 py-2 ' +
+                        cls.bg500 +
+                        ' text-white rounded ' +
+                        cls.hover500 +
+                        ' text-sm font-medium transition-colors flex items-center justify-center gap-1'}
+                    >
+                      🚀 Visit
+                    </button>
+                    <button
+                      onclick={e => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(route.path);
+                      }}
+                      class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
+                    >
+                      📋
+                    </button>
+                  </div>
+                </CardContent>
+              {/snippet}
+            </Card>
           </button>
         {/each}
       </div>
@@ -1141,7 +1149,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <DialogTitle>
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">{selectedRoute.icon} {selectedRoute.name}</h2>
-          <button onclick={() => (showModal = false)} class="text-gray-500 hover:text-gray-700 text-2xl" aria-label="Close modal">×</button>
+          <button
+            onclick={() => (showModal = false)}
+            class="text-gray-500 hover:text-gray-700 text-2xl"
+            aria-label="Close modal">×</button
+          >
         </div>
       </DialogTitle>
       <div class="space-y-4">

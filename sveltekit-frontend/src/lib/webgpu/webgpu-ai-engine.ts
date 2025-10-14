@@ -47,7 +47,7 @@ export class WebGPUAIEngine {
   /**
    * Constructor optionally triggers auto init in browser only.
    * Heavy async work is deferred via init()/waitForReady() to avoid SSR issues.
-   */;
+   */
   constructor(autoInit = true) {
     if (autoInit && typeof navigator !== 'undefined' && 'gpu' in navigator) {
       this.initPromise = this.initializeWebGPU();
@@ -59,7 +59,7 @@ export class WebGPUAIEngine {
       this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
     }
   }
-  /** public lazy initialization */;
+  /** public lazy initialization */
   init(): Promise<void> {
     if (!this.initPromise) {
       if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
@@ -71,11 +71,11 @@ export class WebGPUAIEngine {
     }
     return this.initPromise;
   }
-  /** whether GPU path is ready */;
+  /** whether GPU path is ready */
   isReady(): boolean {
     return !!(this.isInitialized && this.capabilities?.isSupported);
   }
-  /** await readiness (with timeout) */;
+  /** await readiness (with timeout) */
   async waitForReady(timeoutMs = 5000): Promise<boolean> {
     try {
       await Promise.race([
@@ -89,7 +89,7 @@ export class WebGPUAIEngine {
   }
   /**
    * Initialize WebGPU with feature detection
-   */;
+   */
   async initializeWebGPU(): Promise<void> {
     if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
     // Not in a browser / not supported
@@ -120,7 +120,7 @@ export class WebGPUAIEngine {
         (adapter.features as any as string[]).forEach?.((f: string) => featureList.push(f);
       }
       this.capabilities = {
-        isSupported: true
+        isSupported: true,
         adapter,
         device,
         features: featureList;
@@ -143,7 +143,7 @@ export class WebGPUAIEngine {
   }
   /**
    * Create optimized compute shader for kernel attention
-   */;
+   */
   private createKernelAttentionShader(): string {
     return `;
       struct Params {
@@ -178,7 +178,7 @@ export class WebGPUAIEngine {
   }
   /**
    * Create T5-style transformer shader
-   */;
+   */
   private createT5TransformerShader(): string {
     return `;
       struct T5Params {
@@ -220,8 +220,8 @@ export class WebGPUAIEngine {
    */
   async processDimensionalArray(
     data: BufferLike;
-    shape: number[]
-    attentionWeights: BufferLike
+    shape: number[],
+    attentionWeights: BufferLike,
     kernelSize = 8;
   ): Promise<any> {
     if (!this.capabilities?.isSupported || !this.capabilities.device) {
@@ -247,8 +247,8 @@ export class WebGPUAIEngine {
       pipeline = device.createComputePipeline({
         layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
         compute: {
-          module: shaderModule
-          entryPoint: 'kernelAttention'
+          module: shaderModule,
+          entryPoint: 'kernelAttention',
         }
       });
       this.shaderCache.set(shaderKey, pipeline);
@@ -349,8 +349,8 @@ export class WebGPUAIEngine {
     const pipeline = device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule
-        entryPoint: 't5Attention'
+        module: shaderModule,
+        entryPoint: 't5Attention',
       }
     });
     // Create buffers for T5 computation
@@ -469,7 +469,7 @@ export class WebGPUAIEngine {
   }
   /**
    * Create custom AI library components
-   */;
+   */
   createCustomLibrary(),: {
     DimensionalProcessor: any;
     AttentionKernel: any;
@@ -494,7 +494,7 @@ export class WebGPUAIEngine {
           for (let i = 0; i < data.length; i += kernelSize) {
             const slice = data.slice(i, Math.min(i + kernelSize, data.length);
             slices.push({
-              data: slice
+              data: slice,
               attentionScore: slice.reduce((sum, val) => sum + val, 0) / slice.length,
               startIndex: i
             });
@@ -528,7 +528,7 @@ export class WebGPUAIEngine {
   }
   /**
    * Get engine capabilities and stats
-   */;
+   */
   getCapabilities(),: {
     webgpu: WebGPUCapabilities;
     performance: any;

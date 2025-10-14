@@ -469,7 +469,11 @@ function toNumber(v: unknown, fallback = 0): number {
 function toString(v: unknown, fallback = ''): string {
   if (typeof v === 'string') return v;
   if (v === undefined || v === null) return fallback;
-  try { return String(v); } catch { return fallback; }
+  try {
+    return String(v);
+  } catch {
+    return fallback;
+  }
 }
 
 /**
@@ -506,68 +510,74 @@ function buildRedisStatsFromUnknown(src: unknown): RedisStats | null {
 
 // New: safe mapper from unknown -> RedisOptimizationResult
 function mapToRedisOptimizationResult(src: unknown): RedisOptimizationResult | null {
-	if (!isObject(src)) return null;
-	const o = src as Record<string, unknown>;
+  if (!isObject(src)) return null;
+  const o = src as Record<string, unknown>;
 
-	// response can be any; prefer explicit field then fallback to whole object
-	const response = ('response' in o ? o.response : src) as unknown;
+  // response can be any; prefer explicit field then fallback to whole object
+  const response = ('response' in o ? o.response : src) as unknown;
 
-	const sourceRaw = typeof o.source === 'string' ? o.source : undefined;
-	const source = sourceRaw === 'cache' || sourceRaw === 'fresh' || sourceRaw === 'queued' ? sourceRaw : 'fresh';
+  const sourceRaw = typeof o.source === 'string' ? o.source : undefined;
+  const source = sourceRaw === 'cache' || sourceRaw === 'fresh' || sourceRaw === 'queued' ? sourceRaw : 'fresh';
 
-	const processing_time = (() => {
-		if (typeof o.processing_time === 'number' && Number.isFinite(o.processing_time)) return o.processing_time;
-		if (typeof o.processing_time === 'string') {
-			const n = parseFloat(o.processing_time);
-			if (Number.isFinite(n)) return n;
-		}
-		// try nested _redis_optimization.processing_time
-		if (isObject(o._redis_optimization) && typeof (o._redis_optimization as Record<string, unknown>).processing_time === 'number') {
-			return (o._redis_optimization as Record<string, unknown>).processing_time as number;
-		}
-		return 0;
-	})();
+  const processing_time = (() => {
+    if (typeof o.processing_time === 'number' && Number.isFinite(o.processing_time)) return o.processing_time;
+    if (typeof o.processing_time === 'string') {
+      const n = parseFloat(o.processing_time);
+      if (Number.isFinite(n)) return n;
+    }
+    // try nested _redis_optimization.processing_time
+    if (
+      isObject(o._redis_optimization) &&
+      typeof (o._redis_optimization as Record<string, unknown>).processing_time === 'number'
+    ) {
+      return (o._redis_optimization as Record<string, unknown>).processing_time as number;
+    }
+    return 0;
+  })();
 
-	const cached = (() => {
-		if (typeof o.cached === 'boolean') return o.cached;
-		if (typeof o.cached === 'string') {
-			return o.cached === 'true';
-		}
-		// sometimes source indicates cache
-		if (source === 'cache') return true;
-		return false;
-	})();
+  const cached = (() => {
+    if (typeof o.cached === 'boolean') return o.cached;
+    if (typeof o.cached === 'string') {
+      return o.cached === 'true';
+    }
+    // sometimes source indicates cache
+    if (source === 'cache') return true;
+    return false;
+  })();
 
-	const task_id = (() => {
-		if (typeof o.task_id === 'string') return o.task_id;
-		if (typeof o.taskId === 'string') return o.taskId;
-		if (isObject(o._redis_optimization) && typeof (o._redis_optimization as Record<string, unknown>).session_id === 'string') {
-			return (o._redis_optimization as Record<string, unknown>).session_id as string;
-		}
-		return undefined;
-	})();
+  const task_id = (() => {
+    if (typeof o.task_id === 'string') return o.task_id;
+    if (typeof o.taskId === 'string') return o.taskId;
+    if (
+      isObject(o._redis_optimization) &&
+      typeof (o._redis_optimization as Record<string, unknown>).session_id === 'string'
+    ) {
+      return (o._redis_optimization as Record<string, unknown>).session_id as string;
+    }
+    return undefined;
+  })();
 
-	const _redis_optimization = (() => {
-		if (isObject(o._redis_optimization)) {
-			const r = o._redis_optimization as Record<string, unknown>;
-			return {
-				endpoint: toString(r.endpoint, ''),
-				cache_strategy: toString(r.cache_strategy, ''),
-				memory_bank: toString(r.memory_bank, ''),
-				session_id: toString(r.session_id, ''),
-				timestamp: toString(r.timestamp, ''),
-			};
-		}
-		return undefined;
-	})();
+  const _redis_optimization = (() => {
+    if (isObject(o._redis_optimization)) {
+      const r = o._redis_optimization as Record<string, unknown>;
+      return {
+        endpoint: toString(r.endpoint, ''),
+        cache_strategy: toString(r.cache_strategy, ''),
+        memory_bank: toString(r.memory_bank, ''),
+        session_id: toString(r.session_id, ''),
+        timestamp: toString(r.timestamp, ''),
+      };
+    }
+    return undefined;
+  })();
 
-	return {
-		response,
-		source,
-		processing_time,
-		cached,
-		...(task_id ? { task_id } : {}),
-		...(_redis_optimization ? { _redis_optimization } : {}),
-	};
+  return {
+    response,
+    source,
+    processing_time,
+    cached,
+    ...(task_id ? { task_id } : {}),
+    ...(_redis_optimization ? { _redis_optimization } : {}),
+  };
 }
 // --- end helpers ---

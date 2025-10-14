@@ -1,7 +1,8 @@
 <!-- Legal AI Command Palette - Global Search Component -->
 <script lang="ts">
   import BitsUI from 'bits-ui';
-  const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = (BitsUI as any);
+  const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } =
+    BitsUI as any;
   import { Search, FileText, Users, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   // Svelte 5 props
@@ -10,7 +11,7 @@
     onOpenChange,
     placeholder = 'Search...',
     className = '',
-    ondispatch
+    ondispatch,
   }: {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -25,38 +26,98 @@
       group: 'Cases',
       icon: Gavel,
       items: [
-        { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] },
-        { id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] },
-        { id: 'case-3', title: 'People v. Williams', description: 'DUI case pending', keywords: ['dui', 'williams', 'traffic'] }
-      ]
+        {
+          id: 'case-1',
+          title: 'State v. Johnson',
+          description: 'Active criminal case',
+          keywords: ['criminal', 'theft', 'johnson'],
+        },
+        {
+          id: 'case-2',
+          title: 'Smith v. Corporation',
+          description: 'Civil litigation',
+          keywords: ['civil', 'corporate', 'smith'],
+        },
+        {
+          id: 'case-3',
+          title: 'People v. Williams',
+          description: 'DUI case pending',
+          keywords: ['dui', 'williams', 'traffic'],
+        },
+      ],
     },
     {
       group: 'Evidence',
       icon: FileText,
       items: [
-        { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] },
-        { id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] },
-        { id: 'evidence-3', title: 'Witness Statement - Martinez', description: 'Testimony transcript', keywords: ['witness', 'martinez', 'statement'] }
-      ]
+        {
+          id: 'evidence-1',
+          title: 'Security Footage 2024-01-15',
+          description: 'Video evidence',
+          keywords: ['video', 'security', 'footage'],
+        },
+        {
+          id: 'evidence-2',
+          title: 'Financial Records',
+          description: 'Bank statements',
+          keywords: ['financial', 'bank', 'records'],
+        },
+        {
+          id: 'evidence-3',
+          title: 'Witness Statement - Martinez',
+          description: 'Testimony transcript',
+          keywords: ['witness', 'martinez', 'statement'],
+        },
+      ],
     },
     {
       group: 'People',
       icon: Users,
       items: [
-        { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] },
-        { id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] },
-        { id: 'person-3', title: 'Attorney Johnson', description: 'Prosecuting attorney', keywords: ['attorney', 'johnson', 'prosecutor'] }
-      ]
+        {
+          id: 'person-1',
+          title: 'John Smith',
+          description: 'Defendant in case #2024-001',
+          keywords: ['defendant', 'smith'],
+        },
+        {
+          id: 'person-2',
+          title: 'Detective Rodriguez',
+          description: 'Lead investigator',
+          keywords: ['detective', 'rodriguez', 'investigator'],
+        },
+        {
+          id: 'person-3',
+          title: 'Attorney Johnson',
+          description: 'Prosecuting attorney',
+          keywords: ['attorney', 'johnson', 'prosecutor'],
+        },
+      ],
     },
     {
       group: 'Documents',
       icon: FileText,
       items: [
-        { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] },
-        { id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] },
-        { id: 'doc-3', title: 'Police Report', description: 'Initial incident report', keywords: ['police', 'report', 'incident'] }
-      ]
-    }
+        {
+          id: 'doc-1',
+          title: 'Motion to Dismiss',
+          description: 'Filed 2024-01-20',
+          keywords: ['motion', 'dismiss', 'filing'],
+        },
+        {
+          id: 'doc-2',
+          title: 'Search Warrant',
+          description: 'Authorized 2024-01-18',
+          keywords: ['warrant', 'search', 'authorized'],
+        },
+        {
+          id: 'doc-3',
+          title: 'Police Report',
+          description: 'Initial incident report',
+          keywords: ['police', 'report', 'incident'],
+        },
+      ],
+    },
   ];
 
   function handleSelect(item: unknown) {
@@ -76,7 +137,7 @@
   class={cn(
     'legal-command-palette',
     'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-    className,
+    className
   )}
 >
   <div class="flex items-center border-b px-3 legal-command-header">
@@ -98,7 +159,11 @@
         </CommandGroupHeading>
         {#each group.items as item}
           <CommandItem
-            value={(item as any).title + ' ' + (item as any).description + ' ' + (((item as any).keywords ?? []) as string[]).join(' ')}
+            value={(item as any).title +
+              ' ' +
+              (item as any).description +
+              ' ' +
+              (((item as any).keywords ?? []) as string[]).join(' ')}
             select={() => handleSelect(item)}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
           >
@@ -139,10 +204,12 @@
   }
   :global(.legal-command-item) {
     color: var(--yorha-text-primary, inherit);
-    transition: background-color 150ms ease, color 150ms ease;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
   }
   :global(.legal-command-item:hover) {
-    background: var(--yorha-bg-hover, rgba(0,0,0,0.03));
+    background: var(--yorha-bg-hover, rgba(0, 0, 0, 0.03));
   }
   :global(.legal-command-item[aria-selected='true']) {
     background: var(--yorha-accent, #2563eb);

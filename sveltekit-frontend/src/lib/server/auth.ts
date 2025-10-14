@@ -29,7 +29,7 @@ export const lucia = new Lucia(adapter, {
       isActive: attributes.isActive,
       avatarUrl: attributes.avatarUrl,
       name: attributes.name,
-    }
+    };
   },
 });
 // Type definitions for Lucia v3
@@ -79,8 +79,8 @@ export class AuthService {
               legalSpecialties?: any;
               preferences?: any;
             }
-          ).email,
-        ),
+          ).email
+        )
       )
       .limit(1);
     if (existingUser.length > 0) {
@@ -99,7 +99,7 @@ export class AuthService {
           legalSpecialties?: any;
           preferences?: any;
         }
-      ).password,
+      ).password
     );
     // Create user
     const [newUser] = await db
@@ -228,18 +228,18 @@ export class AuthService {
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
     if (!user) {
       // Don't reveal if email exists or not for security
-      return { success: true }
+      return { success: true };
     }
     // TODO: Implement email sending service
     // For now, just log the reset request
     console.log(`Password reset requested for user: ${email}`);
-    return { success: true }
+    return { success: true };
   }
   /**
    * Update user profile
    */ async updateProfile(userId: string, data: Partial<any>) {
     // Map camelCase input to snake_case database columns
-    const updateData: any = {}
+    const updateData: any = {};
     if (
       (
         data as {
@@ -439,7 +439,7 @@ export class AuthService {
         status: 'active',
         created_at: new Date(),
         updated_at: new Date(),
-      }
+      };
     } catch (error) {
       console.error('Failed to get case by ID:', error);
       return null;
@@ -521,7 +521,7 @@ export const authService = new AuthService();
  */ export async function getUser(event: RequestEvent): Promise<any> {
   const sessionId = event.cookies.get(lucia.sessionCookieName);
   if (!sessionId) {
-    return { user: null, session: null }
+    return { user: null, session: null };
   }
   const result = await lucia.validateSession(sessionId);
   if ((result as { session?: any }).session && (result as { session?: any }).session.fresh) {
@@ -547,5 +547,5 @@ export const authService = new AuthService();
   if (!user || !session) {
     throw new Error('Authentication required');
   }
-  return { user, session }
+  return { user, session };
 }

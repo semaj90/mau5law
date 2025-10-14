@@ -20,4 +20,4 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('LLM chat error:', error);
     return json({ error: 'Failed to process chat message' }, { status: 500 });
   }
-}
+};

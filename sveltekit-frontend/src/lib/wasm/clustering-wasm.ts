@@ -2,7 +2,7 @@
 /**
  * WebAssembly Clustering Support
  * High-performance clustering algorithms for legal document processing
- */;
+ */
 }
 export interface WebAssemblyClusteringConfig {
   algorithm: 'kmeans' | 'som' | 'dbscan';
@@ -45,7 +45,7 @@ export class WebAssemblyClusteringService {
     }
   }
   async performKMeansClustering(
-    embeddings: number[][]
+    embeddings: number[][],
     k: number;
     config: any;
   ): Promise<any> {
@@ -133,7 +133,7 @@ export class WebAssemblyClusteringService {
   }
   // JavaScript fallback implementations
   private async jsKMeansClustering(
-    embeddings: number[][]
+    embeddings: number[][],
     k: number;
     config: any;
   ): Promise<any> {

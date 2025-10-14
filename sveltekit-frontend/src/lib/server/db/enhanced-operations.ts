@@ -128,14 +128,18 @@ export class DbCaseOperations {
   /**
    * Update existing case
    */
-  static async update(id: string, data: Partial<{
-    title: string;
-    description: string;
-    priority: string;
-    status: string;
-    location: string;
-    jurisdiction: string;
-  }>, userId: string) {
+  static async update(
+    id: string,
+    data: Partial<{
+      title: string;
+      description: string;
+      priority: string;
+      status: string;
+      location: string;
+      jurisdiction: string;
+    }>,
+    userId: string
+  ) {
     const [updatedCase] = await db
       .update(cases)
       .set({

@@ -84,7 +84,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
   }
   try {
-    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" }); // @ts-ignore - Model property access
+    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || 'unknown' }); // @ts-ignore - Model property access
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(
       `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown'}`
@@ -101,7 +101,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
         metadata: {
           source: 'pipeline',
           jobId: job.id,
-          model: result?.model || "unknown", // @ts-ignore - Model property access
+          model: result?.model || 'unknown', // @ts-ignore - Model property access
           backend: (result as { embedding?: any; backend?: any }).backend,
         } as any,
       } as any)
@@ -114,14 +114,14 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     inserted = (already?.[0]?.count ?? 0) > 0;
     await safeJobMachine.completeJob(job.id);
     try {
-      await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length: 0 });
+      await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length : 0 });
     } catch (error) {}
     // Notify clients to invalidate embedding caches
     try {
       emitCacheEvent({
         type: 'embedding_created',
         jobId: job.id,
-        model: result?.model || "unknown", // @ts-ignore - Model property access
+        model: result?.model || 'unknown', // @ts-ignore - Model property access
         backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
         inserted,
@@ -178,7 +178,7 @@ async function runRedisLoop() {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-  const job = JSON.parse(raw) as { id: string; text: string; model?: string };
+      const job = JSON.parse(raw) as { id: string; text: string; model?: string };
       try {
         await processJob(job);
       } catch (err: any) {
@@ -186,7 +186,7 @@ async function runRedisLoop() {
       }
     } catch (e: any) {
       console.error('❌ Worker error (redis loop):', e?.message || e);
-  await new Promise((r) => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 500));
     }
   }
 }
@@ -231,31 +231,31 @@ void runWorker();
 // --- Changed: add safe shim for jobMachine to avoid runtime errors if the export shape differs ---
 // moved above processJob so it's available when used
 const safeJobMachine = (() => {
-	// Basic heuristic: must be an object and expose methods used below
-	if (jobMachine && typeof jobMachine === 'object') {
-		const hasCreate = typeof (jobMachine as any).createJob === 'function';
-		const hasStart = typeof (jobMachine as any).startJob === 'function';
-		const hasComplete = typeof (jobMachine as any).completeJob === 'function';
-		const hasFail = typeof (jobMachine as any).failJob === 'function';
-		if (hasCreate && hasStart && hasComplete && hasFail) {
-			return jobMachine as any;
-		}
-	}
-	// Fallback stub that logs and no-ops to keep worker running
-	console.warn('⚠️ jobMachine not available or missing methods — using stubbed fallback.');
-	return {
-		async createJob(id: string, ctx?: any) {
-			console.warn(`jobMachine.createJob stub called for ${id}`);
-		},
-		async startJob(id: string) {
-			console.warn(`jobMachine.startJob stub called for ${id}`);
-			return true;
-		},
-		async completeJob(id: string) {
-			console.warn(`jobMachine.completeJob stub called for ${id}`);
-		},
-		async failJob(id: string, err?: any, retry?: boolean) {
-			console.warn(`jobMachine.failJob stub called for ${id} -`, err);
-		},
-	} as const;
+  // Basic heuristic: must be an object and expose methods used below
+  if (jobMachine && typeof jobMachine === 'object') {
+    const hasCreate = typeof (jobMachine as any).createJob === 'function';
+    const hasStart = typeof (jobMachine as any).startJob === 'function';
+    const hasComplete = typeof (jobMachine as any).completeJob === 'function';
+    const hasFail = typeof (jobMachine as any).failJob === 'function';
+    if (hasCreate && hasStart && hasComplete && hasFail) {
+      return jobMachine as any;
+    }
+  }
+  // Fallback stub that logs and no-ops to keep worker running
+  console.warn('⚠️ jobMachine not available or missing methods — using stubbed fallback.');
+  return {
+    async createJob(id: string, ctx?: any) {
+      console.warn(`jobMachine.createJob stub called for ${id}`);
+    },
+    async startJob(id: string) {
+      console.warn(`jobMachine.startJob stub called for ${id}`);
+      return true;
+    },
+    async completeJob(id: string) {
+      console.warn(`jobMachine.completeJob stub called for ${id}`);
+    },
+    async failJob(id: string, err?: any, retry?: boolean) {
+      console.warn(`jobMachine.failJob stub called for ${id} -`, err);
+    },
+  } as const;
 })();

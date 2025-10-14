@@ -23,7 +23,7 @@
     totalPersons: 0,
     activeCases: 0,
     pendingAnalysis: 0,
-    recentActivity: 0
+    recentActivity: 0,
   });
   // Real-time processing status
   let systemHealth = $state({
@@ -39,7 +39,7 @@
     { id: 'evidence', label: 'Evidence', icon: '🔍' },
     { id: 'reports', label: 'Reports', icon: '📄' },
     { id: 'persons', label: 'Persons', icon: '👤' },
-    { id: 'processing', label: 'Processing', icon: '⚙️' }
+    { id: 'processing', label: 'Processing', icon: '⚙️' },
   ];
   // Load dashboard data
   const loadDashboardData = async () => {
@@ -49,15 +49,24 @@
       // Load all data in parallel
       const [casesResponse, evidenceResponse, reportsResponse, personsResponse] = await Promise.all([
         (apiClient as any).getCases?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 },
-        (apiClient as any).getEvidence?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 },
-        (apiClient as any).getReports?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 },
-        (apiClient as any).getPersonsOfInterest?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 }
+        (apiClient as any).getEvidence?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || {
+          data: [],
+          total: 0,
+        },
+        (apiClient as any).getReports?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || {
+          data: [],
+          total: 0,
+        },
+        (apiClient as any).getPersonsOfInterest?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || {
+          data: [],
+          total: 0,
+        },
       ]);
       // Update state with proper fallbacks
-      cases = Array.isArray(casesResponse.data) ? casesResponse.data: [];
-      evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data: [];
-      reports = Array.isArray(reportsResponse.data) ? reportsResponse.data: [];
-      personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data: [];
+      cases = Array.isArray(casesResponse.data) ? casesResponse.data : [];
+      evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data : [];
+      reports = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
+      personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data : [];
       // Calculate statistics
       stats = {
         totalCases: casesResponse.total || 0,
@@ -70,28 +79,29 @@
           if (!c?.updatedAt) return false;
           const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return new Date(c.updatedAt) > dayAgo;
-        }).length
-      }
+        }).length,
+      };
       // Load system health
       await loadSystemHealth();
     } catch (err: any) {
       console.error('Dashboard load error:', err);
-      error = err instanceof Error ? err.message: 'Failed to load dashboard data';
+      error = err instanceof Error ? err.message : 'Failed to load dashboard data';
       toast.error('Failed to load dashboard', { description: error });
     } finally {
       loading = false;
     }
-  }
+  };
   // Load system health status
   const loadSystemHealth = async () => {
     try {
-      const healthResponse = await (apiClient as any).getHealthStatus?.() || {}
+      const healthResponse = (await (apiClient as any).getHealthStatus?.()) || {};
       systemHealth = {
-        api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
+        api:
+          healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
         database: healthResponse.services?.database || 'unknown',
         aiServices: healthResponse.services?.aiServices || 'unknown',
         jobQueue: healthResponse.services?.jobQueue || 'unknown',
-      }
+      };
     } catch (err: any) {
       console.error('Health check failed:', err);
       systemHealth = {
@@ -99,17 +109,17 @@
         database: 'unknown',
         aiServices: 'unknown',
         jobQueue: 'unknown',
-      }
+      };
     }
-  }
+  };
   const createQuickCase = async () => {
     try {
       const caseData = {
         title: `New Case - ${new Date().toLocaleDateString()}`,
         description: 'Quick case created from dashboard',
         status: 'open' as const,
-        priority: 'medium' as const
-      }
+        priority: 'medium' as const,
+      };
       // TODO: Implement actual API call and success check for case creation
       toast.success('Case created successfully!');
       await loadDashboardData(); // Refresh data
@@ -117,7 +127,7 @@
       console.error('Quick case creation error:', err);
       toast.error('Failed to create case');
     }
-  }
+  };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -125,34 +135,48 @@
       hour: '2-digit',
       minute: '2-digit',
     });
-  }
+  };
   // Priority and status colors
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'urgent':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  }
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'open': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'closed': return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'archived': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'open':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'closed':
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'archived':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  }
+  };
   const getHealthColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'error': return 'text-red-600';
-      default: return 'text-gray-400';
+      case 'healthy':
+        return 'text-green-600';
+      case 'warning':
+        return 'text-yellow-600';
+      case 'error':
+        return 'text-red-600';
+      default:
+        return 'text-gray-400';
     }
-  }
+  };
   // Lifecycle
   $effect(() => {
     loadDashboardData();
@@ -164,7 +188,7 @@
         clearInterval(refreshInterval as any);
         refreshInterval = null;
       }
-    }
+    };
   });
 </script>
 
@@ -385,14 +409,14 @@
                           <div class="flex items-center space-x-2">
                             <span
                               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
-                                caseItem?.priority || 'medium',
+                                caseItem?.priority || 'medium'
                               )}"
                             >
                               {caseItem?.priority || 'medium'}
                             </span>
                             <span
                               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
-                                caseItem?.status || 'open',
+                                caseItem?.status || 'open'
                               )}"
                             >
                               {caseItem?.status || 'open'}
@@ -497,7 +521,7 @@
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
                           class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(
-                            caseItem?.status || 'open',
+                            caseItem?.status || 'open'
                           )}"
                         >
                           {caseItem?.status || 'open'}
@@ -506,7 +530,7 @@
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
                           class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(
-                            caseItem?.priority || 'medium',
+                            caseItem?.priority || 'medium'
                           )}"
                         >
                           {caseItem?.priority || 'medium'}

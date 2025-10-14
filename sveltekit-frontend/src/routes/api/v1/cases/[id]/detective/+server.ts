@@ -2,22 +2,22 @@
  * Detective Mode Toggle API Route
  * POST /api/v1/cases/[id]/detective - Toggle detective mode for case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { CasesCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // UUID validation schema
-const UUIDSchema = z.string().uuid('Invalid case ID format')
+const UUIDSchema = z.string().uuid('Invalid case ID format');
 // Detective mode request schema
 const DetectiveModeSchema = z.object({
   enabled: z.boolean(),
   reason: z.string().optional(),
-  aiAssisted: z.boolean().default(true)
-})
+  aiAssisted: z.boolean().default(true),
+});
 // Helper: safely extract user id from locals/session
 function getUserId(locals: any): string | null {
   // Common shapes: locals.user?.id or locals.session?.user?.id
-  return (locals?.user?.id ?? locals?.session?.user?.id ?? null) as string | null
+  return (locals?.user?.id ?? locals?.session?.user?.id ?? null) as string | null;
 }
 /*
  * POST /api/v1/cases/[id]/detective
@@ -27,25 +27,19 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(
-        401,
-        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      )
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
     // Validate case ID
-    const caseId = UUIDSchema.parse(params.id)
+    const caseId = UUIDSchema.parse(params.id);
     // Parse request body
-    const body = await request.json()
-    const { enabled, reason, aiAssisted } = DetectiveModeSchema.parse(body)
+    const body = await request.json();
+    const { enabled, reason, aiAssisted } = DetectiveModeSchema.parse(body);
     // Create service instance
-    const casesService = new CasesCRUDService(getUserId(locals))
+    const casesService = new CasesCRUDService(getUserId(locals));
     // Get current case to verify it exists and user has access
-    const currentCase = await casesService.getById(caseId)
+    const currentCase = await casesService.getById(caseId);
     if (!currentCase) {
-      return error(
-        404,
-        makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
-      )
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
     }
     // Update detective mode
     const updateData = {
@@ -90,30 +84,27 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       },
     });
   } catch (err: any) {
-    console.error('Error toggling detective mode:', err)
+    console.error('Error toggling detective mode:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
           message: 'Invalid request data',
           code: 'INVALID_DATA',
-          details: err.errors
+          details: err.errors,
         })
-      )
+      );
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(
-        404,
-        makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
-      )
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
     }
     return error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to toggle detective mode',
         code: 'DETECTIVE_MODE_FAILED',
-        details: err.message
+        details: err.message,
       })
-    )
+    );
   }
-}
+};

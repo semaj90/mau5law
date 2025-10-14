@@ -17,9 +17,9 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   onDestroy(() => {
-  if (editor) {
-    editor.dispose();
-  }
+    if (editor) {
+      editor.dispose();
+    }
   });
 </script>
 

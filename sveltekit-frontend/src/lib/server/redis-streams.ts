@@ -27,7 +27,12 @@ function streamKey(requestId: string) {
  * Produce a token chunk to the Redis Stream for the given requestId.
  * Returns the Redis-generated stream id (e.g. 169616...-0)
  */
-export async function produceTokenChunk(requestId: string, seq: number, chunk: string, meta: Record<string, unknown> = {}): Promise<string> {
+export async function produceTokenChunk(
+  requestId: string,
+  seq: number,
+  chunk: string,
+  meta: Record<string, unknown> = {}
+): Promise<string> {
   if (!client) throw new Error('Redis client not initialized');
   const key = streamKey(requestId);
   const fields: string[] = ['seq', String(seq), 'chunk', chunk, 'meta', JSON.stringify(meta)];
@@ -39,7 +44,7 @@ export async function produceTokenChunk(requestId: string, seq: number, chunk: s
   };
   const redisLike = client as unknown as RedisLike;
   if (typeof redisLike.xadd === 'function' || typeof redisLike.xAdd === 'function') {
-    const fn = (redisLike.xadd ?? redisLike.xAdd) as ((...args: string[]) => Promise<unknown>);
+    const fn = (redisLike.xadd ?? redisLike.xAdd) as (...args: string[]) => Promise<unknown>;
     const id = await fn.call(client, key, '*', ...fields);
     return String(id ?? '');
   }
@@ -113,20 +118,27 @@ export async function consumeTokenStream(
 }
 
 function safeJsonParse<T = unknown>(s: string, fallback: T): T {
-  try { return JSON.parse(s) as T; } catch { return fallback; }
+  try {
+    return JSON.parse(s) as T;
+  } catch {
+    return fallback;
+  }
 }
 
 function redisCall(...args: string[]): Promise<unknown> {
   if (!client) return Promise.reject(new Error('Redis client not initialized'));
-  const c = client as unknown as { call?: (...a: unknown[]) => Promise<unknown>; sendCommand?: (...a: unknown[]) => Promise<unknown> };
+  const c = client as unknown as {
+    call?: (...a: unknown[]) => Promise<unknown>;
+    sendCommand?: (...a: unknown[]) => Promise<unknown>;
+  };
   if (typeof c.call === 'function') return c.call(...args);
   if (typeof c.sendCommand === 'function') return c.sendCommand(args as unknown[]);
   // Last-resort attempt using index signature
   const anyClient = client as unknown as Record<string, unknown>;
   const maybeCall = anyClient['call'] as unknown;
-  if (typeof maybeCall === 'function') return (maybeCall as (...a: unknown[]) => Promise<unknown>).apply(client, args as unknown[]);
+  if (typeof maybeCall === 'function')
+    return (maybeCall as (...a: unknown[]) => Promise<unknown>).apply(client, args as unknown[]);
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
 }
 
 export { client as redisClient };
-

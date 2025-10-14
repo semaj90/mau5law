@@ -143,7 +143,8 @@
   {/if}
 </div>
 
-<style>/* @unocss-include */ /* Base Golden Ratio Grid */ {}
+<style>
+/* @unocss-include */ /* Base Golden Ratio Grid */ {}
   :global(.golden-ratio-grid) {
     display: grid;
     width: 100%;

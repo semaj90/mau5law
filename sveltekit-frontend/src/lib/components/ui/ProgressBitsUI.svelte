@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Progress as ProgressPrimitive } from "bits-ui";
+  import { Progress as ProgressPrimitive } from 'bits-ui';
 
   interface Props {
     value?: number;

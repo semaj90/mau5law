@@ -24,7 +24,7 @@
     metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10);
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
-    }
+    };
   });
   function getHealthColor(health: string): string {
     switch (health) {

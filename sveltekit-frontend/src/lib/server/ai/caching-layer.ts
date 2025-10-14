@@ -88,14 +88,14 @@ class CachingLayer {
   }
   /**
    * Generate cache key from input parameters
-   */;
+   */
   generateKey(params: any): string {
     const normalized = JSON.stringify(params, Object.keys(params).sort();
     return `ai:synthesis:${crypto.createHash('sha256').update(normalized).digest('hex')}`;
   }
   /**
    * Get item from cache with multi-tier strategy
-   */;
+   */
   async get(_key: string): Promise<any | null> {
     try {
       // Check hot cache first (ultra-fast)
@@ -142,7 +142,7 @@ class CachingLayer {
   }
   /**
    * Set item in cache with multi-tier strategy
-   */;
+   */
   async set(_key: string, value: any, options: CacheOptions = {}): Promise<void> {
     try {
       const ttl = options.ttl || 3600; // Default 1 hour
@@ -182,7 +182,7 @@ class CachingLayer {
   }
   /**
    * Invalidate cache by tags
-   */;
+   */
   async invalidateByTags(tags: string[]): Promise<void> {
     try {
       if (this.redis) {
@@ -225,7 +225,7 @@ class CachingLayer {
   }
   /**
    * Clear entire cache
-   */;
+   */
   async clear(): Promise<void> {
     try {
       this.lruCache.clear();
@@ -242,7 +242,7 @@ class CachingLayer {
   }
   /**
    * Warm up cache with frequently accessed items
-   */;
+   */
   async warmUp(items: Array<): Promise<void> {
     logger.info(`[CachingLayer] Warming up cache with ${items.length} items`);
     const warmUpPromises = items.map((item) => this.set((item as { key?: any; value?: any; options?: any; lastAccess?: any }).key, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).value, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).options);
@@ -251,7 +251,7 @@ class CachingLayer {
   }
   /**
    * Get cache statistics
-   */;
+   */
   async getStats(): Promise<any> {
     const redisInfo = this.redis ? await this.getRedisStats() : null;
     return {
@@ -276,8 +276,8 @@ class CachingLayer {
     if (accessCount >= this.cacheConfig.hotCacheThreshold) {
       this.hotCache.set(key, {
         data,
-        hits: accessCount
-        lastAccess: Date.now()
+        hits: accessCount,
+        lastAccess: Date.now(),
       });
       // Limit hot cache size
       if (this.hotCache.size > 100) {

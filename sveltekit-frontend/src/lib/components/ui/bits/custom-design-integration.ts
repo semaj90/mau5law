@@ -195,7 +195,7 @@ export const MinimalDesignSystem: DesignSystem = {
 // DESIGN SYSTEM UTILITIES
 // ======================================================================
 export function createDesignSystem(
-  name: string
+  name: string,
   customTokens: Partial<CustomDesignTokens>;
   options: {
     baseSystem?: DesignSystem;
@@ -326,7 +326,7 @@ export function createAccessibleColorPalette(baseColor: string): {
     200: `color-mix(in srgb, ${baseColor} 30%, white)`,
     300: `color-mix(in srgb, ${baseColor} 40%, white)`,
     400: `color-mix(in srgb, ${baseColor} 60%, white)`,
-    500: baseColor
+    500: baseColor,
     600: `color-mix(in srgb, ${baseColor} 80%, black)`,
     700: `color-mix(in srgb, ${baseColor} 60%, black)`,
     800: `color-mix(in srgb, ${baseColor} 40%, black)`,
@@ -370,7 +370,7 @@ export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem
   let currentSystem = initialSystem;
   let isDarkMode = false;
   return {
-    designSystem: currentSystem
+    designSystem: currentSystem,
     isDarkMode,
     toggleDarkMode() {
       isDarkMode = !isDarkMode;

@@ -27,7 +27,7 @@ export const SNES_PALETTE: RetroColorPalette = {
   success: ['#9cfc38', '#92cc41', '#4a7c23'],
   warning: ['#f7d51d', '#fc9838', '#cc6600'],
   error: ['#fc5c5c', '#f83800', '#cc2800'],
-  info: ['#5cc3ff', '#3c9cfc', '#0050cc']
+  info: ['#5cc3ff', '#3c9cfc', '#0050cc'],
 };
 
 /**
@@ -39,7 +39,7 @@ export const NES_PALETTE: RetroColorPalette = {
   success: ['#00d800', '#00a800', '#006800'],
   warning: ['#fca044', '#fc7800', '#ac5000'],
   error: ['#f83800', '#cc0000', '#880000'],
-  info: ['#00b8fc', '#0078f8', '#0040a8']
+  info: ['#00b8fc', '#0078f8', '#0040a8'],
 };
 
 /**
@@ -53,12 +53,13 @@ export function generateGradient(options: GradientOptions): string {
     horizontal: 'to right',
     vertical: 'to bottom',
     diagonal: 'to bottom right',
-    radial: 'circle'
+    radial: 'circle',
   };
 
-  const gradientType = direction === 'radial'
-    ? `radial-gradient(${directionMap[direction]}, `
-    : `linear-gradient(${directionMap[direction]}, `;
+  const gradientType =
+    direction === 'radial'
+      ? `radial-gradient(${directionMap[direction]}, `
+      : `linear-gradient(${directionMap[direction]}, `;
 
   return gradientType + colors.join(', ') + ')';
 }
@@ -77,7 +78,7 @@ export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeSt
     small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
     medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px' },
     large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },
-    xl: { padding: '22px 28px', fontSize: '17px', minHeight: '60px' }
+    xl: { padding: '22px 28px', fontSize: '17px', minHeight: '60px' },
   };
   return sizeMap[size] || sizeMap.medium;
 }
@@ -85,11 +86,7 @@ export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeSt
 /**
  * Generate Mode 7 transform (SNES perspective effect)
  */
-export function getMode7Transform(
-  isPressed: boolean,
-  isHovered: boolean,
-  enabled: boolean
-): string {
+export function getMode7Transform(isPressed: boolean, isHovered: boolean, enabled: boolean): string {
   if (!enabled) return 'none';
   if (isPressed) return 'perspective(100px) rotateX(5deg) scale(0.95)';
   if (isHovered) return 'perspective(200px) rotateX(-2deg) scale(1.02)';

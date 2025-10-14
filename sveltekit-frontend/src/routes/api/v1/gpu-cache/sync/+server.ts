@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator'
-import { dev } from '$app/environment'
-type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] }
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator';
+import { dev } from '$app/environment';
+type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();

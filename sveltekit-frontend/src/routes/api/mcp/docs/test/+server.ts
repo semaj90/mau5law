@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       timestamp: new Date().toISOString(),
       success: [],
       errors: [],
-    }
+    };
     // Test 1: Message Queue + Redis Best Practices
     try {
       const practices = await getMessageQueueRedisBestPractices(fetch);
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         error: error.message,
         stack: error.stack,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

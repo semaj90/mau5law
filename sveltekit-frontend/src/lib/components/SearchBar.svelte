@@ -155,7 +155,8 @@
         <input
           type="date"
           class="date-input"
-          aria-label="From date";
+          aria-label="From date"
+          ;
           bind:value={dateRange.from}
           onchange={handleDateChange}
         />
@@ -176,7 +177,7 @@
         class="clear-filters-btn"
         onclick={() => {
           selectedFileTypes = [];
-          dateRange = { from: '', to: '' }
+          dateRange = { from: '', to: '' };
           dispatchFilters();
         }}
       >

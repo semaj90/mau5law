@@ -10,11 +10,11 @@
 export type TooltipParams = {
   text?: string;
   delay?: number; // milliseconds before showing tooltip
-}
+};
 export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
   if (typeof window === 'undefined') {
     // no-op on server
-    return { update: () => {}, destroy: () => {} }
+    return { update: () => {}, destroy: () => {} };
   }
   let { text = '', delay = 0 } = params;
   let tooltipEl: HTMLDivElement | null = null;
@@ -38,12 +38,12 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     tooltipEl.style.whiteSpace = 'nowrap';
     tooltipEl.textContent = content;
     document.body.appendChild(tooltipEl);
-  }
+  };
   const updateTooltipContent = (content: string) => {
     if (tooltipEl) {
       tooltipEl.textContent = content;
     }
-  }
+  };
   const removeTooltip = () => {
     if (showTimer) {
       window.clearTimeout(showTimer);
@@ -53,7 +53,7 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     tooltipEl.remove();
     tooltipEl = null;
     node.removeAttribute('aria-describedby');
-  }
+  };
   const positionTooltip = (clientX: number, clientY: number) => {
     if (!tooltipEl) return;
     const padding = 8;
@@ -70,7 +70,7 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     }
     tooltipEl.style.left = `${left}px`;
     tooltipEl.style.top = `${top}px`;
-  }
+  };
   const handleMouseEnter = (e: MouseEvent) => {
     if (!text) return;
     if (showTimer) window.clearTimeout(showTimer);
@@ -87,12 +87,12 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
       }
       showTimer = null;
     }, delay);
-  }
+  };
   const handleMouseMove = (e: MouseEvent) => {
     if (tooltipEl) {
       positionTooltip(e.clientX, e.clientY);
     }
-  }
+  };
   const handleMouseLeave = () => {
     if (showTimer) {
       window.clearTimeout(showTimer);
@@ -107,7 +107,7 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
         window.clearTimeout(to);
       }, 150);
     }
-  }
+  };
   node.addEventListener('mouseenter', handleMouseEnter);
   node.addEventListener('mousemove', handleMouseMove);
   node.addEventListener('mouseleave', handleMouseLeave);
@@ -127,5 +127,5 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
       node.removeEventListener('focus', handleMouseEnter);
       node.removeEventListener('blur', handleMouseLeave);
     },
-  }
+  };
 }

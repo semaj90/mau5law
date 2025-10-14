@@ -3,7 +3,7 @@
  * Common cleanup patterns for Svelte 5 components
  */
 export function createEventListener<T extends keyof HTMLElementEventMap>(
-  element: HTMLElement
+  element: HTMLElement,
   event: T;
   handler: (_event: HTMLElementEventMap[T]) => void,
   options?: AddEventListenerOptions;
@@ -48,7 +48,7 @@ export function createResizeObserver(
 }
 export function createIntersectionObserver(
   callback: IntersectionObserverCallback;
-  element: Element
+  element: Element,
   options?: IntersectionObserverInit;
 ) {
   const observer = new IntersectionObserver(callback, options);

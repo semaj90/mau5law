@@ -2,16 +2,16 @@
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // Query schema
 const InsightsQuerySchema = z.object({
   caseId: z.string().uuid(),
   insightType: z.enum(['summary', 'patterns', 'risks', 'recommendations', 'all']).default('all'),
-  depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed')
-})
+  depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed'),
+});
 /*
  * GET /api/v1/detective/insights
  * Get AI-generated insights for a case

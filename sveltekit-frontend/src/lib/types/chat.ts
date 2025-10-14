@@ -15,7 +15,7 @@ export interface ChatMessage {
     sources?: string[];
     processingTime?: number;
     [key: string]: unknown;
-  }
+  };
 }
 export interface ChatSession {
   id: string;
@@ -29,7 +29,7 @@ export interface ChatSession {
     context?: string;
     tags?: string[];
     [key: string]: unknown;
-  }
+  };
 }
 export interface ChatState {
   messages: ChatMessage[];

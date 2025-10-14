@@ -1164,11 +1164,15 @@ export const criticalErrors = derived(_historyStore, history =>
       error.privileged_content_exposed
   )
 );
-export const complianceViolations = derived(_historyStore, (history) => history.filter(error => !!error.compliance));
-export const chainOfCustodyErrors = derived(_historyStore, (history) => history.filter(error => error.chain_of_custody_error));
-export const privilegeViolations = derived(_historyStore, (history) => history.filter(error => error.privileged_content_exposed));
-export const recentErrors = derived(_historyStore, (history) => {
+export const complianceViolations = derived(_historyStore, history => history.filter(error => !!error.compliance));
+export const chainOfCustodyErrors = derived(_historyStore, history =>
+  history.filter(error => error.chain_of_custody_error)
+);
+export const privilegeViolations = derived(_historyStore, history =>
+  history.filter(error => error.privileged_content_exposed)
+);
+export const recentErrors = derived(_historyStore, history => {
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
   return history.filter(error => error.timestamp >= oneDayAgo);
 });
-export const errorTrends = derived(_statsStore, (stats) => stats.trends);
+export const errorTrends = derived(_statsStore, stats => stats.trends);

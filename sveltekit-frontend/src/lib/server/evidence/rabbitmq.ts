@@ -22,7 +22,7 @@ export async function consume(queue: string, onMessage: (msg: any) => Promise<vo
   const { conn, channel } = await connectRabbit();
   await channel.assertQueue(queue, { durable: true });
   channel.prefetch(1);
-  channel.consume(queue, async (m) => {
+  channel.consume(queue, async m => {
     if (!m) return;
     try {
       const payload = JSON.parse(m.content.toString());

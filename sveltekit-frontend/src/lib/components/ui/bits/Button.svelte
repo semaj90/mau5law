@@ -5,14 +5,25 @@
   import { getContext } from 'svelte';
   interface ButtonProps extends HTMLButtonAttributes {
     children?: Snippet;
-    variant?: 'default' | 'primary' | 'success' | 'warning' | 'error' | 'nes' | 'legal' | 'ghost' | 'yorha' | 'yorha-primary' | 'nier';
+    variant?:
+      | 'default'
+      | 'primary'
+      | 'success'
+      | 'warning'
+      | 'error'
+      | 'nes'
+      | 'legal'
+      | 'ghost'
+      | 'yorha'
+      | 'yorha-primary'
+      | 'nier';
     size?: 'sm' | 'md' | 'lg' | 'icon';
     loading?: boolean;
     fullWidth?: boolean;
     nesStyle?: boolean; // Enable NES.css retro styling
     nierStyle?: boolean; // Enable NieR: Automata styling
   }
-    let {
+  let {
     variant = 'default',
     size = 'md',
     loading = false,
@@ -72,11 +83,12 @@
         md: 'h-10 px-4 py-2 text-sm rounded-md',
         lg: 'h-12 px-6 text-base rounded-lg',
         icon: 'h-10 w-10 rounded-md', // Changed semicolon to comma
-      }
+      };
       classes.push(sizeClasses[size]);
       // Variant classes (UnoCSS)
       const variantClasses = {
-        default: 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700',
+        default:
+          'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700',
         primary: 'bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary',
         success: 'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-600',
         warning: 'bg-amber-600 text-white hover:bg-amber-700 focus-visible:ring-amber-600',
@@ -87,7 +99,7 @@
         yorha: 'yorha-button',
         'yorha-primary': 'yorha-button-primary',
         nier: 'bg-nier-bg-secondary border-2 border-nier-border-primary text-nier-text-primary hover:bg-nier-bg-tertiary',
-      }
+      };
       classes.push(variantClasses[variant] || variantClasses.default);
     }
     // Full width
@@ -123,16 +135,16 @@
     content: '';
   }
 
-    .yorha-button-primary::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(var(--color-nier-accent-warm-rgba), 0.18), transparent);
-      transition: left 0.5s ease;
-    }
+  .yorha-button-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(var(--color-nier-accent-warm-rgba), 0.18), transparent);
+    transition: left 0.5s ease;
+  }
 
   .yorha-button-primary:hover::before {
     left: 100%;

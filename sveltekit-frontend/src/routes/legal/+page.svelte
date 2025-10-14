@@ -25,7 +25,7 @@
     activeCases: 12,
     pendingEvidence: 8,
     documentsProcessed: 156,
-    aiAnalysisCompleted: 89
+    aiAnalysisCompleted: 89,
   };
 </script>
 

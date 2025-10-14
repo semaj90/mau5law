@@ -1,25 +1,21 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { getContext } from "svelte";
-  import { writable } from "svelte/store";
-  import type { SelectContext } from "./types";
+  import { getContext } from 'svelte';
+  import { writable } from 'svelte/store';
+  import type { SelectContext } from './types';
   interface Props {
     value: unknown;
     class_?: string;
     children?: import('svelte').Snippet;
   }
-  let {
-    value,
-    class_ = "",
-    children
-  }: Props = $props();
+  let { value, class_ = '', children }: Props = $props();
   const context =
-    getContext<SelectContext>("select") ||
+    getContext<SelectContext>('select') ||
     ({
       selected: writable(null),
       open: writable(false),
       onSelect: () => {},
-      onToggle: () => {}
+      onToggle: () => {},
     } as SelectContext);
   const { selected, open, onSelect, onToggle } = context;
   let isSelected = $derived($selected === value);
@@ -42,7 +38,8 @@
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
+<style>
+/* @unocss-include */ {}
   .select-item {
     padding: 8px 12px;
     cursor: pointer;

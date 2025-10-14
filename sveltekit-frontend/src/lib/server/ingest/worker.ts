@@ -68,7 +68,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
         throw new Error(`Unknown job type: ${jobData.type}`);
     }
     const response: WorkerJobResult = {
-      success: true
+      success: true,
       result,
       processingTime: Date.now() - startTime,
       workerId
@@ -172,7 +172,7 @@ async function handleImageProcessing(payload: {
   // Return processed buffer
   const processedBuffer = await image.toBuffer();
   return {
-    success: true
+    success: true,
     buffer: Array.from(processedBuffer), // Convert back to array for JSON transport
     metadata: {
       originalSize: buffer.length,

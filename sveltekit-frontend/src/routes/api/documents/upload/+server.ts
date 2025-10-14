@@ -31,12 +31,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const documentId = uuidv4()
     // Create initial database record
     const [document] = await db.insert(documents).values({
-      id: documentId
+      id: documentId,
       original_name: file.name,
       file_size: file.size,
       mime_type: file.type,
-      case_id: caseId || null
-      user_id: userId || null
+      case_id: caseId || null,
+      user_id: userId || null,
       status: 'uploading',
       created_at: new Date(),
       updated_at: new Date()
@@ -50,10 +50,10 @@ export const POST: RequestHandler = async ({ request }) => {
     try {
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: uploadFormData
+        body: uploadFormData,
         headers: {
-          'X-Request-ID': documentId
-          'X-User-ID': userId || 'anonymous'
+          'X-Request-ID': documentId,
+          'X-User-ID': userId || 'anonymous',
         }
       })
       if (!uploadResponse.ok) {
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Create processing record
       await db.insert(document_processing).values({
         id: uuidv4(),
-        document_id: documentId
+        document_id: documentId,
         status: 'queued',
         processing_type: 'full_analysis',
         created_at: new Date(),

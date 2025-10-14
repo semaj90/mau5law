@@ -477,7 +477,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Feedback recorded successfully',
-      feedback_id: responseId
+      feedback_id: responseId,
       impact: 'Learning algorithms updated with your feedback',
     })
   } catch (error: any) {

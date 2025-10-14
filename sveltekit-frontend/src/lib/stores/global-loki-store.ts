@@ -14,7 +14,7 @@ export interface JobState {
   progress?: number;
   result?: any;
   error?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   createdAt: number;
   updatedAt: number;
 }
@@ -30,21 +30,19 @@ export class GlobalLokiStore {
     this.db = new Loki('global-jobs.loki');
     this.coll = this.db.addCollection<JobState>('jobs', {
       unique: ['id'],
-      indices: ['state', 'type', 'createdAt']
+      indices: ['state', 'type', 'createdAt'],
     });
   }
   /**
    * Initialize with Redis client for cross-worker synchronization
-  */
+   */
   async initRedis(redisClient?: Redis): Promise<void> {
     if (this.initialized) return;
     this.redis = redisClient || undefined;
     if (this.redis) {
       try {
         // Create subscriber connection (Redis clients can't pub/sub on same connection)
-        this.subscriber = (this.redis as any).duplicate
-          ? (this.redis as any).duplicate()
-          : undefined;
+        this.subscriber = (this.redis as any).duplicate ? (this.redis as any).duplicate() : undefined;
         if (this.subscriber && typeof (this.subscriber as any).connect === 'function') {
           try {
             await (this.subscriber as any).connect();
@@ -80,7 +78,7 @@ export class GlobalLokiStore {
   }
   /**
    * Apply remote update from Redis pub/sub
-  */
+   */
   private applyRemoteUpdate(update: JobState): void {
     try {
       const existing = this.coll.by('id', update.id);
@@ -100,7 +98,7 @@ export class GlobalLokiStore {
   }
   /**
    * Start a new job
-  */
+   */
   async startJob(jobMeta: Partial<JobState>): Promise<void> {
     const now = Date.now();
     const job: JobState = {
@@ -109,11 +107,11 @@ export class GlobalLokiStore {
       state: 'queued',
       progress: 0,
       metadata: jobMeta.metadata || {},
-      createdAt: now
-      updatedAt: now
-      ...jobMeta
-    }
-  // Update local collection
+      createdAt: now,
+      updatedAt: now,
+      ...jobMeta,
+    };
+    // Update local collection
     try {
       const existing = this.coll.by('id', job.id);
       if (existing) {
@@ -130,7 +128,7 @@ export class GlobalLokiStore {
   }
   /**
    * Update job state
-  */
+   */
   async updateJob(jobId: string, patch: Partial<JobState>): Promise<void> {
     const existing = this.coll.by('id', jobId);
     if (!existing) {
@@ -140,9 +138,9 @@ export class GlobalLokiStore {
     const updated: JobState = {
       ...existing,
       ...patch,
-      updatedAt: Date.now()
-    }
-  // Update local collection
+      updatedAt: Date.now(),
+    };
+    // Update local collection
     try {
       Object.assign(existing, updated);
       this.coll.update(existing);
@@ -154,82 +152,82 @@ export class GlobalLokiStore {
   }
   /**
    * Mark job as processing
-  */
+   */
   async startProcessing(jobId: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'processing',
-      progress: 0
+      progress: 0,
     });
   }
   /**
    * Update job progress
-  */
+   */
   async updateProgress(jobId: string, progress: number): Promise<void> {
     return this.updateJob(jobId, { progress });
   }
   /**
    * Complete job successfully
-  */
+   */
   async completeJob(jobId: string, result?: any): Promise<void> {
     return this.updateJob(jobId, {
       state: 'completed',
       progress: 100,
-      result
+      result,
     });
   }
   /**
    * Mark job as failed
-  */
+   */
   async failJob(jobId: string, error: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'failed',
-      error
+      error,
     });
   }
   /**
    * Mark job as skipped (dedupe)
-  */
+   */
   async skipJob(jobId: string, reason: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'skipped',
-      error: reason
+      error: reason,
     });
   }
   /**
    * Get job by ID
-  */
+   */
   getJob(jobId: string): JobState | null {
     return this.coll.by('id', jobId) || null;
   }
   /**
    * Get jobs by state
-  */
+   */
   getJobsByState(state: JobState['state']): JobState[] {
     return this.coll.find({ state });
   }
   /**
    * Get jobs by type
-  */
+   */
   getJobsByType(type: string): JobState[] {
     return this.coll.find({ type });
   }
   /**
    * Get all jobs
-  */
+   */
   getAllJobs(): JobState[] {
     return this.coll.find();
   }
   /**
    * Get job statistics
-  */
+   */
   getStats(): {
     total: number;
     byState: Record<string, number>;
     byType: Record<string, number>;
   } {
     const jobs = this.getAllJobs();
-    const byState: Record<string, number> = {}
-    const byType: Record<string, number> = {}
+    const byState: Record<string, number> = {};
+    const byType: Record<string, number> = {};
     for (const job of jobs) {
       byState[job.state] = (byState[job.state] || 0) + 1;
       byType[job.type] = (byType[job.type] || 0) + 1;
@@ -237,19 +235,16 @@ export class GlobalLokiStore {
     return {
       total: jobs.length,
       byState,
-      byType
-    }
+      byType,
+    };
   }
   /**
    * Clear old completed jobs
-  */
+   */
   async cleanup(olderThanMs: number = 24 * 60 * 60 * 1000): Promise<number> {
     const cutoff = Date.now() - olderThanMs;
     const oldJobs = this.coll.find({
-      $and: [
-        { state: { $in: ['completed', 'failed'] } },
-        { updatedAt: { $lt: cutoff } }
-      ]
+      $and: [{ state: { $in: ['completed', 'failed'] } }, { updatedAt: { $lt: cutoff } }],
     });
     for (const job of oldJobs) {
       this.coll.remove(job);
@@ -259,7 +254,7 @@ export class GlobalLokiStore {
   }
   /**
    * Broadcast update to Redis pub/sub
-  */
+   */
   private async broadcastUpdate(job: JobState): Promise<void> {
     if (!this.redis) return;
     try {
@@ -273,7 +268,7 @@ export class GlobalLokiStore {
   }
   /**
    * Shutdown and cleanup
-  */
+   */
   async shutdown(): Promise<void> {
     if (this.subscriber) {
       try {

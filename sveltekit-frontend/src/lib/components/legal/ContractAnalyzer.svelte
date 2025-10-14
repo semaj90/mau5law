@@ -219,7 +219,7 @@
             <div
               class="clause-card"
               class:selected={selectedClause === clause.id}
-              onclick="{() => selectClause(clause.id)}"
+              onclick={() => selectClause(clause.id)}
               transition:scale={contractBuilder.animations.enter}
               style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
             >

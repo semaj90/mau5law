@@ -11,7 +11,7 @@ export interface WebGPUComputeResult {
   performance?: {
     executionTime: number;
     memoryUsed?: number;
-  }
+  };
 }
 class WebGPUComputeService {
   private initialized = false;
@@ -27,25 +27,25 @@ class WebGPUComputeService {
       // For now, return a stub implementation
       // This can be expanded to use the existing WebGPU AI engine
       const result = {
-        success: true
+        success: true,
         data: {
           message: 'WebGPU compute request processed',
           requestType: request.type,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         performance: {
-          executionTime: performance.now() - startTime
-        }
-      }
+          executionTime: performance.now() - startTime,
+        },
+      };
       return result;
     } catch (error) {
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Unknown WebGPU error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown WebGPU error',
         performance: {
-          executionTime: performance.now() - startTime
-        }
-      }
+          executionTime: performance.now() - startTime,
+        },
+      };
     }
   }
   async isWebGPUSupported(): Promise<boolean> {

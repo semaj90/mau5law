@@ -148,8 +148,8 @@ class LegalAIOrchestrator {
         topic: params.query,
         jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
-        includeAnalysis: true
-        userRole: params.userRole
+        includeAnalysis: true,
+        userRole: params.userRole,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok,) {
@@ -180,8 +180,8 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         content: params.content,
         documentType: params.documentType || 'legal_document',
-        extractEntities: true
-        includeKeyTerms: true
+        extractEntities: true,
+        includeKeyTerms: true,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok,) {
@@ -211,8 +211,8 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         content: params.content,
         maxLength: 500,
-        includeKeyPoints: true
-        legalFocus: true
+        includeKeyPoints: true,
+        legalFocus: true,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok,) {
@@ -301,8 +301,8 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
-        relevanceScore: relevanceData
-        includeRecommendations: true
+        relevanceScore: relevanceData,
+        includeRecommendations: true,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok,) {
@@ -420,7 +420,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request }) => {
     )
   }
 }, {
-  gpuAccelerated: true
+  gpuAccelerated: true,
   cacheKey: (event) => {
     const url = new URL(event.request.url)
     return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`

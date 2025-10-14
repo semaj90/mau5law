@@ -14,14 +14,14 @@ export const createComponentId = () => crypto.randomUUID();
 // UnoCSS class helpers for dynamic styling
 export const mergeClasses = (...classes: (string | undefined)[]) => {
   return classes.filter(Boolean).join(' ');
-}
+};
 // Theme helpers
 export const getThemeVar = (varName: string) => {
   if (typeof window !== 'undefined') {
     return getComputedStyle(document.documentElement).getPropertyValue(`--${varName}`);
   }
   return '';
-}
+};
 // Animation helpers for UnoCSS
 export const animationClasses = {
   fadeIn: 'animate-fade-in',

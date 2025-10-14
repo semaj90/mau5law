@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
         isKeyAuthority: citations.isKeyAuthority,
         documentTitle: legalDocuments.title,
         caseTitle: cases.title,
-        createdAt: citations.createdAt
+        createdAt: citations.createdAt,
       })
       .from(citations)
       .leftJoin(legalDocuments, eq(citations.documentId, legalDocuments.id))
@@ -69,17 +69,19 @@ export const GET: RequestHandler = async ({ url }) => {
       metadata: {
         count: result.length,
         source: 'database',
-        cached: false
-      }
+        cached: false,
+      },
     });
-
   } catch (error) {
     console.error('❌ Citations API error:', error);
-    return json({
-      error: 'Failed to fetch citations',
-      citations: [],
-      metadata: { count: 0, source: 'error', cached: false }
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to fetch citations',
+        citations: [],
+        metadata: { count: 0, source: 'error', cached: false },
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -89,9 +91,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const { caseId, documentId, citationType, quotedText, legalPrinciple } = body;
 
     if (!citationType || !quotedText) {
-      return json({
-        error: 'citationType and quotedText are required'
-      }, { status: 400 });
+      return json(
+        {
+          error: 'citationType and quotedText are required',
+        },
+        { status: 400 }
+      );
     }
 
     const [newCitation] = await db
@@ -103,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
         quotedText,
         legalPrinciple,
         relevanceScore: '0.85', // Default confidence
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       })
       .returning();
 
@@ -111,11 +116,13 @@ export const POST: RequestHandler = async ({ request }) => {
       citation: newCitation,
       success: true,
     });
-
   } catch (error) {
     console.error('❌ Create citation error:', error);
-    return json({
-      error: 'Failed to create citation'
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to create citation',
+      },
+      { status: 500 }
+    );
   }
 };

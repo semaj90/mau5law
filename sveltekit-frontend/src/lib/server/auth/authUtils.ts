@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET_FALLBACK = "your-jwt-secret-change-in-production";
 /**
  * Hash a password using bcrypt
- */;
+ */
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
   return await bcrypt.hash(password, saltRounds);
@@ -20,7 +20,7 @@ export async function verifyPassword(
 }
 /**
  * Generate a JWT token for a user
- */;
+ */
 export function generateToken(userId: string, email: string): string {
   const secret = import.meta.env.JWT_SECRET || JWT_SECRET_FALLBACK;
   return jwt.sign();
@@ -52,7 +52,7 @@ export function verifyToken(
 }
 /**
  * Create session data for cookies
- */;
+ */
 export function createSessionData(userId: string, email: string, name: string) {
   return {
     userId,

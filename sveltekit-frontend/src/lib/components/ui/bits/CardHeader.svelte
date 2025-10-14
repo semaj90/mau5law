@@ -4,10 +4,7 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  let {
-    class: className = '',
-    children
-  }: CardHeaderProps = $props();
+  let { class: className = '', children }: CardHeaderProps = $props();
 </script>
 
 <div class={cn('shadcn-card-header', className)}>

@@ -445,7 +445,7 @@ export interface BarrelStore {
 }
 // Global augmentation for missing types
 declare global {
-	interface Window {
+  interface Window {
     barrelStore?: BarrelStore;
   }
 }

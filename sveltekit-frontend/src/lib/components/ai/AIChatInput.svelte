@@ -1,14 +1,14 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
   import { debounce } from '$lib/utils/debounce';
-  import { browser } from "$app/environment";
-  import { onMount } from "svelte";
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   // Props (exported for Svelte)
-  export let placeholder: string = "Type your message...";
+  export let placeholder: string = 'Type your message...';
   export let disabled: boolean = false;
   export let autoFocus: boolean = false;
-  export let value: string = "";
+  export let value: string = '';
   export let maxLength: number = 2000;
   export let rows: number = 1;
   export let maxRows: number = 6;
@@ -32,14 +32,14 @@
   // Handle input changes
   function handleInput(event: Event) {
     const tgt = event.target as HTMLTextAreaElement;
-    value = tgt?.value ?? "";
+    value = tgt?.value ?? '';
     ondispatch?.(value);
     adjustTextareaHeight();
   }
 
   // Handle key press
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       if (event.shiftKey) {
         // Shift+Enter: new line
         return;
@@ -56,22 +56,18 @@
     const trimmedValue = value.trim();
     if (!trimmedValue || disabled) return;
     ondispatch?.(trimmedValue);
-    value = "";
+    value = '';
     resetTextareaHeight();
   }
 
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
-    textarea.style.height = "auto";
+    textarea.style.height = 'auto';
     const computed = getComputedStyle(textarea);
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
-    const paddingHeight =
-      (parseInt(computed.paddingTop || '0') || 0) +
-      (parseInt(computed.paddingBottom || '0') || 0);
-    const currentRows = Math.floor(
-      (textarea.scrollHeight - paddingHeight) / lineHeight
-    );
+    const paddingHeight = (parseInt(computed.paddingTop || '0') || 0) + (parseInt(computed.paddingBottom || '0') || 0);
+    const currentRows = Math.floor((textarea.scrollHeight - paddingHeight) / lineHeight);
     const targetRows = Math.min(Math.max(currentRows, rows), maxRows);
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
@@ -82,16 +78,18 @@
     if (!textarea) return;
     const computed = getComputedStyle(textarea);
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
-    const paddingHeight =
-      (parseInt(computed.paddingTop || '0') || 0) +
-      (parseInt(computed.paddingBottom || '0') || 0);
+    const paddingHeight = (parseInt(computed.paddingTop || '0') || 0) + (parseInt(computed.paddingBottom || '0') || 0);
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
     isMultiline = false;
   }
 
   // Handle focus/blur events (placeholders if needed)
-  function handleFocus() { /* no-op for now */ }
-  function handleBlur() { /* no-op for now */ }
+  function handleFocus() {
+    /* no-op for now */
+  }
+  function handleBlur() {
+    /* no-op for now */
+  }
 
   // Reactive character count and limit flags
   $: characterCount = value ? value.length : 0;
@@ -103,15 +101,15 @@
   <div class="input-container">
     <textarea
       bind:this={textarea}
-      bind:value={value}
-      placeholder={placeholder}
-      disabled={disabled}
+      bind:value
+      {placeholder}
+      {disabled}
       maxlength={maxLength}
       class="chat-input"
-      class:disabled={disabled}
+      class:disabled
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
-      rows={rows}
+      {rows}
       on:input={debouncedHandleInput}
       on:keydown={handleKeydown}
       on:focus={handleFocus}
@@ -121,18 +119,14 @@
     ></textarea>
     <div class="input-actions">
       {#if characterCount > 0}
-        <span
-          class="character-count"
-          class:near-limit={isNearLimit}
-          class:at-limit={isAtLimit}
-        >
+        <span class="character-count" class:near-limit={isNearLimit} class:at-limit={isAtLimit}>
           {characterCount}/{maxLength}
         </span>
       {/if}
       <button
         type="button"
         class="send-button"
-        disabled={disabled}
+        {disabled}
         class:has-content={value.trim().length > 0}
         on:click={handleSend}
         title="Send message (Enter)"
@@ -145,7 +139,8 @@
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
           <line x1="22" y1="2" x2="11" y2="13" />
           <polygon points="22,2 15,22 11,13 2,9" />
         </svg>
@@ -162,27 +157,27 @@
 </div>
 
 <style>
-.chat-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-/* --- Chat Input Styles --- */
-.input-container {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 12px;
-  background: var(--bg-primary, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
+  .chat-input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  /* --- Chat Input Styles --- */
+  .input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
   .input-container:focus-within {
     border-color: var(--accent-color, #3b82f6);
     box-shadow: 0 0 0 3px var(--accent-shadow, rgba(59, 130, 246, 0.1));
-}
+  }
   .chat-input {
     flex: 1;
     min-height: 20px;
@@ -198,38 +193,38 @@
     color: var(--text-primary, #1e293b);
     overflow-y: auto;
     scrollbar-width: thin;
-}
+  }
   .chat-input::placeholder {
     color: var(--text-placeholder, #94a3b8);
-}
+  }
   .chat-input:disabled {
     color: var(--text-disabled, #94a3b8);
     cursor: not-allowed;
-}
+  }
   .chat-input.near-limit {
     color: var(--text-warning, #d97706);
-}
+  }
   .chat-input.at-limit {
     color: var(--text-error, #dc2626);
-}
+  }
   .input-actions {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-}
+  }
   .character-count {
     font-size: 0.75rem;
     color: var(--text-muted, #94a3b8);
     font-variant-numeric: tabular-num;
-}
+  }
   .character-count.near-limit {
     color: var(--text-warning, #d97706);
-}
+  }
   .character-count.at-limit {
     color: var(--text-error, #dc2626);
     font-weight: 600;
-}
+  }
   .send-button {
     display: flex;
     align-items: center;
@@ -242,30 +237,30 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-}
+  }
   .send-button:hover:not(:disabled) {
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
-}
+  }
   .send-button.has-content {
     background: var(--accent-color, #3b82f6);
     color: white;
-}
+  }
   .send-button.has-content:hover:not(:disabled) {
     background: var(--accent-hover, #2563eb);
-}
+  }
   .send-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+  }
   .input-hint {
     margin-top: 8px;
     padding: 0 12px;
-}
+  }
   .hint-text {
     font-size: 0.75rem;
     color: var(--text-muted, #94a3b8);
-}
+  }
   .hint-text kbd {
     font-size: 0.6875rem;
     padding: 2px 4px;
@@ -274,21 +269,21 @@
     border-radius: 3px;
     font-family: monospace;
     color: var(--text-secondary, #64748b);
-}
+  }
   /* Scrollbar styling */
   .chat-input::-webkit-scrollbar {
     width: 4px;
-}
+  }
   .chat-input::-webkit-scrollbar-track {
     background: transparent;
-}
+  }
   .chat-input::-webkit-scrollbar-thumb {
     background: var(--border-color, #e2e8f0);
     border-radius: 2px;
-}
+  }
   .chat-input::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted, #94a3b8);
-}
+  }
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
     .input-container {
@@ -320,7 +315,7 @@
     .send-button {
       width: 32px;
       height: 32px;
-}
+    }
     .send-button svg {
       width: 16px;
       height: 16px;

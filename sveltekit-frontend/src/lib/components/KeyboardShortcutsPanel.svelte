@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     formatShortcut,
     keyboardShortcutsService,
     setKeyboardContext,
-    type KeyboardShortcut
+    type KeyboardShortcut,
   } from '$lib/services/keyboard-shortcuts-service';
   // removed typed Button component to avoid constructor/type mismatches
   import Switch from '$lib/components/ui/switch/Switch.svelte';
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
         const matchesRemote = !showRemoteOnly || !!shortcut.remote;
         return matchesSearch && matchesCategory && matchesRemote;
       })
-      .map((s) => s.id);
+      .map(s => s.id);
   });
 
   function getShortcutById(id: string) {
@@ -103,9 +103,7 @@ https://svelte.dev/e/js_parse_error -->
 
     // Fallback: update local shortcuts store so UI reflects change
     // (Assume `shortcuts` is a writable store; cast to any to avoid TS errors)
-    (shortcuts as any)?.update?.((list: any[] = []) =>
-      list.map((s) => (s.id === id ? { ...s, enabled } : s))
-    );
+    (shortcuts as any)?.update?.((list: any[] = []) => list.map(s => (s.id === id ? { ...s, enabled } : s)));
   }
 
   function toggleShortcut(shortcut: KeyboardShortcut) {
@@ -118,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       command: shortcut.id,
       args: {},
       source: 'api',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -129,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
       cases: '📁',
       evidence: '📋',
       system: '⚙️',
-      remote: '🎮'
+      remote: '🎮',
     };
     return icons[category] || '📌';
   }
@@ -139,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
       keyboard: '⌨️',
       api: '🔗',
       websocket: '📡',
-      voice: '🎤'
+      voice: '🎤',
     };
     return icons[source] || '❓';
   }
@@ -152,9 +150,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
-          <button type="button" class="bits-btn ghost" onclick={() => (helpModalVisible = false)}>
-            ✕
-          </button>
+          <button type="button" class="bits-btn ghost" onclick={() => (helpModalVisible = false)}> ✕ </button>
         </div>
         <!-- Search and filters -->
         <div class="flex gap-4 mb-4">
@@ -185,7 +181,8 @@ https://svelte.dev/e/js_parse_error -->
             {#if selectedCategory === 'all' || selectedCategory === category.id}
               <div class="mb-6">
                 <h3 class="text-lg font-semibold text-yellow-400 mb-3 flex items-center gap-2">
-                  {getCategoryIcon(category.id)} {category.name}
+                  {getCategoryIcon(category.id)}
+                  {category.name}
                 </h3>
                 <div class="space-y-2">
                   {#each category.shortcuts as entry}
@@ -230,9 +227,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <button type="button" class="bits-btn sm ghost" onclick={connectRemote}>
-                Connect
-              </button>
+              <button type="button" class="bits-btn sm ghost" onclick={connectRemote}> Connect </button>
             </div>
           </div>
         {/if}
@@ -247,21 +242,17 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
-          <button type="button" class="bits-btn ghost" onclick={() => remoteStatusVisible = false}>
-            ✕
-          </button>
+          <button type="button" class="bits-btn ghost" onclick={() => (remoteStatusVisible = false)}> ✕ </button>
         </div>
         <!-- Connection status -->
         <div class="mb-6">
           <div class="flex items-center gap-3 mb-2">
-            <div class={ "w-3 h-3 rounded-full " + ($isRemoteConnected ? 'bg-green-400' : 'bg-red-400') }></div>
+            <div class={'w-3 h-3 rounded-full ' + ($isRemoteConnected ? 'bg-green-400' : 'bg-red-400')}></div>
             <span class="font-medium">
               {$isRemoteConnected ? 'Connected' : 'Disconnected'}
             </span>
           </div>
-          <div class="text-sm text-gray-400">
-            Endpoint: ws://localhost:8085/keyboard-remote
-          </div>
+          <div class="text-sm text-gray-400">Endpoint: ws://localhost:8085/keyboard-remote</div>
         </div>
         <!-- Recent commands -->
         <div class="mb-4">
@@ -284,25 +275,17 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {:else}
-            <div class="text-gray-400 text-center py-4">
-              No recent commands
-            </div>
+            <div class="text-gray-400 text-center py-4">No recent commands</div>
           {/if}
         </div>
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <button type="button" class="bits-btn ghost" onclick={disconnectRemote}>
-              Disconnect
-            </button>
+            <button type="button" class="bits-btn ghost" onclick={disconnectRemote}> Disconnect </button>
           {:else}
-            <button type="button" class="bits-btn" onclick={connectRemote}>
-              Reconnect
-            </button>
+            <button type="button" class="bits-btn" onclick={connectRemote}> Reconnect </button>
           {/if}
-          <button type="button" class="bits-btn ghost" onclick={clearRemoteHistory}>
-            Clear History
-          </button>
+          <button type="button" class="bits-btn ghost" onclick={clearRemoteHistory}> Clear History </button>
         </div>
       </div>
     </div>
@@ -314,7 +297,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="p-3 bg-gray-900 border-gray-700 text-white nes-container">
       <div class="flex items-center gap-2 text-sm">
         <span>🎹</span>
-        <span>Press <kbd class="bg-gray-800 px-1 rounded">Shift</kbd> + <kbd class="bg-gray-800 px-1 rounded">H</kbd> for shortcuts</span>
+        <span
+          >Press <kbd class="bg-gray-800 px-1 rounded">Shift</kbd> + <kbd class="bg-gray-800 px-1 rounded">H</kbd> for shortcuts</span
+        >
         {#if $isRemoteConnected}
           <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         {/if}
@@ -322,6 +307,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <style>
   /* Replaced empty/comment-only ruleset to avoid "Do not use empty rulesets" error.
      Explicit properties mirror the original @apply intent (inline-block, padding,
@@ -330,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
     display: inline-block;
     padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
     font-size: 0.75rem; /* text-xs */
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Helvetica Neue', monospace;
     background-color: #1f2937; /* gray-800 */
     color: inherit;
     border: 1px solid #4b5563; /* gray-600 */

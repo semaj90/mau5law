@@ -96,7 +96,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Initialize local LLM model for intent prediction
-   */;
+   */
   private async initializeIntentModel(): Promise<void> {
     try {
       // Use Ollama for local LLM inference
@@ -111,7 +111,7 @@ export class PredictivePrefetcher {
       });
       if (modelResponse.ok) {
         this.intentModel = {
-          initialized: true
+          initialized: true,
           endpoint: "http://localhost:11434/api/generate",
           model: "gemma3-legal:latest"
         }
@@ -129,7 +129,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Start monitoring user behavior for intent prediction
-   */;
+   */
   private startBehaviorMonitoring(): void {
     // Mouse movement tracking
     self.addEventListener("mousemove", (e: any) => {
@@ -159,7 +159,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Initialize prefetch strategies for legal AI workflows
-   */;
+   */
   private initializeStrategies(): void {
     // Evidence analysis workflow
     this.prefetchStrategies.set("analyze_document", {
@@ -221,8 +221,8 @@ export class PredictivePrefetcher {
       priority: "low",
       conditions: { [key,: strin,g]: any },
       llmIntegration: {
-        useLocalLLM: true
-        intentThreshold: 0.7
+        useLocalLLM: true,
+        intentThreshold: 0.7,
       }
     });
     // Evidence viewing (Phase 8 enhanced)
@@ -245,8 +245,8 @@ export class PredictivePrefetcher {
         userRole: ["prosecutor", "detective"]
       },
       llmIntegration: {
-        useLocalLLM: true
-        intentThreshold: 0.8
+        useLocalLLM: true,
+        intentThreshold: 0.8,
       }
     });
     // Document search (Phase 8 enhanced)
@@ -269,14 +269,14 @@ export class PredictivePrefetcher {
         connection: "fast"
       },
       llmIntegration: {
-        useLocalLLM: true
-        intentThreshold: 0.75
+        useLocalLLM: true,
+        intentThreshold: 0.75,
       }
     });
   }
   /**
    * Initialize legal workflow patterns for Phase 8
-   */;
+   */
   private initializeLegalWorkflowPatterns(): void {
     this.legalWorkflowPatterns = [
       {
@@ -316,8 +316,8 @@ export class PredictivePrefetcher {
         sequence: ["/search", "/documents", "/documents/viewer", "/citations"],
         triggerConditions: {
           activity: "research",
-          keyboardIntensive: true
-          mouseVelocity: "low"
+          keyboardIntensive: true,
+          mouseVelocity: "low",
         },
         successProbability: 0.82,
         typicalAssets: [
@@ -336,7 +336,7 @@ export class PredictivePrefetcher {
           "/ai/recommendations"
         ],
         triggerConditions: {
-          fileUpload: true
+          fileUpload: true,
           aiConfidence: "high",
           documentType: "legal"
         },
@@ -399,7 +399,7 @@ export class PredictivePrefetcher {
     if (maxScore > 0.6) {
       return {
         action: predictedAction as UserIntent["action"],
-        confidence: maxScore
+        confidence: maxScore,
         context,
         userProfile: {
           role: "user",
@@ -413,7 +413,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Enhanced prediction with additional context
-   */;
+   */
   private async predictUserIntentEnhanced(context: { mouseEvents: MouseEvent[]; keyboardEvents: KeyboardEvent[] }): Promise<UserIntent | null> {
     const currentContext = {
       currentPage: window.location.pathname,
@@ -427,7 +427,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Analyze recent actions for behavioral patterns
-   */;
+   */
   private analyzeRecentActions(actions: string[]): Map<string, number> {
     const patterns = new Map<string, number>();
     // Look for sequential patterns
@@ -451,7 +451,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Execute prefetch strategy based on predicted intent
-   */;
+   */
   async executePrefetch(intent: UserIntent): Promise<void> {
     const strategy = this.prefetchStrategies.get(intent.action);
     if (!strategy) return;
@@ -484,7 +484,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Check if conditions are met for prefetching
-   */;
+   */
   private checkConditions(conditions: PrefetchStrategy["conditions"]): boolean {
     // Check viewport
     if (conditions.viewport) {
@@ -511,7 +511,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Prefetch API route
-   */;
+   */
   private async prefetchRoute(route: string): Promise<void> {
     if (!this.cache) return;
     try {
@@ -530,7 +530,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Prefetch static asset
-   */;
+   */
   private async prefetchAsset(asset: string): Promise<void> {
     if (!this.cache) return;
     try {
@@ -544,7 +544,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Setup event listeners for intent detection
-   */;
+   */
   private setupEventListeners(): void {
     // Listen for user interactions
     self.addEventListener("message", async (_event: any) => {
@@ -567,7 +567,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Cleanup old cache entries
-   */;
+   */
   private async cleanupCache(): Promise<void> {
     if (!this.cache) return;
     try {
@@ -589,7 +589,7 @@ export class PredictivePrefetcher {
   }
   /**
    * Get cached response for request
-   */;
+   */
   async getCachedResponse(request: Request): Promise<Response | null> {
     if (!this.cache) return null;
     try {

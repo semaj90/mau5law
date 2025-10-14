@@ -1,6 +1,6 @@
 /**
  * AI Chat Types - Type definitions for the AI chat system
- */;
+ */
 }
 export interface ChatMessage {
   id: string;

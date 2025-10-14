@@ -9,7 +9,7 @@ const EMBED_QUEUE = 'evidence.embed';
 
 async function start() {
   console.log('Starting OCR worker - listening on', OCR_QUEUE);
-  await consume(OCR_QUEUE, async (job) => {
+  await consume(OCR_QUEUE, async job => {
     const { filePath, evidenceId } = job;
     console.log('OCR job', evidenceId, filePath);
     let fullPath = filePath;
@@ -23,4 +23,7 @@ async function start() {
   });
 }
 
-start().catch((err) => { console.error(err); process.exit(1); });
+start().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

@@ -1,6 +1,5 @@
-
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // In production, this would check actual CUDA availability
@@ -10,40 +9,43 @@ export const GET: RequestHandler = async () => {
       return json({
         success: true,
         cuda: {
-          available: true
+          available: true,
           version: '12.2',
           devices: [
             {
               id: 0,
               name: 'RTX 3060',
               memory: '12GB',
-              utilization: 45
-            }
-          ]
-        }
-      })
+              utilization: 45,
+            },
+          ],
+        },
+      });
     } else {
-      throw new Error('CUDA check failed')
+      throw new Error('CUDA check failed');
     }
   } catch (error) {
-    console.error('CUDA status check failed:', error)
-    return json({
-      success: false,
-      error: 'failure default to mock',
-      cuda: {
-        available: false
-        version: null
-        error: 'Mock CUDA unavailable',
-        mockDevices: [
-          {
-            id: 0,
-            name: 'Mock GPU',
-            memory: 'Unknown',
-            utilization: 0
-          }
-        ]
-      }
-    }, { status: 500 })
+    console.error('CUDA status check failed:', error);
+    return json(
+      {
+        success: false,
+        error: 'failure default to mock',
+        cuda: {
+          available: false,
+          version: null,
+          error: 'Mock CUDA unavailable',
+          mockDevices: [
+            {
+              id: 0,
+              name: 'Mock GPU',
+              memory: 'Unknown',
+              utilization: 0,
+            },
+          ],
+        },
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const prerender = false;

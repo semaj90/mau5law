@@ -6,12 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import type {
-    SystemMetrics,
-    CommandResult,
-    YoRHaModule,
-    HolographicData
-  } from '$lib/types/yorha-interface';
+  import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData } from '$lib/types/yorha-interface';
 
   // Define a new interface for command responses
   interface CommandResponse {
@@ -102,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Multi-Protocol Communication Hub',
       icon: 'radio',
       color: '#06b6d4', // Changed semicolon to comma
-    }
+    },
   ];
   $effect(() => {
     activeModules.set(yorhaModules);
@@ -111,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
     initWebGL();
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
-    }
+    };
   });
   function initializeHolographics() {
     const initialData: HolographicData[] = [
@@ -144,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
         color: '#8b5cf6',
         opacity: 0.9,
         animation: 'pulse', // Changed semicolon to comma
-      }
+      },
     ];
     holographicData.set(initialData);
   }
@@ -224,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
       // Render holographic elements
       renderHolographics(timestamp);
       animationId = requestAnimationFrame(render);
-    }
+    };
     render(0);
   }
   function renderHolographics(timestamp: number) {
@@ -237,8 +232,8 @@ https://svelte.dev/e/js_parse_error -->
         rotation: {
           x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
           y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
-          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0)
-        }
+          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0),
+        },
       }))
     );
   }
@@ -253,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'PROCESSING',
       output: 'Executing command...',
       module: 'YORHA-CORE',
-    }
+    };
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
     try {
       // Route command to appropriate system
@@ -263,13 +258,14 @@ https://svelte.dev/e/js_parse_error -->
       result.data = response.data;
     } catch (error) {
       result.status = 'ERROR';
-      result.output = error instanceof Error ? error.message: 'Unknown error';
+      result.output = error instanceof Error ? error.message : 'Unknown error';
     } finally {
       isProcessingCommand = false;
-      commandHistory.update(history => history.map(cmd => cmd.id === result.id ? result : cmd));
+      commandHistory.update(history => history.map(cmd => (cmd.id === result.id ? result : cmd)));
     }
   }
-  async function routeCommand(command: string): Promise<CommandResponse> { // Update return type
+  async function routeCommand(command: string): Promise<CommandResponse> {
+    // Update return type
     const cmd = command.toLowerCase().trim(); // Fix: call toLowerCase()
     if (cmd.startsWith('legal')) {
       return await executeLegalCommand(cmd);
@@ -285,19 +281,21 @@ https://svelte.dev/e/js_parse_error -->
       return executeHelpCommand(cmd);
     }
   }
-  async function executeLegalCommand(cmd: string): Promise<CommandResponse> { // Update return type
+  async function executeLegalCommand(cmd: string): Promise<CommandResponse> {
+    // Update return type
     // Integration with legal AI services
     const response = await fetch('/api/v1/legal-ai/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
+      body: JSON.stringify({ query: cmd, source: 'yorha-interface' }),
     });
-    if (response.ok) { // response.ok is a boolean, no need for casting
+    if (response.ok) {
+      // response.ok is a boolean, no need for casting
       const data = await response.json(); // Fix: call json()
       return {
         output: `Legal analysis complete. ${data.summary || 'Analysis processed.'}`,
         data: data,
-      }
+      };
     } else {
       throw new Error('Legal AI system unavailable');
     }
@@ -305,45 +303,45 @@ https://svelte.dev/e/js_parse_error -->
   async function executeAnalysisCommand(cmd: string): Promise<any> {
     return {
       output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
-      data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' }
-    }
+      data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' },
+    };
   }
   async function executeSearchCommand(cmd: string): Promise<any> {
     const query = cmd.replace('search ', '');
     return {
       output: `Searching database for: "${query}"`,
-      data: { query, results_count: Math.floor(Math.random() * 50) + 1 }
-    }
+      data: { query, results_count: Math.floor(Math.random() * 50) + 1 },
+    };
   }
   function executeSystemCommand(cmd: string) {
     if (cmd.includes('status')) {
       return {
         output: 'All systems operational. YoRHa interface running at optimal parameters.',
         data: $metrics, // Changed '$metric' to '$metrics'
-      }
+      };
     } else if (cmd.includes('modules')) {
       return {
         output: `${$activeModules.length} modules active`,
         data: $activeModules, // Changed '$activeModule' to '$activeModules'
-      }
+      };
     } else {
       return {
         output: 'System command processed',
-        data: { status: 'ok' }
-      }
+        data: { status: 'ok' },
+      };
     }
   }
   async function executeNeuralCommand(cmd: string): Promise<any> {
     return {
       output: 'Neural network processing initiated',
-      data: { neural_activity: $metrics.neural_activity }
-    }
+      data: { neural_activity: $metrics.neural_activity },
+    };
   }
   function executeHelpCommand(cmd: string) {
     return {
       output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
-      data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] }
-    }
+      data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] },
+    };
   }
   function triggerGlitch() {
     glitchActive = true;
@@ -360,121 +358,25 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'ACTIVE': return '#00ff88';
-      case 'STANDBY': return '#ffa500';
-      case 'MAXIMUM': return '#ff0066';
-      case 'OFFLINE': return '#666';
-      default: return '#00ff88';
+      case 'ACTIVE':
+        return '#00ff88';
+      case 'STANDBY':
+        return '#ffa500';
+      case 'MAXIMUM':
+        return '#ff0066';
+      case 'OFFLINE':
+        return '#666';
+      default:
+        return '#00ff88';
     }
   }
 </script>
-<!-- YoRHa Interface Styles -->
-<style>
-  .yorha-container {
-    /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */
-    font-family: 'Courier New', 'Monaco', monospace;
-    overflow: hidden;
-    position: relative;
-  }
-  .scanlines {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      transparent 50%,
-      rgba(0, 255, 136, 0.03) 50%
-    );
-    background-size: 100% 2px;
-    animation: scanline-scroll 0.1s linear infinite;
-    pointer-events: none;
-    z-index: 1;
-  }
-  @keyframes scanline-scroll {
-    0% { transform: translateY(0) } /* Removed trailing comma */
-    100% { transform: translateY(2px) } /* Removed trailing comma */
-  }
-  .glitch-effect {
-    animation: glitch 0.2s ease-in-out;
-  }
-  @keyframes glitch {
-    0% { transform: translateX(0); filter: hue-rotate(0deg) } /* Removed trailing comma */
-    20% { transform: translateX(-2px); filter: hue-rotate(90deg) } /* Removed trailing comma */
-    40% { transform: translateX(2px); filter: hue-rotate(180deg) } /* Removed trailing comma */
-    60% { transform: translateX(-1px); filter: hue-rotate(270deg) } /* Removed trailing comma */
-    80% { transform: translateX(1px); filter: hue-rotate(360deg) } /* Removed trailing comma */
-    100% { transform: translateX(0); filter: hue-rotate(0deg) } /* Removed trailing comma */
-  }
-  .cyber-border {
-    border: 1px solid #00ff88;
-    box-shadow:
-      0 0 5px rgba(0, 255, 136, 0.3),
-      inset 0 0 5px rgba(0, 255, 136, 0.1);
-  }
-  .hologram-text {
-    color: #00ff88;
-    text-shadow: 0 0 10px currentColor;
-    animation: hologram-flicker 2s ease-in-out infinite alternate;
-  }
-  @keyframes hologram-flicker {
-    0% { opacity: 0.8 } /* Removed trailing comma */
-    50% { opacity: 1 } /* Removed trailing comma */
-    100% { opacity: 0.9 } /* Removed trailing comma */
-  }
-  .module-panel {
-    background: rgba(0, 20, 40, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 255, 136, 0.3);
-    transition: all 0.3s ease;
-  }
-  .module-panel:hover {
-    border-color: #00ff88;
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-    transform: translateY(-2px);
-  }
-  .command-terminal {
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #00ff88;
-    font-family: 'Courier New', monospace;
-  }
-  .command-input {
-    background: transparent;
-    border: none;
-    color: #00ff88;
-    font-family: inherit;
-    outline: none;
-    width: 100%;
-  }
-  .command-input::placeholder {
-    color: rgba(0, 255, 136, 0.5);
-  }
-  .status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    animation: status-pulse 2s ease-in-out infinite;
-  }
-  @keyframes status-pulse {
-    0% { opacity: 1 } /* Removed trailing comma */
-    50% { opacity: 0.5 } /* Removed trailing comma */
-    100% { opacity: 1 } /* Removed trailing comma */
-  }
-  .data-stream { /* Changed selector from .holographic-canv.data-stream to .data-stream */
-    position: absolute;
-    width: 2px;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, #00ff88, transparent);
-    animation: data-flow 3s linear infinite;
-  }
-  @keyframes data-flow {
-    0% { transform: translateY(-100%); opacity: 0 } /* Removed trailing comma */
-    50% { opacity: 1 } /* Removed trailing comma */
-    100% { transform: translateY(100vh); opacity: 0 } /* Removed trailing comma */
-  }
-</style>
+
 <!-- YoRHa Command Interface -->
-<div class="yorha-container min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900" class:glitch-effect={glitchActive}>
+<div
+  class="yorha-container min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900"
+  class:glitch-effect={glitchActive}
+>
   <!-- Scanline overlay -->
   <div class="scanlines" style="opacity: {scanlineOpacity}"></div>
   <!-- Background holographic canvas -->
@@ -484,13 +386,11 @@ https://svelte.dev/e/js_parse_error -->
     width="800"
     height="600"
     style="filter: {hologramFlicker ? 'brightness(1.5) hue-rotate(180deg)' : 'brightness(1)'}"
-  ></canvas> <!-- Removed extraneous semicolon -->
+  ></canvas>
+  <!-- Removed extraneous semicolon -->
   <!-- Animated data streams -->
   {#each Array(12) as _, i}
-    <div
-      class="data-stream"
-      style="left: {5 + i * 8}%; animation-delay: {i * 0.3}s"
-    ></div>
+    <div class="data-stream" style="left: {5 + i * 8}%; animation-delay: {i * 0.3}s"></div>
   {/each}
   <!-- Main interface content -->
   <div class="relative z-10 p-6 h-screen flex flex-col">
@@ -506,10 +406,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="text-cyan-400 text-xs">POWER LEVEL</div>
         </div>
         <div class="flex items-center space-x-2">
-          <div
-            class="status-indicator"
-            style="background-color: {getStatusColor($systemStatus)}"
-          ></div>
+          <div class="status-indicator" style="background-color: {getStatusColor($systemStatus)}"></div>
           <span class="hologram-text font-mono">{$systemStatus}</span>
         </div>
       </div>
@@ -520,10 +417,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="module-panel p-4 rounded-lg">
           <div class="flex justify-between items-start mb-3">
             <h3 class="hologram-text font-bold text-sm">{module.name}</h3>
-            <div
-              class="status-indicator"
-              style="background-color: {getStatusColor(module.status)}"
-            ></div>
+            <div class="status-indicator" style="background-color: {getStatusColor(module.status)}"></div>
           </div>
           <p class="text-cyan-300 text-xs mb-3">{module.description}</p>
           <div class="flex justify-between items-center">
@@ -535,10 +429,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <!-- Mini progress bar -->
           <div class="w-full bg-slate-700 h-1 rounded mt-2">
-            <div
-              class="h-1 rounded"
-              style="width: {module.power}%; background-color: {module.color}"
-            ></div>
+            <div class="h-1 rounded" style="width: {module.power}%; background-color: {module.color}"></div>
           </div>
         </div>
       {/each}
@@ -608,7 +499,155 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Footer -->
     <footer class="mt-4 text-center text-cyan-400 text-xs">
       <div>YoRHa Legal AI Interface v2.0 • Bunker Operations • Quantum Security Enabled</div>
-      <div class="mt-1">Neural Activity: {$metrics.neural_activity.toFixed(1)}% • Security Level: {$metrics.security_level}</div>
+      <div class="mt-1">
+        Neural Activity: {$metrics.neural_activity.toFixed(1)}% • Security Level: {$metrics.security_level}
+      </div>
     </footer>
   </div>
 </div>
+
+<!-- YoRHa Interface Styles -->
+<style>
+  .yorha-container {
+    /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */
+    font-family: 'Courier New', 'Monaco', monospace;
+    overflow: hidden;
+    position: relative;
+  }
+  .scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
+    background-size: 100% 2px;
+    animation: scanline-scroll 0.1s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes scanline-scroll {
+    0% {
+      transform: translateY(0);
+    } /* Removed trailing comma */
+    100% {
+      transform: translateY(2px);
+    } /* Removed trailing comma */
+  }
+  .glitch-effect {
+    animation: glitch 0.2s ease-in-out;
+  }
+  @keyframes glitch {
+    0% {
+      transform: translateX(0);
+      filter: hue-rotate(0deg);
+    } /* Removed trailing comma */
+    20% {
+      transform: translateX(-2px);
+      filter: hue-rotate(90deg);
+    } /* Removed trailing comma */
+    40% {
+      transform: translateX(2px);
+      filter: hue-rotate(180deg);
+    } /* Removed trailing comma */
+    60% {
+      transform: translateX(-1px);
+      filter: hue-rotate(270deg);
+    } /* Removed trailing comma */
+    80% {
+      transform: translateX(1px);
+      filter: hue-rotate(360deg);
+    } /* Removed trailing comma */
+    100% {
+      transform: translateX(0);
+      filter: hue-rotate(0deg);
+    } /* Removed trailing comma */
+  }
+  .cyber-border {
+    border: 1px solid #00ff88;
+    box-shadow:
+      0 0 5px rgba(0, 255, 136, 0.3),
+      inset 0 0 5px rgba(0, 255, 136, 0.1);
+  }
+  .hologram-text {
+    color: #00ff88;
+    text-shadow: 0 0 10px currentColor;
+    animation: hologram-flicker 2s ease-in-out infinite alternate;
+  }
+  @keyframes hologram-flicker {
+    0% {
+      opacity: 0.8;
+    } /* Removed trailing comma */
+    50% {
+      opacity: 1;
+    } /* Removed trailing comma */
+    100% {
+      opacity: 0.9;
+    } /* Removed trailing comma */
+  }
+  .module-panel {
+    background: rgba(0, 20, 40, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    transition: all 0.3s ease;
+  }
+  .module-panel:hover {
+    border-color: #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    transform: translateY(-2px);
+  }
+  .command-terminal {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ff88;
+    font-family: 'Courier New', monospace;
+  }
+  .command-input {
+    background: transparent;
+    border: none;
+    color: #00ff88;
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+  }
+  .command-input::placeholder {
+    color: rgba(0, 255, 136, 0.5);
+  }
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+  @keyframes status-pulse {
+    0% {
+      opacity: 1;
+    } /* Removed trailing comma */
+    50% {
+      opacity: 0.5;
+    } /* Removed trailing comma */
+    100% {
+      opacity: 1;
+    } /* Removed trailing comma */
+  }
+  .data-stream {
+    /* Changed selector from .holographic-canv.data-stream to .data-stream */
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, #00ff88, transparent);
+    animation: data-flow 3s linear infinite;
+  }
+  @keyframes data-flow {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    } /* Removed trailing comma */
+    50% {
+      opacity: 1;
+    } /* Removed trailing comma */
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    } /* Removed trailing comma */
+  }
+</style>

@@ -138,9 +138,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
     if (cached) {
       return json({
         success: true,
-        data: cached
-        fromCache: true
-        timestamp: new Date().toISOString()
+        data: cached,
+        fromCache: true,
+        timestamp: new Date().toISOString(),
       })
     }
     // Calculate priorities for each case
@@ -180,8 +180,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
     await multiLayerCache.set(cacheKey, sortedCases, 60, 180)
     return json({
       success: true,
-      data: sortedCases
-      fromCache: false
+      data: sortedCases,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         totalCases: mockCases.length,
@@ -235,8 +235,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
       success: false,
       error: 'failure default to mock',
-      data: mockFallbackCases
-      fromCache: false
+      data: mockFallbackCases,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         totalCases: mockFallbackCases.length,
@@ -292,8 +292,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: `Case ${caseId} updated with action: ${action}`,
-      updatedCase: caseItem
-      timestamp: new Date().toISOString()
+      updatedCase: caseItem,
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Error updating case:', error)
@@ -301,8 +301,8 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: 'failure default to mock - case update simulated',
       message: 'Mock update: Case action processed locally',
-      updatedCase: null
-      timestamp: new Date().toISOString()
+      updatedCase: null,
+      timestamp: new Date().toISOString(),
     }, { status: 500 })
   }
 }

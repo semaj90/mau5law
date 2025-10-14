@@ -1,7 +1,7 @@
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Go Upload Service Configuration
-const GO_UPLOAD_SERVICE_URL = 'http://localhost:8093'
+const GO_UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const GO_UPLOAD_TIMEOUT = 30000; // 30 seconds
 /*
  * Proxy to Go Upload Service
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async () => {
       method: 'GET',
       signal: (AbortSignal as any).timeout?.(5000) ?? undefined,
     });
-    const isHealthy = response.ok
+    const isHealthy = response.ok;
     const statusCode = isHealthy ? 200 : 503;
     return json(
       {
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async () => {
       { status: statusCode }
     );
   } catch (healthError: any) {
-    console.error('❌ Go upload service health check failed:', healthError)
+    console.error('❌ Go upload service health check failed:', healthError);
     return json(
       {
         service: 'go-upload-service',
@@ -103,4 +103,4 @@ export const GET: RequestHandler = async () => {
       { status: 503 }
     );
   }
-}
+};

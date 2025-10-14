@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         test: 'webgl_shader_cache_import',
         status: 'success',
         data: {
-          imported: true
+          imported: true,
           shaderCount,
           shaders: Object.keys(LEGAL_AI_SHADERS)
         }
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
         test: 'nes_memory_import',
         status: 'success',
         data: {
-          imported: true
+          imported: true,
           stats: {
             documentCount: memoryStats.documentCount,
             totalRAM: memoryStats.totalRAM,
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
       test: 'gpu_memory_simulation',
       status: 'success',
       data: {
-        simulated: true
+        simulated: true,
         gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
         memoryAvailable: '8GB VRAM',
         webgpuSupport: 'Requires browser context'
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       timestamp: new Date().toISOString(),
-      tests: results
+      tests: results,
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),

@@ -28,14 +28,14 @@ export const POST: RequestHandler = async ({ request }) => {
         'You are a legal AI assistant specialized in analyzing legal documents and providing expert insights.'
     }
     const wasmContext = {
-      wasmModule: null
-      wasmInstance: null
-      isInitialized: false
+      wasmModule: null,
+      wasmInstance: null,
+      isInitialized: false,
       config: {
         modelPath: '/models/gemma3-legal-q4.wasm',
         threads: 8,
         contextLength: 4096,
-        enableGPU: true
+        enableGPU: true,
         batchSize: 4,
         quantization: 'q4_0' as const
       },
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Comprehensive test results
     const testResults = {
       success: true,
-      processingTime: totalTime
+      processingTime: totalTime,
       timestamp: new Date().toISOString(),
       request: {
         prompt: prompt.slice(0, 100) + (prompt.length > 100 ? '...' : ''),
@@ -145,9 +145,9 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: directResult.metadata,
           cacheHit: directResult.cacheHit
         },
-        rabbitMQIntegration: rabbitMQResult
-        postgresqlQdrantSync: syncResult
-        xstateMachine: machineResult
+        rabbitMQIntegration: rabbitMQResult,
+        postgresqlQdrantSync: syncResult,
+        xstateMachine: machineResult,
       },
       integration: {
         wasmInferenceService: '✅ Operational',
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
       performance: {
         totalProcessingTime: `${totalTime}ms`,
         wasmInferenceTime: `${directResult.processingTime}ms`,
-        ragEnabled: enableRAG
+        ragEnabled: enableRAG,
         documentsRetrieved: directResult.ragContext?.documentsUsed || 0,
         memoryUsage: `${directResult.memoryUsage} bytes`,
         cacheUtilization: directResult.cacheHit ? 'Cache Hit' : 'Cache Miss'
@@ -232,8 +232,8 @@ export const GET: RequestHandler = async () => {
     // Quick connectivity tests
     const services = {
       wasmInferenceService: healthStatus.status === 'healthy',
-      enhancedRAGService: false
-      postgresqlQdrantSync: false
+      enhancedRAGService: false,
+      postgresqlQdrantSync: false,
     }
     // Test Enhanced RAG Service
     try {
@@ -257,7 +257,7 @@ export const GET: RequestHandler = async () => {
       status: overallHealth ? 'healthy' : 'degraded',
       timestamp: new Date().toISOString(),
       services,
-      wasmHealth: healthStatus
+      wasmHealth: healthStatus,
       endpoints: {
         testInference: '/api/test-wasm-inference (POST)',
         healthCheck: '/api/test-wasm-inference (GET)',

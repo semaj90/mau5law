@@ -41,9 +41,9 @@ export const POST: RequestHandler = async (event) => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          messages: messages
-          model: model
-          temperature: temperature
+          messages: messages,
+          model: model,
+          temperature: temperature,
           max_tokens: requestData.max_tokens || 1024,
           stream: false
         })
@@ -53,8 +53,8 @@ export const POST: RequestHandler = async (event) => {
         console.error('TensorRT bridge error:', errorText)
         return json({
           error: "TensorRT bridge failed",
-          detail: errorText
-          bridge_status: bridgeResponse.status
+          detail: errorText,
+          bridge_status: bridgeResponse.status,
         }, { status: 500 })
       }
       const bridgeData = await bridgeResponse.json()
@@ -82,11 +82,11 @@ export const POST: RequestHandler = async (event) => {
         created,: Math.floor(Date.now() / 1000),
         id,: `tensorrt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
         tensorrt,: {
-          bridge_used: true
-          bridge_url: TENSORRT_BRIDGE_URL
-          model_used: model
-          gpu_accelerated: true
-          response_time_ms: totalTime
+          bridge_used: true,
+          bridge_url: TENSORRT_BRIDGE_URL,
+          model_used: model,
+          gpu_accelerated: true,
+          response_time_ms: totalTime,
         }
       })
     } catch (bridgeError: any) {

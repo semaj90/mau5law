@@ -18,7 +18,7 @@
     Activity,
     Upload,
     MessageSquare,
-    BarChart
+    BarChart,
   } from 'lucide-svelte';
   // Component state
   let selectedFiles = $state<FileList | null>(null);
@@ -39,7 +39,7 @@
     averageSpeed: 0,
     cacheHitRate: 0,
     workerUtilization: 0,
-    simdPerformance: 0
+    simdPerformance: 0,
   });
 
   // declare interval handle in outer scope so cleanup can synchronously access it
@@ -54,13 +54,13 @@
         queueLimit: 100,
         enableSIMD: true,
         redisCache: true,
-        concurrencyLimit: 6
+        concurrencyLimit: 6,
       };
       workerPool = createWorkerPool(workerConfig);
       simdCache = createSIMDJSONCache({
         defaultTTL: 3600,
         compressionEnabled: true,
-        enableMetrics: true
+        enableMetrics: true,
       });
 
       // Dynamically import the upload progress component. Support both default and named exports.
@@ -91,16 +91,15 @@
   function updateSystemStats() {
     if (workerPool) {
       const workerStats = workerPool.getStats() || {};
-      const cacheStats = simdCache?.getCacheStats() || {}
-      const simdStatus = simdCache?.getSIMDStatus() || {}
+      const cacheStats = simdCache?.getCacheStats() || {};
+      const simdStatus = simdCache?.getSIMDStatus() || {};
       systemStats = {
         workers: workerStats,
         cache: cacheStats,
         simd: simdStatus,
-      }
-      performanceMetrics.workerUtilization = workerStats.totalWorkers > 0
-        ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100
-        : 0;
+      };
+      performanceMetrics.workerUtilization =
+        workerStats.totalWorkers > 0 ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100 : 0;
       performanceMetrics.cacheHitRate = (cacheStats.hitRate || 0) * 100;
     }
   }
@@ -118,7 +117,7 @@
       });
       // Subscribe to upload progress
       let unsubscribe: () => void;
-      unsubscribe = enhancedUploadStore.subscribe((state) => {
+      unsubscribe = enhancedUploadStore.subscribe(state => {
         // state comes from the store's actual type; adapt it to the small shape we use here
         const s = state as unknown as UploadStateLike;
         if (s.matches('completed')) {
@@ -164,11 +163,10 @@
       }
       // Generate embeddings with Gemma3
       if (context.results?.extractedText) {
-        const embeddings = await workerPool.generateEmbeddings(
-          context.results.extractedText,
-          'embeddinggemma:latest',
-          { normalize: true, chunkSize: 512 }
-        );
+        const embeddings = await workerPool.generateEmbeddings(context.results.extractedText, 'embeddinggemma:latest', {
+          normalize: true,
+          chunkSize: 512,
+        });
         processedResults.embeddings = embeddings;
       }
       // Perform AI analysis
@@ -187,14 +185,15 @@
           type: documentType,
           caseId,
         },
-        user: { preferences: { priority: 'accuracy' } }
-      }
+        user: { preferences: { priority: 'accuracy' } },
+      };
       const recs = await workerPool.generateRecommendations(recContext);
       recommendations = recs.data?.recommendations || [];
       // Update performance metrics
       const simdMetrics = simdCache.getMetrics ? simdCache.getMetrics() : {};
       performanceMetrics.simdPerformance = simdMetrics.averageParseTime || 0;
-      performanceMetrics.averageSpeed = (simdMetrics.totalDataProcessed || 0) / Math.max(simdMetrics.totalParse || 1, 1);
+      performanceMetrics.averageSpeed =
+        (simdMetrics.totalDataProcessed || 0) / Math.max(simdMetrics.totalParse || 1, 1);
     } catch (error) {
       console.error('Result processing failed:', error);
     }
@@ -212,10 +211,10 @@
         evidence: Array.from({ length: 100 }, (_, i) => ({
           id: i,
           type: 'document',
-          description: `Evidence item ${i} with detailed legal content and metadata`
-        }))
-      }
-    }
+          description: `Evidence item ${i} with detailed legal content and metadata`,
+        })),
+      },
+    };
     const jsonString = JSON.stringify(testData);
     console.time('SIMD JSON Parse');
     await simdCache.parse(jsonString);
@@ -232,8 +231,8 @@
 
 <!-- global style frameworks (UnoCSS / NES.css) -->
 <!-- adjust these paths if your project uses different import entry points -->
-<link rel="stylesheet" href="/src/lib/styles/uno.css">
-<link rel="stylesheet" href="/src/lib/styles/nes.css">
+<link rel="stylesheet" href="/src/lib/styles/uno.css" />
+<link rel="stylesheet" href="/src/lib/styles/nes.css" />
 
 <div class="space-y-6 p-6">
   <!-- Header -->
@@ -263,7 +262,12 @@
           </div>
           <div class="enhanced-progress">
             <Progress value={performanceMetrics.workerUtilization} class="h-2" />
-            <progress class="nes-progress is-primary" value={performanceMetrics.workerUtilization} max="100" aria-label="worker-utilization"></progress>
+            <progress
+              class="nes-progress is-primary"
+              value={performanceMetrics.workerUtilization}
+              max="100"
+              aria-label="worker-utilization"
+            ></progress>
           </div>
           <div class="text-xs text-muted-foreground">
             Queue: {systemStats.workers?.queuedTasks || 0}
@@ -286,7 +290,12 @@
           </div>
           <div class="enhanced-progress">
             <Progress value={performanceMetrics.cacheHitRate} class="h-2" />
-            <progress class="nes-progress is-success" value={performanceMetrics.cacheHitRate} max="100" aria-label="cache-hit-rate"></progress>
+            <progress
+              class="nes-progress is-success"
+              value={performanceMetrics.cacheHitRate}
+              max="100"
+              aria-label="cache-hit-rate"
+            ></progress>
           </div>
           <div class="text-xs text-muted-foreground">
             Entries: {systemStats.cache?.memoryEntries || 0}
@@ -352,7 +361,13 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label for="caseIdInput" class="block text-sm font-medium mb-2">Case ID</label>
-          <input id="caseIdInput" type="text" bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
+          <input
+            id="caseIdInput"
+            type="text"
+            bind:value={caseId}
+            class="w-full p-2 border rounded"
+            placeholder="Enter case ID"
+          />
         </div>
         <div>
           <label for="documentTypeSelect" class="block text-sm font-medium mb-2">Document Type</label>
@@ -494,11 +509,7 @@
               <div class="flex justify-between items-start mb-2">
                 <h4 class="font-medium">{rec.title || rec.type}</h4>
                 <Badge
-                  variant={rec.priority === 'high'
-                    ? 'destructive'
-                    : rec.priority === 'medium'
-                      ? 'default'
-                      : 'outline'}
+                  variant={rec.priority === 'high' ? 'destructive' : rec.priority === 'medium' ? 'default' : 'outline'}
                 >
                   {rec.priority || 'normal'}
                 </Badge>
@@ -510,7 +521,12 @@
                 <div class="mt-2">
                   <div class="enhanced-progress small">
                     <Progress value={rec.confidence * 100} class="h-1" />
-                    <progress class="nes-progress is-dark" value={rec.confidence * 100} max="100" aria-label="rec-confidence"></progress>
+                    <progress
+                      class="nes-progress is-dark"
+                      value={rec.confidence * 100}
+                      max="100"
+                      aria-label="rec-confidence"
+                    ></progress>
                   </div>
                   <span class="text-xs text-muted-foreground">
                     Confidence: {(rec.confidence * 100).toFixed(1)}%
@@ -568,22 +584,22 @@
 </div>
 
 <style>
-/* Minimal layout glue for the dual progress presentation */
-.enhanced-progress {
-  display: grid;
-  gap: 0.25rem;
-}
-.enhanced-progress.small {
-  gap: 0.15rem;
-}
-.enhanced-progress progress.nes-progress {
-  height: 0.6rem;
-}
-/* make sure NES progress fits within UI patterns */
-.enhanced-progress .nes-progress {
-  width: 100%;
-  border-radius: 4px;
-  overflow: hidden;
-  box-sizing: border-box;
-}
+  /* Minimal layout glue for the dual progress presentation */
+  .enhanced-progress {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .enhanced-progress.small {
+    gap: 0.15rem;
+  }
+  .enhanced-progress progress.nes-progress {
+    height: 0.6rem;
+  }
+  /* make sure NES progress fits within UI patterns */
+  .enhanced-progress .nes-progress {
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
 </style>

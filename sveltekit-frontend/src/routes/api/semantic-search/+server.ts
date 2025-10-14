@@ -53,7 +53,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: any[])
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: fastStringify({,
-        query: queryEmbedding
+        query: queryEmbedding,
         vectors: candidates.map(c => c.embedding),
         k: candidates.length,
         precision: 'fp64'  // Use higher precision for subtle differences
@@ -108,7 +108,7 @@ function rerankLegalResults(results: any[], query: string): any[] {
     .sort((a, b) => b.legal_relevance_score - a.legal_relevance_score)
 }
 async function performVectorSearch(
-  embedding: number[]
+  embedding: number[],
   limit: number = 20,
   threshold: number = 0.7
 ): Promise<any[]> {
@@ -167,8 +167,8 @@ export const GET: RequestHandler = async ({ url }) => {
     let finalResults = rawResults
     let computationMetadata = {
       precision_used: 'fp32',
-      gpu_accelerated: false
-      escalation_reason: null
+      gpu_accelerated: false,
+      escalation_reason: null,
     }
     // GPU-accelerated re-ranking for subtle differences or large batches
     if (precisionAnalysis.needsGPU || precisionAnalysis.needsFP64) {
@@ -183,8 +183,8 @@ export const GET: RequestHandler = async ({ url }) => {
           })
           computationMetadata = {
             precision_used: precisionAnalysis.needsFP64 ? 'fp64' : 'fp32',
-            gpu_accelerated: true
-            escalation_reason: precisionAnalysis.needsFP64 ? 'subtle_differences' : 'batch_optimization'
+            gpu_accelerated: true,
+            escalation_reason: precisionAnalysis.needsFP64 ? 'subtle_differences' : 'batch_optimization',
           }
         } catch (error) {
           console.warn('GPU computation failed, falling back to CPU:', error)
@@ -195,15 +195,15 @@ export const GET: RequestHandler = async ({ url }) => {
     EmbeddingSearchCache.set(cacheKey, { results: rerankedResults, timestamp: Date.now() })
     return json({
       success: true,
-      results: rerankedResults
+      results: rerankedResults,
       query: query.trim(),
       total_results: rerankedResults.length,
       total_time_ms: Date.now() - startTime,
       search_metadata: {
         embedding_model: 'nomic-embed-text',
         reranker: 'legal_relevance_v1',
-        threshold_used: threshold
-        computation: computationMetadata
+        threshold_used: threshold,
+        computation: computationMetadata,
         precision_analysis: {
           subtle_differences_detected: precisionAnalysis.needsFP64,
           gpu_batch_eligible: precisionAnalysis.needsGPU,

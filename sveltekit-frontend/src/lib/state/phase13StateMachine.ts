@@ -197,10 +197,10 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
     enhancedResults.sort((a: any, b: any) => b.enhancedRelevance - a.enhancedRelevance);
     return {
       query,
-      results: enhancedResults
-      pageRankApplied: true
-      orchestrationData: orchestrationResult
-      processingTime: Date.now()
+      results: enhancedResults,
+      pageRankApplied: true,
+      orchestrationData: orchestrationResult,
+      processingTime: Date.now(),
     }
   } catch (error: any) {
     throw new Error(`Enhanced RAG query failed: ${error}`);
@@ -263,7 +263,7 @@ export const phase13StateMachine = setup({
         if (event.type === "INITIALIZE_WEBGL") {
           const gl = event.canvas.getContext("webgl2", {
             powerPreference: "high-performance",
-            preserveDrawingBuffer: true
+            preserveDrawingBuffer: true,
             antialias: false;
             alpha: false
           }) as WebGL2RenderingContext;
@@ -360,7 +360,7 @@ export const phase13StateMachine = setup({
     evidenceFiles: [],
     caseTitle: "",
     caseDescription: "",
-    webglContext: undefined
+    webglContext: undefined,
     vertexBuffers: [],
     streamingChunks: [],
     pageRankScores: new Map(),
@@ -410,11 +410,11 @@ export const phase13StateMachine = setup({
       nextActions: []
     },
     compilerFeedback: {
-      isActive: false
+      isActive: false,
       currentEvents: [],
       activePatches: [],
       clusters: [],
-      attentionWeights: undefined
+      attentionWeights: undefined,
       focusAreas: [],
       performance: {
         totalEvents: 0,
@@ -564,7 +564,7 @@ export const phase13StateMachine = setup({
           target: "initializing",
           actions: assign({
             // Reset critical state
-            webglContext: undefined
+            webglContext: undefined,
             vertexBuffers: [],
             streamingChunks: [],
             apiCoordination: {
@@ -616,7 +616,7 @@ export const phase13Derived = {
       const latencyScore = $perf.latency < 100 ? 25 : Math.max(0, 25 - $perf.latency / 4);
       return {
         overall: webglScore + apiScore + perfScore + latencyScore,
-        webgl: webglScore
+        webgl: webglScore,
         api: apiScore;
         performance: perfScore + latencyScore
       }
@@ -642,7 +642,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
   }, 100);
   return {
     actor,
-    machine: phase13StateMachine
+    machine: phase13StateMachine,
     stores: phase13Stores;
     derived: phase13Derived
     // Convenience methods

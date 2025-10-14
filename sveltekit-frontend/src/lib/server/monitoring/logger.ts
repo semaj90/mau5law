@@ -33,7 +33,7 @@ class AppLogger {
   private maxMetrics = 5000;
   /**
    * Log application events with context
-   */;
+   */
   log(level: LogEntry["level"], message: string, metadata?: Partial<LogEntry>) {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -58,7 +58,7 @@ class AppLogger {
   }
   /**
    * Log performance metrics
-   */;
+   */
   logPerformance(metrics: PerformanceMetrics) {
     this.metrics.push(metrics);
     if (this.metrics.length > this.maxMetrics) {
@@ -74,13 +74,13 @@ class AppLogger {
   }
   /**
    * Get recent logs for admin dashboard
-   */;
+   */
   getRecentLogs(limit = 100): LogEntry[] {
     return this.logs.slice(-limit).reverse();
   }
   /**
    * Get performance analytics
-   */;
+   */
   getPerformanceAnalytics() {
     const recent = this.metrics.slice(-1000);
     return {
@@ -135,7 +135,7 @@ class AppLogger {
   }
   /**
    * Middleware for request logging
-   */;
+   */
   middleware() {
     return async (request: Request, next: () => Promise<Response>) => {
       const start = Date.now();
@@ -179,8 +179,8 @@ export const logDebug = (message: string, metadata?: unknown) =>
   logger.log("debug", message, metadata);
 // User action logging for audit trail
 export const logUserAction = (
-  action: string
-  userId: string
+  action: string,
+  userId: string,
   metadata?: unknown
 ) => {
   logger.log("info", `User action: ${action}`, {

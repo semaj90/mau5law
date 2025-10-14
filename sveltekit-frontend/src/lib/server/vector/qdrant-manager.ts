@@ -78,8 +78,8 @@ export class QdrantManager {
         },
         limit: params.limit || 10,
         score_threshold: params.scoreThreshold || 0.7,
-        with_payload: true
-        with_vector: false
+        with_payload: true,
+        with_vector: false,
       }
       // Add metadata filters if provided
       if (params.filters) {
@@ -110,8 +110,8 @@ export class QdrantManager {
         metadata: {
           query: params.query,
           collection: params.collection,
-          response_time_ms: responseTime
-          total_results: results.length
+          response_time_ms: responseTime,
+          total_results: results.length,
         }
       }
     } catch (error: any) {
@@ -142,8 +142,8 @@ export class QdrantManager {
       },
       limit: params.limit || 5,
       score_threshold: 0.6,
-      filter: filters
-      with_payload: true
+      filter: filters,
+      with_payload: true,
     }
     const results = await this.client.search(this.collections.chat_history, searchRequest);
     return results.map((r) => ({
@@ -234,12 +234,12 @@ export class QdrantManager {
   // Vector similarity caching for performance
   async cacheEmbedding(_key: string, embedding: number[], metadata: any) {
     const point: any = { // Changed from PointStruct,
-      id: key
+      id: key,
       vector: {
         embedding: embedding
       },
       payload: {
-        cache_key: key
+        cache_key: key,
         cached_at: Date.now(),
         expires_at: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         ...metadata
@@ -276,7 +276,7 @@ export class QdrantManager {
       const collectionName = this.collections[collection];
       const info = await this.client.getCollection(collectionName);
       return {
-        name: collectionName
+        name: collectionName,
         vectors_count: info.vectors_count || 0,
         segments_count: info.segments_count || 0,
         status: info.status,

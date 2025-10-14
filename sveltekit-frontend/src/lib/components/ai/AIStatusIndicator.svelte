@@ -17,7 +17,7 @@
       loading: 'Loading...',
       error: 'AI Error',
       unavailable: 'AI Unavailable',
-    }[currentStatus],
+    }[currentStatus]
   );
   let statusColor = $derived(
     {
@@ -25,7 +25,7 @@
       loading: 'var(--status-warning, #f59e0b)',
       error: 'var(--status-error, #ef4444)',
       unavailable: 'var(--status-muted, #94a3b8)',
-    }[currentStatus],
+    }[currentStatus]
   );
   // Provider details
   let providerText = $derived(
@@ -35,7 +35,7 @@
         ? 'Cloud AI'
         : provider === 'hybrid'
           ? 'Hybrid AI'
-          : 'No Provider',
+          : 'No Provider'
   );
   let isErrorState = $derived(currentStatus === 'error');
   let isLoadingState = $derived(currentStatus === 'loading');

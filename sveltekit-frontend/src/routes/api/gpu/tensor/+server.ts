@@ -30,7 +30,7 @@ class GPUServiceManager {
     gpuServicePool.forEach(url => {
       this.serviceHealth.set(url, {
         url,
-        healthy: true
+        healthy: true,
         lastCheck: 0,
         responseTime: 0,
         errorCount: 0
@@ -271,10 +271,10 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         return json({
           api: {
-            processing: stats
-            services: serviceManager.getHealthStats()
+            processing: stats,
+            services: serviceManager.getHealthStats(),
           },
-          gpuService: serviceStats
+          gpuService: serviceStats,
           timestamp: Date.now(),
           uptime: process.uptime(),
           environment: dev ? 'development' : 'production'
@@ -323,8 +323,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: true,
         message: `${clearType} cleared successfully`,
         details: {
-          clearedType: clearType
-          serviceResults: results
+          clearedType: clearType,
+          serviceResults: results,
         }
       })
     }

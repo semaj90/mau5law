@@ -60,14 +60,14 @@ export class HeadlessUICache {
       embeddingDimensions: 256,
       syncInterval: 5 * 60 * 1000, // 5 minutes
       strategy: {
-        memory: true
-        indexeddb: true
+        memory: true,
+        indexeddb: true,
         localStorage: false, // Disabled by default due to size limits
-        lru: true
-        semantic: true
-        cost: true
-        syncWithRedis: true
-        conflictResolution: 'server'
+        lru: true,
+        semantic: true,
+        cost: true,
+        syncWithRedis: true,
+        conflictResolution: 'server',
       },
       ...config
     }
@@ -114,7 +114,7 @@ export class HeadlessUICache {
   }
   /**
    * Get cached data with semantic similarity fallback
-   */;
+   */
   async get<T>(_key: string, semanticQuery?: string): Promise<T | null> {
     this.totalRequests++;
     // 1. Check memory cache first (fastest)
@@ -166,7 +166,7 @@ export class HeadlessUICache {
    * Set cached data with optional semantic embedding
    */
   async set<T>(_key: string
-    data: T
+    data: T,
     ttl?: number
     source: 'client' | 'server' | 'hybrid' = 'client',
     semanticText?: string;
@@ -214,7 +214,7 @@ export class HeadlessUICache {
    * Find semantically similar cached entries using WASM vector operations
    */
   private async findSemanticallysimilar<T>(
-    query: string
+    query: string,
     threshold: number = 0.7;
   ): Promise<CacheEntry<T> | null> {
     if (!vectorWasm.isInitialized()) return null;
@@ -251,7 +251,7 @@ export class HeadlessUICache {
   }
   /**
    * Smart eviction using multiple strategies
-   */;
+   */
   private async enforceMemoryLimit(): Promise<void> {
     const currentSize = this.calculateMemorySize();
     if (currentSize <= this.config.maxMemorySize) return;
@@ -270,7 +270,7 @@ export class HeadlessUICache {
   }
   /**
    * Calculate eviction score (lower = more likely to evict)
-   */;
+   */
   private calculateEvictionScore(entry: CacheEntry): number {
     let score = 0;
     // Factor in recency (LRU)
@@ -290,7 +290,7 @@ export class HeadlessUICache {
   }
   /**
    * Sync with server-side Redis tensor cache
-   */;
+   */
   private async syncWithServer(): Promise<void> {
     if (!this.config.strategy.syncWithRedis) return;
     try {
@@ -421,7 +421,7 @@ export class HeadlessUICache {
     });
   }
   private async searchIndexedDBBySimilarity<T>(
-    queryEmbedding: Float32Array
+    queryEmbedding: Float32Array,
     threshold: number;
   ): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
@@ -459,7 +459,7 @@ export class HeadlessUICache {
   }
   /**
    * Get cache statistics
-   */;
+   */
   getStats() {
     return {
       hitRatio: this.hitRatio,
@@ -473,7 +473,7 @@ export class HeadlessUICache {
   }
   /**
    * Clear all caches
-   */;
+   */
   async clear(): Promise<void> {
     this.memoryCache.clear();
     if (this.db) {
@@ -484,7 +484,7 @@ export class HeadlessUICache {
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose(): void {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);

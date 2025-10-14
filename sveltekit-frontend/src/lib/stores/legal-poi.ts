@@ -687,16 +687,19 @@ export const savedSearchesStore = writable<
 >([]);
 
 // Criminal Investigation Functions
-export async function createWantedPoster(poiId: string, options: {
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  reward?: number;
-  charges: string[];
-  dangerWarning?: string;
-}): Promise<Blob> {
+export async function createWantedPoster(
+  poiId: string,
+  options: {
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    reward?: number;
+    charges: string[];
+    dangerWarning?: string;
+  }
+): Promise<Blob> {
   const response = await fetch(`/api/poi/${poiId}/wanted-poster`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(options)
+    body: JSON.stringify(options),
   });
   if (!response.ok) {
     throw new Error(`Wanted poster creation failed: ${response.statusText}`);
@@ -711,45 +714,51 @@ export async function addToWatchList(poiId: string, listType: string, reason: st
       listType,
       reason,
       priority,
-      addedDate: new Date().toISOString()
-    })
+      addedDate: new Date().toISOString(),
+    }),
   });
   if (!response.ok) {
     throw new Error(`Watch list addition failed: ${response.statusText}`);
   }
 }
-export async function recordSighting(poiId: string, sighting: {
-  location: string;
-  date: string;
-  description: string;
-  reportedBy: string;
-  reliability: number;
-  verified: boolean;
-}): Promise<void> {
+export async function recordSighting(
+  poiId: string,
+  sighting: {
+    location: string;
+    date: string;
+    description: string;
+    reportedBy: string;
+    reliability: number;
+    verified: boolean;
+  }
+): Promise<void> {
   const response = await fetch(`/api/poi/${poiId}/sighting`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(sighting)
+    body: JSON.stringify(sighting),
   });
   if (!response.ok) {
     throw new Error(`Sighting recording failed: ${response.statusText}`);
   }
 }
-export async function issueWarrant(poiId: string, warrant: {
-  type: 'arrest' | 'search' | 'bench';
-  charges: string[];
-  jurisdiction: string;
-  bail?: number;
-  conditions?: string[];
-}): Promise<string> {
+export async function issueWarrant(
+  poiId: string,
+  warrant: {
+    type: 'arrest' | 'search' | 'bench';
+    charges: string[];
+    jurisdiction: string;
+    bail?: number;
+    conditions?: string[];
+  }
+): Promise<string> {
   const response = await fetch(`/api/poi/${poiId}/warrant`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ...warrant,
       issuedDate: new Date().toISOString(),
-      status: 'active'
-    })
+      status: 'active',
+    }),
   });
   if (!response.ok) {
     throw new Error(`Warrant issuance failed: ${response.statusText}`);
@@ -815,7 +824,7 @@ export const mostWantedStore = writable<{
   localWanted: [],
   internationalWanted: [],
   recentEscapes: [],
-  highValueTargets: []
+  highValueTargets: [],
 });
 
 // Surveillance and Monitoring

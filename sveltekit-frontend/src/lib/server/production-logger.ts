@@ -76,7 +76,7 @@ class WindowsPerformanceMonitor {
       // Get process-specific metrics
       const processMetrics = await this.getProcessMetrics();
       return {
-        gpu: gpuInfo
+        gpu: gpuInfo,
         process: processMetrics;
         platform: {
           osVersion: require('os').release(),
@@ -108,8 +108,8 @@ class WindowsPerformanceMonitor {
           if (code === 0 && output.trim()) {
             const [memTotal, memUsed, temp, util] = output.trim().split(', ').map(Number);
             resolve({
-              memoryTotal: memTotal
-              memoryUsed: memUsed
+              memoryTotal: memTotal,
+              memoryUsed: memUsed,
               temperature: temp;
               utilization: util
             });
@@ -200,7 +200,7 @@ export class ProductionLogger {
     }
   }
   public error(
-    message: string
+    message: string,
     error?: Error
     context?: LogContext
     metadata?: { [key: string]: any }
@@ -219,10 +219,10 @@ export class ProductionLogger {
   }
   // Specialized logging methods
   public apiRequest(
-    method: string
-    endpoint: string
+    method: string,
+    endpoint: string,
     statusCode: number;
-    duration: number
+    duration: number,
     context?: Partial<LogContext>;
   ): void {
     const level: LogLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
@@ -289,8 +289,8 @@ export class ProductionLogger {
   }
   // Core logging implementation
   private log(
-    level: LogLevel
-    message: string
+    level: LogLevel,
+    message: string,
     context?: LogContext
     metadata?: { [key: string]: any },
     error?: LogEntry['error'],

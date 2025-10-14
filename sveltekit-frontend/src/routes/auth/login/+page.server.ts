@@ -1,8 +1,8 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
 export const load: PageServerLoad = async () => {
-  return {}
-}
+  return {};
+};
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
     const data = await request.formData();
@@ -39,4 +39,4 @@ export const actions: Actions = {
       return fail(400, { error: error.message || 'Login failed' });
     }
   },
-}
+};

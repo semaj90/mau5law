@@ -18,9 +18,9 @@ export interface VertexData {
 
 export interface LegalVisualizationVertex {
   position: Float32Array; // 3 floats (x, y, z)
-  color: Float32Array;    // 4 floats (r, g, b, a)
+  color: Float32Array; // 4 floats (r, g, b, a)
   textureCoord: Float32Array; // 2 floats (u, v)
-  caseData: Uint32Array;  // 4 uint32 (caseId hash, docType, risk, confidence)
+  caseData: Uint32Array; // 4 uint32 (caseId hash, docType, risk, confidence)
 }
 
 export interface StreamingConfig {
@@ -354,7 +354,7 @@ export class WebGPUVertexStreamer {
     }
 
     // Update uniforms
-    let uniformData = new Float32Array(20); // 16 + 4 for alignment
+    const uniformData = new Float32Array(20); // 16 + 4 for alignment
     uniformData.set(mvpMatrix, 0); // MVP matrix (16 floats)
     uniformData[16] = time; // time
     uniformData[17] = this.vertices.length; // vertex count

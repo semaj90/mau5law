@@ -29,7 +29,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
       user: sessionData.user,
       session: sessionData.session,
       permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? [],
-    }
+    };
   } catch (error: any) {
     // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them
     if (error && typeof (error as any).status === 'number') {
@@ -38,4 +38,4 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     console.error('Admin layout load error:', error);
     throw redirect(302, '/login');
   }
-}
+};

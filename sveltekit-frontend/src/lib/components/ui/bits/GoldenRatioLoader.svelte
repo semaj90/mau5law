@@ -144,7 +144,8 @@
                 cx={point.x}
                 cy={point.y}
                 r="1"
-                class="fill-amber-500 animate-pulse";
+                class="fill-amber-500 animate-pulse"
+                ;
                 style:animation-delay="{point.delay}ms"
               />
             {/each}
@@ -187,7 +188,8 @@
             View Details
           </button>
           <button
-            class="px-6 py-2 bg-white hover:bg-amber-50 text-amber-700 border border-amber-300 rounded-lg transition-colors duration-200";
+            class="px-6 py-2 bg-white hover:bg-amber-50 text-amber-700 border border-amber-300 rounded-lg transition-colors duration-200"
+            ;
             style:flex="0 0 {100 / GOLDEN_RATIO}%"
           >
             Export

@@ -43,7 +43,7 @@
   interface ScoringRequest {
     caseId: string;
     evidence?: string[];
-    context?: { [key: string]: any }
+    context?: { [key: string]: any };
     scoringModel?: 'comprehensive' | 'priority' | 'risk';
   }
   // Mock data generator for demonstration
@@ -59,19 +59,50 @@
         dateCreated: '2024-01-15',
         lastUpdated: new Date().toISOString(),
         factors: [
-          { category: 'Financial Risk', weight: 0.3, impact: 0.9, description: 'Potential damages exceed $10M', confidence: 95 },
-          { category: 'Legal Precedent', weight: 0.25, impact: 0.85, description: 'Limited favorable precedents', confidence: 88 },
-          { category: 'Evidence Strength', weight: 0.2, impact: 0.7, description: 'Key documents under dispute', confidence: 82 },
-          { category: 'Timeline Pressure', weight: 0.15, impact: 0.95, description: 'Trial date approaching rapidly', confidence: 100 },
-          { category: 'Public Relations', weight: 0.1, impact: 0.6, description: 'Moderate media attention', confidence: 75 }
+          {
+            category: 'Financial Risk',
+            weight: 0.3,
+            impact: 0.9,
+            description: 'Potential damages exceed $10M',
+            confidence: 95,
+          },
+          {
+            category: 'Legal Precedent',
+            weight: 0.25,
+            impact: 0.85,
+            description: 'Limited favorable precedents',
+            confidence: 88,
+          },
+          {
+            category: 'Evidence Strength',
+            weight: 0.2,
+            impact: 0.7,
+            description: 'Key documents under dispute',
+            confidence: 82,
+          },
+          {
+            category: 'Timeline Pressure',
+            weight: 0.15,
+            impact: 0.95,
+            description: 'Trial date approaching rapidly',
+            confidence: 100,
+          },
+          {
+            category: 'Public Relations',
+            weight: 0.1,
+            impact: 0.6,
+            description: 'Moderate media attention',
+            confidence: 75,
+          },
         ],
         recommendations: [
           'Prioritize settlement negotiations before trial date',
           'Strengthen expert witness testimony on technical claims',
           'Prepare comprehensive prior art documentation',
-          'Consider filing for summary judgment on key claims'
+          'Consider filing for summary judgment on key claims',
         ],
-        riskLevel: 'high' },
+        riskLevel: 'high',
+      },
       {
         id: 'case-002',
         title: 'State v. Anderson - Criminal Defense',
@@ -82,17 +113,41 @@
         dateCreated: '2024-02-01',
         lastUpdated: new Date(Date.now() - 86400000).toISOString(),
         factors: [
-          { category: 'Evidence Strength', weight: 0.35, impact: 0.75, description: 'Prosecution has substantial documentation', confidence: 90 },
-          { category: 'Witness Credibility', weight: 0.25, impact: 0.6, description: 'Key witness reliability questionable', confidence: 70 },
-          { category: 'Legal Complexity', weight: 0.2, impact: 0.8, description: 'Multiple intersecting statutes', confidence: 85 },
-          { category: 'Sentencing Risk', weight: 0.2, impact: 0.85, description: 'Mandatory minimums apply', confidence: 95 }
+          {
+            category: 'Evidence Strength',
+            weight: 0.35,
+            impact: 0.75,
+            description: 'Prosecution has substantial documentation',
+            confidence: 90,
+          },
+          {
+            category: 'Witness Credibility',
+            weight: 0.25,
+            impact: 0.6,
+            description: 'Key witness reliability questionable',
+            confidence: 70,
+          },
+          {
+            category: 'Legal Complexity',
+            weight: 0.2,
+            impact: 0.8,
+            description: 'Multiple intersecting statutes',
+            confidence: 85,
+          },
+          {
+            category: 'Sentencing Risk',
+            weight: 0.2,
+            impact: 0.85,
+            description: 'Mandatory minimums apply',
+            confidence: 95,
+          },
         ],
         recommendations: [
           'Focus on challenging chain of custody for digital evidence',
           'Develop alternative narrative for financial transactions',
-          'Negotiate plea agreement to avoid mandatory minimums'
+          'Negotiate plea agreement to avoid mandatory minimums',
         ],
-        riskLevel: 'high'
+        riskLevel: 'high',
       },
       {
         id: 'case-003',
@@ -104,17 +159,41 @@
         dateCreated: '2024-01-20',
         lastUpdated: new Date(Date.now() - 172800000).toISOString(),
         factors: [
-          { category: 'Tax Implications', weight: 0.4, impact: 0.5, description: 'Moderate tax exposure under current structure', confidence: 85 },
-          { category: 'Family Dynamics', weight: 0.3, impact: 0.4, description: 'Generally cooperative beneficiaries', confidence: 80 },
-          { category: 'Asset Complexity', weight: 0.2, impact: 0.45, description: 'Mixed portfolio of liquid and illiquid assets', confidence: 90 },
-          { category: 'Regulatory Changes', weight: 0.1, impact: 0.3, description: 'Stable regulatory environment', confidence: 75 }
+          {
+            category: 'Tax Implications',
+            weight: 0.4,
+            impact: 0.5,
+            description: 'Moderate tax exposure under current structure',
+            confidence: 85,
+          },
+          {
+            category: 'Family Dynamics',
+            weight: 0.3,
+            impact: 0.4,
+            description: 'Generally cooperative beneficiaries',
+            confidence: 80,
+          },
+          {
+            category: 'Asset Complexity',
+            weight: 0.2,
+            impact: 0.45,
+            description: 'Mixed portfolio of liquid and illiquid assets',
+            confidence: 90,
+          },
+          {
+            category: 'Regulatory Changes',
+            weight: 0.1,
+            impact: 0.3,
+            description: 'Stable regulatory environment',
+            confidence: 75,
+          },
         ],
         recommendations: [
           'Consider generation-skipping trust provisions',
           'Review and update beneficiary designations',
-          'Implement regular trust review schedule'
+          'Implement regular trust review schedule',
         ],
-        riskLevel: 'medium'
+        riskLevel: 'medium',
       },
       {
         id: 'case-004',
@@ -126,17 +205,41 @@
         dateCreated: '2024-02-10',
         lastUpdated: new Date(Date.now() - 259200000).toISOString(),
         factors: [
-          { category: 'Contract Clarity', weight: 0.35, impact: 0.25, description: 'Well-drafted agreement with clear terms', confidence: 95 },
-          { category: 'Damages Amount', weight: 0.3, impact: 0.3, description: 'Limited financial exposure', confidence: 90 },
-          { category: 'Counterparty Risk', weight: 0.2, impact: 0.35, description: 'Financially stable opponent', confidence: 88 },
-          { category: 'Settlement Likelihood', weight: 0.15, impact: 0.2, description: 'High probability of early settlement', confidence: 92 }
+          {
+            category: 'Contract Clarity',
+            weight: 0.35,
+            impact: 0.25,
+            description: 'Well-drafted agreement with clear terms',
+            confidence: 95,
+          },
+          {
+            category: 'Damages Amount',
+            weight: 0.3,
+            impact: 0.3,
+            description: 'Limited financial exposure',
+            confidence: 90,
+          },
+          {
+            category: 'Counterparty Risk',
+            weight: 0.2,
+            impact: 0.35,
+            description: 'Financially stable opponent',
+            confidence: 88,
+          },
+          {
+            category: 'Settlement Likelihood',
+            weight: 0.15,
+            impact: 0.2,
+            description: 'High probability of early settlement',
+            confidence: 92,
+          },
         ],
         recommendations: [
           'Proceed with standard mediation process',
           'Document all performance milestones',
-          'Maintain open communication channels'
+          'Maintain open communication channels',
         ],
-        riskLevel: 'low'
+        riskLevel: 'low',
       },
       {
         id: 'case-005',
@@ -148,25 +251,49 @@
         dateCreated: '2024-01-25',
         lastUpdated: new Date().toISOString(),
         factors: [
-          { category: 'Medical Evidence', weight: 0.35, impact: 0.65, description: 'Mixed expert opinions on standard of care', confidence: 75 },
-          { category: 'Jury Sympathy', weight: 0.25, impact: 0.8, description: 'Plaintiff has compelling personal story', confidence: 85 },
-          { category: 'Insurance Coverage', weight: 0.2, impact: 0.5, description: 'Adequate coverage with reasonable deductible', confidence: 90 },
-          { category: 'Prior Cases', weight: 0.2, impact: 0.7, description: 'Previous similar claims settled', confidence: 80 }
+          {
+            category: 'Medical Evidence',
+            weight: 0.35,
+            impact: 0.65,
+            description: 'Mixed expert opinions on standard of care',
+            confidence: 75,
+          },
+          {
+            category: 'Jury Sympathy',
+            weight: 0.25,
+            impact: 0.8,
+            description: 'Plaintiff has compelling personal story',
+            confidence: 85,
+          },
+          {
+            category: 'Insurance Coverage',
+            weight: 0.2,
+            impact: 0.5,
+            description: 'Adequate coverage with reasonable deductible',
+            confidence: 90,
+          },
+          {
+            category: 'Prior Cases',
+            weight: 0.2,
+            impact: 0.7,
+            description: 'Previous similar claims settled',
+            confidence: 80,
+          },
         ],
         recommendations: [
           'Engage top medical experts early',
           'Prepare comprehensive standard of care documentation',
           'Explore structured settlement options',
-          'Focus on procedural compliance evidence'
+          'Focus on procedural compliance evidence',
         ],
-        riskLevel: 'medium'
-      }
+        riskLevel: 'medium',
+      },
     ];
     // Add some randomization to scores for demo effect
     return mockCases.map(c => ({
       ...c,
       score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),
-      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)))
+      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5))),
     }));
   }
   $effect(() => {
@@ -193,8 +320,8 @@
         const response = await fetch('/api/ai/case-scoring', {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
         if ((response as { ok?: boolean }).ok) {
           const data = await response.json();
@@ -242,12 +369,12 @@
         const request: ScoringRequest = {
           caseId,
           scoringModel: 'comprehensive',
-          ...options
+          ...options,
         };
         const response = await fetch('/api/ai/case-scoring', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(request),
         });
@@ -281,11 +408,16 @@
   }
   function getPriorityBadgeClass(priority: string): string {
     switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'critical':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   // Derived filtered list (Svelte 5 $derived returns a callable)
@@ -306,13 +438,16 @@
     filtered = [...filtered]; // copy before sort
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'score': return b.score - a.score;
+        case 'score':
+          return b.score - a.score;
         case 'priority': {
           const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
-        case 'date': return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
-        default: return 0;
+        case 'date':
+          return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+        default:
+          return 0;
       }
     });
     return filtered;
@@ -323,6 +458,7 @@
     showScoreDetails = true;
   }
 </script>
+
 <svelte:head>
   <title>Case Scoring Dashboard - Legal AI Platform</title>
 </svelte:head>
@@ -337,7 +473,13 @@
         <input type="checkbox" bind:checked={useMockData} onchange={() => loadCaseScores()} />
         <span>Demo Mode</span>
       </label>
-      <button aria-label="Action button" type="button" onclick={() => loadCaseScores()} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
+      <button
+        aria-label="Action button"
+        type="button"
+        onclick={() => loadCaseScores()}
+        disabled={isLoading}
+        class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50"
+      >
         {isLoading ? 'Loading...' : 'Refresh'}
       </button>
     </div>
@@ -434,18 +576,24 @@
           </div>
           <div class="nier-bits-yorha-panel-content">
             <div class="nier-bits-card-actions">
-              <button aria-label="Action button" type="button" onclick={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
-                 View Details
-               </button>
-              <button aria-label="Action button"
+              <button
+                aria-label="Action button"
+                type="button"
+                onclick={() => openScoreDetails(caseItem)}
+                class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50"
+              >
+                View Details
+              </button>
+              <button
+                aria-label="Action button"
                 type="button"
                 onclick={() => scoreCase(caseItem.id)}
-                 disabled={scoringInProgress}
-                 class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
-               >
-                 {scoringInProgress ? 'Rescoring...' : 'Rescore'}
-               </button>
-             </div>
+                disabled={scoringInProgress}
+                class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
+              >
+                {scoringInProgress ? 'Rescoring...' : 'Rescore'}
+              </button>
+            </div>
           </div>
         </div>
       {/each}
@@ -461,9 +609,11 @@
       aria-label="Close dialog"
       class="visually-hidden"
       onclick={() => (showScoreDetails = false)}
-      onkeydown={(e) => { if (e.key === 'Escape') showScoreDetails = false; }}
-    >Close</button>
-    <div class="modal-content score-details-dialog" role="document" onclick={(e) => e.stopPropagation()}>
+      onkeydown={e => {
+        if (e.key === 'Escape') showScoreDetails = false;
+      }}>Close</button
+    >
+    <div class="modal-content score-details-dialog" role="document" onclick={e => e.stopPropagation()}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
@@ -514,22 +664,36 @@
         </section>
       </div>
       <div class="dialog-actions">
-        <button aria-label="Action button" type="button" onclick={() => (showScoreDetails = false)} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
+        <button
+          aria-label="Action button"
+          type="button"
+          onclick={() => (showScoreDetails = false)}
+          class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50"
+        >
           Close
         </button>
-        <button aria-label="Action button" type="button" onclick={() => selectedCase && scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
+        <button
+          aria-label="Action button"
+          type="button"
+          onclick={() => selectedCase && scoreCase(selectedCase.id)}
+          class="px-3 py-2 rounded bg-blue-600 text-white"
+        >
           Rescore Case
         </button>
       </div>
     </div>
   </div>
 {/if}
+
 <style>
   .case-scoring-dashboard {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
   .dashboard-header {
     display: flex;
@@ -565,7 +729,7 @@
     font-size: 0.875rem;
     cursor: pointer;
   }
-  .demo-toggle input[type="checkbox"] {
+  .demo-toggle input[type='checkbox'] {
     cursor: pointer;
   }
   .demo-toggle span {
@@ -676,10 +840,18 @@
     font-weight: 600;
     font-size: 0.875rem;
   }
-  .risk-low { color: #059669; }
-  .risk-medium { color: #d97706; }
-  .risk-high { color: #dc2626; }
-  .risk-critical { color: #991b1b; }
+  .risk-low {
+    color: #059669;
+  }
+  .risk-medium {
+    color: #d97706;
+  }
+  .risk-high {
+    color: #dc2626;
+  }
+  .risk-critical {
+    color: #991b1b;
+  }
   .top-factors h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
@@ -708,7 +880,8 @@
     gap: 0.5rem;
     justify-content: flex-end;
   }
-  .loading-state, .empty-state {
+  .loading-state,
+  .empty-state {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
@@ -724,7 +897,9 @@
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Modal Styles */
   .modal-overlay {
@@ -742,7 +917,9 @@
   .modal-content {
     background: white;
     border-radius: 0.5rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;

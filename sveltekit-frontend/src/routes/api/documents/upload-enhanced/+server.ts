@@ -67,10 +67,10 @@ export const POST: RequestHandler = async ({ request }) => {
         processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails,
         message: `Document uploaded and indexed successfully with ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks} semantic chunks`,
         features: {
-          textExtraction: true
-          semanticIndexing: true
-          legalClassification: true
-          enhancedSearch: true
+          textExtraction: true,
+          semanticIndexing: true,
+          legalClassification: true,
+          enhancedSearch: true,
         }
       })
     } else {

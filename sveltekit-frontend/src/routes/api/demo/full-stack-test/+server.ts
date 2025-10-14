@@ -81,14 +81,14 @@ export const GET: RequestHandler = async ({ url }) => {
           entities_found: processResult.parsedDocument.entities.length,
           suggestions_made: processResult.parsedDocument.suggestions.length,
           confidence_score: processResult.parsedDocument.confidence,
-          gpu_accelerated: true
+          gpu_accelerated: true,
           vectorized_in_pgvector: processResult.vectorized,
           processing_stats: processResult.processingStats
         },
         // Search performance results
         semantic_search: {
           queries_tested: searchQueries.length,
-          results_summary: searchResults
+          results_summary: searchResults,
           redis_caching: 'enabled',
           avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A'
         },
@@ -115,8 +115,8 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         message: 'YoRHa Legal AI Full Stack Demo completed successfully',
-        results: demoResults
-        next_steps: [
+        results: demoResults,
+        next_steps: [,
           'Document successfully processed with SIMD GPU acceleration',
           'Vector embeddings stored in PostgreSQL with pgvector',
           'Search results cached in Redis for optimal performance',
@@ -234,9 +234,9 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         action: 'custom_semantic_search',
-        query: searchQuery
-        results: searchResults
-        cached: searchResults.length > 0 // Indicates if this was likely cached
+        query: searchQuery,
+        results: searchResults,
+        cached: searchResults.length > 0, // Indicates if this was likely cached
       })
     }
     return json({

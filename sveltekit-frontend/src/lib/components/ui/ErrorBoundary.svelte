@@ -8,25 +8,25 @@
     showDetails?: boolean;
     onError?: ((error: Error) => void) | null;
   }
-  let {
-    fallback = '',
-    showDetails = false,
-    onError = null
-  }: Props = $props();
+  let { fallback = '', showDetails = false, onError = null }: Props = $props();
   let error: Error | null = null;
   let errorInfo: string = '';
   let isRetrying = false;
   // Error details for debugging
-  let errorDetails = $derived(error ? {
-    name: error.name,
-    message: error.message,
-    stack: error.stack,
-    timestamp: new Date().toISOString(),
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
-    url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
-  } : null);
+  let errorDetails = $derived(
+    error
+      ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString(),
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+          url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
+        }
+      : null
+  );
   function handleError(_event: ErrorEvent | PromiseRejectionEvent) {
-    const err = 'error' in event ? event.error: event.reaso;
+    const err = 'error' in event ? event.error : event.reaso;
     if (err instanceof Error) {
       error = err;
       errorInfo = err.stack || err.messag;
@@ -60,7 +60,7 @@
         ...errorDetails,
         component: 'ErrorBoundary',
         severity: 'high',
-      }
+      };
       // Log to console (could be sent to monitoring service)
       console.warn('Error report generated:', report);
       // You could implement actual error reporting here

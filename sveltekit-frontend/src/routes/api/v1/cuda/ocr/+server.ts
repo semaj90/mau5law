@@ -9,19 +9,19 @@ const execAsync = promisify(exec);
 
 /* Helper to safely extract useful info from unknown throwables */
 function normalizeError(err: unknown): { status?: number; message?: string; bodyMessage?: string } {
-	// Non-object errors (string, number, etc.)
-	if (err === null || typeof err !== 'object') {
-		return { message: typeof err === 'string' ? err : undefined };
-	}
-	const e = err as Record<string, unknown>;
-	const status = typeof e.status === 'number' ? e.status : undefined;
-	const message = typeof e.message === 'string' ? e.message : undefined;
-	let bodyMessage: string | undefined;
-	if (e.body && typeof e.body === 'object') {
-		const body = e.body as Record<string, unknown>;
-		if (typeof body.message === 'string') bodyMessage = body.message;
-	}
-	return { status, message, bodyMessage };
+  // Non-object errors (string, number, etc.)
+  if (err === null || typeof err !== 'object') {
+    return { message: typeof err === 'string' ? err : undefined };
+  }
+  const e = err as Record<string, unknown>;
+  const status = typeof e.status === 'number' ? e.status : undefined;
+  const message = typeof e.message === 'string' ? e.message : undefined;
+  let bodyMessage: string | undefined;
+  if (e.body && typeof e.body === 'object') {
+    const body = e.body as Record<string, unknown>;
+    if (typeof body.message === 'string') bodyMessage = body.message;
+  }
+  return { status, message, bodyMessage };
 }
 
 /**
@@ -84,28 +84,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     console.log(`✅ CUDA OCR completed: ${cudaResult.text.length} chars extracted`);
 
-    return json({
-      success: true,
-      text: cudaResult.text,
-      confidence: cudaResult.confidence,
-      regions: cudaResult.regions || [],
-      processingMethod: 'cuda_tensorrt',
-      processingTime: Math.round(processingTime),
-      metadata: {
-        modelUsed: 'tensorrt_gemma',
-        gpuAccelerated: true,
-        cudaVersion: cudaResult.cudaVersion,
-        tensorrtVersion: cudaResult.tensorrtVersion
+    return json(
+      {
+        success: true,
+        text: cudaResult.text,
+        confidence: cudaResult.confidence,
+        regions: cudaResult.regions || [],
+        processingMethod: 'cuda_tensorrt',
+        processingTime: Math.round(processingTime),
+        metadata: {
+          modelUsed: 'tensorrt_gemma',
+          gpuAccelerated: true,
+          cudaVersion: cudaResult.cudaVersion,
+          tensorrtVersion: cudaResult.tensorrtVersion,
+        },
+      },
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Processing-Time': `${Math.round(processingTime)}ms`,
+          'X-GPU-Accelerated': 'true',
+        },
       }
-    }, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-GPU-Accelerated': 'true'
-      }
-    });
-
+    );
   } catch (err: unknown) {
     const processingTime = performance.now() - startTime;
     console.error('CUDA OCR error:', err);
@@ -113,9 +115,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { status, message, bodyMessage } = normalizeError(err);
 
     const errorResponse = {
-      error: status ? bodyMessage ?? message ?? 'CUDA OCR failed' : 'Internal server error',
+      error: status ? (bodyMessage ?? message ?? 'CUDA OCR failed') : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? message : undefined,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {

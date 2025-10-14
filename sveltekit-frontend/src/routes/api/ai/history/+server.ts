@@ -31,7 +31,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     return json({ error: 'Failed to save AI history' }, { status: 500 });
   }
-}
+};
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     const userId = getUserId(locals) || 'anonymous';
@@ -40,6 +40,6 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     return json({ error: 'Failed to fetch AI history' }, { status: 500 });
   }
-}
+};
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
 export const GET = redisOptimized.aiAnalysis(originalGETHandler);

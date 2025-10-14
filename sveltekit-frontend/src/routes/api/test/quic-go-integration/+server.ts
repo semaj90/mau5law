@@ -77,8 +77,8 @@ const goServiceManager = {
           success: true,
           service,
           method,
-          mockResponse: true
-          timestamp: new Date().toISOString()
+          mockResponse: true,
+          timestamp: new Date().toISOString(),
         }
       }
     }
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testsError: Object.values(testResults).filter((t) => t.status === 'ERROR').length
     }
     return json({
-      success: overallSuccess
+      success: overallSuccess,
       message: 'QUIC-Go Integration Test Complete',
       summary,
       testResults,
@@ -270,8 +270,8 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Custom integration test completed',
       service,
       endpoint,
-      result: testResult
-      timestamp: new Date().toISOString()
+      result: testResult,
+      timestamp: new Date().toISOString(),
     })
   } catch (err: any) {
     console.error('Custom integration test failed:', err)

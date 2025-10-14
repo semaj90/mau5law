@@ -290,7 +290,8 @@ editing
       <div class="space-y-4">
         <label for="ai-query">What would you like help with?</label>
         <textarea
-          id="ai-query";
+          id="ai-query"
+          ;
           bind:value={aiQuery}
           placeholder="E.g., 'Analyze this clause', 'Suggest improvements', 'Find relevant precedents'..."
           rows="4"

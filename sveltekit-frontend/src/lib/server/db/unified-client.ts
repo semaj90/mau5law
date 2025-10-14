@@ -609,15 +609,10 @@ export const unifiedDb = {
   vectorSearch: (embedding: number[], options?: VectorSearchOptions) =>
     dbManager.hybridVectorSearch(embedding, options),
   ensureCollection: (name: string, size?: number, distance?: 'Cosine' | 'Dot' | 'Euclid') =>
-    dbManager.ensureQdrantCollection(name, size, distance)
-}
+    dbManager.ensureQdrantCollection(name, size, distance),
+};
 // Re-export schema for convenience
 export * from './schema-unified.js';
 // Re-export types
-export type {
-  DatabaseConfig,
-  VectorSearchOptions,
-  HybridSearchResult,
-  DocumentMetadata
-}
+export type { DatabaseConfig, VectorSearchOptions, HybridSearchResult, DocumentMetadata };
 export default unifiedDb;

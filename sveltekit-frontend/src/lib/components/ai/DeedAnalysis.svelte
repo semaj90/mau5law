@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import type { Document } from "$lib/types/global";
+  import type { Document } from '$lib/types/global';
   // Types
   interface SimilarityResult extends Document {
-  similarity: number;
+    similarity: number;
   }
   // Props (Svelte 5 runes)
   let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props();
@@ -39,7 +39,7 @@
         similarDocuments = [];
       }
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Search failed';
+      error = err instanceof Error ? err.message : 'Search failed';
       similarDocuments = [];
     } finally {
       isLoading = false;
@@ -48,9 +48,10 @@
   // Reactive search when query changes
   // simple reactive trigger (debounce could be added later)
   $effect(() => {
-  if (searchQuery && searchQuery.trim().length) { // Added .trim() to ensure non-empty string
-    performSemanticSearch(searchQuery);
-  }
+    if (searchQuery && searchQuery.trim().length) {
+      // Added .trim() to ensure non-empty string
+      performSemanticSearch(searchQuery);
+    }
   });
 </script>
 
@@ -154,8 +155,9 @@
           <div class="bg-gray-50 p-3 rounded text-sm">
             <p class="text-gray-700">{doc.content.slice(0, 200)}{doc.content.length > 200 ? '...' : ''}</p>
           </div>
-            <div class="mt-3 flex justify-end">
-              <button type="button"
+          <div class="mt-3 flex justify-end">
+            <button
+              type="button"
               onclick={() => (selectedDocument = doc)}
               class="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >

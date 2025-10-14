@@ -17,32 +17,32 @@
     variant = 'default',
     size = 'default',
     showPercentage = false,
-    class: className = ''
+    class: className = '',
   }: Props = $props();
 
   let percentage = $derived(Math.min(Math.max((value / max) * 100, 0), 100));
 
   // Enhanced theming with NES.css compatibility
   let variantClasses = $derived(
-    variant === 'success' ? 'bg-green-500 nes-progress is-success' :
-    variant === 'error' ? 'bg-red-500 nes-progress is-error' :
-    variant === 'warning' ? 'bg-yellow-500 nes-progress is-warning' :
-    variant === 'info' ? 'bg-blue-500 nes-progress is-primary' :
-    variant === 'yorha' ? 'bg-black nes-progress is-dark' :
-    variant === 'legal' ? 'bg-indigo-600 nes-progress is-pattern' :
-    'bg-gray-600 nes-progress'
+    variant === 'success'
+      ? 'bg-green-500 nes-progress is-success'
+      : variant === 'error'
+        ? 'bg-red-500 nes-progress is-error'
+        : variant === 'warning'
+          ? 'bg-yellow-500 nes-progress is-warning'
+          : variant === 'info'
+            ? 'bg-blue-500 nes-progress is-primary'
+            : variant === 'yorha'
+              ? 'bg-black nes-progress is-dark'
+              : variant === 'legal'
+                ? 'bg-indigo-600 nes-progress is-pattern'
+                : 'bg-gray-600 nes-progress'
   );
 
-  let sizeClasses = $derived(
-    size === 'sm' ? 'h-1.5' :
-    size === 'lg' ? 'h-4' :
-    'h-2.5'
-  );
+  let sizeClasses = $derived(size === 'sm' ? 'h-1.5' : size === 'lg' ? 'h-4' : 'h-2.5');
 
   let containerClasses = $derived(
-    variant === 'yorha' ? 'nes-container is-dark with-title' :
-    variant === 'legal' ? 'nes-container with-title' :
-    ''
+    variant === 'yorha' ? 'nes-container is-dark with-title' : variant === 'legal' ? 'nes-container with-title' : ''
   );
 </script>
 
@@ -58,7 +58,9 @@
       aria-label="Upload progress"
     >
       {#if variant === 'yorha'}
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"
+        ></div>
       {/if}
     </div>
   </div>
@@ -72,8 +74,12 @@
 
 <style>
   @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
 
   .animate-shimmer {
@@ -97,8 +103,8 @@
       45deg,
       transparent,
       transparent 10px,
-      rgba(255,255,255,.1) 10px,
-      rgba(255,255,255,.1) 20px
+      rgba(255, 255, 255, 0.1) 10px,
+      rgba(255, 255, 255, 0.1) 20px
     );
     pointer-events: none;
   }

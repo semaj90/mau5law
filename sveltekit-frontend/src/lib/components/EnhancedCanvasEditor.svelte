@@ -1059,6 +1059,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <!-- Props migrated to Svelte 5 $props() pattern -->
 
 <style>

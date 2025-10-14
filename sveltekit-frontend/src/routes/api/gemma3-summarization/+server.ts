@@ -22,12 +22,12 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
           error: 'Service unreachable',
         },
-        { status: 503 },
+        { status: 503 }
       );
     }
   }
   error(404, 'Not found');
-}
+};
 // Summarization endpoints
 export const POST: RequestHandler = async ({ request, url }) => {
   const endpoint = url.pathname.split('/').pop();
@@ -64,4 +64,4 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     error(500, 'Internal server error');
   }
-}
+};

@@ -13,7 +13,7 @@ export interface DimensionalArray {
     lastAccessed: number;
     computationHash: string;
     attentionWeights: Float32Array;
-  }
+  };
 }
 export interface KernelAttentionSlice {
   startIndex: number;
@@ -31,7 +31,7 @@ export interface CacheEntry {
     userId: string;
     sessionId: string;
     behaviorPattern: string;
-  }
+  };
 }
 
 export interface RecommendationResult {

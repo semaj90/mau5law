@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Store the query in PostgreSQL
     const [query] = await db.insert(legal_queries).values({
       prompt,
-      context: context || null
+      context: context || null,
       timestamp: new Date(),
       status: 'processing',
       user_ip: request.headers.get('x-forwarded-for') || 'unknown'
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const inference_start = Date.now()
       const result = await tensorrtService.infer({
         prompt,
-        context: enhanced_context
+        context: enhanced_context,
         max_tokens,
         temperature
       })
@@ -77,8 +77,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const query_embedding = await generateEmbedding(prompt)
         await db.insert(embeddings).values({
           query_id: query.id,
-          embedding: query_embedding
-          created_at: new Date()
+          embedding: query_embedding,
+          created_at: new Date(),
         })
       } catch (embedding_error) {
         console.warn('Failed to store embedding:', embedding_error)
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           model_used: result.model_used,
           tokens: result.tokens,
           inference_time: result.inference_time,
-          total_time: inference_time
+          total_time: inference_time,
           similar_documents_found: similar_documents.length,
           enhanced_with_context: enhanced_context.length > (context?.length || 0)
         }
@@ -208,9 +208,9 @@ export const PUT: RequestHandler = async ({ request }) => {
     `)
     return json({
       success: true,
-      query: query_text
-      results: similar_documents
-      count: similar_documents.length
+      query: query_text,
+      results: similar_documents,
+      count: similar_documents.length,
     })
   } catch (error) {
     console.error('Vector search error:', error)

@@ -33,7 +33,7 @@ export class ChatHistoryService {
         model,
         messageCount: 0,
       },
-    }
+    };
     await db.insert(chatSessions).values(session);
     return id;
   }
@@ -55,7 +55,7 @@ export class ChatHistoryService {
         model: params?.model || 'unknown',
         ...(params.metadata || {}),
       },
-    }
+    };
     await db.insert(chatMessages).values(msg);
     // Update session metadata with incremented message count
     const currentSession = await db.select().from(chatSessions).where(eq(chatSessions.id, params.sessionId)).limit(1);

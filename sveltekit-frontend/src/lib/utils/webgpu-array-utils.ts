@@ -4,7 +4,14 @@
  * Solves Float32Array vs ArrayBuffer mismatches and provides quantization for AI inference
  * Author: Claude Code Integration
  */
-export type SupportedArrayTypes = ArrayBuffer | Float32Array | Float64Array | Uint8Array | Int8Array | Uint16Array | Int16Array;
+export type SupportedArrayTypes =
+  | ArrayBuffer
+  | Float32Array
+  | Float64Array
+  | Uint8Array
+  | Int8Array
+  | Uint16Array
+  | Int16Array;
 
 export interface QuantizationConfig {
   precision: 'fp32' | 'fp16' | 'int8' | 'uint8';
@@ -75,8 +82,8 @@ export interface ArrayConversionResult {
  */
 export function quantizeToINT8(input: Float32Array, config?: Partial<QuantizationConfig>): ArrayConversionResult {
   // Calculate dynamic range if not provided
-  let minVal = config?.minValue ?? Math.min(...input);
-  let maxVal = config?.maxValue ?? Math.max(...input);
+  const minVal = config?.minValue ?? Math.min(...input);
+  const maxVal = config?.maxValue ?? Math.max(...input);
   // Avoid division by zero
   const range = Math.max(maxVal - minVal, 1e-8);
   const scale = config?.scale ?? 254.0 / range; // Leave room for -127 to 127
@@ -117,7 +124,7 @@ export function dequantizeINT8(quantizedData: Int8Array, config: QuantizationCon
 }
 /**
  * Dequantizes FP16 back to Float32Array
- */;
+ */
 export function dequantizeFP16(fp16Data: Uint16Array): Float32Array {
   const result = new Float32Array(fp16Data.length);
   for (let i = 0; i < fp16Data.length; i++) {

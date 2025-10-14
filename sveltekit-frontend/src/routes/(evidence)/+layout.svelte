@@ -18,7 +18,7 @@
     { name: 'Evidence Canvas', href: '/evidence/canvas', icon: '🎨' },
     { name: 'Evidence Board', href: '/evidence/board', icon: '📊' },
     { name: 'Workspace', href: '/evidence/workspace', icon: '🏢' },
-    { name: 'Interactive Tools', href: '/evidence/interactive', icon: '⚡' }
+    { name: 'Interactive Tools', href: '/evidence/interactive', icon: '⚡' },
   ];
 
   // Get current route

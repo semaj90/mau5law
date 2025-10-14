@@ -25,7 +25,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     }
     // First, get basic search results
     const searchParams = new URLSearchParams({
-      q: query
+      q: query,
       jurisdiction,
       category,
       limit: '20'
@@ -45,8 +45,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       count: aiEnhancedResults.laws.length,
       query,
       filters: { jurisdiction, category },
-      enhanced: true
-      timestamp: new Date().toISOString()
+      enhanced: true,
+      timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
     console.error('AI legal search error:', error)
@@ -77,7 +77,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: aiAnalysisPrompt
+        message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
         model: 'gemma3-legal:latest'
       })
@@ -123,7 +123,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       aiInsights: generateLawInsights(law, query)
     })
     return {
-      laws: enhancedLaws
+      laws: enhancedLaws,
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
       concepts: aiAnalysis.concepts || extractLegalConcepts(query)

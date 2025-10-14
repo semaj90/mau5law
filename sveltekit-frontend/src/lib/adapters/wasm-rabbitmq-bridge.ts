@@ -37,7 +37,7 @@ export function createWASMHandler(
     vectorSimilarity?: boolean;
     batchNormalization?: boolean;
     tensorCompression?: boolean;
-  },
+  }
 ): MessageHandler {
   return async (message: any, originalMessage: any) => {
     const startTime = performance.now();
@@ -63,7 +63,7 @@ export function createWASMHandler(
       // Fallback to base handler on WASM errors
       return await baseHandler(message, originalMessage);
     }
-  }
+  };
 }
 /**
  * Determine if a message should use WASM acceleration
@@ -84,7 +84,7 @@ export function createWASMHandler(
       messageStr.includes(indicator) ||
       message.type?.includes(indicator) ||
       message.stage?.includes('embedding') ||
-      message.cudaAccelerated === true,
+      message.cudaAccelerated === true
   );
 }
 /**
@@ -96,10 +96,10 @@ async function enhanceMessageWithWASM(
     vectorSimilarity?: boolean;
     batchNormalization?: boolean;
     tensorCompression?: boolean;
-  },
+  }
 ): Promise<any> {
   if (!wasmModule || !wasmReady) return message;
-  const enhanced = { ...message }
+  const enhanced = { ...message };
   const wasmMemory = wasmModule.instance.exports.memory as WebAssembly.Memory;
   const floatView = new Float32Array(wasmMemory.buffer);
   try {
@@ -150,7 +150,7 @@ async function enhanceMessageWithWASM(
         const normalizedPtr = (wasmModule.instance.exports.batchNormalizeVectors as Function)(
           vectorsPtr,
           numVectors,
-          vectorLength,
+          vectorLength
         );
         const normalizedOffset = normalizedPtr > 2;
         // Copy normalized vectors back
@@ -184,7 +184,7 @@ async function enhanceMessageWithWASM(
 export async function computeVectorSimilarityWASM(
   queryVector: number[],
   targetVectors: number[][],
-  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
+  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine'
 ): Promise<number[]> {
   if (!wasmModule || !wasmReady) {
     throw new Error('WASM module not ready for similarity computation');
@@ -195,7 +195,7 @@ export async function computeVectorSimilarityWASM(
   const vectorDim = queryVec.length;
   const vectorCount = targetVectors.length;
   // Algorithm mapping
-  const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 }
+  const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 };
   try {
     // Allocate WASM memory
     const queryPtr = (wasmModule.instance.exports.__new as Function)(vectorDim * 4, 0);
@@ -221,7 +221,7 @@ export async function computeVectorSimilarityWASM(
       resultsPtr,
       vectorDim,
       vectorCount,
-      algorithmMap[algorithm],
+      algorithmMap[algorithm]
     );
     // Extract results
     const similarities = [];
@@ -261,7 +261,7 @@ export async function computeVectorSimilarityWASM(
         });
       }
     },
-    { batchNormalization: true },
+    { batchNormalization: true }
   );
   worker.registerHandler('legal.chunks.embed', vectorEmbeddingHandler);
   // WASM Similarity Search Handler
@@ -272,7 +272,7 @@ export async function computeVectorSimilarityWASM(
         const similarities = await computeVectorSimilarityWASM(
           message.queryVector,
           message.candidateVectors,
-          message.algorithm || 'cosine',
+          message.algorithm || 'cosine'
         );
         await worker.publishMessage('legal.search.results', {
           ...message,
@@ -282,7 +282,7 @@ export async function computeVectorSimilarityWASM(
         });
       }
     },
-    { vectorSimilarity: true },
+    { vectorSimilarity: true }
   );
   worker.registerHandler('legal.similarity.compute', similarityHandler);
   console.log('✅ WASM-accelerated handlers registered');
@@ -297,5 +297,5 @@ export async function computeVectorSimilarityWASM(
     capabilities: wasmReady
       ? ['vector_normalization', 'batch_processing', 'similarity_computation', 'tensor_operations']
       : [],
-  }
+  };
 }

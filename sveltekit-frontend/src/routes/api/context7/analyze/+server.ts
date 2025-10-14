@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Mock Context7 analysis for now
     const context7Analysis = {
-      id: evidenceId
+      id: evidenceId,
       type: type || 'legal_evidence',
       status: 'completed',
       analysis: {

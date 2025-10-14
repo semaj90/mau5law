@@ -195,13 +195,13 @@ export class GPUVectorProcessor {
     const inBuffer = device.createBuffer({ size: bytes, usage, label: `legal-in-${cacheKey}` });
     const outBuffer = device.createBuffer({ size: bytes, usage, label: `legal-out-${cacheKey}` });
     const readBuffer = device.createBuffer({
-      size: bytes
+      size: bytes,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       label: `legal-read-${cacheKey}`
     });
     const bindGroup = device.createBindGroup({
-      layout: bindGroupLayout
-      entries: [
+      layout: bindGroupLayout,
+      entries: [,
         { binding: 0, resource: { buffer: inBuffer } },
         { binding: 1, resource: { buffer: outBuffer } }
       ],
@@ -215,10 +215,10 @@ export class GPUVectorProcessor {
       inBuffer,
       outBuffer,
       readBuffer,
-      capacity: count
+      capacity: count,
       workgroupSize,
-      dimension: dim
-      vec4Optimized: vec4Compatible
+      dimension: dim,
+      vec4Optimized: vec4Compatible,
       compileTime,
       uploadTime: 0,
       executeTime: 0,
@@ -231,11 +231,11 @@ export class GPUVectorProcessor {
       type: 'gpu.vector.pipeline.compile' as any,
       meta: {
         cacheKey,
-        dimension: dim
-        vec4Optimized: vec4Compatible
-        compileTimeMs: compileTime
-        capacity: count
-        backend: 'webgpu'
+        dimension: dim,
+        vec4Optimized: vec4Compatible,
+        compileTimeMs: compileTime,
+        capacity: count,
+        backend: 'webgpu',
       }
     });
     return cache;
@@ -406,14 +406,14 @@ export class GPUVectorProcessor {
           workgroups,
           dimension: cache.dimension,
           vec4Optimized: cache.vec4Optimized,
-          reused: true
+          reused: true,
           reduction: !!stats,
           timing: {
             compile: cache.compileTime,
-            upload: uploadTime
-            execute: executeTime
-            readback: readbackTime
-            total: durationMs
+            upload: uploadTime,
+            execute: executeTime,
+            readback: readbackTime,
+            total: durationMs,
           }
         }
       });
@@ -422,16 +422,16 @@ export class GPUVectorProcessor {
           type: 'gpu.vector.webgpu.reduction' as any,
           meta: {
             segments: stats.length / 3,
-            dimension: dim
+            dimension: dim,
             durationMs,
-            energy: true
-            vec4Optimized: cache.vec4Optimized
+            energy: true,
+            vec4Optimized: cache.vec4Optimized,
           }
         });
       }
       const out: Record<string, ArrayBufferView> = {
         [firstKey]: transformed
-        transform: transformed
+        transform: transformed,
       }
       if (stats) out['stats'] = stats; // [mean0,std0,energy0, mean1,std1,energy1, ...]
       return out;
@@ -577,19 +577,19 @@ export class GPUVectorProcessor {
       telemetryBus.publish({
         type: 'lod.embed.adapt' as any,
         meta: {
-          fromDimension: oldDim
+          fromDimension: oldDim,
           toDimension: this.embeddingDimension,
-          backend: newBackend
+          backend: newBackend,
           previousBackend,
           reason: 'backend-demotion'
         }
       });
       gpuTelemetryService.record({
         pipeline: 'embedding-generation',
-        backend: newBackend
+        backend: newBackend,
         durationMs: 0,
-        success: true
-        shaderType: 'dimension-adapt'
+        success: true,
+        shaderType: 'dimension-adapt',
       } as any);
     }
   }

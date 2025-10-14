@@ -1,3 +1,20 @@
+<script lang="ts" module>
+  // Module-level exports remain permissive; attempt to read from adapter at runtime
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  const _ns = await getBitsNamespace();
+  export const Dialog = _ns ?? {};
+  export const DialogTrigger = (_ns as any)?.Trigger ?? (_ns as any)?.DialogTrigger ?? null;
+  export const DialogPortal = (_ns as any)?.Portal ?? (_ns as any)?.DialogPortal ?? null;
+  export const DialogOverlay = (_ns as any)?.Overlay ?? (_ns as any)?.DialogOverlay ?? null;
+  export const DialogContent = (_ns as any)?.Content ?? (_ns as any)?.DialogContent ?? null;
+  export const DialogTitle = (_ns as any)?.Title ?? null;
+  export const DialogDescription = (_ns as any)?.Description ?? null;
+  export const DialogClose = (_ns as any)?.Close ?? null;
+
+  export const DialogHeader = 'div';
+  export const DialogFooter = 'div';
+</script>
+
 <script lang="ts">
   import { getBitsNamespace as getBitsNamespaceClient } from '$lib/utils/bits-ui-adapter';
   import { cn } from '$lib/utils/cn';
@@ -35,27 +52,31 @@
     modal = true,
     overlayClass = '',
     contentClass = '',
-    children
+    children,
   }: DialogProps = $props();
 
-  const dialogContentClasses = $derived(cn(
-    'bits-dialog-content',
-    size === 'sm' && 'max-w-md',
-    size === 'md' && 'max-w-lg',
-    size === 'lg' && 'max-w-2xl',
-    size === 'xl' && 'max-w-4xl',
-    size === 'full' && 'max-w-full',
-    contentClass
-  ));
+  const dialogContentClasses = $derived(
+    cn(
+      'bits-dialog-content',
+      size === 'sm' && 'max-w-md',
+      size === 'md' && 'max-w-lg',
+      size === 'lg' && 'max-w-2xl',
+      size === 'xl' && 'max-w-4xl',
+      size === 'full' && 'max-w-full',
+      contentClass
+    )
+  );
 
-  const overlayClasses = $derived(cn(
-    'bits-dialog-overlay',
-    legal && 'backdrop-blur-md',
-    evidenceAnalysis && 'bg-nier-evidence-overlay',
-    caseManagement && 'bg-nier-case-overlay',
-    (evidenceAnalysis || caseManagement) && 'bg-nier-overlay',
-    overlayClass
-  ));
+  const overlayClasses = $derived(
+    cn(
+      'bits-dialog-overlay',
+      legal && 'backdrop-blur-md',
+      evidenceAnalysis && 'bg-nier-evidence-overlay',
+      caseManagement && 'bg-nier-case-overlay',
+      (evidenceAnalysis || caseManagement) && 'bg-nier-overlay',
+      overlayClass
+    )
+  );
 
   function handleOpenChange(newOpen: boolean) {
     onOpenChange?.(newOpen);
@@ -78,91 +99,78 @@
 </script>
 
 {#if BitsDialogRoot}
-	<BitsDialogRoot
-		open={open}
-		on:openChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}
-	>
-		{#if BitsDialogPortal}
-			<BitsDialogPortal>
-				{#if BitsDialogOverlay}
-					<BitsDialogOverlay
-						class={overlayClasses}
-						data-ssr-dialog-overlay="true"
-						data-evidence-analysis={evidenceAnalysis}
-						data-case-management={caseManagement}
-					></BitsDialogOverlay>
-				{/if}
+  <BitsDialogRoot {open} on:openChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}>
+    {#if BitsDialogPortal}
+      <BitsDialogPortal>
+        {#if BitsDialogOverlay}
+          <BitsDialogOverlay
+            class={overlayClasses}
+            data-ssr-dialog-overlay="true"
+            data-evidence-analysis={evidenceAnalysis}
+            data-case-management={caseManagement}
+          ></BitsDialogOverlay>
+        {/if}
 
-				{#if BitsDialogContent}
-					<BitsDialogContent
-						class={dialogContentClasses}
-						data-ssr-dialog-content="true"
-						role="dialog"
-						aria-modal={modal}
-						tabindex="-1"
-						data-evidence-analysis={evidenceAnalysis}
-						data-case-management={caseManagement}
-					>
-						<div class="bits-dialog-accent"></div>
-						{#if children}
-							{@render children()}
-						{/if}
-					</BitsDialogContent>
-				{/if}
-			</BitsDialogPortal>
-		{:else}
-			{#if BitsDialogOverlay}
-				<BitsDialogOverlay
-					class={overlayClasses}
-					data-ssr-dialog-overlay="true"
-					data-evidence-analysis={evidenceAnalysis}
-					data-case-management={caseManagement}
-				></BitsDialogOverlay>
-			{/if}
+        {#if BitsDialogContent}
+          <BitsDialogContent
+            class={dialogContentClasses}
+            data-ssr-dialog-content="true"
+            role="dialog"
+            aria-modal={modal}
+            tabindex="-1"
+            data-evidence-analysis={evidenceAnalysis}
+            data-case-management={caseManagement}
+          >
+            <div class="bits-dialog-accent"></div>
+            {#if children}
+              {@render children()}
+            {/if}
+          </BitsDialogContent>
+        {/if}
+      </BitsDialogPortal>
+    {:else}
+      {#if BitsDialogOverlay}
+        <BitsDialogOverlay
+          class={overlayClasses}
+          data-ssr-dialog-overlay="true"
+          data-evidence-analysis={evidenceAnalysis}
+          data-case-management={caseManagement}
+        ></BitsDialogOverlay>
+      {/if}
 
-			{#if BitsDialogContent}
-				<BitsDialogContent
-					class={dialogContentClasses}
-					data-ssr-dialog-content="true"
-					role="dialog"
-					aria-modal={modal}
-					tabindex="-1"
-					data-evidence-analysis={evidenceAnalysis}
-					data-case-management={caseManagement}
-				>
-					<div class="bits-dialog-accent"></div>
-					{#if children}
-						{@render children()}
-					{/if}
-				</BitsDialogContent>
-			{/if}
-		{/if}
-	</BitsDialogRoot>
+      {#if BitsDialogContent}
+        <BitsDialogContent
+          class={dialogContentClasses}
+          data-ssr-dialog-content="true"
+          role="dialog"
+          aria-modal={modal}
+          tabindex="-1"
+          data-evidence-analysis={evidenceAnalysis}
+          data-case-management={caseManagement}
+        >
+          <div class="bits-dialog-accent"></div>
+          {#if children}
+            {@render children()}
+          {/if}
+        </BitsDialogContent>
+      {/if}
+    {/if}
+  </BitsDialogRoot>
 {:else}
-	<div class={cn('bits-dialog-content', 'nier-bits-dialog', dialogContentClasses)} role="dialog" aria-modal={modal} hidden={!open} data-evidence-analysis={evidenceAnalysis} data-case-management={caseManagement}>
-		<div class="bits-dialog-accent"></div>
-		{#if children}
-			{@render children()}
-		{/if}
-	</div>
+  <div
+    class={cn('bits-dialog-content', 'nier-bits-dialog', dialogContentClasses)}
+    role="dialog"
+    aria-modal={modal}
+    hidden={!open}
+    data-evidence-analysis={evidenceAnalysis}
+    data-case-management={caseManagement}
+  >
+    <div class="bits-dialog-accent"></div>
+    {#if children}
+      {@render children()}
+    {/if}
+  </div>
 {/if}
-
-<script lang="ts" module>
-  // Module-level exports remain permissive; attempt to read from adapter at runtime
-  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-  const _ns = await getBitsNamespace();
-  export const Dialog = _ns ?? {};
-  export const DialogTrigger = (_ns as any)?.Trigger ?? (_ns as any)?.DialogTrigger ?? null;
-  export const DialogPortal = (_ns as any)?.Portal ?? (_ns as any)?.DialogPortal ?? null;
-  export const DialogOverlay = (_ns as any)?.Overlay ?? (_ns as any)?.DialogOverlay ?? null;
-  export const DialogContent = (_ns as any)?.Content ?? (_ns as any)?.DialogContent ?? null;
-  export const DialogTitle = (_ns as any)?.Title ?? null;
-  export const DialogDescription = (_ns as any)?.Description ?? null;
-  export const DialogClose = (_ns as any)?.Close ?? null;
-
-  export const DialogHeader = 'div';
-  export const DialogFooter = 'div';
-</script>
 
 <style>
   /* @unocss-include */
@@ -192,11 +200,7 @@
   }
 
   :global(.nier-bits-dialog) {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
-    );
+    background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-primary);
   }
 
@@ -216,16 +220,23 @@
   }
 
   :global([data-evidence-analysis] .bits-dialog-content) {
-    background-image: linear-gradient(45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
+    background-image:
+      linear-gradient(45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
       linear-gradient(-45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
       linear-gradient(45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%),
       linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-    background-position: 0, 0 10px, 10px -10px, -10px 0px;
+    background-position:
+      0,
+      0 10px,
+      10px -10px,
+      -10px 0px;
   }
 
   :global([data-case-management] .bits-dialog-content) {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
@@ -257,7 +268,9 @@
     background: white;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
     overflow-y: auto;
     padding: 1.5rem;
     outline: none;

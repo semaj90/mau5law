@@ -118,7 +118,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       })
     )
     return json({
-      reports: enrichedReports
+      reports: enrichedReports,
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {

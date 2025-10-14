@@ -1,37 +1,37 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { cache } from '$lib/server/cache/redis'
-import { embedText } from '$lib/server/embedding-gateway'
-import { hashString32 } from '$lib/utils/chunk'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { cache } from '$lib/server/cache/redis';
+import { embedText } from '$lib/server/embedding-gateway';
+import { hashString32 } from '$lib/utils/chunk';
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const payload = await request.json()
+    const payload = await request.json();
     // expected payload: { id, seq?, payload: { text, meta } }
-    const id = payload.id || `c_${Date.now()}`
-    const text = String(payload.payload?.text || '')
-    const hash = hashString32(text)
-    const cacheKey = `pipeline:chunk:${id}`
+    const id = payload.id || `c_${Date.now()}`;
+    const text = String(payload.payload?.text || '');
+    const hash = hashString32(text);
+    const cacheKey = `pipeline:chunk:${id}`;
     // Save chunk compressed to redis (hot cache)
     await cache.setCompressed(cacheKey, payload, 60 * 60); // 1h TTL
     // Optionally compute embedding synchronously for small chunks (and also enqueue)
     try {
       const model =
         payload?.model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'embeddinggemma:latest';
-      const { embeddings } = await embedText(fetch, [text], model)
-      const embed = embeddings[0]
-      await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000)
+      const { embeddings } = await embedText(fetch, [text], model);
+      const embed = embeddings[0];
+      await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err)
-      console.warn('embed failed (will enqueue):', msg)
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn('embed failed (will enqueue):', msg);
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
     }
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
-    const job = { id, text, model: payload?.model || 'embeddinggemma-300m' }
+    const job = { id, text, model: payload?.model || 'embeddinggemma-300m' };
     try {
       // dynamic import so we don't require amqplib at runtime if not installed
-      const { publishToQueue } = await import('$lib/server/rabbitmq')
-      await publishToQueue('evidence.embedding.queue', job)
-      console.log('📤 Enqueued job to RabbitMQ: ', id)
+      const { publishToQueue } = await import('$lib/server/rabbitmq');
+      await publishToQueue('evidence.embedding.queue', job);
+      console.log('📤 Enqueued job to RabbitMQ: ', id);
     } catch (e) {
       // Fall back to Redis list-based queue
       try {
@@ -41,12 +41,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        console.warn('Failed to enqueue job to Redis as fallback:', msg)
+        console.warn('Failed to enqueue job to Redis as fallback:', msg);
       }
     }
-    return json({ ok: true, id }, { status: 202 })
+    return json({ ok: true, id }, { status: 202 });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    return json({ ok: false, error: msg }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err);
+    return json({ ok: false, error: msg }, { status: 500 });
   }
-}
+};

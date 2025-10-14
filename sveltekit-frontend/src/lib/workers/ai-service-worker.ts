@@ -154,7 +154,7 @@ class AIServiceWorker {
     throw lastError || new Error('Unknown error during AI task execution');
   }
   private async callProvider(
-    provider: AIProviderConfig
+    provider: AIProviderConfig,
     task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
@@ -179,7 +179,7 @@ class AIServiceWorker {
     }
   }
   private async callOllama(
-    provider: AIProviderConfig
+    provider: AIProviderConfig,
     task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
@@ -190,7 +190,7 @@ class AIServiceWorker {
         model: task?.model || "unknown" // @ts-ignore - Model property access,
         prompt: task.prompt,
         system: task.systemPrompt,
-        stream: false
+        stream: false,
         options: {
           temperature: task.temperature || 0.1,
           top_p: task.topP || 0.9,
@@ -219,7 +219,7 @@ class AIServiceWorker {
     }
   }
   private async callAutoGen(
-    provider: AIProviderConfig
+    provider: AIProviderConfig,
     task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
@@ -253,7 +253,7 @@ class AIServiceWorker {
     }
   }
   private async callCrewAI(
-    provider: AIProviderConfig
+    provider: AIProviderConfig,
     task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {

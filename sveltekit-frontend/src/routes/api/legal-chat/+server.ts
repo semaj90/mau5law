@@ -3,11 +3,11 @@
  * Demonstrates Redis List-based chat history with legal AI integration
  * Integrates with Gemma embeddings and CHR-ROM caching
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service'
-import { cachedVectorSearch } from '$lib/services/cached-vector-search'
-import { gemmaEmbeddingService } from '$lib/services/embedding-generator'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service';
+import { cachedVectorSearch } from '$lib/services/cached-vector-search';
+import { gemmaEmbeddingService } from '$lib/services/embedding-generator';
 import callOllamaApi from '$lib/services/ollama-client';
 // Import the redis orchestrator module as a namespace to tolerate different export shapes
 import * as redisOrchestratorModule from '$lib/services/redis-orchestrator';

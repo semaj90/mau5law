@@ -2,11 +2,11 @@
  * Legal Strategy Recommendation Engine
  * AI-powered case strategy analysis and recommendations
  */
-import { json, type RequestHandler } from '@sveltejs/kit'
-import { z } from 'zod'
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Configuration
-const OLLAMA_BASE_URL = 'http://localhost:11434'
-const LEGAL_MODEL = 'gemma3-legal:latest'
+const OLLAMA_BASE_URL = 'http://localhost:11434';
+const LEGAL_MODEL = 'gemma3-legal:latest';
 // Request schemas
 const StrategyAnalysisSchema = z.object({
   caseId: z.string().uuid(),
@@ -16,97 +16,101 @@ const StrategyAnalysisSchema = z.object({
   opposingStrategy: z.string().optional(),
   budget: z.enum(['low', 'medium', 'high']).optional(),
   timeline: z.enum(['urgent', 'normal', 'extended']).optional(),
-  riskTolerance: z.enum(['conservative', 'moderate', 'aggressive']).default('moderate')
-})
+  riskTolerance: z.enum(['conservative', 'moderate', 'aggressive']).default('moderate'),
+});
 const PrecedentSearchSchema = z.object({
   jurisdiction: z.string(),
   legalIssues: z.array(z.string()),
   factPattern: z.string(),
-  dateRange: z.object({
-    start: z.string(),
-    end: z.string()
-  }).optional(),
-  courtLevel: z.enum(['trial', 'appellate', 'supreme', 'all']).default('all')
-})
+  dateRange: z
+    .object({
+      start: z.string(),
+      end: z.string(),
+    })
+    .optional(),
+  courtLevel: z.enum(['trial', 'appellate', 'supreme', 'all']).default('all'),
+});
 const RiskAssessmentSchema = z.object({
   caseId: z.string().uuid(),
-  scenarios: z.array(z.object({
-    name: z.string(),
-    likelihood: z.number().min(0).max(1),
-    description: z.string()
-  })),
-  mitigationStrategies: z.array(z.string()).optional()
-})
+  scenarios: z.array(
+    z.object({
+      name: z.string(),
+      likelihood: z.number().min(0).max(1),
+      description: z.string(),
+    })
+  ),
+  mitigationStrategies: z.array(z.string()).optional(),
+});
 // Types
 interface StrategyRecommendation {
-  id: string
-  title: string
-  description: string
-  rationale: string
-  confidence: number
+  id: string;
+  title: string;
+  description: string;
+  rationale: string;
+  confidence: number;
   expectedOutcome: {
-    probability: number
-    description: string
-    timeframe: string
-  }
+    probability: number;
+    description: string;
+    timeframe: string;
+  };
   requiredResources: {
-    evidence: string[]
-    expertise: string[]
-    estimatedCost: string
-    timeline: string
-  }
-  risks: string[]
-  alternatives: string[]
-  precedents: LegalPrecedent[]
+    evidence: string[];
+    expertise: string[];
+    estimatedCost: string;
+    timeline: string;
+  };
+  risks: string[];
+  alternatives: string[];
+  precedents: LegalPrecedent[];
 }
 interface LegalPrecedent {
-  caseId: string
-  title: string
-  court: string
-  year: number
-  relevance: number
-  outcome: string
-  keyHoldings: string[]
-  factSimilarity: number
-  jurisdiction: string
-  citation: string
+  caseId: string;
+  title: string;
+  court: string;
+  year: number;
+  relevance: number;
+  outcome: string;
+  keyHoldings: string[];
+  factSimilarity: number;
+  jurisdiction: string;
+  citation: string;
 }
 interface RiskFactor {
-  factor: string
-  likelihood: number
-  impact: string
-  severity: 'low' | 'medium' | 'high' | 'critical'
-  mitigation: string[]
+  factor: string;
+  likelihood: number;
+  impact: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  mitigation: string[];
 }
 interface CaseOutcomeProjection {
-  scenario: string
-  probability: number
-  outcome: string
-  keyFactors: string[]
-  timelineWeeks: number
+  scenario: string;
+  probability: number;
+  outcome: string;
+  keyFactors: string[];
+  timelineWeeks: number;
   costEstimate: {
-    min: number
-    max: number
-    currency: string
-  }
+    min: number;
+    max: number;
+    currency: string;
+  };
 }
 
 // Add typed CaseFactors to replace `any`
 type CaseFactors = {
-  caseType: string
-  evidenceCount: number
-  budget?: 'low' | 'medium' | 'high' | null
-  timeline?: 'urgent' | 'normal' | 'extended' | null
-}
+  caseType: string;
+  evidenceCount: number;
+  budget?: 'low' | 'medium' | 'high' | null;
+  timeline?: 'urgent' | 'normal' | 'extended' | null;
+};
 
 // Add typed Evidence to replace `any`
 type Evidence = {
-  id: string
-  filename?: string
-  type?: string
-  analysisScore?: number
-  [key: string]: unknown
-}
+  id: string;
+  filename?: string;
+  type?: string;
+  analysisScore?: number;
+  [key: string]: unknown;
+};
 
 // Advanced Strategy Engine
 class LegalStrategyEngine {

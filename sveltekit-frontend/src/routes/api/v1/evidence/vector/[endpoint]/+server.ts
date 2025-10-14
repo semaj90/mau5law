@@ -1,59 +1,53 @@
 /**
  * Minimal Vector Evidence API - Simplified for error reduction
  */
-import { json, type RequestHandler } from '@sveltejs/kit'
-import { z } from 'zod'
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 
 // Request schema + inferred type
 const VectorRequestSchema = z.object({
   query: z.string().min(1).optional(),
   limit: z.number().min(1).max(100).default(10),
 });
-type VectorRequest = z.infer<typeof VectorRequestSchema>
+type VectorRequest = z.infer<typeof VectorRequestSchema>;
 
 // Response item types
 interface SearchResult {
-  id: string
-  similarity: number
-  title: string
-  type?: 'document' | 'snippet' | string
+  id: string;
+  similarity: number;
+  title: string;
+  type?: 'document' | 'snippet' | string;
 }
 
 interface SimilarityPair {
-  source: string
-  target: string
-  score: number
+  source: string;
+  target: string;
+  score: number;
 }
 
 interface ClusterResult {
-  cluster: number
-  documents: string[]
+  cluster: number;
+  documents: string[];
 }
 
 interface HealthStatus {
-  status: string
-  timestamp: string
+  status: string;
+  timestamp: string;
 }
 
 interface EmbedResult {
-  id: string
-  vector: number[]
-  dimensions: number
+  id: string;
+  vector: number[];
+  dimensions: number;
 }
 
 interface GenericResponse {
-  message: string
-  query?: string
+  message: string;
+  query?: string;
 }
 
 // Union of all possible data item shapes
-type VectorData =
-  | SearchResult
-  | SimilarityPair
-  | ClusterResult
-  | HealthStatus
-  | EmbedResult
-  | GenericResponse
+type VectorData = SearchResult | SimilarityPair | ClusterResult | HealthStatus | EmbedResult | GenericResponse;
 
 // Strongly typed response
 interface VectorResponse {

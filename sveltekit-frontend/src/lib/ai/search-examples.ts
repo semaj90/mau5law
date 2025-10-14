@@ -14,14 +14,11 @@ export class SearchExamples {
    */
   async exampleDocumentSearch() {
     console.log('🔍 Running simple document search example...');
-    const results = await this.server.searchDocuments(
-      'contract violation legal precedent',
-      {
-        limit: 5,
-        threshold: 0.75,
-        useCache: true,
-      }
-    );
+    const results = await this.server.searchDocuments('contract violation legal precedent', {
+      limit: 5,
+      threshold: 0.75,
+      useCache: true,
+    });
     console.log(`Found ${results.length} documents:`);
     results.forEach((result, index) => {
       console.log(`${index + 1}. Document: ${result.document_id}`);
@@ -36,16 +33,13 @@ export class SearchExamples {
    */
   async exampleSemanticSearch() {
     console.log('🧠 Running semantic search example...');
-    const result = await this.server.semanticSearch(
-      'intellectual property theft criminal charges',
-      {
-        collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
-        limit: 10,
-        threshold: 0.7,
-        includeContent: true,
-        useCache: true,
-      }
-    );
+    const result = await this.server.semanticSearch('intellectual property theft criminal charges', {
+      collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
+      limit: 10,
+      threshold: 0.7,
+      includeContent: true,
+      useCache: true,
+    });
     console.log(`Semantic search results:`);
     console.log(`- Query: "${result.query}"`);
     console.log(`- Total results: ${result.total_results}`);
@@ -65,15 +59,12 @@ export class SearchExamples {
    */
   async exampleFullTextSearch() {
     console.log('📝 Running full-text search example...');
-    const result = await this.server.fullTextSearch(
-      'fraud embezzlement financial crimes',
-      {
-        collections: ['legal_documents', 'case_embeddings'],
-        limit: 8,
-        useCache: true,
-        includeSnippets: true,
-      }
-    );
+    const result = await this.server.fullTextSearch('fraud embezzlement financial crimes', {
+      collections: ['legal_documents', 'case_embeddings'],
+      limit: 8,
+      useCache: true,
+      includeSnippets: true,
+    });
     console.log(`Full-text search results:`);
     console.log(`- Query: "${result.query}"`);
     console.log(`- Total results: ${result.total_results}`);
@@ -91,22 +82,21 @@ export class SearchExamples {
    */
   async exampleHybridSearch() {
     console.log('🔀 Running hybrid search example...');
-    const result = await this.server.hybridSearch(
-      'corporate merger acquisition antitrust',
-      {
-        limit: 6,
-        vectorWeight: 0.4,    // 40% vector similarity
-        textWeight: 0.35,     // 35% full-text ranking
-        keywordWeight: 0.25,  // 25% keyword matching
-        threshold: 0.6,
-        useCache: true,
-      }
-    );
+    const result = await this.server.hybridSearch('corporate merger acquisition antitrust', {
+      limit: 6,
+      vectorWeight: 0.4, // 40% vector similarity
+      textWeight: 0.35, // 35% full-text ranking
+      keywordWeight: 0.25, // 25% keyword matching
+      threshold: 0.6,
+      useCache: true,
+    });
     console.log(`Hybrid search results:`);
     console.log(`- Query: "${result.query}"`);
     console.log(`- Total results: ${result.total_results}`);
     console.log(`- Search time: ${result.search_time.toFixed(2)}ms`);
-    console.log(`- Weights: Vector=${result.weights.vectorWeight}, Text=${result.weights.textWeight}, Keyword=${result.weights.keywordWeight}`);
+    console.log(
+      `- Weights: Vector=${result.weights.vectorWeight}, Text=${result.weights.textWeight}, Keyword=${result.weights.keywordWeight}`
+    );
     result.results.forEach((item, index) => {
       console.log(`\n${index + 1}. Document: ${item.document_id}`);
       console.log(`   Combined Score: ${(item.combined_score * 100).toFixed(1)}%`);
@@ -125,16 +115,13 @@ export class SearchExamples {
    */
   async exampleAdvancedVectorSearch() {
     console.log('🚀 Running advanced vector search example...');
-    const result = await this.server.advancedVectorSearch(
-      'employment discrimination workplace harassment',
-      {
-        k: 7,
-        algorithm: 'hybrid',
-        useCache: true,
-        threshold: 0.75,
-        includeMetadata: true,
-      }
-    );
+    const result = await this.server.advancedVectorSearch('employment discrimination workplace harassment', {
+      k: 7,
+      algorithm: 'hybrid',
+      useCache: true,
+      threshold: 0.75,
+      includeMetadata: true,
+    });
     console.log(`Advanced vector search results:`);
     console.log(`- Query: "${result.query}"`);
     console.log(`- Strategy: ${result.searchStrategy}`);

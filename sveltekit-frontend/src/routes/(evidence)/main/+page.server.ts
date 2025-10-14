@@ -39,7 +39,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         .select()
         .from(evidence)
         .where(
-          helpers.and(helpers.eq(evidence.caseId, caseId) as any, helpers.eq(evidence.userId, user.id) as any) as any,
+          helpers.and(helpers.eq(evidence.caseId, caseId) as any, helpers.eq(evidence.userId, user.id) as any) as any
         );
     } else {
       evidenceData = await db
@@ -52,9 +52,9 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       evidence: evidenceData,
       caseId,
       user,
-    }
+    };
   } catch (err: any) {
     console.error('Failed to load evidence:', err);
     throw error(500, 'Failed to load evidence data');
   }
-}
+};

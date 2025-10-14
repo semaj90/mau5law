@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(`${ollamaUrl}/api/tags`, {
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
@@ -25,32 +25,38 @@ export const GET: RequestHandler = async () => {
           details: {
             url: ollamaUrl,
             models: data.models?.length || 0,
-            available: true
+            available: true,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       } else {
         throw new Error(`HTTP ${response.status}`);
       }
     } catch (fetchError: any) {
-      return json({
-        status: 'unavailable',
-        service: 'ollama',
-        message: 'Ollama service not reachable',
-        details: {
-          url: ollamaUrl,
-          error: fetchError.message,
-          available: false
+      return json(
+        {
+          status: 'unavailable',
+          service: 'ollama',
+          message: 'Ollama service not reachable',
+          details: {
+            url: ollamaUrl,
+            error: fetchError.message,
+            available: false,
+          },
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
-      }, { status: 503 });
+        { status: 503 }
+      );
     }
   } catch (error: any) {
-    return json({
-      status: 'error',
-      service: 'ollama',
-      error: error.message || 'Health check failed',
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+    return json(
+      {
+        status: 'error',
+        service: 'ollama',
+        error: error.message || 'Health check failed',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 };

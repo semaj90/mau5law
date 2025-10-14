@@ -36,7 +36,7 @@ export const GET: RequestHandler = async () => {
         cpuUsage: process.cpuUsage(),
         loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)',
       },
-    }
+    };
     // Basic service availability checks
     try {
       // You can add actual service checks here
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
           'Content-Type': 'application/json',
           'X-Health-Check': 'failed',
         },
-      },
+      }
     );
   }
-}
+};

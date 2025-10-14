@@ -15,7 +15,7 @@ export interface VectorSearchResult {
     type: string;
     name: string;
     url: string;
-  }
+  };
   highlights?: string[];
   confidence?: number;
 }
@@ -56,7 +56,7 @@ export interface ChatMessage {
     tokenCount?: number;
     processingTime?: number;
     confidence?: number;
-  }
+  };
 }
 export interface SystemStatus {
   gpu: boolean;
@@ -74,7 +74,7 @@ export interface ChatRequest {
     caseId?: string;
     documentIds?: string[];
     previousMessages?: ChatMessage[];
-  }
+  };
 }
 export interface ChatResponse {
   response: string;
@@ -87,7 +87,7 @@ export interface ChatResponse {
     promptTokens: number;
     responseTokens: number;
     tokensPerSecond: number;
-  }
+  };
   suggestions?: string[];
   relatedCases?: string[];
   vectorSearchResults?: VectorSearchResult[];

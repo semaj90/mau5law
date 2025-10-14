@@ -4,19 +4,7 @@
   import { Button, Card, Dialog, Input, Label, Select, Textarea, Progress } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
-  import { 
-    Upload, 
-    FileText, 
-    Image, 
-    Video, 
-    Music, 
-    File, 
-    X, 
-    CheckCircle, 
-    AlertCircle,
-    Trash2,
-    Eye
-  } from 'lucide-svelte';
+  import { Upload, FileText, Image, Video, Music, File, X, CheckCircle, AlertCircle, Trash2, Eye } from 'lucide-svelte';
 
   // Props
   let { caseId = '', onUploadComplete = () => {} } = $props();
@@ -38,7 +26,7 @@
     evidenceType: 'document',
     tags: '',
     isAdmissible: true,
-    admissibilityNotes: ''
+    admissibilityNotes: '',
   });
 
   // File type icons
@@ -57,7 +45,7 @@
     'application/pdf': FileText,
     'text/plain': FileText,
     'application/msword': FileText,
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': FileText
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': FileText,
   };
 
   // Get file type icon
@@ -110,16 +98,19 @@
       return true;
     });
 
-    selectedFiles = [...selectedFiles, ...validFiles.map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
-      title: file.name.replace(/\.[^/.]+$/, ''),
-      description: '',
-      evidenceType: getEvidenceTypeFromMimeType(file.type),
-      tags: '',
-      isAdmissible: true,
-      admissibilityNotes: ''
-    }))];
+    selectedFiles = [
+      ...selectedFiles,
+      ...validFiles.map(file => ({
+        id: Math.random().toString(36).substr(2, 9),
+        file,
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        description: '',
+        evidenceType: getEvidenceTypeFromMimeType(file.type),
+        tags: '',
+        isAdmissible: true,
+        admissibilityNotes: '',
+      })),
+    ];
   }
 
   // Get evidence type from MIME type
@@ -139,9 +130,7 @@
 
   // Update file data
   function updateFileData(fileId, field, value) {
-    selectedFiles = selectedFiles.map(f => 
-      f.id === fileId ? { ...f, [field]: value } : f
-    );
+    selectedFiles = selectedFiles.map(f => (f.id === fileId ? { ...f, [field]: value } : f));
   }
 
   // Upload files
@@ -156,7 +145,7 @@
 
     for (let i = 0; i < selectedFiles.length; i++) {
       const fileData = selectedFiles[i];
-      
+
       try {
         const formData = new FormData();
         formData.append('file', fileData.file);
@@ -170,7 +159,7 @@
 
         const response = await fetch('/api/evidence/upload', {
           method: 'POST',
-          body: formData
+          body: formData,
         });
 
         const result = await response.json();
@@ -192,7 +181,7 @@
     }
 
     isUploading = false;
-    
+
     if (completedUploads.length > 0) {
       onUploadComplete(completedUploads);
       selectedFiles = [];
@@ -216,14 +205,14 @@
       evidenceType: 'document',
       tags: '',
       isAdmissible: true,
-      admissibilityNotes: ''
+      admissibilityNotes: '',
     };
   }
 </script>
 
 <div class="evidence-upload-container">
   <!-- Upload Button -->
-  <Button onclick={() => showUploadDialog = true} class="w-full">
+  <Button onclick={() => (showUploadDialog = true)} class="w-full">
     <Upload class="w-4 h-4 mr-2" />
     Upload Evidence
   </Button>
@@ -232,21 +221,19 @@
   <Dialog bind:open={showUploadDialog}>
     <div class="p-6 max-w-4xl">
       <h3 class="text-lg font-semibold mb-4">Upload Evidence</h3>
-      
+
       <!-- Upload Area -->
       <div
-        class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors {dragOver ? 'border-blue-500 bg-blue-50' : 'hover:border-gray-400'}"
+        class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors {dragOver
+          ? 'border-blue-500 bg-blue-50'
+          : 'hover:border-gray-400'}"
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         ondrop={handleDrop}
       >
         <Upload class="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p class="text-lg font-medium text-gray-900 mb-2">
-          Drop files here or click to select
-        </p>
-        <p class="text-sm text-gray-500 mb-4">
-          Supports images, videos, audio, documents (max 50MB each)
-        </p>
+        <p class="text-lg font-medium text-gray-900 mb-2">Drop files here or click to select</p>
+        <p class="text-sm text-gray-500 mb-4">Supports images, videos, audio, documents (max 50MB each)</p>
         <input
           type="file"
           multiple
@@ -255,9 +242,7 @@
           class="hidden"
           id="file-input"
         />
-        <Button onclick={() => document.getElementById('file-input').click()}>
-          Select Files
-        </Button>
+        <Button onclick={() => document.getElementById('file-input').click()}>Select Files</Button>
       </div>
 
       <!-- Selected Files -->
@@ -273,21 +258,17 @@
                   <div class="flex-shrink-0">
                     <svelte:component this={getFileIcon(fileData.file)} class="w-8 h-8 text-gray-400" />
                   </div>
-                  
+
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between mb-2">
                       <h5 class="font-medium text-gray-900 truncate">
                         {fileData.title}
                       </h5>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onclick={() => removeFile(fileData.id)}
-                      >
+                      <Button size="sm" variant="ghost" onclick={() => removeFile(fileData.id)}>
                         <X class="w-4 h-4" />
                       </Button>
                     </div>
-                    
+
                     <p class="text-sm text-gray-500 mb-3">
                       {formatFileSize(fileData.file.size)} • {fileData.file.type}
                     </p>
@@ -296,13 +277,9 @@
                     <div class="grid grid-cols-2 gap-3">
                       <div>
                         <Label for="title-{fileData.id}">Title</Label>
-                        <Input
-                          id="title-{fileData.id}"
-                          bind:value={fileData.title}
-                          placeholder="Evidence title"
-                        />
+                        <Input id="title-{fileData.id}" bind:value={fileData.title} placeholder="Evidence title" />
                       </div>
-                      
+
                       <div>
                         <Label for="type-{fileData.id}">Type</Label>
                         <Select
@@ -311,12 +288,12 @@
                             { value: 'image', label: 'Image' },
                             { value: 'video', label: 'Video' },
                             { value: 'audio', label: 'Audio' },
-                            { value: 'physical', label: 'Physical' }
+                            { value: 'physical', label: 'Physical' },
                           ]}
                           bind:selected={fileData.evidenceType}
                         />
                       </div>
-                      
+
                       <div class="col-span-2">
                         <Label for="description-{fileData.id}">Description</Label>
                         <Textarea
@@ -326,16 +303,12 @@
                           class="min-h-[60px]"
                         />
                       </div>
-                      
+
                       <div>
                         <Label for="tags-{fileData.id}">Tags</Label>
-                        <Input
-                          id="tags-{fileData.id}"
-                          bind:value={fileData.tags}
-                          placeholder="Comma-separated tags"
-                        />
+                        <Input id="tags-{fileData.id}" bind:value={fileData.tags} placeholder="Comma-separated tags" />
                       </div>
-                      
+
                       <div class="flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -369,7 +342,7 @@
       {#if completedUploads.length > 0 || failedUploads.length > 0}
         <div class="mt-6">
           <h4 class="font-medium text-gray-900 mb-3">Upload Results</h4>
-          
+
           {#if completedUploads.length > 0}
             <div class="mb-4">
               <div class="flex items-center gap-2 mb-2">
@@ -414,20 +387,13 @@
       <div class="flex justify-between items-center mt-6">
         <div class="flex gap-2">
           {#if selectedFiles.length > 0}
-            <Button variant="ghost" onclick={clearAllFiles}>
-              Clear All
-            </Button>
+            <Button variant="ghost" onclick={clearAllFiles}>Clear All</Button>
           {/if}
         </div>
-        
+
         <div class="flex gap-2">
-          <Button variant="ghost" onclick={() => showUploadDialog = false}>
-            Cancel
-          </Button>
-          <Button
-            onclick={uploadFiles}
-            disabled={selectedFiles.length === 0 || isUploading}
-          >
+          <Button variant="ghost" onclick={() => (showUploadDialog = false)}>Cancel</Button>
+          <Button onclick={uploadFiles} disabled={selectedFiles.length === 0 || isUploading}>
             {isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} Files`}
           </Button>
         </div>

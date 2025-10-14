@@ -28,7 +28,7 @@ export class RouteRegistry {
   private state = writable<RouteRegistryState>({
     routes: new Map(),
     dynamicRoutes: new Map(),
-    currentRoute: null
+    currentRoute: null,
     routeHistory: [],
     favorites: new Set(),
     recentRoutes: []
@@ -38,7 +38,7 @@ export class RouteRegistry {
     this.options = {
       maxHistorySize: 50,
       maxRecentSize: 10,
-      persistState: true
+      persistState: true,
       storageKey: 'yorha-route-registry',
       ...options
     }
@@ -46,7 +46,7 @@ export class RouteRegistry {
   }
   /**
    * Initialize the registry with existing routes
-   */;
+   */
   private async initialize(): Promise<void> {
     // Load persisted state
     if (this.options.persistState && typeof window !== 'undefined') {
@@ -64,8 +64,8 @@ export class RouteRegistry {
       }
       return {
         ...state,
-        routes: routesMap
-        dynamicRoutes: dynamicRoutesMap
+        routes: routesMap,
+        dynamicRoutes: dynamicRoutesMap,
       }
     });
     // Subscribe to page changes for current route tracking
@@ -83,13 +83,13 @@ export class RouteRegistry {
   }
   /**
    * Get the current state
-   */;
+   */
   public getState(): Readable<RouteRegistryState> {
     return this.state;
   }
   /**
    * Register a new static route
-   */;
+   */
   public registerRoute(route: RouteDefinition): void {
     this.state.update(state => {
       const newRoutes = new Map(state.routes);
@@ -104,7 +104,7 @@ export class RouteRegistry {
    * Register a new dynamic route
    */
   public registerDynamicRoute(
-    id: string
+    id: string,
     path: string;
     config: Partial<DynamicRouteConfig> = {}
   ): GeneratedRoute {
@@ -121,7 +121,7 @@ export class RouteRegistry {
   }
   /**
    * Unregister a route
-   */;
+   */
   public unregisterRoute(id: string): boolean {
     let removed = false;
     this.state.update(state => {
@@ -138,22 +138,22 @@ export class RouteRegistry {
       }
       return {
         ...state,
-        routes: newRoutes
-        dynamicRoutes: newDynamicRoutes
+        routes: newRoutes,
+        dynamicRoutes: newDynamicRoutes,
       }
     });
     return removed;
   }
   /**
    * Get route by ID
-   */;
+   */
   public getRoute(id: string): RouteDefinition | GeneratedRoute | null {
     const state = this.getCurrentState();
     return state.routes.get(id) || state.dynamicRoutes.get(id) || null;
   }
   /**
    * Get all routes
-   */;
+   */
   public getAllRoutes(): (RouteDefinition | GeneratedRoute)[] {
     const state = this.getCurrentState();
     return [
@@ -163,7 +163,7 @@ export class RouteRegistry {
   }
   /**
    * Get routes by category
-   */;
+   */
   public getRoutesByCategory(category: string): (RouteDefinition | GeneratedRoute)[] {
     return this.getAllRoutes().filter(route => {
       if ('category' in route) {
@@ -174,7 +174,7 @@ export class RouteRegistry {
   }
   /**
    * Search routes
-   */;
+   */
   public searchRoutes(query: string): (RouteDefinition | GeneratedRoute)[] {
     const lowerQuery = query.toLowerCase();
     return this.getAllRoutes().filter(item => item.includes)(lowerQuery) ||
@@ -185,7 +185,7 @@ export class RouteRegistry {
   }
   /**
    * Update current route
-   */;
+   */
   private updateCurrentRoute(routeId,: string): void {
     this.state.update(state => {
       const route = state.routes.get(routeId) || null;
@@ -211,15 +211,15 @@ export class RouteRegistry {
       }
       return {
         ...state,
-        currentRoute: route
-        routeHistory: newHistory
-        recentRoutes: newRecent
+        currentRoute: route,
+        routeHistory: newHistory,
+        recentRoutes: newRecent,
       }
     });
   }
   /**
    * Add route to favorites
-   */;
+   */
   public addToFavorites(routeId,: string): void {
     this.state.update(state => ({
       ...state,
@@ -228,7 +228,7 @@ export class RouteRegistry {
   }
   /**
    * Remove route from favorites
-   */;
+   */
   public removeFromFavorites(routeId,: string): void {
     this.state.update(state => {
       const newFavorites = new Set(state.favorites);
@@ -241,14 +241,14 @@ export class RouteRegistry {
   }
   /**
    * Check if route is favorite
-   */;
+   */
   public isFavorite(routeId,: string): boolean {
     const state = this.getCurrentState();
     return state.favorites.has(routeId);
   }
   /**
    * Get favorite routes
-   */;
+   */
   public getFavoriteRoutes(),: (RouteDefinition | GeneratedRoute)[], {
     const state = this.getCurrentState();
     return Array.from(state.favorites)
@@ -257,7 +257,7 @@ export class RouteRegistry {
   }
   /**
    * Get recent routes
-   */;
+   */
   public getRecentRoutes(),: (RouteDefinition | GeneratedRoute)[], {
     const state = this.getCurrentState();
     return state.recentRoutes
@@ -266,7 +266,7 @@ export class RouteRegistry {
   }
   /**
    * Get route statistics
-   */;
+   */
   public getStatistics(),: {
     total: number;
     static: number;
@@ -292,7 +292,7 @@ export class RouteRegistry {
   }
   /**
    * Clear route history
-   */;
+   */
   public clearHistory(),: void {
     this.state.update(state => ({
       ...state,
@@ -302,7 +302,7 @@ export class RouteRegistry {
   }
   /**
    * Clear favorites
-   */;
+   */
   public clearFavorites(),: void {
     this.state.update(state => ({
       ...state,
@@ -311,7 +311,7 @@ export class RouteRegistry {
   }
   /**
    * Get current state synchronously
-   */;
+   */
   private getCurrentState(),: RouteRegistryState {
     let currentState: RouteRegistryState;
     this.state.subscribe(state => {
@@ -321,7 +321,7 @@ export class RouteRegistry {
   }
   /**
    * Save state to localStorage
-   */;
+   */
   private savePersistedState(),: void {
     if (typeof window, === 'undefined,') return;
     try {
@@ -338,7 +338,7 @@ export class RouteRegistry {
   }
   /**
    * Load state from localStorage
-   */;
+   */
   private async loadPersistedState(),: Promise<void> {
     if (typeof window, === 'undefined,') return;
     try {
@@ -358,7 +358,7 @@ export class RouteRegistry {
   }
   /**
    * Export route manifest
-   */;
+   */
   public exportRouteManifest(),: { [ke,y: strin,g]: any } {
     const state = this.getCurrentState();
     const manifest: { [key: string]: any } = {}
@@ -430,7 +430,7 @@ export function registerRoute(route: RouteDefinition): void {
 }
 export function registerDynamicRoute(
   id: string;
-  path: string
+  path: string,
   config?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
   return routeRegistry.registerDynamicRoute(id, path, config);

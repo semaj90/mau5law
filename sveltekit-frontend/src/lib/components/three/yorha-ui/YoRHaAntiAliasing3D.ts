@@ -526,10 +526,10 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       quality: 'high',
       edgeThreshold: 0.166,
       subpixelQuality: 0.75,
-      enabled: true
+      enabled: true,
       temporalSamples: 8,
       jitterPattern: 'halton',
-      adaptiveQuality: true
+      adaptiveQuality: true,
       performanceTarget: 60,
       ...config
     }
@@ -809,9 +809,9 @@ export const AntiAliasingUtils = {
       quality: targetFPS >= 60 ? 'high' : 'medium',
       edgeThreshold: 0.166,
       subpixelQuality: 0.75,
-      enabled: true
-      adaptiveQuality: true
-      performanceTarget: targetFPS
+      enabled: true,
+      adaptiveQuality: true,
+      performanceTarget: targetFPS,
     }
   },
   createAAPreset(preset: 'performance' | 'balanced' | 'quality'): AntiAliasingConfig {
@@ -820,26 +820,26 @@ export const AntiAliasingUtils = {
         type: 'fxaa' as const,
         quality: 'medium' as const,
         samples: 2,
-        adaptiveQuality: true
-        performanceTarget: 60
+        adaptiveQuality: true,
+        performanceTarget: 60,
       },
       balanced: {
         type: 'auto' as const,
         quality: 'high' as const,
         samples: 4,
-        adaptiveQuality: true
-        performanceTarget: 60
+        adaptiveQuality: true,
+        performanceTarget: 60,
       },
       quality: {
         type: 'taa' as const,
         quality: 'ultra' as const,
         samples: 8,
-        adaptiveQuality: false
-        performanceTarget: 30
+        adaptiveQuality: false,
+        performanceTarget: 30,
       }
     }
     return {
-      enabled: true
+      enabled: true,
       edgeThreshold: 0.166,
       subpixelQuality: 0.75,
       temporalSamples: 8,

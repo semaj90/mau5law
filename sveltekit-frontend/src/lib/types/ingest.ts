@@ -1,7 +1,7 @@
 /**
  * Type definitions for Document Ingest Integration
  * Supports both single and batch document processing
- */;
+ */
 }
 export interface DocumentIngestRequest {
   title: string;

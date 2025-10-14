@@ -36,7 +36,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       borderColor: options.borderColor || YORHA_COLORS.primary.black,
       borderWidth: options.borderWidth || 0.02,
       shadow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.5,
         intensity: 0.3,
@@ -46,7 +46,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       // Interactive states
       hover: {
         shadow: {
-          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true
+          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true,
           intensity: 0.4,
           offsetY: -0.15,
           ...options.hover?.shadow
@@ -96,8 +96,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     shape.lineTo(x, y + radius);
     shape.quadraticCurveTo(x, y, x + radius, y);
     const extrudeSettings = {
-      depth: depth
-      bevelEnabled: true
+      depth: depth,
+      bevelEnabled: true,
       bevelSegments: 2,
       bevelSize: radius * 0.05,
       bevelThickness: depth * 0.1
@@ -112,8 +112,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const headerGeometry = new THREE.PlaneGeometry(width - 0.1, headerHeight);
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true
-      opacity: 0.9
+      transparent: true,
+      opacity: 0.9,
     });
     this.headerMesh = new THREE.Mesh(headerGeometry, headerMaterial);
     this.headerMesh.position.set(0, (this.style.height || 3) / 2 - headerHeight / 2 - 0.05, (this.style.depth || 0.1) / 2 + 0.001);
@@ -150,7 +150,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     );
     // Add hover effects
     this.closeButtonMesh.userData = {
-      interactive: true
+      interactive: true,
       onClick: () => this.onCloseClick(),
       onHover: () => {
         if (this.closeButtonMesh?.material instanceof THREE.MeshBasicMaterial) {
@@ -174,8 +174,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       contentHeight
     );
     const scrollMaterial = new THREE.MeshBasicMaterial({
-      transparent: true
-      opacity: 0
+      transparent: true,
+      opacity: 0,
     });
     const scrollPlane = new THREE.Mesh(scrollGeometry, scrollMaterial);
     scrollPlane.position.set(0, -0.2, (this.style.depth || 0.1) / 2 + 0.001);
@@ -189,8 +189,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const scrollBarGeometry = new THREE.PlaneGeometry(0.05, (this.style.height || 3) - 0.4);
     const scrollBarMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true
-      opacity: 0.5
+      transparent: true,
+      opacity: 0.5,
     });
     const scrollBar = new THREE.Mesh(scrollBarGeometry, scrollBarMaterial);
     scrollBar.position.set(
@@ -206,8 +206,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const handleGeometry = new THREE.PlaneGeometry(handleSize, handleSize);
     const handleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true
-      opacity: 0.7
+      transparent: true,
+      opacity: 0.7,
     });
     // Bottom-right corner handle
     const resizeHandle = new THREE.Mesh(handleGeometry, handleMaterial);
@@ -217,7 +217,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       (this.style.depth || 0.1) / 2 + 0.001
     );
     resizeHandle.userData = {
-      interactive: true
+      interactive: true,
       onDrag: (deltaX: number, deltaY: number) => this.onResize(deltaX, deltaY)
     }
     this.add(resizeHandle);
@@ -246,7 +246,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.02,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.amber,
           intensity: 0.2
         }

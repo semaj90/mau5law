@@ -229,13 +229,13 @@ class EnhancedNotesManager {
   private dbPrefix = "legal-note-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
-    compressionEnabled: true
-    enableMetrics: true
+    compressionEnabled: true,
+    enableMetrics: true,
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
-    enableSIMD: true
-    redisCache: true
+    enableSIMD: true,
+    redisCache: true,
   });
   static getInstance(): EnhancedNotesManager {
     if (!EnhancedNotesManager.instance) {
@@ -248,8 +248,8 @@ class EnhancedNotesManager {
     const now = new Date();
     const enhancedNote: LegalNote = {
       ...note,
-      savedAt: note.id ? (await this.getExistingNote(note.id))?.savedAt || now : now
-      updatedAt: now
+      savedAt: note.id ? (await this.getExistingNote(note.id))?.savedAt || now : now,
+      updatedAt: now,
       metadata: {
         ...note.metadata,
         lastProcessed: now
@@ -412,19 +412,19 @@ class EnhancedNotesManager {
   async createNoteFromOCR(ocrResult: any, caseId?: string): Promise<LegalNote> {
     const noteId = `ocr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const note: LegalNote = {
-      id: noteId
+      id: noteId,
       title: `OCR Extract - ${new Date().toLocaleDateString()}`,
       content: ocrResult.text,
       markdown: ocrResult.text,
       html: `<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,
-      contentJson: ocrResult
+      contentJson: ocrResult,
       noteType: 'ocr_extracted',
       tags: ['ocr', 'extracted'],
       caseId,
       userId: 'current-user', // TODO: Get from auth
       savedAt: new Date(),
       metadata: {
-        ocrExtracted: true
+        ocrExtracted: true,
         ocrConfidence: ocrResult.confidence,
         ocrBoundingBoxes: ocrResult.boundingBoxes,
         sourceDocument: ocrResult.sourceDocument,
@@ -439,19 +439,19 @@ class EnhancedNotesManager {
   async createNoteFromAIAnalysis(analysis: any, sourceContent: string, caseId?: string): Promise<LegalNote> {
     const noteId = `ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const note: LegalNote = {
-      id: noteId
+      id: noteId,
       title: analysis.title || `AI Analysis - ${new Date().toLocaleDateString()}`,
       content: analysis.summary || sourceContent,
       markdown: analysis.markdown || analysis.summary,
       html: analysis.html || `<p>${analysis.summary}</p>`,
-      contentJson: analysis
+      contentJson: analysis,
       noteType: 'ai_generated',
       tags: ['ai-generated', 'analysis', ...(analysis.tags || [])],
       caseId,
       userId: 'current-user',
       savedAt: new Date(),
       metadata: {
-        aiGenerated: true
+        aiGenerated: true,
         aiModel: analysis.model || 'gemma3:legal-latest',
         confidence: analysis.confidence,
         legalCitations: analysis.citations,

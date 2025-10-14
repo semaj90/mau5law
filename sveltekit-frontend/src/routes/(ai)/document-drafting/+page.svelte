@@ -8,7 +8,10 @@
 
 <svelte:head>
   <title>Legal Document Drafting - Legal AI Platform</title>
-  <meta name="description" content="AI-powered legal document creation and collaborative editing using Enhanced-Bits architecture" />
+  <meta
+    name="description"
+    content="AI-powered legal document creation and collaborative editing using Enhanced-Bits architecture"
+  />
 </svelte:head>
 
 <div class="page-container">

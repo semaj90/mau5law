@@ -25,7 +25,7 @@ interface LegalEntityExtraction {
  * FlatBuffer Legal Document Processor
  * Optimized for zero-copy access to large legal documents
  * Integrates with Go microservices via QUIC/HTTP3
- */;
+ */
 export class FlatBufferLegalProcessor {
   private builder: Builder;
   private readonly API_BASE = 'http://localhost:8084'; // Go microservice endpoint
@@ -35,7 +35,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Store large legal document using FlatBuffer for efficient access
    * Integrates with your Go microservice search-embedder-service
-   */;
+   */
   async storeLegalDocument(_document: {
     id: string;
     title: string;
@@ -56,7 +56,7 @@ export class FlatBufferLegalProcessor {
     const fbDocument = this.createDocumentFlatBuffer({
       id: document.id,
       title: document.title,
-      content: processedContent
+      content: processedContent,
       contentType: document.contentType,
       compressed: !!document.compress,
       checksum: this.calculateChecksum(processedContent)
@@ -66,7 +66,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Process vector embeddings with FlatBuffer for GPU acceleration
    * Optimized for your CUDA/SIMD Go microservices
-   */;
+   */
   async storeVectorEmbeddings(embeddings: {
     documentId: string;
     vectors: Float32Array;
@@ -81,7 +81,7 @@ export class FlatBufferLegalProcessor {
     const quantizedEmbeddings = await this.quantizeEmbeddings(embeddings.vectors);
     const fbEmbeddings = this.createEmbeddingFlatBuffer({
       documentId: embeddings.documentId,
-      embedding: quantizedEmbeddings
+      embedding: quantizedEmbeddings,
       model: embeddings?.model || "unknown" // @ts-ignore - Model property access,
       dimension: embeddings.vectors.length,
       confidence: 0.95 // Would come from Go AI processing
@@ -91,7 +91,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Execute legal entity extraction using FlatBuffer for zero-copy processing
    * Calls your Go microservice with experimental SIMD optimization
-   */;
+   */
   async extractLegalEntities(documentId: string, content: Uint8Array): Promise<LegalEntityExtraction> {
     try {
       // Call Go microservice with FlatBuffer data
@@ -118,7 +118,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Perform semantic search using FlatBuffer vector operations
    * Optimized for your GPU-accelerated Go search service
-   */;
+   */
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
@@ -150,7 +150,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Stream WebGPU texture data for legal document visualization
    * Integrates with your NES texture streaming pipeline
-   */;
+   */
   async streamDocumentTexture(documentId: string, options: {
     qualityLevel?: number;
     chunkSize?: number;

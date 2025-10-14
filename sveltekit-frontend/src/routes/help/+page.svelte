@@ -383,7 +383,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         article =>
           article.title.toLowerCase().includes(query) ||
           article.description.toLowerCase().includes(query) ||
-          article.content.toLowerCase().includes(query),
+          article.content.toLowerCase().includes(query)
       );
     }
     // Sort by popularity

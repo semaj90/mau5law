@@ -28,7 +28,7 @@
     md: 'max-w-lg',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl',
-  }
+  };
 
   const variantClasses = {
     default: 'enhanced-modal-default',
@@ -36,7 +36,7 @@
     diamond: 'enhanced-modal-diamond nes-diamond-pattern',
     gaming: 'enhanced-modal-gaming',
     legal: 'enhanced-modal-legal',
-  }
+  };
 
   function handleBackdropClick(_event: MouseEvent) {
     if (event.target === event.currentTarget) {
@@ -129,11 +129,12 @@
     );
     border: 2px solid;
     border-image: linear-gradient(
-      135deg,
-      var(--enhanced-accent) 0%,
-      var(--enhanced-accent-secondary) 50%,
-      var(--enhanced-accent-grey) 100%
-    ) 1;
+        135deg,
+        var(--enhanced-accent) 0%,
+        var(--enhanced-accent-secondary) 50%,
+        var(--enhanced-accent-grey) 100%
+      )
+      1;
   }
 
   /* Diamond Pattern Modal */

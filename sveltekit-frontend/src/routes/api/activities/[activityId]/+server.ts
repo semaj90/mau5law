@@ -251,4 +251,4 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     console.error('Error patching activity:', error);
     return json({ error: 'Failed to update activity' }, { status: 500 });
   }
-}
+};

@@ -18,7 +18,7 @@
     type = 'button',
     ariaLabel = undefined,
     onclick = undefined,
-    children
+    children,
   }: Props = $props();
 
   let Btn: any = $state(null);

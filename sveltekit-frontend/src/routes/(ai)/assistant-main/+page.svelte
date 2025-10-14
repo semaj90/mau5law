@@ -1,4 +1,3 @@
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Svelte 5 runes are built-in, no import needed
@@ -36,7 +35,19 @@
   import { onMount, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { createMachine, interpret } from 'xstate';
-      import { Button, Card, CardHeader, CardTitle, CardContent, Input, Badge, Textarea, Dialog, DialogCompound, Tabs } from '$lib/components/ui/enhanced-bits';
+  import {
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Input,
+    Badge,
+    Textarea,
+    Dialog,
+    DialogCompound,
+    Tabs,
+  } from '$lib/components/ui/enhanced-bits';
   // Real-time search integration
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.ts';
@@ -209,7 +220,7 @@
       type: 'user',
       content: currentMessage,
       timestamp: new Date(),
-    }
+    };
     chatMessages = [...chatMessages, userMessage];
     const messageToSend = currentMessage;
     currentMessage = '';
@@ -224,7 +235,7 @@
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
             vectorSearch: true,
-            includeAI: true
+            includeAI: true,
           });
           enhancedContext = {
             ...enhancedContext,
@@ -232,9 +243,9 @@
             searchMetadata: {
               query: messageToSend,
               timestamp: new Date(),
-              resultCount: searchResults.length
-            }
-          }
+              resultCount: searchResults.length,
+            },
+          };
         } catch (searchError) {
           console.warn('Search enhancement failed:', searchError);
         }
@@ -257,7 +268,7 @@
           timestamp: new Date(),
           suggestions: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [],
           metadata: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).metadata,
-        }
+        };
         chatMessages = [...chatMessages, assistantMessage];
         aiSuggestions = (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [];
         aiService.send('RESPONSE_COMPLETE');
@@ -271,7 +282,7 @@
         type: 'system',
         content: 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date(),
-      }
+      };
       chatMessages = [...chatMessages, errorMessage];
       aiService.send('ERROR');
     } finally {
@@ -283,13 +294,12 @@
       recentReports: reports.slice(0, 3),
       recentSummaries: summaries.slice(0, 3),
       topCitations: citations.sort((a, b) => b.relevance - a.relevance).slice(0, 5),
-    }
+    };
   }
   async function startVoiceInput() {
     if (!voiceEnabled) return;
     try {
-      const SpeechRecognitionAPI =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
+      const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
       if (!SpeechRecognitionAPI) {
         throw new Error('Speech recognition not supported');
       }
@@ -299,17 +309,17 @@
       recognition.lang = 'en-US';
       isListening = true;
       aiService.send('VOICE_INPUT');
-      recognition.onresult = (event) => {
+      recognition.onresult = event => {
         const transcript = event.results[0][0].transcript;
         currentMessage = transcript;
         isListening = false;
         aiService.send('VOICE_COMPLETE');
         sendMessage();
-      }
+      };
       recognition.onerror = () => {
         isListening = false;
         aiService.send('VOICE_CANCEL');
-      }
+      };
       recognition.start();
     } catch (error) {
       console.error('Voice input error:', error);
@@ -356,8 +366,8 @@
     panelLayout[panelName].width = newWidth;
     // Redistribute remaining width
     const remaining = 100 - newWidth;
-    const otherPanels = Object.keys(panelLayout).filter((p) => p !== panelName);
-    otherPanels.forEach((panel) => {
+    const otherPanels = Object.keys(panelLayout).filter(p => p !== panelName);
+    otherPanels.forEach(panel => {
       panelLayout[panel].width = remaining / otherPanels.length;
     });
   }
@@ -366,7 +376,7 @@
       messages: chatMessages,
       timestamp: new Date(),
       context: getRelevantContext(),
-    }
+    };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -380,6 +390,7 @@
     sendMessage();
   }
 </script>
+
 <svelte:head>
   <title>AI Assistant</title>
 </svelte:head>
@@ -392,13 +403,13 @@
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Context7 Active</span>
       </div>
       <div class="flex items-center space-x-2">
-  <Button class="bits-btn" variant="ghost" size="sm" onclick={exportChatHistory}>
-<Download class="h-4 w-4 mr-1" />
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={exportChatHistory}>
+          <Download class="h-4 w-4 mr-1" />
           Export
-</Button>
+        </Button>
         <Button class="bits-btn" variant="ghost" size="sm">
-<Settings class="h-4 w-4" />
-</Button>
+          <Settings class="h-4 w-4" />
+        </Button>
       </div>
     </div>
   </header>
@@ -408,20 +419,19 @@
     <div
       class="border-r border-slate-200 bg-white transition-all duration-300"
       style:width={panelLayout.reports.collapsed ? '0px' : `${panelLayout.reports.width}%`}
-      style:min-width={panelLayout.reports.collapsed ? '0px' : '250px'}>
+      style:min-width={panelLayout.reports.collapsed ? '0px' : '250px'}
+    >
       {#if !panelLayout.reports.collapsed}
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Reports</h3>
             <div class="flex items-center space-x-1">
-              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
-adjustPanelWidth('reports', -5)}>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
-</Button>
-              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
-togglePanel('reports')}>
+              </Button>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
-</Button>
+              </Button>
             </div>
           </div>
           <div class="flex-1 overflow-y-auto p-4">
@@ -433,16 +443,13 @@ togglePanel('reports')}>
             {:else}
               <div class="space-y-3">
                 {#each reports as report}
-                  <div
-                    class="p-3 border border-slate-200 rounded-lg hover:shadow-sm cursor-pointer">
+                  <div class="p-3 border border-slate-200 rounded-lg hover:shadow-sm cursor-pointer">
                     <h4 class="font-medium text-slate-900 text-sm mb-1">{report.title}</h4>
                     <p class="text-xs text-slate-600 mb-2">
                       {report.type} • {new Date(report.date).toLocaleDateString()}
                     </p>
                     <p class="text-xs text-slate-700 line-clamp-2">{report.summary}</p>
-                    <Badge
-                      class="mt-2 text-xs"
-                      variant={report.status === 'completed' ? 'default' : 'outline'}>
+                    <Badge class="mt-2 text-xs" variant={report.status === 'completed' ? 'default' : 'outline'}>
                       {report.status}
                     </Badge>
                   </div>
@@ -457,15 +464,15 @@ togglePanel('reports')}>
     <div
       class="border-r border-slate-200 bg-white transition-all duration-300"
       style:width={panelLayout.summaries.collapsed ? '0px' : `${panelLayout.summaries.width}%`}
-      style:min-width={panelLayout.summaries.collapsed ? '0px' : '250px'}>
+      style:min-width={panelLayout.summaries.collapsed ? '0px' : '250px'}
+    >
       {#if !panelLayout.summaries.collapsed}
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Summaries</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
-togglePanel('summaries')}>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
-</Button>
+            </Button>
           </div>
           <div class="flex-1 overflow-y-auto p-4">
             <div class="space-y-3">
@@ -484,15 +491,15 @@ togglePanel('summaries')}>
     <div
       class="border-r border-slate-200 bg-white transition-all duration-300"
       style:width={panelLayout.citations.collapsed ? '0px' : `${panelLayout.citations.width}%`}
-      style:min-width={panelLayout.citations.collapsed ? '0px' : '250px'}>
+      style:min-width={panelLayout.citations.collapsed ? '0px' : '250px'}
+    >
       {#if !panelLayout.citations.collapsed}
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Citations</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
-togglePanel('citations')}>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
-</Button>
+            </Button>
           </div>
           <div class="flex-1 overflow-y-auto p-4">
             <div class="space-y-3">
@@ -501,9 +508,10 @@ togglePanel('citations')}>
                   <h4 class="font-medium text-slate-900 text-sm mb-1">{citation.title}</h4>
                   <p class="text-xs text-slate-600 mb-1">{citation.source}</p>
                   <div class="flex justify-between items-center">
-                    <span class="text-xs text-slate-500"
-                      >{new Date(citation.date).toLocaleDateString()}</span>
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(citation.relevance * 100).toFixed(0)}% relevant</span>
+                    <span class="text-xs text-slate-500">{new Date(citation.date).toLocaleDateString()}</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                      >{(citation.relevance * 100).toFixed(0)}% relevant</span
+                    >
                   </div>
                 </div>
               {/each}
@@ -515,7 +523,8 @@ togglePanel('citations')}>
     <!-- AI Chat Panel -->
     <div
       class="bg-white transition-all duration-300 flex flex-col"
-      style:width={panelLayout.chat.collapsed ? '0px' : `${panelLayout.chat.width}%`}>
+      style:width={panelLayout.chat.collapsed ? '0px' : `${panelLayout.chat.width}%`}
+    >
       {#if !panelLayout.chat.collapsed}
         <!-- Chat Header -->
         <div class="p-4 border-b border-slate-200 flex items-center justify-between">
@@ -533,10 +542,9 @@ togglePanel('citations')}>
               </span>
             </div>
           </div>
-          <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
-togglePanel('chat')}>
+          <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
             <Expand class="h-3 w-3" />
-</Button>
+          </Button>
         </div>
         <!-- AI Suggestions Bar -->
         {#if contextualSuggestions.length > 0}
@@ -546,7 +554,8 @@ togglePanel('chat')}>
               {#each contextualSuggestions as suggestion}
                 <button
                   class="text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
-                  onclick={() => useSuggestion(suggestion)}>
+                  onclick={() => useSuggestion(suggestion)}
+                >
                   {suggestion}
                 </button>
               {/each}
@@ -559,9 +568,7 @@ togglePanel('chat')}>
             <div class="text-center py-12">
               <MessageSquare class="h-16 w-16 text-slate-300 mx-auto mb-4" />
               <p class="text-slate-500">Start a conversation with your AI assistant</p>
-              <p class="text-slate-400 text-sm mt-1">
-                Ask questions about your cases, evidence, or legal research
-              </p>
+              <p class="text-slate-400 text-sm mt-1">Ask questions about your cases, evidence, or legal research</p>
             </div>
           {:else}
             {#each chatMessages as message}
@@ -571,7 +578,8 @@ togglePanel('chat')}>
                     ? 'bg-blue-500 text-white'
                     : message.type === 'assistant'
                       ? 'bg-slate-100 text-slate-900'
-                      : 'bg-yellow-100 text-yellow-800'} rounded-lg p-3">
+                      : 'bg-yellow-100 text-yellow-800'} rounded-lg p-3"
+                >
                   <p class="text-sm">{message.content}</p>
                   <p class="text-xs opacity-75 mt-1">
                     {new Date(message.timestamp).toLocaleTimeString()}
@@ -579,9 +587,10 @@ togglePanel('chat')}>
                   {#if message.suggestions && message.suggestions.length > 0}
                     <div class="mt-2 space-y-1">
                       {#each message.suggestions as suggestion}
-                                                <Button
+                        <Button
                           class="block w-full text-left text-xs p-2 bg-white/20 hover:bg-white/30 rounded transition-colors"
-                          onclick={() => useSuggestion(suggestion)}>
+                          onclick={() => useSuggestion(suggestion)}
+                        >
                           {suggestion}
                         </Button>
                       {/each}
@@ -596,14 +605,8 @@ togglePanel('chat')}>
               <div class="bg-slate-100 rounded-lg p-3">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                  <div
-                    class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
-                    style="animation-delay: 0.1s">
-                  </div>
-                  <div
-                    class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
-                    style="animation-delay: 0.2s">
-                  </div>
+                  <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                  <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                   <span class="text-sm text-slate-600">AI is thinking...</span>
                 </div>
               </div>
@@ -618,7 +621,7 @@ togglePanel('chat')}>
               categories={['cases', 'evidence', 'precedents', 'statutes']}
               enableVectorSearch={true}
               aiSuggestions={true}
-              select={(result) => {
+              select={result => {
                 currentMessage = `Tell me about: ${(result as { title?: unknown }).title}`;
                 sendMessage();
               }}
@@ -630,8 +633,9 @@ togglePanel('chat')}>
               <Input
                 bind:value={currentMessage}
                 placeholder="Ask your AI assistant..."
-                keydown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-                disabled={isProcessing} />
+                keydown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                disabled={isProcessing}
+              />
             </div>
             {#if voiceEnabled}
               <Button
@@ -639,23 +643,25 @@ togglePanel('chat')}>
                 size="sm"
                 onclick={startVoiceInput}
                 disabled={isListening || isProcessing}
-                class={isListening ? 'bg-red-100 border-red-300' : ''}>
-{#if isListening}
+                class={isListening ? 'bg-red-100 border-red-300' : ''}
+              >
+                {#if isListening}
                   <MicOff class="h-4 w-4" />
                 {:else}
                   <Mic class="h-4 w-4" />
                 {/if}
-</Button>
+              </Button>
             {/if}
             <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
-<Send class="h-4 w-4" />
-</Button>
+              <Send class="h-4 w-4" />
+            </Button>
           </div>
         </div>
       {/if}
     </div>
   </div>
 </div>
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;

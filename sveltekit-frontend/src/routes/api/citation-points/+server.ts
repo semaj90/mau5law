@@ -1,4 +1,3 @@
-
 import { reports } from '$lib/server/db/schema';
 import { db } from '$lib/server/db/index';
 import type { RequestHandler } from './$types.js';
@@ -31,7 +30,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     console.error('Error fetching citation points:', error);
     return json({ error: 'Failed to fetch citation points' }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -62,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: data.metadata || {},
       isBookmarked: data.isBookmarked || false,
       createdBy: getUserId(locals),
-    }
+    };
     const [newCitation] = await db
       .insert(reports)
       .values({
@@ -78,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Error creating citation point:', error);
     return json({ error: 'Failed to create citation point' }, { status: 500 });
   }
-}
+};
 export const PUT: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -102,7 +101,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     }
     const updateData: { [key: string]: any } = {
       updatedAt: new Date().toISOString(),
-    }
+    };
     // Only update provided fields
     if (data.text !== undefined) updateData.text = data.text;
     if (data.source !== undefined) updateData.source = data.source;
@@ -126,7 +125,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     console.error('Error updating citation point:', error);
     return json({ error: 'Failed to update citation point' }, { status: 500 });
   }
-}
+};
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
@@ -155,4 +154,4 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     console.error('Error deleting citation point:', error);
     return json({ error: 'Failed to delete citation point' }, { status: 500 });
   }
-}
+};

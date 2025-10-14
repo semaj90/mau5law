@@ -1,21 +1,21 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 /*
  * Simple Glyph Generation Test API
  * Tests glyph diffusion without database or MinIO dependencies
  */
 export const GET: RequestHandler = async () => {
-  console.log('🎨 Glyph test endpoint accessed via GET')
+  console.log('🎨 Glyph test endpoint accessed via GET');
   return json({
     success: true,
     message: 'Glyph diffusion test endpoint is working',
-    status: 'ok'
-  })
-}
+    status: 'ok',
+  });
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    console.log('🎨 Testing glyph generation:', body)
+    const body = await request.json();
+    console.log('🎨 Testing glyph generation:', body);
     // Simulate glyph generation without database/MinIO
     const mockGlyphResponse = {
       success: true,
@@ -36,21 +36,24 @@ export const POST: RequestHandler = async ({ request }) => {
         generation_time_ms: Math.floor(Math.random() * 200 + 50),
         cache_hits: 0,
         tensor_ids: ['mock_tensor_1', 'mock_tensor_2'],
-        neural_sprite_results: null
+        neural_sprite_results: null,
         metadata: {
           style: body.style || 'legal',
           prompt: body.prompt || 'test',
-          dimensions: body.dimensions || [256, 256]
-        }
-      }
-    }
-    console.log('✅ Mock glyph generated successfully')
-    return json(mockGlyphResponse)
+          dimensions: body.dimensions || [256, 256],
+        },
+      },
+    };
+    console.log('✅ Mock glyph generated successfully');
+    return json(mockGlyphResponse);
   } catch (error) {
-    console.error('❌ Glyph test generation failed:', error)
-    return json({
-      success: false,
-      error: 'Glyph test generation failed: ' + error.message
-    }, { status: 500 })
+    console.error('❌ Glyph test generation failed:', error);
+    return json(
+      {
+        success: false,
+        error: 'Glyph test generation failed: ' + error.message,
+      },
+      { status: 500 }
+    );
   }
-}
+};

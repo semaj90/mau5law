@@ -2,7 +2,7 @@
 /**
  * WebAssembly Integration for Legal AI Performance Acceleration
  * Handles ECMAScript to WebAssembly compilation and execution
- */;
+ */
 }
 export interface WasmModule {
   instance: WebAssembly.Instance;
@@ -47,8 +47,8 @@ export class WebAssemblyAccelerator {
    * Compile ECMAScript/TypeScript to WebAssembly bytecode
    */
   async compileToWasm(
-    sourceCode: string
-    functionName: string
+    sourceCode: string,
+    functionName: string,
     options: WasmCompileOptions = {}
   ): Promise<Uint8Array> {
     const cacheKey = this.generateCacheKey(sourceCode, options);
@@ -75,7 +75,7 @@ export class WebAssemblyAccelerator {
    * Load and instantiate WebAssembly module
    */
   async loadModule(
-    wasmBytes: Uint8Array
+    wasmBytes: Uint8Array,
     imports: { [key: string]: any } = {},
     moduleId?: string;
   ): Promise<WasmModule> {
@@ -117,8 +117,8 @@ export class WebAssemblyAccelerator {
    * Execute WebAssembly function with performance monitoring
    */
   async executeWasmFunction<T>(
-    moduleId: string
-    functionName: string
+    moduleId: string,
+    functionName: string,
     ...args: any[];
   ): Promise<T> {
     const module = this.modules.get(moduleId);
@@ -144,7 +144,7 @@ export class WebAssemblyAccelerator {
   }
   /**
    * High-performance JSON parsing with SIMD
-   */;
+   */
   async parseJSONSIMD(jsonString: string): Promise<any> {
     try {
       // Load simdjson WASM module if not already loaded
@@ -180,7 +180,7 @@ export class WebAssemblyAccelerator {
   }
   /**
    * Vector operations with compiled WASM module
-   */;
+   */
   async computeEmbeddingsSIMD(vectors: Float32Array[]): Promise<Float32Array> {
     try {
       // Import our compiled WASM wrapper
@@ -233,7 +233,7 @@ export class WebAssemblyAccelerator {
   }
   /**
    * OCR text processing with WASM acceleration
-   */;
+   */
   async processOCRTextWASM(imageData: ImageData): Promise<string> {
     if (!this.modules.has("ocr-processor")) {
       const wasmBytes = await this.loadOCRProcessorModule();
@@ -266,7 +266,7 @@ export class WebAssemblyAccelerator {
    * Async compilation with AssemblyScript
    */
   private async compileWithAssemblyScript(
-    sourceCode: string
+    sourceCode: string,
     options: WasmCompileOptions;
   ): Promise<Uint8Array> {
     // This would use AssemblyScript compiler
@@ -349,7 +349,7 @@ export class WebAssemblyAccelerator {
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose(): void {
     this.modules.clear();
     this.compileCache.clear();
@@ -360,7 +360,7 @@ export const wasmAccelerator = new WebAssemblyAccelerator();
 // Performance-critical function decorator
 export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
-    target: any
+    target: any,
     propertyKey: string;
     descriptor: PropertyDescriptor;
   ) {

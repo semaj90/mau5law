@@ -41,12 +41,12 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // 2. Store the PDF file
     // 3. Return download URL, localstorage or stream the PDF
     const pdfMetadata = {
-      reportId: reportId
+      reportId: reportId,
       reportTitle: report.title,
       generatedBy: getUserId(locals),
       generatedAt: new Date().toISOString(),
       format: exportOptions.format,
-      options: exportOptions
+      options: exportOptions,
       estimatedPages: 10, // Rough estimate
       fileSize: "~2.5MB", // Placeholder
       downloadUrl: `/api/reports/${reportId}/export/pdf/download?token=${Date.now()}`, // Placeholder URL
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     return json({
       success: true,
       message: "PDF export initiated successfully",
-      metadata: pdfMetadata
+      metadata: pdfMetadata,
       note: "This is a mock response. In production, actual PDF generation would occur here."
     })
   } catch (error: any) {

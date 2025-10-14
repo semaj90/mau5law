@@ -3,7 +3,7 @@
  * Lightweight Matrix Transform Library (~10KB)
  * Optimized for CSS transforms and WebGL integration
  * Inspired by gl-matrix but focused on sprite transformations
- */;
+ */
 }
 export interface MatrixTransformConfig {
   enableGPUAcceleration: boolean;
@@ -35,7 +35,7 @@ export class MatrixTransformLib {
   }
   /**
    * Generate CSS transforms from sprite JSON state
-   */;
+   */
   public generateCSSTransforms(spriteJsonState: string): TransformResult {
     const cacheKey = this.getCacheKey(spriteJsonState);
     if (this.config.cacheTransforms && this.transformCache.has(cacheKey)) {
@@ -80,7 +80,7 @@ export class MatrixTransformLib {
   }
   /**
    * Multiply two 2D transformation matrices
-   */;
+   */
   public multiplyMatrices(a: number[], b: number[]): number[] {
     // 2D transformation matrix multiplication (3x3 homogeneous coordinates)
     // [ a b c ]   [ g h i ]
@@ -97,7 +97,7 @@ export class MatrixTransformLib {
   }
   /**
    * Convert 2D matrix to CSS transform string
-   */;
+   */
   public matrixToCSS(matrix: number[]): string {
     if (this.config.optimizeForCSS) {
       // Use CSS3 matrix() function for hardware acceleration
@@ -125,7 +125,7 @@ export class MatrixTransformLib {
   }
   /**
    * Convert 2D matrix to WebGL-compatible 4x4 matrix
-   */;
+   */
   public matrixToWebGL(matrix: number[]): Float32Array {
     // Convert 2D transformation matrix to 4x4 WebGL matrix
     return new Float32Array([
@@ -151,8 +151,8 @@ export class MatrixTransformLib {
    * Interpolate between two transforms (for animations)
    */
   public interpolateTransforms(
-    from: Transform2D
-    to: Transform2D
+    from: Transform2D,
+    to: Transform2D,
     t: number, // 0 to 1
   ): TransformResult {
     t = Math.max(0, Math.min(1, t); // Clamp to 0-1
@@ -275,7 +275,7 @@ export class MatrixTransformLib {
   }
   /**
    * Utility methods for common transformations
-   */;
+   */
   public static createTranslation(x: number, y: number): number[] {
     return [1, 0, x, 0, 1, y];
   }
@@ -292,7 +292,7 @@ export class MatrixTransformLib {
   }
   /**
    * Get performance statistics
-   */;
+   */
   public getStats(): {
     cacheSize: number;
     cacheEnabled: boolean;
@@ -308,7 +308,7 @@ export class MatrixTransformLib {
   }
   /**
    * Clear transform cache
-   */;
+   */
   public clearCache(): void {
     this.transformCache.clear();
   }

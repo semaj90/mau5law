@@ -23,7 +23,7 @@
     { name: 'Document Drafting', href: '/document-drafting', icon: '📝' },
     { name: 'Pattern Detection', href: '/pattern-detection', icon: '🎯' },
     { name: 'Orchestrator', href: '/orchestrator', icon: '🎼' },
-    { name: 'Processing', href: '/processing', icon: '⚙️' }
+    { name: 'Processing', href: '/processing', icon: '⚙️' },
   ];
 
   // AI-focused console theme (cyberpunk for AI work)

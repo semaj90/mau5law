@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const paginatedEvidence = filteredEvidence.slice(offset, offset + limit)
     return json({
       success: true,
-      data: paginatedEvidence
+      data: paginatedEvidence,
       pagination: {
         total: filteredEvidence.length,
         limit,
@@ -184,8 +184,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        evidence: newEvidence
-        processing_job: processingJob
+        evidence: newEvidence,
+        processing_job: processingJob,
       },
       message: 'Evidence item created and queued for processing',
       timestamp: new Date().toISOString()
@@ -226,7 +226,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     }
     return json({
       success: true,
-      data: mockEvidenceData[evidenceIndex]
+      data: mockEvidenceData[evidenceIndex],
       message: 'Evidence updated successfully',
       timestamp: new Date().toISOString()
     })

@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     // Simple spell correction (can be enhanced)
     const correctedQuery = query.toLowerCase().trim()
     const response: SuggestResponse = {
-      suggestions: limitedSuggestions
+      suggestions: limitedSuggestions,
       correctedQuery,
       explanation: `Found ${limitedSuggestions.length} suggestions for "${query}"`,
       processingTimeMs: Date.now() - startTime
@@ -108,12 +108,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     params: { [key,: strin,g]: any },
     url: new URL(url),
     fetch,
-    request: mockRequest
+    request: mockRequest,
     route: { id: '/api/suggest' },
     locals: { [key,: strin,g]: any },
-    platform: undefined
-    isDataRequest: false
-    isSubRequest: false
+    platform: undefined,
+    isDataRequest: false,
+    isSubRequest: false,
   } as any)
 }
 async function searchDatabase(query: string, contextType: string, limit: number): Promise<Suggestion[]> {
@@ -143,10 +143,10 @@ async function searchDatabase(query: string, contextType: string, limit: number)
         const similarity = calculateSimilarity(queryLower, name.toLowerCase()
         if (similarity > 0.3) {
           suggestions.push({
-            label: name
+            label: name,
             entityId: person.id,
             type: 'PERSON',
-            score: similarity
+            score: similarity,
             description: `${person.role || 'User'} - ${person.email}`,
             icon: 'user',
             tags: ['legal', 'professional', person.role || 'user'].filter(Boolean)
@@ -183,7 +183,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             label: caseItem.title,
             entityId: caseItem.id,
             type: 'CASE',
-            score: similarity
+            score: similarity,
             description: caseItem.description || `${caseItem.caseType} case`,
             icon: 'folder',
             tags: ['case', caseItem.status, caseItem.caseType].filter(Boolean)
@@ -222,7 +222,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             label: evidenceItem.title,
             entityId: evidenceItem.id,
             type: 'EVIDENCE',
-            score: similarity
+            score: similarity,
             description: evidenceItem.description || `${evidenceItem.evidenceType} evidence`,
             icon: 'file-text',
             tags: ['evidence', evidenceItem.evidenceType, 'document'].filter(Boolean)

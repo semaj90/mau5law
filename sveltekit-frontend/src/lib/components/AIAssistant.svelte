@@ -7,116 +7,118 @@
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
   // Legal AI Assistant State Machine (XState Best Practices)
-  const legalAIMachine = createMachine({
-    id: 'legalAI',
-    initial: 'idle',
-    context: {
-      prompt: '',
-      response: '',
-      error: null,
-      conversationHistory: []
-    },
-    states: {
-      idle: {
-        on: {
-          QUERY: {
-            target: 'querying',
-            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
-            actions: assign({
-              prompt: (_ctx, evt) => (evt as any).prompt,
-              error: () => null
-            })
-          }
-        }
+  const legalAIMachine = createMachine(
+    {
+      id: 'legalAI',
+      initial: 'idle',
+      context: {
+        prompt: '',
+        response: '',
+        error: null,
+        conversationHistory: [],
       },
-      querying: {
-        invoke: {
-          // wrap the async promise with fromPromise so XState accepts the actor logic type
-          src: fromPromise(async (ctx: any) => {
-            const payload = {
-              model: 'gemma3-legal:latest',
-              prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${ctx.prompt}`,
-              stream: false,
-              options: {
-                temperature: 0.3,
-                max_tokens: 2048,
-                top_p: 0.9,
-                frequency_penalty: 0.0,
-                presence_penalty: 0.0
-              }
-            };
-
-            const response = await fetch('http://localhost:11434/api/generate', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            return { response: data.response ?? data.output ?? JSON.stringify(data) };
-          }),
-          onDone: {
-            target: 'success',
-            actions: assign((ctx: any, evt: any) => {
-              const result = (evt?.data as any)?.response ?? '';
-              return {
-                response: result,
-                conversationHistory: [
-                  ...(ctx?.conversationHistory ?? []),
-                  { prompt: ctx?.prompt ?? '', response: result, timestamp: Date.now() }
-                ]
+      states: {
+        idle: {
+          on: {
+            QUERY: {
+              target: 'querying',
+              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
+              actions: assign({
+                prompt: (_ctx, evt) => (evt as any).prompt,
+                error: () => null,
+              }),
+            },
+          },
+        },
+        querying: {
+          invoke: {
+            // wrap the async promise with fromPromise so XState accepts the actor logic type
+            src: fromPromise(async (ctx: any) => {
+              const payload = {
+                model: 'gemma3-legal:latest',
+                prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${ctx.prompt}`,
+                stream: false,
+                options: {
+                  temperature: 0.3,
+                  max_tokens: 2048,
+                  top_p: 0.9,
+                  frequency_penalty: 0.0,
+                  presence_penalty: 0.0,
+                },
               };
-            })
+
+              const response = await fetch('http://localhost:11434/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+
+              const data = await response.json();
+              return { response: data.response ?? data.output ?? JSON.stringify(data) };
+            }),
+            onDone: {
+              target: 'success',
+              actions: assign((ctx: any, evt: any) => {
+                const result = (evt?.data as any)?.response ?? '';
+                return {
+                  response: result,
+                  conversationHistory: [
+                    ...(ctx?.conversationHistory ?? []),
+                    { prompt: ctx?.prompt ?? '', response: result, timestamp: Date.now() },
+                  ],
+                };
+              }),
+            },
+            onError: {
+              target: 'error',
+              actions: assign((_ctx: any, evt: any) => ({
+                error: (evt?.data?.message as string) ?? (evt?.message as string) ?? 'Failed to connect to Legal AI',
+              })),
+            },
           },
-          onError: {
-            target: 'error',
-            actions: assign((_ctx: any, evt: any) => ({
-              error: (evt?.data?.message as string) ?? (evt?.message as string) ?? 'Failed to connect to Legal AI'
-            }))
-          }
-        }
+        },
+        success: {
+          on: {
+            QUERY: {
+              target: 'querying',
+              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
+              actions: assign({
+                prompt: (_ctx, evt) => (evt as any).prompt,
+                error: () => null,
+              }),
+            },
+            CLEAR: {
+              target: 'idle',
+              actions: assign({
+                prompt: () => '',
+                response: () => '',
+                error: () => null,
+              }),
+            },
+          },
+        },
+        error: {
+          on: {
+            RETRY: {
+              target: 'querying',
+            },
+            QUERY: {
+              target: 'querying',
+              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
+              actions: assign({
+                prompt: (_ctx, evt) => (evt as any).prompt,
+                error: () => null,
+              }),
+            },
+          },
+        },
       },
-      success: {
-        on: {
-          QUERY: {
-            target: 'querying',
-            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
-            actions: assign({
-              prompt: (_ctx, evt) => (evt as any).prompt,
-              error: () => null
-            })
-          },
-          CLEAR: {
-            target: 'idle',
-            actions: assign({
-              prompt: () => '',
-              response: () => '',
-              error: () => null
-            })
-          }
-        }
-      },
-      error: {
-        on: {
-          RETRY: {
-            target: 'querying'
-          },
-          QUERY: {
-            target: 'querying',
-            guard: (_ctx, evt) => !!((evt as any)?.prompt?.trim()),
-            actions: assign({
-              prompt: (_ctx, evt) => (evt as any).prompt,
-              error: () => null
-            })
-          }
-        }
-      }
-    }
-  } /* removed second-argument implementations; invoke uses inline src */);
+    } /* removed second-argument implementations; invoke uses inline src */
+  );
   // Initialize XState machine - use 'snapshot' returned by @xstate/svelte
   const { snapshot, send } = useMachine(legalAIMachine);
 
@@ -127,9 +129,9 @@
   const notifications = writable<Notification[]>([]);
 
   // Derived stores based on the XState snapshot store
-  const isLoading = derived(snapshot, ($snapshot) => $snapshot.matches('querying'));
-  const currentResponse = derived(snapshot, ($snapshot) => $snapshot.context.response);
-  const errorMessage = derived(snapshot, ($snapshot) => $snapshot.context.error);
+  const isLoading = derived(snapshot, $snapshot => $snapshot.matches('querying'));
+  const currentResponse = derived(snapshot, $snapshot => $snapshot.context.response);
+  const errorMessage = derived(snapshot, $snapshot => $snapshot.context.error);
   const canSubmit = derived(
     [promptInput, isLoading],
     ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading
@@ -137,9 +139,9 @@
 
   function showNotification(title: string, description: string) {
     const id = Date.now();
-    notifications.update((n) => [...n, { id, title, description }]);
+    notifications.update(n => [...n, { id, title, description }]);
     // remove after timeout (run outside update callback for safety)
-    setTimeout(() => notifications.update((m) => m.filter(item => item.id !== id)), 5000);
+    setTimeout(() => notifications.update(m => m.filter(item => item.id !== id)), 5000);
   }
   // Enhanced query function with error handling
   function handleQuery() {
@@ -185,10 +187,12 @@
 <div class="w-full max-w-4xl yorha-nier-bits-card nes-container">
   <div class="yorha-panel-header yorha-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
-      <div class="w-3 h-3 rounded-full"
-           class:bg-green-500={$snapshot.matches('idle')}
-           class:bg-yellow-500={$isLoading}
-           class:bg-red-500={$snapshot.matches('error')}></div>
+      <div
+        class="w-3 h-3 rounded-full"
+        class:bg-green-500={$snapshot.matches('idle')}
+        class:bg-yellow-500={$isLoading}
+        class:bg-red-500={$snapshot.matches('error')}
+      ></div>
       YoRHa Legal AI Assistant - Gemma3 Legal Latest
     </h3>
     <div class="text-sm nes-text is-disabled">
@@ -234,22 +238,10 @@
         {$isLoading ? 'Processing Legal Query...' : 'Ask Legal AI'}
       </svelte:component>
       {#if $snapshot.matches('error')}
-        <svelte:component
-          this={EnhancedButtonAny}
-          variant="ghost"
-          on:click={handleRetry}
-        >
-          Retry
-        </svelte:component>
+        <svelte:component this={EnhancedButtonAny} variant="ghost" on:click={handleRetry}>Retry</svelte:component>
       {/if}
       {#if $currentResponse}
-        <svelte:component
-          this={EnhancedButtonAny}
-          variant="ghost"
-          on:click={handleClear}
-        >
-          Clear
-        </svelte:component>
+        <svelte:component this={EnhancedButtonAny} variant="ghost" on:click={handleClear}>Clear</svelte:component>
       {/if}
     </div>
     <!-- Response Section -->
@@ -260,9 +252,7 @@
           <span class="font-medium">Error</span>
         </div>
         <p class="mt-2 text-sm text-red-600">{$errorMessage}</p>
-        <p class="mt-1 text-xs text-red-500">
-          Please ensure Ollama is running with gemma3-legal:latest model
-        </p>
+        <p class="mt-1 text-xs text-red-500">Please ensure Ollama is running with gemma3-legal:latest model</p>
       </div>
     {/if}
     {#if $currentResponse}
@@ -284,9 +274,7 @@
           <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
             Copy Response
           </button>
-          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-            Save to Case
-          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"> Save to Case </button>
           <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
             Follow-up Question
           </button>
@@ -356,8 +344,12 @@
     background: #fef2f2;
   }
   @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

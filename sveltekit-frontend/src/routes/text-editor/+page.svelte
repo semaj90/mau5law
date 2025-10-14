@@ -33,7 +33,7 @@ https://svelte.dev/e/expected_token -->
     words: 0,
     characters: 0,
     charactersNoSpaces: 0,
-    paragraphs: 0
+    paragraphs: 0,
   };
 
   $: {
@@ -116,7 +116,9 @@ https://svelte.dev/e/expected_token -->
         <span class="save-status">Last saved: {lastSaved.toLocaleTimeString()}</span>
       {/if}
       {#if isModified}
-        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700 modified-badge">Unsaved</span>
+        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700 modified-badge"
+          >Unsaved</span
+        >
       {/if}
     </div>
   </div>
@@ -384,7 +386,8 @@ https://svelte.dev/e/expected_token -->
 
   /* Animations */
   @keyframes glow-pulse {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);
     }
     50% {

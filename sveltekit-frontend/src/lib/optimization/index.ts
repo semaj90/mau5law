@@ -285,10 +285,10 @@ export function createEnhancedOptimizationSuite(config?: {
       nvmeStorage: true
     },
     legalAI: {
-      enableCaseLawOptimization: true
-      enableEvidenceAnalysis: true
-      enableDocumentSummarization: true
-      enableSemanticSearch: true
+      enableCaseLawOptimization: true,
+      enableEvidenceAnalysis: true,
+      enableDocumentSummarization: true,
+      enableSemanticSearch: true,
     },
     services: {
       ollamaInstances: 3,
@@ -400,8 +400,8 @@ function createNvidiaOptimizations(hardware: any): GPUOptimizationConfig {
   return {
     deviceId: 0,
     memoryLimitMB: hardware.gpuMemoryGB * 1024 * 0.8, // Use 80% of GPU memory
-    tensorCores: true
-    cudaVersion: '12.0'
+    tensorCores: true,
+    cudaVersion: '12.0',
   }
 }
 function createCudaMemoryManager(hardware: any): CUDAMemoryConfig {
@@ -655,10 +655,10 @@ export async function optimizeForLegalAIDevelopment(): Promise<any> {
       nvmeStorage: true
     },
     legalAI: {
-      enableCaseLawOptimization: true
-      enableEvidenceAnalysis: true
-      enableDocumentSummarization: true
-      enableSemanticSearch: true
+      enableCaseLawOptimization: true,
+      enableEvidenceAnalysis: true,
+      enableDocumentSummarization: true,
+      enableSemanticSearch: true,
     },
     services: {
       ollamaInstances: 3,
@@ -691,10 +691,10 @@ export async function optimizeForLegalAIProduction(): Promise<EnhancedOptimizati
       nvmeStorage: true
     },
     legalAI: {
-      enableCaseLawOptimization: true
-      enableEvidenceAnalysis: true
-      enableDocumentSummarization: true
-      enableSemanticSearch: true
+      enableCaseLawOptimization: true,
+      enableEvidenceAnalysis: true,
+      enableDocumentSummarization: true,
+      enableSemanticSearch: true,
     },
     services: {
       ollamaInstances: 5,
@@ -732,9 +732,9 @@ export const enhancedQuickOptimization = {
     memoryFreed += 256;
     performanceGain += 10;
     return {
-      memoryFreedMB: memoryFreed
-      performanceImprovement: performanceGain
-      optimizationsApplied: optimizations
+      memoryFreedMB: memoryFreed,
+      performanceImprovement: performanceGain,
+      optimizationsApplied: optimizations,
     }
   },
   // TODO: GPU memory optimization for RTX 3060 Ti
@@ -746,7 +746,7 @@ export const enhancedQuickOptimization = {
     const tensorOptimized = true;
     gpuMemoryFreed += 512; // Additional 512MB
     return {
-      gpuMemoryFreedMB: gpuMemoryFreed
+      gpuMemoryFreedMB: gpuMemoryFreed,
       ollamaOptimized,
       tensorOptimized
     }

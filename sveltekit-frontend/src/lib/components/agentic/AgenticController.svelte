@@ -113,7 +113,7 @@
 
       const response = await fetch('/api/v1/agentic', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) {
@@ -128,7 +128,6 @@
 
       // Refresh errors list after a short delay
       setTimeout(fetchRecentErrors, 2000);
-
     } catch (err: any) {
       error = `Upload failed: ${err.message}`;
       console.error('Upload error:', err);
@@ -193,7 +192,7 @@
   {#if error}
     <div class="error-alert">
       ❌ {error}
-      <button onclick={() => error = ''}>×</button>
+      <button onclick={() => (error = '')}>×</button>
     </div>
   {/if}
 
@@ -242,7 +241,7 @@
       {#if selectedFile}
         <div class="file-selected">
           📄 {selectedFile.name}
-          <button onclick={() => selectedFile = null}>×</button>
+          <button onclick={() => (selectedFile = null)}>×</button>
         </div>
       {:else}
         <div class="drop-message">
@@ -267,12 +266,7 @@
     <h3>🔍 Error Query & Fix Suggestions</h3>
 
     <div class="query-input-group">
-      <input
-        type="text"
-        bind:value={errorQuery}
-        placeholder="Paste error message here..."
-        class="query-input"
-      />
+      <input type="text" bind:value={errorQuery} placeholder="Paste error message here..." class="query-input" />
       <button class="query-btn" onclick={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
         {loading ? '🔄' : '🔍'} Find Fixes
       </button>
@@ -291,7 +285,8 @@
               {fix.suggestion}
             </div>
             <div class="fix-similar">
-              <strong>Similar error:</strong> {fix.similarError.substring(0, 100)}...
+              <strong>Similar error:</strong>
+              {fix.similarError.substring(0, 100)}...
             </div>
           </div>
         {/each}
@@ -443,7 +438,9 @@
     color: var(--nier-accent-cool, #00ccff);
   }
 
-  .upload-section, .query-section, .errors-section {
+  .upload-section,
+  .query-section,
+  .errors-section {
     background: var(--nier-bg-secondary, #1a1a1a);
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
@@ -451,7 +448,9 @@
     margin-bottom: 2rem;
   }
 
-  .upload-section h3, .query-section h3, .errors-section h3 {
+  .upload-section h3,
+  .query-section h3,
+  .errors-section h3 {
     margin: 0 0 1rem 0;
     color: var(--nier-accent-warm, #d4af37);
   }
@@ -501,7 +500,8 @@
     display: none;
   }
 
-  .upload-btn, .query-btn {
+  .upload-btn,
+  .query-btn {
     padding: 0.75rem 1.5rem;
     background: var(--nier-accent-cool, #00ccff);
     color: var(--nier-bg-primary, #0a0a0a);
@@ -512,12 +512,14 @@
     transition: all 0.3s ease;
   }
 
-  .upload-btn:hover:not(:disabled), .query-btn:hover:not(:disabled) {
+  .upload-btn:hover:not(:disabled),
+  .query-btn:hover:not(:disabled) {
     background: var(--nier-accent-warm, #d4af37);
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
   }
 
-  .upload-btn:disabled, .query-btn:disabled {
+  .upload-btn:disabled,
+  .query-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -568,7 +570,8 @@
     font-size: 0.9rem;
   }
 
-  .fix-relevance, .fix-success {
+  .fix-relevance,
+  .fix-success {
     color: var(--nier-accent-warm, #d4af37);
   }
 
@@ -612,7 +615,8 @@
     font-weight: bold;
   }
 
-  .error-confidence, .error-date {
+  .error-confidence,
+  .error-date {
     color: var(--nier-text-muted, #999);
   }
 

@@ -42,7 +42,7 @@ export class SimpleAuthService {
         FROM users
         WHERE email = $1 AND is_active = true
       `,
-        [email],
+        [email]
       );
       if ((result as { rows?: any }).rows.length === 0) {
         throw new Error('Invalid email or password');
@@ -65,7 +65,7 @@ export class SimpleAuthService {
         last_name: user.last_name,
         role: user.role,
         is_active: user.is_active,
-      }
+      };
     } finally {
       await client.end();
     }

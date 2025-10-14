@@ -127,16 +127,16 @@ const orchestrationMachine = createMachine({
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
   context: {
-    query: null as string | null
-    embeddings: null as number[] | null
-    neo4jResults: null as Document[] | null
-    pgVectorResults: null as Document[] | null
-    ragResults: null as any[] | null
+    query: null as string | null,
+    embeddings: null as number[] | null,
+    neo4jResults: null as Document[] | null,
+    pgVectorResults: null as Document[] | null,
+    ragResults: null as any[] | null,
     rankedResults: null as any[] | null, // Add rankedResults to context
-    legalBertAnalysis: null as any | null
-    ollamaResponse: null as string | null
-    finalSynthesis: null as AutoSolveResult | null
-    error: null as Error | null
+    legalBertAnalysis: null as any | null,
+    ollamaResponse: null as string | null,
+    finalSynthesis: null as AutoSolveResult | null,
+    error: null as Error | null,
   },
   states: {
     idle: {
@@ -157,7 +157,7 @@ const orchestrationMachine = createMachine({
               {
                 guard: 'cacheHit',
                 target: 'complete',
-                actions: 'storeCachedResult'
+                actions: 'storeCachedResult',
               });
               {
                 target: 'analyzingQuery'
@@ -327,7 +327,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.ollama = new ChatOllama({
       baseUrl: serviceConfig.ollama.baseUrl,
       model: serviceConfig.ollama?.model || "unknown" // @ts-ignore - Model property access,
-      temperature: 0.3
+      temperature: 0.3,
     });
     // Use nomic-embed-text for embeddings as requested
     this.embeddings = new OllamaEmbeddings({
@@ -379,7 +379,7 @@ export class EnhancedAISynthesisOrchestrator {
       // Initialize PGVector store with fallback
       try {
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
-          postgresConnectionOptions: pgConfig
+          postgresConnectionOptions: pgConfig,
           tableName: 'legal_embeddings',
           columns: {
             idColumnName: 'id',
@@ -490,10 +490,10 @@ export class EnhancedAISynthesisOrchestrator {
               // Removed invalid fields (sources, ollamaResponse) to match SynthesizerInput type
             } as any,
             options: {
-              enableMMR: true
-              enableCrossEncoder: true
-              enableLegalBERT: true
-              enableRAG: true
+              enableMMR: true,
+              enableCrossEncoder: true,
+              enableLegalBERT: true,
+              enableRAG: true,
               maxSources: 10,
               similarityThreshold: 0.7,
               diversityLambda: 0.5
@@ -780,7 +780,7 @@ RESPONSE:`;
     const service = createActor(this.machine, {
       input: {
         query,
-        stream: true
+        stream: true,
         ...(options || {})
       }
     }).start();

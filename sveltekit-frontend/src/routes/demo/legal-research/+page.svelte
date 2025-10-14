@@ -21,7 +21,7 @@
       summary: 'Breach of contract case involving commercial real estate transaction',
       date: '2024-03-15',
       outcome: 'Settled',
-      relevance: 95
+      relevance: 95,
     },
     {
       id: '2',
@@ -29,7 +29,7 @@
       summary: 'Fourth Amendment search and seizure violation',
       date: '2024-02-20',
       outcome: 'Dismissed',
-      relevance: 88
+      relevance: 88,
     },
     {
       id: '3',
@@ -37,8 +37,8 @@
       summary: 'Patent infringement regarding software algorithm',
       date: '2024-01-10',
       outcome: 'Pending',
-      relevance: 82
-    }
+      relevance: 82,
+    },
   ];
 
   function selectFeature(id: string) {
@@ -50,9 +50,10 @@
     if (!searchQuery.trim()) return;
 
     // Simulate search results
-    demoResults = mockLegalCases.filter(c =>
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.summary.toLowerCase().includes(searchQuery.toLowerCase())
+    demoResults = mockLegalCases.filter(
+      c =>
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.summary.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }
 </script>
@@ -67,9 +68,7 @@
         </div>
         <div>
           <h1 class="text-4xl font-bold">Legal Research Demo</h1>
-          <p class="text-blue-100 mt-2">
-            Explore AI-powered legal research capabilities
-          </p>
+          <p class="text-blue-100 mt-2">Explore AI-powered legal research capabilities</p>
         </div>
       </div>
 
@@ -107,13 +106,13 @@
           </div>
 
           <div class="flex gap-2">
-            <button type="button" class="btn-outline btn-sm" onclick={() => searchQuery = 'contract breach'}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'contract breach')}>
               Contract Law
             </button>
-            <button type="button" class="btn-outline btn-sm" onclick={() => searchQuery = 'patent infringement'}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'patent infringement')}>
               IP Law
             </button>
-            <button type="button" class="btn-outline btn-sm" onclick={() => searchQuery = 'criminal defense'}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'criminal defense')}>
               Criminal Law
             </button>
           </div>
@@ -149,9 +148,7 @@
 
     <!-- Features Grid -->
     <section>
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-dark-text mb-6">
-        Research Features
-      </h2>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-dark-text mb-6">Research Features</h2>
 
       <div class="grid-legal">
         {#each activeFeatures as feature}

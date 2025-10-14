@@ -23,15 +23,15 @@ const getSchema = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return typeof fileUploadSchema !== 'undefined' ? fileUploadSchema : fallbackFileUploadSchema;
-}
+};
 export const load: PageServerLoad = async () => {
   // Initialize the form
   const schema = getSchema();
   const form = await superValidate(zod(schema));
   return {
     form,
-  }
-}
+  };
+};
 export const actions: Actions = {
   upload: async ({ request, fetch }) => {
     const formData = await request.formData();
@@ -73,9 +73,9 @@ export const actions: Actions = {
                 acc[tag] = 'true';
                 return acc;
               },
-              {} as Record<string, string>,
-            ),
-          ),
+              {} as Record<string, string>
+            )
+          )
         );
       }
       // Add metadata
@@ -85,7 +85,7 @@ export const actions: Actions = {
         aiAnalysis: form.data.aiAnalysis.toString(),
         uploadedBy: 'user', // TODO: Get from session,
         uploadedAt: new Date().toISOString(),
-      }
+      };
       uploadFormData.append('metadata', JSON.stringify(metadata));
       // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
@@ -112,7 +112,7 @@ export const actions: Actions = {
         form,
         uploadResult,
         message: 'Document uploaded successfully!',
-      }
+      };
     } catch (error: unknown) {
       // Narrow the unknown error to extract a useful message if possible
       let errMessage = 'Internal server error during upload';
@@ -128,4 +128,4 @@ export const actions: Actions = {
       });
     }
   },
-}
+};

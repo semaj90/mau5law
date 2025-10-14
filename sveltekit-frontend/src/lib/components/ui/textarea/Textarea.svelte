@@ -1,6 +1,6 @@
 <script lang="ts">
   // Props are defined as $props() rune, no import needed
-  import { cn } from "../../../utils";
+  import { cn } from '../../../utils';
   interface Props {
     value?: string;
     placeholder?: string;
@@ -9,7 +9,7 @@
     rows?: number;
     cols?: number;
     maxlength?: number;
-    resize?: "none" | "both" | "horizontal" | "vertical";
+    resize?: 'none' | 'both' | 'horizontal' | 'vertical';
     class?: string;
     id?: string;
     name?: string;
@@ -20,22 +20,22 @@
     onblur?: (_event: FocusEvent) => void;
   }
   let {
-    value = $bindable(""),
-    placeholder = "",
+    value = $bindable(''),
+    placeholder = '',
     disabled = false,
     readonly = false,
     rows = 3,
     cols = undefined,
     maxlength = undefined,
-    resize = "vertical",
-    class: className = "",
+    resize = 'vertical',
+    class: className = '',
     id = undefined,
     name = undefined,
     onkeydown = undefined,
     oninput = undefined,
     onchange = undefined,
     onfocus = undefined,
-    onblur = undefined
+    onblur = undefined,
   }: Props = $props();
 </script>
 
@@ -60,7 +60,7 @@
     resize === 'horizontal' && 'resize-x',
     resize === 'vertical' && 'resize-y',
     resize === 'both' && 'resize',
-    className,
+    className
   )}
 ></textarea>
 ;

@@ -92,7 +92,7 @@ async function queryOllama(prompt: string, model?: string): Promise<string> {
     });
     if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
       throw new Error(
-        `Ollama request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} - ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`,
+        `Ollama request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} - ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
       );
     }
     const data: OllamaResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
@@ -181,7 +181,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         legalRelevance: 'Unknown - requires manual analysis',
         keyFindings: ['AI analysis incomplete'],
         recommendations: ['Manual legal review recommended'],
-      }
+      };
     }
     // Generate embedding for similarity search if content available
     let embedding: number[] | null = null;
@@ -207,7 +207,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
           message: 'Invalid analysis request',
           details: error.errors,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     return json(
@@ -215,7 +215,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         message: 'Analysis failed',
         details: error.message || 'Unknown error',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

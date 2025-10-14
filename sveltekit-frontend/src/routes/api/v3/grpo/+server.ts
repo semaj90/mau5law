@@ -1,7 +1,7 @@
 // GRPO (Guided Reasoning and Policy Optimization) Thinking Response API v3
 // Advanced search and recommendation engine for legal reasoning chains with timestamp analysis
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import {
   storeGrpoThinkingResponse,
   searchGrpoThinkingResponses,
@@ -12,11 +12,11 @@ import {
   getGrpoCacheStats,
   type GrpoThinkingResponse,
   type ThinkingRecommendation,
-  type GrpoBatchJob
-} from '$lib/server/services/grpoThinkingService'
-import { generateEmbedding } from '$lib/server/services/vectorDBService'
-import { grpoRateLimiter } from '$lib/server/middleware/rate-limiter'
-import { createHash } from 'node:crypto'
+  type GrpoBatchJob,
+} from '$lib/server/services/grpoThinkingService';
+import { generateEmbedding } from '$lib/server/services/vectorDBService';
+import { grpoRateLimiter } from '$lib/server/middleware/rate-limiter';
+import { createHash } from 'node:crypto';
 
 // Define an interface for the rate limiter result
 interface GrpoRateLimitResult {
@@ -46,16 +46,17 @@ const grpoApiLogger = {
 };
 // Generate unique request ID for tracking
 function generateRequestId(): string {
-  return `grpo_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`
+  return `grpo_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`;
 }
 // Initialize GRPO database on startup
-let grpoInitialized = false
+let grpoInitialized = false;
 async function ensureGrpoInitialized() {
   if (!grpoInitialized) {
     try {
-      await initializeGrpoThinkingTable()
-      grpoInitialized = true
-    } catch (error: unknown) { // Changed error: any to error: unknown
+      await initializeGrpoThinkingTable();
+      grpoInitialized = true;
+    } catch (error: unknown) {
+      // Changed error: any to error: unknown
       if (error instanceof Error) {
         console.warn('GRPO database initialization failed, continuing without DB features:', error.message);
       } else {
@@ -95,31 +96,33 @@ async function withGrpoRateLimit(request: Request, handlerPromise: Promise<Respo
 // Validate GRPO thinking response data
 function validateGrpoThinkingResponse(data: Partial<GrpoThinkingResponse>): { valid: boolean; error?: string } {
   if (!data || typeof data !== 'object') {
-    return { valid: false, error: 'Invalid request body' }
+    return { valid: false, error: 'Invalid request body' };
   }
   if (!data.conversationId || typeof data.conversationId !== 'string') {
-    return { valid: false, error: 'conversationId is required' }
+    return { valid: false, error: 'conversationId is required' };
   }
   if (!data.messageId || typeof data.messageId !== 'string') {
-    return { valid: false, error: 'messageId is required' }
+    return { valid: false, error: 'messageId is required' };
   }
   if (!data.originalQuery || typeof data.originalQuery !== 'string') {
-    return { valid: false, error: 'originalQuery is required' }
+    return { valid: false, error: 'originalQuery is required' };
   }
   if (!data.thinkingChain || typeof data.thinkingChain !== 'string') {
-    return { valid: false, error: 'thinkingChain is required' }
+    return { valid: false, error: 'thinkingChain is required' };
   }
   if (data.thinkingChain.length < 50) {
-    return { valid: false, error: 'thinkingChain must be at least 50 characters' }
+    return { valid: false, error: 'thinkingChain must be at least 50 characters' };
   }
   if (data.thinkingChain.length > 50000) {
-    return { valid: false, error: 'thinkingChain too long (max 50000 characters)' }
+    return { valid: false, error: 'thinkingChain too long (max 50000 characters)' };
   }
-  if (typeof data.confidenceLevel !== 'undefined' &&
-      (typeof data.confidenceLevel !== 'number' || data.confidenceLevel < 0 || data.confidenceLevel > 1)) {
-    return { valid: false, error: 'confidenceLevel must be a number between 0 and 1' }
+  if (
+    typeof data.confidenceLevel !== 'undefined' &&
+    (typeof data.confidenceLevel !== 'number' || data.confidenceLevel < 0 || data.confidenceLevel > 1)
+  ) {
+    return { valid: false, error: 'confidenceLevel must be a number between 0 and 1' };
   }
-  return { valid: true }
+  return { valid: true };
 }
 // GET method for GRPO health check, search, trends, and recommendations
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -346,7 +349,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
   })(); // Immediately invoke the async function to get a Promise<Response>
   return await withGrpoRateLimit(request, handlerPromise);
-}
+};
 // POST method for storing GRPO thinking responses and batch processing
 export const POST: RequestHandler = async ({ request, url }) => {
   const handlerPromise = (async () => {
@@ -585,4 +588,4 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   })(); // Immediately invoke the async function to get a Promise<Response>
   return await withGrpoRateLimit(request, handlerPromise);
-}
+};

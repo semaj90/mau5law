@@ -146,7 +146,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`)
       return cachedJson({
         success: true,
-        redis: redisStats
+        redis: redisStats,
         cacheStatistics: {
           legalSearchEntries: legalCacheKeys.length,
           caseLawEntries: caseLawKeys.length,
@@ -161,9 +161,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         health: {
-          redis: isRedisHealthy
-          caching: true
-          legalSearchOptimized: true
+          redis: isRedisHealthy,
+          caching: true,
+          legalSearchOptimized: true,
         },
         timestamp: new Date().toISOString()
       })
@@ -225,8 +225,8 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
  * Generate legal-specific embedding with context
  */
 async function generateLegalEmbedding(
-  query: string
-  searchType: string
+  query: string,
+  searchType: string,
   practiceArea?: string
 ): Promise<number[]> {
   // Enhance query with legal context
@@ -311,7 +311,7 @@ async function performLegalSearch(params: {
     }
   ]
   return {
-    results: mockResults
+    results: mockResults,
     totalResults: mockResults.length,
     searchTime: '45ms',
     legalContext: {

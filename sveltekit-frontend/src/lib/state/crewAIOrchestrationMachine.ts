@@ -230,12 +230,12 @@ export const crewAIOrchestrationMachine = setup({
     }),
     // Reset for new task
     resetForNewTask: assign({
-      currentTask: null
+      currentTask: null,
       agentResponses: [],
       failedAgents: [],
       activeAgents: [],
       retryCount: 0,
-      lastError: null
+      lastError: null,
       processingTime: ({ context }) => Date.now() - context.startTime
     }),
     // Complete task
@@ -257,13 +257,13 @@ export const crewAIOrchestrationMachine = setup({
   id: 'crewAIOrchestration',
   initial: 'idle',
   context: {
-    currentTask: null
+    currentTask: null,
     taskQueue: [],
     completedTasks: [],
     activeAgents: [],
     agentResponses: [],
     failedAgents: [],
-    lastSaved: null
+    lastSaved: null,
     autoSaveInterval: 30000,
     idleTimeout: 300000,
     lastActivity: new Date().toISOString(),
@@ -271,7 +271,7 @@ export const crewAIOrchestrationMachine = setup({
     focusSchema: 'document_edit',
     currentRecommendations: [],
     retryCount: 0,
-    lastError: null
+    lastError: null,
     startTime: Date.now(),
     processingTime: 0,
     qualityScore: 0
@@ -493,24 +493,24 @@ async function generateSchemaFocusConfig(schema: string, context: CrewAIContext)
   // Generate UI focus configuration based on schema
   const configs = {
     document_edit: {
-      showInlineEdits: true
-      highlightRecommendations: true
-      autoComplete: true
+      showInlineEdits: true,
+      highlightRecommendations: true,
+      autoComplete: true,
     },
     review_mode: {
-      showAnalysis: true
-      highlightRisks: true
-      compactView: false
+      showAnalysis: true,
+      highlightRisks: true,
+      compactView: false,
     },
     analysis_mode: {
-      showMetrics: true
-      showAgentBreakdown: true
-      detailedView: true
+      showMetrics: true,
+      showAgentBreakdown: true,
+      detailedView: true,
     },
     idle_mode: {
-      showSummary: true
-      autoSavePrompt: true
-      minimizeUI: true
+      showSummary: true,
+      autoSavePrompt: true,
+      minimizeUI: true,
     }
   }
   return configs[schema as keyof typeof configs] || configs.document_edit;

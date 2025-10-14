@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     automation: 0x14b8a6,
     table: 0x8b5cf6,
     default: 0xffffff,
-  }
+  };
   function initThree() {
     if (!canvasContainer) return;
     scene = new THREE.Scene();
@@ -58,10 +58,14 @@ https://svelte.dev/e/js_parse_error -->
     scene.add(new THREE.AmbientLight(0x404040));
   }
   function buildGraph() {
-  // Clear existing
-  Object.values(nodeMeshes).forEach(m => { if (m && scene) scene.remove(m); });
-    linkLines.forEach(l => { if (scene) scene.remove(l); });
-  nodeMeshes = {};
+    // Clear existing
+    Object.values(nodeMeshes).forEach(m => {
+      if (m && scene) scene.remove(m);
+    });
+    linkLines.forEach(l => {
+      if (scene) scene.remove(l);
+    });
+    nodeMeshes = {};
     linkLines = [];
     const radius = 4;
     // CHANGED: use typed node and safe color lookup
@@ -73,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
       mesh.position.set(
         Math.cos(a) * radius,
         Math.sin(a * 2) * 0.5,
-        Math.sin(a) * radius * 0.5 + (Math.random() - 0.5),
+        Math.sin(a) * radius * 0.5 + (Math.random() - 0.5)
       );
       if (scene) scene.add(mesh);
       nodeMeshes[n.id] = mesh;
@@ -97,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   function animate() {
     animationId = requestAnimationFrame(animate);
     // Light weight drift animation - guard undefined meshes
-    Object.values(nodeMeshes).forEach((m) => {
+    Object.values(nodeMeshes).forEach(m => {
       if (!m) return; // skip undefined entries
       m.rotation.y += 0.005;
     });

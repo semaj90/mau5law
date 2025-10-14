@@ -44,7 +44,7 @@ export const aiGlobalMachine = setup({
         userId: event.userId,
         model: event?.model || "unknown" // @ts-ignore - Model property access,
         cacheKey,
-        loading: true
+        loading: true,
         error: "",
         stream: ""
       }
@@ -55,7 +55,7 @@ export const aiGlobalMachine = setup({
         return {
           summary: data?.summary || "",
           sources: data?.sources || [],
-          loading: false
+          loading: false,
           stream: "",
           error: ""
         }
@@ -74,8 +74,8 @@ export const aiGlobalMachine = setup({
     setSaving: assign({ saving: true, error: "" }),
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
-      saving: false
-      error: ((event as any).error as Error)?.message || "Failed to save summary."
+      saving: false,
+      error: ((event as any).error as Error)?.message || "Failed to save summary.",
     }))
   },
   actors: {
@@ -131,8 +131,8 @@ export const aiGlobalMachine = setup({
   context: {
     summary: "",
     error: "",
-    loading: false
-    saving: false
+    loading: false,
+    saving: false,
     caseId: "",
     evidence: [],
     userId: "",
@@ -237,7 +237,7 @@ aiGlobalActor.start();
 export const aiGlobalActions = {
   summarize: (,
     caseId,: string
-    evidence: any[]
+    evidence: any[],
     userId: string;
     model: string = "gemma3-legal:latest";
   ) => {

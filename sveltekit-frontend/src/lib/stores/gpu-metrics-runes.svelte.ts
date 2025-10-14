@@ -22,8 +22,8 @@ class GPUMetricsStore {
   private state = $state<GPUMetricsState>({
     sessionId: '',
     metrics: [],
-    isActive: false
-    serverHealthy: true
+    isActive: false,
+    serverHealthy: true,
     consecutiveFailures: 0,
     backoffMultiplier: 1,
     lastFlushTime: 0,
@@ -175,7 +175,7 @@ class GPUMetricsStore {
     return {
       sessionId: this.state.sessionId,
       startTime,
-      endTime: now
+      endTime: now,
       samples: [...this.state.metrics], // Copy to avoid mutation
       avgFps: fpsSamples.length > 0 ? fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length: 0,
       minFps: fpsSamples.length > 0 ? Math.min(...fpsSamples) : 0,
@@ -190,7 +190,7 @@ export const gpuMetricsStore = new GPUMetricsStore();
 // Helper functions for components
 export function useGPUMetrics() {
   return {
-    store: gpuMetricsStore
+    store: gpuMetricsStore,
     metricsCount: gpuMetricsStore.metricsCount,
     isHealthy: gpuMetricsStore.isHealthy,
     performanceStatus: gpuMetricsStore.performanceStatus,

@@ -33,8 +33,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
             const allJobs = globalLoki.getAllJobs()
             controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot',
-              jobs: allJobs
-              timestamp: new Date().toISOString()
+              jobs: allJobs,
+              timestamp: new Date().toISOString(),
             })}\n\n`)
           } else if (jobIds.length > 0) {
             // Send specific jobs

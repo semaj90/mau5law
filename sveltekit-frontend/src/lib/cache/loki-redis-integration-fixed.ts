@@ -31,11 +31,11 @@ export interface LegalDocument {
 const CACHE_CONFIG = {
   // Loki.js settings
   loki: {
-    autosave: true
+    autosave: true,
     autosaveInterval: 5000, // 5 seconds
-    autoload: true
-    throttledSaves: true
-    serializationMethod: 'pretty' as const
+    autoload: true,
+    throttledSaves: true,
+    serializationMethod: 'pretty' as const,
   },
   // Redis settings
   redis: {
@@ -290,8 +290,8 @@ export class LokiRedisCache extends EventEmitter {
         cacheTimestamp: Date.now(),
         accessCount: 1,
         cacheLocation: 'loki',
-        compressed: false
-        syncStatus: 'synced'
+        compressed: false,
+        syncStatus: 'synced',
       }
       // Store in Loki.js first (fastest access)
       await this.storeLokiDocument(cachedDoc);
@@ -487,7 +487,7 @@ export class LokiRedisCache extends EventEmitter {
     return null;
   }
   async searchDocuments(
-    query: string
+    query: string,
     filters: {
       type?: string[];
       riskLevel?: string[];
@@ -539,7 +539,7 @@ export class LokiRedisCache extends EventEmitter {
         for (const doc of documents) {
           results.push({
             id: doc.id,
-            document: doc as LegalDocument
+            document: doc as LegalDocument,
             score: this.calculateRelevanceScore(doc, query),
             matchType: 'fuzzy' as const
           });

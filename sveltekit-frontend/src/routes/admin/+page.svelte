@@ -73,7 +73,7 @@
           totalDocuments: 1847,
           processedDocuments: 1523,
           aiAnalyses: 3421,
-          uptime: '2d 14h 32m'
+          uptime: '2d 14h 32m',
         };
       }
     } catch (error) {
@@ -108,7 +108,7 @@
             user: 'john.doe@law.com',
             description: 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
-            status: 'success'
+            status: 'success',
           },
           {
             id: 2,
@@ -116,7 +116,7 @@
             user: 'jane.smith@law.com',
             description: 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
-            status: 'success'
+            status: 'success',
           },
           {
             id: 3,
@@ -124,8 +124,8 @@
             user: 'admin@legal-ai.com',
             description: 'Administrator login from 192.168.1.100',
             timestamp: new Date(Date.now() - 1800000).toISOString(),
-            status: 'info'
-          }
+            status: 'info',
+          },
         ];
       }
     } catch (error) {
@@ -145,7 +145,7 @@
   const activityIconMap: Record<string, any> = {
     case_created: Users,
     ai_analysis: Cpu,
-    user_login: Shield
+    user_login: Shield,
   };
   function getActivityIcon(type: string) {
     return activityIconMap[type] || Activity;
@@ -310,7 +310,7 @@
       <div class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
-                {@const ActivityIconComp = getActivityIcon(activity.type)}
+            {@const ActivityIconComp = getActivityIcon(activity.type)}
             <div
               class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success'
                 ? 'border-green-500 bg-green-50'
@@ -318,7 +318,7 @@
                   ? 'border-red-500 bg-red-50'
                   : 'border-blue-500 bg-blue-50'} rounded-r-lg"
             >
-                    <ActivityIconComp class="w-4 h-4 mt-1 nes-text is-disabled" />
+              <ActivityIconComp class="w-4 h-4 mt-1 nes-text is-disabled" />
               <div class="flex-1">
                 <p class="text-sm font-medium">{activity.description}</p>
                 <div class="flex items-center gap-4 mt-1 text-xs nes-text is-disabled">

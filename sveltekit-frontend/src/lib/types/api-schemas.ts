@@ -9,7 +9,7 @@ export interface APIResponse<T = any> {
     timestamp: string;
     cached: boolean;
     source: 'ssr' | 'api';
-  }
+  };
   error?: string;
 }
 // User Authentication Schemas
@@ -31,7 +31,7 @@ export interface User {
   permissions: string[];
   isActive: boolean;
   emailVerified?: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   createdAt: string;
   updatedAt: string;
 }
@@ -54,18 +54,18 @@ export interface SystemHealth {
     healthyServices: number;
     totalServices: number;
     timestamp: string;
-  }
+  };
   services: {
     databases: Record<string, ServiceStatus>;
     aiServices: Record<string, ServiceStatus>;
     gpuServices: Record<string, GPUServiceStatus>;
     orchestration: Record<string, ServiceStatus>;
     storage: Record<string, ServiceStatus>;
-  }
+  };
   performance: {
     systemUptime: number;
     memoryUsage: MemoryUsage;
-  }
+  };
   architecture: {
     platform: string;
     version: string;
@@ -73,7 +73,7 @@ export interface SystemHealth {
     microservices: number;
     protocols: string[];
     features: string[];
-  }
+  };
 }
 export interface ServiceStatus {
   host: string;
@@ -125,7 +125,7 @@ export interface Case {
   department?: string;
   jurisdiction?: string;
   tags: string[];
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   createdAt: string;
   updatedAt: string;
 }
@@ -141,7 +141,7 @@ export interface Evidence {
   hash?: string;
   chainOfCustody: ChainOfCustodyEntry[];
   tags: string[];
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -162,10 +162,10 @@ export interface AIAnalysis {
   type: 'sentiment' | 'entity_extraction' | 'document_classification' | 'similarity' | 'summarization';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress?: number;
-  results?: { [key: string]: any }
+  results?: { [key: string]: any };
   confidence?: number;
   model?: string;
-  parameters?: { [key: string]: any }
+  parameters?: { [key: string]: any };
   createdBy: string;
   createdAt: string;
   completedAt?: string;
@@ -173,15 +173,15 @@ export interface AIAnalysis {
 // Search and Query Schemas
 export interface SearchQuery {
   query: string;
-  filters?: { [key: string]: any }
+  filters?: { [key: string]: any };
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
-  }
+  };
   pagination?: {
     page: number;
     limit: number;
-  }
+  };
 }
 export interface SearchResults<T = any> {
   items: T[];
@@ -240,8 +240,8 @@ export interface GraphNode {
   id: string;
   type: 'database' | 'service' | 'component';
   label: string;
-  position: { x: number; y: number; z: number }
-  metrics: { [key: string]: any }
+  position: { x: number; y: number; z: number };
+  metrics: { [key: string]: any };
   status: 'healthy' | 'degraded' | 'unhealthy';
 }
 export interface GraphEdge {
@@ -259,7 +259,7 @@ export interface ErrorResponse {
     timestamp: string;
     cached: false;
     source: 'ssr' | 'api';
-  }
+  };
   error: string;
 }
 // Type Guards for Runtime Validation

@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
   return json({
     ok: true,
     endpoint,
-    iterations: iters
+    iterations: iters,
     off_ms: +offMs.toFixed(2),
     on_ms: +onMs.toFixed(2),
     speedup: +(offMs / Math.max(1e-6, onMs)).toFixed(2)

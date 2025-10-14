@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
   let averageProsecutionScore = $derived(
     processedDocuments.length > 0
       ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length
-      : 0,
+      : 0
   );
   let canQuery = $derived(ragQuery.trim.length > 0);
   $effect(() => {
@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     const input = event.target as HTMLInputElement;
     const files = input?.files ? Array.from(input.files) : [];
     selectedFiles = files.filter(
-      file => file && (file.type === 'application/pdf' || (file.name && file.name.toLowerCase.endsWith('.pdf'))),
+      file => file && (file.type === 'application/pdf' || (file.name && file.name.toLowerCase.endsWith('.pdf')))
     );
     addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
   }
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(
-          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`,
+          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`
         );
       }
       const result = await (
@@ -153,14 +153,14 @@ https://svelte.dev/e/js_parse_error -->
           }
         ).caseAISummaryScor;
         addLog(
-          `✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`,
+          `✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`
         );
         addLog(
-          `📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`,
+          `📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`
         );
         addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
         addLog(
-          `📈 Case AI summary score: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore}/100`,
+          `📈 Case AI summary score: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore}/100`
         );
       } else {
         throw new Error(
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
               jurisdiction?: unknown;
               prosecutionScore?: unknown;
             }
-          ).error || 'Processing failed',
+          ).error || 'Processing failed'
         );
       }
     } catch (err) {
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(
-          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`,
+          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`
         );
       }
       const result = await (
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
             }
           ).results || [];
         addLog(
-          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`,
+          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`
         );
         if (
           (
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
           ).aggregatedAnalysis?.recommendedNextQuery
         ) {
           addLog(
-            `💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`,
+            `💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`
           );
         }
       } else {
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
               jurisdiction?: unknown;
               prosecutionScore?: unknown;
             }
-          ).error || 'RAG query failed',
+          ).error || 'RAG query failed'
         );
       }
     } catch (err) {
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
         addLog('⚠️ GPU service not responding - using CPU processing');
       }
       addLog(
-        `🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`,
+        `🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`
       );
     } catch (err) {
       const error = err as Error;
@@ -494,7 +494,8 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2"> Jurisdiction </label>
             <select
-              id="jurisdiction";
+              id="jurisdiction"
+              ;
               bind:value={selectedJurisdiction}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -648,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
                                 jurisdiction?: unknown;
                                 prosecutionScore?: unknown;
                               }
-                            ).factCheckStatus ?? 'UNVERIFIED',
+                            ).factCheckStatus ?? 'UNVERIFIED'
                           )}
                           class="text-xs"
                         >
@@ -716,7 +717,7 @@ https://svelte.dev/e/js_parse_error -->
                               jurisdiction?: unknown;
                               prosecutionScore?: unknown;
                             }
-                          ).prosecutionScore ?? 0,
+                          ).prosecutionScore ?? 0
                         )}
                       >
                         Prosecution Score: {(

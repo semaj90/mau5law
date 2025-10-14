@@ -2,7 +2,7 @@
  * N64-Style 4KB Texture Streaming Engine
  * Universal browser compatibility with GPU acceleration when available
  * Perfect for legal document processing and evidence visualization
- */;
+ */
 }
 export interface TextureChunk {
   id: string;
@@ -35,7 +35,7 @@ export interface LegalDocumentTexture {
 }
 /**
  * N64 Texture Streaming Engine with WebGL/WebGL2/CPU fallback
- */;
+ */
 export class N64TextureStreamingEngine {
   private gl: WebGL2RenderingContext | WebGLRenderingContext | null = null;
   private wasmModule: WebAssembly.Module | null = null;
@@ -54,10 +54,10 @@ export class N64TextureStreamingEngine {
   constructor(canvas: HTMLCanvasElement, options: Partial<StreamingOptions> = {}) {
     this.options = {
       maxChunkSize: 4096, // N64-style 4KB chunks
-      enableCompression: true
-      adaptiveQuality: true
+      enableCompression: true,
+      adaptiveQuality: true,
       cacheSize: 256, // 256MB cache
-      wasmAcceleration: true
+      wasmAcceleration: true,
       ...options
     }
     this.initializeContext(canvas);
@@ -66,22 +66,22 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Initialize WebGL context with fallback chain
-   */;
+   */
   private initializeContext(canvas: HTMLCanvasElement): void {
     // Try WebGL2 first
     this.gl = canvas.getContext('webgl2', {
       powerPreference: 'high-performance',
       antialias: false, // N64 style
-      alpha: false
-      preserveDrawingBuffer: true
+      alpha: false,
+      preserveDrawingBuffer: true,
     });
     // Fallback to WebGL1
     if (!this.gl) {
       this.gl = canvas.getContext('webgl', {
         powerPreference: 'high-performance',
-        antialias: false
-        alpha: false
-        preserveDrawingBuffer: true
+        antialias: false,
+        alpha: false,
+        preserveDrawingBuffer: true,
       });
     }
     if (!this.gl) {
@@ -98,7 +98,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Initialize WASM acceleration for complex filtering
-   */;
+   */
   private async initializeWASM(): Promise<void> {
     if (!this.options.wasmAcceleration) return;
     try {
@@ -111,7 +111,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Generate minimal WASM module for texture filtering
-   */;
+   */
   private async generateTextureWASM(): Promise<Uint8Array> {
     // Minimal WASM module for texture filtering operations
     // In production, this would be pre-compiled
@@ -135,7 +135,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Setup Web Worker for texture compression
-   */;
+   */
   private setupCompressionWorker(): void {
     if (!this.options.enableCompression) return;
     const workerScript = `;
@@ -171,7 +171,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Load legal document texture with 4KB chunked streaming
-   */;
+   */
   async loadLegalDocumentTexture(_document: LegalDocumentTexture): Promise<WebGLTexture | ImageData> {
     const startTime = performance.now();
     if (!this.gl) {
@@ -199,7 +199,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Stream texture chunks with 4KB N64-style constraints
-   */;
+   */
   private async streamTextureChunks(texture: WebGLTexture, document: LegalDocumentTexture): Promise<void> {
     if (!this.gl) return;
     const { width, height } = document.resolution;
@@ -220,7 +220,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Load individual 4KB texture chunk
-   */;
+   */
   private async loadTextureChunk(texture: WebGLTexture, chunk: TextureChunk, document: LegalDocumentTexture): Promise<void> {
     if (!this.gl) return;
     // Check cache first
@@ -257,7 +257,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * CPU fallback for texture loading
-   */;
+   */
   private async loadTextureCPU(_document: LegalDocumentTexture): Promise<ImageData> {
     const { width, height } = document.resolution;
     const canvas = new OffscreenCanvas(width, height);
@@ -274,7 +274,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Apply chunk data in CPU mode
-   */;
+   */
   private async applyCPUChunk(imageData: ImageData, chunk: TextureChunk, document: LegalDocumentTexture): Promise<void> {
     let data = chunk.data;
     if (chunk.isCompressed) {
@@ -302,7 +302,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Decompress texture chunk
-   */;
+   */
   private async decompressChunk(chunk: TextureChunk): Promise<Uint8Array> {
     // Simple RLE decompression
     const compressed = chunk.data;
@@ -318,7 +318,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Apply WASM filtering if available
-   */;
+   */
   private async applyWASMFiltering(data: Uint8Array, chunk: TextureChunk): Promise<Uint8Array> {
     if (!this.wasmModule) return data;
     try {
@@ -337,7 +337,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Get WebGL format constants
-   */;
+   */
   private getGLFormat(format: string) {
     if (!this.gl) throw new Error('No WebGL context');
     switch (format) {
@@ -365,7 +365,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Adaptive quality adjustment based on performance
-   */;
+   */
   private adjustQualityBasedOnPerformance(): void {
     const targetFrameTime = 16.67; // 60 FPS
     if (this.stats.renderTime > targetFrameTime * 2) {
@@ -378,7 +378,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Legal document-specific texture loading
-   */;
+   */
   async loadEvidencePhoto(imageUrl: string, metadata: any): Promise<LegalDocumentTexture> {
     // Convert image to 4KB chunks
     const image = await this.loadImage(imageUrl);
@@ -413,7 +413,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Create 4KB texture chunks from image
-   */;
+   */
   private async createTextureChunks(image: HTMLImageElement, type: string): Promise<TextureChunk[]> {
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
@@ -424,7 +424,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Create 4KB texture chunks from ImageData
-   */;
+   */
   private async createTextureChunksFromImageData(imageData: ImageData, type: string): Promise<TextureChunk[]> {
     const chunks: TextureChunk[] = [];
     const chunkSize = Math.sqrt(this.options.maxChunkSize / 4); // RGBA = 4 bytes per pixel
@@ -435,9 +435,9 @@ export class N64TextureStreamingEngine {
         const chunkData = this.extractChunk(imageData, col * chunkSize, row * chunkSize, chunkSize);
         chunks.push({
           id: (row * chunksPerRow + col).toString(),
-          data: chunkData
-          width: chunkSize
-          height: chunkSize
+          data: chunkData,
+          width: chunkSize,
+          height: chunkSize,
           format: 'rgba',
           mipLevel: 0,
           isCompressed: false
@@ -457,7 +457,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Extract chunk data from ImageData
-   */;
+   */
   private extractChunk(imageData: ImageData, startX: number, startY: number, size: number): Uint8Array {
     const chunkData = new Uint8Array(size * size * 4);
     let index = 0;
@@ -476,7 +476,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Load image helper
-   */;
+   */
   private loadImage(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -488,7 +488,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getPerformanceStats() {
     return {
       ...this.stats,
@@ -500,7 +500,7 @@ export class N64TextureStreamingEngine {
   }
   /**
    * Clear caches and cleanup
-   */;
+   */
   dispose(): void {
     // Clear WebGL textures
     if (this.gl) {
@@ -519,17 +519,17 @@ export class N64TextureStreamingEngine {
 }
 /**
  * Factory function for creating texture streaming engine
- */;
+ */
 export function createN64TextureEngine(canvas: HTMLCanvasElement, options?: Partial<StreamingOptions>) {
   return new N64TextureStreamingEngine(canvas, options);
 }
 /**
  * Legal document texture utilities
- */;
+ */
 export const LegalTextureUtils = {
   /**
    * Create evidence visualization texture
-   */;
+   */
   async createEvidenceVisualization(evidenceItems,: any[]): Promise<LegalDocumentTexture> {
     // Create 3D evidence relationship visualization
     const canvas = new OffscreenCanvas(1024, 1024);
@@ -567,7 +567,7 @@ export const LegalTextureUtils = {
   },
   /**
    * Create courtroom display texture optimized for low bandwidth
-   */;
+   */
   async createCourtroomDisplay(documentTexture,: LegalDocumentTexture): Promise<LegalDocumentTexture> {
     // Optimize for courtroom display with enhanced contrast and readability
     const optimizedChunks = documentTexture.chunks.map(chunk => ({
@@ -578,7 +578,7 @@ export const LegalTextureUtils = {
     return {
       ...documentTexture,
       textureType: 'courtroom',
-      chunks: optimizedChunks
+      chunks: optimizedChunks,
       metadata: {
         ...documentTexture.metadata,
         classification: 'courtroom_display'
@@ -587,7 +587,7 @@ export const LegalTextureUtils = {
   },
   /**
    * Enhance texture data for courtroom visibility
-   */;
+   */
   enhanceForCourtroom(data,: Uint8Array): Uint8Array {
     const enhanced = new Uint8Array(data.length);
     for (let i = 0; i < data.length; i += 4) {

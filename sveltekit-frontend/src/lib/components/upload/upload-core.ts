@@ -34,18 +34,23 @@ export class UploadManager {
   opts: Required<UploadManagerOptions>;
 
   constructor(opts?: UploadManagerOptions) {
-    this.opts = Object.assign({
-      maxConcurrency: 3,
-      maxRetries: 3,
-      enableGPUProcessing: true,
-      enableEmbeddings: true,
-      onProgress: () => {},
-      onComplete: () => {}
-    }, opts || {});
+    this.opts = Object.assign(
+      {
+        maxConcurrency: 3,
+        maxRetries: 3,
+        enableGPUProcessing: true,
+        enableEmbeddings: true,
+        onProgress: () => {},
+        onComplete: () => {},
+      },
+      opts || {}
+    );
   }
 
   addFiles(files: File[]) {
-    const newStates = files.map(f => ({ file: f, status: 'pending', progress: 0, attempts: 0, error: null, result: null } as FileState));
+    const newStates = files.map(
+      f => ({ file: f, status: 'pending', progress: 0, attempts: 0, error: null, result: null }) as FileState
+    );
     this.fileStates.push(...newStates);
     this.queue.push(...newStates);
     this.emitProgress();
@@ -83,21 +88,35 @@ export class UploadManager {
       const res = await fetch('/api/upload/minio', { method: 'POST', body: form });
       if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
       const json = await res.json().catch(() => ({}));
-      state.result = { success: true, id: json.id || '', url: json.url || '', fileName: state.file.name, size: state.file.size };
+      state.result = {
+        success: true,
+        id: json.id || '',
+        url: json.url || '',
+        fileName: state.file.name,
+        size: state.file.size,
+      };
       state.progress = 100;
       state.status = 'completed';
 
       // Optionally enqueue GPU processing / embeddings - best effort
       if (this.opts.enableGPUProcessing) {
         try {
-          await fetch('/api/gpu/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: state.file.name }) }).catch(() => null);
+          await fetch('/api/gpu/process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileName: state.file.name }),
+          }).catch(() => null);
         } catch {
           // ignore GPU errors; not blocking
         }
       }
       if (this.opts.enableEmbeddings) {
         try {
-          await fetch('/api/embed/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: state.file.name }) }).catch(() => null);
+          await fetch('/api/embed/process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileName: state.file.name }),
+          }).catch(() => null);
         } catch {
           // ignore
         }
@@ -120,12 +139,18 @@ export class UploadManager {
 
   cancelAll() {
     this.queue = [];
-    this.fileStates.forEach(s => { if (s.status === 'uploading' || s.status === 'pending') s.status = 'canceled'; });
+    this.fileStates.forEach(s => {
+      if (s.status === 'uploading' || s.status === 'pending') s.status = 'canceled';
+    });
     this.emitProgress();
   }
 
   private emitProgress() {
-    try { this.opts.onProgress(this.fileStates); } catch { /* swallow */ }
+    try {
+      this.opts.onProgress(this.fileStates);
+    } catch {
+      /* swallow */
+    }
   }
 }
 

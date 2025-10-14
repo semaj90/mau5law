@@ -48,7 +48,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
   ondragenter={handleDragEnter}
-  ondragleave="{handleDragLeave}"
+  ondragleave={handleDragLeave}
   on:dragover|preventDefault
   ondrop={onkeydown}
 >

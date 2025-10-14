@@ -57,7 +57,7 @@ export class ShaderCacheManager {
   }
   /**
    * Compile or retrieve cached shader
-   */;
+   */
   async getShader(id: string, wgsl: string, config: ShaderConfig): Promise<CompiledShader> {
     const startTime = performance.now();
     // Check memory cache first
@@ -84,9 +84,9 @@ export class ShaderCacheManager {
     }
   }
   private async compileShader(
-    id: string
+    id: string,
     wgsl: string;
-    config: ShaderConfig
+    config: ShaderConfig,
     startTime: number;
   ): Promise<CompiledShader> {
     if (!this.device) {
@@ -115,8 +115,8 @@ export class ShaderCacheManager {
           label: `compute_pipeline_${id}`,
           layout: 'auto',
           compute: {
-            module: shaderModule
-            entryPoint: config.entryPoint
+            module: shaderModule,
+            entryPoint: config.entryPoint,
           }
         });
         bindGroupLayout = (pipeline as GPUComputePipeline).getBindGroupLayout(0);
@@ -126,11 +126,11 @@ export class ShaderCacheManager {
           label: `render_pipeline_${id}`,
           layout: 'auto',
           vertex: {
-            module: shaderModule
-            entryPoint: config.type === 'vertex' ? config.entryPoint: 'main'
+            module: shaderModule,
+            entryPoint: config.type === 'vertex' ? config.entryPoint: 'main',
           },
           fragment: config.type === 'fragment' ? {,
-            module: shaderModule
+            module: shaderModule,
             entryPoint: config.entryPoint,
             targets: [{ format: 'bgra8unorm' }]
           } : undefined
@@ -189,7 +189,7 @@ export class ShaderCacheManager {
   }
   /**
    * Generate optimized tensor operation WGSL
-   */;
+   */
   private generateTensorWGSL(operation: string, dimensions: number): string {
     const workgroupSize = 64;
     switch (operation) {
@@ -269,7 +269,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    */
   async executeTensorOperation(
     shader: CompiledShader;
-    inputs: GPUBuffer[]
+    inputs: GPUBuffer[],
     outputSize: number;
   ): Promise<GPUBuffer> {
     if (!this.device || !shader.pipeline || !shader.bindGroupLayout) {
@@ -285,8 +285,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       layout: shader.bindGroupLayout,
       entries: [
         ...inputs.map((buffer, index) => ({
-          binding: index
-          resource: { buffer }
+          binding: index,
+          resource: { buffer },
         })),
         {
           binding: inputs.length,
@@ -306,11 +306,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Log shader usage for observability
-   */;
+   */
   private logShaderUsage(id: string, type: string, duration: number): void {
     const logData = {
-      shader_id: id
-      cache_type: type
+      shader_id: id,
+      cache_type: type,
       compile_time_ms: duration;
       timestamp: Date.now()
     }
@@ -322,10 +322,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Log shader compilation errors
-   */;
+   */
   private logShaderError(id: string, error: Error): void {
     const errorData = {
-      shader_id: id
+      shader_id: id,
       error_message: error.message,
       error_stack: error.stack,
       timestamp: Date.now()
@@ -335,7 +335,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Generate semantic embedding for shader code
-   */;
+   */
   private async generateShaderEmbedding(wgsl: string, metadata: CompiledShader['metadata']): Promise<number[]> {
     try {
       // Create comprehensive text for embedding
@@ -350,7 +350,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: embeddingText
+          text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgpu', ...metadata.tags],
           type: 'shader'
@@ -369,7 +369,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Generate fallback embedding based on shader characteristics
-   */;
+   */
   private generateFallbackEmbedding(wgsl: string): number[] {
     const features = new Array(384).fill(0);
     // removed unused lines assignment
@@ -393,7 +393,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Search cached shaders using semantic similarity
-   */;
+   */
   async searchShaders(query: ShaderSearchQuery): Promise<ShaderSearchResult[]> {
     try {
       // Get all shader IDs from cache index
@@ -431,7 +431,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 compiledAt: Date.now(),
                 lastUsed: Date.now(),
                 compileTime: 0,
-                cacheHit: false
+                cacheHit: false,
                 usageCount: 0,
                 averageExecutionTime: 0,
                 description: query.text,
@@ -482,7 +482,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Calculate cosine similarity between two vectors
-   */;
+   */
   private calculateCosineSimilarity(vec1: number[], vec2: number[]): number {
     if (vec1.length !== vec2.length) return 0;
     let dotProduct = 0;
@@ -500,8 +500,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    * Enhanced shader caching with embeddings
    */
   async cacheShaderWithEmbedding(
-    shader: CompiledShader
-    description: string
+    shader: CompiledShader,
+    description: string,
     operation: string;
     tags: string[] = [];
   ): Promise<void> {
@@ -529,7 +529,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Record shader performance metrics
-   */;
+   */
   async recordShaderPerformance(shaderId: string, executionTime: number): Promise<void> {
     const shader = this.shaders.get(shaderId);
     if (!shader) return;
@@ -547,7 +547,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Get shader cache statistics
-   */;
+   */
   async getShaderStats(): Promise<{
     totalShaders: number;
     memoryCount: number;
@@ -585,7 +585,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   /**
    * Clean up resources
-   */;
+   */
   dispose(): void {
     this.shaders.clear();
     this.compileQueue.clear();

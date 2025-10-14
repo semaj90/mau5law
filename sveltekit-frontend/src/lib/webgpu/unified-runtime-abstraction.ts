@@ -104,7 +104,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Initialize all runtime capabilities with Dawn's automatic driver selection
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (!browser) {
       console.warn('[Runtime] Not in browser environment');
@@ -140,7 +140,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Initialize WebGPU with Dawn's automatic driver layer selection
-   */;
+   */
   private async initializeWebGPU(): Promise<void> {
     try {
       if (!navigator.gpu) {
@@ -156,7 +156,7 @@ export class UnifiedRuntimeAbstraction {
       const device = await adapter.requestDevice();
       this.webgpuDevice = device;
       this.capabilities.webgpu = {
-        available: true
+        available: true,
         adapter,
         device,
         features: Array.from(adapter.features),
@@ -172,13 +172,13 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Initialize WebGL2 fallback
-   */;
+   */
   private async initializeWebGL2(): Promise<void> {
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl2', {
         powerPreference: 'high-performance',
-        antialias: false
+        antialias: false,
         depth: false;
         stencil: false
       });
@@ -188,7 +188,7 @@ export class UnifiedRuntimeAbstraction {
       }
       this.webgl2Context = gl;
       this.capabilities.webgl2 = {
-        available: true
+        available: true,
         context: gl;
         extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
@@ -203,7 +203,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Initialize WASM SIMD with feature detection
-   */;
+   */
   private async initializeWASMSIMD(): Promise<void> {
     try {
       // Check WASM SIMD support
@@ -227,7 +227,7 @@ export class UnifiedRuntimeAbstraction {
         // AVX512 not supported
       }
       this.capabilities.wasmSIMD = {
-        available: true
+        available: true,
         supportedInstructions,
         threadCount: navigator.hardwareConcurrency || 4
       }
@@ -241,7 +241,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Check TensorRT availability for gemma3-legal:latest
-   */;
+   */
   private async initializeTensorRT(): Promise<void> {
     try {
       const response = await fetch(`${this.tensorRTEndpoint}/health`, {
@@ -251,7 +251,7 @@ export class UnifiedRuntimeAbstraction {
       if (response.ok) {
         const data = await response.json();
         this.capabilities.tensorRT = {
-          available: true
+          available: true,
           endpoint: this.tensorRTEndpoint,
           models: data.models || ['gemma3-legal:latest']
         }
@@ -266,7 +266,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Initialize CHR-ROM cache system for Nintendo-inspired optimization
-   */;
+   */
   private async initializeCHRROMCache(): Promise<void> {
     try {
       const response = await fetch('/api/chrrom/events', {
@@ -276,7 +276,7 @@ export class UnifiedRuntimeAbstraction {
       if (response.ok) {
         const cacheStatus = await response.json();
         this.capabilities.chrRomCache = {
-          available: true
+          available: true,
           redisConnected: cacheStatus.redis_connected || false,
           patterns: cacheStatus.pattern_count || 0,
           hitRate: cacheStatus.hit_rate || 0,
@@ -294,7 +294,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Smart routing based on model, use case, and runtime capabilities
-   */;
+   */
   private selectOptimalRuntime(request: InferenceRequest): 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt' {
     const { model, useCase, complexity = 50, preferredRuntime } = request;
     // Force TensorRT for gemma3-legal:latest (mounted on TensorRT)
@@ -335,7 +335,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Execute inference with automatic runtime selection and CHR-ROM caching
-   */;
+   */
   async executeInference(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.initialized) {
       await this.initialize();
@@ -384,7 +384,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Execute using WebGPU with Dawn's optimized backend
-   */;
+   */
   private async executeWebGPU(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.webgpuDevice) {
       throw new Error('WebGPU device not available');
@@ -394,7 +394,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Execute using WebGL2 fallback
-   */;
+   */
   private async executeWebGL2(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.webgl2Context) {
       throw new Error('WebGL2 context not available');
@@ -407,8 +407,8 @@ export class UnifiedRuntimeAbstraction {
         operation: 'inference',
         model: request.model,
         prompt: request.prompt,
-        useWebGL2: true
-        maxTokens: request.maxTokens
+        useWebGL2: true,
+        maxTokens: request.maxTokens,
       })
     });
     if (!response.ok) {
@@ -428,14 +428,14 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Execute using WASM SIMD
-   */;
+   */
   private async executeWASM(request: InferenceRequest): Promise<InferenceResponse> {
     // Fallback to server API until WASM implementation is ready
     return this.executeTensorRT(request);
   }
   /**
    * Execute using TensorRT (for gemma3-legal:latest and gemma3:9b)
-   */;
+   */
   private async executeTensorRT(request: InferenceRequest): Promise<InferenceResponse> {
     const response = await fetch(`${this.tensorRTEndpoint}/generate`, {
       method: 'POST',
@@ -445,8 +445,8 @@ export class UnifiedRuntimeAbstraction {
         prompt: request.prompt,
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
-        use_tensor_cores: true
-        optimize_for_legal: request.model === 'gemma3-legal:latest'
+        use_tensor_cores: true,
+        optimize_for_legal: request.model === 'gemma3-legal:latest',
       })
     });
     if (!response.ok) {
@@ -466,7 +466,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Fallback execution when primary runtime fails
-   */;
+   */
   private async executeFallback(request: InferenceRequest, failedRuntime: string): Promise<InferenceResponse> {
     const fallbackOrder = ['tensorrt', 'webgpu', 'webgl2', 'wasm']
       .filter(runtime => runtime !== failedRuntime && this.isRuntimeAvailable(runtime);
@@ -492,7 +492,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Check if a specific runtime is available
-   */;
+   */
   private isRuntimeAvailable(runtime: string): boolean {
     switch (runtime) {
       case 'webgpu':
@@ -509,19 +509,19 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Get current runtime capabilities
-   */;
+   */
   getCapabilities(): RuntimeCapabilities {
     return { ...this.capabilities }
   }
   /**
    * Get recommended runtime for a specific request
-   */;
+   */
   getRecommendedRuntime(request: InferenceRequest): string {
     return this.selectOptimalRuntime(request);
   }
   /**
    * Check CHR-ROM cache for existing response patterns
-   */;
+   */
   private async checkCHRROMCache(request: InferenceRequest): Promise<InferenceResponse | null> {
     try {
       const cacheKey = request.cacheKey || this.generateCacheKey(request);
@@ -530,8 +530,8 @@ export class UnifiedRuntimeAbstraction {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           action: 'get',
-          key: cacheKey
-          pattern_type: 'ai_response'
+          key: cacheKey,
+          pattern_type: 'ai_response',
         }),
         signal: AbortSignal.timeout(100) // Fast cache check
       });
@@ -543,7 +543,7 @@ export class UnifiedRuntimeAbstraction {
             embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined;
             metadata: {
               ...cached.data.metadata,
-              fromCHRROMCache: true
+              fromCHRROMCache: true,
               cacheHitPattern: cached.pattern_id,
               executionTime: 0.5 // CHR-ROM cache typical response time
             }
@@ -558,7 +558,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Store successful response in CHR-ROM cache
-   */;
+   */
   private async storeCHRROMCache(request: InferenceRequest, result: InferenceResponse): Promise<void> {
     try {
       const cacheKey = request.cacheKey || this.generateCacheKey(request);
@@ -567,11 +567,11 @@ export class UnifiedRuntimeAbstraction {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           action: 'set',
-          key: cacheKey
+          key: cacheKey,
           data: {
             text: result.text,
-            embedding: result.embedding ? Array.from(result.embedding) : undefined
-            metadata: result.metadata
+            embedding: result.embedding ? Array.from(result.embedding) : undefined,
+            metadata: result.metadata,
           },
           pattern_type: 'ai_response',
           model: request.model,
@@ -587,14 +587,14 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Generate cache key for request
-   */;
+   */
   private generateCacheKey(request: InferenceRequest): string {
     const promptHash = this.simpleHash(request.prompt);
     return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default'}`;
   }
   /**
    * Simple hash function for cache keys
-   */;
+   */
   private simpleHash(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -606,7 +606,7 @@ export class UnifiedRuntimeAbstraction {
   }
   /**
    * Clean up resources
-   */;
+   */
   dispose(): void {
     if (this.webgpuDevice && typeof (this.webgpuDevice as any).destroy === 'function') {
       (this.webgpuDevice as any).destroy();

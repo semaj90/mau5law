@@ -32,7 +32,7 @@ declare module '$env/dynamic/private' {
     SUPABASE_URL?: string;
     SUPABASE_ANON_KEY?: string;
     [key: string]: string | undefined;
-  }
+  };
 }
 declare module '$env/dynamic/public' {
   export const env: Record<string, string | undefined>;
@@ -161,6 +161,6 @@ export const envHelper = {
   getOllamaUrl: (): string => {
     return envHelper.get('OLLAMA_URL') || envHelper.get('PUBLIC_OLLAMA_URL') || `http://localhost:11434`;
   },
-}
+};
 // Export types
-export type { EnhancedEnv }
+export type { EnhancedEnv };

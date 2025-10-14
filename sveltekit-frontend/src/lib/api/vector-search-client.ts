@@ -148,7 +148,7 @@ export enum DocumentType {
   RULING = 5,
   STATUTE = 6,
   CASE_LAW = 7,
-  REGULATION = 8
+  REGULATION = 8,
 }
 
 /**
@@ -180,10 +180,10 @@ export class VectorSearchClient {
         headers: {
           'Content-Type': 'application/x-protobuf',
           'Accept': 'application/x-protobuf',
-          'X-Client-Version': '1.0.0'
+          'X-Client-Version': '1.0.0',
         },
         body: requestBuffer,
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -200,7 +200,6 @@ export class VectorSearchClient {
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
 
       return searchResponse;
-
     } catch (error) {
       console.error('Protocol buffer vector search error:', error);
       throw new Error(`Vector search failed: ${error.message}`);
@@ -216,10 +215,10 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
         },
         body: JSON.stringify(request),
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -228,7 +227,6 @@ export class VectorSearchClient {
       }
 
       return await response.json();
-
     } catch (error) {
       console.error('JSON vector search error:', error);
       throw error;
@@ -257,8 +255,8 @@ export class VectorSearchClient {
       batch_params: {
         parallel_processing: true,
         max_concurrent: 10,
-        return_aggregated_analytics: true
-      }
+        return_aggregated_analytics: true,
+      },
     };
 
     try {
@@ -266,10 +264,10 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
         },
         body: JSON.stringify(batchRequest),
-        signal: AbortSignal.timeout(this.timeout * 2) // Double timeout for batch
+        signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
       });
 
       if (!response.ok) {
@@ -278,7 +276,6 @@ export class VectorSearchClient {
 
       const batchResponse = await response.json();
       return batchResponse.responses;
-
     } catch (error) {
       console.error('Batch vector search error:', error);
       throw error;
@@ -288,10 +285,7 @@ export class VectorSearchClient {
   /**
    * Search with auto-retry and fallback
    */
-  async searchWithRetry(
-    request: VectorSearchRequest,
-    maxRetries = 3
-  ): Promise<VectorSearchResponse> {
+  async searchWithRetry(request: VectorSearchRequest, maxRetries = 3): Promise<VectorSearchResponse> {
     let lastError: Error;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -309,8 +303,8 @@ export class VectorSearchClient {
             params: {
               ...request.params,
               limit: Math.min(request.params?.limit || 10, 5),
-              include_embeddings: false
-            }
+              include_embeddings: false,
+            },
           };
           return await this.searchJson(fallbackRequest);
         }
@@ -351,27 +345,29 @@ export class VectorSearchClient {
 export const vectorSearchClient = new VectorSearchClient();
 
 // Convenience functions
-export const searchVectors = (request: VectorSearchRequest) =>
-  vectorSearchClient.search(request);
+export const searchVectors = (request: VectorSearchRequest) => vectorSearchClient.search(request);
 
-export const batchSearchVectors = (requests: VectorSearchRequest[]) =>
-  vectorSearchClient.batchSearch(requests);
+export const batchSearchVectors = (requests: VectorSearchRequest[]) => vectorSearchClient.batchSearch(requests);
 
 export const searchWithRetry = (request: VectorSearchRequest, maxRetries?: number) =>
   vectorSearchClient.searchWithRetry(request, maxRetries);
 
 // TypeScript type guards
 export function isVectorSearchResponse(obj: any): obj is VectorSearchResponse {
-  return obj && typeof obj === 'object' &&
-    Array.isArray(obj.results) &&
-    obj.metadata && typeof obj.metadata === 'object';
+  return (
+    obj && typeof obj === 'object' && Array.isArray(obj.results) && obj.metadata && typeof obj.metadata === 'object'
+  );
 }
 
 export function isSearchResult(obj: any): obj is SearchResult {
-  return obj && typeof obj === 'object' &&
+  return (
+    obj &&
+    typeof obj === 'object' &&
     typeof obj.id === 'string' &&
-    obj.document && typeof obj.document === 'object' &&
-    typeof obj.similarity_score === 'number';
+    obj.document &&
+    typeof obj.document === 'object' &&
+    typeof obj.similarity_score === 'number'
+  );
 }
 
 // Utility functions
@@ -389,7 +385,7 @@ export function getDocumentTypeLabel(type: DocumentType): string {
     [DocumentType.RULING]: 'Ruling',
     [DocumentType.STATUTE]: 'Statute',
     [DocumentType.CASE_LAW]: 'Case Law',
-    [DocumentType.REGULATION]: 'Regulation'
+    [DocumentType.REGULATION]: 'Regulation',
   };
   return labels[type] || 'Unknown';
 }
