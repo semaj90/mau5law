@@ -6,48 +6,103 @@ import { browser } from '$app/environment';
 import type { LegalDocument } from '$lib/gpu/nes-gpu-integration.js';
 import type { LangChainConfig, ProcessingResult, QueryResult } from '$lib/ai/langchain-ollama-service.js';
 import type { WASMLLMConfig, WASMLLMResponse } from '$lib/types/vector-jobs.js';
+
+// --- Added lightweight service interfaces to avoid `any` ---
+type WASMLLMService = {
+  initialize(): Promise<boolean>;
+  loadModel(config?: Partial<WASMLLMConfig>): Promise<void>;
+  generateText(prompt: string, config?: Partial<WASMLLMConfig>): Promise<WASMLLMResponse>;
+  getStats?(): any;
+  dispose?(): void;
+};
+
+type LangChainOllamaService = {
+  testConnection(): Promise<boolean>;
+  queryDocuments(query: string, opts: { maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
+  processDocument(content: string, meta?: { documentId?: string; title?: string; type?: string }): Promise<ProcessingResult>;
+  getStats?(): any;
+  reset?(): void;
+};
+
+type NESGPUIntegration = {
+  searchLegalDocumentsGPU(query: string, opts: { limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }): Promise<LegalDocument[]>;
+  ingestLegalDocumentsBinary(docs: LegalDocument[]): Promise<void>;
+  getPerformanceStats?(): Promise<any>;
+  dispose?(): void;
+};
+
+type VectorOps = {
+  searchDocuments(embedding: Float32Array, threshold: number): Promise<any>;
+  // add additional methods if you rely on them elsewhere
+};
+
+// NEW: small shape describing document-like objects used in this module
+type DocLike = {
+  id?: string;
+  content?: string;
+  text?: string;
+  title?: string;
+  metadata?: Record<string, unknown>;
+  score?: number;
+  type?: string;
+};
+
+// NEW: typed result for ingestDocuments to avoid Promise<any>
+export interface IngestResult {
+  success: boolean;
+  processedCount: number;
+  errors: number;
+  processingTime: number;
+  error?: string;
+}
+
 // Lazy imports to avoid SSR issues
-let wasmLLMService: any = null;
-let langChainOllamaService: any = null;
-let nesGPUIntegration: any = null;
-let vectorOps: any = null;
+let wasmLLMService: WASMLLMService | null = null;
+let langChainOllamaService: LangChainOllamaService | null = null;
+let nesGPUIntegration: NESGPUIntegration | null = null;
+let vectorOps: VectorOps | null = null;
 // Load services dynamically - works both server and client side
 const loadServices = async () => {
-  try {
-    if (!wasmLLMService) {
-      const wasmModule = await import('$lib/wasm/wasm-llm-service.js');
-      wasmLLMService = wasmModule.wasmLLMService;
-    }
-  } catch (error) {
-    console.warn('WASM LLM service not available:', error);
-  }
-  try {
-    if (!langChainOllamaService) {
-      const langChainModule = await import('$lib/ai/langchain-ollama-service.js');
-      langChainOllamaService = langChainModule.langChainOllamaService;
-    }
-  } catch (error) {
-    console.warn('LangChain service not available:', error);
-  }
-  try {
-    if (!nesGPUIntegration) {
-      const gpuModule = await import('$lib/gpu/nes-gpu-integration.js');
-      nesGPUIntegration = gpuModule.nesGPUIntegration;
-    }
-  } catch (error) {
-    console.warn('GPU integration not available:', error);
-  }
-  // Only try to load vector operations server-side
-  if (!browser && !vectorOps) {
+  // Try to import only the services appropriate for this runtime to avoid SSR import errors.
+  // Browser-only: WASM LLM, NES GPU integration
+  if (browser) {
     try {
-      const dbModule = await import('$lib/server/db/enhanced-vector-operations.js');
-      vectorOps = dbModule.vectorOps;
+      if (!wasmLLMService) {
+        const wasmModule = await import('$lib/wasm/wasm-llm-service.js');
+        wasmLLMService = wasmModule.wasmLLMService as WASMLLMService;
+      }
     } catch (error) {
-      console.warn('Vector operations not available:', error);
+      console.warn('WASM LLM service not available (browser import):', error);
+    }
+    try {
+      if (!nesGPUIntegration) {
+        const gpuModule = await import('$lib/gpu/nes-gpu-integration.js');
+        nesGPUIntegration = gpuModule.nesGPUIntegration as NESGPUIntegration;
+      }
+    } catch (error) {
+      console.warn('GPU integration not available (browser import):', error);
+    }
+  } else {
+    // Server-only: LangChain/Ollama and vector ops
+    try {
+      if (!langChainOllamaService) {
+        const langChainModule = await import('$lib/ai/langchain-ollama-service.js');
+        langChainOllamaService = langChainModule.langChainOllamaService as LangChainOllamaService;
+      }
+    } catch (error) {
+      console.warn('LangChain service not available (server import):', error);
+    }
+    try {
+      if (!vectorOps) {
+        const dbModule = await import('$lib/server/db/enhanced-vector-operations.js');
+        vectorOps = dbModule.vectorOps as VectorOps;
+      }
+    } catch (error) {
+      console.warn('Vector operations not available (server import):', error);
     }
   }
-}
-}
+};
+
 export interface UnifiedAIConfig {
   // Service selection
   preferredMode: 'wasm' | 'langchain' | 'gpu' | 'hybrid';
@@ -62,13 +117,13 @@ export interface UnifiedAIConfig {
     useNESCache: boolean;
     enableBinaryPipeline: boolean;
     batchSize: number;
-  }
+  };
   // Database Configuration
   dbConfig?: {
     userId: string;
     enableVectorSearch: boolean;
     cacheResults: boolean;
-  }
+  };
 }
 export interface UnifiedQueryOptions {
   query: string;
@@ -89,7 +144,7 @@ export interface UnifiedResponse {
     tokenCount?: number;
     confidence?: number;
     cacheHit?: boolean;
-  }
+  };
   error?: string;
 }
 export class UnifiedAIService {
@@ -104,15 +159,15 @@ export class UnifiedAIService {
       wasmConfig: {
         modelPath: 'gemma3-legal',
         maxTokens: 2048,
-        temperature: 0.7
+        temperature: 0.7,
       },
       langChainConfig: {
         model: 'gemma3-legal:latest',
-        embeddingModel: 'nomic-embed-text:latest',
+        embeddingModel: 'embeddinggemma:latest',
         temperature: 0.3,
         chunkSize: 1000,
         chunkOverlap: 200,
-        useCuda: true
+        useCuda: true,
       },
       gpuConfig: {
         useNESCache: true,
@@ -124,9 +179,26 @@ export class UnifiedAIService {
         enableVectorSearch: true,
         cacheResults: true,
       },
-      ...config
+      ...config,
+    };
+  }
+
+  // SSR-safe timestamp helper (works with or without performance API)
+  private nowMs(): number {
+    return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+  }
+
+  // NEW: safe error message extractor for unknown catch bindings
+  private getErrorMessage(err: unknown): string {
+    if (!err) return 'Unknown error';
+    if (err instanceof Error) return err.message;
+    try {
+      return typeof err === 'string' ? err : JSON.stringify(err);
+    } catch {
+      return String(err);
     }
   }
+
   /**
    * Initialize the unified AI service
    */
@@ -134,31 +206,51 @@ export class UnifiedAIService {
     if (this.initialized) return;
     try {
       await loadServices();
-      // Initialize WASM service
-      if (wasmLLMService && (this.config.preferredMode === 'wasm' || this.config.preferredMode === 'hybrid')) {
-        const wasmInitialized = await wasmLLMService.initialize();
-        if (wasmInitialized && this.config.wasmConfig) {
-          await wasmLLMService.loadModel(this.config.wasmConfig);
+
+      // Initialize WASM service only in the browser runtime
+      if (
+        browser &&
+        wasmLLMService &&
+        (this.config.preferredMode === 'wasm' || this.config.preferredMode === 'hybrid')
+      ) {
+        try {
+          const wasmInitialized = await wasmLLMService.initialize();
+          if (wasmInitialized && this.config.wasmConfig) {
+            await wasmLLMService.loadModel(this.config.wasmConfig);
+          }
+          console.log('✅ WASM LLM service initialized (browser)');
+        } catch (e) {
+          console.warn('WASM initialization failed:', e);
         }
-        console.log('✅ WASM LLM service initialized');
       }
-      // Test LangChain connection
-      if (langChainOllamaService && (this.config.preferredMode === 'langchain' || this.config.preferredMode === 'hybrid')) {
-        const connected = await langChainOllamaService.testConnection();
-        if (connected) {
-          console.log('✅ LangChain + Ollama service initialized');
-        } else {
-          console.warn('⚠️ LangChain service not available - falling back to WASM');
+
+      // Test LangChain connection only if available (server)
+      if (
+        !browser &&
+        langChainOllamaService &&
+        (this.config.preferredMode === 'langchain' || this.config.preferredMode === 'hybrid')
+      ) {
+        try {
+          const connected = await langChainOllamaService.testConnection();
+          if (connected) {
+            console.log('✅ LangChain + Ollama service initialized (server)');
+          } else {
+            console.warn('⚠️ LangChain service not available - falling back to WASM/GPU');
+          }
+        } catch (e) {
+          console.warn('LangChain test connection failed:', e);
         }
       }
-      // Initialize GPU acceleration if available
-      if (nesGPUIntegration && this.config.enableGPUAcceleration) {
-        console.log('✅ NES-GPU integration available');
+
+      // GPU presence notice (browser-only)
+      if (browser && nesGPUIntegration && this.config.enableGPUAcceleration) {
+        console.log('✅ NES-GPU integration available (browser)');
       }
+
       this.initialized = true;
       console.log('🚀 Unified AI Service initialized successfully');
-    } catch (error) {
-      console.error('❌ Failed to initialize Unified AI Service:', error);
+    } catch (error: unknown) {
+      console.error('❌ Failed to initialize Unified AI Service:', this.getErrorMessage(error));
       throw error;
     }
   }
@@ -169,8 +261,8 @@ export class UnifiedAIService {
     if (!this.initialized) {
       await this.initialize();
     }
-    const startTime = performance.now();
-    const cacheKey = this.generateCacheKey(options);
+    const startTime = this.nowMs();
+    const cacheKey = this.generateCacheKey(_options);
     // Check cache first
     if (this.config.enableCaching && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
@@ -179,69 +271,74 @@ export class UnifiedAIService {
         metadata: {
           model: cached.metadata?.model || 'cached',
           ...cached.metadata,
-          cacheHit: true
-        }
-      }
+          cacheHit: true,
+        },
+      };
     }
     try {
       let result: UnifiedResponse;
-      const mode = options.mode || this.selectOptimalMode(options);
+      const mode = _options.mode || this.selectOptimalMode(_options);
       switch (mode) {
         case 'wasm':
-          result = await this.queryWASM(options);
+          result = await this.queryWASM(_options);
           break;
         case 'langchain':
-          result = await this.queryLangChain(options);
+          result = await this.queryLangChain(_options);
           break;
         case 'gpu':
-          result = await this.queryGPU(options);
+          result = await this.queryGPU(_options);
           break;
         default:
-          result = await this.queryHybrid(options);
+          result = await this.queryHybrid(_options);
       }
-      const processingTime = performance.now() - startTime;
-      (result as { processingTime?: any; success?: any }).processingTime = processingTime;
+      const processingTime = this.nowMs() - startTime;
+      result.processingTime = processingTime;
       // Cache successful results
-      if (this.config.enableCaching && (result as { processingTime?: any; success?: any }).success) {
+      if (this.config.enableCaching && result.success) {
         this.cache.set(cacheKey, result);
       }
       return result;
-    } catch (error: any) {
-      console.error('❌ Query failed:', error);
+    } catch (error: unknown) {
+      console.error('❌ Query failed:', this.getErrorMessage(error));
       return {
         success: false,
         response: '',
         mode: 'error',
-        processingTime: performance.now() - startTime,
-        error: error.message
-      }
+        processingTime: this.nowMs() - startTime,
+        error: this.getErrorMessage(error),
+      };
     }
   }
   /**
    * Query using WASM LLM service
    */
   private async queryWASM(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+    // WASM LLMs are typically browser-side in this app; guard accordingly.
+    if (!browser) {
+      throw new Error('WASM LLM queries are only supported in the browser runtime.');
+    }
     if (!wasmLLMService) {
-      throw new Error('WASM LLM service not available');
+      // try to lazy-load once more (best-effort)
+      await loadServices();
+      if (!wasmLLMService) {
+        throw new Error('WASM LLM service not available');
+      }
     }
     try {
-      const wasmResponse: WASMLLMResponse = await wasmLLMService.generateText(
-        options.query,
-        this.config.wasmConfig
-      );
+      const wasmResponse: WASMLLMResponse = await wasmLLMService.generateText(_options.query, this.config.wasmConfig);
       return {
         success: true,
         response: wasmResponse.text,
         mode: 'wasm',
-        processingTime: wasmResponse.processingTimeMs,
+        processingTime: wasmResponse.processingTimeMs ?? 0,
         metadata: {
           model: wasmResponse.metadata?.model || 'wasm-model',
           tokenCount: wasmResponse.tokens,
-          confidence: wasmResponse.confidence
-        }
-      }
-    } catch (error: any) {
-      throw new Error(`WASM query failed: ${error.message}`);
+          confidence: wasmResponse.confidence,
+        },
+      };
+    } catch (error: unknown) {
+      throw new Error(`WASM query failed: ${this.getErrorMessage(error)}`);
     }
   }
   /**
@@ -256,64 +353,63 @@ export class UnifiedAIService {
       }
     }
     try {
-      const langChainResponse: QueryResult = await langChainOllamaService.queryDocuments(
-        options.query);
-        {
-          maxResults: options.maxResults || 10,
-          relevanceThreshold,: options.threshold || 0.7
-        }
-      );
+      const langChainResponse: QueryResult = await langChainOllamaService.queryDocuments(_options.query, {
+        maxResults: _options.maxResults || 10,
+        relevanceThreshold: _options.threshold ?? 0.7,
+      });
       return {
         success: true,
         response: langChainResponse.answer,
         mode: 'langchain',
-        processingTime: langChainResponse.processingTime,
+        processingTime: langChainResponse.processingTime ?? 0,
         sources: langChainResponse.sources,
         metadata: {
-          model: this.config.langChainConfig?.model || 'langchain-model',
-          confidence: langChainResponse.confidence
-        }
-      }
-    } catch (error: any) {
-      throw new Error(`LangChain query failed: ${error.message}`);
+          // replaced inline fallback with a robust extractor to guarantee a string model name
+          model: this.getLangChainModelName(),
+          confidence: langChainResponse.confidence,
+        },
+      };
+    } catch (error: unknown) {
+      throw new Error(`LangChain query failed: ${this.getErrorMessage(error)}`);
     }
   }
   /**
    * Query using GPU-accelerated search
    */
   private async queryGPU(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
-    if (!nesGPUIntegration) {
-      throw new Error('GPU integration not available');
+    // Guard GPU usage for SSR safety: only run GPU-specific routines in the browser
+    if (!browser || !nesGPUIntegration) {
+      throw new Error('GPU integration not available in this runtime (server-side or missing).');
     }
     try {
-      const gpuResults: LegalDocument[] = await nesGPUIntegration.searchLegalDocumentsGPU(
-        options.query);
-        {
-          limit: options.maxResults || 20,
-          threshold,: options.threshold || 0.7,
-          useNESCache,: this.config.gpuConfig?.useNESCache,
-          enableGPUAcceleration,: this.config.enableGPUAcceleration
-        }
-      );
-      // Format GPU results as response
-      // removed unused response assignment
+      const gpuResults: LegalDocument[] = await nesGPUIntegration.searchLegalDocumentsGPU(_options.query, {
+        limit: _options.maxResults || 20,
+        threshold: _options.threshold ?? 0.7,
+        useNESCache: this.config.gpuConfig?.useNESCache ?? true,
+        enableGPUAcceleration: this.config.enableGPUAcceleration ?? true,
+      });
+      // updated: removed unused query parameter
+      const textResponse = this.formatGPUResults(gpuResults);
       return {
         success: true,
-        response,
+        response: textResponse,
         mode: 'gpu',
-        processingTime: 0, // Will be set by caller
-        sources: gpuResults.map(doc => ({,
-          content: doc.content || doc.title,
-          metadata: doc.metadata || {},
-          score: doc.score || 0.8
-        })),
+        processingTime: 0,
+        sources: gpuResults.map(doc => {
+          const d = doc as DocLike;
+          return {
+            content: d.content ?? d.title,
+            metadata: d.metadata ?? {},
+            score: d.score ?? 0.8,
+          };
+        }),
         metadata: {
           model: 'gpu-accelerated',
-          confidence: 0.8
-        }
-      }
-    } catch (error: any) {
-      throw new Error(`GPU query failed: ${error.message}`);
+          confidence: 0.8,
+        },
+      };
+    } catch (error: unknown) {
+      throw new Error(`GPU query failed: ${this.getErrorMessage(error)}`);
     }
   }
   /**
@@ -324,7 +420,7 @@ export class UnifiedAIService {
     // Try GPU first for fast results
     if (nesGPUIntegration && this.config.enableGPUAcceleration) {
       try {
-        const gpuResult = await this.queryGPU(options);
+        const gpuResult = await this.queryGPU(_options);
         if (gpuResult.success) results.push(gpuResult);
       } catch (error) {
         console.warn('GPU query failed, trying other methods:', error);
@@ -333,7 +429,7 @@ export class UnifiedAIService {
     // Try LangChain for comprehensive analysis
     if (langChainOllamaService) {
       try {
-        const langChainResult = await this.queryLangChain(options);
+        const langChainResult = await this.queryLangChain(_options);
         if (langChainResult.success) results.push(langChainResult);
       } catch (error) {
         console.warn('LangChain query failed, trying WASM:', error);
@@ -342,7 +438,7 @@ export class UnifiedAIService {
     // Try WASM as fallback
     if (wasmLLMService && results.length === 0) {
       try {
-        const wasmResult = await this.queryWASM(options);
+        const wasmResult = await this.queryWASM(_options);
         if (wasmResult.success) results.push(wasmResult);
       } catch (error) {
         console.warn('WASM query failed:', error);
@@ -352,138 +448,221 @@ export class UnifiedAIService {
       throw new Error('All query methods failed');
     }
     // Combine results for best response
-    return this.combineResults(results, options);
+    return this.combineResults(results, _options);
   }
   /**
    * Ingest documents into the unified system
    */
-  async ingestDocuments(documents: LegalDocument[]): Promise<any> {
-    const startTime = performance.now();
-    let processed = 0;
+  async ingestDocuments(documents: LegalDocument[]): Promise<IngestResult> {
+    const startTime = this.nowMs();
+    const processedIds = new Set<string>();
     let errors = 0;
+
     try {
-      // Process with GPU binary pipeline if available
-      if (nesGPUIntegration && this.config.enableGPUAcceleration) {
-        await nesGPUIntegration.ingestLegalDocumentsBinary(documents);
-        processed = documents.length;
+      // 1) GPU binary pipeline (browser-only) - mark all docs as processed if successful
+      if (browser && nesGPUIntegration && this.config.enableGPUAcceleration) {
+        try {
+          await nesGPUIntegration.ingestLegalDocumentsBinary(documents);
+          for (const d of documents) {
+            const dd = d as DocLike;
+            if (dd.id) processedIds.add(dd.id);
+          }
+          console.log('✅ GPU binary ingestion completed for', documents.length, 'documents');
+        } catch (gpuErr) {
+          console.warn('GPU ingestion failed:', gpuErr);
+          errors += documents.length;
+        }
       }
-      // Process with LangChain for text analysis
-      if (langChainOllamaService) {
+
+      // 2) Server-side LangChain ingestion (best-effort)
+      if (!browser && langChainOllamaService) {
         for (const doc of documents) {
           try {
-            if (doc.content) {
-              await langChainOllamaService.processDocument(doc.content, {
-                documentId: doc.id,
-                title: doc.title,
-                type: doc.type
-              });
-              processed++;
-            }
-          } catch (error) {
-            console.error(`Failed to process document ${doc.id}:`, error);
+            const d = doc as DocLike;
+            const content = d.content ?? d.text ?? d.title ?? '';
+            await langChainOllamaService.processDocument(content, {
+              documentId: d.id,
+              title: d.title,
+              type: d.type,
+            });
+            if (d.id) processedIds.add(d.id);
+          } catch (lcErr) {
+            const id = (doc as DocLike).id ?? '(unknown)';
+            console.warn('LangChain ingestion failed for doc', id, lcErr);
             errors++;
           }
         }
       }
+
+      // 3) Optional vector/indexing step if vectorOps present (minimal, non-breaking)
+      if (vectorOps && this.config.dbConfig?.enableVectorSearch) {
+        try {
+          // vectorOps API in this codebase provides searchDocuments; if indexing is required
+          // the concrete module should expose an index/store API. For now, we log availability.
+          console.log('Vector operations available — implement indexing in the concrete module if needed');
+        } catch (vecErr) {
+          console.warn('Vector ops indexing attempt failed:', vecErr);
+        }
+      }
+
+      const processingTime = this.nowMs() - startTime;
       return {
         success: errors === 0,
-        processed,
+        processedCount: processedIds.size,
         errors,
-        processingTime: performance.now() - startTime
-      }
-    } catch (error: any) {
-      console.error('Document ingestion failed:', error);
+        processingTime,
+      };
+    } catch (error: unknown) {
+      console.error('Ingest documents failed:', error);
       return {
         success: false,
-        processed,
-        errors: documents.length - processed,
-        processingTime: performance.now() - startTime
-      }
+        processedCount: processedIds.size,
+        errors: errors + 1,
+        processingTime: this.nowMs() - startTime,
+        // use the helper to safely extract message from unknown
+        error: this.getErrorMessage(error),
+      };
     }
   }
+
   /**
-   * Get performance statistics
+   * Pick an optimal mode based on runtime, available services and config.
+   * Returns one of: 'wasm' | 'langchain' | 'gpu' | 'hybrid'
    */
-  async getStats() {
-    const stats: any = {
-      initialized: this.initialized,
-      cacheSize: this.cache.size,
-      config: this.config
-    }
-    if (wasmLLMService) {
-      stats.wasm = wasmLLMService.getStats();
-    }
-    if (langChainOllamaService) {
-      stats.langchain = langChainOllamaService.getStats();
-    }
-    if (nesGPUIntegration) {
-      stats.gpu = await nesGPUIntegration.getPerformanceStats();
-    }
-    return stats;
-  }
-  // Helper methods
   private selectOptimalMode(_options: UnifiedQueryOptions): 'wasm' | 'langchain' | 'gpu' | 'hybrid' {
-    // Simple heuristics for mode selection
-    if (options.query.length < 100 && wasmLLMService) return 'wasm';
-    if (options.maxResults && options.maxResults > 20 && nesGPUIntegration) return 'gpu';
-    if (langChainOllamaService) return 'langchain';
+    // explicit mode override (if caller provided non-'auto' value)
+    if (_options.mode && _options.mode !== 'auto') {
+      return _options.mode as 'wasm' | 'langchain' | 'gpu' | 'hybrid';
+    }
+
+    // respect configured preferredMode when it's not 'hybrid'
+    if (this.config.preferredMode && this.config.preferredMode !== 'hybrid') {
+      return this.config.preferredMode;
+    }
+
+    // runtime-aware defaults
+    if (browser && nesGPUIntegration && this.config.enableGPUAcceleration) {
+      return 'gpu';
+    }
+    if (!browser && langChainOllamaService) {
+      return 'langchain';
+    }
+    if (browser && wasmLLMService) {
+      return 'wasm';
+    }
+    // last resort: hybrid
     return 'hybrid';
   }
-  private generateCacheKey(_options: UnifiedQueryOptions): string {
-    return `${options.query}_${options.mode || 'auto'}_${options.maxResults || 10}_${options.threshold || 0.7}`;
-  }
-  private formatGPUResults(documents: LegalDocument[], query: string): string {
-    if (documents.length === 0) {
-      return `No relevant legal documents found for query: "${query}"`;
+
+  /**
+   * Combine multiple UnifiedResponse values (hybrid strategy) into a single response.
+   * Very small, safe merge: prefer highest confidence, aggregate sources.
+   */
+  private combineResults(results: UnifiedResponse[], _options: UnifiedQueryOptions): UnifiedResponse {
+    if (!results || results.length === 0) {
+      throw new Error('No results to combine');
     }
-    let response = `Found ${documents.length} relevant legal documents:\n\n`;
-    documents.slice(0, 5).forEach((doc, index) => {
-      response += `${index + 1}. ${doc.title}\n`;
-      if (doc.summary) {
-        response += `   Summary: ${doc.summary}\n`;
-      }
-      if (doc.riskLevel) {
-        response += `   Risk Level: ${doc.riskLevel}\n`;
-      }
-      response += '\n';
-    });
-    return response;
-  }
-  private combineResults(results: UnifiedResponse[], options: UnifiedQueryOptions): UnifiedResponse {
-    // For now, return the best result based on confidence
-    const best = results.reduce((prev, current) =>
-      (current.metadata?.confidence || 0) > (prev.metadata?.confidence || 0) ? current : prev
-    );
+    // choose best by confidence (fallback to first)
+    const best = results.reduce((prev, curr) => {
+      const prevConf = prev.metadata?.confidence ?? 0;
+      const currConf = curr.metadata?.confidence ?? 0;
+      return currConf > prevConf ? curr : prev;
+    }, results[0]);
+
+    const allSources = results.flatMap(r => r.sources ?? []);
+    const processingTime = results.reduce((max, r) => Math.max(max, r.processingTime ?? 0), 0);
+
     return {
-      ...best,
+      success: true,
+      response: best.response,
       mode: 'hybrid',
-      sources: results.flatMap(r => r.sources || [])
-    }
+      processingTime,
+      sources: allSources,
+      metadata: {
+        model: best.metadata?.model ?? 'hybrid',
+        confidence: best.metadata?.confidence ?? 0,
+      },
+    };
   }
+
   /**
-   * Clear cache
+   * Minimal cache key generator (safe, deterministic)
    */
-  clearCache(): void {
-    this.cache.clear();
-    console.log('🧹 Unified AI Service cache cleared');
+  private generateCacheKey(_options: UnifiedQueryOptions): string {
+    return JSON.stringify({
+      q: _options.query,
+      mode: _options.mode ?? null,
+      maxResults: _options.maxResults ?? null,
+      threshold: _options.threshold ?? null,
+      includeMetadata: _options.includeMetadata ?? false,
+    });
   }
+
   /**
-   * Dispose of resources
+   * Format GPU results into a lightweight text snippet.
    */
-  dispose(): void {
+  private formatGPUResults(docs: LegalDocument[]): string {
+    if (!docs || docs.length === 0) return '';
+    // join titles/snippets for a concise response
+    return docs
+      .slice(0, 5)
+      .map(d => {
+        const dd = d as DocLike;
+        const title = dd.title ?? '(untitled)';
+        const snippet = (dd.content ?? dd.text ?? '').toString().slice(0, 240).replace(/\s+/g, ' ');
+        return `${title}: ${snippet ? snippet : ''}`.trim();
+      })
+      .join('\n\n');
+  }
+
+  // NEW: allow external disposers to clear internal cache without casting to any
+  public clearCache(): void {
     this.cache.clear();
-    if (wasmLLMService) {
-      wasmLLMService.dispose();
+  }
+
+  // Add helper to safely extract model name from Partial<LangChainConfig>
+  private getLangChainModelName(): string {
+    const m = this.config.langChainConfig?.model;
+    if (typeof m === 'string') return m;
+    // common shapes: { name: 'model-name' } or { id: 'model-id' }
+    if (m && typeof m === 'object') {
+      const obj = m as Record<string, unknown>;
+      const name = obj['name'];
+      if (typeof name === 'string') return name;
+      const id = obj['id'];
+      if (typeof id === 'string') return id;
     }
-    if (langChainOllamaService) {
-      langChainOllamaService.reset();
-    }
-    if (nesGPUIntegration) {
-      nesGPUIntegration.dispose();
-    }
-    this.initialized = false;
-    console.log('🧹 Unified AI Service disposed');
+    return 'langchain-model';
   }
 }
-// Export singleton instance
+
+/**
+ * Export a singleton instance for consumers to import easily.
+ * This matches patterns elsewhere in the repo (single service instance).
+ */
 export const unifiedAIService = new UnifiedAIService();
+
+/**
+ * Add a small convenience dispose helper that will attempt to clean up
+ * underlying services if they expose dispose/reset methods. This is best-effort
+ * and non-breaking.
+ */
+export async function disposeUnifiedAIService() {
+  try {
+    // use explicit method to avoid proto-check complaints
+    unifiedAIService.clearCache();
+
+    // Try to call service disposers if present (best-effort, avoid throwing).
+    if (wasmLLMService && typeof wasmLLMService.dispose === 'function') {
+      wasmLLMService.dispose();
+    }
+    if (langChainOllamaService && typeof langChainOllamaService.reset === 'function') {
+      langChainOllamaService.reset();
+    }
+    if (nesGPUIntegration && typeof nesGPUIntegration.dispose === 'function') {
+      nesGPUIntegration.dispose();
+    }
+  } catch (e) {
+    console.warn('disposeUnifiedAIService encountered errors while disposing underlying services:', e);
+  }
+}

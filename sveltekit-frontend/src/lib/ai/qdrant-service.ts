@@ -64,6 +64,19 @@ export interface QdrantServiceConfig {
   vectorSize: number;
   apiKey?: string;
 }
+
+// New: move helper types to top-level (cannot declare `type` inside a class)
+export type PointInsert = {
+  id?: string | number;
+  vector: number[];
+  payload?: LegalDocumentMetadata | Record<string, unknown>;
+};
+export type SearchItem = {
+  id: string | number;
+  score?: number;
+  payload?: LegalDocumentMetadata | Record<string, unknown>;
+};
+
 export class QdrantService {
   private client: InstanceType<typeof QdrantClient>;
   private collectionName: string;
@@ -76,51 +89,73 @@ export class QdrantService {
     this.collectionName = config.collectionName;
     this.vectorSize = config.vectorSize;
   }
+
   async ensureCollection(): Promise<void> {
     try {
-      await this.client.getCollection(this.collectionName);
-    } catch (error: any) {
-      // Collection doesn't exist, create it
-      await this.client.createCollection(this.collectionName, {
-        vectors: {
-          size: this.vectorSize,
-          distance: 'Cosine',
-        },
-      });
+      // Use collectionsApi.getCollection - returns metadata if exists
+      await (this.client as any).collectionsApi.getCollection({ collection_name: this.collectionName });
+    } catch (err: unknown) {
+      // If not found, create it
+      // Note: the client throws on 404, so create if error.
+      try {
+        await (this.client as any).collectionsApi.createCollection({
+          collection_name: this.collectionName,
+          vectors: {
+            size: this.vectorSize,
+            distance: 'Cosine',
+          },
+        } as any);
+      } catch (createErr: unknown) {
+        // rethrow for upstream handling
+        throw createErr;
+      }
     }
   }
-  async upsertPoints(points: Array<any>): Promise<void> {
+
+  async upsertPoints(points: PointInsert[]): Promise<void> {
     await this.ensureCollection();
-    await this.client.upsert(this.collectionName, {
+    // Use pointsApi.upsert
+    await (this.client as any).pointsApi.upsert({
+      collection_name: this.collectionName,
       wait: true,
-      points: points,
-    });
+      points,
+    } as any);
   }
-  async searchSimilar(vector: number[], limit: number = 10, filter?: { [key: string]: any }): Promise<Array<any>> {
+
+  async searchSimilar(vector: number[], limit: number = 10, filter?: Record<string, unknown>): Promise<SearchItem[]> {
     await this.ensureCollection();
-    const searchResult = await this.client.search(this.collectionName, {
+    const resp = await (this.client as any).pointsApi.search({
+      collection_name: this.collectionName,
       vector,
       limit,
-      filter,
       with_payload: true,
+      filter,
       score_threshold: 0.5,
-    });
-    return searchResult.map((result: any) => ({
-      id: (result as { id?: any; score?: any; payload?: any }).id as string,
-      score: (result as { id?: any; score?: any; payload?: any }).score,
-      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata,
+    } as any);
+
+    // response shapes may vary by client version; prefer resp.result or resp as array
+    const hits = (resp as any).result ?? (resp as any);
+    return (Array.isArray(hits) ? hits : []).map((item: any) => ({
+      id: item.id,
+      score: item.score,
+      payload: item.payload as LegalDocumentMetadata | Record<string, unknown>,
     }));
   }
-  async deletePoints(ids: string[]): Promise<void> {
-    await this.client.delete(this.collectionName, {
+
+  async deletePoints(ids: Array<string | number>): Promise<void> {
+    // Use pointsApi.delete; some clients expect delete method under pointsApi
+    await (this.client as any).pointsApi.delete({
+      collection_name: this.collectionName,
       wait: true,
       points: ids,
-    });
+    } as any);
   }
+
   async getCollectionInfo() {
     try {
-      return await this.client.getCollection(this.collectionName);
-    } catch (error: any) {
+      const info = await (this.client as any).collectionsApi.getCollection({ collection_name: this.collectionName });
+      return info;
+    } catch (err: unknown) {
       return null;
     }
   }
@@ -130,5 +165,7 @@ export const qdrantService = new QdrantService({
   url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
   collectionName: 'legal_documents',
   vectorSize: 768,
+  apiKey: import.meta.env.QDRANT_API_KEY,
+});
   apiKey: import.meta.env.QDRANT_API_KEY,
 });
