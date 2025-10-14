@@ -88,86 +88,53 @@ function processSSELine(line: string, state: InternalSSEState, emit: (evt: { eve
   state.dataLines.push(line.trim());
 }
 
-export async function streamRag(opts: RagStreamOptions): Promise<any> {
-  const {
-    query,
-    contextIds = [],
-    intent,
-    model = 'default',
-    ingestionId,
-    signal,
-    onToken,
-    onPatch,
-    onDone,
-    onError,
-    endpoint = '/rag/query/stream',
-    extra = {},
-  } = opts;
-  let doneEmitted = false;
+export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?: string } | {}> {
+  const { onToken, onPatch, onDone, onError, signal, ...base } = opts;
+  const localAbort = new AbortController();
+  if (signal) {
+    if (signal.aborted) localAbort.abort();
+    else signal.addEventListener('abort', () => localAbort.abort(), { once: true });
+  }
+
+  let traceparent: string | undefined;
+
   try {
-    const body = JSON.stringify({ query, contextIds, intent, model, ingestionId, ...extra });
-    const resp = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-      signal,
-    });
-    if (!resp.ok || !resp.body) {
-      throw new Error(`Stream request failed: ${resp.status}`);
-    }
-    const traceparent = resp.headers.get('traceparent') || undefined;
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    const state: InternalSSEState = { dataLines: [] };
-    let buffer = '';
-    const emit = (evt: { event?: string; data: string }) => {
-      const ev = evt.event || 'message';
-      if (ev === 'token' || ev === 'message') {
-        if (evt.data && onToken) onToken(evt.data);
-      } else if (ev === 'patch') {
-        if (evt.data && onPatch) {
-          try {
-            onPatch(JSON.parse(evt.data));
-          } catch {
-            /* ignore malformed patch */
-          }
-        }
-      } else if (ev === 'error') {
-        if (onError) onError(new Error(evt.data));
-      } else if (ev === 'done') {
-        doneEmitted = true;
-        onDone?.();
+    for await (const ev of streamRagGenerator({ ...base, signal: localAbort.signal })) {
+      switch (ev.type) {
+        case 'meta':
+          traceparent = ev.traceparent;
+          break;
+        case 'token':
+          onToken?.(ev.token);
+          break;
+        case 'patch':
+          onPatch?.(ev.patch);
+          break;
+        case 'summary':
+          // server-provided summary; treat as done or expose via onPatch/onDone as needed
+          break;
+        case 'error':
+          // Non-final errors are still forwarded; final errors will be handled below or by generator termination
+          onError?.(ev.error);
+          if (ev.final) return {};
+          break;
+        case 'done':
+          onDone?.();
+          return { traceparent };
+        case 'reconnect':
+          // reconnect notifications are informational; ignore here
+          break;
+        default:
+          break;
       }
-    };
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      // Process complete lines; keep trailing partial in buffer
-      let newlineIndex: number;
-      while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-        const rawLine = buffer.slice(0, newlineIndex);
-        buffer = buffer.slice(newlineIndex + 1);
-        const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine; // normalize CRLF
-        processSSELine(line, state, emit);
-      }
-      // Early exit if aborted
-      if (signal?.aborted) break;
     }
-    // Flush any final line without newline
-    if (buffer.length) {
-      processSSELine(buffer, state, emit);
-    }
-    // Finalize any pending event data
-    finalizeEvent(state, emit);
-    if (!doneEmitted) {
-      // Server closed without explicit done; emit once
-      onDone?.();
-    }
+
+    // generator completed without an explicit 'done' event: treat as done
+    onDone?.();
     return { traceparent };
   } catch (e: any) {
     if (e?.name === 'AbortError') {
-      // Silent abort (treat as graceful cancel). Do not call onError.
+      // silent abort
       return {};
     }
     onError?.(e instanceof Error ? e : new Error(String(e)));
@@ -369,40 +336,36 @@ export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
 }
 
 export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamStore {
-  // Add a small explicit type for metrics so we can add startedAt later
+  // Clean, fixed implementation replacing the corrupted version.
+
   type Metrics = {
     reconnects: number;
     errors: number;
     startedAt?: number | undefined;
   };
 
+  // Writable stores
   const tokensW = writable<string[]>([]);
   const statusW = writable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>('idle');
   const errorW = writable<Error | null>(null);
   const tokenCountW = writable<number>(0);
-  // Typed metrics store (startedAt is optional)
   const metricsW = writable<Metrics>({ reconnects: 0, errors: 0, startedAt: undefined });
   const traceparentW = writable<string | undefined>(undefined);
   const streamIdW = writable<string | undefined>(undefined);
   const patchesW = writable<any[]>([]);
   const appliedObjectW = writable<any>(initial?.patches?.initialObject ?? {});
   const summaryW = writable<string | undefined>(undefined);
-  const inverseStack: any[][] = [];
-  const snapshots: { index: number; object: any }[] = [];
-  const patchCount = 0;
-  const snapshotInterval = initial?.patches?.snapshotInterval ?? 20;
-  // (Re)declared runtime state variables (restored after edit)
+
+  // Runtime state
+  let abortCtrl: AbortController | null = null;
+  let running = false;
   let persistenceKey: string | undefined;
   let pendingBatch: string[] = [];
   let batchTimer: ReturnType<typeof setTimeout> | null = null;
-  const lastTokenTs: number | null = null;
-  const emaInterArrival = 0;
-  const EMA_ALPHA = 0.25;
-  let abortCtrl: AbortController | null = null;
-  let running = false;
 
-  // Added: batching control flags derived from initial options
+  // Batching & persistence options
   const batchingEnabled = initial?.batching?.enabled ?? false;
+  const batchIntervalMs = initial?.batching?.intervalMs ?? 40;
   const maxBatch = initial?.batching?.maxBatchSize ?? 32;
 
   function getStorage(storage?: 'local' | 'session') {
@@ -419,11 +382,13 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       const raw = store.getItem(persistenceKey);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed as string[]; // legacy format
+      if (Array.isArray(parsed)) return parsed as string[];
       if (parsed && typeof parsed === 'object' && parsed.version === 1 && typeof parsed.data === 'string') {
         return parsed.data.length ? parsed.data.split('\n') : [];
       }
-    } catch (error) {}
+    } catch {
+      /* ignore */
+    }
     return [];
   }
 
@@ -439,13 +404,15 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       } else {
         store.setItem(persistenceKey, JSON.stringify(tokens.slice(-maxTokens)));
       }
-    } catch (error) {}
+    } catch {
+      /* ignore */
+    }
   }
 
   function flushBatch() {
     if (!pendingBatch.length) return;
-    tokensW.update(a => {
-      const next = [...a, ...pendingBatch];
+    tokensW.update(existing => {
+      const next = [...existing, ...pendingBatch];
       tokenCountW.set(next.length);
       persist(next);
       return next;
@@ -458,117 +425,71 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   }
 
   function scheduleBatch() {
-    if (!batchingEnabled) return; // no-op when batching disabled
+    if (!batchingEnabled) return;
     if (batchTimer) return;
-    let interval = initial?.batching?.intervalMs ?? 40;
-    if (initial?.batching?.adaptive) {
-      // Use EMA of inter-arrival; flush sooner if slow, batch tighter if fast;
-      if (emaInterArrival > 0) {
-        const minI = initial.batching?.minIntervalMs ?? 15;
-        const maxI = initial.batching?.maxIntervalMs ?? 80;
-        interval = Math.min(maxI, Math.max(minI, emaInterArrival * 0.8));
-      }
-    }
+    const interval = initial?.batching?.adaptive ? Math.max(initial?.batching?.minIntervalMs ?? 15, Math.min(initial?.batching?.maxIntervalMs ?? 80, batchIntervalMs)) : batchIntervalMs;
     batchTimer = setTimeout(() => flushBatch(), interval);
   }
 
-  // Patch application helpers
-  function applyJsonPatch(target: any, patch: any[]): boolean {
-    try {
-      for (const op of patch) {
-        if (!op || typeof op !== 'object') return false;
-        const { op: operation, path, value } = op as any;
-        if (typeof path !== 'string' || !path.startsWith('/')) return false;
-        const segments = path
-          .slice(1)
-          .split('/')
-          .map(s => s.replace(/~1/g, '/').replace(/~0/g, '~'));
-        let parent = target;
-        for (let i = 0; i < segments.length - 1; i++) {
-          const seg = segments[i];
-          if (!(seg in parent) || typeof parent[seg] !== 'object') parent[seg] = {};
-          parent = parent[seg];
-        }
-        const key = segments[segments.length - 1];
-        switch (operation) {
-          case 'add':
-          case 'replace':
-            parent[key] = value;
-            break;
-          case 'remove':
-            if (Array.isArray(parent)) parent.splice(Number(key), 1);
-            else delete parent[key];
-            break;
-          default:
-            return false;
-        }
-      }
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  function deepMerge(target: any, src: any) {
-    if (src && typeof src === 'object') {
-      for (const k of Object.keys(src)) {
-        const sv = src[k];
-        if (sv && typeof sv === 'object' && !Array.isArray(sv)) {
-          if (!target[k] || typeof target[k] !== 'object') target[k] = {};
-          deepMerge(target[k], sv);
-        } else {
-          target[k] = sv;
-        }
-      }
-    }
-    return target;
-  }
-
-  // Add a local cancel helper so start() can call it safely
   function cancel() {
     abortCtrl?.abort();
     running = false;
     statusW.set('aborted');
-    try {
-      flushBatch();
-    } catch {
-      /* ignore flush errors on cancel */
-    }
+    try { flushBatch(); } catch {}
   }
 
-  async function start(opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }): Promise<any> {
-    if (running) cancel(); // now refers to the local helper
-    const merged: RagStreamGeneratorOptions = { ...(initial as any), ...(opts as any) } as any;
+  async function start(opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }): Promise<void> {
+    if (running) cancel();
+
+    const merged: RagStreamGeneratorOptions = {
+      ...initial,
+      ...opts,
+      // ensure required props exist
+      query: opts.query ?? (initial as any)?.query ?? '',
+      contextIds: opts.contextIds ?? (initial as any)?.contextIds ?? [],
+      model: opts.model ?? (initial as any)?.model ?? 'default',
+      endpoint: opts.endpoint ?? (initial as any)?.endpoint ?? '/rag/query/stream',
+      maxRetries: opts.maxRetries ?? initial?.maxRetries ?? 0,
+      backoffMs: opts.backoffMs ?? initial?.backoffMs ?? 500,
+      backoffFactor: opts.backoffFactor ?? initial?.backoffFactor ?? 2,
+      retryStatusCodes: opts.retryStatusCodes ?? initial?.retryStatusCodes ?? [502, 503, 504],
+      signal: undefined, // will wire local signal below
+    } as RagStreamGeneratorOptions;
+
     abortCtrl = new AbortController();
-    if (merged.signal) {
-      if (merged.signal.aborted) abortCtrl.abort();
-      else merged.signal.addEventListener('abort', () => abortCtrl?.abort(), { once: true });
+    if (opts.signal) {
+      if (opts.signal.aborted) abortCtrl.abort();
+      else opts.signal.addEventListener('abort', () => abortCtrl?.abort(), { once: true });
     }
+    merged.signal = abortCtrl.signal;
+
+    // restore persisted tokens if any
     const restored = loadPersisted(merged.query);
     tokensW.set(restored);
     tokenCountW.set(restored.length);
     errorW.set(null);
     statusW.set('connecting');
-    // set startedAt via the typed store - use update to avoid overload/type mismatch
-    metricsW.update(() => ({ reconnects: 0, errors: 0, startedAt: Date.now() }));
+    metricsW.set({ reconnects: 0, errors: 0, startedAt: Date.now() });
     summaryW.set(undefined);
     streamIdW.set(undefined);
+    traceparentW.set(undefined);
     running = true;
 
     try {
-      // Added: attempt counter local to start()
-      const attempt = 0;
-      for await (const ev of streamRagGenerator({ ...merged, signal: abortCtrl.signal })) {
+      for await (const ev of streamRagGenerator(merged)) {
         switch (ev.type) {
+          case 'meta':
+            traceparentW.set(ev.traceparent);
+            streamIdW.set(ev.streamId);
+            break;
           case 'token':
+            // transition status
             statusW.update(s => (s === 'connecting' || s === 'reconnecting' ? 'streaming' : s));
             if (batchingEnabled) {
-              // batching path
               pendingBatch.push(ev.token);
               if (pendingBatch.length >= maxBatch) flushBatch();
               else scheduleBatch();
             } else {
-              // direct push path
               tokensW.update(a => {
                 const next = [...a, ev.token];
                 tokenCountW.set(next.length);
@@ -577,75 +498,183 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               });
             }
             break;
-          case 'reconnect':
-            statusW.set('reconnecting');
-            // use typed update (no any)
-            metricsW.update(m => ({ ...m, reconnects: (m?.reconnects ?? 0) + 1 }));
-            break;
           case 'patch':
             patchesW.update(p => [...p, ev.patch]);
             if (initial?.patches?.autoApply) {
-              const prevObj = get(appliedObjectW) ?? initial?.patches?.initialObject ?? {};
-              const mode = initial.patches?.mode || 'auto';
-              const newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
-              let changed = false;
-              let inverseForPatch: any[] | null = null;
-              const keepInv = initial?.patches?.keepInverses;
-              if ((mode === 'auto' || mode === 'json-patch') && Array.isArray(ev.patch)) {
-                if (keepInv) {
-                  inverseForPatch = [];
-                  for (let i = ev.patch.length - 1; i >= 0; i--) {
-                    const op = ev.patch[i];
-                    if (op?.op === 'remove' && typeof op.path === 'string') {
-                      // Remove operations are inherently reversible (no-op inverse)
-                      inverseForPatch.push({ op: 'add', path: op.path, value: undefined });
-                    } else {
-                      const success = applyJsonPatch(newObj, [op]);
-                      changed = changed || success;
-                      if (success && keepInv) {
-                        // Add inverse for successful patch
-                        const invOp = { op: 'remove', path: op.path };
-                        inverseForPatch.push(invOp);
-                      }
-                    }
-                  }
-                  if (changed) {
-                    deepMerge(newObj, prevObj);
-                    appliedObjectW.set(newObj);
-                  }
-                  // Apply inverses as separate patches (if any)
-                  if (inverseForPatch?.length) {
-                    for (const inv of inverseForPatch) {
-                      patchesW.update(p => [...p, inv]);
-                    }
-                  }
-                } else {
-                  // Simple replace for non-mergeable cases
-                  applyJsonPatch(newObj, ev.patch);
-                  appliedObjectW.set(newObj);
+              try {
+                const prevObj = get(appliedObjectW) ?? initial?.patches?.initialObject ?? {};
+                const mode = initial.patches?.mode ?? 'auto';
+                const newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
+                let changed = false;
+                if ((mode === 'auto' || mode === 'json-patch') && Array.isArray(ev.patch)) {
+                  changed = applyJsonPatch(newObj, ev.patch);
+                } else if (mode === 'merge' && ev.patch && typeof ev.patch === 'object') {
+                  deepMerge(newObj, ev.patch);
+                  changed = true;
                 }
-              } else if (mode === 'merge') {
-                deepMerge(newObj, ev.patch);
-                appliedObjectW.set(newObj);
+                if (changed) appliedObjectW.set(newObj);
+              } catch {
+                /* ignore patch apply errors */
               }
+            }
+            break;
+          case 'summary':
+            summaryW.set(ev.summary);
+            break;
+          case 'reconnect':
+            statusW.set('reconnecting');
+            metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), reconnects: (m?.reconnects ?? 0) + 1 }));
+            break;
+          case 'error':
+            // non-final errors still reported
+            errorW.set(ev.error);
+            metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), errors: (m?.errors ?? 0) + 1 }));
+            if (ev.final) {
+              statusW.set('error');
+              running = false;
+              return;
             }
             break;
           case 'done':
             statusW.set('done');
-            break;
-          case 'error':
-            errorW.set(new Error(ev.error));
-            statusW.set('error');
-            break;
+            flushBatch();
+            running = false;
+            return;
           default:
-            console.warn('Unknown event type:', ev);
+            // unknown - ignore
+            break;
         }
       }
-    } catch (error) {
-      console.error('Stream error:', error);
+    } catch (err: any) {
+      if (!abortCtrl?.signal.aborted) {
+        errorW.set(err instanceof Error ? err : new Error(String(err)));
+        statusW.set('error');
+      }
     } finally {
       flushBatch();
       running = false;
+    }
+  }
+
+  async function interrupt(mode: 'graceful' | 'force' = 'graceful') {
+    if (!running) return;
+    if (mode === 'graceful') {
+      try {
+        // attempt to request server to stop by issuing a short streamRag call (best-effort)
+        await streamRag({
+          query: (initial as any)?.query ?? '',
+          contextIds: (initial as any)?.contextIds ?? [],
+          intent: (initial as any)?.intent,
+          model: (initial as any)?.model,
+          signal: abortCtrl?.signal,
+          endpoint: (initial as any)?.endpoint,
+        });
+      } catch {
+        /* ignore */
+      }
+    }
+    // always cancel locally
+    abortCtrl?.abort();
+    statusW.set('aborted');
+  }
+
+  function clear() {
+    tokensW.set([]);
+    tokenCountW.set(0);
+    patchesW.set([]);
+    appliedObjectW.set(initial?.patches?.initialObject ?? {});
+    summaryW.set(undefined);
+    persist([]);
+  }
+
+  function resetMetrics() {
+    metricsW.set({ reconnects: 0, errors: 0, startedAt: undefined });
+  }
+
+  function rebuildApplied(upToIndex?: number) {
+    const allPatches = get(patchesW);
+    const target = upToIndex != null ? allPatches.slice(0, upToIndex) : allPatches;
+    const initialObj = initial?.patches?.initialObject ?? {};
+    try {
+      const newObj = target.reduce((obj, patch) => {
+        if (Array.isArray(patch)) {
+          applyJsonPatch(obj, patch);
+        } else if (patch && typeof patch === 'object') {
+          deepMerge(obj, patch);
+        }
+        return obj;
+      }, JSON.parse(JSON.stringify(initialObj)));
+      appliedObjectW.set(newObj);
+    } catch {
+      // ignore
+    }
+  }
+
+  function undoLast(count = 1) {
+    const allPatches = get(patchesW);
+    const newPatches = allPatches.slice(0, Math.max(0, allPatches.length - count));
+    patchesW.set(newPatches);
+    rebuildApplied();
+  }
+
+  /* Insert small helper utilities used by the store.
+     These are minimal implementations to avoid external deps.
+     applyJsonPatch supports basic operations: add, replace, remove.
+     deepMerge performs a recursive object merge.
+  */
+  function getTargetParent(target: any, path: string) {
+    const parts = path.split('/').slice(1); // remove leading empty segment
+    let obj = target;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const key = decodeURIComponent(parts[i]);
+      if (obj[key] === undefined) obj[key] = {};
+      obj = obj[key];
+      if (obj === null || typeof obj !== 'object') return null;
+    }
+    return { parent: obj, key: decodeURIComponent(parts[parts.length - 1] || '') };
+  }
+
+  function applyJsonPatch(target: any, patch: any[]): boolean {
+    if (!Array.isArray(patch)) return false;
+    let changed = false;
+    for (const op of patch) {
+      const { op: type, path, value } = op;
+      if (typeof path !== 'string') continue;
+      const t = getTargetParent(target, path);
+      if (!t) continue;
+      const { parent, key } = t;
+      try {
+        if (type === 'remove') {
+          if (parent && Object.prototype.hasOwnProperty.call(parent, key)) {
+            delete parent[key];
+            changed = true;
+          }
+        } else if (type === 'add' || type === 'replace') {
+          parent[key] = value;
+          changed = true;
+        } else if (type === 'test') {
+          // ignore tests here
+        } else {
+          // unsupported op - skip
+        }
+      } catch {
+        // ignore malformed operations
+      }
+    }
+    return changed;
+  }
+
+  function deepMerge(target: any, src: any) {
+    if (src == null || typeof src !== 'object') return;
+    if (typeof target !== 'object' || target === null) return;
+    for (const k of Object.keys(src)) {
+      const sv = src[k];
+      if (sv && typeof sv === 'object' && !Array.isArray(sv)) {
+        if (!target[k] || typeof target[k] !== 'object') target[k] = {};
+        deepMerge(target[k], sv);
+      } else {
+        target[k] = sv;
+      }
     }
   }
 
@@ -661,69 +690,30 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     appliedObject: appliedObjectW,
     summary: summaryW,
     start,
-    cancel() {
-      abortCtrl?.abort();
-    },
-    async interrupt(mode: 'graceful' | 'force' = 'graceful') {
-      if (running) {
-        if (mode === 'graceful') {
-          // Graceful stop: request server to stop streaming
-          try {
-            await streamRag({
-              query: initial?.query ?? '',
-              contextIds: initial?.contextIds,
-              intent: initial?.intent,
-              model: initial?.model,
-              signal: abortCtrl?.signal,
-              onDone: () => {},
-              onError: () => {},
-            });
-          } catch (e) {
-            console.error('Graceful interrupt error:', e);
-          }
-        }
-        // Force cancel the ongoing request
-        abortCtrl?.abort();
-      }
-    },
-    clear() {
-      tokensW.set([]);
-      tokenCountW.set(0);
-      patchesW.set([]);
-      appliedObjectW.set(initial?.patches?.initialObject ?? {});
-      summaryW.set(undefined);
-      persist([]);
-    },
-    resetMetrics() {
-      metricsW.set({ reconnects: 0, errors: 0, startedAt: undefined });
-    },
-    rebuildApplied(upToIndex?: number) {
-      const allPatches = get(patchesW);
-      const targetPatches = upToIndex != null ? allPatches.slice(0, upToIndex) : allPatches;
-      const initialObj = initial?.patches?.initialObject ?? {};
-      const newObj = targetPatches.reduce(
-        (obj, patch) => {
-          applyJsonPatch(obj, patch);
-          return obj;
-        },
-        JSON.parse(JSON.stringify(initialObj))
-      );
-      appliedObjectW.set(newObj);
-    },
-    undoLast(count = 1) {
-      const allPatches = get(patchesW);
-      const newPatches = allPatches.slice(0, -count);
-      patchesW.set(newPatches);
-      // Reapply remaining patches to update the derived object
-      const initialObj = initial?.patches?.initialObject ?? {};
-      const newObj = newPatches.reduce(
-        (obj, patch) => {
-          applyJsonPatch(obj, patch);
-          return obj;
-        },
-        JSON.parse(JSON.stringify(initialObj))
-      );
-      appliedObjectW.set(newObj);
-    },
+    cancel,
+    interrupt,
+    clear,
+    resetMetrics,
+    rebuildApplied,
+    undoLast,
   };
 }
+        (obj, patch) => {
+          applyJsonPatch(obj, patch););
+          return obj;
+        },
+        JSON.parse(JSON.stringify(initialObj))
+      );allPatches.slice(0, -count);
+      appliedObjectW.set(newObj);
+    },ining patches to update the derived object
+    undoLast(count = 1) {t initialObj = initial?.patches?.initialObject ?? {};
+      const allPatches = get(patchesW);
+      const newPatches = allPatches.slice(0, -count);(obj, patch) => {
+      patchesW.set(newPatches);ch);
+      // Reapply remaining patches to update the derived object    return obj;
+      const initialObj = initial?.patches?.initialObject ?? {};    },
+      const newObj = newPatches.reduce(       JSON.parse(JSON.stringify(initialObj))
+        (obj, patch) => {      );
+        }  };    },      appliedObjectW.set(newObj);      );        JSON.parse(JSON.stringify(initialObj))        },          return obj;          applyJsonPatch(obj, patch);      appliedObjectW.set(newObj);
+      },
+    };

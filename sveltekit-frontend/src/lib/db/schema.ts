@@ -75,6 +75,7 @@ export const documents = pgTable(
     id: text('id')
       .primaryKey()
       .default('doc_' + new Date().getTime()),
+    case_id: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
     user_id: integer('user_id')
       .references(() => users.id)
       .notNull(),
@@ -91,6 +92,7 @@ export const documents = pgTable(
     metadata: jsonb('metadata').default('{}'),
   },
   table => ({
+    caseIdIndex: index('documents_case_id_idx').on(table.case_id),
     userIdIndex: index('documents_user_id_idx').on(table.user_id),
     fileTypeIndex: index('documents_file_type_idx').on(table.file_type),
     embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
@@ -293,6 +295,10 @@ export const usersRelations = relations(users, ({ many }: any) => ({
   aiHistory: many(aiHistory),
 }));
 export const documentsRelations = relations(documents, ({ one, many }: any) => ({
+  case: one(cases, {
+    fields: [documents.case_id],
+    references: [cases.id],
+  }),
   user: one(users, {
     fields: [documents.user_id],
     references: [users.id],

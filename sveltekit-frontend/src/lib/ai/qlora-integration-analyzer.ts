@@ -34,42 +34,6 @@ interface UserBehaviorProfile {
     speed_weight: number;
   };
 }
-interface ModelPerformanceInsights {
-  modelId: string;
-  domainSpecificPerformance: Map<string, number>;
-  weaknessPatterns: string[];
-  strengthPatterns: string[];
-  optimizationOpportunities: {
-    parameter_efficiency: number;
-    context_utilization: number;
-    response_quality: number;
-  };
-  recommendedAdjustments: {
-    rank: number;
-    alpha: number;
-    target_modules: string[];
-    learning_rate: number;
-  };
-}
-interface TopologyRecommendations {
-  optimalArchitecture: {
-    layers: number;
-    hidden_size: number;
-    attention_heads: number;
-    intermediate_size: number;
-  };
-  specializationPoints: {
-    layer_index: number;
-    module_name: string;
-    specialization_type: 'domain' | 'task' | 'user';
-    adaptation_strength: number;
-  }[];
-  pruningRecommendations: {
-    prune_ratio: number;
-    target_components: string[];
-    expected_speedup: number;
-  };
-}
 interface DistillationPlan {
   planId: string;
   teacherModel: string;
@@ -112,21 +76,49 @@ export class QLoRAIntegrationAnalyzer {
     console.log('🔬 QLoRA Integration Analyzer initialized');
   }
   /**
-   * Mock implementation for missing method
-   */ private mockAnalyzeBehaviorPatterns(data: any): Promise<any> {
+   * Mock implementation for behavior pattern analysis.
+   * Returns a lightweight object with patterns, insights and clusters for downstream use.
+   */
+  private mockAnalyzeBehaviorPatterns(data: Array<any>): Promise<{
+    patterns: Array<{ id: string; score: number; summary: string }>;
+    insights: { coherence: number; [k: string]: any };
+    behavioral_clusters: Array<{ clusterId: string; members: string[] }>;
+  }> {
+    const patterns = (data || []).map((d: any, i: number) => ({
+      id: `p_${i}`,
+      score: Math.min(1, Math.random() * 0.5 + 0.5),
+      summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary',
+    }));
+    const coherence = patterns.length ? patterns.reduce((s, p) => s + p.score, 0) / patterns.length : 0.7;
     return Promise.resolve({
-      patterns: [],
-      insights: {} as { [key: string]: any },
-      behavioral_clusters: [],
+      patterns,
+      insights: { coherence },
+      behavioral_clusters: [{ clusterId: 'c1', members: patterns.map(p => p.id) }],
     });
   }
+
   /**
-   * Mock implementation for missing buildUserJourneyGraphs method
-   */ private mockBuildUserJourneyGraphs(data: any[]): Promise<any> {
+   * Mock implementation for building user journey graphs.
+   * Accepts an array of interaction-like objects and returns a simple graph shape.
+   */
+  private mockBuildUserJourneyGraphs(
+    data: Array<{
+      node_id: string;
+      action_type: string;
+      context: unknown;
+      outcome: unknown;
+      timestamp: number;
+      edges: Array<{ target: string; weight: number }>;
+    }>
+  ): Promise<{
+    nodes: Array<{ id: string; type: string }>;
+    edges: Array<unknown>;
+    graph_metrics: { connectivity: number; depth: number };
+  }> {
     return Promise.resolve({
-      nodes: data.map(d => ({ id: d.node_id, type: 'user_interaction' })),
-      edges: [],
-      graph_metrics: { connectivity: 0.5, depth: 1 },
+      nodes: (data || []).map(d => ({ id: d.node_id, type: 'user_interaction' })),
+      edges: data.flatMap(d => (d.edges || []) as unknown[]),
+      graph_metrics: { connectivity: 0.5, depth: Math.max(1, Math.floor((data || []).length / 10)) },
     });
   }
   /**
@@ -134,7 +126,7 @@ export class QLoRAIntegrationAnalyzer {
    */
   async analyzeFeedbackForDistillation(feedbackBatch: Array<any>): Promise<FeedbackAnalysis> {
     console.log(`🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`);
-    const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     try {
       // 1. Sora-Moogle: Advanced pattern recognition in feedback data
       // Note: Using mock implementation since analyzeBehaviorPatterns is not yet implemented
@@ -372,8 +364,8 @@ export class QLoRAIntegrationAnalyzer {
     };
   }
   private calculateAnalysisConfidence(patterns: any, graphs: any): number {
-    const patternConfidence = patterns.coherence || 0.7;
-    const graphConfidence = graphs.connectivity || 0.8;
+    const patternConfidence = patterns?.insights?.coherence ?? patterns?.coherence ?? 0.7;
+    const graphConfidence = graphs?.graph_metrics?.connectivity ?? graphs?.connectivity ?? 0.8;
     return (patternConfidence + graphConfidence) / 2;
   }
   private async updateUserProfiles(analysis: FeedbackAnalysis): Promise<void> {

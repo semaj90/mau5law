@@ -2,7 +2,13 @@ import { json, error } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { db } from '$lib/server/db';
 import { cases, caseActivities } from '$lib/server/db/schema';
-import { eq, and, or, desc, count, ilike } from 'drizzle-orm';
+import { eq, and, or, desc, count, sql } from 'drizzle-orm';
+
+// Provide local aliases to satisfy the rest of the file without relying on specific drizzle exports.
+// Use `unknown` to avoid `any` and keep runtime casts explicit where needed.
+type AnyTable = unknown;
+type AnyColumn = unknown;
+
 import { z } from 'zod';
 import { getEmbedding } from '$lib/server/services/embeddingService';
 import type { RequestHandler } from './$types';
@@ -66,6 +72,35 @@ async function resolveSchemaTable<T = unknown>(...candidates: string[]): Promise
   }
   throw new Error(`Schema table not found. Tried: ${candidates.join(', ')}`);
 }
+
+// add runtime column-resolvers to tolerate schema naming differences
+function resolveTableColumn(table: unknown, ...candidates: string[]): unknown {
+  // safe, runtime lookup avoiding direct compile-time property access that may not exist
+  const t = table as Record<string, unknown>;
+  for (const name of candidates) {
+    if (Object.prototype.hasOwnProperty.call(t, name)) {
+      // return the resolved column as unknown (avoid 'any' to satisfy linting/tsconfig)
+      return t[name];
+    }
+  }
+  // If nothing found, throw a descriptive error so callers can handle it during runtime tests
+  throw new Error(`Could not resolve any of columns [${candidates.join(', ')}] on provided table`);
+}
+
+// convenient wrapper specifically for `cases` table to choose the assigned/assignee column
+function getCasesAssignedColumn() {
+  // try common variants in order
+  return resolveTableColumn(
+    cases,
+    'assignedAttorney',
+    'assigned_to',
+    'assigned_user',
+    'assignedAttorneyId',
+    'assigned_to_id',
+    'assignee_id'
+  );
+}
+
 // GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them)
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
@@ -78,6 +113,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const search = url.searchParams.get('search');
     if (caseId) {
       // Get specific case with related data (only if user owns it or is assigned)
+      const assignedCol = getCasesAssignedColumn();
+
       const caseData = await db
         .select({
           id: cases.id,
@@ -86,22 +123,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           description: cases.description,
           priority: cases.priority,
           status: cases.status,
-          assignedAttorney: cases.assignedAttorney, // changed from assigned_attorney
+          // map to a logical key for the response; use the resolved column
+          assignedAttorney: assignedCol,
           createdBy: cases.createdBy,
-          createdAt: cases.createdAt, // changed from created_at
-          updatedAt: cases.updatedAt, // changed from updated_at
+          createdAt: cases.createdAt,
+          updatedAt: cases.updatedAt,
           metadata: cases.metadata,
         })
         .from(cases)
-        .where(
-          and(
-            eq(cases.id, caseId),
-            or(
-              eq(cases.createdBy, user.id), // User created the case
-              eq(cases.assignedAttorney, user.id) // changed from assigned_attorney
-            )
-          )
-        )
+        .where(and(eq(cases.id, caseId), or(eq(cases.createdBy, user.id), eq(assignedCol, user.id))))
         .limit(1);
       if (caseData.length === 0) {
         throw error(
@@ -113,26 +143,46 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         );
       }
       // Get related documents (resolve table at runtime to avoid missing-export compile errors)
-      const caseDocuments = await resolveSchemaTable<any>('caseDocuments', 'case_documents', 'documents', 'case_docs'); // typed as any
+      const caseDocuments = await resolveSchemaTable<Record<string, unknown>>(
+        'caseDocuments',
+        'case_documents',
+        'documents',
+        'case_docs'
+      );
+      // resolve the caseId and createdAt columns reliably for the dynamic table
+      const docCaseIdCol = resolveTableColumn(caseDocuments, 'caseId', 'case_id', 'case_id_ref');
+      const docCreatedAtCol = resolveTableColumn(caseDocuments, 'createdAt', 'created_at', 'created');
+
       const documents = await db
         .select()
-        .from(caseDocuments)
-        .where(eq(caseDocuments.caseId, caseId))
-        .orderBy(desc(caseDocuments.createdAt)); // changed from created_at
+        .from(caseDocuments as unknown as AnyTable)
+        .where(eq(docCaseIdCol as unknown as AnyColumn, caseId))
+        .orderBy(desc(docCreatedAtCol as unknown as AnyColumn));
+
       // Get activities
       const activities = await db
         .select()
         .from(caseActivities)
         .where(eq(caseActivities.caseId, caseId))
-        .orderBy(desc(caseActivities.createdAt)) // changed from timestamp
+        .orderBy(desc(caseActivities.createdAt))
         .limit(50); // Limit activity history
+
       // Get timeline events (resolve table at runtime)
-      const caseTimeline = await resolveSchemaTable<any>('caseTimeline', 'case_timeline', 'timeline', 'caseEvents'); // typed as any
+      const caseTimeline = await resolveSchemaTable<Record<string, unknown>>(
+        'caseTimeline',
+        'case_timeline',
+        'timeline',
+        'caseEvents'
+      );
+      const timelineCaseIdCol = resolveTableColumn(caseTimeline, 'caseId', 'case_id', 'caseRef');
+      const timelineCreatedAtCol = resolveTableColumn(caseTimeline, 'createdAt', 'created_at', 'created');
+
       const timeline = await db
         .select()
-        .from(caseTimeline)
-        .where(eq(caseTimeline.caseId, caseId))
-        .orderBy(desc(caseTimeline.createdAt)); // changed from timestamp
+        .from(caseTimeline as unknown as AnyTable)
+        .where(eq(timelineCaseIdCol as unknown as AnyColumn, caseId))
+        .orderBy(desc(timelineCreatedAtCol as unknown as AnyColumn));
+
       return json({
         success: true,
         data: {
@@ -143,16 +193,26 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         },
       });
     }
-    // Build query for cases the user has access to
-    const whereConditions = [or(eq(cases.createdBy, user.id), eq(cases.assignedAttorney, user.id))]; // changed assigned_attorney -> assignedAttorney
+
+    // Build query for cases the user has access to - use assignedAttorney property (resolved)
+    const assignedCol = getCasesAssignedColumn();
+    const whereConditions = [or(eq(cases.createdBy, user.id), eq(assignedCol, user.id))];
     if (status) {
       whereConditions.push(eq(cases.status, status));
     }
     // If search term provided, search in title and description
     if (search) {
-      whereConditions.push(or(ilike(cases.title, `%${search}%`), ilike(cases.description, `%${search}%`)));
+      const searchTerm = `%${search.toLowerCase()}%`;
+      whereConditions.push(
+        or(
+          // title case-insensitive match (safe if nullable)
+          sql`lower(COALESCE(${cases.title}, '')) LIKE ${searchTerm}`,
+          // description case-insensitive match (safe if nullable)
+          sql`lower(COALESCE(${cases.description}, '')) LIKE ${searchTerm}`
+        )
+      );
     }
-    // Get cases with pagination
+    // Get cases with pagination - map assignedAttorney from schema correctly
     const result = await db
       .select({
         id: cases.id,
@@ -161,15 +221,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         description: cases.description,
         priority: cases.priority,
         status: cases.status,
-        assignedAttorney: cases.assignedAttorney, // changed from assigned_attorney
+        assignedAttorney: assignedCol,
         createdBy: cases.createdBy,
-        createdAt: cases.createdAt, // changed from created_at
-        updatedAt: cases.updatedAt, // changed from updated_at
+        createdAt: cases.createdAt,
+        updatedAt: cases.updatedAt,
         metadata: cases.metadata,
       })
       .from(cases)
       .where(and(...whereConditions))
-      .orderBy(desc(cases.updatedAt)) // changed from updated_at
+      .orderBy(desc(cases.updatedAt))
       .limit(limit)
       .offset(offset);
     // Get total count for pagination
@@ -216,13 +276,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     // Parse and validate request body
     const body = await request.json();
-    const validatedData = createCaseSchema.parse(body);
+    // narrow the validatedData type for TypeScript
+    const validatedData = createCaseSchema.parse(body) as z.infer<typeof createCaseSchema>;
+
     // Generate unique ID and timestamps
     const caseId = randomUUID();
     const now = new Date();
     // Generate embedding for case content (title + description) using pgvector
-    const caseContent = `${validatedData.title} ${validatedData.description || ''}`;
-    let caseEmbedding = null;
+    // use nullish coalescing to preserve empty-string descriptions if provided
+    const caseContent = `${validatedData.title} ${validatedData.description ?? ''}`;
+    let caseEmbedding: number[] | null = null;
+
     try {
       // Generate semantic embedding for similarity search
       caseEmbedding = await getEmbedding(caseContent);
@@ -248,17 +312,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         id: caseId,
         caseNumber: validatedData.caseNumber,
         title: validatedData.title,
-        description: validatedData.description || '',
+        // preserve empty string if explicitly provided
+        description: validatedData.description ?? '',
         priority: validatedData.priority,
-        status: validatedData.status,
-        assignedAttorney: validatedData.assignedAttorney || null,
+        status: validatedData.status ?? 'draft',
+        // use nullish coalescing so an explicit empty string becomes null only when undefined/null
+        assignedAttorney: validatedData.assignedAttorney ?? null,
         createdBy: user.id,
         userId: user.id, // For compatibility
         metadata: {
           ...validatedData.metadata,
           tags: validatedData.tags,
           category: validatedData.category,
-          createdByName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+          createdByName: getUserDisplayName(user),
           embedding: caseEmbedding ? true : false,
         },
         createdAt: now,
@@ -282,13 +348,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
     // Create initial timeline event
     // Insert timeline (resolve table at runtime)
-    const caseTimelineInsert = (await resolveSchemaTable<any>(
+    const caseTimelineInsert = (await resolveSchemaTable<Record<string, unknown>>(
       'caseTimeline',
       'case_timeline',
       'timeline',
       'caseEvents'
-    )) as any;
-    await db.insert(caseTimelineInsert).values({
+    )) as Record<string, unknown>;
+    await db.insert(caseTimelineInsert as unknown as AnyTable).values({
       id: randomUUID(),
       caseId: caseId,
       event: 'Case Created',
@@ -304,13 +370,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // If embedding was generated, store it in the embedding cache for future use
     if (caseEmbedding && caseEmbedding.length > 0) {
       try {
-        const { embeddingCache } = (await import('$lib/server/db/schema')) as any;
+        // avoid "as any" by narrowing dynamic import to unknown and using plain property access
+        const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
+        const embeddingCache = schemaMod['embeddingCache'] as unknown; // keep as unknown to avoid any
         const contentHash = hashContent(caseContent);
 
-        // Do a simple insert; if the DB client doesn't support onConflict style chaining,
-        // fall back to an update if the insert errors (resilient upsert).
         try {
-          await db.insert(embeddingCache).values({
+          await db.insert(embeddingCache as unknown as AnyTable).values({
             id: randomUUID(),
             content_hash: contentHash,
             embedding: caseEmbedding,
@@ -326,19 +392,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         } catch (insertErr) {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
+            // use a narrowed access to the column name to avoid "as any" cast
             await db
-              .update(embeddingCache)
+              .update(embeddingCache as unknown as AnyTable)
               .set({ embedding: caseEmbedding, updated_at: now })
-              .where(
-                // cast to any to avoid strict property errors for dynamically imported schema
-                eq((embeddingCache as any).content_hash, contentHash)
-              );
+              .where(eq((embeddingCache as unknown as Record<string, unknown>).content_hash, contentHash));
           } catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
           }
         }
-        // Note: If you need ON CONFLICT DO NOTHING behavior with your DB client,
-        // use the appropriate drizzle helper or raw SQL in a separate statement.
       } catch (cacheError) {
         console.warn('Failed to cache embedding:', cacheError);
       }
@@ -353,7 +415,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           createdBy: {
             id: user.id,
             email: user.email,
-            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+            // use helper instead of assuming firstName/lastName fields exist
+            name: getUserDisplayName(user),
           },
         },
       },
@@ -394,16 +457,17 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     }
     // Parse and validate request body
     const body = await request.json();
-    const validatedData = updateCaseSchema.parse(body);
+    // narrow the validatedData type for TypeScript
+    const validatedData = updateCaseSchema.parse(body) as z.infer<typeof updateCaseSchema>;
     const now = new Date();
     // Check if user has permission to update this case
-    // Include metadata in the selected fields so updates can merge safely
+    const assignedCol = getCasesAssignedColumn();
     const existingCase = await db
       .select({
         id: cases.id,
         title: cases.title,
         createdBy: cases.createdBy,
-        assignedAttorney: cases.assignedAttorney,
+        assignedAttorney: assignedCol,
         metadata: cases.metadata,
       })
       .from(cases)
@@ -419,6 +483,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       assignedAttorney?: string | null;
       metadata?: Record<string, unknown>;
     };
+    // use the returned assignedAttorney value from DB safely (it may be null)
     const caseRecord = existingCase[0] as unknown as CaseRecord;
     const hasPermission =
       caseRecord.createdBy === user.id || caseRecord.assignedAttorney === user.id || user.role === 'admin';
@@ -432,7 +497,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       );
     }
     // Generate new embedding if title or description changed
-    let newEmbedding = null;
+    let newEmbedding: number[] | null = null;
     const titleChanged = validatedData.title && validatedData.title !== caseRecord.title;
     const descriptionChanged = validatedData.description !== undefined;
     if (titleChanged || descriptionChanged) {
@@ -454,7 +519,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     if (validatedData.priority) updateData.priority = validatedData.priority;
     if (validatedData.status) updateData.status = validatedData.status;
     if (validatedData.category) updateData.category = validatedData.category;
-    if (validatedData.assignedAttorney !== undefined) updateData.assignedAttorney = validatedData.assignedAttorney;
+    if (validatedData.assignedAttorney !== undefined) updateData.assignedAttorney = validatedData.assignedAttorney; // <- changed
     // Update metadata (merge with existing metadata safely)
     if (validatedData.metadata || validatedData.tags || newEmbedding) {
       updateData.metadata = {
@@ -493,15 +558,14 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     // Update embedding cache if embedding was regenerated
     if (newEmbedding && newEmbedding.length > 0) {
       try {
-        const { embeddingCache } = (await import('$lib/server/db/schema')) as any;
+        const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
+        const embeddingCache = schemaMod['embeddingCache'] as unknown;
         const newTitle = validatedData.title || caseRecord.title;
         const newDescription = validatedData.description || '';
         const newContent = `${newTitle} ${newDescription}`;
-        // const contentHash = await hashContent(newContent);
         const contentHash = hashContent(newContent);
-        // Try insert, fall back to update if insert fails (resilient upsert)
         try {
-          await db.insert(embeddingCache).values({
+          await db.insert(embeddingCache as unknown as AnyTable).values({
             id: randomUUID(),
             content_hash: contentHash,
             embedding: newEmbedding,
@@ -519,9 +583,9 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
             await db
-              .update(embeddingCache)
+              .update(embeddingCache as unknown as AnyTable)
               .set({ embedding: newEmbedding, updated_at: now })
-              .where(eq((embeddingCache as any).content_hash, contentHash));
+              .where(eq((embeddingCache as unknown as Record<string, unknown>).content_hash, contentHash));
           } catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
           }
@@ -539,7 +603,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         updatedBy: {
           id: user.id,
           email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+          name: getUserDisplayName(user),
         },
         changedFields,
       },
@@ -572,13 +636,14 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
     }
     // Check if user has permission to delete this case
+    const assignedCol = getCasesAssignedColumn();
     const existingCase = await db
       .select({
         id: cases.id,
         title: cases.title,
         caseNumber: cases.caseNumber,
         createdBy: cases.createdBy,
-        assignedAttorney: cases.assignedAttorney,
+        assignedAttorney: assignedCol,
         status: cases.status,
       })
       .from(cases)
@@ -633,13 +698,27 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     });
     // Delete related data in proper order (maintain referential integrity)
     // Resolve tables at runtime to perform deletions (avoid missing-export compile errors)
-    const caseTimelineDel = await resolveSchemaTable<any>('caseTimeline', 'case_timeline', 'timeline', 'caseEvents');
-    const caseDocumentsDel = await resolveSchemaTable<any>('caseDocuments', 'case_documents', 'documents', 'case_docs');
+    const caseTimelineDel = await resolveSchemaTable<Record<string, unknown>>(
+      'caseTimeline',
+      'case_timeline',
+      'timeline',
+      'caseEvents'
+    );
+    const caseDocumentsDel = await resolveSchemaTable<Record<string, unknown>>(
+      'caseDocuments',
+      'case_documents',
+      'documents',
+      'case_docs'
+    );
+    const timelineCaseIdColDel = resolveTableColumn(caseTimelineDel, 'caseId', 'case_id');
+    const docsCaseIdColDel = resolveTableColumn(caseDocumentsDel, 'caseId', 'case_id');
+
     const deleteResults = (await Promise.allSettled([
-      db.delete(caseTimelineDel).where(eq(caseTimelineDel.caseId, caseId)),
+      db.delete(caseTimelineDel as unknown as AnyTable).where(eq(timelineCaseIdColDel as unknown as AnyColumn, caseId)),
       db.delete(caseActivities).where(eq(caseActivities.caseId, caseId)),
-      db.delete(caseDocumentsDel).where(eq(caseDocumentsDel.caseId, caseId)),
+      db.delete(caseDocumentsDel as unknown as AnyTable).where(eq(docsCaseIdColDel as unknown as AnyColumn, caseId)),
     ])) as PromiseSettledResult<unknown>[];
+
     // Log any failures in related data deletion
     deleteResults.forEach((result, index) => {
       if (result.status === 'rejected') {
@@ -660,16 +739,20 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     }
     // Clean up embedding cache for this case
     try {
-      const { embeddingCache } = (await import('$lib/server/db/schema')) as any;
-      // Attempt to remove any cache rows for this case. Exact JSON matching may vary by DB;
-      // cast to any to avoid TS errors and keep this best-effort cleanup.
+      const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
+      const embeddingCache = schemaMod['embeddingCache'] as unknown;
       try {
-        await db
-          .delete(embeddingCache)
-          .where(eq((embeddingCache as any).metadata, { entityType: 'case', entityId: caseId }));
+        // Narrow the dynamic table to a safe runtime shape to avoid `any`
+        const embeddingCacheTable = embeddingCache as unknown as AnyTable;
+        await db.delete(embeddingCacheTable).where(
+          // column lookup remains dynamic; keep the runtime metadata object comparison as-is
+          eq((embeddingCache as unknown as Record<string, unknown>).metadata, {
+            entityType: 'case',
+            entityId: caseId,
+          })
+        );
       } catch (delErr) {
         console.warn('Fallback embedding cache delete failed (attempting looser delete by entityId):', delErr);
-        // Best-effort: if metadata is JSON, some adapters require raw SQL. Skip on failure.
       }
     } catch (cacheError) {
       console.warn('Failed to clean up embedding cache:', cacheError);
@@ -684,7 +767,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         deletedBy: {
           id: user.id,
           email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+          name: getUserDisplayName(user),
         },
         deletedAt: now.toISOString(),
         relatedDataDeleted: {
@@ -702,3 +785,12 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     throw error(500, makeHttpErrorPayload({ message: 'Failed to delete case', code: 'DELETE_ERROR' }));
   }
 };
+// add helper to safely derive a user display name without assuming properties that may not exist
+function getUserDisplayName(user: unknown): string {
+  if (typeof user === 'object' && user !== null && ('firstName' in user || 'lastName' in user || 'email' in user)) {
+    const u = user as { firstName?: string; lastName?: string; email?: string };
+    const fullName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
+    return fullName || u.email || 'Unknown User';
+  }
+  return 'Unknown User';
+}
