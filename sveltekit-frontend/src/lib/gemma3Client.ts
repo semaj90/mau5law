@@ -2,7 +2,7 @@
 /**
  * Gemma3 API Client for SvelteKit
  * Provides integration with Ollama and llama.cpp servers
- */;
+ */
 }
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -63,7 +63,7 @@ export class Gemma3Client {
   }
   /**
    * Check if the server is healthy and available
-   */;
+   */
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
@@ -78,7 +78,7 @@ export class Gemma3Client {
   }
   /**
    * Get server information
-   */;
+   */
   async getServerInfo(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/health`, {
       method: "GET",
@@ -91,7 +91,7 @@ export class Gemma3Client {
   }
   /**
    * List available models
-   */;
+   */
   async listModels(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
       method: "GET",
@@ -164,7 +164,7 @@ export class Gemma3Client {
   }
   /**
    * Helper: Ask a legal question with proper context
-   */;
+   */
   async askLegalQuestion(question: string, context?: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
@@ -187,7 +187,7 @@ export class Gemma3Client {
    * Helper: Analyze a legal document
    */
   async analyzeDocument(
-    documentText: string
+    documentText: string,
     analysisType: string = "general",
   ): Promise<string> {
     const messages: ChatMessage[] = [
@@ -211,7 +211,7 @@ export class Gemma3Client {
    * Helper: Review a contract
    */
   async reviewContract(
-    contractText: string
+    contractText: string,
     reviewFocus?: string
   ): Promise<string> {
     const messages: ChatMessage[] = [
@@ -235,8 +235,8 @@ export class Gemma3Client {
    * Helper: Generate legal document template
    */
   async generateDocumentTemplate(
-    documentType: string
-    requirements: string
+    documentType: string,
+    requirements: string,
   ): Promise<string> {
     const messages: ChatMessage[] = [
       {

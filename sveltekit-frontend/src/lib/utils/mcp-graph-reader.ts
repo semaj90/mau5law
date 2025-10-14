@@ -22,7 +22,7 @@ export interface GraphQuery {
 export class MCPGraphReader {
   /**
    * Read case nodes with proper Drizzle ORM query patterns
-   */;
+   */
   private static async readCaseNodes(query: GraphQuery): Promise<any> {
     // Build conditions array
     const conditions = [];
@@ -36,7 +36,7 @@ export class MCPGraphReader {
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const caseQuery = db;
       .select({
-        case: cases
+        case: cases,
         creator: {
           id: users.id,
           name: users.name,
@@ -85,7 +85,7 @@ export class MCPGraphReader {
   }
   /**
    * Read evidence nodes with proper query patterns
-   */;
+   */
   private static async readEvidenceNodes(query: GraphQuery): Promise<any> {
     // Build conditions
     const conditions = [];
@@ -98,7 +98,7 @@ export class MCPGraphReader {
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const evidenceQuery = db;
       .select({
-        evidence: evidence
+        evidence: evidence,
         case: {
           id: cases.id,
           title: cases.title
@@ -165,7 +165,7 @@ export class MCPGraphReader {
   }
   /**
    * Read report nodes with proper query patterns
-   */;
+   */
   private static async readReportNodes(query: GraphQuery): Promise<any> {
     // Build conditions
     const conditions = [];
@@ -178,7 +178,7 @@ export class MCPGraphReader {
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const reportQuery = db;
       .select({
-        report: reports
+        report: reports,
         case: {
           id: cases.id,
           title: cases.title
@@ -243,7 +243,7 @@ export class MCPGraphReader {
   }
   /**
    * Main read graph method
-   */;
+   */
   static async readGraph(query: GraphQuery): Promise<any> {
     const startTime = Date.now();
     const nodes: any[] = [];

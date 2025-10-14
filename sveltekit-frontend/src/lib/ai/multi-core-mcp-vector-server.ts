@@ -27,8 +27,7 @@ type PGVector = any; // Placeholder for langchain PGVector
 type SIMDJsonParser = any; // Placeholder for SIMD JSON parser
 /**
  * Advanced search configuration options
- */;
-interface AdvancedSearchOptions {
+ */ interface AdvancedSearchOptions {
   k?: number;
   algorithm?: 'auto' | 'postgres_hnsw' | 'postgres_ivf_flat' | 'langchain' | 'hybrid';
   useCache?: boolean;
@@ -37,18 +36,16 @@ interface AdvancedSearchOptions {
 }
 /**
  * Search result structure
- */;
-interface SearchResult {
+ */ interface SearchResult {
   document_id: string;
   content: string;
   similarity: number;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   score: number;
 }
 /**
  * Search performance metrics
- */;
-interface SearchMetrics {
+ */ interface SearchMetrics {
   embeddingTime: number;
   searchTime: number;
   postProcessTime: number;
@@ -58,8 +55,7 @@ interface SearchMetrics {
 }
 /**
  * Advanced search result with full context
- */;
-interface AdvancedSearchResult {
+ */ interface AdvancedSearchResult {
   query: string;
   results: SearchResult[];
   searchStrategy: SearchStrategy;
@@ -72,24 +68,22 @@ interface AdvancedSearchResult {
 type SearchStrategy = 'postgres_hnsw' | 'postgres_ivf_flat' | 'langchain' | 'hybrid';
 /**
  * Document search result
- */;
-interface DocumentSearchResult {
+ */ interface DocumentSearchResult {
   document_id: string;
   content: string;
   similarity: number;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   searchTime: number;
 }
 /**
  * Semantic search result
- */;
-interface SemanticSearchResult {
+ */ interface SemanticSearchResult {
   query: string;
   results: Array<{
     document_id: string;
     content: string;
     similarity: number;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
     source_collection: string;
   }>;
   total_results: number;
@@ -99,15 +93,14 @@ interface SemanticSearchResult {
 }
 /**
  * Full-text search result
- */;
-interface FullTextSearchResult {
+ */ interface FullTextSearchResult {
   query: string;
   results: Array<{
     document_id: string;
     content: string;
     snippet: string;
     rank: number;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
     source_collection: string;
   }>;
   total_results: number;
@@ -117,13 +110,12 @@ interface FullTextSearchResult {
 }
 /**
  * Hybrid search result
- */;
-interface HybridSearchResult {
+ */ interface HybridSearchResult {
   query: string;
   results: Array<{
     document_id: string;
     content: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
     vector_score: number;
     text_score: number;
     keyword_score: number;
@@ -137,7 +129,7 @@ interface HybridSearchResult {
     vectorWeight: number;
     textWeight: number;
     keywordWeight: number;
-  }
+  };
   cache_hit: boolean;
 }
 // SIMD JSON parser interface (using simdjson or similar)
@@ -1360,5 +1352,5 @@ export {
   FullTextSearchResult,
   HybridSearchResult,
   AdvancedSearchResult,
-  SearchResult
-}
+  SearchResult,
+};

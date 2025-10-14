@@ -73,7 +73,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   streamEnabled: true
   // GPU acceleration settings
   gpu: {
-    enabled: true
+    enabled: true,
     layers: 35, // Number of layers to offload to GPU
     mainGpu: 0,
     tensorSplit: null
@@ -82,35 +82,35 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   performance: {
     batchSize: 32,
     parallelRequests: 4,
-    cacheEnabled: true
+    cacheEnabled: true,
     cacheTTL: 3600, // 1 hour cache
   },
   // Advanced features from blueprint
   features: {
     som: true, // Self-Organizing Map for topic modeling
-    proactiveCaching: true
-    multiModalIndexing: true
+    proactiveCaching: true,
+    multiModalIndexing: true,
     reinforcementLearning: false, // Can be enabled later
-    webGpuAcceleration: true
+    webGpuAcceleration: true,
     intelligentFallback: true, // Enable smart model selection
   }
 }
 /**
  * Get model configuration with fallback support
- */;
+ */
 export function getModelConfig(modelName: string = OLLAMA_CONFIG.defaultModel): ModelConfig {
   return MODELS[modelName] || MODELS[OLLAMA_CONFIG.fallbackModels?.legal || 'legal-bert'];
 }
 /**
  * Check if model supports a specific capability
- */;
+ */
 export function modelSupportsCapability(modelName: string, capability: string): boolean {
   const config = getModelConfig(modelName);
   return config.capabilities.includes(capability);
 }
 /**
  * Get optimal model for a specific task with fallback chain
- */;
+ */
 export function getOptimalModel(_task: 'embedding' | 'generation' | 'legal-analysis'): string[] {
   const taskMap = {
     'embedding': FALLBACK_CHAIN['embeddings'],
@@ -141,7 +141,7 @@ export function selectBestAvailableModel(preferredModels: string[], availableMod
 }
 /**
  * Determine if a task should use legal-specific model
- */;
+ */
 export function isLegalTask(prompt: string): boolean {
   const legalKeywords = [
     'contract', 'agreement', 'legal', 'law', 'court', 'case',

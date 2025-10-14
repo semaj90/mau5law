@@ -68,7 +68,7 @@ class UserAnalyticsEngine {
     await sleep(5);
   }
   async generateRecommendations(_document: LegalDocument
-    context: RenderContext
+    context: RenderContext,
   ): Promise<{ personalizationVector: Float32Array; recommendedDocIds: string[] }> {
     console.log(`[Analytics] Generating recommendations for user & document ${document.id}`);
     const userId = 'user-123';
@@ -114,8 +114,8 @@ class UserAnalyticsEngine {
       pv[i] = Math.min(1, Math.max(0, pv[i]));
     }
     return {
-      personalizationVector: pv
-      recommendedDocIds: graphRecs.map((r) => r.recommendedDocId).filter(Boolean)
+      personalizationVector: pv,
+      recommendedDocIds: graphRecs.map((r) => r.recommendedDocId).filter(Boolean),
     }
   }
 }
@@ -342,7 +342,7 @@ export class SearchCacheNeuralEngine {
     console.log('🧠 SearchCacheNeuralEngine ready with User Analytics');
   }
   async optimizeRenderingForDocument(_document: LegalDocument
-    context: RenderContext
+    context: RenderContext,
   ): Promise<NeuralOptimizationResult> {
     // Phase 1: User Analytics & Recommendation
     await this.userAnalytics.trackUserInteraction(context);
@@ -358,12 +358,12 @@ export class SearchCacheNeuralEngine {
     const perfGain = this.estimateGain(shader, lod, context);
     const reasons = this.buildReasons(shader, lod, context, recommendations);
     const result: NeuralOptimizationResult = {
-      recommendedShaderVariant: shader
-      optimalLODLevel: lod
+      recommendedShaderVariant: shader,
+      optimalLODLevel: lod,
       cacheStrategy,
-      confidenceScore: confidence
-      estimatedPerformanceGain: perfGain
-      adaptationReasons: reasons
+      confidenceScore: confidence,
+      estimatedPerformanceGain: perfGain,
+      adaptationReasons: reasons,
       visualContext: {
         optimizationPlanSVG: this.makePlanSVG(shader, lod, cacheStrategy),
         semanticHeatmapSVG: this.makeHeatmap(features)
@@ -446,9 +446,9 @@ export class SearchCacheNeuralEngine {
     docTypes.forEach((dt) => this.lodLevels.set(dt, [...base]));
   } // --- Feature Extraction ---
   private extractFeatures(
-    ctx: RenderContext
-    doc: LegalDocument | null
-    personalization: Float32Array
+    ctx: RenderContext,
+    doc: LegalDocument | null,
+    personalization: Float32Array,
   ): Float32Array {
     const f = new Float32Array(48);
     let i = 0; // 48 total (16 sys + 8 doc + 8 temporal + 16 personalization)
@@ -519,8 +519,8 @@ export class SearchCacheNeuralEngine {
     return levels[clamped];
   }
   private pickCacheStrategy(
-    ctx: RenderContext
-    similar: SOMSimilarity[]
+    ctx: RenderContext,
+    similar: SOMSimilarity[],
   ): 'prefetch' | 'lazy' | 'aggressive' | 'conservative' {
     if (ctx.cacheStatus.chrRomHitRate > 0.8 && ctx.performanceMetrics.memoryPressure < 0.4)
       return 'conservative';
@@ -544,10 +544,10 @@ export class SearchCacheNeuralEngine {
     return Math.min(200, gain);
   }
   private buildReasons(
-    shader: ShaderVariant
-    lod: LODLevel
-    ctx: RenderContext
-    recommendations: { recommendedDocIds: string[] }
+    shader: ShaderVariant,
+    lod: LODLevel,
+    ctx: RenderContext,
+    recommendations: { recommendedDocIds: string[] },
   ): string[] {
     const reasons: string[] = [];
     if (ctx.performanceMetrics.currentFPS < 45)

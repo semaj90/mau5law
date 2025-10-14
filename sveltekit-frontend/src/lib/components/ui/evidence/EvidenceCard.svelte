@@ -22,31 +22,31 @@
 </script>
 
 {#if caseFile}
-<div class="nes-container is-dark with-title evidence-card">
-  <header class="card-header">
-    <h3 class="card-title title">{caseFile.title}</h3>
-    <p class="card-description">{displayStatus}</p>
-  </header>
-  <div class="card-content space-y-4">
-    <p>{caseFile.summary}</p>
+  <div class="nes-container is-dark with-title evidence-card">
+    <header class="card-header">
+      <h3 class="card-title title">{caseFile.title}</h3>
+      <p class="card-description">{displayStatus}</p>
+    </header>
+    <div class="card-content space-y-4">
+      <p>{caseFile.summary}</p>
 
-    <!-- slot for children/content -->
-    <slot />
+      <!-- slot for children/content -->
+      <slot />
 
-    <div class="flex justify-end">
-      <button class="nes-btn is-primary" onclick={handleAnalyzeClick} type="button">Analyze</button>
+      <div class="flex justify-end">
+        <button class="nes-btn is-primary" onclick={handleAnalyzeClick} type="button">Analyze</button>
+      </div>
     </div>
   </div>
-</div>
 {:else}
-<!-- graceful fallback while props are not yet present -->
-<div class="nes-container is-dark with-title evidence-card">
-  <header class="card-header">
-    <h3 class="card-title title">Loading…</h3>
-    <p class="card-description">{displayStatus}</p>
-  </header>
-  <div class="card-content space-y-4">
-    <p>No case data available.</p>
+  <!-- graceful fallback while props are not yet present -->
+  <div class="nes-container is-dark with-title evidence-card">
+    <header class="card-header">
+      <h3 class="card-title title">Loading…</h3>
+      <p class="card-description">{displayStatus}</p>
+    </header>
+    <div class="card-content space-y-4">
+      <p>No case data available.</p>
+    </div>
   </div>
-</div>
 {/if}

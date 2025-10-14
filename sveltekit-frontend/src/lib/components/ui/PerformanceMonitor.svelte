@@ -115,7 +115,7 @@
         toggleVisibility();
         autoHideTimer();
       }
-    }
+    };
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeyDown);
     }
@@ -123,7 +123,7 @@
       if (typeof window !== 'undefined') {
         window.removeEventListener('keydown', handleKeyDown);
       }
-    }
+    };
   });
   onDestroy(() => {
     if (intervalId) {

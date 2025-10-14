@@ -80,7 +80,12 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       ? 'User logged in — recommend linking dashboard to user activities at /dashboard/activities.'
       : 'Public view — system dashboard at /dashboard.',
     conflicts: [], // No file-based conflicts detected without fs access
-    counts: { total: realRoutes.length, api: realRoutes.filter(r => r.path.startsWith('/api')).length, ui: realRoutes.filter(r => !r.path.startsWith('/api')).length, groups: {} },
+    counts: {
+      total: realRoutes.length,
+      api: realRoutes.filter(r => r.path.startsWith('/api')).length,
+      ui: realRoutes.filter(r => !r.path.startsWith('/api')).length,
+      groups: {},
+    },
     suggestions: [
       'Use nested dashboards for user-specific flows, e.g. /dashboard/activities, /dashboard/settings.',
       'Group feature pages under top-level namespaces (ai, yorha, admin) to keep routes organized.',

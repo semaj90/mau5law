@@ -8,7 +8,7 @@ import { legalAIBridge, LegalAIIntegration } from '$lib/integrations/legal-ai-we
 import { quantizeForLegalAI, type LegalAIProfile } from '$lib/utils/typed-array-quantization.js';
 /**
  * Example 1: Integrate with existing legal document chat interface
- */;
+ */
 export async function integrateLegalChatWithWebGPU() {
   console.log('💬 Integrating legal chat with WebGPU buffer system...');
   // Simulate existing legal chat system with document embeddings
@@ -39,8 +39,8 @@ export async function integrateLegalChatWithWebGPU() {
     const processedDocuments = await Promise.all(legalDocuments.map(async (doc) => {
         const result = await legalAIBridge.processLegalDocumentEmbeddings(doc.embeddings, {
           documentType: doc.type,
-          enableCaching: true
-          debugMode: true
+          enableCaching: true,
+          debugMode: true,
         }));
         return {
           ...doc,
@@ -63,7 +63,7 @@ export async function integrateLegalChatWithWebGPU() {
     // Fallback to CPU processing
     return legalDocuments.map(doc => ({
       ...doc,
-      webgpuBuffer: null
+      webgpuBuffer: null,
       processingTime: 0,
       compressionStats: { originalSize: 0, compressedSize: 0, compressionRatio: 1, spaceSavings: '0%' }
     });
@@ -71,7 +71,7 @@ export async function integrateLegalChatWithWebGPU() {
 }
 /**
  * Example 2: Enhance existing legal document similarity search
- */;
+ */
 export async function enhanceLegalSimilaritySearchWithQuantization() {
   console.log('🔍 Enhancing legal similarity search with quantization...');
   // Simulate existing similarity search system
@@ -108,7 +108,7 @@ export async function enhanceLegalSimilaritySearchWithQuantization() {
 }
 /**
  * Example 3: Integrate with legal document upload and processing workflow
- */;
+ */
 export async function integrateLegalDocumentUploadWorkflow() {
   console.log('📤 Integrating legal document upload workflow...');
   // Simulate document upload with different types and priorities
@@ -147,14 +147,14 @@ export async function integrateLegalDocumentUploadWorkflow() {
         priority: doc.priority
       })),
       {
-        enableCaching: true
-        debugMode: true
+        enableCaching: true,
+        debugMode: true,
       }
     );
     // Create enhanced document records with WebGPU optimization data
     const enhancedDocuments = uploadedDocuments.map((doc, index) => ({
       ...doc,
-      webgpuProcessing: processingResults[index]
+      webgpuProcessing: processingResults[index],
       optimizationScore: calculateOptimizationScore(processingResults[index])
     });
     console.log('✅ Legal document upload workflow enhanced:', {
@@ -174,7 +174,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
 }
 /**
  * Example 4: Real-time legal analysis with WebGPU acceleration
- */;
+ */
 export async function enableRealTimeLegalAnalysis() {
   console.log('⚡ Enabling real-time legal analysis...');
   // Simulate real-time legal text analysis pipeline
@@ -204,9 +204,9 @@ export async function enableRealTimeLegalAnalysis() {
       performanceMetrics: LegalAIIntegration.getLegalAIPerformanceMetrics()
     });
     return {
-      originalTexts: legalTextSamples
+      originalTexts: legalTextSamples,
       processedEmbeddings,
-      isWebGPUAccelerated: processedEmbeddings.some(e => !(e instanceof Float32Array)
+      isWebGPUAccelerated: processedEmbeddings.some(e => !(e instanceof Float32Array),
     }
   } catch (error) {
     console.error('❌ Real-time legal analysis setup failed:', error);
@@ -215,7 +215,7 @@ export async function enableRealTimeLegalAnalysis() {
 }
 /**
  * Example 5: Performance monitoring integration
- */;
+ */
 export async function setupLegalAIPerformanceMonitoring() {
   console.log('📊 Setting up legal AI performance monitoring...');
   try {
@@ -246,7 +246,7 @@ export async function setupLegalAIPerformanceMonitoring() {
 }
 /**
  * Example 6: Progressive enhancement for existing legal AI components
- */;
+ */
 export class ProgressiveLegalAIEnhancement {
   private webgpuAvailable = false;
   private fallbackMode = false;

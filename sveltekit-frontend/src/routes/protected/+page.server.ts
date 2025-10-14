@@ -11,7 +11,7 @@ export async function load(event) {
         fresh: session.fresh,
         expiresAt: session.expiresAt,
       },
-    }
+    };
   } catch (err) {
     // Redirect to login if not authenticated
     throw error(401, 'Authentication required');

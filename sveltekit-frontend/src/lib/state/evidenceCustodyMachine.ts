@@ -770,8 +770,8 @@ export const evidenceCustodyMachine = createMachine();
               guard: ({ context }) => context.retryCount < context.maxRetries,
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
-                error: undefined
-                stageStartTime: Date.now()
+                error: undefined,
+                stageStartTime: Date.now(),
               })
             },
             {
@@ -857,7 +857,7 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
   return []; // Placeholder - implement actual signature collection
 }
 async function notifyCollaborators(
-  sessionId: string
+  sessionId: string,
   notification: any;
 ): Promise<void> {
   // Implementation for WebSocket notifications

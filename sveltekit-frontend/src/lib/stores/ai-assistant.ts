@@ -64,8 +64,8 @@ export interface AIAssistantState {
 }
 const initialState: AIAssistantState = {
   cases: {},
-  isLoading: false
-  globalInsights: []
+  isLoading: false,
+  globalInsights: [],
 }
 function createAIAssistantStore() {
   const { subscribe, set, update } = writable<AIAssistantState>(initialState);
@@ -83,8 +83,8 @@ function createAIAssistantStore() {
             messages: [],
             evidenceMap: {},
             currentSession: {
-              isActive: false
-              lastActivity: Date.now()
+              isActive: false,
+              lastActivity: Date.now(),
             },
             insights: []
           }
@@ -113,8 +113,8 @@ function createAIAssistantStore() {
             messages: [],
             evidenceMap: {},
             currentSession: {
-              isActive: true
-              lastActivity: Date.now()
+              isActive: true,
+              lastActivity: Date.now(),
             },
             insights: []
           }

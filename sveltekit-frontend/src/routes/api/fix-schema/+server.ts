@@ -28,7 +28,7 @@ export async function POST(): Promise<any> {
         success: false,
         error: error.message,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

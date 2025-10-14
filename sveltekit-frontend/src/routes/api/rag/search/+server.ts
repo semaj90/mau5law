@@ -155,7 +155,7 @@ async function vectorSearch(
     const rows = await q
       .orderBy(desc(sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`))
       .limit(limit);
-    return rows.map((r) => ({ ...r, searchType: 'semantic', score: r.similarity }));
+    return rows.map(r => ({ ...r, searchType: 'semantic', score: r.similarity }));
   } catch (err: unknown) {
     console.error('Vector search failed:', err);
     if (filters) {
@@ -208,7 +208,7 @@ async function textSearch(
     const rows = await q
       .orderBy(desc(sql`ts_rank(to_tsvector('english', ${documents.content}), plainto_tsquery('english', ${query}))`))
       .limit(limit);
-    return rows.map((r) => ({
+    return rows.map(r => ({
       ...r,
       similarity: Math.min(r.rank * 2, 1.0),
       searchType: 'text',
@@ -231,7 +231,7 @@ async function textSearch(
         .where(sql`${documents.content} ILIKE ${`%${query}%`}`)
         .orderBy(desc(documents.createdAt))
         .limit(limit);
-      return fallback.map((r) => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 }));
+      return fallback.map(r => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 }));
     } catch (fallbackErr: unknown) {
       console.error('Fallback text search failed:', fallbackErr);
       return [];
@@ -285,7 +285,8 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
             // For semantic search, result.content is embedding chunk, result.fullContent is full document
             finalContent = result.content;
             finalFullContent = result.fullContent;
-          } else { // text search
+          } else {
+            // text search
             // For text search, result.content is the full document
             finalContent = result.content;
             finalFullContent = result.content; // fullContent is the same as content for text search

@@ -1,17 +1,15 @@
 // Database connection management with role separation
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from "pg";
+import { Pool } from 'pg';
 import * as schema from './schema-postgres.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration
-const isDevelopment = process.env.NODE_ENV === "development";
+const isDevelopment = process.env.NODE_ENV === 'development';
 /**
  * 🔐 Runtime App Connection (legal_admin - limited privileges)
  * Use this for all normal app operations: queries, inserts, updates
  */
-const appConnectionString =
-  process.env.DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5434/legal_ai_db"
+const appConnectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 /**
  * 👑 Admin Connection (postgres - superuser)
  * Use this only for migrations, extensions, and administrative tasks
@@ -19,7 +17,7 @@ const appConnectionString =
 const adminConnectionString =
   process.env.ADMIN_DATABASE_URL ||
   process.env.MIGRATION_DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5434/legal_ai_db"
+  'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 // App connection pool (for normal operations)
 export const appPool = isDevelopment
   ? new Pool({
@@ -48,8 +46,8 @@ export const adminDb: PostgresJsDatabase<typeof schema> = drizzle(adminPool, { s
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
   admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password;
-  environment: isDevelopment ? 'development' : 'production'
-}
+  environment: isDevelopment ? 'development' : 'production',
+};
 // Utility functions
 export async function testAppConnection(): Promise<boolean> {
   try {

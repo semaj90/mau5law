@@ -526,5 +526,5 @@ export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: 'legal-ai:ai-analysis'
+  AI_ANALYSIS: 'legal-ai:ai-analysis',
 } as const;

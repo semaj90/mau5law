@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     userId = $bindable('user123'),
     initialContext = $bindable('kernel attention'),
     enableWebGPU = $bindable(true),
-    enableModularSwitching = $bindable(true)
+    enableModularSwitching = $bindable(true),
   }: {
     userId?: string;
     initialContext?: string;
@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let processingTime = $state(0);
   let webgpuSupported = $state(false);
   let currentModule = $state('dimensional-arrays');
-  let computationHistory = $state<any[] >([]);
+  let computationHistory = $state<any[]>([]);
   // Input data
   let inputData = $state('1,2,3,4,5,6,7,8');
   let attentionWeights = $state('0.8,0.6,0.9,0.7,0.5,0.8,0.6,0.9');
@@ -42,8 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   let t5Task = $state('summarize');
   let t5Text = $state('This is sample text for T5 processing');
   // Results
-  let results = $state<any >(null);
-  let error = $state<string | null >(null);
+  let results = $state<any>(null);
+  let error = $state<string | null>(null);
   $effect(() => {
     // Initialize AI computation machine
     aiActor = createActor(aiComputationMachine, {
@@ -58,10 +58,10 @@ https://svelte.dev/e/js_parse_error -->
           similar: [],
           suggestions: [],
           didYouMean: [],
-          othersSearched: []
+          othersSearched: [],
         },
-        computationResults: []
-      }
+        computationResults: [],
+      },
     });
     aiActor.start();
     // Subscribe to state changes
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
           results = {
             result: `Processed: ${t5Text.substring(0, 50)}... (${t5Task})`,
             processingTime: Math.random() * 100 + 50,
-            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks']
+            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks'],
           };
         }
       } else {
@@ -106,33 +106,20 @@ https://svelte.dev/e/js_parse_error -->
         const dataArray = new Float32Array(data);
         const weightsArray = new Float32Array(weights);
         if (enableWebGPU && webgpuSupported) {
-          results = await webgpuAI.processDimensionalArray(
-            dataArray,
-            [data.length],
-            weightsArray,
-            kernelSize
-          );
+          results = await webgpuAI.processDimensionalArray(dataArray, [data.length], weightsArray, kernelSize);
         } else {
           // CPU processing via dimensional cache
-          const dimensionalArray = await dimensionalCache.createDimensionalArray(
-            data,
-            [data.length],
-            weights
-          );
-          await dimensionalCache.cacheDimensionalArray(
-            `computation_${Date.now()}`,
-            dimensionalArray,
-            {
-              userId,
-              sessionId: `session_${Date.now()}`,
-              behaviorPattern: 'active_user'
-            }
-          );
+          const dimensionalArray = await dimensionalCache.createDimensionalArray(data, [data.length], weights);
+          await dimensionalCache.cacheDimensionalArray(`computation_${Date.now()}`, dimensionalArray, {
+            userId,
+            sessionId: `session_${Date.now()}`,
+            behaviorPattern: 'active_user',
+          });
           results = {
             result: dimensionalArray.data,
             processingTime: Math.random() * 50 + 20,
             gpuMemoryUsed: dataArray.byteLength,
-            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes']
+            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes'],
           };
         }
       }
@@ -140,26 +127,26 @@ https://svelte.dev/e/js_parse_error -->
       // Send to state machine
       aiActor.send({
         type: 'COMPUTATION_COMPLETE',
-        result: results
+        result: results,
       });
     } catch (err: any) {
       error = err.message;
       aiActor.send({
         type: 'COMPUTATION_ERROR',
-        error: err.message
+        error: err.message,
       });
     }
   }
   async function loadRecommendations() {
     aiActor.send({
       type: 'GET_RECOMMENDATIONS',
-      context: initialContext
+      context: initialContext,
     });
     // Also get modular recommendations
     const modularRecs = webgpuAI.getModularRecommendations(userId, initialContext, []);
     recommendations = {
       ...recommendations,
-      ...modularRecs
+      ...modularRecs,
     };
   }
   function switchModule(moduleName: string) {
@@ -205,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
       const lastComputation = computationHistory[computationHistory.length - 1];
       console.log('🔄 Resuming from:', lastComputation);
       aiActor.send({
-        type: 'PICK_UP_WHERE_LEFT_OFF'
+        type: 'PICK_UP_WHERE_LEFT_OFF',
       });
     }
   }
@@ -213,10 +200,19 @@ https://svelte.dev/e/js_parse_error -->
   function formatArray(arr: any): string {
     if (!arr) return '';
     if (Array.isArray(arr)) {
-      return arr.slice(0, 8).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
+      return (
+        arr
+          .slice(0, 8)
+          .map(n => n.toFixed(3))
+          .join(', ') + (arr.length > 8 ? '...' : '')
+      );
     }
     if (arr.constructor === Float32Array) {
-      return Array.from(arr.slice(0, 8)).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
+      return (
+        Array.from(arr.slice(0, 8))
+          .map(n => n.toFixed(3))
+          .join(', ') + (arr.length > 8 ? '...' : '')
+      );
     }
     return String(arr);
   }
@@ -232,7 +228,9 @@ https://svelte.dev/e/js_parse_error -->
         <span class="text-sm">WebGPU {webgpuSupported ? 'Supported' : 'Not Available'}</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full {aiActor?.getSnapshot().context.isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div
+          class="w-3 h-3 rounded-full {aiActor?.getSnapshot().context.isOnline ? 'bg-green-500' : 'bg-red-500'}"
+        ></div>
         <span class="text-sm">Online Status</span>
       </div>
     </div>

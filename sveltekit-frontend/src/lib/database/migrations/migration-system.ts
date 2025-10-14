@@ -45,7 +45,7 @@ export class DatabaseMigrator {
   private sql: postgres.Sql;
   private migrationsPath: string;
   constructor(
-    connectionString: string
+    connectionString: string,
     migrationsPath: string = './src/lib/database/migrations';
   ) {
     this.sql = postgres(connectionString);
@@ -54,7 +54,7 @@ export class DatabaseMigrator {
   }
   /**
    * Initialize migration system - create migrations table if it doesn't exist
-   */;
+   */
   async initialize(): Promise<void> {
     try {
       await this.sql`
@@ -85,7 +85,7 @@ export class DatabaseMigrator {
   }
   /**
    * Load migration files from the migrations directory
-   */;
+   */
   async loadMigrations(): Promise<Migration[]> {
     try {
       const files = await fs.readdir(this.migrationsPath);
@@ -119,7 +119,7 @@ export class DatabaseMigrator {
    * CREATE TABLE users ...;
    * -- Down
    * DROP TABLE users;
-   */;
+   */
   private parseSQLMigration(filename: string, content: string): Migration {
     // removed unused lines assignment
     let name = filename.replace(/\.(sql|ts|js)$/, '');
@@ -158,7 +158,7 @@ export class DatabaseMigrator {
   }
   /**
    * Check which migrations have been applied
-   */;
+   */
   async getAppliedMigrations(): Promise<string[]> {
     try {
       const result = await this.db
@@ -174,14 +174,14 @@ export class DatabaseMigrator {
   }
   /**
    * Calculate checksum for migration content
-   */;
+   */
   private calculateChecksum(migration: Migration): string {
     const content = migration.up + (migration.down || '');
     return createHash('sha256').update(content).digest('hex');
   }
   /**
    * Execute a single migration
-   */;
+   */
   async executeMigration(migration: Migration): Promise<MigrationResult> {
     const startTime = Date.now();
     const checksum = this.calculateChecksum(migration);
@@ -198,7 +198,7 @@ export class DatabaseMigrator {
         }
         console.log(`⏭️  Migration ${migration.version} already applied`);
         return {
-          success: true
+          success: true,
           version: migration.version,
           executionTime: 0,
           applied: false
@@ -239,7 +239,7 @@ export class DatabaseMigrator {
       const executionTime = Date.now() - startTime;
       console.log(`✅ Migration ${migration.version} completed in ${executionTime}ms`);
       return {
-        success: true
+        success: true,
         version: migration.version,
         executionTime,
         applied: true
@@ -254,9 +254,9 @@ export class DatabaseMigrator {
           version: migration.version,
           name: migration.name,
           checksum,
-          execution_time_ms: executionTime
-          success: false
-          error_message: errorMessage
+          execution_time_ms: executionTime,
+          success: false,
+          error_message: errorMessage,
           rollback_sql: migration.down || null,
           metadata: migration.metadata || {}
         });
@@ -264,17 +264,17 @@ export class DatabaseMigrator {
         console.error('Failed to record migration failure:', recordError);
       }
       return {
-        success: false
+        success: false,
         version: migration.version,
         executionTime,
-        error: errorMessage
-        applied: false
+        error: errorMessage,
+        applied: false,
       }
     }
   }
   /**
    * Run all pending migrations
-   */;
+   */
   async migrate(): Promise<MigrationResult[]> {
     console.log('🔄 Starting database migration...');
     try {
@@ -310,7 +310,7 @@ export class DatabaseMigrator {
   }
   /**
    * Rollback the last migration
-   */;
+   */
   async rollback(): Promise<MigrationResult> {
     console.log('🔄 Starting migration rollback...');
     try {
@@ -324,7 +324,7 @@ export class DatabaseMigrator {
       if (lastMigration.length === 0) {
         console.log('ℹ️  No migrations to rollback');
         return {
-          success: true
+          success: true,
           version: '',
           executionTime: 0,
           applied: false
@@ -349,7 +349,7 @@ export class DatabaseMigrator {
       const executionTime = Date.now() - startTime;
       console.log(`✅ Rollback completed in ${executionTime}ms`);
       return {
-        success: true
+        success: true,
         version: migration.version,
         executionTime,
         applied: true
@@ -358,17 +358,17 @@ export class DatabaseMigrator {
       const errorMessage = error instanceof Error ? error.message: String(error);
       console.error('❌ Rollback failed:', errorMessage);
       return {
-        success: false
+        success: false,
         version: '',
         executionTime: 0,
-        error: errorMessage
-        applied: false
+        error: errorMessage,
+        applied: false,
       }
     }
   }
   /**
    * Get migration status
-   */;
+   */
   async getStatus(): Promise<{
     appliedMigrations: number;
     pendingMigrations: number;
@@ -393,7 +393,7 @@ export class DatabaseMigrator {
         .where(eq(migrations.success, false);
       return {
         appliedMigrations: appliedVersions.length,
-        pendingMigrations: pendingCount
+        pendingMigrations: pendingCount,
         lastMigration,
         systemHealthy: failedMigrations.length === 0
       }
@@ -402,14 +402,14 @@ export class DatabaseMigrator {
       return {
         appliedMigrations: 0,
         pendingMigrations: 0,
-        lastMigration: null
-        systemHealthy: false
+        lastMigration: null,
+        systemHealthy: false,
       }
     }
   }
   /**
    * Create a new migration file
-   */;
+   */
   async createMigration(name: string, sql?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
     const version = timestamp.slice(0, 14); // YYYYMMDDHHMMSS
@@ -435,7 +435,7 @@ export class DatabaseMigrator {
   }
   /**
    * Validate migration integrity
-   */;
+   */
   async validateIntegrity(): Promise<{
     valid: boolean;
     issues: string[];
@@ -474,14 +474,14 @@ export class DatabaseMigrator {
     } catch (error) {
       issues.push(`Validation error: ${error instanceof Error ? error.message: String(error)}`);
       return {
-        valid: false
+        valid: false,
         issues
       }
     }
   }
   /**
    * Close database connection
-   */;
+   */
   async close(): Promise<void> {
     await this.sql.end();
   }

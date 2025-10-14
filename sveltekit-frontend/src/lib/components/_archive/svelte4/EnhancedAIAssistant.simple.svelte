@@ -4,15 +4,8 @@ https://svelte.dev/e/props_duplicate -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Brain,
-    Loader2,
-    Quote,
-    Search,
-    Settings,
-    Trash2,
-  } from "lucide-svelte";
-  import * as Dialog from "bits-ui/dialog";
+  import { Brain, Loader2, Quote, Search, Settings, Trash2 } from 'lucide-svelte';
+  import * as Dialog from 'bits-ui/dialog';
 
   // Replace export lets with a single $props() destructuring for runes mode
   interface Props {
@@ -28,38 +21,38 @@ https://svelte.dev/e/props_duplicate -->
   const {
     caseId = undefined,
     evidenceIds = [],
-    placeholder = "Ask AI about this case...",
-    maxHeight = "400px",
+    placeholder = 'Ask AI about this case...',
+    maxHeight = '400px',
     showReferences = true,
     enableVoiceInput = false,
     ondispatch,
   } = $props() as Props;
 
   // State
-  let query = $state("");
+  let query = $state('');
   let isLoading = $state(false);
-  let messages = $state<any[] >([]);
+  let messages = $state<any[]>([]);
   let showSettings = $state(false);
   let showCitationDialog = $state(false);
-  let selectedCitation = $state("");
-  let selectedModel = $state("gpt-4");
+  let selectedCitation = $state('');
+  let selectedModel = $state('gpt-4');
   let searchThreshold = $state(0.7);
   let maxResults = $state(5);
   let temperature = $state(0.7);
-  let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
+  let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']);
   // Mock AI response
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
-    const userMessage = { role: "user", content: query }
+    const userMessage = { role: 'user', content: query };
     messages = [...messages, userMessage];
     // Clear input
-    query = "";
+    query = '';
     // Mock AI response
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",
+        role: 'assistant',
         content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
   This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
   Key considerations:
@@ -70,17 +63,17 @@ https://svelte.dev/e/props_duplicate -->
   Would you like me to elaborate on any of these aspects?`,
         references: [
           {
-            title: "Smith v. Jones",
-            citation: "123 F.3d 456 (2023)",
+            title: 'Smith v. Jones',
+            citation: '123 F.3d 456 (2023)',
             relevance: 0.9,
           },
           {
-            title: "42 U.S.C. § 1983",
-            citation: "Federal Civil Rights Statute",
+            title: '42 U.S.C. § 1983',
+            citation: 'Federal Civil Rights Statute',
             relevance: 0.8,
           },
         ],
-      }
+      };
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -211,10 +204,7 @@ https://svelte.dev/e/props_duplicate -->
           </div>
           <div class="dialog-actions">
             <button class="btn-primary" onclick={() => insertCitation()}>Insert Citation</button>
-            <button
-              class="btn-secondary"
-              onclick={() => navigator.clipboard.writeText(selectedCitation)}
-            >
+            <button class="btn-secondary" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy to Clipboard
             </button>
           </div>
@@ -229,6 +219,7 @@ https://svelte.dev/e/props_duplicate -->
     </Dialog.Portal>
   </Dialog.Root>
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
@@ -402,14 +393,14 @@ https://svelte.dev/e/props_duplicate -->
     color: #374151;
   }
   .setting-group select,
-  .setting-group input[type="number"] {
+  .setting-group input[type='number'] {
     width: 100%;
     padding: 8px;
     border: 1px solid #d1d5db;
     border-radius: 4px;
     outline: none;
   }
-  .setting-group input[type="range"] {
+  .setting-group input[type='range'] {
     width: 100%;
   }
   .dialog-overlay {
@@ -499,5 +490,3 @@ https://svelte.dev/e/props_duplicate -->
     background: #e5e7eb;
   }
 </style>
-
-

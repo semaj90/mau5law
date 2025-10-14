@@ -39,4 +39,4 @@ declare global {
     resultCount: number;
   }
 }
-export {}
+export {};

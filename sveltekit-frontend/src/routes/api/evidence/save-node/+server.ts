@@ -70,14 +70,14 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       content: validatedNode.content,
       canvasPosition: validatedNode.metadata,
       caseId: validatedNode.caseId,
-      userId: userId
+      userId: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
     return json({
       success: true,
-      evidence: evidenceData
-      message: "Evidence saved successfully"
+      evidence: evidenceData,
+      message: "Evidence saved successfully",
     })
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -94,15 +94,15 @@ async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
   try {
     const canvasStateData = {
       id: crypto.randomUUID(),
-      canvasData: canvasData
-      userId: userId
+      canvasData: canvasData,
+      userId: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
     return json({
       success: true,
-      canvasState: canvasStateData
-      message: "Canvas state saved successfully"
+      canvasState: canvasStateData,
+      message: "Canvas state saved successfully",
     })
   } catch (error: any) {
     throw error

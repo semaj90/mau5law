@@ -9,19 +9,19 @@
     redis: 'checking',
     ollama: 'checking',
     gpu: 'checking',
-    workers: 'checking' // NEW: Worker health status
+    workers: 'checking', // NEW: Worker health status
   });
 
   let stats = $state({
     totalCases: 0,
     totalEvidence: 0,
-    processingJobs: 0
+    processingJobs: 0,
   });
 
   let workerDetails = $state({
     ocr: { status: 'offline', healthy: false, queueDepth: 0 },
     embedding: { status: 'offline', healthy: false, queueDepth: 0 },
-    autotag: { status: 'offline', healthy: false, queueDepth: 0 }
+    autotag: { status: 'offline', healthy: false, queueDepth: 0 },
   });
 
   // Check system health on mount
@@ -55,8 +55,12 @@
       const workersCheck = await fetch('/api/health/workers').catch(() => null);
       if (workersCheck?.ok) {
         const workersData = await workersCheck.json();
-        systemStatus.workers = workersData.success && workersData.status === 'online' ? 'online' :
-                                workersData.status === 'degraded' ? 'degraded' : 'offline';
+        systemStatus.workers =
+          workersData.success && workersData.status === 'online'
+            ? 'online'
+            : workersData.status === 'degraded'
+              ? 'degraded'
+              : 'offline';
 
         // Update worker details
         if (workersData.workers) {
@@ -66,21 +70,21 @@
                 status: worker.status,
                 healthy: worker.healthy,
                 queueDepth: worker.queueDepth || 0,
-                processedJobs: worker.processedJobs || 0
+                processedJobs: worker.processedJobs || 0,
               };
             } else if (worker.name.includes('Embedding')) {
               workerDetails.embedding = {
                 status: worker.status,
                 healthy: worker.healthy,
                 queueDepth: worker.queueDepth || 0,
-                processedJobs: worker.processedJobs || 0
+                processedJobs: worker.processedJobs || 0,
               };
             } else if (worker.name.includes('Autotag')) {
               workerDetails.autotag = {
                 status: worker.status,
                 healthy: worker.healthy,
                 queueDepth: 0,
-                processedJobs: worker.processedJobs || 0
+                processedJobs: worker.processedJobs || 0,
               };
             }
           });
@@ -109,19 +113,27 @@
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'online': return 'is-success'; // NES.css success color
-      case 'offline': return 'is-error';   // NES.css error color
-      case 'degraded': return 'is-warning'; // NES.css warning color
-      default: return 'is-disabled'; // NES.css disabled/default color
+      case 'online':
+        return 'is-success'; // NES.css success color
+      case 'offline':
+        return 'is-error'; // NES.css error color
+      case 'degraded':
+        return 'is-warning'; // NES.css warning color
+      default:
+        return 'is-disabled'; // NES.css disabled/default color
     }
   }
 
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'online': return '✅';
-      case 'offline': return '❌';
-      case 'degraded': return '⚠️'; // Changed for degraded status
-      default: return '⏳';
+      case 'online':
+        return '✅';
+      case 'offline':
+        return '❌';
+      case 'degraded':
+        return '⚠️'; // Changed for degraded status
+      default:
+        return '⏳';
     }
   }
 </script>
@@ -149,31 +161,36 @@
       <div class="nes-container is-dark is-small status-item-custom">
         <span class="nes-text is-primary status-label-custom">Database</span>
         <span class="nes-text {getStatusColor(systemStatus.database)}">
-          {getStatusIcon(systemStatus.database)} {systemStatus.database}
+          {getStatusIcon(systemStatus.database)}
+          {systemStatus.database}
         </span>
       </div>
       <div class="nes-container is-dark is-small status-item-custom">
         <span class="nes-text is-primary status-label-custom">Redis Cache</span>
         <span class="nes-text {getStatusColor(systemStatus.redis)}">
-          {getStatusIcon(systemStatus.redis)} {systemStatus.redis}
+          {getStatusIcon(systemStatus.redis)}
+          {systemStatus.redis}
         </span>
       </div>
       <div class="nes-container is-dark is-small status-item-custom">
         <span class="nes-text is-primary status-label-custom">Ollama AI</span>
         <span class="nes-text {getStatusColor(systemStatus.ollama)}">
-          {getStatusIcon(systemStatus.ollama)} {systemStatus.ollama}
+          {getStatusIcon(systemStatus.ollama)}
+          {systemStatus.ollama}
         </span>
       </div>
       <div class="nes-container is-dark is-small status-item-custom">
         <span class="nes-text is-primary status-label-custom">GPU Compute</span>
         <span class="nes-text {getStatusColor(systemStatus.gpu)}">
-          {getStatusIcon(systemStatus.gpu)} {systemStatus.gpu}
+          {getStatusIcon(systemStatus.gpu)}
+          {systemStatus.gpu}
         </span>
       </div>
       <div class="nes-container is-dark is-small status-item-custom">
         <span class="nes-text is-primary status-label-custom">Background Workers</span>
         <span class="nes-text {getStatusColor(systemStatus.workers)}">
-          {getStatusIcon(systemStatus.workers)} {systemStatus.workers}
+          {getStatusIcon(systemStatus.workers)}
+          {systemStatus.workers}
         </span>
       </div>
     </div>
@@ -189,9 +206,17 @@
               <h4 class="nes-text is-primary">OCR Worker</h4>
             </div>
             <div class="worker-stats-custom">
-              <p class="nes-text is-white">Status: <strong class="nes-text {getStatusColor(workerDetails.ocr.status)}">{workerDetails.ocr.status}</strong></p>
-              <p class="nes-text is-white">Processed: <strong class="nes-text is-success">{workerDetails.ocr.processedJobs || 0}</strong></p>
-              <p class="nes-text is-white">Queue: <strong class="nes-text is-warning">{workerDetails.ocr.queueDepth || 0}</strong></p>
+              <p class="nes-text is-white">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.ocr.status)}"
+                  >{workerDetails.ocr.status}</strong
+                >
+              </p>
+              <p class="nes-text is-white">
+                Processed: <strong class="nes-text is-success">{workerDetails.ocr.processedJobs || 0}</strong>
+              </p>
+              <p class="nes-text is-white">
+                Queue: <strong class="nes-text is-warning">{workerDetails.ocr.queueDepth || 0}</strong>
+              </p>
             </div>
             <div class="worker-tech-custom">
               <span class="tech-badge">GPU Tesseract</span>
@@ -199,15 +224,27 @@
             </div>
           </div>
 
-          <div class="nes-container is-dark worker-card-custom {workerDetails.embedding.healthy ? 'is-success' : 'is-error'}">
+          <div
+            class="nes-container is-dark worker-card-custom {workerDetails.embedding.healthy
+              ? 'is-success'
+              : 'is-error'}"
+          >
             <div class="worker-header-custom">
               <span class="worker-icon-custom">🧠</span>
               <h4 class="nes-text is-primary">Embedding Worker</h4>
             </div>
             <div class="worker-stats-custom">
-              <p class="nes-text is-white">Status: <strong class="nes-text {getStatusColor(workerDetails.embedding.status)}">{workerDetails.embedding.status}</strong></p>
-              <p class="nes-text is-white">Processed: <strong class="nes-text is-success">{workerDetails.embedding.processedJobs || 0}</strong></p>
-              <p class="nes-text is-white">Queue: <strong class="nes-text is-warning">{workerDetails.embedding.queueDepth || 0}</strong></p>
+              <p class="nes-text is-white">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.embedding.status)}"
+                  >{workerDetails.embedding.status}</strong
+                >
+              </p>
+              <p class="nes-text is-white">
+                Processed: <strong class="nes-text is-success">{workerDetails.embedding.processedJobs || 0}</strong>
+              </p>
+              <p class="nes-text is-white">
+                Queue: <strong class="nes-text is-warning">{workerDetails.embedding.queueDepth || 0}</strong>
+              </p>
             </div>
             <div class="worker-tech-custom">
               <span class="tech-badge">embeddinggemma:latest</span>
@@ -216,14 +253,22 @@
             </div>
           </div>
 
-          <div class="nes-container is-dark worker-card-custom {workerDetails.autotag.healthy ? 'is-success' : 'is-error'}">
+          <div
+            class="nes-container is-dark worker-card-custom {workerDetails.autotag.healthy ? 'is-success' : 'is-error'}"
+          >
             <div class="worker-header-custom">
               <span class="worker-icon-custom">🏷️</span>
               <h4 class="nes-text is-primary">Autotag Worker</h4>
             </div>
             <div class="worker-stats-custom">
-              <p class="nes-text is-white">Status: <strong class="nes-text {getStatusColor(workerDetails.autotag.status)}">{workerDetails.autotag.status}</strong></p>
-              <p class="nes-text is-white">Processed: <strong class="nes-text is-success">{workerDetails.autotag.processedJobs || 0}</strong></p>
+              <p class="nes-text is-white">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.autotag.status)}"
+                  >{workerDetails.autotag.status}</strong
+                >
+              </p>
+              <p class="nes-text is-white">
+                Processed: <strong class="nes-text is-success">{workerDetails.autotag.processedJobs || 0}</strong>
+              </p>
               <p class="nes-text is-white">Type: <strong class="nes-text is-disabled">Optional</strong></p>
             </div>
             <div class="worker-tech-custom">
@@ -271,8 +316,8 @@
       <div class="featured-icon-custom">🎮⚔️</div>
       <h2 class="nes-text is-success">YoRHa Detective Command Center</h2>
       <p class="nes-text is-white featured-description-custom">
-        Full-featured AI detective interface with real-time Ollama chat, PostgreSQL chat history,
-        and retro gaming aesthetic. Stream responses from Gemma3-Legal with 30 GPU layers!
+        Full-featured AI detective interface with real-time Ollama chat, PostgreSQL chat history, and retro gaming
+        aesthetic. Stream responses from Gemma3-Legal with 30 GPU layers!
       </p>
       <div class="featured-tech-custom">
         <span class="tech-badge">Ollama Streaming</span>
@@ -608,13 +653,19 @@
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   .featured-card-custom:hover {
     border-color: #ffd700;
-    box-shadow: 0 0 40px rgba(0, 255, 65, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
+    box-shadow:
+      0 0 40px rgba(0, 255, 65, 0.4),
+      0 0 60px rgba(255, 215, 0, 0.2);
     transform: translateY(-8px) scale(1.02);
   }
 
@@ -633,8 +684,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.9; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
   }
 
   .featured-icon-custom {

@@ -2,7 +2,7 @@
  * HTTP Cache Headers Utility
  * Provides optimal caching strategies for different endpoint types
  * Maximizes browser cache efficiency while ensuring data freshness
- */;
+ */
 }
 export interface CacheConfig {
   maxAge?: number;          // Cache-Control max-age in seconds
@@ -19,7 +19,7 @@ export interface ResponseWithCacheHeaders extends Response {
 }
 /**
  * Cache strategies for different content types
- */;
+ */
 export const CACHE_STRATEGIES = {
   // Static content (embeddings, processed documents) - 1 hour
   STATIC_CONTENT: {
@@ -51,14 +51,14 @@ export const CACHE_STRATEGIES = {
   USER_DATA: {
     maxAge: 300,
     staleWhileRevalidate: 600,
-    private: true
-    mustRevalidate: true
+    private: true,
+    mustRevalidate: true,
   },
   // Real-time data - minimal caching
   REALTIME: {
     maxAge: 60,
-    mustRevalidate: true
-    private: true
+    mustRevalidate: true,
+    private: true,
   },
   // Immutable content (with versioned URLs)
   IMMUTABLE: {
@@ -68,7 +68,7 @@ export const CACHE_STRATEGIES = {
 } as const;
 /**
  * Generate Cache-Control header value
- */;
+ */
 function generateCacheControlHeader(config: CacheConfig): string {
   const parts: string[] = [];
   if (config.noCache) {
@@ -97,7 +97,7 @@ function generateCacheControlHeader(config: CacheConfig): string {
 }
 /**
  * Generate ETag from content
- */;
+ */
 function generateETag(content: any): string {
   const crypto = require('crypto');
   const hash = crypto.createHash('sha256')
@@ -109,7 +109,7 @@ function generateETag(content: any): string {
  * Apply cache headers to a Response object
  */
 export function applyCacheHeaders(
-  response: Response
+  response: Response,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     content?: any;
@@ -144,7 +144,7 @@ export function applyCacheHeaders(
  * SvelteKit helper to create cached JSON responses
  */
 export function cachedJson(
-  data: any
+  data: any,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     status?: number;
@@ -160,7 +160,7 @@ export function cachedJson(
     }
   });
   return applyCacheHeaders(response, strategy, {
-    content: data
+    content: data,
     generateETag: options.generateETag ?? true,
     lastModified: options.lastModified
   });
@@ -169,7 +169,7 @@ export function cachedJson(
  * Check if request has conditional headers (If-None-Match, If-Modified-Since)
  */
 export function checkConditionalHeaders(
-  request: Request
+  request: Request,
   etag?: string
   lastModified?: Date;
 ): { isNotModified: boolean; shouldSend304: boolean } {
@@ -196,7 +196,7 @@ export function checkConditionalHeaders(
 }
 /**
  * Create 304 Not Modified response
- */;
+ */
 export function notModifiedResponse(etag?: string, lastModified?: Date): Response {
   const headers = new Headers();
   if (etag) {
@@ -214,7 +214,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
  * Middleware wrapper for adding cache headers to endpoint responses
  */
 export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>,(,
-  handler: T
+  handler: T,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     generateETag?: boolean;
@@ -258,7 +258,7 @@ export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>
 }
 /**
  * Utility to clear cache-related headers (for debugging)
- */;
+ */
 export function clearCacheHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
   headers.delete('Cache-Control');

@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from "lucide-svelte";
+  import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import Input from "$lib/components/ui/Input.svelte";
+  import Input from '$lib/components/ui/Input.svelte';
 
   type SearchResult = {
     id: string;
@@ -26,7 +26,7 @@
   };
 
   // Modern Svelte 5 runes
-  let query = $state("");
+  let query = $state('');
   let isSearching = $state(false);
   let results = $state<SearchResult[]>([]);
   let metrics = $state<SearchMetrics | null>(null);
@@ -48,9 +48,9 @@
       const response = await fetch('/api/semantic-search', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: query.trim() })
+        body: JSON.stringify({ query: query.trim() }),
       });
 
       if (!response.ok) {
@@ -70,17 +70,17 @@
       results = (data.results || []).map((r: any) => ({
         id: r.id,
         title: r.title || `Document ${r.id}`,
-        content: r.content || r.text || "",
+        content: r.content || r.text || '',
         similarity: r.similarity ?? 0,
         documentType: r.documentType ?? 'deed',
-        metadata: r.metadata
+        metadata: r.metadata,
       }));
 
       metrics = {
         totalDocuments: (data.results || []).length,
         searchTime: Math.round(searchTime),
         vectorDimensions: data.vectorDimensions ?? 384,
-        similarityThreshold: data.similarityThreshold ?? 0.0
+        similarityThreshold: data.similarityThreshold ?? 0.0,
       };
     } catch (err) {
       error = err instanceof Error ? err.message : 'Search failed';
@@ -128,31 +128,34 @@
   // Demo placeholder results for development
   const demoResults: SearchResult[] = [
     {
-      id: "demo-1",
-      title: "Property Deed - 123 Main Street",
-      content: "This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...",
+      id: 'demo-1',
+      title: 'Property Deed - 123 Main Street',
+      content:
+        'This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...',
       similarity: 0.92,
       documentType: 'deed',
       metadata: {
-        caseId: "CASE-2024-001",
-        uploadDate: "2024-01-15",
-        tags: ["property", "transfer", "warranty"]
-      }
+        caseId: 'CASE-2024-001',
+        uploadDate: '2024-01-15',
+        tags: ['property', 'transfer', 'warranty'],
+      },
     },
     {
-      id: "demo-2",
-      title: "Employment Contract - Tech Corp",
-      content: "This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...",
+      id: 'demo-2',
+      title: 'Employment Contract - Tech Corp',
+      content:
+        'This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...',
       similarity: 0.87,
       documentType: 'contract',
       metadata: {
-        caseId: "CASE-2024-002",
-        uploadDate: "2024-01-10",
-        tags: ["employment", "technology", "intellectual property"]
-      }
-    }
+        caseId: 'CASE-2024-002',
+        uploadDate: '2024-01-10',
+        tags: ['employment', 'technology', 'intellectual property'],
+      },
+    },
   ];
 </script>
+
 <!-- Vector Intelligence Demo Component -->
 <div class="max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header Section -->
@@ -182,11 +185,7 @@
           class="flex-1"
           disabled={isSearching}
         />
-        <Button
-          type="submit"
-          disabled={searchButtonDisabled}
-          class="min-w-[100px] bits-btn bits-btn"
-        >
+        <Button type="submit" disabled={searchButtonDisabled} class="min-w-[100px] bits-btn bits-btn">
           {#if isSearching}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
             Searching
@@ -199,13 +198,8 @@
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
-        {#each ["property ownership transfer", "contract liability clauses", "employment agreements", "intellectual property rights"] as example}
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={() => (query = example)}
-            disabled={isSearching}
-          >
+        {#each ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] as example}
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
             {example}
           </Button>
         {/each}
@@ -258,7 +252,7 @@
             type="button"
             class="w-full text-left hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"
             onclick={() => (selectedResult = result)}
-            aria-label={ `Open ${result.title}` }
+            aria-label={`Open ${result.title}`}
           >
             <div class="yorha-panel-content pt-6">
               <div class="space-y-3">
@@ -307,7 +301,9 @@
                   {#if result.metadata.tags}
                     <div class="flex flex-wrap gap-1">
                       {#each result.metadata.tags as tag}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                          >{tag}</span
+                        >
                       {/each}
                     </div>
                   {/if}
@@ -324,9 +320,7 @@
       <div class="yorha-panel-content pt-6 text-center space-y-2">
         <Search class="h-12 w-12 nes-text is-disabled mx-auto" />
         <h3 class="font-semibold">No results found</h3>
-        <p class="text-sm nes-text is-disabled">
-          Try adjusting your search terms or using different keywords
-        </p>
+        <p class="text-sm nes-text is-disabled">Try adjusting your search terms or using different keywords</p>
       </div>
     </div>
   {/if}
@@ -344,7 +338,8 @@
           </p>
         </div>
         <div class="flex justify-center">
-          <Button class="bits-btn"
+          <Button
+            class="bits-btn"
             variant="ghost"
             onclick={() => {
               results = demoResults;
@@ -365,16 +360,16 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>
-            ×
-          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>×</Button>
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">
         <p class="text-sm">{selectedResult.content}</p>
         <div class="flex items-center gap-2">
           <Badge>Similarity: {formatSimilarity(selectedResult.similarity)}</Badge>
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{selectedResult.documentType}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{selectedResult.documentType}</span
+          >
         </div>
       </div>
     </div>

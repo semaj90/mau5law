@@ -20,6 +20,6 @@ export const GET = async () => {
       timestamp: new Date().toISOString(),
       totalTimeMs: Date.now() - start,
     },
-    { status: redisOk ? 200 : 503 },
+    { status: redisOk ? 200 : 503 }
   );
-}
+};

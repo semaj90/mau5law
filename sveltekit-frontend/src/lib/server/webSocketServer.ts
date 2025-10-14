@@ -70,35 +70,35 @@ async function* streamQLoRAResponse(
           confidenceLevel: 0.85,
           riskLevel: 'medium',
           lastAccessed: Date.now(),
-          compressed: false
+          compressed: false,
           metadata: {
             caseId: 'websocket_session',
             aiGenerated: true
           }
         },
-        renderingNeeded: streamBinary
-        realTimeRequired: true
+        renderingNeeded: streamBinary,
+        realTimeRequired: true,
       },
       metadata: {
         timestamp: Date.now(),
         clientCapabilities: { webgpu: true, streaming: true }
       },
       cachePreferences: {
-        enableMultiTierCache: true
-        enableWebGPUCache: true
-        enableSummarizeCache: true
-        enableRabbitMQCache: false
+        enableMultiTierCache: true,
+        enableWebGPUCache: true,
+        enableSummarizeCache: true,
+        enableRabbitMQCache: false,
         cacheStrategy: 'adaptive',
         maxLatencyMs: 5000,
         minAccuracyThreshold: accuracyTarget * 0.9
       },
       optimization: {
         predictiveAccuracy: 0.75,
-        targetAccuracy: accuracyTarget
+        targetAccuracy: accuracyTarget,
         learningRate: 0.05,
-        useReinforcementLearning: true
-        useWebGPUAcceleration: true
-        useAsyncOrchestration: true
+        useReinforcementLearning: true,
+        useWebGPUAcceleration: true,
+        useAsyncOrchestration: true,
       }
     });
     const processingTime = Date.now() - startTime;

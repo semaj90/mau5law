@@ -43,13 +43,13 @@ declare global {
     __TELEMETRY__?: any;
     __GPU_MANAGER__?: {
       getAcceleration(): any;
-    }
+    };
   }
 }
 // Environment configuration mock (to avoid import issues)
 const ENV_CONFIG = {
   GPU_DEBUG: false,
-}
+};
 // Import meta environment variable handling
 interface ImportMetaEnv {
   readonly VITE_ANALYTICS_ENDPOINT?: string;
@@ -82,7 +82,7 @@ export class TelemetryEventBus {
     flushInterval: 30000, // 30 seconds
     enableDebug: ENV_CONFIG.GPU_DEBUG,
     endpoint: undefined, // Will be set from environment variables
-  }
+  };
   private constructor() {
     this.sessionId = this.generateSessionId();
     this.metrics = {
@@ -91,7 +91,7 @@ export class TelemetryEventBus {
       bufferSize: 0,
       avgFlushTime: 0,
       lastFlushTimestamp: 0,
-    }
+    };
     this.startAutoFlush();
     // Browser integration
     if (typeof window !== 'undefined') {
@@ -118,7 +118,7 @@ export class TelemetryEventBus {
       ...data,
       timestamp: performance.now(),
       sessionId: this.sessionId,
-    }
+    };
     this.addEvent(event);
   }
   /**
@@ -129,7 +129,7 @@ export class TelemetryEventBus {
       ...data,
       timestamp: performance.now(),
       sessionId: this.sessionId,
-    }
+    };
     this.addEvent(event);
   }
   /**
@@ -140,7 +140,7 @@ export class TelemetryEventBus {
       ...data,
       timestamp: performance.now(),
       sessionId: this.sessionId,
-    }
+    };
     this.addEvent(event);
     // Immediate flush for errors
     if (data.type === 'critical') {
@@ -199,7 +199,7 @@ export class TelemetryEventBus {
     dimensions: number,
     encodingTime: number,
     compressionRatio: number,
-    success: boolean,
+    success: boolean
   ): void {
     this.emitPerformanceEvent({
       type: 'vector_encoding',
@@ -223,7 +223,7 @@ export class TelemetryEventBus {
     return {
       ...this.metrics,
       bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100,
-    }
+    };
   }
   /**
    * Export telemetry data for analysis
@@ -239,7 +239,7 @@ export class TelemetryEventBus {
         viewport: typeof window !== 'undefined' ? { width: window.innerWidth, height: window.innerHeight } : null,
         gpu: typeof window !== 'undefined' && window.__GPU_MANAGER__ ? await this.getGPUInfo() : null,
       },
-    }
+    };
     return new Blob([JSON.stringify(exportData, null, 2)], {
       type: 'application/json',
     });
@@ -308,7 +308,7 @@ export class TelemetryEventBus {
       sessionId: this.sessionId,
       timestamp: Date.now(),
       events,
-    }
+    };
     const response = await fetch(this.options.endpoint, {
       method: 'POST',
       headers: {
@@ -329,7 +329,7 @@ export class TelemetryEventBus {
         return {
           acceleration: window.__GPU_MANAGER__.getAcceleration(),
           contextType: 'detected',
-        }
+        };
       }
     } catch {
       return null;

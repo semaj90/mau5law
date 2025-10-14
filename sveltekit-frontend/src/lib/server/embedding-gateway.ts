@@ -12,7 +12,7 @@ export interface EmbedGatewayResult {
 }
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
-  fetchFn: typeof fetch
+  fetchFn: typeof fetch,
   text: string;
   opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {

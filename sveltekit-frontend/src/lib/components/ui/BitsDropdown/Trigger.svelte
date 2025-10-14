@@ -7,7 +7,7 @@
   // No-op snippet fallback - use a Snippet-compatible function via unknown cast
   // TypeScript complains about direct conversion from () => string to Snippet,
   // so convert through unknown first which preserves runtime behavior.
-  const _noop: Snippet = ((() => '') as unknown) as Snippet;
+  const _noop: Snippet = (() => '') as unknown as Snippet;
 </script>
 
 <!-- Prefer explicit `children` prop; use optional chaining and a noop to avoid invalid_snippet -->

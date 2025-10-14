@@ -7,7 +7,7 @@ const mockTaskSystem = {
     totalTasks: 8,
     pendingCount: 5,
     completedCount: 2,
-    failedCount: 1
+    failedCount: 1,
   },
   availableTasks: [
     {
@@ -21,8 +21,8 @@ const mockTaskSystem = {
       files: [
         'src/routes/profile/+page.svelte',
         'src/routes/profile/+page.server.ts',
-        'src/lib/components/UserProfileForm.svelte'
-      ]
+        'src/lib/components/UserProfileForm.svelte',
+      ],
     },
     {
       id: 'add-document-extraction-service',
@@ -32,10 +32,7 @@ const mockTaskSystem = {
       type: 'service',
       estimatedComplexity: 9,
       status: 'pending',
-      files: [
-        'src/routes/api/documents/extract/+server.ts',
-        'src/lib/services/legal-document-processor.ts'
-      ]
+      files: ['src/routes/api/documents/extract/+server.ts', 'src/lib/services/legal-document-processor.ts'],
     },
     {
       id: 'implement-logout-functionality',
@@ -45,10 +42,7 @@ const mockTaskSystem = {
       type: 'feature',
       estimatedComplexity: 5,
       status: 'pending',
-      files: [
-        'src/lib/components/Navigation.svelte',
-        'src/routes/api/auth/logout/+server.ts'
-      ]
+      files: ['src/lib/components/Navigation.svelte', 'src/routes/api/auth/logout/+server.ts'],
     },
     {
       id: 'fix-remaining-typescript-errors',
@@ -58,7 +52,7 @@ const mockTaskSystem = {
       type: 'maintenance',
       estimatedComplexity: 10,
       status: 'pending',
-      files: ['Multiple files across the codebase']
+      files: ['Multiple files across the codebase'],
     },
     {
       id: 'create-case-management-tables',
@@ -68,11 +62,8 @@ const mockTaskSystem = {
       type: 'database',
       estimatedComplexity: 7,
       status: 'pending',
-      files: [
-        'src/lib/server/db/migrations/005_case_management_schema.sql',
-        'src/lib/server/db/schema/cases.ts'
-      ]
-    }
+      files: ['src/lib/server/db/migrations/005_case_management_schema.sql', 'src/lib/server/db/schema/cases.ts'],
+    },
   ],
   recentCompletedTasks: [
     {
@@ -84,7 +75,7 @@ const mockTaskSystem = {
       estimatedComplexity: 6,
       status: 'completed',
       completedAt: '2024-12-29T10:30:00Z',
-      files: ['scripts/benchmark-embeddings.mjs']
+      files: ['scripts/benchmark-embeddings.mjs'],
     },
     {
       id: 'add-websocket-notifications',
@@ -95,9 +86,9 @@ const mockTaskSystem = {
       estimatedComplexity: 7,
       status: 'completed',
       completedAt: '2024-12-28T15:45:00Z',
-      files: ['src/lib/websocket/notification-server.ts']
-    }
-  ]
+      files: ['src/lib/websocket/notification-server.ts'],
+    },
+  ],
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -110,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const response = {
       success: true,
       ...mockTaskSystem,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return json(response);
@@ -120,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to load tasks',
-        message: error.message
+        message: error.message,
       },
       { status: 500 }
     );

@@ -76,7 +76,7 @@ export interface LLMBridgeResponse {
     cacheHitRate?: number;
     memoryUsed?: number;
     gpuAccelerated?: boolean;
-  }
+  };
   confidence?: number;
   citations?: any[];
   followupSuggestions?: string[];

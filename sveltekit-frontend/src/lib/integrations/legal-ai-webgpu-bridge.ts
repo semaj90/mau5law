@@ -29,7 +29,7 @@ export interface LegalAIProcessingResult {
 }
 /**
  * Legal AI WebGPU Bridge for seamless integration
- */;
+ */
 export class LegalAIWebGPUBridge {
   private uploader: WebGPUBufferUploader | null = null;
   private device: GPUDevice | null = null;
@@ -68,7 +68,7 @@ export class LegalAIWebGPUBridge {
    * Process legal document embeddings with optimized quantization
    */
   async processLegalDocumentEmbeddings(
-    embeddings: Float32Array | number[] | ArrayBuffer
+    embeddings: Float32Array | number[] | ArrayBuffer,
     options: LegalDocumentProcessingOptions = {}
   ): Promise<LegalAIProcessingResult> {
     if (!this.isInitialized || !this.uploader) {
@@ -146,8 +146,8 @@ export class LegalAIWebGPUBridge {
    * Legal AI similarity search with WebGPU optimization
    */
   async performLegalSimilaritySearch(
-    queryEmbedding: Float32Array | number[] | ArrayBuffer
-    documentCorpus: Array<Float32Array | number[] | ArrayBuffer>
+    queryEmbedding: Float32Array | number[] | ArrayBuffer,
+    documentCorpus: Array<Float32Array | number[] | ArrayBuffer>,
     options: LegalDocumentProcessingOptions & {
       topK?: number;
       threshold?: number;
@@ -165,7 +165,7 @@ export class LegalAIWebGPUBridge {
     });
     // Process corpus with compression for efficiency
     const corpusResults = await this.batchProcessLegalDocuments(documentCorpus.map(embedding => ({
-        embeddings: embedding
+        embeddings: embedding,
         type: 'case-law' as const,
         priority: 'medium' as const
       })),
@@ -178,7 +178,7 @@ export class LegalAIWebGPUBridge {
     const processingStats = {
       queryProcessingTime: queryResult.processingTime,
       corpusProcessingTime: processingTime - queryResult.processingTime,
-      totalProcessingTime: processingTime
+      totalProcessingTime: processingTime,
       queryCompressionRatio: queryResult.compressionStats.compressionRatio,
       averageCorpusCompressionRatio: corpusResults.reduce((sum, r) => sum + r.compressionStats.compressionRatio, 0) / corpusResults.length,
       memoryUsage: {
@@ -198,7 +198,7 @@ export class LegalAIWebGPUBridge {
   }
   /**
    * Get performance and cache statistics
-   */;
+   */
   getPerformanceStats() {
     if (!this.uploader) {
       return null;
@@ -211,7 +211,7 @@ export class LegalAIWebGPUBridge {
   }
   /**
    * Clear all cached buffers and reset performance counters
-   */;
+   */
   clearCache(): void {
     if (this.uploader) {
       this.uploader.clearCache();
@@ -219,7 +219,7 @@ export class LegalAIWebGPUBridge {
   }
   /**
    * Cleanup all resources
-   */;
+   */
   destroy(): void {
     if (this.uploader) {
       this.uploader.clearCache();
@@ -270,13 +270,13 @@ export class LegalAIWebGPUBridge {
 export const legalAIBridge = new LegalAIWebGPUBridge();
 /**
  * Utility functions for quick integration with existing legal AI components
- */;
+ */
 export namespace LegalAIIntegration {
   /**
    * Quick helper for existing legal AI components to process embeddings
    */
   export async function processEmbeddingsForLegalAI(
-    embeddings: Float32Array | number[] | ArrayBuffer
+    embeddings: Float32Array | number[] | ArrayBuffer,
     documentType: LegalDocumentProcessingOptions['documentType'] = 'brief';
   ): Promise<GPUBuffer | Float32Array> {
     try {
@@ -299,7 +299,7 @@ export namespace LegalAIIntegration {
    * Helper for legal document similarity search
    */
   export async function setupLegalSimilaritySearch(
-    queryDocument: Float32Array
+    queryDocument: Float32Array,
     documentDatabase: Float32Array[];
   ) {
     try {
@@ -321,7 +321,7 @@ export namespace LegalAIIntegration {
   }
   /**
    * Helper to get compression statistics for legal AI performance monitoring
-   */;
+   */
   export function getLegalAIPerformanceMetrics() {
     return legalAIBridge.getPerformanceStats();
   }

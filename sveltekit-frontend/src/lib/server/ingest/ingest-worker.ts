@@ -182,7 +182,7 @@ parentPort.on("message", async (job: Job) => {
       const documentData = {
         userId: job.userId,
         source: job.minioUrl || filename,
-        content: textContent
+        content: textContent,
         contentType: `${modality}/${ext}`,
         embedding: JSON.stringify(embedding),
         metadata: JSON.stringify({
@@ -197,7 +197,7 @@ parentPort.on("message", async (job: Job) => {
       const [result] = await db.insert(userDocuments).values(documentData).returning();
       parentPort!.postMessage({
         jobId: job.id,
-        ok: true
+        ok: true,
         documentId: (result as { id?: any }).id,
         modality,
         textLength: textContent.length,

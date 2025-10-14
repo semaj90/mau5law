@@ -54,7 +54,9 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ .context-menu-content {
+<style>
+  /* @unocss-include */
+  .context-menu-content {
     position: fixed;
     z-index: 1000;
     min-width: 12rem;

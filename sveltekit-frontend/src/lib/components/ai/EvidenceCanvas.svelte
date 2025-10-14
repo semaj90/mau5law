@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte';
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
   import { FileText, Upload, Save, Loader, CheckCircle, AlertCircle } from 'lucide-svelte';
 
@@ -58,7 +58,7 @@
       fabricCanvas = new Fabric.Canvas(canvasEl as HTMLCanvasElement, {
         backgroundColor: '#ffffff',
         selection: true,
-        preserveObjectStacking: true
+        preserveObjectStacking: true,
       });
     } catch (err: unknown) {
       // normalize unknown to Error before logging/using
@@ -92,7 +92,7 @@
         name: item?.title ?? item?.name ?? 'Evidence Item',
         type: item?.type ?? item?.evidenceType ?? 'document',
         uploadedAt: item?.createdAt ?? new Date().toISOString(),
-        status: 'uploaded' as const
+        status: 'uploaded' as const,
       }));
       // Add visual representations to canvas
       evidenceList.forEach((item, index) => {
@@ -109,7 +109,7 @@
       { name: 'Contract Document', type: 'document', color: '#3b82f6' },
       { name: 'Email Evidence', type: 'communication', color: '#10b981' },
       { name: 'Financial Records', type: 'financial', color: '#f59e0b' },
-      { name: 'Witness Statement', type: 'testimony', color: '#8b5cf6' }
+      { name: 'Witness Statement', type: 'testimony', color: '#8b5cf6' },
     ];
     defaultItems.forEach((item, index) => {
       const evidenceItem = {
@@ -117,7 +117,7 @@
         name: item.name,
         type: item.type,
         uploadedAt: new Date().toISOString(),
-        status: 'uploaded' as const
+        status: 'uploaded' as const,
       };
       evidenceList.push(evidenceItem);
       addEvidenceToCanvas(evidenceItem, index, item.color);
@@ -190,7 +190,7 @@
       testimony: '#8b5cf6',
       physical: '#ef4444',
       digital: '#06b6d4',
-      default: '#6b7280'
+      default: '#6b7280',
     };
     return colors[type] || colors.default;
   }
@@ -198,10 +198,10 @@
   function collectObjects() {
     if (!fabricCanvas) return [];
     const objs = (fabricCanvas.getObjects?.() ?? []).map((o: any) => {
-      const type = o.type || "object";
-      const left = typeof o.left === "number" ? o.left : 0;
-      const top = typeof o.top === "number" ? o.top : 0;
-      const text = typeof o.text === "string" ? o.text : undefined;
+      const type = o.type || 'object';
+      const left = typeof o.left === 'number' ? o.left : 0;
+      const top = typeof o.top === 'number' ? o.top : 0;
+      const text = typeof o.text === 'string' ? o.text : undefined;
       const evidenceId = o.evidenceId ?? o.get('evidenceId');
       const out: any = {
         type,
@@ -235,10 +235,10 @@
           canvas_data: {
             objects: collectObjects(),
             evidence_items: evidenceList,
-            canvas_size: { width: canvasEl?.width ?? 800, height: canvasEl?.height ?? 600 }
+            canvas_size: { width: canvasEl?.width ?? 800, height: canvasEl?.height ?? 600 },
           },
-          options
-        })
+          options,
+        }),
       });
       clearInterval(progressInterval);
       if (!response.ok) {
@@ -254,7 +254,7 @@
           similarCases: result.analysis.similarCases,
           complianceStatus: result.analysis.complianceStatus,
           timeline: result.analysis.timeline,
-          processingTime: result.metadata?.processingTimeMs
+          processingTime: result.metadata?.processingTimeMs,
         };
         analysisProgress = 100;
         analysisStatus = 'complete';
@@ -298,7 +298,7 @@
         name: file.name,
         type: getFileType(file.type),
         uploadedAt: new Date().toISOString(),
-        status: 'uploading'
+        status: 'uploading',
       };
       evidenceList.push(evidenceItem);
       try {
@@ -309,7 +309,7 @@
         formData.append('evidenceType', evidenceItem.type);
         const response = await fetch('/api/v1/minio/upload', {
           method: 'POST',
-          body: formData
+          body: formData,
         });
         if (response.ok) {
           evidenceItem.status = 'uploaded';
@@ -344,7 +344,7 @@
       objects: fabricCanvas.toJSON(),
       evidence: evidenceList,
       timestamp: new Date().toISOString(),
-      caseId
+      caseId,
     };
     // Save to localStorage as backup
     try {
@@ -389,12 +389,10 @@
         style="display: none;"
       />
     </label>
-    <button type="button"
-      class={"nes-btn " + (analysisStatus === 'idle'
-        ? 'is-primary'
-        : analysisStatus === 'complete'
-          ? 'is-success'
-          : 'is-warning')}
+    <button
+      type="button"
+      class={'nes-btn ' +
+        (analysisStatus === 'idle' ? 'is-primary' : analysisStatus === 'complete' ? 'is-success' : 'is-warning')}
       onclick={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
@@ -423,7 +421,7 @@
       <label for="analysis-progress" class="nes-text">Analysis Progress:</label>
       <progress
         id="analysis-progress"
-        class={"nes-progress " + (analysisStatus === 'analyzing' ? 'is-primary' : 'is-warning')}
+        class={'nes-progress ' + (analysisStatus === 'analyzing' ? 'is-primary' : 'is-warning')}
         value={analysisProgress}
         max="100"
         aria-valuemin="0"
@@ -494,7 +492,7 @@
     <p class="title">Evidence Items ({evidenceList.length})</p>
     <div class="evidence-grid">
       {#each evidenceList as item}
-        <div class={"nes-container is-rounded evidence-item " + getItemStatus(item)}>
+        <div class={'nes-container is-rounded evidence-item ' + getItemStatus(item)}>
           <div class="evidence-header">
             <span class="evidence-name">{getItemName(item)}</span>
             <span class="evidence-status nes-badge">
@@ -528,11 +526,12 @@
       {#if analysisResult.riskLevel}
         <div class="risk-indicator">
           <span
-            class={"nes-badge " + (analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical'
-              ? 'is-error'
-              : analysisResult.riskLevel === 'medium'
-                ? 'is-warning'
-                : 'is-success')}
+            class={'nes-badge ' +
+              (analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical'
+                ? 'is-error'
+                : analysisResult.riskLevel === 'medium'
+                  ? 'is-warning'
+                  : 'is-success')}
           >
             Risk Level: {analysisResult.riskLevel.toUpperCase()}
           </span>
@@ -588,15 +587,16 @@
         <h4 class="nes-text">Case Timeline</h4>
         <div class="timeline-list">
           {#each analysisResult.timeline as event}
-            <div class={"nes-container is-rounded timeline-item " + event.importance}>
+            <div class={'nes-container is-rounded timeline-item ' + event.importance}>
               <div class="timeline-header">
                 <span class="timeline-date">{new Date(event.date).toLocaleDateString()}</span>
                 <span
-                  class={"nes-badge " + (event.importance === 'high'
-                    ? 'is-error'
-                    : event.importance === 'medium'
-                      ? 'is-warning'
-                      : 'is-success')}
+                  class={'nes-badge ' +
+                    (event.importance === 'high'
+                      ? 'is-error'
+                      : event.importance === 'medium'
+                        ? 'is-warning'
+                        : 'is-success')}
                 >
                   {event.importance}
                 </span>
@@ -613,11 +613,12 @@
         <h4 class="nes-text">Compliance Status</h4>
         <div class="compliance-status">
           <span
-            class={"nes-badge " + (analysisResult.complianceStatus.toLowerCase().includes('compliant')
-              ? 'is-success'
-              : analysisResult.complianceStatus.toLowerCase().includes('violation')
-                ? 'is-error'
-                : 'is-warning')}
+            class={'nes-badge ' +
+              (analysisResult.complianceStatus.toLowerCase().includes('compliant')
+                ? 'is-success'
+                : analysisResult.complianceStatus.toLowerCase().includes('violation')
+                  ? 'is-error'
+                  : 'is-warning')}
           >
             {analysisResult.complianceStatus}
           </span>
@@ -912,77 +913,76 @@
     .metadata-grid {
       grid-template-columns: 1fr;
       font-size: 12px;
-  }
-  /* Main toolbar styling */
-.evidence-toolbar {
-    margin-bottom: 2rem;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .timeline-event {
-    font-size: 13px;
-    line-height: 1.4;
-  }
-  .timeline-item.high {
-    border-color: #dc3545;
-  }
-  .timeline-item.medium {
-    border-color: #ffc107;
-  }
-  .timeline-item.low {
-    border-color: #28a745;
-  }
-  /* Compliance status */
-  .compliance-status {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-  /* Metadata */
-  .metadata-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  .metadata-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    font-size: 12px;
-  }
-  .metadata-label {
-    font-weight: bold;
-  }
-  .metadata-value {
-    font-family: monospace;
-  }
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .upload-section {
-      flex-direction: column;
-      align-items: stretch;
     }
-    .settings-row {
-      flex-direction: column;
-      gap: 1rem;
+    /* Main toolbar styling */
+    .evidence-toolbar {
+      margin-bottom: 2rem;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .evidence-grid {
-      grid-template-columns: 1fr;
+    .timeline-event {
+      font-size: 13px;
+      line-height: 1.4;
     }
-    .case-header,
-    .timeline-header {
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-start;
+    .timeline-item.high {
+      border-color: #dc3545;
     }
+    .timeline-item.medium {
+      border-color: #ffc107;
+    }
+    .timeline-item.low {
+      border-color: #28a745;
+    }
+    /* Compliance status */
+    .compliance-status {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    /* Metadata */
     .metadata-grid {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .metadata-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      font-size: 12px;
+    }
+    .metadata-label {
+      font-weight: bold;
+    }
+    .metadata-value {
+      font-family: monospace;
+    }
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .upload-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .settings-row {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .evidence-grid {
+        grid-template-columns: 1fr;
+      }
+      .case-header,
+      .timeline-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+      .metadata-grid {
+        grid-template-columns: 1fr;
+      }
     }
   }
-}
 </style>
-

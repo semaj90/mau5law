@@ -67,7 +67,7 @@ class ParallelCacheOrchestrator {
       gpuTexture: 200
     },
     circuitBreakers: {
-      enabled: true
+      enabled: true,
       failureThreshold: 5,
       recoveryTime: 30000
     }
@@ -82,7 +82,7 @@ class ParallelCacheOrchestrator {
    * Execute parallel cache operations across all services
    * Group 0: Memory/GPU operations (fast) - target 300ms
    * Group 1: Network/disk operations (slower) - target 200ms additional
-   */;
+   */
   async executeParallel(request: ParallelCacheRequest): Promise<any> {
     const startTime = performance.now();
     this.resetMetrics();
@@ -100,7 +100,7 @@ class ParallelCacheOrchestrator {
       const totalLatency = performance.now() - startTime;
       this.updateMetrics(totalLatency, allResults);
       return {
-        success: true
+        success: true,
         data: allResults.map(r => r.data).filter(Boolean),
         metrics: { ...this.executionMetrics, totalLatency },
         cacheResults: allResults
@@ -109,7 +109,7 @@ class ParallelCacheOrchestrator {
       console.error('Parallel cache execution failed:', error);
       this.recordCircuitBreakerFailure(request.type);
       return {
-        success: false
+        success: false,
         metrics: { ...this.executionMetrics, totalLatency: performance.now() - startTime },
         cacheResults: []
       }
@@ -119,7 +119,7 @@ class ParallelCacheOrchestrator {
    * Group 0: Memory + GPU operations (300ms target)
    */
   private async executeGroup0Operations(
-    request: ParallelCacheRequest
+    request: ParallelCacheRequest,
     resources: CacheResourceAllocation;
   ): Promise<Array<any>, {
     const operations = [
@@ -148,8 +148,8 @@ class ParallelCacheOrchestrator {
    * Group 1: Network + Storage operations (200ms target)
    */
   private async executeGroup1Operations(
-    request: ParallelCacheRequest
-    resources: CacheResourceAllocation
+    request: ParallelCacheRequest,
+    resources: CacheResourceAllocation,
     group0Results: any[];
   ): Promise<Array<any>, {
     // Only execute if we didn't get enough hits from Group 0
@@ -177,7 +177,7 @@ class ParallelCacheOrchestrator {
   }
   /**
    * Smart resource allocation based on task count and system capacity
-   */;
+   */
   private allocateResources(request: ParallelCacheRequest): CacheResourceAllocation {
     const baseAllocation = { ...this.resourceAllocation }
     const taskCount = request.keys.length;
@@ -196,7 +196,7 @@ class ParallelCacheOrchestrator {
    * Batch memory lookups across L1/L2 tiers
    */
   private async batchMemoryLookup(
-    keys: string[]
+    keys: string[],
     tier: 'l1' | 'l2';
   ): Promise<Array<any>, {
     const cache = tier === 'l1' ? this.l1Memory: this.l2Memory;
@@ -234,7 +234,7 @@ class ParallelCacheOrchestrator {
       // Search for cached shaders
       for (const key of request.keys) {
         const searchResults = await shaderCacheManager.searchShaders({
-          text: key
+          text: key,
           operation: request.type,
           shaderType: 'webgpu',
           limit: 1
@@ -242,7 +242,7 @@ class ParallelCacheOrchestrator {
         if (searchResults.length > 0) {
           results.push({
             key,
-            hit: true
+            hit: true,
             source: 'gpu_texture',
             data: searchResults[0]
           });
@@ -271,7 +271,7 @@ class ParallelCacheOrchestrator {
         if (cacheResult.success && cacheResult.hit) {
           results.push({
             key,
-            hit: true
+            hit: true,
             source: 'xstate_semantic',
             data: cacheResult.data
           });
@@ -305,7 +305,7 @@ class ParallelCacheOrchestrator {
         // In real implementation, this would query pgvector with the cached embeddings
         results.push({
           key,
-          hit: true
+          hit: true,
           source: 'rag_cached_embedding',
           data: { ragResults: `RAG results for ${key} using cached embeddings` }
         });
@@ -396,7 +396,7 @@ class ParallelCacheOrchestrator {
   }
   /**
    * Circuit breaker management
-   */;
+   */
   private recordCircuitBreakerFailure(operation,: string): void {
     const state = this.circuitBreakerState.get(operation) || {
       failures: 0,
@@ -428,7 +428,7 @@ class ParallelCacheOrchestrator {
   }
   /**
    * Performance metrics tracking
-   */;
+   */
   private initializeMetrics(),: CacheExecutionMetrics {
     return {
       totalLatency: 0,
@@ -471,7 +471,7 @@ class ParallelCacheOrchestrator {
   }
   /**
    * Get performance statistics
-   */;
+   */
   async getPerformanceStats(),: Promise<any> {
     return {
       currentMetrics: this.executionMetrics,
@@ -491,7 +491,7 @@ class ParallelCacheOrchestrator {
   }
   /**
    * Clear all cache tiers
-   */;
+   */
   async clearAll(),: Promise<void> {
     await Promis,e.all([
       this.l1Memory.clear(),

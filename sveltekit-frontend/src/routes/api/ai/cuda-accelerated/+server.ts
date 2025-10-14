@@ -102,8 +102,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			return json({
 				success: false,
 				error: 'CUDA server is not available',
-				fallback_available: true
-				processing_time_ms: Date.now() - startTime
+				fallback_available: true,
+				processing_time_ms: Date.now() - startTime,
 			}, { status: 503 })
 		}
 		// Prepare CUDA inference request
@@ -119,7 +119,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			context_documents: requestData.context_documents || [],
 			metadata: {
 				...requestData.metadata,
-				sveltekit_frontend: true
+				sveltekit_frontend: true,
 				request_timestamp: new Date().toISOString(),
 				client_type: 'web',
 				performance_target: 'rtx_3060_ti'
@@ -146,10 +146,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const response = {
 			...result,
 			frontend_processing_ms: totalProcessingTime - ((result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).processing_time_ms || 0),
-			total_processing_ms: totalProcessingTime
-			cuda_acceleration: true
+			total_processing_ms: totalProcessingTime,
+			cuda_acceleration: true,
 			performance_metrics: {
-				gpu_optimized: true
+				gpu_optimized: true,
 				target_achieved: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).tokens_per_second >= 50,
 				memory_efficient: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.memory_utilization < 0.9,
 				temperature_safe: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.temperature < 80
@@ -163,9 +163,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			success: false,
 			error: 'CUDA inference failed',
 			details: error.message,
-			cuda_acceleration: false
-			processing_time_ms: processingTime
-			fallback_required: true
+			cuda_acceleration: false,
+			processing_time_ms: processingTime,
+			fallback_required: true,
 		}, { status: 500 })
 	}
 }
@@ -215,7 +215,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 					success: true,
 					message: 'CUDA-accelerated Legal AI API',
 					available_operations: ['status', 'metrics', 'gpu-status'],
-					cuda_server_url: CUDA_SERVER_URL
+					cuda_server_url: CUDA_SERVER_URL,
 					performance_targets: {
 						tokens_per_second: 50,
 						max_inference_time_ms: 2000,
@@ -268,7 +268,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		const result = await (response as { ok?: any; json?: any; status?: any }).json()
 		return json({
 			...result,
-			cuda_accelerated: true
+			cuda_accelerated: true,
 			vector_dimensions: 768,
 			search_algorithm: 'cuda_optimized_cosine_similarity'
 		})
@@ -308,8 +308,8 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 			session_id: query.session_id,
 			metadata: {
 				...query.metadata,
-				batch_processing: true
-				rtx_3060_ti_optimized: true
+				batch_processing: true,
+				rtx_3060_ti_optimized: true,
 			}
 		})
 		const response = await fetch(`${CUDA_SERVER_URL}/api/legal/batch`, {
@@ -324,7 +324,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		const result = await (response as { ok?: any; json?: any; status?: any }).json()
 		return json({
 			...result,
-			cuda_batch_processing: true
+			cuda_batch_processing: true,
 			parallel_streams: 8,
 			rtx_3060_ti_optimized: true
 		})

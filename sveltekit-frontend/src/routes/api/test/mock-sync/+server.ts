@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           database: {
-            status: dbStatus
+            status: dbStatus,
             available: db !== null,
             pgvector: dbStatus === 'connected' ? 'available' : 'unknown'
           },
@@ -71,9 +71,9 @@ export const GET: RequestHandler = async ({ url }) => {
         const mockData = initializeMockDataWithEmbeddings()
         return json({
           success: true,
-          data: mockData
+          data: mockData,
           metadata: {
-            generated_embeddings: true
+            generated_embeddings: true,
             embedding_dimensions: 384,
             total_records: {
               users: mockData.users.length,
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'api-examples':
         return json({
           success: true,
-          examples: mockApiResponses
+          examples: mockApiResponses,
           usage: {
             cases_list: 'GET /api/cases',
             cases_create: 'POST /api/cases',
@@ -102,8 +102,8 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: false,
             error: 'Database not connected',
-            status: dbStatus
-            suggestion: 'Ensure PostgreSQL is running on localhost:5432 with legal_ai_db database'
+            status: dbStatus,
+            suggestion: 'Ensure PostgreSQL is running on localhost:5432 with legal_ai_db database',
           })
         }
         try {
@@ -136,8 +136,8 @@ export const GET: RequestHandler = async ({ url }) => {
           }
           return json({
             success: true,
-            database_test: testResults
-            recommendations: testResults.tables === 'missing'
+            database_test: testResults,
+            recommendations: testResults.tables === 'missing',
               ? ['Run database migrations: npm run db:migrate', 'Seed test data: npm run db:seed']
               : ['Database appears ready for use']
           })
@@ -208,8 +208,8 @@ export const POST: RequestHandler = async ({ request }) => {
           `)
           return json({
             success: true,
-            vector_test: vectorTest[0]
-            message: 'pgvector is working correctly'
+            vector_test: vectorTest[0],
+            message: 'pgvector is working correctly',
           })
         } catch (error) {
           return json({

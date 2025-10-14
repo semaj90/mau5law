@@ -2,18 +2,14 @@
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   interface Props {
-    caseId: string ;
+    caseId: string;
   }
-  let {
-    caseId = ""
-  }: Props = $props();
+  let { caseId = '' }: Props = $props();
 
-
-
-  import { page } from "$app/state";
-  import Button from "$lib/components/ui/button/Button.svelte";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import { notifications } from "$lib/stores/notification";
+  import { page } from '$app/state';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Tooltip from '$lib/components/ui/Tooltip.svelte';
+  import { notifications } from '$lib/stores/notification';
   import {
     AlertCircle,
     Archive,
@@ -35,8 +31,8 @@ https://svelte.dev/e/js_parse_error -->
     Trash2,
     Upload,
     Video,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
+  } from 'lucide-svelte';
+  import { onMount } from 'svelte';
 
   // Props
 
@@ -51,33 +47,33 @@ https://svelte.dev/e/js_parse_error -->
   let showBulkActions = false;
 
   // Filters and view options
-  let searchQuery = "";
-  let selectedCategory = "";
-  let viewMode = "grid"; // 'grid' | 'list'
-  let sortBy = "uploadedAt";
-  let sortOrder = "desc";
+  let searchQuery = '';
+  let selectedCategory = '';
+  let viewMode = 'grid'; // 'grid' | 'list'
+  let sortBy = 'uploadedAt';
+  let sortOrder = 'desc';
 
   // Upload modal state
   let showUploadModal = false;
   let dragActive = false;
   let uploadFiles: FileList | null = null;
-  let uploadDescription = "";
-  let uploadTags = "";
+  let uploadDescription = '';
+  let uploadTags = '';
 
   // File categories
   const categories = [
-    { value: "", label: "All Files", icon: Folder },
-    { value: "image", label: "Images", icon: Image },
-    { value: "video", label: "Videos", icon: Video },
-    { value: "document", label: "Documents", icon: FileText },
-    { value: "audio", label: "Audio", icon: Music },
-    { value: "archive", label: "Archives", icon: Archive },
+    { value: '', label: 'All Files', icon: Folder },
+    { value: 'image', label: 'Images', icon: Image },
+    { value: 'video', label: 'Videos', icon: Video },
+    { value: 'document', label: 'Documents', icon: FileText },
+    { value: 'audio', label: 'Audio', icon: Music },
+    { value: 'archive', label: 'Archives', icon: Archive },
   ];
 
   // Get caseId from URL if not provided as prop
   $effect(() => {
     if (!caseId) {
-      caseId = page.url.searchParams.get("caseId") || page.params.id || "";
+      caseId = page.url.searchParams.get('caseId') || page.params.id || '';
     }
   });
 
@@ -89,15 +85,15 @@ https://svelte.dev/e/js_parse_error -->
 
   async function loadEvidenceFiles() {
     if (!caseId) {
-      error = "Case ID is required";
+      error = 'Case ID is required';
       return;
-}
+    }
     loading = true;
     error = null;
 
     try {
       const params = new URLSearchParams({ caseId });
-      if (selectedCategory) params.append("category", selectedCategory);
+      if (selectedCategory) params.append('category', selectedCategory);
 
       const response = await fetch(`/api/evidence/upload?${params}`);
       const data = await response.json();
@@ -106,20 +102,21 @@ https://svelte.dev/e/js_parse_error -->
         evidenceFiles = data.files || [];
         filterAndSortFiles();
       } else {
-        error = data.error || "Failed to load evidence files";
-}
+        error = data.error || 'Failed to load evidence files';
+      }
     } catch (err) {
-      console.error("Error loading evidence:", err);
-      error = "Failed to load evidence files";
+      console.error('Error loading evidence:', err);
+      error = 'Failed to load evidence files';
       notifications.add({
-        type: "error",
-        title: "Error Loading Evidence",
-        message: "Failed to load evidence files. Please try again.",
+        type: 'error',
+        title: 'Error Loading Evidence',
+        message: 'Failed to load evidence files. Please try again.',
         duration: 5000,
       });
     } finally {
       loading = false;
-}}
+    }
+  }
   function filterAndSortFiles() {
     let filtered = [...evidenceFiles];
 
@@ -127,49 +124,49 @@ https://svelte.dev/e/js_parse_error -->
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        (f) =>
+        f =>
           f.title?.toLowerCase().includes(query) ||
           f.fileName?.toLowerCase().includes(query) ||
           f.description?.toLowerCase().includes(query)
       );
-}
+    }
     // Apply category filter
     if (selectedCategory) {
-      filtered = filtered.filter((f) => f.evidenceType === selectedCategory);
-}
+      filtered = filtered.filter(f => f.evidenceType === selectedCategory);
+    }
     // Apply sorting
     filtered.sort((a, b) => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
 
-      if (sortBy === "uploadedAt" || sortBy === "updatedAt") {
+      if (sortBy === 'uploadedAt' || sortBy === 'updatedAt') {
         aValue = new Date(aValue || 0).getTime();
         bValue = new Date(bValue || 0).getTime();
-      } else if (sortBy === "fileSize") {
+      } else if (sortBy === 'fileSize') {
         aValue = Number(aValue) || 0;
         bValue = Number(bValue) || 0;
-      } else if (typeof aValue === "string") {
+      } else if (typeof aValue === 'string') {
         aValue = aValue.toLowerCase();
         bValue = bValue.toLowerCase();
-}
-      if (sortOrder === "asc") {
+      }
+      if (sortOrder === 'asc') {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
-}
+      }
     });
 
     filteredFiles = filtered;
-}
+  }
   // File upload handlers
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
-}
+  }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-}
+  }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -181,7 +178,9 @@ https://svelte.dev/e/js_parse_error -->
         showUploadModal = true;
       } else {
         uploadMultipleFiles();
-}}}
+      }
+    }
+  }
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
     uploadFiles = input.files;
@@ -190,7 +189,9 @@ https://svelte.dev/e/js_parse_error -->
         showUploadModal = true;
       } else {
         uploadMultipleFiles();
-}}}
+      }
+    }
+  }
   async function uploadSingleFile() {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
@@ -200,13 +201,13 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const file = uploadFiles[0];
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("caseId", caseId);
-      formData.append("description", uploadDescription);
-      formData.append("tags", uploadTags);
+      formData.append('file', file);
+      formData.append('caseId', caseId);
+      formData.append('description', uploadDescription);
+      formData.append('tags', uploadTags);
 
-      const response = await fetch("/api/evidence/upload", {
-        method: "POST",
+      const response = await fetch('/api/evidence/upload', {
+        method: 'POST',
         body: formData,
       });
 
@@ -214,32 +215,33 @@ https://svelte.dev/e/js_parse_error -->
 
       if (result.success) {
         notifications.add({
-          type: "success",
-          title: "File Uploaded",
+          type: 'success',
+          title: 'File Uploaded',
           message: `${file.name} uploaded successfully`,
         });
 
         showUploadModal = false;
-        uploadDescription = "";
-        uploadTags = "";
+        uploadDescription = '';
+        uploadTags = '';
         uploadFiles = null;
 
         await loadEvidenceFiles();
       } else {
-        throw new Error(result.error || "Upload failed");
-}
+        throw new Error(result.error || 'Upload failed');
+      }
     } catch (err) {
-      console.error("Upload error:", err);
+      console.error('Upload error:', err);
       notifications.add({
-        type: "error",
-        title: "Upload Failed",
-        message: err instanceof Error ? err.message : "File upload failed",
+        type: 'error',
+        title: 'Upload Failed',
+        message: err instanceof Error ? err.message : 'File upload failed',
         duration: 5000,
       });
     } finally {
       uploading = false;
       uploadProgress = 0;
-}}
+    }
+  }
   async function uploadMultipleFiles() {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
@@ -248,13 +250,13 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const formData = new FormData();
-      Array.from(uploadFiles).forEach((file) => {
-        formData.append("files", file);
+      Array.from(uploadFiles).forEach(file => {
+        formData.append('files', file);
       });
-      formData.append("caseId", caseId);
+      formData.append('caseId', caseId);
 
-      const response = await fetch("/api/evidence/upload", {
-        method: "PUT",
+      const response = await fetch('/api/evidence/upload', {
+        method: 'PUT',
         body: formData,
       });
 
@@ -262,74 +264,75 @@ https://svelte.dev/e/js_parse_error -->
 
       if (result.success && result.successCount > 0) {
         notifications.add({
-          type: "success",
-          title: "Bulk Upload Complete",
+          type: 'success',
+          title: 'Bulk Upload Complete',
           message: `${result.successCount} files uploaded successfully`,
         });
 
         if (result.failureCount > 0) {
           notifications.add({
-            type: "warning",
-            title: "Some Uploads Failed",
+            type: 'warning',
+            title: 'Some Uploads Failed',
             message: `${result.failureCount} files failed to upload`,
             duration: 8000,
           });
-}
+        }
         uploadFiles = null;
         await loadEvidenceFiles();
       } else {
-        throw new Error(result.error || "Bulk upload failed");
-}
+        throw new Error(result.error || 'Bulk upload failed');
+      }
     } catch (err) {
-      console.error("Bulk upload error:", err);
+      console.error('Bulk upload error:', err);
       notifications.add({
-        type: "error",
-        title: "Bulk Upload Failed",
-        message: err instanceof Error ? err.message : "Bulk upload failed",
+        type: 'error',
+        title: 'Bulk Upload Failed',
+        message: err instanceof Error ? err.message : 'Bulk upload failed',
         duration: 5000,
       });
     } finally {
       uploading = false;
       uploadProgress = 0;
-}}
+    }
+  }
   // Selection handlers
   function toggleFileSelection(fileId: string) {
     if (selectedFiles.has(fileId)) {
       selectedFiles.delete(fileId);
     } else {
       selectedFiles.add(fileId);
-}
+    }
     selectedFiles = selectedFiles;
     showBulkActions = selectedFiles.size > 0;
-}
+  }
   function selectAllFiles() {
     if (selectedFiles.size === filteredFiles.length) {
       selectedFiles.clear();
     } else {
-      filteredFiles.forEach((f) => selectedFiles.add(f.id));
-}
+      filteredFiles.forEach(f => selectedFiles.add(f.id));
+    }
     selectedFiles = selectedFiles;
     showBulkActions = selectedFiles.size > 0;
-}
+  }
   // Utility functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-}
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
   function getFileIcon(evidenceType: string) {
     switch (evidenceType) {
-      case "image":
+      case 'image':
         return Image;
-      case "video":
+      case 'video':
         return Video;
-      case "audio":
+      case 'audio':
         return Music;
-      case "document":
+      case 'document':
         return FileText;
-      case "archive":
+      case 'archive':
         return Archive;
       default:
         return File;
@@ -337,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getFileUrl(file: any): string {
     return file.fileUrl || `/uploads/${caseId}/${file.fileName}`;
-}
+  }
   // Reactive statements
   $effect(() => {
     if (searchQuery || selectedCategory || sortBy || sortOrder) {
@@ -367,16 +370,12 @@ https://svelte.dev/e/js_parse_error -->
             disabled={loading}
             aria-label="Refresh evidence files"
           >
-            <RefreshCw class={`icon ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw class={`icon ${loading ? 'animate-spin' : ''}`} />
           </button>
         </Tooltip>
 
         <Tooltip content="Upload files">
-          <button
-            class="nes-btn is-success"
-            onclick={() => (showUploadModal = true)}
-            disabled={!caseId}
-          >
+          <button class="nes-btn is-success" onclick={() => (showUploadModal = true)} disabled={!caseId}>
             <Upload class="icon" />
             UPLOAD
           </button>
@@ -403,10 +402,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Category Filter -->
       <div class="nes-select is-dark filter-select">
-        <select
-          bind:value={selectedCategory}
-          aria-label="Filter by category"
-        >
+        <select bind:value={selectedCategory} aria-label="Filter by category">
           {#each categories as category}
             <option value={category.value}>{category.label}</option>
           {/each}
@@ -417,10 +413,10 @@ https://svelte.dev/e/js_parse_error -->
       <Tooltip content="Toggle view mode">
         <button
           class="nes-btn view-toggle"
-          onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+          onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
           aria-label="Toggle view mode"
         >
-          {#if viewMode === "grid"}
+          {#if viewMode === 'grid'}
             <List class="icon" />
           {:else}
             <Grid class="icon" />
@@ -432,10 +428,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Sort Options -->
     <div class="sort-section">
       <div class="nes-select is-dark">
-        <select
-          bind:value={sortBy}
-          aria-label="Sort by"
-        >
+        <select bind:value={sortBy} aria-label="Sort by">
           <option value="uploadedAt">Upload Date</option>
           <option value="title">Name</option>
           <option value="fileSize">File Size</option>
@@ -444,10 +437,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="nes-select is-dark">
-        <select
-          bind:value={sortOrder}
-          aria-label="Sort order"
-        >
+        <select bind:value={sortOrder} aria-label="Sort order">
           <option value="desc">Descending</option>
           <option value="asc">Ascending</option>
         </select>
@@ -517,14 +507,12 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Upload class="drop-icon" />
         <h3 class="nes-text is-primary">
-          {searchQuery || selectedCategory
-            ? "No matching files found"
-            : "No evidence files yet"}
+          {searchQuery || selectedCategory ? 'No matching files found' : 'No evidence files yet'}
         </h3>
         <p class="drop-text">
           {searchQuery || selectedCategory
-            ? "Try adjusting your search criteria"
-            : "Drag and drop files here or click to upload"}
+            ? 'Try adjusting your search criteria'
+            : 'Drag and drop files here or click to upload'}
         </p>
 
         {#if !searchQuery && !selectedCategory}
@@ -548,13 +536,10 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Files Header -->
       <div class="files-header nes-container is-dark">
         <span class="nes-text is-primary">
-          {filteredFiles.length} file{filteredFiles.length !== 1 ? "s" : ""} found
+          {filteredFiles.length} file{filteredFiles.length !== 1 ? 's' : ''} found
         </span>
 
-        <button
-          class="nes-btn select-all-btn"
-          onclick={() => selectAllFiles()}
-        >
+        <button class="nes-btn select-all-btn" onclick={() => selectAllFiles()}>
           {#if selectedFiles.size === filteredFiles.length}
             <CheckSquare class="icon" />
           {:else}
@@ -565,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <!-- Files Grid/List -->
-      {#if viewMode === "grid"}
+      {#if viewMode === 'grid'}
         <div class="files-grid">
           {#each filteredFiles as file}
             <div class="nes-container is-dark is-rounded file-card">
@@ -611,7 +596,7 @@ https://svelte.dev/e/js_parse_error -->
 
                 <!-- File Preview/Icon -->
                 <div class="file-preview">
-                  {#if file.evidenceType === "image"}
+                  {#if file.evidenceType === 'image'}
                     <img
                       src={getFileUrl(file)}
                       alt={file.title || file.fileName}
@@ -752,11 +737,7 @@ https://svelte.dev/e/js_parse_error -->
                 <span class="nes-text">Uploading...</span>
                 <span class="nes-text is-success">{uploadProgress}%</span>
               </div>
-              <progress
-                class="nes-progress is-success"
-                value={uploadProgress}
-                max="100"
-              ></progress>
+              <progress class="nes-progress is-success" value={uploadProgress} max="100"></progress>
             </div>
           {/if}
         </div>
@@ -768,18 +749,14 @@ https://svelte.dev/e/js_parse_error -->
           onclick={() => {
             showUploadModal = false;
             uploadFiles = null;
-            uploadDescription = "";
-            uploadTags = "";
+            uploadDescription = '';
+            uploadTags = '';
           }}
           disabled={uploading}
         >
           Cancel
         </button>
-        <button
-          class="nes-btn is-success"
-          onclick={() => uploadSingleFile()}
-          disabled={uploading || !uploadFiles}
-        >
+        <button class="nes-btn is-success" onclick={() => uploadSingleFile()} disabled={uploading || !uploadFiles}>
           {#if uploading}
             <div class="uploading-spinner"></div>
             Uploading...
@@ -936,7 +913,9 @@ https://svelte.dev/e/js_parse_error -->
   .file-card {
     background: #1a1d20 !important;
     border: 2px solid #3a3d40 !important;
-    transition: border-color 0.2s, transform 0.2s;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
   }
 
   .file-card:hover {
@@ -1171,7 +1150,9 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .animate-spin {

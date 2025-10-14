@@ -30,7 +30,7 @@ class InMemoryQueue extends EventEmitter {
   async lpush(queueName: string, data: string): Promise<number> {
     const message: QueueMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      data: typeof data === 'string' ? JSON.parse(data) : data
+      data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
@@ -46,7 +46,7 @@ class InMemoryQueue extends EventEmitter {
   async rpush(queueName: string, data: string): Promise<number> {
     const message: QueueMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      data: typeof data === 'string' ? JSON.parse(data) : data
+      data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
@@ -151,7 +151,7 @@ class InMemoryQueue extends EventEmitter {
   getStats(queueName?: string): any {
     if (queueName) {
       return {
-        queue: queueName
+        queue: queueName,
         pending: this.messages.get(queueName)?.length || 0,
         deadLetter: this.deadLetter.get(queueName)?.length || 0,
         stats: this.stats.get(queueName) || { processed: 0, failed: 0 }
@@ -214,8 +214,8 @@ export class WorkflowQueue extends InMemoryQueue {
   private workflows: Map<string, any> = new Map();
   async startWorkflow(workflowId: string, initialState: any): Promise<void> {
     this.workflows.set(workflowId, {
-      id: workflowId
-      state: initialState
+      id: workflowId,
+      state: initialState,
       history: [{ state: initialState, timestamp: Date.now() }],
       status: 'active'
     });

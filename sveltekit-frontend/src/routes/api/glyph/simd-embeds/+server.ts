@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js'
-import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js'
-import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js'
-import sharp from 'sharp'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
+import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
+import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
+import sharp from 'sharp';
 /*
  * SIMD-Enhanced Glyph Generation API
  *
@@ -12,13 +12,13 @@ import sharp from 'sharp'
  */
 interface SIMDGlyphRequest extends GlyphRequest {
   simd_config?: {
-    enable_tiling: boolean
-    tile_size: number
+    enable_tiling: boolean;
+    tile_size: number;
     compression_target: number; // Target compression ratio (e.g., 50 for 50:1),
-    shader_format: 'webgl' | 'webgpu' | 'css' | 'svg'
-    adaptive_quality: boolean
+    shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
+    adaptive_quality: boolean;
     performance_tier: 'nes' | 'snes' | 'n64'; // Quality target
-  }
+  };
 }
 interface SIMDShaderData {
   tiled_data: Float32Array;
@@ -583,12 +583,15 @@ export const GET: RequestHandler = async () => {
     };
     return json({
       success: true,
-      data: stats
-    })
+      data: stats,
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'SIMD glyph service unavailable'
-    }, { status: 503 })
+    return json(
+      {
+        success: false,
+        error: 'SIMD glyph service unavailable',
+      },
+      { status: 503 }
+    );
   }
-}
+};

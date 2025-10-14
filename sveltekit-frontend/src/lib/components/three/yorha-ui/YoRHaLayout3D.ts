@@ -59,7 +59,7 @@ export class YoRHaLayout3D extends THREE.Group {
     // Cast to YoRHa3DComponent for the internal array (layout components can be treated as components)
     const comp = component as YoRHa3DComponent;
     this.children3D.push({
-      component: comp
+      component: comp,
       layout,
       originalPosition
     });
@@ -269,9 +269,9 @@ export class YoRHaLayout3D extends THREE.Group {
     return start;
   }
   private getCrossPosition(
-    childCrossSize: number
-    availableCross: number
-    alignSelf: string | undefined
+    childCrossSize: number,
+    availableCross: number,
+    alignSelf: string | undefined,
     padding: Required<YoRHaPadding3D>;
   ): number {
     const align = alignSelf || this.options.align || 'start';
@@ -363,8 +363,8 @@ export class YoRHaLayoutPresets {
   static createGrid(columns: number, rows?: number, gap = 0.2): YoRHaLayout3D {
     return new YoRHaLayout3D({
       type: 'grid',
-      gridColumns: columns
-      gridRows: rows
+      gridColumns: columns,
+      gridRows: rows,
       gap
     });
   }

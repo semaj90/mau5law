@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         ocrMetadata: evidence.ocrMetadata,
         processedAt: evidence.processedAt,
         createdAt: evidence.createdAt,
-        updatedAt: evidence.updatedAt
+        updatedAt: evidence.updatedAt,
       })
       .from(evidence)
       .where(eq(evidence.id, evidenceId))
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         highConfidence: hasHighConfidence,
         hasRegions: hasRegions,
         regionsCount: hasRegions ? record.ocrRegions.length : 0,
-        tensorOptimized: record.tensorProcessed
+        tensorOptimized: record.tensorProcessed,
       },
 
       // Processing metadata
@@ -78,10 +78,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       timing: {
         uploaded: record.createdAt.toISOString(),
         lastUpdated: record.updatedAt.toISOString(),
-        processed: record.processedAt?.toISOString()
+        processed: record.processedAt?.toISOString(),
       },
 
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     };
 
     return json(status, {
@@ -89,10 +89,9 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'Cache-Control': 'max-age=60' // Cache for 1 minute
-      }
+        'Cache-Control': 'max-age=60', // Cache for 1 minute
+      },
     });
-
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Evidence OCR status error:', err);
@@ -100,7 +99,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || 'Status check failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime)
+      processingTime: Math.round(processingTime),
     };
 
     return json(errorResponse, {
@@ -108,8 +107,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true',
+      },
     });
   }
 };

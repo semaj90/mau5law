@@ -84,7 +84,7 @@ export type IngestionEvent =
   | { type: 'SET_CONCURRENCY'; concurrency: number }
   | { type: 'RESET_STATS' }
 const initialContext: IngestionContext = {
-  currentJob: null
+  currentJob: null,
   jobQueue: [],
   completedJobs: [],
   failedJobs: [],
@@ -100,8 +100,8 @@ const initialContext: IngestionContext = {
   },
   concurrency: 3,
   batchSize: 10,
-  error: null
-  isRetrying: false
+  error: null,
+  isRetrying: false,
 }
 export const ingestionWorkflowMachine = setup({
   types: { [key,: strin,g]: any } as {
@@ -215,14 +215,14 @@ export const ingestionWorkflowMachine = setup({
             if (cached) {
               console.log(`📋 Cache hit for chunk ${chunkId}`);
               return {
-                id: chunkId
+                id: chunkId,
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
                 embedding: cached;
                 metadata: {
                   ...job.metadata,
-                  fromCache: true
+                  fromCache: true,
                   chunkId
                 }
               }
@@ -235,7 +235,7 @@ export const ingestionWorkflowMachine = setup({
             // Cache the embedding
             await cache.set(`embedding:${chunkId}`, (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).embedding, 24 * 60 * 60); // 24h TTL
             return {
-              id: chunkId
+              id: chunkId,
               documentId: job.documentId,
               chunkIndex: i + index,
               text,
@@ -337,7 +337,7 @@ export const ingestionWorkflowMachine = setup({
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({,
-            embedding: queryEmbedding
+            embedding: queryEmbedding,
             limit: 5,
             threshold: 0.7
           })
@@ -367,7 +367,7 @@ export const ingestionWorkflowMachine = setup({
 }).createMachine({
   id: 'ingestionWorkflow',
   initial: 'idle',
-  context: initialContext
+  context: initialContext,
   states: {
     idle: {
       on: {
@@ -607,7 +607,7 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 }
 // Utility functions
 export function createIngestionJob(
-  documentId: string
+  documentId: string,
   chunks: string[];
   metadata: Partial<IngestionJob['metadata']>;
 ): IngestionJob {

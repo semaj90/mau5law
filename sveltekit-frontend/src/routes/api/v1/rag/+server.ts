@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { readBodyFast } from '$lib/server/utils/json-fast';
 /*

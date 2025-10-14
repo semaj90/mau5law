@@ -1,4 +1,3 @@
-```svelte
 <!--
   Simplified Registration Form - Svelte 5 Compatible
   Basic registration without complex dependencies
@@ -13,14 +12,7 @@
   import Input from '$lib/components/ui/Input.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Label from '$lib/components/ui/label.svelte';
-  import {
-    Shield,
-    UserPlus,
-    AlertCircle,
-    Eye,
-    EyeOff,
-    Loader2
-  } from 'lucide-svelte'; // Added icon imports
+  import { Shield, UserPlus, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-svelte'; // Added icon imports
   import {
     FileText,
     FileArchive,
@@ -38,9 +30,9 @@
     password?: string;
     confirmPassword?: string;
     role?: string;
-   department?: string;
-jurisdiction?: string;
-agreeToTerms?: boolean;
+    department?: string;
+    jurisdiction?: string;
+    agreeToTerms?: boolean;
     enableTwoFactor?: boolean;
   }
   interface Props {
@@ -48,11 +40,7 @@ agreeToTerms?: boolean;
     redirectTo?: string;
     showLogin?: boolean;
   }
-  let {
-    data,
-    redirectTo = '/dashboard',
-    showLogin = true
-  }: Props = $props();
+  let { data, redirectTo = '/dashboard', showLogin = true }: Props = $props();
   // Form state
   let showPassword = $state(false);
   let showConfirmPassword = $state(false);
@@ -79,7 +67,7 @@ agreeToTerms?: boolean;
     { value: 'prosecutor', label: 'Prosecutor' },
     { value: 'investigator', label: 'Investigator' },
     { value: 'analyst', label: 'Legal Analyst' },
-    { value: 'admin', label: 'Administrator' }
+    { value: 'admin', label: 'Administrator' },
   ];
   // Form validation
   function validateForm(): boolean {
@@ -110,7 +98,7 @@ agreeToTerms?: boolean;
   }
   // Password strength checker
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
-    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' }
+    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
     let score = 0;
     if (password.length >= 8) score += 2;
     if (password.length >= 12) score += 1;
@@ -118,10 +106,10 @@ agreeToTerms?: boolean;
     if (/[A-Z]/.test(password)) score += 1;
     if (/\d/.test(password)) score += 1;
     if (/@$!%*?&/.test(password)) score += 1;
-    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' }
-    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' }
-    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' }
-    return { score, feedback: 'Excellent', color: 'text-green-500' }
+    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' };
+    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' };
+    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };
+    return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
 
   let passwordStrength = $derived(calculatePasswordStrength(formData.password));
@@ -159,7 +147,13 @@ agreeToTerms?: boolean;
 
   function saveManifest() {
     try {
-      const manifest: FileManifest[] = files.map((f) => ({ id: f.id, name: f.file.name, size: f.file.size, lastModified: f.file.lastModified, status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status }));
+      const manifest: FileManifest[] = files.map(f => ({
+        id: f.id,
+        name: f.file.name,
+        size: f.file.size,
+        lastModified: f.file.lastModified,
+        status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status,
+      }));
       localStorage.setItem(FILES_MANIFEST_KEY, JSON.stringify(manifest));
     } catch (e) {
       // ignore storage errors
@@ -173,13 +167,16 @@ agreeToTerms?: boolean;
       if (!raw) return;
       const manifest = JSON.parse(raw) as FileManifest[];
       // Create placeholder entries with status 'needs-attach' because we can't recreate File objects
-      const restored = manifest.map((m) => ({
-        id: m.id,
-        file: new File([], m.name, { lastModified: m.lastModified, type: '' }),
-        status: m.status === 'pending' ? 'needs-attach' : m.status,
-        progress: 0,
-        iconData: fileTypeIcon(m.name) // Calculate iconData for restored files
-      } as FileEntry));
+      const restored = manifest.map(
+        m =>
+          ({
+            id: m.id,
+            file: new File([], m.name, { lastModified: m.lastModified, type: '' }),
+            status: m.status === 'pending' ? 'needs-attach' : m.status,
+            progress: 0,
+            iconData: fileTypeIcon(m.name), // Calculate iconData for restored files
+          }) as FileEntry
+      );
       files = [...restored, ...files];
     } catch (e) {
       console.warn('loadManifest failed', e);
@@ -203,20 +200,23 @@ agreeToTerms?: boolean;
     const input = e.target as HTMLInputElement;
     if (!input?.files) return;
     const list = Array.from(input.files);
-    const newEntries = list.map((f) => ({
-      id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000),
-      file: f,
-      status: 'pending',
-      progress: 0,
-      iconData: fileTypeIcon(f.name) // Calculate iconData when files are selected
-    } as FileEntry));
+    const newEntries = list.map(
+      f =>
+        ({
+          id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000),
+          file: f,
+          status: 'pending',
+          progress: 0,
+          iconData: fileTypeIcon(f.name), // Calculate iconData when files are selected
+        }) as FileEntry
+    );
     files = [...files, ...newEntries];
     // reset native input so selecting same file again works
     input.value = '';
   }
 
   function removeFile(id: string) {
-    files = files.filter((f) => f.id !== id);
+    files = files.filter(f => f.id !== id);
   }
 
   // Determine a small icon / color for file types
@@ -224,23 +224,28 @@ agreeToTerms?: boolean;
   function fileTypeIcon(name: string): FileTypeIconData {
     const ext = name.split('.').pop()?.toLowerCase() || '';
     switch (ext) {
-      case 'pdf': return { Icon: FileText, color: 'text-red-600', bg: 'bg-red-100' };
+      case 'pdf':
+        return { Icon: FileText, color: 'text-red-600', bg: 'bg-red-100' };
       case 'doc':
-      case 'docx': return { Icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
+      case 'docx':
+        return { Icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
       case 'png':
       case 'jpg':
-      case 'jpeg': return { Icon: FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
-      case 'zip': return { Icon: FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
-      default: return { Icon: FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
+      case 'jpeg':
+        return { Icon: FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
+      case 'zip':
+        return { Icon: FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
+      default:
+        return { Icon: FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
     }
   }
 
   function uploadFile(entry: FileEntry) {
     entry.status = 'uploading';
     const xhr = new XMLHttpRequest();
-  const url = '/api/evidence/upload';
+    const url = '/api/evidence/upload';
     xhr.open('POST', url, true);
-    xhr.upload.onprogress = (ev) => {
+    xhr.upload.onprogress = ev => {
       if (ev.lengthComputable) {
         entry.progress = Math.round((ev.loaded / ev.total) * 100);
         files = [...files];
@@ -268,14 +273,14 @@ agreeToTerms?: boolean;
       enableEmbeddings: true,
       enableAiAnalysis: true,
       enableOcr: false,
-      title: entry.file.name
+      title: entry.file.name,
     };
     fd.append('uploadData', JSON.stringify(uploadData));
     xhr.send(fd);
   }
 
   async function uploadAllPending() {
-    for (const entry of files.filter((f) => f.status === 'pending')) {
+    for (const entry of files.filter(f => f.status === 'pending')) {
       // don't block; start each upload concurrently but small delay to allow UI update
       uploadFile(entry);
     }
@@ -289,7 +294,7 @@ agreeToTerms?: boolean;
       if (!input.files || input.files.length === 0) return;
       const picked = input.files[0];
       // find entry
-      const idx = files.findIndex((x) => x.id === id);
+      const idx = files.findIndex(x => x.id === id);
       if (idx === -1) return;
       // replace placeholder file
       files[idx].file = picked;
@@ -303,6 +308,7 @@ agreeToTerms?: boolean;
   }
 </script>
 
+```svelte
 <div class="w-full max-w-2xl mx-auto">
   <div class="bg-nier-bits-card p-8 rounded-lg border border-border">
     <div class="text-center mb-6">
@@ -359,7 +365,7 @@ agreeToTerms?: boolean;
           } else if ((result as { type?: any; data?: any }).type === 'error') {
             errorMessage = 'An error occurred during registration. Please try again.';
           }
-        }
+        };
       }}
       class="space-y-4"
     >
@@ -511,7 +517,7 @@ agreeToTerms?: boolean;
                   style="width: {Math.min(100, (passwordStrength.score / 8) * 100)}%"
                 ></div>
               </div>
-              <span class={"text-sm " + passwordStrength.color}>{passwordStrength.feedback}</span>
+              <span class={'text-sm ' + passwordStrength.color}>{passwordStrength.feedback}</span>
             </div>
           {/if}
         </div>
@@ -556,9 +562,7 @@ agreeToTerms?: boolean;
             class="rounded border-border text-primary focus:ring-primary"
           />
           <Label>
-            <span class="text-sm">
-              Enable two-factor authentication (recommended for legal professionals)
-            </span>
+            <span class="text-sm"> Enable two-factor authentication (recommended for legal professionals) </span>
           </Label>
         </div>
       </div>
@@ -601,13 +605,23 @@ agreeToTerms?: boolean;
       <div class="space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div class="flex-1">
-            <Button type="button" class="w-full sm:w-auto bits-btn bits-btn" onclick={triggerFileInput} disabled={isLoading}>
+            <Button
+              type="button"
+              class="w-full sm:w-auto bits-btn bits-btn"
+              onclick={triggerFileInput}
+              disabled={isLoading}
+            >
               Upload Documents
             </Button>
             <input bind:this={fileInputEl} onchange={onFilesSelected} type="file" multiple class="hidden" />
           </div>
           <div class="flex-1">
-            <Button type="button" class="w-full sm:w-auto bits-btn bits-ghost" onclick={uploadAllPending} disabled={isLoading || files.length===0}>
+            <Button
+              type="button"
+              class="w-full sm:w-auto bits-btn bits-ghost"
+              onclick={uploadAllPending}
+              disabled={isLoading || files.length === 0}
+            >
               Upload All Pending
             </Button>
           </div>
@@ -625,7 +639,7 @@ agreeToTerms?: boolean;
                   </div>
                   <div class="min-w-0">
                     <div class="text-sm font-medium truncate">{f.file.name}</div>
-                    <div class="text-xs text-muted truncate">{Math.round(f.file.size/1024)} KB</div>
+                    <div class="text-xs text-muted truncate">{Math.round(f.file.size / 1024)} KB</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -639,9 +653,19 @@ agreeToTerms?: boolean;
                     <div class="text-red-600" title={f.error}>⚠</div>
                   {:else if f.status === 'needs-attach'}
                     <div class="text-sm text-muted">File missing — please reattach</div>
-                    <Button type="button" class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => reattachFile(f.id)} disabled={isLoading}>Reattach</Button>
+                    <Button
+                      type="button"
+                      class="bits-btn bits-ghost text-xs px-2 py-1"
+                      onclick={() => reattachFile(f.id)}
+                      disabled={isLoading}>Reattach</Button
+                    >
                   {/if}
-                  <Button type="button" class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => removeFile(f.id)} disabled={isLoading}>Remove</Button>
+                  <Button
+                    type="button"
+                    class="bits-btn bits-ghost text-xs px-2 py-1"
+                    onclick={() => removeFile(f.id)}
+                    disabled={isLoading}>Remove</Button
+                  >
                 </div>
               </div>
             {/each}
@@ -673,15 +697,35 @@ agreeToTerms?: boolean;
     {/if}
   </div>
 </div>
+```
 
 <style>
-  .animate-fade-in { animation: fadeIn .18s ease-out; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-  .bg-muted { background-color: var(--muted, #f3f4f6); }
-  .bg-card { background-color: var(--card, #ffffff); }
-  .bits-ghost { background: transparent; border: 1px solid var(--border, #e5e7eb); }
+  .animate-fade-in {
+    animation: fadeIn 0.18s ease-out;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .bg-muted {
+    background-color: var(--muted, #f3f4f6);
+  }
+  .bg-card {
+    background-color: var(--card, #ffffff);
+  }
+  .bits-ghost {
+    background: transparent;
+    border: 1px solid var(--border, #e5e7eb);
+  }
   @media (max-width: 640px) {
-    .max-w-2xl { padding: 1rem; }
+    .max-w-2xl {
+      padding: 1rem;
+    }
   }
 </style>
-```

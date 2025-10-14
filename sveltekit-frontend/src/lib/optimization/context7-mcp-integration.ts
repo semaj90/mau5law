@@ -60,10 +60,10 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     this.optimizationSuite =
       suite ||;
       createEnhancedOptimizationSuite({
-        development_mode: true
+        development_mode: true,
         memory_limit_gb: 8,
-        enable_wasm: true
-        cache_strategy: "balanced"
+        enable_wasm: true,
+        cache_strategy: "balanced",
       });
     this.initializeIntegration();
   }
@@ -74,8 +74,8 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       // Get performance baseline
       this.performance_baseline = await this.collectCurrentMetrics();
       this.emit("integration_initialized", {
-        suite_ready: true
-        baseline_metrics: this.performance_baseline
+        suite_ready: true,
+        baseline_metrics: this.performance_baseline,
       });
     } catch (error: any) {
       console.error("Context7 MCP integration initialization failed:", error);
@@ -131,7 +131,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     return response;
   }
   async suggestIntegrationWithOptimization(
-    feature: string
+    feature: string,
     requirements?: string;
   ): Promise<Context7MCPResponse> {
     const optimization_context = await this.getOptimizationContext();
@@ -154,7 +154,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     return response;
   }
   async getLibraryDocsWithOptimizationTips(
-    library: string
+    library: string,
     topic?: string;
   ): Promise<Context7MCPResponse> {
     const request: Context7MCPRequest = {
@@ -625,7 +625,7 @@ const db = drizzle(pool, {
     ];
     return {
       current_metrics,
-      recommendations: all_recommendations
+      recommendations: all_recommendations,
       estimated_improvements,
       implementation_plan
     }

@@ -32,7 +32,7 @@ export class EmbeddingService {
    * Generate embedding for text using Ollama
    */
   async generateEmbedding(
-    text: string
+    text: string,
     options: EmbeddingOptions = {}
   ): Promise<number[]> {
     try {
@@ -43,7 +43,7 @@ export class EmbeddingService {
         },
         body: JSON.stringify({,
           model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,
-          prompt: text
+          prompt: text,
         })
       });
       if (!response.ok) {
@@ -82,7 +82,7 @@ export class EmbeddingService {
   }
   /**
    * Generate and store user profile embedding
-   */;
+   */
   async generateUserProfileEmbedding(userId: string): Promise<void> {
     try {
       // Get user data
@@ -120,7 +120,7 @@ export class EmbeddingService {
   }
   /**
    * Generate and store user preference embedding
-   */;
+   */
   async generateUserPreferenceEmbedding(userId: string): Promise<void> {
     try {
       // Get user data
@@ -202,7 +202,7 @@ export class EmbeddingService {
   }
   /**
    * Generate case embedding and store in database
-   */;
+   */
   async generateCaseEmbedding(caseId: string, content: string): Promise<void> {
     try {
       // Generate embedding
@@ -222,7 +222,7 @@ export class EmbeddingService {
   }
   /**
    * Calculate cosine similarity between two vectors
-   */;
+   */
   cosineSimilarity(vecA: number[], vecB: number[]): number {
     if (vecA.length !== vecB.length) {
       throw new Error('Vectors must have the same length');
@@ -243,7 +243,7 @@ export class EmbeddingService {
   }
   /**
    * Normalize vector to unit length
-   */;
+   */
   private normalizeVector(vector: number[]): number[] {
     const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
     if (norm === 0) {
@@ -255,7 +255,7 @@ export class EmbeddingService {
    * Chunk text into smaller pieces for embedding
    */
   chunkText(
-    text: string
+    text: string,
     chunkSize: number = 600,
     overlap: number = 60;
   ): { text: string; index: number }[] {
@@ -280,7 +280,7 @@ export class EmbeddingService {
   }
   /**
    * Health check for Ollama service
-   */;
+   */
   async healthCheck(): Promise<boolean> {
     try {
       // removed unused response assignment
@@ -292,7 +292,7 @@ export class EmbeddingService {
   }
   /**
    * Get available models from Ollama
-   */;
+   */
   async getAvailableModels(): Promise<string[]> {
     try {
       // removed unused response assignment

@@ -46,11 +46,11 @@ export const POST: RequestHandler = async ({ request }) => {
 				.insert(chatMessages)
 				.values({
 					id: message.id,
-					sessionId: sessionId
+					sessionId: sessionId,
 					content: message.content,
 					role: message.role,
 					timestamp: message.timestamp || new Date(),
-					embedding: embedding ? JSON.stringify(embedding) : null
+					embedding: embedding ? JSON.stringify(embedding) : null,
 					metadata: message.metadata || {},
 					model: model || 'gemma3-legal',
 					confidence: message.metadata?.confidence || null

@@ -19,7 +19,7 @@ const TARGET_DIM: number = (() => {
   return Number.isFinite(v) && v > 0 ? v : 384;
 })();
 function ensureDim(
-  vec: number[] | Float32Array | null | undefined
+  vec: number[] | Float32Array | null | undefined,
   target = TARGET_DIM;
 ): number[] {
   if (!vec || (!Array.isArray(vec as any) && !(vec instanceof Float32Array))
@@ -269,8 +269,8 @@ async function generateNomicBatchEmbeddings(
 }
 // Export object for easier importing and better organization
 export const embeddings = {
-  generate: generateEmbedding
-  generateBatch: generateBatchEmbeddings
+  generate: generateEmbedding,
+  generateBatch: generateBatchEmbeddings,
 }
 // For backward compatibility
 export const embedAndSearch = {

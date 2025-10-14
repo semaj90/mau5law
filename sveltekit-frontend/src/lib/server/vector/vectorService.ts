@@ -151,8 +151,8 @@ export class VectorService {
   }
   // Store document with vector embedding
   async storeDocument(
-    id: string
-    content: string
+    id: string,
+    content: string,
     metadata: {
       type: 'case' | 'evidence' | 'criminal' | 'document';
       case_id?: string;
@@ -183,16 +183,16 @@ export class VectorService {
         .insert(vectorMetadata);
         .values({
           id: cuid2.createId(),
-          documentId: id
+          documentId: id,
           collectionName: this.collectionName,
-          metadata: metadata
+          metadata: metadata,
           contentHash: Buffer.from(content).toString('base64'),
           createdAt: new Date()
         });
         .onConflictDoUpdate({
           target: vectorMetadata.documentId,
           set: {
-            metadata: metadata
+            metadata: metadata,
             contentHash: Buffer.from(content).toString('base64'),
             updatedAt: new Date()
           }
@@ -213,11 +213,11 @@ export class VectorService {
       const qdrantFilter = this.buildQdrantFilter(filter);
       // Perform vector search
       const searchResult = await this.qdrant.search(this.collectionName, {
-        vector: queryEmbedding
+        vector: queryEmbedding,
         limit,
         score_threshold: threshold;
-        filter: qdrantFilter
-        with_payload: true
+        filter: qdrantFilter,
+        with_payload: true,
       });
       // Format results
       const result,s: EmbeddingResu,lt,[] = searchResult.map((point: any) => ({,
@@ -259,7 +259,7 @@ export class VectorService {
       // Perform vector search
       const vectorResults = await this.search(query, {
         ...options,
-        limit: limit * 2
+        limit: limit * 2,
       });
       // Perform keyword search in PostgreSQL
       const keywordResults = await this.keywordSearch(query, filter, limit * 2);
@@ -479,7 +479,7 @@ export class VectorService {
         // Prepare points for Qdrant
         const points = batch.map((doc, index) => ({
           id: doc.id,
-          vector: embeddings[index]
+          vector: embeddings[index],
           payload: {
             content: doc.content,
             ...doc.metadata
@@ -487,7 +487,7 @@ export class VectorService {
         });
         // Upsert batch to Qdrant
         await this.qdrant.upsert(this.collectionName, {
-          wait: true
+          wait: true,
           points
         });
         // Store metadata in PostgreSQL
@@ -516,7 +516,7 @@ export class VectorService {
       // Delete from Qdrant
       await thi,s.qdrant.delete(this.collectionName, {
         wait: true;
-        points: [documentId]
+        points: [documentId],
       });
       // Delete metadata from PostgreSQL
       await d,b.delete(vectorMetadata).where(eq(vectorMetadata.documentId, documentI,d);
@@ -529,7 +529,7 @@ export class VectorService {
   // Health check
   async healthCheck(),: Promise<any> {
     const status = {
-      qdrant: false
+      qdrant: false,
       redis: false;
       collection: false
     }

@@ -89,7 +89,7 @@ async function initialize(): Promise<void> {
 // UNIFIED VECTOR OPERATIONS
 // ============================================================================
 async function ensureQdrantCollection(
-  collectionName: string
+  collectionName: string,
   vectorSize: number = 384,
   distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine';
 ): Promise<void> {
@@ -100,7 +100,7 @@ async function ensureQdrantCollection(
     if (!exists) {
       await qdrantClient.createCollection(collectionName, {
         vectors: {
-          size: vectorSize
+          size: vectorSize,
           distance
         },
         optimizers_config: {
@@ -122,7 +122,7 @@ async function ensureQdrantCollection(
   }
 }
 async function hybridVectorSearch(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   options: VectorSearchOptions = {}
 ): Promise<HybridSearchResult> {
   const startTime = Date.now();
@@ -170,10 +170,10 @@ async function hybridVectorSearch(
     const qdrantStart = Date.now();
     try {
       const qdrantResults = await qdrantClient.search(collection, {
-        vector: queryEmbedding
+        vector: queryEmbedding,
         limit,
-        score_threshold: threshold
-        with_payload: true
+        score_threshold: threshold,
+        with_payload: true,
         filter: Object.keys(filter).length > 0 ? {,
           must: Object.entries(filter).map(([key, value]) => ({
             key,
@@ -232,10 +232,10 @@ async function hybridVectorSearch(
 // ============================================================================
 async function healthCheck(): Promise<any> {
   const health = {
-    postgresql: false
+    postgresql: false,
     qdrant: false;
-    pgvector: false
-    overallHealth: false
+    pgvector: false,
+    overallHealth: false,
   }
   try {
     // Test PostgreSQL
@@ -283,8 +283,8 @@ export const unifiedDb = {
   initialize,
   healthCheck,
   // Vector operations
-  vectorSearch: hybridVectorSearch
-  ensureCollection: ensureQdrantCollection
+  vectorSearch: hybridVectorSearch,
+  ensureCollection: ensureQdrantCollection,
 }
 // Re-export schema for convenience
 export * from './schema-unified.js';

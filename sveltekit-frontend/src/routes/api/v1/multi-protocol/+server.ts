@@ -1,25 +1,25 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 /*
  * Multi-Protocol API Gateway Integration
  * SvelteKit frontend integration with enhanced multi-protocol gateway
  * Provides intelligent routing and fallback capabilities
  */
-import { json, error } from '@sveltejs/kit'
-import { ensureError } from '$lib/utils/ensure-error'
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 
 // Protocol types and priorities
-type ProtocolType = 'quic' | 'grpc' | 'http' | 'websocket'
-type ProtocolPriority = 1 | 2 | 3 | 4
+type ProtocolType = 'quic' | 'grpc' | 'http' | 'websocket';
+type ProtocolPriority = 1 | 2 | 3 | 4;
 
 // Gateway Health interface
 interface GatewayHealth {
-	status: string;
-	protocols: Record<string, unknown>;
+  status: string;
+  protocols: Record<string, unknown>;
 }
 
 // Gateway Services interface
 interface GatewayServices {
-	services: Record<string, ServiceEndpoint[]>;
+  services: Record<string, ServiceEndpoint[]>;
 }
 
 // Gateway Metrics interface
@@ -27,10 +27,10 @@ type GatewayMetrics = Record<string, unknown>;
 
 // Protocol Stats interface
 interface ProtocolStats {
-	total: number;
-	healthy: number;
-	avg_response_time: number;
-	avg_success_rate: number;
+  total: number;
+  healthy: number;
+  avg_response_time: number;
+  avg_success_rate: number;
 }
 
 // Protocol fallback request interface
@@ -63,90 +63,91 @@ export interface ProtocolFallbackResponse {
 }
 // Service endpoint information
 export interface ServiceEndpoint {
-	name: string
-	protocol: ProtocolType
-	priority: ProtocolPriority
-	address: string
-	port: number
-	path?: string
-	healthy: boolean
-	weight: number
-	load_factor: number
-	response_time: number
-	last_check: string
-	capabilities: string[]
-	request_count: number
-	error_count: number
-	success_rate: number
+  name: string;
+  protocol: ProtocolType;
+  priority: ProtocolPriority;
+  address: string;
+  port: number;
+  path?: string;
+  healthy: boolean;
+  weight: number;
+  load_factor: number;
+  response_time: number;
+  last_check: string;
+  capabilities: string[];
+  request_count: number;
+  error_count: number;
+  success_rate: number;
 }
 // Gateway configuration
 const GATEWAY_CONFIG = {
-	baseUrl: import.meta.env.GATEWAY_BASE_URL || 'http://localhost:8230',
-	timeout: parseInt(import.meta.env.GATEWAY_TIMEOUT || '30000', 10),
-	retryAttempts: parseInt(import.meta.env.GATEWAY_RETRY_ATTEMPTS || '3', 10),
-	enableFallback: import.meta.env.GATEWAY_ENABLE_FALLBACK !== 'false'
-}
+  baseUrl: import.meta.env.GATEWAY_BASE_URL || 'http://localhost:8230',
+  timeout: parseInt(import.meta.env.GATEWAY_TIMEOUT || '30000', 10),
+  retryAttempts: parseInt(import.meta.env.GATEWAY_RETRY_ATTEMPTS || '3', 10),
+  enableFallback: import.meta.env.GATEWAY_ENABLE_FALLBACK !== 'false',
+};
 // Protocol priority mapping
 const PROTOCOL_PRIORITIES: Record<ProtocolType, ProtocolPriority> = {
-	quic: 1,      // Highest priority - lowest latency
-	grpc: 2,      // Second priority - high performance
-	http: 3,      // Third priority - standard fallback
-	websocket: 4  // Lowest priority - real-time specific
-}
+  quic: 1, // Highest priority - lowest latency
+  grpc: 2, // Second priority - high performance
+  http: 3, // Third priority - standard fallback
+  websocket: 4, // Lowest priority - real-time specific
+};
 /*
  * GET /api/v1/multi-protocol - Get multi-protocol gateway status and services
  */
 export const GET: RequestHandler = async ({ url }) => {
-	try {
-		const includeMetrics = url.searchParams.get('metrics') === 'true'
-		const serviceName = url.searchParams.get('service')
-		const protocol = url.searchParams.get('protocol') as ProtocolType
-		// Fetch gateway health and services
-		const [healthResponse, servicesResponse, metricsResponse] = await Promise.allSettled([
-			fetchGatewayHealth(),
-			fetchGatewayServices(),
-			includeMetrics ? fetchGatewayMetrics() : Promise.resolve(null)
-		])
-		const health = healthResponse.status === 'fulfilled' ? healthResponse.value : null
-		const services = servicesResponse.status === 'fulfilled' ? servicesResponse.value : null
-		const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null
-		// Filter by service name if specified
-		let filteredServices = services
-		if (serviceName && services) {
-			filteredServices = {
-				[serviceName]: services[serviceName] || []
-			}
-		}
-		// Filter by protocol if specified
-		if (protocol && filteredServices) {
-			for (const [service, endpoints] of Object.entries(filteredServices)) {
-				filteredServices[service] = (endpoints as ServiceEndpoint[]).filter(
-					endpoint => endpoint.protocol === protocol
-				)
-			}
-		}
-		return json({
-			gateway: {
-				status: health?.status || 'unknown',
-				protocols: health?.protocols || {},
-				timestamp: new Date().toISOString()
-			},
-			services: filteredServices || {},
-			metrics: metrics || null,
-			config: {
-				fallback_enabled: GATEWAY_CONFIG.enableFallback,
-				timeout: GATEWAY_CONFIG.timeout,
-				retry_attempts: GATEWAY_CONFIG.retryAttempts
-			}
-		})
-	} catch (err: unknown) {
-		console.error('Multi-protocol gateway status check failed:', err)
-		throw error(500, ensureError({
-			message: 'Failed to check gateway status',
-			error: err instanceof Error ? err.message : 'Unknown error'
-		}))
-	}
-}
+  try {
+    const includeMetrics = url.searchParams.get('metrics') === 'true';
+    const serviceName = url.searchParams.get('service');
+    const protocol = url.searchParams.get('protocol') as ProtocolType;
+    // Fetch gateway health and services
+    const [healthResponse, servicesResponse, metricsResponse] = await Promise.allSettled([
+      fetchGatewayHealth(),
+      fetchGatewayServices(),
+      includeMetrics ? fetchGatewayMetrics() : Promise.resolve(null),
+    ]);
+    const health = healthResponse.status === 'fulfilled' ? healthResponse.value : null;
+    const services = servicesResponse.status === 'fulfilled' ? servicesResponse.value : null;
+    const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null;
+    // Filter by service name if specified
+    let filteredServices = services;
+    if (serviceName && services) {
+      filteredServices = {
+        [serviceName]: services[serviceName] || [],
+      };
+    }
+    // Filter by protocol if specified
+    if (protocol && filteredServices) {
+      for (const [service, endpoints] of Object.entries(filteredServices)) {
+        filteredServices[service] = (endpoints as ServiceEndpoint[]).filter(endpoint => endpoint.protocol === protocol);
+      }
+    }
+    return json({
+      gateway: {
+        status: health?.status || 'unknown',
+        protocols: health?.protocols || {},
+        timestamp: new Date().toISOString(),
+      },
+      services: filteredServices || {},
+      metrics: metrics || null,
+      config: {
+        fallback_enabled: GATEWAY_CONFIG.enableFallback,
+        timeout: GATEWAY_CONFIG.timeout,
+        retry_attempts: GATEWAY_CONFIG.retryAttempts,
+      },
+    });
+  } catch (err: unknown) {
+    console.error('Multi-protocol gateway status check failed:', err);
+    throw error(
+      500,
+      ensureError({
+        message: 'Failed to check gateway status',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
+  }
+};
 /*
  * POST /api/v1/multi-protocol - Execute request with protocol fallback
  */
@@ -178,32 +179,35 @@ export const POST: RequestHandler = async ({ request }) => {
  * PUT /api/v1/multi-protocol/config - Update gateway configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
-	try {
-		const config = await request.json()
-		// Update gateway configuration
-		const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/config`, {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(config),
-			signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout)
-		})
-		if (!response.ok) {
-			throw new Error(`Gateway config update failed: ${response.status}`)
-		}
-		const result = await response.json()
-		return json({
-			success: true,
-			message: 'Gateway configuration updated',
-			config: result
-		})
-	} catch (err: unknown) {
-		console.error('Gateway configuration update failed:', err)
-		throw error(500, ensureError({
-			message: 'Configuration update failed',
-			error: err instanceof Error ? err.message : 'Unknown error'
-		}))
-	}
-}
+  try {
+    const config = await request.json();
+    // Update gateway configuration
+    const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+      signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout),
+    });
+    if (!response.ok) {
+      throw new Error(`Gateway config update failed: ${response.status}`);
+    }
+    const result = await response.json();
+    return json({
+      success: true,
+      message: 'Gateway configuration updated',
+      config: result,
+    });
+  } catch (err: unknown) {
+    console.error('Gateway configuration update failed:', err);
+    throw error(
+      500,
+      ensureError({
+        message: 'Configuration update failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
+  }
+};
 /*
  * DELETE /api/v1/multi-protocol/circuit-breaker/:service/:endpoint - Reset circuit breaker
  */
@@ -369,7 +373,7 @@ async function fetchGatewayMetrics(): Promise<GatewayMetrics> {
  * Generate unique request ID for tracing
  */
 function generateRequestId(): string {
-	return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 /*
  * Get optimal protocol for service based on requirements
@@ -406,7 +410,10 @@ export function getOptimalProtocol(
 /*
  * Create protocol fallback chain based on service and requirements
  */
-export function createFallbackChain(preferredProtocol: ProtocolType, serviceCapabilities: string[] = []): ProtocolType[] {
+export function createFallbackChain(
+  preferredProtocol: ProtocolType,
+  serviceCapabilities: string[] = []
+): ProtocolType[] {
   const allProtocols: ProtocolType[] = ['quic', 'grpc', 'http', 'websocket'];
   // Filter protocols based on service capabilities if provided
   const availableProtocols =
@@ -426,59 +433,67 @@ export function createFallbackChain(preferredProtocol: ProtocolType, serviceCapa
  * Protocol selection utility functions for frontend components
  */
 export const ProtocolUtils = {
-	getOptimalProtocol,
-	createFallbackChain,
-	/*
-	 * Check if protocol is available for service
-	 */
-	isProtocolAvailable(services: Record<string, ServiceEndpoint[]>, serviceName: string, protocol: ProtocolType): boolean {
-		const serviceEndpoints = services[serviceName] || []
-		return serviceEndpoints.some(endpoint => endpoint.protocol === protocol && endpoint.healthy)
-	},
-	/*
-	 * Get best endpoint for service and protocol
-	 */
-	getBestEndpoint(services: Record<string, ServiceEndpoint[]>, serviceName: string, protocol: ProtocolType): ServiceEndpoint | null {
-		const serviceEndpoints = services[serviceName] || []
-		const protocolEndpoints = serviceEndpoints.filter(
-			endpoint => endpoint.protocol === protocol && endpoint.healthy
-		)
-		if (protocolEndpoints.length === 0) {
-			return null
-		}
-		// Sort by success rate and response time
-		return protocolEndpoints.sort((a, b) => {
-			const scoreA = a.success_rate * 0.7 + (1 / (a.response_time + 1)) * 0.3
-			const scoreB = b.success_rate * 0.7 + (1 / (b.response_time + 1)) * 0.3
-			return scoreB - scoreA
-		})[0]
-	},
-	/*
-	 * Get protocol statistics
-	 */
-	getProtocolStats(services: Record<string, ServiceEndpoint[]>): Record<ProtocolType, ProtocolStats> {
-		const stats: Partial<Record<ProtocolType, ProtocolStats>> = {}
-		const protocolData: Record<ProtocolType, ServiceEndpoint[]> = {
-			quic: [],
-			grpc: [],
-			http: [],
-			websocket: []
-		}
-		// Collect endpoints by protocol
-		Object.values(services).flat().forEach(endpoint => {
-			protocolData[endpoint.protocol].push(endpoint)
-		})
-		// Calculate statistics
-		Object.entries(protocolData).forEach(([protocol, endpoints]) => {
-			const healthy = endpoints.filter(e => e.healthy)
-			stats[protocol as ProtocolType] = {
+  getOptimalProtocol,
+  createFallbackChain,
+  /*
+   * Check if protocol is available for service
+   */
+  isProtocolAvailable(
+    services: Record<string, ServiceEndpoint[]>,
+    serviceName: string,
+    protocol: ProtocolType
+  ): boolean {
+    const serviceEndpoints = services[serviceName] || [];
+    return serviceEndpoints.some(endpoint => endpoint.protocol === protocol && endpoint.healthy);
+  },
+  /*
+   * Get best endpoint for service and protocol
+   */
+  getBestEndpoint(
+    services: Record<string, ServiceEndpoint[]>,
+    serviceName: string,
+    protocol: ProtocolType
+  ): ServiceEndpoint | null {
+    const serviceEndpoints = services[serviceName] || [];
+    const protocolEndpoints = serviceEndpoints.filter(endpoint => endpoint.protocol === protocol && endpoint.healthy);
+    if (protocolEndpoints.length === 0) {
+      return null;
+    }
+    // Sort by success rate and response time
+    return protocolEndpoints.sort((a, b) => {
+      const scoreA = a.success_rate * 0.7 + (1 / (a.response_time + 1)) * 0.3;
+      const scoreB = b.success_rate * 0.7 + (1 / (b.response_time + 1)) * 0.3;
+      return scoreB - scoreA;
+    })[0];
+  },
+  /*
+   * Get protocol statistics
+   */
+  getProtocolStats(services: Record<string, ServiceEndpoint[]>): Record<ProtocolType, ProtocolStats> {
+    const stats: Partial<Record<ProtocolType, ProtocolStats>> = {};
+    const protocolData: Record<ProtocolType, ServiceEndpoint[]> = {
+      quic: [],
+      grpc: [],
+      http: [],
+      websocket: [],
+    };
+    // Collect endpoints by protocol
+    Object.values(services)
+      .flat()
+      .forEach(endpoint => {
+        protocolData[endpoint.protocol].push(endpoint);
+      });
+    // Calculate statistics
+    Object.entries(protocolData).forEach(([protocol, endpoints]) => {
+      const healthy = endpoints.filter(e => e.healthy);
+      stats[protocol as ProtocolType] = {
         total: endpoints.length,
         healthy: healthy.length,
         avg_response_time:
           healthy.length > 0 ? healthy.reduce((sum, e) => sum + e.response_time, 0) / healthy.length : 0,
         avg_success_rate: healthy.length > 0 ? healthy.reduce((sum, e) => sum + e.success_rate, 0) / healthy.length : 0,
       };
-		})
-		return stats as Record<ProtocolType, ProtocolStats>;
-	}
-}
+    });
+    return stats as Record<ProtocolType, ProtocolStats>;
+  },
+};

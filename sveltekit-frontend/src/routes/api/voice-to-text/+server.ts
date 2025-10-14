@@ -1,5 +1,4 @@
-
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 // Simple env helper

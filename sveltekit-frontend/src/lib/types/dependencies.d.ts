@@ -56,7 +56,7 @@ declare module '@langchain/core/utils/document' {
 declare module '@langchain/core/documents' {
   export interface Document {
     pageContent: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
 }
 // Ollama LangChain types
@@ -147,10 +147,10 @@ declare module '@xenova/transformers' {
       onnx: {
         wasm: {
           numThreads: number;
-        }
-      }
-    }
-  }
+        };
+      };
+    };
+  };
   export function pipeline(_task: string, model?: string, options?: PretrainedOptions): Promise<Pipeline>;
 }
 export interface FeatureExtractionPipeline extends Pipeline {}
@@ -163,7 +163,7 @@ declare module 'lokijs' {
       revision: number;
       created: number;
       version: number;
-    }
+    };
   }
   export interface LokiCollection<T = any> {
     insert(doc: T): T & LokiObj;
@@ -199,7 +199,7 @@ declare module 'lokijs' {
         transactional?: boolean;
         autoupdate?: boolean;
         exact?: string[];
-      },
+      }
     ): LokiCollection<T>;
     getCollection<T = any>(name: string): LokiCollection<T> | null;
     removeCollection(name: string): void;
@@ -238,7 +238,7 @@ declare module 'lokijs' {
         destructureDelimiter?: string;
         serializationMethod?: 'normal' | 'pretty' | 'destructured';
         throttledSaves?: boolean;
-      },
+      }
     );
     // Database methods
     addCollection<T = any>(
@@ -250,7 +250,7 @@ declare module 'lokijs' {
         transactional?: boolean;
         autoupdate?: boolean;
         exact?: string[];
-      },
+      }
     ): LokiCollection<T>;
     getCollection<T = any>(name: string): LokiCollection<T> | null;
     removeCollection(name: string): void;
@@ -277,7 +277,7 @@ declare global {
     interface Global {
       performance: {
         now(): number;
-      }
+      };
       gc?: () => void;
     }
   }

@@ -1,7 +1,7 @@
 /**
  * Performance Monitor for N64 Texture Streaming
  * Adaptive quality adjustment based on client capabilities
- */;
+ */
 }
 export interface PerformanceMetrics {
   frameRate: number;
@@ -41,7 +41,7 @@ export interface QualitySettings {
 }
 /**
  * Performance Monitor and Adaptive Quality Controller
- */;
+ */
 export class PerformanceMonitor {
   private metrics: PerformanceMetrics;
   private capabilities: ClientCapabilities;
@@ -80,7 +80,7 @@ export class PerformanceMonitor {
   }
   /**
    * Detect client capabilities
-   */;
+   */
   private detectClientCapabilities(): ClientCapabilities {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -143,7 +143,7 @@ export class PerformanceMonitor {
   }
   /**
    * Get optimal quality settings based on capabilities
-   */;
+   */
   private getOptimalQualitySettings(): QualitySettings {
     const base: QualitySettings = {
       textureResolution: 1.0,
@@ -203,7 +203,7 @@ export class PerformanceMonitor {
   }
   /**
    * Start performance monitoring
-   */;
+   */
   private startMonitoring(): void {
     // Monitor frame performance
     this.performanceInterval = window.setInterval(() => {
@@ -216,7 +216,7 @@ export class PerformanceMonitor {
   }
   /**
    * Update frame timing
-   */;
+   */
   updateFrameTiming(renderTime: number): void {
     const now = performance.now();
     if (this.lastFrameTime > 0) {
@@ -233,26 +233,26 @@ export class PerformanceMonitor {
   }
   /**
    * Update cache statistics
-   */;
+   */
   updateCacheStats(hits: number, total: number): void {
     this.metrics.cacheHitRate = total > 0 ? hits / total : 0;
   }
   /**
    * Update chunk loading rate
-   */;
+   */
   updateChunkRate(chunksLoaded: number): void {
     const elapsed = (performance.now() - this.startTime) / 1000;
     this.metrics.chunksPerSecond = elapsed > 0 ? chunksLoaded / elapsed : 0;
   }
   /**
    * Update network latency
-   */;
+   */
   updateNetworkLatency(latency: number): void {
     this.metrics.networkLatency = latency;
   }
   /**
    * Update performance metrics
-   */;
+   */
   private updatePerformanceMetrics(): void {
     if (this.samples.length > 0) {
       const avgFrameTime = this.samples.reduce((sum, time) => sum + time, 0) / this.samples.length;
@@ -271,7 +271,7 @@ export class PerformanceMonitor {
   }
   /**
    * Check if quality adjustment is needed
-   */;
+   */
   private checkQualityAdjustment(): void {
     if (!this.metrics.adaptiveEnabled) return;
     const avgFrameTime = this.metrics.frameRate > 0 ? 1000 / this.metrics.frameRate: 100;
@@ -293,7 +293,7 @@ export class PerformanceMonitor {
   }
   /**
    * Adjust quality settings
-   */;
+   */
   private adjustQuality(adjustment: number): void {
     const newResolution = Math.max(0.3, Math.min(1.0, this.qualitySettings.textureResolution + adjustment);
     if (Math.abs(newResolution - this.qualitySettings.textureResolution) > 0.01) {
@@ -317,7 +317,7 @@ export class PerformanceMonitor {
   }
   /**
    * Estimate GPU memory usage
-   */;
+   */
   private estimateGPUMemoryUsage(): number {
     // Simplified estimation based on texture count and size
     // In a real implementation, this would query GPU memory APIs
@@ -327,7 +327,7 @@ export class PerformanceMonitor {
   }
   /**
    * Estimate CPU usage based on frame timing variance
-   */;
+   */
   private estimateCPUUsage(): number {
     if (this.samples.length < 10) return 0;
     const avgFrameTime = this.samples.reduce((sum, time) => sum + time, 0) / this.samples.length;
@@ -338,7 +338,7 @@ export class PerformanceMonitor {
   }
   /**
    * Force quality level
-   */;
+   */
   setQualityLevel(level: number): void {
     this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level);
     if (this.onQualityChange) {
@@ -347,31 +347,31 @@ export class PerformanceMonitor {
   }
   /**
    * Enable/disable adaptive quality
-   */;
+   */
   setAdaptiveEnabled(enabled: boolean): void {
     this.metrics.adaptiveEnabled = enabled;
   }
   /**
    * Get current metrics
-   */;
+   */
   getMetrics(): PerformanceMetrics {
     return { ...this.metrics }
   }
   /**
    * Get client capabilities
-   */;
+   */
   getCapabilities(): ClientCapabilities {
     return { ...this.capabilities }
   }
   /**
    * Get current quality settings
-   */;
+   */
   getQualitySettings(): QualitySettings {
     return { ...this.qualitySettings }
   }
   /**
    * Benchmark system performance
-   */;
+   */
   async runBenchmark(): Promise<{
     cpuScore: number;
     gpuScore: number;
@@ -462,7 +462,7 @@ export class PerformanceMonitor {
   }
   /**
    * Generate performance report
-   */;
+   */
   generateReport(): string {
     const report = {
       timestamp: new Date().toISOString(),
@@ -475,7 +475,7 @@ export class PerformanceMonitor {
   }
   /**
    * Generate performance recommendations
-   */;
+   */
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
     if (this.metrics.frameRate < 30) {
@@ -500,7 +500,7 @@ export class PerformanceMonitor {
   }
   /**
    * Cleanup monitoring
-   */;
+   */
   dispose(): void {
     if (this.performanceInterval) {
       clearInterval(this.performanceInterval);

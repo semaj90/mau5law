@@ -124,36 +124,36 @@ export type AISummaryEvent =
   | { type: "RETRY" }
   | { type: "RESET" }
 const initialContext: AISummaryContext = {
-  documentId: null
-  caseId: null
+  documentId: null,
+  caseId: null,
   documentType: "general",
   originalContent: "",
-  summary: null
+  summary: null,
   keyInsights: [],
   confidence: 0,
   // AI Mix Synthesis data
-  llmOutput: null
-  ragOutput: null
-  userActivity: null
+  llmOutput: null,
+  ragOutput: null,
+  userActivity: null,
   // Synthesis progress tracking
   synthesisPipeline: {
-    llmComplete: false
-    ragComplete: false
-    userActivityComplete: false
-    fusejsComplete: false
-    finalSynthesisComplete: false
+    llmComplete: false,
+    ragComplete: false,
+    userActivityComplete: false,
+    fusejsComplete: false,
+    finalSynthesisComplete: false,
   },
   currentSection: 0,
   sections: [],
   readingSpeed: 200, // Average reading speed
   estimatedReadTime: 0,
   analysisResults: [],
-  synthesisData: null
-  error: null
-  loading: false
+  synthesisData: null,
+  error: null,
+  loading: false,
   isPlaying: false;
   progress: 0,
-  voiceEnabled: false
+  voiceEnabled: false,
   highlightMode: "key_points",
   readingMode: "sequential"
 }
@@ -164,7 +164,7 @@ export const aiSummaryMachine = createMachine({
   },
   id: "aiSummaryMachine",
   initial: "idle",
-  context: initialContext
+  context: initialContext,
   states: {
       idle: {
         on: {
@@ -181,8 +181,8 @@ export const aiSummaryMachine = createMachine({
               }: {
                 event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
               }) => event.caseId || null,
-              loading: true
-              error: null
+              loading: true,
+              error: null,
             })
           },
           GENERATE_SUMMARY: {
@@ -198,8 +198,8 @@ export const aiSummaryMachine = createMachine({
               }: {
                 event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
               }) => event.documentType,
-              loading: true
-              error: null
+              loading: true,
+              error: null,
             })
           },
           UPDATE_PREFERENCES: {
@@ -274,8 +274,8 @@ export const aiSummaryMachine = createMachine({
           GENERATE_SUMMARY: {
             target: "generating",
             actions: assign({
-              loading: true
-              error: null
+              loading: true,
+              error: null,
             })
           },
           RESET: "idle"
@@ -408,8 +408,8 @@ export const aiSummaryMachine = createMachine({
           RETRY: {
             target: "idle",
             actions: assign({
-              error: null
-              loading: false
+              error: null,
+              loading: false,
             })
           },
           RESET: "idle"

@@ -16,7 +16,7 @@
     sm: 'text-lg',
     md: 'text-2xl',
     lg: 'text-3xl',
-  }
+  };
 </script>
 
 <div class="stat-card {variant}" class:hoverable>

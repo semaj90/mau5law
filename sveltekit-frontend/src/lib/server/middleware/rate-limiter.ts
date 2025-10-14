@@ -45,7 +45,7 @@ class RateLimiter {
       // First request or window expired
       this.limits.set(key, { count: 1, resetTime });
       return {
-        allowed: true
+        allowed: true,
         resetTime,
         remaining: this.config.maxRequests - 1
       }
@@ -53,7 +53,7 @@ class RateLimiter {
     if (entry.count >= this.config.maxRequests) {
       // Rate limit exceeded
       return {
-        allowed: false
+        allowed: false,
         resetTime: entry.resetTime,
         remaining: 0
       }
@@ -61,7 +61,7 @@ class RateLimiter {
     // Increment and allow
     entry.count++;
     return {
-      allowed: true
+      allowed: true,
       resetTime: entry.resetTime,
       remaining: this.config.maxRequests - entry.count
     }
@@ -102,7 +102,7 @@ export const grpoRateLimiter = new RateLimiter({
 });
 // Middleware function to apply rate limiting
 export function withRateLimit(
-  rateLimiter: RateLimiter
+  rateLimiter: RateLimiter,
   errorMessage: string = 'Too many requests';
 ) {
   return (handler: (request: Request) => Promise<Response>) => {
@@ -112,7 +112,7 @@ export function withRateLimit(
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
         return new Response(JSON.stringify({
             success: false;
-            error: errorMessage
+            error: errorMessage,
             retryAfter,
             resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
           }),

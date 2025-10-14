@@ -73,20 +73,20 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       success: successCount === totalTests,
       summary: {
         totalTests,
-        passed: successCount
+        passed: successCount,
         failed: totalTests - successCount,
         processingTime: Date.now() - startTime
       },
-      results: testResults
-      timestamp: new Date().toISOString()
+      results: testResults,
+      timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
     return json({
       success: false,
       error: 'Database persistence test failed',
       details: error instanceof Error ? error.message: 'Unknown error',
-      results: testResults
-      processingTime: Date.now() - startTime
+      results: testResults,
+      processingTime: Date.now() - startTime,
     }, { status: 500 })
   }
 }
@@ -96,8 +96,8 @@ async function testCreateUser(): Promise<any> {
     const userId = uuidv4()
     const testEmail = `test-${Date.now()}@legal-ai.com`
     await db.insert(users).values({
-      id: userId
-      email: testEmail
+      id: userId,
+      email: testEmail,
       displayName: 'Test User',
       role: 'user'
     })
@@ -123,13 +123,13 @@ async function testCreateChatSession(userId: string): Promise<any> {
   try {
     const sessionId = uuidv4()
     await db.insert(chatSessions).values({
-      id: sessionId
+      id: sessionId,
       userId,
       title: 'Test Session',
       context: { testSession: true },
       metadata: {
-        createdForTesting: true
-        timestamp: new Date().toISOString()
+        createdForTesting: true,
+        timestamp: new Date().toISOString(),
       }
     })
     return {
@@ -154,8 +154,8 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
   try {
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
-      legalDomain: true
-      cache: true
+      legalDomain: true,
+      cache: true,
     }) as number[]
     if (!Array.isArray(embedding) || embedding.length === 0) {
       throw new Error('Invalid embedding generated')
@@ -188,14 +188,14 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
     if (embedding && embedding.length > 0) {
       // Use pgvector utility function
       const success = await insertChatMessageWithEmbedding({
-        id: messageId
+        id: messageId,
         sessionId,
         role: 'user',
         content,
         embedding,
         metadata: {
-          testMessage: true
-          embeddingDimensions: embedding.length
+          testMessage: true,
+          embeddingDimensions: embedding.length,
         }
       })
       if (!success) {
@@ -204,13 +204,13 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
     } else {
       // Fallback without embedding
       await db.insert(chatMessages).values({
-        id: messageId
+        id: messageId,
         sessionId,
         role: 'user',
         content,
         metadata: {
-          testMessage: true
-          embeddingStatus: 'not_available'
+          testMessage: true,
+          embeddingStatus: 'not_available',
         }
       })
     }
@@ -394,8 +394,8 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       .set({
         feedback: 'helpful',
         metadata: {
-          feedbackUpdated: true
-          feedbackTimestamp: new Date().toISOString()
+          feedbackUpdated: true,
+          feedbackTimestamp: new Date().toISOString(),
         }
       })
       .where(eq(chatRecommendations.id, recommendationId)
@@ -405,8 +405,8 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       success: (result as { length?: any }).length > 0,
       message: 'Recommendation feedback updated successfully',
       data: {
-        updatedRecommendationId: recommendationId
-        feedback: 'helpful'
+        updatedRecommendationId: recommendationId,
+        feedback: 'helpful',
       },
       responseTime: Date.now() - startTime
     }

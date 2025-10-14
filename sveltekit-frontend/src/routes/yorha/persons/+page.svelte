@@ -19,7 +19,7 @@
       location: 'Downtown District',
       description: 'Former cybersecurity expert turned corporate spy',
       cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null
+      photo: null,
     },
     {
       id: 'POI-002',
@@ -31,7 +31,7 @@
       location: 'Tech Quarter',
       description: 'Data analyst with suspicious financial transactions',
       cases: ['CASE-2024-088'],
-      photo: null
+      photo: null,
     },
     {
       id: 'POI-003',
@@ -43,8 +43,8 @@
       location: 'Multiple Networks',
       description: 'Advanced persistent threat actor, identity unknown',
       cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null
-    }
+      photo: null,
+    },
   ]);
   let searchQuery = $state('');
   let selectedThreatLevel = $state('all');
@@ -57,7 +57,7 @@
     status: 'surveillance',
     description: '',
     last_seen: '',
-    location: ''
+    location: '',
   });
   let isLoading = $state(false);
   let error = $state(null);
@@ -67,10 +67,11 @@
     let filtered = persons ? [...persons] : [];
     const q = (searchQuery || '').trim().toLowerCase();
     if (q) {
-      filtered = filtered.filter(item =>
-        (item.name || '').toLowerCase().includes(q) ||
-        (item.alias || '').toLowerCase().includes(q) ||
-        (item.description || '').toLowerCase().includes(q)
+      filtered = filtered.filter(
+        item =>
+          (item.name || '').toLowerCase().includes(q) ||
+          (item.alias || '').toLowerCase().includes(q) ||
+          (item.description || '').toLowerCase().includes(q)
       );
     }
     if (selectedThreatLevel && selectedThreatLevel !== 'all') {
@@ -80,20 +81,30 @@
   });
   function getThreatLevelColor(level: string) {
     switch (level) {
-      case 'critical': return 'bg-red-500 text-white';
-      case 'high': return 'bg-orange-500 text-white';
-      case 'medium': return 'bg-yellow-500 text-black';
-      case 'low': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'critical':
+        return 'bg-red-500 text-white';
+      case 'high':
+        return 'bg-orange-500 text-white';
+      case 'medium':
+        return 'bg-yellow-500 text-black';
+      case 'low':
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'wanted': return 'bg-red-600 text-white';
-      case 'surveillance': return 'bg-blue-600 text-white';
-      case 'active': return 'bg-orange-600 text-white';
-      case 'cleared': return 'bg-green-600 text-white';
-      default: return 'bg-gray-600 text-white';
+      case 'wanted':
+        return 'bg-red-600 text-white';
+      case 'surveillance':
+        return 'bg-blue-600 text-white';
+      case 'active':
+        return 'bg-orange-600 text-white';
+      case 'cleared':
+        return 'bg-green-600 text-white';
+      default:
+        return 'bg-gray-600 text-white';
     }
   }
   // Load persons from API
@@ -119,7 +130,7 @@
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData) // removed stray semicolon here
+        body: JSON.stringify(personData), // removed stray semicolon here
       });
       if (response.ok) {
         const newPerson = await response.json();
@@ -141,7 +152,15 @@
     try {
       await addPerson(newPerson);
       // reset newPerson and close modal
-      newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' };
+      newPerson = {
+        name: '',
+        alias: '',
+        threat_level: 'low',
+        status: 'surveillance',
+        description: '',
+        last_seen: '',
+        location: '',
+      };
       showNewPersonModal = false;
       error = null;
     } catch (err) {
@@ -160,6 +179,7 @@
   const InputComponent: any = Input;
   const BadgeComponent: any = Badge;
 </script>
+
 <svelte:head>
   <title>PERSONS OF INTEREST - YoRHa Detective Interface</title>
 </svelte:head>
@@ -286,71 +306,73 @@
           <!-- replaced Card usage with direct component tag -->
           <CardComponent class="person-nier-bits-card nes-container">
             <div class="person-header nes-container">
-               <div class="person-photo">
-                 {#if person.photo}
-                   <img src={person.photo} alt={person.name} />
-                 {:else}
-                   <div class="photo-placeholder">
-                     <Shield class="w-8 h-8" />
-                   </div>
-                 {/if}
-               </div>
-               <div class="person-basic-info">
-                 <div class="person-name">{person.name}</div>
-                 <div class="person-alias">"{person.alias}"</div>
-                 <div class="person-id">{person.id}</div>
-               </div>
-               <div class="person-badges">
-                 <BadgeComponent class={getThreatLevelColor(person.threat_level)}>
-                   {person.threat_level.toUpperCase()}
-                 </BadgeComponent>
-                 <BadgeComponent class={getStatusColor(person.status)}>
-                   {person.status.toUpperCase()}
-                 </BadgeComponent>
-               </div>
+              <div class="person-photo">
+                {#if person.photo}
+                  <img src={person.photo} alt={person.name} />
+                {:else}
+                  <div class="photo-placeholder">
+                    <Shield class="w-8 h-8" />
+                  </div>
+                {/if}
+              </div>
+              <div class="person-basic-info">
+                <div class="person-name">{person.name}</div>
+                <div class="person-alias">"{person.alias}"</div>
+                <div class="person-id">{person.id}</div>
+              </div>
+              <div class="person-badges">
+                <BadgeComponent class={getThreatLevelColor(person.threat_level)}>
+                  {person.threat_level.toUpperCase()}
+                </BadgeComponent>
+                <BadgeComponent class={getStatusColor(person.status)}>
+                  {person.status.toUpperCase()}
+                </BadgeComponent>
+              </div>
             </div>
             <div class="person-content nes-container">
-               <div class="person-details">
-                 <div class="detail-row">
-                   <span class="detail-label">Last Seen:</span>
-                   <span class="detail-value">{person.last_seen}</span>
-                 </div>
-                 <div class="detail-row">
-                   <span class="detail-label">Location:</span>
-                   <span class="detail-value">{person.location}</span>
-                 </div>
-                 <div class="detail-row">
-                   <span class="detail-label">Cases:</span>
-                   <span class="detail-value">{person.cases.length} active</span>
-                 </div>
-               </div>
-               <div class="person-description">
-                 {person.description}
-               </div>
-               <div class="person-cases">
-                 {#each person.cases as caseId}
-                   <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
-                 {/each}
-               </div>
+              <div class="person-details">
+                <div class="detail-row">
+                  <span class="detail-label">Last Seen:</span>
+                  <span class="detail-value">{person.last_seen}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Location:</span>
+                  <span class="detail-value">{person.location}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Cases:</span>
+                  <span class="detail-value">{person.cases.length} active</span>
+                </div>
+              </div>
+              <div class="person-description">
+                {person.description}
+              </div>
+              <div class="person-cases">
+                {#each person.cases as caseId}
+                  <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                    >{caseId}</span
+                  >
+                {/each}
+              </div>
             </div>
 
             <!-- replaced Card.Footer (not exported) with a plain div -->
             <div class="person-actions nes-container card-footer">
-               <ButtonComponent class="bits-btn" size="sm" variant="ghost">
-                 <Eye class="w-4 h-4" />
-                 View
-               </ButtonComponent>
-               <ButtonComponent class="bits-btn" size="sm" variant="ghost">
-                 <Edit class="w-4 h-4" />
-                 Edit
-               </ButtonComponent>
-               <ButtonComponent class="bits-btn" size="sm" variant="destructive">
-                 <Trash2 class="w-4 h-4" />
-                 Remove
-               </ButtonComponent>
+              <ButtonComponent class="bits-btn" size="sm" variant="ghost">
+                <Eye class="w-4 h-4" />
+                View
+              </ButtonComponent>
+              <ButtonComponent class="bits-btn" size="sm" variant="ghost">
+                <Edit class="w-4 h-4" />
+                Edit
+              </ButtonComponent>
+              <ButtonComponent class="bits-btn" size="sm" variant="destructive">
+                <Trash2 class="w-4 h-4" />
+                Remove
+              </ButtonComponent>
             </div>
           </CardComponent>
-         {/each}
+        {/each}
       {/if}
     </div>
     {#if filteredPersons.length === 0}
@@ -393,23 +415,30 @@
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button
-          class="close-btn"
-          aria-label="Close"
-          type="button"
-          onclick={() => (showNewPersonModal = false)}
-        >×</button>
+        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
+          >×</button
+        >
       </header>
 
       <div class="modal-form">
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
-            <InputComponent id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
+            <InputComponent
+              id="full-name"
+              placeholder="Enter full name"
+              class="yorha-input"
+              bind:value={newPerson.name}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
-            <InputComponent id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
+            <InputComponent
+              id="alias"
+              placeholder="Known alias or codename"
+              class="yorha-input"
+              bind:value={newPerson.alias}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="threat-level">THREAT LEVEL</label>
@@ -435,7 +464,12 @@
           </div>
           <div class="form-field">
             <label class="form-label" for="location">LAST KNOWN LOCATION</label>
-            <InputComponent id="location" placeholder="e.g. Downtown District" class="yorha-input" bind:value={newPerson.location} />
+            <InputComponent
+              id="location"
+              placeholder="e.g. Downtown District"
+              class="yorha-input"
+              bind:value={newPerson.location}
+            />
           </div>
           <div class="form-field form-field-full">
             <label class="form-label" for="description">DESCRIPTION</label>
@@ -456,229 +490,446 @@
           variant="ghost"
           onclick={() => {
             showNewPersonModal = false;
-            newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' };
+            newPerson = {
+              name: '',
+              alias: '',
+              threat_level: 'low',
+              status: 'surveillance',
+              description: '',
+              last_seen: '',
+              location: '',
+            };
           }}
         >
           CANCEL
         </ButtonComponent>
-        <ButtonComponent class="bits-btn" onclick={handleAddPerson} >
-          ADD PERSON
-        </ButtonComponent>
+        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
       </footer>
     </div>
   </div>
 {/if}
 
 <style>
-/* Replaced corrupted stylesheet with a cleaned version. Keep selectors used in markup. */
-.yorha-interface {
-  display: flex;
-  height: 100vh;
-  background: #2a2a2a;
-  color: #d4af37;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-}
+  /* Replaced corrupted stylesheet with a cleaned version. Keep selectors used in markup. */
+  .yorha-interface {
+    display: flex;
+    height: 100vh;
+    background: #2a2a2a;
+    color: #d4af37;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
 
-/* Sidebar */
-.yorha-sidebar {
-  width: 200px;
-  background: #1a1a1a;
-  border-right: 1px solid #3a3a3a;
-  display: flex;
-  flex-direction: column;
-}
-.yorha-logo {
-  padding: 20px 15px;
-}
-.yorha-title, .yorha-subtitle {
-  font-size: 18px;
-  font-weight: bold;
-  color: #d4af37;
-  line-height: 1;
-}
-.yorha-subtext {
-  font-size: 10px;
-  color: #888;
-  padding-top: 8px;
-  border-bottom: 1px solid #3a3a3a;
-}
-.yorha-nav {
-  padding: 10px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-left: 8px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  color: #888;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  justify-content: space-between;
-  font-size: 11px;
-}
-.nav-item:hover {
-  background: #2a2a2a;
-  color: #d4af37;
-}
-.nav-item.persons-active {
-  background: #162016;
-  color: #d4af37;
-  border-left: 3px solid #d4af37;
-  padding-left: 9px;
-}
-.nav-count {
-  font-size: 10px;
-  background: #d4af37;
-  color: #000;
-  padding: 1px 6px;
-  border-radius: 2px;
-}
+  /* Sidebar */
+  .yorha-sidebar {
+    width: 200px;
+    background: #1a1a1a;
+    border-right: 1px solid #3a3a3a;
+    display: flex;
+    flex-direction: column;
+  }
+  .yorha-logo {
+    padding: 20px 15px;
+  }
+  .yorha-title,
+  .yorha-subtitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d4af37;
+    line-height: 1;
+  }
+  .yorha-subtext {
+    font-size: 10px;
+    color: #888;
+    padding-top: 8px;
+    border-bottom: 1px solid #3a3a3a;
+  }
+  .yorha-nav {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .nav-item:hover {
+    background: #2a2a2a;
+    color: #d4af37;
+  }
+  .nav-item.persons-active {
+    background: #162016;
+    color: #d4af37;
+    border-left: 3px solid #d4af37;
+    padding-left: 9px;
+  }
+  .nav-count {
+    font-size: 10px;
+    background: #d4af37;
+    color: #000;
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
 
-/* Main area */
-.yorha-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #2a2a2a;
-  overflow: hidden;
-}
-.persons-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #3a3a3a;
-  background: #2a2a2a;
-}
-.header-left { display:flex; align-items:center; gap:12px; }
-.header-icon {
-  background: none;
-  border: 1px solid #555;
-  color: #d4af37;
-  padding: 6px 8px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 12px;
-}
-.persons-title { font-size: 24px; font-weight: bold; color: #d4af37; margin: 0; }
-.persons-subtitle { font-size: 12px; color: #888; }
+  /* Main area */
+  .yorha-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #2a2a2a;
+    overflow: hidden;
+  }
+  .persons-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #3a3a3a;
+    background: #2a2a2a;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-icon {
+    background: none;
+    border: 1px solid #555;
+    color: #d4af37;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+  }
+  .persons-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d4af37;
+    margin: 0;
+  }
+  .persons-subtitle {
+    font-size: 12px;
+    color: #888;
+  }
 
-/* Search toolbar */
-.search-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  background: #242424;
-  border-bottom: 1px solid #3a3a3a;
-}
-.search-input-wrapper { position: relative; display: flex; align-items: center; gap: 12px; }
-:global(.search-icon) { position: absolute; left: 10px; }
-:global(.search-input) {
-  padding-left: 36px !important;
-  background: #1a1a1a !important;
-  border: 1px solid #555 !important;
-  color: #d4af37 !important;
-  min-width: 300px;
-}
-.threat-filter {
-  background: #1a1a1a;
-  border: 1px solid #555;
-  color: #d4af37;
-  padding: 6px 12px;
-  font-family: inherit;
-  font-size: 12px;
-}
+  /* Search toolbar */
+  .search-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #242424;
+    border-bottom: 1px solid #3a3a3a;
+  }
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  :global(.search-icon) {
+    position: absolute;
+    left: 10px;
+  }
+  :global(.search-input) {
+    padding-left: 36px !important;
+    background: #1a1a1a !important;
+    border: 1px solid #555 !important;
+    color: #d4af37 !important;
+    min-width: 300px;
+  }
+  .threat-filter {
+    background: #1a1a1a;
+    border: 1px solid #555;
+    color: #d4af37;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 12px;
+  }
 
-/* Stats */
-.stats-section { display: flex; gap: 20px; color: #d4af37; align-items: center; }
-.stat-item { text-align: center; font-size: 11px; }
-.stat-number { font-size: 18px; font-weight: bold; color: #d4af37; }
-.stat-item.critical .stat-number { color: #ef4444; }
-.stat-item.high .stat-number { color: #f97316; }
+  /* Stats */
+  .stats-section {
+    display: flex;
+    gap: 20px;
+    color: #d4af37;
+    align-items: center;
+  }
+  .stat-item {
+    text-align: center;
+    font-size: 11px;
+  }
+  .stat-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d4af37;
+  }
+  .stat-item.critical .stat-number {
+    color: #ef4444;
+  }
+  .stat-item.high .stat-number {
+    color: #f97316;
+  }
 
-/* Persons grid & cards */
-.persons-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-:global(.person-nier-bits-card) {
-  background: #1a1a1a !important;
-  border: 1px solid #3a3a3a !important;
-  padding: 12px;
-}
-.person-header {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.person-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #2a2a2a;
-  display:flex; align-items:center; justify-content:center;
-}
-.photo-placeholder { color: #666; }
-.person-basic-info { flex: 1; }
-.person-name { font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 2px; }
-.person-alias, .person-id { font-size: 10px; color: #666; font-family: 'JetBrains Mono', monospace; margin: 4px 0; }
-.person-badges { display: flex; flex-direction: column; gap: 6px; }
-.person-details { color: #888; margin: 12px 0; }
-.detail-row { display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px; }
-.detail-label { color:#888; }
-.detail-value { color:#d4af37; }
-.person-description { font-size: 11px; color:#ccc; line-height:1.4; margin: 8px 0; }
-.person-cases { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
-.case-badge { font-size:9px; padding:4px 8px; border-radius:4px; border:1px solid #333; background:#151515; color:#d4af37; }
+  /* Persons grid & cards */
+  .persons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  :global(.person-nier-bits-card) {
+    background: #1a1a1a !important;
+    border: 1px solid #3a3a3a !important;
+    padding: 12px;
+  }
+  .person-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .person-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo-placeholder {
+    color: #666;
+  }
+  .person-basic-info {
+    flex: 1;
+  }
+  .person-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d4af37;
+    margin-bottom: 2px;
+  }
+  .person-alias,
+  .person-id {
+    font-size: 10px;
+    color: #666;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 4px 0;
+  }
+  .person-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .person-details {
+    color: #888;
+    margin: 12px 0;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+  .detail-label {
+    color: #888;
+  }
+  .detail-value {
+    color: #d4af37;
+  }
+  .person-description {
+    font-size: 11px;
+    color: #ccc;
+    line-height: 1.4;
+    margin: 8px 0;
+  }
+  .person-cases {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .case-badge {
+    font-size: 9px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: #151515;
+    color: #d4af37;
+  }
 
-/* Actions */
-.person-actions { display:flex; gap:8px; justify-content:flex-end; }
+  /* Actions */
+  .person-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
 
-/* Empty / loading / error */
-.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; color:#666; text-align:center; }
-.empty-icon { font-size:48px; margin-bottom:12px; }
-.empty-title { font-size:18px; color:#888; margin-bottom:8px; }
-.empty-subtitle { font-size:12px; color:#999; margin-bottom:10px; }
+  /* Empty / loading / error */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #666;
+    text-align: center;
+  }
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .empty-title {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .empty-subtitle {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 10px;
+  }
 
-.error-banner {
-  display:flex; align-items:center; gap:8px;
-  padding:12px 20px; background:#4a1a1a; border:1px solid #ef4444; color:#fca5a5; font-size:12px; margin:15px 20px; border-radius:4px;
-}
-.loading-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; color:#888; }
-.loading-spinner {
-  width:32px; height:32px; border:2px solid #3a3a3a; border-top:2px solid #d4af37; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:12px;
-}
-@keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+  .error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #4a1a1a;
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    font-size: 12px;
+    margin: 15px 20px;
+    border-radius: 4px;
+  }
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #888;
+  }
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #3a3a3a;
+    border-top: 2px solid #d4af37;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 
-/* Modal styles */
-.modal-overlay {
-  position: fixed; inset:0; background: rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:50;
-}
-.yorha-modal {
-  width: 720px; max-width: 95%; background:#2a2a2a; border:2px solid #d4af37; color:#d4af37; padding: 16px; border-radius:6px;
-}
-.dialog-header { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; }
-.dialog-title { font-size:14px; font-weight:bold; }
-.close-btn { background:transparent; border:none; color:#d4af37; font-size:20px; cursor:pointer; padding:4px 8px; }
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  .yorha-modal {
+    width: 720px;
+    max-width: 95%;
+    background: #2a2a2a;
+    border: 2px solid #d4af37;
+    color: #d4af37;
+    padding: 16px;
+    border-radius: 6px;
+  }
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .dialog-title {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: #d4af37;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
 
-.modal-form { display:flex; flex-direction:column; padding:8px 0 0 0; }
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.form-field { display:flex; flex-direction:column; gap:6px; }
-.form-field-full { grid-column: 1 / -1; }
-.form-label { font-size:11px; font-weight:bold; color:#d4af37; text-transform:uppercase; }
-:global(.yorha-input) { background:#1a1a1a !important; border:1px solid #555 !important; color:#d4af37 !important; font-family:inherit !important; padding:8px; }
-.yorha-select { background:#1a1a1a; border:1px solid #555; color:#d4af37; padding:6px 10px; font-size:12px; }
-.yorha-textarea { background:#1a1a1a; border:1px solid #555; color:#d4af37; padding:8px 10px; font-size:12px; resize:vertical; }
-.dialog-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 0 0;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-field-full {
+    grid-column: 1 / -1;
+  }
+  .form-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #d4af37;
+    text-transform: uppercase;
+  }
+  :global(.yorha-input) {
+    background: #1a1a1a !important;
+    border: 1px solid #555 !important;
+    color: #d4af37 !important;
+    font-family: inherit !important;
+    padding: 8px;
+  }
+  .yorha-select {
+    background: #1a1a1a;
+    border: 1px solid #555;
+    color: #d4af37;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .yorha-textarea {
+    background: #1a1a1a;
+    border: 1px solid #555;
+    color: #d4af37;
+    padding: 8px 10px;
+    font-size: 12px;
+    resize: vertical;
+  }
+  .dialog-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
 </style>

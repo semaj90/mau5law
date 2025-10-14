@@ -106,7 +106,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Main entry point: Execute LLM inference with optimal model selection
-   */;
+   */
   async executeInference(request: ClientLLMRequest): Promise<InferenceResult> {
     const startTime = performance.now();
     try {
@@ -114,7 +114,7 @@ class UnifiedClientLLMOrchestrator {
       const cacheResult = await this.checkInferenceCache(request);
       if (cacheResult.hit) {
         return {
-          success: true
+          success: true,
           response: cacheResult.data.response,
           modelUsed: cacheResult.data.modelUsed,
           executionMetrics: {
@@ -142,19 +142,19 @@ class UnifiedClientLLMOrchestrator {
       await this.cacheInferenceResult(request, inferenceResult);
       const totalLatency = performance.now() - startTime;
       return {
-        success: true
+        success: true,
         response: inferenceResult.response,
         modelUsed: selectedModel.id,
         executionMetrics: {
           totalLatency,
-          modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime: undefined
+          modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime: undefined,
           cacheHitRate: 0.0,
           memoryUsed: selectedModel.memoryFootprint.gpuMemoryMB + selectedModel.memoryFootprint.ddrRAMCacheMB,
           qualityScore: inferenceResult.qualityScore
         },
         rlMetrics: inferenceResult.rlMetrics,
         contextSwitching: contextSwitch.required && contextSwitch.fromModel && contextSwitch.toModel && contextSwitch.reason ? {,
-          switchOccurred: true
+          switchOccurred: true,
           fromModel: contextSwitch.fromModel,
           toModel: contextSwitch.toModel,
           switchReason: contextSwitch.reason
@@ -168,7 +168,7 @@ class UnifiedClientLLMOrchestrator {
         return fallbackResult;
       } catch (fallbackError) {
         return {
-          success: false
+          success: false,
           response: 'Error: Unable to process request with any available model',
           modelUsed: 'none',
           executionMetrics: {
@@ -183,7 +183,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Initialize all available models and workers
-   */;
+   */
   private async initializeOrchestrator(): Promise<void> {
     if (!browser) return;
     console.log('🚀 Initializing Unified Client LLM Orchestrator...');
@@ -206,7 +206,7 @@ class UnifiedClientLLMOrchestrator {
       console.error('❌ Failed to initialize orchestrator:', error);
     }
   }
-  /** Initialize Gemma 270M model */;
+  /** Initialize Gemma 270M model */
   private async initializeGemma270M(): Promise<void> {
     try {
       const worker = new Worker('/workers/nes-rl.js');
@@ -231,8 +231,8 @@ class UnifiedClientLLMOrchestrator {
         id: 'gemma270m',
         type: 'gemma270m',
   architecture: 'gemma',
-        isLoaded: true
-        isActive: false
+        isLoaded: true,
+        isActive: false,
         memoryFootprint: {
           gpuMemoryMB: 1024, // 1GB for 270M model
           ddrRAMCacheMB: 512,
@@ -256,7 +256,7 @@ class UnifiedClientLLMOrchestrator {
       console.error('❌ Failed to initialize Gemma 270M:', error);
     }
   }
-  /** Initialize Gemma Legal specialized model */;
+  /** Initialize Gemma Legal specialized model */
   private async initializeGemmaLegal(): Promise<void> {
     try {
       const worker = new Worker('/workers/nes-rl.js');
@@ -265,8 +265,8 @@ class UnifiedClientLLMOrchestrator {
         id: 'gemma-legal',
         type: 'gemma-legal',
         architecture: 'gemma',
-        isLoaded: true
-        isActive: false
+        isLoaded: true,
+        isActive: false,
         memoryFootprint: {
           gpuMemoryMB: 2048,
           ddrRAMCacheMB: 1024,
@@ -292,7 +292,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Initialize Legal-BERT for context switching
-   */;
+   */
   private async initializeLegalBERT(): Promise<void> {
     try {
       // Legal-BERT is smaller, can run in main thread with ONNX.js
@@ -301,8 +301,8 @@ class UnifiedClientLLMOrchestrator {
         id: 'legal-bert',
         type: 'legal-bert',
         architecture: 'bert',
-        isLoaded: true
-        isActive: false
+        isLoaded: true,
+        isActive: false,
         memoryFootprint: {
           gpuMemoryMB: 512, // Smaller model
           ddrRAMCacheMB: 256,
@@ -326,7 +326,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Initialize ONNX models for specialized tasks
-   */;
+   */
   private async initializeONNXModels(): Promise<void> {
     try {
       // Load embedding models and other ONNX models
@@ -335,8 +335,8 @@ class UnifiedClientLLMOrchestrator {
         id: 'onnx-embeddings',
         type: 'onnx-model',
         architecture: 'onnx',
-        isLoaded: true
-        isActive: false
+        isLoaded: true,
+        isActive: false,
         memoryFootprint: {
           gpuMemoryMB: 256,
           ddrRAMCacheMB: 128,
@@ -359,7 +359,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Select optimal model based on task and constraints
-   */;
+   */
   private async selectOptimalModel(request: ClientLLMRequest): Promise<ModelInstance> {
     // Check user preference first
     if (request.modelPreferences.preferredModel && request.modelPreferences.preferredModel !== 'auto') {
@@ -396,7 +396,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Check inference cache using parallel cache orchestrator
-   */;
+   */
   private async checkInferenceCache(request: ClientLLMRequest): Promise<any> {
     try {
       const cacheKey = this.generateInferenceCacheKey(request);
@@ -418,7 +418,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Execute inference with selected model
-   */;
+   */
   private async executeModelInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     model.isActive = true;
     model.performanceMetrics.lastUsed = Date.now();
@@ -441,7 +441,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Execute Gemma 270M inference
-   */;
+   */
   private async executeGemmaInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
       throw new Error('Gemma worker not available');
@@ -462,7 +462,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Execute Legal-BERT inference (context switching)
-   */;
+   */
   private async executeLegalBERTInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.onnxSession) {
       throw new Error('Legal-BERT ONNX session not available');
@@ -480,7 +480,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Execute Gemma Legal inference (specialized reasoning)
-   */;
+   */
   private async executeGemmaLegalInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
       throw new Error('Gemma Legal worker not available');
@@ -522,7 +522,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Execute ONNX model inference
-   */;
+   */
   private async executeONNXInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.onnxSession) {
       throw new Error('ONNX session not available');
@@ -539,7 +539,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Cache inference result
-   */;
+   */
   private async cacheInferenceResult(request: ClientLLMRequest, result: any): Promise<void> {
     try {
       const cacheKey = this.generateInferenceCacheKey(request);
@@ -560,7 +560,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Generate cache key for inference request
-   */;
+   */
   private generateInferenceCacheKey(request: ClientLLMRequest): string {
     const promptHash = this.hashString(request.prompt);
     const contextHash = this.hashString(JSON.stringify(request.context);
@@ -577,7 +577,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Send message to worker and wait for response
-   */;
+   */
   private async sendWorkerMessage(worker: Worker, message: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const messageId = Math.random().toString(36);
@@ -616,7 +616,7 @@ class UnifiedClientLLMOrchestrator {
     if (gemmaModel) {
       const result = await this.executeGemmaInference(gemmaModel, request);
       return {
-        success: true
+        success: true,
         response: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).response,
         modelUsed: 'gemma270m',
         executionMetrics: {
@@ -631,7 +631,7 @@ class UnifiedClientLLMOrchestrator {
   }
   /**
    * Get orchestrator status and metrics
-   */;
+   */
   async getStatus(): Promise<any> {
     const activeModels = Array.from(this.models.values()
       .filter(m => m.isActive)

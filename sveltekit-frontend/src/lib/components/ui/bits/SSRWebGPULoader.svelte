@@ -25,7 +25,7 @@
       overlay?: Snippet<[number, boolean, string]>;
       fallback?: Snippet<[string]>;
       debug?: Snippet<[any, number, boolean]>;
-    }
+    };
   }
   let {
     assetId,
@@ -38,7 +38,7 @@
     errorClass = 'nes-error',
     overlay = false,
     debug = false,
-    children
+    children,
   }: Props = $props();
   // Reactive state for texture streaming
   let webgpuSupported = $state(false);
@@ -71,7 +71,7 @@
         await initializeTextureStreaming();
       } catch (err) {
         console.error('🎮 WebGPU initialization failed:', err);
-        error = err instanceof Error ? err.message: 'WebGPU failed';
+        error = err instanceof Error ? err.message : 'WebGPU failed';
         textureData = generateFallbackPattern();
         isLoading = false;
       }
@@ -92,8 +92,8 @@
       const lodContext: LODContext = {
         viewportDistance,
         documentComplexity: 0.5, // Medium complexity default
-        memoryPressure: 0.3       // Assume good memory conditions
-      }
+        memoryPressure: 0.3, // Assume good memory conditions
+      };
       currentLOD = lodManager.calculateLOD(lodContext);
       // Stream texture at calculated LOD
       const textureChunk = await lodManager.streamTexture(assetId, currentLOD);
@@ -110,7 +110,7 @@
         setupProgressiveEnhancement();
       }
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Streaming failed';
+      error = err instanceof Error ? err.message : 'Streaming failed';
       textureData = generateFallbackPattern();
       isLoading = false;
     }
@@ -125,7 +125,7 @@
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
              style="image-rendering: pixelated;" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="${color}" opacity="0.8"/>
-      <rect x="2" y="2" width="${width-4}" height="${height-4}"
+      <rect x="2" y="2" width="${width - 4}" height="${height - 4}"
             fill="none" stroke="#000" stroke-width="2"/>
       <text x="50%" y="60%" text-anchor="middle"
             font-family="monospace" font-size="8" fill="#000">${pattern}</text>
@@ -135,8 +135,8 @@
    * Convert GPU texture data to displayable format
    */
   async function convertTextureToDisplay(textureBuffer: ArrayBuffer, lodLevel: number): Promise<string> {
-  const lodInfo = LOD_LEVELS[lodLevel];
-  const { width: texWidth, height: texHeight } = lodInfo.resolution;
+    const lodInfo = LOD_LEVELS[lodLevel];
+    const { width: texWidth, height: texHeight } = lodInfo.resolution;
     // Create canvas to convert texture data
     const canvas = document.createElement('canvas');
     canvas.width = texWidth;
@@ -144,11 +144,7 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas 2D context not available');
     // Convert ArrayBuffer to ImageData
-    const imageData = new ImageData(
-      new Uint8ClampedArray(textureBuffer),
-      texWidth,
-      texHeight
-    );
+    const imageData = new ImageData(new Uint8ClampedArray(textureBuffer), texWidth, texHeight);
     ctx.putImageData(imageData, 0, 0);
     // For low LOD levels, apply pixelated rendering
     if (lodLevel >= 2) {
@@ -195,10 +191,22 @@
     }
     // NES-inspired color palette
     const nesColors = [
-      '#fcfcfc', '#f8f8f8', '#bcbcbc', '#7c7c7c',
-      '#a4e4fc', '#3cbcfc', '#0078f8', '#0000fc',
-      '#b8b8f8', '#6888fc', '#0058f8', '#0000bc',
-      '#d8b8f8', '#9878f8', '#6844fc', '#4428bc'
+      '#fcfcfc',
+      '#f8f8f8',
+      '#bcbcbc',
+      '#7c7c7c',
+      '#a4e4fc',
+      '#3cbcfc',
+      '#0078f8',
+      '#0000fc',
+      '#b8b8f8',
+      '#6888fc',
+      '#0058f8',
+      '#0000bc',
+      '#d8b8f8',
+      '#9878f8',
+      '#6844fc',
+      '#4428bc',
     ];
     return nesColors[Math.abs(hash) % nesColors.length];
   }
@@ -350,9 +358,15 @@
     text-shadow: 1px 1px 0 #fff;
   }
   @keyframes nes-blink {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+    }
   }
   @keyframes nes-spin {
     from {

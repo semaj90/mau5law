@@ -72,9 +72,9 @@ export const GET: RequestHandler = async ({ params, url }) => {
       console.log(`📋 Canvas cache hit for ID: ${id}`)
       return json({
         success: true,
-        canvas: cached
-        cached: true
-        source: 'cache'
+        canvas: cached,
+        cached: true,
+        source: 'cache',
       })
     }
     // Query database for canvas state
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     // Combine canvas state with annotations
     const canvas = {
       ...canvasState[0],
-      annotations: annotations
+      annotations: annotations,
       canvas_json: canvasState[0].canvasData, // Map to expected field name
       metadata: {
         version: canvasState[0].version,
@@ -145,7 +145,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     const updatedCanvas = await db
       .update(canvasStates)
       .set({
-        canvasData: canvas_json
+        canvasData: canvas_json,
         name: name || existingCanvas[0].name,
         version: existingCanvas[0].version + 1,
         updatedAt: new Date().toISOString()
@@ -163,7 +163,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         await db
           .insert(canvasAnnotations)
           .values(annotations.map(ann => ({
-            evidenceId: id
+            evidenceId: id,
             fabricData: ann.fabricData || ann,
             annotationType: ann.annotationType || 'annotation',
             coordinates: ann.coordinates || {},
@@ -185,7 +185,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     const responseData = {
       ...updatedCanvas[0],
       canvas_json,
-      annotations: annotations || []
+      annotations: annotations || [],
       metadata: {
         ...metadata,
         version: updatedCanvas[0].version,
@@ -246,7 +246,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       message: 'Canvas deleted successfully',
-      canvas_id: id
+      canvas_id: id,
       canvas_name: deletedCanvas[0].name,
       deleted_annotations: deletedAnnotations.length,
       timestamp: new Date().toISOString()

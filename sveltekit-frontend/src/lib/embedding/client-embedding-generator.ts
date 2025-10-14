@@ -4,7 +4,7 @@ import type { LegalDocument, Evidence } from "$lib/types/legal-types";
 /**
  * Client-side embedding generator for legal documents
  * Uses WebAssembly for efficient client-side vector generation
- */;
+ */
 export class ClientEmbeddingGenerator {
   private wasmModule: any = null;
   private initialized = false;
@@ -15,7 +15,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Initialize the embedding generator with WASM module
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
     try {
@@ -51,7 +51,7 @@ export class ClientEmbeddingGenerator {
   /**
    * Generate embeddings for legal document text
    * Optimized for legal terminology and case law
-   */;
+   */
   async generateEmbedding(text: string): Promise<Float32Array | null> {
     if (!this.initialized || !this.worker) {
       console.warn('Embedding generator not initialized');
@@ -72,11 +72,11 @@ export class ClientEmbeddingGenerator {
         }
         this.worker!.postMessage({
           type: 'generate_embedding',
-          text: text
+          text: text,
           options: {
             maxLength: 8192, // Legal documents can be long
-            normalize: true
-            legal_mode: true
+            normalize: true,
+            legal_mode: true,
           }
         });
       });
@@ -87,7 +87,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Generate embeddings for legal documents with legal-specific preprocessing
-   */;
+   */
   async generateLegalDocumentEmbedding(_document: LegalDocument): Promise<Float32Array | null> {
     try {
       // Construct legal-optimized text for embedding
@@ -101,7 +101,7 @@ export class ClientEmbeddingGenerator {
   /**
    * Batch generate embeddings for multiple documents
    * Optimized for memory efficiency (70% reduction target)
-   */;
+   */
   async generateBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
     if (!this.initialized || !this.worker) {
       console.warn('Embedding generator not initialized');
@@ -125,12 +125,12 @@ export class ClientEmbeddingGenerator {
         }
         this.worker!.postMessage({
           type: 'generate_batch_embeddings',
-          texts: texts
+          texts: texts,
           options: {
             batchSize: 10, // Process in batches to manage memory
             maxLength: 4096,
-            normalize: true
-            legal_mode: true
+            normalize: true,
+            legal_mode: true,
           }
         });
       });
@@ -141,7 +141,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Generate embeddings for evidence with metadata integration
-   */;
+   */
   async generateEvidenceEmbedding(evidence: Evidence): Promise<Float32Array | null> {
     try {
       const embeddingText = this.prepareEvidenceText(evidence);
@@ -153,7 +153,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Prepare legal document text for optimal embedding generation
-   */;
+   */
   private prepareLegalText(_document: LegalDocument): string {
     const components = [];
     // Add document title with legal emphasis
@@ -204,7 +204,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Prepare evidence text for embedding generation
-   */;
+   */
   private prepareEvidenceText(evidence: Evidence): string {
     const components = [];
     // Add evidence title
@@ -235,18 +235,18 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Get embedding model information
-   */;
+   */
   getModelInfo(): { model: string; dimensions: number; initialized: boolean } {
     const dimensions = this.embedModel === 'nomic-embed' ? 384 : 512;
     return {
       model: this.embedModel,
-      dimensions: dimensions
-      initialized: this.initialized
+      dimensions: dimensions,
+      initialized: this.initialized,
     }
   }
   /**
    * Check if the client can support embedding generation
-   */;
+   */
   static isSupported(): boolean {
     return (
       typeof Worker !== 'undefined' &&
@@ -256,7 +256,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Get memory usage statistics for optimization monitoring
-   */;
+   */
   async getMemoryStats(): Promise<any> {
     if (!this.worker) return null;
     try {
@@ -276,7 +276,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Optimize memory usage - clear caches and trigger garbage collection
-   */;
+   */
   async optimizeMemory(): Promise<void> {
     if (this.worker) {
       this.worker.postMessage({ type: 'optimize_memory' });
@@ -288,7 +288,7 @@ export class ClientEmbeddingGenerator {
   }
   /**
    * Cleanup resources
-   */;
+   */
   async cleanup(): Promise<void> {
     if (this.worker) {
       this.worker.terminate();
@@ -307,7 +307,7 @@ export class EmbeddingCache {
   private maxAge = 24 * 60 * 60 * 1000; // 24 hours
   /**
    * Get cached embedding or generate new one
-   */;
+   */
   async getCachedEmbedding(text: string): Promise<Float32Array | null> {
     const cacheKey = this.generateCacheKey(text);
     const cached = this.cache.get(cacheKey);
@@ -323,7 +323,7 @@ export class EmbeddingCache {
   }
   /**
    * Cache an embedding
-   */;
+   */
   setCachedEmbedding(text: string, embedding: Float32Array): void {
     const cacheKey = this.generateCacheKey(text);
     // Clean up old entries if cache is full
@@ -331,13 +331,13 @@ export class EmbeddingCache {
       this.cleanup();
     }
     this.cache.set(cacheKey, {
-      embedding: embedding
-      timestamp: Date.now()
+      embedding: embedding,
+      timestamp: Date.now(),
     });
   }
   /**
    * Generate cache key from text
-   */;
+   */
   private generateCacheKey(text: string): string {
     // Simple hash function for cache key
     let hash = 0;
@@ -350,7 +350,7 @@ export class EmbeddingCache {
   }
   /**
    * Cleanup old cache entries
-   */;
+   */
   private cleanup(): void {
     const now = Date.now();
     const entries = Array.from(this.cache.entries();
@@ -364,7 +364,7 @@ export class EmbeddingCache {
   }
   /**
    * Get cache statistics
-   */;
+   */
   getStats() {
     return {
       size: this.cache.size,

@@ -55,7 +55,7 @@
   const aiActor = {
     send: (event: any) => console.log('AI actor event:', event),
     subscribe: (callback: (state: any) => void) => ({ unsubscribe: () => {} }),
-    start: () => {}
+    start: () => {},
   };
   aiActor.start();
   // Debounced suggestion generation
@@ -74,7 +74,7 @@
         text,
         contextBefore,
         contextAfter,
-        cursorPosition: cursorPos
+        cursorPosition: cursorPos,
       });
       currentSuggestions = suggestions.slice(0, maxSuggestions);
       if (currentSuggestions.length > 0) {
@@ -100,30 +100,28 @@
     // 1. Auto-completion suggestions
     if (enableAutoComplete) {
       try {
-        const completionTask = createAITask(
-          'completion',
-          'completion',
-          {
-            prompt: `Complete this text naturally: "${context.contextBefore}[CURSOR]${context.contextAfter}"
+        const completionTask = createAITask('completion', 'completion', {
+          prompt: `Complete this text naturally: "${context.contextBefore}[CURSOR]${context.contextAfter}"
             Provide 2-3 natural completions for the text at [CURSOR]. Focus on:
             - Legal terminology accuracy
             - Contextual relevance
             - Natural language flow
             Return JSON array with completions.`,
-            model: aiModel,
-            format: 'json'
-          }
-        );
+          model: aiModel,
+          format: 'json',
+        });
         aiActor.send({ type: 'START_PROCESSING', task: completionTask });
         const result = await waitForAIResult(completionTask.id);
         if (result?.success && result.result?.completions) {
-          suggestions.push(...result.result.completions.map((completion: string, index: number) => ({
-            id: `completion_${index}`,
-            type: 'completion' as const,
-            text: completion,
-            confidence: 0.8,
-            reasoning: 'AI-generated text completion'
-          })));
+          suggestions.push(
+            ...result.result.completions.map((completion: string, index: number) => ({
+              id: `completion_${index}`,
+              type: 'completion' as const,
+              text: completion,
+              confidence: 0.8,
+              reasoning: 'AI-generated text completion',
+            }))
+          );
         }
       } catch (error) {
         console.error('Auto-completion error:', error);
@@ -132,33 +130,31 @@
     // 2. Grammar and style suggestions
     if (enableGrammarCheck) {
       try {
-        const grammarTask = createAITask(
-          'grammar',
-          'analysis',
-          {
-            prompt: `Analyze this text for grammar, style, and legal writing improvements: "${context.text}"
+        const grammarTask = createAITask('grammar', 'analysis', {
+          prompt: `Analyze this text for grammar, style, and legal writing improvements: "${context.text}"
             Focus on:
             - Grammar errors
             - Legal writing style
             - Clarity improvements
             - Professional tone
             Return JSON with specific suggestions and replacements.`,
-            model: aiModel,
-            format: 'json'
-          }
-        );
+          model: aiModel,
+          format: 'json',
+        });
         aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
         const result = await waitForAIResult(grammarTask.id);
         if (result?.success && result.result?.suggestions) {
-          suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({
-            id: `grammar_${index}`,
-            type: 'grammar' as const,
-            text: suggestion.text,
-            replacement: suggestion.replacement,
-            confidence: suggestion.confidence || 0.7,
-            reasoning: suggestion.reasoning || 'Grammar/style improvement',
-            range: suggestion.range
-          })));
+          suggestions.push(
+            ...result.result.suggestions.map((suggestion: any, index: number) => ({
+              id: `grammar_${index}`,
+              type: 'grammar' as const,
+              text: suggestion.text,
+              replacement: suggestion.replacement,
+              confidence: suggestion.confidence || 0.7,
+              reasoning: suggestion.reasoning || 'Grammar/style improvement',
+              range: suggestion.range,
+            }))
+          );
         }
       } catch (error) {
         console.error('Grammar check error:', error);
@@ -172,7 +168,7 @@
           'embedding',
           {
             text: context.contextBefore,
-            model: 'nomic-embed-text'
+            model: 'nomic-embed-text',
           },
           'medium'
         );
@@ -180,22 +176,21 @@
         const embeddingResult = await waitForAIResult(semanticTask.id);
         if (embeddingResult?.success) {
           // Use RAG to find related legal terms and concepts
-          const ragResults = await enhancedRAGStore.search(
-            context.contextBefore,
-            {
-              limit: 5,
-              useEnhancedMode: true,
-              filters: { confidenceThreshold: 0.7 }
-            }
-          );
+          const ragResults = await enhancedRAGStore.search(context.contextBefore, {
+            limit: 5,
+            useEnhancedMode: true,
+            filters: { confidenceThreshold: 0.7 },
+          });
           if (ragResults.results?.length > 0) {
-            suggestions.push(...ragResults.results.map((result: any, index: number) => ({
-              id: `semantic_${index}`,
-              type: 'legal_term' as const,
-              text: result.summary || (result.content ? result.content.slice(0, 100) : ''),
-              confidence: result.confidence ?? 0.75,
-              reasoning: `Related legal concept: ${result.metadata?.type || 'case law'}`
-            })));
+            suggestions.push(
+              ...ragResults.results.map((result: any, index: number) => ({
+                id: `semantic_${index}`,
+                type: 'legal_term' as const,
+                text: result.summary || (result.content ? result.content.slice(0, 100) : ''),
+                confidence: result.confidence ?? 0.75,
+                reasoning: `Related legal concept: ${result.metadata?.type || 'case law'}`,
+              }))
+            );
           }
         }
       } catch (error) {
@@ -232,7 +227,7 @@
     const editorRect = editorElement.getBoundingClientRect();
     cursorPosition = {
       x: rect.left - editorRect.left,
-      y: rect.bottom - editorRect.top + 5
+      y: rect.bottom - editorRect.top + 5,
     };
   }
   // Handle input events
@@ -249,10 +244,7 @@
     switch ((event as KeyboardEvent).key) {
       case 'ArrowDown':
         event.preventDefault();
-        selectedSuggestionIndex = Math.min(
-          selectedSuggestionIndex + 1,
-          currentSuggestions.length - 1
-        );
+        selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1);
         break;
       case 'ArrowUp':
         event.preventDefault();
@@ -333,7 +325,7 @@
     tabindex="0"
     aria-label="AI-enhanced text editor"
     aria-multiline="true"
-    placeholder={placeholder}
+    {placeholder}
     oninput={handleInput}
     onkeydown={handleKeyDown}
   >

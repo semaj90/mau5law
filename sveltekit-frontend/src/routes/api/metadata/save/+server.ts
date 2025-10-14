@@ -39,22 +39,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       // Basic ownership check: either assignedTo matches user id or user is admin
       const assignedTo = (caseDetails as { assignedTo?: string }).assignedTo;
       const isOwner = user && assignedTo && user.id === assignedTo;
-      const isAdmin = user && (user.role === 'admin');
+      const isAdmin = user && user.role === 'admin';
       if (!isOwner && !isAdmin && !DEV_BYPASS_AUTH) {
         return json({ success: false, error: 'Forbidden: insufficient permissions for this case' }, { status: 403 });
       }
     }
 
-    const result = await db.insert(uploads).values({
-      caseId,
-      userId,
-      originalFilename,
-      storedFilename,
-      mimeType,
-      fileSize,
-      storagePath,
-      metadata,
-    }).returning();
+    const result = await db
+      .insert(uploads)
+      .values({
+        caseId,
+        userId,
+        originalFilename,
+        storedFilename,
+        mimeType,
+        fileSize,
+        storagePath,
+        metadata,
+      })
+      .returning();
 
     const inserted = Array.isArray(result) && result.length ? result[0] : null;
 

@@ -6,19 +6,19 @@ export interface CHRPatternBase {
   type: CHRPatternType;
   ttlMs?: number;
   createdAt: string;
-  meta?: { [key: string]: any }
+  meta?: { [key: string]: any };
 }
 export interface CHRTextPattern extends CHRPatternBase {
   type: 'text';
-  payload: { text: string; style?: 'mono' | 'body' | 'small' | 'title' }
+  payload: { text: string; style?: 'mono' | 'body' | 'small' | 'title' };
 }
 export interface CHRSVGPattern extends CHRPatternBase {
   type: 'svg';
-  payload: { svg: string; viewBox?: string }
+  payload: { svg: string; viewBox?: string };
 }
 export interface CHRStatePattern extends CHRPatternBase {
   type: 'state';
-  payload: { [key: string]: any }
+  payload: { [key: string]: any };
 }
 export type CHRPattern = CHRTextPattern | CHRSVGPattern | CHRStatePattern;
 class CHRCache {

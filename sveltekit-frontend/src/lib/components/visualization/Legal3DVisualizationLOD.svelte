@@ -823,7 +823,7 @@ if (!browser) return;
       <div class="entity-position">
         <span
           >Position: ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(
-            1,
+            1
           )})</span
         >
       </div>

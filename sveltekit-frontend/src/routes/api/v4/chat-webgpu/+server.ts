@@ -3,105 +3,105 @@
  * High-performance chat with RTX 3060 Ti optimization and tensor acceleration
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { webgpuAI } from '$lib/webgpu/webgpu-ai-engine.js'
-import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js'
-import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js'
-import { ollamaChatStream } from '$lib/services/ollamaChatStream.js'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuAI } from '$lib/webgpu/webgpu-ai-engine.js';
+import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream.js';
 // Rate limiter for WebGPU operations
-const GPU_RATE_LIMIT = new Map<string, number>()
+const GPU_RATE_LIMIT = new Map<string, number>();
 const GPU_RATE_WINDOW = 60000; // 1 minute
 const MAX_GPU_REQUESTS = 30; // RTX 3060 Ti can handle ~30 concurrent ops
 interface WebGPUChatRequest {
-  message: string
-  model?: string
-  temperature?: number
-  maxTokens?: number
-  stream?: boolean
-  useWebGPU?: boolean
-  enableTensorCompression?: boolean
+  message: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  stream?: boolean;
+  useWebGPU?: boolean;
+  enableTensorCompression?: boolean;
   gpuOptimizations?: {
-    rtxOptimized: boolean
-    tensorCores: boolean
-    flashAttention: boolean
-    parallelInference: boolean
-  }
+    rtxOptimized: boolean;
+    tensorCores: boolean;
+    flashAttention: boolean;
+    parallelInference: boolean;
+  };
 }
 interface WebGPUChatResponse {
-  success: boolean
-  response?: string
-  processingTime: number
-  gpuAccelerated: boolean
+  success: boolean;
+  response?: string;
+  processingTime: number;
+  gpuAccelerated: boolean;
   tensorCompression: {
-    enabled: boolean
-    compressionRatio?: number
-    memoryUsage?: number
-  }
+    enabled: boolean;
+    compressionRatio?: number;
+    memoryUsage?: number;
+  };
   rtxMetrics?: {
-    tensorCoreUtilization: number
-    memoryBandwidth: number
-    thermalStatus: string
-  }
-  error?: string
+    tensorCoreUtilization: number;
+    memoryBandwidth: number;
+    thermalStatus: string;
+  };
+  error?: string;
 }
 /**
  * Check WebGPU rate limits for RTX 3060 Ti thermal management
  */
 function checkGPURateLimit(clientIP: string): boolean {
-  const now = Date.now()
-  const key = `gpu_${clientIP}`
-  const requests = GPU_RATE_LIMIT.get(key) || 0
+  const now = Date.now();
+  const key = `gpu_${clientIP}`;
+  const requests = GPU_RATE_LIMIT.get(key) || 0;
   // Reset counter if window passed
-  const lastRequest = GPU_RATE_LIMIT.get(`${key}_time`) || 0
+  const lastRequest = GPU_RATE_LIMIT.get(`${key}_time`) || 0;
   if (now - lastRequest > GPU_RATE_WINDOW) {
-    GPU_RATE_LIMIT.set(key, 0)
-    GPU_RATE_LIMIT.set(`${key}_time`, now)
-    return true
+    GPU_RATE_LIMIT.set(key, 0);
+    GPU_RATE_LIMIT.set(`${key}_time`, now);
+    return true;
   }
   if (requests >= MAX_GPU_REQUESTS) {
-    return false
+    return false;
   }
-  GPU_RATE_LIMIT.set(key, requests + 1)
-  return true
+  GPU_RATE_LIMIT.set(key, requests + 1);
+  return true;
 }
 
 // Add typed helpers to normalize GPU engine outputs to Float32Array
 function isArrayBufferView(x: unknown): x is ArrayBufferView {
-	// ArrayBuffer.isView guards ArrayBufferView types (TypedArray, DataView)
-	return typeof x === 'object' && x !== null && ArrayBuffer.isView(x);
+  // ArrayBuffer.isView guards ArrayBufferView types (TypedArray, DataView)
+  return typeof x === 'object' && x !== null && ArrayBuffer.isView(x);
 }
 function viewToFloat32(view: ArrayBufferView): Float32Array {
-	if (view instanceof Float32Array) return view;
-	return new Float32Array(view.buffer, view.byteOffset, view.byteLength / Float32Array.BYTES_PER_ELEMENT);
+  if (view instanceof Float32Array) return view;
+  return new Float32Array(view.buffer, view.byteOffset, view.byteLength / Float32Array.BYTES_PER_ELEMENT);
 }
 function extractFloat32FromResult(input: unknown): Float32Array | undefined {
-	// Direct typed array / view
-	if (isArrayBufferView(input)) return viewToFloat32(input);
-	// Plain number array
-	if (Array.isArray(input) && input.every((n) => typeof n === 'number')) {
-		return new Float32Array(input as number[]);
-	}
-	// Object shapes that might contain a buffer-like property
-	if (typeof input === 'object' && input !== null) {
-		const obj = input as Record<string, unknown>;
-		const keys = ['result', 'optimized', 'data', 'buffer', 'optimizedBuffer'];
-		for (const k of keys) {
-			const v = obj[k];
-			if (isArrayBufferView(v)) return viewToFloat32(v);
-			if (Array.isArray(v) && v.every((n) => typeof n === 'number')) {
-				return new Float32Array(v as number[]);
-			}
-		}
-	}
-	return undefined;
+  // Direct typed array / view
+  if (isArrayBufferView(input)) return viewToFloat32(input);
+  // Plain number array
+  if (Array.isArray(input) && input.every(n => typeof n === 'number')) {
+    return new Float32Array(input as number[]);
+  }
+  // Object shapes that might contain a buffer-like property
+  if (typeof input === 'object' && input !== null) {
+    const obj = input as Record<string, unknown>;
+    const keys = ['result', 'optimized', 'data', 'buffer', 'optimizedBuffer'];
+    for (const k of keys) {
+      const v = obj[k];
+      if (isArrayBufferView(v)) return viewToFloat32(v);
+      if (Array.isArray(v) && v.every(n => typeof n === 'number')) {
+        return new Float32Array(v as number[]);
+      }
+    }
+  }
+  return undefined;
 }
 
 /**
  * WebGPU-accelerated text tokenization using compute shaders
  */
 async function tokenizeWithWebGPU(text: string): Promise<Float32Array> {
-	try {
+  try {
     if (!webgpuAI.isReady()) {
       await webgpuAI.waitForReady(3000);
     }

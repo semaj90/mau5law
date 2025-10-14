@@ -12,7 +12,7 @@
 
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { onMount  } from "svelte";
+  import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
   import { reactiveApiClient } from '$lib/services/api-client';
   import { productionServiceClient } from '$lib/api/production-service-client';
@@ -43,7 +43,8 @@
     loading?: Snippet;
     error?: Snippet;
   }
-  let { open = $bindable(false),
+  let {
+    open = $bindable(false),
     title = '',
     description = '',
     size = 'md',
@@ -58,12 +59,12 @@
     onOpenChange,
     onDataLoad,
     onError,
-  children,
-  header,
-  footer,
-  loading,
-  error
-   }: Props = $props();
+    children,
+    header,
+    footer,
+    loading,
+    error,
+  }: Props = $props();
   // Reactive data state
   let data: unknown = $state(dataProvider?.data || null);
   let isLoading = $state(dataProvider?.loading || false);
@@ -74,7 +75,7 @@
     md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-xl',
-    full: 'max-w-[95vw] max-h-[95vh]'
+    full: 'max-w-[95vw] max-h-[95vh]',
   };
   // Helper: safe case label extraction (avoid inline TS casts in template)
   function getCaseLabel(d: any) {
@@ -133,7 +134,7 @@
         onDataLoad?.(data);
       }
     } catch (err) {
-      const error = err instanceof Error ? err.message: 'Failed to load data';
+      const error = err instanceof Error ? err.message : 'Failed to load data';
       errorMessage = error;
       onError?.(error);
     } finally {
@@ -153,7 +154,7 @@
     }
   }
   // Auto-refresh interval
-  let refreshTimer = $state<number | null >(null);
+  let refreshTimer = $state<number | null>(null);
   $effect(() => {
     if (open && refreshInterval && refreshInterval > 0) {
       refreshTimer = setInterval(() => {
@@ -167,7 +168,7 @@
         clearInterval(refreshTimer);
         refreshTimer = null;
       }
-    }
+    };
   });
   // Initial load (preserve original behavior)
   $effect(() => {
@@ -188,7 +189,7 @@
     if (entityType && entityId) {
       const key = `${entityType}:${entityId}`;
       unsubscribe?.();
-      unsubscribe = reactiveApiClient.subscribe(key, (store) => {
+      unsubscribe = reactiveApiClient.subscribe(key, store => {
         data = store.data;
         isLoading = store.loading;
         errorMessage = store.error;
@@ -197,7 +198,7 @@
     }
     return () => {
       unsubscribe?.();
-    }
+    };
   });
 </script>
 
@@ -219,7 +220,7 @@
         <div class="flex items-center justify-between">
           <div class="flex-1">
             {#if header}
-              {@render header?.()}         <!-- changed: call with no args -->
+              {@render header?.()} <!-- changed: call with no args -->
             {:else if title}
               <h2 class="text-lg font-semibold leading-none tracking-tight font-mono">
                 {title}
@@ -245,7 +246,7 @@
                 class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50"
                 title="Refresh data"
               >
-                <RefreshCw class={cn("h-4 w-4", isLoading && "animate-spin")} />
+                <RefreshCw class={cn('h-4 w-4', isLoading && 'animate-spin')} />
               </button>
             {/if}
             {#if showClose}
@@ -286,7 +287,7 @@
         {:else if errorMessage}
           <div class="flex-1 flex items-center justify-center">
             {#if error}
-              {@render error?.()}            <!-- changed: call with no args -->
+              {@render error?.()} <!-- changed: call with no args -->
             {:else}
               <div class="flex flex-col items-center gap-3 text-center">
                 <AlertCircle class="h-8 w-8 text-destructive" />
@@ -305,14 +306,16 @@
           </div>
         {:else}
           <div class="flex-1">
-            {@render children?.()}         <!-- changed: call with no args -->
+            {@render children?.()}
+            <!-- changed: call with no args -->
           </div>
         {/if}
       </div>
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 modular-dialog-footer border-t pt-4">
-          {@render footer?.()}            <!-- changed: call with no args -->
+          {@render footer?.()}
+          <!-- changed: call with no args -->
         </div>
       {/if}
     </Dialog.Content>
@@ -323,12 +326,12 @@
   :global(.modular-dialog) {
     /* Replaced Tailwind @apply with safe CSS using CSS variables */
     background-color: var(--yorha-bg-secondary, #0f1724);
-    border: 1px solid var(--yorha-border, rgba(255,255,255,0.06));
+    border: 1px solid var(--yorha-border, rgba(255, 255, 255, 0.06));
   }
   :global(.modular-dialog-content) {
     color: var(--yorha-text-primary, #e6eef8);
   }
   :global(.modular-dialog-footer) {
-    border-top: 1px solid var(--yorha-border, rgba(255,255,255,0.06));
+    border-top: 1px solid var(--yorha-border, rgba(255, 255, 255, 0.06));
   }
 </style>

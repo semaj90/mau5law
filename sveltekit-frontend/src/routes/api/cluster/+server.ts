@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ ok: false, upstream: baseUrl, error: msg }, { status: 502 });
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   const baseUrl = import.meta.env.CLUSTER_BASE_URL || DEFAULT_CLUSTER_URL;
   try {
@@ -29,4 +29,4 @@ export const POST: RequestHandler = async ({ request }) => {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ error: msg, upstream: baseUrl }, { status: 502 });
   }
-}
+};

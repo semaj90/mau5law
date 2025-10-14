@@ -66,7 +66,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
   }
 }
 export async function consumeFromQueue(
-  queueName: string
+  queueName: string,
   processor: (payload: any, ack: () => void, nack: () => void) => Promise<void>;
 ): Promise<void> {
   try {

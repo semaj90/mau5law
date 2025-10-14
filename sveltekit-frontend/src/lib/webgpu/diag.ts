@@ -81,12 +81,12 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
           device = await adapter.requestDevice();
           t2 = performance.now();
           const result: WebGPUDiagResult = {
-            supported: true
-            adapterFound: true
-            deviceCreated: true
+            supported: true,
+            adapterFound: true,
+            deviceCreated: true,
             warnings,
-            powerPreferenceTried: tried
-            powerPreferenceUsed: usedPref
+            powerPreferenceTried: tried,
+            powerPreferenceUsed: usedPref,
             timings: {
               requestAdapterMs: t1 - t0,
               requestDeviceMs: t2 - t1
@@ -130,12 +130,12 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
     'If running in VM/remote or with multiple GPUs, ensure the high-performance adapter is allowed.'
   );
   return {
-    supported: true
+    supported: true,
     adapterFound: Boolean(adapter),
-    deviceCreated: false
+    deviceCreated: false,
     error: 'Failed to create a WebGPU device after trying multiple power preferences.',
     warnings,
-    powerPreferenceTried: tried
+    powerPreferenceTried: tried,
     timings: t1 ? { requestAdapterMs: t1 - t0 } : { [key,: strin,g]: any },
     adapter: adapter;
       ? {

@@ -66,7 +66,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Get default ONNX configuration for Legal-BERT
-   */;
+   */
   private getDefaultConfig(): ONNXModelConfig {
     return {
       modelPath: './models/legal-bert-onnx/model.onnx',
@@ -84,8 +84,8 @@ export class LegalBertONNXService extends EventEmitter {
       ],
       sessionOptions: {
         graphOptimizationLevel: 'all',
-        enableMemPattern: true
-        enableCpuMemArena: true
+        enableMemPattern: true,
+        enableCpuMemArena: true,
         executionMode: 'parallel',
         logSeverityLevel: 2, // Warning level
       },
@@ -122,7 +122,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Initialize ONNX session and tokenizer
-   */;
+   */
   async initialize(): Promise<void> {
     try {
       // Dynamic import to avoid loading ONNX in environments where it's not available
@@ -149,7 +149,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Load ONNX Runtime with fallback handling
-   */;
+   */
   private async loadONNXRuntime(): Promise<any> {
     try {
       // Try to load ONNX Runtime
@@ -165,7 +165,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Initialize tokenizer (placeholder - integrate with actual BERT tokenizer)
-   */;
+   */
   private async initializeTokenizer(): Promise<any> {
     // This is a placeholder. In production, you would:
     // 1. Load the actual BERT tokenizer (e.g., from @xenova/transformers)
@@ -180,7 +180,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Mock tokenization (replace with actual BERT tokenizer)
-   */;
+   */
   private mockTokenize(text: string): { input_ids: number[]; attention_mask: number[]; token_type_ids: number[] } {
     // This is a simplified mock. In production, use proper BERT tokenization
     const words = text.toLowerCase().split(/\s+/).slice(0, 510); // Leave room for special tokens
@@ -191,13 +191,13 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Mock detokenization
-   */;
+   */
   private mockDetokenize(tokens: number[]): string {
     return tokens.map(t => `token_${t}`).join(' ');
   }
   /**
    * Extract legal entities from text
-   */;
+   */
   async extractLegalEntities(text: string): Promise<LegalEntityExtractionResult> {
     const startTime = Date.now();
     if (!this.isInitialized) {
@@ -231,7 +231,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Classify legal document type
-   */;
+   */
   async classifyLegalDocument(text: string): Promise<LegalClassificationResult> {
     const startTime = Date.now();
     if (!this.isInitialized) {
@@ -250,7 +250,7 @@ export class LegalBertONNXService extends EventEmitter {
       this.updateMetrics(processingTime, true);
       const result: LegalClassificationResult = {
         predictions,
-        topPrediction: predictions[0]
+        topPrediction: predictions[0],
         processingTime,
         modelUsed: 'legal-bert-onnx'
       }
@@ -266,7 +266,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Generate embeddings for legal text
-   */;
+   */
   async generateEmbeddings(text: string): Promise<LegalEmbeddingResult> {
     const startTime = Date.now();
     if (!this.isInitialized) {
@@ -301,7 +301,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Prepare inputs for ONNX inference
-   */;
+   */
   private async prepareONNXInputs(tokens: any): Promise<{ [key: string]: any }, {
     // Use the ONNX runtime that was loaded during initialization
     const ort = await this.loadONNXRuntime();
@@ -326,7 +326,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Process NER outputs to extract entities
-   */;
+   */
   private processNEROutputs(outputs: any, originalText: string, tokens: any): Array< {
     // This is a simplified implementation
     // In production, you would:
@@ -342,7 +342,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Process classification outputs
-   */;
+   */
   private processClassificationOutputs(outputs,: any): Array< {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
@@ -354,7 +354,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Extract embeddings from model outputs
-   */;
+   */
   private extractEmbeddings(outputs,: any): number[,] {
     // Extract from pooler output or perform mean pooling
     // This is a mock implementation
@@ -363,7 +363,7 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Update performance metrics
-   */;
+   */
   private updateMetrics(latency,: number, succes,s: boolea,n): void {
     this.performanceMetrics.totalInferences+,+;
     this.performanceMetrics.averageLatency =
@@ -382,19 +382,19 @@ export class LegalBertONNXService extends EventEmitter {
   }
   /**
    * Get performance metrics
-   */;
+   */
   getPerformanceMetrics(), {
     return { ...this.performanceMetrics }
   }
   /**
    * Check if service is ready
-   */;
+   */
   isReady(),: boolean {
     return this.isInitialized && this.session !== null;
   }
   /**
    * Cleanup resources
-   */;
+   */
   async dispose(),: Promise<void> {
     try {
       if (this.sessio,n) {

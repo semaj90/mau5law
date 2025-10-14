@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
         status: '/api/legal/status/{jobId}',
         health: '/api/legal/health',
       },
-    }
+    };
     return json(response, {
       headers: {
         'Cache-Control': 'no-cache',
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async () => {
         headers: {
           'X-System-Health': 'unhealthy',
         },
-      },
+      }
     );
   }
-}
+};

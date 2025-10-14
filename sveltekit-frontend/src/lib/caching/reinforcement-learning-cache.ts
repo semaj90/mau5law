@@ -86,7 +86,7 @@ export class ReinforcementLearningCache {
   /**
    * Predict next 3D component based on user interaction sequence
    * Uses RNN-like sequential pattern learning
-   */;
+   */
   async predict3DComponent(currentContext: string, userAction: string): Promise<Component3DMetadata | null> {
     // Add current action to sequence for learning
     this.userInteractionSequence.push(userAction);
@@ -108,7 +108,7 @@ export class ReinforcementLearningCache {
   /**
    * Pre-render animation frames for predicted interactions
    * Autoencoder-like compression for efficient storage
-   */;
+   */
   async preRenderAnimations(componentId: string, animationType: string): Promise<void> {
     const prediction: AnimationPrediction = {
       componentId,
@@ -127,7 +127,7 @@ export class ReinforcementLearningCache {
   /**
    * AI-driven 3D asset search with semantic understanding
    * Uses transformer-like embeddings for context understanding
-   */;
+   */
   async searchPredictive3DAssets(query: string, context: any): Promise<AssetSearchPattern[]> {
     // Generate semantic embedding for query (transformer-like processing)
     const queryVector = await this.generateQueryEmbedding(query);
@@ -149,7 +149,7 @@ export class ReinforcementLearningCache {
   /**
    * Transport 3D components using CHR-ROM pattern compression
    * Integrates with NES GPU Memory Bridge for efficient transfer
-   */;
+   */
   async transport3DComponents(components: Component3DMetadata[]): Promise<string[]> {
     const transportedIds: string[] = [];
     for (const component of components) {
@@ -275,7 +275,7 @@ export class ReinforcementLearningCache {
       predictions.push({
         searchTerm: '3d_document_stack',
         assetType: '3d_model',
-        contextVector: queryVector
+        contextVector: queryVector,
         usageFrequency: 1,
         lastAccessed: Date.now()
       });
@@ -284,7 +284,7 @@ export class ReinforcementLearningCache {
       predictions.push({
         searchTerm: '3d_evidence_container',
         assetType: '3d_model',
-        contextVector: queryVector
+        contextVector: queryVector,
         usageFrequency: 1,
         lastAccessed: Date.now()
       });

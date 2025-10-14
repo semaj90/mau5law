@@ -37,7 +37,7 @@ export async function loadComponent(
   }
 }
 async function loadComponentWithRetry(
-  name: string
+  name: string,
   retryAttempts: number;
   timeout: number
 ): Promise<ComponentType | null> {

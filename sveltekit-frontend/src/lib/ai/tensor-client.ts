@@ -16,29 +16,32 @@ async function runGpuTile(embedding: number[]) {
     const t0 = performance.now();
     // Enhanced self-similarity with SIMD GPU tiling
     const result = await __gpuAccelerator.calculateVectorSimilarityWithSIMDTiling(v, v, {
-      enableTiling: true
+      enableTiling: true,
       tileSize: 256,
-      useEvidenceAnalysis: false
+      useEvidenceAnalysis: false,
     });
     const t1 = performance.now();
     return {
       op: 'simdGpuTiling',
-      similarity: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).similarity,
+      similarity: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any })
+        .similarity,
       length: v.length,
       timeMs: +(t1 - t0).toFixed(2),
       gpuMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).gpuMeta,
-      tilingMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).tilingMeta,
-      performance: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).performanceMetrics
-    }
+      tilingMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any })
+        .tilingMeta,
+      performance: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any })
+        .performanceMetrics,
+    };
   } catch (e: any) {
-    return { op: 'simdGpuTiling', error: e?.message || String(e) }
+    return { op: 'simdGpuTiling', error: e?.message || String(e) };
   }
 }
 export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }) {
   const res = await fetch('/api/ai/tensor', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text })
+    body: JSON.stringify({ text }),
   });
   if (!res.ok) throw new Error(`Tensor API error: ${res.status}`);
   const data = await res.json();
@@ -49,15 +52,15 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
   if (opts?.simdParse && navigator.serviceWorker?.controller) {
     const tensor = new Float32Array(embedding);
     // Transfer the underlying ArrayBuffer for zero-copy to the SW
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const channel = new MessageChannel();
-      channel.port1.onmessage = (ev) => {
+      channel.port1.onmessage = ev => {
         Promise.resolve(gpuPromise)
-          .then((gpuMeta) => resolve({ ...data, tensorMeta: ev.data, gpuMeta })
-          .catch(() => resolve({ ...data, tensorMeta: ev.data });
-      }
+          .then(gpuMeta => resolve({ ...data, tensorMeta: ev.data, gpuMeta }))
+          .catch(() => resolve({ ...data, tensorMeta: ev.data }));
+      };
       const payload = tensor.buffer;
-      navigator.serviceWorker.controller!.postMessage()
+      navigator.serviceWorker.controller!.postMessage(
         { type: 'SIMD_PARSE_TENSOR', payload },
         // Transfer both the port and the ArrayBuffer for true zero-copy
         [channel.port2, payload]
@@ -67,7 +70,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
   // If only GPU tiling is requested
   if (opts?.gpuTile) {
     const gpuMeta = await gpuPromise;
-    return { ...data, gpuMeta }
+    return { ...data, gpuMeta };
   }
   return data;
 }

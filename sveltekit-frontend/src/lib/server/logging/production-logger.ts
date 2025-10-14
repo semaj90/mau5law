@@ -105,9 +105,9 @@ export class ProductionLogger {
         errorDetails: entry.error ? {,
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name
+          name: entry.error.name,
         } : null;
-        data: entry.data ? JSON.stringify(entry.data) : null
+        data: entry.data ? JSON.stringify(entry.data) : null,
         userId: entry.userId,
         caseId: entry.caseId,
         documentId: entry.documentId
@@ -145,7 +145,7 @@ export class ProductionLogger {
       level: error ? 'error' : 'info',
       service: 'ocr',
       message: `OCR processing: ${fileName}`,
-      data: result
+      data: result,
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {,
         duration: 0,

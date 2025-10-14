@@ -97,7 +97,7 @@ export class WebGPURedisOptimizer {
       this.computePipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule
+          module: shaderModule,
           entryPoint: 'main',
         },
       });
@@ -145,9 +145,9 @@ export class WebGPURedisOptimizer {
               type: 'init',
               config: {
                 poolType,
-                threadId: i
-                rtxOptimizations: true
-                simdEnabled: true
+                threadId: i,
+                rtxOptimizations: true,
+                simdEnabled: true,
               },
             });
             workers.push(worker);
@@ -336,7 +336,7 @@ export class WebGPURedisOptimizer {
         tensorDimensions: value instanceof Float32Array ? [value.length] : undefined
         requiresGPU: options.compress && value instanceof Float32Array,
       },
-      data: value
+      data: value,
       key,
       ttl: options.ttl,
     }
@@ -418,7 +418,7 @@ export class WebGPURedisOptimizer {
   async getOptimizationStats(): Promise<any> {
     const currentMetrics = await this.getGPUMetrics();
     return {
-      gpuMetrics: currentMetrics
+      gpuMetrics: currentMetrics,
       threadPoolStats: {
         totalPools: this.threadPools.size,
         activeWorkers: Array.from(this.threadPools.values()).flat().length,
@@ -451,7 +451,7 @@ export const optimizedCache = {
   async set(_key: string, value: any, ttl?: number): Promise<void> {
     return webgpuRedisOptimizer.setOptimized(key, value, {
       ttl,
-      compress: value instanceof Float32Array
+      compress: value instanceof Float32Array,
       parallel: true;
       priority: 'medium',
     });

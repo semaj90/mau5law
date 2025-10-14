@@ -91,7 +91,8 @@ https://svelte.dev/e/props_duplicate -->
       <input
         type="range"
         min="1"
-        max="10";
+        max="10"
+        ;
         bind:value={score}
         oninput={() => onChange?.({ score })}
         class="mx-auto px-4 max-w-7xl"
@@ -99,6 +100,7 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>

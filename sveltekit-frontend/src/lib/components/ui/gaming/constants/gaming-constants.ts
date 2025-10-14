@@ -46,28 +46,28 @@ export const NES_COLOR_PALETTE: NESColorPalette & {
 // SNES Color Palette (enhanced 16-bit)
 export const SNES_COLOR_PALETTE: SNESColorPalette = {
   background: [
-    '#0f0f0f',  // Black
-    '#7c7c7c',  // Dark gray
-    '#bcbcbc',  // Light gray
-    '#fcfcfc'   // White
+    '#0f0f0f', // Black
+    '#7c7c7c', // Dark gray
+    '#bcbcbc', // Light gray
+    '#fcfcfc', // White
   ],
   sprites: [
-    '#f83800',  // Red
-    '#3cbcfc',  // Blue
-    '#92cc41',  // Green
-    '#f7d51d'   // Yellow
+    '#f83800', // Red
+    '#3cbcfc', // Blue
+    '#92cc41', // Green
+    '#f7d51d', // Yellow
   ],
   ui: [
-    '#0f0f0f',  // Black
-    '#fcfcfc',  // White
-    '#7c7c7c',  // Dark gray
-    '#bcbcbc'   // Light gray
+    '#0f0f0f', // Black
+    '#fcfcfc', // White
+    '#7c7c7c', // Dark gray
+    '#bcbcbc', // Light gray
   ],
   effects: [
-    '#8b41fc',  // Purple
-    '#fc9838',  // Orange
-    '#38fcfc',  // Cyan
-    '#fc38fc'   // Magenta
+    '#8b41fc', // Purple
+    '#fc9838', // Orange
+    '#38fcfc', // Cyan
+    '#fc38fc', // Magenta
   ],
   // Individual color properties for direct access
   black: '#0f0f0f',
@@ -87,8 +87,8 @@ export const SNES_COLOR_PALETTE: SNESColorPalette = {
   lime: '#9cfc38',
   // Gradient definitions for SNES-style depth
   primaryGradient: ['#3cbcfc', '#0084ff', '#0050cc'],
-  secondaryGradient: ['#f7d51d', '#cc8800', '#996600']
-}
+  secondaryGradient: ['#f7d51d', '#cc8800', '#996600'],
+};
 // N64 Texture and Rendering Presets (Enhanced)
 export const N64_TEXTURE_PRESETS = {
   // Low-poly optimized settings
@@ -164,15 +164,15 @@ export const N64_TEXTURE_PRESETS = {
 // Responsive gaming breakpoints
 export const GAMING_BREAKPOINTS = {
   // Screen sizes that impact gaming component rendering
-  handheld: '(max-width: 320px)',     // Game Boy size
-  nes: '(max-width: 480px)',          // NES TV resolution equivalent;
-  snes: '(max-width: 768px)',         // SNES enhanced resolution
-  n64: '(min-width: 769px)',          // N64 and above
+  handheld: '(max-width: 320px)', // Game Boy size
+  nes: '(max-width: 480px)', // NES TV resolution equivalent;
+  snes: '(max-width: 768px)', // SNES enhanced resolution
+  n64: '(min-width: 769px)', // N64 and above
   // Performance-based breakpoints
   lowPerformance: '(max-device-memory: 2)',
   mediumPerformance: '(max-device-memory: 4)',
-  highPerformance: '(min-device-memory: 5)'
-}
+  highPerformance: '(min-device-memory: 5)',
+};
 // Gaming era specifications with advanced memory optimization
 export const GAMING_ERA_SPECS = {
   '8bit': {
@@ -289,10 +289,10 @@ export const GAMING_CSS_VARS = {
   '--snes-pink': SNES_COLOR_PALETTE.pink,
   '--snes-lime': SNES_COLOR_PALETTE.lime,
   // Component sizing (pixel-perfect)
-  '--gaming-unit': '8px',          // Base 8px grid
-  '--nes-border-width': '2px',     // NES standard border
-  '--snes-border-width': '1px',    // SNES refined border
-  '--n64-border-radius': '4px',    // N64 rounded corners
+  '--gaming-unit': '8px', // Base 8px grid
+  '--nes-border-width': '2px', // NES standard border
+  '--snes-border-width': '1px', // SNES refined border
+  '--n64-border-radius': '4px', // N64 rounded corners
   // Typography
   '--gaming-font-8bit': '"Press Start 2P", monospace',
   '--gaming-font-16bit': '"Orbitron", sans-serif',
@@ -301,78 +301,78 @@ export const GAMING_CSS_VARS = {
   '--gaming-transition-instant': '0ms',
   '--gaming-transition-fast': '100ms',
   '--gaming-transition-normal': '200ms',
-  '--gaming-transition-slow': '400ms'
-}
+  '--gaming-transition-slow': '400ms',
+};
 // Component size mappings
 export const GAMING_COMPONENT_SIZES = {
   small: {
     padding: 'calc(var(--gaming-unit) * 1)',
     fontSize: '10px',
-    minHeight: 'calc(var(--gaming-unit) * 4)'
+    minHeight: 'calc(var(--gaming-unit) * 4)',
   },
   medium: {
     padding: 'calc(var(--gaming-unit) * 2)',
     fontSize: '12px',
-    minHeight: 'calc(var(--gaming-unit) * 6)'
+    minHeight: 'calc(var(--gaming-unit) * 6)',
   },
   large: {
     padding: 'calc(var(--gaming-unit) * 3)',
     fontSize: '14px',
-    minHeight: 'calc(var(--gaming-unit) * 8)'
+    minHeight: 'calc(var(--gaming-unit) * 8)',
   },
   xl: {
     padding: 'calc(var(--gaming-unit) * 4)',
     fontSize: '16px',
-    minHeight: 'calc(var(--gaming-unit) * 10)'
-  }
-}
+    minHeight: 'calc(var(--gaming-unit) * 10)',
+  },
+};
 // Retro effect presets
 export const RETRO_EFFECTS = {
   scanlines: {
     name: 'Scanlines',
     cssFilter: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.3) 2px, rgba(0,0,0,.3) 4px)',
-    performance: 'low'
+    performance: 'low',
   },
   crt: {
     name: 'CRT Monitor',
     cssFilter: 'contrast(1.2) brightness(1.1) saturate(1.3)',
     borderRadius: '10px',
     boxShadow: 'inset 0 0 0 4px rgba(0,0,0,0.3)',
-    performance: 'medium'
+    performance: 'medium',
   },
   pixelate: {
     name: 'Pixel Perfect',
     imageRendering: 'pixelated',
     msInterpolationMode: 'nearest-neighbor',
-    performance: 'low'
+    performance: 'low',
   },
   glitch: {
     name: 'Digital Glitch',
     animation: 'glitch 2s infinite',
-    performance: 'high'
-  }
-}
+    performance: 'high',
+  },
+};
 // Gaming sound effect mappings
 export const GAMING_SOUND_EFFECTS = {
   '8bit': {
     buttonPress: '/sounds/8bit/button-press.wav',
     menuMove: '/sounds/8bit/menu-move.wav',
     error: '/sounds/8bit/error.wav',
-    success: '/sounds/8bit/success.wav'
+    success: '/sounds/8bit/success.wav',
   },
   '16bit': {
     buttonPress: '/sounds/16bit/button-press.wav',
     menuMove: '/sounds/16bit/menu-move.wav',
     error: '/sounds/16bit/error.wav',
-    success: '/sounds/16bit/success.wav'
+    success: '/sounds/16bit/success.wav',
   },
   'n64': {
     buttonPress: '/sounds/n64/button-press.wav',
     menuMove: '/sounds/n64/menu-move.wav',
     error: '/sounds/n64/error.wav',
-    success: '/sounds/n64/success.wav'
-  }
-}
+    success: '/sounds/n64/success.wav',
+  },
+};
 // Enhanced bit-level caching architecture with multi-tier storage
 export const ENHANCED_MEMORY_CACHING = {
   // Tier 1: JavaScript Redis-style in-memory cache

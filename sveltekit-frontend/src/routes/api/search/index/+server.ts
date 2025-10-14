@@ -182,8 +182,8 @@ async function buildVectorIndex() {
         ...point.payload.metadata,
         source: 'qdrant',
         vectorId: point.id,
-        hasVector: true
-        vectorDimensions: point.vector.length
+        hasVector: true,
+        vectorDimensions: point.vector.length,
       }
     })
   } catch (error) {
@@ -238,7 +238,7 @@ async function buildMinIOIndex() {
         entities: [fileType, obj.metadata['x-amz-meta-practice-area'] || 'Legal'],
         metadata: {
           practiceArea: obj.metadata['x-amz-meta-practice-area'],
-          documentType: fileType
+          documentType: fileType,
           caseId: obj.metadata['x-amz-meta-case-id'],
           uploadDate: obj.lastModified.toISOString(),
           source: 'minio',

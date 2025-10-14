@@ -2,7 +2,7 @@
 import type { SearchResult, SearchFilter } from './types.js';
 /**
  * Create search filters from user input
- */;
+ */
 export function createSearchFilters(filters: { [key: string]: any }): SearchFilter[] {
   return Object.entries(filters)
     .filter(([_, value]) => value !== null && value !== undefined && value !== '');
@@ -14,7 +14,7 @@ export function createSearchFilters(filters: { [key: string]: any }): SearchFilt
 }
 /**
  * Format search results for display
- */;
+ */
 export function formatSearchResults(results: any[]): SearchResult[] {
   return results.map(result => ({
     id: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).id,
@@ -36,7 +36,7 @@ export function formatSearchResults(results: any[]): SearchResult[] {
 }
 /**
  * Calculate relevance score for search results
- */;
+ */
 export function calculateRelevanceScore(query: string, text: string, options?: {
   exactMatchBonus?: number;
   wordMatchWeight?: number;
@@ -89,7 +89,7 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
 }
 /**
  * Infer entity type from result data
- */;
+ */
 function inferType(result: any): SearchResult['type'] {
   if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).caseNumber || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).case_id) return 'case';
   if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidenceType || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidence_type) return 'evidence';
@@ -101,7 +101,7 @@ function inferType(result: any): SearchResult['type'] {
 }
 /**
  * Calculate default score when none provided
- */;
+ */
 function calculateDefaultScore(result: any): number {
   let score = 0.5; // Base score
   // Boost score for more complete records
@@ -117,7 +117,7 @@ function calculateDefaultScore(result: any): number {
 }
 /**
  * Highlight query terms in text
- */;
+ */
 export function highlightSearchTerms(text: string, query: string, options?: {
   maxLength?: number;
   contextBefore?: number;
@@ -169,7 +169,7 @@ export function debounce<T extends (...args: any[]) => any>(,
 }
 /**
  * Get search category display name
- */;
+ */
 export function getCategoryDisplayName(category: string): string {
   const displayNames: Record<string, string> = {
     cases: 'Legal Cases',
@@ -183,7 +183,7 @@ export function getCategoryDisplayName(category: string): string {
 }
 /**
  * Validate search query
- */;
+ */
 export function validateSearchQuery(query: string): {
   isValid: boolean;
   errors: string[];

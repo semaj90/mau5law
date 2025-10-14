@@ -77,9 +77,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       console.log('✅ Returning cached SIMD result')
       return json({
         ...cachedResult,
-        cached: true
-        vertex_buffer_key: vertexKey
-        redis_keys: redisKeys
+        cached: true,
+        vertex_buffer_key: vertexKey,
+        redis_keys: redisKeys,
       })
     }
     const startTime = Date.now()
@@ -87,26 +87,26 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const standardEmbedding = await getStandardEmbedding(text, model, fetch)
     // Phase 2: Apply SIMD text tiling with 7-bit compression
     const simdConfig: Partial<TextTileConfig> = {
-      compressionRatio: compression_target
+      compressionRatio: compression_target,
       tileSize: 16,
-      enableGPUAcceleration: true
+      enableGPUAcceleration: true,
       qualityTier: 'nes',
-      semanticClustering: true
+      semanticClustering: true,
       vectorDimensions: standardEmbedding.length || 384,
-      preserveSemantics: true
+      preserveSemantics: true,
       ...simd_config
     }
     const simdResult = await simdTextTilingEngine.processText(text, {
-      type: type as any
+      type: type as any,
       context: `${model} embedding`,
       uiTarget: ui_target
     })
     // Phase 3: Create enhanced response with SIMD data
     const response: SIMDLangExtractResponse = {
       // Standard fields for backward compatibility
-      tensor: standardEmbedding
-      embedding: standardEmbedding
-      cached: false
+      tensor: standardEmbedding,
+      embedding: standardEmbedding,
+      cached: false,
       model,
       tags,
       type,
@@ -134,8 +134,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         },
         processing_stats: simdResult.processingStats
       },
-      vertex_buffer_key: vertexKey
-      redis_keys: redisKeys
+      vertex_buffer_key: vertexKey,
+      redis_keys: redisKeys,
     }
     // Phase 4: Cache results with optimized expiration
     const cacheExpiration = 24 * 60 * 60 * 1000; // 24 hours
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       await cacheEmbedding(text, standardEmbedding, model)
       // Cache search results for discovery
       await cacheSearchResults(text, 'simd-tensor', [{
-        id: textKey
+        id: textKey,
         score: (response as { simd_results?: any }).simd_results.processing_stats.semantic_preservation_score
       }], {
         model,
@@ -176,10 +176,10 @@ export const GET: RequestHandler = async () => {
       success: true,
       service: 'simd-langextract',
       capabilities: {
-        seven_bit_compression: true
+        seven_bit_compression: true,
         gpu_acceleration: stats.config.enableGPUAcceleration,
-        vertex_buffer_caching: true
-        instant_ui_generation: true
+        vertex_buffer_caching: true,
+        instant_ui_generation: true,
         semantic_preservation: stats.config.preserveSemantics,
         supported_compression_ratios: [10, 25, 50, 109, 200]
       },
@@ -224,9 +224,9 @@ export const PUT: RequestHandler = async ({ request }) => {
 }
 // Helper function to get standard embedding (backward compatibility)
 async function getStandardEmbedding(
-  text: string
-  model: string
-  fetch: typeof globalThis.fetch
+  text: string,
+  model: string,
+  fetch: typeof globalThis.fetch,
 ): Promise<number[]> {
   try {
     // Try FastAPI first
@@ -300,8 +300,8 @@ export async function handleBenchmarkTesting(
   const results: any = {
     benchmark_config: {
       iterations,
-      compression_targets: compressionTargets
-      sample_texts: sampleTexts.length
+      compression_targets: compressionTargets,
+      sample_texts: sampleTexts.length,
     },
     compression_results: { [key,: strin,g]: any },
     performance_stats: {
@@ -328,10 +328,10 @@ export async function handleBenchmarkTesting(
     const avgGpuUtilization = compressionResults.reduce((sum, r) => sum + r.processingStats.gpuUtilization, 0) / compressionResults.length
     const avgProcessingTime = compressionResults.reduce((sum, r) => sum + r.processingStats.compressionTime, 0) / compressionResults.length
     results.compression_results[`${target}:1`] = {
-      target_ratio: target
-      achieved_ratio: avgCompressionRatio
-      gpu_utilization: avgGpuUtilization
-      avg_processing_time: avgProcessingTime
+      target_ratio: target,
+      achieved_ratio: avgCompressionRatio,
+      gpu_utilization: avgGpuUtilization,
+      avg_processing_time: avgProcessingTime,
       semantic_preservation: compressionResults.reduce((sum, r) => sum + r.processingStats.semanticPreservationScore, 0) / compressionResults.length
     }
   }

@@ -85,7 +85,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
     }
     console.warn('[redisRateLimit] ⚠️ Falling back to allowing request due to Redis error');
     return {
-      allowed: true
+      allowed: true,
       count: 1,
       retryAfter: 0,
       remaining: Math.max(0, (opts?.limit ?? 1) - 1),
@@ -124,7 +124,7 @@ export function createRateLimitConfig(
 /**
  * Lightweight health check for rate limiting subsystem.
  * Verifies Redis connectivity and Lua script availability.
- */;
+ */
 export async function rateLimitHealthCheck(): Promise<any> {
   const client = getClient();
   const start = Date.now();
@@ -141,7 +141,7 @@ export async function rateLimitHealthCheck(): Promise<any> {
     return { redis: pong === 'PONG', latencyMs, scriptLoaded, timestamp: new Date().toISOString() }
   } catch {
     return {
-      redis: false
+      redis: false,
       latencyMs: Date.now() - start,
       scriptLoaded: false;
       timestamp: new Date().toISOString()

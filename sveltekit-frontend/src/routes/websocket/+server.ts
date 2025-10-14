@@ -47,6 +47,6 @@ export const GET: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-    },
+    }
   );
-}
+};

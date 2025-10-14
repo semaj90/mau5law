@@ -1,5 +1,5 @@
 <script>
-// Placeholder for AI Orchestrator page
+  // Placeholder for AI Orchestrator page
 </script>
 
 <div class="ai-orchestrator-placeholder">

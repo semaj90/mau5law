@@ -397,14 +397,30 @@ lodManager = new N64LODManager();
     font-size: 0.75rem;
     font-weight: bold;
   }
-  .mode-badge.active { background: #22c55e, }
-  .mode-badge.preview { background: #3b82f6, }
-  .mode-badge.timeline { background: #f59e0b, }
-  .mode-badge.overview { background: #6b7280, }
-  .importance-badge.critical { background: #ef4444, }
-  .importance-badge.high { background: #f97316, }
-  .importance-badge.medium { background: #eab308, }
-  .importance-badge.low { background: #6b7280, }
+  .mode-badge.active {
+    background: #22c55e;
+  }
+  .mode-badge.preview {
+    background: #3b82f6;
+  }
+  .mode-badge.timeline {
+    background: #f59e0b;
+  }
+  .mode-badge.overview {
+    background: #6b7280;
+  }
+  .importance-badge.critical {
+    background: #ef4444;
+  }
+  .importance-badge.high {
+    background: #f97316;
+  }
+  .importance-badge.medium {
+    background: #eab308;
+  }
+  .importance-badge.low {
+    background: #6b7280;
+  }
   .lod-controls {
     display: flex;
     gap: 0.25rem;
@@ -447,10 +463,7 @@ lodManager = new N64LODManager();
     position: relative;
     height: 400px;
     overflow: auto;
-    background: repeating-conic-gradient(
-      #2a2a2a 0% 25%,
-      transparent 0% 50%
-    ) 50% / 20px 20px;
+    background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px;
   }
   .streaming-overlay {
     position: absolute;

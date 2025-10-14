@@ -15,7 +15,7 @@ const RAW_ENV = {
   VITE_GPU_DEBUG: import.meta.env.VITE_GPU_DEBUG,
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
   VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE,
-}
+};
 export interface EnvConfig {
   OLLAMA_URL: string;
   OLLAMA_MODEL: string;
@@ -55,7 +55,7 @@ function validateAndBuildEnv(): EnvConfig {
       RAW_ENV.VITE_REDUCTION_MODE === 'gpu' || RAW_ENV.VITE_REDUCTION_MODE === 'cpu'
         ? RAW_ENV.VITE_REDUCTION_MODE
         : 'auto',
-  }
+  };
   if (cfg.GPU_DEBUG) {
     console.log('[ENV] Loaded configuration', cfg);
   }

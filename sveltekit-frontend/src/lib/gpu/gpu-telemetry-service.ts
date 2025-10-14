@@ -30,7 +30,7 @@ interface Aggregates {
 }
 export class GPUTelemetryService {
   private samples: OperationSample[] = [];
-  private aggregates: Record<string, Aggregates> = {}
+  private aggregates: Record<string, Aggregates> = {};
   private maxSamples = 200;
   private errors: GPUErrorSample[] = [];
   private demotions: BackendDemotionEvent[] = [];
@@ -38,7 +38,7 @@ export class GPUTelemetryService {
     this.samples.push(sample);
     if (this.samples.length > this.maxSamples) this.samples.shift();
     const key = `${sample.pipeline}|${sample.backend}|${sample.shaderType || 'na'}`;
-    const agg = this.aggregates[key] || { count: 0, successes: 0, totalMs: 0, maxMs: 0, minMs: Infinity }
+    const agg = this.aggregates[key] || { count: 0, successes: 0, totalMs: 0, maxMs: 0, minMs: Infinity };
     agg.count += 1;
     if (sample.success) agg.successes += 1;
     agg.totalMs += sample.durationMs;
@@ -57,9 +57,9 @@ export class GPUTelemetryService {
       results.push({
         pipeline,
         backend,
-        shaderType: shaderType === 'na' ? null : shaderType
+        shaderType: shaderType === 'na' ? null : shaderType,
         durationMs: a.totalMs,
-        success: true
+        success: true,
         timestamp: Date.now(),
         avgMs: a.totalMs / a.count,
         successRate: a.successes / a.count,
@@ -73,7 +73,7 @@ export class GPUTelemetryService {
     return results.sort((a, b) => b.timestamp - a.timestamp);
   }
   dump(): { samples: OperationSample[]; aggregates: ReturnType<GPUTelemetryService['getAggregates']> } {
-    return { samples: [...this.samples], aggregates: this.getAggregates() }
+    return { samples: [...this.samples], aggregates: this.getAggregates() };
   }
   recordError(e: GPUErrorSample): void {
     this.errors.push(e);

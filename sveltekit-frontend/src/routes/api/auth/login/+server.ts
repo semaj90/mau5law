@@ -18,4 +18,4 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (e: any) {
     return new Response(JSON.stringify({ error: 'Login failed', detail: e.message }), { status: 500 });
   }
-}
+};

@@ -1,17 +1,21 @@
 <script lang="ts">
-import { onMount } from 'svelte';
-let query = '';
-let results: any[] = [];
+  import { onMount } from 'svelte';
+  let query = '';
+  let results: any[] = [];
 
-async function searchDocs() {
-  const resp = await fetch('/api/rag/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }) });
-  const json = await resp.json();
-  results = json.results || [];
-}
+  async function searchDocs() {
+    const resp = await fetch('/api/rag/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+    const json = await resp.json();
+    results = json.results || [];
+  }
 
-onMount(() => {
-  // optional: initialize client worker for embeddings
-});
+  onMount(() => {
+    // optional: initialize client worker for embeddings
+  });
 </script>
 
 <input bind:value={query} placeholder="Ask the RAG system..." />

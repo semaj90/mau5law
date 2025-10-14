@@ -298,13 +298,13 @@ class LegalReportsManager {
   private templatePrefix = "report-template-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
-    compressionEnabled: true
-    enableMetrics: true
+    compressionEnabled: true,
+    enableMetrics: true,
   });
   private workerPool = createWorkerPool({
     maxWorkers: 6,
-    enableSIMD: true
-    redisCache: true
+    enableSIMD: true,
+    redisCache: true,
   });
   static getInstance(): LegalReportsManager {
     if (!LegalReportsManager.instance) {
@@ -314,7 +314,7 @@ class LegalReportsManager {
   }
   // Generate report using AI
   async generateReport(
-    template: ReportTemplate
+    template: ReportTemplate,
     variables: { [key: string]: any },
     options: {
       caseId?: string;
@@ -327,7 +327,7 @@ class LegalReportsManager {
     const reportId = `report-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     // Create initial report structure
     const report: LegalReport = {
-      id: reportId
+      id: reportId,
       type: template.type as any,
       title: this.processTemplate(template.name, variables),
       description: this.processTemplate(template.description, variables),
@@ -340,7 +340,7 @@ class LegalReportsManager {
       language: 'en',
       jurisdiction: template.jurisdiction,
       court: template.court,
-      aiGenerated: true
+      aiGenerated: true,
       aiModel: options.aiModel || 'gemma3:legal-latest',
       sourceCitations: options.sourceCitations || [],
       sourceNotes: options.sourceNotes || [],
@@ -353,10 +353,10 @@ class LegalReportsManager {
       comments: [],
       processingStatus: 'generating',
       exportFormats: {
-        pdf: true
-        docx: true
-        html: true
-        markdown: true
+        pdf: true,
+        docx: true,
+        html: true,
+        markdown: true,
       },
       tags: [],
       priority: 'medium',
@@ -401,7 +401,7 @@ class LegalReportsManager {
   }
   // Generate individual section
   private async generateSection(
-    sectionDef: TemplateSectionDefinition
+    sectionDef: TemplateSectionDefinition,
     variables: { [key: string]: any },
     aiPrompt?: string
     options: any = {}
@@ -412,7 +412,7 @@ class LegalReportsManager {
       order: sectionDef.order,
       type: sectionDef.type,
       content: sectionDef.defaultContent || '',
-      aiGenerated: false
+      aiGenerated: false,
       variables
     }
     if (aiPrompt) {
@@ -612,7 +612,7 @@ class LegalReportsManager {
     if (status === 'approved' && reviewer) {
       // Add approval comment
       await this.addComment(reportId, {
-        author: reviewer
+        author: reviewer,
         content: 'Report approved',
         type: 'approval',
         resolved: true
@@ -696,7 +696,7 @@ class LegalReportsManager {
             title: 'Executive Summary',
             order: 1,
             type: 'text',
-            required: true
+            required: true,
             aiPrompt: 'Write a comprehensive executive summary for the case {{case_name}} involving {{legal_issues}}. Include key facts, legal arguments, and recommendations.'
           },
           {
@@ -704,7 +704,7 @@ class LegalReportsManager {
             title: 'Factual Background',
             order: 2,
             type: 'text',
-            required: true
+            required: true,
             aiPrompt: 'Provide a detailed factual background for {{case_name}}, including chronology of events, parties involved, and relevant circumstances.'
           },
           {
@@ -712,7 +712,7 @@ class LegalReportsManager {
             title: 'Legal Analysis',
             order: 3,
             type: 'text',
-            required: true
+            required: true,
             aiPrompt: 'Analyze the legal issues in {{case_name}}, including applicable law, precedents, and legal arguments for both sides.'
           },
           {
@@ -720,7 +720,7 @@ class LegalReportsManager {
             title: 'Recommendations',
             order: 4,
             type: 'text',
-            required: true
+            required: true,
             aiPrompt: 'Provide strategic recommendations for {{case_name}}, including next steps, potential risks, and suggested actions.'
           },
           {
@@ -735,24 +735,24 @@ class LegalReportsManager {
           {
             name: 'case_name',
             type: 'text',
-            required: true
-            description: 'Name or title of the case'
+            required: true,
+            description: 'Name or title of the case',
           },
           {
             name: 'legal_issues',
             type: 'text',
-            required: true
-            description: 'Primary legal issues involved'
+            required: true,
+            description: 'Primary legal issues involved',
           },
           {
             name: 'client_name',
             type: 'text',
-            required: false
-            description: 'Client name'
+            required: false,
+            description: 'Client name',
           }
         ],
         aiPrompts: {},
-        isPublic: true
+        isPublic: true,
         createdBy: 'system',
         createdAt: new Date()
       },
@@ -768,7 +768,7 @@ class LegalReportsManager {
             title: 'Memorandum Header',
             order: 1,
             type: 'text',
-            required: true
+            required: true,
             defaultContent: 'MEMORANDUM\n\nTO: {{recipient}}\nFROM: {{author}}\nDATE: {{date}}\nRE: {{subject}}'
           },
           {
@@ -776,23 +776,23 @@ class LegalReportsManager {
             title: 'Question Presented',
             order: 2,
             type: 'text',
-            required: true
-            aiPrompt: 'Draft a clear and concise question presented for the legal issue: {{legal_question}}'
+            required: true,
+            aiPrompt: 'Draft a clear and concise question presented for the legal issue: {{legal_question}}',
           },
           {
             id: 'brief-answer',
             title: 'Brief Answer',
             order: 3,
             type: 'text',
-            required: true
-            aiPrompt: 'Provide a brief answer to the question: {{legal_question}}. Include conclusion and key reasoning.'
+            required: true,
+            aiPrompt: 'Provide a brief answer to the question: {{legal_question}}. Include conclusion and key reasoning.',
           },
           {
             id: 'discussion',
             title: 'Discussion',
             order: 4,
             type: 'text',
-            required: true
+            required: true,
             aiPrompt: 'Write a detailed legal analysis discussing {{legal_question}}. Include relevant law, precedents, analysis, and application to facts.'
           },
           {
@@ -800,28 +800,28 @@ class LegalReportsManager {
             title: 'Conclusion',
             order: 5,
             type: 'text',
-            required: true
-            aiPrompt: 'Write a conclusion that summarizes the analysis and restates the answer to {{legal_question}}'
+            required: true,
+            aiPrompt: 'Write a conclusion that summarizes the analysis and restates the answer to {{legal_question}}',
           }
         ],
         variables: [
           {
             name: 'recipient',
             type: 'text',
-            required: true
-            description: 'Memo recipient'
+            required: true,
+            description: 'Memo recipient',
           },
           {
             name: 'author',
             type: 'text',
-            required: true
-            description: 'Memo author'
+            required: true,
+            description: 'Memo author',
           },
           {
             name: 'legal_question',
             type: 'text',
-            required: true
-            description: 'Legal question to analyze'
+            required: true,
+            description: 'Legal question to analyze',
           },
           {
             name: 'subject',
@@ -831,7 +831,7 @@ class LegalReportsManager {
           }
         ],
         aiPrompts: {},
-        isPublic: true
+        isPublic: true,
         createdBy: 'system',
         createdAt: new Date()
       }

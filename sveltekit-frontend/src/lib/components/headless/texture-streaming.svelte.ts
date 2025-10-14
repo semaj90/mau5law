@@ -22,7 +22,7 @@ export interface StreamingStats {
 /**
  * Headless texture streaming component using Svelte 5 runes
  * Provides reactive state management for legal document texture streaming
- */;
+ */
 export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig> = {}) {
 	// Canvas reference state
 	let canvasElement = $state<HTMLCanvasElement | null>(null);
@@ -41,21 +41,21 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		cacheHits: 0,
 		renderTime: 0,
 		qualityLevel: 1.0,
-		hasWebGL: false
-		hasWASM: false
+		hasWebGL: false,
+		hasWASM: false,
 	});
 	// Configuration state
 	let activeConfig = $state<TextureStreamingConfig>({
-		enableGPU: true
+		enableGPU: true,
 		maxChunkSize: 4096,
 		cacheSize: 512,
-		adaptiveQuality: true
-		compressionEnabled: true
+		adaptiveQuality: true,
+		compressionEnabled: true,
 		...config
 	});
 	/**
 	 * Initialize the texture streaming pipeline
-	 */;
+	 */
 	function initialize(canvas: HTMLCanvasElement) {
 		try {
 			canvasElement = canvas;
@@ -72,7 +72,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Load evidence photo with streaming
-	 */;
+	 */
 	async function loadEvidencePhoto(photo: EvidencePhoto) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -95,7 +95,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Load document scan with streaming
-	 */;
+	 */
 	async function loadDocumentScan(scan: DocumentScan, pageData: ImageData[]) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -121,7 +121,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Load case visualization with streaming
-	 */;
+	 */
 	async function loadCaseVisualization(visualization: CaseVisualization) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -144,7 +144,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Load courtroom display with streaming
-	 */;
+	 */
 	async function loadCourtroomDisplay(display: CourtroomDisplay) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -169,13 +169,13 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Get cached texture by ID
-	 */;
+	 */
 	function getCachedTexture(documentId: string) {
 		return loadedTextures.get(documentId);
 	}
 	/**
 	 * Update configuration
-	 */;
+	 */
 	function updateConfig(newConfig: Partial<TextureStreamingConfig>) {
 		activeConfig = { ...activeConfig, ...newConfig }
 		if (pipeline) {
@@ -189,7 +189,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Update performance statistics
-	 */;
+	 */
 	function updateStats() {
 		if (pipeline) {
 			const pipelineStats = pipeline.getStats();
@@ -205,7 +205,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Clear all cached textures
-	 */;
+	 */
 	function clearCache() {
 		if (pipeline) {
 			pipeline.clearCache();
@@ -215,7 +215,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	}
 	/**
 	 * Dispose of the pipeline
-	 */;
+	 */
 	function dispose() {
 		if (pipeline) {
 			pipeline.dispose();

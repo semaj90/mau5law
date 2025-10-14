@@ -36,14 +36,14 @@ export function createFuseSearch(documents: RAGDocument[]) {
     keys: [
       { name: 'filename', weight: 0.3 },
       { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 }
+      { name: 'tags', weight: 0.2 },
     ],
     threshold: 0.4,
     includeScore: true,
     minMatchCharLength: 2,
     ignoreLocation: true,
     useExtendedSearch: true,
-    findAllMatches: true
+    findAllMatches: true,
   });
 
   return fuse;
@@ -57,19 +57,12 @@ export function fuseSearch(
   query: string,
   options: FuseSearchOptions = {}
 ): FuseSearchResult[] {
-  const {
-    threshold = 0.4,
-    limit = 10,
-    tags,
-    includeScore = true
-  } = options;
+  const { threshold = 0.4, limit = 10, tags, includeScore = true } = options;
 
   // Filter by tags first if specified
   let filteredDocs = documents;
   if (tags && tags.length > 0) {
-    filteredDocs = documents.filter(doc =>
-      doc.tags && doc.tags.some(tag => tags.includes(tag))
-    );
+    filteredDocs = documents.filter(doc => doc.tags && doc.tags.some(tag => tags.includes(tag)));
   }
 
   if (filteredDocs.length === 0) {
@@ -81,13 +74,13 @@ export function fuseSearch(
     keys: [
       { name: 'filename', weight: 0.3 },
       { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 }
+      { name: 'tags', weight: 0.2 },
     ],
     threshold,
     includeScore,
     minMatchCharLength: 2,
     ignoreLocation: true,
-    useExtendedSearch: true
+    useExtendedSearch: true,
   });
 
   // Perform search
@@ -98,7 +91,7 @@ export function fuseSearch(
     ...result.item,
     fuseScore: result.score || 0,
     matchScore: 1 - (result.score || 0), // Convert to 0-1 where higher is better
-    highlights: extractHighlights(result.item, query)
+    highlights: extractHighlights(result.item, query),
   }));
 }
 
@@ -142,16 +135,11 @@ export function extractUniqueTags(documents: RAGDocument[]): string[] {
 /**
  * Get tag suggestions based on partial input
  */
-export function getTagSuggestions(
-  documents: RAGDocument[],
-  partialTag: string
-): string[] {
+export function getTagSuggestions(documents: RAGDocument[], partialTag: string): string[] {
   const allTags = extractUniqueTags(documents);
   const lowerPartial = partialTag.toLowerCase();
 
-  return allTags
-    .filter(tag => tag.toLowerCase().includes(lowerPartial))
-    .slice(0, 10);
+  return allTags.filter(tag => tag.toLowerCase().includes(lowerPartial)).slice(0, 10);
 }
 
 /**
@@ -167,41 +155,33 @@ export function hybridSearch(
   query: string,
   options: HybridSearchOptions = {}
 ): FuseSearchResult[] {
-  const {
-    vectorResults = [],
-    fusionWeight = 0.5,
-    limit = 10,
-    ...fuseOptions
-  } = options;
+  const { vectorResults = [], fusionWeight = 0.5, limit = 10, ...fuseOptions } = options;
 
   // Get Fuse.js results
   const fuseResults = fuseSearch(documents, query, {
     ...fuseOptions,
-    limit: limit * 2 // Get more results for fusion
+    limit: limit * 2, // Get more results for fusion
   });
 
   // Create map of vector results for quick lookup
   const vectorMap = new Map<string | number, number>();
   vectorResults.forEach((result, index) => {
-    vectorMap.set(result.id, result.score || (1 - index / vectorResults.length));
+    vectorMap.set(result.id, result.score || 1 - index / vectorResults.length);
   });
 
   // Combine and re-score results
   const combined = fuseResults.map(fuseResult => {
     const vectorScore = vectorMap.get(fuseResult.id) || 0;
-    const combinedScore = (fuseResult.matchScore * fusionWeight) +
-                         (vectorScore * (1 - fusionWeight));
+    const combinedScore = fuseResult.matchScore * fusionWeight + vectorScore * (1 - fusionWeight);
 
     return {
       ...fuseResult,
-      matchScore: combinedScore
+      matchScore: combinedScore,
     };
   });
 
   // Sort by combined score and return top results
-  return combined
-    .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, limit);
+  return combined.sort((a, b) => b.matchScore - a.matchScore).slice(0, limit);
 }
 
 /**
@@ -227,11 +207,7 @@ export function groupByTags(results: FuseSearchResult[]): Map<string, FuseSearch
 /**
  * Filter documents by date range
  */
-export function filterByDateRange(
-  documents: RAGDocument[],
-  startDate?: string,
-  endDate?: string
-): RAGDocument[] {
+export function filterByDateRange(documents: RAGDocument[], startDate?: string, endDate?: string): RAGDocument[] {
   return documents.filter(doc => {
     if (!doc.createdAt) return true;
 
@@ -246,13 +222,8 @@ export function filterByDateRange(
 /**
  * Filter documents by file types
  */
-export function filterByFileTypes(
-  documents: RAGDocument[],
-  fileTypes: string[]
-): RAGDocument[] {
+export function filterByFileTypes(documents: RAGDocument[], fileTypes: string[]): RAGDocument[] {
   if (!fileTypes || fileTypes.length === 0) return documents;
 
-  return documents.filter(doc =>
-    fileTypes.some(type => doc.fileType.toLowerCase().includes(type.toLowerCase()))
-  );
+  return documents.filter(doc => fileTypes.some(type => doc.fileType.toLowerCase().includes(type.toLowerCase())));
 }

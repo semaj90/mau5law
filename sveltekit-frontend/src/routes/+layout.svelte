@@ -9,7 +9,7 @@
       session?: any;
       isAuthenticated?: boolean;
       startupStatus?: any;
-    }
+    };
   }
 
   let { children, data }: Props = $props();

@@ -112,32 +112,32 @@ const defaultPreferences: UserPreferences = {
     model: 'gemma3-legal',
     temperature: 0.7,
     maxTokens: 2048,
-    enableStreaming: true
-    autoComplete: true
+    enableStreaming: true,
+    autoComplete: true,
   },
   notifications: {
-    email: true
-    push: false
-    desktop: true
-    legal: true
+    email: true,
+    push: false,
+    desktop: true,
+    legal: true,
   },
   privacy: {
-    shareAnalytics: true
-    storeSearchHistory: true
-    enableRecommendations: true
+    shareAnalytics: true,
+    storeSearchHistory: true,
+    enableRecommendations: true,
   }
 }
 const defaultState: GlobalUserState = {
-  user: null
-  session: null
-  isAuthenticated: false
-  profile: null
-  preferences: defaultPreferences
+  user: null,
+  session: null,
+  isAuthenticated: false,
+  profile: null,
+  preferences: defaultPreferences,
   chatHistory: [],
   recommendations: [],
-  analytics: null
-  patterns: null
-  lastActivity: null
+  analytics: null,
+  patterns: null,
+  lastActivity: null,
   sessionMetrics: {
     startTime: new Date(),
     duration: 0,
@@ -149,8 +149,8 @@ const defaultState: GlobalUserState = {
   recentEmbeddings: [],
   searchHistory: [],
   syncStatus: 'idle',
-  lastSync: null
-  pendingChanges: 0
+  lastSync: null,
+  pendingChanges: 0,
 }
 // ===== SVELTE 5 RUNES STORE =====
 let globalUserState = $state<GlobalUserState>(defaultState);

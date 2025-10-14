@@ -38,7 +38,7 @@
       summary = `Connection Error: ${error.message}`;
     }
     isGenerating = false;
-  }
+  };
   const loadCaseDemo = async () => {
     caseData = {
       id: 'demo-case',
@@ -49,8 +49,8 @@
         { id: '3', type: 'photo', title: 'Crime Scene Photos' },
       ],
       status: 'active',
-    }
-  }
+    };
+  };
   $effect(() => {
     loadCaseDemo();
   });

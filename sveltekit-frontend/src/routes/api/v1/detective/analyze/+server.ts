@@ -5,38 +5,40 @@
  * POST /api/v1/detective/patterns - Detect suspicious patterns
  * POST /api/v1/detective/connections - Generate connection maps
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid(),
   analysisType: z.enum(['full', 'timeline', 'connections', 'patterns', 'anomalies']).default('full'),
   depth: z.enum(['surface', 'deep', 'comprehensive']).default('deep'),
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
-  options: z.object({
-    includeAI: z.boolean().default(true),
-    confidenceThreshold: z.number().min(0).max(1).default(0.6),
-    maxResults: z.number().min(1).max(100).default(20)
-  }).optional()
-})
+  options: z
+    .object({
+      includeAI: z.boolean().default(true),
+      confidenceThreshold: z.number().min(0).max(1).default(0.6),
+      maxResults: z.number().min(1).max(100).default(20),
+    })
+    .optional(),
+});
 // renamed to $... to mark intentionally unused (satisfies allowed-unused-vars rule)
 const $PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial'])).optional(),
-  sensitivity: z.number().min(0).max(1).default(0.7)
-})
+  sensitivity: z.number().min(0).max(1).default(0.7),
+});
 const $ConnectionMappingSchema = z.object({
   caseId: z.string().uuid(),
   entityTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
-  maxDepth: z.number().min(1).max(5).default(3)
-})
+  maxDepth: z.number().min(1).max(5).default(3),
+});
 // Configuration for AI services (kept for future use; prefixed with $ to avoid unused var error)
-const $OLLAMA_BASE_URL = 'http://localhost:11434'
-const $DETECTIVE_MODEL = 'gemma3-legal:latest'
+const $OLLAMA_BASE_URL = 'http://localhost:11434';
+const $DETECTIVE_MODEL = 'gemma3-legal:latest';
 /*
  * POST /api/v1/detective/analyze
  * Run comprehensive detective analysis on a case
@@ -192,110 +194,110 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 };
 // --- Added: small typed Locals to avoid `any` and make getUserId safer ---
 type ServiceLocals = {
-	user?: { id?: string } | null;
-	session?: { userId?: string } | null;
-	[key: string]: unknown;
+  user?: { id?: string } | null;
+  session?: { userId?: string } | null;
+  [key: string]: unknown;
 };
 
 function getUserId(locals: ServiceLocals): string {
-	// prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
-	if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
-	if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
-	// last resort: stringified user object or 'unknown'
-	try {
-		if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
-	} catch (err) {
-		// avoid empty catch - log for diagnostics
-		console.warn('getUserId: failed to stringify locals.user', err);
-	}
-	return 'unknown';
+  // prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
+  if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
+  if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
+  // last resort: stringified user object or 'unknown'
+  try {
+    if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
+  } catch (err) {
+    // avoid empty catch - log for diagnostics
+    console.warn('getUserId: failed to stringify locals.user', err);
+  }
+  return 'unknown';
 }
 /*
  * Perform comprehensive detective analysis
  */
 async function performDetectiveAnalysis(
-	caseData: CaseRecord,
-	evidence: EvidenceItem[],
-	analysisType: string,
-	depth: string,
-	focusAreas?: string[],
-	$options: Record<string, unknown> = {}
+  caseData: CaseRecord,
+  evidence: EvidenceItem[],
+  analysisType: string,
+  depth: string,
+  focusAreas?: string[],
+  $options: Record<string, unknown> = {}
 ): Promise<DetectiveAnalysis> {
-	const analysis: DetectiveAnalysis = {
-		overallConfidence: 0,
-		findings: [],
-		patterns: [],
-		connections: [],
-		anomalies: [],
-		timeline: [],
-		recommendations: [],
-		alerts: [],
-	};
+  const analysis: DetectiveAnalysis = {
+    overallConfidence: 0,
+    findings: [],
+    patterns: [],
+    connections: [],
+    anomalies: [],
+    timeline: [],
+    recommendations: [],
+    alerts: [],
+  };
 
-	try {
-		// mark case reference to avoid "declared but never used"
-		if (caseData?.id) {
-			(analysis as Record<string, unknown>).caseId = caseData.id;
-		}
+  try {
+    // mark case reference to avoid "declared but never used"
+    if (caseData?.id) {
+      (analysis as Record<string, unknown>).caseId = caseData.id;
+    }
 
-		// interpret options minimally (safe typed access)
-		const opts = $options ?? {};
-		const includeAI =
-			typeof (opts as Record<string, unknown>).includeAI === 'boolean'
-				? ((opts as Record<string, unknown>).includeAI as boolean)
-				: true;
+    // interpret options minimally (safe typed access)
+    const opts = $options ?? {};
+    const includeAI =
+      typeof (opts as Record<string, unknown>).includeAI === 'boolean'
+        ? ((opts as Record<string, unknown>).includeAI as boolean)
+        : true;
 
-		// Baseline confidence influenced by requested depth and options
-		if (depth === 'comprehensive') {
-			analysis.overallConfidence = 0.9;
-		} else if (depth === 'deep') {
-			analysis.overallConfidence = 0.8;
-		} else {
-			analysis.overallConfidence = 0.7;
-		}
-		// If AI processing disabled, decrease confidence slightly
-		if (!includeAI) analysis.overallConfidence = Math.max(0, analysis.overallConfidence - 0.15);
+    // Baseline confidence influenced by requested depth and options
+    if (depth === 'comprehensive') {
+      analysis.overallConfidence = 0.9;
+    } else if (depth === 'deep') {
+      analysis.overallConfidence = 0.8;
+    } else {
+      analysis.overallConfidence = 0.7;
+    }
+    // If AI processing disabled, decrease confidence slightly
+    if (!includeAI) analysis.overallConfidence = Math.max(0, analysis.overallConfidence - 0.15);
 
-		// Temporal Analysis
-		if (analysisType === 'full' || analysisType === 'timeline') {
-			const timelineAnalysis = analyzeTimeline(evidence);
-			analysis.timeline = timelineAnalysis.events;
-			analysis.patterns.push(...timelineAnalysis.patterns);
-			analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.8);
-		}
-		// Connection Analysis
-		if (analysisType === 'full' || analysisType === 'connections') {
-			const connectionAnalysis = analyzeConnections(evidence);
-			analysis.connections = connectionAnalysis.connections;
-			analysis.findings.push(...connectionAnalysis.findings);
-			analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.75);
-		}
-		// Pattern Detection
-		if (analysisType === 'full' || analysisType === 'patterns') {
-			const patternAnalysis = detectPatterns(evidence, focusAreas);
-			analysis.patterns.push(...patternAnalysis.patterns);
-			analysis.anomalies.push(...patternAnalysis.anomalies);
-			analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.72);
-		}
+    // Temporal Analysis
+    if (analysisType === 'full' || analysisType === 'timeline') {
+      const timelineAnalysis = analyzeTimeline(evidence);
+      analysis.timeline = timelineAnalysis.events;
+      analysis.patterns.push(...timelineAnalysis.patterns);
+      analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.8);
+    }
+    // Connection Analysis
+    if (analysisType === 'full' || analysisType === 'connections') {
+      const connectionAnalysis = analyzeConnections(evidence);
+      analysis.connections = connectionAnalysis.connections;
+      analysis.findings.push(...connectionAnalysis.findings);
+      analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.75);
+    }
+    // Pattern Detection
+    if (analysisType === 'full' || analysisType === 'patterns') {
+      const patternAnalysis = detectPatterns(evidence, focusAreas);
+      analysis.patterns.push(...patternAnalysis.patterns);
+      analysis.anomalies.push(...patternAnalysis.anomalies);
+      analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.72);
+    }
 
-		// Generate recommendations based on findings (may reference case title if available)
-		analysis.recommendations = generateDetectiveRecommendations(analysis);
-		analysis.alerts = generateDetectiveAlerts(analysis);
+    // Generate recommendations based on findings (may reference case title if available)
+    analysis.recommendations = generateDetectiveRecommendations(analysis);
+    analysis.alerts = generateDetectiveAlerts(analysis);
 
-		// small contextual hint placed into analysis for consumers
-		if (caseData?.title && analysis.recommendations.length) {
-			analysis.recommendations = analysis.recommendations.map((r) => `${r} (case: ${caseData.title})`);
-		}
+    // small contextual hint placed into analysis for consumers
+    if (caseData?.title && analysis.recommendations.length) {
+      analysis.recommendations = analysis.recommendations.map(r => `${r} (case: ${caseData.title})`);
+    }
 
-		return analysis;
-	} catch (err) {
-		console.error('Detective analysis error:', err);
-		return {
-			...analysis,
-			error: 'Analysis failed',
-			details: err instanceof Error ? err.message : String(err ?? 'Unknown error'),
-		} as DetectiveAnalysis;
-	}
+    return analysis;
+  } catch (err) {
+    console.error('Detective analysis error:', err);
+    return {
+      ...analysis,
+      error: 'Analysis failed',
+      details: err instanceof Error ? err.message : String(err ?? 'Unknown error'),
+    } as DetectiveAnalysis;
+  }
 }
 /*
  * Analyze timeline patterns in evidence
@@ -333,120 +335,118 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
 }
 // NEW: typed connection/pattern analysis shapes
 type Connection = {
-	id?: string;
-	sourceId?: string;
-	targetId?: string;
-	connectionType: 'related' | 'coincident' | 'same_actor' | string;
-	strength: number; // 0..1
-	evidence: string[]; // short notes about why connected
+  id?: string;
+  sourceId?: string;
+  targetId?: string;
+  connectionType: 'related' | 'coincident' | 'same_actor' | string;
+  strength: number; // 0..1
+  evidence: string[]; // short notes about why connected
 };
 
 type Finding = {
-	type: string;
-	confidence: number;
-	description: string;
-	items: (string | undefined)[];
+  type: string;
+  confidence: number;
+  description: string;
+  items: (string | undefined)[];
 };
 
 type ConnectionAnalysis = {
-	connections: Connection[];
-	findings: Finding[];
+  connections: Connection[];
+  findings: Finding[];
 };
 
 type Pattern = {
-	type: string;
-	confidence: number;
-	description: string;
-	occurrences?: number;
-	significance?: 'low' | 'medium' | 'high' | string;
-	coordinates?: string[];
+  type: string;
+  confidence: number;
+  description: string;
+  occurrences?: number;
+  significance?: 'low' | 'medium' | 'high' | string;
+  coordinates?: string[];
 };
 
 type Anomaly = {
-	type: string;
-	confidence: number;
-	description: string;
-	details?: string;
-	severity?: 'low' | 'medium' | 'high' | string;
+  type: string;
+  confidence: number;
+  description: string;
+  details?: string;
+  severity?: 'low' | 'medium' | 'high' | string;
 };
 
 type PatternAnalysis = {
-	patterns: Pattern[];
-	anomalies: Anomaly[];
+  patterns: Pattern[];
+  anomalies: Anomaly[];
 };
 /*
  * Analyze connections between evidence items
  */
 function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
-	// defensively handle missing array
-	const items = Array.isArray(evidence) ? evidence : [];
+  // defensively handle missing array
+  const items = Array.isArray(evidence) ? evidence : [];
 
-	const connections: Connection[] = items
-		.slice(0, Math.min(3, items.length))
-		.map((item, index) => {
-			const sourceId = item?.id;
-			const target = items[(index + 1) % Math.max(1, items.length)];
-			const targetId = target?.id;
-			return {
-				id: `${sourceId ?? 's'}->${targetId ?? 't'}`,
-				sourceId,
-				targetId,
-				connectionType: 'related',
-				strength: Number((Math.random() * 0.4 + 0.6).toFixed(3)),
-				evidence: [
-					item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type:unknown',
-					item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp:unknown',
-				],
-			} as Connection;
-		});
+  const connections: Connection[] = items.slice(0, Math.min(3, items.length)).map((item, index) => {
+    const sourceId = item?.id;
+    const target = items[(index + 1) % Math.max(1, items.length)];
+    const targetId = target?.id;
+    return {
+      id: `${sourceId ?? 's'}->${targetId ?? 't'}`,
+      sourceId,
+      targetId,
+      connectionType: 'related',
+      strength: Number((Math.random() * 0.4 + 0.6).toFixed(3)),
+      evidence: [
+        item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type:unknown',
+        item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp:unknown',
+      ],
+    } as Connection;
+  });
 
-	const findings: Finding[] = [
-		{
-			type: 'strong_connection',
-			confidence: 0.89,
-			description: 'Multiple evidence items share common characteristics',
-			items: items.slice(0, 2).map(i => i?.id),
-		},
-	];
+  const findings: Finding[] = [
+    {
+      type: 'strong_connection',
+      confidence: 0.89,
+      description: 'Multiple evidence items share common characteristics',
+      items: items.slice(0, 2).map(i => i?.id),
+    },
+  ];
 
-	return { connections, findings };
+  return { connections, findings };
 }
 
 /*
  * Detect suspicious patterns in evidence
  */
 function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): PatternAnalysis {
-	const items = Array.isArray(evidence) ? evidence : [];
-	const count = items.length;
+  const items = Array.isArray(evidence) ? evidence : [];
+  const count = items.length;
 
-	const patterns: Pattern[] = [
-		{
-			type: 'behavioral',
-			confidence: 0.76,
-			description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : ''}`,
-			occurrences: Math.max(1, Math.floor(count / 2)),
-			significance: 'high',
-		},
-		{
-			type: 'location',
-			confidence: 0.84,
-			description: 'Geographic clustering of evidence locations',
-			coordinates: count > 1 ? ['40.7128,-74.0060', '40.7589,-73.9851'] : [],
-			significance: 'medium',
-		},
-	];
+  const patterns: Pattern[] = [
+    {
+      type: 'behavioral',
+      confidence: 0.76,
+      description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : ''}`,
+      occurrences: Math.max(1, Math.floor(count / 2)),
+      significance: 'high',
+    },
+    {
+      type: 'location',
+      confidence: 0.84,
+      description: 'Geographic clustering of evidence locations',
+      coordinates: count > 1 ? ['40.7128,-74.0060', '40.7589,-73.9851'] : [],
+      significance: 'medium',
+    },
+  ];
 
-	const anomalies: Anomaly[] = [
-		{
-			type: 'timing_anomaly',
-			confidence: 0.91,
-			description: 'Unusual timing pattern detected',
-			details: `Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none'}`,
-			severity: count > 5 ? 'high' : 'medium',
-		},
-	];
+  const anomalies: Anomaly[] = [
+    {
+      type: 'timing_anomaly',
+      confidence: 0.91,
+      description: 'Unusual timing pattern detected',
+      details: `Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none'}`,
+      severity: count > 5 ? 'high' : 'medium',
+    },
+  ];
 
-	return { patterns, anomalies };
+  return { patterns, anomalies };
 }
 
 // Add lightweight typed interfaces for case and insights to avoid `any`

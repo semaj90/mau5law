@@ -39,7 +39,7 @@ export const ENHANCED_BITS_COMPONENTS = {
   FormGrid: () => import('./FormGrid.svelte'),
   AvatarDisplay: () => import('./AvatarDisplay.svelte'),
   EditorCard: () => import('./EditorCard.svelte'),
-}
+};
 // Dynamic component loader
 export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS) {
   try {
@@ -66,7 +66,7 @@ export const ENHANCED_BITS_THEMES = {
     text: '#e0e0e0',
     border: '#444444',
   },
-}
+};
 export type EnhancedBitsTheme = keyof typeof ENHANCED_BITS_THEMES;
 
 // YoRHa Harvard Gaming Components

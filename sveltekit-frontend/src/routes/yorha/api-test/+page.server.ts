@@ -163,14 +163,14 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         'Success rate percentage',
         'Error categorization',
       ],
-    }
+    };
     return {
       endpoints: apiEndpoints,
       testSuites,
       documentation: testDocumentation,
       initialLoad: true,
       timestamp: new Date().toISOString(),
-    }
+    };
   } catch (error: unknown) {
     console.error('Error loading API test data:', error);
     return {
@@ -180,6 +180,6 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
       initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load API test configuration',
-    }
+    };
   }
-}
+};

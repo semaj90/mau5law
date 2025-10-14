@@ -1,4 +1,3 @@
-
 // PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
 import { db } from '../db/index.js';
 import { legalDocuments, documentChunks } from '../db/schema-postgres.js';
@@ -11,7 +10,7 @@ import type {
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
-  IngestionJobStatus
+  IngestionJobStatus,
 } from './embedding-repository.js';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
@@ -58,7 +57,7 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
         documentType: 'evidence',
         chunkIndex: index,
         content: text,
-        embedding
+        embedding,
       });
       processed++;
       update({ processedChunks: processed });
@@ -69,10 +68,11 @@ function getJobStatus(jobId: string) {
   return getStatus(jobId);
 }
 async function querySimilar(query: string, options: SimilarityQueryOptions = {}): Promise<SimilarityResult[]> {
-  const model = options?.model || "unknown" // @ts-ignore - Model property access || DEFAULT_MODEL
+  const model = options?.model || 'unknown'; // @ts-ignore - Model property access || DEFAULT_MODEL
   const queryEmbedding = await embedContent(query, model);
   const limit = options.limit || 8;
-  const rows = await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance
+  const rows =
+    await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance
                                      FROM document_chunks
                                      ORDER BY embedding <=> ${queryEmbedding}
                                      LIMIT ${limit}`);
@@ -82,14 +82,14 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
     content: String(r.content),
-    score: 1 - Number(r.distance)
+    score: 1 - Number(r.distance),
   }));
 }
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   enqueueIngestion,
   processNextJob,
   getJobStatus: async (jobId: string) => getJobStatus(jobId) || null,
-  querySimilar
-}
+  querySimilar,
+};
 // Named exports (optional direct usage)
-export { enqueueIngestion, processNextJob, getJobStatus, querySimilar }
+export { enqueueIngestion, processNextJob, getJobStatus, querySimilar };

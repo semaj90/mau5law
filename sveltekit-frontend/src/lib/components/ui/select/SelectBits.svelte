@@ -118,7 +118,7 @@
             'legal-ai-select-item flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer',
             option.disabled
               ? 'opacity-50 cursor-not-allowed'
-              : 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/60 data-[highlighted]:bg-slate-800/60 data-[highlighted]:text-amber-400',
+              : 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/60 data-[highlighted]:bg-slate-800/60 data-[highlighted]:text-amber-400'
           )}
         >
           <SelectPrimitive.ItemIndicator class="w-4 h-4 text-amber-400">

@@ -36,7 +36,7 @@
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const listener = () => {
       if (theme === 'system') applyTheme('system');
-    }
+    };
     if (mq.addEventListener) {
       mq.addEventListener('change', listener);
     } else {
@@ -51,7 +51,7 @@
         // @ts-ignore - legacy API
         mq.removeListener(listener);
       }
-    }
+    };
   });
 </script>
 

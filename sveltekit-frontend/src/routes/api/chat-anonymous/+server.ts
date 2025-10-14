@@ -104,7 +104,7 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

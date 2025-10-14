@@ -159,7 +159,7 @@ const idleDetectionServices = {
           body: JSON.stringify({,
             bucket: 'self-prompting',
             key: `prompts/${selectedPrompt.id}.json`,
-            data: selectedPrompt
+            data: selectedPrompt,
             metadata: {
               type: 'self_prompt',
               sessionId: context.sessionId,
@@ -232,8 +232,8 @@ const idleDetectionActions = {
       const totalJobs = context.performanceMetrics.jobsCompleted + 1;
       const avgTime = (context.performanceMetrics.averageProcessingTime * context.performanceMetrics.jobsCompleted + processingTime) / totalJobs;
       return {
-        jobsCompleted: totalJobs
-        averageProcessingTime: avgTime
+        jobsCompleted: totalJobs,
+        averageProcessingTime: avgTime,
         successRate: totalJobs > 0 ? (totalJobs / (totalJobs + 1)) * 100 : 100, // Simplified success rate
         lastJobTimestamp: Date.now()
       }
@@ -251,8 +251,8 @@ const idleDetectionActions = {
         confidence: 0.8, // Would be calculated based on response quality;
         timestamp: Date.now(),
         triggerReason: 'idle_detected',
-        processedByNeo4j: true
-        minioArtifacts: event.artifacts
+        processedByNeo4j: true,
+        minioArtifacts: event.artifacts,
       }
       return [prompt, ...context.selfPromptingHistory].slice(0, 100); // Keep last 100 prompts
     }
@@ -296,11 +296,11 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
     sessionId: crypto.randomUUID(),
     lastActivity: Date.now(),
     idleTimeout: 5 * 60 * 1000, // 5 minutes default
-    backgroundJobsEnabled: true
+    backgroundJobsEnabled: true,
     jobQueue: [],
-    neo4jConnected: false
-    minioConnected: false
-    rabbitmqConnected: false
+    neo4jConnected: false,
+    minioConnected: false,
+    rabbitmqConnected: false,
     selfPromptingHistory: [],
     performanceMetrics: {
       jobsCompleted: 0,
@@ -488,7 +488,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
     }
   }
 }, {
-  services: idleDetectionServices
+  services: idleDetectionServices,
   actions: idleDetectionActions;
   guards: idleDetectionGuards
 });
@@ -500,24 +500,24 @@ async function generateContextualPrompts(systemContext: any): Promise<SelfPrompt
     prompts.push({
       id: crypto.randomUUID(),
       prompt: "Analyze the current legal research session for potential gaps and suggest next steps",
-      context: systemContext
+      context: systemContext,
       confidence: 0.8,
       timestamp: Date.now(),
       triggerReason: 'idle_detected',
-      processedByNeo4j: false
-      minioArtifacts: []
+      processedByNeo4j: false,
+      minioArtifacts: [],
     });
   }
   if (systemContext.completedJobs > 5) {
     prompts.push({
       id: crypto.randomUUID(),
       prompt: "Identify patterns in completed legal document processing tasks to optimize future workflows",
-      context: systemContext
+      context: systemContext,
       confidence: 0.9,
       timestamp: Date.now(),
       triggerReason: 'pattern_recognition',
-      processedByNeo4j: false
-      minioArtifacts: []
+      processedByNeo4j: false,
+      minioArtifacts: [],
     });
   }
   return prompts;

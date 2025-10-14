@@ -27,8 +27,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
         return json({
           success: true,
-          cached: result
-          timestamp: Date.now()
+          cached: result,
+          timestamp: Date.now(),
         })
       }
       case 'get': {
@@ -46,9 +46,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
           data: cached ? {,
             embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
             attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null
-            metadata: cached.metadata
+            metadata: cached.metadata,
           } : null
-          timestamp: Date.now()
+          timestamp: Date.now(),
         })
       }
       case 'clear': {

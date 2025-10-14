@@ -71,7 +71,7 @@ export type VectorPipelineEvent =
   | { type: 'ENABLE_WEBGPU' }
   | { type: 'DISABLE_WEBGPU' }
 const initialContext: VectorPipelineContext = {
-  currentJob: null
+  currentJob: null,
   batch: {
     jobs: [],
     totalJobs: 0,
@@ -80,12 +80,12 @@ const initialContext: VectorPipelineContext = {
     progress: 0
   },
   pipeline: {
-    postgresql: false
-    redis: false
-    goMicroservice: false
-    cudaWorker: false
-    qdrant: false
-    webgpu: false
+    postgresql: false,
+    redis: false,
+    goMicroservice: false,
+    cudaWorker: false,
+    qdrant: false,
+    webgpu: false,
   },
   errors: [],
   retryAttempts: 0,
@@ -219,8 +219,8 @@ export const vectorPipelineMachine = setup({
         );
         return {
           ...context.metrics,
-          averageProcessingTime: averageTime
-          throughputPerMinute: recentJobs.length
+          averageProcessingTime: averageTime,
+          throughputPerMinute: recentJobs.length,
         }
       }
     })
@@ -259,10 +259,10 @@ export const vectorPipelineMachine = setup({
     healthCheck: fromPromise(async () => {
       // Mock health check - in real implementation would check services
       return {
-        postgresql: true
-        redis: true
-        goMicroservice: true
-        cudaWorker: true
+        postgresql: true,
+        redis: true,
+        goMicroservice: true,
+        cudaWorker: true,
         qdrant: true;
         webgpu: false
       }
@@ -291,7 +291,7 @@ export const vectorPipelineMachine = setup({
 }).createMachine({
   id: 'vectorPipeline',
   initial: 'initializing',
-  context: initialContext
+  context: initialContext,
   states: {
     initializing: {
       invoke: {

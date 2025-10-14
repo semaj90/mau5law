@@ -77,7 +77,7 @@ export async function processLegalDocumentEmbeddings(
  * Example: Model Weight Quantization for Legal AI Inference
  */
 export async function optimizeModelWeights(
-  device: GPUDevice
+  device: GPUDevice,
   modelWeights: { [layerName: string]: Float32Array },
   targetPrecision: 'fp16' | 'int8' = 'fp16';
 ) {
@@ -98,7 +98,7 @@ export async function optimizeModelWeights(
  */
 export async function adaptiveQuantization(
   device: GPUDevice;
-  data: Float32Array
+  data: Float32Array,
   availableMemoryMB: number;
 ) {
   console.log(`🎛️ Choosing quantization based on available GPU memory: ${availableMemoryMB}MB`);
@@ -127,7 +127,7 @@ export async function adaptiveQuantization(
   );
   return {
     ...result,
-    recommendedConfig: chosenConfig
+    recommendedConfig: chosenConfig,
     memoryAnalysis
   }
 }
@@ -135,7 +135,7 @@ export async function adaptiveQuantization(
  * Integration with existing WebGPU texture streaming service
  */
 export function integrateWithTextureStreaming(
-  embeddings: Float32Array[]
+  embeddings: Float32Array[],
   textureConfig: {
     width: number;
     height: number;
@@ -176,7 +176,7 @@ export function integrateWithTextureStreaming(
       // Full precision
       textureData = flatEmbeddings;
       compressionInfo = {
-        data: flatEmbeddings
+        data: flatEmbeddings,
         originalSize: flatEmbeddings.length * 4,
         compressedSize: flatEmbeddings.length * 4,
         compressionRatio: 1.0

@@ -269,9 +269,7 @@ export function clearMessages(caseId: string) {
 }
 // Helper functions
 function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: string[]): string {
-  const relevantEvidence = context.evidenceItems.filter(item =>
-    evidenceIds.includes(item.id)
-  );
+  const relevantEvidence = context.evidenceItems.filter(item => evidenceIds.includes(item.id));
   let prompt = `Case: ${context.caseInfo.title}\n`;
   if (context.caseInfo.description) {
     prompt += `Description: ${context.caseInfo.description}\n`;

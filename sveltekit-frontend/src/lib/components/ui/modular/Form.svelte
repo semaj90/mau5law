@@ -104,7 +104,8 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </form>
 
-<style>/* YoRHa-specific styling */ {}
+<style>
+/* YoRHa-specific styling */ {}
 :global(.yorha-form input), {}
 :global(.yorha-form textarea), {}
   :global(.yorha-form select) {

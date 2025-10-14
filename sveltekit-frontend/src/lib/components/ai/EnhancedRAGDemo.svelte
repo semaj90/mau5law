@@ -12,12 +12,7 @@
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
   import Button from '$lib/components/ui/Button.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
   import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
 
@@ -147,7 +142,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
 
       console.log(`✅ Analysis completed in ${processingTime.toFixed(2)}ms`);
       console.log(`Found ${result.entities.length} entities and ${result.concepts.length} concepts`);
-
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
@@ -171,13 +165,13 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
         query: queryText,
         filters: {
           entityTypes: selectedEntityTypes,
-          confidenceThreshold: confidenceThreshold
+          confidenceThreshold: confidenceThreshold,
         },
         semantic: {
           useEmbeddings: true,
           expandConcepts: useSemanticExpansion,
-          includeRelated: true
-        }
+          includeRelated: true,
+        },
       };
 
       // Store the query
@@ -202,7 +196,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
 
       console.log(`✅ RAG query completed in ${processingTime.toFixed(2)}ms`);
       console.log(`Found ${response.results.length} relevant results`);
-
     } catch (error) {
       console.error('RAG query failed:', error);
     } finally {
@@ -221,7 +214,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     });
 
     return Array.from(summary.entries())
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .map(([type, count]) => ({ type, count }));
   });
 
@@ -264,14 +257,18 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   <!-- Tab Navigation -->
   <div class="flex border-b border-gray-200">
     <button
-      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      onclick={() => activeTab = 'analyze'}
+      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
+        ? 'border-blue-500 text-blue-600'
+        : 'border-transparent text-gray-500 hover:text-gray-700'}"
+      onclick={() => (activeTab = 'analyze')}
     >
       Document Analysis
     </button>
     <button
-      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      onclick={() => activeTab = 'query'}
+      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query'
+        ? 'border-blue-500 text-blue-600'
+        : 'border-transparent text-gray-500 hover:text-gray-700'}"
+      onclick={() => (activeTab = 'query')}
     >
       RAG Query
     </button>
@@ -293,15 +290,20 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           ></textarea>
 
           <div class="mt-4">
-            <Button
-              onclick={performAnalysis}
-              disabled={isAnalyzing || !sampleLegalText.trim()}
-              class="w-full"
-            >
+            <Button onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
               {#if isAnalyzing}
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Analyzing with {gpuAcceleration ? 'GPU' : 'CPU'}...
               {:else}
@@ -324,9 +326,19 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               <div class="bg-gray-50 p-3 rounded-md">
                 <h4 class="text-sm font-medium text-gray-700 mb-2">Performance</h4>
                 <div class="grid grid-cols-2 gap-4 text-sm">
-                  <div>Processing Time: <span class="font-mono {performanceColor}">{analysisResult.processingTime.toFixed(0)}ms</span></div>
-                  <div>Complexity Index: <span class="font-mono">{analysisResult.complexityIndex.toFixed(2)}</span></div>
-                  <div>Legal Relevance: <span class="font-mono">{(analysisResult.legalRelevanceScore * 100).toFixed(1)}%</span></div>
+                  <div>
+                    Processing Time: <span class="font-mono {performanceColor}"
+                      >{analysisResult.processingTime.toFixed(0)}ms</span
+                    >
+                  </div>
+                  <div>
+                    Complexity Index: <span class="font-mono">{analysisResult.complexityIndex.toFixed(2)}</span>
+                  </div>
+                  <div>
+                    Legal Relevance: <span class="font-mono"
+                      >{(analysisResult.legalRelevanceScore * 100).toFixed(1)}%</span
+                    >
+                  </div>
                   <div>Sentiment Score: <span class="font-mono">{analysisResult.sentimentScore.toFixed(2)}</span></div>
                 </div>
               </div>
@@ -355,8 +367,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                       <div class="text-sm bg-green-50 p-2 rounded">
                         <div class="font-medium text-green-800">{concept.concept}</div>
                         <div class="text-green-600 text-xs">
-                          Confidence: {(concept.confidenceScore * 100).toFixed(1)}% |
-                          Category: {concept.legalCategory}
+                          Confidence: {(concept.confidenceScore * 100).toFixed(1)}% | Category: {concept.legalCategory}
                         </div>
                       </div>
                     {/each}
@@ -367,7 +378,12 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           {:else}
             <div class="text-center text-gray-500 py-8">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
               <p class="mt-2">No analysis results yet. Click "Analyze Document" to get started.</p>
             </div>
@@ -401,12 +417,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               <h4 class="text-sm font-medium text-gray-700">Advanced Filters</h4>
 
               <div class="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  bind:checked={useSemanticExpansion}
-                  id="semantic-expansion"
-                  class="rounded"
-                />
+                <input type="checkbox" bind:checked={useSemanticExpansion} id="semantic-expansion" class="rounded" />
                 <label for="semantic-expansion" class="text-sm text-gray-600">
                   Enable semantic concept expansion
                 </label>
@@ -416,14 +427,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 <label class="block text-sm text-gray-600 mb-1">
                   Confidence Threshold: {confidenceThreshold}
                 </label>
-                <input
-                  type="range"
-                  bind:value={confidenceThreshold}
-                  min="0.1"
-                  max="1.0"
-                  step="0.1"
-                  class="w-full"
-                />
+                <input type="range" bind:value={confidenceThreshold} min="0.1" max="1.0" step="0.1" class="w-full" />
               </div>
 
               <div>
@@ -431,12 +435,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 <div class="grid grid-cols-2 gap-2 text-xs">
                   {#each ['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY', 'DATE', 'CASE_REF'] as entityType}
                     <label class="flex items-center space-x-1">
-                      <input
-                        type="checkbox"
-                        bind:group={selectedEntityTypes}
-                        value={entityType}
-                        class="rounded"
-                      />
+                      <input type="checkbox" bind:group={selectedEntityTypes} value={entityType} class="rounded" />
                       <span>{entityType.replace('_', ' ')}</span>
                     </label>
                   {/each}
@@ -444,15 +443,20 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               </div>
             </div>
 
-            <Button
-              onclick={performRAGQuery}
-              disabled={isAnalyzing || !queryText.trim()}
-              class="w-full"
-            >
+            <Button onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
               {#if isAnalyzing}
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Querying with {gpuAcceleration ? 'GPU' : 'CPU'}...
               {:else}
@@ -508,7 +512,12 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           {:else}
             <div class="text-center text-gray-500 py-8">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               <p class="mt-2">No query results yet. Execute a RAG query to see results here.</p>
             </div>
@@ -524,8 +533,22 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       <div class="flex items-center justify-between text-sm text-gray-600">
         <div>
           <span class="font-medium">Acceleration Status:</span>
-          WebGPU: <span class="font-mono {webgpuStatus === 'available' ? 'text-green-600' : webgpuStatus === 'unavailable' ? 'text-red-600' : 'text-yellow-600'}">{webgpuStatus}</span> |
-          CUDA-WASM: <span class="font-mono {cudaStatus === 'available' ? 'text-green-600' : cudaStatus === 'unavailable' ? 'text-red-600' : 'text-yellow-600'}">{cudaStatus}</span>
+          WebGPU:
+          <span
+            class="font-mono {webgpuStatus === 'available'
+              ? 'text-green-600'
+              : webgpuStatus === 'unavailable'
+                ? 'text-red-600'
+                : 'text-yellow-600'}">{webgpuStatus}</span
+          >
+          | CUDA-WASM:
+          <span
+            class="font-mono {cudaStatus === 'available'
+              ? 'text-green-600'
+              : cudaStatus === 'unavailable'
+                ? 'text-red-600'
+                : 'text-yellow-600'}">{cudaStatus}</span
+          >
         </div>
         <div>
           <span class="font-medium">Runtime:</span>
@@ -563,8 +586,16 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   }
 
   /* Performance indicators */
-  .text-green-600 { color: rgb(34, 197, 94), }
-  .text-yellow-600 { color: rgb(234, 179, 8), }
-  .text-red-600 { color: rgb(239, 68, 68), }
-  .text-blue-600 { color: rgb(37, 99, 235), }
+  .text-green-600 {
+    color: rgb(34, 197, 94);
+  }
+  .text-yellow-600 {
+    color: rgb(234, 179, 8);
+  }
+  .text-red-600 {
+    color: rgb(239, 68, 68);
+  }
+  .text-blue-600 {
+    color: rgb(37, 99, 235);
+  }
 </style>

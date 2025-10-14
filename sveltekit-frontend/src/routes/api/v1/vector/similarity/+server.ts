@@ -2,23 +2,23 @@
  * Vector Similarity API - Client WebAssembly to Server CUDA Bridge
  * Handles cosine similarity, euclidean distance, and batch operations
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { PGVECTOR_CONFIG, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
 interface VectorSimilarityRequest {
-  operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch',
-  vectorA: Float32Array | number[]
-  vectorB?: Float32Array | number[]
+  operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';
+  vectorA: Float32Array | number[];
+  vectorB?: Float32Array | number[];
   vectors?: Array<Float32Array | number[]>; // For batch operations
   algorithm?: 0 | 1 | 2 | 3; // Algorithm selector for batch ops
-  useCUDA?: boolean
-  parallel?: boolean
+  useCUDA?: boolean;
+  parallel?: boolean;
 }
 interface CUDAResponse {
-  result: number | number[]
-  gpuTime: number
-  parallelWorkers: number
-  memoryUsed: number
+  result: number | number[];
+  gpuTime: number;
+  parallelWorkers: number;
+  memoryUsed: number;
 }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();

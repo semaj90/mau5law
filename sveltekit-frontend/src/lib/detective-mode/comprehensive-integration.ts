@@ -27,9 +27,9 @@ export class ComprehensiveIntegration {
   private initialized = false;
   private systemStatus: DetectiveSystemStatus = {
     grpc: {
-      connected: false
-      caseScoringAvailable: false
-      streamingActive: false
+      connected: false,
+      caseScoringAvailable: false,
+      streamingActive: false,
     },
     evidence: {
       totalItems: 0,
@@ -44,7 +44,7 @@ export class ComprehensiveIntegration {
   private streamingCleanup: (() => void)[] = [];
   /**
    * Initialize the comprehensive integration system with Phase 5-7 enhancements
-   */;
+   */
   async initialize(): Promise<DetectiveSystemStatus> {
     try {
       console.log('🔧 Initializing Comprehensive Detective Mode Integration...');
@@ -66,7 +66,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Initialize gRPC services for binary protocol optimization
-   */;
+   */
   private async initializeGrpcServices(): Promise<void> {
     try {
       // Test gRPC case scoring service connection
@@ -86,7 +86,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Setup real-time evidence streaming
-   */;
+   */
   private async setupEvidenceStreaming(): Promise<void> {
     try {
       // Subscribe to evidence store changes
@@ -116,7 +116,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Setup performance monitoring for detective mode operations
-   */;
+   */
   private async setupPerformanceMonitoring(): Promise<void> {
     // Monitor system performance every 30 seconds
     const performanceInterval = setInterval(() => {
@@ -127,7 +127,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Broadcast evidence updates to connected clients
-   */;
+   */
   private broadcastEvidenceUpdate(evidenceState: any): void {
     // This would integrate with WebSocket/SSE in production
     const event = new CustomEvent('detective-evidence-update', {
@@ -144,7 +144,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Broadcast case scoring updates
-   */;
+   */
   private broadcastScoringUpdate(update: any): void {
     const event = new CustomEvent('detective-scoring-update', {
       detail: {
@@ -160,7 +160,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Update system performance metrics
-   */;
+   */
   private updatePerformanceMetrics(): void {
     this.systemStatus.realTime.lastHeartbeat = new Date();
     // Get gRPC performance comparison
@@ -177,7 +177,7 @@ export class ComprehensiveIntegration {
   }
   /**
    * Score a case using the enhanced gRPC service
-   */;
+   */
   async scoreCase(caseData: Case): Promise<any> {
     if (!this.initialized) {
       throw new Error('Comprehensive Integration not initialized');
@@ -212,19 +212,19 @@ export class ComprehensiveIntegration {
   }
   /**
    * Check if the system is initialized
-   */;
+   */
   isInitialized(): boolean {
     return this.initialized;
   }
   /**
    * Get current system status
-   */;
+   */
   getSystemStatus(): DetectiveSystemStatus {
     return this.systemStatus;
   }
   /**
    * Cleanup resources
-   */;
+   */
   destroy(): void {
     this.streamingCleanup.forEach(cleanup => cleanup();
     this.streamingCleanup = [];

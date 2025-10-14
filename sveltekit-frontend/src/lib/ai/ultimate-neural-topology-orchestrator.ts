@@ -152,7 +152,7 @@ export class UltimateNeuralTopologyOrchestrator {
   }
   /**
    * Initialize the complete neural topology orchestrator
-   */;
+   */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     console.log('🧠 Initializing Ultimate Neural Topology Orchestrator...');
@@ -177,7 +177,7 @@ export class UltimateNeuralTopologyOrchestrator {
   }
   /**
    * Process any type of content with unified intelligence
-   */;
+   */
   async processWithUnifiedIntelligence(request: UnifiedProcessingRequest): Promise<UnifiedProcessingResult> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -209,7 +209,7 @@ export class UltimateNeuralTopologyOrchestrator {
       const result: UnifiedProcessingResult = {
         extraction: processingResults.extraction,
         predictions: {
-          nextUserActions: predictions.nextStates.map((state: any) => ({,
+          nextUserActions: predictions.nextStates.map((state: any) => ({
             action: state.state.userAction,
             probability: state.probability,
             timeEstimate: state.timeEstimate
@@ -241,7 +241,7 @@ export class UltimateNeuralTopologyOrchestrator {
   }
   /**
    * Real-time neural topology visualization data
-   */;
+   */
   async getNeuralTopologyVisualization(): Promise<{
     nodes: Array<any>;
     edges: Array<any>;
@@ -314,7 +314,7 @@ export class UltimateNeuralTopologyOrchestrator {
   }
   /**
    * Advanced system diagnostics
-   */;
+   */
   async getComprehensiveSystemDiagnostics(): Promise<any> {
     const [
       hmmMetrics,
@@ -464,10 +464,10 @@ export class UltimateNeuralTopologyOrchestrator {
       this.hmmSomPredictor.predictNextStates()
     ]);
     return {
-      extraction: results[0].status === 'fulfilled' ? results[0].value: null
-      tiledData: results[1].status === 'fulfilled' ? results[1].value : null
-      uiComponent: results[2].status === 'fulfilled' ? results[2].value : null
-      predictions: results[3].status === 'fulfilled' ? results[3].value : null
+      extraction: results[0].status === 'fulfilled' ? results[0].value: null,
+      tiledData: results[1].status === 'fulfilled' ? results[1].value : null,
+      uiComponent: results[2].status === 'fulfilled' ? results[2].value : null,
+      predictions: results[3].status === 'fulfilled' ? results[3].value : null,
       embeddings: results[0].status === 'fulfilled' && results[0].value?.embeddings?.documentEmbedding
         ? results[0].value.embeddings.documentEmbedding
         : null;
@@ -684,7 +684,7 @@ export class UltimateNeuralTopologyOrchestrator {
   // =============================================================================
   /**
    * Get current system metrics
-   */;
+   */
   getSystemMetrics(): {
     state: NeuralTopologyState;
     metrics: {
@@ -707,14 +707,14 @@ export class UltimateNeuralTopologyOrchestrator {
   }
   /**
    * Force system optimization
-   */;
+   */
   async forceOptimization(): Promise<void> {
     await this.optimizeNeuralTopology();
     console.log('🔧 Neural topology optimization completed');
   }
   /**
    * Update system configuration
-   */;
+   */
   updateConfiguration(config: Partial<NeuralTopologyState>): void {
     this.currentState = { ...this.currentState, ...config }
     console.log('⚙️ Neural orchestrator configuration updated');

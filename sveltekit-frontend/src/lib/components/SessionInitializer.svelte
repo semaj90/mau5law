@@ -62,7 +62,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
           syncIntervalId = null;
           debugLog('Cleared auto-sync interval');
         }
-      }
+      };
     }
   });
 

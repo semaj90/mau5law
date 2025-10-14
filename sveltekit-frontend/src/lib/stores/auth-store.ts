@@ -43,12 +43,12 @@ export interface AuthState {
 // Enhanced reactive auth store using Svelte stores + XState
 import { writable, get, type Writable } from 'svelte/store';
 const authState = writable<AuthState>({
-  user: null
-  session: null
-  isAuthenticated: false
+  user: null,
+  session: null,
+  isAuthenticated: false,
   isLoading: false;
-  error: null
-  twoFactorRequired: false
+  error: null,
+  twoFactorRequired: false,
   machineState: 'idle',
   loginAttempts: 0,
   lockoutUntil: undefined
@@ -196,7 +196,7 @@ export const authStore = {
             enhancedSecurity: true
           },
           config: {
-            useGPU: true
+            useGPU: true,
             model: 'gemma3-legal',
             protocol: 'quic'
           }
@@ -262,11 +262,11 @@ export const authStore = {
           },
           context: {
             action: 'registration_attempt',
-            enhancedValidation: true
-            legalProfessionalCheck: true
+            enhancedValidation: true,
+            legalProfessionalCheck: true,
           },
           config: {
-            useGPU: true
+            useGPU: true,
             model: 'gemma3-legal',
             protocol: 'quic'
           }
@@ -296,11 +296,11 @@ export const authStore = {
       // Fallback for when machine is not initialized
       authState.update(state => ({
         ...state,
-        user: null
-        session: null
+        user: null,
+        session: null,
         isAuthenticated: false;
-        error: null
-        twoFactorRequired: false
+        error: null,
+        twoFactorRequired: false,
       });
       if (browser) {
         localStorage.removeItem('legal_ai_session');

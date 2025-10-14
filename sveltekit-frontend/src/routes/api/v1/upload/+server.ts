@@ -1,19 +1,15 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
  * Supports document analysis, OCR, embedding generation, and metadata extraction
  */
-import { ensureError } from '$lib/utils/ensure-error'
-import { dev } from '$app/environment'
-import type {
-  EnhancedUploadRequest,
-  EnhancedUploadResponse,
-  APIRequestContext
-} from '$lib/types/api.js'
-import { embeddingService } from '$lib/server/embedding-service.js'
-import crypto from "crypto"
+import { ensureError } from '$lib/utils/ensure-error';
+import { dev } from '$app/environment';
+import type { EnhancedUploadRequest, EnhancedUploadResponse, APIRequestContext } from '$lib/types/api.js';
+import { embeddingService } from '$lib/server/embedding-service.js';
+import crypto from 'crypto';
 
 // Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {
@@ -24,9 +20,9 @@ const UPLOAD_SERVICE_CONFIG = {
     process: '/api/process',
     status: '/api/status',
     metadata: '/api/metadata',
-    health: '/health'
-  }
-}
+    health: '/health',
+  },
+};
 // Document Processor Configuration
 const DOCUMENT_PROCESSOR_CONFIG = {
   http: 'http://localhost:8081',
@@ -34,9 +30,9 @@ const DOCUMENT_PROCESSOR_CONFIG = {
     process: '/api/process',
     ocr: '/api/ocr',
     analyze: '/api/analyze',
-    health: '/api/health'
-  }
-}
+    health: '/api/health',
+  },
+};
 // Supported file types and limits
 const FILE_CONFIG = {
   maxSize: 100 * 1024 * 1024, // 100MB
@@ -53,25 +49,25 @@ const FILE_CONFIG = {
     'audio/mpeg',
     'audio/wav',
     'video/mp4',
-    'video/quicktime'
+    'video/quicktime',
   ],
   textTypes: ['application/pdf', 'text/plain', 'text/csv'],
   imageTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
   documentTypes: [
     'application/pdf',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ]
-}
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
+};
 /*
  * POST /api/v1/upload - Enhanced File Upload with Processing
  */
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
-  const startTime = Date.now()
-  const requestId = crypto.randomUUID()
+  const startTime = Date.now();
+  const requestId = crypto.randomUUID();
   try {
-    const formData = await request.formData()
-    const file = formData.get('file') as File
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
     // Validate file presence
     if (!file) {
       return error(
@@ -128,13 +124,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: uploadRequest.sessionId,
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
-      caseId: uploadRequest.caseId
-    }
+      caseId: uploadRequest.caseId,
+    };
     // Process upload
-    const uploadResponse = await processEnhancedUpload(uploadRequest, context)
-    return json(uploadResponse)
+    const uploadResponse = await processEnhancedUpload(uploadRequest, context);
+    return json(uploadResponse);
   } catch (err: any) {
-    console.error('Upload API Error:', err)
+    console.error('Upload API Error:', err);
     return error(
       500,
       ensureError({
@@ -147,24 +143,24 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       })
     );
   }
-}
+};
 /*
  * GET /api/v1/upload - Upload Service Info and Health
  */
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action')
-  const documentId = url.searchParams.get('id')
+  const action = url.searchParams.get('action');
+  const documentId = url.searchParams.get('id');
   try {
     switch (action) {
       case 'health':
-        return await handleHealthCheck()
+        return await handleHealthCheck();
       case 'status':
         if (!documentId) {
           return error(400, ensureError({ message: 'Document ID required for status check' }));
         }
-        return await handleStatusCheck(documentId)
+        return await handleStatusCheck(documentId);
       case 'config':
-        return await handleConfigInfo()
+        return await handleConfigInfo();
       default:
         return json({
           service: 'Enhanced Upload API',
@@ -187,7 +183,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
     }
   } catch (err: any) {
-    console.error('Upload GET Error:', err)
+    console.error('Upload GET Error:', err);
     return error(
       500,
       ensureError({
@@ -196,10 +192,13 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     );
   }
-}
+};
 // Implementation functions would be added here...
 // (The complete implementation is too long for this response)
-async function processEnhancedUpload(request: EnhancedUploadRequest, context: APIRequestContext): Promise<EnhancedUploadResponse> {
+async function processEnhancedUpload(
+  request: EnhancedUploadRequest,
+  context: APIRequestContext
+): Promise<EnhancedUploadResponse> {
   // Implementation stub - full implementation would include all stages
   return {
     success: true,
@@ -221,17 +220,17 @@ async function handleHealthCheck(): Promise<Response> {
     components: {
       uploadService: { status: 'healthy', endpoint: UPLOAD_SERVICE_CONFIG.http },
       documentProcessor: { status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
-      embeddingService: { status: 'healthy', model: 'nomic-embed-text' }
+      embeddingService: { status: 'healthy', model: 'nomic-embed-text' },
     },
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }
 async function handleStatusCheck(documentId: string): Promise<Response> {
   return json({
     documentId,
     status: 'completed',
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }
 async function handleConfigInfo(): Promise<Response> {
   return json({
@@ -243,9 +242,9 @@ async function handleConfigInfo(): Promise<Response> {
         textExtraction: { supported: true, fileTypes: FILE_CONFIG.textTypes },
         ocrProcessing: { supported: true, fileTypes: FILE_CONFIG.imageTypes },
         embeddingGeneration: { supported: true, model: 'nomic-embed-text' },
-        contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] }
-      }
+        contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] },
+      },
     },
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }

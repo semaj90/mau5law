@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       limit: searchRequest.params?.limit || 10,
       min_similarity: searchRequest.params?.min_similarity || 0.7,
       algorithm: searchRequest.params?.algorithm || 'COSINE_SIMILARITY',
-      include_embeddings: searchRequest.params?.include_embeddings || false
+      include_embeddings: searchRequest.params?.include_embeddings || false,
     };
 
     // Validate limits
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       query: searchRequest.query || searchRequest.text,
       params,
       filters: searchRequest.filters,
-      metadata: searchRequest.metadata
+      metadata: searchRequest.metadata,
     });
 
     const processingTime = performance.now() - startTime;
@@ -67,17 +67,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           query_clarity: calculateQueryClarity(searchRequest.query),
           result_diversity: calculateResultDiversity(searchResults.results),
           exact_matches: searchResults.exactMatches || 0,
-          semantic_matches: searchResults.semanticMatches || 0
-        }
+          semantic_matches: searchResults.semanticMatches || 0,
+        },
       },
       analytics: {
         query_id: generateQueryId(),
         query_hash: hashQuery(searchRequest.query),
         expansion_terms: searchResults.expansionTerms || [],
         clusters: searchResults.semanticClusters || [],
-        complexity: assessQueryComplexity(searchRequest.query)
+        complexity: assessQueryComplexity(searchRequest.query),
       },
-      recommendations: generateRecommendations(searchResults.results)
+      recommendations: generateRecommendations(searchResults.results),
     };
 
     // Serialize to protocol buffer binary format
@@ -91,10 +91,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         'Content-Length': responseBuffer.length.toString(),
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Total-Results': searchResults.total.toString(),
-        'X-Data-Source': searchResults.dataSource || 'postgresql'
-      }
+        'X-Data-Source': searchResults.dataSource || 'postgresql',
+      },
     });
-
   } catch (err) {
     console.error('Vector search protobuf error:', err);
 
@@ -102,14 +101,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const errorResponse = await serializeErrorResponse({
       code: 'SEARCH_ERROR',
       message: err.message || 'Vector search failed',
-      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined,
     });
 
     return new Response(errorResponse, {
       status: 500,
       headers: {
-        'Content-Type': 'application/x-protobuf'
-      }
+        'Content-Type': 'application/x-protobuf',
+      },
     });
   }
 };
@@ -126,17 +125,17 @@ async function parseVectorSearchRequest(buffer: Uint8Array): Promise<any> {
     // Return minimal valid request structure
     return {
       query: null,
-      text: "mock search query",
+      text: 'mock search query',
       params: {
         limit: 10,
         min_similarity: 0.7,
-        algorithm: 'COSINE_SIMILARITY'
+        algorithm: 'COSINE_SIMILARITY',
       },
       filters: {},
       metadata: {
         user_id: 'anonymous',
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
   }
 }
@@ -153,8 +152,8 @@ async function serializeErrorResponse(error: any): Promise<ArrayBuffer> {
     error: {
       code: error.code,
       message: error.message,
-      details: error.details
-    }
+      details: error.details,
+    },
   });
   return new TextEncoder().encode(errorJson).buffer;
 }
@@ -172,26 +171,24 @@ async function executeVectorSearch(searchParams: any) {
         created_at: Date.now() - 86400000,
         case_id: 'case_001',
         jurisdiction: 'Federal',
-        legal_categories: ['Contract Law', 'Commercial Law']
+        legal_categories: ['Contract Law', 'Commercial Law'],
       },
       similarity_score: 0.92,
       snippets: [
         {
           text: 'The parties agree to the following terms and conditions...',
-          highlights: [
-            { start: 12, end: 27, match_type: 'semantic' }
-          ],
+          highlights: [{ start: 12, end: 27, match_type: 'semantic' }],
           relevance_score: 0.89,
-          page_number: 1
-        }
+          page_number: 1,
+        },
       ],
       legal_context: {
         precedents: ['Smith v. Jones (2020)', 'ABC Corp v. XYZ LLC (2019)'],
         key_terms: ['contract', 'agreement', 'terms', 'obligations'],
         practice_area: 'Contract Law',
-        legal_weight: 0.85
-      }
-    }
+        legal_weight: 0.85,
+      },
+    },
   ];
 
   // Simulate processing time based on query complexity
@@ -212,9 +209,9 @@ async function executeVectorSearch(searchParams: any) {
         cluster_id: 'cluster_001',
         theme: 'Contract Terms',
         weight: 0.75,
-        representative_terms: ['contract', 'agreement', 'terms']
-      }
-    ]
+        representative_terms: ['contract', 'agreement', 'terms'],
+      },
+    ],
   };
 }
 
@@ -223,7 +220,7 @@ function calculateQueryClarity(query: any): number {
   // Mock implementation - analyze query structure and terminology
   if (!query) return 0.5;
   const complexity = typeof query === 'string' ? query.split(' ').length : 10;
-  return Math.min(0.95, 0.3 + (complexity * 0.05));
+  return Math.min(0.95, 0.3 + complexity * 0.05);
 }
 
 function calculateResultDiversity(results: any[]): number {
@@ -243,7 +240,7 @@ function hashQuery(query: any): string {
   let hash = 0;
   for (let i = 0; i < queryString.length; i++) {
     const char = queryString.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
   return Math.abs(hash).toString(16);
@@ -285,7 +282,7 @@ function assessQueryComplexity(query: any): any {
   return {
     complexity_score: complexityScore,
     complexity_level: level,
-    complexity_factors: factors
+    complexity_factors: factors,
   };
 }
 
@@ -299,7 +296,7 @@ function generateRecommendations(results: any[]): any[] {
       description: 'Find cases with similar legal issues',
       action_url: '/cases/search?similar=true',
       confidence: 0.82,
-      tags: ['cases', 'precedents', 'similar']
+      tags: ['cases', 'precedents', 'similar'],
     },
     {
       type: 'legal_research',
@@ -307,7 +304,7 @@ function generateRecommendations(results: any[]): any[] {
       description: 'Search broader legal databases',
       action_url: '/legal/research/expand',
       confidence: 0.75,
-      tags: ['research', 'databases', 'comprehensive']
-    }
+      tags: ['research', 'databases', 'comprehensive'],
+    },
   ];
 }

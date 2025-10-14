@@ -16,7 +16,7 @@ const NES_MEMORY_MAP = {
     start: 0x0000,
     end: 0x07ff,
     size: 2048,
-    mirrored: true
+    mirrored: true,
     mirrorSize: 8192, // $0000-$1FFF
   },
   // PPU registers (for UI components)
@@ -24,7 +24,7 @@ const NES_MEMORY_MAP = {
     start: 0x2000,
     end: 0x2007,
     size: 8,
-    mirrored: true
+    mirrored: true,
     mirrorSize: 8192, // $2000-$3FFF
   },
   // APU and I/O registers (for audio/input)
@@ -112,7 +112,7 @@ export class NESMemoryArchitecture {
   // NES-style memory management state
   private readonly memoryState = {
     currentScanline: 0,
-    vblankActive: false
+    vblankActive: false,
     ppu2000: 0, // PPU control register
     ppu2001: 0, // PPU mask register
     ppu2002: 0, // PPU status register
@@ -144,7 +144,7 @@ export class NESMemoryArchitecture {
       size: NES_MEMORY_MAP.INTERNAL_RAM.size,
       used: 0,
       documents: new Map(),
-      isActive: true
+      isActive: true,
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
@@ -157,7 +157,7 @@ export class NESMemoryArchitecture {
       size: NES_MEMORY_MAP.CHR_ROM.size,
       used: 0,
       documents: new Map(),
-      isActive: true
+      isActive: true,
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
@@ -170,7 +170,7 @@ export class NESMemoryArchitecture {
       size: NES_MEMORY_MAP.PRG_ROM.size,
       used: 0,
       documents: new Map(),
-      isActive: true
+      isActive: true,
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
@@ -183,7 +183,7 @@ export class NESMemoryArchitecture {
       size: NES_MEMORY_MAP.SAVE_RAM.size,
       used: 0,
       documents: new Map(),
-      isActive: true
+      isActive: true,
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
@@ -288,9 +288,9 @@ export class NESMemoryArchitecture {
       const legalDocument: LegalDocument = {
         ...document,
         priority,
-        size: documentSize
+        size: documentSize,
         lastAccessed: Date.now(),
-        compressed: compress
+        compressed: compress,
         bankId: bank.id,
       }
       // Allocate document in bank
@@ -386,7 +386,7 @@ export class NESMemoryArchitecture {
         }
       }
       this.compressionWorker!.postMessage({
-        documentData: data
+        documentData: data,
         legalContext: {
           type: document.type,
           riskLevel: document.riskLevel,

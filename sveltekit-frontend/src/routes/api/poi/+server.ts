@@ -16,22 +16,26 @@ const createPoiSchema = z.object({
   status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).default('person_of_interest'),
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).default('low'),
-  physicalDescription: z.object({
-    height: z.string().optional(),
-    weight: z.string().optional(),
-    hair: z.string().optional(),
-    eyes: z.string().optional(),
-    distinguishingMarks: z.string().optional()
-  }).optional(),
-  profileData: z.object({
-    modusOperandi: z.string().optional(),
-    knownHabits: z.array(z.string()).optional().default([]),
-    associates: z.array(z.string()).optional().default([])
-  }).optional(),
+  physicalDescription: z
+    .object({
+      height: z.string().optional(),
+      weight: z.string().optional(),
+      hair: z.string().optional(),
+      eyes: z.string().optional(),
+      distinguishingMarks: z.string().optional(),
+    })
+    .optional(),
+  profileData: z
+    .object({
+      modusOperandi: z.string().optional(),
+      knownHabits: z.array(z.string()).optional().default([]),
+      associates: z.array(z.string()).optional().default([]),
+    })
+    .optional(),
   lastKnownLocation: z.string().optional(),
   lastSeen: z.string().optional(),
   dangerLevel: z.number().min(0).max(10).default(0),
-  notes: z.string().optional()
+  notes: z.string().optional(),
 });
 
 const updatePoiSchema = createPoiSchema.partial();
@@ -56,24 +60,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     // Apply filters
     const conditions = [];
-    
+
     if (search) {
-      conditions.push(
-        or(
-          ilike(personsOfInterest.name, `%${search}%`),
-          ilike(personsOfInterest.notes, `%${search}%`)
-        )
-      );
+      conditions.push(or(ilike(personsOfInterest.name, `%${search}%`), ilike(personsOfInterest.notes, `%${search}%`)));
     }
-    
+
     if (status) {
       conditions.push(eq(personsOfInterest.status, status));
     }
-    
+
     if (priority) {
       conditions.push(eq(personsOfInterest.priority, priority));
     }
-    
+
     if (threatLevel) {
       conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
     }
@@ -83,11 +82,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
 
     const [pois, totalCount] = await Promise.all([
-      query
-        .orderBy(desc(personsOfInterest.createdAt))
-        .limit(limit)
-        .offset(offset),
-      db.select({ count: sql`count(*)` }).from(personsOfInterest)
+      query.orderBy(desc(personsOfInterest.createdAt)).limit(limit).offset(offset),
+      db.select({ count: sql`count(*)` }).from(personsOfInterest),
     ]);
 
     return json({
@@ -97,8 +93,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         page,
         limit,
         total: totalCount[0]?.count || 0,
-        pages: Math.ceil((totalCount[0]?.count || 0) / limit)
-      }
+        pages: Math.ceil((totalCount[0]?.count || 0) / limit),
+      },
     });
   } catch (error) {
     console.error('Error fetching POIs:', error);
@@ -117,17 +113,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const body = await request.json();
     const validatedData = createPoiSchema.parse(body);
 
-    const [newPoi] = await db.insert(personsOfInterest).values({
-      ...validatedData,
-      createdBy: session.user.id,
-      dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
-      lastSeen: validatedData.lastSeen ? new Date(validatedData.lastSeen) : null
-    }).returning();
+    const [newPoi] = await db
+      .insert(personsOfInterest)
+      .values({
+        ...validatedData,
+        createdBy: session.user.id,
+        dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
+        lastSeen: validatedData.lastSeen ? new Date(validatedData.lastSeen) : null,
+      })
+      .returning();
 
-    return json({
-      success: true,
-      data: newPoi
-    }, { status: 201 });
+    return json(
+      {
+        success: true,
+        data: newPoi,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating POI:', error);
     if (error instanceof z.ZodError) {

@@ -30,12 +30,12 @@
     try {
       // Uses UUID-based endpoint from registry
       wsClient = createWSClient('rag', {
-        onMessage: (data) => {
+        onMessage: data => {
           messages = [...messages, data];
         },
-        onStatusChange: (status) => {
+        onStatusChange: status => {
           connectionStatus = status;
-        }
+        },
       });
       wsClient.connect();
     } catch (err) {
@@ -61,9 +61,7 @@
 <div class="demo-page">
   <header>
     <h1>🚀 Integrated RAG System</h1>
-    <p class="subtitle">
-      Complete document processing pipeline with semantic search and recommendations
-    </p>
+    <p class="subtitle">Complete document processing pipeline with semantic search and recommendations</p>
   </header>
 
   <div class="pipeline-diagram">
@@ -148,13 +146,15 @@
   <p class="text-gray-600">Real-time RAG search demo placeholder. WebSocket integration coming soon.</p>
 
   <div class="mb-4">
-    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-          class:bg-green-100={connectionStatus === 'connected'}
-          class:text-green-800={connectionStatus === 'connected'}
-          class:bg-yellow-100={connectionStatus === 'connecting'}
-          class:text-yellow-800={connectionStatus === 'connecting'}
-          class:bg-red-100={connectionStatus === 'error'}
-          class:text-red-800={connectionStatus === 'error'}>
+    <span
+      class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+      class:bg-green-100={connectionStatus === 'connected'}
+      class:text-green-800={connectionStatus === 'connected'}
+      class:bg-yellow-100={connectionStatus === 'connecting'}
+      class:text-yellow-800={connectionStatus === 'connecting'}
+      class:bg-red-100={connectionStatus === 'error'}
+      class:text-red-800={connectionStatus === 'error'}
+    >
       {connectionStatus}
     </span>
   </div>
@@ -165,12 +165,13 @@
       bind:value={searchQuery}
       placeholder="Enter search query..."
       class="flex-1 px-4 py-2 border rounded-lg"
-      onkeydown={(e) => e.key === 'Enter' && sendSearch()}
+      onkeydown={e => e.key === 'Enter' && sendSearch()}
     />
     <button
       onclick={sendSearch}
       disabled={connectionStatus !== 'connected'}
-      class="px-6 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50">
+      class="px-6 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50"
+    >
       Search
     </button>
   </div>
@@ -187,9 +188,7 @@
     <p>
       <strong>Tech Stack:</strong> SvelteKit + embeddinggemma + PostgreSQL/pgvector + Qdrant + MinIO + Redis
     </p>
-    <p class="small">
-      Memory-efficient 384-dimensional embeddings for optimal performance
-    </p>
+    <p class="small">Memory-efficient 384-dimensional embeddings for optimal performance</p>
   </footer>
 </div>
 

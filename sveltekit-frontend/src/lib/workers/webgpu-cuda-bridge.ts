@@ -52,7 +52,7 @@ class WebGPUCudaBridge {
 			this.webgpuDevice = {
 				device,
 				adapter,
-				isInitialized: true
+				isInitialized: true,
 				capabilities: {
 					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
 					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
@@ -250,8 +250,8 @@ class WebGPUCudaBridge {
 				bindGroupLayouts: [bindGroupLayout]
 			}),
 			compute: {
-				module: shaderModule
-				entryPoint: 'main'
+				module: shaderModule,
+				entryPoint: 'main',
 			}
 		});
 		// Create command encoder and dispatch compute
@@ -289,7 +289,7 @@ class WebGPUCudaBridge {
 				body: JSON.stringify({,
 					model: config?.model || 'gemma3-legal',
 					prompt: config.prompt || 'Analyze the provided legal document.',
-					stream: false
+					stream: false,
 					options: {
 						temperature: config.temperature || 0.7,
 						top_p: config.top_p || 0.9,
@@ -322,7 +322,7 @@ class WebGPUCudaBridge {
 					user_id: config.user_id,
 					session_id: config.session_id,
 					metadata: {
-						webgpu_bridge: true
+						webgpu_bridge: true,
 						data_length: data instanceof Float32Array ? (data as { length?: any; byteLength?: any }).length: (data as { length?: any; byteLength?: any }).byteLength,
 						optimization_level: 'rtx_3060_ti'
 					}

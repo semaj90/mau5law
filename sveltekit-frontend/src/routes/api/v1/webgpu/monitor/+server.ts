@@ -1,55 +1,55 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js'
-import { embeddingCache } from '$lib/server/embedding-cache-middleware.js'
-import { cache } from '$lib/server/cache/redis.js'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
+import { cache } from '$lib/server/cache/redis.js';
 /**
  * WebGPU Cache System Monitoring API
  * Real-time performance monitoring and analytics dashboard
  */
 interface SystemMetrics {
-  timestamp: number
+  timestamp: number;
   webgpu: {
-    available: boolean
-    utilization: number
-    memoryUsed: number
-    memoryTotal: number
-    tensorCoreLoad: number
-    thermalStatus: string
-    queueDepth: number
-  }
+    available: boolean;
+    utilization: number;
+    memoryUsed: number;
+    memoryTotal: number;
+    tensorCoreLoad: number;
+    thermalStatus: string;
+    queueDepth: number;
+  };
   cache: {
-    hitRatio: number
-    totalOperations: number
-    compressionRatio: number
-    avgResponseTime: number
-    memoryUsage: number
-  }
+    hitRatio: number;
+    totalOperations: number;
+    compressionRatio: number;
+    avgResponseTime: number;
+    memoryUsage: number;
+  };
   threading: {
-    activeWorkers: number
-    totalThreadPools: number
-    queuedTasks: number
-    completedTasks: number
-  }
+    activeWorkers: number;
+    totalThreadPools: number;
+    queuedTasks: number;
+    completedTasks: number;
+  };
   performance: {
-    opsPerSecond: number
-    mbPerSecond: number
-    errorRate: number
-    p95ResponseTime: number
-  }
+    opsPerSecond: number;
+    mbPerSecond: number;
+    errorRate: number;
+    p95ResponseTime: number;
+  };
 }
 interface HealthStatus {
-  overall: 'healthy' | 'warning' | 'critical',
+  overall: 'healthy' | 'warning' | 'critical';
   components: {
-    webgpu: 'healthy' | 'degraded' | 'offline',
-    cache: 'healthy' | 'warning' | 'critical'
-    workers: 'healthy' | 'overloaded' | 'offline'
-  }
-  alerts: Array<any>
+    webgpu: 'healthy' | 'degraded' | 'offline';
+    cache: 'healthy' | 'warning' | 'critical';
+    workers: 'healthy' | 'overloaded' | 'offline';
+  };
+  alerts: Array<any>;
 }
 // In-memory metrics storage for demo (in production, use proper time-series DB)
-let metricsHistory: SystemMetrics[] = []
-let alertHistory: HealthStatus['alerts'] = []
+let metricsHistory: SystemMetrics[] = [];
+let alertHistory: HealthStatus['alerts'] = [];
 // Add typed response shapes to avoid `any`
 type MonitorHistory = {
   metrics: SystemMetrics[];

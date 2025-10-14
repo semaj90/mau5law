@@ -32,8 +32,8 @@ class SuggestionsService {
         category,
         limit,
         suggestionType: 'legal_search',
-        includeSemanticExpansions: true
-        includeTrendingTerms: true
+        includeSemanticExpansions: true,
+        includeTrendingTerms: true,
         legalContext: {
           jurisdiction: 'federal',
           practiceAreas: 'all',
@@ -53,12 +53,12 @@ class SuggestionsService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        partial: partialQuery
+        partial: partialQuery,
         category,
         limit,
         completionType: 'legal_smart',
-        includeDefinitions: true
-        includePracticeAreas: true
+        includeDefinitions: true,
+        includePracticeAreas: true,
       })
     }, [8095, 8096]).then(r => r.json()
   }
@@ -121,18 +121,18 @@ export const GET: RequestHandler = async ({ url }) => {
       trending: trending.slice(0, 5),
       metadata: {
         category,
-        query: userQuery
+        query: userQuery,
         totalSuggestions: suggestions.length,
         processingTime,
-        aiEnhanced: true
+        aiEnhanced: true,
         includeDefinitions,
         timestamp: new Date().toISOString(),
         searchStrategy: userQuery ? 'contextual_completion' : 'discovery_trending',
         servicesUsed: {
-          enhancedRAG: true
-          semanticExpansions: true
-          trendingAnalysis: includeTrending
-          smartCompletions: userQuery.length >= 2
+          enhancedRAG: true,
+          semanticExpansions: true,
+          trendingAnalysis: includeTrending,
+          smartCompletions: userQuery.length >= 2,
         }
       },
       // Legal AI platform specific enhancements
@@ -153,25 +153,25 @@ export const GET: RequestHandler = async ({ url }) => {
     )
     return json({
       success: true, // Still return success with fallback
-      suggestions: fallbackSuggestions
+      suggestions: fallbackSuggestions,
       trending: [],
       metadata: {
         category: url.searchParams.get('category') || 'general',
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
-        fallbackMode: true
-        error: error instanceof Error ? error.message: 'Unknown error'
+        fallbackMode: true,
+        error: error instanceof Error ? error.message: 'Unknown error',
       }
     })
   }
 }
 // Enhanced utility functions for suggestion processing
 async function processEnhancedSuggestions(
-  contextualSuggestions: any[]
-  completions: any[]
-  query: string
-  category: string
-  includeDefinitions: boolean
+  contextualSuggestions: any[],
+  completions: any[],
+  query: string,
+  category: string,
+  includeDefinitions: boolean,
 ): Promise<any[]> {
   try {
     const allSuggestions = [
@@ -190,9 +190,9 @@ async function processEnhancedSuggestions(
         text: c.completion || c.text,
         category: c.category || category,
         score: c.completionScore || c.score || 0.6,
-        trending: false
+        trending: false,
         description: c.description,
-        definition: includeDefinitions ? c.definition : undefined
+        definition: includeDefinitions ? c.definition : undefined,
         practiceArea: c.practiceArea,
         confidence: c.confidence || 0.6,
         source: 'completion'
@@ -222,7 +222,7 @@ async function processTrendingSuggestions(trendingData: any[], category: string)
       text: trending.searchTerm || trending.text || trending,
       category: trending.category || category,
       score: trending.trendingScore || 0.9,
-      trending: true
+      trending: true,
       description: `Trending search in ${category} law`,
       searchCount: trending.searchCount || 0,
       trendingPeriod: trending.period || '7d',
@@ -408,10 +408,10 @@ async function getFallbackSuggestions(query: string, category: string, limit: nu
   }
   const suggestions = fallbackSuggestionsByCategory[category] || fallbackSuggestionsByCategory.general
   return suggestions.slice(0, limit).map((suggestion, index) => ({
-    text: suggestion
+    text: suggestion,
     category,
     score: 0.5 - (index * 0.05),
-    trending: false
+    trending: false,
     description: `Fallback suggestion for ${category}`,
     source: 'fallback',
     confidence: 0.5

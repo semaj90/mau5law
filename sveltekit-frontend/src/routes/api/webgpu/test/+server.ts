@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // src/routes/api/webgpu/test/+server.ts
 // WebGPU test endpoint for browser-side testing
 // Tests WebGPU compute with WASM fallback integration
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
   try {

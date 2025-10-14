@@ -437,7 +437,8 @@
           <label for="feature" class="block text-sm font-medium mb-2">Feature</label>
           <input
             id="feature"
-            type="text";
+            type="text"
+            ;
             bind:value={feature}
             placeholder="e.g., AI chat component"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -481,7 +482,8 @@
         <div class="md:col-span-2">
           <label for="ragQuery" class="block text-sm font-medium mb-2">Legal Query</label>
           <textarea
-            id="ragQuery";
+            id="ragQuery"
+            ;
             bind:value={ragQuery}
             placeholder="e.g., contract liability clauses, criminal evidence standards, case precedents..."
             rows="3"
@@ -518,7 +520,8 @@
           <label for="ragCaseId" class="block text-sm font-medium mb-2">Case ID (optional)</label>
           <input
             id="ragCaseId"
-            type="text";
+            type="text"
+            ;
             bind:value={ragCaseId}
             placeholder="e.g., CASE-2024-001"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -540,7 +543,8 @@
           <label for="filePath" class="block text-sm font-medium mb-2">File Path</label>
           <input
             id="filePath"
-            type="text";
+            type="text"
+            ;
             bind:value={filePath}
             placeholder="e.g., /path/to/legal-document.pdf"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -589,7 +593,8 @@
           <label for="ragQuery" class="block text-sm font-medium mb-2">Query</label>
           <input
             id="ragQuery"
-            type="text";
+            type="text"
+            ;
             bind:value={ragQuery}
             placeholder="e.g., liability clauses"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -242,7 +242,7 @@ import type { RequestHandler } from './$types'
          {
            success: false,
            error: err.message,
-           timestamp: new Date().toISOString()
+           timestamp: new Date().toISOString(),
          },
          { status: 500 }
        )

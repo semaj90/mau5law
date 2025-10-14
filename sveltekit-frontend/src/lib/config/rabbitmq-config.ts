@@ -14,14 +14,14 @@ export interface RabbitMQConfig {
     heartbeat?: number;
     connection_timeout?: number;
     channel_max?: number;
-  }
+  };
   exchanges: {
     name: string;
     type: 'direct' | 'topic' | 'fanout' | 'headers';
     options?: {
       durable?: boolean;
       autoDelete?: boolean;
-    }
+    };
   }[];
   queues: {
     name: string;
@@ -35,7 +35,7 @@ export interface RabbitMQConfig {
       maxLength?: number;
       deadLetterExchange?: string;
       deadLetterRoutingKey?: string;
-    }
+    };
   }[];
 }
 // Environment-based configuration
@@ -48,7 +48,7 @@ const RABBITMQ_PROTOCOL = (process.env.RABBITMQ_PROTOCOL as 'amqp' | 'amqps') ||
 // Queue and exchange names
 export const EXCHANGES = {
   LEGAL_AI_MAIN: 'legal_ai.main',
-  LEGAL_AI_DLX: 'legal_ai.dlx' // Dead letter exchange
+  LEGAL_AI_DLX: 'legal_ai.dlx', // Dead letter exchange
 } as const;
 export const QUEUES = {
   // Document processing queues
@@ -66,7 +66,7 @@ export const QUEUES = {
   VECTOR_SEARCH_UPDATE: 'legal_ai.vector.search_update',
   // Dead letter queues
   DEAD_LETTER: 'legal_ai.dead_letter',
-  RETRY: 'legal_ai.retry'
+  RETRY: 'legal_ai.retry',
 } as const;
 export const ROUTING_KEYS = {
   // Document operations
@@ -94,7 +94,7 @@ export const ROUTING_KEYS = {
   CLEANUP: 'system.cleanup',
   // Error handling
   RETRY_FAILED_JOB: 'error.retry',
-  MOVE_TO_DLQ: 'error.dead_letter'
+  MOVE_TO_DLQ: 'error.dead_letter',
 } as const;
 // Production RabbitMQ configuration
 export const getRabbitMQConfig = (): RabbitMQConfig => ({
@@ -107,7 +107,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
     vhost: RABBITMQ_VHOST,
     heartbeat: 60,
     connection_timeout: 10000,
-    channel_max: 100
+    channel_max: 100,
   },
   exchanges: [
     {
@@ -115,17 +115,17 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       type: 'topic',
       options: {
         durable: true,
-        autoDelete: false
-      }
+        autoDelete: false,
+      },
     },
     {
       name: EXCHANGES.LEGAL_AI_DLX,
       type: 'direct',
       options: {
         durable: true,
-        autoDelete: false
-      }
-    }
+        autoDelete: false,
+      },
+    },
   ],
   queues: [
     // Document processing queues
@@ -139,8 +139,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 600000, // 10 minutes
         maxLength: 1000,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     {
       name: QUEUES.DOCUMENT_INDEXING,
@@ -152,8 +152,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     {
       name: QUEUES.DOCUMENT_ANALYSIS,
@@ -165,8 +165,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 1200000, // 20 minutes (AI processing can be slow)
         maxLength: 200,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     // Case processing queues
     {
@@ -179,8 +179,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     {
       name: QUEUES.CASE_SIMILARITY,
@@ -192,8 +192,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 180000, // 3 minutes
         maxLength: 300,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     // AI processing queues
     {
@@ -206,8 +206,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 900000, // 15 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     {
       name: QUEUES.AI_ENTITY_EXTRACTION,
@@ -219,8 +219,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 600000, // 10 minutes
         maxLength: 200,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     {
       name: QUEUES.AI_CLASSIFICATION,
@@ -232,8 +232,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     // Vector operations
     {
@@ -246,8 +246,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 120000, // 2 minutes
         maxLength: 1000,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
     },
     // Error handling queues
     {
@@ -256,8 +256,8 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       options: {
         durable: true,
         autoDelete: false,
-        messageTtl: 86400000 // 24 hours in dead letter queue
-      }
+        messageTtl: 86400000, // 24 hours in dead letter queue
+      },
     },
     {
       name: QUEUES.RETRY,
@@ -269,17 +269,17 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
         deadLetterExchange: EXCHANGES.LEGAL_AI_DLX,
-        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ
-      }
-    }
-  ]
+        deadLetterRoutingKey: ROUTING_KEYS.MOVE_TO_DLQ,
+      },
+    },
+  ],
 });
 // Message priority levels
 export const PRIORITY = {
   LOW: 1,
   NORMAL: 5,
   HIGH: 8,
-  CRITICAL: 10
+  CRITICAL: 10,
 } as const;
 // Consumer configuration
 export interface ConsumerConfig {
@@ -297,7 +297,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
     autoAck: false,
     retryAttempts: 3,
     retryDelay: 5000,
-    exponentialBackoff: true
+    exponentialBackoff: true,
   };
   // Queue-specific configurations
   switch (queueName) {
@@ -306,7 +306,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
       return {
         ...baseConfig,
         concurrency: 2, // Embedding generation is CPU intensive
-        prefetchCount: 5
+        prefetchCount: 5,
       };
     case QUEUES.DOCUMENT_ANALYSIS:
     case QUEUES.AI_SUMMARIZATION:
@@ -315,13 +315,13 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         concurrency: 1, // AI operations are resource intensive
         prefetchCount: 2,
         retryAttempts: 2,
-        retryDelay: 30000 // 30 seconds
+        retryDelay: 30000, // 30 seconds
       };
     case QUEUES.VECTOR_SEARCH_UPDATE:
       return {
         ...baseConfig,
         concurrency: 5, // Fast database operations
-        prefetchCount: 20
+        prefetchCount: 20,
       };
     case QUEUES.AI_ENTITY_EXTRACTION:
     case QUEUES.AI_CLASSIFICATION:
@@ -329,12 +329,12 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         ...baseConfig,
         concurrency: 2,
         prefetchCount: 5,
-        retryAttempts: 2
+        retryAttempts: 2,
       };
     default:
       return baseConfig;
   }
-}
+};
 // Connection URL helper
 export const getRabbitMQConnectionURL = (): string => {
   const config = getRabbitMQConfig();
@@ -345,6 +345,6 @@ export const getRabbitMQConnectionURL = (): string => {
 // Health check configuration
 export const HEALTH_CHECK = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds
-  retries: 3
+  timeout: 5000, // 5 seconds
+  retries: 3,
 } as const;

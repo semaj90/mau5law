@@ -96,7 +96,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     )
     return json({
       success: true,
-      content: reportContent
+      content: reportContent,
       reportType,
       template: template.title,
       sections: template.sections,
@@ -115,9 +115,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 }
 function generateReportContent(
-  template: any
-  caseId: string
-  reportId: string
+  template: any,
+  caseId: string,
+  reportId: string,
   existingContent?: string
   context?: unknown
 ): string {
@@ -160,8 +160,8 @@ function generateReportContent(
   return content
 }
 function generateSectionContent(
-  section: string
-  reportType: string
+  section: string,
+  reportType: string,
   existingContent?: string
   context?: unknown
 ): string {

@@ -30,7 +30,9 @@
           this.top = opts.top || 0;
           this.selectable = opts.selectable ?? true;
         }
-        addWithUpdate(obj: any) { this.objects.push(obj); }
+        addWithUpdate(obj: any) {
+          this.objects.push(obj);
+        }
         on() {}
         set() {}
       };
@@ -40,15 +42,27 @@
           this.el = el;
           this.options = options;
         }
-        add(obj: any) { this.objects.push(obj); }
-        remove(obj: any) { this.objects = this.objects.filter(o => o !== obj); }
-        clear() { this.objects = []; }
+        add(obj: any) {
+          this.objects.push(obj);
+        }
+        remove(obj: any) {
+          this.objects = this.objects.filter(o => o !== obj);
+        }
+        clear() {
+          this.objects = [];
+        }
         renderAll() {}
-        getObjects() { return this.objects; }
+        getObjects() {
+          return this.objects;
+        }
         on() {}
         off() {}
-        toJSON() { return { objects: this.objects }; }
-        loadFromJSON(_: any, cb?: () => void) { if (cb) cb(); }
+        toJSON() {
+          return { objects: this.objects };
+        }
+        loadFromJSON(_: any, cb?: () => void) {
+          if (cb) cb();
+        }
       };
       _fabricModule = {
         Canvas: MockCanvas,
@@ -59,7 +73,7 @@
         Circle: class {},
         Triangle: class {},
         Point: class {},
-        Shadow: class {}
+        Shadow: class {},
       };
       return _fabricModule;
     }
@@ -88,7 +102,7 @@
     readOnly = false,
     showGrid = true,
     showRulers = false,
-    autoSave = true
+    autoSave = true,
   }: Props = $props();
 
   // Canvas and state
@@ -120,7 +134,7 @@
     canvas: `legal:canvas:${caseId}`,
     collaboration: `legal:canvas:${caseId}:collab`,
     cursors: `legal:canvas:${caseId}:cursors`,
-    ai: `legal:canvas:${caseId}:ai`
+    ai: `legal:canvas:${caseId}:ai`,
   };
 
   // Initialize on client
@@ -154,7 +168,7 @@
       backgroundColor: '#1a1a1a',
       selection: !readOnly,
       interactive: !readOnly,
-      preserveObjectStacking: true
+      preserveObjectStacking: true,
     });
 
     // Free drawing defaults (guard for mock)
@@ -177,7 +191,7 @@
         strokeWidth: 1,
         selectable: false,
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true,
       });
       grid.push(line);
     }
@@ -187,7 +201,7 @@
         strokeWidth: 1,
         selectable: false,
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true,
       });
       grid.push(line);
     }
@@ -199,47 +213,51 @@
 
   async function setupZoomPan() {
     const fabric = await getFabric();
-    fabricCanvas.on && fabricCanvas.on('mouse:wheel', (opt: any) => {
-      try {
-        const evt = opt.e;
-        let zoom = fabricCanvas.getZoom ? fabricCanvas.getZoom() : 1;
-        zoom *= Math.pow(0.999, evt.deltaY);
-        zoom = Math.max(0.1, Math.min(5, zoom));
-        if (fabric.Point) {
-          const point = new fabric.Point(evt.offsetX, evt.offsetY);
-          fabricCanvas.zoomToPoint(point, zoom);
+    fabricCanvas.on &&
+      fabricCanvas.on('mouse:wheel', (opt: any) => {
+        try {
+          const evt = opt.e;
+          let zoom = fabricCanvas.getZoom ? fabricCanvas.getZoom() : 1;
+          zoom *= Math.pow(0.999, evt.deltaY);
+          zoom = Math.max(0.1, Math.min(5, zoom));
+          if (fabric.Point) {
+            const point = new fabric.Point(evt.offsetX, evt.offsetY);
+            fabricCanvas.zoomToPoint(point, zoom);
+          }
+          evt.preventDefault();
+          evt.stopPropagation();
+        } catch (e) {
+          // ignore
         }
-        evt.preventDefault();
-        evt.stopPropagation();
-      } catch (e) {
-        // ignore
-      }
-    });
+      });
 
     let panning = false;
-    fabricCanvas.on && fabricCanvas.on('mouse:down', (opt: any) => {
-      const evt = opt.e;
-      if (evt && (evt.altKey || evt.button === 1)) {
-        panning = true;
-        fabricCanvas.selection = false;
-        fabricCanvas.defaultCursor = 'grab';
-      }
-    });
-    fabricCanvas.on && fabricCanvas.on('mouse:move', (opt: any) => {
-      if (!panning) return;
-      const evt = opt.e;
-      if (!evt) return;
-      if (fabric.Point) {
-        const delta = new fabric.Point(evt.movementX, evt.movementY);
-        fabricCanvas.relativePan && fabricCanvas.relativePan(delta);
-      }
-      if (collaborative) broadcastCursorPosition(evt.offsetX, evt.offsetY);
-    });
-    fabricCanvas.on && fabricCanvas.on('mouse:up', () => {
-      panning = false;
-      fabricCanvas.selection = true;
-      fabricCanvas.defaultCursor = 'default';
-    });
+    fabricCanvas.on &&
+      fabricCanvas.on('mouse:down', (opt: any) => {
+        const evt = opt.e;
+        if (evt && (evt.altKey || evt.button === 1)) {
+          panning = true;
+          fabricCanvas.selection = false;
+          fabricCanvas.defaultCursor = 'grab';
+        }
+      });
+    fabricCanvas.on &&
+      fabricCanvas.on('mouse:move', (opt: any) => {
+        if (!panning) return;
+        const evt = opt.e;
+        if (!evt) return;
+        if (fabric.Point) {
+          const delta = new fabric.Point(evt.movementX, evt.movementY);
+          fabricCanvas.relativePan && fabricCanvas.relativePan(delta);
+        }
+        if (collaborative) broadcastCursorPosition(evt.offsetX, evt.offsetY);
+      });
+    fabricCanvas.on &&
+      fabricCanvas.on('mouse:up', () => {
+        panning = false;
+        fabricCanvas.selection = true;
+        fabricCanvas.defaultCursor = 'default';
+      });
   }
 
   async function loadCanvasData() {
@@ -271,7 +289,7 @@
       if (!evidenceNodes.has(evidence.id)) {
         const node = await createEvidenceNode(evidence, {
           x: 100 + (i % 5) * 200,
-          y: 100 + Math.floor(i / 5) * 150
+          y: 100 + Math.floor(i / 5) * 150,
         });
         evidenceNodes.set(evidence.id, node);
         fabricCanvas.add && fabricCanvas.add(node);
@@ -288,7 +306,7 @@
       selectable: !readOnly,
       hasControls: !readOnly,
       hasBorders: !readOnly,
-      lockScalingFlip: true
+      lockScalingFlip: true,
     });
 
     const background = new fabric.Rect({
@@ -303,8 +321,8 @@
         color: 'rgba(0,0,0,0.3)',
         blur: 10,
         offsetX: 2,
-        offsetY: 2
-      })
+        offsetY: 2,
+      }),
     });
 
     const title = new fabric.Text(evidence.title || `Evidence ${evidence.id}`, {
@@ -316,7 +334,7 @@
       left: 90,
       originX: 'center',
       originY: 'top',
-      width: 160
+      width: 160,
     });
 
     const typeIcon = new fabric.Text(getEvidenceIcon(evidence.type), {
@@ -326,25 +344,29 @@
       top: 40,
       left: 90,
       originX: 'center',
-      originY: 'center'
+      originY: 'center',
     });
 
     const indicators: any[] = [];
     if (evidence.aiSummary) {
-      indicators.push(new fabric.Circle({
-        radius: 6,
-        fill: '#4CAF50',
-        top: 100,
-        left: 20 + indicators.length * 20
-      }));
+      indicators.push(
+        new fabric.Circle({
+          radius: 6,
+          fill: '#4CAF50',
+          top: 100,
+          left: 20 + indicators.length * 20,
+        })
+      );
     }
     if (evidence.analyzed) {
-      indicators.push(new fabric.Circle({
-        radius: 6,
-        fill: '#2196F3',
-        top: 100,
-        left: 20 + indicators.length * 20
-      }));
+      indicators.push(
+        new fabric.Circle({
+          radius: 6,
+          fill: '#2196F3',
+          top: 100,
+          left: 20 + indicators.length * 20,
+        })
+      );
     }
 
     const objects = [background, title, typeIcon, ...indicators];
@@ -354,7 +376,7 @@
       evidenceId: evidence.id,
       evidenceType: evidence.type,
       evidenceData: evidence,
-      nodeType: 'evidence'
+      nodeType: 'evidence',
     });
 
     nodeGroup.on && nodeGroup.on('mousedown', (e: any) => handleNodeClick(nodeGroup, e));
@@ -373,7 +395,7 @@
       hasControls: false,
       hasBorders: false,
       strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,
-      shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.2)', blur: 5 })
+      shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.2)', blur: 5 }),
     });
 
     const arrow = new fabric.Triangle({
@@ -382,22 +404,22 @@
       fill: getConnectionColor(connectionType),
       left: toCenter.x,
       top: toCenter.y,
-      angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,
+      angle: (Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180) / Math.PI + 90,
       selectable: false,
-      evented: false
+      evented: false,
     });
 
     const group = new fabric.Group([line, arrow], {
       selectable: !readOnly,
       hasControls: false,
-      hasBorders: false
+      hasBorders: false,
     });
 
     group.set({
       connectionType,
       fromNodeId: fromNode.evidenceId,
       toNodeId: toNode.evidenceId,
-      nodeType: 'connection'
+      nodeType: 'connection',
     });
 
     return group;
@@ -409,7 +431,7 @@
       left: position.x,
       top: position.y,
       selectable: !readOnly,
-      hasControls: !readOnly
+      hasControls: !readOnly,
     });
 
     const background = new fabric.Rect({
@@ -419,7 +441,7 @@
       stroke: '#ddd',
       strokeWidth: 1,
       rx: 4,
-      ry: 4
+      ry: 4,
     });
 
     const textObj = new fabric.Text(text, {
@@ -428,7 +450,7 @@
       fontFamily: 'Arial',
       width: 180,
       top: 10,
-      left: 10
+      left: 10,
     });
 
     annotation.addWithUpdate(background);
@@ -436,7 +458,7 @@
     annotation.set({
       annotationType: type,
       annotationText: text,
-      nodeType: 'annotation'
+      nodeType: 'annotation',
     });
 
     return annotation;
@@ -450,7 +472,7 @@
       audio: '#FF9800',
       witness_statement: '#F44336',
       key_document: '#FFD700',
-      physical: '#795548'
+      physical: '#795548',
     };
     return colors[type] || '#607D8B';
   }
@@ -463,7 +485,7 @@
       audio: '🎵',
       witness_statement: '👤',
       key_document: '⭐',
-      physical: '📦'
+      physical: '📦',
     };
     return icons[type] || '📄';
   }
@@ -475,7 +497,7 @@
       temporal: '#2196F3',
       contradicts: '#FF5722',
       supports: '#8BC34A',
-      inferred: '#9E9E9E'
+      inferred: '#9E9E9E',
     };
     return colors[type] || '#666';
   }
@@ -491,7 +513,7 @@
     propertiesPanel = {
       type: node.nodeType,
       data: node.nodeType === 'evidence' ? node.evidenceData : node,
-      position: { x: node.left ?? 0, y: node.top ?? 0 }
+      position: { x: node.left ?? 0, y: node.top ?? 0 },
     };
   }
 
@@ -518,26 +540,33 @@
   }
 
   function setupEventHandlers() {
-    fabricCanvas.on && fabricCanvas.on('object:modified', () => {
-      saveCanvasState();
-      if (collaborative) broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
-    });
+    fabricCanvas.on &&
+      fabricCanvas.on('object:modified', () => {
+        saveCanvasState();
+        if (collaborative) broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
+      });
 
-    fabricCanvas.on && fabricCanvas.on('selection:created', (e: any) => {
-      if (e.selected && e.selected.length === 1) selectNode(e.selected[0]);
-    });
+    fabricCanvas.on &&
+      fabricCanvas.on('selection:created', (e: any) => {
+        if (e.selected && e.selected.length === 1) selectNode(e.selected[0]);
+      });
 
-    fabricCanvas.on && fabricCanvas.on('selection:cleared', () => { propertiesPanel = null; });
+    fabricCanvas.on &&
+      fabricCanvas.on('selection:cleared', () => {
+        propertiesPanel = null;
+      });
 
-    fabricCanvas.on && fabricCanvas.on('path:created', () => {
-      saveCanvasState();
-      if (collaborative) broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
-    });
+    fabricCanvas.on &&
+      fabricCanvas.on('path:created', () => {
+        saveCanvasState();
+        if (collaborative) broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
+      });
 
-    fabricCanvas.on && fabricCanvas.on('mouse:down', (e: any) => {
-      if (e.e && e.e.button === 2) showContextMenu(e.e.clientX, e.e.clientY, e.target);
-      else contextMenu = null;
-    });
+    fabricCanvas.on &&
+      fabricCanvas.on('mouse:down', (e: any) => {
+        if (e.e && e.e.button === 2) showContextMenu(e.e.clientX, e.e.clientY, e.target);
+        else contextMenu = null;
+      });
 
     document.addEventListener('keydown', handleKeyboardShortcuts);
   }
@@ -546,19 +575,40 @@
     if (!fabricCanvas) return;
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case 'z': e.shiftKey ? redo() : undo(); break;
-        case 's': e.preventDefault(); saveCanvasState(); break;
-        case 'a': e.preventDefault(); fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject(); fabricCanvas.renderAll && fabricCanvas.renderAll(); break;
+        case 'z':
+          e.shiftKey ? redo() : undo();
+          break;
+        case 's':
+          e.preventDefault();
+          saveCanvasState();
+          break;
+        case 'a':
+          e.preventDefault();
+          fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject();
+          fabricCanvas.renderAll && fabricCanvas.renderAll();
+          break;
       }
     }
     if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedObjects();
     switch (e.key) {
-      case '1': selectedTool = 'select'; break;
-      case '2': selectedTool = 'evidence'; break;
-      case '3': selectedTool = 'connection'; break;
-      case '4': selectedTool = 'note'; break;
-      case '5': selectedTool = 'highlight'; break;
-      case '6': selectedTool = 'draw'; break;
+      case '1':
+        selectedTool = 'select';
+        break;
+      case '2':
+        selectedTool = 'evidence';
+        break;
+      case '3':
+        selectedTool = 'connection';
+        break;
+      case '4':
+        selectedTool = 'note';
+        break;
+      case '5':
+        selectedTool = 'highlight';
+        break;
+      case '6':
+        selectedTool = 'draw';
+        break;
     }
     updateToolMode();
   }
@@ -617,7 +667,7 @@
       const resp = await fetch('/api/v1/evidence/advanced-analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ evidenceId, analysisTypes: ['summary', 'entities', 'sentiment'], caseId })
+        body: JSON.stringify({ evidenceId, analysisTypes: ['summary', 'entities', 'sentiment'], caseId }),
       });
       if (resp.ok) {
         const result = await resp.json();
@@ -638,7 +688,7 @@
       top: -10,
       left: -10,
       stroke: '#fff',
-      strokeWidth: 2
+      strokeWidth: 2,
     });
     node.addWithUpdate && node.addWithUpdate(indicator);
     fabricCanvas.renderAll && fabricCanvas.renderAll();
@@ -649,7 +699,7 @@
       pubSubController = createPubSubHelper({
         channels: Object.values(redisChannels),
         onMessage: handleRedisMessage,
-        autoStart: true
+        autoStart: true,
       });
       websocketStore.subscribeToDashboard && websocketStore.subscribeToDashboard();
       console.log('Canvas collaboration setup complete with Redis');
@@ -678,9 +728,12 @@
   function handleCollaborativeChange(data: any) {
     // lightweight handlers reserved for future merging logic
     switch (data.action) {
-      case 'object_modified': /* merge logic */ break;
-      case 'connection_added': /* create connection if missing */ break;
-      case 'objects_deleted': /* remove objects */ break;
+      case 'object_modified':
+        /* merge logic */ break;
+      case 'connection_added':
+        /* create connection if missing */ break;
+      case 'objects_deleted':
+        /* remove objects */ break;
     }
   }
 
@@ -694,7 +747,7 @@
         top: cursorData.y,
         selectable: false,
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true,
       });
       collaboratorCursors.set(userId, cursor);
       fabricCanvas.add && fabricCanvas.add(cursor);
@@ -707,11 +760,13 @@
   }
 
   function broadcastCanvasChange(action: string, data: any) {
-    if (websocketStore.connected) websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
+    if (websocketStore.connected)
+      websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
   }
 
   function broadcastCursorPosition(x: number, y: number) {
-    if (websocketStore.connected) websocketStore.broadcastCursorPosition && websocketStore.broadcastCursorPosition(caseId, { x, y });
+    if (websocketStore.connected)
+      websocketStore.broadcastCursorPosition && websocketStore.broadcastCursorPosition(caseId, { x, y });
   }
 
   function setupAIIntegration() {
@@ -724,7 +779,7 @@
       const resp = await fetch('/api/v1/ai/canvas-suggestions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId, evidenceData, canvasData: fabricCanvas.toJSON ? fabricCanvas.toJSON() : {} })
+        body: JSON.stringify({ caseId, evidenceData, canvasData: fabricCanvas.toJSON ? fabricCanvas.toJSON() : {} }),
       });
       if (resp.ok) {
         const suggestions = await resp.json();
@@ -741,7 +796,7 @@
       const resp = await fetch('/api/v1/ai/generate-layout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId, evidenceData, layoutType: 'smart' })
+        body: JSON.stringify({ caseId, evidenceData, layoutType: 'smart' }),
       });
       if (resp.ok) {
         const layout = await resp.json();
@@ -773,7 +828,9 @@
     redoStack = [];
     if (autoSave) {
       if (saveTimeout) clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(async () => { await saveCanvas(); }, 2000);
+      saveTimeout = setTimeout(async () => {
+        await saveCanvas();
+      }, 2000);
     }
   }
 
@@ -786,12 +843,12 @@
         evidenceNodes: Array.from(evidenceNodes.entries()),
         connections: Array.from(connections.entries()),
         annotations: Array.from(annotations.entries()),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       const resp = await fetch('/api/v1/evidence/canvas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(savePayload)
+        body: JSON.stringify(savePayload),
       });
       if (resp.ok) {
         await saveToRedisCache(savePayload);
@@ -800,7 +857,7 @@
             action: 'canvas_saved',
             caseId,
             timestamp: savePayload.timestamp,
-            user: 'current_user' // replace with actual user id retrieval
+            user: 'current_user', // replace with actual user id retrieval
           });
         }
         lastSaveTime = new Date();
@@ -819,8 +876,8 @@
         body: JSON.stringify({
           key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
           value: canvasPayload,
-          ttl: CACHE_TTL.DOCUMENT_ANALYSIS
-        })
+          ttl: CACHE_TTL.DOCUMENT_ANALYSIS,
+        }),
       });
       if (!resp.ok) throw new Error('Redis cache failed');
     } catch (err) {
@@ -844,9 +901,21 @@
   }
 
   function setupAutoSave() {
-    fabricCanvas.on && fabricCanvas.on('object:modified', () => { saveCanvasState(); publishCanvasChange('object_modified'); });
-    fabricCanvas.on && fabricCanvas.on('object:added', () => { saveCanvasState(); publishCanvasChange('object_added'); });
-    fabricCanvas.on && fabricCanvas.on('object:removed', () => { saveCanvasState(); publishCanvasChange('object_removed'); });
+    fabricCanvas.on &&
+      fabricCanvas.on('object:modified', () => {
+        saveCanvasState();
+        publishCanvasChange('object_modified');
+      });
+    fabricCanvas.on &&
+      fabricCanvas.on('object:added', () => {
+        saveCanvasState();
+        publishCanvasChange('object_added');
+      });
+    fabricCanvas.on &&
+      fabricCanvas.on('object:removed', () => {
+        saveCanvasState();
+        publishCanvasChange('object_removed');
+      });
     console.log('Auto-save enabled');
   }
 
@@ -857,7 +926,7 @@
         action,
         caseId,
         timestamp: new Date().toISOString(),
-        user: 'current_user'
+        user: 'current_user',
       });
     } catch (err) {
       console.error('Failed to publish canvas change:', err);
@@ -866,10 +935,11 @@
 
   async function loadCanvasFromRedis(canvasData: any) {
     try {
-      fabricCanvas.loadFromJSON && fabricCanvas.loadFromJSON(canvasData, () => {
-        fabricCanvas.renderAll && fabricCanvas.renderAll();
-        console.log('Canvas synced from Redis');
-      });
+      fabricCanvas.loadFromJSON &&
+        fabricCanvas.loadFromJSON(canvasData, () => {
+          fabricCanvas.renderAll && fabricCanvas.renderAll();
+          console.log('Canvas synced from Redis');
+        });
     } catch (err) {
       console.error('Failed to load canvas from Redis:', err);
     }
@@ -906,21 +976,25 @@
       strokeWidth: 3,
       strokeDashArray: [10, 5],
       selectable: false,
-      evented: false
+      evented: false,
     });
     fabricCanvas.add && fabricCanvas.add(highlight);
-    setTimeout(() => { fabricCanvas.remove && fabricCanvas.remove(highlight); }, 5000);
+    setTimeout(() => {
+      fabricCanvas.remove && fabricCanvas.remove(highlight);
+    }, 5000);
   }
 
   async function loadCanvasFromJSON(jsonData: string) {
     try {
-      fabricCanvas.loadFromJSON && fabricCanvas.loadFromJSON(jsonData, () => {
-        fabricCanvas.renderAll && fabricCanvas.renderAll();
-        fabricCanvas.getObjects && fabricCanvas.getObjects().forEach((obj: any) => {
-          if (obj.nodeType === 'evidence') evidenceNodes.set(obj.evidenceId, obj);
-          else if (obj.nodeType === 'connection') connections.set(`${obj.fromNodeId}-${obj.toNodeId}`, obj);
+      fabricCanvas.loadFromJSON &&
+        fabricCanvas.loadFromJSON(jsonData, () => {
+          fabricCanvas.renderAll && fabricCanvas.renderAll();
+          fabricCanvas.getObjects &&
+            fabricCanvas.getObjects().forEach((obj: any) => {
+              if (obj.nodeType === 'evidence') evidenceNodes.set(obj.evidenceId, obj);
+              else if (obj.nodeType === 'connection') connections.set(`${obj.fromNodeId}-${obj.toNodeId}`, obj);
+            });
         });
-      });
     } catch (err) {
       console.error('Failed to load canvas from JSON:', err);
     }
@@ -989,24 +1063,41 @@
     const objects = fabricCanvas.getObjects ? fabricCanvas.getObjects() : [];
     if (!objects.length) return;
     const group = new fabric.Group(objects);
-    const boundingRect = group.getBoundingRect ? group.getBoundingRect() : { width: canvasWidth, height: canvasHeight, left: 0, top: 0 };
+    const boundingRect = group.getBoundingRect
+      ? group.getBoundingRect()
+      : { width: canvasWidth, height: canvasHeight, left: 0, top: 0 };
     const scaleX = (canvasWidth - 40) / boundingRect.width;
     const scaleY = (canvasHeight - 40) / boundingRect.height;
     const scale = Math.min(scaleX, scaleY, 1);
     fabricCanvas.setZoom && fabricCanvas.setZoom(scale);
-    fabricCanvas.absolutePan && fabricCanvas.absolutePan(new fabric.Point(
-      (canvasWidth - boundingRect.width * scale) / 2 - boundingRect.left * scale,
-      (canvasHeight - boundingRect.height * scale) / 2 - boundingRect.top * scale
-    ));
+    fabricCanvas.absolutePan &&
+      fabricCanvas.absolutePan(
+        new fabric.Point(
+          (canvasWidth - boundingRect.width * scale) / 2 - boundingRect.left * scale,
+          (canvasHeight - boundingRect.height * scale) / 2 - boundingRect.top * scale
+        )
+      );
   }
 
   // Lightweight stubs for missing features to keep component error-free
-  function startConnection(target: any) { console.log('startConnection', target); }
-  function addNote(target: any) { console.log('addNote', target); }
-  function editConnection(target: any) { console.log('editConnection', target); }
-  function deleteConnection(target: any) { console.log('deleteConnection', target); }
-  function addNoteAt(x: number, y: number) { console.log('addNoteAt', x, y); }
-  function paste() { console.log('paste'); }
+  function startConnection(target: any) {
+    console.log('startConnection', target);
+  }
+  function addNote(target: any) {
+    console.log('addNote', target);
+  }
+  function editConnection(target: any) {
+    console.log('editConnection', target);
+  }
+  function deleteConnection(target: any) {
+    console.log('deleteConnection', target);
+  }
+  function addNoteAt(x: number, y: number) {
+    console.log('addNoteAt', x, y);
+  }
+  function paste() {
+    console.log('paste');
+  }
 </script>
 
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>

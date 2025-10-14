@@ -10,7 +10,7 @@ export const load: ServerLoad = async ({ locals }) => {
     sessionId: locals.session?.id ?? null,
     email: locals.user?.email ?? null,
     isAuthenticated: !!locals.user,
-  }
+  };
   // Return mock data for now (keeping existing for backward compatibility)
   const recentCases = [
     { id: 'case-001', title: 'Sample Legal Case', status: 'active', createdAt: new Date() },
@@ -23,8 +23,8 @@ export const load: ServerLoad = async ({ locals }) => {
     // Existing dashboard data
     recentCases,
     recentCriminals,
-  }
-}
+  };
+};
 export const actions: Actions = {
   logout: async ({ cookies }) => {
     // Clear the auth-session cookie
@@ -32,4 +32,4 @@ export const actions: Actions = {
     // Redirect back to homepage after logout
     throw redirect(303, '/');
   },
-}
+};

@@ -10,7 +10,7 @@ const createCasePoiRelationSchema = z.object({
   relationshipType: z.enum(['suspect', 'witness', 'victim', 'informant', 'other']),
   role: z.string().optional(),
   involvementLevel: z.enum(['primary', 'secondary', 'peripheral', 'unknown']).default('unknown'),
-  notes: z.string().optional()
+  notes: z.string().optional(),
 });
 
 const updateCasePoiRelationSchema = createCasePoiRelationSchema.partial();
@@ -26,10 +26,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const caseId = params.caseId;
 
     // Verify case exists
-    const [caseRecord] = await db
-      .select()
-      .from(cases)
-      .where(eq(cases.id, caseId));
+    const [caseRecord] = await db.select().from(cases).where(eq(cases.id, caseId));
 
     if (!caseRecord) {
       return json({ error: 'Case not found' }, { status: 404 });
@@ -39,19 +36,21 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const casePois = await db
       .select({
         relation: casePoiRelations,
-        poi: personsOfInterest
+        poi: personsOfInterest,
       })
       .from(casePoiRelations)
       .innerJoin(personsOfInterest, eq(casePoiRelations.poiId, personsOfInterest.id))
-      .where(and(
-        eq(casePoiRelations.caseId, caseId),
-        eq(casePoiRelations.isActive, true),
-        eq(personsOfInterest.isActive, true)
-      ));
+      .where(
+        and(
+          eq(casePoiRelations.caseId, caseId),
+          eq(casePoiRelations.isActive, true),
+          eq(personsOfInterest.isActive, true)
+        )
+      );
 
     return json({
       success: true,
-      data: casePois
+      data: casePois,
     });
   } catch (error) {
     console.error('Error fetching case POIs:', error);
@@ -72,20 +71,14 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const validatedData = createCasePoiRelationSchema.parse(body);
 
     // Verify case exists
-    const [caseRecord] = await db
-      .select()
-      .from(cases)
-      .where(eq(cases.id, caseId));
+    const [caseRecord] = await db.select().from(cases).where(eq(cases.id, caseId));
 
     if (!caseRecord) {
       return json({ error: 'Case not found' }, { status: 404 });
     }
 
     // Verify POI exists
-    const [poi] = await db
-      .select()
-      .from(personsOfInterest)
-      .where(eq(personsOfInterest.id, validatedData.poiId));
+    const [poi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, validatedData.poiId));
 
     if (!poi) {
       return json({ error: 'POI not found' }, { status: 404 });
@@ -95,11 +88,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const [existingRelation] = await db
       .select()
       .from(casePoiRelations)
-      .where(and(
-        eq(casePoiRelations.caseId, caseId),
-        eq(casePoiRelations.poiId, validatedData.poiId),
-        eq(casePoiRelations.isActive, true)
-      ));
+      .where(
+        and(
+          eq(casePoiRelations.caseId, caseId),
+          eq(casePoiRelations.poiId, validatedData.poiId),
+          eq(casePoiRelations.isActive, true)
+        )
+      );
 
     if (existingRelation) {
       return json({ error: 'POI is already associated with this case' }, { status: 409 });
@@ -115,14 +110,17 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         role: validatedData.role,
         involvementLevel: validatedData.involvementLevel,
         notes: validatedData.notes,
-        createdBy: session.user.id
+        createdBy: session.user.id,
       })
       .returning();
 
-    return json({
-      success: true,
-      data: newRelation
-    }, { status: 201 });
+    return json(
+      {
+        success: true,
+        data: newRelation,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error adding POI to case:', error);
     if (error instanceof z.ZodError) {

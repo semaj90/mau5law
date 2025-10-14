@@ -2,33 +2,33 @@
  * 💼 Last Worked On Items API
  * Returns user's recent work activity with time tracking
  */
-import type { RequestHandler } from './$types'
-import { json } from '@sveltejs/kit'
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
-import { calculateDocumentPriority } from '$lib/config/legal-priorities'
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import { calculateDocumentPriority } from '$lib/config/legal-priorities';
 interface WorkItem {
-  id: string
+  id: string;
   type: 'case' | 'document' | 'evidence' | 'contract' | 'research';
-  title: string
-  lastWorked: string
+  title: string;
+  lastWorked: string;
   timeSpent: number; // minutes,
   progress: number; // 0-1
-  status: 'in-progress' | 'review' | 'completed' | 'on-hold',
-  priority: number
-  activities: WorkActivity[]
+  status: 'in-progress' | 'review' | 'completed' | 'on-hold';
+  priority: number;
+  activities: WorkActivity[];
   metadata: {
-    caseId?: string
-    clientName?: string
-    practiceArea?: string
-    deadline?: string
-    collaborators?: string[]
-  }
+    caseId?: string;
+    clientName?: string;
+    practiceArea?: string;
+    deadline?: string;
+    collaborators?: string[];
+  };
 }
 interface WorkActivity {
-  timestamp: string
+  timestamp: string;
   action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
   duration: number; // minutes
-  description?: string
+  description?: string;
 }
 // Mock work history - in production this would be in PostgreSQL with user sessions
 const mockWorkHistory: WorkItem[] = [
@@ -46,22 +46,22 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 45,
-        description: 'Evidence review session'
+        description: 'Evidence review session',
       },
       {
         timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 90,
-        description: 'Updated case strategy document'
-      }
+        description: 'Updated case strategy document',
+      },
     ],
     metadata: {
       caseId: 'case-001',
       clientName: 'John Smith',
       practiceArea: 'Employment Law',
       deadline: '2024-03-15',
-      collaborators: ['sarah.johnson@firm.com', 'mike.wilson@firm.com']
-    }
+      collaborators: ['sarah.johnson@firm.com', 'mike.wilson@firm.com'],
+    },
   },
   {
     id: 'work-002',
@@ -77,21 +77,21 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 67,
-        description: 'Revised termination clauses'
+        description: 'Revised termination clauses',
       },
       {
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 56,
-        description: 'Initial contract review'
-      }
+        description: 'Initial contract review',
+      },
     ],
     metadata: {
       caseId: 'case-001',
       clientName: 'John Smith',
       practiceArea: 'Employment Law',
-      collaborators: ['legal.assistant@firm.com']
-    }
+      collaborators: ['legal.assistant@firm.com'],
+    },
   },
   {
     id: 'work-003',
@@ -107,22 +107,22 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 78,
-        description: 'Negotiated liability terms'
+        description: 'Negotiated liability terms',
       },
       {
         timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         action: 'commented',
         duration: 23,
-        description: 'Added notes on due diligence'
-      }
+        description: 'Added notes on due diligence',
+      },
     ],
     metadata: {
       caseId: 'case-002',
       clientName: 'TechStart Inc.',
       practiceArea: 'Corporate Law',
       deadline: '2024-02-28',
-      collaborators: ['corp.counsel@techstart.com', 'partner@firm.com']
-    }
+      collaborators: ['corp.counsel@techstart.com', 'partner@firm.com'],
+    },
   },
   {
     id: 'work-004',
@@ -138,21 +138,21 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 89,
-        description: 'Analyzed email thread for prior art evidence'
+        description: 'Analyzed email thread for prior art evidence',
       },
       {
         timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 67,
-        description: 'Initial evidence categorization'
-      }
+        description: 'Initial evidence categorization',
+      },
     ],
     metadata: {
       caseId: 'case-004',
       clientName: 'InnovateTech Corp',
       practiceArea: 'Intellectual Property',
-      deadline: '2024-03-01'
-    }
+      deadline: '2024-03-01',
+    },
   },
   {
     id: 'work-005',
@@ -168,153 +168,167 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 145,
-        description: 'Research on federal estate tax changes'
+        description: 'Research on federal estate tax changes',
       },
       {
         timestamp: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 89,
-        description: 'Initial research planning'
-      }
+        description: 'Initial research planning',
+      },
     ],
     metadata: {
       caseId: 'case-003',
       clientName: 'Johnson Family',
       practiceArea: 'Estate Planning',
-      deadline: '2024-03-10'
-    }
-  }
-]
+      deadline: '2024-03-10',
+    },
+  },
+];
 export const GET: RequestHandler = async ({ url }) => {
-  const limit = parseInt(url.searchParams.get('limit') || '10')
-  const type = url.searchParams.get('type') as WorkItem['type'] | null
-  const status = url.searchParams.get('status') as WorkItem['status'] | null
-  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all'}`
+  const limit = parseInt(url.searchParams.get('limit') || '10');
+  const type = url.searchParams.get('type') as WorkItem['type'] | null;
+  const status = url.searchParams.get('status') as WorkItem['status'] | null;
+  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all'}`;
   try {
     // Check cache first
-    const cached = await multiLayerCache.get<WorkItem[]>(cacheKey)
+    const cached = await multiLayerCache.get<WorkItem[]>(cacheKey);
     if (cached) {
       return json({
         success: true,
-        data: cached
-        fromCache: true
-        timestamp: new Date().toISOString()
-      })
+        data: cached,
+        fromCache: true,
+        timestamp: new Date().toISOString(),
+      });
     }
     // Filter by type and status if specified
-    let filteredWork = mockWorkHistory
+    let filteredWork = mockWorkHistory;
     if (type) {
-      filteredWork = filteredWork.filter(work => work.type === type)
+      filteredWork = filteredWork.filter(work => work.type === type);
     }
     if (status) {
-      filteredWork = filteredWork.filter(work => work.status === status)
+      filteredWork = filteredWork.filter(work => work.status === status);
     }
     // Calculate priorities for each work item
     const workWithPriorities = filteredWork.map(workItem => {
       const priority = calculateDocumentPriority({
         type: workItem.type as any,
-        category: workItem.metadata.practiceArea?.toLowerCase().replace(/\s+/g, '-') as any || 'general',
+        category: (workItem.metadata.practiceArea?.toLowerCase().replace(/\s+/g, '-') as any) || 'general',
         urgency: workItem.metadata.deadline
-          ? (new Date(workItem.metadata.deadline).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000 ? 'critical' : 'normal')
+          ? new Date(workItem.metadata.deadline).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000
+            ? 'critical'
+            : 'normal'
           : 'normal',
         complexity: workItem.timeSpent > 180 ? 'highly_complex' : 'normal',
         activeReview: workItem.status === 'in-progress',
         lastAccessed: new Date(workItem.lastWorked),
         fileSize: workItem.timeSpent * 1024, // Estimate based on time spent
-        isEvidenceCritical: workItem.type === 'evidence'
-      })
+        isEvidenceCritical: workItem.type === 'evidence',
+      });
       return {
         ...workItem,
-        priority
-      }
-    })
+        priority,
+      };
+    });
     // Sort by last worked (most recent first) and priority
     const recentWork = workWithPriorities
       .sort((a, b) => {
         // Primary sort: last worked time
-        const timeDiff = new Date(b.lastWorked).getTime() - new Date(a.lastWorked).getTime()
-        if (timeDiff !== 0) return timeDiff
+        const timeDiff = new Date(b.lastWorked).getTime() - new Date(a.lastWorked).getTime();
+        if (timeDiff !== 0) return timeDiff;
         // Secondary sort: priority
-        return b.priority - a.priority
+        return b.priority - a.priority;
       })
-      .slice(0, limit)
+      .slice(0, limit);
     // Cache the results (2-minute TTL, high priority for active work)
-    await multiLayerCache.set(cacheKey, recentWork, 120, 200)
+    await multiLayerCache.set(cacheKey, recentWork, 120, 200);
     return json({
       success: true,
-      data: recentWork
-      fromCache: false
+      data: recentWork,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         totalItems: filteredWork.length,
         returnedItems: recentWork.length,
         totalTimeSpent: recentWork.reduce((sum, w) => sum + w.timeSpent, 0),
         averageProgress: recentWork.reduce((sum, w) => sum + w.progress, 0) / recentWork.length,
-        activeItems: recentWork.filter(w => w.status === 'in-progress').length
-      }
-    })
+        activeItems: recentWork.filter(w => w.status === 'in-progress').length,
+      },
+    });
   } catch (error) {
-    console.error('Error fetching work history:', error)
-    return json({
-      success: false,
-      error: 'Failed to fetch work history',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    console.error('Error fetching work history:', error);
+    return json(
+      {
+        success: false,
+        error: 'Failed to fetch work history',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    const { itemId, action, duration, description } = body
+    const body = await request.json();
+    const { itemId, action, duration, description } = body;
     if (!itemId || !action) {
-      return json({
-        success: false,
-        error: 'Missing required fields: itemId, action'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Missing required fields: itemId, action',
+        },
+        { status: 400 }
+      );
     }
     // Find work item
-    const workIndex = mockWorkHistory.findIndex(w => w.id === itemId)
+    const workIndex = mockWorkHistory.findIndex(w => w.id === itemId);
     if (workIndex === -1) {
-      return json({
-        success: false,
-        error: 'Work item not found'
-      }, { status: 404 })
+      return json(
+        {
+          success: false,
+          error: 'Work item not found',
+        },
+        { status: 404 }
+      );
     }
-    const workItem = mockWorkHistory[workIndex]
+    const workItem = mockWorkHistory[workIndex];
     // Add new activity
     const newActivity: WorkActivity = {
       timestamp: new Date().toISOString(),
       action,
-      duration: duration || 0
-      description
-    }
-    workItem.activities.unshift(newActivity)
-    workItem.lastWorked = new Date().toISOString()
-    workItem.timeSpent += duration || 0
+      duration: duration || 0,
+      description,
+    };
+    workItem.activities.unshift(newActivity);
+    workItem.lastWorked = new Date().toISOString();
+    workItem.timeSpent += duration || 0;
     // Update progress based on action
     if (action === 'completed') {
-      workItem.progress = 1.0
-      workItem.status = 'completed'
+      workItem.progress = 1.0;
+      workItem.status = 'completed';
     } else if (action === 'reviewed' && workItem.progress < 0.9) {
-      workItem.progress = Math.min(1.0, workItem.progress + 0.1)
+      workItem.progress = Math.min(1.0, workItem.progress + 0.1);
     }
     // Keep only last 20 activities
     if (workItem.activities.length > 20) {
-      workItem.activities.splice(20)
+      workItem.activities.splice(20);
     }
     // Clear cache
-    await multiLayerCache.clear('memory')
+    await multiLayerCache.clear('memory');
     return json({
       success: true,
       message: 'Work activity recorded successfully',
-      data: workItem
-      timestamp: new Date().toISOString()
-    })
+      data: workItem,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error('Error recording work activity:', error)
-    return json({
-      success: false,
-      error: 'Failed to record work activity'
-    }, { status: 500 })
+    console.error('Error recording work activity:', error);
+    return json(
+      {
+        success: false,
+        error: 'Failed to record work activity',
+      },
+      { status: 500 }
+    );
   }
-}
+};

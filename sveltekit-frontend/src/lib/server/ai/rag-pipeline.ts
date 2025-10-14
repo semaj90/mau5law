@@ -1,4 +1,4 @@
-import { eq, sql as drizzleSql, and, gte } from "drizzle-orm";
+import { eq, sql as drizzleSql, and, gte } from 'drizzle-orm';
 // Fallback schema import - will gracefully degrade if schema not available
 // Use non-any types to satisfy lint/TS rules while still allowing a runtime fallback.
 type TablePlaceholder = Record<string, unknown>;

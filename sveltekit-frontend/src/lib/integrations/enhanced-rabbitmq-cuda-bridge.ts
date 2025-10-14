@@ -10,15 +10,15 @@ const CUDA_SERVICE_URL = 'http://localhost:8096'
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672'
 // Enhanced integration state
 export const rabbitMQCudaState = writable({
-  connected: false
-  cudaHealthy: false
+  connected: false,
+  cudaHealthy: false,
   activeJobs: 0,
   completedJobs: 0,
   lastError: null;
   performance: {
     averageProcessingTime: 0,
-    cudaAcceleration: true
-    wasmFallback: false
+    cudaAcceleration: true,
+    wasmFallback: false,
   }
 });
 interface CUDAJob {
@@ -50,7 +50,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Initialize the RabbitMQ-CUDA bridge
-   */;
+   */
   async initialize(): Promise<boolean> {
     try {
       console.log('🔗 Initializing Enhanced RabbitMQ-CUDA Bridge...');
@@ -70,8 +70,8 @@ class EnhancedRabbitMQCudaBridge {
       // Update state
       rabbitMQCudaState.update(state => ({
         ...state,
-        connected: true
-        cudaHealthy: this.cudaHealthy
+        connected: true,
+        cudaHealthy: this.cudaHealthy,
       });
       console.log('✅ Enhanced RabbitMQ-CUDA Bridge initialized successfully');
       return true;
@@ -79,15 +79,15 @@ class EnhancedRabbitMQCudaBridge {
       console.error('❌ Failed to initialize RabbitMQ-CUDA bridge:', error);
       rabbitMQCudaState.update(state => ({
         ...state,
-        connected: false
-        lastError: error.message
+        connected: false,
+        lastError: error.message,
       });
       return false;
     }
   }
   /**
    * Set up RabbitMQ exchanges and queues for CUDA processing
-   */;
+   */
   private async setupQueues() {
     if (!this.channel) throw new Error('No RabbitMQ channel available');
     // Legal AI CUDA Exchange
@@ -116,7 +116,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Start consuming messages from CUDA processing queues
-   */;
+   */
   private async startConsuming() {
     if (!this.channel) throw new Error('No RabbitMQ channel available');
     // Consumer for tensor computation
@@ -144,7 +144,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Process tensor computation job with CUDA acceleration
-   */;
+   */
   private async processTensorJob(msg: amqp.ConsumeMessage) {
     const startTime = Date.now();
     let job: CUDAJob;
@@ -170,7 +170,7 @@ class EnhancedRabbitMQCudaBridge {
       const processingTime = Date.now() - startTime;
       // Publish result
       await this.publishResult(job.id, {
-        success: true
+        success: true,
         result,
         processingTime,
         cudaAccelerated: this.cudaHealthy
@@ -195,7 +195,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Process vector similarity job with RTX 3060 Ti acceleration
-   */;
+   */
   private async processVectorSimilarityJob(msg: amqp.ConsumeMessage) {
     const startTime = Date.now();
     let job: CUDAJob;
@@ -209,8 +209,8 @@ class EnhancedRabbitMQCudaBridge {
         similarities = await this.submitToCudaService({
           type: 'vector_similarity',
           data: {
-            query: queryVector
-            vectors: candidateVectors
+            query: queryVector,
+            vectors: candidateVectors,
             algorithm,
             batch_size: 1000 // RTX 3060 Ti optimized batch size
           },
@@ -238,7 +238,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Process embedding normalization with batch processing
-   */;
+   */
   private async processEmbeddingJob(msg: amqp.ConsumeMessage) {
     const startTime = Date.now();
     let job: CUDAJob;
@@ -252,7 +252,7 @@ class EnhancedRabbitMQCudaBridge {
         normalizedEmbeddings = await this.submitToCudaService({
           type: 'batch_normalize',
           data: {
-            vectors: embeddings
+            vectors: embeddings,
             batch_size: Math.min(batchSize, 500), // GPU memory optimized
             normalize_type: 'l2'
           },
@@ -280,7 +280,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Submit job to CUDA service worker
-   */;
+   */
   private async submitToCudaService(jobData: any): Promise<any> {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/compute`, {
@@ -300,7 +300,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Check CUDA service health
-   */;
+   */
   private async checkCudaHealth() {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`, {
@@ -326,7 +326,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Fallback tensor computation using WebAssembly
-   */;
+   */
   private async fallbackTensorCompute(payload: any): Promise<any> {
     console.log('🔄 Using WebAssembly fallback for tensor computation');
     // Implement WebAssembly tensor operations
@@ -335,7 +335,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Fallback vector similarity using WebAssembly
-   */;
+   */
   private async fallbackVectorSimilarity(query: number[], vectors: number[][], algorithm: string): Promise<number[]> {
     console.log(`🔄 Using WebAssembly fallback for vector similarity (${algorithm})`);
     // Simple cosine similarity implementation
@@ -352,7 +352,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Fallback batch normalization
-   */;
+   */
   private async fallbackBatchNormalize(embeddings: number[][]): Promise<number[][]> {
     console.log('🔄 Using JavaScript fallback for batch normalization');
     return embeddings.map(embedding => {
@@ -362,7 +362,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Publish result to results queue
-   */;
+   */
   private async publishResult(jobId: string, result: CUDAResponse) {
     if (!this.channel) return;
     const message = {
@@ -382,12 +382,12 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Submit a job to the CUDA processing pipeline
-   */;
+   */
   async submitJob(type: CUDAJob['type'], payload: any, priority: number = 5): Promise<string> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const jobId = `cuda_job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const job: CUDAJob = {
-      id: jobId
+      id: jobId,
       type,
       payload,
       priority,
@@ -409,8 +409,8 @@ class EnhancedRabbitMQCudaBridge {
         priority,
         persistent: true;
         headers: {
-          'x-job-type': type
-          'x-cuda-preferred': this.cudaHealthy ? 'true' : 'false'
+          'x-job-type': type,
+          'x-cuda-preferred': this.cudaHealthy ? 'true' : 'false',
         }
       }
     );
@@ -420,7 +420,7 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Get integration status
-   */;
+   */
   getStatus() {
     return {
       connected: !!this.connection,
@@ -441,15 +441,15 @@ class EnhancedRabbitMQCudaBridge {
   }
   /**
    * Shutdown the bridge
-   */;
+   */
   async shutdown() {
     try {
       if (this.channel) await this.channel.close();
       if (this.connection) await (this.connection as any).close();
       rabbitMQCudaState.update(state => ({
         ...state,
-        connected: false
-        activeJobs: 0
+        connected: false,
+        activeJobs: 0,
       });
       console.log('✅ RabbitMQ-CUDA bridge shutdown complete');
     } catch (error) {

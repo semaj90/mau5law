@@ -445,20 +445,16 @@ export const yorhaAPI = new YoRHaAPIClient();
 // Component Data Validators
 export const YoRHaValidators = {
   validateButtonConfig: (config: any): config is YoRHaButton3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.text === 'string' || config.text === undefined);
+    return typeof config === 'object' && (typeof config.text === 'string' || config.text === undefined);
   },
   validatePanelConfig: (config: any): config is YoRHaPanel3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.title === 'string' || config.title === undefined);
+    return typeof config === 'object' && (typeof config.title === 'string' || config.title === undefined);
   },
   validateInputConfig: (config: any): config is YoRHaInput3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.placeholder === 'string' || config.placeholder === undefined);
+    return typeof config === 'object' && (typeof config.placeholder === 'string' || config.placeholder === undefined);
   },
   validateModalConfig: (config: any): config is YoRHaModal3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.title === 'string' || config.title === undefined);
-  }
-}
+    return typeof config === 'object' && (typeof config.title === 'string' || config.title === undefined);
+  },
+};
 // YoRHaAPIClient is already exported above as a class

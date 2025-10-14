@@ -464,14 +464,14 @@ export function isSOMId(value: string): value is SOMId {
 // even if @webgpu/types is not installed. If you have @webgpu/types, these
 // declarations will merge with the real ones.
 declare global {
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface GPUDevice {}
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface GPUAdapter {}
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface GPUBuffer {}
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface GPUComputePipeline {}
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface GPUBindGroupLayout {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GPUDevice {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GPUAdapter {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GPUBuffer {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GPUComputePipeline {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GPUBindGroupLayout {}
 }

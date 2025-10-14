@@ -227,10 +227,10 @@ export async function benchmarkRustBridge(): Promise<any> {
   const systemTime = performance.now() - systemStart;
   const totalTime = performance.now() - startTime;
   return {
-    textProcessing: textTime
-    vectorOperations: vectorTime
-    systemAccess: systemTime
-    overallScore: 1000 / totalTime // Higher is better
+    textProcessing: textTime,
+    vectorOperations: vectorTime,
+    systemAccess: systemTime,
+    overallScore: 1000 / totalTime, // Higher is better
   }
 }
 // Cleanup function

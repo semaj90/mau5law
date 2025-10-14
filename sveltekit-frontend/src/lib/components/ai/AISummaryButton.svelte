@@ -7,8 +7,8 @@
     onsummary?: () => void;
   }
   // Receive props (Svelte 5 runes)
-  let { text = "", onsummary }: Props = $props();
-  let summary = $state("");
+  let { text = '', onsummary }: Props = $props();
+  let summary = $state('');
   let errorMessage = $state('');
   let loading = $state(false);
   async function getSummary(input: string) {
@@ -20,7 +20,7 @@
       const res = await fetch('/api/ai/ollama-gemma3', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: `Summarize: ${input}` })
+        body: JSON.stringify({ prompt: `Summarize: ${input}` }),
       });
 
       if (!res.ok) {
@@ -42,13 +42,8 @@
     }
   }
 </script>
-<button
-  type="button"
-  aria-label="Get AI summary"
-  class="space-y-4"
-  onclick={() => getSummary(text)}
-  disabled={loading}
->
+
+<button type="button" aria-label="Get AI summary" class="space-y-4" onclick={() => getSummary(text)} disabled={loading}>
   {#if loading}
     Summarizing...
   {:else}

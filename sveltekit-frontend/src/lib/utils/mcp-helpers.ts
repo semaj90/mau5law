@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import * as fs from "fs/promises";
+import * as fs from 'fs/promises';
 /**
  * Copilot Orchestration Wrapper
  * Self-prompts after using MCP memory/codebase tools

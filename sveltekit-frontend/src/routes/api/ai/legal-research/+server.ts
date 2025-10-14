@@ -224,8 +224,8 @@ function generateMockResults(topic: string, options: any): LegalResearchResult[]
   return mockResults
 }
 async function generateResearchAnalysis(
-  topic: string
-  results: LegalResearchResult[]
+  topic: string,
+  results: LegalResearchResult[],
   userRole?: string
 ): Promise<string> {
   const prompt = `Based on the following legal research results for "${topic}", provide a comprehensive analysis:
@@ -261,7 +261,7 @@ This research provides a foundation for further legal analysis and case preparat
 }
 function generateResearchRecommendations(
   topic: string,;
-  results: LegalResearchResult[]
+  results: LegalResearchResult[],
   userRole?: string
 ): string[] {
   const recommendations = []

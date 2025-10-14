@@ -85,24 +85,24 @@
       if (isHovered) {
         animationFrame = requestAnimationFrame(animate);
       }
-    }
+    };
     animate();
   }
   // Rarity-based styling
   let rarityStyles = $derived(() => {
     switch (rarity) {
       case 'common':
-        return { color: '#8B8B8B', glow: '#CCCCCC' }
+        return { color: '#8B8B8B', glow: '#CCCCCC' };
       case 'uncommon':
-        return { color: '#1E90FF', glow: '#87CEEB' }
+        return { color: '#1E90FF', glow: '#87CEEB' };
       case 'rare':
-        return { color: '#9932CC', glow: '#DDA0DD' }
+        return { color: '#9932CC', glow: '#DDA0DD' };
       case 'epic':
-        return { color: '#FF6347', glow: '#FFA07A' }
+        return { color: '#FF6347', glow: '#FFA07A' };
       case 'legendary':
-        return { color: '#FFD700', glow: '#FFFFE0' }
+        return { color: '#FFD700', glow: '#FFFFE0' };
       default:
-        return { color: '#8B8B8B', glow: '#CCCCCC' }
+        return { color: '#8B8B8B', glow: '#CCCCCC' };
     }
   });
   let cardClasses = $derived(() => {

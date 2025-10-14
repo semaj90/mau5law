@@ -2,10 +2,10 @@
  * Evidence by Case API Route
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 
 // Helper: safely extract user id from locals (added)
 function getUserId(locals: unknown): string {

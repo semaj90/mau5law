@@ -15,7 +15,7 @@ export interface CaseMachineOptions {
 }
 /**
  * Factory function to create a legal case machine with specific context
- */;
+ */
 export function createLegalCaseMachine(_options: CaseMachineOptions) {
   const {
     caseId,
@@ -117,7 +117,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
  *   const [state, send] = useMachine(machine);
  * </script>
  * ```
- */;
+ */
 export function createLegalCaseMachineForRoute(page: any, options: Partial<CaseMachineOptions> = {}) {
   const caseId = page.params.caseId;
   if (!caseId) {
@@ -126,34 +126,34 @@ export function createLegalCaseMachineForRoute(page: any, options: Partial<CaseM
   return createLegalCaseMachine({
     caseId,
     userId: page.data?.user?.id,
-    enableRAG: true
-    autoLoadEvidence: true
+    enableRAG: true,
+    autoLoadEvidence: true,
     ...options
   });
 }
 /**
  * Ready-to-use machine configurations for common scenarios
- */;
+ */
 export const LegalCaseMachinePresets = {
   // Full-featured machine with RAG and auto-loading
   full: (caseId: string, userId?: string) => createLegalCaseMachine({
     caseId,
     userId,
-    enableRAG: true
-    autoLoadEvidence: true
+    enableRAG: true,
+    autoLoadEvidence: true,
   }),
   // Lightweight machine for read-only access;
   readonly: (caseId: string) => createLegalCaseMachine({
     caseId,
-    enableRAG: true
-    autoLoadEvidence: false
+    enableRAG: true,
+    autoLoadEvidence: false,
   }),
   // RAG-focused machine for AI analysis
   ragOnly: (caseId: string) => createLegalCaseMachine({
     caseId,
-    enableRAG: true
-    autoLoadEvidence: false
-    ragEndpoint: '/api/v1/rag'
+    enableRAG: true,
+    autoLoadEvidence: false,
+    ragEndpoint: '/api/v1/rag',
   })
 }
 /**
@@ -166,7 +166,7 @@ export type RAGCaseEvent =
   | { type: 'RAG_STREAM'; query: string; onChunk: (chunk: string) => void }
 /**
  * Extended machine with RAG-specific states and events
- */;
+ */
 export function createEnhancedRAGMachine(_options: CaseMachineOptions) {
   const baseMachine = createLegalCaseMachine(options);
   return baseMachine.provide({

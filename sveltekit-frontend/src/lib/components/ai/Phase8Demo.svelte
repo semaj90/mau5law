@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     frameRate: 0,
     lodLevels: { low: 0, mid: 0, high: 0 },
     cacheHits: 0,
-    aiBoosts: 0
+    aiBoosts: 0,
   });
   // Demo data
   const sampleUIDefinition: MatrixUINode[] = [
@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
         confidence: 95,
         evidenceType: 'forensic',
         aiGenerated: true,
-      }
+      },
     },
     {
       type: 'button',
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
         priority: 'critical',
         confidence: 88,
         aiGenerated: false,
-      }
+      },
     },
     {
       type: 'evidence-item',
@@ -74,8 +74,8 @@ https://svelte.dev/e/js_parse_error -->
         confidence: 72,
         evidenceType: 'digital',
         aiGenerated: true,
-      }
-    }
+      },
+    },
   ];
   const sampleUserContext: UserContext = {
     intent: 'analyze',
@@ -85,11 +85,11 @@ https://svelte.dev/e/js_parse_error -->
     recentActions: ['file_upload', 'view_document', 'apply_filter'],
     userRole: 'prosecutor',
     workflowState: 'review',
-  }
+  };
   $effect(() => {
     (async () => {
-await initializePhase8System();
-    startDemoLoop();
+      await initializePhase8System();
+      startDemoLoop();
     })();
   });
   async function initializePhase8System(): Promise<void> {
@@ -110,10 +110,7 @@ await initializePhase8System();
         const sourceNode = sampleUIDefinition.find(n => n.id === node.element.id);
         if (sourceNode) {
           const vertices = new Float32Array([
-            -0.5, -0.5, 0.0, 0.0, 0.0,
-             0.5, -0.5, 0.0, 1.0, 0.0,
-             0.5,  0.5, 0.0, 1.0, 1.0,
-            -0.5,  0.5, 0.0, 0.0, 1.0
+            -0.5, -0.5, 0.0, 0.0, 0.0, 0.5, -0.5, 0.0, 1.0, 0.0, 0.5, 0.5, 0.0, 1.0, 1.0, -0.5, 0.5, 0.0, 0.0, 1.0,
           ]);
           // provide a safe default for metadata
           lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || {});
@@ -137,15 +134,17 @@ await initializePhase8System();
       const metrics = lodSystem.getPerformanceMetrics();
       performanceMetrics.frameRate = metrics.frameRate;
       // Simulate viewport focus changes
-      if (frameCount % 120 === 0) { // Every 2 seconds at 60fps
+      if (frameCount % 120 === 0) {
+        // Every 2 seconds at 60fps
         simulateViewportFocus();
       }
       // Simulate AI suggestions
-      if (frameCount % 180 === 0) { // Every 3 seconds
+      if (frameCount % 180 === 0) {
+        // Every 3 seconds
         simulateAISuggestions();
       }
       requestAnimationFrame(demoLoop);
-    }
+    };
     requestAnimationFrame(demoLoop);
   }
   function simulateViewportFocus(): void {
@@ -155,7 +154,7 @@ await initializePhase8System();
       radius: 200 + Math.random() * 100,
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
       confidenceScore: 0.8 + Math.random() * 0.2,
-    }
+    };
     lodSystem.updateViewportFocus(focus);
   }
   async function simulateAISuggestions(): Promise<void> {
@@ -177,7 +176,7 @@ await initializePhase8System();
           originalScore: 0.6,
           rerankScore: 0,
           confidence: 78,
-        }
+        },
       ];
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
       // assign number of boosts (length of results) instead of invalid filter usage
@@ -194,7 +193,7 @@ await initializePhase8System();
         // empty arrays cast to satisfy MouseEvent[] / KeyboardEvent[] without real events
         mouseActivity: [] as unknown as MouseEvent[],
         keyboardActivity: [] as unknown as KeyboardEvent[],
-        eyeTracking: [] // optional, default empty
+        eyeTracking: [], // optional, default empty
       };
       const intentPrediction = await prefetcher.predictIntent(predictiveContext);
       if (intentPrediction) {
@@ -309,7 +308,7 @@ await initializePhase8System();
     <div class="webgl-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">WebGL2 Rendering</h3>
       <div class="canvas-container relative bg-black border border-gray-700 rounded">
-  <canvas bind:this={canvas as any} width="600" height="400" class="w-full h-auto"></canvas>
+        <canvas bind:this={canvas as any} width="600" height="400" class="w-full h-auto"></canvas>
         <div class="overlay absolute top-2 left-2 text-xs text-green-400 font-mono">
           LOD System Active | Cubic Filter Blending | AI-Aware Rendering
         </div>
@@ -418,7 +417,7 @@ await initializePhase8System();
     display: flex;
     align-items: center;
     font-size: 0.875rem; /* text-sm */
-    color: #D1D5DB; /* gray-300 */
+    color: #d1d5db; /* gray-300 */
   }
 
   /* Support both the original .tech-card name and the rendered .tech-nier-bits-card */

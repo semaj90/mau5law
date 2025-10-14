@@ -3,17 +3,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import * as Dialog from '$lib/components/ui/dialog/index.js';
-  import {
-    MessageSquare,
-    Send,
-    Bot,
-    User,
-    Loader2,
-    X,
-    Copy,
-    ThumbsUp,
-    ThumbsDown,
-  } from 'lucide-svelte';
+  import { MessageSquare, Send, Bot, User, Loader2, X, Copy, ThumbsUp, ThumbsDown } from 'lucide-svelte';
 
   // --- Props (using a single $props() call with TypeScript types) ---
   type AISourceContext = { title?: string; description?: string; fullText?: string } | null;
@@ -32,7 +22,7 @@
     title = 'AI Legal Assistant',
     placeholder = 'Ask about legal matters...',
     caseId = null,
-    documentId = null
+    documentId = null,
   } = $props() as Props;
 
   // --- State (unchanged approach using Svelte runes) ---
@@ -246,7 +236,13 @@
 
               <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
                 <!-- Replaced invalid Card/CardContent wrappers with semantic divs -->
-                <div class="{message.role === 'user' ? 'bg-primary text-primary-foreground' : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''} nes-container" aria-live="polite" role="alert">
+                <div
+                  class="{message.role === 'user' ? 'bg-primary text-primary-foreground' : ''} {message.error
+                    ? 'border-red-200 dark:border-red-800'
+                    : ''} nes-container"
+                  aria-live="polite"
+                  role="alert"
+                >
                   <div class="p-3">
                     <div class="prose prose-sm max-w-none {message.role === 'user' ? 'prose-invert' : ''}">
                       <p class="whitespace-pre-wrap">{message.content}</p>
@@ -258,19 +254,36 @@
                           {formatTimestamp(message.timestamp)}
                         </span>
                         {#if message.metadata?.tokensPerSecond}
-                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(message.metadata.tokensPerSecond)} tok/s</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                            >{Math.round(message.metadata.tokensPerSecond)} tok/s</span
+                          >
                         {/if}
                       </div>
 
                       {#if message.role === 'assistant' && !message.error}
                         <div class="flex items-center gap-1">
-                          <button type="button" class="bits-btn" aria-label="Copy message" onclick={() => copyToClipboard(message.content)}>
+                          <button
+                            type="button"
+                            class="bits-btn"
+                            aria-label="Copy message"
+                            onclick={() => copyToClipboard(message.content)}
+                          >
                             <Copy aria-hidden="true" class="h-3 w-3" />
                           </button>
-                          <button type="button" class="bits-btn" aria-label="Thumbs up feedback" onclick={() => provideFeedback(message.id, 'positive')}>
+                          <button
+                            type="button"
+                            class="bits-btn"
+                            aria-label="Thumbs up feedback"
+                            onclick={() => provideFeedback(message.id, 'positive')}
+                          >
                             <ThumbsUp aria-hidden="true" class="h-3 w-3" />
                           </button>
-                          <button type="button" class="bits-btn" aria-label="Thumbs down feedback" onclick={() => provideFeedback(message.id, 'negative')}>
+                          <button
+                            type="button"
+                            class="bits-btn"
+                            aria-label="Thumbs down feedback"
+                            onclick={() => provideFeedback(message.id, 'negative')}
+                          >
                             <ThumbsDown aria-hidden="true" class="h-3 w-3" />
                           </button>
                         </div>
@@ -283,7 +296,11 @@
                 {#if message.suggestions && message.suggestions.length > 0}
                   <div class="mt-2 space-y-1">
                     {#each message.suggestions as suggestion}
-                      <button type="button" class="text-xs h-auto py-1 px-2 bits-btn" onclick={() => handleSuggestionClick(suggestion)}>
+                      <button
+                        type="button"
+                        class="text-xs h-auto py-1 px-2 bits-btn"
+                        onclick={() => handleSuggestionClick(suggestion)}
+                      >
                         {suggestion}
                       </button>
                     {/each}
@@ -331,15 +348,22 @@
         <textarea
           bind:this={inputElement}
           bind:value={currentMessage}
-          on:input={(e) => (currentMessage = (e.target as HTMLTextAreaElement).value)}
-          placeholder={placeholder}
+          on:input={e => (currentMessage = (e.target as HTMLTextAreaElement).value)}
+          {placeholder}
           onkeydown={handleKeydown}
           aria-label="Message input"
           disabled={isLoading}
           class="flex-1 rounded p-2 border"
-          rows="2"></textarea>
+          rows="2"
+        ></textarea>
 
-        <button type="button" class="bits-btn" on:click={() => sendMessage()} disabled={isLoading || !currentMessage.trim()} aria-label="Send message">
+        <button
+          type="button"
+          class="bits-btn"
+          on:click={() => sendMessage()}
+          disabled={isLoading || !currentMessage.trim()}
+          aria-label="Send message"
+        >
           {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}

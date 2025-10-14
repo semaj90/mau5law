@@ -23,7 +23,7 @@ import { sql } from 'drizzle-orm';
 // ============================================================================
 /**
  * Primary shader cache entries with source code, compiled binaries, and metadata
- */;
+ */
 export const shaderCacheEntries = pgTable('shader_cache_entries', {
   id: uuid('id').defaultRandom().primaryKey(),
   // Core identification
@@ -71,7 +71,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
 });
 /**
  * User shader access patterns for predictive preloading
- */;
+ */
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
   id: serial('id').primaryKey(),
   // User and session context
@@ -122,7 +122,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
 });
 /**
  * Predictive preloading rules learned by the reinforcement system
- */;
+ */
 export const shaderPreloadRules = pgTable('shader_preload_rules', {
   id: serial('id').primaryKey(),
   // Rule identification
@@ -162,7 +162,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
 });
 /**
  * Shader dependency graph for intelligent preloading
- */;
+ */
 export const shaderDependencies = pgTable('shader_dependencies', {
   id: serial('id').primaryKey(),
   // Dependency relationship
@@ -189,7 +189,7 @@ export const shaderDependencies = pgTable('shader_dependencies', {
 });
 /**
  * Real-time shader compilation queue for background processing
- */;
+ */
 export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(),
   // Queue identification
@@ -233,7 +233,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
 /**
  * Materialized view for fast shader recommendations
  * Updated periodically by background jobs
- */;
+ */
 export const shaderRecommendationsView = pgTable('shader_recommendations_view', {
   id: serial('id').primaryKey(),
   userId: text('user_id').notNull(),

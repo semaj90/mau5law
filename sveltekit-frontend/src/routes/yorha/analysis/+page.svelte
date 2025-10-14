@@ -5,16 +5,7 @@
   import * as Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import {
-    BarChart,
-    TrendingUp,
-    Target,
-    AlertCircle,
-    Brain,
-    Activity,
-    Database,
-    Clock
-  } from 'lucide-svelte';
+  import { BarChart, TrendingUp, Target, AlertCircle, Brain, Activity, Database, Clock } from 'lucide-svelte';
   // Analysis data
   let analysisData = $state({
     caseMetrics: {
@@ -43,7 +34,7 @@
       processing_speed: 1.3,
       confidence: 91.8,
       last_update: '2024-01-22 14:35:00',
-    }
+    },
   });
   let recentAnalyses = $state([
     {
@@ -72,9 +63,10 @@
       confidence: 88.3,
       findings: 'Suspicious transaction clusters detected',
       timestamp: '4 hours ago',
-    }
+    },
   ]);
 </script>
+
 <svelte:head>
   <title>ANALYSIS - YoRHa Detective Interface</title>
 </svelte:head>
@@ -141,9 +133,9 @@
       </div>
       <div class="header-right">
         <Button class="header-btn bits-btn bits-btn">
-<Brain class="w-4 h-4" />
+          <Brain class="w-4 h-4" />
           RUN ANALYSIS
-</Button>
+        </Button>
       </div>
     </header>
     <!-- Analysis Dashboard -->
@@ -186,12 +178,21 @@
           <Card.Content class="metric-content nes-container">
             <div class="progress-section">
               <div class="progress-item">
-                <span class="progress-label">Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis.total_pieces})</span>
-                <Progress value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar" />
+                <span class="progress-label"
+                  >Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis
+                    .total_pieces})</span
+                >
+                <Progress
+                  value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                  class="progress-bar"
+                />
               </div>
               <div class="progress-item">
                 <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
-                <Progress value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar" />
+                <Progress
+                  value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                  class="progress-bar"
+                />
               </div>
             </div>
           </Card.Content>
@@ -244,7 +245,7 @@
             <div class="performance-item">
               <div class="performance-label">Processing Speed</div>
               <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div>
-              <Progress value={100 - (analysisData.aiPerformance.processing_speed * 20)} class="performance-progress" />
+              <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" />
             </div>
             <div class="performance-item">
               <div class="performance-label">Confidence Score</div>
@@ -273,7 +274,9 @@
                     <div class="analysis-basic-info">
                       <span class="analysis-id">{analysis.id}</span>
                       <span class="analysis-case">{analysis.case_id}</span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{analysis.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{analysis.type}</span
+                      >
                     </div>
                     <div class="analysis-status">
                       {#if analysis.status === 'completed'}
@@ -283,7 +286,9 @@
                         <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white">PROCESSING</span>
                         <Activity class="w-4 h-4 animate-pulse" />
                       {:else}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysis.status.toUpperCase()}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                          >{analysis.status.toUpperCase()}</span
+                        >
                       {/if}
                     </div>
                   </div>
@@ -303,6 +308,7 @@
     </div>
   </main>
 </div>
+
 <style>
   .yorha-interface {
     display: flex;

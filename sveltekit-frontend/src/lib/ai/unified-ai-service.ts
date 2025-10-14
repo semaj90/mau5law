@@ -99,8 +99,8 @@ export class UnifiedAIService {
   constructor(config: Partial<UnifiedAIConfig> = {}) {
     this.config = {
       preferredMode: 'hybrid',
-      enableCaching: true
-      enableGPUAcceleration: true
+      enableCaching: true,
+      enableGPUAcceleration: true,
       wasmConfig: {
         modelPath: 'gemma3-legal',
         maxTokens: 2048,
@@ -115,21 +115,21 @@ export class UnifiedAIService {
         useCuda: true
       },
       gpuConfig: {
-        useNESCache: true
-        enableBinaryPipeline: true
-        batchSize: 20
+        useNESCache: true,
+        enableBinaryPipeline: true,
+        batchSize: 20,
       },
       dbConfig: {
         userId: 'system',
-        enableVectorSearch: true
-        cacheResults: true
+        enableVectorSearch: true,
+        cacheResults: true,
       },
       ...config
     }
   }
   /**
    * Initialize the unified AI service
-   */;
+   */
   async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
@@ -164,7 +164,7 @@ export class UnifiedAIService {
   }
   /**
    * Process a query using the optimal AI service
-   */;
+   */
   async query(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!this.initialized) {
       await this.initialize();
@@ -209,7 +209,7 @@ export class UnifiedAIService {
     } catch (error: any) {
       console.error('❌ Query failed:', error);
       return {
-        success: false
+        success: false,
         response: '',
         mode: 'error',
         processingTime: performance.now() - startTime,
@@ -219,7 +219,7 @@ export class UnifiedAIService {
   }
   /**
    * Query using WASM LLM service
-   */;
+   */
   private async queryWASM(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!wasmLLMService) {
       throw new Error('WASM LLM service not available');
@@ -230,7 +230,7 @@ export class UnifiedAIService {
         this.config.wasmConfig
       );
       return {
-        success: true
+        success: true,
         response: wasmResponse.text,
         mode: 'wasm',
         processingTime: wasmResponse.processingTimeMs,
@@ -246,7 +246,7 @@ export class UnifiedAIService {
   }
   /**
    * Query using LangChain + Ollama service
-   */;
+   */
   private async queryLangChain(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!langChainOllamaService) {
       console.log('Loading LangChain service...');
@@ -264,7 +264,7 @@ export class UnifiedAIService {
         }
       );
       return {
-        success: true
+        success: true,
         response: langChainResponse.answer,
         mode: 'langchain',
         processingTime: langChainResponse.processingTime,
@@ -280,7 +280,7 @@ export class UnifiedAIService {
   }
   /**
    * Query using GPU-accelerated search
-   */;
+   */
   private async queryGPU(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!nesGPUIntegration) {
       throw new Error('GPU integration not available');
@@ -298,7 +298,7 @@ export class UnifiedAIService {
       // Format GPU results as response
       // removed unused response assignment
       return {
-        success: true
+        success: true,
         response,
         mode: 'gpu',
         processingTime: 0, // Will be set by caller
@@ -318,7 +318,7 @@ export class UnifiedAIService {
   }
   /**
    * Hybrid query using multiple services
-   */;
+   */
   private async queryHybrid(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     const results: UnifiedResponse[] = [];
     // Try GPU first for fast results
@@ -356,7 +356,7 @@ export class UnifiedAIService {
   }
   /**
    * Ingest documents into the unified system
-   */;
+   */
   async ingestDocuments(documents: LegalDocument[]): Promise<any> {
     const startTime = performance.now();
     let processed = 0;
@@ -394,7 +394,7 @@ export class UnifiedAIService {
     } catch (error: any) {
       console.error('Document ingestion failed:', error);
       return {
-        success: false
+        success: false,
         processed,
         errors: documents.length - processed,
         processingTime: performance.now() - startTime
@@ -403,7 +403,7 @@ export class UnifiedAIService {
   }
   /**
    * Get performance statistics
-   */;
+   */
   async getStats() {
     const stats: any = {
       initialized: this.initialized,
@@ -462,14 +462,14 @@ export class UnifiedAIService {
   }
   /**
    * Clear cache
-   */;
+   */
   clearCache(): void {
     this.cache.clear();
     console.log('🧹 Unified AI Service cache cleared');
   }
   /**
    * Dispose of resources
-   */;
+   */
   dispose(): void {
     this.cache.clear();
     if (wasmLLMService) {

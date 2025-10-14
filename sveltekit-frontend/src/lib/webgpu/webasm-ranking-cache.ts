@@ -47,7 +47,7 @@ export interface CacheMetrics {
 }
 /**
  * WebAssembly Ranking Cache with Service Worker Integration
- */;
+ */
 export class WebASMRankingCache {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
@@ -85,7 +85,7 @@ export class WebASMRankingCache {
   }
   /**
    * High-performance ranking with WebAssembly and service worker concurrency
-   */;
+   */
   async rank(request: RankingRequest): Promise<RankingResponse> {
     const startTime = performance.now();
     this.metrics.totalRequests++;
@@ -100,8 +100,8 @@ export class WebASMRankingCache {
           return {
             id: request.id,
             rankings: this.deserializeRankings(cached.rankings, cached.summary),
-            cached: true
-            processingTime: performance.now() - startTime
+            cached: true,
+            processingTime: performance.now() - startTime,
           }
         }
       }
@@ -127,7 +127,7 @@ export class WebASMRankingCache {
   }
   /**
    * Batch ranking with WebAssembly parallel processing
-   */;
+   */
   async batchRank(requests: RankingRequest[]): Promise<RankingResponse[]> {
     const startTime = performance.now();
     try {
@@ -152,7 +152,7 @@ export class WebASMRankingCache {
   }
   /**
    * QUIC integration - publish ranking results to server cache
-   */;
+   */
   async publishToQUICCache(hash: string, rankings: RankingResponse): Promise<boolean> {
     try {
       // Serialize ranking data for QUIC protocol
@@ -161,8 +161,8 @@ export class WebASMRankingCache {
         method: 'POST',
         headers: {
           'Content-Type': 'application/octet-stream',
-          'X-Cache-Key': hash
-          'X-Rankings-Count': rankings.rankings.length.toString()
+          'X-Cache-Key': hash,
+          'X-Rankings-Count': rankings.rankings.length.toString(),
         },
         body: payload
       });
@@ -180,7 +180,7 @@ export class WebASMRankingCache {
   }
   /**
    * Decode QUIC cached rankings
-   */;
+   */
   async decodeFromQUICCache(hash: string): Promise<RankingResponse | null> {
     try {
       // removed unused response assignment
@@ -265,7 +265,7 @@ export class WebASMRankingCache {
       const response: RankingResponse = {
         id: request.id,
         rankings,
-        cached: false
+        cached: false,
         processingTime: performance.now() - startTime,
         wasmTime
       }
@@ -276,7 +276,7 @@ export class WebASMRankingCache {
     return {
       id: request.id,
       rankings,
-      cached: false
+      cached: false,
       processingTime: performance.now() - startTime,
       wasmTime
     }
@@ -414,9 +414,9 @@ export class WebASMRankingCache {
       rankingsArray[i * 2 + 1] = Math.floor(rank.score * 10000);
     });
     return {
-      hash: key
+      hash: key,
       summary,
-      rankings: rankingsArray
+      rankings: rankingsArray,
       confidence: rankings.length > 0 ? rankings[0].score: 0,
       timestamp: Date.now(),
       crc32: this.calculateCRC32(rankingsArray.buffer)
@@ -544,7 +544,7 @@ export class WebASMRankingCache {
       ];
       const testReques,t: RankingRequest = {
         id: 'warmup',
-        vectors: testVectors
+        vectors: testVectors,
         topK: 2,
         threshold: 0.0,
         useCache: false
@@ -580,8 +580,8 @@ export class WebASMRankingCache {
 export const webASMRankingCache = new WebASMRankingCache({
   maxEntries: 1000,
   ttlSeconds: 300, // 5 minutes
-  enableServiceWorker: true
-  wasmModulePath: '/webasm/ranking-cache.wasm'
+  enableServiceWorker: true,
+  wasmModulePath: '/webasm/ranking-cache.wasm',
 });
 // Auto-initialize on client side
 if (typeof window !== 'undefined') {

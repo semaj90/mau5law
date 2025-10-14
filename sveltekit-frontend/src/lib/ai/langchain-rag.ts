@@ -1,15 +1,15 @@
 // LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
-import type { Document as LangChainDocumentType } from "@langchain/core/documents";
-import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
+import type { Document as LangChainDocumentType } from '@langchain/core/documents';
+import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
 import { RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
-  return documents.map((doc) => doc.pageContent).join('\n\n');
-}
+  return documents.map(doc => doc.pageContent).join('\n\n');
+};
 // Note: QdrantVectorStore and QdrantClient may need to be installed separately
 // import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
 // import { QdrantClient } from "@qdrant/js-client-rest"
@@ -92,7 +92,7 @@ export interface RAGResult {
     usedCompression: boolean;
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
     semanticProcessingTime?: number; // Processing time from semantic search API
-  }
+  };
 }
 
 /**
@@ -1304,12 +1304,10 @@ type SemanticSearchResult = {
 
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
-  qdrantUrl: import.meta.env.QDRANT_URL || "http://localhost:6333",
-  ollamaGenerationUrl:
-    import.meta.env.OLLAMA_GENERATION_URL || "http://localhost:11434/v1",
-  ollamaEmbeddingUrl:
-    import.meta.env.OLLAMA_EMBEDDING_URL || "http://localhost:11434/v1",
-  apiKey: import.meta.env.OLLAMA_API_KEY || "EMPTY",
-  collectionName: "legal_documents",
-  embeddingDimensions: 768
+  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+  ollamaGenerationUrl: import.meta.env.OLLAMA_GENERATION_URL || 'http://localhost:11434/v1',
+  ollamaEmbeddingUrl: import.meta.env.OLLAMA_EMBEDDING_URL || 'http://localhost:11434/v1',
+  apiKey: import.meta.env.OLLAMA_API_KEY || 'EMPTY',
+  collectionName: 'legal_documents',
+  embeddingDimensions: 768,
 });

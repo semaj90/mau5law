@@ -240,7 +240,7 @@ const stakeholderNotificationActor = fromPromise(async ({
       id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       recipient,
       message,
-      type: notificationType
+      type: notificationType,
       sentAt: new Date().toISOString(),
       status: 'sent'
     });
@@ -344,14 +344,14 @@ export const legalCaseManagementMachine = createMachine({
     },
     creating: {
       invoke: {
-        src: legalProgressTracker
-        id: 'progressTracker'
+        src: legalProgressTracker,
+        id: 'progressTracker',
       },
       initial: 'validating',
       states: {
         validating: {
           invoke: {
-            src: caseValidationActor
+            src: caseValidationActor,
             id: 'validationActor',
             input: ({ context }) => ({
               title: context.title,
@@ -381,7 +381,7 @@ export const legalCaseManagementMachine = createMachine({
         },
         persisting: {
           invoke: {
-            src: caseCreationActor
+            src: caseCreationActor,
             id: 'creationActor',
             input: ({ context }) => ({
               title: context.title,
@@ -425,8 +425,8 @@ export const legalCaseManagementMachine = createMachine({
     },
     draft: {
       invoke: {
-        src: legalProgressTracker
-        id: 'progressTracker'
+        src: legalProgressTracker,
+        id: 'progressTracker',
       },
       on: {
         ADD_EVIDENCE: {
@@ -524,7 +524,7 @@ export const legalCaseManagementMachine = createMachine({
     },
     analyzing: {
       invoke: {
-        src: riskAnalysisActor
+        src: riskAnalysisActor,
         id: 'analysisActor',
         input: ({ context }) => ({
           caseId: context.caseId,
@@ -555,8 +555,8 @@ export const legalCaseManagementMachine = createMachine({
     },
     active: {
       invoke: {
-        src: legalProgressTracker
-        id: 'progressTracker'
+        src: legalProgressTracker,
+        id: 'progressTracker',
       },
       entry: assign({
         workflowStage: 'investigation'
@@ -606,7 +606,7 @@ export const legalCaseManagementMachine = createMachine({
               context.deadlines.map((deadline, index) =>
                 index.toString()) === event.deadlineId ? { ...deadline, completed: true } : deadline
               ),
-            lastModified: () => Date.now()
+            lastModified: () => Date.now(),
           })
         },
         UPDATE_STATUS: [

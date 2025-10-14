@@ -24,7 +24,7 @@
   {dir}
   class={cn(
     'w-full data-[orientation=vertical]:flex data-[orientation=vertical]:flex-row data-[orientation=vertical]:space-x-2',
-    className,
+    className
   )}
   {...restProps}
 >

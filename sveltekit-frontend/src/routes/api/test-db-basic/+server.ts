@@ -23,7 +23,7 @@ export const GET: RequestHandler = async () => {
         error: String(error),
         stack: error instanceof Error ? error.stack : undefined,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

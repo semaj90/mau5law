@@ -25,8 +25,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       required: ['email', 'password', 'confirmPassword', 'name', 'role'],
     } as JSONSchema7,
   });
-  return { form }
-}
+  return { form };
+};
 export const actions: Actions = {
   default: async ({ request }) => {
     const form = await superValidate(request, zod(registerSchema), {
@@ -88,4 +88,4 @@ export const actions: Actions = {
       });
     }
   },
-}
+};

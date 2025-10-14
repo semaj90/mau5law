@@ -87,7 +87,7 @@ export class UnifiedAPIRouter {
   // ===== ROUTE REGISTRATION =====
   /**
    * Register a new API route
-   */;
+   */
   register(routeConfig: RouteConfig): void {
     const key = this.createRouteKey(routeConfig.path, routeConfig.method);
     this.routes.set(key, routeConfig);
@@ -97,20 +97,20 @@ export class UnifiedAPIRouter {
   }
   /**
    * Register multiple routes at once
-   */;
+   */
   registerMany(routes: RouteConfig[]): void {
     routes.forEach(route => this.register(route);
   }
   /**
    * Add global middleware
-   */;
+   */
   use(middleware: Middleware): void {
     this.middleware.push(middleware);
   }
   // ===== REQUEST HANDLING =====
   /**
    * Main request handler - called from SvelteKit API routes
-   */;
+   */
   async handle(_event: RequestEvent): Promise<Response> {
     const startTime = Date.now();
     const requestId = this.generateRequestId();
@@ -162,9 +162,9 @@ export class UnifiedAPIRouter {
   }
   // ===== MIDDLEWARE EXECUTION =====
   private async executeMiddleware(
-    middleware: Middleware[]
+    middleware: Middleware[],
     event: RequestEvent;
-    context: RouteContext
+    context: RouteContext,
     finalHandler: () => Promise<Response>;
   ): Promise<Response> {
     let index = 0;
@@ -273,7 +273,7 @@ export class UnifiedAPIRouter {
     if (!response.ok) return;
     response.clone().arrayBuffer().then(buffer => {
       this.cache.set(cacheKey, {
-        body: buffer
+        body: buffer,
         status: response.status,
         headers: Object.fromEntries(response.headers.entries()),
         expiresAt: Date.now() + (config.ttl * 1000)
@@ -282,8 +282,8 @@ export class UnifiedAPIRouter {
   }
   private createErrorResponse(message: string, status: number, context: Partial<RouteContext>): Response {
     const response: APIResponse = {
-      success: false
-      error: message
+      success: false,
+      error: message,
       meta: {
         requestId: context.requestId || 'unknown',
         timestamp: new Date().toISOString(),
@@ -438,10 +438,10 @@ export interface RouterConfig {
 }
 // ===== SINGLETON INSTANCE =====
 export const unifiedAPIRouter = new UnifiedAPIRouter({
-  enableCaching: true
-  enableRateLimit: true
-  enableLogging: dev
-  defaultEncoding: 'json'
+  enableCaching: true,
+  enableRateLimit: true,
+  enableLogging: dev,
+  defaultEncoding: 'json',
 });
 // ===== UTILITY FUNCTIONS =====
 /**
@@ -455,7 +455,7 @@ export function createAPIResponse<T>(
 ): APIResponse<T> {
   return {
     success,
-    data: success ? data : undefined
+    data: success ? data : undefined,
     error: success ? undefined : (data as any),
     message,
     meta: {
@@ -470,7 +470,7 @@ export function createAPIResponse<T>(
 }
 /**
  * Middleware factory for authentication
- */;
+ */
 export function createAuthMiddleware(_options: { required?: boolean } = {}): Middleware {
   return async (event, context, next) => {
     const authHeader = event.request.headers.get('authorization');
@@ -487,7 +487,7 @@ export function createAuthMiddleware(_options: { required?: boolean } = {}): Mid
 }
 /**
  * Middleware factory for request validation
- */;
+ */
 export function createValidationMiddleware<T>(schema: any): Middleware {
   return async (event, context, next) => {
     try {

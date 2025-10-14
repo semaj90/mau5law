@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       id: u.id,
       firstName: u.firstName || '',
       lastName: u.lastName || '',
-    }
+    };
     // Initialize the SuperForm with drizzle-zod schema
     const profileForm = await superValidate(profileData, zod(profileSchema as any));
     // Get user account statistics
@@ -70,13 +70,13 @@ export const load: PageServerLoad = async ({ locals }) => {
       felonyCases: felonyCases[0]?.count || 0,
       misdemeanorCases: misdemeanorCases[0]?.count || 0,
       citationCases: citationCases[0]?.count || 0,
-    }
+    };
     return {
       user: locals.user,
       session: locals.session,
       userStats,
       profileForm, // Add the SuperForm
-    }
+    };
   } catch (error: any) {
     console.error('Error loading user stats:', error);
     // Return basic data if stats fail
@@ -95,9 +95,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         citationCases: 0,
       },
       profileForm: null,
-    }
+    };
   }
-}
+};
 export const actions: Actions = {
   updateProfile: async ({ request, locals }) => {
     if (!locals.user) {
@@ -105,7 +105,7 @@ export const actions: Actions = {
     }
     const form = await superValidate(request, zod(profileSchema as any));
     if (!form.valid) {
-      return { form }
+      return { form };
     }
     try {
       // Update profile in database
@@ -116,10 +116,10 @@ export const actions: Actions = {
       //   })
       //   .where(eq(profileTable.id, getUserId(locals))
       console.log('Profile updated:', form.data);
-      return { form, success: true }
+      return { form, success: true };
     } catch (err) {
       console.error('Profile update failed:', err);
       throw error(500, 'Failed to update profile');
     }
   },
-}
+};

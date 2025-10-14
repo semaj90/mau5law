@@ -36,21 +36,21 @@ class ComponentMetadataCache {
       size: 2048,
       dependencies: [],
       priority: 'critical',
-      cacheable: true
+      cacheable: true,
     },
     Input: {
       category: 'core',
       size: 3072,
       dependencies: ['Label'],
       priority: 'critical',
-      cacheable: true
+      cacheable: true,
     },
     Card: {
       category: 'core',
       size: 4096,
       dependencies: ['CardHeader', 'CardContent'],
       priority: 'high',
-      cacheable: true
+      cacheable: true,
     },
     // Legal AI Components
     EvidenceBoard: {
@@ -58,21 +58,21 @@ class ComponentMetadataCache {
       size: 15360, // ~15KB
       dependencies: ['Card', 'Button', 'Input', 'Dialog'],
       priority: 'high',
-      cacheable: true
+      cacheable: true,
     },
     EvidenceCard: {
       category: 'legal',
       size: 8192,
       dependencies: ['Card', 'Button'],
       priority: 'normal',
-      cacheable: true
+      cacheable: true,
     },
     CaseManager: {
       category: 'legal',
       size: 20480, // ~20KB
       dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'],
       priority: 'normal',
-      cacheable: true
+      cacheable: true,
     },
     // AI Components
     EmbeddingGemmaChat: {
@@ -80,14 +80,14 @@ class ComponentMetadataCache {
       size: 25600, // ~25KB
       dependencies: ['Card', 'Input', 'Button', 'ChatMessage'],
       priority: 'high',
-      cacheable: true
+      cacheable: true,
     },
     EnhancedRAGStudio: {
       category: 'ai',
       size: 18432, // ~18KB
       dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'],
       priority: 'normal',
-      cacheable: true
+      cacheable: true,
     },
     // Gaming Components
     NESButton: {
@@ -95,14 +95,14 @@ class ComponentMetadataCache {
       size: 6144,
       dependencies: ['Button'],
       priority: 'low',
-      cacheable: true
+      cacheable: true,
     },
     NESContainer: {
       category: 'gaming',
       size: 8192,
       dependencies: ['Card'],
       priority: 'low',
-      cacheable: true
+      cacheable: true,
     },
     // Advanced Components
     Board: {
@@ -110,16 +110,16 @@ class ComponentMetadataCache {
       size: 12288,
       dependencies: ['Card', 'DragDropZone'],
       priority: 'normal',
-      cacheable: true
+      cacheable: true,
     },
     Dialog: {
       category: 'advanced',
       size: 10240,
       dependencies: ['Button'],
       priority: 'high',
-      cacheable: true
+      cacheable: true,
     },
-  }
+  };
   async initialize() {
     // Load cached metadata from Redis
     await this.loadCachedMetadata();
@@ -169,12 +169,12 @@ class ComponentMetadataCache {
       errorCount: 0,
       successCount: 0,
       lastAccess: Date.now(),
-    }
+    };
     const updated = {
       ...existing,
       ...metrics,
       lastAccess: Date.now(),
-    }
+    };
     this.performanceMetrics.set(componentName, updated);
     // Cache performance metrics
     this.cachePerformanceMetrics(componentName, updated);
@@ -189,8 +189,7 @@ class ComponentMetadataCache {
    * Get components by category
    */
   getComponentsByCategory(category: string): ComponentMetadata[] {
-    return Array.from(this.metadata.values())
-      .filter(meta => meta.category === category);
+    return Array.from(this.metadata.values()).filter(meta => meta.category === category);
   }
   /**
    * Get component dependencies (recursive)
@@ -240,9 +239,9 @@ class ComponentMetadataCache {
         visit(dep);
       }
       ordered.push(name);
-    }
+    };
     // Sort by priority first
-    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 }
+    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 };
     const sortedComponents = componentNames.sort((a, b) => {
       const metaA = this.metadata.get(a);
       const metaB = this.metadata.get(b);
@@ -266,11 +265,10 @@ class ComponentMetadataCache {
       averageRenderTime: 0,
       totalMemoryUsage: 0,
       errorRate: 0,
-    }
+    };
     // Calculate category counts
     for (const metadata of this.metadata.values()) {
-      analytics.categoryCounts[metadata.category] =
-        (analytics.categoryCounts[metadata.category] || 0) + 1;
+      analytics.categoryCounts[metadata.category] = (analytics.categoryCounts[metadata.category] || 0) + 1;
     }
     // Calculate performance averages
     const metrics = Array.from(this.performanceMetrics.values());

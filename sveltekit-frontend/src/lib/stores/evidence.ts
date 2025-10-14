@@ -3,14 +3,14 @@
  * Comprehensive evidence management with chain of custody, encryption, and legal compliance
  * Supports digital forensics, case management, and audit trail requirements
  */
-import { writable, get, derived } from "svelte/store";
+import { writable, get, derived } from 'svelte/store';
 import { selectedCase } from './case-store.js';
 // Core Evidence Interface
 export interface Evidence {
   id: string;
   caseId: string;
   title: string;
-  type: "document" | "image" | "video" | "audio" | "note" | "digital_forensic" | "physical_item";
+  type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'digital_forensic' | 'physical_item';
   content: string; // URL for files, text for notes
   x: number; // Position on canvas,
   y: number; // Position on canvas
@@ -93,7 +93,7 @@ export interface EvidenceFilter {
   type?: string[];
   confidentiality_level?: string[];
   priority?: string[];
-  date_range?: { start: string; end: string }
+  date_range?: { start: string; end: string };
   collected_by?: string[];
   tags?: string[];
   search_text?: string;

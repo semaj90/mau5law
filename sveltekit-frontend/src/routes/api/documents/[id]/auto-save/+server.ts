@@ -91,7 +91,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         success: true,
         message: "Document auto-saved successfully (mock)",
         document: {
-          id: documentId
+          id: documentId,
           lastSavedAt: new Date().toISOString(),
           wordCount: wordCount || (content ? content.split(/\s+/).length: 0),
           isDirty: false
@@ -154,10 +154,10 @@ export async function GET({ params }: RequestEvent): Promise<any> {
       return json({
         success: true,
         autoSaveStatus: {
-          isDirty: false
+          isDirty: false,
           lastSavedAt: new Date().toISOString(),
-          hasAutoSaveData: false
-          autoSaveData: null
+          hasAutoSaveData: false,
+          autoSaveData: null,
         }
       })
     }

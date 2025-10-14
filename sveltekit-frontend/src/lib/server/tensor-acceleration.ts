@@ -40,7 +40,7 @@ export class TensorAccelerator {
   }
   /**
    * Lazy initialization of WebGPU device
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
     try {
@@ -75,7 +75,7 @@ export class TensorAccelerator {
   }
   /**
    * Create specialized compute pipelines for different operations
-   */;
+   */
   private async createComputePipelines(): Promise<void> {
     if (!this.device) return;
     // Similarity computation pipeline
@@ -191,8 +191,8 @@ export class TensorAccelerator {
    * GPU-accelerated similarity computation between embeddings
    */
   async computeSimilarity(
-    vectorA: Float32Array
-    vectorB: Float32Array
+    vectorA: Float32Array,
+    vectorB: Float32Array,
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
     const startTime = performance.now();
@@ -277,7 +277,7 @@ export class TensorAccelerator {
       return {
         similarity,
         gpuMeta: {
-          gpuProcessed: true
+          gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
@@ -294,7 +294,7 @@ export class TensorAccelerator {
    * GPU-accelerated embedding transformation
    */
   async transformEmbedding(
-    embedding: Float32Array
+    embedding: Float32Array,
     operation: 'normalize' | 'quantize' | 'activate',
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
@@ -361,7 +361,7 @@ export class TensorAccelerator {
       return {
         transformed,
         gpuMeta: {
-          gpuProcessed: true
+          gpuProcessed: true,
           tileSize: options.tileSize || this.config.tileSize,
           computeTime,
           memoryUsage: embedding.byteLength * 2,
@@ -378,8 +378,8 @@ export class TensorAccelerator {
    * GPU-accelerated image analysis for visual documents
    */
   async analyzeImage(
-    imageData: Uint32Array
-    width: number
+    imageData: Uint32Array,
+    width: number,
     height: number;
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
@@ -452,7 +452,7 @@ export class TensorAccelerator {
       return {
         features,
         gpuMeta: {
-          gpuProcessed: true
+          gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
@@ -467,13 +467,13 @@ export class TensorAccelerator {
   }
   /**
    * Check if WebGPU is available
-   */;
+   */
   static isAvailable(): boolean {
     return typeof navigator !== 'undefined' && !!navigator.gpu;
   }
   /**
    * Get device capabilities
-   */;
+   */
   async getCapabilities() {
     if (!this.initialized && !(await this.initialize())) {
       return null;
@@ -489,7 +489,7 @@ export class TensorAccelerator {
   }
   /**
    * Cleanup resources
-   */;
+   */
   destroy(): void {
     if (this.device) {
       this.device.destroy();
@@ -503,8 +503,8 @@ export class TensorAccelerator {
 export const tensorAccelerator = new TensorAccelerator();
 // Convenience functions with opt-in GPU tiling
 export async function acceleratedSimilarity(
-  vectorA: Float32Array
-  vectorB: Float32Array
+  vectorA: Float32Array,
+  vectorB: Float32Array,
   options: TensorAccelerationOptions = {}
 ) {
   if (options.gpuTile && TensorAccelerator.isAvailable()) {
@@ -523,7 +523,7 @@ export async function acceleratedSimilarity(
   return {
     similarity,
     gpuMeta: {
-      gpuProcessed: false
+      gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,
@@ -533,7 +533,7 @@ export async function acceleratedSimilarity(
   }
 }
 export async function acceleratedTransform(
-  embedding: Float32Array
+  embedding: Float32Array,
   operation: 'normalize' | 'quantize' | 'activate',
   options: TensorAccelerationOptions = {}
 ) {
@@ -560,7 +560,7 @@ export async function acceleratedTransform(
   return {
     transformed,
     gpuMeta: {
-      gpuProcessed: false
+      gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,

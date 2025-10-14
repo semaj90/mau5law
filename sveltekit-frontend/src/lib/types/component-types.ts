@@ -1,7 +1,7 @@
 
 /**
  * Common component types for better type safety
- */;
+ */
 }
 export interface ApiResponse<T = unknown> {
   success: boolean;

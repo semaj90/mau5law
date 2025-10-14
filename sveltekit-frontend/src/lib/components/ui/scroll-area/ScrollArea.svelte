@@ -4,7 +4,7 @@
   import type { ScrollAreaRootProps } from 'bits-ui';
   type Props = ScrollAreaRootProps & {
     class?: string;
-  }
+  };
   let { children, class: className = '', ...rest }: Props = $props();
 </script>
 

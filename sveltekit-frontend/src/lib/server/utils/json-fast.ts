@@ -17,7 +17,7 @@ async function ensureSimd() {
         const mod = await import('simdjson');
         const parser = mod.default || mod;
         if (parser && typeof (parser as any).parse === 'function') {
-          simdParser = { parse: (parser as any).parse }
+          simdParser = { parse: (parser as any).parse };
           return simdParser;
         }
       } catch {
@@ -31,7 +31,7 @@ async function ensureSimd() {
       try {
         const mod2 = await import('node-simdjson');
         if (mod2 && typeof (mod2 as any).parse === 'function') {
-          simdParser = { parse: (mod2 as any).parse }
+          simdParser = { parse: (mod2 as any).parse };
           return simdParser;
         }
       } catch {

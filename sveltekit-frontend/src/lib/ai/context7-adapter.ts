@@ -39,7 +39,7 @@ export const context7AgentOrchestrator = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as any).triggerAgent !== 'function') {
       // mock behavior: echo back a completed trigger
-      return { ...trigger, result: `Mocked trigger for ${trigger.todoId || 'unknown'}`, status: 'completed' }
+      return { ...trigger, result: `Mocked trigger for ${trigger.todoId || 'unknown'}`, status: 'completed' };
     }
     return (impl as any).triggerAgent(trigger);
   },
@@ -60,7 +60,7 @@ export const context7AgentOrchestrator = {
     // real impl or empty
     return [] as any[];
   },
-}
+};
 // Semantic auditor wrapper
 export const context7SemanticAuditor = {
   async performSemanticAudit(component: string) {
@@ -71,10 +71,10 @@ export const context7SemanticAuditor = {
     }
     return (impl as any).performSemanticAudit(component);
   },
-}
+};
 export default {
   ensureContext7Ready,
   performContext7Search,
   context7AgentOrchestrator,
   context7SemanticAuditor,
-}
+};

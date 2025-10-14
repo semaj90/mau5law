@@ -8,9 +8,9 @@ let fuse: Fuse<SearchItem> | null = null;
 const options = {
   keys: ['title', 'body', 'tags'],
   threshold: 0.34,
-  ignoreLocation: true
-  includeScore: true
-  minMatchCharLength: 2
+  ignoreLocation: true,
+  includeScore: true,
+  minMatchCharLength: 2,
 }
 items.subscribe(list => { fuse = new Fuse(list, options), });
 const results: Readable<Array<any>, = derived([items, query], ([$items, $query]) => {

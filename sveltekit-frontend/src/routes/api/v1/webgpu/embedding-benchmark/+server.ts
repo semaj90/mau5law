@@ -1,21 +1,21 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from '$lib/server/embedding-cache-middleware.js'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from '$lib/server/embedding-cache-middleware.js';
 import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
 /**
  * Legal AI Embedding Benchmark with WebGPU Optimization
  * Real-world performance testing with legal document processing
  */
 interface EmbeddingBenchmarkRequest {
-  mode: 'single' | 'batch' | 'stress' | 'comparison',
+  mode: 'single' | 'batch' | 'stress' | 'comparison';
   config: {
-    documentCount?: number
-    batchSize?: number
-    iterations?: number
-    useWebGPU?: boolean
-    practiceAreas?: string[]
-    documentTypes?: ('contract' | 'case' | 'statute' | 'brief')[]
-  }
+    documentCount?: number;
+    batchSize?: number;
+    iterations?: number;
+    useWebGPU?: boolean;
+    practiceAreas?: string[];
+    documentTypes?: ('contract' | 'case' | 'statute' | 'brief')[];
+  };
 }
 type BenchmarkConfig = EmbeddingBenchmarkRequest['config'];
 type DocumentType = 'contract' | 'case' | 'statute' | 'brief';
@@ -406,19 +406,22 @@ function calculateEmbeddingSimilarity(dim1: number, dim2: number): number {
 // DELETE - Clear benchmark cache data
 export const DELETE: RequestHandler = async () => {
   try {
-    console.log('🗑️ Clearing legal embedding benchmark cache')
+    console.log('🗑️ Clearing legal embedding benchmark cache');
     // Clear benchmark-specific cache entries
     // Note: In production, would implement cache pattern clearing
     return json({
       success: true,
       message: 'Legal embedding benchmark cache cleared',
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to clear benchmark cache',
-      details: error instanceof Error ? error.message: String(error)
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to clear benchmark cache',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};

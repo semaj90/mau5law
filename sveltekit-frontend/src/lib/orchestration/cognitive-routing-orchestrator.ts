@@ -1,7 +1,7 @@
 export class CognitiveRoutingOrchestrator {
   async processRoute(route: string, context: any) {
     console.log('🧠 Cognitive routing orchestrator processing route:', route);
-    return { processed: true, route, context }
+    return { processed: true, route, context };
   }
   initialize() {
     console.log('🚀 Cognitive routing orchestrator initialized');
@@ -18,7 +18,7 @@ export class CognitiveRoutingOrchestrator {
       },
       learningRate: 0.85,
       adaptationScore: 0.75,
-    }
+    };
   }
   updateLearningState(state: any) {
     console.log('🧠 Updating learning state:', state);

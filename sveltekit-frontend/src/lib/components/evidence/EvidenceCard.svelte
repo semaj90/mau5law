@@ -83,156 +83,162 @@ https: //svelte.dev/e/block_unexpected_character -->
      }
   }
 </script>
+
 <div
   class="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 shadow hover:shadow-lg hover:border-blue-500
     relative
-    { compact ? 'text-sm' : '' }
-    { draggable ? 'cursor-grab active:cursor-grabbing' : '' }
-    { isHovered ? 'scale-105 z-10 shadow-2xl' : '' }"
+    {compact ? 'text-sm' : ''}
+    {draggable ? 'cursor-grab active:cursor-grabbing' : ''}
+    {isHovered ? 'scale-105 z-10 shadow-2xl' : ''}"
   transition:scale={{ duration: 200, easing: quintOut }}
-  onmouseenter={ handleMouseEnter }
-  onmouseleave={ handleMouseLeave }
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
   role="article"
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b border-gray-200">
-    <div class="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border capitalize"
-      class:bg-blue-50={ evidence.evidenceType === 'document' || evidence.type === 'document' }
-      class:text-blue-700={ evidence.evidenceType === 'document' || evidence.type === 'document' }
-      class:border-blue-200={ evidence.evidenceType === 'document' || evidence.type === 'document' }
-      class:bg-green-50={ evidence.evidenceType === 'image' || evidence.type === 'image' }
-      class:text-green-700={ evidence.evidenceType === 'image' || evidence.type === 'image' }
-      class:border-green-200={ evidence.evidenceType === 'image' || evidence.type === 'image' }
-      class:bg-purple-50={ evidence.evidenceType === 'video' || evidence.type === 'video' }
-      class:text-purple-700={ evidence.evidenceType === 'video' || evidence.type === 'video' }
-      class:border-purple-200={ evidence.evidenceType === 'video' || evidence.type === 'video' }
-      class:bg-orange-50={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
-      class:text-orange-700={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
-      class:border-orange-200={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
-      class:bg-indigo-50={ evidence.evidenceType === 'link' || evidence.type === 'link' }
-      class:text-indigo-700={ evidence.evidenceType === 'link' || evidence.type === 'link' }
-      class:border-indigo-200={ evidence.evidenceType === 'link' || evidence.type === 'link' }
-      data-type={ evidence.evidenceType || evidence.type }
+    <div
+      class="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border capitalize"
+      class:bg-blue-50={evidence.evidenceType === 'document' || evidence.type === 'document'}
+      class:text-blue-700={evidence.evidenceType === 'document' || evidence.type === 'document'}
+      class:border-blue-200={evidence.evidenceType === 'document' || evidence.type === 'document'}
+      class:bg-green-50={evidence.evidenceType === 'image' || evidence.type === 'image'}
+      class:text-green-700={evidence.evidenceType === 'image' || evidence.type === 'image'}
+      class:border-green-200={evidence.evidenceType === 'image' || evidence.type === 'image'}
+      class:bg-purple-50={evidence.evidenceType === 'video' || evidence.type === 'video'}
+      class:text-purple-700={evidence.evidenceType === 'video' || evidence.type === 'video'}
+      class:border-purple-200={evidence.evidenceType === 'video' || evidence.type === 'video'}
+      class:bg-orange-50={evidence.evidenceType === 'audio' || evidence.type === 'audio'}
+      class:text-orange-700={evidence.evidenceType === 'audio' || evidence.type === 'audio'}
+      class:border-orange-200={evidence.evidenceType === 'audio' || evidence.type === 'audio'}
+      class:bg-indigo-50={evidence.evidenceType === 'link' || evidence.type === 'link'}
+      class:text-indigo-700={evidence.evidenceType === 'link' || evidence.type === 'link'}
+      class:border-indigo-200={evidence.evidenceType === 'link' || evidence.type === 'link'}
+      data-type={evidence.evidenceType || evidence.type}
     >
-      <IconComponent size={ 16 } />
-      <span>{ evidence.evidenceType || evidence.type }</span>
+      <IconComponent size={16} />
+      <span>{evidence.evidenceType || evidence.type}</span>
     </div>
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-        onclick={ () => onView(evidence as Evidence) }
+        onclick={() => onView(evidence as Evidence)}
         title="View evidence"
       >
-        <Eye size={ 14 } />
+        <Eye size={14} />
       </button>
-      { #if evidence.url || evidence.file }
+      {#if evidence.url || evidence.file}
         <button
           class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
-          onclick={ () => onDownload(evidence as Evidence) }
+          onclick={() => onDownload(evidence as Evidence)}
           title="Download"
         >
-          <Download size={ 14 } />
+          <Download size={14} />
         </button>
-      { /if }
+      {/if}
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
-        onclick={ () => onEdit(evidence as Evidence) }
+        onclick={() => onEdit(evidence as Evidence)}
         title="Edit evidence"
       >
-        <PenLine size={ 14 } />
+        <PenLine size={14} />
       </button>
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
-        onclick={ () => onDelete(evidence as Evidence) }
+        onclick={() => onDelete(evidence as Evidence)}
         title="Delete evidence"
       >
-        <Trash2 size={ 14 } />
+        <Trash2 size={14} />
       </button>
     </div>
   </div>
   <!-- Content -->
   <div class="px-3 py-3">
     <!-- Preview (for images/videos) -->
-    { #if (evidence.evidenceType || evidence.type) === "image" && evidence.url }
+    {#if (evidence.evidenceType || evidence.type) === 'image' && evidence.url}
       <div class="relative w-full mb-3 rounded-lg overflow-hidden bg-gray-50">
         <img
-          src={ evidence.url }
-          alt={ evidence.title }
+          src={evidence.url}
+          alt={evidence.title}
           loading="lazy"
           class="w-full h-auto max-h-48 object-cover"
-          onerror={ (e) => {
+          onerror={e => {
             // removed unused target assignment
-            target.style.display = "none";
-           }}
+            target.style.display = 'none';
+          }}
         />
       </div>
-    { :else if (evidence.evidenceType || evidence.type) === "video" && evidence.url }
+    {:else if (evidence.evidenceType || evidence.type) === 'video' && evidence.url}
       <div class="relative w-full mb-3 rounded-lg overflow-hidden bg-gray-50">
-        <video src={ evidence.url } preload="metadata" controls={ false } muted class="w-full h-auto max-h-48 object-cover">
+        <video src={evidence.url} preload="metadata" controls={false} muted class="w-full h-auto max-h-48 object-cover">
           <track kind="captions" />
         </video>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3 text-white">
-          <Video size={ 24 } />
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3 text-white"
+        >
+          <Video size={24} />
         </div>
       </div>
-    { /if }
+    {/if}
     <!-- Title and Description -->
     <div class="flex flex-col gap-2">
-      <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2" >
-        { evidence.title }
+      <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2">
+        {evidence.title}
       </h3>
-      { #if evidence.description && !compact }
+      {#if evidence.description && !compact}
         <p class="text-sm text-gray-500 leading-snug line-clamp-3">
-          { evidence.description }
+          {evidence.description}
         </p>
-      { /if }
+      {/if}
       <!-- Metadata -->
       <div class="flex flex-wrap gap-2 my-2">
-        { #if evidence.metadata?.createdAt || evidence.createdAt }
+        {#if evidence.metadata?.createdAt || evidence.createdAt}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-            { new Date(evidence.metadata?.createdAt || evidence.createdAt || '').toLocaleDateString() }
+            {new Date(evidence.metadata?.createdAt || evidence.createdAt || '').toLocaleDateString()}
           </span>
-        { /if }
-        { #if fileSize > 0 }
+        {/if}
+        {#if fileSize > 0}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-            { formatFileSize(fileSize) }
+            {formatFileSize(fileSize)}
           </span>
-        { /if }
-        { #if evidence.metadata?.format }
+        {/if}
+        {#if evidence.metadata?.format}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-            { evidence.metadata.format.toUpperCase() }
+            {evidence.metadata.format.toUpperCase()}
           </span>
-        { /if }
+        {/if}
       </div>
       <!-- Tags -->
-      { #if evidence.tags && evidence.tags.length > 0 }
+      {#if evidence.tags && evidence.tags.length > 0}
         <div class="flex flex-wrap gap-1 mt-2">
-          { #each evidence.tags.slice(0, 3) as tag }
-            <span class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-              <Tag size={ 10 } />
-              { tag }
+          {#each evidence.tags.slice(0, 3) as tag}
+            <span
+              class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200"
+            >
+              <Tag size={10} />
+              {tag}
             </span>
-          { /each }
-          { #if evidence.tags.length > 3 }
-            <span class="text-xs text-gray-500 font-medium">+{ evidence.tags.length - 3 }</span>
-          { /if }
+          {/each}
+          {#if evidence.tags.length > 3}
+            <span class="text-xs text-gray-500 font-medium">+{evidence.tags.length - 3}</span>
+          {/if}
         </div>
-      { /if }
+      {/if}
     </div>
   </div>
   <!-- Footer (if has URL) -->
-  { #if evidence.url && ((evidence.evidenceType || evidence.type) === "link") }
+  {#if evidence.url && (evidence.evidenceType || evidence.type) === 'link'}
     <div class="px-3 py-3 border-t border-gray-200 bg-gray-50">
       <a
-        href={ evidence.url }
+        href={evidence.url}
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
       >
-        <Link size={ 14 } />
+        <Link size={14} />
         Open Link
       </a>
     </div>
-  { /if }
+  {/if}
 </div>
 <!-- Tooltip section removed - replaced with native title attributes -->;

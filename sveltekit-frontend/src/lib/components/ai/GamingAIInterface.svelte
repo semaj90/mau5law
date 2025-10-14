@@ -18,8 +18,8 @@
     Activity,
     Database,
     Shield,
-    Target
-  } from 'lucide-svelte'
+    Target,
+  } from 'lucide-svelte';
   import GamingAIButton from './GamingAIButton.svelte';
   import NierAIAssistant from './NierAIAssistant.svelte';
   interface AIMessage {
@@ -43,10 +43,7 @@
     };
     isVisible?: boolean;
   }
-  let {
-    caseContext,
-    isVisible = true
-  }: Props = $props();
+  let { caseContext, isVisible = true }: Props = $props();
   // Component States
   let showAIInterface = $state(false);
   let showNierAssistant = $state(false);
@@ -63,10 +60,11 @@
     {
       id: '1',
       role: 'system',
-      content: 'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',
+      content:
+        'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',
       timestamp: new Date(),
-      metadata: { confidence: 100, model: 'gemma3-legal' }
-    }
+      metadata: { confidence: 100, model: 'gemma3-legal' },
+    },
   ]);
   let inputValue = $state('');
   let isTyping = $state(false);
@@ -79,7 +77,7 @@
       role: 'user',
       content,
       timestamp: new Date(),
-      status: 'sending'
+      status: 'sending',
     };
     messages = [...messages, userMessage];
     // Set typing state
@@ -90,13 +88,13 @@
         message: content,
         settings: {
           model: 'gemma3-legal',
-          temperature: 0.1
-        }
+          temperature: 0.1,
+        },
       };
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error(`API Error: ${response.status}`);
@@ -112,14 +110,13 @@
         metadata: {
           model: data?.model ?? 'gemma3-legal',
           confidence: Math.floor(Math.random() * 20) + 80, // Simulate confidence if absent
-          processingTime: typeof data?.processingTime === 'number' ? data.processingTime : Math.floor(Math.random() * 1000) + 500
-        }
+          processingTime:
+            typeof data?.processingTime === 'number' ? data.processingTime : Math.floor(Math.random() * 1000) + 500,
+        },
       };
       messages = [...messages, aiMessage];
       // Update user message status
-      messages = messages.map(msg =>
-        msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
-      );
+      messages = messages.map(msg => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg));
     } catch (error) {
       console.error('AI Chat Error:', error);
       // Add error message
@@ -128,13 +125,11 @@
         role: 'system',
         content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message : 'Unknown error'}`,
         timestamp: new Date(),
-        metadata: { confidence: 0 }
+        metadata: { confidence: 0 },
       };
       messages = [...messages, errorMessage];
       // Update user message status
-      messages = messages.map(msg =>
-        msg.id === userMessage.id ? { ...msg, status: 'error' } : msg
-      );
+      messages = messages.map(msg => (msg.id === userMessage.id ? { ...msg, status: 'error' } : msg));
     } finally {
       isTyping = false;
       aiMode = 'idle';
@@ -150,7 +145,7 @@
       danger: 'text-red-400',
       bg: 'bg-gray-900',
       panel: 'bg-gray-800/90',
-      border: 'border-gray-600/50'
+      border: 'border-gray-600/50',
     },
     cyberpunk: {
       primary: 'text-cyan-300',
@@ -159,7 +154,7 @@
       danger: 'text-pink-400',
       bg: 'bg-black',
       panel: 'bg-gray-900/95',
-      border: 'border-cyan-500/30'
+      border: 'border-cyan-500/30',
     },
     matrix: {
       primary: 'text-green-300',
@@ -168,8 +163,8 @@
       danger: 'text-red-500',
       bg: 'bg-black',
       panel: 'bg-green-950/80',
-      border: 'border-green-500/40'
-    }
+      border: 'border-green-500/40',
+    },
   };
   let currentTheme = $state('yorha');
   let theme = $derived(() => themes[currentTheme as keyof typeof themes]);
@@ -178,7 +173,7 @@
     cpuUsage: 23,
     memoryUsage: 67,
     aiProcessing: 12,
-    caseAnalysis: 89
+    caseAnalysis: 89,
   });
   // Gaming-style AI responses
   const processAICommand = async (command: string) => {
@@ -190,7 +185,7 @@
       role: 'user',
       content: command,
       timestamp: new Date(),
-      status: 'sent'
+      status: 'sent',
     };
     messages = [...messages, userMessage];
     // Simulate processing with gaming effects
@@ -217,8 +212,8 @@
         tokens: response.length,
         model: 'YoRHa-Legal-AI-v2',
         processingTime: 1.2,
-        confidence: confidence
-      }
+        confidence: confidence,
+      },
     };
     messages = [...messages, aiResponse];
     isTyping = false;
@@ -252,13 +247,14 @@
     return () => clearInterval(interval);
   });
 </script>
+
 <!-- Gaming AI Button -->
 <GamingAIButton
-  bind:isVisible={isVisible}
-  bind:aiMode={aiMode}
+  bind:isVisible
+  bind:aiMode
   {isConnected}
   toggle={toggleInterface}
-  settingsclick={() => terminalMode = !terminalMode}
+  settingsclick={() => (terminalMode = !terminalMode)}
 />
 <!-- Gaming AI Interface -->
 {#if showAIInterface}
@@ -274,7 +270,7 @@
       tabindex="0"
       aria-label="Close AI Interface"
       on:click={() => (showAIInterface = false)}
-      on:keydown={(e) => {
+      on:keydown={e => {
         if (e.key === 'Enter' || e.key === ' ') showAIInterface = false;
       }}
     ></div>
@@ -308,22 +304,27 @@
         </div>
         <!-- Header Controls -->
         <div class="flex items-center gap-2">
-          <button type="button"
-            onclick={() => currentTheme = currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha'}
+          <button
+            type="button"
+            onclick={() =>
+              (currentTheme =
+                currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha')}
             class="p-2 rounded-lg hover:bg_gray-700/50 transition-colors"
             title="Switch Theme"
           >
             <Settings class="w-5 h-5 {theme.secondary}" />
           </button>
-            <button type="button"
+          <button
+            type="button"
             onclick={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Open Full Assistant"
           >
             <Maximize2 class="w-5 h-5 {theme.secondary}" />
           </button>
-            <button type="button"
-            onclick={() => showAIInterface = false}
+          <button
+            type="button"
+            onclick={() => (showAIInterface = false)}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
           >
             <X class="w-5 h-5 text-red-400" />
@@ -352,7 +353,8 @@
           <div class="flex-1 overflow-y-auto p-4 space-y-4">
             {#each messages as message (message.id)}
               <div
-                class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}";
+                class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}"
+                ;
                 in:fly={{ x: message.role === 'user' ? 20 : -20, duration: 200 }}
               >
                 <div class="max-w-[80%]">
@@ -373,7 +375,8 @@
                     class="px-4 py-3 rounded-lg {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
                       : message.role === 'system'
-                      ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary: 'bg-gray-700/30 border border-gray-600/30 ' + theme.primary}"
+                        ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary
+                        : 'bg-gray-700/30 border border-gray-600/30 ' + theme.primary}"
                   >
                     <pre class="text-sm whitespace-pre-wrap font-mono">{message.content}</pre>
                     {#if message.metadata && message.role === 'assistant'}
@@ -411,7 +414,7 @@
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
             <form
-              on:submit={(e) => {
+              on:submit={e => {
                 e.preventDefault();
                 sendMessage(inputValue);
               }}
@@ -420,7 +423,7 @@
               <div class="flex-1 relative">
                 <input
                   bind:value={inputValue}
-                  placeholder={isTyping ? "AI is processing..." : "Enter command or query..."}
+                  placeholder={isTyping ? 'AI is processing...' : 'Enter command or query...'}
                   disabled={isTyping}
                   class="w-full px-4 py-3 bg-gray-800/50 border {theme.border} rounded-lg
                          {theme.primary} placeholder-gray-500 focus:border-{theme.accent.split('-')[1]}-400;
@@ -441,7 +444,10 @@
             <div class="flex gap-2 mt-3">
               {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
                 <button
-                  onclick={() => { inputValue = cmd; sendMessage(cmd) }}
+                  onclick={() => {
+                    inputValue = cmd;
+                    sendMessage(cmd);
+                  }}
                   class="px-3 py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
                          rounded border {theme.border} transition-colors uppercase font-mono"
                 >
@@ -456,12 +462,7 @@
           <h3 class="text-sm font-bold {theme.primary} mb-4 uppercase">AI Control Panel</h3>
           <!-- AI Modes -->
           <div class="space-y-2 mb-6">
-            {#each [
-              { id: 'analysis', label: 'Deep Analysis', icon: Brain },
-              { id: 'search', label: 'Evidence Search', icon: Search },
-              { id: 'document', label: 'Document Gen', icon: FileText },
-              { id: 'rapid', label: 'Rapid Response', icon: Zap }
-            ] as mode}
+            {#each [{ id: 'analysis', label: 'Deep Analysis', icon: Brain }, { id: 'search', label: 'Evidence Search', icon: Search }, { id: 'document', label: 'Document Gen', icon: FileText }, { id: 'rapid', label: 'Rapid Response', icon: Zap }] as mode}
               <button
                 onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
                 class="w-full flex items-center gap-3 p-3 rounded-lg border {theme.border}
@@ -479,8 +480,8 @@
             <h4 class="text-xs font-bold {theme.secondary} uppercase">System Monitor</h4>
             <div class="space-y-2 text-xs {theme.secondary} font-mono">
               <div>Connection: <span class="text-green-400">STABLE</span></div>
-              <div>AI Model: <span class="{theme.accent}">YoRHa-Legal-v2</span></div>
-              <div>Uptime: <span class="{theme.accent}">72:14:39</span></div>
+              <div>AI Model: <span class={theme.accent}>YoRHa-Legal-v2</span></div>
+              <div>Uptime: <span class={theme.accent}>72:14:39</span></div>
               <div>Response Time: <span class="text-green-400">1.2s avg</span></div>
             </div>
           </div>
@@ -489,7 +490,9 @@
       <!-- Scanline Effect -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          class="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-{theme.accent.split('-')[1]}-400/50 to-transparent
+          class="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-{theme.accent.split(
+            '-'
+          )[1]}-400/50 to-transparent
                  animate-[scanner_3s_infinite]"
         ></div>
       </div>
@@ -498,16 +501,21 @@
 {/if}
 <!-- Nier Assistant Integration -->
 {#if showNierAssistant}
-<NierAIAssistant
-  isOpen={showNierAssistant}
-  {caseContext}
-  onClose={() => (showNierAssistant = false)}
-/>
+  <NierAIAssistant isOpen={showNierAssistant} {caseContext} onClose={() => (showNierAssistant = false)} />
 {/if}
+
 <style>
   @keyframes scanner {
-    0% { top: 0%; opacity: 1; }
-    50% { opacity: 0.3; }
-    100% { top: 100%; opacity: 1; }
+    0% {
+      top: 0%;
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      top: 100%;
+      opacity: 1;
+    }
   }
 </style>

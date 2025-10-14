@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 // Orphaned content: import type { Evidence
 // Sidebar state
 export const sidebarStore = writable({
-  open: false
+  open: false,
   width: 320,
   items: [] as any[],
   searchQuery: "",
@@ -13,10 +13,10 @@ export const sidebarStore = writable({
 export const toolbarStore = writable({
   selectedTool: "select",
   formatting: {
-    bold: false
-    italic: false
-    underline: false
-    strikethrough: false
+    bold: false,
+    italic: false,
+    underline: false,
+    strikethrough: false,
     fontSize: 16,
     fontFamily: "Arial",
     color: "#000000",
@@ -30,8 +30,8 @@ export const toolbarStore = writable({
     opacity: 1
   },
   zoom: 100,
-  canUndo: false
-  canRedo: false
+  canUndo: false,
+  canRedo: false,
 });
 // Canvas state
 export const canvasStore = writable({
@@ -39,16 +39,16 @@ export const canvasStore = writable({
   height: 600,
   objects: [] as any[],
   selectedObjects: [] as any[],
-  clipboard: null as any
-  isDirty: false
-  isLoading: false
+  clipboard: null as any,
+  isDirty: false,
+  isLoading: false,
   panX: 0,
   panY: 0,
   scale: 1
 });
 // AI state
 export const aiStore = writable({
-  dialogOpen: false
+  dialogOpen: false,
   selectedVibe: "professional",
   prompt: "",
   response: "",
@@ -57,7 +57,7 @@ export const aiStore = writable({
 });
 // File upload state
 export const uploadStore = writable({
-  isUploading: false
+  isUploading: false,
   progress: 0,
   queue: [] as File[],
   uploadedFiles: [] as Evidence[]

@@ -28,7 +28,7 @@ export interface IntelligentTodo {
   confidence: number;
   tags: string[];
   created_at: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
 }
 // Respect environment flag to enable/disable WebGPU features in dev
 const _ENABLE_GPU = (() => {
@@ -79,7 +79,7 @@ export class WebGPUSOMCache {
     port: 6379,
     keyPrefix: 'som:cache:',
     syncInterval: 30000, // 30 seconds
-  }
+  };
   private syncTimer: any = null;
   // WebGPU compute shaders for semantic operations
   private similarityShader = `
@@ -582,7 +582,7 @@ export class WebGPUSOMCache {
     return todos.sort((a, b) => b.priority - a.priority);
   }
   private getSeverityWeight(severity: string): number {
-    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 }
+    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
   private generateSuggestedFixes(category: string): string[] {
@@ -593,7 +593,7 @@ export class WebGPUSOMCache {
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
       general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
-    }
+    };
     return fixes[category] ?? fixes.general;
   }
   private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
@@ -793,7 +793,7 @@ export class WebGPUSOMCache {
     return todos.sort((a, b) => b.priority - a.priority);
   }
   private getSeverityWeight(severity: string): number {
-    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 }
+    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
   private generateSuggestedFixes(category: string): string[] {
@@ -804,7 +804,7 @@ export class WebGPUSOMCache {
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
       general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
-    }
+    };
     return fixes[category] ?? fixes.general;
   }
   private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
@@ -1004,7 +1004,7 @@ export class WebGPUSOMCache {
     return todos.sort((a, b) => b.priority - a.priority);
   }
   private getSeverityWeight(severity: string): number {
-    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 }
+    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
   private generateSuggestedFixes(category: string): string[] {
@@ -1015,7 +1015,7 @@ export class WebGPUSOMCache {
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
       general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
-    }
+    };
     return fixes[category] ?? fixes.general;
   }
   private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
@@ -1215,7 +1215,7 @@ export class WebGPUSOMCache {
     return todos.sort((a, b) => b.priority - a.priority);
   }
   private getSeverityWeight(severity: string): number {
-    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 }
+    const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
   private generateSuggestedFixes(category: string): string[] {
@@ -1226,7 +1226,7 @@ export class WebGPUSOMCache {
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
       general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
-    }
+    };
     return fixes[category] ?? fixes.general;
   }
   private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
@@ -1378,11 +1378,14 @@ export class WebGPUSOMCache {
    * Train vector quantization model using WebGPU compute shaders
    * Converts Float32 embeddings → Int8 quantized arrays (4x memory savings)
    */
-  async trainVectorQuantization(vectors: Float32Array[], options?: {
-    dimensions?: number;
-    scaleFactor?: number;
-    offset?: number;
-  }): Promise<Int8Array[]> {
+  async trainVectorQuantization(
+    vectors: Float32Array[],
+    options?: {
+      dimensions?: number;
+      scaleFactor?: number;
+      offset?: number;
+    }
+  ): Promise<Int8Array[]> {
     if (!this.device) {
       console.warn('⚠️ WebGPU not available, falling back to CPU quantization');
       return this.quantizeVectorsCPU(vectors);
@@ -1499,10 +1502,13 @@ export class WebGPUSOMCache {
    * Compute legal document embeddings using WebGPU acceleration
    * Applies legal-specific weighting for contracts, case law, citations
    */
-  async computeLegalEmbeddingGPU(text: string, metadata?: {
-    legalWeight?: number;
-    caseWeight?: number;
-  }): Promise<Float32Array> {
+  async computeLegalEmbeddingGPU(
+    text: string,
+    metadata?: {
+      legalWeight?: number;
+      caseWeight?: number;
+    }
+  ): Promise<Float32Array> {
     if (!this.device) {
       console.warn('⚠️ WebGPU not available, falling back to CPU embeddings');
       return this.computeLegalEmbeddingCPU(text, metadata);
@@ -1820,7 +1826,9 @@ export async function initializeSOMCache(): Promise<WebGPUSOMCache> {
   const webGPUEnabled = await cache.initializeWebGPU();
   const indexDBEnabled = await cache.initializeIndexDB();
   const redisEnabled = await cache.initializeRedis();
-  console.log(`🧠 SOM Cache initialized - WebGPU: ${webGPUEnabled}, IndexDB: ${indexDBEnabled}, Redis: ${redisEnabled}`);
+  console.log(
+    `🧠 SOM Cache initialized - WebGPU: ${webGPUEnabled}, IndexDB: ${indexDBEnabled}, Redis: ${redisEnabled}`
+  );
   return cache;
 }
 // Export singleton instance for service worker

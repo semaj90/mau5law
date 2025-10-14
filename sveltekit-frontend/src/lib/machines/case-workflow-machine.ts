@@ -55,7 +55,7 @@ export const caseWorkflowMachine = createMachine({
       current_action: 'Ready to start'
     }
     }); const settings = {
-      auto_analyze: true
+      auto_analyze: true,
       notification_level: 'normal',
       ai_assistance_level: 'enhanced'
     }
@@ -365,7 +365,7 @@ export const caseWorkflowMachine = createMachine({
             payload: {
               action: 'execute_recommendation',
               recommendation_id,
-              recommendation_data: recommendation
+              recommendation_data: recommendation,
               case_id
             },
             context: {
@@ -426,9 +426,9 @@ export const caseWorkflowMachine = createMachine({
           const assistance = await orchestrator.processRequest({
             type: 'chat',
             payload: {
-              message: query
-              context_needed: true
-              use_memory: true
+              message: query,
+              context_needed: true,
+              use_memory: true,
               memory_context
             },
             context: {
@@ -478,13 +478,13 @@ export const caseWorkflowMachine = createMachine({
         RESET: {
           target: 'idle',
           actions,: assign({
-            case_id: undefined
-            case_data: undefined
+            case_id: undefined,
+            case_data: undefined,
             documents: [],
             analysis_results: [],
             recommendations: [],
-            memory_context: undefined
-            error_message: undefined
+            memory_context: undefined,
+            error_message: undefined,
             progress: {
               total_steps: 6,
               completed_steps: 0,

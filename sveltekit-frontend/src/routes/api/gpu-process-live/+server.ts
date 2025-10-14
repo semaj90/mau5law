@@ -71,8 +71,8 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'stop':
         const stopped = gpuProcessor.stopProcess(data.processId)
         return json({
-          success: stopped
-          message: stopped ? 'Process stopped' : 'Process not found'
+          success: stopped,
+          message: stopped ? 'Process stopped' : 'Process not found',
         })
       case 'errors':
         const errors = await getLiveTypeScriptErrors()

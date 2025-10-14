@@ -72,9 +72,9 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       quantumCoherence: 0.8,
       entanglementStrength: 0.5,
       waveFunction: 'superposition',
-      uncertaintyPrinciple: true
+      uncertaintyPrinciple: true,
       collapseProbability: 0.01,
-      enableTunneling: true
+      enableTunneling: true,
       dimensions: 8,
       ...options.quantum
     }
@@ -84,15 +84,15 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       cognitiveLoad: 0.6,
       synapticActivity: 0.7,
       neuralNetworkComplexity: 7,
-      emergentProperties: true
-      selfAwareness: false
+      emergentProperties: true,
+      selfAwareness: false,
       ...options.consciousness
     }
     this.realityOptions = {
       matrixGlitchIntensity: 0.2,
       temporalDistortion: 0.1,
       spatialWarp: { x: 0, y: 0, z: 0 },
-      causalityLoop: false
+      causalityLoop: false,
       paradoxResolution: 'branch',
       realityStability: 0.85,
       ...options.reality
@@ -110,7 +110,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     // Transparent container material
     return new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.beige,
-      transparent: true
+      transparent: true,
       opacity: 0.1,
       wireframe: true
     });
@@ -141,9 +141,9 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         },
         waveFunction: new Complex(Math.random(), Math.random()),
         entangled: Math.random() < this.quantumOptions.entanglementStrength,
-        entanglementPartner: undefined as number | undefined
+        entanglementPartner: undefined as number | undefined,
         probability: Math.random(),
-        collapsed: false
+        collapsed: false,
         spin: Math.random() * Math.PI * 2,
         phase: Math.random() * Math.PI * 2
       }
@@ -183,9 +183,9 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       },
       vertexShader: this.getQuantumVertexShader(),
       fragmentShader: this.getQuantumFragmentShader(),
-      transparent: true
-      vertexColors: true
-      blending: THREE.AdditiveBlending
+      transparent: true,
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
     });
     this.quantumField = new THREE.Points(geometry, material);
     this.mesh!.add(this.quantumField);
@@ -205,8 +205,8 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         connections: [] as number[],
         thought: this.generateRandomThought(),
         awareness: Math.random() * this.consciousnessOptions.awarenessLevel,
-        firing: false
-        lastFired: 0
+        firing: false,
+        lastFired: 0,
       }
       // Create connections to nearby nodes
       const connectionCount = Math.floor(Math.random() * 5) + 2;
@@ -221,8 +221,8 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       const nodeGeometry = new THREE.SphereGeometry(0.05, 8, 8);
       const nodeMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color().setHSL(node.awareness, 0.8, 0.6),
-        transparent: true
-        opacity: 0.7
+        transparent: true,
+        opacity: 0.7,
       });
       const nodeMesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
       nodeMesh.position.set(node.position.x, node.position.y, node.position.z);
@@ -240,8 +240,8 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
           const connectionMaterial = new THREE.LineBasicMaterial({
             color: YORHA_COLORS.accent.gold,
-            transparent: true
-            opacity: 0.3
+            transparent: true,
+            opacity: 0.3,
           });
           const connectionLine = new THREE.Line(connectionGeometry, connectionMaterial);
           this.consciousnessNetwork?.add(connectionLine);
@@ -265,8 +265,8 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         },
         vertexShader: this.getMatrixVertexShader(),
         fragmentShader: this.getMatrixFragmentShader(),
-        transparent: true
-        side: THREE.DoubleSide
+        transparent: true,
+        side: THREE.DoubleSide,
       });
       this.glitchMaterials.push(streamMaterial);
       const streamMesh = new THREE.Mesh(streamGeometry, streamMaterial);

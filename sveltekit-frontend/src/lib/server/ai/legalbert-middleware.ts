@@ -327,7 +327,7 @@ export class LegalBERTMiddleware {
       // - { embeddings: number[] }
       // - { vector: number[] }
       // - { data: [{ embedding: number[] }, ...] }
-      if (Array.isArray(json) && json.every((n) => typeof n === 'number')) {
+      if (Array.isArray(json) && json.every(n => typeof n === 'number')) {
         return json as number[];
       }
 
@@ -336,12 +336,12 @@ export class LegalBERTMiddleware {
         const obj = json as Record<string, unknown>;
 
         const embeddings = obj['embeddings'];
-        if (Array.isArray(embeddings) && embeddings.every((n) => typeof n === 'number')) {
+        if (Array.isArray(embeddings) && embeddings.every(n => typeof n === 'number')) {
           return embeddings as number[];
         }
 
         const vector = obj['vector'];
-        if (Array.isArray(vector) && vector.every((n) => typeof n === 'number')) {
+        if (Array.isArray(vector) && vector.every(n => typeof n === 'number')) {
           return vector as number[];
         }
 
@@ -349,7 +349,7 @@ export class LegalBERTMiddleware {
         if (Array.isArray(data) && data.length > 0) {
           const first = data[0] as Record<string, unknown> | undefined;
           const emb = first && first['embedding'];
-          if (Array.isArray(emb) && emb.every((n) => typeof n === 'number')) {
+          if (Array.isArray(emb) && emb.every(n => typeof n === 'number')) {
             return emb as number[];
           }
         }

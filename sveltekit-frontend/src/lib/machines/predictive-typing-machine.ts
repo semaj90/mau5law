@@ -1036,4 +1036,4 @@ export function createPredictiveTypingMachine(
   return predictiveTypingMachine.provide(impl as Parameters<(typeof predictiveTypingMachine)['provide']>[0]);
 }
 // Export context type for external use
-export type { PredictiveTypingContext, PredictiveTypingEvent }
+export type { PredictiveTypingContext, PredictiveTypingEvent };

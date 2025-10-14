@@ -8,7 +8,4 @@ export { default as CardHeader } from './CardHeader.svelte';
 export { default as CardTitle } from './CardTitle.svelte';
 
 // Re-export common types
-export type {
-  ButtonVariant,
-  ButtonSize
-} from '../types';
+export type { ButtonVariant, ButtonSize } from '../types';

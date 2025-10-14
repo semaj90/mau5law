@@ -10,7 +10,7 @@
     documentsAnalyzed: 234,
     citationsFound: 89,
     casesProcessed: 12,
-    assistantSessions: 8
+    assistantSessions: 8,
   });
 
   // Available AI Services
@@ -21,7 +21,7 @@
       href: '/ai/chat',
       description: 'Interactive AI chat with legal document context',
       status: 'active',
-      stats: `${aiStats.activeChats} active chats`
+      stats: `${aiStats.activeChats} active chats`,
     },
     {
       name: 'AI Assistant',
@@ -29,7 +29,7 @@
       href: '/ai/assistant',
       description: 'Legal AI assistant for document analysis',
       status: 'active',
-      stats: `${aiStats.assistantSessions} sessions`
+      stats: `${aiStats.assistantSessions} sessions`,
     },
     {
       name: 'RAG Query System',
@@ -37,7 +37,7 @@
       href: '/ai/rag',
       description: 'Retrieval-Augmented Generation for legal research',
       status: 'active',
-      stats: `${aiStats.ragQueries} queries processed`
+      stats: `${aiStats.ragQueries} queries processed`,
     },
     {
       name: 'GPU Chat',
@@ -45,7 +45,7 @@
       href: '/ai/gpu-chat',
       description: 'High-performance GPU-accelerated chat',
       status: 'active',
-      stats: 'RTX 3060 Ti enabled'
+      stats: 'RTX 3060 Ti enabled',
     },
     {
       name: 'Vector Search',
@@ -53,7 +53,7 @@
       href: '/ai/vector-search',
       description: 'Semantic search across legal documents',
       status: 'active',
-      stats: 'pgvector enabled'
+      stats: 'pgvector enabled',
     },
     {
       name: 'Document Analysis',
@@ -61,7 +61,7 @@
       href: '/ai/processing',
       description: 'AI-powered document processing and analysis',
       status: 'active',
-      stats: `${aiStats.documentsAnalyzed} documents`
+      stats: `${aiStats.documentsAnalyzed} documents`,
     },
     {
       name: 'Case Scoring',
@@ -69,7 +69,7 @@
       href: '/ai/case-scoring',
       description: 'AI-driven case strength assessment',
       status: 'active',
-      stats: `${aiStats.casesProcessed} cases scored`
+      stats: `${aiStats.casesProcessed} cases scored`,
     },
     {
       name: 'Pattern Detection',
@@ -77,8 +77,8 @@
       href: '/ai/pattern-detection',
       description: 'Legal pattern and anomaly detection',
       status: 'active',
-      stats: 'ML models active'
-    }
+      stats: 'ML models active',
+    },
   ];
 
   // Recent AI Activities
@@ -88,29 +88,29 @@
       title: 'Contract Review Session',
       time: '2 minutes ago',
       user: 'Legal Analyst',
-      status: 'completed'
+      status: 'completed',
     },
     {
       type: 'rag',
       title: 'Precedent Research Query',
       time: '5 minutes ago',
       user: 'Senior Associate',
-      status: 'completed'
+      status: 'completed',
     },
     {
       type: 'analysis',
       title: 'Document Classification',
       time: '8 minutes ago',
       user: 'Paralegal',
-      status: 'processing'
+      status: 'processing',
     },
     {
       type: 'assistant',
       title: 'Case Strategy Discussion',
       time: '12 minutes ago',
       user: 'Partner',
-      status: 'completed'
-    }
+      status: 'completed',
+    },
   ]);
 
   // System Health
@@ -118,14 +118,14 @@
     aiModels: 'online',
     vectorDB: 'online',
     gpuAcceleration: 'active',
-    ragPipeline: 'healthy'
+    ragPipeline: 'healthy',
   });
 
   // helper to provide data-* attributes while avoiding strict Props type errors
   function umamiAttrs(serviceName: string) {
     return {
       'data-umami-event': 'ai-service-access',
-      'data-umami-event-service': serviceName
+      'data-umami-event-service': serviceName,
     } as any;
   }
 </script>
@@ -227,13 +227,7 @@
             <p class="service-description">{service.description}</p>
             <div class="service-stats">{service.stats}</div>
             <!-- Use spread of an any-casted object to attach data-* attributes without TS errors -->
-            <Button
-              href={service.href}
-              class="service-button"
-              {...umamiAttrs(service.name)}
-            >
-              Launch Service
-            </Button>
+            <Button href={service.href} class="service-button" {...umamiAttrs(service.name)}>Launch Service</Button>
           </CardContent>
         </Card>
       {/each}
@@ -280,18 +274,10 @@
   <div class="quick-actions">
     <h2>⚡ Quick Actions</h2>
     <div class="actions-grid">
-      <Button href="/ai/chat" class="action-button">
-        💬 Start New Chat
-      </Button>
-      <Button href="/ai/rag" class="action-button">
-        🧠 RAG Query
-      </Button>
-      <Button href="/ai/processing" class="action-button">
-        📄 Analyze Document
-      </Button>
-      <Button href="/cases" class="action-button">
-        ⚖️ Review Cases
-      </Button>
+      <Button href="/ai/chat" class="action-button">💬 Start New Chat</Button>
+      <Button href="/ai/rag" class="action-button">🧠 RAG Query</Button>
+      <Button href="/ai/processing" class="action-button">📄 Analyze Document</Button>
+      <Button href="/cases" class="action-button">⚖️ Review Cases</Button>
     </div>
   </div>
 </div>

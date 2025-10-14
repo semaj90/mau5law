@@ -95,9 +95,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         neural_activity: Math.max(60, Math.min(100, systemData.neural_activity + (Math.random() - 0.5) * 4)),
         active_processes: Math.max(
           8,
-          Math.min(20, systemData.active_processes + Math.round((Math.random() - 0.5) * 2)),
+          Math.min(20, systemData.active_processes + Math.round((Math.random() - 0.5) * 2))
         ),
-      }
+      };
     }, 3000);
     // Initialize legal AI session
     initializeLegalSession();
@@ -184,7 +184,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       }
     }
     const { promise, abort } = withAbort(async signal => {
-      if (searchMode === 'local') return { results: [] } // guard
+      if (searchMode === 'local') return { results: [] }; // guard
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, {
         signal,
       });
@@ -249,7 +249,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               relevance?: unknown;
               status?: unknown;
             }
-          ).relevance || Math.random()) * 100,
+          ).relevance || Math.random()) * 100
         ),
         status:
           (

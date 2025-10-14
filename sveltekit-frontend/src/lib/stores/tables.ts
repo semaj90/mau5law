@@ -30,7 +30,7 @@ class TableManager {
     }
     const defaultState: TableState = {
       id,
-      sortColumn: null
+      sortColumn: null,
       sortDirection: 'asc',
       selectedRows: new Set(),
       currentPage: 1,
@@ -59,9 +59,9 @@ class TableManager {
       const newDirection = direction || (state.sortColumn === column && state.sortDirection === 'asc' ? 'desc' : 'asc');
       return {
         ...state,
-        sortColumn: column
-        sortDirection: newDirection
-        currentPage: 1 // Reset to first page when sorting
+        sortColumn: column,
+        sortDirection: newDirection,
+        currentPage: 1, // Reset to first page when sorting
       }
     });
   }
@@ -105,8 +105,8 @@ class TableManager {
     if (!table) return;
     table.update(state => ({
       ...state,
-      searchQuery: query
-      currentPage: 1 // Reset to first page when searching
+      searchQuery: query,
+      currentPage: 1, // Reset to first page when searching
     });
   }
   updateFilter(tableId: string, column: string, filter: string) {
@@ -121,8 +121,8 @@ class TableManager {
       }
       return {
         ...state,
-        columnFilters: newFilters
-        currentPage: 1 // Reset to first page when filtering
+        columnFilters: newFilters,
+        currentPage: 1, // Reset to first page when filtering
       }
     });
   }
@@ -131,8 +131,8 @@ class TableManager {
     if (!table) return;
     table.update(state => ({
       ...state,
-      currentPage: page
-      pageSize: pageSize || state.pageSize
+      currentPage: page,
+      pageSize: pageSize || state.pageSize,
     });
   }
   updateColumnWidth(tableId: string, column: string, width: number) {

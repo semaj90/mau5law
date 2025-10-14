@@ -33,14 +33,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     testId,
     timestamp: new Date().toISOString(),
     totalDuration: 0,
-    overallSuccess: false
+    overallSuccess: false,
     results: [],
     systemHealth: {
-      authentication: false
-      sessionManagement: false
-      aiAssistant: false
-      productionServices: false
-      gpuAcceleration: false
+      authentication: false,
+      sessionManagement: false,
+      aiAssistant: false,
+      productionServices: false,
+      gpuAcceleration: false,
     }
   }
   try {
@@ -117,8 +117,8 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: testUser
-        password: 'password'
+        email: testUser,
+        password: 'password',
       })
     })
     if (!loginResponse.ok) {
@@ -156,13 +156,13 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
     // Simulate session validation
     const sessionValidation = {
       userId: authData.user.id,
-      sessionActive: true
+      sessionActive: true,
       securityLevel: 'standard',
       permissions: ['cases:read', 'evidence:read', 'ai:analyze']
     }
     // Test session health
     const sessionHealth = {
-      isValid: true
+      isValid: true,
       warningCount: 0,
       lastCheck: new Date()
     }
@@ -172,8 +172,8 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       success: true,
       duration: Date.now() - stepStart,
       data: {
-        validation: sessionValidation
-        health: sessionHealth
+        validation: sessionValidation,
+        health: sessionHealth,
       }
     }
   } catch (error: any) {
@@ -211,8 +211,8 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       data: {
         serviceHealth,
         ragResponse: ragResponse ? 'Success' : 'No response',
-        healthyCount: healthyServices
-        totalCount: totalServices
+        healthyCount: healthyServices,
+        totalCount: totalServices,
       }
     }
   } catch (error: any) {
@@ -280,14 +280,14 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
     console.log('⚡ Testing GPU acceleration...')
     // Test GPU availability (simulated - in real implementation would check actual GPU)
     const gpuInfo = {
-      available: true
+      available: true,
       model: 'RTX 3060 Ti',
       memory: '8GB VRAM',
       utilization: '45%'
     }
     // Test GPU-accelerated query
     const gpuQuery = await services.queryRAG('GPU-accelerated legal document analysis test', {
-      useGPU: true
+      useGPU: true,
       model: 'gemma3-legal',
       testMode: true
     })
@@ -319,12 +319,12 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
     console.log('🔄 Testing end-to-end integration...')
     // Simulate complete user flow
     const workflow = {
-      login: true
-      sessionCreated: true
-      aiQueryExecuted: true
-      servicesAccessed: true
-      gpuAccelerated: true
-      securityValidated: true
+      login: true,
+      sessionCreated: true,
+      aiQueryExecuted: true,
+      servicesAccessed: true,
+      gpuAccelerated: true,
+      securityValidated: true,
     }
     // Test workflow completion
     const workflowSteps = Object.values(workflow).filter(item => item.length)
@@ -339,7 +339,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
       duration: Date.now() - stepStart,
       data: {
         workflow,
-        completedSteps: workflowSteps
+        completedSteps: workflowSteps,
         totalSteps,
         integrationScore: '100%'
       }

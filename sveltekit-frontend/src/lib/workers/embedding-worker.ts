@@ -100,8 +100,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           processed += batch.length;
           // Report progress
           this.postResponse({
-            id: taskId
-            success: true
+            id: taskId,
+            success: true,
             progress: Math.round((processed / texts.length) * 100),
             data: { processed, total: texts.length }
           });
@@ -125,7 +125,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         errors,
         metrics: {
           tokenCount: this.estimateTokenCount(texts),
-          embeddingDimensions: dimensions
+          embeddingDimensions: dimensions,
           cacheHits: 0,
           cacheMisses: texts.length
         }
@@ -138,11 +138,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       chunks.forEach((chunk, index) => {
         documentChunks.push({
           id: this.generateId(),
-          content: chunk
+          content: chunk,
           metadata: {
             ...metadata,
             source: metadata?.source || 'unknown',
-            chunkIndex: index
+            chunkIndex: index,
             totalChunks: chunks.length,
             startIndex: content.indexOf(chunk),
             endIndex: content.indexOf(chunk) + chunk.length
@@ -151,8 +151,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         // Report progress
         if (index % 10 === 0) {
           this.postResponse({
-            id: taskId
-            success: true
+            id: taskId,
+            success: true,
             progress: Math.round((index / chunks.length) * 100),
             data: { processed: index, total: chunks.length }
           });
@@ -171,8 +171,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         // Report progress every 100 items
         if (i % 100 === 0) {
           this.postResponse({
-            id: taskId
-            success: true
+            id: taskId,
+            success: true,
             progress: Math.round((i / targetEmbeddings.length) * 100),
             data: { processed: i, total: targetEmbeddings.length }
           });
@@ -476,14 +476,14 @@ export class EmbeddingWorkerManager {
   }
   public async processGeneral(
     data: any;
-    options: any
+    options: any,
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<any> {
     return this.executeTask('processing', data, onProgress, options);
   }
   private async executeTask(
     type: WorkerMessage['type'],
-    data: any
+    data: any,
     onProgress?: (progress: number, data?: unknown) => void,
     options?: unknown
   ): Promise<any> {

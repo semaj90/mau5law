@@ -50,7 +50,7 @@ export const websocketStore = {
   subscribeToDashboard,
   broadcastEvidenceEdit,
   broadcastCursorPosition,
-}
+};
 
 /**
  * Initialize WebSocket connection
@@ -181,7 +181,7 @@ function handleCaseUpdate(data: any): void {
     websocketStore.dashboardData.cases[caseIndex] = {
       ...websocketStore.dashboardData.cases[caseIndex],
       ...updateData,
-    }
+    };
   }
 
   // Add to recent activity
@@ -229,14 +229,14 @@ function handleProcessingStatus(data: any): void {
 
   // Update processing jobs list
   const jobIndex = websocketStore.processingJobs.findIndex(
-    job => job.entityType === entityType && job.entityId === entityId,
+    job => job.entityType === entityType && job.entityId === entityId
   );
 
   if (jobIndex !== -1) {
     websocketStore.processingJobs[jobIndex] = {
       ...websocketStore.processingJobs[jobIndex],
       status,
-    }
+    };
   } else {
     websocketStore.processingJobs.push({
       entityType,
@@ -250,7 +250,7 @@ function handleProcessingStatus(data: any): void {
   if (entityType === 'evidence' && status.status === 'completed') {
     websocketStore.dashboardData.stats.pendingAnalysis = Math.max(
       0,
-      websocketStore.dashboardData.stats.pendingAnalysis - 1,
+      websocketStore.dashboardData.stats.pendingAnalysis - 1
     );
 
     // Update evidence with AI summary
@@ -265,7 +265,7 @@ function handleProcessingStatus(data: any): void {
 function handleDashboardUpdate(data: any): void {
   // Merge dashboard update data
   if (data.stats) {
-    websocketStore.dashboardData.stats = { ...websocketStore.dashboardData.stats, ...data.stats }
+    websocketStore.dashboardData.stats = { ...websocketStore.dashboardData.stats, ...data.stats };
   }
   if (data.recentCases) {
     websocketStore.dashboardData.cases = data.recentCases;
@@ -295,7 +295,7 @@ function handleCollaborativeEdit(data: any): void {
 
     // Check if anyone else is editing this evidence
     const stillEditing = Array.from(websocketStore.activeEditors.values()).some(
-      editor => editor.evidenceId === evidenceId,
+      editor => editor.evidenceId === evidenceId
     );
 
     if (!stillEditing) {
@@ -320,7 +320,7 @@ function handleCursorUpdate(data: any): void {
 }
 
 function handleSystemHealth(data: any): void {
-  websocketStore.systemHealth = { ...websocketStore.systemHealth, ...data }
+  websocketStore.systemHealth = { ...websocketStore.systemHealth, ...data };
 }
 
 // Utility functions for components

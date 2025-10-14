@@ -1,5 +1,5 @@
 // XState Machine for AI Agent Shell with Production Go Services Integration
-import { createMachine, assign } from "xstate";
+import { createMachine, assign } from 'xstate';
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
 import productionServiceClient from '../services/production-service-client.js';
 // Define context and event types
@@ -224,11 +224,11 @@ export const agentShellActions = {
         jobId: event.jobId,
         userId: event.userId,
         patchContent: event.patchContent,
-        targetFile: event.targetFile
+        targetFile: event.targetFile,
       });
-      console.log("Patch accepted:", result);
+      console.log('Patch accepted:', result);
     } catch (error: any) {
-      console.error("Patch acceptance failed:", error);
+      console.error('Patch acceptance failed:', error);
     }
   },
   rateSuggestionAction: async ({ event }: any) => {
@@ -237,11 +237,11 @@ export const agentShellActions = {
         jobId: event.jobId,
         rating: event.rating,
         userId: event.userId,
-        feedback: event.feedback
+        feedback: event.feedback,
       });
-      console.log("Rating submitted:", result);
+      console.log('Rating submitted:', result);
     } catch (error: any) {
-      console.error("Rating submission failed:", error);
+      console.error('Rating submission failed:', error);
     }
-  }
-}
+  },
+};

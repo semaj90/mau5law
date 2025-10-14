@@ -28,12 +28,12 @@ export const load: PageServerLoad = async ({ locals }) => {
         avgLatency: 45, // milliseconds,
         throughput: 850, // documents per second,
       },
-    }
+    };
   } catch (err) {
     console.error('Error loading CUDA streaming data:', err);
     return getDefaultGPUData();
   }
-}
+};
 export const actions: Actions = {
   startStream: async ({ request, locals }) => {
     const data = await request.formData();
@@ -109,7 +109,7 @@ export const actions: Actions = {
       return fail(500, { error: 'Document processing failed' });
     }
   },
-}
+};
 async function getGPUSystemInfo() {
   // Mock GPU info - replace with actual CUDA/GPU detection
   return {
@@ -129,7 +129,7 @@ async function getGPUSystemInfo() {
       gpu: 15, // percentage,
       memory: 8, // percentage,
     },
-  }
+  };
 }
 async function getStreamingStats() {
   return {
@@ -142,7 +142,7 @@ async function getStreamingStats() {
     uptime: 23847, // seconds,
     queueSize: 12,
     memoryUsage: 8.4, // GB,
-  }
+  };
 }
 async function getRecentProcessingResults() {
   return [
@@ -186,12 +186,12 @@ async function initializeCudaStream(sessionId: string, options: any) {
     processingQueue: [],
     estimatedThroughput: 750,
     queuePosition: 1,
-  }
+  };
 }
 async function terminateCudaStream(sessionId: string) {
   // Mock termination - replace with actual CUDA cleanup
   console.log(`Terminating CUDA stream: ${sessionId}`);
-  return { terminated: true }
+  return { terminated: true };
 }
 async function processCudaDocument(documentData: string, options: any) {
   // Mock CUDA document processing - replace with actual implementation
@@ -212,7 +212,7 @@ async function processCudaDocument(documentData: string, options: any) {
       memory_used: Math.random() * 2 + 0.5, // GB,
       tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200,
     },
-  }
+  };
 }
 function getDefaultGPUData() {
   return {
@@ -237,5 +237,5 @@ function getDefaultGPUData() {
       avgLatency: 0,
       throughput: 0,
     },
-  }
+  };
 }

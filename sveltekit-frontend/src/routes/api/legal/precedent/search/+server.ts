@@ -164,8 +164,8 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
   // Limit results
   const limitedMatches = mockMatches.slice(0, maxResults)
   return {
-    matches: limitedMatches
-    total: mockMatches.length
+    matches: limitedMatches,
+    total: mockMatches.length,
   }
 }
 async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<CitationNetwork[]> {
@@ -256,10 +256,10 @@ async function analyzeApplicability(matches: PrecedentMatch[], request: Preceden
     legalPrincipleAlignment: matches.some(m => m.legalSimilarity > 0.85) ? 'STRONG' : 'MODERATE',
     temporalRelevance: recentCount > matches.length * 0.6 ? 'HIGH' : 'MEDIUM',
     factors: {
-      bindingPrecedents: bindingCount
-      persuasivePrecedents: persuasiveCount
-      averageSimilarity: avgSimilarity
-      recentAuthority: recentCount
+      bindingPrecedents: bindingCount,
+      persuasivePrecedents: persuasiveCount,
+      averageSimilarity: avgSimilarity,
+      recentAuthority: recentCount,
       jurisdictionalSpread: new Set(matches.map(m => m.jurisdiction)).size,
       practiceAreaCoverage: new Set(matches.flatMap(m => m.practiceAreas)).size
     },

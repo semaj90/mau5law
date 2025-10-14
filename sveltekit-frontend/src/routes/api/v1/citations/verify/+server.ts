@@ -2,21 +2,21 @@
  * Citation Verification API Route
  * POST /api/v1/citations/verify - Verify citation validity and accuracy
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { db } from '$lib/server/db/unified-client'
-import { citations } from '$lib/server/db/schemas/cases-schema'
-import { eq } from 'drizzle-orm'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { db } from '$lib/server/db/unified-client';
+import { citations } from '$lib/server/db/schemas/cases-schema';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
 
 /* Add a concrete type for citation records used in this module */
 type CitationRecord = {
-	id?: string;
-	title?: string;
-	citation?: string;
-	metadata?: Record<string, unknown> | null;
-	[extra: string]: unknown;
-}
+  id?: string;
+  title?: string;
+  citation?: string;
+  metadata?: Record<string, unknown> | null;
+  [extra: string]: unknown;
+};
 
 // New types to fix missing VerificationResult references
 type DatabaseSource = {
@@ -78,8 +78,8 @@ const LEGAL_DATABASES = {
   westlaw: 'https://api.westlaw.com/verify',
   lexis: 'https://api.lexisnexis.com/verify',
   justia: 'https://api.justia.com/verify',
-  courtlistener: 'https://api.courtlistener.com/verify'
-}
+  courtlistener: 'https://api.courtlistener.com/verify',
+};
 /*
  * POST /api/v1/citations/verify
  * Verify citation validity using multiple legal databases

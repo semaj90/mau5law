@@ -2,8 +2,8 @@
  * SvelteKit API Route - Go Tensor Service Bridge
  * Bridges SvelteKit frontend with Go microservice on port 8095
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client'
 
 // --- Start of local stubs for missing exports ---
@@ -43,10 +43,17 @@ interface IGoTensorServiceClient {
   processBatch(requests: TensorRequest[]): Promise<GoTensorServiceResponseRaw[]>;
 }
 
-const goTensorService: IGoTensorServiceClient = { // Removed 'export'
-  async init() { console.log('Mock goTensorService.init called'); },
-  async healthCheck() { return { status: 'mock-online', timestamp: new Date().toISOString() }; },
-  async getMetrics() { return { totalRequests: 0, uptime: 0, mock: true }; },
+const goTensorService: IGoTensorServiceClient = {
+  // Removed 'export'
+  async init() {
+    console.log('Mock goTensorService.init called');
+  },
+  async healthCheck() {
+    return { status: 'mock-online', timestamp: new Date().toISOString() };
+  },
+  async getMetrics() {
+    return { totalRequests: 0, uptime: 0, mock: true };
+  },
   async processTensor(request: TensorRequest) {
     console.log('Mock goTensorService.processTensor called', request.id);
     return {
@@ -55,10 +62,10 @@ const goTensorService: IGoTensorServiceClient = { // Removed 'export'
       result: {
         embeddings: request.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 100,
-        metadata: { mock: true, operation: request.operation }
+        metadata: { mock: true, operation: request.operation },
       },
       timestamp: new Date(),
-      source: 'mock-stub'
+      source: 'mock-stub',
     };
   },
   async processBatch(requests: TensorRequest[]) {
@@ -69,12 +76,12 @@ const goTensorService: IGoTensorServiceClient = { // Removed 'export'
       result: {
         embeddings: req.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 150,
-        metadata: { mock: true, operation: req.operation }
+        metadata: { mock: true, operation: req.operation },
       },
       timestamp: new Date(),
-      source: 'mock-stub'
+      source: 'mock-stub',
     }));
-  }
+  },
 };
 
 export function generateTensorRequest(
@@ -136,15 +143,15 @@ interface PutRequestBody {
 }
 
 // Initialize tensor service connection
-let isInitialized = false
+let isInitialized = false;
 async function ensureInitialized() {
   if (!isInitialized) {
     try {
-      await goTensorService.init()
-      isInitialized = true
-      console.log('Go tensor service initialized via API route')
+      await goTensorService.init();
+      isInitialized = true;
+      console.log('Go tensor service initialized via API route');
     } catch (error) {
-      console.log('Go tensor service not available, using mock mode')
+      console.log('Go tensor service not available, using mock mode');
       // Continue with mock responses when service is unavailable
     }
   }
@@ -311,18 +318,22 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 // PUT: Batch processing
 export const PUT: RequestHandler = async ({ request }) => {
-  await ensureInitialized()
+  await ensureInitialized();
   try {
-    const body: PutRequestBody = await request.json() // Apply type to body
-    const { requests } = body
+    const body: PutRequestBody = await request.json(); // Apply type to body
+    const { requests } = body;
     if (!Array.isArray(requests) || requests.length === 0) {
-      return json({
-        success: false,
-        error: 'Invalid or empty requests array'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Invalid or empty requests array',
+        },
+        { status: 400 }
+      );
     }
     // Convert to tensor requests
-    const tensorRequests: TensorRequest[] = requests.map((req: BatchTensorRequestItem, index: number) => ({ // Apply type to req
+    const tensorRequests: TensorRequest[] = requests.map((req: BatchTensorRequestItem, index: number) => ({
+      // Apply type to req
       id: `batch_${Date.now()}_${index}_${Math.random().toString(36).slice(2, 11)}`, // Use slice instead of substr
       documentId: req.documentId || `doc-${index}`,
       data: Array.isArray(req.data) ? new Float32Array(req.data) : req.data,
@@ -331,7 +342,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }));
     try {
       // Process batch with Go service
-      const responses: GoTensorServiceResponseRaw[] = await goTensorService.processBatch(tensorRequests)
+      const responses: GoTensorServiceResponseRaw[] = await goTensorService.processBatch(tensorRequests);
       return json({
         success: true,
         data: {
@@ -340,12 +351,8 @@ export const PUT: RequestHandler = async ({ request }) => {
             success: response.success,
             result: response.result
               ? {
-                  processedData: response.result.processedData
-                    ? Array.from(response.result.processedData)
-                    : undefined,
-                  embeddings: response.result.embeddings
-                    ? Array.from(response.result.embeddings)
-                    : undefined,
+                  processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
+                  embeddings: response.result.embeddings ? Array.from(response.result.embeddings) : undefined,
                   metadata: response.result.metadata,
                   similarity: response.result.similarity,
                   processingTime: response.result.processingTime,
@@ -360,7 +367,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       });
     } catch (serviceError) {
       // Fallback to mock batch processing
-      console.log('Go service unavailable, using mock batch processing')
+      console.log('Go service unavailable, using mock batch processing');
       const mockResponses = tensorRequests.map(req => ({
         id: req.id,
         success: true,
@@ -392,9 +399,12 @@ export const PUT: RequestHandler = async ({ request }) => {
       });
     }
   } catch (error) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'Batch processing failed'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Batch processing failed',
+      },
+      { status: 500 }
+    );
   }
-}
+};

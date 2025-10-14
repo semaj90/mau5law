@@ -46,8 +46,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         verifiedHash: verifiedHash.toLowerCase(),
         storedHash,
         result,
-        verificationMethod: method
-        verifiedBy: userId
+        verificationMethod: method,
+        verifiedBy: userId,
         notes
       })
       .returning()

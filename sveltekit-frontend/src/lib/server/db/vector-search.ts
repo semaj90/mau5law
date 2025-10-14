@@ -18,7 +18,7 @@ interface EmbeddingVector {
  * Perform semantic vector search using pgvector
  */
 export async function vectorSearch(
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   options: VectorSearchOptions = {}
 ): Promise<VectorSearchResult> {
   const startTime = performance.now();
@@ -75,7 +75,7 @@ export async function vectorSearch(
       score: parseFloat(row.similarity) // Alias for compatibility
     }));
     return {
-      results: documents
+      results: documents,
       totalResults: documents.length,
       queryTime: Math.round(queryTime),
       searchStrategy: 'pgvector_cosine_similarity',
@@ -175,7 +175,7 @@ export async function optimizeVectorIndex() {
     // Analyze table for query optimization
     await db.execute(sql`ANALYZE legal_documents`);
     return {
-      success: true
+      success: true,
       indexType: 'ivfflat',
       lists: 100,
       operation: 'cosine_similarity'
@@ -201,9 +201,9 @@ export async function vectorSearchHealthCheck() {
     // Check if vector extension is loaded
     const vectorLoaded = info.preload_libs?.includes('vector') || false;
     return {
-      healthy: true
+      healthy: true,
       vectorExtension: info.vector_version || 'not_found',
-      extensionLoaded: vectorLoaded
+      extensionLoaded: vectorLoaded,
       database: 'postgresql',
       capabilities: [
         'cosine_similarity',

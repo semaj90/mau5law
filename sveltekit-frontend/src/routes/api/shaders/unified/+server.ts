@@ -1,50 +1,118 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { cache } from '$lib/server/cache/redis'
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager'
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { cache } from '$lib/server/cache/redis';
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
 interface UnifiedShaderQuery {
-  text?: string
-  operation?: string
-  shaderType?: 'webgpu' | 'webgl' | 'all'
-  tags?: string[]
-  sortBy?: 'relevance' | 'performance' | 'usage' | 'recent'
-  limit?: number
+  text?: string;
+  operation?: string;
+  shaderType?: 'webgpu' | 'webgl' | 'all';
+  tags?: string[];
+  sortBy?: 'relevance' | 'performance' | 'usage' | 'recent';
+  limit?: number;
 }
 interface UnifiedShader {
-  id: string
-  name: string
-  shaderCode: string
-  shaderType: 'webgpu' | 'webgl'
-  operation: string
+  id: string;
+  name: string;
+  shaderCode: string;
+  shaderType: 'webgpu' | 'webgl';
+  operation: string;
   metadata: {
-    compiledAt: string
-    lastUsed: string
-    compileTime: number
-    usageCount: number
-    averageExecutionTime: number
-    description: string
-    tags: string[]
-  }
-  config: any
-  relevanceScore?: number
-  embeddingSimilarity?: number
-  hasEmbedding: boolean
+    compiledAt: string;
+    lastUsed: string;
+    compileTime: number;
+    usageCount: number;
+    averageExecutionTime: number;
+    description: string;
+    tags: string[];
+  };
+  // Replace `any` with a safer, descriptive shape for arbitrary config objects.
+  // Using Record<string, unknown> keeps structure flexible while avoiding `any`.
+  config?: Record<string, unknown> | null;
+  relevanceScore?: number;
+  embeddingSimilarity?: number;
+  hasEmbedding: boolean;
 }
+
+// New: strongly-typed shape for WebGL cache entries (avoid `any`)
+type WebGLShaderCacheEntry = {
+  id: string;
+  name: string;
+  shaderCode: string;
+  operation?: string;
+  metadata?: {
+    compiledAt?: string | number;
+    lastUsed?: string | number;
+    compileTime?: number;
+    usageCount?: number;
+    averageExecutionTime?: number;
+    description?: string;
+    tags?: string[];
+  };
+  config?: unknown;
+  embedding?: number[] | null;
+};
+
+// New: typed shape for cache implementations we support (avoid `any`)
+type CacheLike = {
+  get?<T = unknown>(key: string): Promise<T | null | undefined>;
+  set?(key: string, value: unknown, ttlMs?: number): Promise<void> | void;
+  delete?(key: string): Promise<number | void> | void;
+  del?(key: string): Promise<number | void> | void;
+  remove?(key: string): Promise<number | void> | void;
+  removeItem?(key: string): Promise<number | void> | void;
+};
+
+// small helper to safely get a string message from unknown errors
+const getErrorMessage = (e: unknown): string =>
+  e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
+
+// small helper to defensively convert various timestamp shapes to ISO
+function safeToIso(val: unknown): string {
+  try {
+    if (typeof val === 'number') return new Date(val).toISOString();
+    if (typeof val === 'string') {
+      const d = new Date(val);
+      if (!isNaN(d.getTime())) return d.toISOString();
+    }
+    // fallback to now
+    return new Date().toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
+// small helper to ensure the query is JSON-serializable for responses
+function sanitizeQuery(q: unknown) {
+  try {
+    return q == null ? null : JSON.parse(JSON.stringify(q));
+  } catch {
+    return null;
+  }
+}
+
+// New helper: safely normalize unknown config values to the expected shape
+function normalizeConfig(val: unknown): Record<string, unknown> | null {
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    return val as Record<string, unknown>;
+  }
+  return null;
+}
+
 // GET endpoint - Unified shader search capabilities
 export const GET: RequestHandler = async () => {
   try {
     // Get stats from both WebGPU and WebGL caches
-    const webgpuStats = await shaderCacheManager.getShaderStats()
+    const webgpuStats = await shaderCacheManager.getShaderStats();
     // Get WebGL shader count
-    const unifiedIndex = await cache.get<string[]>('unified_shader_index') || []
-    const webglShaderCount = unifiedIndex.filter(id => id.startsWith('webgl:')).length
+    const unifiedIndex = (await cache.get<string[]>('unified_shader_index')) || [];
+    const webglShaderCount = unifiedIndex.filter(id => id.startsWith('webgl:')).length;
     const capabilities = {
       endpoint: '/api/shaders/unified',
       description: 'Unified search across WebGPU and WebGL shader caches with semantic similarity',
       totalShaders: {
         webgpu: webgpuStats.totalShaders,
-        webgl: webglShaderCount
-        total: webgpuStats.totalShaders + webglShaderCount
+        webgl: webglShaderCount,
+        total: webgpuStats.totalShaders + webglShaderCount,
       },
       searchOptions: {
         text: 'string (optional) - Semantic text search across shader code and descriptions',
@@ -52,7 +120,7 @@ export const GET: RequestHandler = async () => {
         shaderType: 'string (optional) - "webgpu", "webgl", or "all" (default)',
         tags: 'string[] (optional) - Filter by shader tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or "recent"',
-        limit: 'number (optional) - Maximum results (default: 20, max: 100)'
+        limit: 'number (optional) - Maximum results (default: 20, max: 100)',
       },
       supportedOperations: [
         'vector_similarity',
@@ -61,35 +129,41 @@ export const GET: RequestHandler = async () => {
         'text_flow',
         'evidence_timeline',
         'embedding_generation',
-        'matrix_multiply'
+        'matrix_multiply',
       ],
       features: [
         'Semantic search using vector embeddings',
         'Cross-platform WebGPU and WebGL support',
         'Performance and usage analytics',
         'Real-time search with caching',
-        'Advanced filtering and sorting'
-      ]
-    }
-    return json(capabilities)
-  } catch (error: any) {
-    return json({ error: 'Failed to get unified shader capabilities' }, { status: 500 })
+        'Advanced filtering and sorting',
+      ],
+    };
+    return json(capabilities);
+  } catch (error) {
+    // use helper to avoid 'any' and still keep logs/safe responses
+    console.error('Failed to get unified shader capabilities:', getErrorMessage(error));
+    return json({ error: 'Failed to get unified shader capabilities' }, { status: 500 });
   }
-}
+};
 // POST endpoint - Unified shader search
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now()
+  // Use Date.now() instead of performance.now() for server-side timing
+  const startTime = Date.now();
   try {
-    const query: UnifiedShaderQuery = await request.json()
+    const query: UnifiedShaderQuery = await request.json();
+    // Clamp limit early and reuse
+    const limit = Math.min(Math.max(query.limit ?? 20, 1), 100);
+
     // Validate query
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
-      return json({ error: 'limit must be between 1 and 100' }, { status: 400 })
+      return json({ error: 'limit must be between 1 and 100' }, { status: 400 });
     }
     if (query.shaderType && !['webgpu', 'webgl', 'all'].includes(query.shaderType)) {
-      return json({ error: 'shaderType must be one of: webgpu, webgl, all' }, { status: 400 })
+      return json({ error: 'shaderType must be one of: webgpu, webgl, all' }, { status: 400 });
     }
-    const results: UnifiedShader[] = []
-    const shaderType = query.shaderType || 'all'
+    const results: UnifiedShader[] = [];
+    const shaderType = query.shaderType || 'all';
     // Search WebGPU shaders
     if (shaderType === 'webgpu' || shaderType === 'all') {
       try {
@@ -98,219 +172,282 @@ export const POST: RequestHandler = async ({ request }) => {
           operation: query.operation,
           tags: query.tags,
           sortBy: query.sortBy,
-          limit: query.limit || 20
-        })
+          limit: limit,
+        });
         for (const shader of webgpuResults) {
+          // Resolve a user-friendly name in a type-safe way:
+          // 1) prefer top-level 'name' or 'title' if present,
+          // 2) else use the first line of metadata.description (if available),
+          // 3) otherwise fallback to shader.id.
+          // cast via `unknown` first to satisfy TypeScript when converting between unrelated types
+          const shaderRecord = shader as unknown as Record<string, unknown>;
+          let shaderName = shader.id;
+          if ('name' in shaderRecord && typeof shaderRecord['name'] === 'string') {
+            shaderName = String(shaderRecord['name']);
+          } else if ('title' in shaderRecord && typeof shaderRecord['title'] === 'string') {
+            shaderName = String(shaderRecord['title']);
+          } else if (
+            shader.metadata &&
+            typeof shader.metadata.description === 'string' &&
+            shader.metadata.description.length > 0
+          ) {
+            shaderName = shader.metadata.description.split('\n')[0].slice(0, 80);
+          }
+
+          // fixed: clean, valid push (removed diff artifacts)
           results.push({
             id: shader.id,
-            name: shader.id,
+            // Use computed, type-safe shaderName
+            name: shaderName,
             shaderCode: shader.wgsl,
             shaderType: 'webgpu',
-            operation: shader.metadata.operation,
+            operation: shader.metadata?.operation ?? 'unknown',
             metadata: {
-              compiledAt: new Date(shader.metadata.compiledAt).toISOString(),
-              lastUsed: new Date(shader.metadata.lastUsed).toISOString(),
-              compileTime: shader.metadata.compileTime,
-              usageCount: shader.metadata.usageCount,
-              averageExecutionTime: shader.metadata.averageExecutionTime,
-              description: shader.metadata.description,
-              tags: shader.metadata.tags
+              compiledAt: safeToIso(shader.metadata?.compiledAt),
+              lastUsed: safeToIso(shader.metadata?.lastUsed),
+              compileTime: Number(shader.metadata?.compileTime ?? 0),
+              usageCount: Number(shader.metadata?.usageCount ?? 0),
+              averageExecutionTime: Number(shader.metadata?.averageExecutionTime ?? 0),
+              description: String(shader.metadata?.description ?? ''),
+              tags: Array.isArray(shader.metadata?.tags) ? shader.metadata!.tags!.map(String) : [],
             },
-            config: shader.config,
+            config: normalizeConfig(shader.config),
             relevanceScore: shader.relevanceScore,
             embeddingSimilarity: shader.embeddingSimilarity,
-            hasEmbedding: !!shader.embedding
-          })
+            hasEmbedding: !!shader.embedding,
+          });
         }
-      } catch (error) {
-        console.warn('WebGPU shader search failed:', error)
+      } catch (err) {
+        console.warn('WebGPU shader search failed:', getErrorMessage(err));
       }
     }
     // Search WebGL shaders
     if (shaderType === 'webgl' || shaderType === 'all') {
       try {
-        const unifiedIndex = await cache.get<string[]>('unified_shader_index') || []
-        const webglShaderIds = unifiedIndex.filter(id => id.startsWith('webgl:')).map(id => id.replace('webgl:', '')
+        const unifiedIndex = (await cache.get<string[]>('unified_shader_index')) || [];
+        // Fixed: close parentheses and ensure map receives a string
+        const webglShaderIds = unifiedIndex
+          .filter((id: unknown) => typeof id === 'string' && String(id).startsWith('webgl:'))
+          .map((id: unknown) => String(id).replace('webgl:', ''));
         for (const shaderId of webglShaderIds) {
-          const shaderData = await cache.get<any>(`webgl_shader:${shaderId}`)
-          if (!shaderData) continue
-          let relevanceScore = 0
-          let embeddingSimilarity = 0
+          // Use typed cache.get and explicit null-check braces
+          const shaderData = await cache.get<WebGLShaderCacheEntry>(`webgl_shader:${shaderId}`);
+          if (!shaderData) {
+            continue;
+          }
+          let relevanceScore = 0;
+          let embeddingSimilarity = 0;
           // Apply filters
-          if (query.operation && shaderData.operation !== query.operation) continue
+          if (query.operation && shaderData.operation !== query.operation) continue;
           if (query.tags && query.tags.length > 0) {
-            const matchingTags = shaderData.metadata.tags.filter((tag: string) =>
-              query.tags!.some(queryTag => tag.toLowerCase().includes(queryTag.toLowerCase())
-            )
-            if (matchingTags.length === 0) continue
-            relevanceScore += matchingTags.length * 0.2
+            // Harden tag access and close nested callbacks properly
+            const tagsArray: string[] = Array.isArray(shaderData?.metadata?.tags) ? shaderData.metadata.tags : [];
+            const matchingTags = tagsArray.filter((tag: string) =>
+              query.tags!.some((queryTag: string) => tag.toLowerCase().includes(String(queryTag).toLowerCase()))
+            );
+            if (matchingTags.length === 0) continue;
+            relevanceScore += matchingTags.length * 0.2;
           }
           // Text search
           if (query.text) {
-            const searchText = query.text.toLowerCase()
+            const searchText = query.text.toLowerCase();
             const shaderText = [
               shaderData.shaderCode,
-              shaderData.metadata.description,
+              shaderData.metadata?.description,
               shaderData.operation,
-              ...shaderData.metadata.tags
-            ].join(' ').toLowerCase()
+              ...(Array.isArray(shaderData.metadata?.tags) ? shaderData.metadata.tags : []),
+            ]
+              .join(' ')
+              .toLowerCase();
             if (shaderText.includes(searchText)) {
-              relevanceScore += 0.5
+              relevanceScore += 0.5;
             }
             // Semantic similarity using embeddings
-            if (shaderData.embedding && shaderData.embedding.length > 0) {
+            if (Array.isArray(shaderData.embedding) && shaderData.embedding.length > 0) {
               try {
                 // Generate embedding for query text (simplified for WebGL)
                 embeddingSimilarity = Math.random() * 0.3 + 0.4; // Placeholder
-                relevanceScore += embeddingSimilarity * 0.7
+                relevanceScore += embeddingSimilarity * 0.7;
               } catch (error) {
-                console.warn('Error calculating WebGL embedding similarity:', error)
+                console.warn('Error calculating WebGL embedding similarity:', error);
               }
             }
           }
           // Performance and usage scoring
-          if (shaderData.metadata.usageCount > 0) {
-            relevanceScore += Math.log(shaderData.metadata.usageCount + 1) * 0.1
+          const usageCount = Number(shaderData?.metadata?.usageCount ?? 0);
+          if (usageCount > 0) {
+            relevanceScore += Math.log(usageCount + 1) * 0.1;
           }
+          // Normalize potentially-undefined WebGL metadata fields to match UnifiedShader types
+          const op = shaderData.operation ?? 'unknown';
+          const compiledAtIso = new Date(shaderData.metadata?.compiledAt ?? Date.now()).toISOString();
+          const lastUsedIso = new Date(shaderData.metadata?.lastUsed ?? Date.now()).toISOString();
+          const compileTimeNum = Number(shaderData.metadata?.compileTime ?? 0);
+          const avgExecTimeNum = Number(shaderData.metadata?.averageExecutionTime ?? 0);
+          const desc = shaderData.metadata?.description ?? '';
+          const tagsArr = Array.isArray(shaderData.metadata?.tags) ? shaderData.metadata!.tags! : [];
+
           results.push({
             id: shaderData.id,
             name: shaderData.name,
             shaderCode: shaderData.shaderCode,
             shaderType: 'webgl',
-            operation: shaderData.operation,
+            operation: op,
             metadata: {
-              compiledAt: new Date(shaderData.metadata.compiledAt).toISOString(),
-              lastUsed: new Date(shaderData.metadata.lastUsed).toISOString(),
-              compileTime: shaderData.metadata.compileTime,
-              usageCount: shaderData.metadata.usageCount,
-              averageExecutionTime: shaderData.metadata.averageExecutionTime,
-              description: shaderData.metadata.description,
-              tags: shaderData.metadata.tags
+              compiledAt: compiledAtIso,
+              lastUsed: lastUsedIso,
+              compileTime: compileTimeNum,
+              usageCount: usageCount,
+              averageExecutionTime: avgExecTimeNum,
+              description: desc,
+              tags: tagsArr,
             },
-            config: shaderData.config,
+            config: normalizeConfig(shaderData.config),
             relevanceScore,
             embeddingSimilarity,
-            hasEmbedding: !!shaderData.embedding
-          })
+            hasEmbedding: !!shaderData.embedding,
+          });
         }
-      } catch (error) {
-        console.warn('WebGL shader search failed:', error)
+      } catch (err) {
+        // avoid multi-argument console call which triggered a parser/emit error in this project
+        console.warn('WebGL shader search failed: ' + getErrorMessage(err));
       }
     }
-    // Sort results
-    results.sort((a, b) => {
-      switch (query.sortBy) {
-        case 'performance':
-          return (a.metadata.averageExecutionTime || Number.MAX_VALUE) -
-                 (b.metadata.averageExecutionTime || Number.MAX_VALUE)
-        case 'usage':
-          return b.metadata.usageCount - a.metadata.usageCount
-        case 'recent':
-          return new Date(b.metadata.lastUsed).getTime() - new Date(a.metadata.lastUsed).getTime()
-        case 'relevance':
-        default:
-          return (b.relevanceScore || 0) - (a.relevanceScore || 0)
+    // Sort results (replaced switch with if/else to avoid parser errors)
+    results.sort((a: UnifiedShader, b: UnifiedShader) => {
+      const sortBy = query.sortBy ?? 'relevance';
+      if (sortBy === 'performance') {
+        return (
+          (a.metadata.averageExecutionTime ?? Number.MAX_VALUE) - (b.metadata.averageExecutionTime ?? Number.MAX_VALUE)
+        );
       }
-    })
+      if (sortBy === 'usage') {
+        return (b.metadata.usageCount ?? 0) - (a.metadata.usageCount ?? 0);
+      }
+      if (sortBy === 'recent') {
+        return new Date(b.metadata.lastUsed).getTime() - new Date(a.metadata.lastUsed).getTime();
+      }
+      // default to relevance
+      return (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0);
+    });
     // Apply limit
-    const limitedResults = results.slice(0, query.limit || 20)
-    const searchTime = performance.now() - startTime
+    const limitedResults = results.slice(0, limit);
+    // Use Date.now() here as well
+    const searchTime = Date.now() - startTime;
     const response = {
-      shaders: limitedResults.map(shader => ({
+      shaders: limitedResults.map((shader: UnifiedShader) => ({
         ...shader,
         // Truncate shader code for list view
-        shaderCodePreview: shader.shaderCode.length > 500 ?
-          shader.shaderCode.substring(0, 500) + '...' : shader.shaderCode
+        shaderCodePreview:
+          shader.shaderCode && shader.shaderCode.length > 500
+            ? shader.shaderCode.substring(0, 500) + '...'
+            : shader.shaderCode,
       })),
       metadata: {
         totalResults: limitedResults.length,
         searchTime,
-        query,
+        // ensure the query is safe for JSON
+        query: sanitizeQuery(query),
         breakdown: {
-          webgpu: limitedResults.filter(item => item.length),
-          webgl: limitedResults.filter(item => item.length)
-        }
-      }
-    }
-    return json(response)
-  } catch (error: any) {
-    const searchTime = performance.now() - startTime
-    console.error('Unified shader search error:', error)
-    return json({
+          webgpu: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgpu').length,
+          webgl: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgl').length,
+        },
+      },
+    };
+
+    return json(response);
+  } catch (err) {
+    // Ensure we always compute searchTime and serialize the error safely
+    const searchTime = Date.now() - startTime;
+    console.error('Unified shader search error:', getErrorMessage(err));
+    // Use nullish coalescing for safe default and build the response object before returning
+    const safeError = getErrorMessage(err) ?? 'Unified search failed';
+
+    const errorResponse = {
       shaders: [],
       metadata: {
         totalResults: 0,
         searchTime,
-        query: { [key,: strin,g]: any },
-        error: error.message || 'Unified search failed'
-      }
-    }, { status: 500 })
+        query: null,
+        error: safeError,
+      },
+    };
+
+    return json(errorResponse, { status: 500 });
   }
-}
+};
 // DELETE endpoint - Clean up shader caches
 export const DELETE: RequestHandler = async ({ url }) => {
   // Helper to safely delete a key regardless of underlying cache implementation
   const safeDelete = async (_key: string) => {
-    const c: any = cache as any
-    if (c && typeof c.delete === 'function') return c.delete(key)
-    if (c && typeof c.del === 'function') return c.del(key)
-    if (c && typeof c.remove === 'function') return c.remove(key)
-    if (c && typeof c.removeItem === 'function') return c.removeItem(key)
+    const c = cache as CacheLike;
+    if (!c) return;
+    if (typeof c.delete === 'function') return await Promise.resolve(c.delete(_key));
+    if (typeof c.del === 'function') return await Promise.resolve(c.del(_key));
+    if (typeof c.remove === 'function') return await Promise.resolve(c.remove(_key));
+    if (typeof c.removeItem === 'function') return await Promise.resolve(c.removeItem(_key));
     // Fallback: set to a short-lived empty value (TTL 1ms) if no delete method exists
-    if (c && typeof c.set === 'function') return c.set(key, null, 1)
-  }
+    if (typeof c.set === 'function') return await Promise.resolve(c.set(_key, null, 1));
+  };
   try {
-    const shaderTypeParam = url.searchParams.get('type')
+    const shaderTypeParam = url.searchParams.get('type');
     const shaderType: 'webgpu' | 'webgl' | 'all' =
       shaderTypeParam === 'webgpu' || shaderTypeParam === 'webgl' || shaderTypeParam === 'all'
         ? shaderTypeParam
-        : 'all'
-    let cleanedCount = 0
+        : 'all';
+    let cleanedCount = 0;
     if (shaderType === 'webgpu' || shaderType === 'all') {
       // Clear WebGPU shaders
-      const webgpuIndexRaw = await cache.get<any>('webgpu_shader_index')
-      const webgpuIndex: string[] = Array.isArray(webgpuIndexRaw) ? webgpuIndexRaw : []
+      const webgpuIndexRaw = (await cache.get('webgpu_shader_index')) as unknown;
+      const webgpuIndex: string[] = Array.isArray(webgpuIndexRaw) ? (webgpuIndexRaw as string[]) : [];
       for (const id of webgpuIndex) {
-        await safeDelete(`webgpu_shader:${id}`)
-        cleanedCount++
+        await safeDelete(`webgpu_shader:${id}`);
+        cleanedCount++;
       }
-      await safeDelete('webgpu_shader_index')
+      await safeDelete('webgpu_shader_index');
     }
     if (shaderType === 'webgl' || shaderType === 'all') {
       // Clear WebGL shaders
-      const unifiedIndexRaw = await cache.get<any>('unified_shader_index')
+      const unifiedIndexRaw = (await cache.get('unified_shader_index')) as unknown;
       const unifiedIndex: string[] = Array.isArray(unifiedIndexRaw)
-        ? unifiedIndexRaw
-        : (typeof unifiedIndexRaw === 'string'
-            ? (() => {
-                try {
-                  const parsed = JSON.parse(unifiedIndexRaw)
-                  return Array.isArray(parsed) ? parsed : []
-                } catch {
-                  return []
-                }
-              })()
-            : [])
+        ? (unifiedIndexRaw as string[])
+        : typeof unifiedIndexRaw === 'string'
+          ? (() => {
+              try {
+                const parsed = JSON.parse(unifiedIndexRaw as string);
+                return Array.isArray(parsed) ? parsed : [];
+              } catch {
+                return [];
+              }
+            })()
+          : [];
       const webglShaderIds = unifiedIndex
-        .filter(id => typeof id === 'string' && id.startsWith('webgl:')
-        .map(id => id.replace('webgl:', '')
+        .filter(id => typeof id === 'string' && id.startsWith('webgl:'))
+        .map(id => String(id).replace('webgl:', ''));
       for (const id of webglShaderIds) {
-        await safeDelete(`webgl_shader:${id}`)
-        cleanedCount++
+        await safeDelete(`webgl_shader:${id}`);
+        cleanedCount++;
       }
       // Update unified index (remove webgl:* entries)
-      const remainingIndex = unifiedIndex.filter(id => !id.startsWith('webgl:')
+      const remainingIndex = unifiedIndex.filter(id => !(typeof id === 'string' && id.startsWith('webgl:')));
       if (remainingIndex.length > 0) {
-        await cache.set('unified_shader_index', remainingIndex, 24 * 60 * 60 * 1000)
+        // use typed set if available
+        const c = cache as CacheLike;
+        if (typeof c.set === 'function') {
+          await Promise.resolve(c.set('unified_shader_index', remainingIndex, 24 * 60 * 60 * 1000));
+        } else {
+          await safeDelete('unified_shader_index');
+        }
       } else {
-        await safeDelete('unified_shader_index')
+        await safeDelete('unified_shader_index');
       }
     }
     return json({
       success: true,
-      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache`
-    })
-  } catch (error: any) {
-    return json({ error: 'Failed to clean shader caches' }, { status: 500 })
+      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache`,
+    });
+  } catch (err) {
+    console.error('Failed to clean shader caches:', getErrorMessage(err));
+    return json({ error: 'Failed to clean shader caches' }, { status: 500 });
   }
-}
+};

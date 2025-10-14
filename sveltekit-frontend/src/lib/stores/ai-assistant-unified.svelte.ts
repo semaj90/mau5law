@@ -79,9 +79,9 @@ class AIAssistantGlobalStore {
     maxTokens: 2048,
     model: 'gemma3-legal',
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
-    autoSwitchBackend: true
-    persistHistory: true
-    enableAcceleration: false
+    autoSwitchBackend: true,
+    persistHistory: true,
+    enableAcceleration: false,
   });
   // Performance metrics
   metrics = $state({
@@ -126,8 +126,8 @@ class AIAssistantGlobalStore {
         messages: [],
         evidenceMap: {},
         currentSession: {
-          isActive: false
-          lastActivity: Date.now()
+          isActive: false,
+          lastActivity: Date.now(),
         },
         insights: []
       }
@@ -159,8 +159,8 @@ class AIAssistantGlobalStore {
   }
   // === Enhanced AI Communication Methods ===
   async sendMessage(
-    caseId: string
-    content: string
+    caseId: string,
+    content: string,
     evidenceIds?: string[]
     options?: {
       backend?: Backend;
@@ -260,8 +260,8 @@ class AIAssistantGlobalStore {
   }
   private calculateBackendScore(
     backend: Backend;
-    complexity: string
-    hasLegalContext: boolean
+    complexity: string,
+    hasLegalContext: boolean,
     requiresSpeed: boolean;
   ): number {
     let score = this.backendHealth[backend] * 0.4; // Base health (40%)
@@ -318,7 +318,7 @@ class AIAssistantGlobalStore {
       .map(msg => `${msg.role}: ${msg.content}`)
       .join('\n');
     const result = await browserLocalAI.generateText({
-      prompt: content
+      prompt: content,
       maxTokens: 512,
       temperature: 0.3,
       systemPrompt: `You are a legal AI assistant. Context:\n${conversationContext}`
@@ -347,7 +347,7 @@ class AIAssistantGlobalStore {
     const systemPrompt = `You are a specialized legal AI assistant. Recent conversation context:\n${recentContext}`;
     const result = await cudaServiceWorker.generateText({
       model: 'gemma3-legal-latest',
-      prompt: content
+      prompt: content,
       maxTokens: 2048,
       temperature: 0.2,
       systemPrompt,
@@ -382,13 +382,13 @@ class AIAssistantGlobalStore {
       id: `case_${i}`,
       title: `Case Document ${i + 1}`,
       content: `Mock case content`,
-      embedding: new Float32Array(768).map(() => Math.random()
+      embedding: new Float32Array(768).map(() => Math.random(),
     });
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
       content: `Mock evidence content`,
-      embedding: new Float32Array(768).map(() => Math.random()
+      embedding: new Float32Array(768).map(() => Math.random(),
     });
     // Use accelerated processing
     const acceleratedResult = await enhanceAIResponse(

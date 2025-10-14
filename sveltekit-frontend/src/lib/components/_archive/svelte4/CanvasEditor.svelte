@@ -104,10 +104,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const gridSize = 40;
     ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1 / zoomLevel;
-    const startX = Math.floor((-panOffset.x / zoomLevel) / gridSize) * gridSize;
-    const startY = Math.floor((-panOffset.y / zoomLevel) / gridSize) * gridSize;
-    const endX = startX + (canvasWidth / zoomLevel) + gridSize;
-    const endY = startY + (canvasHeight / zoomLevel) + gridSize;
+    const startX = Math.floor(-panOffset.x / zoomLevel / gridSize) * gridSize;
+    const startY = Math.floor(-panOffset.y / zoomLevel / gridSize) * gridSize;
+    const endX = startX + canvasWidth / zoomLevel + gridSize;
+    const endY = startY + canvasHeight / zoomLevel + gridSize;
 
     for (let x = startX; x < endX; x += gridSize) {
       ctx.beginPath();
@@ -156,11 +156,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   function getConnectionColor(type: string): string {
     switch (type) {
-      case 'person': return '#8b5cf6';
-      case 'location': return '#10b981';
-      case 'organization': return '#f59e0b';
-      case 'temporal': return '#ef4444';
-      default: return '#6b7280';
+      case 'person':
+        return '#8b5cf6';
+      case 'location':
+        return '#10b981';
+      case 'organization':
+        return '#f59e0b';
+      case 'temporal':
+        return '#ef4444';
+      default:
+        return '#6b7280';
     }
   }
 
@@ -171,15 +176,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const arrowAngle = Math.PI / 6;
     ctx.beginPath();
     ctx.moveTo(toX, toY);
-    ctx.lineTo(
-      toX - arrowLength * Math.cos(angle - arrowAngle),
-      toY - arrowLength * Math.sin(angle - arrowAngle)
-    );
+    ctx.lineTo(toX - arrowLength * Math.cos(angle - arrowAngle), toY - arrowLength * Math.sin(angle - arrowAngle));
     ctx.moveTo(toX, toY);
-    ctx.lineTo(
-      toX - arrowLength * Math.cos(angle + arrowAngle),
-      toY - arrowLength * Math.sin(angle + arrowAngle)
-    );
+    ctx.lineTo(toX - arrowLength * Math.cos(angle + arrowAngle), toY - arrowLength * Math.sin(angle + arrowAngle));
     ctx.stroke();
   }
 
@@ -258,7 +257,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       { x: node.x + node.width / 2, y: node.y },
       { x: node.x + node.width, y: node.y + node.height / 2 },
       { x: node.x + node.width / 2, y: node.y + node.height },
-      { x: node.x, y: node.y + node.height / 2 }
+      { x: node.x, y: node.y + node.height / 2 },
     ];
     ctx.fillStyle = '#3b82f6';
     points.forEach(point => {
@@ -286,7 +285,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     return '#6b7280';
   }
 
-  function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  function roundRect(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+  ) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -322,7 +328,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     ctx.fillText(`${Math.round(zoomLevel * 100)}%`, controlsX + 70, controlsY + 45);
   }
 
-  function drawButton(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, text: string, enabled: boolean) {
+  function drawButton(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    text: string,
+    enabled: boolean
+  ) {
     ctx.fillStyle = enabled ? '#ffffff' : '#f3f4f6';
     ctx.strokeStyle = '#d1d5db';
     ctx.lineWidth = 1;
@@ -350,7 +364,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   async function processDroppedFile(file: File, x: number, y: number) {
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = async e => {
       const content = e.target?.result as string;
       const node = {
         id: crypto.randomUUID(),
@@ -363,7 +377,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         height: 80,
         aiTags: null,
         metadata: null,
-        connections: []
+        connections: [],
       };
       fileNodes.push(node);
       draw();
@@ -382,8 +396,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           content: node.content,
           fileName: node.name,
           fileType: node.type,
-          enhanced: true
-        })
+          enhanced: true,
+        }),
       });
       if (response.ok) {
         const aiTags = await response.json();
@@ -417,7 +431,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           toId: existingNode.id,
           type: 'person',
           strength: sharedPeople.length / Math.max(people.length || 1, 1),
-          label: sharedPeople[0]
+          label: sharedPeople[0],
         });
       }
       if (sharedLocations.length > 0) {
@@ -426,7 +440,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           toId: existingNode.id,
           type: 'location',
           strength: sharedLocations.length / Math.max(locations.length || 1, 1),
-          label: sharedLocations[0]
+          label: sharedLocations[0],
         });
       }
       if (sharedOrganizations.length > 0) {
@@ -435,7 +449,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           toId: existingNode.id,
           type: 'organization',
           strength: sharedOrganizations.length / Math.max(organizations.length || 1, 1),
-          label: sharedOrganizations[0]
+          label: sharedOrganizations[0],
         });
       }
     });
@@ -446,7 +460,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const rect = canvas.getBoundingClientRect();
     return {
       x: (event.clientX - rect.left - panOffset.x) / zoomLevel,
-      y: (event.clientY - rect.top - panOffset.y) / zoomLevel
+      y: (event.clientY - rect.top - panOffset.y) / zoomLevel,
     };
   }
 
@@ -455,19 +469,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const controlsX = canvasWidth - 120;
     const controlsY = 20;
     // Use client coords for UI buttons
-    if (event.clientX >= controlsX && event.clientX <= controlsX + 40 &&
-        event.clientY >= controlsY && event.clientY <= controlsY + 30) {
+    if (
+      event.clientX >= controlsX &&
+      event.clientX <= controlsX + 40 &&
+      event.clientY >= controlsY &&
+      event.clientY <= controlsY + 30
+    ) {
       zoomIn();
       return;
     }
-    if (event.clientX >= controlsX + 50 && event.clientX <= controlsX + 90 &&
-        event.clientY >= controlsY && event.clientY <= controlsY + 30) {
+    if (
+      event.clientX >= controlsX + 50 &&
+      event.clientX <= controlsX + 90 &&
+      event.clientY >= controlsY &&
+      event.clientY <= controlsY + 30
+    ) {
       zoomOut();
       return;
     }
-    const clickedNode = fileNodes.find(node =>
-      mouse.x >= node.x && mouse.x <= node.x + node.width &&
-      mouse.y >= node.y && mouse.y <= node.y + node.height
+    const clickedNode = fileNodes.find(
+      node =>
+        mouse.x >= node.x && mouse.x <= node.x + node.width && mouse.y >= node.y && mouse.y <= node.y + node.height
     );
     if (clickedNode) {
       selectedNodeId = clickedNode.id;
@@ -488,9 +510,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       if (canvas) canvas.style.cursor = 'grabbing';
       return;
     }
-    const clickedNode = fileNodes.find(node =>
-      mouse.x >= node.x && mouse.x <= node.x + node.width &&
-      mouse.y >= node.y && mouse.y <= node.y + node.height
+    const clickedNode = fileNodes.find(
+      node =>
+        mouse.x >= node.x && mouse.x <= node.x + node.width && mouse.y >= node.y && mouse.y <= node.y + node.height
     );
     if (clickedNode && !readOnly) {
       if (event.shiftKey) {
@@ -525,9 +547,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       }
       return;
     }
-    const hoveredNode = fileNodes.find(node =>
-      mouse.x >= node.x && mouse.x <= node.x + node.width &&
-      mouse.y >= node.y && mouse.y <= node.y + node.height
+    const hoveredNode = fileNodes.find(
+      node =>
+        mouse.x >= node.x && mouse.x <= node.x + node.width && mouse.y >= node.y && mouse.y <= node.y + node.height
     );
     const newHoveredId = hoveredNode?.id || null;
     if (newHoveredId !== hoveredNodeId) {
@@ -598,15 +620,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         connections: nodeConnections,
         viewport: { zoomLevel, panOffset },
         caseId,
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
       };
       await fetch('/api/evidence/save-node', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'auto_save',
-          data: { canvasState, caseId }
-        })
+          data: { canvasState, caseId },
+        }),
       });
       ondispatch?.(canvasState);
     } catch (error) {
@@ -629,7 +651,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       height: 80,
       aiTags: null,
       metadata: null,
-      connections: []
+      connections: [],
     };
     fileNodes.push(node);
     draw();
@@ -652,7 +674,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     return {
       nodes: fileNodes,
       connections: nodeConnections,
-      viewport: { zoomLevel, panOffset }
+      viewport: { zoomLevel, panOffset },
     };
   }
 
@@ -686,6 +708,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="container mx-auto px-4">AI analysis failed - Click to retry</div>
   {/if}
 </div>
+
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>

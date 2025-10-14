@@ -201,7 +201,7 @@
                 <pre class="bg-black/30 p-2 rounded border border-white/10 overflow-x-auto text-sm">{JSON.stringify(
                     $auth,
                     null,
-                    2,
+                    2
                   )}</pre>
               </div>
               <div>

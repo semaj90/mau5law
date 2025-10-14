@@ -4,7 +4,11 @@
 // Integrates WebGPU tensor acceleration for client-side AI processing
 // import { webLlamaService, type WebLlamaResponse, type WebLlamaConfig } from '../ai/webasm-llamacpp.js'
 // import { tensorAccelerator, acceleratedSimilarity } from '../webgpu/tensor-acceleration.js'
-import { unifiedRuntime, type InferenceRequest, type InferenceResponse } from '../webgpu/unified-runtime-abstraction.js';
+import {
+  unifiedRuntime,
+  type InferenceRequest,
+  type InferenceResponse,
+} from '../webgpu/unified-runtime-abstraction.js';
 // Fallback types and implementations for broken dependencies
 interface WebLlamaResponse {
   success: boolean;
@@ -16,13 +20,13 @@ interface WebLlamaResponse {
     fromCache?: boolean;
     gpuAccelerated?: boolean;
     simdUsed?: boolean;
-  }
+  };
 }
 // Fallback webLlamaService implementation
 const webLlamaService = {
   async initialize(config: any): Promise<{ success: boolean; error?: string }> {
     console.warn('[WebAssembly AI] Using fallback webLlamaService implementation');
-    return { success: true }
+    return { success: true };
   },
   async generateText(_options: any): Promise<WebLlamaResponse> {
     // Fallback to unified runtime
@@ -32,21 +36,21 @@ const webLlamaService = {
         prompt: options.prompt,
         maxTokens: options.maxTokens,
         temperature: options.temperature,
-        useCase: 'chat'
+        useCase: 'chat',
       });
       return {
         success: true,
         text: response.text,
         metadata: {
           tokensGenerated: response.metadata.tokensGenerated,
-          confidence: response.metadata.confidence
-        }
-      }
+          confidence: response.metadata.confidence,
+        },
+      };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message
-      }
+        error: error.message,
+      };
     }
   },
   async analyzeLegalDocument(title: string, content: string, type: string): Promise<any> {
@@ -56,8 +60,8 @@ const webLlamaService = {
       recommendations: ['Consider reviewing with legal expert'],
       confidence: 0.5,
       processingTime: 100,
-      method: 'fallback'
-    }
+      method: 'fallback',
+    };
   },
   getHealthStatus(): any {
     return {
@@ -68,13 +72,13 @@ const webLlamaService = {
       workerEnabled: false,
       cacheSize: 0,
       threadsCount: navigator.hardwareConcurrency || 4,
-      wasmSupported: typeof WebAssembly !== 'undefined'
-    }
+      wasmSupported: typeof WebAssembly !== 'undefined',
+    };
   },
   dispose(): void {
     // No-op for fallback
-  }
-}
+  },
+};
 // Fallback acceleratedSimilarity implementation
 async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
   // Simple cosine similarity fallback
@@ -114,7 +118,7 @@ export interface WebAssemblyAIConfig {
     quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32';
     threads: number;
     batchSize: number;
-  }
+  };
   // Fallback strategy (removed ONNX)
   fallbackStrategy: 'ollama' | 'python' | 'webasm' | 'auto';
   gpuDetectionTimeout: number;
@@ -130,7 +134,7 @@ export interface WebAssemblyAIResponse {
     fromCache: boolean;
     gpuAccelerated?: boolean;
     tensorAccelerationUsed?: boolean;
-  }
+  };
   conversationId?: string;
 }
 export class WebAssemblyAIAdapter {
@@ -156,7 +160,7 @@ export class WebAssemblyAIAdapter {
         name: 'gemma3:270m',
         quantization: 'Q4_0',
         threads: navigator.hardwareConcurrency || 4,
-        batchSize: 512
+        batchSize: 512,
       },
       // Parameters
       maxTokens: 2048,
@@ -165,13 +169,12 @@ export class WebAssemblyAIAdapter {
       // Fallback strategy (removed ONNX)
       fallbackStrategy: 'auto',
       gpuDetectionTimeout: 5000,
-      ...config
-    }
+      ...config,
+    };
   }
   /**
    * Initialize WebAssembly AI service with unified runtime abstraction
-   */;
-  async initialize(): Promise<boolean> {
+   */ async initialize(): Promise<boolean> {
     if (!browser) {
       console.warn('[WebAssembly AI] Not running in browser environment');
       return false;
@@ -208,7 +211,7 @@ export class WebAssemblyAIAdapter {
         webgpu: capabilities.webgpu.available,
         webgl2: capabilities.webgl2.available,
         wasmSIMD: capabilities.wasmSIMD.available,
-        tensorRT: capabilities.tensorRT.available
+        tensorRT: capabilities.tensorRT.available,
       });
       return true;
     } catch (error) {
@@ -218,8 +221,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Detect GPU availability and capabilities
-   */;
-  private async detectGPUAvailability(): Promise<boolean> {
+   */ private async detectGPUAvailability(): Promise<boolean> {
     try {
       // Check WebGPU support
       if (navigator.gpu) {
@@ -245,8 +247,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Select the best inference method based on availability and config
-   */;
-  private async selectInferenceMethod(): Promise<'ollama' | 'python' | 'webasm'> {
+   */ private async selectInferenceMethod(): Promise<'ollama' | 'python' | 'webasm'> {
     if (this.config.fallbackStrategy !== 'auto') {
       return this.config.fallbackStrategy;
     }
@@ -254,7 +255,7 @@ export class WebAssemblyAIAdapter {
     try {
       const ollamaCheck = await fetch(`${this.config.ollamaEndpoint}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout)
+        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout),
       });
       if (ollamaCheck.ok) {
         console.log('[WebAssembly AI] Ollama available');
@@ -267,7 +268,7 @@ export class WebAssemblyAIAdapter {
     try {
       const pythonCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout)
+        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout),
       });
       if (pythonCheck.ok) {
         console.log('[WebAssembly AI] Python middleware available');
@@ -282,8 +283,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Initialize Ollama connection
-   */;
-  private async initializeOllama(): Promise<void> {
+   */ private async initializeOllama(): Promise<void> {
     const modelCheck = await fetch(`${this.config.ollamaEndpoint}/models`);
     const models = await modelCheck.json();
     if (!models.models || models.models.length === 0) {
@@ -294,8 +294,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Initialize Python middleware connection
-   */;
-  private async initializePythonMiddleware(): Promise<void> {
+   */ private async initializePythonMiddleware(): Promise<void> {
     const statusCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/status`);
     const status = await statusCheck.json();
     this.currentModel = status?.model || 'gemma3:270m';
@@ -303,8 +302,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Initialize client-side WebAssembly llama.cpp inference
-   */;
-  private async initializeWebAssemblyLlamaCpp(): Promise<void> {
+   */ private async initializeWebAssemblyLlamaCpp(): Promise<void> {
     try {
       // Initialize the WebAssembly llama.cpp service
       console.log(`[WebAssembly AI] Loading WebAssembly llama.cpp from ${this.config.wasmPath}`);
@@ -315,12 +313,12 @@ export class WebAssemblyAIAdapter {
           name: this.config.modelConfig.name,
           quantization: this.config.modelConfig.quantization,
           contextSize: this.config.contextSize,
-          batchSize: this.config.modelConfig.batchSize
+          batchSize: this.config.modelConfig.batchSize,
         },
         threads: this.config.modelConfig.threads,
         enableSIMD: this.config.enableSIMD,
         enableGPU: this.gpuAvailable && this.config.enableGPU,
-        enableMultiCore: this.config.enableMultiCore
+        enableMultiCore: this.config.enableMultiCore,
       });
       if (!initResult.success) {
         throw new Error(`WebAssembly llama.cpp initialization failed: ${initResult.error}`);
@@ -333,7 +331,7 @@ export class WebAssemblyAIAdapter {
         threads: this.config.modelConfig.threads,
         simdEnabled: this.config.enableSIMD,
         gpuEnabled: this.gpuAvailable && this.config.enableGPU,
-        multiCoreEnabled: this.config.enableMultiCore
+        multiCoreEnabled: this.config.enableMultiCore,
       });
     } catch (error) {
       console.error('[WebAssembly AI] WebAssembly llama.cpp initialization failed:', error);
@@ -388,10 +386,7 @@ export class WebAssemblyAIAdapter {
       response.metadata.processingTime = totalTime;
       return response;
     } catch (error: any) {
-      console.error(
-        `[WebAssembly AI] Message processing failed with ${this.activeInferenceMethod}:`,
-        error
-      );
+      console.error(`[WebAssembly AI] Message processing failed with ${this.activeInferenceMethod}:`, error);
       // Try fallback method if primary fails
       try {
         return await this.fallbackInference(message, options);
@@ -412,10 +407,10 @@ export class WebAssemblyAIAdapter {
         prompt: prompt,
         options: {
           num_predict: options.maxTokens || this.config.maxTokens,
-          temperature: options.temperature || this.config.temperature
+          temperature: options.temperature || this.config.temperature,
         },
-        stream: false
-      })
+        stream: false,
+      }),
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.statusText}`);
@@ -429,14 +424,13 @@ export class WebAssemblyAIAdapter {
         confidence: 0.9,
         method: 'ollama',
         modelUsed: this.currentModel,
-        fromCache: false
-      }
-    }
+        fromCache: false,
+      },
+    };
   }
   /**
    * Generate response using Python middleware
-   */;
-  private async generateWithPython(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+   */ private async generateWithPython(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
     const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -444,8 +438,8 @@ export class WebAssemblyAIAdapter {
         prompt: prompt,
         max_tokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature || this.config.temperature,
-        model: this.currentModel
-      })
+        model: this.currentModel,
+      }),
     });
     if (!response.ok) {
       throw new Error(`Python middleware error: ${response.statusText}`);
@@ -459,14 +453,13 @@ export class WebAssemblyAIAdapter {
         confidence: data.confidence || 0.85,
         method: 'python',
         modelUsed: this.currentModel,
-        fromCache: data.from_cache || false
-      }
-    }
+        fromCache: data.from_cache || false,
+      },
+    };
   }
   /**
    * Generate response using unified runtime abstraction (WebGPU/WebGL2/WASM SIMD)
-   */;
-  private async generateWithUnifiedRuntime(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+   */ private async generateWithUnifiedRuntime(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
     try {
       const startTime = performance.now();
       // Determine complexity for runtime selection
@@ -479,8 +472,8 @@ export class WebAssemblyAIAdapter {
         temperature: options.temperature || this.config.temperature,
         complexity: complexity,
         useCase: this.determineUseCase(prompt),
-        preferredRuntime: options.preferredRuntime
-      }
+        preferredRuntime: options.preferredRuntime,
+      };
       // Get recommended runtime
       const recommendedRuntime = unifiedRuntime.getRecommendedRuntime(request);
       console.log(`[WebAssembly AI] Using ${recommendedRuntime} for complexity ${complexity}`);
@@ -497,9 +490,9 @@ export class WebAssemblyAIAdapter {
           modelUsed: this.currentModel,
           fromCache: false,
           gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime),
-          tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt'
-        }
-      }
+          tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt',
+        },
+      };
     } catch (error: any) {
       console.error('[WebAssembly AI] Unified runtime execution failed:', error);
       // Fallback to direct WebAssembly llama.cpp
@@ -508,8 +501,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Generate response using client-side WebAssembly llama.cpp (fallback)
-   */;
-  private async generateWithWebAssemblyLlamaCpp(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+   */ private async generateWithWebAssemblyLlamaCpp(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
     if (!this.llamacppInstance) {
       throw new Error('WebAssembly llama.cpp instance not initialized');
     }
@@ -525,7 +517,7 @@ export class WebAssemblyAIAdapter {
         repeatPenalty: 1.1,
         useGPU: this.gpuAvailable && this.config.enableGPU,
         useSIMD: this.config.enableSIMD,
-        streaming: false
+        streaming: false,
       });
       const processingTime = performance.now() - startTime;
       if (!wasmResponse.success) {
@@ -541,9 +533,9 @@ export class WebAssemblyAIAdapter {
           modelUsed: this.currentModel,
           fromCache: wasmResponse.metadata?.fromCache || false,
           gpuAccelerated: wasmResponse.metadata?.gpuAccelerated || false,
-          tensorAccelerationUsed: wasmResponse.metadata?.simdUsed || false
-        }
-      }
+          tensorAccelerationUsed: wasmResponse.metadata?.simdUsed || false,
+        },
+      };
     } catch (error: any) {
       console.error('[WebAssembly AI] WebAssembly llama.cpp inference failed:', error);
       throw error;
@@ -577,8 +569,8 @@ export class WebAssemblyAIAdapter {
       response.metadata = {
         ...response.metadata,
         gpuAccelerated: true,
-        tensorAccelerationUsed: true
-      }
+        tensorAccelerationUsed: true,
+      };
       console.log(
         `[WebAssembly AI] GPU tensor acceleration enhanced response with max similarity: ${maxSimilarity.toFixed(3)}`
       );
@@ -592,11 +584,8 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Fallback inference when primary method fails
-   */;
-  private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
-    const fallbackOrder = ['ollama', 'python', 'webasm'].filter(
-      (method) => method !== this.activeInferenceMethod
-    );
+   */ private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
+    const fallbackOrder = ['ollama', 'python', 'webasm'].filter(method => method !== this.activeInferenceMethod);
     for (const method of fallbackOrder) {
       try {
         console.log(`[WebAssembly AI] Trying fallback method: ${method}`);
@@ -627,11 +616,10 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Test Ollama connection
-   */;
-  private async testOllamaConnection(): Promise<boolean> {
+   */ private async testOllamaConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.ollamaEndpoint}/health`, {
-        signal: AbortSignal.timeout(2000)
+        signal: AbortSignal.timeout(2000),
       });
       return response.ok;
     } catch {
@@ -640,11 +628,10 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Test Python middleware connection
-   */;
-  private async testPythonConnection(): Promise<boolean> {
+   */ private async testPythonConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, {
-        signal: AbortSignal.timeout(2000)
+        signal: AbortSignal.timeout(2000),
       });
       return response.ok;
     } catch {
@@ -690,7 +677,7 @@ export class WebAssemblyAIAdapter {
   ): Promise<void> {
     try {
       const response = await this.sendMessage(message, {
-        conversationHistory: options.conversationHistory
+        conversationHistory: options.conversationHistory,
       });
       // Simulate streaming by chunking the response
       const chunks = this.chunkResponse(response.content, 50);
@@ -699,7 +686,7 @@ export class WebAssemblyAIAdapter {
           options.onChunk(chunk);
         }
         // Add small delay to simulate streaming
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
       if (options.onComplete) {
         options.onComplete(response);
@@ -713,14 +700,12 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Get available models
-   */;
-  getAvailableModels(): string[] {
+   */ getAvailableModels(): string[] {
     return ['gemma3:270m', 'gemma3-legal:latest'];
   }
   /**
    * Set model configuration
-   */;
-  setModel(model: string): void {
+   */ setModel(model: string): void {
     if (!this.getAvailableModels().includes(model)) {
       throw new Error(`Unsupported model: ${model}`);
     }
@@ -728,8 +713,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Set temperature
-   */;
-  setTemperature(temperature: number): void {
+   */ setTemperature(temperature: number): void {
     if (temperature < 0 || temperature > 2) {
       throw new Error('Temperature must be between 0 and 2');
     }
@@ -737,8 +721,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Get health status
-   */;
-  getHealthStatus(): {
+   */ getHealthStatus(): {
     initialized: boolean;
     modelLoaded: boolean;
     webgpuAvailable: boolean;
@@ -753,13 +736,12 @@ export class WebAssemblyAIAdapter {
     return {
       initialized: this.initialized,
       currentModel: this.currentModel,
-      ...wasmHealth
-    }
+      ...wasmHealth,
+    };
   }
   /**
    * Check if WebAssembly is supported
-   */;
-  isSupported(): boolean {
+   */ isSupported(): boolean {
     return (
       browser &&
       typeof WebAssembly !== 'undefined' &&
@@ -795,8 +777,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Test WebAssembly llama.cpp availability
-   */;
-  private async testWebAssemblyConnection(): Promise<boolean> {
+   */ private async testWebAssemblyConnection(): Promise<boolean> {
     try {
       if (!this.llamacppInstance) {
         return false;
@@ -809,49 +790,72 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Calculate prompt complexity for runtime selection
-   */;
-  private calculateComplexity(prompt: string): number {
+   */ private calculateComplexity(prompt: string): number {
     let complexity = 0;
     // Base complexity from length
     complexity += Math.min(50, Math.log2(prompt.length + 1) * 8);
     // Legal terminology complexity
     const legalTerms = [
-      'contract', 'liability', 'negligence', 'statute', 'precedent', 'jurisdiction',
-      'plaintiff', 'defendant', 'evidence', 'testimony', 'affidavit', 'subpoena',
-      'damages', 'tort', 'breach', 'clause', 'amendment', 'litigation'
+      'contract',
+      'liability',
+      'negligence',
+      'statute',
+      'precedent',
+      'jurisdiction',
+      'plaintiff',
+      'defendant',
+      'evidence',
+      'testimony',
+      'affidavit',
+      'subpoena',
+      'damages',
+      'tort',
+      'breach',
+      'clause',
+      'amendment',
+      'litigation',
     ];
-    const legalTermCount = legalTerms.reduce((count, term) =>
-      count + (prompt.toLowerCase().includes(term) ? 1 : 0), 0);
+    const legalTermCount = legalTerms.reduce((count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0), 0);
     complexity += legalTermCount * 3;
     // Technical complexity indicators
     const technicalTerms = ['analyze', 'compare', 'synthesize', 'evaluate', 'assess'];
-    const technicalTermCount = technicalTerms.reduce((count, term) =>
-      count + (prompt.toLowerCase().includes(term) ? 1 : 0), 0);
+    const technicalTermCount = technicalTerms.reduce(
+      (count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0),
+      0
+    );
     complexity += technicalTermCount * 5;
     // Question complexity
     const questionWords = ['why', 'how', 'what', 'when', 'where', 'which'];
-    const questionCount = questionWords.reduce((count, word) =>
-      count + (prompt.toLowerCase().includes(word) ? 1 : 0), 0);
+    const questionCount = questionWords.reduce(
+      (count, word) => count + (prompt.toLowerCase().includes(word) ? 1 : 0),
+      0
+    );
     complexity += questionCount * 2;
     return Math.min(100, complexity);
   }
   /**
    * Determine use case from prompt content
-   */;
-  private determineUseCase(prompt: string): 'chat' | 'legal-analysis' | 'embedding' | 'similarity' {
+   */ private determineUseCase(prompt: string): 'chat' | 'legal-analysis' | 'embedding' | 'similarity' {
     const lowerPrompt = prompt.toLowerCase();
     // Legal analysis indicators
     const legalIndicators = [
-      'contract', 'liability', 'legal', 'law', 'statute', 'precedent',
-      'court', 'judge', 'trial', 'evidence', 'witness'
+      'contract',
+      'liability',
+      'legal',
+      'law',
+      'statute',
+      'precedent',
+      'court',
+      'judge',
+      'trial',
+      'evidence',
+      'witness',
     ];
     if (legalIndicators.some(indicator => lowerPrompt.includes(indicator))) {
       return 'legal-analysis';
     }
     // Embedding/similarity indicators
-    const embeddingIndicators = [
-      'similar', 'compare', 'match', 'search', 'find', 'related'
-    ];
+    const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related'];
     if (embeddingIndicators.some(indicator => lowerPrompt.includes(indicator))) {
       return 'similarity';
     }
@@ -860,8 +864,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Generate embedding using embeddinggemma:latest (the actual model available)
-   */;
-  private async generateEmbedding(text: string): Promise<Float32Array> {
+   */ private async generateEmbedding(text: string): Promise<Float32Array> {
     try {
       // Use the vector embeddings API that uses embeddinggemma:latest
       const response = await fetch('/api/v1/vector/embeddings', {
@@ -871,15 +874,15 @@ export class WebAssemblyAIAdapter {
           text,
           model: 'embeddinggemma:latest',
           useCUDA: true,
-          normalize: true
-        })
+          normalize: true,
+        }),
       });
       if (!response.ok) {
         // Fallback to Ollama embedding API
         const ollamaResponse = await fetch('/api/ai/embedding', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
+          body: JSON.stringify({ text }),
         });
         if (!ollamaResponse.ok) {
           throw new Error(`Both embedding APIs failed: ${response.statusText}`);
@@ -901,8 +904,7 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Simple embedding fallback for WebGPU tensor operations when server is unavailable
-   */;
-  private generateSimpleEmbedding(text: string): Float32Array {
+   */ private generateSimpleEmbedding(text: string): Float32Array {
     const dim = 256; // Fixed dimension for compatibility
     const embedding = new Float32Array(dim);
     // Simple hash-based embedding (fallback only)
@@ -924,14 +926,12 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Estimate token count from text
-   */;
-  private estimateTokenCount(text: string): number {
+   */ private estimateTokenCount(text: string): number {
     return Math.ceil(text.length / 4); // Rough estimation: ~4 characters per token
   }
   /**
    * Clean up resources
-   */;
-  dispose(): void {
+   */ dispose(): void {
     if (webLlamaService) {
       webLlamaService.dispose();
     }

@@ -4,18 +4,18 @@
  * Provides local LLM inference using WebAssembly when Ollama is unavailable
  * Uses llama.cpp compiled to WebAssembly for client-side processing
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Define options type for WebAssembly LLM
 interface WasmLLMOptions {
-	temperature: number
-	maxTokens: number
+  temperature: number;
+  maxTokens: number;
 }
 
 interface ChatMessage {
-	role: 'user' | 'assistant' | 'system'
-	content: string
+  role: 'user' | 'assistant' | 'system';
+  content: string;
 }
 
 // WebAssembly LLM service interface
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 export const GET: RequestHandler = async () => {
-	try {
+  try {
     const wasm = await getWasmService();
     return json({
       success: true,
@@ -253,4 +253,4 @@ export const GET: RequestHandler = async () => {
       { status: 500 }
     );
   }
-}
+};

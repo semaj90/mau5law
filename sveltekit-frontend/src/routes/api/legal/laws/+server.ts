@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
           jurisdiction: legalPrecedents.jurisdiction,
           summary: legalPrecedents.summary,
           relevanceScore: legalPrecedents.relevanceScore,
-          legalPrinciples: legalPrecedents.legalPrinciples
+          legalPrinciples: legalPrecedents.legalPrinciples,
         })
         .from(legalPrecedents)
         .orderBy(desc(legalPrecedents.relevanceScore))
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
           category: statutes.category,
           jurisdiction: statutes.jurisdiction,
           penalties: statutes.penalties,
-          isActive: statutes.isActive
+          isActive: statutes.isActive,
         })
         .from(statutes)
         .where(eq(statutes.isActive, true))
@@ -97,16 +97,18 @@ export const GET: RequestHandler = async ({ url }) => {
         count: result.length,
         jurisdiction,
         category,
-        source: 'database'
-      }
+        source: 'database',
+      },
     });
-
   } catch (error) {
     console.error('❌ Laws API error:', error);
-    return json({
-      error: 'Failed to fetch laws',
-      laws: [],
-      metadata: { count: 0, source: 'error' }
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Failed to fetch laws',
+        laws: [],
+        metadata: { count: 0, source: 'error' },
+      },
+      { status: 500 }
+    );
   }
 };

@@ -263,7 +263,7 @@ if (!canvas) return;
   <div class="sr-only">
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
       Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map.join(
-        ', ',
+        ', '
       )}
     {/if}
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}

@@ -73,7 +73,7 @@ export function buildFilters(filters: SQL[]): SQL | undefined {
   return filters.length > 0 ? and(...filters) : undefined;
 }
 export function buildSearchFilters(
-  searchColumns: PgColumn[]
+  searchColumns: PgColumn[],
   searchTerm: string;
 ): SQL {
   const searchFilters = searchColumns.map((col: any) => like(col, `%${searchTerm}%`)

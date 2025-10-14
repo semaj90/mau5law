@@ -8,11 +8,15 @@
     onError?: (error: Error, errorInfo?: unknown) => void;
   }
   // Use a single $props() destructure (runes mode disallows multiple calls)
-  let { fallback, onError, children }:
-    { fallback?: unknown; onError?: (error: Error, errorInfo?: unknown) => void; children?: Snippet } = $props() as any;
+  let {
+    fallback,
+    onError,
+    children,
+  }: { fallback?: unknown; onError?: (error: Error, errorInfo?: unknown) => void; children?: Snippet } =
+    $props() as any;
   // Create snippet-typed aliases for rendering
-  const fallbackSnippet: Snippet | undefined = (fallback as unknown) as Snippet | undefined;
-  const childrenSnippet: Snippet | undefined = (children as unknown) as Snippet | undefined;
+  const fallbackSnippet: Snippet | undefined = fallback as unknown as Snippet | undefined;
+  const childrenSnippet: Snippet | undefined = children as unknown as Snippet | undefined;
   let hasError = $state(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
@@ -26,7 +30,7 @@
       timestamp: new Date().toISOString(),
       userAgent: globalThis.navigator?.userAgent,
       context,
-    }
+    };
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
     // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) })
@@ -84,7 +88,7 @@
     return () => {
       globalThis.removeEventListener('error', handleGlobalError);
       globalThis.removeEventListener('unhandledrejection', handleUnhandledRejection);
-    }
+    };
   });
 </script>
 
@@ -178,7 +182,8 @@
   {@render childrenSnippet?.()}
 {/if}
 
-<style>/* Ensure error boundary styles don't interfere with global styles */
+<style>
+  /* Ensure error boundary styles don't interfere with global styles */
   details summary::-webkit-details-marker {
     display: none;
   }

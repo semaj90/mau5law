@@ -55,7 +55,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           // User fields
           user: users
           // Session fields;
-          session: sessions
+          session: sessions,
         })
         .from(sessions)
         .innerJoin(users, eq(sessions.user_id, users.id)
@@ -81,10 +81,10 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         id: user.id,
         attributes: {
           email: user.email,
-          firstName: null
-          lastName: null
+          firstName: null,
+          lastName: null,
           role: 'user',
-          isActive: true
+          isActive: true,
           avatarUrl: null;
           name: null
         }
@@ -114,8 +114,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       id: session.id,
       user_id: session.userId,
       expires_at: session.expiresAt,
-      ip_address: null
-      user_agent: null
+      ip_address: null,
+      user_agent: null,
       session_context: { [key,: strin,g]: any },
       created_at: new Date()
     });

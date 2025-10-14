@@ -30,4 +30,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     })
     .returning();
   return new Response(JSON.stringify(doc[0]));
-}
+};

@@ -69,14 +69,14 @@ export class MemoryPalaceEngine {
       memoryBudgetMB: 4, // N64 memory constraint
       consolePalette: 'n64',
       ...settings,
-    }
+    };
     this.camera = {
       position: [0, 5, 10],
       target: [0, 0, 0],
       fov: 60,
       near: 0.1,
       far: this.settings.renderDistance,
-    }
+    };
     this.initializeWebGL();
   }
   private async initializeWebGL(): Promise<void> {
@@ -201,7 +201,7 @@ export class MemoryPalaceEngine {
         new Float32Array(
           Array(384)
             .fill(0)
-            .map(() => Math.random()),
+            .map(() => Math.random())
         ),
     }));
   }
@@ -209,7 +209,7 @@ export class MemoryPalaceEngine {
     const render = () => {
       this.render();
       this.renderLoop = requestAnimationFrame(render);
-    }
+    };
     render();
   }
   stopRenderLoop(): void {
@@ -341,7 +341,7 @@ export class MemoryPalaceEngine {
         } else {
           resolve();
         }
-      }
+      };
       requestAnimationFrame(animate);
     });
   }
@@ -370,7 +370,7 @@ export class MemoryPalaceEngine {
       used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,
       utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100,
-    }
+    };
   }
   destroy(): void {
     this.stopRenderLoop();
@@ -389,7 +389,7 @@ export class MemoryPalaceEngine {
 // Factory function for easier instantiation
 export async function createMemoryPalaceEngine(
   canvas: HTMLCanvasElement,
-  settings?: Partial<PalaceSettings>,
+  settings?: Partial<PalaceSettings>
 ): Promise<MemoryPalaceEngine> {
   const engine = new MemoryPalaceEngine(canvas, settings);
   return engine;

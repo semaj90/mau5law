@@ -49,29 +49,29 @@
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
       nodeElement = null;
-    }
+    };
   });
 </script>
 
 <ContextMenu.Root>
   <ContextMenu.Trigger>
-      <div
-        bind:this={nodeElement}
-        class="space-y-4"
-        style={`left: ${position.x}px; top: ${position.y}px; z-index: 10;`}
-        onmousedown={handleMouseDown}
-        onkeydown={(e: KeyboardEvent) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            isDragging = true;
-            dragStartX = 0;
-            dragStartY = 0;
-          }
-        }}
-        role="button"
-        tabindex={0}
-        aria-label="Drag report node"
-      >
+    <div
+      bind:this={nodeElement}
+      class="space-y-4"
+      style={`left: ${position.x}px; top: ${position.y}px; z-index: 10;`}
+      onmousedown={handleMouseDown}
+      onkeydown={(e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          isDragging = true;
+          dragStartX = 0;
+          dragStartY = 0;
+        }
+      }}
+      role="button"
+      tabindex={0}
+      aria-label="Drag report node"
+    >
       <div>
         <div>
           {report.content}

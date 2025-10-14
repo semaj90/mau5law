@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     return json(
       { error: 'Failed to get system information', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

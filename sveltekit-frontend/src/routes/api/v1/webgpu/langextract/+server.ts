@@ -1,57 +1,57 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import {
   webgpuLangChainBridge,
   processLegalDocumentWithWebGPU,
   processBatchDocumentsWithWebGPU,
   getLangChainWebGPUStats,
-  type LangChainWebGPUConfig
-} from '$lib/server/webgpu-langchain-bridge.js'
+  type LangChainWebGPUConfig,
+} from '$lib/server/webgpu-langchain-bridge.js';
 /**
  * WebGPU-Enhanced LangExtract API
  * High-performance legal document processing with GPU-accelerated caching
  * Integrates LangChain extraction with WebGPU optimization
  */
 interface WebGPULangExtractRequest {
-  text?: string
-  documents?: Array<any>
-  action: 'process' | 'batch' | 'benchmark' | 'stats' | 'config'
-  config?: Partial<LangChainWebGPUConfig>
+  text?: string;
+  documents?: Array<any>;
+  action: 'process' | 'batch' | 'benchmark' | 'stats' | 'config';
+  config?: Partial<LangChainWebGPUConfig>;
   benchmark?: {
-    iterations?: number
-    compareStandard?: boolean
-  }
+    iterations?: number;
+    compareStandard?: boolean;
+  };
 }
 
 // New typed result interfaces to avoid `any` casts
-type RecordObject = Record<string, unknown>
+type RecordObject = Record<string, unknown>;
 
 interface PerformanceInfo {
-  webgpuUtilized?: boolean
-  throughput?: number
-  totalTime?: number
-  [key: string]: unknown
+  webgpuUtilized?: boolean;
+  throughput?: number;
+  totalTime?: number;
+  [key: string]: unknown;
 }
 
 interface EmbeddingsInfo {
-  cacheHit?: boolean
-  compressionRatio?: number
-  [key: string]: unknown
+  cacheHit?: boolean;
+  compressionRatio?: number;
+  [key: string]: unknown;
 }
 
 interface ExtractionInfo {
-  summary?: string
-  keyTerms?: string[]
-  entities?: RecordObject[]
-  risks?: RecordObject[]
-  [key: string]: unknown
+  summary?: string;
+  keyTerms?: string[];
+  entities?: RecordObject[];
+  risks?: RecordObject[];
+  [key: string]: unknown;
 }
 
 interface WebGPUResult {
-  performance?: PerformanceInfo
-  embeddings?: EmbeddingsInfo
-  extraction?: ExtractionInfo
-  [key: string]: unknown
+  performance?: PerformanceInfo;
+  embeddings?: EmbeddingsInfo;
+  extraction?: ExtractionInfo;
+  [key: string]: unknown;
 }
 // GET - System status and capabilities
 export const GET: RequestHandler = async () => {
@@ -344,7 +344,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
   const webgpuTime = Date.now() - webgpuStartTime;
 
   // Prepare placeholders for standard comparison so `standardTime` is always defined
-  let standardResults: WebGPUResult[] = [];
+  const standardResults: WebGPUResult[] = [];
   let standardTime = 0;
 
   if (compareStandard) {

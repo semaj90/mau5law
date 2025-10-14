@@ -1,7 +1,7 @@
 /**
  * Evidence Management Global Store - SvelteKit 2 + Svelte 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration
- */;
+ */
 }
 export interface EvidenceNode {
   id: string;
@@ -71,11 +71,11 @@ class EvidenceGlobalStore {
   // UI state
   ui = $state<UIState>({
     selectedNodeIds: [],
-    draggedNodeId: null
-    modalOpen: false
-    modalType: null
-    editingNode: null
-    showAISuggestions: true
+    draggedNodeId: null,
+    modalOpen: false,
+    modalType: null,
+    editingNode: null,
+    showAISuggestions: true,
     filterBy: {},
     viewMode: 'network',
     aiProcessing: false
@@ -110,7 +110,7 @@ class EvidenceGlobalStore {
     const caseId = crypto.randomUUID();
     const newCase: LegalCase = {
       ...caseData,
-      id: caseId
+      id: caseId,
       nodes: [],
       connections: [],
       metadata: {
@@ -155,7 +155,7 @@ class EvidenceGlobalStore {
     const nodeId = crypto.randomUUID();
     const newNode: EvidenceNode = {
       ...nodeData,
-      id: nodeId
+      id: nodeId,
       connections: [],
       metadata: {
         dateCreated: Date.now(),
@@ -233,7 +233,7 @@ class EvidenceGlobalStore {
     if (!this.currentCase || fromNodeId === toNodeId) return;
     const connectionId = crypto.randomUUID();
     const connection = {
-      id: connectionId
+      id: connectionId,
       fromNodeId,
       toNodeId,
       relationship,
@@ -477,7 +477,7 @@ class EvidenceGlobalStore {
     const caseData = this.cases[caseId];
     if (!caseData) throw new Error('Case not found');
     return JSON.stringify({
-      case: caseData
+      case: caseData,
       exportedAt: new Date().toISOString(),
       version: '1.0'
     }, null, 2);
@@ -510,8 +510,8 @@ class EvidenceGlobalStore {
 export const evidenceStore = new EvidenceGlobalStore();
 // Export helper functions for common operations
 export function createEvidenceNode(
-  title: string
-  content: string
+  title: string,
+  content: string,
   type: EvidenceNode['type'],
   position = { x: Math.random() * 800, y: Math.random() * 600 }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {

@@ -16,7 +16,7 @@ https: //svelte.dev/e/js_parse_error -->
       admissibility: 'admissible' | 'questionable' | 'inadmissible';
       reasoning: string;
       suggestedTags: string[];
-    }
+    };
     tags?: string[];
     similarEvidence?: Array<{ similarity: number; content: string }>;
   }
@@ -27,16 +27,12 @@ https: //svelte.dev/e/js_parse_error -->
     onsaveAnalysis?: (event?: unknown) => void;
     similarEvidence?: Array<any> | null;
   }
-  let {
-    open = false,
-    evidence = null,
-    similarEvidence = null
-  }: Props = $props();
+  let { open = false, evidence = null, similarEvidence = null }: Props = $props();
   import { fade, fly } from 'svelte/transition';
   import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
-  import Button from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/button';
   import Input from '$lib/components/ui/Input.svelte';
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles } from 'lucide-svelte';
@@ -56,10 +52,10 @@ https: //svelte.dev/e/js_parse_error -->
           content: evidence.content,
           type: evidence.type,
           generateAnalysis: true,
-          metadata: { analysisMode }
-        })
+          metadata: { analysisMode },
+        }),
       });
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       if (result?.success && result.evidence) {
         evidence = { ...evidence, ...result.evidence };
         onevidenceUpdated?.();
@@ -73,7 +69,10 @@ https: //svelte.dev/e/js_parse_error -->
 
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
-    const tags = newTags.split(',').map(t => t.trim()).filter(Boolean);
+    const tags = newTags
+      .split(',')
+      .map(t => t.trim())
+      .filter(Boolean);
     try {
       const response = await fetch('/api/evidence', {
         method: 'PUT',
@@ -81,12 +80,12 @@ https: //svelte.dev/e/js_parse_error -->
         body: JSON.stringify({
           evidenceId: evidence.id,
           caseId: evidence.caseId,
-          tags: [...(evidence.tags || []), ...tags]
-        })
+          tags: [...(evidence.tags || []), ...tags],
+        }),
       });
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       if (result?.success && result.evidence) {
-        evidence = { ...evidence, tags: result.evidence.tags || (evidence.tags || []) };
+        evidence = { ...evidence, tags: result.evidence.tags || evidence.tags || [] };
         newTags = '';
         onevidenceUpdated?.();
       }
@@ -97,10 +96,14 @@ https: //svelte.dev/e/js_parse_error -->
 
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
-      case 'admissible': return 'bg-green-100 text-green-800 border-green-300';
-      case 'questionable': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'inadmissible': return 'bg-red-100 text-red-800 border-red-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'admissible':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'questionable':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'inadmissible':
+        return 'bg-red-100 text-red-800 border-red-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getRelevanceColor(relevance: number): string {
@@ -109,14 +112,10 @@ https: //svelte.dev/e/js_parse_error -->
     return 'text-red-600';
   }
 </script>
-<Dialog.Root
-  bind:open
-  title="Evidence Analysis"
-  description="AI-powered legal evidence analysis and tagging"
-  size="xl"
->
+
+<Dialog.Root bind:open title="Evidence Analysis" description="AI-powered legal evidence analysis and tagging" size="xl">
   {#snippet trigger()}
-      {@render trigger?.()}
+    {@render trigger?.()}
   {/snippet}
   {#if evidence}
     <div class="space-y-4">
@@ -134,7 +133,14 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <div class="space-y-4">
-          <Button class="bits-btn" variant="secondary" size="sm" on:click={() => { /* export handler placeholder */ }}>
+          <Button
+            class="bits-btn"
+            variant="secondary"
+            size="sm"
+            on:click={() => {
+              /* export handler placeholder */
+            }}
+          >
             <Download class="inline-block" />
             <span>Export</span>
           </Button>
@@ -260,14 +266,8 @@ https: //svelte.dev/e/js_parse_error -->
             </div>
             <!-- Add Tags -->
             <div class="space-y-4">
-              <Input
-                bind:value={newTags}
-                placeholder="Add tags (comma-separated)"
-                class="space-y-4"
-              />
-              <Button class="bits-btn" size="sm" on:click={() => updateTags()} disabled={!newTags.trim()}>
-                Add
-              </Button>
+              <Input bind:value={newTags} placeholder="Add tags (comma-separated)" class="space-y-4" />
+              <Button class="bits-btn" size="sm" on:click={() => updateTags()} disabled={!newTags.trim()}>Add</Button>
             </div>
           </div>
         </GridItem>
@@ -291,11 +291,7 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   {/if}
   {#snippet footer({ close })}
-  <Button class="bits-btn" variant="secondary" on:click={() => close()}>
-    Close
-  </Button>
-  <Button class="bits-btn" variant="primary" on:click={() => onsaveAnalysis?.()}>
-    Save Analysis
-  </Button>
-{/snippet}
+    <Button class="bits-btn" variant="secondary" on:click={() => close()}>Close</Button>
+    <Button class="bits-btn" variant="primary" on:click={() => onsaveAnalysis?.()}>Save Analysis</Button>
+  {/snippet}
 </Dialog.Root>;

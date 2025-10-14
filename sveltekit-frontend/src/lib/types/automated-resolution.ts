@@ -1,7 +1,7 @@
 /**
  * 🤖 AUTOMATED RESOLUTION TYPE DEFINITIONS
  * Type definitions for automated barrel store generation and missing import resolution
- */;
+ */
 }
 export interface MissingImportAnalysis {
   missingFunctions: Set<string>;

@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const response: QueryResponse = {
           answer: cached.response,
           model_used: cached?.model || 'unknown',
-          cache_hit: true
+          cache_hit: true,
           memory_bank_used: 'L3_REDIS_CACHE',
           response_time_ms: Date.now() - startTime,
           cost_saved: 0.015, // Simulated API cost saving
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Phase 4: Cache result (Nintendo L3 Memory Bank)
     queryCache.set(cacheKey, {
-      response: answer
+      response: answer,
       timestamp: Date.now(),
       model: modelUsed
     })
@@ -238,10 +238,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const responseTime = Date.now() - startTime
     const response: QueryResponse = {
       answer,
-      model_used: modelUsed
-      cache_hit: false
-      memory_bank_used: memoryBank
-      response_time_ms: responseTime
+      model_used: modelUsed,
+      cache_hit: false,
+      memory_bank_used: memoryBank,
+      response_time_ms: responseTime,
       cost_saved: 0,
       classification: {
         type: classification.type,
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
         reasoning: classification.reasoning
       },
       nintendo_diagnostics: {
-        bank_switches: bankSwitches
+        bank_switches: bankSwitches,
         memory_pressure: responseTime > 2000 ? 'high' : responseTime > 1000 ? 'medium' : 'low',
         cache_efficiency: (queryCache.size / 1000) * 100
       }

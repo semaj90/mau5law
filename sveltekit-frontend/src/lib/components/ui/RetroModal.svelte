@@ -59,7 +59,8 @@ https://svelte.dev/e/slot_snippet_conflict -->
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Additional custom styling to enhance nes.css */ {}
+<style>
+/* Additional custom styling to enhance nes.css */ {}
   :global(.nes-dialog) {
     animation: modalSlideIn 0.3s ease-out;
   }

@@ -11,8 +11,8 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw redirect(303, '/dashboard');
   }
   const form = await superValidate(zod(loginSchema));
-  return { form }
-}
+  return { form };
+};
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
     const form = await superValidate(request, zod(loginSchema));
@@ -47,4 +47,4 @@ export const actions: Actions = {
       return message(form, 'Login failed. Please try again.', { status: 500 });
     }
   },
-}
+};

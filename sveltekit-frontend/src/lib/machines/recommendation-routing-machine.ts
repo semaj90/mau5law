@@ -1,4 +1,4 @@
-import { createMachine, assign, createActor, type StateFrom, fromPromise } from "xstate";
+import { createMachine, assign, createActor, type StateFrom, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext {
@@ -9,7 +9,7 @@ export interface RecommendationContext {
     id: string;
     type: 'evidence' | 'contract' | 'brief' | 'deposition';
     confidence: number;
-  }
+  };
   rabbitMQRouting: {
     exchange: string;
     routingKeys: string[];
@@ -19,33 +19,33 @@ export interface RecommendationContext {
       backgroundProcessing: string;
       aiAnalysis: string;
       recommendations: string;
-    }
+    };
     currentQueue?: string;
     messageId?: string;
-  }
+  };
   recommendations: {
     legal: LegalRecommendation[];
     documents: DocumentRecommendation[];
     actions: ActionRecommendation[];
     risks: RiskRecommendation[];
-  }
+  };
   aiModels: {
     primary: string; // gemma3:legal-latest,
     fallback: string[];
     currentModel?: string;
     confidence: number;
-  }
+  };
   processingMetrics: {
     averageLatency: number;
     queueDepth: number;
     throughput: number;
     errorRate: number;
-  }
+  };
   cache: {
     redisKeys: string[];
     hitRate: number;
     lastUpdate: Date;
-  }
+  };
   error?: string;
 }
 // Recommendation types
@@ -602,12 +602,7 @@ function determinePriority(documentType?: string): 'high' | 'standard' | 'backgr
 }
 function generateCacheKeys(context: RecommendationContext): string[] {
   const base = `rec:${context.userId}:${context.caseId || 'global'}`;
-  const keys = [
-    `${base}:legal`,
-    `${base}:documents`,
-    `${base}:actions`,
-    `${base}:risks`
-  ];
+  const keys = [`${base}:legal`, `${base}:documents`, `${base}:actions`, `${base}:risks`];
   if (context.currentDocument?.id) {
     keys.push(`${base}:doc:${context.currentDocument.id}`);
   }
@@ -619,7 +614,7 @@ export type RecommendationActor = ReturnType<typeof createActor<typeof recommend
 // Store integration
 function createRecommendationStore() {
   const actor = createActor(recommendationRoutingMachine);
-  const { subscribe } = writable(actor.getSnapshot(), (set) => {
+  const { subscribe } = writable(actor.getSnapshot(), set => {
     actor.subscribe(set);
     actor.start();
     return () => actor.stop();
@@ -627,7 +622,7 @@ function createRecommendationStore() {
   return {
     subscribe,
     send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor)
-  }
+    getSnapshot: actor.getSnapshot.bind(actor),
+  };
 }
 export const recommendationStore = createRecommendationStore();

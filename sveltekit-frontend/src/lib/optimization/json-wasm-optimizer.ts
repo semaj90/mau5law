@@ -83,7 +83,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       original_size: jsonString.length,
       compressed_size: 0,
       compression_ratio: 1,
-      parse_time_ms: parseTime
+      parse_time_ms: parseTime,
       stringify_time_ms: 0,
       wasm_acceleration
     }
@@ -113,7 +113,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       compressed_size: 0,
       compression_ratio: 1,
       parse_time_ms: 0,
-      stringify_time_ms: stringifyTime
+      stringify_time_ms: stringifyTime,
       wasm_acceleration
     }
     return { json: result, stats }
@@ -495,19 +495,19 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
     if (compressStats.compression_ratio > 1.5) {
       return {
         optimized: compressed;
-        stats: compressStats
-        useCompression: true
+        stats: compressStats,
+        useCompression: true,
       }
     }
   }
   return {
     optimized: json;
-    stats: stringifyStats
-    useCompression: false
+    stats: stringifyStats,
+    useCompression: false,
   }
 }
 export async function parseOptimizedTransport<T = any>(
-  data: string | Uint8Array
+  data: string | Uint8Array,
   isCompressed: boolean;
 ): Promise<any> {
   if (isCompressed && data instanceof Uint8Array) {

@@ -153,7 +153,7 @@ export class VectorMetadataEncoder {
       }
       // Update performance history
       this.updatePerformanceHistory({
-        renderTime: totalTime
+        renderTime: totalTime,
         memoryUsage: batch.totalSize,
         gpuUtilization: metrics.gpuUtilization,
         temperature: 50, // Placeholder - would need actual GPU temp API
@@ -172,7 +172,7 @@ export class VectorMetadataEncoder {
   }
   /**
    * Decode vector metadata back to original vector space
-   */;
+   */
   async decodeVector(metadata: VectorMetadata): Promise<Float32Array> {
     return measureAsync('vector_decode', async () => {
       // GPU-accelerated decoding if available
@@ -184,7 +184,7 @@ export class VectorMetadataEncoder {
   }
   /**
    * Update encoder configuration with validation
-   */;
+   */
   updateConfig(newConfig: Partial<VectorEncodingConfig>): void {
     this.config = {
       ...this.config,
@@ -202,7 +202,7 @@ export class VectorMetadataEncoder {
   }
   /**
    * Get current performance metrics
-   */;
+   */
   getPerformanceMetrics(): {
     currentConfig: VectorEncodingConfig;
     recentPerformance: GPUPerformanceMetrics[];
@@ -270,12 +270,12 @@ export class VectorMetadataEncoder {
     return {
       name: 'VectorQuantization',
       backend: this.gpuContext.getBackendType(),
-      compute: computeShader
-      entryPoint: 'main'
+      compute: computeShader,
+      entryPoint: 'main',
     }
   }
   private async preprocessVector(
-    vector: Float32Array
+    vector: Float32Array,
     targetDimensions: VectorDimensions;
   ): Promise<Float32Array> {
     if (vector.length === targetDimensions) {
@@ -317,7 +317,7 @@ export class VectorMetadataEncoder {
     }
   }
   private async encodeBatchGPU(
-    vectors: Float32Array[]
+    vectors: Float32Array[],
     metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
     config,: VectorEncodingConfi,g;
   ): Promise<VectorMetadata[]> {
@@ -329,7 +329,7 @@ export class VectorMetadataEncoder {
       const processingTime = 1; // Would measure actual GPU time
       results.push({
         ...metadata[i],
-        encoding: encoded
+        encoding: encoded,
         processingTime,
         compressionRatio: encoded.byteLength / (vectors[i].length * 4)
       });
@@ -337,7 +337,7 @@ export class VectorMetadataEncoder {
     return results;
   }
   private async encodeBatchCPU(
-    vectors: Float32Array[]
+    vectors: Float32Array[],
     metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
     config,: VectorEncodingConfi,g;
   ): Promise<VectorMetadata[]> {
@@ -347,7 +347,7 @@ export class VectorMetadataEncoder {
       const processingTime = performance.now() - startTime;
       return {
         ...metadata[i],
-        encoding: encoded
+        encoding: encoded,
         processingTime,
         compressionRatio: encoded.byteLength / (vector.length * 4)
       }

@@ -518,19 +518,23 @@ function calculateChatQualityScore(response: string, userInput: string): number 
   // Relevance to user input
   const userWords = userInput.toLowerCase().split(/\s+/);
   const responseWords = response.toLowerCase().split(/\s+/);
-  const relevantWords = userWords.filter(word =>
-    word.length > 3 && responseWords.some(rw => rw.includes(word))
-  );
+  const relevantWords = userWords.filter(word => word.length > 3 && responseWords.some(rw => rw.includes(word)));
   score += Math.min(0.2, relevantWords.length * 0.03);
 
   // Professional tone indicators
   const professionalTerms = [
-    'recommend', 'suggest', 'consider', 'analysis', 'professional',
-    'legal', 'attorney', 'review', 'documentation', 'requirements'
+    'recommend',
+    'suggest',
+    'consider',
+    'analysis',
+    'professional',
+    'legal',
+    'attorney',
+    'review',
+    'documentation',
+    'requirements',
   ];
-  const hasProfessionalTone = professionalTerms.some(term =>
-    response.toLowerCase().includes(term)
-  );
+  const hasProfessionalTone = professionalTerms.some(term => response.toLowerCase().includes(term));
   if (hasProfessionalTone) {
     score += 0.1;
   }

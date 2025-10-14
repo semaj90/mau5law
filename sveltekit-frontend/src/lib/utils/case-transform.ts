@@ -47,7 +47,7 @@ export const REVERSE_FIELD_MAPPINGS = Object.fromEntries(
 ) as Record<string, string>;
 /**
  * Convert snake_case object keys to camelCase
- */;
+ */
 export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
   if (obj === null || obj === undefined) return obj as unknown as T;
   if (Array.isArray(obj)) {
@@ -70,7 +70,7 @@ export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
 }
 /**
  * Convert camelCase object keys to snake_case
- */;
+ */
 export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
   if (obj === null || obj === undefined) return obj as unknown as T;
   if (Array.isArray(obj)) {
@@ -93,19 +93,19 @@ export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
 }
 /**
  * Database-safe query helper - converts camelCase input to snake_case for SQL
- */;
+ */
 export function dbQuery<T>(camelCaseData: { [key: string]: any }): T {
   return toSnakeCase(camelCaseData);
 }
 /**
  * Frontend-safe response helper - converts snake_case DB results to camelCase
- */;
+ */
 export function apiResponse<T>(snakeCaseData: { [key: string]: any } | { [key: string]: any }[]): T {
   return toCamelCase(snakeCaseData);
 }
 /**
  * Type-safe user transformer specifically for common User operations
- */;
+ */
 export interface DatabaseUser {
   id: string;
   email: string;
@@ -140,7 +140,7 @@ export function transformUserForDatabase(frontendUser: Partial<FrontendUser>): P
 }
 /**
  * Drizzle ORM integration helpers
- */;
+ */
 export function drizzleSelect<T>(camelCaseFields: string[]): Record<string, boolean> {
   const snakeFields: Record<string, boolean> = {}
   camelCaseFields.forEach(field => {

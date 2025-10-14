@@ -95,7 +95,7 @@ export type {
  */
 /**
  * Initialize the complete routing system
- */;
+ */
 export async function initializeRouting(_options: {
   enableGuards?: boolean;
   enableNavigation?: boolean;
@@ -122,7 +122,7 @@ export async function initializeRouting(_options: {
 }
 /**
  * Route builder utility for creating dynamic routes with type safety
- */;
+ */
 export class RouteBuilder {
   private config: Partial<DynamicRouteConfig> = {}
   private routeId: string = '';
@@ -133,49 +133,49 @@ export class RouteBuilder {
   }
   /**
    * Set component path
-   */;
+   */
   component(path: string): RouteBuilder {
     this.config.component = path;
     return this;
   }
   /**
    * Set layout path
-   */;
+   */
   layout(path: string): RouteBuilder {
     this.config.layout = path;
     return this;
   }
   /**
    * Set preload option
-   */;
+   */
   preload(enabled: boolean = true): RouteBuilder {
     this.config.preload = enabled;
     return this;
   }
   /**
    * Set SSR option
-   */;
+   */
   ssr(enabled: boolean = true): RouteBuilder {
     this.config.ssr = enabled;
     return this;
   }
   /**
    * Set hydration option
-   */;
+   */
   hydrate(enabled: boolean = true): RouteBuilder {
     this.config.hydrate = enabled;
     return this;
   }
   /**
    * Set parameters
-   */;
+   */
   params(params: { [key: string]: any }): RouteBuilder {
     this.config.params = params;
     return this;
   }
   /**
    * Build and register the route
-   */;
+   */
   build(): GeneratedRoute {
     const route: GeneratedRoute = {
       id: this.routeId,
@@ -195,7 +195,7 @@ export class RouteBuilder {
   }
   /**
    * Build route configuration without registering
-   */;
+   */
   getConfig(): DynamicRouteConfig {
     return {
       pattern: this.routePath,
@@ -206,13 +206,13 @@ export class RouteBuilder {
 }
 /**
  * Create a new route builder
- */;
+ */
 export function createRoute(id: string, path: string): RouteBuilder {
   return new RouteBuilder(id, path);
 }
 /**
  * Batch route registration utility
- */;
+ */
 export function registerRoutes(routes: Array<): GeneratedRoute[] {
   return routes.map(route => {
     const config = route.config || {}
@@ -252,7 +252,7 @@ export function matchRoute(
  * Route URL generation utility
  */
 export function generateRouteUrl(
-  routeId: string
+  routeId: string,
   params: Record<string, string> = {},
   searchParams: Record<string, string> = {}
 ): string {
@@ -281,7 +281,7 @@ export function generateRouteUrl(
 }
 /**
  * Route validation utility
- */;
+ */
 export function validateRoute(route: GeneratedRoute | RouteDefinition): {
   valid: boolean;
   errors: string[];
@@ -310,7 +310,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
 }
 /**
  * Route debugging utility
- */;
+ */
 export function debugRoutes(): {
   totalRoutes: number;
   staticRoutes: number;
@@ -343,7 +343,7 @@ export function debugRoutes(): {
 }
 /**
  * Export types and constants
- */;
+ */
 export const ROUTE_EVENTS = {
   ROUTE_REGISTERED: 'route:registered',
   ROUTE_UNREGISTERED: 'route:unregistered',

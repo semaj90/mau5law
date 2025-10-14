@@ -62,7 +62,7 @@ class GlobalGPUManager {
       isEnabled: false,
       contextType: 'cpu',
       nesMemory: new Map(),
-    }
+    };
   }
   static getInstance(): GlobalGPUManager {
     if (!GlobalGPUManager.instance) {
@@ -140,7 +140,7 @@ class GlobalGPUManager {
         buffer,
         view,
         isDirty: false,
-      }
+      };
       // Create GPU buffer if GPU acceleration is available
       if (this.acceleration.hybridContext) {
         try {
@@ -276,7 +276,7 @@ class GlobalGPUManager {
     options: {
       dithering?: boolean;
       paletteSubset?: 'background' | 'sprite' | 'full';
-    } = {},
+    } = {}
   ): Promise<Float32Array> {
     if (!this.acceleration.isEnabled || !this.acceleration.hybridContext) {
       return this.quantizeToNESPaletteCPU(imageData, width, height, options);
@@ -298,7 +298,7 @@ class GlobalGPUManager {
           inputPixels: imageData,
           nesPalette: paletteData,
           config: new Float32Array([width, height, paletteSize, options.dithering ? 1.0 : 0.0]),
-        },
+        }
       );
       console.log(`🎮 NES color quantization complete (${width}x${height}) using GPU`);
       return results.outputPixels as Float32Array;
@@ -314,7 +314,7 @@ class GlobalGPUManager {
     imageData: Float32Array,
     width: number,
     height: number,
-    options: { dithering?: boolean; paletteSubset?: string } = {},
+    options: { dithering?: boolean; paletteSubset?: string } = {}
   ): Float32Array {
     const output = new Float32Array(imageData.length);
     const paletteSize = options.paletteSubset === 'background' ? 16 : options.paletteSubset === 'sprite' ? 16 : 52;

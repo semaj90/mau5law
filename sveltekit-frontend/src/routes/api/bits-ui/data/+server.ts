@@ -122,13 +122,13 @@ async function getBatchData(locals: any): Promise<Response> {
   const batchedData = await batchSSRRequests({
     dashboard: () => getDashboardData(locals).then(r => r.json()),
     health: () => getSystemHealth().then(r => r.json()),
-    activities: () => getRecentActivities(locals).then(r => r.json()
+    activities: () => getRecentActivities(locals).then(r => r.json(),
   })
   return createSSRResponse({
     ...batchedData,
     meta: {
-      batchLoaded: true
-      loadTime: new Date().toISOString()
+      batchLoaded: true,
+      loadTime: new Date().toISOString(),
     }
   })
 }
@@ -137,7 +137,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) =
   const data = await request.json()
   // Process form data with proper serialization
   const processedData = {
-    received: data
+    received: data,
     processedAt: new Date().toISOString(),
     userId: getUserId(locals),
     status: 'processed'

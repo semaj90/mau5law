@@ -34,14 +34,14 @@ export const POST: RequestHandler = async ({ request }) => {
         preferences: {
           theme: 'nier',
           language: 'en',
-          notificationsEnabled: true
-          analyticsOptIn: false
+          notificationsEnabled: true,
+          analyticsOptIn: false,
         }
       })
       const authResponse = legal.api.AuthResponse.create({
         success: true,
         token: 'jwt_token_here',
-        user: user
+        user: user,
         expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
       })
       const encoded = legal.api.AuthResponse.encode(authResponse).finish()
@@ -72,8 +72,8 @@ export const POST: RequestHandler = async ({ request }) => {
           preferences: {
             theme: 'nier',
             language: 'en',
-            notifications_enabled: true
-            analytics_opt_in: false
+            notifications_enabled: true,
+            analytics_opt_in: false,
           }
         },
         expires_at: Date.now() + (24 * 60 * 60 * 1000)
@@ -88,8 +88,8 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
   return json({
     status: 'operational',
-    protobuf_support: true
-    fallback_json: true
+    protobuf_support: true,
+    fallback_json: true,
     version: '1.0.0',
     timestamp: new Date().toISOString()
   })

@@ -133,8 +133,8 @@ export const POST: RequestHandler = async ({ request }) => {
       demo: {
         title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
-        testQuery: query
-        operationsTested: operation
+        testQuery: query,
+        operationsTested: operation,
       },
       results,
       performance: {
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
         cacheHitBenefit: 'Up to 240x faster response times',
         productionImpact: 'Enables real-time legal AI with sub-second responses'
       },
-      redis: redisStats
+      redis: redisStats,
       costSavings: {
         computeReduction: '99.6%',
         estimatedSavings: '$1,200/month for 10K daily requests',
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async () => {
           peak: memory.used_memory_peak_human,
           fragmentation: memory.mem_fragmentation_ratio
         },
-        keys: keyCount
+        keys: keyCount,
         performance: `${responseTime.toFixed(2)}ms`
       },
       cacheDemo: {

@@ -7,8 +7,12 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 // Import using module syntax to avoid circular dependencies
 const redisServicePromise = import('../redis-service.js').then(m => m.redisService).catch(() => null);
 const lokiRedisPromise = import('$lib/cache/loki-redis-integration.js').then(m => m.lokiRedisCache).catch(() => null);
-const ragPipelinePromise = import('$lib/services/enhanced-rag-pipeline.js').then(m => m.enhancedRAGPipeline).catch(() => null);
-const searchEnginePromise = import('$lib/services/instant-search-engine.js').then(m => m.instantSearchEngine).catch(() => null);
+const ragPipelinePromise = import('$lib/services/enhanced-rag-pipeline.js')
+  .then(m => m.enhancedRAGPipeline)
+  .catch(() => null);
+const searchEnginePromise = import('$lib/services/instant-search-engine.js')
+  .then(m => m.instantSearchEngine)
+  .catch(() => null);
 const dbPromise = import('../db/drizzle.js').then(m => ({ db: m.db, sql: m.sql })).catch(() => null);
 const schemaPromise = import('../db/schema-postgres.js').then(m => m).catch(() => null);
 // Enhanced RabbitMQ Manager with improved error handling and type safety

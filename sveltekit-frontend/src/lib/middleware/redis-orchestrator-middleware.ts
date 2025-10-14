@@ -15,7 +15,7 @@ export function withRedisOrchestrator(
     cacheStrategy: CacheStrategy;
     memoryBank: MemoryBank;
     requiresFresh?: boolean;
-  },
+  }
 ): RequestHandler {
   return async event => {
     // Skip caching for fresh-required operations

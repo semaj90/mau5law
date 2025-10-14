@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       timestamp: new Date().toISOString(),
-      tests: results
+      tests: results,
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),

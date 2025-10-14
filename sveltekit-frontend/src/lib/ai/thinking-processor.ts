@@ -8,7 +8,7 @@ export interface ThinkingAnalysis {
     model_used: string;
     processing_time: number;
     thinking_enabled: boolean;
-  }
+  };
 }
 // Enhanced analysis with GRPO integration flag
 export interface EnhancedThinkingOptions extends AnalysisOptions {
@@ -29,10 +29,7 @@ export class ThinkingProcessor {
   /**
    * Analyzes a document using the enhanced API endpoint
    */
-  static async analyzeDocument(
-    text: string
-    options: AnalysisOptions = {}
-  ): Promise<ThinkingAnalysis> {
+  static async analyzeDocument(text: string, options: AnalysisOptions = {}): Promise<ThinkingAnalysis> {
     // Check if enhanced GRPO should be used
     const enhancedOptions = options as EnhancedThinkingOptions;
     const useGRPO = enhancedOptions.useGRPO || false;
@@ -40,54 +37,83 @@ export class ThinkingProcessor {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         text,
-        query: text
+        query: text,
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
         enableRecommendations: enhancedOptions.enableRecommendations || false,
-        ...options
-      })
+        ...options,
+      }),
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     if (!(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success) {
-      throw new Error((result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error || 'Analysis failed');
+      throw new Error(
+        (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error ||
+          'Analysis failed'
+      );
     }
     // Return enhanced analysis if GRPO was used
-    if (useGRPO && (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning) {
+    if (
+      useGRPO &&
+      (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+        .structured_reasoning
+    ) {
       return {
-        thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
-        analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.response || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
-        confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.confidence,
-        reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
+        thinking:
+          (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+            .thinking || '',
+        analysis:
+          (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+            .response ||
+          (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+            .analysis ||
+          (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
+        confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+          .confidence,
+        reasoning_steps:
+          (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+            .reasoning_steps || [],
         metadata: {
           ...result.metadata,
-          grpo_enhanced: true
-          recommendations_count: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.recommendations?.length || 0,
-          temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
-          structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning
-        }
-      }
+          grpo_enhanced: true,
+          recommendations_count:
+            (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+              .recommendations?.length || 0,
+          temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any })
+            .analysis.temporal_score,
+          structured_reasoning: (
+            result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }
+          ).analysis.structured_reasoning,
+        },
+      };
     }
     // Standard analysis response
     return {
-      thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
-      analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
-      confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata.confidence,
-      reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
-      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
-    }
+      thinking:
+        (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking ||
+        '',
+      analysis:
+        (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis ||
+        (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
+      confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
+        .confidence,
+      reasoning_steps:
+        (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
+          .reasoning_steps || [],
+      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
+    };
   }
   /**
    * Analyzes evidence by ID
    */
   static async analyzeEvidence(
-    evidenceId: string
+    evidenceId: string,
     options: Omit<AnalysisOptions, 'evidenceId'> = {}
   ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { evidenceId, ...options });
@@ -95,15 +121,12 @@ export class ThinkingProcessor {
   /**
    * Analyzes a case by ID
    */
-  static async analyzeCase(
-    caseId: string
-    options: Omit<AnalysisOptions, 'caseId'> = {}
-  ): Promise<ThinkingAnalysis> {
+  static async analyzeCase(caseId: string, options: Omit<AnalysisOptions, 'caseId'> = {}): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { caseId, ...options });
   }
   /**
    * Parses a thinking-style response from the API
-   */;
+   */
   static parseThinkingResponse(content: string, useThinking: boolean): ThinkingAnalysis {
     if (!useThinking) {
       return {
@@ -114,9 +137,9 @@ export class ThinkingProcessor {
         metadata: {
           model_used: 'quick',
           processing_time: 0,
-          thinking_enabled: false
-        }
-      }
+          thinking_enabled: false,
+        },
+      };
     }
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
     const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
@@ -129,13 +152,13 @@ export class ThinkingProcessor {
       metadata: {
         model_used: 'thinking',
         processing_time: 0,
-        thinking_enabled: true
-      }
-    }
+        thinking_enabled: true,
+      },
+    };
   }
   /**
    * Extracts JSON from text content
-   */;
+   */
   protected static extractJSON(text: string): unknown {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -146,7 +169,7 @@ export class ThinkingProcessor {
   }
   /**
    * Calculates confidence score based on thinking depth and analysis quality
-   */;
+   */
   private static calculateConfidence(thinking: string, analysis: string): number {
     let score = 0.6;
     // Boost for detailed thinking
@@ -160,20 +183,17 @@ export class ThinkingProcessor {
   }
   /**
    * Extracts numbered reasoning steps from thinking content
-   */;
+   */
   private static extractReasoningSteps(thinking: string): string[] {
     return thinking
       .split('\n')
-      .filter(
-        (line) =>
-          line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*')
-      )
-      .map((step) => step.trim()
+      .filter(line => line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*'))
+      .map(step => step.trim())
       .slice(0, 10); // Limit to 10 steps for UI
   }
   /**
    * Formats thinking content for display
-   */;
+   */
   static formatThinkingContent(thinking: string): string {
     // Add markdown-style formatting for better readability
     return thinking
@@ -185,13 +205,13 @@ export class ThinkingProcessor {
   }
   /**
    * Gets the appropriate model name based on thinking style
-   */;
+   */
   static getModelName(useThinking: boolean): string {
     return useThinking ? 'legal-gemma3-thinking' : 'gemma3-legal:latest';
   }
   /**
    * Validates analysis results
-   */;
+   */
   static validateAnalysis(analysis: ThinkingAnalysis): boolean {
     return !!(
       analysis &&
@@ -203,32 +223,32 @@ export class ThinkingProcessor {
   }
   /**
    * Gets analysis history for a document
-   */;
-  static async getAnalysisHistory(_options: {
-    evidenceId?: string;
-    caseId?: string;
-    limit?: number;
-  }): Promise<any[]> {
+   */
+  static async getAnalysisHistory(_options: { evidenceId?: string; caseId?: string; limit?: number }): Promise<any[]> {
     const params = new URLSearchParams();
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
-    if (options.limit) params.append('limit', options.limit.toString();
+    if (options.limit) params.append('limit', options.limit.toString());
     // removed unused response assignment
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      throw new Error(
+        `Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`
+      );
     }
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-    return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses: [];
+    return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success
+      ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses
+      : [];
   }
 }
 /**
  * Utility functions for working with legal document analysis
- */;
+ */
 export const LegalAnalysisUtils = {
   /**
    * Determines the appropriate analysis type for a document
-   */;
-  getAnalysisType(documentType,: string, evidenceType?: string): string {
+   */
+  getAnalysisType(documentType: string, evidenceType?: string): string {
     if (evidenceType === 'chain_of_custody') return 'chain_of_custody';
     if (documentType === 'evidence') return 'classification';
     if (documentType === 'legal_document') return 'compliance';
@@ -237,26 +257,26 @@ export const LegalAnalysisUtils = {
   },
   /**
    * Gets the confidence level description
-   */;
-  getConfidenceLabel(confidence,: number): { label: string; color: string } {
-    if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' }
-    if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' }
-    if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' }
-    if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' }
-    return { label: 'Low', color: '#6b7280' }
+   */
+  getConfidenceLabel(confidence: number): { label: string; color: string } {
+    if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
+    if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
+    if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' };
+    if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' };
+    return { label: 'Low', color: '#6b7280' };
   },
   /**
    * Formats processing time for display
-   */;
-  formatProcessingTime(ms,: number): string {
+   */
+  formatProcessingTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   },
   /**
    * Extracts key legal terms from analysis
-   */;
-  extractLegalTerms(analysis,: any): string[,] {
+   */
+  extractLegalTerms(analysis: any): string[] {
     const text = JSON.stringify(analysis).toLowerCase();
     const legalTerms = [
       'evidence',
@@ -274,14 +294,14 @@ export const LegalAnalysisUtils = {
       'authentication',
       'objection',
       'sustained',
-      'overruled'
+      'overruled',
     ];
-    return legalTerms.filter((term) => text.includes(term);
-  }
-}
+    return legalTerms.filter(term => text.includes(term));
+  },
+};
 /**
  * Document analysis result from thinking processor
- */;
+ */
 export interface DocumentAnalysisResult {
   id: string;
   document_type: string;
@@ -293,35 +313,35 @@ export interface DocumentAnalysisResult {
   risk_assessment?: {
     level: 'low' | 'medium' | 'high';
     factors: string[];
-  }
+  };
   compliance_status?: {
     compliant: boolean;
     violations: string[];
     recommendations: string[];
-  }
+  };
   chain_of_custody?: {
     complete: boolean;
     gaps: string[];
     verification_status: string;
-  }
+  };
 }
 /**
  * Quick analysis shortcuts for common operations
- */;
+ */
 export const QuickAnalysis = {
   /**
    * Quick evidence classification
-   */;
-  async classifyEvidence(evidenceId,: string, useThinking = false): Promise<ThinkingAnalysis> {
+   */
+  async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
   },
   /**
    * Quick chain of custody verification
-   */;
-  async verifyChainOfCustody(evidenceId,: string, useThinking = true): Promise<ThinkingAnalysis> {
+   */
+  async verifyChainOfCustody(evidenceId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'chain_of_custody',
       useThinkingStyle: useThinking, // Default to thinking style for custody verification
@@ -329,21 +349,21 @@ export const QuickAnalysis = {
   },
   /**
    * Quick case strength assessment
-   */;
-  async assessCaseStrength(caseId,: string, useThinking = true): Promise<ThinkingAnalysis> {
+   */
+  async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
   },
   /**
    * Quick document compliance check
-   */;
-  async checkCompliance(text,: string, useThinking = false): Promise<ThinkingAnalysis> {
+   */
+  async checkCompliance(text: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',
       analysisType: 'compliance',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
-  }
-}
+  },
+};

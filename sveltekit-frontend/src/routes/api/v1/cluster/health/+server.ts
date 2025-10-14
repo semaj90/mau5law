@@ -1,19 +1,17 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Cluster Health Monitoring API
  * Real-time health checks for all 37 Go services + external dependencies
  */
-import { getRedisService } from '$lib/server/redis/redis-service.js'
-import { minioService } from '$lib/server/storage/minio-service.js'
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js'
+import { getRedisService } from '$lib/server/redis/redis-service.js';
+import { minioService } from '$lib/server/storage/minio-service.js';
+import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
 
 /*
  * Lightweight types to avoid `any` while matching common service shapes
  */
-type HealthCheckResult =
-  | { status?: string; ok?: boolean; details?: unknown }
-  | Record<string, unknown>;
+type HealthCheckResult = { status?: string; ok?: boolean; details?: unknown } | Record<string, unknown>;
 
 type ServiceHealthProvider = {
   healthCheck?: () => Promise<HealthCheckResult> | HealthCheckResult;
@@ -35,8 +33,7 @@ async function probeServiceHealth(
 
       // normalize possible shapes from result
       // safe type guards to avoid `any`
-      const isObject = (v: unknown): v is Record<string, unknown> =>
-        typeof v === 'object' && v !== null;
+      const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
       const hasStatusString = (r: unknown): r is { status: string } =>
         isObject(r) && 'status' in r && typeof (r as Record<string, unknown>)['status'] === 'string';
       const hasOkBoolean = (r: unknown): r is { ok: boolean } =>
@@ -45,8 +42,8 @@ async function probeServiceHealth(
       const status = hasStatusString(result)
         ? result.status
         : hasOkBoolean(result) && result.ok
-        ? 'healthy'
-        : 'unhealthy';
+          ? 'healthy'
+          : 'unhealthy';
 
       const details = isObject(result) && 'details' in result ? (result as Record<string, unknown>)['details'] : result;
 

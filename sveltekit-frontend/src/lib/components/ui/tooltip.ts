@@ -10,4 +10,4 @@ export type TooltipProps = {
   placement?: 'top' | 'bottom' | 'left' | 'right';
   disabled?: boolean;
   children?: import('svelte').Snippet;
-}
+};

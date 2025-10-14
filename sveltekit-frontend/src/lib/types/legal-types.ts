@@ -17,7 +17,7 @@ export interface Evidence {
   aiTags?: string[];
   aiSummary?: string;
   aiAnalysis?: AIAnalysis;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   confidentialityLevel: number;
   chainOfCustody?: ChainOfCustodyEntry[];
   isProcessed: boolean;
@@ -37,7 +37,7 @@ export interface AIAnalysis {
   id: string;
   evidenceId: string;
   analysisType: 'content_extraction' | 'sentiment_analysis' | 'entity_recognition' | 'classification' | 'similarity';
-  results: { [key: string]: any }
+  results: { [key: string]: any };
   confidence: number;
   processingTime: number;
   model: string;
@@ -77,7 +77,7 @@ export interface LegalDocument {
   jurisdiction?: string;
   court?: string;
   parties?: Record<string, string>; // e.g., { plaintiff: "John Doe", defendant: "Jane Smith" }
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   embeddings?: number[]; // Vector embeddings for search
 }
 // Enhanced Case Interface
@@ -136,7 +136,7 @@ export interface VectorSearchResult {
   id: string;
   score: number;
   content: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   type: 'document' | 'evidence' | 'case';
 }
 // Export commonly used types from legal.ts

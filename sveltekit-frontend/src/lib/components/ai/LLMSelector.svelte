@@ -28,7 +28,7 @@
       tokensPerSecond: number;
       memoryUsage: string;
       responseTime: number;
-    }
+    };
     capabilities: string[];
     endpoint: string;
   }
@@ -115,7 +115,7 @@
   ]);
   // Filter models based on criteria
   let filteredModels = $derived(
-    filterBy === 'all' ? availableModels : availableModels.filter(model => model.specialization === filterBy),
+    filterBy === 'all' ? availableModels : availableModels.filter(model => model.specialization === filterBy)
   );
   // Melt UI Select Setup
   // const {
@@ -131,10 +131,10 @@
   //   }
   // })
   // Mock implementations for now
-  const trigger = {}
-  const menu = {}
+  const trigger = {};
+  const menu = {};
   const option = () => ({});
-  const label = {}
+  const label = {};
   const selectedLabel = 'Select Model';
   const open = false;
   const selected = null;
@@ -153,7 +153,7 @@
       default:
         return Setting;
     }
-  }
+  };
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -168,7 +168,7 @@
       default:
         return 'text-gray-400';
     }
-  }
+  };
   // Status Icons
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -183,7 +183,7 @@
       default:
         return AlertCircl;
     }
-  }
+  };
   // State for dropdown
   let isOpen = $state(false);
   // Handle model selection
@@ -400,8 +400,8 @@
     </div>
   {/if}
 </div>
+;
 
 <style>
   /* @unocss-include */
 </style>
-;

@@ -71,7 +71,7 @@ export interface OffscreenRenderTarget {
 }
 /**
  * Factory for creating headless legal AI processing pipelines
- */;
+ */
 export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
   private device: GPUDevice | null = null;
@@ -86,7 +86,7 @@ export class HeadlessLegalProcessorFactory {
   }
   /**
    * Initialize headless WebGPU environment without any surface dependencies
-   */;
+   */
   async initializeHeadless(): Promise<boolean> {
     if (this.isInitialized) return true;
     console.log('🎯 Initializing Headless Legal AI Processor Factory');
@@ -133,7 +133,7 @@ export class HeadlessLegalProcessorFactory {
   }
   /**
    * Initialize all subsystems for headless operation
-   */;
+   */
   private async initializeSubsystems(): Promise<void> {
     if (!this.device) throw new Error('Device not available');
     // Initialize YoRHa mipmap shaders in headless mode
@@ -148,7 +148,7 @@ export class HeadlessLegalProcessorFactory {
   }
   /**
    * Test headless WebGPU capabilities
-   */;
+   */
   private async testHeadlessCapabilities(): Promise<void> {
     if (!this.device) return;
     console.log('🔬 Testing headless WebGPU capabilities...');
@@ -165,23 +165,23 @@ export class HeadlessLegalProcessorFactory {
    * Process legal document with full headless pipeline
    */
   async processLegalDocument(
-    text: string
+    text: string,
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult> {
     const fullConfig: HeadlessProcessingConfig = {
       mode: 'headless',
-      enableOffscreenRendering: true
-      enableMipmapGeneration: true
-      enableLODCaching: true
+      enableOffscreenRendering: true,
+      enableMipmapGeneration: true,
+      enableLODCaching: true,
       maxTextureSize: 4096,
       preferredGPUMemory: 256,
       concurrentProcessingLimit: 4,
-      enableStreamingOptimization: true
+      enableStreamingOptimization: true,
       documentAnalysisLevel: 'comprehensive',
-      generateSVGSummaries: true
-      enablePredictiveAnalytics: true
+      generateSVGSummaries: true,
+      enablePredictiveAnalytics: true,
       outputFormats: ['svg', 'json', 'lod'],
-      saveToFile: false
+      saveToFile: false,
       ...config
     }
     if (!this.isInitialized) {
@@ -219,7 +219,7 @@ export class HeadlessLegalProcessorFactory {
       metrics.compressionRatio = lodResult.lodEntry.cache_metadata.compression_stats.compression_ratio;
       metrics.memoryUsage = mipmapResult?.totalMemoryUsed || 0;
       const result: HeadlessProcessingResult = {
-        success: true
+        success: true,
         processingTime: metrics.processingTime,
         outputFiles,
         mipmapChain: mipmapResult ? {,
@@ -238,7 +238,7 @@ export class HeadlessLegalProcessorFactory {
     } catch (error) {
       console.error('Headless processing failed:', error);
       return {
-        success: false
+        success: false,
         processingTime: performance.now() - startTime,
         metrics
       }
@@ -271,7 +271,7 @@ export class HeadlessLegalProcessorFactory {
    * Generate mipmap visualizations for document
    */
   private async generateMipmapVisualizations(
-    lodEntry: LODCacheEntry
+    lodEntry: LODCacheEntry,
     config: HeadlessProcessingConfig;
   ): Promise<any> {
     if (!this.device || !config.enableMipmapGeneration) return null;
@@ -301,7 +301,7 @@ export class HeadlessLegalProcessorFactory {
   }
   /**
    * Create offscreen render target for headless processing
-   */;
+   */
   private createOffscreenRenderTarget(width: number, height: number): OffscreenRenderTarget {
     if (!this.device) throw new Error('Device not available');
     const texture = this.device.createTexture({
@@ -322,7 +322,7 @@ export class HeadlessLegalProcessorFactory {
    * Render document content to texture (headless)
    */
   private async renderDocumentToTexture(
-    lodEntry: LODCacheEntry
+    lodEntry: LODCacheEntry,
     renderTarget: OffscreenRenderTarget;
   ): Promise<void> {
     if (!this.device) return;
@@ -358,7 +358,7 @@ export class HeadlessLegalProcessorFactory {
       // Call Ollama service for legal analysis
       const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available;
-        stream: false
+        stream: false,
       });
       // Parse response for structured legal analysis
       return this.parseLegalAnalysisResponse(response);
@@ -369,7 +369,7 @@ export class HeadlessLegalProcessorFactory {
   }
   /**
    * Build legal analysis prompt using LOD data
-   */;
+   */
   private buildLegalAnalysisPrompt(text,: string, lodEntr,y: LODCacheEntr,y): string {
     const contextAnchors = lodEntry.vector_metadata.context_anchors.join(', ');
     return `Analyze this legal document for key entities, risk factors, and compliance issues:
@@ -387,7 +387,7 @@ Format your response as structured JSON.`;
   }
   /**
    * Parse legal analysis response into structured format
-   */;
+   */
   private parseLegalAnalysisResponse(response,: any): any {
     // Would implement proper parsing of Ollama response
     return {
@@ -401,7 +401,7 @@ Format your response as structured JSON.`;
   }
   /**
    * Generate fallback analysis if Ollama fails
-   */;
+   */
   private generateFallbackAnalysis(text,: string): any {
     return {
       confidence: 0.6,
@@ -451,7 +451,7 @@ Format your response as structured JSON.`;
   }
   /**
    * Get processing statistics
-   */;
+   */
   getStats(), {
     return {
       isInitialized: this.isInitialized,
@@ -462,7 +462,7 @@ Format your response as structured JSON.`;
   }
   /**
    * Cleanup resources
-   */;
+   */
   dispose(), {
     if (this.device) {
       // Cleanup WebGPU resources
@@ -479,16 +479,16 @@ export const headlessLegalProcessorFactory = HeadlessLegalProcessorFactory.getIn
 // Export default configuration
 export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
   mode: 'headless',
-  enableOffscreenRendering: true
-  enableMipmapGeneration: true
-  enableLODCaching: true
+  enableOffscreenRendering: true,
+  enableMipmapGeneration: true,
+  enableLODCaching: true,
   maxTextureSize: 2048,
   preferredGPUMemory: 128,
   concurrentProcessingLimit: 2,
-  enableStreamingOptimization: true
+  enableStreamingOptimization: true,
   documentAnalysisLevel: 'advanced',
-  generateSVGSummaries: true
-  enablePredictiveAnalytics: true
+  generateSVGSummaries: true,
+  enablePredictiveAnalytics: true,
   outputFormats: ['svg', 'json', 'lod'],
   saveToFile: false
 }

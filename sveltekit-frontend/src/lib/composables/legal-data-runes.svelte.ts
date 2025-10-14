@@ -415,9 +415,9 @@ export function useLegalData(caseId?: string) {
     ]);
   }
   return {
-    case: caseComposable
-    evidence: evidenceComposable
-    persons: personComposable
+    case: caseComposable,
+    evidence: evidenceComposable,
+    persons: personComposable,
     isAnyLoading,
     hasAnyError,
     initializeAll

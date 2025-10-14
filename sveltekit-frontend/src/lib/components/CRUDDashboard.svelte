@@ -1,29 +1,19 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { notifications } from "$lib/stores/notification";
-  import {
-    Activity,
-    Camera,
-    CheckCircle,
-    Clock,
-    FileText,
-    Plus,
-    RefreshCw,
-    Search,
-    TrendingUp,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import { notifications } from '$lib/stores/notification';
+  import { Activity, Camera, CheckCircle, Clock, FileText, Plus, RefreshCw, Search, TrendingUp } from 'lucide-svelte';
+  import { onMount } from 'svelte';
   // Data stores for all entities
   let cases: any[] = $state([]);
   let evidence: any[] = $state([]);
   let reports: any[] = $state([]);
-  let criminals = $state<any[] >([]);
+  let criminals = $state<any[]>([]);
   let activities: any[] = $state([]);
-  let users_list = $state<any[] >([]);
+  let users_list = $state<any[]>([]);
   // Loading states
   let loading = $state({
-    cases: false,   // <-- added missing comma here
+    cases: false, // <-- added missing comma here
     evidence: false,
     reports: false,
     criminals: false,
@@ -41,12 +31,12 @@
   });
   // Search and filter states
   let searchTerms = $state({
-    cases: "",
-    evidence: "",
-    reports: "",
-    criminals: "",
-    activities: "",
-    users: "" // <-- added missing 'users' property so searchTerms.users is valid
+    cases: '',
+    evidence: '',
+    reports: '',
+    criminals: '',
+    activities: '',
+    users: '', // <-- added missing 'users' property so searchTerms.users is valid
   });
   let refreshing = $state(false);
   // Fetch all data
@@ -64,28 +54,27 @@
       ]);
       calculateStats();
       notifications.add({
-        type: "success",
-        title: "Data Refreshed",
-        message: "All data has been successfully updated",
+        type: 'success',
+        title: 'Data Refreshed',
+        message: 'All data has been successfully updated',
       });
     } catch (error) {
-      console.error("Error refreshing data:", error);
+      console.error('Error refreshing data:', error);
       notifications.add({
-        type: "error",
-        title: "Refresh Failed",
-        message: "Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.",
+        type: 'error',
+        title: 'Refresh Failed',
+        message:
+          'Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.',
       });
     } finally {
       refreshing = false;
-  }
+    }
   }
   // Fetch functions for each entity
   async function fetchCases() {
     loading.cases = true;
     try {
-      const response = await fetch(
-        `/api/cases?limit=10&search=${searchTerms.cases}`
-      );
+      const response = await fetch(`/api/cases?limit=10&search=${searchTerms.cases}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has a cases property that is an array
@@ -98,17 +87,15 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching cases:", error);
+      console.error('Error fetching cases:', error);
     } finally {
       loading.cases = false;
-  }
+    }
   }
   async function fetchEvidence() {
     loading.evidence = true;
     try {
-      const response = await fetch(
-        `/api/evidence?limit=10&search=${searchTerms.evidence}`
-      );
+      const response = await fetch(`/api/evidence?limit=10&search=${searchTerms.evidence}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has an evidence property that is an array
@@ -121,17 +108,15 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching evidence:", error);
+      console.error('Error fetching evidence:', error);
     } finally {
       loading.evidence = false;
-  }
+    }
   }
   async function fetchReports() {
     loading.reports = true;
     try {
-      const response = await fetch(
-        `/api/reports?limit=10&search=${searchTerms.reports}`
-      );
+      const response = await fetch(`/api/reports?limit=10&search=${searchTerms.reports}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has a reports property that is an array
@@ -144,17 +129,15 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching reports:", error);
+      console.error('Error fetching reports:', error);
     } finally {
       loading.reports = false;
-  }
+    }
   }
   async function fetchCriminals() {
     loading.criminals = true;
     try {
-      const response = await fetch(
-        `/api/criminals?limit=10&search=${searchTerms.criminals}`
-      );
+      const response = await fetch(`/api/criminals?limit=10&search=${searchTerms.criminals}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has a criminals property that is an array
@@ -167,17 +150,15 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching criminals:", error);
+      console.error('Error fetching criminals:', error);
     } finally {
       loading.criminals = false;
-  }
+    }
   }
   async function fetchActivities() {
     loading.activities = true;
     try {
-      const response = await fetch(
-        `/api/activities?limit=10&search=${searchTerms.activities}`
-      );
+      const response = await fetch(`/api/activities?limit=10&search=${searchTerms.activities}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has an activities property that is an array
@@ -190,17 +171,15 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching activities:", error);
+      console.error('Error fetching activities:', error);
     } finally {
       loading.activities = false;
-  }
+    }
   }
   async function fetchUsers() {
     loading.users = true;
     try {
-      const response = await fetch(
-        `/api/users?limit=10&search=${searchTerms.users || ""}`
-      );
+      const response = await fetch(`/api/users?limit=10&search=${searchTerms.users || ''}`);
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         // Defensive coding: ensure data is an array or has a users property that is an array
@@ -213,23 +192,19 @@
         }
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
     } finally {
       loading.users = false;
-  }
+    }
   }
   // Calculate statistics
   function calculateStats() {
     stats.totalCases = cases.length;
-    stats.activeCases = cases.filter(
-      (c) => c.status === "open" || c.status === "active"
-    ).length;
+    stats.activeCases = cases.filter(c => c.status === 'open' || c.status === 'active').length;
     stats.totalEvidence = evidence.length;
     stats.totalReports = reports.length;
-    stats.urgentActivities = activities.filter(
-      (a) => a.priority === "urgent" || a.priority === "high"
-    ).length;
-    stats.recentActivity = activities.filter((a) => {
+    stats.urgentActivities = activities.filter(a => a.priority === 'urgent' || a.priority === 'high').length;
+    stats.recentActivity = activities.filter(a => {
       const created = new Date(a.createdAt);
       const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       return created > dayAgo;
@@ -247,26 +222,26 @@
   // Search handlers
   function handleSearch(entity: string) {
     switch (entity) {
-      case "cases":
+      case 'cases':
         fetchCases();
         break;
-      case "evidence":
+      case 'evidence':
         fetchEvidence();
         break;
-      case "reports":
+      case 'reports':
         fetchReports();
         break;
-      case "criminals":
+      case 'criminals':
         fetchCriminals();
         break;
-      case "activities":
+      case 'activities':
         fetchActivities();
         break;
-  }
+    }
   }
   // Format date helper
   function formatDate(dateString: string) {
-    if (!dateString) return "N/A";
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString();
   }
   // Initialize
@@ -274,6 +249,7 @@
     fetchAllData();
   });
 </script>
+
 <div class="crud-dashboard container mx-auto px-4">
   <!-- Header -->
   <div class="dashboard-header space-y-4">
@@ -283,13 +259,8 @@
         <p>Comprehensive view of all database entities and operations</p>
       </div>
       <div class="header-content">
-        <button
-          class="refresh-btn"
-          onclick={() => fetchAllData()}
-          disabled={refreshing}
-          title="Refresh all data"
-        >
-          <RefreshCw class={refreshing ? "animate-spin" : ""} size={16} />
+        <button class="refresh-btn" onclick={() => fetchAllData()} disabled={refreshing} title="Refresh all data">
+          <RefreshCw class={refreshing ? 'animate-spin' : ''} size={16} />
           Refresh
         </button>
       </div>
@@ -353,11 +324,12 @@
             <input
               type="text"
               placeholder="Search cases..."
-              bind:value={searchTerms.cases} oninput={() => handleSearch("cases")}
+              bind:value={searchTerms.cases}
+              oninput={() => handleSearch('cases')}
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew("cases")}>
+            <button class="refresh-btn" onclick={() => createNew('cases')}>
               <Plus size={16} />
             </button>
           </div>
@@ -373,25 +345,19 @@
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{case_.title}</span>
-                <span class="space-y-4"
-                  >{case_.status}</span
-                >
+                <span class="space-y-4">{case_.status}</span>
               </div>
               <div class="space-y-4">
                 <span class="space-y-4">#{case_.caseNumber}</span>
                 <span class="space-y-4">Priority: {case_.priority}</span>
-                <span class="space-y-4"
-                  >Created: {formatDate(case_.createdAt)}</span
-                >
+                <span class="space-y-4">Created: {formatDate(case_.createdAt)}</span>
               </div>
             </div>
           {/each}
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("cases")}>
-          View All Cases
-        </button>
+        <button class="space-y-4" onclick={() => viewAll('cases')}> View All Cases </button>
       </div>
     </div>
     <!-- Evidence Section -->
@@ -407,11 +373,12 @@
             <input
               type="text"
               placeholder="Search evidence..."
-              bind:value={searchTerms.evidence} oninput={() => handleSearch("evidence")}
+              bind:value={searchTerms.evidence}
+              oninput={() => handleSearch('evidence')}
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew("evidence")}>
+            <button class="refresh-btn" onclick={() => createNew('evidence')}>
               <Plus size={16} />
             </button>
           </div>
@@ -430,7 +397,7 @@
                 <span class="space-y-4">{item.evidenceType}</span>
               </div>
               <div class="space-y-4">
-                <span class="space-y-4">Type: {item.fileType || "N/A"}</span>
+                <span class="space-y-4">Type: {item.fileType || 'N/A'}</span>
                 <span class="space-y-4">
                   Size:
                   {#if item.fileSize}
@@ -446,9 +413,7 @@
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("evidence")}>
-          View All Evidence
-        </button>
+        <button class="space-y-4" onclick={() => viewAll('evidence')}> View All Evidence </button>
       </div>
     </div>
     <!-- Reports Section -->
@@ -464,11 +429,12 @@
             <input
               type="text"
               placeholder="Search reports..."
-              bind:value={searchTerms.reports} oninput={() => handleSearch("reports")}
+              bind:value={searchTerms.reports}
+              oninput={() => handleSearch('reports')}
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew("reports")}>
+            <button class="refresh-btn" onclick={() => createNew('reports')}>
               <Plus size={16} />
             </button>
           </div>
@@ -484,27 +450,19 @@
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{report.title}</span>
-                <span class="space-y-4"
-                  >{report.status}</span
-                >
+                <span class="space-y-4">{report.status}</span>
               </div>
               <div class="space-y-4">
                 <span class="space-y-4">Type: {report.reportType}</span>
-                <span class="space-y-4"
-                  >Words: {report.metadata?.wordCount || "N/A"}</span
-                >
-                <span class="space-y-4"
-                  >Created: {formatDate(report.createdAt)}</span
-                >
+                <span class="space-y-4">Words: {report.metadata?.wordCount || 'N/A'}</span>
+                <span class="space-y-4">Created: {formatDate(report.createdAt)}</span>
               </div>
             </div>
           {/each}
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("reports")}>
-          View All Reports
-        </button>
+        <button class="space-y-4" onclick={() => viewAll('reports')}> View All Reports </button>
       </div>
     </div>
     <!-- Activities Section -->
@@ -520,11 +478,12 @@
             <input
               type="text"
               placeholder="Search activities..."
-              bind:value={searchTerms.activities} oninput={() => handleSearch("activities")}
+              bind:value={searchTerms.activities}
+              oninput={() => handleSearch('activities')}
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew("activities")}>
+            <button class="refresh-btn" onclick={() => createNew('activities')}>
               <Plus size={16} />
             </button>
           </div>
@@ -540,25 +499,19 @@
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{activity.title}</span>
-                <span class="space-y-4"
-                  >{activity.status}</span
-                >
+                <span class="space-y-4">{activity.status}</span>
               </div>
               <div class="space-y-4">
                 <span class="space-y-4">Type: {activity.activityType}</span>
                 <span class="space-y-4">Priority: {activity.priority}</span>
-                <span class="space-y-4"
-                  >Due: {formatDate(activity.scheduledFor)}</span
-                >
+                <span class="space-y-4">Due: {formatDate(activity.scheduledFor)}</span>
               </div>
             </div>
           {/each}
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("activities")}>
-          View All Activities
-        </button>
+        <button class="space-y-4" onclick={() => viewAll('activities')}> View All Activities </button>
       </div>
     </div>
     <!-- Quick Actions Panel -->
@@ -570,23 +523,23 @@
         </h2>
       </div>
       <div class="actions-grid space-y-4">
-        <button class="refresh-btn" onclick={() => createNew("cases")}>
-           <FileText size={24} />
-           <span>New Case</span>
-         </button>
-        <button class="refresh-btn" onclick={() => createNew("evidence")}>
-           <Camera size={24} />
-           <span>Add Evidence</span>
-         </button>
-        <button class="refresh-btn" onclick={() => createNew("reports")}>
-           <FileText size={24} />
-           <span>Create Report</span>
-         </button>
-        <button class="refresh-btn" onclick={() => viewAll("activities")}>
-           <Clock size={24} />
-           <span>View Tasks</span>
-         </button>
-       </div>
+        <button class="refresh-btn" onclick={() => createNew('cases')}>
+          <FileText size={24} />
+          <span>New Case</span>
+        </button>
+        <button class="refresh-btn" onclick={() => createNew('evidence')}>
+          <Camera size={24} />
+          <span>Add Evidence</span>
+        </button>
+        <button class="refresh-btn" onclick={() => createNew('reports')}>
+          <FileText size={24} />
+          <span>Create Report</span>
+        </button>
+        <button class="refresh-btn" onclick={() => viewAll('activities')}>
+          <Clock size={24} />
+          <span>View Tasks</span>
+        </button>
+      </div>
       <!-- System Status -->
       <div class="space-y-4">
         <h3>System Status</h3>
@@ -608,26 +561,27 @@
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .crud-dashboard {
     padding: 2rem;
     background: #f8fafc;
     min-height: 100vh;
-}
+  }
   .dashboard-header {
     margin-bottom: 2rem;
-}
+  }
   .title-section h1 {
     font-size: 2rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
     color: #1f2937;
-}
+  }
   .title-section p {
     color: #6b7280;
     margin: 0;
-}
+  }
   .refresh-btn {
     display: flex;
     align-items: center;
@@ -638,23 +592,23 @@
   @media (max-width: 768px) {
     .crud-dashboard {
       padding: 1rem;
-}
+    }
     .content-grid {
       grid-template-columns: 1fr;
-}
+    }
     .header-content {
       flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
-}
+    }
     .section-actions {
       flex-direction: column;
       align-items: stretch;
       gap: 0.5rem;
-}
+    }
     .search-box input {
       width: 100%;
-}
+    }
     .actions-grid {
       grid-template-columns: 1fr;
     }

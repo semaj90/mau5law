@@ -59,8 +59,8 @@ export const POST: RequestHandler = async ({ request }) => {
             meta: {
               ...meta,
               batchId,
-              batchIndex: i
-              batchSize: texts.length
+              batchIndex: i,
+              batchSize: texts.length,
             },
             priority
           })

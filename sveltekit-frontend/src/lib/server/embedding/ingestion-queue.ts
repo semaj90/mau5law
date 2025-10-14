@@ -14,7 +14,7 @@ export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobSta
     evidenceId: job.evidenceId,
     status: 'queued',
     model: job?.model || 'unknown', // @ts-ignore - Model property access || 'nomic-embed-text'
-  }
+  };
   STATUS_STORE.set(jobId, initial);
   try {
     await cache.set(`ingest:payload:${jobId}`, job, 60 * 60 * 1000);
@@ -29,7 +29,7 @@ export function getStatus(jobId: string): IngestionJobStatus | null {
   return STATUS_STORE.get(jobId) || null;
 }
 export async function processNext(
-  processor: (payload: IngestionJobRequest, update: (partial: Partial<IngestionJobStatus>) => void) => Promise<void>,
+  processor: (payload: IngestionJobRequest, update: (partial: Partial<IngestionJobStatus>) => void) => Promise<void>
 ): Promise<IngestionJobStatus | null> {
   const jobId = MEMORY_QUEUE.shift();
   if (!jobId) return null;
@@ -47,7 +47,7 @@ export async function processNext(
   const update = (partial: Partial<IngestionJobStatus>) => {
     Object.assign(status, partial);
     STATUS_STORE.set(jobId, status);
-  }
+  };
   try {
     await processor(payload, update);
     status.status = 'completed';

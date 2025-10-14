@@ -12,7 +12,7 @@
     modelsActive: 5,
     inferencesPerHour: 1247,
     gpuUtilization: 78,
-    averageResponseTime: 0.85
+    averageResponseTime: 0.85,
   };
 
   // Recent AI activities
@@ -20,7 +20,7 @@
     { type: 'analysis', document: 'Contract_2025_001.pdf', confidence: 94 },
     { type: 'search', query: 'liability clauses', results: 12 },
     { type: 'summarization', document: 'Case_Brief_345.docx', pages: 23 },
-    { type: 'comparison', documents: ['Policy_A.pdf', 'Policy_B.pdf'], similarity: 0.87 }
+    { type: 'comparison', documents: ['Policy_A.pdf', 'Policy_B.pdf'], similarity: 0.87 },
   ];
 </script>
 
@@ -278,7 +278,10 @@
     color: #a1a1aa;
   }
 
-  .confidence, .results, .pages, .similarity {
+  .confidence,
+  .results,
+  .pages,
+  .similarity {
     color: #00d4aa;
     font-weight: 600;
   }

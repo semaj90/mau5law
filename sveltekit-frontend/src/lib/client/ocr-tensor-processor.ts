@@ -5,7 +5,11 @@
  */
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { browser } from '$app/environment';
-import { PREDICTIVE_UI_ANALYTICS, ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
+import {
+  PREDICTIVE_UI_ANALYTICS,
+  ENHANCED_MEMORY_CACHING,
+  GAMING_ERA_SPECS,
+} from '$lib/components/ui/gaming/constants/gaming-constants.js';
 // OCR.js types (install via: npm install tesseract.js @types/tesseract.js)
 import type { Tesseract, RecognizeResult, BBox, Word, LoggerMessage } from 'tesseract.js';
 

@@ -12,10 +12,10 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err) {
     return json({ error: (err as Error).message || 'local-search failed' }, { status: 500 });
   }
-}
+};
 export const GET: RequestHandler = async ({ url }) => {
   const q = url.searchParams.get('q') || '';
   const limit = Number(url.searchParams.get('limit') || '5');
   const results = q ? await searchLocal(q, isFinite(limit) ? limit : 5) : [];
   return json({ results });
-}
+};

@@ -37,10 +37,10 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
   const remainingMs = cached.entry.ttlMs - (now - cached.entry.ts)
   return json({
     success: true,
-    hit: true
+    hit: true,
     key,
     source: cached.source,
-    remainingMs: remainingMs < 0 ? 0 : remainingMs
+    remainingMs: remainingMs < 0 ? 0 : remainingMs,
     structured: !!cached.entry.structured,
     model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
     mode: cached.entry.mode,
@@ -48,10 +48,10 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
     createdAt: new Date(cached.entry.ts).toISOString(),
     ageMs: now - cached.entry.ts,
     perf: cached.entry.perf,
-    redisTTL: ttl
+    redisTTL: ttl,
     memory: memoryStats(),
-    summary: includeSummary ? cached.entry.summary: undefined
-    structuredPayload: includeSummary ? cached.entry.structured : undefined
+    summary: includeSummary ? cached.entry.summary: undefined,
+    structuredPayload: includeSummary ? cached.entry.structured : undefined,
   })
 }
 const originalDELETEHandler: RequestHandler = async ({ params }) => {

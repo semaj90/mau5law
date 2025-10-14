@@ -162,8 +162,8 @@ class UpdateLoopTester {
       const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery)
       await db.insert(queryVectors).values({
         userId: this.testResults.testUserId,
-        query: testQuery
-        embedding: queryEmbedding
+        query: testQuery,
+        embedding: queryEmbedding,
         resultCount: 1,
         clickedResults: [{ id: document.id, score: 0.8 }]
       })
@@ -192,7 +192,7 @@ class UpdateLoopTester {
               processingTime: updateResult.processingTime
             }
           : null
-        rerankingResult: rerankingResult
+        rerankingResult: rerankingResult,
           ? {
               queriesAffected: rerankingResult.length,
               avgImprovement:
@@ -200,7 +200,7 @@ class UpdateLoopTester {
                 rerankingResult.length
             }
           : null
-        time: Date.now() - stepStart
+        time: Date.now() - stepStart,
       }
       console.log(`✅ Scenario ${scenario.name} completed`)
     } catch (err: any) {
@@ -251,7 +251,7 @@ class UpdateLoopTester {
         const relevantResult = searchResults.find((r: any) => r.documentId === documentId)
         searchTests.push({
           documentId,
-          query: testQuery
+          query: testQuery,
           found: !!relevantResult,
           similarity: relevantResult?.similarity || 0,
           rank: relevantResult

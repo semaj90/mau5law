@@ -176,7 +176,7 @@ export class FlatBufferNodeSerializer {
   /**
    * Deserialize binary FlatBuffer back to node objects
    * Optimized for zero-copy access where possible
-   */;
+   */
   static async deserializeNodes(buffer,: ArrayBuffer): Promise<BinaryGraphData> {
     const startTime = performance.now();
     try {
@@ -269,7 +269,7 @@ export class FlatBufferNodeSerializer {
   /**
    * Create GPU-optimized node data for WebGPU texture upload
    * Converts FlatBuffer nodes to texture-ready format
-   */;
+   */
   static createGPUNodeData(binaryData,: BinaryGraphData): GPUNodeDataFB {
     const nodeCount = binaryData.nodes.length;
     // Create GPU-aligned arrays
@@ -302,12 +302,12 @@ export class FlatBufferNodeSerializer {
       }
     }
     return {
-      nodeId: nodeIds
-      position: positions
-      embedding: embeddings
+      nodeId: nodeIds,
+      position: positions,
+      embedding: embeddings,
       metadata,
-      priority: priorities
-      bankId: bankIds
+      priority: priorities,
+      bankId: bankIds,
     }
   }
   // Cache management
@@ -354,20 +354,20 @@ export class FlatBufferNodeSerializer {
   }
   /**
    * Get performance metrics and cache statistics
-   */;
+   */
   static getMetrics(), {
     const cacheHitRate = this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses);
     return {
       ...this.metrics,
       cacheSize: this.binaryCache.size,
-      cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate
+      cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
       avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
     }
   }
   /**
    * Clear cache and reset metrics
-   */;
+   */
   static reset(),: void {
     this.binaryCache.clear();
     this.cacheAccessTime.clear();

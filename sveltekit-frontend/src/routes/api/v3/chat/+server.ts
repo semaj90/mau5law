@@ -1,8 +1,8 @@
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { ollamaChatStream } from '$lib/services/ollamaChatStream'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats as _searchSimilarChats, // Rename the problematic import
@@ -354,7 +354,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         },
         { status: 400 }
       );
-    } catch (error: unknown) { // Changed from any to unknown
+    } catch (error: unknown) {
+      // Changed from any to unknown
       const errorMessage = error instanceof Error ? error.message : String(error);
       requestLogger.error('GET request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
         duration: Date.now() - startTime,
@@ -377,34 +378,41 @@ export const GET: RequestHandler = async ({ url, request }) => {
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
   return await withRateLimit(request, async () => {
-    const requestId = generateRequestId()
-    const requestLogger = logger.withRequestId(requestId)
-    const startTime = Date.now()
+    const requestId = generateRequestId();
+    const requestLogger = logger.withRequestId(requestId);
+    const startTime = Date.now();
     try {
-      await ensureDbInitialized()
-      let body: EnhancedChatRequest
+      await ensureDbInitialized();
+      let body: EnhancedChatRequest;
       try {
-        body = await request.json() as EnhancedChatRequest
-      } catch (parseError: unknown) { // Changed from any to unknown
+        body = (await request.json()) as EnhancedChatRequest;
+      } catch (parseError: unknown) {
+        // Changed from any to unknown
         const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
-        requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage })
-        return json({
-          success: false,
-          error: 'Invalid JSON in request body',
-          requestId,
-          timestamp: new Date().toISOString()
-        }, { status: 400 })
+        requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage });
+        return json(
+          {
+            success: false,
+            error: 'Invalid JSON in request body',
+            requestId,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 400 }
+        );
       }
       // Validate input
-      const validation = validateChatRequest(body)
+      const validation = validateChatRequest(body);
       if (!validation.valid) {
-        requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error })
-        return json({
-          success: false,
-          error: validation.error,
-          requestId,
-          timestamp: new Date().toISOString()
-        }, { status: 400 })
+        requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error });
+        return json(
+          {
+            success: false,
+            error: validation.error,
+            requestId,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 400 }
+        );
       }
       const {
         message,
@@ -418,31 +426,27 @@ export const POST: RequestHandler = async ({ request }) => {
         searchThreshold = 0.7,
         systemPrompt,
         useGrpoRecommendations = true, // Enable GRPO recommendations by default
-        enableThinkingCapture = true,  // Enable thinking response capture
-        thinkingType = 'analysis'      // Default thinking type
-      } = body
+        enableThinkingCapture = true, // Enable thinking response capture
+        thinkingType = 'analysis', // Default thinking type
+      } = body;
       const userMessage = message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
       // Use requestLogger directly since withConversation might not be available
-      const conversationLogger = requestLogger.child({ conversationId })
-      conversationLogger.info(
-        'Chat request started',
-        'chat-api-v3',
-        {
-          messageLength: userMessage.length,
-          model,
-          temperature,
-          maxTokens,
-          stream,
-          useVectorSearch
-        }
-      )
+      const conversationLogger = requestLogger.child({ conversationId });
+      conversationLogger.info('Chat request started', 'chat-api-v3', {
+        messageLength: userMessage.length,
+        model,
+        temperature,
+        maxTokens,
+        stream,
+        useVectorSearch,
+      });
       // For streaming responses
       if (stream) {
-        const encoder = new TextEncoder()
+        const encoder = new TextEncoder();
         const readable = new ReadableStream({
           async start(controller) {
             try {
-              conversationLogger.info('Starting streaming response', 'chat-api-v3')
+              conversationLogger.info('Starting streaming response', 'chat-api-v3');
               const streamGenerator = ollamaChatStream()({
                 message: userMessage,
                 model,
@@ -455,37 +459,37 @@ export const POST: RequestHandler = async ({ request }) => {
                 useGrpoRecommendations,
                 enableThinkingCapture,
                 thinkingType: sanitizeThinkingType(thinkingType),
-                context: messages || []
+                context: messages || [],
               }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
-              let sources: VectorSearchResult[] = []
+              let sources: VectorSearchResult[] = [];
               for await (const chunk of streamGenerator) {
                 if (chunk.metadata?.type === 'sources') {
-                  sources = chunk.metadata.sources || [] // Removed 'as any'
+                  sources = chunk.metadata.sources || []; // Removed 'as any'
                   const sourcesChunk = {
                     type: 'sources',
                     sources,
                     requestId,
-                    timestamp: new Date().toISOString()
-                  }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`))
+                    timestamp: new Date().toISOString(),
+                  };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'recommendations') {
-                  const recommendations = chunk.metadata.recommendations || [] // Removed 'as any'
+                  const recommendations = chunk.metadata.recommendations || []; // Removed 'as any'
                   const recommendationsChunk = {
                     type: 'grpo-recommendations',
                     recommendations,
                     count: recommendations.length,
                     requestId,
-                    timestamp: new Date().toISOString()
-                  }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`))
+                    timestamp: new Date().toISOString(),
+                  };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'text') {
                   const textChunk = {
                     type: 'text',
                     text: chunk.text,
                     confidence: chunk.metadata.confidence || 0.9,
-                    requestId
-                  }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`))
+                    requestId,
+                  };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'final') {
                   const finalChunk = {
                     type: 'final',
@@ -494,29 +498,35 @@ export const POST: RequestHandler = async ({ request }) => {
                     processingTimeMs: Date.now() - startTime,
                     vectorSearchUsed: useVectorSearch,
                     sources,
-                  }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`))
+                  };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
                 }
               }
-              controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+              controller.enqueue(encoder.encode('data: [DONE]\n\n'));
               controller.close();
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
-                duration: Date.now() - startTime
-              })
-            } catch (error: unknown) { // Changed from any to unknown
+                duration: Date.now() - startTime,
+              });
+            } catch (error: unknown) {
+              // Changed from any to unknown
               const errorMessage = error instanceof Error ? error.message : String(error);
-              conversationLogger.error('Streaming response failed', 'chat-api-v3', error instanceof Error ? error : undefined, { errorMessage })
+              conversationLogger.error(
+                'Streaming response failed',
+                'chat-api-v3',
+                error instanceof Error ? error : undefined,
+                { errorMessage }
+              );
               const errorChunk = {
                 type: 'error',
                 error: 'An error occurred while processing your request',
                 requestId,
-                timestamp: new Date().toISOString()
-              }
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`))
-              controller.close()
+                timestamp: new Date().toISOString(),
+              };
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
+              controller.close();
             }
-          }
-        })
+          },
+        });
         return new Response(readable, {
           headers: {
             'Content-Type': 'text/event-stream',
@@ -524,15 +534,15 @@ export const POST: RequestHandler = async ({ request }) => {
             'Connection': 'keep-alive',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type',
-            'X-Request-ID': requestId
-          }
-        })
+            'X-Request-ID': requestId,
+          },
+        });
       }
       // For non-streaming responses
-      conversationLogger.info('Starting non-streaming response', 'chat-api-v3')
-      let fullResponse = ''
-      let sources: VectorSearchResult[] = []
-      let vectorSearchUsed = false
+      conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
+      let fullResponse = '';
+      let sources: VectorSearchResult[] = [];
+      let vectorSearchUsed = false;
       const streamGenerator = ollamaChatStream()({
         message: userMessage,
         model,
@@ -545,27 +555,23 @@ export const POST: RequestHandler = async ({ request }) => {
         useGrpoRecommendations,
         enableThinkingCapture,
         thinkingType: sanitizeThinkingType(thinkingType),
-        context: messages || []
+        context: messages || [],
       }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
       for await (const chunk of streamGenerator) {
         if (chunk.metadata?.type === 'sources') {
-          sources = chunk.metadata.sources || [] // Removed 'as any'
-          vectorSearchUsed = sources.length > 0
+          sources = chunk.metadata.sources || []; // Removed 'as any'
+          vectorSearchUsed = sources.length > 0;
         } else if (chunk.metadata?.type === 'text') {
-          fullResponse += chunk.text
+          fullResponse += chunk.text;
         }
       }
-      const processingTime = Date.now() - startTime
-      conversationLogger.info(
-        'Chat response completed',
-        'chat-api-v3',
-        {
-          responseLength: fullResponse.length,
-          vectorSearchUsed,
-          sourcesFound: sources.length,
-          duration: processingTime
-        }
-      )
+      const processingTime = Date.now() - startTime;
+      conversationLogger.info('Chat response completed', 'chat-api-v3', {
+        responseLength: fullResponse.length,
+        vectorSearchUsed,
+        sourcesFound: sources.length,
+        duration: processingTime,
+      });
       const response: ChatResponse = {
         success: true,
         response: fullResponse,
@@ -579,28 +585,30 @@ export const POST: RequestHandler = async ({ request }) => {
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
-          timestamp: new Date().toISOString()
-        }
-      }
-      return json(response)
-    } catch (error: unknown) { // Changed from any to unknown
-      const processingTime = Date.now() - startTime
+          timestamp: new Date().toISOString(),
+        },
+      };
+      return json(response);
+    } catch (error: unknown) {
+      // Changed from any to unknown
+      const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error(
-        'Chat request failed',
-        'chat-api-v3',
-        error instanceof Error ? error : undefined,
-        { duration: processingTime, errorMessage }
-      )
-      return json({
-        success: false,
-        error: 'Internal server error occurred while processing your request',
-        requestId,
-        metadata: {
-          processingTimeMs: processingTime,
-          timestamp: new Date().toISOString()
-        }
-      }, { status: 500 })
+      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
+        duration: processingTime,
+        errorMessage,
+      });
+      return json(
+        {
+          success: false,
+          error: 'Internal server error occurred while processing your request',
+          requestId,
+          metadata: {
+            processingTimeMs: processingTime,
+            timestamp: new Date().toISOString(),
+          },
+        },
+        { status: 500 }
+      );
     }
-  })
-}
+  });
+};

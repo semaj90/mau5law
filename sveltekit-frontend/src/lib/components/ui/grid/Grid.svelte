@@ -33,12 +33,12 @@
     md: 'gap-4',
     lg: 'gap-6',
     xl: 'gap-8',
-  }
+  };
   // Responsive breakpoints
   let gridClass = $derived(
     responsive
       ? `grid-cols-1 sm:grid-cols-2 md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${columns}`
-      : `grid-cols-${columns}`,
+      : `grid-cols-${columns}`
   );
 </script>
 

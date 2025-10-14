@@ -1,4 +1,4 @@
-import { QdrantClient } from "@qdrant/js-client-rest";
+import { QdrantClient } from '@qdrant/js-client-rest';
 // TODO: Integrate QdrantService with Context7 audit/agent pipeline
 // - Use this service for vector search in semantic_search-driven audit
 // - Expose helper to fetch similar legal documents for audit/agent flows
@@ -11,14 +11,10 @@ import { QdrantClient } from "@qdrant/js-client-rest";
  * Find similar documents and log results for audit/agent pipeline.
  * Optionally triggers agent actions if similar docs found.
  */
-export async function findSimilarForAudit(
-  vector: number[],
-  limit = 5,
-  triggerAgent = false
-): Promise<any> {
+export async function findSimilarForAudit(vector: number[], limit = 5, triggerAgent = false): Promise<any> {
   const similar = await qdrantService.searchSimilar(vector, limit);
   // Log results to console (replace with file/db logging as needed)
-  console.log("[Qdrant Audit] Similar documents:", similar);
+  console.log('[Qdrant Audit] Similar documents:', similar);
   // TODO: Write to phase10-todo.log or DB
   if (triggerAgent && similar.length > 0) {
     // Example: trigger agent action for each similar doc (stub)
@@ -45,21 +41,21 @@ export interface LegalDocumentMetadata {
     jurisdiction: string;
     confidentialityLevel: string;
     tags: string[];
-  }
+  };
   extractedData?: {
     parties?: string[];
     dates?: string[];
     amounts?: string[];
     legalCitations?: string[];
     keyTerms?: string[];
-  }
+  };
   fileMetadata: {
     size: number;
     mimeType: string;
     pageCount?: number;
     wordCount?: number;
     language?: string;
-  }
+  };
   [key: string]: unknown;
 }
 export interface QdrantServiceConfig {
@@ -75,7 +71,7 @@ export class QdrantService {
   constructor(config: QdrantServiceConfig) {
     this.client = new QdrantClient({
       url: config.url,
-      apiKey: config.apiKey
+      apiKey: config.apiKey,
     });
     this.collectionName = config.collectionName;
     this.vectorSize = config.vectorSize;
@@ -88,43 +84,37 @@ export class QdrantService {
       await this.client.createCollection(this.collectionName, {
         vectors: {
           size: this.vectorSize,
-          distance: "Cosine"
-        }
+          distance: 'Cosine',
+        },
       });
     }
   }
-  async upsertPoints(
-    points: Array<any>
-  ): Promise<void> {
+  async upsertPoints(points: Array<any>): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
       wait: true,
-      points: points
+      points: points,
     });
   }
-  async searchSimilar(
-    vector: number[],
-    limit: number = 10,
-    filter?: { [key: string]: any }
-  ): Promise<Array<any>> {
+  async searchSimilar(vector: number[], limit: number = 10, filter?: { [key: string]: any }): Promise<Array<any>> {
     await this.ensureCollection();
     const searchResult = await this.client.search(this.collectionName, {
       vector,
       limit,
       filter,
       with_payload: true,
-      score_threshold: 0.5
+      score_threshold: 0.5,
     });
     return searchResult.map((result: any) => ({
       id: (result as { id?: any; score?: any; payload?: any }).id as string,
       score: (result as { id?: any; score?: any; payload?: any }).score,
-      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata
+      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata,
     }));
   }
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
       wait: true,
-      points: ids
+      points: ids,
     });
   }
   async getCollectionInfo() {
@@ -137,8 +127,8 @@ export class QdrantService {
 }
 // Export singleton instance
 export const qdrantService = new QdrantService({
-  url: import.meta.env.QDRANT_URL || "http://localhost:6333",
-  collectionName: "legal_documents",
+  url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+  collectionName: 'legal_documents',
   vectorSize: 768,
-  apiKey: import.meta.env.QDRANT_API_KEY
+  apiKey: import.meta.env.QDRANT_API_KEY,
 });

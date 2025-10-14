@@ -6,7 +6,7 @@ import { legalBertONNXService } from './legal-bert-onnx-service.js';
 import { ollamaService } from './ollama-service.js';
 /**
  * Example: Process a legal document with ONNX optimization
- */;
+ */
 export async function processLegalDocumentWithONNX(documentText: string) {
   try {
     console.log('🔬 Processing legal document with ONNX Legal-BERT...');
@@ -56,7 +56,7 @@ Analysis:`);
 }
 /**
  * Example: Initialize ONNX services on startup
- */;
+ */
 export async function initializeONNXServices() {
   try {
     console.log('🚀 Initializing ONNX Legal-BERT service...');
@@ -82,7 +82,7 @@ export async function initializeONNXServices() {
 }
 /**
  * Example: Batch process multiple legal documents efficiently
- */;
+ */
 export async function batchProcessLegalDocuments(documents: Array<) {
   const results = [];
   const startTime = Date.now();
@@ -123,17 +123,17 @@ export async function batchProcessLegalDocuments(documents: Array<) {
 }
 /**
  * Example: Performance comparison between ONNX and Ollama
- */;
+ */
 export async function performanceComparison(testText: string) {
   console.log('⚡ Running performance comparison: ONNX vs Ollama...');
   const tests = {
     onnx: {
-      entityExtraction: null
-      classification: null
-      embeddings: null
+      entityExtraction: null,
+      classification: null,
+      embeddings: null,
     },
     ollama: {
-      entityExtraction: null
+      entityExtraction: null,
       classification: null;
       embeddings: null
     }
@@ -160,12 +160,12 @@ export async function performanceComparison(testText: string) {
     const comparison = {
       onnx: {
         ...tests.onnx,
-        total: onnxTotal
-        averageLatency: legalBertONNXService.getPerformanceMetrics().averageLatency
+        total: onnxTotal,
+        averageLatency: legalBertONNXService.getPerformanceMetrics().averageLatency,
       },
       ollama: {
-        total: ollamaTotal
-        responseLength: ollamaResponse.response?.length || 0
+        total: ollamaTotal,
+        responseLength: ollamaResponse.response?.length || 0,
       },
       speedup: {
         entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),

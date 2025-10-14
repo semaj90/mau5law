@@ -83,8 +83,8 @@ export const GET: RequestHandler = async ({ url }) => {
           cacheTimestamp: Date.now(),
           accessCount: 1,
           cacheLocation: 'loki' as const,
-          compressed: false
-          syncStatus: 'synced' as const
+          compressed: false,
+          syncStatus: 'synced' as const,
         }
         await lokiRedisCache.storeDocument(testDoc)
         const retrievedDoc = await lokiRedisCache.getDocument(testDoc.id)
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'working',
           operations: ['store', 'retrieve', 'search', 'cleanup'],
           testDocument: {
-            stored: true
+            stored: true,
             retrieved: !!retrievedDoc,
             matches: retrievedDoc?.id === testDoc.id
           },
@@ -149,14 +149,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.results.instantSearch = {
           status: 'working',
           operations: ['initialize', 'search', 'filter', 'stats'],
-          testQueries: searchTests
-          statistics: searchStats
+          testQueries: searchTests,
+          statistics: searchStats,
           features: {
-            fuzzySearch: true
-            semanticSearch: true
-            caching: true
-            realTimeSearch: true
-            legalPatterns: true
+            fuzzySearch: true,
+            semanticSearch: true,
+            caching: true,
+            realTimeSearch: true,
+            legalPatterns: true,
           }
         }
         results.performance.instantSearch = Date.now() - searchStartTime
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ url }) => {
                           healthStatus.instantSearch.available
         results.results.health = {
           status: allHealthy ? 'healthy' : 'degraded',
-          components: healthStatus
+          components: healthStatus,
           integration: {
             redisLoki: healthStatus.redis.connected && healthStatus.loki.initialized,
             lokiSearch: healthStatus.loki.initialized && healthStatus.instantSearch.available,
@@ -306,14 +306,14 @@ async function populateTestData(count: number): Promise<any> {
       cacheTimestamp: Date.now(),
       accessCount: Math.floor(Math.random() * 20),
       cacheLocation: 'loki' as const,
-      compressed: false
-      syncStatus: 'synced' as const
+      compressed: false,
+      syncStatus: 'synced' as const,
     }
     await lokiRedisCache.storeDocument(doc)
     testDocuments.push(doc.id)
   }
   return {
-    documentsCreated: count
-    documentIds: testDocuments
+    documentsCreated: count,
+    documentIds: testDocuments,
   }
 }

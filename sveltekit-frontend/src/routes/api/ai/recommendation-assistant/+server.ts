@@ -58,9 +58,9 @@ export const POST: RequestHandler = async ({ request }) => {
     if (cached) {
       return json({
         success: true,
-        data: cached
-        fromCache: true
-        timestamp: new Date().toISOString()
+        data: cached,
+        fromCache: true,
+        timestamp: new Date().toISOString(),
       })
     }
     // Generate AI recommendations based on type
@@ -88,8 +88,8 @@ export const POST: RequestHandler = async ({ request }) => {
     await multiLayerCache.set(cacheKey, aiResponse, 900, 180); // 15min TTL, high priority
     return json({
       success: true,
-      data: aiResponse
-      fromCache: false
+      data: aiResponse,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         type,
@@ -140,8 +140,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'failure default to mock',
-      data: mockResponse
-      fromCache: false
+      data: mockResponse,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         type,

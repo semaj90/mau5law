@@ -6,7 +6,7 @@ export const GET: RequestHandler = async () => {
   let client: any;
   const stream = new ReadableStream({
     start(controller) {
-      client = { write: (chunk: string) => controller.enqueue(chunk) }
+      client = { write: (chunk: string) => controller.enqueue(chunk) };
       addClient(client);
       controller.enqueue(`event: ping\ndata: {"ok":true}\n\n`);
     },
@@ -21,10 +21,10 @@ export const GET: RequestHandler = async () => {
   });
   // removed unused response assignment
   return response as any;
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   const ctx = (await request.json()) as PrecomputeContext;
   const patterns = await generateCHRPatterns(ctx);
   broadcastPatterns(patterns);
   return json({ ok: true, count: patterns.length });
-}
+};

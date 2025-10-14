@@ -10,7 +10,7 @@
     searchDocumentsLocal,
     hybridSearchLocal,
     getStorageStats,
-    type RAGDocument
+    type RAGDocument,
   } from '$lib/storage/rag-storage';
 
   // State using Svelte 5 runes
@@ -62,7 +62,7 @@
 
       const res = await fetch('/api/rag/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       const data = await res.json();
@@ -93,7 +93,10 @@
     searchResults = [];
 
     try {
-      const searchTagsArray = searchTags.split(',').map(t => t.trim()).filter(Boolean);
+      const searchTagsArray = searchTags
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
 
       const res = await fetch('/api/rag/search', {
         method: 'POST',
@@ -102,8 +105,8 @@
           query: searchQuery,
           searchType,
           tags: searchTagsArray.length > 0 ? searchTagsArray : undefined,
-          limit: 10
-        })
+          limit: 10,
+        }),
       });
 
       const data = await res.json();
@@ -131,12 +134,8 @@
 <div class="nes-container is-dark" style="min-height: 100vh; background: #212529; padding: 2rem;">
   <!-- Header -->
   <div style="border-bottom: 4px solid #d4af37; padding-bottom: 1.5rem; margin-bottom: 2rem;">
-    <h1 class="nes-text is-primary" style="font-size: 2rem; margin-bottom: 0.5rem;">
-      🤖 RAG KNOWLEDGE BASE
-    </h1>
-    <p style="color: #d4af37; font-size: 0.875rem;">
-      embeddinggemma:latest + MinIO + Qdrant + PostgreSQL + Fuse.js
-    </p>
+    <h1 class="nes-text is-primary" style="font-size: 2rem; margin-bottom: 0.5rem;">🤖 RAG KNOWLEDGE BASE</h1>
+    <p style="color: #d4af37; font-size: 0.875rem;">embeddinggemma:latest + MinIO + Qdrant + PostgreSQL + Fuse.js</p>
 
     <!-- System Status -->
     {#if systemStatus}
@@ -247,16 +246,14 @@
 
       <!-- Search Query -->
       <div class="nes-field" style="margin-bottom: 1rem;">
-        <label for="search-input" style="color: #d4af37; margin-bottom: 0.5rem; display: block;">
-          Search Query
-        </label>
+        <label for="search-input" style="color: #d4af37; margin-bottom: 0.5rem; display: block;"> Search Query </label>
         <input
           id="search-input"
           type="text"
           class="nes-input is-dark"
           placeholder="What are you looking for?"
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && searchDocuments()}
+          onkeydown={e => e.key === 'Enter' && searchDocuments()}
           style="width: 100%;"
         />
       </div>

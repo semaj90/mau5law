@@ -89,13 +89,13 @@ export interface ProcessingStep {
   enabled: boolean;
   order: number;
   dependencies?: string[];
-  config?: { [key: string]: any }
+  config?: { [key: string]: any };
 }
 // File metadata and analysis results
 export interface FileMetadata {
   mimeType: string;
   encoding?: string;
-  dimensions?: { width: number; height: number }
+  dimensions?: { width: number; height: number };
   pageCount?: number;
   language?: string;
   documentType?: 'contract' | 'deed' | 'evidence' | 'report' | 'correspondence' | 'unknown';
@@ -121,7 +121,7 @@ export interface UploadProcessingResult {
 export interface DetectedObject {
   type: 'table' | 'signature' | 'seal' | 'text-block' | 'image' | 'diagram';
   confidence: number;
-  boundingBox: { x: number; y: number; width: number; height: number }
+  boundingBox: { x: number; y: number; width: number; height: number };
   page?: number;
   extractedText?: string;
 }
@@ -136,7 +136,7 @@ export interface OCRResult {
 export interface OCRWord {
   text: string;
   confidence: number;
-  boundingBox: { x: number; y: number; width: number; height: number }
+  boundingBox: { x: number; y: number; width: number; height: number };
 }
 export interface UploadAnalysisResult {
   documentType: string;
@@ -188,7 +188,7 @@ export type UploadMachineEvent =
   | { type: 'ERROR'; fileId?: string; error: string }
   | { type: 'RETRY'; fileId: string }
   | { type: 'CANCEL'; fileId?: string }
-  | { type: 'RESET' }
+  | { type: 'RESET' };
 // Cache Strategy for Upload Components
 export interface UploadCacheConfig {
   strategy: 'lru' | 'redis' | 'memory' | 'hybrid';
@@ -237,4 +237,4 @@ export type UploadEventMap = {
   'error:occurred': UploadEventDetail;
   'cache:hit': UploadEventDetail;
   'cache:miss': UploadEventDetail;
-}
+};

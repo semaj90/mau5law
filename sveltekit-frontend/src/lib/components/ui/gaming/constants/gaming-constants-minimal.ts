@@ -15,14 +15,14 @@ export const GAMING_CSS_VARS = {
   '--gaming-transition-normal': '300ms',
   '--yorha-secondary': '#ffd700',
   '--yorha-bg-primary': '#0a0a0a',
-  '--yorha-text-primary': '#e0e0e0'
+  '--yorha-text-primary': '#e0e0e0',
 };
 
 // Gaming Breakpoints
 export const GAMING_BREAKPOINTS = {
   mobile: 768,
   tablet: 1024,
-  desktop: 1440
+  desktop: 1440,
 };
 
 // Gaming Era Specifications
@@ -39,8 +39,8 @@ export const GAMING_ERA_SPECS = {
       learningRate: 0.1,
       neighborhoodRadius: 2,
       maxIterations: 1000,
-      compressionRatio: 4.0
-    }
+      compressionRatio: 4.0,
+    },
   },
   '16bit': {
     maxColors: 256,
@@ -54,8 +54,8 @@ export const GAMING_ERA_SPECS = {
       learningRate: 0.05,
       neighborhoodRadius: 3,
       maxIterations: 2000,
-      compressionRatio: 6.0
-    }
+      compressionRatio: 6.0,
+    },
   },
   'n64': {
     maxColors: 16777216,
@@ -71,9 +71,9 @@ export const GAMING_ERA_SPECS = {
       maxIterations: 5000,
       compressionRatio: 8.0,
       realTimeOptimization: true,
-      dynamicLOD: true
-    }
-  }
+      dynamicLOD: true,
+    },
+  },
 };
 
 // N64 Texture Presets
@@ -87,7 +87,7 @@ export const N64_TEXTURE_PRESETS = {
     materialType: 'basic' as const,
     enableShadows: false,
     enableReflections: false,
-    shadowMapSize: 256 as const
+    shadowMapSize: 256 as const,
   },
   balanced: {
     textureQuality: 'medium' as const,
@@ -98,7 +98,7 @@ export const N64_TEXTURE_PRESETS = {
     materialType: 'phong' as const,
     enableShadows: true,
     enableReflections: false,
-    shadowMapSize: 512 as const
+    shadowMapSize: 512 as const,
   },
   highQuality: {
     textureQuality: 'high' as const,
@@ -109,8 +109,8 @@ export const N64_TEXTURE_PRESETS = {
     materialType: 'pbr' as const,
     enableShadows: true,
     enableReflections: true,
-    shadowMapSize: 1024 as const
-  }
+    shadowMapSize: 1024 as const,
+  },
 };
 
 // Export a working constants object
@@ -118,5 +118,5 @@ export const GAMING_CONSTANTS = {
   CSS_VARS: GAMING_CSS_VARS,
   BREAKPOINTS: GAMING_BREAKPOINTS,
   ERA_SPECS: GAMING_ERA_SPECS,
-  N64_PRESETS: N64_TEXTURE_PRESETS
+  N64_PRESETS: N64_TEXTURE_PRESETS,
 };

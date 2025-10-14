@@ -1,7 +1,7 @@
 /**
  * Legal AI Priority System - NES-Inspired Memory Management
  * 8-bit priority scoring (0-255) for legal document classification
- */;
+ */
 }
 export interface LegalDocument {
   id: string;
@@ -42,7 +42,7 @@ export type MemoryBank = 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
 /**
  * Base priority weights for different document types (0.0 - 1.0)
  * Higher values = higher priority = faster memory banks
- */;
+ */
 export const LEGAL_PRIORITY_WEIGHTS: Record<DocumentType, number> = {
   // Critical case documents - highest priority
   contracts: 1.0,           // Always need instant access
@@ -61,7 +61,7 @@ export const LEGAL_PRIORITY_WEIGHTS: Record<DocumentType, number> = {
 }
 /**
  * Category-based priority modifiers
- */;
+ */
 export const CATEGORY_MODIFIERS: Record<LegalCategory, number> = {
   criminal: 1.2,           // Highest stakes
   litigation: 1.15,        // High stakes, time-sensitive
@@ -76,7 +76,7 @@ export const CATEGORY_MODIFIERS: Record<LegalCategory, number> = {
 }
 /**
  * Urgency-based multipliers
- */;
+ */
 export const URGENCY_MULTIPLIERS: Record<UrgencyLevel, number> = {
   critical: 2.0,   // Court deadline today/tomorrow
   high: 1.5,       // Court deadline this week
@@ -86,7 +86,7 @@ export const URGENCY_MULTIPLIERS: Record<UrgencyLevel, number> = {
 }
 /**
  * Complexity-based multipliers (complex docs need faster access)
- */;
+ */
 export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
   highly_complex: 1.3,  // Multi-party contracts, complex litigation
   complex: 1.15,        // Standard contracts, depositions
@@ -96,7 +96,7 @@ export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
 /**
  * NES Memory Bank Configuration
  * Mimics Nintendo's memory architecture for legal document management
- */;
+ */
 export const NES_MEMORY_MAP = {
   // L1 Cache - Ultra-fast GPU memory (1MB)
   INTERNAL_RAM: {
@@ -137,7 +137,7 @@ export const NES_MEMORY_MAP = {
 } as const;
 /**
  * Calculate priority score for a legal document (0-255)
- */;
+ */
 export function calculateDocumentPriority(_document: LegalDocument): number {
   // Start with base type weight
   let priority = LEGAL_PRIORITY_WEIGHTS[document.type] || 0.3;
@@ -176,7 +176,7 @@ export function calculateDocumentPriority(_document: LegalDocument): number {
 }
 /**
  * Select appropriate memory bank based on priority score
- */;
+ */
 export function selectMemoryBank(priority: number): MemoryBank {
   if (priority >= NES_MEMORY_MAP.INTERNAL_RAM.minPriority) {
     return 'INTERNAL_RAM';
@@ -191,13 +191,13 @@ export function selectMemoryBank(priority: number): MemoryBank {
 }
 /**
  * Get memory bank configuration
- */;
+ */
 export function getMemoryBankConfig(bank: MemoryBank) {
   return NES_MEMORY_MAP[bank];
 }
 /**
  * Priority analysis for debugging
- */;
+ */
 export function analyzePriority(_document: LegalDocument) {
   const baseWeight = LEGAL_PRIORITY_WEIGHTS[document.type];
   const categoryMod = CATEGORY_MODIFIERS[document.category];
@@ -208,12 +208,12 @@ export function analyzePriority(_document: LegalDocument) {
   return {
     document: document.id,
     baseWeight,
-    categoryModifier: categoryMod
-    urgencyMultiplier: urgencyMult
-    complexityMultiplier: complexityMult
+    categoryModifier: categoryMod,
+    urgencyMultiplier: urgencyMult,
+    complexityMultiplier: complexityMult,
     activeReviewBoost: document.activeReview,
     evidenceCriticalBoost: document.isEvidenceCritical,
-    finalPriority: priority
+    finalPriority: priority,
     memoryBank,
     bankConfig: getMemoryBankConfig(memoryBank)
   }

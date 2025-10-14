@@ -1,4 +1,3 @@
-
 // TODO: Wire up NomicEmbeddingsService for production Context7 pipeline
 // - Use this service for all embedding generation in semantic_search, audit, and agent flows
 // - After embedding, upsert to Qdrant and log to todo log/DB as needed
@@ -7,7 +6,7 @@
 export interface DocumentChunk {
   id: string;
   text: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export interface EmbeddingResult {
   embedding: number[];
@@ -15,7 +14,7 @@ export interface EmbeddingResult {
   metadata?: {
     timestamp: string;
     [key: string]: unknown;
-  }
+  };
 }
 export class NomicEmbeddingsService {
   /**

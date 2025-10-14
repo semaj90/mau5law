@@ -2,14 +2,14 @@
 /**
  * Fetch utility with AbortController timeout
  * Replaces deprecated timeout in RequestInit for better error handling
- */;
+ */
 }
 export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
   /** Timeout in milliseconds (default: 30000ms / 30s) */
   timeout?: number;
   /** Custom AbortSignal to combine with timeout */
   signal?: AbortSignal;
-  /** Retry configuration */;
+  /** Retry configuration */
   retry?: {
     attempts: number;
     delay: number;
@@ -34,12 +34,12 @@ export interface FetchNetworkError extends Error {
  * Enhanced fetch with AbortController-based timeout and retry logic
  */
 export async function fetchWithTimeout(
-  url: string | URL | Request
+  url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   const {
     timeout = 30000,
-    signal: externalSignal
+    signal: externalSignal,
     retry,
     ...fetchOptions
   } = options;
@@ -116,7 +116,7 @@ export async function fetchWithTimeout(
  * Legal AI specific fetch with optimized defaults
  */
 export async function fetchLegalAI(
-  url: string | URL | Request
+  url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
@@ -138,7 +138,7 @@ export async function fetchLegalAI(
  * Ollama service fetch with specific timeout handling
  */
 export async function fetchOllama(
-  url: string | URL | Request
+  url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
@@ -159,7 +159,7 @@ export async function fetchOllama(
  * Database operations fetch with conservative timeout
  */
 export async function fetchDatabase(
-  url: string | URL | Request
+  url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
@@ -174,7 +174,7 @@ export async function fetchDatabase(
 }
 /**
  * Combine multiple AbortSignals into one
- */;
+ */
 function combineAbortSignals(...signals: AbortSignal[]): AbortSignal {
   const controller = new AbortController();
   for (const signal of signals) {
@@ -190,13 +190,13 @@ function combineAbortSignals(...signals: AbortSignal[]): AbortSignal {
 }
 /**
  * Sleep utility for retry delays
- */;
+ */
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve: any) => setTimeout(resolve, ms);
 }
 /**
  * Check if error is a timeout error
- */;
+ */
 export function isTimeoutError(error: any): error is FetchTimeoutError {
   return error instanceof Error &&
          error.name === 'TimeoutError' &&
@@ -205,7 +205,7 @@ export function isTimeoutError(error: any): error is FetchTimeoutError {
 }
 /**
  * Check if error is an abort error
- */;
+ */
 export function isAbortError(error: any): error is FetchAbortError {
   return error instanceof Error &&
          error.name === 'AbortError' &&
@@ -214,7 +214,7 @@ export function isAbortError(error: any): error is FetchAbortError {
 }
 /**
  * Check if error is a network error
- */;
+ */
 export function isNetworkError(error: any): error is FetchNetworkError {
   return error instanceof Error &&
          error.name === 'NetworkError' &&
@@ -223,7 +223,7 @@ export function isNetworkError(error: any): error is FetchNetworkError {
 }
 /**
  * Create a reusable AbortController with timeout
- */;
+ */
 export function createTimeoutController(timeout: number): {
   controller: AbortController;
   timeoutId: ReturnType<typeof setTimeout>;

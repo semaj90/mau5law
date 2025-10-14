@@ -126,8 +126,8 @@ export const canvasSystemMachine = setup({
   context: {
     nodes: [],
     connections: [],
-    selectedNode: null
-    draggedNode: null
+    selectedNode: null,
+    draggedNode: null,
     canvasState: {
       nodes: [],
       connections: [],

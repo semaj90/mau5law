@@ -32,7 +32,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       depth: options.depth || 0.15,
       borderRadius: options.rounded ? 0.3 : (options.borderRadius || 0.05),
       shadow: {
-        enabled: true
+        enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.3,
         intensity: 0.4,
@@ -46,7 +46,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
           ...options.hover?.transform
         },
         shadow: {
-          enabled: true
+          enabled: true,
           offsetY: -0.08,
           intensity: 0.6,
           ...options.hover?.shadow
@@ -107,8 +107,8 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     shape.lineTo(x, y + radius);
     shape.quadraticCurveTo(x, y, x + radius, y);
     const extrudeSettings = {
-      depth: depth
-      bevelEnabled: true
+      depth: depth,
+      bevelEnabled: true,
       bevelSegments: 4,
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1
@@ -123,8 +123,8 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const textGeometry = new THREE.PlaneGeometry(1.5, 0.3);
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.style.textColor || YORHA_COLORS.primary.black,
-      transparent: true
-      side: THREE.DoubleSide
+      transparent: true,
+      side: THREE.DoubleSide,
     });
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
     this.textMesh.position.z = (this.style.depth || 0.15) / 2 + 0.01;
@@ -217,8 +217,8 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const ringGeometry = new THREE.RingGeometry(0.15, 0.2, 16);
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true
-      opacity: 0.8
+      transparent: true,
+      opacity: 0.8,
     });
     const ring = new THREE.Mesh(ringGeometry, ringMaterial);
     ring.position.z = (this.style.depth || 0.15) / 2 + 0.02;

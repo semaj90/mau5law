@@ -49,18 +49,18 @@ export const prefetchMachine = createMachine({
   initial: "initializing",
   context: {
     userActions: [],
-    predictedIntent: null
+    predictedIntent: null,
     confidence: 0,
     prefetchQueue: [],
     embeddings: [],
-    modelWeights: null
+    modelWeights: null,
     metrics: {
       hits: 0,
       misses: 0,
       avgPredictionTime: 0,
       lastPredictionAccuracy: 0
     },
-    docId: null
+    docId: null,
     currentRoute: '',
     viewportData: {
       width: (typeof window !== 'undefined' && window?.innerWidth) || 1920,

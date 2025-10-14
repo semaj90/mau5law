@@ -67,12 +67,12 @@ export const ADVANCED_COMPONENTS = {
  */
 export const CompoundComponents = {
   Card: {
-    Root: Card
-    Header: CardHeader
-    Title: CardTitle
-    Description: CardDescription
-    Content: CardContent
-    Footer: CardFooter
+    Root: Card,
+    Header: CardHeader,
+    Title: CardTitle,
+    Description: CardDescription,
+    Content: CardContent,
+    Footer: CardFooter,
   },
 } as const;
 // ======================================
@@ -231,7 +231,7 @@ export const COMPONENT_BUNDLES = {
  */
 export function getComponentBundleInfo() {
   return {
-    bundles: COMPONENT_BUNDLES
+    bundles: COMPONENT_BUNDLES,
     estimatedSizes: {
       core: '~15KB',
       legal: '~45KB',

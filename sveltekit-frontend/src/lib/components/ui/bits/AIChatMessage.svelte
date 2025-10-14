@@ -1,7 +1,7 @@
 <!-- AI Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   interface Props {
-    message: { role: string; content: string; timestamp?: string; references?: unknown[] }
+    message: { role: string; content: string; timestamp?: string; references?: unknown[] };
     showReferences?: boolean;
   }
   let { message, showReferences = false }: Props = $props();

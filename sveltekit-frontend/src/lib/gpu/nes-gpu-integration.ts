@@ -99,7 +99,7 @@ const webgpuPolyfill = {
 }
 const wasmAccelerator = {
   process: () => Promise.resolve(new ArrayBuffer(1024)),
-  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384)
+  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384),
 }
 const multiLayerCache = {
   get: (key?: any, namespace?: any) => null,
@@ -196,7 +196,7 @@ export class NESGPUIntegration {
   /**
    * ULTRA-FAST: Binary pipeline for legal document ingestion
    * Bypasses JSON completely - uses FlatBuffers + NES memory banks
-   */;
+   */
   async ingestLegalDocumentsBinary(documents: LegalDocument[]): Promise<void> {
     const startTime = performance.now();
     console.log(`🚀 Starting binary ingestion of ${documents.length} documents`);
@@ -225,7 +225,7 @@ export class NESGPUIntegration {
   }
   /**
    * Pack documents into NES memory banks using 8-bit addressing
-   */;
+   */
   private async packDocumentsIntoNESBanks(documents: LegalDocument[]): Promise<void> {
     const startTime = performance.now();
     for (const document of documents) {
@@ -246,7 +246,7 @@ export class NESGPUIntegration {
   }
   /**
    * Select optimal NES memory bank based on legal document characteristics
-   */;
+   */
   private selectOptimalNESBank(_document: LegalDocument): string {
     // Critical legal documents → Fast RAM (2KB)
     if (document.riskLevel === 'critical' || (document.priority && document.priority > 200)) {
@@ -269,7 +269,7 @@ export class NESGPUIntegration {
   }
   /**
    * Create binary FlatBuffer representation (eliminates JSON parsing)
-   */;
+   */
   private createBinaryDocument(_document: LegalDocument): ArrayBuffer {
     // Calculate exact binary size
     const baseSize = 64; // Fixed fields
@@ -311,7 +311,7 @@ export class NESGPUIntegration {
   }
   /**
    * Generate 4x4 ranking matrix based on legal document properties
-   */;
+   */
   private generateRankingMatrix(_document: LegalDocument): Float32Array {
     const matrix = new Float32Array(16);
     // Legal importance weights
@@ -328,7 +328,7 @@ export class NESGPUIntegration {
   }
   /**
    * Upload binary data to GPU textures for ultra-fast rendering
-   */;
+   */
   private async uploadToGPUTextures(binaryBuffer: ArrayBuffer, documentCount: number): Promise<void> {
     if (!this.device) return;
     const startTime = performance.now();
@@ -373,7 +373,7 @@ export class NESGPUIntegration {
   }
   /**
    * Copy binary data to GPU textures using compute shaders
-   */;
+   */
   private async copyBinaryToTextures(binaryBuffer: ArrayBuffer, documentCount: number): Promise<void> {
     if (!this.device || !this.graphTextures) return;
     // Create staging buffer
@@ -396,7 +396,7 @@ export class NESGPUIntegration {
   }
   /**
    * Create compute shader for unpacking binary data
-   */;
+   */
   private createBinaryUnpackShader(documentCount: number): GPUComputePipeline {
     const shaderCode = `;
       struct LegalDocumentData {
@@ -434,7 +434,7 @@ export class NESGPUIntegration {
    * Ultra-fast semantic search using GPU textures + NES memory
    */
   async searchLegalDocumentsGPU(
-    query: string
+    query: string,
     options: {
       limit?: number;
       threshold?: number;
@@ -478,7 +478,7 @@ export class NESGPUIntegration {
   }
   /**
    * Generate query embedding using WebAssembly acceleration
-   */;
+   */
   private async generateQueryEmbeddingWASM(query: string): Promise<Float32Array> {
     const startTime = performance.now();
     try {
@@ -495,8 +495,8 @@ export class NESGPUIntegration {
    * GPU-accelerated similarity search with ranking matrices for ultra-fast results
    */
   private async performGPUSimilaritySearchWithRanking(
-    queryEmbedding: Float32Array
-    limit: number
+    queryEmbedding: Float32Array,
+    limit: number,
     threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
@@ -508,7 +508,7 @@ export class NESGPUIntegration {
       const candidateDocumentIds = await this.getCandidateDocumentIds(limit * 2); // Get 2x to allow for filtering
       // Step 2: Use GPU ranking matrices for initial scoring
       const rankingScores = await gpuRankingMatrices.computeAggregateRanking({
-        documentIds: candidateDocumentIds
+        documentIds: candidateDocumentIds,
         weights: [0.4, 0.3, 0.2, 0.1] // Weights: relevance, precedent, recency, authority
       });
       // Step 3: Get ranking matrices for candidate documents
@@ -584,8 +584,8 @@ export class NESGPUIntegration {
    * Fallback GPU similarity search without ranking matrices
    */
   private async performBasicGPUSimilaritySearch(
-    queryEmbedding: Float32Array
-    limit: number
+    queryEmbedding: Float32Array,
+    limit: number,
     threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
@@ -619,7 +619,7 @@ export class NESGPUIntegration {
   }
   /**
    * Utility functions
-   */;
+   */
   private stringToId(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -656,7 +656,7 @@ export class NESGPUIntegration {
   }
   /**
    * Get candidate document IDs for similarity search
-   */;
+   */
   private async getCandidateDocumentIds(limit: number): Promise<string[]> {
     // In a real implementation, this would query NES memory banks
     // For now, return mock document IDs
@@ -668,7 +668,7 @@ export class NESGPUIntegration {
   }
   /**
    * Create compute shader for combined similarity + ranking calculation
-   */;
+   */
   private createCombinedSimilarityRankingShader(): GPUComputePipeline {
     if (!this.device) throw new Error('GPU device not initialized');
     const shaderCode = `;
@@ -729,10 +729,10 @@ export class NESGPUIntegration {
    * Convert combined GPU results to LegalDocument objects
    */
   private async convertCombinedGPUResultsToDocuments(
-    buffer: GPUBuffer
-    documentIds: string[]
+    buffer: GPUBuffer,
+    documentIds: string[],
     rankingMatrices: Map<string, RankingMatrix>,
-    limit: number
+    limit: number,
     threshold: number;
   ): Promise<LegalDocument[]> {
     // In a real implementation, this would:
@@ -746,7 +746,7 @@ export class NESGPUIntegration {
       const docId = documentIds[i];
       const matrix = rankingMatrices.get(docId);
       const document = {
-        id: docId
+        id: docId,
         title: `Legal Document ${docId}`,
         type: 'contract',
         priority: 150,
@@ -754,7 +754,7 @@ export class NESGPUIntegration {
         lastAccessed: Date.now(),
         confidenceLevel: matrix ? Math.random() * 0.3 + 0.7 : 0.5,
         riskLevel: 'medium' as const,
-        compressed: false
+        compressed: false,
         metadata: {
           caseId: `case-${docId}`,
           jurisdiction: 'US',
@@ -806,7 +806,7 @@ export class NESGPUIntegration {
   }
   /**
    * Get comprehensive performance statistics including GPU ranking
-   */;
+   */
   async getPerformanceStats(): Promise<PipelineStats & {
     gpuRankingStats?: {
       totalDocuments: number;
@@ -829,7 +829,7 @@ export class NESGPUIntegration {
   }
   /**
    * Cleanup GPU resources
-   */;
+   */
   dispose(): void {
     if (this.graphTextures) {
       this.graphTextures.nodeDataTexture.destroy();

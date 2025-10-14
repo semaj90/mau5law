@@ -25,9 +25,9 @@ export interface AuthState {
 // Core authentication state
 const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
-    user: null
-    isAuthenticated: false
-    isLoading: true
+    user: null,
+    isAuthenticated: false,
+    isLoading: true,
   });
   return {
     subscribe,
@@ -42,24 +42,24 @@ const createAuthStore = () => {
           const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
-            isAuthenticated: true
-            isLoading: false
+            isAuthenticated: true,
+            isLoading: false,
             sessionId: userData.sessionId,
             lastActivity: new Date()
           });
         } else {
           set({
-            user: null
-            isAuthenticated: false
-            isLoading: false
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
           });
         }
       } catch (error: any) {
         console.error("Failed to initialize auth:", error);
         set({
-          user: null
-          isAuthenticated: false
-          isLoading: false
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
         });
       }
     },
@@ -79,8 +79,8 @@ const createAuthStore = () => {
           const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
-            isAuthenticated: true
-            isLoading: false
+            isAuthenticated: true,
+            isLoading: false,
             sessionId: userData.sessionId,
             lastActivity: new Date()
           });
@@ -90,17 +90,17 @@ const createAuthStore = () => {
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
-            user: null
-            isAuthenticated: false
-            isLoading: false
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
           });
           return { success: false, error: error.message }
         }
       } catch (error: any) {
         set({
-          user: null
-          isAuthenticated: false
-          isLoading: false
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
         });
         return { success: false, error: "Network error" }
       }
@@ -127,8 +127,8 @@ const createAuthStore = () => {
           const result = await (response as { ok?: any; json?: any }).json();
           set({
             user: (result as { user?: any; sessionId?: any }).user,
-            isAuthenticated: true
-            isLoading: false
+            isAuthenticated: true,
+            isLoading: false,
             sessionId: (result as { user?: any; sessionId?: any }).sessionId,
             lastActivity: new Date()
           });
@@ -138,17 +138,17 @@ const createAuthStore = () => {
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
-            user: null
-            isAuthenticated: false
-            isLoading: false
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
           });
           return { success: false, error: error.message }
         }
       } catch (error: any) {
         set({
-          user: null
-          isAuthenticated: false
-          isLoading: false
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
         });
         return { success: false, error: "Network error" }
       }
@@ -164,9 +164,9 @@ const createAuthStore = () => {
         console.error("Logout error:", error);
       }
       set({
-        user: null
-        isAuthenticated: false
-        isLoading: false
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
       });
       // Clear AI assistant state
       aiAssistantStore.clear();
@@ -238,12 +238,12 @@ export interface AIAssistantState {
   conversationHistory: Array<any>
 const createAIAssistantStore = () => {
   const { subscribe, set, update } = writable<AIAssistantState>({
-    isEnabled: false
+    isEnabled: false,
     preferences: {
-      autoSuggest: true
-      contextAwareness: true
-      legalSpecialization: true
-      confidenceThreshold: 0.7
+      autoSuggest: true,
+      contextAwareness: true,
+      legalSpecialization: true,
+      confidenceThreshold: 0.7,
     },
     conversationHistory: []
   });
@@ -253,7 +253,7 @@ const createAIAssistantStore = () => {
     initializeForUser(user: AuthUser) {
       update((state: any) => ({
         ...state,
-        isEnabled: true
+        isEnabled: true,
         userId: user.id,
         preferences: {
           ...state.preferences,
@@ -335,14 +335,14 @@ const createAIAssistantStore = () => {
     // Clear AI assistant state
     clear(), {
       set({
-        isEnabled: false
+        isEnabled: false,
         preferences: {
-          autoSuggest: true
-          contextAwareness: true
-          legalSpecialization: true
-          confidenceThreshold: 0.7
+          autoSuggest: true,
+          contextAwareness: true,
+          legalSpecialization: true,
+          confidenceThreshold: 0.7,
         },
-        conversationHistory: []
+        conversationHistory: [],
       });
     }
   }

@@ -16,11 +16,11 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import type { RequestHandler } from '@sveltejs/kit';
-import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'
-import { ollamaService } from '$lib/server/services/OllamaService.js'
-import { logger } from '$lib/server/production-logger.js'
-import { conversationService } from '$lib/server/services/conversation-service'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
+import { ollamaService } from '$lib/server/services/OllamaService.js';
+import { logger } from '$lib/server/production-logger.js';
+import { conversationService } from '$lib/server/services/conversation-service';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 interface StreamLine {
   response?: string;
   done?: boolean;
@@ -29,9 +29,9 @@ interface StreamLine {
 }
 
 // add a typed shape for the RAG service response to avoid `any`
-type RAGResponse = { results?: unknown[]; [k: string]: unknown }
+type RAGResponse = { results?: unknown[]; [k: string]: unknown };
 
-const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
+const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   const requestId = getRequestId(event);
   const body = await event.request.json().catch(() => ({}));
   const {
@@ -264,14 +264,14 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       'Access-Control-Allow-Origin': '*',
     },
   });
-})
+});
 export const OPTIONS: RequestHandler = async () =>
   new Response(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  })
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 export const POST = redisOptimized.aiChat(originalPOSTHandler);

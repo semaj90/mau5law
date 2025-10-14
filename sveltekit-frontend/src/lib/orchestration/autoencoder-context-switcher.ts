@@ -93,8 +93,8 @@ export class AutoencoderContextSwitcher {
    * Main context switching logic - decides which model to use
    */
   async switchContext(
-    userId: string
-    query: string
+    userId: string,
+    query: string,
     currentContext: any;
   ): Promise<any> {
     const startTime = performance.now();
@@ -121,7 +121,7 @@ export class AutoencoderContextSwitcher {
       switchingCost: this.switchingLatency
     });
     return {
-      modelId: targetModelId
+      modelId: targetModelId,
       switchingLatency: this.switchingLatency,
       compressionRatio: switchingDecision.contextCompressionRatio,
       memoryState: await this.gpuMemoryManager.getMemoryState()
@@ -131,7 +131,7 @@ export class AutoencoderContextSwitcher {
    * Generate compressed context embedding using autoencoder
    */
   private async generateContextVector(
-    userId: string
+    userId: string,
     query: string;
     context: any;
   ): Promise<ContextVector> {
@@ -145,7 +145,7 @@ export class AutoencoderContextSwitcher {
       userId,
       sessionId: context.sessionId || 'default',
       timestamp: Date.now(),
-      embedding: compressedEmbedding
+      embedding: compressedEmbedding,
       metadata: {
         domain: this.classifyDomain(query),
         complexity: this.calculateComplexity(query),
@@ -163,7 +163,7 @@ export class AutoencoderContextSwitcher {
   }
   /**
    * Predict optimal model using autoencoder-compressed context
-   */;
+   */
   private async predictOptimalModel(contextVector: ContextVector): Promise<SwitchingDecision> {
     const candidates = Array.from(this.modelUsagePatterns.values();
     const currentModelId = await this.getCurrentActiveModel();
@@ -188,10 +188,10 @@ export class AutoencoderContextSwitcher {
     const gcRequired = memoryPressure > 0.8 ||
       (this.activeModels.size >= this.maxActiveModels && shouldSwitch);
     return {
-      targetModelId: bestModel
-      confidence: bestScore
+      targetModelId: bestModel,
+      confidence: bestScore,
       switchingCost: this.estimateSwitchingCost(currentModelId, bestModel),
-      expectedBenefit: improvement
+      expectedBenefit: improvement,
       shouldSwitch,
       gcRequired,
       contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio()
@@ -199,7 +199,7 @@ export class AutoencoderContextSwitcher {
   }
   /**
    * Intelligent garbage collection based on usage patterns
-   */;
+   */
   private async performIntelligentGC(): Promise<void> {
     const startTime = performance.now();
     console.log('🗑️ Performing intelligent GPU garbage collection...');
@@ -225,7 +225,7 @@ export class AutoencoderContextSwitcher {
   }
   /**
    * Execute fast model switching using QUIC protocol
-   */;
+   */
   private async executeFastModelSwitch(decision: SwitchingDecision): Promise<string> {
     console.log(`🔄 Fast switching to model: ${decision.targetModelId}`);
     // Check if model is already loaded
@@ -237,8 +237,8 @@ export class AutoencoderContextSwitcher {
     const loadCommand = {
       modelId: decision.targetModelId,
       priority: 'high',
-      compressionEnabled: true
-      streamingEnabled: true
+      compressionEnabled: true,
+      streamingEnabled: true,
     }
     const loadResponse = await this.quicServer.sendLoadCommand(loadCommand);
     if (loadResponse.success) {
@@ -256,11 +256,11 @@ export class AutoencoderContextSwitcher {
    * Update model usage patterns for ML-based optimization
    */
   private async updateUsagePatterns(
-    contextVector: ContextVector
+    contextVector: ContextVector,
     usedModelId: string;
   ): Promise<void> {
     const pattern = this.modelUsagePatterns.get(usedModelId) || {
-      modelId: usedModelId
+      modelId: usedModelId,
       totalUsage: 0,
       recentUsage: 0,
       averageLatency: 0,
@@ -293,7 +293,7 @@ export class AutoencoderContextSwitcher {
    * Consider creating a new QLoRA model based on usage patterns
    */
   private async considerCreatingSpecializedModel(
-    contextVector: ContextVector
+    contextVector: ContextVector,
     pattern: ModelUsagePattern;
   ): Promise<void> {
     console.log(`🧠 Considering specialized model creation for ${pattern.modelId}...`);
@@ -315,7 +315,7 @@ export class AutoencoderContextSwitcher {
    * Create dynamic QLoRA adapter based on usage patterns
    */
   private async createDynamicQLoRAAdapter(
-    adapterName: string
+    adapterName: string,
     trainingData: {
       domain: string;
       examples: Array<any>;
@@ -324,7 +324,7 @@ export class AutoencoderContextSwitcher {
   ): Promise<void> {
     // This would interface with the QLoRA training system
     const adapterConfig = {
-      name: adapterName
+      name: adapterName,
       rank: this.calculateOptimalRank(trainingData.examples.length),
       alpha: this.calculateOptimalAlpha(trainingData.patterns),
       targetModules: this.selectTargetModules(trainingData.domain),
@@ -339,15 +339,15 @@ export class AutoencoderContextSwitcher {
   }
   /**
    * Store model to local disk with efficient caching
-   */;
+   */
   private async storeModelToDisk(modelName: string, domain: string): Promise<void> {
     const diskPath = `~/.ollama/models/distilled-qlora/${domain}/${modelName}`;
     // Create directory structure
     await this.createDirectoryStructure(diskPath);
     // Store with compression and metadata
     const modelData = {
-      name: modelName
-      domain: domain
+      name: modelName,
+      domain: domain,
       created: Date.now(),
       version: '1.0',
       compression: 'lz4', // Fast compression for quick loading;
@@ -527,7 +527,7 @@ export class AutoencoderContextSwitcher {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getPerformanceStats() {
     return {
       switchingLatency: this.switchingLatency,

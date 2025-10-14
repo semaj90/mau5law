@@ -2,7 +2,7 @@
 /**
  * Complete Routes Configuration for YoRHa Navigation
  * Comprehensive mapping of all available demo routes and features
- */;
+ */
 }
 export interface RouteDefinition {
   id: string;

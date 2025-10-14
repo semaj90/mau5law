@@ -22,8 +22,8 @@ export const enhancedRagMachine = createMachine({
   context: {
     query: '',
     results: [] as any[],
-    error: null as string | null
-    loading: false
+    error: null as string | null,
+    loading: false,
   },
   states: {
     idle: {

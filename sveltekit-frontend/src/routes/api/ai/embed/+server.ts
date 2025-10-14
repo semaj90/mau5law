@@ -43,8 +43,8 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
     },
     body: JSON.stringify({
       model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
-      input: text
-      encoding_format: 'float'
+      input: text,
+      encoding_format: 'float',
     })
   })
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -128,8 +128,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         result = {
           embedding,
           model: 'mock-embeddings',
-          dimensions: targetDim
-          tokens: text.split(' ').length
+          dimensions: targetDim,
+          tokens: text.split(' ').length,
         }
         break
       }

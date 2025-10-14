@@ -17,22 +17,13 @@ https://svelte.dev/e/js_parse_error -->
     documents?: any[];
     showPerformanceMetrics?: boolean;
   }
-  let {
-    documents = [],
-    showPerformanceMetrics = false
-  }: Props = $props();
+  let { documents = [], showPerformanceMetrics = false }: Props = $props();
   // Reactive state for CHR-ROM patterns
   let documentPatterns = $state(new Map<string, Map<string, CHRROMPattern | null>>());
   let performanceStats: any = $state(null);
   let hoveredDocument: string | null = $state(null);
   // Pattern types to load
-  const patternTypes = [
-    'summary_icon',
-    'category_color',
-    'confidence_badge',
-    'status_indicator',
-    'risk_gauge'
-  ];
+  const patternTypes = ['summary_icon', 'category_color', 'confidence_badge', 'status_indicator', 'risk_gauge'];
   // Performance tracking
   let totalRequests = 0;
   let cacheHits = 0;
@@ -40,37 +31,37 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize CHR-ROM system and load patterns
    */
-$effect(() => {
-  (async () => {
-    console.log('🎮 Initializing CHR-ROM Document List...');
-    try {
-      // Initialize the Drizzle bridge
-      await drizzleCHRROMBridge.initialize();
-      // If no documents provided, get from Drizzle
-      if (documents.length === 0) {
-        const docIds = drizzleCHRROMBridge.getAllDocumentIds();
-        documents = docIds.map((id) => {
-          const doc = drizzleCHRROMBridge.getDocument(id);
-          return {
-            id,
-            title: doc?.title || `Document ${id}`,
-            type: doc?.document_type || 'unknown',
-            status: doc?.processing_status || 'pending'
-          };
-        });
+  $effect(() => {
+    (async () => {
+      console.log('🎮 Initializing CHR-ROM Document List...');
+      try {
+        // Initialize the Drizzle bridge
+        await drizzleCHRROMBridge.initialize();
+        // If no documents provided, get from Drizzle
+        if (documents.length === 0) {
+          const docIds = drizzleCHRROMBridge.getAllDocumentIds();
+          documents = docIds.map(id => {
+            const doc = drizzleCHRROMBridge.getDocument(id);
+            return {
+              id,
+              title: doc?.title || `Document ${id}`,
+              type: doc?.document_type || 'unknown',
+              status: doc?.processing_status || 'pending',
+            };
+          });
+        }
+        // Prefetch patterns for all visible documents
+        await prefetchAllPatterns();
+        // Start performance monitoring
+        if (showPerformanceMetrics) {
+          startPerformanceMonitoring();
+        }
+        console.log('✅ CHR-ROM Document List initialized');
+      } catch (error) {
+        console.error('❌ CHR-ROM initialization failed:', error);
       }
-      // Prefetch patterns for all visible documents
-      await prefetchAllPatterns();
-      // Start performance monitoring
-      if (showPerformanceMetrics) {
-        startPerformanceMonitoring();
-      }
-      console.log('✅ CHR-ROM Document List initialized');
-    } catch (error) {
-      console.error('❌ CHR-ROM initialization failed:', error);
-    }
-  })();
-});
+    })();
+  });
   /**
    * Prefetch all patterns for visible documents
    */
@@ -79,12 +70,17 @@ $effect(() => {
     console.log(`🔮 Prefetching patterns for ${docIds.length} documents...`);
     const startTime = performance.now();
     // Use batch pattern retrieval for optimal performance
-    const requests = docIds.flatMap(docId =>
-      patternTypes.map(patternType => ({ docId, patternType })));
+    const requests = docIds.flatMap(docId => patternTypes.map(patternType => ({ docId, patternType })));
     try {
       const batchResults = await chrROMCacheReader.getBatchPatterns(requests);
       for (const result of batchResults) {
-        const typedResult = result as { docId: string; patternType: string; pattern: CHRROMPattern | null; source: string; latency: number };
+        const typedResult = result as {
+          docId: string;
+          patternType: string;
+          pattern: CHRROMPattern | null;
+          source: string;
+          latency: number;
+        };
         if (!documentPatterns.has(typedResult.docId)) {
           documentPatterns.set(typedResult.docId, new Map());
         }
@@ -133,16 +129,16 @@ $effect(() => {
     // Check if we need additional patterns for hover state
     const hoverPatterns = ['entity_heatmap', 'similarity_graph'];
     for (const patternType of hoverPatterns) {
-        const result = await chrROMCacheReader.get(docId, patternType);
-        if (!documentPatterns.has(docId)) {
-          documentPatterns.set(docId, new Map());
-        }
-        const typedResult = result as { pattern: CHRROMPattern | null; latency: number };
-        documentPatterns.get(docId)!.set(patternType, typedResult.pattern);
-        // Log sub-millisecond performance
-        if (typedResult.latency < 1) {
-          // Intentionally empty for now
-        }
+      const result = await chrROMCacheReader.get(docId, patternType);
+      if (!documentPatterns.has(docId)) {
+        documentPatterns.set(docId, new Map());
+      }
+      const typedResult = result as { pattern: CHRROMPattern | null; latency: number };
+      documentPatterns.get(docId)!.set(patternType, typedResult.pattern);
+      // Log sub-millisecond performance
+      if (typedResult.latency < 1) {
+        // Intentionally empty for now
+      }
     }
   }
   /**
@@ -169,6 +165,7 @@ $effect(() => {
     console.log('✅ Pattern refresh completed');
   }
 </script>
+
 <!-- Zero-Latency Document List UI -->
 <div class="chr-rom-document-list">
   <!-- Performance Metrics (optional) -->
@@ -199,9 +196,7 @@ $effect(() => {
           </span>
         </div>
       </div>
-      <button onclick={refreshPatterns} class="refresh-btn">
-        🔄 Refresh Patterns
-      </button>
+      <button onclick={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
     </div>
   {/if}
   <!-- Document List with Instant CHR-ROM Patterns -->
@@ -260,7 +255,7 @@ $effect(() => {
         {#if showPerformanceMetrics}
           <div class="debug-info">
             <small>
-              Patterns: {patternTypes.map(type => getPattern(doc.id, type) ? '✅' : '❌').join(' ')}
+              Patterns: {patternTypes.map(type => (getPattern(doc.id, type) ? '✅' : '❌')).join(' ')}
             </small>
           </div>
         {/if}
@@ -276,6 +271,7 @@ $effect(() => {
     </div>
   {/if}
 </div>
+
 <style>
   .chr-rom-document-list {
     padding: 1rem;

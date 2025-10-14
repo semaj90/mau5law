@@ -14,20 +14,14 @@ https://svelte.dev/e/expected_token -->
     children: Snippet;
   }
 
-  let {
-    title,
-    description = '',
-    showGpuStatus = false,
-    showWelcome = false,
-    children
-  }: Props = $props();
+  let { title, description = '', showGpuStatus = false, showWelcome = false, children }: Props = $props();
 
   let pageLoaded = $state(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
     status: 'Active',
     memory: '7.0GB/8.0GB',
-    temperature: '51°C'
+    temperature: '51°C',
   });
 
   $effect(() => {
@@ -44,7 +38,7 @@ https://svelte.dev/e/expected_token -->
                 gpu: 'WebGPU',
                 status: 'Ready',
                 memory: 'Available',
-                temperature: 'Optimal'
+                temperature: 'Optimal',
               };
             }
           }
@@ -173,7 +167,8 @@ https://svelte.dev/e/expected_token -->
     font-weight: bold;
     margin-top: 2px;
   }
-  .status-active, .status-ready {
+  .status-active,
+  .status-ready {
     color: #00ff41;
   }
   .welcome-overlay {

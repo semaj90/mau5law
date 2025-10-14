@@ -140,7 +140,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border-bottom: 1px solid var(--border-light);
     z-index: 30;
     backdrop-filter: blur(8px);
-}
+  }
   .header-content {
     display: flex;
     align-items: center;
@@ -149,12 +149,12 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     max-width: 1400px;
     margin: 0 auto;
     gap: 1rem;
-}
+  }
   .brand-section {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-}
+  }
   .brand-button {
     display: flex;
     align-items: center;
@@ -167,20 +167,20 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.2s ease;
-}
+  }
   .brand-button:hover {
     background: var(--bg-tertiary);
-}
+  }
   .brand-text {
     font-size: 1.1rem;
     font-weight: 700;
-}
+  }
   .main-nav {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     flex-shrink: 0;
-}
+  }
   .nav-button {
     display: flex;
     align-items: center;
@@ -192,28 +192,28 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
-}
+  }
   .nav-button:hover {
     color: var(--text-primary);
     background: var(--bg-tertiary);
-}
+  }
   .nav-button.active {
     color: var(--harvard-crimson);
     background: var(--bg-secondary);
-}
+  }
   .search-section {
     flex: 1;
     max-width: 400px;
     margin: 0 2rem;
-}
+  }
   .user-section {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-}
+  }
   .user-menu-container {
     position: relative;
-}
+  }
   .user-button {
     display: flex;
     align-items: center;
@@ -225,10 +225,10 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border-radius: 6px;
     transition: background 0.2s ease;
     color: var(--text-primary);
-}
+  }
   .user-button:hover {
     background: var(--bg-tertiary);
-}
+  }
   .user-avatar {
     width: 32px;
     height: 32px;
@@ -239,20 +239,20 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     justify-content: center;
     background: var(--bg-secondary);
     color: var(--harvard-crimson);
-}
+  }
   .user-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
+  }
   .avatar-fallback {
     font-weight: 600;
     font-size: 0.875rem;
-}
+  }
   .user-name {
     font-weight: 500;
     color: var(--text-primary);
-}
+  }
   .user-menu {
     position: absolute;
     top: 100%;
@@ -265,7 +265,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     padding: 0.5rem;
     z-index: 1000;
     margin-top: 0.5rem;
-}
+  }
   .menu-item {
     display: flex;
     align-items: center;
@@ -279,15 +279,15 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     transition: background 0.2s ease;
     color: var(--text-primary);
     text-align: left;
-}
+  }
   .menu-item:hover {
     background: var(--bg-tertiary);
-}
+  }
   .menu-separator {
     border: none;
     border-top: 1px solid var(--border-light);
     margin: 0.5rem 0;
-}
+  }
   .sign-in-button {
     padding: 0.5rem 1rem;
     background: transparent;
@@ -296,11 +296,11 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-}
+  }
   .sign-in-button:hover {
     background: var(--harvard-crimson);
     color: var(--text-inverse);
-}
+  }
   .menu-overlay {
     position: fixed;
     top: 0;
@@ -309,31 +309,33 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     bottom: 0;
     z-index: 999;
     background: transparent;
-}
+  }
   /* Responsive */
   @media (max-width: 768px) {
     .header-content {
       padding: 0 0.5rem;
       gap: 0.5rem;
-}
+    }
     .brand-text {
       display: none;
-}
+    }
     .search-section {
       margin: 0 1rem;
-}
+    }
     .nav-button span {
       display: none;
-}
+    }
     .user-name {
       display: none;
-}}
+    }
+  }
   @media (max-width: 480px) {
     .main-nav {
       gap: 0;
-}
+    }
     .search-section {
       max-width: 200px;
       margin: 0 0.5rem;
-}}
+    }
+  }
 </style>

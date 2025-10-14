@@ -12,7 +12,7 @@
     ondone,
     onprogress,
     onerror,
-    oncancel
+    oncancel,
   }: {
     uploadUrl?: string;
     fieldName?: string;
@@ -79,10 +79,15 @@
     form.append(fieldName, file as Blob, file?.name);
 
     try {
-      const res = await uploadWithXhr(uploadUrl, form, (loaded, total) => {
-        percent = Math.round((loaded / total) * 100);
-        onprogress?.({ percent, loaded, total });
-      }, controller.signal);
+      const res = await uploadWithXhr(
+        uploadUrl,
+        form,
+        (loaded, total) => {
+          percent = Math.round((loaded / total) * 100);
+          onprogress?.({ percent, loaded, total });
+        },
+        controller.signal
+      );
 
       uploading = false;
       controller = null;
@@ -97,18 +102,14 @@
   }
 
   onDestroy(() => {
-    if (controller) { // Changed xhr to controller
+    if (controller) {
+      // Changed xhr to controller
       try {
         controller.abort(); // Changed xhr to controller
       } catch {}
     }
   });
 </script>
-
-<style>
-  .progress-track { background: rgba(0,0,0,0.06); height: 12px; border-radius: 9999px; overflow: hidden }
-  .progress-fill { background: var(--accent, #0ea5a4); height: 100%; width: 0%; transition: width 300ms ease }
-</style>
 
 <div class="flex flex-col gap-2 w-full">
   <div class="flex items-center gap-2">
@@ -129,3 +130,18 @@
     <div class="progress-fill" style="width: {percent}%"></div>
   </div>
 </div>
+
+<style>
+  .progress-track {
+    background: rgba(0, 0, 0, 0.06);
+    height: 12px;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    background: var(--accent, #0ea5a4);
+    height: 100%;
+    width: 0%;
+    transition: width 300ms ease;
+  }
+</style>

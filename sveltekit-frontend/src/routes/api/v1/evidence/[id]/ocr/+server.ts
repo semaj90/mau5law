@@ -71,7 +71,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     };
 
     const rawBody = await request.json();
-    const body = (rawBody as unknown) as OCRRequestBody;
+    const body = rawBody as unknown as OCRRequestBody;
     const {
       ocrText,
       ocrConfidence,

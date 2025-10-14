@@ -606,7 +606,7 @@ https: //svelte.dev/e/js_parse_error -->
           <div class="text-center">
             <div
               class="text-2xl font-bold {getScoreColor(
-                $state.context.synthesisResult.strengthAssessment.evidenceQuality,
+                $state.context.synthesisResult.strengthAssessment.evidenceQuality
               )}"
             >
               {Math.round($state.context.synthesisResult.strengthAssessment.evidenceQuality * 100)}%
@@ -624,7 +624,7 @@ https: //svelte.dev/e/js_parse_error -->
           <div class="text-center">
             <div
               class="text-2xl font-bold {getScoreColor(
-                $state.context.synthesisResult.strengthAssessment.witnessCredibility,
+                $state.context.synthesisResult.strengthAssessment.witnessCredibility
               )}"
             >
               {Math.round($state.context.synthesisResult.strengthAssessment.witnessCredibility * 100)}%
@@ -634,7 +634,7 @@ https: //svelte.dev/e/js_parse_error -->
           <div class="text-center">
             <div
               class="text-2xl font-bold {getScoreColor(
-                $state.context.synthesisResult.strengthAssessment.expertOpinions,
+                $state.context.synthesisResult.strengthAssessment.expertOpinions
               )}"
             >
               {Math.round($state.context.synthesisResult.strengthAssessment.expertOpinions * 100)}%

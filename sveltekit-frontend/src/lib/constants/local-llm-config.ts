@@ -16,7 +16,7 @@ export const LOCAL_LLM_CONFIG = {
     EMBEDDINGS: "nomic-embed-text"
 },
   // Prevent remote downloads
-  ALLOW_MODEL_DOWNLOADS: false
+  ALLOW_MODEL_DOWNLOADS: false,
   ALLOWED_HOSTS: ["localhost", "127.0.0.1"],
   // Memory optimization for local GPU
   MAX_CONTEXT_LENGTH: 8192,
@@ -25,7 +25,7 @@ export const LOCAL_LLM_CONFIG = {
 } as const;
 /**
  * Validates that LLM operations are local-only
- */;
+ */
 export function validateLocalLLMAccess(url: string): boolean {
   if (!LOCAL_LLM_CONFIG.ENFORCE_LOCAL_ONLY) return true;
   try {
@@ -39,7 +39,7 @@ export function validateLocalLLMAccess(url: string): boolean {
 }
 /**
  * Gets validated local Ollama URL
- */;
+ */
 export function getLocalOllamaUrl(): string {
   if (!validateLocalLLMAccess(LOCAL_LLM_CONFIG.OLLAMA_BASE_URL)) {
     throw new Error(
@@ -50,7 +50,7 @@ export function getLocalOllamaUrl(): string {
 }
 /**
  * Memory note logged to console during development
- */;
+ */
 if (typeof console !== "undefined") {
   console.log(`
 🧠 MEMORY NOTE: Local Ollama GPU LLMs Only

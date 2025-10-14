@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const summaryText = `Case Summary: ${summary.overview}. Key Findings: ${summary.keyFindings.join(". ")}. Recommendations: ${summary.recommendations.join(". ")}.`
     await VectorService.storeCaseEmbedding({
       caseId,
-      content: summaryText
+      content: summaryText,
       metadata: {
         summary_type: "ai_generated",
         summary,
@@ -153,9 +153,9 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
   }
 }
 async function gatherCaseData(
-  caseId: string
-  includeEvidence: boolean
-  includeTimeline: boolean
+  caseId: string,
+  includeEvidence: boolean,
+  includeTimeline: boolean,
 ): Promise<any> {
   const data: any = { caseId }
   if (includeEvidence) {
@@ -220,7 +220,7 @@ Generate a ${depth} analysis with a structured summary.
 }
 function generateFallbackSummary(caseData: any) {
   return {
-    aiGenerated: false
+    aiGenerated: false,
     overview: `Case ${caseData.caseId} contains evidence items and requires analysis for comprehensive review.`,
     keyFindings: [
       "Evidence collection in progress",
@@ -256,8 +256,8 @@ async function calculateCaseAnalytics(caseId: string): Promise<any> {
   const evidence = 5; // Mock data
   const interactions = 10; // Mock data
   return {
-    evidenceCount: evidence
-    documentsReviewed: interactions
+    evidenceCount: evidence,
+    documentsReviewed: interactions,
     witnessesInterviewed: Math.floor(evidence * 0.3),
     daysActive: 30,
     completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10)

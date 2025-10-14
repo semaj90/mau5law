@@ -9,19 +9,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Build forwarded headers: allow Authorization and other useful headers to pass through
     const forwardedHeaders: Record<string, string> = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
-  const auth = request.headers.get('authorization') || request.headers.get('Authorization');
-  if (auth) forwardedHeaders['Authorization'] = auth;
-  const cookie = request.headers.get('cookie');
-  if (cookie) forwardedHeaders['Cookie'] = cookie;
+    const auth = request.headers.get('authorization') || request.headers.get('Authorization');
+    if (auth) forwardedHeaders['Authorization'] = auth;
+    const cookie = request.headers.get('cookie');
+    if (cookie) forwardedHeaders['Cookie'] = cookie;
 
     const targetUrl = `http://localhost:${process.env.PORT || 5173}/api/gpu-chat`;
 
     const res = await fetch(targetUrl, {
       method: 'POST',
       headers: forwardedHeaders,
-      body: JSON.stringify(incoming ?? {})
+      body: JSON.stringify(incoming ?? {}),
     });
 
     const contentType = res.headers.get('content-type') || '';

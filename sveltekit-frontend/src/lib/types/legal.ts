@@ -29,7 +29,7 @@ export interface LegalDocument {
   updatedAt: Date;
   confidentialityLevel: number;
   tags?: string[];
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export interface AIInsights {
   documentId: string;
@@ -62,7 +62,7 @@ export interface LegalEntity {
   position: {
     start: number;
     end: number;
-  }
+  };
   context?: string;
   normalizedValue?: string;
 }
@@ -107,7 +107,7 @@ export interface AIAnalysisResult {
     keyPhrases?: string[];
     sentimentScore?: number;
     findings?: string[];
-  }
+  };
   processingTime: number;
   error?: string;
 }
@@ -119,7 +119,7 @@ export interface AuditLogEntry {
   userId: string;
   ipAddress?: string;
   userAgent?: string;
-  details?: { [key: string]: any }
+  details?: { [key: string]: any };
   timestamp: Date;
   severity: 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 }
@@ -149,14 +149,14 @@ export interface SystemHealth {
     ai: ServiceStatus;
     cache: ServiceStatus;
     search: ServiceStatus;
-  }
+  };
   metrics: {
     totalCases: number;
     totalDocuments: number;
     pendingAnalyses: number;
     systemLoad: number;
     memoryUsage: number;
-  }
+  };
   lastChecked: Date;
 }
 export interface ServiceStatus {
@@ -169,7 +169,7 @@ export interface ProcessingResult {
   success: boolean;
   processedData?: any;
   error?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 // AI Model Configuration
 export interface AIModelConfig {
@@ -191,10 +191,10 @@ export interface SearchQuery {
     dateRange?: {
       start: Date;
       end: Date;
-    }
+    };
     priority?: string[];
     confidentialityLevel?: number;
-  }
+  };
   sortBy?: 'relevance' | 'date' | 'priority' | 'title';
   sortOrder?: 'asc' | 'desc';
   limit?: number;
@@ -204,7 +204,7 @@ export interface SearchResult<T> {
   items: T[];
   total: number;
   hasMore: boolean;
-  aggregations?: { [key: string]: any }
+  aggregations?: { [key: string]: any };
   query: SearchQuery;
 }
 // API Response Types
@@ -215,12 +215,12 @@ export interface ApiResponse<T> {
     message: string;
     code: string;
     details?: unknown;
-  }
+  };
   metadata?: {
     timestamp: Date;
     requestId: string;
     processingTime: number;
-  }
+  };
 }
 export interface PaginatedResponse<T> {
   items: T[];
@@ -231,7 +231,7 @@ export interface PaginatedResponse<T> {
     totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  }
+  };
 }
 // Document Processing Types
 export interface DocumentProcessingJob {
@@ -277,12 +277,12 @@ export interface AppConfig {
     name: string;
     version: string;
     environment: 'development' | 'staging' | 'production';
-  }
+  };
   database: {
     host: string;
     port: number;
     name: string;
-  }
+  };
   ai: {
     enabled: boolean;
     models: AIModelConfig[];
@@ -290,20 +290,20 @@ export interface AppConfig {
       enabled: boolean;
       ttl: number;
       maxSize: number;
-    }
-  }
+    };
+  };
   security: {
     jwtSecret: string;
     sessionTimeout: number;
     maxLoginAttempts: number;
     passwordMinLength: number;
-  }
+  };
   features: {
     documentAnalysis: boolean;
     realTimeChat: boolean;
     auditLogging: boolean;
     encryption: boolean;
-  }
+  };
 }
 // Event Types for Real-time Updates
 export interface SystemEvent {

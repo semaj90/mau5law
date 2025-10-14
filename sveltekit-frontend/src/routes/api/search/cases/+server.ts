@@ -53,9 +53,9 @@ export const GET: RequestHandler = async ({ url }) => {
 }
 // Fast text-based search using SQL LIKE
 async function searchCasesText(
-  query: string
-  limit: number
-  filters: any
+  query: string,
+  limit: number,
+  filters: any,
 ): Promise<any[]> {
   try {
     const whereConditions = [

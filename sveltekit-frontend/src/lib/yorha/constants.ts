@@ -6,7 +6,7 @@ export type YoRHaColumn = {
   filterable?: boolean;
   width?: number;
   type?: 'text' | 'number' | 'date' | 'action';
-}
+};
 export interface YoRHaFormFieldBase {
   id: string;
   label: string;
@@ -116,7 +116,7 @@ export const evidenceFormFields: YoRHaFormField[] = [
   { id: 'collectedAt', label: 'Collection Date', type: 'date' },
 ];
 export const YO_RHA_FETCH_TIMEOUT_MS = 12000;
-type AbortLike = { signal?: any; abort?: () => void }
+type AbortLike = { signal?: any; abort?: () => void };
 /**
  * withAbort - Accepts a function that receives an optional signal (for environments
  * that have AbortController) and returns an object with the promise and an abort function.
@@ -129,7 +129,7 @@ type AbortLike = { signal?: any; abort?: () => void }
   return {
     promise: fn(controller.signal),
     abort: () => controller.abort && controller.abort(),
-  }
+  };
 }
 /**
  * debounce - Simple debounce helper that returns a debounced version of the provided function.

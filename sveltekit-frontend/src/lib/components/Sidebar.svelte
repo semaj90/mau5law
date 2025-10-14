@@ -1,19 +1,19 @@
 <script lang="ts">
-  import Fuse from "fuse.js";
-  import { onMount } from "svelte";
-  import { quintOut } from "svelte/easing";
-  import { slide } from "svelte/transition";
-  import { sidebarStore } from "../stores/canvas";
-  import { loki, lokiStore } from "../stores/lokiStore";
-  import InfiniteScrollList from "./InfiniteScrollList.svelte";
-  import SearchBar from "./SearchBar.svelte";
-  import TagList from "./TagList.svelte";
-  import { FileText, Folder, Tag, X } from "lucide-svelte";
+  import Fuse from 'fuse.js';
+  import { onMount } from 'svelte';
+  import { quintOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
+  import { sidebarStore } from '../stores/canvas';
+  import { loki, lokiStore } from '../stores/lokiStore';
+  import InfiniteScrollList from './InfiniteScrollList.svelte';
+  import SearchBar from './SearchBar.svelte';
+  import TagList from './TagList.svelte';
+  import { FileText, Folder, Tag, X } from 'lucide-svelte';
   let sidebarElement: HTMLElement;
   let isHovered = false;
   let isPinned = $state(false);
-  let searchQuery = $state("");
-  let activeTab: "evidence" | "notes" | "canvas" = $state("evidence");
+  let searchQuery = $state('');
+  let activeTab: 'evidence' | 'notes' | 'canvas' = $state('evidence');
   let fuse: Fuse<any> | null = null;
 
   // Define expected interfaces for Loki service to resolve type errors
@@ -43,10 +43,10 @@
 
   // Create Fuse instance when relevant items change
   $effect(() => {
-    if (activeTab === "evidence" && evidenceItems.length > 0) {
-      fuse = new Fuse(evidenceItems, { keys: ["fileName", "description", "tags"], threshold: 0.3 });
-    } else if (activeTab === "notes" && notesItems.length > 0) {
-      fuse = new Fuse(notesItems, { keys: ["title", "content", "tags"], threshold: 0.3 });
+    if (activeTab === 'evidence' && evidenceItems.length > 0) {
+      fuse = new Fuse(evidenceItems, { keys: ['fileName', 'description', 'tags'], threshold: 0.3 });
+    } else if (activeTab === 'notes' && notesItems.length > 0) {
+      fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags'], threshold: 0.3 });
     } else {
       fuse = null;
     }
@@ -55,10 +55,10 @@
   // Compute search results reactively
   let searchResults = $derived(() => {
     if (searchQuery && fuse) {
-      return fuse.search(searchQuery).map((r) => r.item);
+      return fuse.search(searchQuery).map(r => r.item);
     }
-    if (activeTab === "evidence") return evidenceItems;
-    if (activeTab === "notes") return notesItems;
+    if (activeTab === 'evidence') return evidenceItems;
+    if (activeTab === 'notes') return notesItems;
     return canvasStates;
   });
 
@@ -68,9 +68,9 @@
   });
 
   function refreshData() {
-    if (activeTab === "evidence") {
+    if (activeTab === 'evidence') {
       typedLoki.evidence.refreshStore(); // Use typedLoki
-    } else if (activeTab === "notes") {
+    } else if (activeTab === 'notes') {
       typedLoki.notes.refreshStore(); // Use typedLoki
     } else {
       // canvas states could be refreshed here if needed
@@ -88,7 +88,7 @@
 
   function togglePin() {
     isPinned = !isPinned;
-    sidebarStore.update((state) => ({ ...state, open: isPinned }));
+    sidebarStore.update(state => ({ ...state, open: isPinned }));
   }
 
   function handleSearch(_event: CustomEvent) {
@@ -97,15 +97,16 @@
 
   function handleItemClick(item: unknown) {
     // Forward or handle item click
-    console.log("Item clicked:", item);
+    console.log('Item clicked:', item);
   }
 
-  function handleTabChange(tab: "evidence" | "notes" | "canvas") {
+  function handleTabChange(tab: 'evidence' | 'notes' | 'canvas') {
     activeTab = tab;
-    searchQuery = "";
+    searchQuery = '';
     refreshData();
   }
 </script>
+
 <div
   class="yorha-3d-panel nes-legal-container"
   class:open={sidebarOpen}
@@ -119,20 +120,28 @@
     <div class="nes-sidebar-trigger hover-trigger" aria-hidden="true"></div>
   {/if}
   {#if sidebarOpen}
-    <div class="yorha-3d-panel-inner neural-sprite-active" transition:slide={{ duration: 300, easing: quintOut, axis: "x" }}>
+    <div
+      class="yorha-3d-panel-inner neural-sprite-active"
+      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
+    >
       <div class="nes-legal-header yorha-3d-button">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
         <div class="nes-header-actions">
           <button
-            class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? "nes-legal-priority-high" : ""}`}
+            class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? 'nes-legal-priority-high' : ''}`}
             onclick={togglePin}
-            aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+            aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             type="button"
           >
             <Tag size={16} />
           </button>
           {#if !isPinned}
-            <button class="nes-legal-priority-low yorha-3d-button" onclick={() => (isHovered = false)} aria-label="Close sidebar" type="button">
+            <button
+              class="nes-legal-priority-low yorha-3d-button"
+              onclick={() => (isHovered = false)}
+              aria-label="Close sidebar"
+              type="button"
+            >
               <X size={16} />
             </button>
           {/if}
@@ -143,23 +152,53 @@
       </div>
       <div class="nes-tabs-container yorha-3d-panel">
         <div class="nes-tab-list">
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "evidence"} onclick={() => handleTabChange("evidence")} type="button">
+          <button
+            class="nes-tab-trigger nes-legal-priority-medium"
+            class:active={activeTab === 'evidence'}
+            onclick={() => handleTabChange('evidence')}
+            type="button"
+          >
             <Folder size={16} /> EVIDENCE
           </button>
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "notes"} onclick={() => handleTabChange("notes")} type="button">
+          <button
+            class="nes-tab-trigger nes-legal-priority-medium"
+            class:active={activeTab === 'notes'}
+            onclick={() => handleTabChange('notes')}
+            type="button"
+          >
             <FileText size={16} /> NOTES
           </button>
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "canvas"} onclick={() => handleTabChange("canvas")} type="button">
+          <button
+            class="nes-tab-trigger nes-legal-priority-medium"
+            class:active={activeTab === 'canvas'}
+            onclick={() => handleTabChange('canvas')}
+            type="button"
+          >
             <Tag size={16} /> CANVAS
           </button>
         </div>
         <div class="nes-tab-content neural-sprite-active">
-          {#if activeTab === "evidence"}
-            <InfiniteScrollList items={searchResults} itemType="evidence" itemClick={handleItemClick} loadMore={refreshData} />
-          {:else if activeTab === "notes"}
-            <InfiniteScrollList items={searchResults} itemType="notes" itemClick={handleItemClick} loadMore={refreshData} />
+          {#if activeTab === 'evidence'}
+            <InfiniteScrollList
+              items={searchResults}
+              itemType="evidence"
+              itemClick={handleItemClick}
+              loadMore={refreshData}
+            />
+          {:else if activeTab === 'notes'}
+            <InfiniteScrollList
+              items={searchResults}
+              itemType="notes"
+              itemClick={handleItemClick}
+              loadMore={refreshData}
+            />
           {:else}
-            <InfiniteScrollList items={canvasStates} itemType="canvas" itemClick={handleItemClick} loadMore={refreshData} />
+            <InfiniteScrollList
+              items={canvasStates}
+              itemType="canvas"
+              itemClick={handleItemClick}
+              loadMore={refreshData}
+            />
           {/if}
         </div>
       </div>
@@ -169,6 +208,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   .sidebar-container {

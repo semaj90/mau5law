@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
         result = {
           action: 'completed',
           documentId,
-          reembedding: reembedResult
+          reembedding: reembedResult,
           reranking: {
             queriesAffected: rerankingJobs.length,
             avgImprovement: rerankingJobs.reduce((sum, job) => sum + job.improvement, 0) / rerankingJobs.length,
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            queue: status
+            queue: status,
             service: 'Document Update Loop',
             timestamp: new Date().toISOString()
           }
@@ -113,10 +113,10 @@ export const GET: RequestHandler = async ({ url }) => {
         const isHealthy = !healthStatus.processing || healthStatus.queued < 100; // Arbitrary threshold
         return json({
           success: true,
-          healthy: isHealthy
+          healthy: isHealthy,
           data: {
             status: isHealthy ? 'healthy' : 'overloaded',
-            queue: healthStatus
+            queue: healthStatus,
             recommendations: isHealthy ? [] : [
               'Queue is overloaded - consider scaling processing',
               'Review document update frequency',

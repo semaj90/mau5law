@@ -3,14 +3,14 @@
  * Demonstrates the complete Redis + WebGPU + SIMD JSON integration
  * Maximum performance legal document processing
  */
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 import {
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
   computeVectorSimilarityOptimized,
-  generateIntelligentTodosOptimized
-} from '$lib/integrations/redis-webgpu-simd-integration.js'
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js'
+  generateIntelligentTodosOptimized,
+} from '$lib/integrations/redis-webgpu-simd-integration.js';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
 // GET: Demonstrate system capabilities and status
 export const GET = async ({ url }) => {

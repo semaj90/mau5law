@@ -3,14 +3,11 @@
  * Advanced semantic search with pgvector, Gemma embeddings, caching, and AI-powered query understanding
  * Production-ready with enterprise security, performance optimization, and comprehensive analytics
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import {
-  semanticSearchService,
-  type SemanticSearchOptions
-} from '$lib/services/semantic-search.js'
-import { performanceOptimizer } from '$lib/services/performance-optimizer.js'
-import { securityService } from '$lib/services/security.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { semanticSearchService, type SemanticSearchOptions } from '$lib/services/semantic-search.js';
+import { performanceOptimizer } from '$lib/services/performance-optimizer.js';
+import { securityService } from '$lib/services/security.js';
 
 // Helper function to ensure the error is an Error object
 function ensureError(err: unknown): Error {
@@ -21,14 +18,19 @@ function ensureError(err: unknown): Error {
   if (typeof err === 'string') {
     return new Error(err);
   }
-  if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+  if (
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    typeof (err as { message: unknown }).message === 'string'
+  ) {
     return new Error((err as { message: string }).message);
   }
   return new Error('An unknown error occurred');
 }
 
 // Simple in-memory cache for query results (fallback if Redis unavailable)
-const queryCache = new Map<string, { result: SemanticSearchResult; timestamp: number }>()
+const queryCache = new Map<string, { result: SemanticSearchResult; timestamp: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 // Add small, safe JSON value types to avoid `any`
@@ -64,44 +66,44 @@ interface SemanticSearchResult {
 }
 
 interface EnhancedSearchRequest {
-  query: string
-  limit?: number
-  threshold?: number
-  includeContent?: boolean
-  includeMetadata?: boolean
-  semanticExpansion?: boolean
-  queryRewriting?: boolean
-  analytics?: boolean
+  query: string;
+  limit?: number;
+  threshold?: number;
+  includeContent?: boolean;
+  includeMetadata?: boolean;
+  semanticExpansion?: boolean;
+  queryRewriting?: boolean;
+  analytics?: boolean;
   filters?: {
-    documentType?: string[]
-    dateRange?: { start?: string; end?: string }
-    tags?: string[]
-    source?: string[]
-  }
+    documentType?: string[];
+    dateRange?: { start?: string; end?: string };
+    tags?: string[];
+    source?: string[];
+  };
 }
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
-  const startTime = Date.now()
-  const clientIP = getClientAddress()
+  const startTime = Date.now();
+  const clientIP = getClientAddress();
   try {
     // Security check: Rate limiting
-    const securityCheck = securityService.checkRateLimit(clientIP)
+    const securityCheck = securityService.checkRateLimit(clientIP);
     // Define minimal typed shapes to avoid `any` casts while remaining tolerant
     type RateLimitShape = {
-      remaining?: number | null
-      resetTime?: number | null
-    }
+      remaining?: number | null;
+      resetTime?: number | null;
+    };
     type SecurityCheckResult = {
-      allowed: boolean
-      remaining?: number | null
-      resetTime?: number | null
-      rateLimitInfo?: RateLimitShape
-      rateLimit?: RateLimitShape
-      [key: string]: unknown
-    }
-    const sc = securityCheck as SecurityCheckResult
+      allowed: boolean;
+      remaining?: number | null;
+      resetTime?: number | null;
+      rateLimitInfo?: RateLimitShape;
+      rateLimit?: RateLimitShape;
+      [key: string]: unknown;
+    };
+    const sc = securityCheck as SecurityCheckResult;
     // Tolerant extraction using typed fields
-    const remaining = sc.remaining ?? sc.rateLimitInfo?.remaining ?? sc.rateLimit?.remaining ?? null
-    const resetTime = sc.resetTime ?? sc.rateLimitInfo?.resetTime ?? sc.rateLimit?.resetTime ?? null
+    const remaining = sc.remaining ?? sc.rateLimitInfo?.remaining ?? sc.rateLimit?.remaining ?? null;
+    const resetTime = sc.resetTime ?? sc.rateLimitInfo?.resetTime ?? sc.rateLimit?.resetTime ?? null;
     if (!sc.allowed) {
       securityService.logAuditEvent({
         action: 'semantic_search_rate_limited',
@@ -112,9 +114,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         errorMessage: 'Rate limit exceeded',
         metadata: {
           remaining,
-          resetTime
-        }
-      })
+          resetTime,
+        },
+      });
       return json(
         {
           success: false,
@@ -128,7 +130,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         }
       );
     }
-    const body = (await request.json()) as EnhancedSearchRequest
+    const body = (await request.json()) as EnhancedSearchRequest;
     const {
       query,
       limit = 10,
@@ -138,8 +140,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       semanticExpansion = true,
       queryRewriting = true,
       analytics = true,
-      filters
-    } = body || ({} as EnhancedSearchRequest)
+      filters,
+    } = body || ({} as EnhancedSearchRequest);
     // Enhanced input validation
     if (!query || !query.trim()) {
       securityService.logAuditEvent({
@@ -148,8 +150,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         clientIP,
         userAgent: request.headers.get('user-agent') || 'unknown',
         success: false,
-        errorMessage: 'Empty query provided'
-      })
+        errorMessage: 'Empty query provided',
+      });
       return json(
         {
           success: false,
@@ -218,7 +220,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     };
     // Perform enhanced semantic search with AI-powered query understanding
     const searchResult: SemanticSearchResult = await semanticSearchService.search(query.trim(), searchOptions);
-    const responseTime = Date.now() - startTime
+    const responseTime = Date.now() - startTime;
 
     // Ensure analytics object exists before updating
     if (!searchResult.analytics) {
@@ -232,9 +234,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
 
     // Update analytics with actual response time
-    searchResult.analytics.processingTime = responseTime
+    searchResult.analytics.processingTime = responseTime;
     // Log successful search with detailed metrics
-    performanceOptimizer.recordQuery(query, responseTime, searchResult.analytics.cacheHit)
+    performanceOptimizer.recordQuery(query, responseTime, searchResult.analytics.cacheHit);
     securityService.logAuditEvent({
       action: 'semantic_search_success',
       resource: '/api/search/vector',
@@ -250,9 +252,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         semanticConcepts: searchResult.analytics.semanticConcepts.slice(0, 5), // Limit for logs
         cacheHit: searchResult.analytics.cacheHit,
         semanticExpansion,
-        queryRewriting
-      }
-    })
+        queryRewriting,
+      },
+    });
     // Prepare response with comprehensive metadata
     const response = {
       success: true,
@@ -273,27 +275,28 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             ...searchResult.analytics,
             dbOptimization: 'IVFFLAT index optimized for current dataset',
             securityLevel: 'Enterprise-grade middleware',
-            performanceFeatures: ['Caching', 'Parallel processing', 'Analytics']
-          }
-        })
+            performanceFeatures: ['Caching', 'Parallel processing', 'Analytics'],
+          },
+        }),
       },
       ...(searchResult.suggestions &&
         searchResult.suggestions.length > 0 && {
-          suggestions: searchResult.suggestions
-        })
-    }
+          suggestions: searchResult.suggestions,
+        }),
+    };
     return json(response, {
       headers: {
         ...securityService.getSecurityHeaders(),
         'X-Search-Strategy': searchResult.analytics.searchStrategy,
         'X-Query-Complexity': searchResult.analytics.queryComplexity,
         'X-Response-Time': responseTime.toString(),
-        'X-Cache-Hit': searchResult.analytics.cacheHit.toString()
-      }
-    })
-  } catch (error: unknown) { // Changed from any
+        'X-Cache-Hit': searchResult.analytics.cacheHit.toString(),
+      },
+    });
+  } catch (error: unknown) {
+    // Changed from any
     const e = ensureError(error);
-    const responseTime = Date.now() - startTime
+    const responseTime = Date.now() - startTime;
     // Enhanced error logging with context
     securityService.logAuditEvent({
       action: 'semantic_search_error',
@@ -306,9 +309,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         responseTime,
         errorType: e.constructor.name,
         stack: e.stack?.substring(0, 500), // Truncated stack trace
-      }
-    })
-    console.error('Enhanced semantic search error:', e)
+      },
+    });
+    console.error('Enhanced semantic search error:', e);
     return json(
       {
         success: false,
@@ -322,9 +325,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     );
   }
-}
+};
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
-  const action = url.searchParams.get('action') || 'health'
+  const action = url.searchParams.get('action') || 'health';
   try {
     switch (action) {
       case 'health':
@@ -380,7 +383,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         );
       }
       case 'performance': {
-        const analytics = await performanceOptimizer.getPerformanceAnalytics()
+        const analytics = await performanceOptimizer.getPerformanceAnalytics();
         return json(
           {
             success: true,
@@ -453,9 +456,10 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         );
     }
-  } catch (error: unknown) { // Changed from any
+  } catch (error: unknown) {
+    // Changed from any
     const e = ensureError(error);
-    console.error('GET /api/search/vector error:', e)
+    console.error('GET /api/search/vector error:', e);
     securityService.logAuditEvent({
       action: 'semantic_search_error',
       resource: '/api/search/vector',
@@ -466,8 +470,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       metadata: {
         errorType: e.constructor.name,
         stack: e.stack?.substring(0, 500), // Truncated stack trace
-      }
-    })
+      },
+    });
     return json(
       {
         success: false,
@@ -480,4 +484,4 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
     );
   }
-}
+};

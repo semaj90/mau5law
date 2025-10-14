@@ -44,8 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
         results: results.documents,
         total: results.total,
         relatedTopics: results.relatedTopics,
-        searchMode: mode
-        processingTime: results.processingTime
+        searchMode: mode,
+        processingTime: results.processingTime,
       })
     }
     // Boolean/phrase search
@@ -55,8 +55,8 @@ export const POST: RequestHandler = async ({ request }) => {
       results: results.documents,
       total: results.total,
       relatedTopics: results.relatedTopics,
-      searchMode: mode
-      processingTime: results.processingTime
+      searchMode: mode,
+      processingTime: results.processingTime,
     })
   } catch (error) {
     console.error('Legal research search error:', error)
@@ -67,11 +67,11 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 }
 async function performSemanticSearch(
-  query: string
-  filters: any
-  sort: string
-  page: number
-  limit: number
+  query: string,
+  filters: any,
+  sort: string,
+  page: number,
+  limit: number,
 ) {
   const startTime = Date.now()
   // Generate embedding for the query
@@ -150,10 +150,10 @@ async function performSemanticSearch(
   }
 }
 async function performKeywordSearch(
-  query: string
+  query: string,
   mode: 'boolean' | 'phrase',
-  filters: any
-  sort: string
+  filters: any,
+  sort: string,
   page: number,;
   limit: number
 ) {
@@ -331,8 +331,8 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
   const endIndex = startIndex + limit
   const paginatedResults = filteredResults.slice(startIndex, endIndex)
   return {
-    documents: paginatedResults
-    total: filteredResults.length
+    documents: paginatedResults,
+    total: filteredResults.length,
   }
 }
 function generateMockKeywordResults(query: string, mode: string, filters: any, page: number, limit: number) {

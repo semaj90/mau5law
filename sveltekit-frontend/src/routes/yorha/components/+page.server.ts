@@ -106,7 +106,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           theme: 'cyberpunk',
         },
       },
-    }
+    };
     // Generate component gallery data
     const galleryData = {
       categories: [
@@ -125,7 +125,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         { id: 'code', label: 'Code View', icon: 'Code' },
         { id: 'config', label: 'Configuration', icon: 'Settings' },
       ],
-    }
+    };
     // Generate demo code snippets
     const codeSnippets = {
       button: `<script>,
@@ -177,14 +177,14 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     Modal content...
   </div>
 </YoRHaModal3D>`,
-    }
+    };
     return {
       specs: componentSpecs,
       gallery: galleryData,
       codeSnippets,
       initialLoad: true,
       timestamp: new Date().toISOString(),
-    }
+    };
   } catch (error: any) {
     console.error('Error loading YoRHa components data:', error);
     return {
@@ -194,6 +194,6 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load components data',
-    }
+    };
   }
-}
+};

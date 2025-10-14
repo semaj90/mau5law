@@ -24,7 +24,7 @@
         variant: 'default',
         size: 'default',
       },
-    },
+    }
   );
 
   interface Props {

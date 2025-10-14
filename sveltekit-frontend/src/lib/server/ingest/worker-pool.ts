@@ -241,7 +241,7 @@ export class AdvancedWorkerPool extends EventEmitter {
     }
     const jobId = `${type}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const jobData: WorkerJobData = {
-      id: jobId
+      id: jobId,
       type,
       payload,
       options
@@ -275,7 +275,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       jobId: jobData.id,
       type: jobData.type,
       workerId: availableWorker.id,
-      activeJobs: this.activeJobs
+      activeJobs: this.activeJobs,
     });
     try {
       const timeout = options.timeout || this.options.jobTimeout;

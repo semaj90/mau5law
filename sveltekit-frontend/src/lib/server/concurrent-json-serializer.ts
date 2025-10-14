@@ -33,7 +33,7 @@ interface SerializationResult {
     processingTime: number;
     method: 'cpu' | 'gpu' | 'worker';
     chunks?: number;
-  }
+  };
   error?: string;
 }
 // Worker thread pool for CPU-intensive serialization
@@ -134,7 +134,7 @@ class WorkerPool {
     // Find the task that matches this result
     const taskIndex = this.taskQueue.findIndex(
       item =>
-        (item as { task?: any }).task.id === (result as { id?: any; metadata?: any; error?: any; serialized?: any }).id,
+        (item as { task?: any }).task.id === (result as { id?: any; metadata?: any; error?: any; serialized?: any }).id
     );
     if (taskIndex !== -1) {
       const { resolve } = this.taskQueue[taskIndex];
@@ -169,7 +169,7 @@ class WorkerPool {
     }
     // Sort by priority
     this.taskQueue.sort((a, b) => {
-      const priorities = { critical: 4, high: 3, medium: 2, low: 1 }
+      const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
       return priorities[b.task.priority] - priorities[a.task.priority];
     });
     const worker = this.availableWorkers.pop()!;
@@ -234,7 +234,7 @@ class WorkerPool {
       },
       priority: this.determinePriority(data, options),
       timestamp: Date.now(),
-    }
+    };
     // Determine optimal serialization method
     const dataSize = this.estimateDataSize(data);
     if (options.gpuAccelerated && this.gpuContext && dataSize > 100 * 1024) {
@@ -310,14 +310,14 @@ class WorkerPool {
           }
           // Handle special types
           if (value instanceof Date) {
-            return { _type: 'Date', value: value.toISOString() }
+            return { _type: 'Date', value: value.toISOString() };
           }
           if (value instanceof Buffer) {
             return task.options.preserveBuffers ? { _type: 'Buffer', value: value.toString('base64') } : '[Buffer]';
           }
           return value;
         },
-        task.options.compress ? 0 : 2,
+        task.options.compress ? 0 : 2
       );
       const processingTime = performance.now() - start;
       return {
@@ -330,7 +330,7 @@ class WorkerPool {
           processingTime,
           method: 'cpu',
         },
-      }
+      };
     } catch (error) {
       const processingTime = performance.now() - start;
       return {
@@ -344,7 +344,7 @@ class WorkerPool {
           method: 'cpu',
         },
         error: error instanceof Error ? error.message : 'Unknown serialization error',
-      }
+      };
     }
   }
   /**
@@ -354,7 +354,7 @@ class WorkerPool {
     const batchOptions = {
       ...options,
       priority: 'medium' as const,
-    }
+    };
     // Process in parallel with worker pool
     const promises = items.map((item, index) => {
       return this.serialize(item, {
@@ -434,7 +434,7 @@ class WorkerPool {
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics
       gpuEnabled: !!this.gpuContext,
-    }
+    };
   }
   /**
    * Cleanup resources
@@ -454,12 +454,15 @@ export async function serializeForAPI<T>(data: T, options?: Partial<Serializatio
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
-      `API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`,
+      `API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`
     );
   }
   return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
-export async function serializeLegalDocument<T>(_document: T, options?: Partial<SerializationOptions>): Promise<string> {
+export async function serializeLegalDocument<T>(
+  _document: T,
+  options?: Partial<SerializationOptions>
+): Promise<string> {
   const result = await concurrentSerializer.serialize(document, {
     legalDocumentMode: true,
     compress: false,
@@ -469,14 +472,14 @@ export async function serializeLegalDocument<T>(_document: T, options?: Partial<
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
-      `Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`,
+      `Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`
     );
   }
   return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
 export async function serializeBatchForCache<T>(
   items: T[],
-  options?: Partial<SerializationOptions>,
+  options?: Partial<SerializationOptions>
 ): Promise<SerializationResult[]> {
   return await concurrentSerializer.serializeBatch(items, {
     compress: true,

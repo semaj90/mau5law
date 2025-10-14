@@ -26,7 +26,8 @@
   {@render children?.()}
 </div>
 
-<style>/* Enhanced Card with NieR styling */ {}
+<style>
+/* Enhanced Card with NieR styling */ {}
   .yorha-card {
 /* Base styles from UnoCSS shortcuts */ {}
     position: relative;

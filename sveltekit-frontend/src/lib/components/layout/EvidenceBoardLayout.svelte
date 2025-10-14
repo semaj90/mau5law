@@ -227,8 +227,9 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
 
 <style>
   .bg-grid-pattern {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
     background-size: 20px 20px;
   }
   /* NES.css enhancements for Evidence Board look */
@@ -246,12 +247,15 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%),
-                linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f8f9fa 75%),
-                linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+    background:
+      linear-gradient(45deg, #f8f9fa 25%, transparent 25%), linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f8f9fa 75%), linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
     background-size: 4px 4px;
-    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+    background-position:
+      0 0,
+      0 2px,
+      2px -2px,
+      -2px 0px;
     z-index: -1;
   }
   /* Interactive elements styling */

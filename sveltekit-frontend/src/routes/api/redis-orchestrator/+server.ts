@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      redis_stats: stats
+      redis_stats: stats,
       ...detailedStats,
       recommendations: generatePerformanceRecommendations(stats)
     })
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         result,
-        orchestrated: true
+        orchestrated: true,
         processing_pipeline: (result as { source?: any }).source === 'cache' ? 'L1_CACHE' :
                            (result as { source?: any }).source === 'fresh' ? 'L3_PROCESSING' :
                            'ASYNC_QUEUE'
@@ -89,8 +89,8 @@ export const POST: RequestHandler = async ({ request }) => {
           processing_time: 0,
           cached: true
         } : null
-        orchestrated: false
-        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS'
+        orchestrated: false,
+        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS',
       })
     }
   } catch (err) {
@@ -180,7 +180,7 @@ async function handleTaskQuery(url: URL) {
       })
     }
     return json({
-      queue_stats: queueStats
+      queue_stats: queueStats,
       queue_health: queueStats.queued_tasks < 100 ? 'healthy' : 'overloaded',
       processing_capacity: queueStats.processing_tasks,
       recommendations: generateTaskQueueRecommendations(queueStats)

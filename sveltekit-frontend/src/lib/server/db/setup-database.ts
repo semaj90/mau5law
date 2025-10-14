@@ -262,7 +262,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
   } catch (error: any) {
     console.error('❌ Database setup failed:', error);
     return {
-      success: false
+      success: false,
       steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
       timestamp: new Date().toISOString()
     }
@@ -304,11 +304,11 @@ export async function checkDatabaseHealth(): Promise<any> {
     }
   } catch (error) {
     return {
-      connected: false
-      tablesExist: false
-      extensionsEnabled: false
-      indexesReady: false
-      sampleDataPresent: false
+      connected: false,
+      tablesExist: false,
+      extensionsEnabled: false,
+      indexesReady: false,
+      sampleDataPresent: false,
     }
   }
 }

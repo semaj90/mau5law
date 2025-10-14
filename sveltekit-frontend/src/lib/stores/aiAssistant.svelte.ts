@@ -52,27 +52,27 @@ export interface Context7Analysis {
 }
 // Create reactive AI assistant state using $state rune
 const aiAssistantState = $state<AIAssistantState>({
-  isActive: false
-  isProcessing: false
+  isActive: false,
+  isProcessing: false,
   currentQuery: '',
   response: '',
   conversationHistory: [],
   model: 'gemma3-legal',
   temperature: 0.7,
   maxTokens: 2048,
-  error: null
+  error: null,
   ollamaClusterHealth: {
-    primary: false
-    secondary: false
-    embeddings: false
+    primary: false,
+    secondary: false,
+    embeddings: false,
   },
   usage: {
     totalQueries: 0,
     totalTokens: 0,
     averageResponseTime: 0
   },
-  streamingActive: false
-  streamBuffer: ''
+  streamingActive: false,
+  streamBuffer: '',
 });
 // Create XState actor for AI assistant
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
@@ -220,7 +220,7 @@ export class AIAssistantManager {
       const userEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'user',
-        content: message
+        content: message,
         timestamp: new Date(),
         metadata: {
           model: response.metadata.modelUsed,
@@ -289,14 +289,14 @@ export class AIAssistantManager {
         thinkingMode: options?.thinkingMode,
         verbose: options?.verbose,
         maxRetrievedDocs: 5,
-        useCompression: true
-        confidenceThreshold: 0.7
+        useCompression: true,
+        confidenceThreshold: 0.7,
       });
       // Update conversation history
       const userEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'user',
-        content: message
+        content: message,
         timestamp: new Date(),
         metadata: {
           model: options?.model || aiAssistantState.model || 'unknown',
@@ -558,7 +558,7 @@ export class AIAssistantManager {
   // Analyze legal document using WebAssembly if available
   async analyzeLegalDocument(
     title: string;
-    content: string
+    content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ) {
     if (!this.webAssemblyEnabled) {

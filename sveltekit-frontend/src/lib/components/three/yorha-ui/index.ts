@@ -50,31 +50,31 @@ export { YoRHaUIExample, createYoRHaUIDemo } from './YoRHaUIExample.js';
 export const YoRHaUtils = {
   /**
    * Create a button with YoRHa styling
-   */;
+   */
   createButton: (text: string, variant: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' = 'primary') => {
     return new YoRHaButton3D({ text, variant });
   },
   /**
    * Create a panel with title
-   */;
+   */
   createPanel: (title: string, width = 4, height = 3) => {
     return new YoRHaPanel3D({ title, width, height });
   },
   /**
    * Create an input field
-   */;
+   */
   createInput: (placeholder: string, type: 'text' | 'password' | 'email' = 'text') => {
     return new YoRHaInput3D({ placeholder, type, variant: 'outlined' });
   },
   /**
    * Create a modal dialog
-   */;
+   */
   createModal: (title: string, variant: 'default' | 'alert' | 'confirm' | 'terminal' = 'default') => {
     return new YoRHaModal3D({ title, variant, closable: true, showHeader: true });
   },
   /**
    * Create a flex layout container
-   */;
+   */
   createFlexContainer: (direction: 'row' | 'column' = 'column', gap = 0.2) => {
     return new YoRHaLayout3D({
       type: 'flex',
@@ -86,12 +86,12 @@ export const YoRHaUtils = {
   },
   /**
    * Create a grid layout container
-   */;
+   */
   createGridContainer: (columns: number, rows?: number, gap = 0.2) => {
     return new YoRHaLayout3D({
       type: 'grid',
-      gridColumns: columns
-      gridRows: rows
+      gridColumns: columns,
+      gridRows: rows,
       gap
     });
   }
@@ -127,7 +127,7 @@ export const YoRHaThemes = {
 export const YoRHaQuickSetup = {
   /**
    * Create a login form with username, password, and submit button
-   */;
+   */
   createLoginForm: () => {
     const container = YoRHaLayoutPresets.createForm();
     const usernameInput = new YoRHaInput3D({
@@ -155,7 +155,7 @@ export const YoRHaQuickSetup = {
   },
   /**
    * Create a confirmation dialog with yes/no buttons
-   */;
+   */
   createConfirmDialog: (title: string, message: string) => {
     const modal = new YoRHaModal3D({
       title,
@@ -187,7 +187,7 @@ export const YoRHaQuickSetup = {
   },
   /**
    * Create a settings panel with common options
-   */;
+   */
   createSettingsPanel: () => {
     const panel = new YoRHaPanel3D({
       title: 'Settings',
@@ -218,7 +218,7 @@ export const YoRHaQuickSetup = {
   },
   /**
    * Create a toolbar with common actions
-   */;
+   */
   createToolbar: (actions: Array<) => {
     const toolbar = YoRHaLayoutPresets.createToolbar();
     const buttons: YoRHaButton3D[] = [];
@@ -239,7 +239,7 @@ export const YoRHaQuickSetup = {
 export const YORHA_UI_VERSION = '1.0.0';
 /**
  * Main initialization function for the YoRHa UI system
- */;
+ */
 export function initYoRHaUI(container: HTMLElement) {
   return createYoRHaUIDemo(container);
 }

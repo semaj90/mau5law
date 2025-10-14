@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
 
-  let caseId = $derived($page.url.searchParams.get("caseId") || "");
+  let caseId = $derived($page.url.searchParams.get('caseId') || '');
   let uploadFile = $state<File | null>(null);
 
   function handleFileUpload(event: Event) {
@@ -127,7 +127,8 @@
     font-size: 1.2rem;
   }
 
-  .file-input, .search-input {
+  .file-input,
+  .search-input {
     width: 100%;
     padding: 0.5rem;
     margin: 0.5rem 0;
@@ -137,7 +138,8 @@
     color: white;
   }
 
-  .upload-btn, .search-btn {
+  .upload-btn,
+  .search-btn {
     background: #ffd700;
     color: #1a1a1a;
     border: none;
@@ -147,7 +149,8 @@
     font-weight: bold;
   }
 
-  .upload-btn:hover, .search-btn:hover {
+  .upload-btn:hover,
+  .search-btn:hover {
     background: #ffed4a;
   }
 

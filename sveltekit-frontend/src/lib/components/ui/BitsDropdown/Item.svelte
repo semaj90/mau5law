@@ -7,7 +7,7 @@
     disabled = false,
     onclick,
     onitemclick,
-    children
+    children,
   }: {
     className?: string;
     disabled?: boolean;
@@ -27,11 +27,6 @@
   }
 </script>
 
-<button
-  class={`dropdown-item ${className}`}
-  role="menuitem"
-  onclick={handleClick}
-  disabled={disabled}
->
+<button class={`dropdown-item ${className}`} role="menuitem" onclick={handleClick} {disabled}>
   {@render children?.()}
 </button>

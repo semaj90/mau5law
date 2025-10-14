@@ -1,23 +1,23 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { legalAI } from '$lib/server/unified/legal-ai-service'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { legalAI } from '$lib/server/unified/legal-ai-service';
 
 // Helper to safely extract an error message from unknown
 function getErrorMessage(err: unknown): string {
-	// Prefer Error instances
-	if (err instanceof Error) return err.message
-	// Strings are fine
-	if (typeof err === 'string') return err
-	// Try JSON stringify fallback
-	try {
-		return JSON.stringify(err)
-	} catch {
-		return 'Unknown error'
-	}
+  // Prefer Error instances
+  if (err instanceof Error) return err.message;
+  // Strings are fine
+  if (typeof err === 'string') return err;
+  // Try JSON stringify fallback
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return 'Unknown error';
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	try {
+  try {
     const body = await request.json();
     const {
       query,
@@ -66,4 +66,4 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 500 }
     );
   }
-}
+};

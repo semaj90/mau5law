@@ -27,4 +27,4 @@ export const GET = async ({ url }): Promise<any> => {
   } catch (err: any) {
     return json({ error: String(err) }, { status: 500 });
   }
-}
+};

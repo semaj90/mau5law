@@ -3,14 +3,10 @@ import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   noteQuicP99Breach,
-  notePipelineAnomalySpike
-} from '$lib/services/pipeline-metrics'
-import {
-  routeAlerts,
-  maybeTriggerAutosolve,
-  getSustainedP99Info
-} from '$lib/services/alert-center'
-import type { RequestHandler } from './$types.js'
+  notePipelineAnomalySpike,
+} from '$lib/services/pipeline-metrics';
+import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } from '$lib/services/alert-center';
+import type { RequestHandler } from './$types.js';
 
 // Add a typed global property to avoid casting to `any`
 declare global {
@@ -20,9 +16,9 @@ declare global {
 }
 
 // Replace plain object with a Map and add a periodic cleanup to prevent memory growth
-const hits = new Map<string, number[]>()
-const RATE_LIMIT_WINDOW = 60_000 // 60s window
-const HIT_LIMIT = 60
+const hits = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW = 60_000; // 60s window
+const HIT_LIMIT = 60;
 const MAX_LAT_SAMPLES = 200; // guard
 
 // <-- ADDED: guard so hot-reload / HMR doesn't create multiple intervals
@@ -30,13 +26,13 @@ if (!globalThis.__quic_push_cleanup_installed) {
   globalThis.__quic_push_cleanup_installed = true;
   // Periodic cleanup every 30s to prune old timestamps and empty entries
   setInterval(() => {
-    const now = Date.now()
+    const now = Date.now();
     for (const [ip, arr] of hits) {
-      const kept = arr.filter(ts => ts > now - RATE_LIMIT_WINDOW)
-      if (kept.length === 0) hits.delete(ip)
-      else hits.set(ip, kept)
+      const kept = arr.filter(ts => ts > now - RATE_LIMIT_WINDOW);
+      if (kept.length === 0) hits.delete(ip);
+      else hits.set(ip, kept);
     }
-  }, 30_000)
+  }, 30_000);
 }
 
 // Add a typed interface for the incoming push payload
@@ -52,15 +48,16 @@ type QuicPushBody = {
 export const POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
   try {
     // Normalize getClientAddress to always resolve via Promise to avoid "await has no effect"
-    const rawIpPromise = typeof getClientAddress === 'function'
-      ? Promise.resolve(getClientAddress())
-      : Promise.resolve<string | undefined>(undefined);
+    const rawIpPromise =
+      typeof getClientAddress === 'function'
+        ? Promise.resolve(getClientAddress())
+        : Promise.resolve<string | undefined>(undefined);
     const rawIp = await rawIpPromise;
 
     // fallback to common headers when getClientAddress is unavailable
     const forwarded = request.headers.get('x-forwarded-for') ?? undefined;
     const ua = request.headers.get('user-agent') ?? 'ua';
-    const ip = rawIp || forwarded?.split(',')?.[0]?.trim() || `unknown:${ua.slice(0,40)}`;
+    const ip = rawIp || forwarded?.split(',')?.[0]?.trim() || `unknown:${ua.slice(0, 40)}`;
 
     const now = Date.now();
 
@@ -69,7 +66,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     if (pruned.length >= HIT_LIMIT) {
       return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
         status: 429,
-        headers: { 'content-type': 'application/json' }
+        headers: { 'content-type': 'application/json' },
       });
     }
     pruned.push(now);
@@ -194,7 +191,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 400,
-      headers: { 'content-type': 'application/json' }
+      headers: { 'content-type': 'application/json' },
     });
   }
-}
+};

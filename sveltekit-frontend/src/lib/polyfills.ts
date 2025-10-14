@@ -23,7 +23,7 @@ if (typeof window !== 'undefined') {
         NODE_ENV: import.meta.env.MODE || 'development',
         PUBLIC_ENV: 'browser'
       },
-      browser: true
+      browser: true,
       cwd: () => '/', // Fix process.cwd() error
       nextTick: (callback: () => void) => setTimeout(callback, 0),
       version: 'v18.0.0',

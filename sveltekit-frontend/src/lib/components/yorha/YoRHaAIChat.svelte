@@ -38,8 +38,8 @@ Enhanced RAG System Connected
 - Vector Database: ✅ CONNECTED
 How can I assist with your legal AI operations?`,
           timestamp: new Date(),
-          type: 'system'
-        }
+          type: 'system',
+        },
       ]);
     } catch (error) {
       isConnected = false;
@@ -54,8 +54,8 @@ Troubleshooting:
 2. Check service health: curl ${RAG_SERVICE_URL}/health
 Offline Mode Available — Basic chat functionality only.`,
           timestamp: new Date(),
-          type: 'error'
-        }
+          type: 'error',
+        },
       ]);
     }
 
@@ -78,7 +78,7 @@ Offline Mode Available — Basic chat functionality only.`,
       role: 'user',
       content: trimmed,
       timestamp: new Date(),
-      type: 'user'
+      type: 'user',
     };
 
     pushMessage(userMessage);
@@ -105,8 +105,8 @@ Offline Mode Available — Basic chat functionality only.`,
           user_id: 'yorha-user',
           session_id: 'yorha-session',
           include_vector_search: true,
-          max_tokens: 1000
-        })
+          max_tokens: 1000,
+        }),
       });
 
       if (!resp.ok) throw new Error(`RAG service error: ${resp.status} ${resp.statusText}`);
@@ -118,7 +118,7 @@ Offline Mode Available — Basic chat functionality only.`,
         content: formatRAGResponse(result),
         timestamp: new Date(),
         type: 'assistant',
-        metadata: result?.metadata ?? {}
+        metadata: result?.metadata ?? {},
       };
 
       pushMessage(assistantMessage);
@@ -128,7 +128,7 @@ Offline Mode Available — Basic chat functionality only.`,
         role: 'assistant',
         content: `❌ Error Processing Request\n${err?.message || String(err)}\nTry checking service status or using /help.`,
         timestamp: new Date(),
-        type: 'error'
+        type: 'error',
       };
       pushMessage(errorMessage);
     } finally {
@@ -179,7 +179,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
             const r = await fetch(`${RAG_SERVICE_URL}/api/analyze`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: arg, type: 'legal' })
+              body: JSON.stringify({ text: arg, type: 'legal' }),
             });
             const res = await r.json();
             responseText = `📋 Analysis Result\nType: ${res?.document_type ?? 'Unknown'}\nConfidence: ${res?.confidence ?? 'N/A'}\nSummary: ${res?.summary ?? 'None'}`;
@@ -197,7 +197,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
       role: 'assistant',
       content: responseText,
       timestamp: new Date(),
-      type: 'command'
+      type: 'command',
     };
     pushMessage(commandResponse);
   }
@@ -239,12 +239,18 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
 
   function getMessageTypeClass(type: string | undefined): string {
     switch (type) {
-      case 'user': return 'bg-yorha-accent-cool/20 border-yorha-accent-cool text-white ml-auto';
-      case 'assistant': return 'bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-light';
-      case 'system': return 'bg-blue-500/20 border-blue-400 text-blue-100';
-      case 'error': return 'bg-red-500/20 border-red-400 text-red-100';
-      case 'command': return 'bg-green-500/20 border-green-400 text-green-100';
-      default: return 'bg-neutral-800 border-neutral-700 text-yorha-light';
+      case 'user':
+        return 'bg-yorha-accent-cool/20 border-yorha-accent-cool text-white ml-auto';
+      case 'assistant':
+        return 'bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-light';
+      case 'system':
+        return 'bg-blue-500/20 border-blue-400 text-blue-100';
+      case 'error':
+        return 'bg-red-500/20 border-red-400 text-red-100';
+      case 'command':
+        return 'bg-green-500/20 border-green-400 text-green-100';
+      default:
+        return 'bg-neutral-800 border-neutral-700 text-yorha-light';
     }
   }
 </script>
@@ -258,7 +264,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
         <div class="max-w-3xl border rounded-lg p-4 {getMessageTypeClass(message.type)}">
           <div class="flex items-center gap-2 mb-2">
             <span class="text-xs font-bold uppercase">
-              {message.role === 'user' ? '👤 USER' : (message.type === 'system' ? '⚙️ SYSTEM' : '🤖 YORHA AI')}
+              {message.role === 'user' ? '👤 USER' : message.type === 'system' ? '⚙️ SYSTEM' : '🤖 YORHA AI'}
             </span>
             <span class="text-xs opacity-70">
               {new Date(message.timestamp).toLocaleTimeString()}
@@ -334,7 +340,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
   :global(.simple-scrollbar) {
     /* non-empty ruleset: thin, subtle scrollbar suitable for dark theme */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.10) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }
 
   /* WebKit-based browsers */
@@ -346,7 +352,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     background: transparent;
   }
   :global(.simple-scrollbar::-webkit-scrollbar-thumb) {
-    background-color: rgba(255,255,255,0.10);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 999px;
     border: 2px solid transparent;
     background-clip: padding-box;

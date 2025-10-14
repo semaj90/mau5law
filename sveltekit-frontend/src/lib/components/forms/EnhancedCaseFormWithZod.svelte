@@ -16,17 +16,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Use native <label>, <textarea>, <input type="checkbox"> to avoid SvelteComponentTyped constructor/type mismatch
   // Removed broken select module import. Using native <select> instead.
-  import {
-    AlertCircle,
-    Loader2,
-    Save,
-    CheckCircle,
-    Upload,
-    FileText,
-    Calendar,
-    Users,
-    Scale
-  } from 'lucide-svelte';
+  import { AlertCircle, Loader2, Save, CheckCircle, Upload, FileText, Calendar, Users, Scale } from 'lucide-svelte';
   import { caseFormSchema } from '$lib/schemas/forms';
   import type { CaseForm } from '$lib/schemas/forms';
   import { createCaseCreationForm } from '$lib/forms/superforms-xstate-integration';
@@ -53,24 +43,24 @@ https://svelte.dev/e/js_parse_error -->
     onsubmit,
     onsuccess,
     onerror,
-    ondraft
+    ondraft,
   }: Props = $props();
   // Enhanced form integration with XState
   const formIntegration = createCaseCreationForm(data, {
     autoSave: enableAutoSave,
     autoSaveDelay: 2000,
     resetOnSuccess: !editMode,
-    onSubmit: async (formData) => {
+    onSubmit: async formData => {
       if (onsubmit) onsubmit({ data: formData as CaseForm });
     },
-    onSuccess: (result) => {
+    onSuccess: result => {
       if (onsuccess) onsuccess({ caseItem: result });
     },
     onError: (error: unknown) => {
       const message = formatError(error);
       if (onerror) onerror({ message });
       componentError = new Error(message);
-    }
+    },
   });
   // only take properties we actually use; other members on the integration may not exist
   const { form: rawForm, errors } = formIntegration;
@@ -140,14 +130,14 @@ https://svelte.dev/e/js_parse_error -->
   const priorityLevels = [
     { value: 'low', label: 'Low Priority', color: 'text-green-600' },
     { value: 'medium', label: 'Medium Priority', color: 'text-yellow-600' },
-    { value: 'high', label: 'High Priority', color: 'text-red-600' }
+    { value: 'high', label: 'High Priority', color: 'text-red-600' },
   ];
   // Status options
   const statusOptions = [
     { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
     { value: 'active', label: 'Active', description: 'Case is under investigation' },
     { value: 'pending', label: 'Pending', description: 'Awaiting review or action' },
-    { value: 'closed', label: 'Closed', description: 'Case is completed' }
+    { value: 'closed', label: 'Closed', description: 'Case is completed' },
   ];
   // Auto-save indicator
   // let lastSaved = $state<Date | null>(null);
@@ -189,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
         JSON.stringify({
           userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
           validationStatus,
-          autoSaved: lastSaved !== null
+          autoSaved: lastSaved !== null,
         })
       );
 
@@ -259,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Add helper to update nested fields on the Writable form store
   function setFormField<K extends keyof CaseForm>(field: K, value: CaseForm[K]) {
-    form.update((f) => ({ ...(f as any), [field]: value }));
+    form.update(f => ({ ...(f as any), [field]: value }));
   }
 
   // === NEW: reactive debounced schema validation (replaces $effect / $state duplication) ===
@@ -353,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
               name="caseNumber"
               placeholder="ABC-2024-123456"
               value={$form?.caseNumber ?? ''}
-              oninput={(e) => setFormField('caseNumber', (e.target as HTMLInputElement).value as any)}
+              oninput={e => setFormField('caseNumber', (e.target as HTMLInputElement).value as any)}
               aria-invalid={$errors?.caseNumber ? 'true' : undefined}
               class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors?.caseNumber ? 'border-destructive' : ''}`}
             />
@@ -374,7 +364,7 @@ https://svelte.dev/e/js_parse_error -->
               id="priority"
               name="priority"
               value={$form?.priority ?? ''}
-              onchange={(e) => setFormField('priority', (e.target as HTMLSelectElement).value as any)}
+              onchange={e => setFormField('priority', (e.target as HTMLSelectElement).value as any)}
               class={$errors?.priority ? 'border-destructive' : ''}
             >
               <option value="" disabled selected hidden>Select priority</option>
@@ -395,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
             name="title"
             placeholder="Enter a descriptive case title"
             value={$form?.title ?? ''}
-            oninput={(e) => setFormField('title', (e.target as HTMLInputElement).value as any)}
+            oninput={e => setFormField('title', (e.target as HTMLInputElement).value as any)}
             aria-invalid={$errors?.title ? 'true' : undefined}
             class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors?.title ? 'border-destructive' : ''}`}
           />
@@ -411,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
             name="description"
             placeholder="Provide detailed case description (optional)"
             value={$form?.description ?? ''}
-            oninput={(e) => setFormField('description', (e.target as HTMLTextAreaElement).value as any)}
+            oninput={e => setFormField('description', (e.target as HTMLTextAreaElement).value as any)}
             rows="4"
             aria-invalid={$errors?.description ? 'true' : undefined}
             class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors?.description ? 'border-destructive' : ''}`}
@@ -434,7 +424,12 @@ https://svelte.dev/e/js_parse_error -->
               <!-- Status -->
               <div class="space-y-2">
                 <label for="status">Case Status</label>
-                <select id="status" name="status" value={$form?.status ?? ''} onchange={(e) => setFormField('status', (e.target as HTMLSelectElement).value as any)}>
+                <select
+                  id="status"
+                  name="status"
+                  value={$form?.status ?? ''}
+                  onchange={e => setFormField('status', (e.target as HTMLSelectElement).value as any)}
+                >
                   <option value="" disabled selected hidden>Select status</option>
                   {#each statusOptions as status}
                     <option value={status.value}>
@@ -454,7 +449,7 @@ https://svelte.dev/e/js_parse_error -->
                   name="dueDate"
                   type="datetime-local"
                   value={$form?.dueDate ?? ''}
-                  oninput={(e) => setFormField('dueDate', (e.target as HTMLInputElement).value as any)}
+                  oninput={e => setFormField('dueDate', (e.target as HTMLInputElement).value as any)}
                   aria-invalid={$errors?.dueDate ? 'true' : undefined}
                   class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors?.dueDate ? 'border-destructive' : ''}`}
                 />
@@ -472,7 +467,7 @@ https://svelte.dev/e/js_parse_error -->
                   type="text"
                   placeholder="Enter tags separated by commas"
                   value={$form?.tags ?? ''}
-                  oninput={(e) => setFormField('tags', (e.target as HTMLInputElement).value as any)}
+                  oninput={e => setFormField('tags', (e.target as HTMLInputElement).value as any)}
                   class="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring"
                   aria-invalid={$errors?.tags ? 'true' : undefined}
                 />
@@ -488,7 +483,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="checkbox"
                     class="h-4 w-4"
                     checked={$form?.isConfidential}
-                    onchange={(e) => setFormField('isConfidential', (e.target as HTMLInputElement).checked)}
+                    onchange={e => setFormField('isConfidential', (e.target as HTMLInputElement).checked)}
                   />
                   <label for="isConfidential">Mark as confidential</label>
                 </div>
@@ -499,7 +494,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="checkbox"
                     class="h-4 w-4"
                     checked={$form?.notifyAssignee}
-                    onchange={(e) => setFormField('notifyAssignee', (e.target as HTMLInputElement).checked)}
+                    onchange={e => setFormField('notifyAssignee', (e.target as HTMLInputElement).checked)}
                   />
                   <label for="notifyAssignee">Notify assignee when case is updated</label>
                 </div>

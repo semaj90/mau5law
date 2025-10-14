@@ -78,7 +78,7 @@ export type ChatEvent =
 /**
  * SSR QLoRA Chat Machine
  * Orchestrates the complete chat experience with multiple AI backends
- */;
+ */
 export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
   id: 'ssrQloraChat',
   initial: 'initializing',
@@ -94,12 +94,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       interactionCount: 0
     },
     systemStatus: {
-      nesMemoryReady: false
-      gpuCacheReady: false
-      qloraReady: false
-      wasmBridgeReady: false
-      ollamaReady: false
-      gemma3Ready: false
+      nesMemoryReady: false,
+      gpuCacheReady: false,
+      qloraReady: false,
+      wasmBridgeReady: false,
+      ollamaReady: false,
+      gemma3Ready: false,
     },
     processingMode: 'instant',
     performanceMetrics: {
@@ -358,8 +358,8 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               ...lastMessage,
               content: event.response,
               source: 'nes_memory',
-              streaming: false
-              processingTime: 0
+              streaming: false,
+              processingTime: 0,
             }
           ];
         }
@@ -376,8 +376,8 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               ...lastMessage,
               content: event.response,
               source: 'gpu_cache',
-              streaming: false
-              processingTime: 50 // Typical cache response time
+              streaming: false,
+              processingTime: 50, // Typical cache response time
             }
           ];
         }
@@ -525,8 +525,8 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
     clearMessages: assign({
       messages: [],
-      streamingMessage: undefined
-      errorMessage: undefined
+      streamingMessage: undefined,
+      errorMessage: undefined,
     }),
     updateUserDictionary: assign({
       userDictionary: (context, event) => {

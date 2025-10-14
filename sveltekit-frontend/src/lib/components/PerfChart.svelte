@@ -16,7 +16,7 @@
         const y = height - (v / max) * height;
         return `${x},${y}`;
       })
-      .join(' '),
+      .join(' ')
   );
 </script>
 

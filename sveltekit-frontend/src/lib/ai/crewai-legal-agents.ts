@@ -1,11 +1,10 @@
-
 // CrewAI Legal Document Review Multi-Agent System
 // Integrates Claude Code CLI + Local Gemma3 + Self-Prompting + Auto-Save
-import { ChatOllama } from "@langchain/ollama";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { documentUpdateLoop } from "$lib/services/documentUpdateLoop";
-import { documents, aiHistory, cases } from "$lib/db/schema";
-import { eq } from "drizzle-orm";
+import { ChatOllama } from '@langchain/ollama';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { documentUpdateLoop } from '$lib/services/documentUpdateLoop';
+import { documents, aiHistory, cases } from '$lib/db/schema';
+import { eq } from 'drizzle-orm';
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
 // ============================================================================
@@ -31,7 +30,7 @@ export interface DocumentReviewTask {
     jurisdiction?: string;
     clientGoals?: string[];
     riskTolerance?: 'low' | 'medium' | 'high';
-  }
+  };
 }
 export interface AgentResponse {
   agentId: string;
@@ -61,7 +60,7 @@ export const legalAgents: LegalAgent[] = [
     - Missing or problematic clauses
     Provide structured analysis with confidence scores.`,
     maxTokens: 2000,
-    temperature: 0.1
+    temperature: 0.1,
   },
   {
     id: 'compliance-auditor',
@@ -76,7 +75,7 @@ export const legalAgents: LegalAgent[] = [
     - Recommended corrective actions
     Flag all potential compliance issues with severity ratings.`,
     maxTokens: 1800,
-    temperature: 0.05
+    temperature: 0.05,
   },
   {
     id: 'risk-assessor',
@@ -91,8 +90,8 @@ export const legalAgents: LegalAgent[] = [
     - Mitigation strategies
     Quantify risks where possible with probability assessments.`,
     maxTokens: 1500,
-    temperature: 0.2
-  }
+    temperature: 0.2,
+  },
 ];
 // ============================================================================
 // MULTI-AGENT ORCHESTRATION
@@ -108,19 +107,22 @@ export class CrewAILegalReviewSystem {
   async reviewDocument(task: DocumentReviewTask): Promise<AgentResponse[]> {
     this.activeJobs.set(task.taskId, task);
     const responses: AgentResponse[] = [];
-    const assignedAgents = task.assignedAgents.length > 0
-      ? task.assignedAgents: ['contract-analyst', 'compliance-auditor', 'risk-assessor'];
+    const assignedAgents =
+      task.assignedAgents.length > 0
+        ? task.assignedAgents
+        : ['contract-analyst', 'compliance-auditor', 'risk-assessor'];
     // Process with all assigned agents in parallel
-    const agentPromises = assignedAgents.map(agentId =>
-      this.processWithAgent(task, agentId)
-    );
+    const agentPromises = assignedAgents.map(agentId => this.processWithAgent(task, agentId));
     try {
       const agentResponses = await Promise.allSettled(agentPromises);
       agentResponses.forEach((result, index) => {
         if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
           responses.push((result as { status?: any; value?: any; reason?: any }).value);
         } else {
-          console.error(`Agent ${assignedAgents[index]} failed:`, (result as { status?: any; value?: any; reason?: any }).reason);
+          console.error(
+            `Agent ${assignedAgents[index]} failed:`,
+            (result as { status?: any; value?: any; reason?: any }).reason
+          );
           responses.push({
             agentId: assignedAgents[index],
             taskId: task.taskId,
@@ -130,7 +132,7 @@ export class CrewAILegalReviewSystem {
             riskLevel: 'high',
             confidence: 0,
             processingTime: 0,
-            errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error']
+            errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'],
           });
         }
       });
@@ -150,10 +152,10 @@ export class CrewAILegalReviewSystem {
     const startTime = Date.now();
     try {
       const ollama = new ChatOllama({
-        baseUrl: "http://localhost:11434",
-        model: "gemma3:legal-latest",
+        baseUrl: 'http://localhost:11434',
+        model: 'gemma3:legal-latest',
         temperature: agent.temperature,
-        maxTokens: agent.maxTokens
+        maxTokens: agent.maxTokens,
       });
       const messages = [
         new SystemMessage(agent.systemPrompt),
@@ -172,7 +174,7 @@ Please provide your analysis in the following JSON format:
   "riskLevel": "low|medium|high",
   "confidence": 0.0-1.0
 }
-        `)
+        `),
       ];
       const response = await ollama.invoke(messages);
       const responseText = (response as { content?: any }).content.toString();
@@ -186,7 +188,7 @@ Please provide your analysis in the following JSON format:
         recommendations: analysis.recommendations,
         riskLevel: analysis.riskLevel,
         confidence: analysis.confidence,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     } catch (error: any) {
       console.error(`Error processing with agent ${agentId}:`, error);
@@ -199,7 +201,7 @@ Please provide your analysis in the following JSON format:
         riskLevel: 'high',
         confidence: 0,
         processingTime: Date.now() - startTime,
-        errors: [error instanceof Error ? error.message: String(error)]
+        errors: [error instanceof Error ? error.message : String(error)],
       };
     }
   }
@@ -219,8 +221,8 @@ Please provide your analysis in the following JSON format:
       findings: [responseText],
       recommendations: ['Manual review recommended'],
       riskLevel: 'medium' as const,
-      confidence: 0.5
-    }
+      confidence: 0.5,
+    };
   }
   private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
     try {
@@ -231,14 +233,16 @@ Please provide your analysis in the following JSON format:
         prompt: `Legal document review: ${task.reviewType}`,
         response: JSON.stringify(responses),
         model: 'gemma3:legal-latest',
-        tokensUsed: Math.floor((task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4),
+        tokensUsed: Math.floor(
+          (task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4
+        ),
         cost: 0, // TODO: Calculate based on token usage
         metadata: {
           taskType: 'legal-document-review',
           reviewType: task.reviewType,
           priority: task.priority,
-          agentCount: responses.length
-        }
+          agentCount: responses.length,
+        },
       });
     } catch (error: any) {
       console.error('Failed to store agent results:', error);

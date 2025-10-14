@@ -37,16 +37,16 @@ export type CaseWithRelations = Case & {
   notes?: Note[];
   leadProsecutor?: User;
   createdBy?: User;
-}
+};
 export type EvidenceWithRelations = Evidence & {
   case?: Case;
   uploadedBy?: User;
-}
+};
 export type ReportWithRelations = Report & {
   case?: Case;
   createdBy?: User;
   lastEditedBy?: User;
-}
+};
 // Re-export schema tables
 export {
   cases,

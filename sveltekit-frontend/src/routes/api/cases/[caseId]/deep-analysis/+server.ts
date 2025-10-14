@@ -64,13 +64,13 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const [qdrantFragmentResults, qdrantEvidenceResults] =
       await Promise.allSettled([
         qdrantClient.search("prosecutor_text_fragments", {
-          vector: queryEmbedding
+          vector: queryEmbedding,
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
           with_payload: true
         }),
         qdrantClient.search("prosecutor_evidence", {
-          vector: queryEmbedding
+          vector: queryEmbedding,
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
           with_payload: true

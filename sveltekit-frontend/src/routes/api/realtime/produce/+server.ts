@@ -17,8 +17,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       // TODO: validate bearer token or session against auth provider if available
     }
 
-  const body = (await request.json().catch(() => ({} as unknown))) as Record<string, unknown>;
-  const { requestId, seq, chunk, meta } = body as { requestId?: string; seq?: number; chunk?: string; meta?: Record<string, unknown> };
+    const body = (await request.json().catch(() => ({}) as unknown)) as Record<string, unknown>;
+    const { requestId, seq, chunk, meta } = body as {
+      requestId?: string;
+      seq?: number;
+      chunk?: string;
+      meta?: Record<string, unknown>;
+    };
     if (!requestId || typeof seq !== 'number' || typeof chunk !== 'string') {
       return json({ ok: false, error: 'Invalid payload' }, { status: 400 });
     }

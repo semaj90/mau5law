@@ -4,16 +4,20 @@
  * Provides seamless routing between message queues and WebAssembly acceleration
  */
 import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
-import { initializeWASMBridge, registerWASMAcceleratedHandlers, getBridgeStatus } from '$lib/adapters/wasm-rabbitmq-bridge.js';
+import {
+  initializeWASMBridge,
+  registerWASMAcceleratedHandlers,
+  getBridgeStatus,
+} from '$lib/adapters/wasm-rabbitmq-bridge.js';
 import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
 // Port configuration for WebAssembly services
 export const WASM_SERVICE_PORTS = {
-  TENSOR_WORKER: 5173,      // SvelteKit dev server port
-  RABBITMQ_API: 5177,       // RabbitMQ API port
-  RABBITMQ_BROKER: 5672,    // RabbitMQ message broker
-  RABBITMQ_MGMT: 15672,     // RabbitMQ management UI
-  WASM_CACHE: 6379,         // Redis cache for WASM results
-  VECTOR_DB: 6333           // Qdrant vector database
+  TENSOR_WORKER: 5173, // SvelteKit dev server port
+  RABBITMQ_API: 5177, // RabbitMQ API port
+  RABBITMQ_BROKER: 5672, // RabbitMQ message broker
+  RABBITMQ_MGMT: 15672, // RabbitMQ management UI
+  WASM_CACHE: 6379, // Redis cache for WASM results
+  VECTOR_DB: 6333, // Qdrant vector database
 } as const;
 // Queue routing for WASM-accelerated jobs
 export const WASM_QUEUE_ROUTING = {
@@ -27,7 +31,7 @@ export const WASM_QUEUE_ROUTING = {
   'vector_to_wasm': 'legal.vectors.wasm_ready',
   'wasm_to_storage': 'legal.wasm.storage_ready',
   'similarity_results': 'legal.similarity.results',
-  'tensor_cache': 'legal.tensors.cache_ready'
+  'tensor_cache': 'legal.tensors.cache_ready',
 } as const;
 
 // Define specific interfaces for tensor processing results
@@ -53,12 +57,12 @@ interface TensorProcessingJob {
     query?: number[];
     operation: 'normalize' | 'similarity' | 'compress' | 'batch_process';
     algorithm?: 'cosine' | 'euclidean' | 'dot' | 'manhattan';
-  }
+  };
   metadata: {
     priority: number;
     timestamp: number;
     source: 'rabbitmq' | 'direct_api' | 'service_worker';
-  }
+  };
 }
 interface TensorWorkerMessage {
   type: 'PROCESS_TENSOR' | 'TENSOR_PROCESSED' | 'TENSOR_ERROR';

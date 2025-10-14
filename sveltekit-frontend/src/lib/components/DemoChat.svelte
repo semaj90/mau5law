@@ -41,7 +41,7 @@ Tests the demo RAG functionality with a working interface
           confidence: 0.9,
           tokensUsed: 250,
           reasoning: ['Generated comprehensive case summary from available evidence'],
-        }
+        };
       } else {
         // Use RAG query for other questions
         const ragQuery: RAGDemoQuery = {
@@ -50,7 +50,7 @@ Tests the demo RAG functionality with a working interface
           evidence: currentEvidence,
           maxTokens: 500,
           temperature: 0.7,
-        }
+        };
         response = await demoQueryLLM(ragQuery);
       }
       // Add AI response

@@ -41,7 +41,7 @@ export const GET: RequestHandler = async () => {
     console.error('Error fetching statutes:', error);
     return json({ error: 'Failed to fetch statutes' }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json();
@@ -50,10 +50,10 @@ export const POST: RequestHandler = async ({ request }) => {
       id: Math.random().toString(36).substring(2, 11),
       ...data,
       updatedAt: new Date().toISOString(),
-    }
+    };
     return json(newStatute, { status: 201 });
   } catch (error: any) {
     console.error('Error creating statute:', error);
     return json({ error: 'Failed to create statute' }, { status: 500 });
   }
-}
+};

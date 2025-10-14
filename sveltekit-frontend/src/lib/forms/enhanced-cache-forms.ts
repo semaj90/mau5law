@@ -22,12 +22,12 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   step: z.number().min(1).max(4).default(1),
   isDraft: z.boolean().default(true)
 }).omit({
-  id: true
-  createdAt: true
-  updatedAt: true
-  _cached: true
-  _lastSync: true
-  _dirty: true
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  _cached: true,
+  _lastSync: true,
+  _dirty: true,
 });
 export type EnhancedCaseForm = z.infer<typeof EnhancedCaseFormSchema>;
 // ===== EVIDENCE UPLOAD FORM SCHEMA =====
@@ -40,16 +40,16 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
     timestamp: z.date(),
     handler: z.string(),
     action: z.string(),
-    notes: z.string().optional()
+    notes: z.string().optional(),
   })).default([]);
 }).omit({
-  id: true
-  createdAt: true
-  fileUrl: true
-  fileSize: true
-  _cached: true
-  _lastSync: true
-  _dirty: true
+  id: true,
+  createdAt: true,
+  fileUrl: true,
+  fileSize: true,
+  _cached: true,
+  _lastSync: true,
+  _dirty: true,
 });
 export type EvidenceUploadForm = z.infer<typeof EvidenceUploadFormSchema>;
 // ===== CACHE-FIRST FORM MANAGER =====
@@ -79,7 +79,7 @@ export class CacheFirstFormManager {
         phone: ''
       },
       step: 1,
-      isDraft: true
+      isDraft: true,
       ...initialData
     }
     // Store in cache
@@ -279,8 +279,8 @@ export class CacheFirstFormManager {
       try {
         // Save to localStorage as backup
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
-          data: formData
-          timestamp: new Date().toISOString()
+          data: formData,
+          timestamp: new Date().toISOString(),
         });
         console.log(`Draft saved for form ${formId}`);
       } catch (error) {

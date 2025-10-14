@@ -8,7 +8,11 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Replaced Svelte-runic prop/state usage with standard Svelte exports and onMount subscription
   import { onMount, onDestroy } from 'svelte';
-  import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
+  import {
+    createGPUProcessingActor,
+    type DocumentInput,
+    type ProcessingResult,
+  } from '$lib/state/gpu-processing-machine';
   import { fade, fly } from 'svelte/transition';
 
   // Props (replace $props)
@@ -57,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
   let activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string, DocumentInput>;
   let completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
   let errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
-  let serviceHealth = (state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' });
-  let metrics = (state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 });
+  let serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
+  let metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 };
 
   // UI state (replace $state usages)
   let selectedTab = 'queue';
@@ -74,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
 
   onMount(() => {
     gpuActor.start();
-    subscription = gpuActor.subscribe((snapshot) => {
+    subscription = gpuActor.subscribe(snapshot => {
       // ensure the snapshot is treated as GPUState
       state = snapshot as unknown as GPUState;
       // update derived values on every snapshot
@@ -84,8 +88,8 @@ https://svelte.dev/e/js_parse_error -->
       activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string, DocumentInput>;
       completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
       errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
-      serviceHealth = (state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' });
-      metrics = (state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 });
+      serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
+      metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 };
     });
 
     if (autoStart && documents.length > 0) {
@@ -121,8 +125,8 @@ https://svelte.dev/e/js_parse_error -->
         timeout: 30000,
         retries: 3,
         batchSize: 1,
-      }
-    }
+      },
+    };
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
     // Clear form
     newDocumentContent = '';
@@ -146,10 +150,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'healthy': return '#28a745';
-      case 'degraded': return '#ffc107';
-      case 'offline': return '#dc3545';
-      default: return '#6c757d';
+      case 'healthy':
+        return '#28a745';
+      case 'degraded':
+        return '#ffc107';
+      case 'offline':
+        return '#dc3545';
+      default:
+        return '#6c757d';
     }
   }
 </script>
@@ -233,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
         <option value="analyze">Legal Analysis</option>
         <option value="vectorize">Vectorization Only</option>
       </select>
-  <input type="range" bind:value={priority} min="1" max="10" class="priority-slider" />
+      <input type="range" bind:value={priority} min="1" max="10" class="priority-slider" />
       <span class="priority-label">Priority: {priority}</span>
     </div>
     <button class="btn btn-primary nes-btn is-primary" on:click={addDocument} disabled={!newDocumentContent.trim()}>

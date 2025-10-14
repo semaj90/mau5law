@@ -40,7 +40,7 @@ export interface TextureStreamingSession {
 }
 /**
  * NES-inspired texture memory banks for optimal GPU memory management
- */;
+ */
 export class YoRHaOptimizedTextureManager {
   private device: GPUDevice | null = null;
   private isInitialized = false;
@@ -89,7 +89,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Initialize NES-style texture memory banks
-   */;
+   */
   private initializeTextureBanks(): void {
     // CHR-ROM Bank: High-frequency legal document patterns and evidence
     this.textureBanks.set('CHR_ROM', {
@@ -98,8 +98,8 @@ export class YoRHaOptimizedTextureManager {
         maxTextures: 64,
         maxMemoryMB: 32,
         mipmapLevels: 8,
-        compressionEnabled: true
-        rtxOptimization: true
+        compressionEnabled: true,
+        rtxOptimization: true,
       },
       textures: new Map(),
       memoryUsed: 0,
@@ -112,8 +112,8 @@ export class YoRHaOptimizedTextureManager {
         maxTextures: 128,
         maxMemoryMB: 128,
         mipmapLevels: 12,
-        compressionEnabled: true
-        rtxOptimization: true
+        compressionEnabled: true,
+        rtxOptimization: true,
       },
       textures: new Map(),
       memoryUsed: 0,
@@ -126,7 +126,7 @@ export class YoRHaOptimizedTextureManager {
         maxTextures: 32,
         maxMemoryMB: 16,
         mipmapLevels: 6,
-        compressionEnabled: true
+        compressionEnabled: true,
         rtxOptimization: false // Lower priority, use CPU
       },
       textures: new Map(),
@@ -153,8 +153,8 @@ export class YoRHaOptimizedTextureManager {
    * Smart texture allocation based on legal document characteristics
    */
   async allocateTexture(
-    textureId: string
-    textureData: ImageData | ArrayBuffer | GPUTexture
+    textureId: string,
+    textureData: ImageData | ArrayBuffer | GPUTexture,
     legalDocument?: LegalDocument
     options: {
       forceBank?: string;
@@ -193,7 +193,7 @@ export class YoRHaOptimizedTextureManager {
         const mipmapConfig: Partial<MipmapConfig> = {
           maxMipLevels: bank.config.mipmapLevels,
           filterMode: 'linear',
-          enableOptimizations: true
+          enableOptimizations: true,
           rtxOptimized: bank.config.rtxOptimization,
           enableStreaming: streamingEnabled
         }
@@ -205,12 +205,12 @@ export class YoRHaOptimizedTextureManager {
       const totalMemory = textureMemory + mipmapMemory;
       // Create texture entry
       const textureEntry: TextureEntry = {
-        id: textureId
+        id: textureId,
         texture: sourceTexture;
         mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
-        memoryBank: bankName
+        memoryBank: bankName,
         lastAccessed: Date.now(),
-        memoryUsed: totalMemory
+        memoryUsed: totalMemory,
         legalDocument,
         generationStats: {
           mipmapGenerationTime: mipmapResult ? mipmapResult.totalGenerationTime : 0,
@@ -236,7 +236,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Smart bank selection based on legal document characteristics
-   */;
+   */
   private selectOptimalBank(legalDocument?: LegalDocument, textureData?: ImageData | ArrayBuffer | GPUTexture): string {
     if (!legalDocument) {
       return 'PRG_ROM'; // Default for general textures
@@ -260,8 +260,8 @@ export class YoRHaOptimizedTextureManager {
    * Streaming texture processing for very large legal documents
    */
   async processStreamingTexture(
-    sessionId: string
-    sourceTexture: GPUTexture
+    sessionId: string,
+    sourceTexture: GPUTexture,
     options: {
       chunkSize?: number;
       memoryBudget?: number;
@@ -346,7 +346,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Bank switching for memory optimization (NES-style)
-   */;
+   */
   async switchTextureBank(fromBank: string, toBank: string, textureId: string): Promise<boolean> {
     const sourceBank = this.textureBanks.get(fromBank);
     const targetBank = this.textureBanks.get(toBank);
@@ -379,7 +379,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * NES-style garbage collection for memory banks
-   */;
+   */
   private async performBankGarbageCollection(bankName: string): Promise<void> {
     const bank = this.textureBanks.get(bankName);
     if (!bank) return;
@@ -405,7 +405,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Release texture and cleanup resources
-   */;
+   */
   async releaseTexture(textureId: string): Promise<boolean> {
     // Find texture in all banks
     let foundBank: string | null = null;
@@ -433,7 +433,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Get comprehensive texture management statistics
-   */;
+   */
   getStatistics(): {
     banks: { [bankName: string]: { textureCount: number; memoryUsedMB: number; memoryLimitMB: number; utilization: number } }
     overall: typeof this.stats;
@@ -447,7 +447,7 @@ export class YoRHaOptimizedTextureManager {
         textureCount: bank.textures.size,
         memoryUsedMB: parseFloat(memoryUsedMB.toFixed(2)),
         memoryLimitMB,
-        utilization: parseFloat((memoryUsedMB / memoryLimitMB * 100).toFixed(1)
+        utilization: parseFloat((memoryUsedMB / memoryLimitMB * 100).toFixed(1),
       }
     }
     const streamingStats = {
@@ -456,7 +456,7 @@ export class YoRHaOptimizedTextureManager {
         .reduce((sum, session) => sum + session.completedChunks, 0)
     }
     return {
-      banks: bankStats
+      banks: bankStats,
       overall: this.stats,
       streaming: streamingStats
     }
@@ -522,7 +522,7 @@ export class YoRHaOptimizedTextureManager {
   }
   /**
    * Cleanup all resources
-   */;
+   */
   dispose(): void {
     // Release all textures
     for (const [bankName, bank] of Array.from(this.textureBanks)) {

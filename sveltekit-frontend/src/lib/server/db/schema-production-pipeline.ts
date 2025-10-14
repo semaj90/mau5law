@@ -24,7 +24,7 @@ export const enableVectorExtension = sql`CREATE EXTENSION IF NOT EXISTS vector`;
 // ===== CRAWL & INGESTION TABLES =====
 /**
  * Crawl Jobs - Tracks web crawling requests and status
- */;
+ */
 export const crawlJobs = pgTable('crawl_jobs', {
   id: uuid('id').primaryKey().defaultRandom(),
   url: text('url').notNull(),
@@ -53,7 +53,7 @@ export const crawlJobs = pgTable('crawl_jobs', {
 });
 /**
  * Crawled Pages - Stores raw crawled content before processing
- */;
+ */
 export const crawledPages = pgTable('crawled_pages', {
   id: uuid('id').primaryKey().defaultRandom(),
   crawlJobId: uuid('crawl_job_id').references(() => crawlJobs.id, { onDelete: 'cascade' }),
@@ -84,7 +84,7 @@ export const crawledPages = pgTable('crawled_pages', {
 // ===== DOCUMENT PROCESSING TABLES =====
 /**
  * Documents - Processed and classified documents
- */;
+ */
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
   crawledPageId: uuid('crawled_page_id').references(() => crawledPages.id),
@@ -129,7 +129,7 @@ export const documents = pgTable('documents', {
 });
 /**
  * Document Chunks - Strategic chunking for optimal embeddings
- */;
+ */
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id').primaryKey().defaultRandom(),
   documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
@@ -168,7 +168,7 @@ export const documentChunks = pgTable('document_chunks', {
 // ===== SEARCH & INDEXING TABLES =====
 /**
  * Search Index - Full-text search with legal-specific ranking
- */;
+ */
 export const searchIndex = pgTable('search_index', {
   id: uuid('id').primaryKey().defaultRandom(),
   documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
@@ -200,7 +200,7 @@ export const searchIndex = pgTable('search_index', {
 });
 /**
  * Cache Keys - Redis cache key management and invalidation
- */;
+ */
 export const cacheKeys = pgTable('cache_keys', {
   id: uuid('id').primaryKey().defaultRandom(),
   cacheKey: varchar('cache_key', { length: 255 }).notNull(),
@@ -227,7 +227,7 @@ export const cacheKeys = pgTable('cache_keys', {
 // ===== PROCESSING & MONITORING TABLES =====
 /**
  * Processing Jobs - Tracks async processing tasks
- */;
+ */
 export const processingJobs = pgTable('processing_jobs', {
   id: uuid('id').primaryKey().defaultRandom(),
   jobType: varchar('job_type', { length: 100 }).notNull(), // crawl, ocr, embed, index, cache_warm
@@ -259,7 +259,7 @@ export const processingJobs = pgTable('processing_jobs', {
 });
 /**
  * System Metrics - Performance and health monitoring
- */;
+ */
 export const systemMetrics = pgTable('system_metrics', {
   id: uuid('id').primaryKey().defaultRandom(),
   metricType: varchar('metric_type', { length: 100 }).notNull(), // crawl_rate, ocr_throughput, embedding_latency, search_performance
@@ -278,7 +278,7 @@ export const systemMetrics = pgTable('system_metrics', {
 // ===== LEGAL-SPECIFIC TABLES =====
 /**
  * Legal Authorities - Court decisions, statutes, regulations
- */;
+ */
 export const legalAuthorities = pgTable('legal_authorities', {
   id: uuid('id').primaryKey().defaultRandom(),
   authorityType: varchar('authority_type', { length: 50 }).notNull(), // case_law, statute, regulation, rule

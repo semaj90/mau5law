@@ -3,15 +3,11 @@
  * GET /api/v1/cases - List user's cases (with pagination)
  * POST /api/v1/cases - Create new case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import {
-  CasesCRUDService,
-  CreateCaseSchema,
-  type CreateCaseData
-} from '$lib/server/services/user-scoped-crud'
-import { queueCaseSynthesis } from '$lib/server/services/background-job-queue'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, CreateCaseSchema, type CreateCaseData } from '$lib/server/services/user-scoped-crud';
+import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
+import { z } from 'zod';
 // Query parameters schema for GET requests
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -19,8 +15,8 @@ const CasesQuerySchema = z.object({
   sortBy: z.enum(['title', 'created_at', 'updated_at', 'status', 'priority']).default('created_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   status: z.enum(['open', 'closed', 'pending', 'archived']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional()
-})
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
+});
 /*
  * GET /api/v1/cases
  * List user's cases with pagination and filtering
@@ -29,24 +25,21 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(
-        401,
-        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      )
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
     // Parse query parameters
-    const url = new URL(request.url)
-    const queryParams = Object.fromEntries(url.searchParams.entries())
-    const validatedQuery = CasesQuerySchema.parse(queryParams)
+    const url = new URL(request.url);
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const validatedQuery = CasesQuerySchema.parse(queryParams);
     // Create service instance
-    const casesService = new CasesCRUDService(getUserId(locals))
+    const casesService = new CasesCRUDService(getUserId(locals));
     // Get cases with pagination
     const result = await casesService.list({
       page: validatedQuery.page,
       limit: validatedQuery.limit,
       sortBy: validatedQuery.sortBy,
-      sortOrder: validatedQuery.sortOrder
-    })
+      sortOrder: validatedQuery.sortOrder,
+    });
     // Map service ListResult<T> => route payload shape
     // Validate response shape with zod before returning
     const CaseItemSchema = z
@@ -58,9 +51,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         priority: z.string().optional(),
         caseNumber: z.string().optional(),
         createdAt: z.string().optional(),
-        updatedAt: z.string().optional()
+        updatedAt: z.string().optional(),
       })
-      .passthrough()
+      .passthrough();
     const CasesListResponse = z
       .object({
         success: z.literal(true),
@@ -71,11 +64,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           total: z.number(),
           totalPages: z.number(),
           hasNext: z.boolean(),
-          hasPrev: z.boolean()
+          hasPrev: z.boolean(),
         }),
-        meta: z.record(z.any()).optional()
+        meta: z.record(z.any()).optional(),
       })
-      .passthrough()
+      .passthrough();
     const payload = {
       success: true,
       data: (result as { items?: any; pagination?: any }).items,
@@ -85,47 +78,47 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         total: (result as { items?: any; pagination?: any }).pagination.totalCount,
         totalPages: (result as { items?: any; pagination?: any }).pagination.totalPages,
         hasNext: (result as { items?: any; pagination?: any }).pagination.hasNext,
-        hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev
+        hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev,
       },
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      }
-    }
-    const validated = CasesListResponse.safeParse(payload)
+        timestamp: new Date().toISOString(),
+      },
+    };
+    const validated = CasesListResponse.safeParse(payload);
     if (!validated.success) {
-      console.error('Cases list response validation failed', validated.error)
+      console.error('Cases list response validation failed', validated.error);
       return error(
         500,
         makeHttpErrorPayload({
           message: 'Invalid response shape',
-          code: 'RESPONSE_VALIDATION_FAILED'
+          code: 'RESPONSE_VALIDATION_FAILED',
         })
-      )
+      );
     }
-    return json(payload)
+    return json(payload);
   } catch (err: any) {
-    console.error('Error fetching cases:', err)
+    console.error('Error fetching cases:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
-          details: err.errors
+          details: err.errors,
         })
-      )
+      );
     }
     return error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to fetch cases',
         code: 'FETCH_FAILED',
-        details: err.message
+        details: err.message,
       })
-    )
+    );
   }
-}
+};
 /*
  * POST /api/v1/cases
  * Create a new case
@@ -134,26 +127,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(
-        401,
-        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      )
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
     // Parse request body
-    const body = await request.json()
-    const validatedData = CreateCaseSchema.parse(body) as CreateCaseData
+    const body = await request.json();
+    const validatedData = CreateCaseSchema.parse(body) as CreateCaseData;
     // Create service instance
-    const casesService = new CasesCRUDService(getUserId(locals))
+    const casesService = new CasesCRUDService(getUserId(locals));
     // Create case
-    const caseId = await casesService.create(validatedData)
+    const caseId = await casesService.create(validatedData);
     // Get the created case details
-    const createdCase = await casesService.getById(caseId)
+    const createdCase = await casesService.getById(caseId);
     // Queue background synthesis
     try {
-      const jobId = await queueCaseSynthesis(caseId, getUserId(locals))
-      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`)
+      const jobId = await queueCaseSynthesis(caseId, getUserId(locals));
+      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
     } catch (queueError) {
-      console.error('Failed to queue case synthesis:', queueError)
+      console.error('Failed to queue case synthesis:', queueError);
       // Don't fail the request, just log the error
     }
     return json(
@@ -164,33 +154,33 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           caseId,
           userId: getUserId(locals),
           timestamp: new Date().toISOString(),
-          synthesisQueued: true
-        }
+          synthesisQueued: true,
+        },
       },
       { status: 201 }
-    )
+    );
   } catch (err: any) {
-    console.error('Error creating case:', err)
+    console.error('Error creating case:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
           message: 'Invalid case data',
           code: 'INVALID_DATA',
-          details: err.errors
+          details: err.errors,
         })
-      )
+      );
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }))
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));
     }
     return error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to create case',
         code: 'CREATE_FAILED',
-        details: err.message
+        details: err.message,
       })
-    )
+    );
   }
-}
+};

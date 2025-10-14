@@ -58,10 +58,7 @@ export interface InternalSSEState {
   dataLines: string[];
 }
 
-function finalizeEvent(
-  state: InternalSSEState,
-  emit: (evt: { event?: string; data: string }) => void
-) {
+function finalizeEvent(state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
   if (state.dataLines.length === 0) return;
   emit({ event: state.currentEvent, data: state.dataLines.join('\n') });
   state.currentEvent = undefined;
@@ -69,11 +66,7 @@ function finalizeEvent(
 }
 
 /** Incremental SSE line processor (per complete line without trailing \n) */
-function processSSELine(
-  line: string,
-  state: InternalSSEState,
-  emit: (evt: { event?: string; data: string }) => void
-) {
+function processSSELine(line: string, state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
   if (line === '' || line === '\r') {
     // Event boundary
     finalizeEvent(state, emit);
@@ -108,7 +101,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
     onDone,
     onError,
     endpoint = '/rag/query/stream',
-    extra = {}
+    extra = {},
   } = opts;
   let doneEmitted = false;
   try {
@@ -117,7 +110,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,
-      signal
+      signal,
     });
     if (!resp.ok || !resp.body) {
       throw new Error(`Stream request failed: ${resp.status}`);
@@ -232,19 +225,19 @@ export async function* streamRagGenerator(
         intent: base.intent,
         model: base.model ?? 'default',
         ingestionId: base.ingestionId,
-        ...(base.extra || {})
+        ...(base.extra || {}),
       });
       const resp = await fetch(base.endpoint || '/rag/query/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,
-        signal: outerAbort.signal
+        signal: outerAbort.signal,
       });
       if (!resp.ok || !resp.body) {
         if (attempt < maxRetries && isRetryableStatus(resp.status, retryStatusCodes)) {
           const delay = backoffMs * Math.pow(backoffFactor, attempt);
           yield { type: 'reconnect', attempt: attempt + 1, nextDelayMs: delay };
-          await new Promise((r) => setTimeout(r, delay));
+          await new Promise(r => setTimeout(r, delay));
           attempt++;
           continue;
         }
@@ -252,7 +245,7 @@ export async function* streamRagGenerator(
           type: 'error',
           error: new Error(`Stream request failed: ${resp.status}`),
           final: true,
-          attempt
+          attempt,
         };
         return;
       }
@@ -318,7 +311,7 @@ export async function* streamRagGenerator(
       if (!canRetry) return;
       const delay = backoffMs * Math.pow(backoffFactor, attempt);
       yield { type: 'reconnect', attempt: attempt + 1, nextDelayMs: delay };
-      await new Promise((r) => setTimeout(r, delay));
+      await new Promise(r => setTimeout(r, delay));
       attempt++;
       continue;
     }
@@ -327,9 +320,7 @@ export async function* streamRagGenerator(
 
 export interface RagStreamStore {
   tokens: Readable<string[]>;
-  status: Readable<
-    'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'
-  >;
+  status: Readable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>;
   error: Readable<Error | null>;
   tokenCount: Readable<number>;
   metrics: Readable<any>;
@@ -338,9 +329,7 @@ export interface RagStreamStore {
   patches: Readable<any[]>;
   appliedObject?: Readable<any>; // auto-applied object derived from patches
   summary: Readable<string | undefined>;
-  start: (
-    opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }
-  ) => Promise<void>;
+  start: (opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }) => Promise<void>;
   cancel: () => void;
   interrupt: (mode?: 'graceful' | 'force') => Promise<void>; // request server to stop; fallback to local summary
   clear: () => void;
@@ -388,9 +377,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   };
 
   const tokensW = writable<string[]>([]);
-  const statusW = writable<
-    'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'
-  >('idle');
+  const statusW = writable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>('idle');
   const errorW = writable<Error | null>(null);
   const tokenCountW = writable<number>(0);
   // Typed metrics store (startedAt is optional)
@@ -402,14 +389,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   const summaryW = writable<string | undefined>(undefined);
   const inverseStack: any[][] = [];
   const snapshots: { index: number; object: any }[] = [];
-  let patchCount = 0;
+  const patchCount = 0;
   const snapshotInterval = initial?.patches?.snapshotInterval ?? 20;
   // (Re)declared runtime state variables (restored after edit)
   let persistenceKey: string | undefined;
   let pendingBatch: string[] = [];
   let batchTimer: ReturnType<typeof setTimeout> | null = null;
-  let lastTokenTs: number | null = null;
-  let emaInterArrival = 0;
+  const lastTokenTs: number | null = null;
+  const emaInterArrival = 0;
   const EMA_ALPHA = 0.25;
   let abortCtrl: AbortController | null = null;
   let running = false;
@@ -433,12 +420,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return parsed as string[]; // legacy format
-      if (
-        parsed &&
-        typeof parsed === 'object' &&
-        parsed.version === 1 &&
-        typeof parsed.data === 'string'
-      ) {
+      if (parsed && typeof parsed === 'object' && parsed.version === 1 && typeof parsed.data === 'string') {
         return parsed.data.length ? parsed.data.split('\n') : [];
       }
     } catch (error) {}
@@ -462,7 +444,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 
   function flushBatch() {
     if (!pendingBatch.length) return;
-    tokensW.update((a) => {
+    tokensW.update(a => {
       const next = [...a, ...pendingBatch];
       tokenCountW.set(next.length);
       persist(next);
@@ -500,7 +482,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
         const segments = path
           .slice(1)
           .split('/')
-          .map((s) => s.replace(/~1/g, '/').replace(/~0/g, '~'));
+          .map(s => s.replace(/~1/g, '/').replace(/~0/g, '~'));
         let parent = target;
         for (let i = 0; i < segments.length - 1; i++) {
           const seg = segments[i];
@@ -575,11 +557,11 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 
     try {
       // Added: attempt counter local to start()
-      let attempt = 0;
+      const attempt = 0;
       for await (const ev of streamRagGenerator({ ...merged, signal: abortCtrl.signal })) {
         switch (ev.type) {
           case 'token':
-            statusW.update((s) => (s === 'connecting' || s === 'reconnecting' ? 'streaming' : s));
+            statusW.update(s => (s === 'connecting' || s === 'reconnecting' ? 'streaming' : s));
             if (batchingEnabled) {
               // batching path
               pendingBatch.push(ev.token);
@@ -587,7 +569,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               else scheduleBatch();
             } else {
               // direct push path
-              tokensW.update((a) => {
+              tokensW.update(a => {
                 const next = [...a, ev.token];
                 tokenCountW.set(next.length);
                 persist(next);
@@ -598,14 +580,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
           case 'reconnect':
             statusW.set('reconnecting');
             // use typed update (no any)
-            metricsW.update((m) => ({ ...m, reconnects: (m?.reconnects ?? 0) + 1 }));
+            metricsW.update(m => ({ ...m, reconnects: (m?.reconnects ?? 0) + 1 }));
             break;
           case 'patch':
-            patchesW.update((p) => [...p, ev.patch]);
+            patchesW.update(p => [...p, ev.patch]);
             if (initial?.patches?.autoApply) {
-              const prevObj = get(appliedObjectW) ?? (initial?.patches?.initialObject ?? {});
+              const prevObj = get(appliedObjectW) ?? initial?.patches?.initialObject ?? {};
               const mode = initial.patches?.mode || 'auto';
-              let newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
+              const newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
               let changed = false;
               let inverseForPatch: any[] | null = null;
               const keepInv = initial?.patches?.keepInverses;
@@ -634,7 +616,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
                   // Apply inverses as separate patches (if any)
                   if (inverseForPatch?.length) {
                     for (const inv of inverseForPatch) {
-                      patchesW.update((p) => [...p, inv]);
+                      patchesW.update(p => [...p, inv]);
                     }
                   }
                 } else {
@@ -694,7 +676,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               model: initial?.model,
               signal: abortCtrl?.signal,
               onDone: () => {},
-              onError: () => {}
+              onError: () => {},
             });
           } catch (e) {
             console.error('Graceful interrupt error:', e);
@@ -719,10 +701,13 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       const allPatches = get(patchesW);
       const targetPatches = upToIndex != null ? allPatches.slice(0, upToIndex) : allPatches;
       const initialObj = initial?.patches?.initialObject ?? {};
-      const newObj = targetPatches.reduce((obj, patch) => {
-        applyJsonPatch(obj, patch);
-        return obj;
-      }, JSON.parse(JSON.stringify(initialObj)));
+      const newObj = targetPatches.reduce(
+        (obj, patch) => {
+          applyJsonPatch(obj, patch);
+          return obj;
+        },
+        JSON.parse(JSON.stringify(initialObj))
+      );
       appliedObjectW.set(newObj);
     },
     undoLast(count = 1) {
@@ -731,11 +716,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       patchesW.set(newPatches);
       // Reapply remaining patches to update the derived object
       const initialObj = initial?.patches?.initialObject ?? {};
-      const newObj = newPatches.reduce((obj, patch) => {
-        applyJsonPatch(obj, patch);
-        return obj;
-      }, JSON.parse(JSON.stringify(initialObj)));
+      const newObj = newPatches.reduce(
+        (obj, patch) => {
+          applyJsonPatch(obj, patch);
+          return obj;
+        },
+        JSON.parse(JSON.stringify(initialObj))
+      );
       appliedObjectW.set(newObj);
-    }
+    },
   };
 }

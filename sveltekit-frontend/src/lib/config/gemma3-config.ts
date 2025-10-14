@@ -114,8 +114,8 @@ export const GEMMA3_INFERENCE_SETTINGS = {
 }
 }
 export function selectOptimalGemmaModel(
-  contextLength: number
-  availableMemory: number
+  contextLength: number,
+  availableMemory: number,
 ): Gemma3ModelConfig | null {
   // Since we only have one model, check if it fits memory requirements
   const model = GEMMA3_MODELS[0];
@@ -125,17 +125,17 @@ export function selectOptimalGemmaModel(
   return null;
 }
 export function formatGemmaPrompt(
-  template: string
-  systemPrompt: string
-  userInput: string
+  template: string,
+  systemPrompt: string,
+  userInput: string,
 ): string {
   return template
     .replace("{system_prompt}", systemPrompt)
     .replace("{user_input}", userInput);
 }
 export function getSystemPromptForContext(
-  queryType: string
-  hasLegalContext: boolean
+  queryType: string,
+  hasLegalContext: boolean,
 ): string {
   if (hasLegalContext) {
     switch (queryType) {

@@ -16,8 +16,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			const errorText = await response.text()
 			return json({
 					error: 'CUDA server error',
-					details: errorText
-					status: response.status
+					details: errorText,
+					status: response.status,
 				}, )
 				{ status: response.status }
 			)
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async () => {
 		const health = await response.json()
 		return json({
 			status: 'connected',
-			cuda_server: health
+			cuda_server: health,
 			endpoint: `${CUDA_SERVER_URL}/cuda/compute`
 		})
 	} catch (error) {

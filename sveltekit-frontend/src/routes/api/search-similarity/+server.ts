@@ -23,5 +23,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
   const results = await vectorSearch(queryVector, Math.min(topK, 50));
   return json({ results, count: results.length }, { status: 200 });
-}
+};
 export const GET: RequestHandler = async () => json({ service: 'search-similarity', status: 'ok' });

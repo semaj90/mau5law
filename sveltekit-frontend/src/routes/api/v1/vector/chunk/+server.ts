@@ -2,38 +2,38 @@
  * RAG Chunking API - Optimized text chunking for legal documents
  * Handles semantic chunking, paragraph-aware splitting, and CUDA-accelerated processing
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js'
-import { MinIOService } from '$lib/server/minio-service'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from '$lib/server/minio-service';
 interface ChunkingRequest {
-  text?: string
-  minioUrl?: string
+  text?: string;
+  minioUrl?: string;
   options: {
-    chunkSize?: number
-    chunkOverlap?: number
-    preserveParagraphs?: boolean
-    useSemanticChunking?: boolean
-    minChunkSize?: number
-    maxChunkSize?: number
-    extractMetadata?: boolean
-    useCUDA?: boolean
-    generateEmbeddings?: boolean
-  }
+    chunkSize?: number;
+    chunkOverlap?: number;
+    preserveParagraphs?: boolean;
+    useSemanticChunking?: boolean;
+    minChunkSize?: number;
+    maxChunkSize?: number;
+    extractMetadata?: boolean;
+    useCUDA?: boolean;
+    generateEmbeddings?: boolean;
+  };
 }
 interface SemanticChunk {
-  content: string
-  startIndex: number
-  endIndex: number
-  embedding?: number[]
+  content: string;
+  startIndex: number;
+  endIndex: number;
+  embedding?: number[];
   metadata: {
-    wordCount: number
+    wordCount: number;
     sentenceCount: number;
-    complexity: number
-    entities?: string[]
-    keyTerms?: string[]
+    complexity: number;
+    entities?: string[];
+    keyTerms?: string[];
     similarity?: number; // Similarity to previous chunk
-  }
+  };
 }
 interface ChunkingResponse {
   success: boolean;

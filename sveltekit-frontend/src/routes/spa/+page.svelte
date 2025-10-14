@@ -15,15 +15,15 @@
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [],
-    chatMessages: []
-  }
+    chatMessages: [],
+  };
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;
   $effect(() => {
     (async () => {
-// Simulate loading legal data
-    await loadSampleData();
-    isLoading = false;
+      // Simulate loading legal data
+      await loadSampleData();
+      isLoading = false;
     })();
   });
   async function loadSampleData() {
@@ -37,8 +37,8 @@
       metadata: {
         gemmaModel: 'gemma3:legal-latest',
         processingTime: Math.floor(Math.random() * 500) + 100,
-        analysisDate: new Date().toISOString()
-      }
+        analysisDate: new Date().toISOString(),
+      },
     }));
     // Generate sample evidence items
     legalData.evidence = Array.from({ length: 75 }, (_, i) => ({
@@ -50,8 +50,8 @@
       metadata: {
         collectedBy: 'Legal AI Assistant',
         verifiedBy: 'gemma3:legal-latest',
-        chainOfCustody: true
-      }
+        chainOfCustody: true,
+      },
     }));
     // Generate sample cases
     legalData.cases = Array.from({ length: 25 }, (_, i) => ({
@@ -63,7 +63,7 @@
         model: 'gemma3:legal-latest',
         confidence: Math.floor(Math.random() * 20) + 80,
         riskAssessment: getRandomRisk(),
-      }
+      },
     }));
     console.log('📊 Sample legal data loaded for SPA Canvas', {
       documents: legalData.documents.length,
@@ -83,7 +83,7 @@
       'Real Estate Contract',
       'Intellectual Property License',
       'Environmental Impact Report',
-      'Tax Liability Assessment'
+      'Tax Liability Assessment',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
@@ -98,13 +98,18 @@
       'Audio Transcript Analysis',
       'Physical Evidence Catalog',
       'Chain of Custody Documentation',
-      'Expert Opinion Report'
+      'Expert Opinion Report',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
-  function getRandomEvidenceTypeEnum(): "document" | "image" | "video" | "audio" | "transcript" {
-    const types: ("document" | "image" | "video" | "audio" | "transcript")[] =
-      ['document', 'image', 'video', 'audio', 'transcript'];
+  function getRandomEvidenceTypeEnum(): 'document' | 'image' | 'video' | 'audio' | 'transcript' {
+    const types: ('document' | 'image' | 'video' | 'audio' | 'transcript')[] = [
+      'document',
+      'image',
+      'video',
+      'audio',
+      'transcript',
+    ];
     return types[Math.floor(Math.random() * types.length)];
   }
   function getRandomCaseType(): string {
@@ -118,13 +123,12 @@
       'Tax Evasion Investigation',
       'Personal Injury Lawsuit',
       'Intellectual Property Theft',
-      'Securities Fraud Case'
+      'Securities Fraud Case',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
-  function getRandomPriority(): "critical" | "high" | "medium" | "low" {
-    const priorities: ("critical" | "high" | "medium" | "low")[] =
-      ['critical', 'high', 'medium', 'low'];
+  function getRandomPriority(): 'critical' | 'high' | 'medium' | 'low' {
+    const priorities: ('critical' | 'high' | 'medium' | 'low')[] = ['critical', 'high', 'medium', 'low'];
     const weights = [0.1, 0.2, 0.4, 0.3]; // Critical is rare
     const rand = Math.random();
     let cumulative = 0;
@@ -150,7 +154,7 @@
       'The merger agreement includes provisions for due diligence that require comprehensive review of financial statements, intellectual property portfolios, and regulatory compliance records...',
       'Patent application filing demonstrates novelty and non-obviousness criteria. Prior art search conducted using AI-enhanced legal research shows minimal overlap with existing patents...',
       'Criminal case evidence chain of custody has been verified through digital forensics analysis. All documentation meets federal evidence admissibility standards...',
-      'Civil litigation brief presents compelling arguments based on established precedent. Legal research indicates 85% probability of favorable outcome based on similar cases...'
+      'Civil litigation brief presents compelling arguments based on established precedent. Legal research indicates 85% probability of favorable outcome based on similar cases...',
     ];
     return samples[Math.floor(Math.random() * samples.length)];
   }
@@ -179,13 +183,13 @@
 
   async function simulateAIResponse() {
     // Simulate gemma3:legal-latest processing time
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 800));
     const aiResponses = [
-      'Based on gemma3:legal-latest analysis, I\'ve identified 3 key legal considerations in your case...',
+      "Based on gemma3:legal-latest analysis, I've identified 3 key legal considerations in your case...",
       'The legal precedent search using advanced AI models shows strong support for your position...',
       'Document review complete. Gemma3:legal-latest found 2 potential compliance issues that require attention...',
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
-      'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...'
+      'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...',
     ];
     // Select a response so `response` is defined and aiResponses is used
     const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
@@ -315,4 +319,3 @@
     overflow: hidden;
   }
 </style>
-

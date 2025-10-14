@@ -61,7 +61,7 @@ export class WebGPULangChainBridge {
    * Process legal document with integrated LangChain extraction + WebGPU caching
    */
   async processLegalDocument(
-    documentText: string
+    documentText: string,
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
@@ -75,7 +75,7 @@ export class WebGPULangChainBridge {
     const totalTime = Date.now() - startTime;
     return {
       extraction: extractionResult.data,
-      embeddings: embeddingResult
+      embeddings: embeddingResult,
       performance: {
         totalTime,
         extractionTime: extractionResult.processingTime,
@@ -117,8 +117,8 @@ export class WebGPULangChainBridge {
    * Extract legal information using LangChain + Ollama
    */
   private async extractWithLangChain(
-    text: string
-    config: LangChainWebGPUConfig
+    text: string,
+    config: LangChainWebGPUConfig,
   ): Promise<{
     data: {
       summary: string;
@@ -173,7 +173,7 @@ export class WebGPULangChainBridge {
         data: {
           summary: summary?.summary || 'Summary not available',
           keyTerms: summary?.keyTerms || [],
-          entities: entities || []
+          entities: entities || [],
           contractTerms: contractTerms?.terms || [],
           caseCitations: [], // Would extract if document type is case
           legalDates: [], // Would extract legal dates;
@@ -221,7 +221,7 @@ export class WebGPULangChainBridge {
         // Use WebGPU-optimized batch embeddings
         const embeddings = await getBatchLegalEmbeddings(
           sections.map(section => ({
-            text: section
+            text: section,
             documentType: config.documentType === 'general' ? 'case' : config.documentType,
             practiceArea: config.practiceArea,
           }))
@@ -260,8 +260,8 @@ export class WebGPULangChainBridge {
         documentEmbedding: new Float32Array(768).fill(0.1),
         compressionRatio: 1.0,
         processingTime: Date.now() - startTime,
-        cacheHit: false
-        webgpuUtilized: false
+        cacheHit: false,
+        webgpuUtilized: false,
       }
     }
   }
@@ -352,8 +352,8 @@ export class WebGPULangChainBridge {
       langExtractService.isOllamaAvailable(),
     ]);
     return {
-      webgpuOptimizer: webgpuStats
-      embeddingCache: cacheStats
+      webgpuOptimizer: webgpuStats,
+      embeddingCache: cacheStats,
       langchainService: {
         available: ollamaAvailable;
         models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
@@ -370,16 +370,16 @@ export class WebGPULangChainBridge {
 }
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
-  useWebGPUCache: true
+  useWebGPUCache: true,
   batchSize: 128,
-  cacheEmbeddings: true
-  compressVectors: true
+  cacheEmbeddings: true,
+  compressVectors: true,
   practiceArea: 'legal-ai',
   documentType: 'general',
 });
 // Convenience functions
 export async function processLegalDocumentWithWebGPU(
-  text: string
+  text: string,
   options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult> {
   return webgpuLangChainBridge.processLegalDocument(text, options);

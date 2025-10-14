@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit'
-import { z } from 'zod'
-import { Client } from 'minio'
-import { db } from '$lib/db/client'
-import { documents, cases } from '$lib/db/schema/rag-integration'
-import { eq } from 'drizzle-orm'
-import { randomUUID } from 'node:crypto'
+import { json } from '@sveltejs/kit';
+import { z } from 'zod';
+import { Client } from 'minio';
+import { db } from '$lib/db/client';
+import { documents, cases } from '$lib/db/schema/rag-integration';
+import { eq } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
 import type { RequestHandler } from './$types.js';
 const presignedRequestSchema = z.object({
   filename: z.string().min(1).max(255),
   contentType: z.string().min(1).max(100),
-  caseId: z.string().uuid()
-})
+  caseId: z.string().uuid(),
+});
 // Initialize MinIO client
 const minioClient = new Client({
   endPoint: 'localhost',

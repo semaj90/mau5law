@@ -39,11 +39,11 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
           interactionCount: ssrResult.ssrContext.userDictionary.interactionHistory.length
         },
         systemStatus: {
-          nesMemoryReady: true
-          gpuCacheReady: true
+          nesMemoryReady: true,
+          gpuCacheReady: true,
           qloraReady: orchestratorStats.completedQLoRAJobs > 0,
-          wasmBridgeReady: true
-          ollamaReady: true
+          wasmBridgeReady: true,
+          ollamaReady: true,
         }
       },
       prerenderedHTML: ssrResult.prerenderedHTML,
@@ -196,7 +196,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       sessionId,
-      cleaned: cleanup
+      cleaned: cleanup,
       message: 'Session deleted successfully',
       timestamp: new Date().toISOString()
     })

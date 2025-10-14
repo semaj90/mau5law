@@ -1,7 +1,7 @@
 /**
  * Type definitions for embedding operations
  * Enhanced for WASM + Web Workers + GPU AI
- */;
+ */
 }
 export interface EmbeddingRequest {
   text: string;

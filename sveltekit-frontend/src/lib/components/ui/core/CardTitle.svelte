@@ -7,15 +7,8 @@ https://svelte.dev/e/js_parse_error -->
   interface Props extends HTMLAttributes<HTMLHeadingElement> {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
   }
-  let {
-    level = 3,
-    class: className = '',
-    children,
-    ...restProps
-  }: Props & { children?: unknown } = $props();
-  let classes = $derived(
-    ['nier-card-title', className].filter(Boolean).join(' ')
-  );
+  let { level = 3, class: className = '', children, ...restProps }: Props & { children?: unknown } = $props();
+  let classes = $derived(['nier-card-title', className].filter(Boolean).join(' '));
 </script>
 
 {#if level === 1}

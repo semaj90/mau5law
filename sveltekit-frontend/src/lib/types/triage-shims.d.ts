@@ -37,4 +37,4 @@ declare class PNGEmbedExtractor {
 declare module 'png-embed-extractor' {
   export = PNGEmbedExtractor;
 }
-export {}
+export {};

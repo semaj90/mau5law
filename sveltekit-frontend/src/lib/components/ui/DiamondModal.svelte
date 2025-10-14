@@ -25,7 +25,7 @@
     glassEffect = true,
     diamondPattern = true,
     children,
-    footer
+    footer,
   }: Props = $props();
 
   interface DiamondModalEvents {
@@ -41,7 +41,7 @@
     small: 'max-w-md',
     medium: 'max-w-2xl',
     large: 'max-w-4xl',
-    fullscreen: 'max-w-full h-full'
+    fullscreen: 'max-w-full h-full',
   };
   onMount(() => {
     if (diamondPattern && canvasElement) {
@@ -51,17 +51,17 @@
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    }
+    };
   });
   function drawDiamondPattern() {
     if (!canvasElement) return;
     const ctx = canvasElement.getContext('2d');
     if (!ctx) return;
     const palette = getCurrentPalette();
-    const width = canvasElement.width = 400;
-    const height = canvasElement.height = 400;
+    const width = (canvasElement.width = 400);
+    const height = (canvasElement.height = 400);
     // Diamond pattern generation
-  const diamondSize = 40;
+    const diamondSize = 40;
     const rows = Math.ceil(height / diamondSize) + 2;
     const cols = Math.ceil(width / diamondSize) + 2;
     let offset = 0;
@@ -80,7 +80,7 @@
       for (let row = -1; row < rows; row++) {
         for (let col = -1; col < cols; col++) {
           const x = col * diamondSize + (row % 2 === 0 ? 0 : diamondSize / 2);
-          const y = row * diamondSize / 2;
+          const y = (row * diamondSize) / 2;
           // Draw playing card diamond
           ctx.beginPath();
           ctx.moveTo(x + diamondSize / 2, y + offset);
@@ -112,6 +112,7 @@
     }
   }
 </script>
+
 {#if open}
   <Portal>
     <div
@@ -126,8 +127,8 @@
         bind:this={modalElement}
         class="modal-container {sizeClasses[size]}"
         class:glass-effect={glassEffect}
-        onclick={(e) => e.stopPropagation()}
-        onkeydown={(e) => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
+        onkeydown={e => e.stopPropagation()}
         transition:scale={{ duration: 300, easing: backOut }}
         role="dialog"
         aria-modal="true"
@@ -136,10 +137,7 @@
       >
         <!-- Diamond pattern background -->
         {#if diamondPattern}
-          <canvas
-            bind:this={canvasElement}
-            class="diamond-canvas"
-          ></canvas>
+          <canvas bind:this={canvasElement} class="diamond-canvas"></canvas>
         {/if}
         <!-- Modal gradient overlay -->
         <div class="gradient-overlay"></div>
@@ -171,12 +169,7 @@
             </div>
             {@render footer?.()}
             {#if !footer}
-              <button
-                class="close-button"
-                onclick={closeModal}
-              >
-                Close
-              </button>
+              <button class="close-button" onclick={closeModal}> Close </button>
             {/if}
             <div class="card-corner bottom-right">
               <span class="suit">♦</span>
@@ -185,17 +178,12 @@
           </div>
         </div>
         <!-- Close button -->
-        <button
-          class="modal-close"
-          onclick={closeModal}
-          aria-label="Close modal"
-        >
-          ✕
-        </button>
+        <button class="modal-close" onclick={closeModal} aria-label="Close modal"> ✕ </button>
       </div>
     </div>
   </Portal>
 {/if}
+
 <style>
   .modal-overlay {
     position: fixed;
@@ -213,11 +201,7 @@
   }
   .modal-container {
     position: relative;
-    background: linear-gradient(135deg,
-      rgba(16, 16, 32, 0.95),
-      rgba(32, 16, 48, 0.95),
-      rgba(16, 16, 32, 0.95)
-    );
+    background: linear-gradient(135deg, rgba(16, 16, 32, 0.95), rgba(32, 16, 48, 0.95), rgba(16, 16, 32, 0.95));
     border-radius: 16px;
     border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow:
@@ -229,11 +213,7 @@
   }
   .glass-effect {
     backdrop-filter: blur(12px) saturate(1.8);
-    background: linear-gradient(135deg,
-      rgba(16, 16, 32, 0.85),
-      rgba(32, 16, 48, 0.85),
-      rgba(16, 16, 32, 0.85)
-    );
+    background: linear-gradient(135deg, rgba(16, 16, 32, 0.85), rgba(32, 16, 48, 0.85), rgba(16, 16, 32, 0.85));
   }
   .diamond-canvas {
     position: absolute;
@@ -270,11 +250,7 @@
     justify-content: space-between;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.05),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
   }
   .modal-title {
     font-size: 1.5rem;
@@ -297,11 +273,7 @@
     justify-content: space-between;
     padding: 1rem 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.03),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
   }
   .card-corner {
     display: flex;
@@ -351,10 +323,7 @@
   }
   .close-button {
     padding: 0.5rem 1.5rem;
-    background: linear-gradient(135deg,
-      rgba(138, 43, 226, 0.3),
-      rgba(30, 144, 255, 0.3)
-    );
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(30, 144, 255, 0.3));
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: #fff;
@@ -363,10 +332,7 @@
     transition: all 0.3;
   }
   .close-button:hover {
-    background: linear-gradient(135deg,
-      rgba(138, 43, 226, 0.5),
-      rgba(30, 144, 255, 0.5)
-    );
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.5), rgba(30, 144, 255, 0.5));
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);
   }
@@ -379,16 +345,10 @@
     border-radius: 4px;
   }
   .modal-body::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg,
-      rgba(138, 43, 226, 0.5),
-      rgba(30, 144, 255, 0.5)
-    );
+    background: linear-gradient(180deg, rgba(138, 43, 226, 0.5), rgba(30, 144, 255, 0.5));
     border-radius: 4px;
   }
   .modal-body::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg,
-      rgba(138, 43, 226, 0.7),
-      rgba(30, 144, 255, 0.7)
-    );
+    background: linear-gradient(180deg, rgba(138, 43, 226, 0.7), rgba(30, 144, 255, 0.7));
   }
 </style>

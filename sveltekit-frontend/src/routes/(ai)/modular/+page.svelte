@@ -17,13 +17,13 @@ https://svelte.dev/e/js_parse_error -->
     webgpuSupported: false,
     dimensionalCache: true,
     xstateMachine: true,
-    rabbitMqConnected: false
+    rabbitMqConnected: false,
   });
   $effect(() => {
     // Check system status
     (async () => {
       try {
-        const cudaResponse = await fetch('http://localhost:8096/health')
+        const cudaResponse = await fetch('http://localhost:8096/health');
         systemStatus.cudaService = cudaResponse.ok;
       } catch (error) {
         console.log('CUDA service not available');

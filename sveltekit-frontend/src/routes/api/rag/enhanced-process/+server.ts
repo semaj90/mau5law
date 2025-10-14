@@ -23,10 +23,10 @@ export const POST: RequestHandler = async ({ request }) => {
       documentId: `doc_${Date.now()}`,
       // Enhanced RAG results
       ragResults: {
-        embeddings: embeddings
-        semanticAnalysis: semanticAnalysis
-        recommendations: recommendations
-        metadata: enhancedMetadata
+        embeddings: embeddings,
+        semanticAnalysis: semanticAnalysis,
+        recommendations: recommendations,
+        metadata: enhancedMetadata,
         // Vector search preparation
         vectorData: {
           chunks: chunkForVectorSearch(documentContent),
@@ -71,7 +71,7 @@ async function generateVectorEmbeddings(content: any): Promise<any> {
   const chunks = chunkForVectorSearch(content.fullText)
   const embeddings = chunks.map((chunk, index) => ({
     chunk_id: `chunk_${index}`,
-    text: chunk
+    text: chunk,
     embedding: generateMockEmbedding(384), // 384-dimensional vector
     metadata: {
       section: findChunkSection(chunk, content.sections),
@@ -80,7 +80,7 @@ async function generateVectorEmbeddings(content: any): Promise<any> {
     }
   })
   return {
-    embeddings: embeddings
+    embeddings: embeddings,
     total_chunks: chunks.length,
     average_chunk_size: chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length,
     generationTime: Date.now() - startTime
@@ -383,7 +383,7 @@ function generateCompletenessRecommendations(analysis: any): unknown[] {
 }
 function generateResearchSuggestions(topics: string[], practiceArea: string): unknown[] {
   return topics.map(topic => ({
-    research_area: topic
+    research_area: topic,
     priority: Math.floor(Math.random() * 3) + 1,
     databases: ['Westlaw', 'Lexis', 'Google Scholar']
   })

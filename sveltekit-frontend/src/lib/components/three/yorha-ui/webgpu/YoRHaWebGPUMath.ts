@@ -285,7 +285,7 @@ export class YoRHaWebGPUMath {
       resultBuffer.destroy();
       const endTime = performance.now();
       return {
-        data: resultCopy
+        data: resultCopy,
         executionTime: endTime - startTime,
         memoryUsed: vectorsA.length * 3 * 4 * 3 // 3 buffers
       }
@@ -349,7 +349,7 @@ export class YoRHaWebGPUMath {
       resultBuffer.destroy();
       const endTime = performance.now();
       return {
-        data: resultCopy
+        data: resultCopy,
         executionTime: endTime - startTime,
         memoryUsed: matricesA.length * 16 * 4 * 3 // 3 buffers
       }
@@ -360,8 +360,8 @@ export class YoRHaWebGPUMath {
   }
   // Layout Computation
   async computeLayout(
-    nodes: Array<any>
-    containerSize: Vector3GPU
+    nodes: Array<any>,
+    containerSize: Vector3GPU,
     layoutType: 'row' | 'column' | 'grid';
   ): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
@@ -377,7 +377,7 @@ export class YoRHaWebGPUMath {
       // Return computed positions
       const positions = new Float32Array(nodes.length * 3);
       return {
-        data: positions
+        data: positions,
         executionTime: endTime - startTime,
         memoryUsed: nodes.length * 32 // Estimated
       }
@@ -388,7 +388,7 @@ export class YoRHaWebGPUMath {
   }
   // Physics Simulation
   async simulatePhysics(
-    particles: Array<any>
+    particles: Array<any>,
     deltaTime: number;
     gravity: Vector3GPU;
   ): Promise<YoRHaComputeResult> {
@@ -404,7 +404,7 @@ export class YoRHaWebGPUMath {
       const endTime = performance.now();
       const result = new Float32Array(particles.length * 6); // position + velocity
       return {
-        data: result
+        data: result,
         executionTime: endTime - startTime,
         memoryUsed: particles.length * 48 // Estimated
       }
@@ -421,7 +421,7 @@ export class YoRHaWebGPUMath {
       z: Math.random()
     });
     const testMatrices = Array.from({ length: 100 }, () => ({
-      elements: new Float32Array(16).map(() => Math.random()
+      elements: new Float32Array(16).map(() => Math.random(),
     });
     const vectorResult = await this.vectorAdd(testVectors, testVectors);
     const matrixResult = await this.matrixMultiply(testMatrices, testMatrices);
@@ -470,7 +470,7 @@ export class YoRHaWebGPUMath {
       result[i * 3 + 2] = vectorsA[i].z + vectorsB[i].z;
     }
     return {
-      data: result
+      data: result,
       executionTime: performance.now() - startTime,
       memoryUsed: vectorsA.length * 3 * 4
     }
@@ -485,7 +485,7 @@ export class YoRHaWebGPUMath {
       }
     }
     return {
-      data: result
+      data: result,
       executionTime: performance.now() - startTime,
       memoryUsed: matricesA.length * 16 * 4
     }
@@ -505,7 +505,7 @@ export class YoRHaWebGPUMath {
       positions[index * 3 + 2] = 0;
     });
     return {
-      data: positions
+      data: positions,
       executionTime: performance.now() - startTime,
       memoryUsed: nodes.length * 12
     }
@@ -532,7 +532,7 @@ export class YoRHaWebGPUMath {
       result[index * 6 + 5] = particle.velocity.z;
     });
     return {
-      data: result
+      data: result,
       executionTime: performance.now() - startTime,
       memoryUsed: particles.length * 48
     }
@@ -542,7 +542,7 @@ export class YoRHaWebGPUMath {
    * Integrates optimized mipmap shaders with WebGPU compute operations
    */
   async processTextureWithMipmaps(
-    sourceTexture: GPUTexture
+    sourceTexture: GPUTexture,
     options: {
       generateMipmaps?: boolean;
       filterMode?: 'linear' | 'nearest' | 'cubic';
@@ -579,7 +579,7 @@ export class YoRHaWebGPUMath {
             sourceTexture,
             options.legalDocument,
             {
-              enableMipmaps: true
+              enableMipmaps: true,
               streamingEnabled: options.enableStreaming,
               priority: options.legalDocument.riskLevel === 'critical' ? 'critical' : 'normal'
             }
@@ -590,28 +590,28 @@ export class YoRHaWebGPUMath {
       console.log(`✅ Texture processing completed in ${processingTime.toFixed(2)}ms`);
       console.log(`🔥 Generated ${mipmaps.length} mip levels with RTX optimization`);
       return {
-        processedTexture: sourceTexture
+        processedTexture: sourceTexture,
         mipmaps,
         processingTime,
-        memoryUsed: totalMemoryUsed
+        memoryUsed: totalMemoryUsed,
         optimization: {
           mipmapGenerated: generateMipmaps && mipmaps.length > 0,
-          rtxAcceleration: rtxOptimized
-          streamingUsed: options.enableStreaming || false
+          rtxAcceleration: rtxOptimized,
+          streamingUsed: options.enableStreaming || false,
         }
       }
     } catch (error) {
       console.error('Texture processing with mipmaps failed:', error);
       // Return basic result without mipmaps
       return {
-        processedTexture: sourceTexture
+        processedTexture: sourceTexture,
         mipmaps: [],
         processingTime: performance.now() - startTime,
         memoryUsed: 0,
         optimization: {
-          mipmapGenerated: false
-          rtxAcceleration: false
-          streamingUsed: false
+          mipmapGenerated: false,
+          rtxAcceleration: false,
+          streamingUsed: false,
         }
       }
     }
@@ -634,7 +634,7 @@ export class YoRHaWebGPUMath {
       const processPromises = legalDocuments.map(async (doc, index) => {
         // Process with context-aware optimization
         const result = await this.processTextureWithMipmaps(doc.texture, {
-          generateMipmaps: true
+          generateMipmaps: true,
           rtxOptimized: doc.riskLevel === 'critical' || doc.priority > 200,
           enableStreaming: doc.type === 'evidence' && doc.priority > 150,
           legalDocument: doc
@@ -648,9 +648,9 @@ export class YoRHaWebGPUMath {
       console.log(`🔥 Generated ${totalMipmaps} total mip levels across ${legalDocuments.length} documents`);
       return {
         processedDocuments: legalDocuments.length,
-        totalProcessingTime: totalTime
-        mipmapsGenerated: totalMipmaps
-        memoryOptimized: true
+        totalProcessingTime: totalTime,
+        mipmapsGenerated: totalMipmaps,
+        memoryOptimized: true,
       }
     } catch (error) {
       console.error('Legal document texture processing failed:', error);

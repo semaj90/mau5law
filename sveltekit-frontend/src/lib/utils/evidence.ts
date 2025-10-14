@@ -9,5 +9,5 @@ export function buildEvidenceTypeDetails(evidence: any): any {
     size: evidence?.size || evidence?.content?.length || 0,
     hasEmbedding: Array.isArray(evidence?.embedding),
     significance: evidence?.significance || evidence?.metadata?.significance || 'unknown',
-  }
+  };
 }

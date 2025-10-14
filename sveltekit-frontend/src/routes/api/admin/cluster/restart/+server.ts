@@ -186,8 +186,8 @@ function waitForWorkerExit(worker: Worker): Promise<void> {
  * Wait for cluster to have the expected number of healthy workers
  */
 function waitForHealthyWorkers(
-  clusterManager: any
-  expectedCount: number
+  clusterManager: any,
+  expectedCount: number,
   maxWait = 10000
 ): Promise<void> {
   return new Promise((resolve, reject) => {

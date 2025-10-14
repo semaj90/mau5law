@@ -42,7 +42,7 @@ export interface KeyboardNavigationParams {
  */
 export function accessibleClick(
   element: HTMLElement,
-  params: AccessibleClickParams,
+  params: AccessibleClickParams
 ): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
   let currentParams = params;
   function handleInteraction(_event: Event) {
@@ -97,7 +97,7 @@ export function accessibleClick(
       element.removeEventListener('click', handleInteraction);
       element.removeEventListener('keydown', handleKeyboard);
     },
-  }
+  };
 }
 /**
  * Focus Management Action
@@ -105,7 +105,7 @@ export function accessibleClick(
  */
 export function focusManagement(
   element: HTMLElement,
-  params: FocusManagementParams = {},
+  params: FocusManagementParams = {}
 ): { update: (params: FocusManagementParams) => void; destroy: () => void } {
   let currentParams = params;
   let previouslyFocused: HTMLElement | null = null;
@@ -213,7 +213,7 @@ export function focusManagement(
         previouslyFocused.focus();
       }
     },
-  }
+  };
 }
 /**
  * ARIA State Management Action
@@ -221,7 +221,7 @@ export function focusManagement(
  */
 export function ariaState(
   element: HTMLElement,
-  params: ARIAStateParams,
+  params: ARIAStateParams
 ): { update: (params: ARIAStateParams) => void; destroy: () => void } {
   let currentParams = params;
   function updateARIA() {
@@ -270,7 +270,7 @@ export function ariaState(
       // Clean up ARIA attributes if needed
       // (Usually not necessary as component will be destroyed)
     },
-  }
+  };
 }
 /**
  * Keyboard Navigation Action
@@ -278,7 +278,7 @@ export function ariaState(
  */
 export function keyboardNavigation(
   element: HTMLElement,
-  params: KeyboardNavigationParams,
+  params: KeyboardNavigationParams
 ): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
   let currentParams = params;
   function handleKeydown(_event: KeyboardEvent) {
@@ -303,7 +303,7 @@ export function keyboardNavigation(
     destroy() {
       element.removeEventListener('keydown', handleKeydown, currentParams.capture);
     },
-  }
+  };
 }
 /**
  * Live Region Action
@@ -315,9 +315,9 @@ export function keyboardNavigation(
 }
 export function liveRegion(
   element: HTMLElement,
-  params: LiveRegionParams = {},
+  params: LiveRegionParams = {}
 ): { update: (params: LiveRegionParams) => void; announce: (message: string) => void; destroy: () => void } {
-  let currentParams = { politeness: 'polite', atomic: false, relevant: 'additions', ...params }
+  let currentParams = { politeness: 'polite', atomic: false, relevant: 'additions', ...params };
   function setupLiveRegion() {
     element.setAttribute('aria-live', currentParams.politeness || 'polite');
     if (currentParams.atomic) {
@@ -348,14 +348,14 @@ export function liveRegion(
   setupLiveRegion();
   return {
     update(newParams: LiveRegionParams) {
-      currentParams = { ...currentParams, ...newParams }
+      currentParams = { ...currentParams, ...newParams };
       setupLiveRegion();
     },
     announce,
     destroy() {
       // Clean up if needed
     },
-  }
+  };
 }
 /**
  * Accessibility Utils
@@ -393,7 +393,7 @@ export function liveRegion(
       requestAnimationFrame(() => {
         if (announcer) announcer.textContent = message;
       });
-    }
+    };
   })(),
   // Manage focus order
   setFocusOrder: (elements: HTMLElement[]): void => {
@@ -424,7 +424,7 @@ export function liveRegion(
     }
     return descId;
   },
-}
+};
 /**
  * Composite Actions
  * Pre-configured combinations of actions for common patterns
@@ -436,7 +436,7 @@ export function liveRegion(
       onClose: () => void;
       title?: string;
       description?: string;
-    },
+    }
   ) => {
     // removed unused titleId assignment
     const descId = a11yUtils.generateId('modal-desc');
@@ -464,7 +464,7 @@ export function liveRegion(
         ariaAction.destroy();
         keyboardAction.destroy();
       },
-    }
+    };
   },
   // Accessible dropdown/combobox
   dropdown: (
@@ -473,7 +473,7 @@ export function liveRegion(
       isOpen: boolean;
       onToggle: () => void;
       onSelect: (_value: any) => void;
-    },
+    }
   ) => {
     const listboxId = a11yUtils.generateId('listbox');
     const ariaAction = ariaState(element, {
@@ -507,6 +507,6 @@ export function liveRegion(
         ariaAction.destroy();
         keyboardAction.destroy();
       },
-    }
+    };
   },
-}
+};

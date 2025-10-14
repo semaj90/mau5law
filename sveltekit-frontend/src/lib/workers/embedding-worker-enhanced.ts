@@ -237,8 +237,8 @@ export class EnhancedEmbeddingWorker {
    */
   private async processModelBatch(
     jobs: EmbeddingJob[];
-    model: string
-    batchId: string
+    model: string,
+    batchId: string,
   ): Promise<void> {
     // Process jobs in parallel with limited concurrency
     const chunks = this.chunkArray(jobs, this.concurrencyLimit);
@@ -316,7 +316,7 @@ export class EnhancedEmbeddingWorker {
       await globalLoki.completeJob(job.id, {
         embeddingSize: embedding.length,
         cached,
-        processingTimeMs: processingTime
+        processingTimeMs: processingTime,
         model: job?.model || 'unknown',
         batchId,
         efficiency: cached ? 'cache-hit' : 'computed',
@@ -376,7 +376,7 @@ export class EnhancedEmbeddingWorker {
    */
   private async setCachedEmbedding(
     text: string;
-    embedding: number[]
+    embedding: number[],
     model?: string
   ): Promise<void> {
     const modelKey = model || 'nomic-embed-text';
@@ -408,8 +408,8 @@ export class EnhancedEmbeddingWorker {
    * Upsert embedding to database using Drizzle-compatible SQL with pgvector
    */
   private async upsertEmbeddingToDB(
-    id: string
-    model: string
+    id: string,
+    model: string,
     embedding: number[];
     meta: Record<string, unknown>
   ): Promise<void> {
@@ -459,9 +459,9 @@ export class EnhancedEmbeddingWorker {
         retryCount,
         meta: {
           ...(job.meta || {}),
-          previousError: error
-          retryAttempt: retryCount
-          lastFailureTime: Date.now()
+          previousError: error,
+          retryAttempt: retryCount,
+          lastFailureTime: Date.now(),
         }
       }
       // Re-queue with exponential backoff: 2s, 4s, 8s
@@ -480,7 +480,7 @@ export class EnhancedEmbeddingWorker {
           'embedding:dlq',
           JSON.stringify({
             ...job,
-            finalError: error
+            finalError: error,
             failedAt: Date.now(),
             retryCount
           })
@@ -563,8 +563,8 @@ export class EnhancedEmbeddingWorker {
     const jobId = job.id || `job_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const fullJob: EmbeddingJob = {
       ...job,
-      id: jobId
-      createdAt: Date.now()
+      id: jobId,
+      createdAt: Date.now(),
     }
   await this.redisRpush(this.queueName, JSON.stringify(fullJob));
     console.log(`📥 Enqueued job ${jobId} for processing`);

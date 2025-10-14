@@ -153,10 +153,7 @@
 <style>
   .app-footer {
     margin-top: auto;
-    background: linear-gradient(135deg,
-      var(--nier-bg-secondary, #1e293b),
-      var(--nier-bg-tertiary, #0f1419)
-    ) !important;
+    background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important;
     border-top: 3px solid var(--n64-primary, #4a90e2) !important;
     font-family: 'Press Start 2P', cursive;
   }
@@ -254,17 +251,17 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-.resource-link {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  padding: 0.25rem 0.5rem !important;
-  font-size: 0.5rem !important;
-  text-decoration: none !important;
-}
-.resource-icon {
-  margin-right: 0.5rem;
-  font-size: 0.75rem;
+  .resource-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.5rem !important;
+    text-decoration: none !important;
+  }
+  .resource-icon {
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
   }
   .resource-label {
     font-size: 0.5rem;
@@ -310,10 +307,7 @@
   }
   /* Demo Footer */
   .demo-footer {
-    background: linear-gradient(135deg,
-      var(--n64-primary, #4a90e2),
-      var(--n64-secondary, #7ed321)
-    ) !important;
+    background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
     margin: 1rem 0 !important;
   }
   .demo-footer .title {

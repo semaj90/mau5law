@@ -117,6 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
+
 <div class="space-y-4">
   <textarea
     bind:this={textarea}
@@ -125,7 +126,8 @@ https://svelte.dev/e/js_parse_error -->
     {rows}
     {disabled}
     {readonly}
-    class="space-y-4" oninput={handleInput}
+    class="space-y-4"
+    oninput={handleInput}
     keydown={handleKeydown}
     onblur={handleBlur}
     onfocus={handleFocus}
@@ -145,11 +147,12 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   .smart-textarea-container {
     position: relative;
-}
+  }
   .smart-textarea {
     width: 100%;
     min-height: 100px;
@@ -165,29 +168,29 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     transition:
       border-color 0.15s ease,
       box-shadow 0.15s ease;
-}
+  }
   .smart-textarea:focus {
     outline: none;
     border-color: var(--pico-primary, #3b82f6);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+  }
   .smart-textarea:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
-}
+  }
   .smart-textarea:read-only {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
-}
+  }
   .smart-textarea::placeholder {
     color: var(--pico-muted-color, #6b7280);
-}
+  }
   .command-menu-overlay {
     pointer-events: auto;
-}
+  }
   /* Help text styling */
   .smart-textarea-container::after {
-    content: "Tip: Use # for commands or Ctrl/Cmd + K";
+    content: 'Tip: Use # for commands or Ctrl/Cmd + K';
     position: absolute;
     bottom: -1.5rem;
     right: 0;
@@ -195,8 +198,8 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     color: var(--pico-muted-color, #6b7280);
     opacity: 0;
     transition: opacity 0.15s ease;
-}
+  }
   .smart-textarea-container:hover::after {
     opacity: 1;
-}
+  }
 </style>

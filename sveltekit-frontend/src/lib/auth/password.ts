@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const SALT_ROUNDS = 12;
 /**
  * Hash a password using bcrypt
- */;
+ */
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
@@ -12,14 +12,14 @@ export async function hashPassword(password: string): Promise<string> {
  * Verify a password against its hash
  */
 export async function verifyPassword(
-  password: string
-  hashedPassword: string
+  password: string,
+  hashedPassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }
 /**
  * Generate a secure random token
- */;
+ */
 export function generateRandomToken(length: number = 32): string {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -31,7 +31,7 @@ export function generateRandomToken(length: number = 32): string {
 }
 /**
  * Generate a numeric verification code
- */;
+ */
 export function generateVerificationCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }

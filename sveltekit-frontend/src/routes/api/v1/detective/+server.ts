@@ -5,20 +5,28 @@
  * GET    /api/v1/detective - Get detective insights for cases
  * POST   /api/v1/detective - Run detective analysis
  */
-import { json, type RequestHandler } from '@sveltejs/kit'
-import { db, sql } from '$lib/server/db'
-import { z } from 'zod'
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { z } from 'zod';
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
-  analysisType: z.enum(['pattern_detection', 'anomaly_detection', 'connection_analysis', 'timeline_gap', 'risk_assessment']),
+  analysisType: z.enum([
+    'pattern_detection',
+    'anomaly_detection',
+    'connection_analysis',
+    'timeline_gap',
+    'risk_assessment',
+  ]),
   evidenceIds: z.array(z.string().uuid()).optional(),
-  options: z.object({
-    confidenceThreshold: z.number().min(0).max(1).default(0.7),
-    includeHypotheses: z.boolean().default(true),
-    maxInsights: z.number().min(1).max(50).default(10)
-  }).default({})
-})
+  options: z
+    .object({
+      confidenceThreshold: z.number().min(0).max(1).default(0.7),
+      includeHypotheses: z.boolean().default(true),
+      maxInsights: z.number().min(1).max(50).default(10),
+    })
+    .default({}),
+});
 // Add a derived TypeScript type for clearer typing (replaces inline z.infer usage)
 type DetectiveAnalysis = z.infer<typeof DetectiveAnalysisSchema>;
 /**
@@ -200,4 +208,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return json({ success: false, message: 'Analysis failed', details: errMsg }, { status: 500 });
   }
-}
+};

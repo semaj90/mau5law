@@ -155,7 +155,8 @@ https://svelte.dev/e/js_parse_error -->
           <label for="year-from" class="block text-sm font-medium mb-2"> Year From </label>
           <input
             id="year-from"
-            type="number";
+            type="number"
+            ;
             bind:value={searchFilters.yearFrom}
             placeholder="1900"
             min="1900"

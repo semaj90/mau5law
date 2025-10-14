@@ -281,7 +281,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get maximum Q-value for a state
-   */;
+   */
   private getMaxQValue(stateId: string, qTable: Map<string, Map<string, number>>): number {
     const stateActions = qTable.get(stateId);
     if (!stateActions || stateActions.size === 0) return 0;
@@ -489,7 +489,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get node by ID from Neo4j
-   */;
+   */
   private async getNodeById(nodeId: string): Promise<SoraGraphNode | null> {
     try {
       const session = this.neo4jDriver.session();
@@ -523,7 +523,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get neighbors of a node
-   */;
+   */
   private async getNeighbors(nodeId: string): Promise<Array<any>> {
     try {
       const session = this.neo4jDriver.session();
@@ -569,7 +569,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Calculate node score based on query embedding
-   */;
+   */
   private calculateNodeScore(node: SoraGraphNode, queryEmbedding: Float32Array): number {
     let score = 0;
     // Semantic similarity
@@ -623,7 +623,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Select best paths based on multiple criteria
-   */;
+   */
   private selectBestPaths(paths: SoraTraversalPath[], limit: number): SoraTraversalPath[] {
     // Sort by combined score
     paths.sort((a, b) => {
@@ -645,7 +645,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Cosine similarity between two embeddings
-   */;
+   */
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) return 0;
     let dotProduct = 0;
@@ -661,7 +661,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Map Neo4j labels to node types
-   */;
+   */
   private mapLabelsToType(labels: string[]): SoraGraphNode['type'] {
     if (labels.includes('Document')) return 'document';
     if (labels.includes('Case')) return 'case';
@@ -672,7 +672,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Map Neo4j relationship types
-   */;
+   */
   private mapRelationshipType(relType: string): SoraGraphEdge['type'] {
     const mapping: Record<string, SoraGraphEdge['type']> = {
       'CITES': 'cites',
@@ -724,7 +724,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Clear traversal cache
-   */;
+   */
   public clearCache(): void {
     this.traversalCache.clear();
   }
@@ -856,7 +856,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Create path embedding by averaging node embeddings
-   */;
+   */
   private createPathEmbedding(path: SoraTraversalPath): Float32Array | null {
     const nodeEmbeddings = path.nodes
       .map(node => node.embedding)
@@ -876,21 +876,21 @@ export class SoraGraphTraversal {
   }
   /**
    * Generate hash for path to track uniqueness
-   */;
+   */
   private generatePathHash(path: SoraTraversalPath): string {
     const pathSignature = path.nodes.map(n => `${n.id}:${n.type}`).join('|');
     return this.simpleHash(pathSignature);
   }
   /**
    * Hash Float32Array for caching
-   */;
+   */
   private hashFloat32Array(array: Float32Array): string {
     const buffer = new Uint8Array(array.buffer);
     return this.simpleHash(Array.from(buffer).join(','));
   }
   /**
    * Simple string hash function
-   */;
+   */
   private simpleHash(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -902,7 +902,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Infer user intent from query
-   */;
+   */
   private inferUserIntent(query: string): UserContext['intent'] {
     const searchKeywords = ['find', 'search', 'look', 'show', 'list'];
     const analyzeKeywords = ['analyze', 'examine', 'investigate', 'study', 'review'];
@@ -917,7 +917,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get current time of day
-   */;
+   */
   private getTimeOfDay(): UserContext['timeOfDay'] {
     const hour = new Date().getHours();
     if (hour < 6) return 'night';
@@ -946,7 +946,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get reinforcement learning statistics
-   */;
+   */
   public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<any> } {
     const entries = Array.from(this.reinforcementModel.entries());
     const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
@@ -961,7 +961,7 @@ export class SoraGraphTraversal {
   }
   /**
    * Get tensor store statistics
-   */;
+   */
   public async getTensorStats(): Promise<any> {
     try {
       // Get basic stats from tensor store

@@ -147,7 +147,7 @@ declare interface TensorSlice {
   dimensions: number[];
 }
 declare interface SOMConfig {
-  gridSize: { width: number; height: number }
+  gridSize: { width: number; height: number };
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;

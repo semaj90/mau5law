@@ -47,7 +47,7 @@ const createSessionStore = () => {
           isAuthenticated: !!pageData.user,
           isLoading: false,
           lastSyncAt: Date.now(),
-        }
+        };
       } else {
         // Fallback: Try to restore from persistent storage
         restoreSessionFromStorage();
@@ -61,7 +61,7 @@ const createSessionStore = () => {
         isAuthenticated: !!user,
         isLoading: false,
         lastSyncAt: Date.now(),
-      }
+      };
       // Persist to localStorage for faster subsequent loads
       if (browser && user) {
         try {
@@ -71,7 +71,7 @@ const createSessionStore = () => {
               user,
               session,
               cachedAt: Date.now(),
-            }),
+            })
           );
         } catch (e) {
           console.warn('Failed to cache session:', e);
@@ -86,7 +86,7 @@ const createSessionStore = () => {
         isAuthenticated: false,
         isLoading: false,
         lastSyncAt: Date.now(),
-      }
+      };
       // Clear persistent storage
       if (browser) {
         try {
@@ -115,7 +115,7 @@ const createSessionStore = () => {
               isAuthenticated: true,
               isLoading: false,
               lastSyncAt: Date.now(),
-            }
+            };
             return data.user;
           }
         }
@@ -126,7 +126,7 @@ const createSessionStore = () => {
           isAuthenticated: false,
           isLoading: false,
           lastSyncAt: Date.now(),
-        }
+        };
         return null;
       } catch (error) {
         console.error('Session refresh failed:', error);
@@ -138,8 +138,8 @@ const createSessionStore = () => {
     getCurrentUser: (): User | null => {
       return sessionState.user;
     },
-  }
-}
+  };
+};
 // Fallback session restoration from various storage mechanisms
 function restoreSessionFromStorage() {
   if (!browser) return;
@@ -192,7 +192,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
       uploadedBy: currentUser.id,
       uploaderRole: currentUser.role || 'viewer',
       uploaderEmail: currentUser.email || null,
-    }
+    };
   }
   // Try fallback mechanisms synchronously
   if (browser) {
@@ -205,7 +205,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
           uploadedBy: candidate.user.id,
           uploaderRole: candidate.user.role || 'viewer',
           uploaderEmail: candidate.user.email || null,
-        }
+        };
       }
       // Check localStorage
       const stored =
@@ -219,7 +219,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
             uploadedBy: parsed.user.id,
             uploaderRole: parsed.user.role || 'viewer',
             uploaderEmail: parsed.user.email || null,
-          }
+          };
         }
       }
     } catch (e) {
@@ -231,5 +231,5 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
     uploadedBy: 'anonymous',
     uploaderRole: 'viewer',
     uploaderEmail: null,
-  }
-}
+  };
+};

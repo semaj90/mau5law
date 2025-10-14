@@ -9,5 +9,5 @@ export const load: PageServerLoad = async ({ cookies, locals }) => {
     deleteSessionTokenCookie({ cookies } as any);
   }
   throw redirect(302, '/login');
-}
-export const actions: Actions = {}
+};
+export const actions: Actions = {};

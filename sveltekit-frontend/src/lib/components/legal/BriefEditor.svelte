@@ -314,7 +314,7 @@
           <button
             class="section-item"
             class:active={selectedSection === section.id}
-            onclick="{() => (selectedSection = section.id)}"
+            onclick={() => (selectedSection = section.id)}
             transition:fade
           >
             <div class="section-header">

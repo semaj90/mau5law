@@ -88,10 +88,10 @@ export class EnhancedVectorService {
     // Vector search
     const queryEmbedding = await this.generateEmbedding(query);
     const vectorResults = await this.qdrant.search(this.collectionName, {
-      vector: queryEmbedding
+      vector: queryEmbedding,
       limit,
-      score_threshold: threshold
-      with_payload: true
+      score_threshold: threshold,
+      with_payload: true,
     });
     // Keyword search in PostgreSQL
     const keywordResults = await this.keywordSearch(query, limit);

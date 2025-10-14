@@ -61,8 +61,8 @@ export class ComprehensiveAgentOrchestrator {
   constructor() {
     this.multicoreService = getContext7MulticoreService({
       workerCount: 6,
-      enableLegalBert: true
-      enableGoLlama: true
+      enableLegalBert: true,
+      enableGoLlama: true,
       maxConcurrentTasks: 25,
       enableGPU: true
     });
@@ -217,8 +217,8 @@ export class ComprehensiveAgentOrchestrator {
     }
   }
   private async executeAgent(
-    agentName: string
-    request: ComprehensiveAgentRequest
+    agentName: string,
+    request: ComprehensiveAgentRequest,
     multicoreAnalysis: any;
   ): Promise<any> {
     const baseOptions = {
@@ -341,13 +341,13 @@ export class ComprehensiveAgentOrchestrator {
   }
   /**
    * Simulate Claude Agent execution (fallback when agent not available)
-   */;
+   */
   private async simulateClaudeAgent(request: ClaudeAgentRequest): Promise<any> {
     return {
       output: `Simulated Claude response for: ${request.prompt.substring(0, 100)}...`,
       score: 0.8,
       metadata: {
-        success: true
+        success: true,
         agent: 'claude-simulated',
         reasoning: 'Simulated Claude reasoning based on prompt analysis',
         timestamp: new Date().toISOString()
@@ -356,13 +356,13 @@ export class ComprehensiveAgentOrchestrator {
   }
   /**
    * Simulate CrewAI Agent execution (fallback when agent not available)
-   */;
+   */
   private async simulateCrewAIAgent(request: CrewAIAgentRequest): Promise<any> {
     return {
       output: `Simulated CrewAI response for: ${request.prompt.substring(0, 100)}...`,
       score: 0.75,
       metadata: {
-        success: true
+        success: true,
         agent: 'crewai-simulated',
         crewType: 'legal-analysis',
         timestamp: new Date().toISOString()
@@ -371,13 +371,13 @@ export class ComprehensiveAgentOrchestrator {
   }
   /**
    * Simulate AutoGen Agent execution (fallback when agent not available)
-   */;
+   */
   private async simulateAutoGenAgent(request: AutoGenAgentRequest): Promise<any> {
     return {
       output: `Simulated AutoGen response for: ${request.prompt.substring(0, 100)}...`,
       score: 0.7,
       metadata: {
-        success: true
+        success: true,
         agent: 'autogen-simulated',
         analysisType: 'automated-review',
         timestamp: new Date().toISOString()
@@ -389,15 +389,15 @@ export class ComprehensiveAgentOrchestrator {
 export const comprehensiveOrchestrator = new ComprehensiveAgentOrchestrator();
 // Helper function for quick agent execution
 export async function executeAgents(
-  prompt: string
+  prompt: string,
   options: ComprehensiveAgentRequest['options'] = {}
 ): Promise<ComprehensiveAgentResponse> {
   return await comprehensiveOrchestrator.executeComprehensiveAnalysis({
     prompt,
     options: {
       agents: ['claude', 'crewai', 'autogen'],
-      useMulticoreAnalysis: true
-      includeContext7: true
+      useMulticoreAnalysis: true,
+      includeContext7: true,
       ...options
     }
   });
@@ -410,9 +410,9 @@ export async function analyzeAndFixErrors(errorData: any): Promise<any> {
       options: {
         agents: ['claude', 'crewai'],
         priority: 'high',
-        useMulticoreAnalysis: true
-        errorAnalysis: true
-        autoFix: true
+        useMulticoreAnalysis: true,
+        errorAnalysis: true,
+        autoFix: true,
       }
     }),
     comprehensiveOrchestrator.analyzeErrors(errorData)

@@ -70,7 +70,7 @@
       version: number;
       wordCount: number;
       completionScore: number;
-    }
+    };
     aiSuggestions: AISuggestion[];
     status: 'draft' | 'review' | 'finalized';
     collaborators: string[];
@@ -94,12 +94,24 @@
       const response = await fetch('/api/ai/document-drafting/types', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        documentTypes = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).documentTypes || [];
+        documentTypes =
+          (
+            data as {
+              documentTypes?: any;
+              templates?: any;
+              history?: any;
+              version?: any;
+              completionScore?: any;
+              lastModified?: any;
+              wordCount?: any;
+              createdAt?: any;
+            }
+          ).documentTypes || [];
       }
     } catch (error) {
       console.error('Error loading document types:', error);
@@ -110,12 +122,24 @@
       const response = await fetch('/api/ai/document-drafting/templates', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        templates = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).templates || [];
+        templates =
+          (
+            data as {
+              documentTypes?: any;
+              templates?: any;
+              history?: any;
+              version?: any;
+              completionScore?: any;
+              lastModified?: any;
+              wordCount?: any;
+              createdAt?: any;
+            }
+          ).templates || [];
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -126,12 +150,24 @@
       const response = await fetch('/api/ai/document-drafting/history', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        draftHistory = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).history || [];
+        draftHistory =
+          (
+            data as {
+              documentTypes?: any;
+              templates?: any;
+              history?: any;
+              version?: any;
+              completionScore?: any;
+              lastModified?: any;
+              wordCount?: any;
+              createdAt?: any;
+            }
+          ).history || [];
       }
     } catch (error) {
       console.error('Error loading draft history:', error);
@@ -152,7 +188,7 @@
       const response = await fetch('/api/ai/document-drafting', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(request),
       });
@@ -161,7 +197,9 @@
         currentDocument = (result as { document?: any; content?: any; suggestions?: any }).document;
         documentContent = currentDocument.content;
       } else {
-        throw new Error(`Failed to start document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(
+          `Failed to start document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`
+        );
       }
     } catch (error) {
       console.error('Error starting document:', error);
@@ -185,7 +223,7 @@
       const response = await fetch('/api/ai/document-drafting/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(request),
       });
@@ -194,7 +232,8 @@
         documentContent = (result as { document?: any; content?: any; suggestions?: any }).content;
         if (currentDocument) {
           currentDocument.content = (result as { document?: any; content?: any; suggestions?: any }).content;
-          currentDocument.aiSuggestions = (result as { document?: any; content?: any; suggestions?: any }).suggestions || [];
+          currentDocument.aiSuggestions =
+            (result as { document?: any; content?: any; suggestions?: any }).suggestions || [];
         }
       }
     } catch (error) {
@@ -222,7 +261,7 @@
       const response = await fetch('/api/ai/document-drafting/save', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(request),
       });
@@ -239,11 +278,11 @@
       const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          documentId: currentDocument.id
-        })
+          documentId: currentDocument.id,
+        }),
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
@@ -262,40 +301,62 @@
   }
   function getDocumentTypeIcon(category: string): string {
     switch (category) {
-      case 'litigation': return '⚖️';
-      case 'contract': return '📄';
-      case 'compliance': return '✅';
-      case 'discovery': return '🔍';
-      case 'pleading': return '📝';
-      default: return '📋';
+      case 'litigation':
+        return '⚖️';
+      case 'contract':
+        return '📄';
+      case 'compliance':
+        return '✅';
+      case 'discovery':
+        return '🔍';
+      case 'pleading':
+        return '📝';
+      default:
+        return '📋';
     }
   }
   function getCategoryColor(category: string): string {
     switch (category) {
-      case 'litigation': return 'bg-red-100 text-red-800 border-red-200';
-      case 'contract': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'compliance': return 'bg-green-100 text-green-800 border-green-200';
-      case 'discovery': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'pleading': return 'bg-orange-100 text-orange-800 border-orange-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'litigation':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'contract':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'compliance':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'discovery':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'pleading':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   function getComplexityColor(complexity: string): string {
     switch (complexity) {
-      case 'basic': return 'text-green-600';
-      case 'intermediate': return 'text-yellow-600';
-      case 'advanced': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'basic':
+        return 'text-green-600';
+      case 'intermediate':
+        return 'text-yellow-600';
+      case 'advanced':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
     }
   }
   function getSuggestionTypeIcon(type: string): string {
     switch (type) {
-      case 'content': return '✏️';
-      case 'structure': return '🏗️';
-      case 'legal_point': return '⚖️';
-      case 'citation': return '📖';
-      case 'language': return '🔤';
-      default: return '💡';
+      case 'content':
+        return '✏️';
+      case 'structure':
+        return '🏗️';
+      case 'legal_point':
+        return '⚖️';
+      case 'citation':
+        return '📖';
+      case 'language':
+        return '🔤';
+      default:
+        return '💡';
     }
   }
   let filteredTemplates = $derived(() => {
@@ -317,6 +378,7 @@
     return currentDocument.aiSuggestions.filter(s => !s.applied);
   });
 </script>
+
 <svelte:head>
   <title>Legal Document Drafting - Legal AI Platform</title>
 </svelte:head>
@@ -329,12 +391,9 @@
     <div class="header-actions">
       {#if currentDocument}
         <button type="button" class="nes-btn" onclick={saveDocument}>Save Draft</button>
-        <button type="button" class="nes-btn btn-ghost" onclick={() => showPreview = true}>Preview</button>
+        <button type="button" class="nes-btn btn-ghost" onclick={() => (showPreview = true)}>Preview</button>
       {:else}
-        <button type="button" class="nes-btn"
-          onclick={startNewDocument}
-          disabled={!selectedDocumentType || isDrafting}
-        >
+        <button type="button" class="nes-btn" onclick={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -350,12 +409,7 @@
           <div class="document-types-list">
             {#each documentTypes as docType}
               <label class="document-type-option">
-                <input
-                  type="radio"
-                  bind:group={selectedDocumentType}
-                  value={docType.id}
-                  class="sr-only"
-                />
+                <input type="radio" bind:group={selectedDocumentType} value={docType.id} class="sr-only" />
                 <!-- Fixed class name to match CSS (.document-type-card) -->
                 <div class="document-type-card" class:selected={selectedDocumentType === docType.id}>
                   <div class="type-header">
@@ -363,7 +417,7 @@
                     <div>
                       <h4>{docType.name}</h4>
                       <!-- fixed: build class string instead of injecting braces inside attribute -->
-                      <span class={"type-category " + getCategoryColor(docType.category)}>
+                      <span class={'type-category ' + getCategoryColor(docType.category)}>
                         {docType.category}
                       </span>
                     </div>
@@ -371,7 +425,7 @@
                   <p class="type-description">{docType.description}</p>
                   <div class="type-metadata">
                     <!-- fixed: build class string for complexity -->
-                    <span class={"complexity " + getComplexityColor(docType.complexity)}>
+                    <span class={'complexity ' + getComplexityColor(docType.complexity)}>
                       {docType.complexity}
                     </span>
                     <span class="estimated-time">{docType.estimatedTime}</span>
@@ -488,10 +542,13 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <button class="nes-btn btn-sm" onclick={() => applySuggestion(suggestion)}>
-                      Apply
-                    </button>
-                    <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* dismiss TODO */ }}>
+                    <button class="nes-btn btn-sm" onclick={() => applySuggestion(suggestion)}> Apply </button>
+                    <button
+                      class="nes-btn btn-ghost btn-sm"
+                      onclick={() => {
+                        /* dismiss TODO */
+                      }}
+                    >
                       Dismiss
                     </button>
                   </div>
@@ -504,16 +561,36 @@
         <section class="sidebar-section">
           <h3>Quick Actions</h3>
           <div class="quick-actions">
-            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Introduction TODO */ }}>
+            <button
+              class="nes-btn btn-ghost btn-sm"
+              onclick={() => {
+                /* Add Introduction TODO */
+              }}
+            >
               Add Introduction
             </button>
-            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Conclusion TODO */ }}>
+            <button
+              class="nes-btn btn-ghost btn-sm"
+              onclick={() => {
+                /* Add Conclusion TODO */
+              }}
+            >
               Add Conclusion
             </button>
-            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Improve Language TODO */ }}>
+            <button
+              class="nes-btn btn-ghost btn-sm"
+              onclick={() => {
+                /* Improve Language TODO */
+              }}
+            >
               Improve Language
             </button>
-            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Citations TODO */ }}>
+            <button
+              class="nes-btn btn-ghost btn-sm"
+              onclick={() => {
+                /* Add Citations TODO */
+              }}
+            >
               Add Citations
             </button>
           </div>
@@ -532,7 +609,8 @@
               <div class="selected-type-preview nier-bits-card">
                 <div class="card-header">
                   <h3 class="text-lg font-semibold">
-                    {getDocumentTypeIcon(selectedDocType.category)} {selectedDocType.name}
+                    {getDocumentTypeIcon(selectedDocType.category)}
+                    {selectedDocType.name}
                   </h3>
                   <p class="text-sm text-muted-foreground">{selectedDocType.description}</p>
                 </div>
@@ -554,17 +632,18 @@
         <!-- Document Editor -->
         <div class="document-editor">
           <div class="editor-toolbar">
-              <div class="toolbar-left">
-              <input
-                type="text"
-                bind:value={documentTitle}
-                placeholder="Document Title"
-                class="title-input"
-              />
+            <div class="toolbar-left">
+              <input type="text" bind:value={documentTitle} placeholder="Document Title" class="title-input" />
             </div>
             <div class="toolbar-right">
               <span class="word-count">{wordCount} words</span>
-              <button class="nes-btn btn-ghost btn-sm" disabled={isGenerating} onclick={() => { /* AI Assist TODO */ }}>
+              <button
+                class="nes-btn btn-ghost btn-sm"
+                disabled={isGenerating}
+                onclick={() => {
+                  /* AI Assist TODO */
+                }}
+              >
                 {isGenerating ? 'Generating...' : 'AI Assist'}
               </button>
             </div>
@@ -584,7 +663,13 @@
                 class="ai-prompt-input"
                 onkeydown={handlePromptKeydown}
               />
-              <button class="nes-btn btn-sm" disabled={isGenerating} onclick={() => { /* quick generate TODO */ }}>
+              <button
+                class="nes-btn btn-sm"
+                disabled={isGenerating}
+                onclick={() => {
+                  /* quick generate TODO */
+                }}
+              >
                 Generate
               </button>
             </div>
@@ -653,12 +738,8 @@
           </div>
         </div>
         <div class="dialog-actions">
-          <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}>
-            Close Preview
-          </button>
-          <button class="nes-btn">
-            Export PDF
-          </button>
+          <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}> Close Preview </button>
+          <button class="nes-btn"> Export PDF </button>
         </div>
       {/if}
     </div>
@@ -670,7 +751,10 @@
     max-width: 1600px;
     margin: 0 auto;
     padding: 2rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
   .drafting-header {
     display: flex;

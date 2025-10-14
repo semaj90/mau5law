@@ -89,9 +89,9 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
       documentId: input.evidenceId,
       content: input.content,
       options: {
-        extractText: true
-        generateEmbeddings: true
-        performAnalysis: true
+        extractText: true,
+        generateEmbeddings: true,
+        performAnalysis: true,
       },
       metadata: {
         userId: input.userId,
@@ -443,7 +443,7 @@ export const evidenceProcessingMachine = createMachine();
               guard: ({ context }) => context.retryCount < context.maxRetries,
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
-                error: undefined
+                error: undefined,
                 progress: 10,
                 stage: "retrying",
                 stageStartTime: Date.now()

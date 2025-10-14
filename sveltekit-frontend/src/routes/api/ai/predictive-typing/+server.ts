@@ -160,7 +160,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         queryCompletions = await topologyPredictiveAnalyticsEngine.generateQueryCompletions(
           query,
           {
-            glyphs: glyphContext
+            glyphs: glyphContext,
             user_session: { session_id, query_history, interaction_patterns },
             topic_focus: context.current_focus
           },)
@@ -223,7 +223,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Phase 6: Build complete response
     const response: PredictiveTypingResponse = {
       success: true,
-      suggestions: topSuggestions
+      suggestions: topSuggestions,
       analytics: {
         predicted_intent: analyticsResult?.user_intent_analysis?.primary_intent || 'search',
         intent_confidence: analyticsResult?.user_intent_analysis?.confidence || 0.5,
@@ -235,12 +235,12 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         })
       },
       performance: {
-        total_time_ms: totalTime
-        glyph_retrieval_ms: glyphRetrievalTime
-        analytics_processing_ms: analyticsProcessingTime
-        cache_hit_rate: cacheHitRate
-        compression_ratio: compressionRatio
-        glyphs_processed: glyphContext.length
+        total_time_ms: totalTime,
+        glyph_retrieval_ms: glyphRetrievalTime,
+        analytics_processing_ms: analyticsProcessingTime,
+        cache_hit_rate: cacheHitRate,
+        compression_ratio: compressionRatio,
+        glyphs_processed: glyphContext.length,
       },
       system_status: {
         lod_cache_size: lodCacheEngine.getCacheStats().total_entries,
@@ -294,12 +294,12 @@ const, originalGETHandler: RequestHandler = async () => {
       success: true,
       service: 'predictive-typing-api',
       capabilities: {
-        lod_caching: true
-        topology_analytics: true
-        glyph_compression: true
-        real_time_learning: true
-        vector_metadata_encoding: true
-        xstate_coordination: true
+        lod_caching: true,
+        topology_analytics: true,
+        glyph_compression: true,
+        real_time_learning: true,
+        vector_metadata_encoding: true,
+        xstate_coordination: true,
       },
       performance_stats: {
         lod_cache: {

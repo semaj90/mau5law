@@ -12,7 +12,9 @@
   // ensure there's always a valid action to avoid runtime/TS errors
   const menuAction = menu ?? ((node: HTMLElement) => ({ destroy() {} }));
 
-  const emptySnippet = { "{@render ...} must be called with a Snippet": "import type { Snippet } from 'svelte'" } as unknown as Snippet;
+  const emptySnippet = {
+    '{@render ...} must be called with a Snippet': "import type { Snippet } from 'svelte'",
+  } as unknown as Snippet;
 
   // return any so the {@render ...} callsite accepts the value despite Svelte's branded Snippet type
   function renderChild(): any {

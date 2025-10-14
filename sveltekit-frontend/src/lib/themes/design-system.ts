@@ -141,10 +141,10 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.nes,
     mode: 'retro' as const,
     effects: {
-      pixelatedBorders: true
-      scanlines: false
-      crtEffect: false
-      glowEffects: false
+      pixelatedBorders: true,
+      scanlines: false,
+      crtEffect: false,
+      glowEffects: false,
     }
   },
   snesMode7: {
@@ -152,10 +152,10 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.snes,
     mode: 'retro' as const,
     effects: {
-      pixelatedBorders: false
-      scanlines: true
-      crtEffect: true
-      glowEffects: true
+      pixelatedBorders: false,
+      scanlines: true,
+      crtEffect: true,
+      glowEffects: true,
     }
   },
   ps1Legal: {
@@ -163,10 +163,10 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.ps1,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: false
-      scanlines: false
-      crtEffect: false
-      glowEffects: true
+      pixelatedBorders: false,
+      scanlines: false,
+      crtEffect: false,
+      glowEffects: true,
     }
   },
   n64Ultra: {
@@ -174,10 +174,10 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.n64,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: true
-      scanlines: false
-      crtEffect: false
-      glowEffects: true
+      pixelatedBorders: true,
+      scanlines: false,
+      crtEffect: false,
+      glowEffects: true,
     }
   },
   ps2Emotion: {
@@ -186,9 +186,9 @@ export const THEME_PRESETS = {
     mode: 'dark' as const,
     effects: {
       pixelatedBorders: false;
-      scanlines: false
-      crtEffect: false
-      glowEffects: true
+      scanlines: false,
+      crtEffect: false,
+      glowEffects: true,
     }
   }
 } as const;
@@ -196,7 +196,7 @@ export const THEME_PRESETS = {
  * Create a custom theme by combining design tokens with a console palette
  */
 export function createCustomTheme(
-  themeName: keyof typeof THEME_PRESETS
+  themeName: keyof typeof THEME_PRESETS,
   overrides?: Partial<CustomTheme>
 ): CustomTheme {
   const preset = THEME_PRESETS[themeName];

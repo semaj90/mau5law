@@ -3,51 +3,51 @@
  *
  * Provides detailed statistics about queue performance and message flow
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 /* Helpers: runtime detection and fetch-with-timeout */
-const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:15672'
-const RABBITMQ_USER = process.env.RABBITMQ_USER ?? process.env.RABBIT_USER
-const RABBITMQ_PASS = process.env.RABBITMQ_PASS ?? process.env.RABBIT_PASS
+const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:15672';
+const RABBITMQ_USER = process.env.RABBITMQ_USER ?? process.env.RABBIT_USER;
+const RABBITMQ_PASS = process.env.RABBITMQ_PASS ?? process.env.RABBIT_PASS;
 
 async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, ms = 4000) {
-	const controller = new AbortController()
-	const id = setTimeout(() => controller.abort(), ms)
-	try {
-		const res = await fetch(input, { ...init, signal: controller.signal })
-		return res
-	} finally {
-		clearTimeout(id)
-	}
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  try {
+    const res = await fetch(input, { ...init, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
 }
 
 async function rabbitManagementAvailable(): Promise<boolean> {
-	try {
-		// Try the overview endpoint which requires auth on default installs
-		const url = `${RABBITMQ_MGMT_HOST.replace(/\/$/, '')}/api/overview`
-		const headers: Record<string, string> = {}
-		if (RABBITMQ_USER && RABBITMQ_PASS) {
-			const basic = Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64')
-			headers['Authorization'] = `Basic ${basic}`
-		}
-		const res = await fetchWithTimeout(url, { headers }, 2000)
-		return !!(res && res.ok)
-	} catch {
-		return false
-	}
+  try {
+    // Try the overview endpoint which requires auth on default installs
+    const url = `${RABBITMQ_MGMT_HOST.replace(/\/$/, '')}/api/overview`;
+    const headers: Record<string, string> = {};
+    if (RABBITMQ_USER && RABBITMQ_PASS) {
+      const basic = Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64');
+      headers['Authorization'] = `Basic ${basic}`;
+    }
+    const res = await fetchWithTimeout(url, { headers }, 2000);
+    return !!(res && res.ok);
+  } catch {
+    return false;
+  }
 }
 
 function detectRuntime(): 'docker' | 'windows' | 'unknown' {
-	if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return 'docker'
-	if (process.platform === 'win32') return 'windows'
-	return 'unknown'
+  if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return 'docker';
+  if (process.platform === 'win32') return 'windows';
+  return 'unknown';
 }
 
 export const GET: RequestHandler = async ({ url }) => {
-	try {
-		const queueName = url.searchParams.get('queue')
-		const detailed = url.searchParams.get('detailed') === 'true';
+  try {
+    const queueName = url.searchParams.get('queue');
+    const detailed = url.searchParams.get('detailed') === 'true';
     const timestamp = new Date().toISOString();
 
     // Base simulated stats (kept as before)
@@ -260,20 +260,23 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Runtime': runtime,
       },
     });
-	} catch (error) {
-		console.error('Failed to fetch queue statistics:', error)
-		return json({
-			error: 'Failed to fetch queue statistics',
-			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString()
-		}, { status: 500 })
-	}
-}
+  } catch (error) {
+    console.error('Failed to fetch queue statistics:', error);
+    return json(
+      {
+        error: 'Failed to fetch queue statistics',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
+  }
+};
 
 export const POST: RequestHandler = async ({ request }) => {
-	try {
-		const { action, queue } = await request.json()
-		const runtime = detectRuntime();
+  try {
+    const { action, queue } = await request.json();
+    const runtime = detectRuntime();
     const mgmtAvailable = await rabbitManagementAvailable();
 
     // If management API available, try to execute real actions (best-effort), otherwise simulate
@@ -334,12 +337,15 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         return json({ error: `Unknown action: ${action}` }, { status: 400 });
     }
-	} catch (error) {
-		console.error('Queue management action failed:', error)
-		return json({
-			error: 'Queue management action failed',
-			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString()
-		}, { status: 500 })
-	}
-}
+  } catch (error) {
+    console.error('Queue management action failed:', error);
+    return json(
+      {
+        error: 'Queue management action failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
+  }
+};

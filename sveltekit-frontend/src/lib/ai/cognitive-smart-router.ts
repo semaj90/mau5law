@@ -42,7 +42,7 @@ const ROUTING_CONFIG = {
     cacheHitRatio: 0.85,
     fastResponseMs: 100,
     complexityThreshold: 0.7,
-    gpuMemoryThreshold: 0.8
+    gpuMemoryThreshold: 0.8,
   },
   // Based on your existing engines
   engineCapabilities: {
@@ -68,30 +68,22 @@ const ROUTING_CONFIG = {
       maxLatency: 150,
       strengths: ['production', 'balanced-performance'],
       gpuRequired: true,
-      memoryFootprint: 7300777888
-    }
+      memoryFootprint: 7300777888,
+    },
   },
   // Based on your task patterns
   routingMatrix: {
     'legal-analysis': ['nes-orchestrator', 'ollama', 'llamacpp-cuda'],
     'ui-interaction': ['webasm-cache', 'nes-orchestrator'],
     'batch-processing': ['ollama', 'llamacpp-cuda', 'nes-orchestrator'],
-    'real-time-chat': ['webasm-cache', 'nes-orchestrator', 'ollama']
-  }
-}
+    'real-time-chat': ['webasm-cache', 'nes-orchestrator', 'ollama'],
+  },
+};
 class CognitiveSmartRouter {
   // Map engine names to valid processing paths
   private mapEngineToPath(
     engine: string
-  ):
-    | 'wasm'
-    | 'worker'
-    | 'cache'
-    | 'fallback'
-    | 'ollama'
-    | 'webasm-cache'
-    | 'nes-orchestrator'
-    | 'llamacpp-cuda' {
+  ): 'wasm' | 'worker' | 'cache' | 'fallback' | 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' {
     switch (engine) {
       case 'ollama':
       case 'llamacpp':
@@ -125,7 +117,7 @@ class CognitiveSmartRouter {
       averageLatency: {} as { [key: string]: any },
       cacheHitRatio: 0,
       engineUtilization: {} as { [key: string]: any },
-      successRate: {} as { [key: string]: any }
+      successRate: {} as { [key: string]: any },
     };
     this.engineHealthCache = new Map();
     this.initializeHealthChecks();
@@ -149,7 +141,7 @@ class CognitiveSmartRouter {
         ...response,
         processingPath: this.mapEngineToPath(decision.engine),
         routingDecision: decision,
-        actualLatency: latency
+        actualLatency: latency,
       } as WebLlamaResponse;
     } catch (error) {
       console.error('Routing failed:', error);
@@ -165,8 +157,8 @@ class CognitiveSmartRouter {
           reasoning: 'Fallback due to routing failure',
           expectedLatency: 200,
           fallbackChain: [],
-          confidence: 0.5
-        }
+          confidence: 0.5,
+        },
       } as WebLlamaResponse;
     }
   }
@@ -184,8 +176,8 @@ class CognitiveSmartRouter {
         reasoning: `High cache probability (${(cacheScore * 100).toFixed(1)}%)`,
         expectedLatency: 5,
         fallbackChain: ['nes-orchestrator', 'ollama'],
-        confidence: cacheScore
-      }
+        confidence: cacheScore,
+      };
     }
     // Critical latency requirements
     if (priority === 'critical' || (maxLatency && maxLatency < 100)) {
@@ -195,8 +187,8 @@ class CognitiveSmartRouter {
           reasoning: 'Critical latency requirement with GPU acceleration',
           expectedLatency: 50,
           fallbackChain: ['webasm-cache', 'ollama'],
-          confidence: 0.9
-        }
+          confidence: 0.9,
+        };
       }
     }
     // Route based on request type using your existing patterns
@@ -208,12 +200,11 @@ class CognitiveSmartRouter {
           engine: engine as RouteDecision['engine'],
           reasoning: `Best available engine for ${requestType}`,
           expectedLatency:
-            ROUTING_CONFIG.engineCapabilities[
-              engine as keyof typeof ROUTING_CONFIG.engineCapabilities
-            ]?.maxLatency || 200,
+            ROUTING_CONFIG.engineCapabilities[engine as keyof typeof ROUTING_CONFIG.engineCapabilities]?.maxLatency ||
+            200,
           fallbackChain: preferredEngines.slice(1),
-          confidence: 0.8
-        }
+          confidence: 0.8,
+        };
       }
     }
     // Final fallback
@@ -222,8 +213,8 @@ class CognitiveSmartRouter {
       reasoning: 'Default fallback - most reliable',
       expectedLatency: 200,
       fallbackChain: [],
-      confidence: 0.6
-    }
+      confidence: 0.6,
+    };
   }
   /**
    * Execute request on specific engine using existing services
@@ -235,7 +226,7 @@ class CognitiveSmartRouter {
           maxTokens: 2048,
           useCache: true,
           enableRanking: true,
-          temperature: 0.1
+          temperature: 0.1,
         });
       case 'nes-orchestrator':
         // Use NES orchestrator for GPU-accelerated processing
@@ -274,8 +265,8 @@ class CognitiveSmartRouter {
         embeddingTime: 5,
         inferenceTime: 45,
         cacheTime: 2,
-        totalTime: performance.now() - startTime
-      }
+        totalTime: performance.now() - startTime,
+      },
     };
     return response;
   }
@@ -297,12 +288,13 @@ class CognitiveSmartRouter {
             temperature: 0.1,
             num_ctx: 8192,
             num_gpu: this.gpuLayers, // Use reasonable GPU layers
-          }
-        })
+          },
+        }),
       });
       const result = await (response as { json?: any; ok?: any }).json();
       return {
-        text: (result as { response?: any; eval_count?: any; eval_duration?: any }).response || 'No response from Ollama',
+        text:
+          (result as { response?: any; eval_count?: any; eval_duration?: any }).response || 'No response from Ollama',
         tokensGenerated: (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_count || 0,
         processingTime: performance.now() - startTime,
         confidence: 0.8,
@@ -312,10 +304,11 @@ class CognitiveSmartRouter {
         processingPath: 'ollama',
         metrics: {
           embeddingTime: 0,
-          inferenceTime: (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_duration / 1000000 || 0, // ns to ms
+          inferenceTime:
+            (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_duration / 1000000 || 0, // ns to ms
           cacheTime: 0,
-          totalTime: performance.now() - startTime
-        }
+          totalTime: performance.now() - startTime,
+        },
       };
     } catch (error) {
       console.error('Ollama request failed:', error);
@@ -350,9 +343,7 @@ class CognitiveSmartRouter {
   /**
    * Check health of specific engine
    */
-  private async checkEngineHealth(
-    engine: string
-  ): Promise<any> {
+  private async checkEngineHealth(engine: string): Promise<any> {
     const cached = this.engineHealthCache.get(engine);
     const now = Date.now();
     // Use cached result if recent (30 seconds)
@@ -387,7 +378,7 @@ class CognitiveSmartRouter {
   private async estimateCacheScore(prompt: string): Promise<number> {
     // Simple heuristic - would integrate with your actual cache
     const commonLegalTerms = ['contract', 'liability', 'indemnification', 'legal', 'clause'];
-    const matches = commonLegalTerms.filter((term) => prompt.toLowerCase().includes(term)).length;
+    const matches = commonLegalTerms.filter(term => prompt.toLowerCase().includes(term)).length;
     return Math.min(matches / commonLegalTerms.length, 0.95);
   }
   /**
@@ -399,12 +390,10 @@ class CognitiveSmartRouter {
     // Update average latency
     const currentAvg = this.metrics.averageLatency[engine] || 0;
     const currentCount = this.metrics.routingDecisions[engine];
-    this.metrics.averageLatency[engine] =
-      (currentAvg * (currentCount - 1) + latency) / currentCount;
+    this.metrics.averageLatency[engine] = (currentAvg * (currentCount - 1) + latency) / currentCount;
     // Update success rate
     const currentSuccess = this.metrics.successRate[engine] || 0;
-    this.metrics.successRate[engine] =
-      (currentSuccess * (currentCount - 1) + (success ? 1 : 0)) / currentCount;
+    this.metrics.successRate[engine] = (currentSuccess * (currentCount - 1) + (success ? 1 : 0)) / currentCount;
     // Update engine utilization
     this.metrics.engineUtilization[engine] = (this.metrics.engineUtilization[engine] || 0) + 1;
   }
@@ -424,7 +413,7 @@ class CognitiveSmartRouter {
       averageLatency: {},
       cacheHitRatio: 0,
       engineUtilization: {},
-      successRate: {}
+      successRate: {},
     };
   }
   /**

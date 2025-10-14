@@ -1,6 +1,6 @@
 /**
  * Feedback System Types for Legal AI Platform
- */;
+ */
 }
 export interface FeedbackSession {
   id: string;

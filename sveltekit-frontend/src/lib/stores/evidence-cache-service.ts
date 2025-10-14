@@ -32,7 +32,7 @@ class EvidenceAnalysisCacheService {
    * Cache evidence analysis result
    */
   async cacheAnalysisResult(_key: CacheKey
-    result: AnalysisResult
+    result: AnalysisResult,
     options: {
       confidence: number;
       processingTime: number;
@@ -111,7 +111,7 @@ class EvidenceAnalysisCacheService {
    * Cache evidence similarity matrix
    */
   async cacheSimilarityMatrix(
-    evidenceIds: string[]
+    evidenceIds: string[],
     matrix: number[][];
     metadata: { [key: string]: any } = {}
   ): Promise<void> {
@@ -293,9 +293,9 @@ class EvidenceAnalysisCacheService {
 export const evidenceAnalysisCacheService = new EvidenceAnalysisCacheService();
 // Convenience functions for enhanced-bits components
 export async function cacheAnalysis(
-  evidenceId: string
-  analysisType: string
-  result: AnalysisResult
+  evidenceId: string,
+  analysisType: string,
+  result: AnalysisResult,
   options: {
     confidence: number;
     processingTime: number;

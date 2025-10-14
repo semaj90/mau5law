@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import crypto from "crypto"
+import crypto from 'crypto';
 import { json, error } from '@sveltejs/kit';
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.

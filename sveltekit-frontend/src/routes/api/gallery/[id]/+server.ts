@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     }
     return json(response, {
       headers: {
-        'X-Item-Type': itemType
+        'X-Item-Type': itemType,
         'X-File-Size': ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileSize || 0).toString(),
         'Cache-Control': 'private, max-age=300' // Cache for 5 minutes
       }
@@ -218,8 +218,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .execute()
     return json({
       success: true,
-      item: updatedItem[0]
-      updated: Object.keys(updateFields)
+      item: updatedItem[0],
+      updated: Object.keys(updateFields),
     })
   } catch (err) {
     console.error('Gallery item update error:', err)
@@ -282,7 +282,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     return json({
       success: true,
       deleted: {
-        id: itemId
+        id: itemId,
         fileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName,
         filePath: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath
       }

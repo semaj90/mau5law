@@ -31,24 +31,24 @@ export interface LegalAIResponse {
   };
 }
 export interface StreamingResponse {
-    data: LegalAIResponse | Partial<LegalAIResponse>;
-    metadata: {
-        requestId: string;
-        timestamp: number;
-        latency: number;
-        chunkIndex?: number;
-        isComplete?: boolean;
-    }
+  data: LegalAIResponse | Partial<LegalAIResponse>;
+  metadata: {
+    requestId: string;
+    timestamp: number;
+    latency: number;
+    chunkIndex?: number;
+    isComplete?: boolean;
+  };
 }
 export interface PerformanceMetrics {
-    totalRequests: number;
-    averageLatency: number;
-    minLatency: number;
-    maxLatency: number;
-    errorRate: number;
-    throughput: number;
-    simdEnabled: boolean;
-    quicEnabled: boolean;
+  totalRequests: number;
+  averageLatency: number;
+  minLatency: number;
+  maxLatency: number;
+  errorRate: number;
+  throughput: number;
+  simdEnabled: boolean;
+  quicEnabled: boolean;
 }
 export interface DocumentAnalysisRequest {
   document_id: string;
@@ -297,20 +297,20 @@ export interface LegalDocument {
   metadata: Record<string, unknown>;
 }
 export interface LegalAnalysisContext {
-    jurisdiction: string;
-    practice_areas: string[];
-    regulatory_frameworks: string[];
-    precedent_cases: string[];
-    compliance_requirements: string[];
+  jurisdiction: string;
+  practice_areas: string[];
+  regulatory_frameworks: string[];
+  precedent_cases: string[];
+  compliance_requirements: string[];
 }
 export interface ContractClause {
-    id: string;
-    type: string;
-    text: string;
-    risk_level: string;
-    enforceability_score: number;
-    recommendations: string[];
-    related_clauses: string[];
+  id: string;
+  type: string;
+  text: string;
+  risk_level: string;
+  enforceability_score: number;
+  recommendations: string[];
+  related_clauses: string[];
 }
 // Remove the namespace and expose module-style type aliases
 export type TensorRTRequest = LegalAIRequest;

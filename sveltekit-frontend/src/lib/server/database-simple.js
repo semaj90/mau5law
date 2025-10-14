@@ -15,7 +15,7 @@ const connectionString =
   import.meta.env.DATABASE_URL ||
   `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
 console.log(
-  `[Database] Connecting to: postgresql://${config.user}:***@${config.host}:${config.port}/${config.database}`,
+  `[Database] Connecting to: postgresql://${config.user}:***@${config.host}:${config.port}/${config.database}`
 );
 // Create connection with error handling
 let sql;

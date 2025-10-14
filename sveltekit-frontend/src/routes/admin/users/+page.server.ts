@@ -53,12 +53,12 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         hasPrev: page > 1,
       },
       search,
-    }
+    };
   } catch (err) {
     console.error('Error loading users:', err);
     throw error(500, 'Failed to load users');
   }
-}
+};
 export const actions: Actions = {
   createUser: async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
@@ -73,21 +73,21 @@ export const actions: Actions = {
         success: false,
         error: 'Email and password are required',
         formData: { email },
-      }
+      };
     }
     if (password !== confirmPassword) {
       return {
         success: false,
         error: 'Passwords do not match',
         formData: { email },
-      }
+      };
     }
     if (password.length < 8) {
       return {
         success: false,
         error: 'Password must be at least 8 characters',
         formData: { email },
-      }
+      };
     }
     try {
       // Check if email already exists
@@ -97,7 +97,7 @@ export const actions: Actions = {
           success: false,
           error: 'Email already exists',
           formData: { email },
-        }
+        };
       }
       // Hash password
       const passwordHash = await hash(password, {
@@ -121,14 +121,14 @@ export const actions: Actions = {
           email: newUser[0].email,
           created_at: newUser[0].created_at,
         },
-      }
+      };
     } catch (err) {
       console.error('Error creating user:', err);
       return {
         success: false,
         error: 'Failed to create user',
         formData: { email },
-      }
+      };
     }
   },
   deleteUser: async ({ request, locals }) => {
@@ -138,21 +138,21 @@ export const actions: Actions = {
     const formData = await request.formData();
     const userId = parseInt(formData.get('userId')?.toString() || '0');
     if (!userId) {
-      return { success: false, error: 'User ID is required' }
+      return { success: false, error: 'User ID is required' };
     }
     // Prevent admin from deleting themselves
     if (userId === parseInt(getUserId(locals))) {
-      return { success: false, error: 'Cannot delete your own account' }
+      return { success: false, error: 'Cannot delete your own account' };
     }
     try {
       const deleteResult = await db.delete(users).where(eq(users.id, userId)).returning();
       if (deleteResult.length === 0) {
-        return { success: false, error: 'User not found' }
+        return { success: false, error: 'User not found' };
       }
-      return { success: true, deletedUser: deleteResult[0] }
+      return { success: true, deletedUser: deleteResult[0] };
     } catch (err) {
       console.error('Error deleting user:', err);
-      return { success: false, error: 'Failed to delete user' }
+      return { success: false, error: 'Failed to delete user' };
     }
   },
   toggleUserStatus: async ({ request, locals }) => {
@@ -162,15 +162,15 @@ export const actions: Actions = {
     const formData = await request.formData();
     const userId = parseInt(formData.get('userId')?.toString() || '0');
     if (!userId) {
-      return { success: false, error: 'User ID is required' }
+      return { success: false, error: 'User ID is required' };
     }
     try {
       // For now, we don't have a status field, but you could add one to the schema
       // This is a placeholder for user status management
-      return { success: true, message: 'User status updated' }
+      return { success: true, message: 'User status updated' };
     } catch (err) {
       console.error('Error updating user status:', err);
-      return { success: false, error: 'Failed to update user status' }
+      return { success: false, error: 'Failed to update user status' };
     }
   },
-}
+};

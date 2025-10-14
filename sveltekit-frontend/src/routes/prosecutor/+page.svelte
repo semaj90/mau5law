@@ -66,13 +66,13 @@ Features: Case management, evidence upload, AI chat, vector search
       // load UI components lazily; support either default or named export
       try {
         const evMod = await import('$lib/components/EvidenceUploadComponent.svelte');
-        EvidenceUploadComponent = evMod.default ?? (evMod.EvidenceUploadComponent ?? null);
+        EvidenceUploadComponent = evMod.default ?? evMod.EvidenceUploadComponent ?? null;
       } catch (e) {
         console.warn('Failed to load EvidenceUploadComponent dynamically', e);
       }
       try {
         const chatMod = await import('$lib/components/OllamaChatInterface.svelte');
-        OllamaChatInterface = chatMod.default ?? (chatMod.OllamaChatInterface ?? null);
+        OllamaChatInterface = chatMod.default ?? chatMod.OllamaChatInterface ?? null;
       } catch (e) {
         console.warn('Failed to load OllamaChatInterface dynamically', e);
       }
@@ -135,7 +135,7 @@ Features: Case management, evidence upload, AI chat, vector search
           selectedCaseId,
           undefined, // any evidence type
           undefined, // any tags
-          20,
+          20
         );
       } else {
         // Fallback to API search
@@ -219,7 +219,12 @@ Features: Case management, evidence upload, AI chat, vector search
             </span>
           {/each}
           <span class="bits-btn">
-            <Button variant="secondary" on:click={() => {/* New case handler */}}>
+            <Button
+              variant="secondary"
+              on:click={() => {
+                /* New case handler */
+              }}
+            >
               <Plus class="w-4 h-4 mr-1" />
               New Case
             </Button>
@@ -334,7 +339,12 @@ Features: Case management, evidence upload, AI chat, vector search
                       {/if}
                       <!-- move styling to wrapper span -->
                       <span class="bits-btn px-2 py-1 text-sm">
-                        <Button variant="secondary" on:click={() => {/* view handler */}}>
+                        <Button
+                          variant="secondary"
+                          on:click={() => {
+                            /* view handler */
+                          }}
+                        >
                           <Eye class="w-4 h-4" />
                         </Button>
                       </span>
@@ -387,7 +397,12 @@ Features: Case management, evidence upload, AI chat, vector search
             {/if}
             <!-- move sizing/styling to wrapper span so Button props remain typed -->
             <span class="bits-btn w-full mt-3 block px-3 py-2 text-sm">
-              <Button variant="secondary" on:click={() => {/* New POI handler */}}>
+              <Button
+                variant="secondary"
+                on:click={() => {
+                  /* New POI handler */
+                }}
+              >
                 <Plus class="w-4 h-4 mr-1" />
                 Add Person of Interest
               </Button>
@@ -395,13 +410,13 @@ Features: Case management, evidence upload, AI chat, vector search
           </div>
         </div>
         <!-- AI Chat Assistant -->
-         <div class="h-96">
+        <div class="h-96">
           {#if OllamaChatInterface}
             <svelte:component this={OllamaChatInterface as any} caseId={selectedCaseId} useRAG={true} />
           {:else}
             <div class="h-full flex items-center justify-center text-sm text-gray-500">Loading chat…</div>
           {/if}
-         </div>
+        </div>
       </div>
     </div>
     <!-- System Status Bar -->
@@ -422,7 +437,7 @@ Features: Case management, evidence upload, AI chat, vector search
               <span>Qdrant</span>
             </div>
             <div class="flex items-center gap-1">
-              <div class={"w-2 h-2 " + (webGPUEnabled ? 'bg-green-500' : 'bg-yellow-500') + ' rounded-full'}></div>
+              <div class={'w-2 h-2 ' + (webGPUEnabled ? 'bg-green-500' : 'bg-yellow-500') + ' rounded-full'}></div>
               <span>WebGPU</span>
             </div>
             <div class="flex items-center gap-1">
@@ -457,5 +472,3 @@ Features: Case management, evidence upload, AI chat, vector search
     font-size: 12px;
   }
 </style>
-
-

@@ -3,7 +3,7 @@ import Trigger from './context-menu-trigger.svelte.js';
 import Content from './context-menu-content.svelte.js';
 import Item from './context-menu-item.svelte.js';
 import Separator from './context-menu-separator.svelte.js';
-export { Root, Trigger, Content, Item, Separator }
+export { Root, Trigger, Content, Item, Separator };
 // Re-export as namespace for convenience
 export const ContextMenu = {
   Root,
@@ -11,4 +11,4 @@ export const ContextMenu = {
   Content,
   Item,
   Separator,
-}
+};

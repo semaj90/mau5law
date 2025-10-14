@@ -86,24 +86,24 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             results.push({
               chunk: r.pageContent,
               score: r.score,
-              semantic_score: r.score ? 1 - r.score: undefined
-              relevance_level: r.score
+              semantic_score: r.score ? 1 - r.score: undefined,
+              relevance_level: r.score,
                 ? r.score < 0.3
                   ? 'high'
                   : r.score < 0.7
                     ? 'medium'
                     : 'low'
                 : 'medium',
-              doc: docs[0]
-              source: 'langchain'
+              doc: docs[0],
+              source: 'langchain',
             })
           }
         } else {
           results.push({
             chunk: r.pageContent,
             score: r.score,
-            semantic_score: r.score ? 1 - r.score: undefined
-            relevance_level: r.score
+            semantic_score: r.score ? 1 - r.score: undefined,
+            relevance_level: r.score,
               ? r.score < 0.3
                 ? 'high'
                 : r.score < 0.7
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           },
           body: JSON.stringify({
             query,
-            limit: limit || k
+            limit: limit || k,
             threshold: threshold || 1.0,
             filters
           })
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                 distance: resultData.distance,
                 semantic_score: resultData.semantic_score,
                 relevance_level: resultData.relevance_level,
-                doc: result
+                doc: result,
                 metadata: resultData.metadata,
                 source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid'
               })

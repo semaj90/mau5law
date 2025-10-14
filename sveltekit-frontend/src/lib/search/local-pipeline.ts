@@ -41,9 +41,9 @@ export class LocalSearchPipeline {
       }
   constructor(), {
     this.fuse = new Fuse([], {
-      includeScore: true
+      includeScore: true,
       threshold: 0.33,
-      keys: [
+      keys: [,
         { name: 'text', weight: 0.8 })
         { name: 'metadata.title', weight,: 0.2 }
       ] as any

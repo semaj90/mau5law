@@ -6,7 +6,7 @@
 
   let {
     onSuccess,
-    onError
+    onError,
   }: {
     onSuccess?: (result: any) => void;
     onError?: (error: string) => void;
@@ -46,7 +46,7 @@
 
       const response = await fetch('/api/integrated/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       clearInterval(progressInterval);
@@ -81,7 +81,7 @@
       const response = await fetch('/api/integrated/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: searchQuery, limit: 5 })
+        body: JSON.stringify({ query: searchQuery, limit: 5 }),
       });
 
       if (!response.ok) {
@@ -130,7 +130,7 @@
       ondragover={handleDragOver}
       ondrop={handleDrop}
       onclick={handleClick}
-      onkeydown={(e) => {
+      onkeydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleClick();
@@ -202,7 +202,7 @@
         type="text"
         bind:value={searchQuery}
         placeholder="Search across uploaded documents..."
-        onkeydown={(e) => e.key === 'Enter' && searchDocuments()}
+        onkeydown={e => e.key === 'Enter' && searchDocuments()}
       />
       <button onclick={searchDocuments} disabled={searching || !searchQuery.trim()}>
         {searching ? 'Searching...' : 'Search'}

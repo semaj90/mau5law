@@ -2,7 +2,7 @@ import stream from "stream";
 /**
  * Browser Cache Manager for Neural Sprite JSON States
  * Multi-layer caching with compression and Service Worker integration
- */;
+ */
 }
 export interface BrowserCacheConfig {
   cachePrefix: string;
@@ -104,9 +104,9 @@ export class BrowserCacheManager {
     if (idbCached) {
       // Restore to memory cache
       cached = {
-        id: spriteId
-        data: idbCached
-        compressed: true
+        id: spriteId,
+        data: idbCached,
+        compressed: true,
         timestamp: Date.now(),
         accessCount: 1,
         size: JSON.stringify(idbCached).length
@@ -130,7 +130,7 @@ export class BrowserCacheManager {
     }
     const cached: CachedSprite = {
       id: sprite.id,
-      data: compressed
+      data: compressed,
       compressed: this.config.enableCompression,
       timestamp: Date.now(),
       accessCount: 1,

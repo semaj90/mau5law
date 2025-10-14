@@ -15,14 +15,14 @@ try {
 }
 
 export class WSRegistry {
-  private static services: Map<string, WSServiceConfig> = new Map(
-    registryData.map(s => [s.name, s])
-  );
+  private static services: Map<string, WSServiceConfig> = new Map(registryData.map(s => [s.name, s]));
 
   static getEndpoint(serviceName: string): string {
     const service = this.services.get(serviceName);
     if (!service) {
-      console.warn(`WebSocket service "${serviceName}" not found in registry. Available: ${Array.from(this.services.keys()).join(', ')}`);
+      console.warn(
+        `WebSocket service "${serviceName}" not found in registry. Available: ${Array.from(this.services.keys()).join(', ')}`
+      );
       return `/ws/${serviceName}`; // Fallback endpoint
     }
     return service.endpoint;

@@ -105,11 +105,11 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`[Real Semantic Audit] Starting audit for component: ${component}, query: ${query}`)
     // Step 1: Run real Context7 semantic search
     const searchResults = await performContext7Search({
-      query: query
+      query: query,
       maxResults: 10,
       confidenceThreshold: 0.7,
-      includeCode: true
-      includeDocs: true
+      includeCode: true,
+      includeDocs: true,
     })
     console.log(`[Real Semantic Search] Found ${searchResults.length} results`)
     // Step 2: Perform comprehensive semantic audit using Context7SemanticAuditor
@@ -131,13 +131,13 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`[Real Semantic Audit] Completed audit with ${triggeredAgents.length} agent triggers`)
     // Step 7: Return comprehensive results
     return new Response(JSON.stringify({
-      results: enhancedResults
-      searchResults: searchResults
-      triggeredAgents: triggeredAgents
+      results: enhancedResults,
+      searchResults: searchResults,
+      triggeredAgents: triggeredAgents,
       auditLog: auditLog.slice(-10), // Last 10 log entries
       metadata: {
-        component: component
-        query: query
+        component: component,
+        query: query,
         timestamp: new Date().toISOString(),
         totalResults: enhancedResults.length,
         totalTriggers: triggeredAgents.length,

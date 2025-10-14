@@ -20,19 +20,19 @@ export interface ConsolePalette {
     classification: string;
     confidence: string;
     priority: string;
-  }
+  };
   gradients: {
     main: string;
     modal: string;
     card: string;
     evidence: string;
     priority: string;
-  }
+  };
   constraints: {
     maxColors: number;
     bitDepth: number;
     memoryKB: number;
-  }
+  };
   cssVariables: Record<string, string>;
 }
 // NES (Nintendo Entertainment System) - 1985
@@ -89,7 +89,7 @@ export const NES_PALETTE: ConsolePalette = {
     '--nes-confidence': '#32CD32',
     '--nes-priority': '#FF6347',
   },
-}
+};
 // SNES (Super Nintendo) - 1990
 export const SNES_PALETTE: ConsolePalette = {
   name: 'SNES Mode 7',
@@ -144,7 +144,7 @@ export const SNES_PALETTE: ConsolePalette = {
     '--snes-confidence': '#00D2D3',
     '--snes-priority': '#FF5252',
   },
-}
+};
 // PS1 (PlayStation) - 1994
 export const PS1_PALETTE: ConsolePalette = {
   name: 'PlayStation Classic',
@@ -199,7 +199,7 @@ export const PS1_PALETTE: ConsolePalette = {
     '--ps1-confidence': '#10B981',
     '--ps1-priority': '#F59E0B',
   },
-}
+};
 // N64 (Nintendo 64) - 1996
 export const N64_PALETTE: ConsolePalette = {
   name: 'N64 Ultra',
@@ -254,7 +254,7 @@ export const N64_PALETTE: ConsolePalette = {
     '--n64-confidence': '#32CD32',
     '--n64-priority': '#FF6347',
   },
-}
+};
 // PS2 (PlayStation 2) - 2000
 export const PS2_PALETTE: ConsolePalette = {
   name: 'PS2 Emotion',
@@ -309,7 +309,7 @@ export const PS2_PALETTE: ConsolePalette = {
     '--ps2-confidence': '#0FB9B1',
     '--ps2-priority': '#FC5C65',
   },
-}
+};
 // Cyberpunk Theme - 2077
 export const CYBERPUNK_PALETTE: ConsolePalette = {
   name: 'Cyberpunk 2077',
@@ -364,7 +364,7 @@ export const CYBERPUNK_PALETTE: ConsolePalette = {
     '--cyberpunk-confidence': '#00CED1',
     '--cyberpunk-priority': '#FF4500',
   },
-}
+};
 // Legal AI Professional Theme
 export const LEGAL_AI_PALETTE: ConsolePalette = {
   name: 'Legal AI Professional',
@@ -419,7 +419,7 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
     '--legal-confidence': '#10B981',
     '--legal-priority': '#F59E0B',
   },
-}
+};
 // Console palette collection
 export const CONSOLE_PALETTES = {
   nes: NES_PALETTE,

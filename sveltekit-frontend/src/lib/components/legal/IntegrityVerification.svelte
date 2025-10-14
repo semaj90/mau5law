@@ -12,7 +12,7 @@ Displays detailed integrity verification results with AI analysis
   import { SvelteComponent } from 'svelte';
 
   // Ensure TypeScript sees a constructor/Component type for dynamic usage
-  const BadgeComponent = (Badge as unknown) as typeof SvelteComponent;
+  const BadgeComponent = Badge as unknown as typeof SvelteComponent;
 
   // Types
   type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
@@ -211,7 +211,10 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.metadataIntact)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.metadataIntact)}`}
             />
-            <svelte:component this={BadgeComponent} variant={verificationResults.metadataIntact ? 'success' : 'destructive'}>
+            <svelte:component
+              this={BadgeComponent}
+              variant={verificationResults.metadataIntact ? 'success' : 'destructive'}
+            >
               {verificationResults.metadataIntact ? 'Pass' : 'Fail'}
             </svelte:component>
           </div>
@@ -225,7 +228,10 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.timestampValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.timestampValid)}`}
             />
-            <svelte:component this={BadgeComponent} variant={verificationResults.timestampValid ? 'success' : 'destructive'}>
+            <svelte:component
+              this={BadgeComponent}
+              variant={verificationResults.timestampValid ? 'success' : 'destructive'}
+            >
               {verificationResults.timestampValid ? 'Pass' : 'Fail'}
             </svelte:component>
           </div>
@@ -239,7 +245,10 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.digitalSignatureValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.digitalSignatureValid)}`}
             />
-            <svelte:component this={BadgeComponent} variant={verificationResults.digitalSignatureValid ? 'success' : 'destructive'}>
+            <svelte:component
+              this={BadgeComponent}
+              variant={verificationResults.digitalSignatureValid ? 'success' : 'destructive'}
+            >
               {verificationResults.digitalSignatureValid ? 'Pass' : 'Fail'}
             </svelte:component>
           </div>
@@ -252,7 +261,10 @@ Displays detailed integrity verification results with AI analysis
             <div class="text-sm font-semibold">
               {Math.round((verificationResults.aiAnalysisScore ?? 0) * 100)}%
             </div>
-            <svelte:component this={BadgeComponent} variant={(verificationResults.aiAnalysisScore ?? 0) > 0.7 ? 'success' : 'warning'}>
+            <svelte:component
+              this={BadgeComponent}
+              variant={(verificationResults.aiAnalysisScore ?? 0) > 0.7 ? 'success' : 'warning'}
+            >
               {(verificationResults.aiAnalysisScore ?? 0) > 0.7 ? 'Good' : 'Review'}
             </svelte:component>
           </div>

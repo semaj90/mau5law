@@ -16,7 +16,7 @@ export interface AIState {
 export const aiStore = writable<AIState>({
   current: "",
   history: [],
-  isProcessing: false
+  isProcessing: false,
   lastResult: null;
   error: null
 });
@@ -24,7 +24,7 @@ export const aiStore = writable<AIState>({
 export const aiCommandResult = writable(null);
 /**
  * Parse AI commands with enhanced capabilities
- */;
+ */
 export async function parseAICommand(command: string): Promise<any> {
   try {
     setProcessing(true);

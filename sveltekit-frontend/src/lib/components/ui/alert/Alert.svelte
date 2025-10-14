@@ -4,17 +4,12 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  let {
-    variant = 'default',
-    class: className = '',
-    children,
-    ...restProps
-  }: Props = $props();
+  let { variant = 'default', class: className = '', children, ...restProps }: Props = $props();
   const variants = {
     default: 'bg-background text-foreground',
     destructive: 'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
     warning: 'border-warning/50 text-warning dark:border-warning [&>svg]:text-warning',
-  }
+  };
 </script>
 
 <div

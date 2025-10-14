@@ -60,10 +60,10 @@
 {#if searchOpen}
   <div
     class="search-modal-overlay"
-    onclick={(e) => {
+    onclick={e => {
       if (e.currentTarget === e.target) toggleSearch();
     }}
-    onkeydown={(e) => {
+    onkeydown={e => {
       if (e.currentTarget === e.target && e.key === 'Enter') toggleSearch();
     }}
     role="dialog"
@@ -81,18 +81,30 @@
 {/if}
 
 <style lang="postcss">
-  nav { @apply relative; }
-  ul { @apply list-none m-0 p-0; }
-  li { @apply inline-block; }
+  nav {
+    @apply relative;
+  }
+  ul {
+    @apply list-none m-0 p-0;
+  }
+  li {
+    @apply inline-block;
+  }
   .search-modal-overlay {
-/* @apply fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-start justify-center pt-24 z-50; */
+    /* @apply fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-start justify-center pt-24 z-50; */
   }
   .search-modal {
-/* @apply bg-gray-900 w-11/12 md:w-2/3 max-h-4/5 overflow-y-auto rounded-lg p-6 shadow-lg; */
+    /* @apply bg-gray-900 w-11/12 md:w-2/3 max-h-4/5 overflow-y-auto rounded-lg p-6 shadow-lg; */
   }
   @media (max-width: 768px) {
-    nav > ul:first-of-type { @apply flex flex-col gap-2 w-full; }
-    li { @apply w-full; }
-    .nes-container > ul > li > a { @apply w-full; }
+    nav > ul:first-of-type {
+      @apply flex flex-col gap-2 w-full;
+    }
+    li {
+      @apply w-full;
+    }
+    .nes-container > ul > li > a {
+      @apply w-full;
+    }
   }
 </style>

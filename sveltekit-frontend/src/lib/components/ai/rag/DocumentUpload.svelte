@@ -20,7 +20,7 @@
     acceptedTypes = ['.txt', '.md', '.pdf', '.docx', '.json', '.csv'],
     uploadEndpoint = '/api/rag/upload',
     onUploadComplete,
-    onError
+    onError,
   }: Props = $props();
 
   // Component state using Svelte 5 runes
@@ -36,13 +36,9 @@
 
   // Computed properties
   let hasFiles = $derived(files.length > 0);
-  let totalSize = $derived(
-    files.reduce((sum, file) => sum + file.size, 0)
-  );
+  let totalSize = $derived(files.reduce((sum, file) => sum + file.size, 0));
   let formattedTotalSize = $derived(formatFileSize(totalSize));
-  let canUpload = $derived(
-    hasFiles && !uploading && errors.length === 0
-  );
+  let canUpload = $derived(hasFiles && !uploading && errors.length === 0);
 
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -60,9 +56,7 @@
 
     // Check file type
     const extension = '.' + file.name.split('.').pop()?.toLowerCase();
-    if (!acceptedTypes.some(type =>
-      type === extension || file.type.includes(type.replace('.', ''))
-    )) {
+    if (!acceptedTypes.some(type => type === extension || file.type.includes(type.replace('.', '')))) {
       return `File type ${extension} not supported`;
     }
 
@@ -138,7 +132,7 @@
 
         const response = await fetch(uploadEndpoint, {
           method: 'POST',
-          body: formData
+          body: formData,
         });
 
         // Simulate progress (real implementation would use XMLHttpRequest)
@@ -160,7 +154,7 @@
         uploadResults.push({
           file: file.name,
           result,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
 
         console.log(`✅ Uploaded ${file.name}:`, result);
@@ -175,10 +169,9 @@
         onUploadComplete({
           message: successMessage,
           results: uploadResults,
-          totalFiles: uploadResults.length
+          totalFiles: uploadResults.length,
         });
       }
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
       errors.push(errorMessage);
@@ -208,8 +201,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fileId: fileResult.id,
-          operations: ['extract_text', 'generate_embedding', 'semantic_chunk']
-        })
+          operations: ['extract_text', 'generate_embedding', 'semantic_chunk'],
+        }),
       });
 
       if (response.ok) {
@@ -243,7 +236,7 @@
       onclick={() => fileInput?.click()}
       role="button"
       tabindex="0"
-      onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
+      onkeydown={e => e.key === 'Enter' && fileInput?.click()}
     >
       {#if !hasFiles}
         <div class="drop-zone-content">
@@ -290,20 +283,12 @@
             {#if uploading && uploadProgress[file.name] !== undefined}
               <div class="upload-progress">
                 <div class="progress-bar">
-                  <div
-                    class="progress-fill"
-                    style="width: {uploadProgress[file.name]}%"
-                  ></div>
+                  <div class="progress-fill" style="width: {uploadProgress[file.name]}%"></div>
                 </div>
                 <span class="progress-text">{uploadProgress[file.name]}%</span>
               </div>
             {:else}
-              <button
-                class="remove-file"
-                onclick={() => removeFile(index)}
-                disabled={uploading}
-                title="Remove file"
-              >
+              <button class="remove-file" onclick={() => removeFile(index)} disabled={uploading} title="Remove file">
                 ✕
               </button>
             {/if}
@@ -326,12 +311,7 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <Button
-        variant="primary"
-        disabled={!canUpload}
-        onclick={uploadFiles}
-        class="upload-button"
-      >
+      <Button variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
         {#if uploading}
           <span class="upload-spinner">🔄</span>
           Uploading to Knowledge Base...
@@ -341,9 +321,7 @@
       </Button>
 
       {#if hasFiles && !uploading}
-        <Button variant="secondary" onclick={clearAll}>
-          Clear All
-        </Button>
+        <Button variant="secondary" onclick={clearAll}>Clear All</Button>
       {/if}
     </div>
 
@@ -565,8 +543,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   .upload-results {

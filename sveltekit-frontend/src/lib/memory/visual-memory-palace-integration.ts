@@ -18,13 +18,13 @@ export interface MemoryPalaceRoom {
     position: [number, number, number]; // 3D position in palace
     orientation: [number, number, number, number]; // Quaternion
     size: [number, number, number]; // Bounding box
-  }
+  };
   compressionData: {
     originalSize: number;
     compressedSize: number;
     compressionRatio: number;
     glyphMap: Map<string, number>; // 7-bit glyph mapping
-  }
+  };
 }
 export interface MemoryPalace {
   id: string;
@@ -36,12 +36,12 @@ export interface MemoryPalace {
     totalLoad: number;
     efficiencyScore: number;
     retrievalSpeed: number; // milliseconds average
-  }
+  };
   visualEncoding: {
     glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
     frequencyTable: Map<number, number>; // Character frequency for optimization
     compressionTree: CompressionNode;
-  }
+  };
 }
 interface CompressionNode {
   value?: number; // 7-bit value (0-127)
@@ -56,7 +56,7 @@ export interface MemoryQuery {
     currentRoom?: string;
     recentRooms?: string[];
     cognitiveState?: 'focused' | 'scattered' | 'tired' | 'alert';
-  }
+  };
 }
 export interface MemoryRetrievalResult {
   rooms: MemoryPalaceRoom[];

@@ -63,8 +63,8 @@ export const POST: RequestHandler = async ({ request }) => {
         successRate: Math.round((totalPassed / totalTests) * 100),
         timestamp: new Date().toISOString()
       },
-      testSuites: results
-      recommendations: generateRecommendations(results)
+      testSuites: results,
+      recommendations: generateRecommendations(results),
     })
   } catch (error: any) {
     console.error('Test suite execution failed:', error)
@@ -207,7 +207,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: 'Test prompt: What is 2+2?',
-        stream: false
+        stream: false,
         options: {
           temperature: 0.1,
           max_tokens: 50
@@ -239,7 +239,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt,
-        stream: false
+        stream: false,
         options: {
           temperature: 0.1,
           max_tokens: 100
@@ -284,8 +284,8 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         query: 'test legal document',
         type: 'all',
-        useAI: false
-        mcpAnalysis: false
+        useAI: false,
+        mcpAnalysis: false,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -308,10 +308,10 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         query: 'contract liability evidence',
         type: 'all',
-        useAI: true
-        mcpAnalysis: false
-        semanticSearch: false
-        confidenceThreshold: 0.5
+        useAI: true,
+        mcpAnalysis: false,
+        semanticSearch: false,
+        confidenceThreshold: 0.5,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -337,9 +337,9 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         query: 'legal precedent analysis',
         type: 'all',
-        useAI: true
-        mcpAnalysis: true
-        semanticSearch: false
+        useAI: true,
+        mcpAnalysis: true,
+        semanticSearch: false,
       })
     })
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -534,9 +534,9 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
  * Helper function to run individual tests
  */
 async function runTest(
-  tests: TestResult[]
-  name: string
-  testFn: () => Promise<string>
+  tests: TestResult[],
+  name: string,
+  testFn: () => Promise<string>,
 ): Promise<void> {
   const startTime = Date.now()
   try {
@@ -621,19 +621,19 @@ export const GET: RequestHandler = async () => {
     const results = checks.map((check: any) => check.status === 'fulfilled' ? check.value:  { error: true }
     )
     const healthStatus = {
-      ai: (results[0] && 'ai' in results[0]) ? results[0].ai: false
-      findApi: (results[1] && 'findApi' in results[1]) ? results[1].findApi : false
+      ai: (results[0] && 'ai' in results[0]) ? results[0].ai: false,
+      findApi: (results[1] && 'findApi' in results[1]) ? results[1].findApi : false,
     }
     const allHealthy = Object.values(healthStatus).every(Boolean)
     return json({
-      healthy: allHealthy
-      status: healthStatus
+      healthy: allHealthy,
+      status: healthStatus,
       duration: Date.now() - startTime,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      healthy: false
+      healthy: false,
       error: 'Health check failed',
       duration: Date.now() - startTime,
       timestamp: new Date().toISOString()

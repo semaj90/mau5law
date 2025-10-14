@@ -57,7 +57,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       hover: {
         borderColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.2
         },
@@ -67,7 +67,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.03,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.4
         },
@@ -108,8 +108,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     shape.lineTo(x, y + radius);
     shape.quadraticCurveTo(x, y, x + radius, y);
     const extrudeSettings = {
-      depth: depth
-      bevelEnabled: true
+      depth: depth,
+      bevelEnabled: true,
       bevelSegments: 2,
       bevelSize: radius * 0.05,
       bevelThickness: depth * 0.1
@@ -147,8 +147,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly
         ? YORHA_COLORS.interaction.disabled: (this.style.textColor || YORHA_COLORS.primary.black),
-      transparent: true
-      side: THREE.DoubleSide
+      transparent: true,
+      side: THREE.DoubleSide,
     });
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
     this.textMesh.position.set(
@@ -166,7 +166,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     );
     const placeholderMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true
+      transparent: true,
       opacity: 0.6,
       side: THREE.DoubleSide
     });
@@ -182,8 +182,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const cursorGeometry = new THREE.PlaneGeometry(0.02, 0.25);
     const cursorMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true
-      opacity: 0
+      transparent: true,
+      opacity: 0,
     });
     this.cursorMesh = new THREE.Mesh(cursorGeometry, cursorMaterial);
     this.cursorMesh.position.set(
@@ -214,8 +214,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const clearGeometry = new THREE.CircleGeometry(0.08, 8);
     const clearMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true
-      opacity: 0.7
+      transparent: true,
+      opacity: 0.7,
     });
     this.clearButtonMesh = new THREE.Mesh(clearGeometry, clearMaterial);
     this.clearButtonMesh.position.set(
@@ -225,7 +225,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     );
     // Add hover effects
     this.clearButtonMesh.userData = {
-      interactive: true
+      interactive: true,
       onClick: () => this.clear(),
       onHover: () => {
         if (this.clearButtonMesh?.material instanceof THREE.MeshBasicMaterial) {
@@ -250,8 +250,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     );
     const highlightMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true
-      opacity: 0
+      transparent: true,
+      opacity: 0,
     });
     this.borderHighlight = new THREE.Mesh(highlightGeometry, highlightMaterial);
     this.borderHighlight.position.z = (this.style.depth || 0.08) / 2 + 0.001;
@@ -290,8 +290,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     });
   }
   private static getVariantStyle(
-    variant: string
-    size: string
+    variant: string,
+    size: string,
     error?: boolean
     success?: boolean;
   ): Partial<YoRHaStyle> {
@@ -332,7 +332,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         borderColor: YORHA_COLORS.accent.gold,
         textColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true
+          enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.2
         }

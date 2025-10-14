@@ -19,7 +19,7 @@ export const db = drizzle(client, {
   logger: import.meta.env.NODE_ENV === 'development',
 });
 // Export client for raw SQL queries if needed
-export { client }
+export { client };
 // Test connection function
 export async function testConnection(): Promise<boolean> {
   try {

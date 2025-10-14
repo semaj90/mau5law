@@ -14,7 +14,7 @@
     'disabled:pointer-events-none disabled:opacity-50',
     'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm',
     'data-[orientation=vertical]:w-full data-[orientation=vertical]:justify-start data-[orientation=vertical]:rounded-none data-[orientation=vertical]:border-b data-[orientation=vertical]:border-border data-[orientation=vertical]:px-4 data-[orientation=vertical]:py-2',
-    className,
+    className
   )}
   {...restProps}
 >

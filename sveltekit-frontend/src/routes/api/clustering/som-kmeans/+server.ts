@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processedAt: new Date().toISOString(),
       // K-means results
       kmeans: {
-        clusters: kmeansClusters
+        clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
         inertia: qualityMetrics.inertia
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       // "Did you mean" recommendations
       recommendations: {
-        suggestions: suggestions
+        suggestions: suggestions,
         confidence: calculateSuggestionConfidence(suggestions),
         categories: categorizeSuggestions(suggestions)
       },
@@ -73,7 +73,7 @@ function extractFeaturesForClustering(ragData: any): unknown {
   // Combine all features into vectors
   const vectors = combineFeatureVectors([textFeatures, semanticFeatures, structuralFeatures])
   return {
-    vectors: vectors
+    vectors: vectors,
     dimensions: vectors[0]?.length || 0,
     labels: generateFeatureLabels(document),
     metadata: {
@@ -207,7 +207,7 @@ async function performSOMAnalysis(features: any, config: { width: number, height
   // Calculate quantization error
   const quantizationError = calculateQuantizationError(vectors, neurons, width, height)
   return {
-    grid: neurons
+    grid: neurons,
     width,
     height,
     neurons: width * height,
@@ -331,11 +331,11 @@ function findBestMatchingUnit(vector: number[], neurons: number[][][], width: nu
   return bmu
 }
 function updateSOMWeights(
-  neurons: number[][][]
-  vector: number[]
+  neurons: number[][][],
+  vector: number[],
   bmu: { x: number, y: number },
-  learningRate: number
-  neighborhoodRadius: number
+  learningRate: number,
+  neighborhoodRadius: number,
   width: number,;
   height: number
 ): void {
@@ -375,7 +375,7 @@ function calculateClusteringQuality(kmeansClusters: any[], somResults: any): unk
 function analyzeClusterContent(points: number[][], labels: string[]): unknown {
   return {
     dominantTerms: labels.slice(0, 3),
-    averageVector: points[0] || []
+    averageVector: points[0] || [],
     variance: Math.random() * 10,
     density: points.length / 10
   }
@@ -407,7 +407,7 @@ function categorizeSuggestions(suggestions: string[]): unknown {
     legal_terms: suggestions.filter(s => s.includes('law') || s.includes('legal')),
     procedural: suggestions.filter(s => s.includes('process') || s.includes('procedure')),
     contractual: suggestions.filter(s => s.includes('contract') || s.includes('agreement')),
-    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract')
+    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract'),
   }
 }
 function calculateClusterQuality(points: number[][], centroid: number[]): number {

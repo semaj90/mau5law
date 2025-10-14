@@ -7,7 +7,7 @@ async function resolveBits(): Promise<BitsNamespace> {
   try {
     const mod = await import('bits-ui');
     // Normalize: prefer mod.default if it looks like the default object
-    const ns = (mod && (mod.default && Object.keys(mod).length === 1)) ? mod.default : mod;
+    const ns = mod && mod.default && Object.keys(mod).length === 1 ? mod.default : mod;
     return ns as BitsNamespace;
   } catch (err) {
     // Fallback: require local vendor shim if available

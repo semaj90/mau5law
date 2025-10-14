@@ -195,7 +195,7 @@ export class SIMDGPUTilingEngine {
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule
+        module: shaderModule,
         entryPoint: 'main',
       },
       label: 'Evidence-Tiling-Pipeline',
@@ -206,7 +206,7 @@ export class SIMDGPUTilingEngine {
    * Process evidence screenshot with SIMD-accelerated GPU tiling
    */
   async processEvidenceWithSIMDTiling(
-    evidenceId: string
+    evidenceId: string,
     imageData: Float32Array,
     width: number,
     height: number,
@@ -262,7 +262,7 @@ export class SIMDGPUTilingEngine {
     this.updateMetrics(tiles.length, simdTime, gpuTime, throughputMBps);
     console.log(`✅ Evidence processing complete: ${tiles.length} tiles in ${totalTime.toFixed(2)}ms`);
     return {
-      chunks: tiles
+      chunks: tiles,
       totalProcessingTime: totalTime,
       simdMetrics: {
         totalSIMDTime: simdTime,
@@ -275,12 +275,12 @@ export class SIMDGPUTilingEngine {
     }
   }
   private async performGPUTiling(
-    imageData: Float32Array
+    imageData: Float32Array,
     width: number;
-    height: number
-    tileSize: number
-    evidenceType: string
-    simdTime: number
+    height: number,
+    tileSize: number,
+    evidenceType: string,
+    simdTime: number,
   ): Promise<TiledEvidenceChunk[]> {
     if (!this.device || !this.computePipeline) {
       // Fallback to CPU tiling
@@ -380,14 +380,14 @@ export class SIMDGPUTilingEngine {
         id: `${evidenceType}_tile_${tileX}_${tileY}`,
         tileX,
         tileY,
-        width: tileSize
-        height: tileSize
-        data: tileData
+        width: tileSize,
+        height: tileSize,
+        data: tileData,
         metadata: {
-          evidenceType: evidenceType as any
+          evidenceType: evidenceType as any,
           confidence,
-          processed: true
-          simdProcessTime: simdTime
+          processed: true,
+          simdProcessTime: simdTime,
           gpuProcessTime: performance.now() - gpuStart,
         },
         memoryRegion,
@@ -405,12 +405,12 @@ export class SIMDGPUTilingEngine {
     return tiles;
   }
   private async performCPUTiling(
-    imageData: Float32Array
+    imageData: Float32Array,
     width: number;
-    height: number
-    tileSize: number
-    evidenceType: string
-    simdTime: number
+    height: number,
+    tileSize: number,
+    evidenceType: string,
+    simdTime: number,
   ): Promise<TiledEvidenceChunk[]> {
     console.log('🔄 Falling back to CPU SIMD tiling...');
     const tilesX = Math.ceil(width / tileSize);
@@ -448,14 +448,14 @@ export class SIMDGPUTilingEngine {
           id: `${evidenceType}_cpu_tile_${tileX}_${tileY}`,
           tileX,
           tileY,
-          width: tileSize
-          height: tileSize
-          data: tileData
+          width: tileSize,
+          height: tileSize,
+          data: tileData,
           metadata: {
-            evidenceType: evidenceType as any
+            evidenceType: evidenceType as any,
             confidence,
-            processed: true
-            simdProcessTime: simdTime
+            processed: true,
+            simdProcessTime: simdTime,
             gpuProcessTime: 0,
           },
           memoryRegion,
@@ -506,9 +506,9 @@ export class SIMDGPUTilingEngine {
         const textureData = new ArrayBuffer(tile.data.byteLength);
         new Float32Array(textureData).set(tile.data);
         await textureStreamer.loadTexture(`${evidenceId}_${tile.id}`, textureData, tile.width, tile.height, {
-          region: region as any
+          region: region as any,
           priority: tile.metadata.confidence * 10, // Higher confidence = higher priority;
-          compress: true
+          compress: true,
           legalContext: {
             documentType: 'evidence',
             confidenceLevel: tile.metadata.confidence,
@@ -537,7 +537,7 @@ export class SIMDGPUTilingEngine {
           })),
         },
         {
-          useGPUAcceleration: true
+          useGPUAcceleration: true,
           batchSize: tiles.length,
           priority: 'high',
         }
@@ -614,8 +614,8 @@ export function calculateOptimalTileSize(imageWidth: number, imageHeight: number
   return Math.max(64, Math.min(512, Math.floor(256 * Math.sqrt(targetTilesCount))));
 }
 export function estimateProcessingTime(
-  imageWidth: number
-  imageHeight: number
+  imageWidth: number,
+  imageHeight: number,
 ): {
   estimatedSIMDTime: number;
   estimatedGPUTime: number;

@@ -108,11 +108,11 @@ export const POST: RequestHandler = async ({ request }) => {
         stressTest: {
           concurrency,
           totalOperations: concurrency * opsPerWorker,
-          duration: stressTime
+          duration: stressTime,
           opsPerSecond: (totals.success * 1000) / stressTime,
           successRate: (totals.success / (totals.success + totals.errors)) * 100,
-          results: totals
-          layerStats: cacheManager.getLayerStats()
+          results: totals,
+          layerStats: cacheManager.getLayerStats(),
         }
       })
     }

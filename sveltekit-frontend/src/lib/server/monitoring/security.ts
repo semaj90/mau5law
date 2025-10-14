@@ -19,15 +19,15 @@ export interface RateLimitEntry {
 }
 export interface SecurityConfig {
   rateLimits: {
-    general: { requests: number; windowMs: number }
-    auth: { requests: number; windowMs: number }
-    api: { requests: number; windowMs: number }
-    upload: { requests: number; windowMs: number }
-  }
+    general: { requests: number; windowMs: number };
+    auth: { requests: number; windowMs: number };
+    api: { requests: number; windowMs: number };
+    upload: { requests: number; windowMs: number };
+  };
   jwt: {
     accessTokenExpiry: string;
     refreshTokenExpiry: string;
-  }
+  };
 }
 const config: SecurityConfig = {
   rateLimits: {
@@ -40,7 +40,7 @@ const config: SecurityConfig = {
     accessTokenExpiry: '15m',
     refreshTokenExpiry: '7d',
   },
-}
+};
 class SecurityManager {
   private rateLimitStore = new Map<string, RateLimitEntry>();
   private blockedIPs = new Set<string>();
@@ -107,7 +107,7 @@ class SecurityManager {
     // Content Security Policy
     headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws: wss:;",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws: wss:;"
     );
     // Other security headers
     headers.set('X-Content-Type-Options', 'nosniff');
@@ -165,4 +165,4 @@ export const securityManager = new SecurityManager();
   }
   return null; // Continue processing
 }
-export { config as securityConfig }
+export { config as securityConfig };

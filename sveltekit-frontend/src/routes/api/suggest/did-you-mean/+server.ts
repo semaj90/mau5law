@@ -115,8 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
         aiSuggestions: cached.aiSuggestions,
         taskSuggestions: cached.taskSuggestions,
         userProfile: cached.userProfile,
-        cached: true
-        took_ms: Math.round(performance.now() - started)
+        cached: true,
+        took_ms: Math.round(performance.now() - started),
       }),
       { headers: { 'Content-Type': 'application/json' } }
     )
@@ -186,18 +186,18 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   const responseData = {
     query,
-    suggestions: combinedSuggestions
-    aiSuggestions: aiSuggestions || null
-    taskSuggestions: taskSuggestions || []
-    userProfile: userInsights
+    suggestions: combinedSuggestions,
+    aiSuggestions: aiSuggestions || null,
+    taskSuggestions: taskSuggestions || [],
+    userProfile: userInsights,
       ? {
           confidenceLevel: userInsights.confidenceLevel,
           learningPhase: userInsights.learningPhase,
           preferredIntents: userInsights.topIntents?.slice(0, 3) || []
         }
       : null
-    cached: false
-    took_ms: Math.round(performance.now() - started)
+    cached: false,
+    took_ms: Math.round(performance.now() - started),
   }
   // Cache the combined results
   await redis.setCache(

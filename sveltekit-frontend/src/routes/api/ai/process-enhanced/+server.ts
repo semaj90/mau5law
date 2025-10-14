@@ -85,8 +85,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           body: JSON.stringify({
             evidence,
             context: "legal_investigation",
-            enhance_tags: true
-            model: options.taggingModel || "gemma3-legal"
+            enhance_tags: true,
+            model: options.taggingModel || "gemma3-legal",
           })
         })
         const taggingResult = await taggingResponse.json()
@@ -140,7 +140,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            vector: embeddings
+            vector: embeddings,
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
             excludeIds: [evidence.id], // Don't match with itself
@@ -201,7 +201,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           pipeline.stages.embedding.result?.embeddings ||
           pipeline.stages.embedding.result?.vector,
         tags: taggingResult?.tags || [],
-        analysis: analysisResult
+        analysis: analysisResult,
         vectorMatches,
         relationships,
         recommendations:

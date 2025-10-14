@@ -55,7 +55,7 @@ export const evidenceProcessTable = pgTable(
     statusIdx: index('evidence_process_status_idx').on(table.status),
     requestedByIdx: index('evidence_process_requested_by_idx').on(table.requested_by),
     createdAtIdx: index('evidence_process_created_at_idx').on(table.created_at),
-  }),
+  })
 );
 // OCR results
 export const evidenceOcrTable = pgTable(
@@ -71,7 +71,7 @@ export const evidenceOcrTable = pgTable(
   (table: any) => ({
     evidenceIdIdx: index('evidence_ocr_evidence_id_idx').on(table.evidence_id),
     createdAtIdx: index('evidence_ocr_created_at_idx').on(table.created_at),
-  }),
+  })
 );
 // Embedding metadata (actual vectors stored in pgvector table)
 export const evidenceEmbeddingsTable = pgTable(
@@ -87,7 +87,7 @@ export const evidenceEmbeddingsTable = pgTable(
   (table: any) => ({
     evidenceIdIdx: index('evidence_embeddings_evidence_id_idx').on(table.evidence_id),
     modelIdx: index('evidence_embeddings_model_idx').on(table.model),
-  }),
+  })
 );
 // pgvector table for similarity search
 export const evidenceVectorsTable = pgTable(
@@ -109,7 +109,7 @@ export const evidenceVectorsTable = pgTable(
     vectorIdx: index('evidence_vectors_vector_idx')
       .using('ivfflat', table.vector.op('vector_l2_ops'))
       .with({ lists: 100 }),
-  }),
+  })
 );
 // RAG analysis results
 export const evidenceAnalysisTable = pgTable(
@@ -128,7 +128,7 @@ export const evidenceAnalysisTable = pgTable(
   (table: any) => ({
     evidenceIdIdx: index('evidence_analysis_evidence_id_idx').on(table.evidence_id),
     createdAtIdx: index('evidence_analysis_created_at_idx').on(table.created_at),
-  }),
+  })
 );
 // Base evidence table (if not already exists)
 export const evidenceTable = pgTable(
@@ -158,7 +158,7 @@ export const evidenceTable = pgTable(
     hashIdx: index('evidence_hash_idx').on(table.hash),
     uploadedAtIdx: index('evidence_uploaded_at_idx').on(table.uploaded_at),
     tagsIdx: index('evidence_tags_idx').using('gin', table.tags),
-  }),
+  })
 );
 // Cases table (if not already exists)
 export const casesTable = pgTable(
@@ -181,7 +181,7 @@ export const casesTable = pgTable(
     statusIdx: index('cases_status_idx').on(table.status),
     createdByIdx: index('cases_created_by_idx').on(table.created_by),
     assignedToIdx: index('cases_assigned_to_idx').on(table.assigned_to),
-  }),
+  })
 );
 // Reports table for detective/legal reports
 export const reportsTable = pgTable(
@@ -204,7 +204,7 @@ export const reportsTable = pgTable(
     evidenceIdIdx: index('reports_evidence_id_idx').on(table.evidence_id),
     createdByIdx: index('reports_created_by_idx').on(table.created_by),
     createdAtIdx: index('reports_created_at_idx').on(table.created_at),
-  }),
+  })
 );
 // System health and monitoring
 export const systemHealthTable = pgTable(
@@ -220,7 +220,7 @@ export const systemHealthTable = pgTable(
   (table: any) => ({
     serviceIdx: index('system_health_service_idx').on(table.service),
     lastCheckIdx: index('system_health_last_check_idx').on(table.last_check),
-  }),
+  })
 );
 // Queue monitoring
 export const queueStatsTable = pgTable(
@@ -237,7 +237,7 @@ export const queueStatsTable = pgTable(
   (table: any) => ({
     queueNameIdx: index('queue_stats_queue_name_idx').on(table.queue_name),
     lastUpdatedIdx: index('queue_stats_last_updated_idx').on(table.last_updated),
-  }),
+  })
 );
 // Chat embeddings for AI assistant semantic search
 export const chatEmbeddings = pgTable(
@@ -261,7 +261,7 @@ export const chatEmbeddings = pgTable(
     legalDomainIdx: index('chat_embeddings_legal_domain_idx').on(table.legalDomain),
     // Vector similarity search index (HNSW) will be created manually in migration
     embeddingIdx: index('chat_embeddings_embedding_idx').on(table.embedding),
-  }),
+  })
 );
 // Export all table types
 export type EvidenceProcess = typeof evidenceProcessTable.$inferSelect;

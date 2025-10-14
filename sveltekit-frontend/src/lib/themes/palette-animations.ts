@@ -31,8 +31,8 @@ export class PaletteAnimationController {
   private chromaticOffset = 0;
   private pixelateLevel = 0;
   async animatePaletteChange(
-    fromPalette: ConsolePaletteName
-    toPalette: ConsolePaletteName
+    fromPalette: ConsolePaletteName,
+    toPalette: ConsolePaletteName,
     options: Partial<AnimationOptions> = {}
   ): Promise<void> {
     if (this.isAnimating) return;
@@ -93,8 +93,8 @@ export class PaletteAnimationController {
         });
       } else if (typeof fromColor === 'string' && typeof toColor === 'string') {
         this.transitions.set(key, {
-          from: fromColor
-          to: toColor
+          from: fromColor,
+          to: toColor,
           current: fromColor;
           progress: 0
         });
@@ -440,8 +440,8 @@ export class PaletteAnimationController {
 export const paletteAnimator = new PaletteAnimationController();
 // Utility functions for common transitions
 export async function smoothPaletteTransition(
-  fromPalette: ConsolePaletteName
-  toPalette: ConsolePaletteName
+  fromPalette: ConsolePaletteName,
+  toPalette: ConsolePaletteName,
   duration = 1000
 ): Promise<void> {
   return paletteAnimator.animatePaletteChange(fromPalette, toPalette, { duration });

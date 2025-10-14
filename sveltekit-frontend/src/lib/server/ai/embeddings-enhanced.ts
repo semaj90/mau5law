@@ -24,7 +24,7 @@ export interface EmbeddingResult {
 }
 /**
  * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
- */;
+ */
 async function generateNomicEmbedding(text: string): Promise<number[]> {
   const ollamaEndpoint = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434'
   // Try Gemma embeddings first, fallback to nomic-embed-text
@@ -58,7 +58,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
 }
 /**
  * Extract structured data from legal documents using langextract patterns
- */;
+ */
 async function extractDocumentStructure(text: string): Promise<any> {
   // Simple extraction patterns for legal documents
   const patterns = {
@@ -211,7 +211,7 @@ export async function generateBatchEmbeddingsEnhanced(
  * Legal document-specific embedding with metadata and extraction
  */
 export async function generateLegalEmbedding(
-  documentText: string
+  documentText: string,
   metadata: {
     documentType?: "contract" | "case_law" | "statute" | "brief" | "other";
     jurisdiction?: string;
@@ -223,7 +223,7 @@ export async function generateLegalEmbedding(
   // Generate embedding with extracted context
   const embedding = (await generateEnhancedEmbedding(documentText, {
     provider: "nomic-embed",
-    legalDomain: true
+    legalDomain: true,
     maxTokens: 2000,
     useExtraction: true
   })) as number[];
@@ -245,19 +245,19 @@ export async function generateLegalEmbedding(
  * Similarity calculation between legal documents
  */
 export async function calculateLegalSimilarity(
-  doc1: string
-  doc2: string
+  doc1: string,
+  doc2: string,
 ): Promise<number> {
   const embeddings = (await generateEnhancedEmbedding([doc1, doc2], {
     provider: "nomic-embed",
-    legalDomain: true
-    useExtraction: true
+    legalDomain: true,
+    useExtraction: true,
   })) as number[][];
   return cosineSimilarity(embeddings[0], embeddings[1]);
 }
 /**
  * Cosine similarity calculation
- */;
+ */
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length !== vecB.length) {
     throw new Error("Vectors must have same length for similarity calculation");
@@ -276,7 +276,7 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
  * Backward compatibility exports
  */
 export async function generateEmbedding(
-  text: string
+  text: string,
   model?: string
 ): Promise<number[]> {
   const result = await generateEnhancedEmbedding(text, {
@@ -288,13 +288,13 @@ export async function generateEmbedding(
     : (result as number[]);
 }
 export async function generateBatchEmbeddings(
-  texts: string[]
+  texts: string[],
   model?: string
   batchSize: number = 10,
 ): Promise<number[][]> {
   return generateBatchEmbeddingsEnhanced(texts, {
     provider: "nomic-embed",
-    legalDomain: true
+    legalDomain: true,
     batchSize
   });
 }
@@ -313,11 +313,11 @@ export async function processDocumentWithChunking(_document: string
     if (chunk.trim().length < 50) continue; // Skip very small chunks
     const embedding = await generateNomicEmbedding(chunk);
     chunks.push({
-      text: chunk
+      text: chunk,
       embedding,
       metadata: {
         chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
-        startIndex: i
+        startIndex: i,
         endIndex: Math.min(i + chunkSize, document.length),
         length: chunk.length
       }

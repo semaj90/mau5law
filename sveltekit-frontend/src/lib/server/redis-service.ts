@@ -37,15 +37,15 @@ class RedisService {
     db: parseInt(process.env.REDIS_DB || '0'),
     maxRetriesPerRequest: 3,
     retryDelayOnFailover: 100,
-    enableReadyCheck: true
-    lazyConnect: true
+    enableReadyCheck: true,
+    lazyConnect: true,
     keepAlive: 30000,
     family: 4,
     keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
   }
   /**
    * Initialize Redis connection pool
-   */;
+   */
   async initialize(): Promise<boolean> {
     try {
       // Prevent multiple initialization attempts
@@ -58,19 +58,19 @@ class RedisService {
       this.pool = {
         primary: new Redis({
           ...this.config,
-          lazyConnect: false
-          connectionName: 'legal-ai-primary'
+          lazyConnect: false,
+          connectionName: 'legal-ai-primary',
         }),
         // Separate connection for pub/sub operations
         subscriber: new Redis({
           ...this.config,
-          lazyConnect: false
-          connectionName: 'legal-ai-subscriber'
+          lazyConnect: false,
+          connectionName: 'legal-ai-subscriber',
         }),
         publisher: new Redis({
           ...this.config,
-          lazyConnect: false
-          connectionName: 'legal-ai-publisher'
+          lazyConnect: false,
+          connectionName: 'legal-ai-publisher',
         })
       }
       // Set up event handlers
@@ -96,7 +96,7 @@ class RedisService {
   }
   /**
    * Set up Redis connection event handlers
-   */;
+   */
   private setupEventHandlers(redis: Redis, name: string): void {
     redis.on('connect', () => {
       console.log(`✅ [RedisService] ${name} connected`);
@@ -122,7 +122,7 @@ class RedisService {
   }
   /**
    * Handle automatic reconnection with exponential backoff
-   */;
+   */
   private async handleReconnection(): Promise<void> {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error(
@@ -142,7 +142,7 @@ class RedisService {
   }
   /**
    * Test Redis Stack modules (JSON, Search, TimeSeries)
-   */;
+   */
   private async testRedisStackModules(): Promise<void> {
     if (!this.pool?.primary) return;
     try {
@@ -169,31 +169,31 @@ class RedisService {
   }
   /**
    * Get Redis client for operations
-   */;
+   */
   getClient(): Redis | null {
     return this.pool?.primary || null;
   }
   /**
    * Get publisher for pub/sub
-   */;
+   */
   getPublisher(): Redis | null {
     return this.pool?.publisher || null;
   }
   /**
    * Get subscriber for pub/sub
-   */;
+   */
   getSubscriber(): Redis | null {
     return this.pool?.subscriber || null;
   }
   /**
    * Check if Redis is connected and healthy
-   */;
+   */
   isHealthy(): boolean {
     return this.isConnected && this.pool?.primary !== null;
   }
   /**
    * Get Redis connection statistics
-   */;
+   */
   getStats(): {
     connected: boolean;
     status: string;
@@ -215,7 +215,7 @@ class RedisService {
   }
   /**
    * Get Redis memory and keyspace info
-   */;
+   */
   async getRedisInfo(): Promise<any> {
     if (!this.pool?.primary || !this.isHealthy()) {
       return null;
@@ -242,7 +242,7 @@ class RedisService {
   }
   /**
    * Cache operations with intelligent TTL for legal AI workloads
-   */;
+   */
   async set(_key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
@@ -332,7 +332,7 @@ class RedisService {
   }
   /**
    * Hash operations
-   */;
+   */
   async hget(_key: string, field: string): Promise<string | null> {
     const client = this.getClient();
     if (!client) return null;
@@ -397,7 +397,7 @@ class RedisService {
   }
   /**
    * Legal AI specific caching methods
-   */;
+   */
   async cacheEmbedding(documentId: string, embedding: number[], metadata?: any): Promise<boolean> {
     const key = `legal:embedding:${documentId}`;
     const data = {
@@ -491,7 +491,7 @@ class RedisService {
   }
   async xRevRange(_key: string
     end: string;
-    start: string
+    start: string,
     options?: { COUNT: number }
   ): Promise<any[]> {
     const client = this.getClient();
@@ -509,7 +509,7 @@ class RedisService {
   }
   /**
    * Cleanup and close connections
-   */;
+   */
   async shutdown(): Promise<void> {
     console.log('[RedisService] Shutting down Redis connections...');
     if (this.pool) {

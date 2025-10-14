@@ -148,7 +148,7 @@ export const passwordResetTokens = pgTable(
         name: 'password_reset_tokens_user_id_users_id_fk',
       }).onDelete('cascade'),
     ],
-  }),
+  })
 );
 // === CASE MANAGEMENT ===
 export const cases = pgTable(
@@ -192,7 +192,7 @@ export const cases = pgTable(
       index('cases_incident_date_idx').on(table.incidentDate),
       index('cases_danger_score_idx').on(table.dangerScore),
     ],
-  }),
+  })
 );
 // === CRIMINAL RECORDS ===
 export const criminals = pgTable(
@@ -238,7 +238,7 @@ export const criminals = pgTable(
       index('criminals_created_by_idx').on(table.createdBy),
       index('criminals_ssn_idx').on(table.ssn),
     ],
-  }),
+  })
 );
 // === EVIDENCE MANAGEMENT ===
 export const evidence = pgTable(
@@ -287,7 +287,7 @@ export const evidence = pgTable(
       index('evidence_uploaded_at_idx').on(table.uploadedAt),
       index('evidence_hash_idx').on(table.hash),
     ],
-  }),
+  })
 );
 // === LEGAL DOCUMENT MANAGEMENT ===
 export const legalDocuments = pgTable(
@@ -348,7 +348,7 @@ export const legalDocuments = pgTable(
       foreignColumns: [users.id],
       name: 'legal_documents_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === CASE ACTIVITIES & TIMELINE ===
 export const caseActivities = pgTable('case_activities', {
@@ -394,7 +394,7 @@ export const attachmentVerifications = pgTable(
       foreignColumns: [users.id],
       name: 'attachment_verifications_verified_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === CANVAS ANNOTATIONS ===
 export const canvasAnnotations = pgTable(
@@ -431,7 +431,7 @@ export const canvasAnnotations = pgTable(
       foreignColumns: [users.id],
       name: 'canvas_annotations_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === CANVAS STATES ===
 export const canvasStates = pgTable(
@@ -461,7 +461,7 @@ export const canvasStates = pgTable(
       foreignColumns: [users.id],
       name: 'canvas_states_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === AI REPORTS & ANALYSIS ===
 export const aiReports = pgTable(
@@ -496,7 +496,7 @@ export const aiReports = pgTable(
       foreignColumns: [users.id],
       name: 'ai_reports_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === CITATIONS ===
 export const citations = pgTable(
@@ -541,7 +541,7 @@ export const citations = pgTable(
       foreignColumns: [users.id],
       name: 'citations_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === REPORTS ===
 export const reports = pgTable(
@@ -574,7 +574,7 @@ export const reports = pgTable(
       foreignColumns: [users.id],
       name: 'reports_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === SAVED REPORTS ===
 export const savedReports = pgTable(
@@ -616,7 +616,7 @@ export const savedReports = pgTable(
       foreignColumns: [users.id],
       name: 'saved_reports_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === THEMES & UI CUSTOMIZATION ===
 export const themes = pgTable(
@@ -642,7 +642,7 @@ export const themes = pgTable(
       foreignColumns: [users.id],
       name: 'themes_created_by_users_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 // === PERSONS OF INTEREST ===
 export const personsOfInterest = pgTable(
@@ -676,7 +676,7 @@ export const personsOfInterest = pgTable(
       foreignColumns: [users.id],
       name: 'persons_of_interest_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === HASH VERIFICATIONS ===
 export const hashVerifications = pgTable(
@@ -707,7 +707,7 @@ export const hashVerifications = pgTable(
       foreignColumns: [users.id],
       name: 'hash_verifications_verified_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === VECTOR EMBEDDINGS FOR AI SEARCH ===
 export const contentEmbeddings = pgTable('content_embeddings', {
@@ -742,7 +742,7 @@ export const userEmbeddings = pgTable(
       foreignColumns: [users.id],
       name: 'user_embeddings_user_id_users_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 export const chatEmbeddings = pgTable('chat_embeddings', {
   id: uuid('id')
@@ -776,7 +776,7 @@ export const evidenceVectors = pgTable(
       foreignColumns: [evidence.id],
       name: 'evidence_vectors_evidence_id_evidence_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 export const caseEmbeddings = pgTable(
   'case_embeddings',
@@ -797,7 +797,7 @@ export const caseEmbeddings = pgTable(
       foreignColumns: [cases.id],
       name: 'case_embeddings_case_id_cases_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 // === RAG (Retrieval Augmented Generation) SESSIONS ===
 export const ragSessions = pgTable(
@@ -822,7 +822,7 @@ export const ragSessions = pgTable(
       name: 'rag_sessions_user_id_users_id_fk',
     }).onDelete('cascade'),
     unique('rag_sessions_session_id_unique').on(table.sessionId),
-  ],
+  ]
 );
 export const ragMessages = pgTable('rag_messages', {
   id: uuid('id')
@@ -908,7 +908,7 @@ export const legalAnalysisSessions = pgTable(
       foreignColumns: [users.id],
       name: 'legal_analysis_sessions_user_id_users_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 // === LEGAL RESEARCH ===
 export const legalResearch = pgTable(
@@ -947,7 +947,7 @@ export const legalResearch = pgTable(
       foreignColumns: [users.id],
       name: 'legal_research_created_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === VECTOR METADATA ===
 export const vectorMetadata = pgTable(
@@ -964,7 +964,7 @@ export const vectorMetadata = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow(),
   },
-  table => [unique('vector_metadata_document_id_unique').on(table.documentId)],
+  table => [unique('vector_metadata_document_id_unique').on(table.documentId)]
 );
 // === CASE SCORING SYSTEM ===
 export const caseScores = pgTable(
@@ -995,7 +995,7 @@ export const caseScores = pgTable(
       foreignColumns: [users.id],
       name: 'case_scores_calculated_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === AI QUERY LOGGING SYSTEM ===
 export const userAiQueries = pgTable(
@@ -1032,7 +1032,7 @@ export const userAiQueries = pgTable(
       foreignColumns: [cases.id],
       name: 'user_ai_queries_case_id_cases_id_fk',
     }).onDelete('cascade'),
-  ],
+  ]
 );
 // === AUTO-TAGGING SYSTEM ===
 export const autoTags = pgTable(
@@ -1059,7 +1059,7 @@ export const autoTags = pgTable(
       foreignColumns: [users.id],
       name: 'auto_tags_confirmed_by_users_id_fk',
     }),
-  ],
+  ]
 );
 // === EMBEDDING CACHE ===
 export const embeddingCache = pgTable(
@@ -1074,7 +1074,7 @@ export const embeddingCache = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     embedding: text('embedding').notNull(), // Vector stored as text, converted in service layer
   },
-  table => [unique('embedding_cache_text_hash_unique').on(table.textHash)],
+  table => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
 );
 // === DOCUMENT CHUNKS ===
 export const documentChunks = pgTable('document_chunks', {
@@ -1236,6 +1236,6 @@ export const autoTagsRelations = relations(autoTags, ({ one }) => ({
 }));
 // === DATABASE CONNECTION & HELPERS ===
 // Export helpers for query building
-export const helpers = { eq }
+export const helpers = { eq };
 // Export all tables for easy access
 // Note: do not re-export tables collectively to avoid redeclaration conflicts

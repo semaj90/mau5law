@@ -9,8 +9,8 @@ export { default as DropdownMenuItem } from './DropdownMenuItem.svelte';
 import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
 
 export async function DropdownMenu() {
-	const ns = await getBitsNamespace();
-	return ns?.DropdownMenu ?? ns;
+  const ns = await getBitsNamespace();
+  return ns?.DropdownMenu ?? ns;
 }
 // Export commonly used types
 export type { Snippet } from 'svelte';

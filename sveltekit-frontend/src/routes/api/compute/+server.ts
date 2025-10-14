@@ -1,20 +1,20 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // src/routes/api/compute/+server.ts
 // SvelteKit API endpoint for multi-threaded job pipeline
 // Implements PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from '$lib/server/db'
-import { createClient } from 'redis'
-import { nanoid } from 'nanoid'
-import { vectorOutbox, vectorJobs, vectors } from '$lib/server/db/schema-postgres.js'
-import { eq } from 'drizzle-orm'
+import { db } from '$lib/server/db';
+import { createClient } from 'redis';
+import { nanoid } from 'nanoid';
+import { vectorOutbox, vectorJobs, vectors } from '$lib/server/db/schema-postgres.js';
+import { eq } from 'drizzle-orm';
 
 // Initialize Redis connection
 const redis = createClient({
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
-})
-let redisConnected = false
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+});
+let redisConnected = false;
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();

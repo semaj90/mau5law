@@ -1,7 +1,7 @@
 /**
  * Client-side timing utility for UX metrics extraction
  * Complements server-side Server-Timing headers for full observability
- */;
+ */
 }
 export interface TimingMetrics {
   // Navigation timing
@@ -32,7 +32,7 @@ class TimingMetricsCollector {
   private observers: PerformanceObserver[] = [];
   /**
    * Initialize performance monitoring with Web Vitals
-   */;
+   */
   initialize(): void {
     if (typeof window === 'undefined') return;
     // Observe Core Web Vitals
@@ -42,7 +42,7 @@ class TimingMetricsCollector {
   }
   /**
    * Extract Server-Timing headers from response
-   */;
+   */
   extractServerTiming(response: Response): Record<string, number> {
     const serverTiming: Record<string, number> = {}
     const timingHeader = response.headers.get('Server-Timing');
@@ -64,7 +64,7 @@ class TimingMetricsCollector {
   }
   /**
    * Extract request ID from response headers
-   */;
+   */
   extractRequestId(response: Response): string | undefined {
     return (
       response.headers.get('X-Request-ID') ||
@@ -74,7 +74,7 @@ class TimingMetricsCollector {
   }
   /**
    * Get comprehensive timing metrics
-   */;
+   */
   getMetrics(): TimingMetrics {
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const paint = performance.getEntriesByType('paint');
@@ -104,7 +104,7 @@ class TimingMetricsCollector {
   }
   /**
    * Create a performance mark
-   */;
+   */
   mark(name: string): void {
     if (typeof performance !== 'undefined' && performance.mark) {
       performance.mark(name);
@@ -113,7 +113,7 @@ class TimingMetricsCollector {
   }
   /**
    * Measure duration between marks
-   */;
+   */
   measure(name: string, startMark: string, endMark?: string): number {
     if (typeof performance !== 'undefined' && performance.measure) {
       try {
@@ -129,7 +129,7 @@ class TimingMetricsCollector {
   }
   /**
    * Enhanced fetch wrapper with timing extraction
-   */;
+   */
   async instrumentedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     const startTime = performance.now();
     const requestId = crypto.randomUUID();
@@ -152,7 +152,7 @@ class TimingMetricsCollector {
         method: init?.method || 'GET',
         clientDuration,
         serverTiming,
-        requestId: serverRequestId || requestId
+        requestId: serverRequestId || requestId,
         status: response.status,
         timestamp: Date.now()
       });
@@ -176,7 +176,7 @@ class TimingMetricsCollector {
   }
   /**
    * Send metrics to analytics endpoint
-   */;
+   */
   async sendMetrics(endpoint: string = '/api/v1/metrics/timing'): Promise<void> {
     const metrics = this.getMetrics();
     try {
@@ -193,7 +193,7 @@ class TimingMetricsCollector {
   }
   /**
    * Observe Web Vitals using PerformanceObserver
-   */;
+   */
   private observeWebVitals(): void {
     // Largest Contentful Paint
     if ('PerformanceObserver' in window) {
@@ -288,7 +288,7 @@ class TimingMetricsCollector {
   }
   /**
    * Cleanup observers
-   */;
+   */
   destroy(): void {
     this.observers.forEach((observer) => {
       try {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { User, Bot, AlertTriangle } from 'lucide-svelte';
   interface Props {
-    message: { role: 'user' | 'assistant' | 'error'; content: string; timestamp?: string }
+    message: { role: 'user' | 'assistant' | 'error'; content: string; timestamp?: string };
     analyticsLog?: (_event: unknown) => void;
   }
   let { message, analyticsLog = () => {} }: Props = $props();

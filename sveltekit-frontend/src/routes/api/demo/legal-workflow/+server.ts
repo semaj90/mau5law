@@ -4,8 +4,8 @@
  * This demonstrates the full workflow using your existing infrastructure:
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/index.js';
 import * as schema from '$lib/server/db/schema.js';
 
@@ -668,7 +668,7 @@ Regarding "${query}" - Based on the processed evidence and case context, this ap
 `;
 }
 export const GET: RequestHandler = async ({ url }) => {
-	const demo = url.searchParams.get('demo');
+  const demo = url.searchParams.get('demo');
   if (demo === 'info') {
     return json({
       workflow: 'Legal AI Case Management Demo',
@@ -728,4 +728,4 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   }
   return json({ error: 'Use ?demo=info for documentation' });
-}
+};

@@ -2,143 +2,147 @@
  * Individual Evidence AI Analysis API Route
  * POST /api/v1/evidence/[id]/analyze - Analyze specific evidence with AI
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // UUID validation schema
-const UUIDSchema = z.string().uuid('Invalid evidence ID format')
+const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 // Analysis request schema
 const AnalysisRequestSchema = z.object({
   analysisType: z.enum(['content', 'metadata', 'forensic', 'legal', 'comprehensive']).default('comprehensive'),
-  options: z.object({
-    includeOCR: z.boolean().default(true),
-    includeNLP: z.boolean().default(true),
-    includeLegalReview: z.boolean().default(true),
-    includeForensics: z.boolean().default(false),
-    confidence: z.number().min(0).max(1).default(0.7)
-  }).optional(),
-  context: z.object({
-    caseId: z.string().uuid().optional(),
-    relatedEvidence: z.array(z.string().uuid()).optional(),
-    legalContext: z.string().optional()
-  }).optional()
-})
+  options: z
+    .object({
+      includeOCR: z.boolean().default(true),
+      includeNLP: z.boolean().default(true),
+      includeLegalReview: z.boolean().default(true),
+      includeForensics: z.boolean().default(false),
+      confidence: z.number().min(0).max(1).default(0.7),
+    })
+    .optional(),
+  context: z
+    .object({
+      caseId: z.string().uuid().optional(),
+      relatedEvidence: z.array(z.string().uuid()).optional(),
+      legalContext: z.string().optional(),
+    })
+    .optional(),
+});
 // Configuration for AI services
-const OLLAMA_BASE_URL = 'http://localhost:11434'
-const CUDA_SERVICE_URL = 'http://localhost:8096'
-const LEGAL_MODEL = 'gemma3-legal:latest'
+const OLLAMA_BASE_URL = 'http://localhost:11434';
+const CUDA_SERVICE_URL = 'http://localhost:8096';
+const LEGAL_MODEL = 'gemma3-legal:latest';
 
 // create a small config object so these constants are read and available for future integration
 const AI_SERVICE_CONFIG = {
   ollamaBaseUrl: OLLAMA_BASE_URL,
   cudaServiceUrl: CUDA_SERVICE_URL,
   legalModel: LEGAL_MODEL,
-} as const
+} as const;
 
 // Add typed definitions to avoid `any`
-type AnalysisType = 'content' | 'metadata' | 'forensic' | 'legal' | 'comprehensive'
+type AnalysisType = 'content' | 'metadata' | 'forensic' | 'legal' | 'comprehensive';
 
 type EvidenceRecord = {
-	id: string
-	title?: string
-	evidenceType?: string
-	content?: string
-	metadata?: {
-		fileSize?: number | string
-		aiAnalysis?: Record<string, AnalysisAggregate> | undefined
-		[key: string]: unknown
-	}
-	createdAt?: string
-	updatedAt?: string
-	// other fields allowed but unknown
-	[key: string]: unknown
-}
+  id: string;
+  title?: string;
+  evidenceType?: string;
+  content?: string;
+  metadata?: {
+    fileSize?: number | string;
+    aiAnalysis?: Record<string, AnalysisAggregate> | undefined;
+    [key: string]: unknown;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+  // other fields allowed but unknown
+  [key: string]: unknown;
+};
 
 type AnalysisOptions = {
-	includeOCR?: boolean
-	includeNLP?: boolean
-	includeLegalReview?: boolean
-	includeForensics?: boolean
-	confidence?: number
-}
+  includeOCR?: boolean;
+  includeNLP?: boolean;
+  includeLegalReview?: boolean;
+  includeForensics?: boolean;
+  confidence?: number;
+};
 
 type AnalysisContext = {
-	caseId?: string
-	relatedEvidence?: string[]
-	legalContext?: string
-}
+  caseId?: string;
+  relatedEvidence?: string[];
+  legalContext?: string;
+};
 
 /* Base and specialized analysis result types */
 type BaseAnalysisResult = {
-	confidence: number
-	findings: string[]
-	recommendations: string[]
-	alerts: string[]
-	timestamp?: string
-	[type: string]: unknown
-}
+  confidence: number;
+  findings: string[];
+  recommendations: string[];
+  alerts: string[];
+  timestamp?: string;
+  [type: string]: unknown;
+};
 
 type ContentAnalysisResult = BaseAnalysisResult & {
-	contentType?: string
-	extractedText?: string
-	entities?: string[]
-	keywords?: string[]
-	sentiment?: string
-	language?: string
-	quality?: 'low' | 'medium' | 'high'
-}
+  contentType?: string;
+  extractedText?: string;
+  entities?: string[];
+  keywords?: string[];
+  sentiment?: string;
+  language?: string;
+  quality?: 'low' | 'medium' | 'high';
+};
 
 type LegalAnalysisResult = BaseAnalysisResult & {
-	relevance?: 'low' | 'medium' | 'high'
-	legalWeight?: string
-	admissibility?: string
-	precedents?: string[]
-	legalIssues?: string[]
-}
+  relevance?: 'low' | 'medium' | 'high';
+  legalWeight?: string;
+  admissibility?: string;
+  precedents?: string[];
+  legalIssues?: string[];
+};
 
 type MetadataAnalysisResult = BaseAnalysisResult & {
-	fileInfo?: {
-		size?: number | string
-		type?: string
-		created?: string
-		modified?: string
-	}
-	integrity?: string
-	authenticity?: string
-	chainOfCustody?: string
-}
+  fileInfo?: {
+    size?: number | string;
+    type?: string;
+    created?: string;
+    modified?: string;
+  };
+  integrity?: string;
+  authenticity?: string;
+  chainOfCustody?: string;
+};
 
 type ForensicAnalysisResult = BaseAnalysisResult & {
-	digitalFingerprint?: string
-	tamperDetection?: string
-	originalityScore?: number
-	forensicMarkers?: string[]
-}
+  digitalFingerprint?: string;
+  tamperDetection?: string;
+  originalityScore?: number;
+  forensicMarkers?: string[];
+};
 
 type AnalysisAggregate = {
-	type: AnalysisType
-	timestamp: string
-	confidence: number
-	findings: string[]
-	recommendations: string[]
-	alerts: string[]
-	content?: ContentAnalysisResult
-	legal?: LegalAnalysisResult
-	metadata?: MetadataAnalysisResult
-	forensic?: ForensicAnalysisResult
-}
+  type: AnalysisType;
+  timestamp: string;
+  confidence: number;
+  findings: string[];
+  recommendations: string[];
+  alerts: string[];
+  content?: ContentAnalysisResult;
+  legal?: LegalAnalysisResult;
+  metadata?: MetadataAnalysisResult;
+  forensic?: ForensicAnalysisResult;
+};
 
 // add a typed Locals shape instead of using `any`
 type Locals = {
-	user?: { id?: string } | null;
-	session?: { userId?: string } | null;
+  user?: { id?: string } | null;
+  session?: { userId?: string } | null;
 } & Record<string, unknown>;
 
 // Helper: resolve user id from locals
 function getUserId(locals: Locals): string {
-	// Prefer explicit user id, then session-based id, else anonymous fallback.
-	return locals?.user?.id ?? locals?.session?.userId ?? 'anonymous';
+  // Prefer explicit user id, then session-based id, else anonymous fallback.
+  return locals?.user?.id ?? locals?.session?.userId ?? 'anonymous';
 }
 
 /*

@@ -1,7 +1,7 @@
 /**
  * Centralized Database Configuration
  * Single source of truth for all database connections across the legal AI platform
- */;
+ */
 }
 export interface DatabaseConfig {
   host: string;
@@ -21,7 +21,7 @@ export interface DatabaseUrls {
 }
 /**
  * Get database configuration from environment with smart defaults
- */;
+ */
 export function getDatabaseConfig(): DatabaseConfig {
   return {
     host: process.env.POSTGRES_HOST || 'localhost',
@@ -37,7 +37,7 @@ export function getDatabaseConfig(): DatabaseConfig {
 }
 /**
  * Generate standardized database URLs
- */;
+ */
 export function getDatabaseUrls(): DatabaseUrls {
   const config = getDatabaseConfig();
   const baseUrl = `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`
@@ -49,7 +49,7 @@ export function getDatabaseUrls(): DatabaseUrls {
 }
 /**
  * Get connection string for specific service types
- */;
+ */
 export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app'): string {
   const urls = getDatabaseUrls();
   switch (type) {
@@ -63,7 +63,7 @@ export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app')
 }
 /**
  * Validate database configuration
- */;
+ */
 export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
   const config = getDatabaseConfig();
   const errors: string[] = [];
@@ -79,7 +79,7 @@ export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
 }
 /**
  * Get pool configuration for different environments
- */;
+ */
 export function getPoolConfig(environment: 'development' | 'production' | 'test' = 'development') {
   const config = getDatabaseConfig();
   const poolConfigs = {
@@ -106,7 +106,7 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
 }
 /**
  * Export commonly used constants
- */;
+ */
 export const DATABASE_CONSTANTS = {
   DEFAULT_HOST: 'localhost',
   DEFAULT_PORT: 5432,
@@ -120,7 +120,7 @@ export const DATABASE_CONSTANTS = {
 } as const;
 /**
  * Browser-safe configuration (no sensitive data)
- */;
+ */
 export function getBrowserSafeDatabaseInfo() {
   const config = getDatabaseConfig();
   return {

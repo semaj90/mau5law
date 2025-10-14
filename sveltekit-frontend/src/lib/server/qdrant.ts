@@ -1,4 +1,4 @@
-import { fetchOllama } from "$lib/utils/fetch-with-timeout";
+import { fetchOllama } from '$lib/utils/fetch-with-timeout';
 // File: src/lib/server/qdrant.ts
 export async function fetchEmbedding(text: string): Promise<number[]> {
   try {
@@ -7,8 +7,8 @@ export async function fetchEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'embeddinggemma:latest',
-        prompt: text
-      })
+        prompt: text,
+      }),
     });
     if (!response.ok) {
       throw new Error(`Ollama embedding failed: ${response.statusText}`);

@@ -67,7 +67,7 @@ function composePrompt(
   core: Passage[],
   neighbors: Passage[],
   concepts: string[],
-  tokenBudget = 1200,
+  tokenBudget = 1200
 ) {
   // Basic pruning: truncate each passage to first 280 chars for now
   const trim = (s: string) => (s.length > 280 ? s.slice(0, 277) + '…' : s);
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const neighbors = core.length
     ? await fetchGraphNeighbors(
         core.map(p => p.id),
-        neighborK,
+        neighborK
       )
     : [];
   const concepts = extractConcepts(core.concat(neighbors));
@@ -108,9 +108,9 @@ export const POST: RequestHandler = async ({ request }) => {
     neighborCount: neighbors.length,
     concepts,
     cached: false,
-  }
+  };
   await redis.setCache(cacheKey, payload, REDIS_TTL_SECONDS);
   return new Response(JSON.stringify({ ...payload, took_ms: Math.round(performance.now() - t0) }), {
     headers: { 'Content-Type': 'application/json' },
   });
-}
+};

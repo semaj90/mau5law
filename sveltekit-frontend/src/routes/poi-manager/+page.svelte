@@ -42,17 +42,17 @@
       weight: '',
       hair: '',
       eyes: '',
-      distinguishingMarks: ''
+      distinguishingMarks: '',
     },
     profileData: {
       modusOperandi: '',
       knownHabits: [],
-      associates: []
+      associates: [],
     },
     lastKnownLocation: '',
     lastSeen: '',
     dangerLevel: 0,
-    notes: ''
+    notes: '',
   });
 
   // Load POIs from API
@@ -89,7 +89,7 @@
       const response = await fetch('/api/poi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const result = await response.json();
@@ -119,7 +119,7 @@
       const response = await fetch(`/api/poi/${selectedPoi.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const result = await response.json();
@@ -147,7 +147,7 @@
 
     try {
       const response = await fetch(`/api/poi/${poi.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       const result = await response.json();
@@ -181,17 +181,17 @@
         weight: '',
         hair: '',
         eyes: '',
-        distinguishingMarks: ''
+        distinguishingMarks: '',
       },
       profileData: {
         modusOperandi: '',
         knownHabits: [],
-        associates: []
+        associates: [],
       },
       lastKnownLocation: '',
       lastSeen: '',
       dangerLevel: 0,
-      notes: ''
+      notes: '',
     };
   }
 
@@ -213,17 +213,17 @@
         weight: '',
         hair: '',
         eyes: '',
-        distinguishingMarks: ''
+        distinguishingMarks: '',
       },
       profileData: poi.profileData || {
         modusOperandi: '',
         knownHabits: [],
-        associates: []
+        associates: [],
       },
       lastKnownLocation: poi.lastKnownLocation || '',
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
       dangerLevel: poi.dangerLevel || 0,
-      notes: poi.notes || ''
+      notes: poi.notes || '',
     };
     showEditDialog = true;
   }
@@ -234,10 +234,11 @@
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(poi =>
-        poi.name.toLowerCase().includes(query) ||
-        poi.notes?.toLowerCase().includes(query) ||
-        poi.aliases?.some(alias => alias.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        poi =>
+          poi.name.toLowerCase().includes(query) ||
+          poi.notes?.toLowerCase().includes(query) ||
+          poi.aliases?.some(alias => alias.toLowerCase().includes(query))
       );
     }
 
@@ -266,7 +267,7 @@
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
   };
 
   // Status colors
@@ -275,7 +276,7 @@
     witness: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     suspect: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
     victim: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+    informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
   };
 </script>
 
@@ -318,7 +319,7 @@
           <Grid class="w-4 h-4" />
         {/if}
       </Button>
-      <Button class="bits-btn" onclick={() => showCreateDialog = true}>
+      <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -329,11 +330,7 @@
   <div class="mb-6">
     <div class="relative">
       <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-      <Input
-        bind:value={searchQuery}
-        placeholder="Search by name, alias, or notes..."
-        class="pl-10 w-full"
-      />
+      <Input bind:value={searchQuery} placeholder="Search by name, alias, or notes..." class="pl-10 w-full" />
     </div>
   </div>
 
@@ -350,7 +347,7 @@
               { value: 'witness', label: 'Witness' },
               { value: 'suspect', label: 'Suspect' },
               { value: 'victim', label: 'Victim' },
-              { value: 'informant', label: 'Informant' }
+              { value: 'informant', label: 'Informant' },
             ]}
             bind:selected={statusFilter}
             placeholder="Status"
@@ -364,7 +361,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'critical', label: 'Critical' }
+              { value: 'critical', label: 'Critical' },
             ]}
             bind:selected={priorityFilter}
             placeholder="Priority"
@@ -378,7 +375,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'extreme', label: 'Extreme' }
+              { value: 'extreme', label: 'Extreme' },
             ]}
             bind:selected={threatLevelFilter}
             placeholder="Threat Level"
@@ -412,7 +409,7 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn" onclick={() => showCreateDialog = true}>
+        <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -462,12 +459,7 @@
               <Edit class="w-3 h-3 mr-1" />
               Edit
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              class="flex-1 bits-btn"
-              onclick={() => deletePoi(poi)}
-            >
+            <Button variant="ghost" size="sm" class="flex-1 bits-btn" onclick={() => deletePoi(poi)}>
               <Trash2 class="w-3 h-3 mr-1" />
               Delete
             </Button>
@@ -519,12 +511,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="name">Name *</Label>
-          <Input
-            id="name"
-            bind:value={formData.name}
-            placeholder="Full name"
-            required
-          />
+          <Input id="name" bind:value={formData.name} placeholder="Full name" required />
         </div>
         <div>
           <Label for="status">Status</Label>
@@ -534,7 +521,7 @@
               { value: 'witness', label: 'Witness' },
               { value: 'suspect', label: 'Suspect' },
               { value: 'victim', label: 'Victim' },
-              { value: 'informant', label: 'Informant' }
+              { value: 'informant', label: 'Informant' },
             ]}
             bind:selected={formData.status}
           />
@@ -549,7 +536,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'critical', label: 'Critical' }
+              { value: 'critical', label: 'Critical' },
             ]}
             bind:selected={formData.priority}
           />
@@ -561,7 +548,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'extreme', label: 'Extreme' }
+              { value: 'extreme', label: 'Extreme' },
             ]}
             bind:selected={formData.threatLevel}
           />
@@ -579,9 +566,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => showCreateDialog = false}>
-          Cancel
-        </Button>
+        <Button type="button" variant="ghost" onclick={() => (showCreateDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
         </Button>
@@ -598,12 +583,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="edit-name">Name *</Label>
-          <Input
-            id="edit-name"
-            bind:value={formData.name}
-            placeholder="Full name"
-            required
-          />
+          <Input id="edit-name" bind:value={formData.name} placeholder="Full name" required />
         </div>
         <div>
           <Label for="edit-status">Status</Label>
@@ -613,7 +593,7 @@
               { value: 'witness', label: 'Witness' },
               { value: 'suspect', label: 'Suspect' },
               { value: 'victim', label: 'Victim' },
-              { value: 'informant', label: 'Informant' }
+              { value: 'informant', label: 'Informant' },
             ]}
             bind:selected={formData.status}
           />
@@ -628,7 +608,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'critical', label: 'Critical' }
+              { value: 'critical', label: 'Critical' },
             ]}
             bind:selected={formData.priority}
           />
@@ -640,7 +620,7 @@
               { value: 'low', label: 'Low' },
               { value: 'medium', label: 'Medium' },
               { value: 'high', label: 'High' },
-              { value: 'extreme', label: 'Extreme' }
+              { value: 'extreme', label: 'Extreme' },
             ]}
             bind:selected={formData.threatLevel}
           />
@@ -658,9 +638,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => showEditDialog = false}>
-          Cancel
-        </Button>
+        <Button type="button" variant="ghost" onclick={() => (showEditDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
         </Button>
@@ -668,4 +646,3 @@
     </form>
   </div>
 </Dialog>
-

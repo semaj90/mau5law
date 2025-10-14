@@ -111,10 +111,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
     const processingTime = Date.now() - startTime
     const response: GalleryResponse = {
-      items: paginatedItems
+      items: paginatedItems,
       totalCount,
       categories,
-      filters: filterOptions
+      filters: filterOptions,
       pagination: {
         page,
         pageSize,

@@ -3,7 +3,7 @@
  * Enhanced for Windows native deployment with memory-efficient vector operations
  * Integrated with NES-style cache orchestrator and production logging
  */
-import { QdrantClient } from "@qdrant/js-client-rest";
+import { QdrantClient } from '@qdrant/js-client-rest';
 import { generateEmbedding } from '../ai/embeddings-simple.js';
 import logger from '../production-logger.js';
 import type { LogContext } from '../production-logger.js';

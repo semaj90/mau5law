@@ -34,8 +34,8 @@ const registerSchema = z
     path: ['agreeToPrivacy'],
   });
 export const load: PageServerLoad = async () => {
-  return {}
-}
+  return {};
+};
 export const actions: Actions = {
   // Handle both login and register in unified flow;
   default: async ({ request, cookies }) => {
@@ -60,7 +60,7 @@ export const actions: Actions = {
           badgeNumber: (formData.get('badgeNumber') as string) || '',
           agreeToTerms: formData.get('agreeToTerms') as string,
           agreeToPrivacy: formData.get('agreeToPrivacy') as string,
-        }
+        };
         // Validate registration data
         const validation = registerSchema.safeParse(registerData);
         if (!validation.success) {
@@ -83,7 +83,7 @@ export const actions: Actions = {
         throw redirect(302, '/dashboard');
       } else {
         // Login flow
-        const loginData = { email, password }
+        const loginData = { email, password };
         // Validate login data
         const validation = loginSchema.safeParse(loginData);
         if (!validation.success) {
@@ -115,4 +115,4 @@ export const actions: Actions = {
       });
     }
   },
-}
+};

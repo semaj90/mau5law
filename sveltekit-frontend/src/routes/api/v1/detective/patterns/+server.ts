@@ -2,24 +2,28 @@
  * Detective Mode Pattern Detection API Route
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 
 // Pattern detection request schema
 const PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
-  patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial', 'digital'])).optional(),
+  patternTypes: z
+    .array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial', 'digital']))
+    .optional(),
   sensitivity: z.number().min(0).max(1).default(0.7),
-  options: z.object({
-    includeAnomalies: z.boolean().default(true),
-    includePredictions: z.boolean().default(false),
-    minOccurrences: z.number().min(1).default(2),
-    timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
-  }).optional()
-})
+  options: z
+    .object({
+      includeAnomalies: z.boolean().default(true),
+      includePredictions: z.boolean().default(false),
+      minOccurrences: z.number().min(1).default(2),
+      timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
+    })
+    .optional(),
+});
 
 // --- New/changed types (replace broad `any`) ---
 type GenericRecord = Record<string, unknown>;

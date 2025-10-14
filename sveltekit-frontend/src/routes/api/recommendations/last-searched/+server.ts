@@ -101,9 +101,9 @@ export const GET: RequestHandler = async ({ url }) => {
     if (cached) {
       return json({
         success: true,
-        data: cached
-        fromCache: true
-        timestamp: new Date().toISOString()
+        data: cached,
+        fromCache: true,
+        timestamp: new Date().toISOString(),
       })
     }
     // Filter by search type if specified
@@ -119,8 +119,8 @@ export const GET: RequestHandler = async ({ url }) => {
     await multiLayerCache.set(cacheKey, recentSearches, 300, 150)
     return json({
       success: true,
-      data: recentSearches
-      fromCache: false
+      data: recentSearches,
+      fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
         totalSearches: filteredSearches.length,
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
       id: `search-${Date.now()}`,
       query,
       timestamp: new Date().toISOString(),
-      resultCount: resultCount || 0
+      resultCount: resultCount || 0,
       searchType,
       filters: filters || {},
       confidence: 0.8, // Default confidence
@@ -171,8 +171,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Search recorded successfully',
-      data: newSearch
-      timestamp: new Date().toISOString()
+      data: newSearch,
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Error recording search:', error)
@@ -215,8 +215,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Search updated successfully',
-      data: search
-      timestamp: new Date().toISOString()
+      data: search,
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Error updating search:', error)

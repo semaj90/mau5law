@@ -1,7 +1,7 @@
 /**
  * Client-side API wrapper for SIMD Glyph Embeds
  * Provides typed interface to /api/glyph/simd-embeds endpoint
- */;
+ */
 }
 export interface SIMDGlyphConfig {
   enable_tiling: boolean;
@@ -104,7 +104,7 @@ export interface GlyphHealthStatus {
 }
 /**
  * SIMD Glyph Embeds API Client
- */;
+ */
 export class GlyphEmbedsClient {
   private baseUrl: string;
   constructor(baseUrl: string = '') {
@@ -112,7 +112,7 @@ export class GlyphEmbedsClient {
   }
   /**
    * Generate SIMD-optimized glyph with shader embeds
-   */;
+   */
   async generateGlyph(request: GlyphEmbedRequest): Promise<GlyphEmbedResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
@@ -129,11 +129,11 @@ export class GlyphEmbedsClient {
           conditioning_tensors: request.conditioning_tensors,
           neural_sprite_config: request.neural_sprite_config,
           simd_config: {
-            enable_tiling: true
+            enable_tiling: true,
             tile_size: 16,
             compression_target: 50,
             shader_format: 'webgpu',
-            adaptive_quality: true
+            adaptive_quality: true,
             performance_tier: 'n64',
             ...request.simd_config
           }
@@ -154,14 +154,14 @@ export class GlyphEmbedsClient {
     } catch (error) {
       console.error('SIMD glyph generation failed:', error);
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Unknown error occurred'
+        success: false,
+        error: error instanceof Error ? error.message: 'Unknown error occurred',
       }
     }
   }
   /**
    * Get health status of SIMD glyph service
-   */;
+   */
   async getHealthStatus(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
@@ -174,8 +174,8 @@ export class GlyphEmbedsClient {
     } catch (error) {
       console.error('Health check failed:', error);
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Health check failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'Health check failed',
       }
     }
   }
@@ -183,7 +183,7 @@ export class GlyphEmbedsClient {
    * Generate multiple glyphs with different configurations
    */
   async generateGlyphVariations(
-    baseRequest: GlyphEmbedRequest
+    baseRequest: GlyphEmbedRequest,
     variations: Partial<GlyphEmbedRequest>[];
   ): Promise<GlyphEmbedResponse[]> {
     const requests = variations.map(variation => ({
@@ -202,7 +202,7 @@ export class GlyphEmbedsClient {
    * Fetch articles and process with RAG chunking for glyph synthesis
    */
   async processArticlesWithRAG(
-    articles: Array<any>
+    articles: Array<any>,
     options: {
       chunk_size?: number;
       overlap_size?: number;
@@ -248,7 +248,7 @@ export class GlyphEmbedsClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({,
-                  content: chunk
+                  content: chunk,
                   max_tokens: 150,
                   legal_context: true
                 })
@@ -267,8 +267,8 @@ export class GlyphEmbedsClient {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({,
-                text: summary || chunk
-                model: 'embeddinggemma:latest'
+                text: summary || chunk,
+                model: 'embeddinggemma:latest',
               })
             });
             if (embedResponse.ok) {
@@ -285,14 +285,14 @@ export class GlyphEmbedsClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({,
-                  id: chunkId
-                  content: chunk
-                  summary: summary
-                  embedding: embedding
+                  id: chunkId,
+                  content: chunk,
+                  summary: summary,
+                  embedding: embedding,
                   metadata: {
                     ...article.metadata,
                     source_url: article.url,
-                    chunk_index: i
+                    chunk_index: i,
                     processed_at: new Date().toISOString(),
                     content_type: 'article_chunk'
                   }
@@ -303,8 +303,8 @@ export class GlyphEmbedsClient {
             }
           }
           processedChunks.push({
-            id: chunkId
-            content: chunk
+            id: chunkId,
+            content: chunk,
             embedding,
             summary,
             metadata: {
@@ -316,14 +316,14 @@ export class GlyphEmbedsClient {
         }
       }
       return {
-        success: true
-        chunks: processedChunks
+        success: true,
+        chunks: processedChunks,
       }
     } catch (error) {
       console.error('RAG processing failed:', error);
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'RAG processing failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'RAG processing failed',
       }
     }
   }
@@ -331,8 +331,8 @@ export class GlyphEmbedsClient {
    * Synthesize glyphs from multiple base glyphs with 'did you mean' suggestions
    */
   async synthesizeGlyphs(
-    baseGlyphIds: string[]
-    prompt: string
+    baseGlyphIds: string[],
+    prompt: string,
     options: {
       enable_did_you_mean?: boolean;
       max_suggestions?: number;
@@ -350,12 +350,12 @@ export class GlyphEmbedsClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          base_glyph_ids: baseGlyphIds
-          prompt: prompt
+          base_glyph_ids: baseGlyphIds,
+          prompt: prompt,
           synthesis_config: {
-            enable_neural_blending: true
-            preserve_legal_semantics: true
-            target_format: 'webgpu'
+            enable_neural_blending: true,
+            preserve_legal_semantics: true,
+            target_format: 'webgpu',
           }
         })
       });
@@ -371,10 +371,10 @@ export class GlyphEmbedsClient {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({,
-              original_prompt: prompt
-              base_glyphs: baseGlyphIds
-              max_suggestions: max_suggestions
-              context_type: 'legal_synthesis'
+              original_prompt: prompt,
+              base_glyphs: baseGlyphIds,
+              max_suggestions: max_suggestions,
+              context_type: 'legal_synthesis',
             })
           });
           if (suggestionsResponse.ok) {
@@ -395,10 +395,10 @@ export class GlyphEmbedsClient {
               glyph_id: synthesisResult.synthesized_glyph.id,
               glyph_data: synthesisResult.synthesized_glyph,
               synthesis_metadata: {
-                base_glyphs: baseGlyphIds
-                prompt: prompt
-                suggestions: didYouMeanSuggestions
-                cached_at: new Date().toISOString()
+                base_glyphs: baseGlyphIds,
+                prompt: prompt,
+                suggestions: didYouMeanSuggestions,
+                cached_at: new Date().toISOString(),
               }
             })
           });
@@ -407,15 +407,15 @@ export class GlyphEmbedsClient {
         }
       }
       return {
-        success: true
+        success: true,
         synthesized_glyph: synthesisResult.synthesized_glyph,
         did_you_mean_suggestions: didYouMeanSuggestions
       }
     } catch (error) {
       console.error('Glyph synthesis failed:', error);
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Synthesis failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'Synthesis failed',
       }
     }
   }
@@ -423,7 +423,7 @@ export class GlyphEmbedsClient {
    * Search cached glyphs using semantic similarity
    */
   async searchGlyphsSemanticly(
-    query: string
+    query: string,
     options: {
       limit?: number;
       threshold?: number;
@@ -441,8 +441,8 @@ export class GlyphEmbedsClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: query
-          model: 'embeddinggemma:latest'
+          text: query,
+          model: 'embeddinggemma:latest',
         })
       });
       if (!embedResponse.ok) {
@@ -454,9 +454,9 @@ export class GlyphEmbedsClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          embedding: embedding
-          limit: limit
-          threshold: threshold
+          embedding: embedding,
+          limit: limit,
+          threshold: threshold,
           filter: {
             content_type: include_synthesized ? ['glyph', 'synthesized_glyph'] : ['glyph']
           }
@@ -467,20 +467,20 @@ export class GlyphEmbedsClient {
       }
       const searchResults = await searchResponse.json();
       return {
-        success: true
-        matches: searchResults.matches || []
+        success: true,
+        matches: searchResults.matches || [],
       }
     } catch (error) {
       console.error('Semantic glyph search failed:', error);
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Search failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'Search failed',
       }
     }
   }
   /**
    * Chunk text content for RAG processing
-   */;
+   */
   private chunkText(text: string, chunkSize: number, overlapSize: number): string[] {
     const chunks: string[] = [];
     const words = text.split(/\s+/);
@@ -497,7 +497,7 @@ export class GlyphEmbedsClient {
    * Create shader code for WebGL/WebGPU rendering
    */
   async createShaderForCanvas(
-    glyphResult: GlyphEmbedResult
+    glyphResult: GlyphEmbedResult,
     targetFormat: 'webgl' | 'webgpu' = 'webgpu';
   ): Promise<any> {
     try {
@@ -508,26 +508,26 @@ export class GlyphEmbedsClient {
       // Check if shader format matches target
       if (shaderData.shader_code.includes('@compute') && targetFormat === 'webgpu') {
         return {
-          success: true
-          shaderCode: shaderData.shader_code
+          success: true,
+          shaderCode: shaderData.shader_code,
         }
       }
       if (shaderData.shader_code.includes('precision mediump') && targetFormat === 'webgl') {
         return {
-          success: true
-          shaderCode: shaderData.shader_code
+          success: true,
+          shaderCode: shaderData.shader_code,
         }
       }
       // Need to regenerate shader for different format
       console.warn(`Shader format mismatch. Generated for different target. Using as-is.`);
       return {
-        success: true
-        shaderCode: shaderData.shader_code
+        success: true,
+        shaderCode: shaderData.shader_code,
       }
     } catch (error) {
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Shader creation failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'Shader creation failed',
       }
     }
   }
@@ -535,7 +535,7 @@ export class GlyphEmbedsClient {
    * Download enhanced PNG artifact with embedded metadata
    */
   async downloadEnhancedArtifact(
-    glyphResult: GlyphEmbedResult
+    glyphResult: GlyphEmbedResult,
     filename?: string;
   ): Promise<any> {
     try {
@@ -551,8 +551,8 @@ export class GlyphEmbedsClient {
       return { success: true }
     } catch (error) {
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Download failed'
+        success: false,
+        error: error instanceof Error ? error.message: 'Download failed',
       }
     }
   }
@@ -595,12 +595,12 @@ export const GLYPH_PRESETS = {
   }
 } as const;
 export function createGlyphRequest(
-  evidenceId: string | number
-  prompt: string
+  evidenceId: string | number,
+  prompt: string,
   preset: keyof typeof GLYPH_PRESETS = 'detective';
 ): GlyphEmbedRequest {
   return {
-    evidence_id: evidenceId
+    evidence_id: evidenceId,
     prompt,
     ...GLYPH_PRESETS[preset]
   }

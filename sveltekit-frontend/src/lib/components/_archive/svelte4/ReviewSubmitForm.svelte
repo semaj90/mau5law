@@ -316,7 +316,8 @@ https://svelte.dev/e/js_parse_error -->
           Comprehensive Case Review *
         </label>
         <textarea
-          id="final_review";
+          id="final_review"
+          ;
           bind:value={formData.final_review}
           rows="6"
           placeholder="Provide a comprehensive review of the case, including your assessment of the evidence, potential strategies, and any additional considerations..."

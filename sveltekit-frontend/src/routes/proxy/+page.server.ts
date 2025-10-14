@@ -7,5 +7,5 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     targetExample: '/api/status',
     now: new Date().toISOString(),
     path: url.pathname,
-  }
-}
+  };
+};

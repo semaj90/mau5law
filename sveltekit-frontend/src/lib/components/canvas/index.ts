@@ -7,13 +7,13 @@ export { default as EvidenceCanvasEditor } from './EvidenceCanvasEditor.svelte';
 export { default as EvidenceNode } from './EvidenceNode.svelte';
 export { default as ReportNode } from './ReportNode.svelte';
 export type CanvasNodeType = 'evidence' | 'report' | 'connection' | 'note';
-export type CanvasPosition = { x: number; y: number }
-export type CanvasSize = { width: number; height: number }
+export type CanvasPosition = { x: number; y: number };
+export type CanvasSize = { width: number; height: number };
 
 export interface CanvasNode {
   id: string;
   type: CanvasNodeType;
   position: CanvasPosition;
   size: CanvasSize;
-  data: { [key: string]: any }
+  data: { [key: string]: any };
 }

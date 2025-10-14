@@ -58,8 +58,8 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         max_tokens: requestData.model_config?.max_tokens || 1024,
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
-        enable_kv_reuse: true
-        compression_type: 'float16'
+        enable_kv_reuse: true,
+        compression_type: 'float16',
       },
       legal_context: {
         case_id: requestData.case_id,
@@ -70,8 +70,8 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         confidence_score: 0.8
       },
       workflow_config: requestData.workflow_config || null,
-      store_embeddings: true
-      cache_strategy: 'rl_optimized'
+      store_embeddings: true,
+      cache_strategy: 'rl_optimized',
     }
     // Submit job to MCP server
     const mcpResponse = await fetch(`${MCP_ENDPOINT}/api/legal/job`, {
@@ -130,7 +130,7 @@ export const, GET: RequestHandler = async ({ url }) => {
     if (result) {
       // Parse protobuf result (simplified - would use actual protobuf parser)
       return json({
-        job_id: jobId
+        job_id: jobId,
         status: 'completed',
         result: {
           // This would be parsed from protobuf
@@ -142,7 +142,7 @@ export const, GET: RequestHandler = async ({ url }) => {
       })
     } else {
       return json({
-        job_id: jobId
+        job_id: jobId,
         status: 'processing',
         submitted_at: jobData.submitted_at,
         estimated_completion: jobData.estimated_completion
@@ -162,7 +162,7 @@ export const, GET: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      case_id: caseId
+      case_id: caseId,
       jobs: caseJobs.sort((a, b) => b.submitted_at - a.submitted_at)
     })
   } else {

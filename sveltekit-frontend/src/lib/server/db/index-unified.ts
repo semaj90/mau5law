@@ -141,10 +141,10 @@ export async function getSystemHealth() {
     database: {
       status: dbHealth.status,
       config: dbHealth.config,
-      connection: connectionTest
-      pools: dbHealth.pools
+      connection: connectionTest,
+      pools: dbHealth.pools,
     },
-    application: appHealth
+    application: appHealth,
     timestamp: new Date().toISOString(),
     version: '2.0.0-unified'
   }

@@ -148,9 +148,9 @@ export class LegalPerformanceMonitor {
     const l4 = calculateRate('L4_Database');
     const overall = (l1 + l2 + l3 + (1 - l4)) / 4; // L4 is miss rate, so invert
     return {
-      L1_GPU: l1
-      L2_Memory: l2
-      L3_Redis: l3
+      L1_GPU: l1,
+      L2_Memory: l2,
+      L3_Redis: l3,
       L4_Database: 1 - l4, // Convert miss rate to hit rate
       overall
     }
@@ -200,7 +200,7 @@ export class LegalPerformanceMonitor {
     const now = new Date();
     const timeElapsed = (Date.now() - this.startTime) / 1000;
     const snapshot: PerformanceSnapshot = {
-      timestamp: now
+      timestamp: now,
       cache_hits: this.calculateCacheHitRates(),
       latency: {
         embedding_generation: 50 + Math.random() * 200, // ms
@@ -310,7 +310,7 @@ export class LegalPerformanceMonitor {
     const totalMisses = Object.values(this.cacheMisses).reduce((sum, misses) => sum + misses, 0);
     const total = totalHits + totalMisses;
     return {
-      hits: totalHits
+      hits: totalHits,
       misses: totalMisses;
       efficiency: total > 0 ? totalHits / total : 0
     }

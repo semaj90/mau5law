@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     // Build response based on query parameters
     let response: any = {
-      system: systemInfo
+      system: systemInfo,
       summary,
       services: Object.fromEntries(serviceStatuses)
     }
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ? 206
           : 503
     return json(response, {
-      status: httpStatus
+      status: httpStatus,
       headers: {
         'X-System-Status': summary.overall.status,
         'X-Health-Score': summary.overall.healthScore.toString(),

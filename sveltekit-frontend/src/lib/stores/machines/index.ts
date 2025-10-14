@@ -32,12 +32,17 @@ export const aiTaskCreators = {
   }),
 };
 
-export const createAITask = (id: string, type: string, payload: Record<string, unknown>, priority: 'low' | 'medium' | 'high' = 'medium') => ({
+export const createAITask = (
+  id: string,
+  type: string,
+  payload: Record<string, unknown>,
+  priority: 'low' | 'medium' | 'high' = 'medium'
+) => ({
   id,
   type,
   payload,
   priority,
-  timestamp: Date.now()
+  timestamp: Date.now(),
 });
 
 // types.ts can contain broad names that collide; pick safe, explicit exports only

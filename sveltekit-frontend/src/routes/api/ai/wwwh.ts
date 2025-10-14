@@ -17,4 +17,4 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     return new Response(JSON.stringify({ error: 'WWWH analysis failed', details: String(err) }), { status: 500 });
   }
-}
+};

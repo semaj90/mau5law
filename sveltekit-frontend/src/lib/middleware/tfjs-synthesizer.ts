@@ -699,7 +699,7 @@ export class TensorFlowSynthesizer {
   }
   private synthesizeComplianceProfile(legalBERTResults?: LegalBERTAnalysis, text?: string): ComplianceProfile {
     const regulations: RegulationAnalysis[] = [];
-    let complianceScore = 0.7;
+    const complianceScore = 0.7;
 
     if (legalBERTResults) {
       const docType = legalBERTResults.classification?.documentType;

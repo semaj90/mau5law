@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js'
-import { minioService } from '$lib/server/storage/minio-service'
+import type { RequestHandler } from './$types.js';
+import { minioService } from '$lib/server/storage/minio-service';
 /**
  * MinIO File Download API
  * GET: Download file by bucket and filename

@@ -7,7 +7,7 @@
     align = 'left' as 'left' | 'right',
     onitemclick,
     trigger,
-    children
+    children,
   }: {
     align?: 'left' | 'right';
     onitemclick?: (e: CustomEvent<any>) => void;

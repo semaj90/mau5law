@@ -25,8 +25,8 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   retryDelayOnFailover: 100,
   enableReadyCheck: true,
   // Connection pooling for high concurrency
-  maxLoadingTimeout: 5000
-}
+  maxLoadingTimeout: 5000,
+};
 // Development-specific optimizations
 export const REDIS_DEV_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
@@ -38,8 +38,8 @@ export const REDIS_DEV_CONFIG: RedisOptions = {
       return null;
     }
     return Math.min(times * 500, 1500);
-  }
-}
+  },
+};
 // Production-specific optimizations
 export const REDIS_PROD_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
@@ -59,19 +59,19 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   // Production connection pooling
   lazyConnect: false,
   enableAutoPipelining: true,
-}
+};
 // Database assignments for different services
 export const REDIS_DATABASES = {
-  CACHE: 0,           // General caching (redis-service.ts)
-  SESSIONS: 1,        // User sessions
-  RATE_LIMITING: 2,   // Rate limiting (redisRateLimit.ts)
-  LOKI_CACHE: 3,      // Loki.js integration cache
-  GPU_CACHE: 4,       // GPU cache orchestration
-  NATS_CACHE: 5,      // NATS messaging cache
-  WORKER_QUEUE: 6,    // Background worker queues
-  ANALYTICS: 7,       // User analytics and metrics
-  TEMP_STORAGE: 8,    // Temporary storage
-  VECTOR_CACHE: 9,    // Vector embedding cache
+  CACHE: 0, // General caching (redis-service.ts)
+  SESSIONS: 1, // User sessions
+  RATE_LIMITING: 2, // Rate limiting (redisRateLimit.ts)
+  LOKI_CACHE: 3, // Loki.js integration cache
+  GPU_CACHE: 4, // GPU cache orchestration
+  NATS_CACHE: 5, // NATS messaging cache
+  WORKER_QUEUE: 6, // Background worker queues
+  ANALYTICS: 7, // User analytics and metrics
+  TEMP_STORAGE: 8, // Temporary storage
+  VECTOR_CACHE: 9, // Vector embedding cache
   TENSORRT_CACHE: 10, // TensorRT-LLM model cache
   GEMMA_EMBEDDINGS: 11, // Gemma embedding cache
   PGVECTOR_CACHE: 12, // PostgreSQL vector index cache
@@ -82,7 +82,7 @@ export const SERVICE_CONFIGS = {
   MAIN_CACHE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.CACHE,
-    keyPrefix: 'legal_ai:'
+    keyPrefix: 'legal_ai:',
   },
   // Rate limiting service (redisRateLimit.ts)
   RATE_LIMIT: {
@@ -96,7 +96,7 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.LOKI_CACHE,
     keyPrefix: 'loki:',
-    enableAutoPipelining: true
+    enableAutoPipelining: true,
   },
   // GPU cache orchestration
   GPU_ORCHESTRATOR: {
@@ -111,7 +111,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.WORKER_QUEUE,
     keyPrefix: 'worker:',
     enableReadyCheck: true,
-    maxLoadingTimeout: 10000
+    maxLoadingTimeout: 10000,
   },
   // Pub/Sub for real-time features
   PUBSUB: {
@@ -126,7 +126,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.TENSORRT_CACHE,
     keyPrefix: 'tensorrt:',
     commandTimeout: 30000, // Longer timeout for model operations
-    maxLoadingTimeout: 60000
+    maxLoadingTimeout: 60000,
   },
   // Gemma embeddings caching
   GEMMA_EMBEDDINGS: {
@@ -134,7 +134,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.GEMMA_EMBEDDINGS,
     keyPrefix: 'gemma:',
     commandTimeout: 20000, // Optimized for embedding operations
-    enableAutoPipelining: true
+    enableAutoPipelining: true,
   },
   // PostgreSQL vector cache
   PGVECTOR_CACHE: {
@@ -142,19 +142,17 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.PGVECTOR_CACHE,
     keyPrefix: 'pgvector:',
     commandTimeout: 15000,
-    enableAutoPipelining: true
-  }
+    enableAutoPipelining: true,
+  },
 } as const;
 // Environment-specific configuration selection
 export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOptions {
-  const baseConfig = isProduction ? REDIS_PROD_CONFIG :
-                     isDevelopment ? REDIS_DEV_CONFIG :
-                     REDIS_BASE_CONFIG;
+  const baseConfig = isProduction ? REDIS_PROD_CONFIG : isDevelopment ? REDIS_DEV_CONFIG : REDIS_BASE_CONFIG;
   if (service && SERVICE_CONFIGS[service]) {
     return {
       ...baseConfig,
-      ...SERVICE_CONFIGS[service]
-    }
+      ...SERVICE_CONFIGS[service],
+    };
   }
   return baseConfig;
 }
@@ -165,34 +163,34 @@ export function getRedisUrl(database?: number): string {
   const password = process.env.REDIS_PASSWORD;
   const db = database ?? 0;
   const auth = password ? `:${password}@` : '';
-  return `redis://${auth}${host}:${port}/${db}`
+  return `redis://${auth}${host}:${port}/${db}`;
 }
 // Health check configuration
 export const HEALTH_CHECK_CONFIG = {
   timeout: 5000,
   retries: 3,
   interval: 30000, // Check every 30 seconds
-}
+};
 // Cache TTL configurations by data type
 export const CACHE_TTL = {
   // Session management
-  SESSION: 24 * 60 * 60,        // 24 hours
-  USER_PROFILE: 60 * 60,        // 1 hour
+  SESSION: 24 * 60 * 60, // 24 hours
+  USER_PROFILE: 60 * 60, // 1 hour
   // Legal AI specific
-  SEARCH_RESULTS: 15 * 60,      // 15 minutes
-  RAG_RESPONSES: 30 * 60,       // 30 minutes
-  VECTOR_EMBEDDINGS: 60 * 60,   // 1 hour
+  SEARCH_RESULTS: 15 * 60, // 15 minutes
+  RAG_RESPONSES: 30 * 60, // 30 minutes
+  VECTOR_EMBEDDINGS: 60 * 60, // 1 hour
   DOCUMENT_ANALYSIS: 2 * 60 * 60, // 2 hours
   // API and rate limiting
-  RATE_LIMIT_WINDOW: 60 * 60,   // 1 hour
-  API_CACHE: 5 * 60,            // 5 minutes
-  TEMP_DATA: 5 * 60,            // 5 minutes
+  RATE_LIMIT_WINDOW: 60 * 60, // 1 hour
+  API_CACHE: 5 * 60, // 5 minutes
+  TEMP_DATA: 5 * 60, // 5 minutes
   // GPU cache orchestration
   GPU_CACHE_ENTRY: 12 * 60 * 60, // 12 hours
-  GPU_METRICS: 10 * 60,         // 10 minutes
+  GPU_METRICS: 10 * 60, // 10 minutes
   // Analytics
   USER_ANALYTICS: 24 * 60 * 60, // 24 hours
-  SYSTEM_METRICS: 60 * 60,      // 1 hour
+  SYSTEM_METRICS: 60 * 60, // 1 hour
 } as const;
 // Key patterns for consistent naming
 export const KEY_PATTERNS = {
@@ -215,7 +213,7 @@ export const KEY_PATTERNS = {
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
-  SYSTEM_METRICS: (component: string) => `metrics:${component}`
+  SYSTEM_METRICS: (component: string) => `metrics:${component}`,
 } as const;
 // Lua scripts for atomic operations
 export const LUA_SCRIPTS = {
@@ -260,7 +258,7 @@ export const LUA_SCRIPTS = {
       end
     end
     return 'OK'
-  `
+  `,
 } as const;
 // Connection pool configuration
 export const POOL_CONFIG = {
@@ -273,7 +271,7 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 30000,
     createRetryIntervalMillis: 200,
-    maxRetries: 3
+    maxRetries: 3,
   },
   // Production pool (larger)
   production: {
@@ -284,8 +282,8 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 60000,
     createRetryIntervalMillis: 500,
-    maxRetries: 5
-  }
+    maxRetries: 5,
+  },
 } as const;
 // Export the configuration based on environment
 export const REDIS_CONFIG = getRedisConfig();
@@ -295,18 +293,18 @@ export function createServiceConfig(service: keyof typeof SERVICE_CONFIGS) {
 }
 // Health monitoring configuration
 export const MONITORING_CONFIG = {
-  healthCheckInterval: 30000,     // 30 seconds
+  healthCheckInterval: 30000, // 30 seconds
   metricsCollectionInterval: 5000, // 5 seconds
-  slowLogThreshold: 10000,        // 10ms
+  slowLogThreshold: 10000, // 10ms
   enableLatencyMonitoring: true,
   enableMemoryMonitoring: true,
   alertThresholds: {
-    memoryUsage: 0.85,            // 85% memory usage alert
-    connectionCount: 0.9,         // 90% max connections alert
-    slowQueries: 100,             // Alert if > 100 slow queries/min
-    responseTime: 1000,           // Alert if > 1000ms average response time
-  }
-}
+    memoryUsage: 0.85, // 85% memory usage alert
+    connectionCount: 0.9, // 90% max connections alert
+    slowQueries: 100, // Alert if > 100 slow queries/min
+    responseTime: 1000, // Alert if > 1000ms average response time
+  },
+};
 // Export everything for easy importing
 export default {
   REDIS_CONFIG,
@@ -318,5 +316,5 @@ export default {
   MONITORING_CONFIG,
   getRedisConfig,
   createServiceConfig,
-  getRedisUrl
-}
+  getRedisUrl,
+};

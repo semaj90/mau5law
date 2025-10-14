@@ -12,7 +12,7 @@ export interface EmbeddingInput {
     evidenceId?: string;
     documentType?: 'contract' | 'evidence' | 'legal_brief' | 'correspondence';
     priority?: 'high' | 'medium' | 'low';
-  }
+  };
 }
 export interface EmbeddingOutput {
   embedding: number[];
@@ -26,7 +26,7 @@ export interface EmbeddingOutput {
     documentType?: string;
     priority?: string;
     timestamp: Date;
-  }
+  };
 }
 export interface EmbeddingError {
   message: string;
@@ -72,7 +72,7 @@ export interface EmbeddingError {
           priority: input.context?.priority,
           timestamp: new Date(),
         },
-      }
+      };
     } catch (error: any) {
       // Map different error types to structured errors
       if (error.code) {
@@ -98,7 +98,7 @@ export interface EmbeddingError {
         details: error,
       } as EmbeddingError;
     }
-  },
+  }
 );
 /**
  * Batch embedding actor for multiple texts
@@ -127,7 +127,7 @@ export interface EmbeddingError {
         details: error,
       } as EmbeddingError;
     }
-  },
+  }
 );
 /**
  * Helper function to create and run embedding actor
@@ -152,7 +152,7 @@ export async function generateLegalDocumentEmbedding(
   text: string,
   caseId: string,
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence',
-  evidenceId?: string,
+  evidenceId?: string
 ): Promise<EmbeddingOutput> {
   return generateEmbedding({
     text,

@@ -23,13 +23,9 @@
     enableRealTimeMetrics?: boolean;
     debugMode?: boolean;
   }
-  let {
-    showProgressionDemo = true,
-    enableRealTimeMetrics = true,
-    debugMode = false
-  }: Props = $props();
+  let { showProgressionDemo = true, enableRealTimeMetrics = true, debugMode = false }: Props = $props();
   // XState machine actor
-  let cacheActor = $state<any >(null);
+  let cacheActor = $state<any>(null);
   let machineState = $state('idle');
   // Demo state
   let currentEra = $state<'8bit' | '16bit' | 'n64' | 'yorha'>('8bit');
@@ -38,7 +34,7 @@
     cacheHits: 0,
     cacheMisses: 0,
     hitRate: 0,
-    avgLatency: 0
+    avgLatency: 0,
   });
   // NES memory visualization
   let nesMemoryBanks = $state([
@@ -47,7 +43,7 @@
     { region: 'RAM', utilization: 45, status: 'active' },
     { region: 'PPU_MEMORY', utilization: 80, status: 'optimized' },
     { region: 'SPRITE_MEMORY', utilization: 30, status: 'idle' },
-    { region: 'PALETTE_MEMORY', utilization: 90, status: 'full' }
+    { region: 'PALETTE_MEMORY', utilization: 90, status: 'full' },
   ]);
   $effect(() => {
     // Initialize XState machine
@@ -129,7 +125,6 @@
     const nextIndex = (currentIndex + 1) % eras.length;
     currentEra = eras[nextIndex];
   }
-
 </script>
 
 <div class="era-demo-area">

@@ -85,7 +85,7 @@
       required ? "after:content-['*'] after:ml-1 after:text-red-500" : '',
     ]
       .filter(Boolean)
-      .join(' '),
+      .join(' ')
   );
   const inputContainerClasses = 'relative flex items-center';
   const inputClasses = $derived(
@@ -114,7 +114,7 @@
           : 'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-100',
     ]
       .filter(Boolean)
-      .join(' '),
+      .join(' ')
   );
   const iconClasses = $derived(
     [
@@ -122,13 +122,13 @@
       size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10',
       iconPosition === 'left' ? 'left-0' : 'right-0',
       hasError ? 'text-red-400' : success ? 'text-green-400' : 'text-gray-400',
-    ].join(' '),
+    ].join(' ')
   );
   const hintClasses = $derived(
     [
       'text-xs transition-colors',
       hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400',
-    ].join(' '),
+    ].join(' ')
   );
 </script>
 

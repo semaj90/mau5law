@@ -27,7 +27,7 @@ export interface GraphResult {
     queryTime: number;
     resultCount: number;
     source: 'wasm' | 'cache' | 'remote';
-  }
+  };
 }
 export interface WasmGraphEngine {
   executeQuery(query: string): Promise<GraphResult>;
@@ -81,21 +81,21 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           nodes: nodeCount,
           edges: edgeCount,
-          executionTime: Math.floor(Math.random() * 10) + 1
+          executionTime: Math.floor(Math.random() * 10) + 1,
         };
       },
       recommend: (nodeId: string, nodeType: string) => {
         // Simulate recommendation algorithm
         return {
           recommendations: Math.floor(Math.random() * 5) + 1,
-          confidence: Math.random()
-        }
+          confidence: Math.random(),
+        };
       },
       memory: () => ({
         used: Math.floor(Math.random() * 1000000) + 500000, // bytes
-        allocated: 2000000
-      })
-    }
+        allocated: 2000000,
+      }),
+    };
   }
   async executeQuery(query: string): Promise<GraphResult> {
     const startTime = Date.now();
@@ -112,9 +112,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...cached.metadata,
             source: 'cache',
-            queryTime: Date.now() - startTime
-          }
-        }
+            queryTime: Date.now() - startTime,
+          },
+        };
       }
       // Execute via WASM if available
       if (this.wasmModule) {
@@ -128,9 +128,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...result.metadata,
             source: 'wasm',
-            queryTime: Date.now() - startTime
-          }
-        }
+            queryTime: Date.now() - startTime,
+          },
+        };
       }
       // Fallback to remote query via service registry
       console.log(`🌐 Remote fallback for query: ${query.substring(0, 50)}...`);
@@ -140,9 +140,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         metadata: {
           ...remoteResult.metadata,
           source: 'remote',
-          queryTime: Date.now() - startTime
-        }
-      }
+          queryTime: Date.now() - startTime,
+        },
+      };
     } catch (error) {
       console.error('❌ Graph query execution failed:', error);
       throw error;
@@ -160,8 +160,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: 'wasm'
-        }
+          source: 'wasm',
+        },
       });
     }
     // Generate mock edges
@@ -173,8 +173,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         label: 'RELATED_TO',
         properties: {
           weight: Math.random(),
-          created: new Date().toISOString()
-        }
+          created: new Date().toISOString(),
+        },
       });
     }
     return {
@@ -183,9 +183,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm'
-      }
-    }
+        source: 'wasm',
+      },
+    };
   }
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
     // This would hit a remote Neo4j or graph service
@@ -197,16 +197,16 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           id: 'remote_1',
           label: 'Remote Case',
           type: 'Case',
-          properties: { title: 'Remote Case Example', status: 'active' }
-        }
+          properties: { title: 'Remote Case Example', status: 'active' },
+        },
       ],
       edges: [],
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: 'remote'
-      }
-    }
+        source: 'remote',
+      },
+    };
   }
   async cacheQuery(query: string, result: GraphResult): Promise<void> {
     const cacheKey = this.hashQuery(query);
@@ -229,8 +229,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           properties: {
             confidence: wasmResult.confidence,
             source: 'wasm_recommendation',
-            basedOn: nodeId
-          }
+            basedOn: nodeId,
+          },
         });
       }
       return recommendations;
@@ -243,11 +243,11 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
     const memoryInfo = this.wasmModule?.memory?.() || { used: 0, allocated: 0 };
     return {
       queriesCached: this.queryCache.size,
-      memoryUsage: `${Math.round(memoryInfo.used / 1024 / 1024 * 100) / 100}MB`,
+      memoryUsage: `${Math.round((memoryInfo.used / 1024 / 1024) * 100) / 100}MB`,
       uptime: Date.now() - this.startTime,
       cacheHitRate: this.cacheRequests > 0 ? (this.cacheHits / this.cacheRequests) * 100 : 0,
-      lastHydration: this.lastHydration
-    }
+      lastHydration: this.lastHydration,
+    };
   }
   async hydrateFromCache(): Promise<number> {
     console.log('💧 Starting WASM graph cache hydration...');
@@ -260,8 +260,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           const cacheKey = this.hashQuery(hotQuery.query);
           if (!this.queryCache.has(cacheKey)) {
             // Transform stored result to GraphResult format if needed
-            const result: GraphResult = hotQuery.result.nodes ?
-              hotQuery.result: this.transformStoredResult(hotQuery.result);
+            const result: GraphResult = hotQuery.result.nodes
+              ? hotQuery.result
+              : this.transformStoredResult(hotQuery.result);
             this.queryCache.set(cacheKey, result);
             hydratedCount++;
           }
@@ -285,15 +286,15 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: 'cache'
-      }
-    }
+        source: 'cache',
+      },
+    };
   }
   private hashQuery(query: string): string {
     let hash = 0;
     for (let i = 0; i < query.length; i++) {
       const char = query.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash).toString(36);

@@ -46,11 +46,8 @@
 
   let suggestions = $derived(
     _availableTags
-      .filter(
-        (tag) =>
-          tag.toLowerCase().includes(inputValue.toLowerCase()) && !_tags.includes(tag),
-      )
-      .slice(0, 5),
+      .filter(tag => tag.toLowerCase().includes(inputValue.toLowerCase()) && !_tags.includes(tag))
+      .slice(0, 5)
   );
 
   const debouncedSearch = debounce(async (query: string) => {
@@ -136,8 +133,12 @@
 
   function handleClickOutside(event: MouseEvent) {
     // Check if the click was outside both the suggestions container and the input element
-    if (suggestionsContainer && !suggestionsContainer.contains(event.target as Node) &&
-        inputElement && !inputElement.contains(event.target as Node)) {
+    if (
+      suggestionsContainer &&
+      !suggestionsContainer.contains(event.target as Node) &&
+      inputElement &&
+      !inputElement.contains(event.target as Node)
+    ) {
       showSuggestions = false;
       activeIndex = -1;
     }
@@ -165,12 +166,7 @@
       <div class="tag" transition:scale>
         <span class="tag-text">{tag}</span>
         {#if !readonly}
-          <button
-            type="button"
-            class="tag-remove"
-            onclick={() => removeTag(tag)}
-            aria-label="Remove {tag} tag"
-          >
+          <button type="button" class="tag-remove" onclick={() => removeTag(tag)} aria-label="Remove {tag} tag">
             <X size={12} />
           </button>
         {/if}
@@ -188,7 +184,8 @@
       aria-label="Add new tag"
     />
     {#if showSuggestions && suggestions.length > 0}
-      <div class="suggestions" role="listbox" bind:this={suggestionsContainer}> <!-- Bind suggestionsContainer here -->
+      <div class="suggestions" role="listbox" bind:this={suggestionsContainer}>
+        <!-- Bind suggestionsContainer here -->
         {#each suggestions as suggestion, index (suggestion)}
           <button
             type="button"
@@ -204,8 +201,10 @@
         {/each}
       </div>
     {/if}
-  </div> <!-- Closes tag-container -->
-  {#if !readonly && allowCustomTags && inputValue.trim() && !suggestions.includes(inputValue.trim()) && !_tags.includes(inputValue.trim()) && _tags.length < maxTags} <!-- Added check for existing tag -->
+  </div>
+  <!-- Closes tag-container -->
+  {#if !readonly && allowCustomTags && inputValue.trim() && !suggestions.includes(inputValue.trim()) && !_tags.includes(inputValue.trim()) && _tags.length < maxTags}
+    <!-- Added check for existing tag -->
     <button
       type="button"
       class="add-custom-tag"
@@ -221,7 +220,9 @@
       Maximum {maxTags} tags allowed
     </div>
   {/if}
-</div> <!-- Closes tag-list -->
+</div>
+
+<!-- Closes tag-list -->
 
 <style>
   .tag-list {
@@ -232,21 +233,21 @@
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    background-color: #dbeafe; /* Corrected hex code */
-    color: #1e40af;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    border: 1px solid #bfdbfe; /* Corrected hex code */
-    transition: all 0.2s ease-in-out; /* Added unit and easing for transition */
-  }
-  .tag:hover {
-    background-color: #bfdbfe; /* Corrected hex code */
-  }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      background-color: #dbeafe; /* Corrected hex code */
+      color: #1e40af;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      border: 1px solid #bfdbfe; /* Corrected hex code */
+      transition: all 0.2s ease-in-out; /* Added unit and easing for transition */
+    }
+    .tag:hover {
+      background-color: #bfdbfe; /* Corrected hex code */
+    }
   }
   .tag-text {
     font-weight: 500;
@@ -313,7 +314,7 @@
     cursor: pointer;
   }
   .suggestion:hover,
-  .suggestionfocus{
+  .suggestionfocus {
     background-color: #eff6ff;
     outline: none;
   }

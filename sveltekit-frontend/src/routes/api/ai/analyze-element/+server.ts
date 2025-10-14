@@ -30,12 +30,12 @@ type Analysis = {
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const payload = await request.json()
-    const elementType = payload?.elementType ?? 'unknown'
-    const content = payload?.content ?? ''
-    const context = payload?.context ?? ''
+    const payload = await request.json();
+    const elementType = payload?.elementType ?? 'unknown';
+    const content = payload?.content ?? '';
+    const context = payload?.context ?? '';
     if (!content || content.length < 3) {
-      return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 })
+      return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 });
     }
     // Quick legal relevance analysis
     const response: Response = await fetch('http://localhost:11434/api/generate', {
@@ -94,11 +94,11 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       analysis = { relevance: 'unknown', raw: result };
     }
 
-    return json(analysis)
+    return json(analysis);
   } catch (error: unknown) {
     // avoid using `any` for error; log safely
-    console.error('Element analysis failed:', error instanceof Error ? error.message : String(error))
-    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 })
+    console.error('Element analysis failed:', error instanceof Error ? error.message : String(error));
+    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });
   }
-}
+};
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

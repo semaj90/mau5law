@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // 4. Return the successful response (standard envelope).
     return json({
       success: true,
-      data: summaryResponse
+      data: summaryResponse,
       metadata: {
         timestamp: new Date().toISOString(),
         processingTimeMs: Date.now() - started

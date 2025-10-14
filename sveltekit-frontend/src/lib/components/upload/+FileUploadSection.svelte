@@ -48,7 +48,7 @@
       console.error('Error uploading file:', error);
       alert('An error occurred during file upload.');
     }
-  }
+  };
   // Dummy data for dropdowns - replace with actual data fetched from API
   const caseOptions = [
     { value: 'case1', label: 'Case 2023-001' },
@@ -69,15 +69,15 @@
   <div class="nier-bits-card-body">
     <div class="mb-3">
       <label for="caseSelect" class="form-label">Select Case:</label>
-  <SelectBits id="caseSelect" bind:selected={selectedCase} options={caseOptions} />
+      <SelectBits id="caseSelect" bind:selected={selectedCase} options={caseOptions} />
     </div>
     <div class="mb-3">
       <label for="poiSelect" class="form-label">Select POI (Optional):</label>
-  <SelectBits id="poiSelect" bind:selected={selectedPoi} options={poiOptions} />
+      <SelectBits id="poiSelect" bind:selected={selectedPoi} options={poiOptions} />
     </div>
     <div class="mb-3">
       <label for="fileInput" class="form-label">Upload File:</label>
-  <input type="file" id="fileInput" class="form-control" onchange={handleFileChange} />
+      <input type="file" id="fileInput" class="form-control" onchange={handleFileChange} />
     </div>
     <div class="mb-3 form-check">
       <label class="flex items-center gap-2">
@@ -118,7 +118,7 @@
 
   .nier-bits-card-body {
     padding-top: 0.5rem; /* keep spacing, avoid empty ruleset */
-    display: block;      /* ensure predictable layout */
+    display: block; /* ensure predictable layout */
   }
 
   .form-label {

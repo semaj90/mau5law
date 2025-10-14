@@ -28,7 +28,7 @@
     'application/pdf': { icon: FileText, label: 'PDF Documents' },
     'text/*': { icon: FileText, label: 'Text Files' },
     '*/*': { icon: Upload, label: 'Any File' },
-  }
+  };
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;

@@ -21,14 +21,17 @@ export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
-    const body = await request.json() as UnifiedVectorRequest;
+    const body = (await request.json()) as UnifiedVectorRequest;
 
     // Validate request
     if (!body.type || !body.payload) {
-      return json({
-        success: false,
-        error: 'Invalid request: type and payload are required'
-      }, { status: 400 });
+      return json(
+        {
+          success: false,
+          error: 'Invalid request: type and payload are required',
+        },
+        { status: 400 }
+      );
     }
 
     // Process through unified orchestrator
@@ -39,15 +42,18 @@ export const POST: RequestHandler = async ({ request }) => {
       api_version: '1.0',
       embedding_model: 'embeddinggemma:latest',
       embedding_dimensions: 512,
-      processing_time_ms: Date.now() - startTime
+      processing_time_ms: Date.now() - startTime,
     });
   } catch (error) {
     console.error('Unified vector API error:', error);
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Processing failed',
-      processing_time_ms: Date.now() - startTime
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Processing failed',
+        processing_time_ms: Date.now() - startTime,
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -76,8 +82,8 @@ export const GET: RequestHandler = async ({ url }) => {
             'XState workflow orchestration',
             'WebGPU SOM clustering',
             'Neo4j graph analysis',
-            'Redis caching'
-          ]
+            'Redis caching',
+          ],
         });
       }
 
@@ -85,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const stats = await unifiedVectorOrchestrator.getStatistics();
         return json({
           success: true,
-          statistics: stats
+          statistics: stats,
         });
       }
 
@@ -93,21 +99,27 @@ export const GET: RequestHandler = async ({ url }) => {
         const performance = unifiedVectorOrchestrator.getPerformanceAnalytics();
         return json({
           success: true,
-          performance
+          performance,
         });
       }
 
       default:
-        return json({
-          success: false,
-          error: 'Unknown action'
-        }, { status: 400 });
+        return json(
+          {
+            success: false,
+            error: 'Unknown action',
+          },
+          { status: 400 }
+        );
     }
   } catch (error) {
     console.error('Unified vector status API error:', error);
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Status check failed'
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Status check failed',
+      },
+      { status: 500 }
+    );
   }
 };

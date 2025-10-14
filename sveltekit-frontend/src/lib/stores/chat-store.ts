@@ -65,13 +65,13 @@ export const userActivities = writable<UserActivity[]>([]);
 // Chat configuration
 export const chatConfig = writable({
   maxMessages: 100,
-  enableAttentionTracking: true
-  enableWebGPU: true
-  enableAnalysisPanel: true
-  autoScroll: true
-  showTypingIndicators: true
-  enableRecommendations: true
-  streamingEnabled: true
+  enableAttentionTracking: true,
+  enableWebGPU: true,
+  enableAnalysisPanel: true,
+  autoScroll: true,
+  showTypingIndicators: true,
+  enableRecommendations: true,
+  streamingEnabled: true,
 });
 // Derived stores for computed values
 export const messageCount = derived(chatMessages, ($messages) => $messages.length);
@@ -211,7 +211,7 @@ export const chatActions = {
       // Create final AI message
       const session = get(currentSession);
       const aiMessage: ChatMessage = {
-        id: messageId
+        id: messageId,
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
@@ -273,7 +273,7 @@ export const chatActions = {
   addError: (message: string, context?: unknown): void => {
     const error = {
       timestamp: new Date(),
-      error: message
+      error: message,
       context
     }
     lastError.set(message);
@@ -357,25 +357,25 @@ if (browser) {
 // Export store collections for convenience
 export const chatStores = {
   // Core state
-  messages: chatMessages
-  session: currentSession
-  sessions: activeSessions
+  messages: chatMessages,
+  session: currentSession,
+  sessions: activeSessions,
   // Connection
-  connected: isConnected
-  status: connectionStatus
+  connected: isConnected,
+  status: connectionStatus,
   // Real-time
-  typing: isTyping
+  typing: isTyping,
   typingUsers,
   streaming: streamingResponse
   // Analysis
-  analysis: currentAnalysis
-  context: ragContext
+  analysis: currentAnalysis,
+  context: ragContext,
   recommendations,
   // User state
-  attention: userAttention
-  activities: userActivities
+  attention: userAttention,
+  activities: userActivities,
   // Configuration
-  config: chatConfig
+  config: chatConfig,
   // Derived;
   derived: {
     messageCount,

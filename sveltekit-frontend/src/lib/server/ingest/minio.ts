@@ -22,7 +22,7 @@ export const S3 = new S3Client({
 });
 /**
  * Convert stream to buffer for processing
- */;
+ */
 export async function streamToBuffer(stream: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of stream) {
@@ -32,7 +32,7 @@ export async function streamToBuffer(stream: Readable): Promise<Buffer> {
 }
 /**
  * Parse MinIO URL format: minio://bucket/key
- */;
+ */
 export function parseMinioUrl(minioUrl: string): { bucket: string; key: string } {
   const match = minioUrl.match(/^minio:\/\/([^\/]+)\/(.+)$/);
   if (!match) {
@@ -43,13 +43,13 @@ export function parseMinioUrl(minioUrl: string): { bucket: string; key: string }
 }
 /**
  * Fetch object from MinIO using minio:// URL
- */;
+ */
 export async function fetchMinioObject(minioUrl: string) {
   const { bucket, key } = parseMinioUrl(minioUrl);
   try {
     const response = await S3.send(new GetObjectCommand({
-      Bucket: bucket
-      Key: key
+      Bucket: bucket,
+      Key: key,
     });
     const body = (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Body as Readable;
     const buffer = await streamToBuffer(body);
@@ -67,13 +67,13 @@ export async function fetchMinioObject(minioUrl: string) {
 }
 /**
  * List objects with a prefix in MinIO bucket
- */;
+ */
 export async function listMinioPrefix(bucket: string, prefix: string) {
   try {
     const response = await S3.send(new ListObjectsV2Command({
-      Bucket: bucket
-      Prefix: prefix
-      MaxKeys: 1000
+      Bucket: bucket,
+      Prefix: prefix,
+      MaxKeys: 1000,
     });
     return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
       key: obj.Key!,
@@ -88,7 +88,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
 }
 /**
  * Batch fetch multiple MinIO objects
- */;
+ */
 export async function batchFetchMinioObjects(minioUrls: string[], options: {
   concurrency?: number;
   failFast?: boolean;
@@ -125,7 +125,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
 }
 /**
  * Detect content type for ingestion pipeline
- */;
+ */
 export function detectContentType(buffer: Buffer, filename?: string): string {
   // Check magic bytes first
   const magicBytes = buffer.slice(0, 16);
@@ -178,7 +178,7 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
 }
 /**
  * Validate content for ingestion pipeline
- */;
+ */
 export function validateContentForIngestion(contentType: string, size: number): {
   valid: boolean;
   reason?: string;

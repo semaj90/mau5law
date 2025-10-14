@@ -7,7 +7,7 @@ export async function indexPgVector(doc: { id: string; text: string; embedding: 
     const schema = await import('$lib/server/db/schema-unified');
     const db: any = (mod as any).db;
     const table: any = (schema as any).embeddings;
-    if (!db || !table) return { ok: false, reason: 'db_or_table_missing' }
+    if (!db || !table) return { ok: false, reason: 'db_or_table_missing' };
     const row: InferInsertModel<any> = {
       id: doc.id,
       content: doc.text,
@@ -15,8 +15,8 @@ export async function indexPgVector(doc: { id: string; text: string; embedding: 
       createdAt: new Date(),
     } as any;
     await db.insert(table).values(row);
-    return { ok: true }
+    return { ok: true };
   } catch (e) {
-    return { ok: false, error: String(e) }
+    return { ok: false, error: String(e) };
   }
 }

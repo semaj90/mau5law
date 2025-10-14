@@ -105,7 +105,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   <div
     class={cn(
       'bg-yorha-bg-secondary border rounded-lg p-4',
-      evidence.compromised ? 'border-red-500/30 bg-red-500/5' : 'border-yorha-border',
+      evidence.compromised ? 'border-red-500/30 bg-red-500/5' : 'border-yorha-border'
     )}
   >
     <div class="flex items-start justify-between mb-3">
@@ -219,7 +219,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 class={cn(
                   'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
                   transfer.verified ? 'bg-green-500/10 border-green-500/30' : 'bg-yellow-500/10 border-yellow-500/30',
-                  interactive && 'group-hover:scale-110 transition-transform',
+                  interactive && 'group-hover:scale-110 transition-transform'
                 )}
               >
                 {#if transfer.verified}
@@ -233,7 +233,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 <div
                   class={cn(
                     'bg-yorha-bg-tertiary border border-yorha-border rounded-lg p-4',
-                    interactive && 'group-hover:border-yorha-primary/30 transition-colors',
+                    interactive && 'group-hover:border-yorha-primary/30 transition-colors'
                   )}
                 >
                   <!-- Transfer Header -->
@@ -258,7 +258,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                         'px-2 py-1 text-xs font-mono rounded border',
                         transfer.verified
                           ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                          : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+                          : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
                       )}
                     >
                       {transfer.verified ? 'VERIFIED' : 'UNVERIFIED'}
@@ -282,7 +282,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       <span
                         className={cn(
                           'inline-block px-1.5 py-0.5 rounded',
-                          conditionConfig[transfer.condition].className,
+                          conditionConfig[transfer.condition].className
                         )}
                       >
                         {conditionConfig[transfer.condition].label}

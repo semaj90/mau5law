@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       processedErrors: fixes.length,
       fixes: fixes.slice(0, 50), // Return first 50 fixes
       performance: {
-        processing_time_ms: processingTime
+        processing_time_ms: processingTime,
         gpu_utilization: 78.5 + Math.random() * 15, // Simulated GPU usage
         memory_usage_mb: 1024 + Math.random() * 500,
         tokens_per_second: (fixes.length * 150) / processingTime * 1000

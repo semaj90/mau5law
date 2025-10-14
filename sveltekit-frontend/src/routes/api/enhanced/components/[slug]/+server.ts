@@ -101,8 +101,8 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     component: 'evidence-board',
     variant,
     data: {
-      evidence: evidenceItems
-      insights: relatedInsights
+      evidence: evidenceItems,
+      insights: relatedInsights,
       stats: {
         total: evidenceItems.length,
         high_priority: evidenceItems.filter(item => item.length),
@@ -196,8 +196,8 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     component: 'case-analysis',
     variant,
     data: {
-      case: caseData
-      related_cases: relatedCases
+      case: caseData,
+      related_cases: relatedCases,
       insights,
       risk_assessment: await calculateRiskScore(caseId)
     },

@@ -159,7 +159,7 @@ export interface VisualEffect {
   type: EffectType;
   enabled: boolean;
   intensity: number;
-  parameters: { [key: string]: any }
+  parameters: { [key: string]: any };
 }
 export type EffectType =
   | 'scanlines'
@@ -313,7 +313,7 @@ export interface SystemAlert {
   timestamp: string;
   acknowledged: boolean;
   resolved: boolean;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export type AlertType =
   | 'SYSTEM_ERROR'
@@ -426,7 +426,7 @@ export interface ShaderProgram {
   id: string;
   vertex_shader: string;
   fragment_shader: string;
-  uniforms: { [key: string]: any }
+  uniforms: { [key: string]: any };
   attributes: Record<string, number>;
 }
 export interface RenderObject {
@@ -451,7 +451,7 @@ export interface Material {
   opacity: number;
   transparent: boolean;
   texture?: string;
-  uniforms?: { [key: string]: any }
+  uniforms?: { [key: string]: any };
 }
 // Utility Types
 export type YoRHaEventType =
@@ -484,7 +484,7 @@ export interface ConfigurationOption {
     max?: number;
     pattern?: string;
     options?: any[];
-  }
+  };
 }
 export interface SystemCapabilities {
   webgl_supported: boolean;
@@ -519,7 +519,7 @@ export interface YoRHaEnhancedTheme extends UITheme {
     cardStyles: Record<string, string>;
     buttonVariants: Record<string, string>;
     inputStyles: Record<string, string>;
-  }
+  };
 }
 /**
  * Type-safe event handlers for YoRHa components
@@ -546,16 +546,16 @@ export interface YoRHaComponentProps {
  */
 export const isSystemMetrics = (_value: unknown): value is SystemMetrics => {
   return typeof value === 'object' && value !== null && 'cpu_usage' in value && 'memory_usage' in value;
-}
+};
 export const isLegalQuery = (_value: unknown): value is LegalQuery => {
   return typeof value === 'object' && value !== null && 'id' in value && 'query_text' in value && 'query_type' in value;
-}
+};
 export const isYoRHaModule = (_value: unknown): value is YoRHaModule => {
   return typeof value === 'object' && value !== null && 'id' in value && 'name' in value && 'status' in value;
-}
+};
 // === Re-exports for Enhanced Compatibility ===
-export type { SystemMetrics as YoRHaSystemMetrics }
-export type { LegalQuery as YoRHaLegalQuery }
-export type { CommandResult as YoRHaCommandResult }
-export type { HolographicData as YoRHa3DObject }
-export type { VisualEffect as YoRHaEffect }
+export type { SystemMetrics as YoRHaSystemMetrics };
+export type { LegalQuery as YoRHaLegalQuery };
+export type { CommandResult as YoRHaCommandResult };
+export type { HolographicData as YoRHa3DObject };
+export type { VisualEffect as YoRHaEffect };

@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 /*
  * Production Logging API Endpoint
  * Handles client-side error logging and monitoring for the Legal AI Platform
  */
-import { json, error } from '@sveltejs/kit'
-import crypto from "crypto"
+import { json, error } from '@sveltejs/kit';
+import crypto from 'crypto';
 
 // Log levels
-type LogLevel = 'error' | 'warn' | 'info' | 'debug'
+type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
 export interface LogEntry {
   level: LogLevel;
@@ -186,17 +186,17 @@ export const GET: RequestHandler = async ({ url, request }) => {
 // DELETE endpoint for clearing logs (development only)
 export const DELETE: RequestHandler = async ({ request }) => {
   if (import.meta.env.NODE_ENV === 'production') {
-    throw error(403, 'Log clearing not allowed in production')
+    throw error(403, 'Log clearing not allowed in production');
   }
-  const authHeader = request.headers.get('authorization')
+  const authHeader = request.headers.get('authorization');
   if (!authHeader || authHeader !== 'Bearer dev-admin-key') {
-    throw error(401, 'Unauthorized')
+    throw error(401, 'Unauthorized');
   }
-  const originalCount = logStore.length
-  logStore.splice(0, logStore.length)
+  const originalCount = logStore.length;
+  logStore.splice(0, logStore.length);
   return json({
     success: true,
     message: `Cleared ${originalCount} log entries`,
-    clearedCount: originalCount
-  })
-}
+    clearedCount: originalCount,
+  });
+};

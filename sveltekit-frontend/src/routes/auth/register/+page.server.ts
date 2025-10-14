@@ -2,8 +2,8 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { EnhancedAuthService } from '$lib/services/enhanced-auth-service.js';
 export const load: PageServerLoad = async () => {
-  return {}
-}
+  return {};
+};
 export const actions: Actions = {
   register: async ({ request, cookies, getClientAddress }) => {
     const data = await request.formData();
@@ -37,7 +37,7 @@ export const actions: Actions = {
           lastName: lastName,
           role: role || 'user',
         },
-        { request, cookies, getClientAddress } as any,
+        { request, cookies, getClientAddress } as any
       );
       if (!(result as { success?: any; error?: any; user?: any }).success) {
         return fail(400, { error: (result as { success?: any; error?: any; user?: any }).error });
@@ -72,4 +72,4 @@ export const actions: Actions = {
     // Redirect to dashboard
     throw redirect(302, '/yorha/dashboard');
   },
-}
+};

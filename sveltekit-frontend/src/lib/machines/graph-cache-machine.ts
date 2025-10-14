@@ -54,15 +54,15 @@ export const graphCacheMachine = createMachine({
   initial: 'initializing',
   // Note: predictableActionArguments removed for version compatibility
   context: {
-    query: null
+    query: null,
     params: { [key,: strin,g]: any },
-    result: null
+    result: null,
     source: 'indexeddb_cache',
-    isStale: false
-    isAuthoritative: false
-    cacheHit: false
+    isStale: false,
+    isAuthoritative: false,
+    cacheHit: false,
     latency: 0,
-    queryHash: null
+    queryHash: null,
     telemetry: {
       totalQueries: 0,
       cacheHits: 0,
@@ -72,10 +72,10 @@ export const graphCacheMachine = createMachine({
       p95LatencyMs: 0,
       p99LatencyMs: 0
     },
-    worker: null
-    refreshJob: null
+    worker: null,
+    refreshJob: null,
     lastRefresh: 0,
-    backgroundRefreshEnabled: true
+    backgroundRefreshEnabled: true,
     retryCount: 0,
     maxRetries: 3
   } satisfies GraphCacheContext,
@@ -289,9 +289,9 @@ export const graphCacheMachine = createMachine({
       })
     }),
     setCacheResult,: assign({
-      result: ({ event }) => event.type === 'CACHE_HIT' ? event.result: null
+      result: ({ event }) => event.type === 'CACHE_HIT' ? event.result: null,
       source: ({ event }) => event.type === 'CACHE_HIT' ? event.source as any : 'indexeddb_cache',
-      cacheHit: true
+      cacheHit: true,
       latency: ({ event }) => event.type === 'CACHE_HIT' ? event.latency : 0,
       telemetry: ({ context }) => ({
         ...context.telemetry,
@@ -299,7 +299,7 @@ export const graphCacheMachine = createMachine({
       })
     }),
     setWasmResult,: assign({
-      result: ({ event }) => event.type === 'WASM_RESULT' ? event.result : null
+      result: ({ event }) => event.type === 'WASM_RESULT' ? event.result : null,
       source: 'wasm' as const,
       latency: ({ event }) => event.type === 'WASM_RESULT' ? event.latency : 0
     }),
@@ -313,8 +313,8 @@ export const graphCacheMachine = createMachine({
         if (event.type === 'AUTHORITATIVE_RESULT') return event.source as any;
         return 'neo4j' as const;
       },
-      isAuthoritative: true
-      lastRefresh: Date.now()
+      isAuthoritative: true,
+      lastRefresh: Date.now(),
     }),
     setRefreshJob,: assign({
       refreshJob: ({ context }) => `refresh_${context.queryHash}_${Date.now()}`

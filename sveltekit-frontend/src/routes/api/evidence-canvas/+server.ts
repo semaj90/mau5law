@@ -19,4 +19,4 @@ export const GET: RequestHandler = async () => {
       'Layout analysis and optimization suggestions',
     ],
   });
-}
+};

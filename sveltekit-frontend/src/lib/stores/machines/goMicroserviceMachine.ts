@@ -14,7 +14,7 @@ interface ConnectEvent { type: 'CONNECT'; endpoint?: string }
 interface DisconnectEvent { type: 'DISCONNECT' }
 type GoEvents = MakeRequestEvent | HealthCheckEvent | ConnectEvent | DisconnectEvent;
 const initialContext: GoMicroserviceContext = {
-  userId: undefined
+  userId: undefined,
   sessionId: '',
   retryCount: 0,
   timestamp: Date.now(),
@@ -30,7 +30,7 @@ type GoMicroserviceEvents =
 interface HealthResult { responseTime: number }
 export const goMicroserviceMachine = createMachine({
   id: 'goMicroservice',
-  context: initialContext
+  context: initialContext,
   initial: 'connecting',
   states: {
     connecting: {

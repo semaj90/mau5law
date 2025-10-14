@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /**
  * Comprehensive Error Handling System for Legal AI Application
- */;
+ */
 }
 export interface AppError {
   id: string;
@@ -32,7 +32,7 @@ class ErrorHandler {
    */
   logError(
     type: AppError["type"],
-    message: string
+    message: string,
     details?: unknown
     severity: AppError["severity"] = "medium",
   ): AppError {
@@ -87,7 +87,7 @@ class ErrorHandler {
     this.logError("upload", message, details, "medium");
   /**
    * Get error report
-   */;
+   */
   getErrorReport(): ErrorReport {
     const byType: Record<string, number> = {}
     const bySeverity: Record<string, number> = {}
@@ -121,13 +121,13 @@ class ErrorHandler {
   }
   /**
    * Clear errors
-   */;
+   */
   clearErrors() {
     this.errors = [];
   }
   /**
    * Subscribe to error events
-   */;
+   */
   onError(callback: (error: AppError) => void) {
     this.listeners.push(callback);
     return () => {
@@ -136,7 +136,7 @@ class ErrorHandler {
   }
   /**
    * Get errors by criteria
-   */;
+   */
   getErrors(criteria?: {
     type?: AppError["type"];
     severity?: AppError["severity"];
@@ -202,7 +202,7 @@ export async function withErrorHandling<T>(
 }
 /**
  * Fetch wrapper with error handling
- */;
+ */
 export async function safeFetch(url: string, options?: RequestInit): Promise<any> {
   try {
     // removed unused response assignment
@@ -221,7 +221,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
 }
 /**
  * Database error handling
- */;
+ */
 export function handleDatabaseError(error: any, operation: string): string {
   console.error(`Database error during ${operation}:`, {
     message: error.message,
@@ -245,7 +245,7 @@ export function handleDatabaseError(error: any, operation: string): string {
 }
 /**
  * Session validation helper
- */;
+ */
 export function validateUserSession(locals: any): unknown {
   if (!locals.user) {
     throw new Error('Authentication required');
@@ -257,7 +257,7 @@ export function validateUserSession(locals: any): unknown {
 }
 /**
  * API response error handler
- */;
+ */
 export function handleAPIError(error: any, endpoint: string): Response {
   const errorMessage = handleDatabaseError(error, `API call to ${endpoint}`);
   errorHandler.system(`API error at ${endpoint}`, {
@@ -266,7 +266,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
     timestamp: new Date().toISOString()
   });
   return new Response(JSON.stringify({
-      error: errorMessage
+      error: errorMessage,
       timestamp: new Date().toISOString(),
       endpoint
     }),

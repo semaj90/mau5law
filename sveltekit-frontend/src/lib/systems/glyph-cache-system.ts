@@ -113,7 +113,7 @@ export class GlyphCacheSystem {
    * Get or create a glyph texture for a character
    */
   async getGlyph(
-    char: string
+    char: string,
     fontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal',
     fontSize: number = 8;
   ): Promise<GlyphTexture> {
@@ -305,8 +305,8 @@ export class GlyphCacheSystem {
     return pattern;
   }
   private renderGlyphTexture(
-    char: string
-    nesPattern: Uint8Array
+    char: string,
+    nesPattern: Uint8Array,
     fontStyle: string;
   ): ImageData | null {
     if (!this.renderContext) return null;
@@ -447,7 +447,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Preload commonly used characters
-   */;
+   */
   async preloadCommonGlyphs(fontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal'): Promise<void> {
     const commonChars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
@@ -463,13 +463,13 @@ export class GlyphCacheSystem {
   }
   /**
    * Get glyph cache metrics
-   */;
+   */
   getMetrics(): GlyphCacheMetrics {
     return { ...this.metrics }
   }
   /**
    * Clear entire cache
-   */;
+   */
   clearCache(): void {
     this.fonts.clear();
     this.cacheHits = 0;
@@ -479,7 +479,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Export glyph as data URL
-   */;
+   */
   exportGlyphAsDataURL(char: string, fontStyle: string = 'legal'): string | null {
     const fontKey = `${fontStyle}_8`;
     const font = this.fonts.get(fontKey);
@@ -498,7 +498,7 @@ export class GlyphCacheSystem {
   }
   /**
    * LLM Integration - Get "did you mean" suggestions from gemma3:legal-latest
-   */;
+   */
   async getLLMSuggestions(inputText: string): Promise<string[]> {
     const cacheKey = `suggestions_${inputText}`;
     if (this.llmCache.has(cacheKey)) {
@@ -511,7 +511,7 @@ export class GlyphCacheSystem {
         body: JSON.stringify({,
           model: 'gemma3:legal-latest',
           prompt: `Given the text "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
-          stream: false
+          stream: false,
           options: {
             temperature: 0.3,
             top_p: 0.9,
@@ -538,7 +538,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Generate embeddings for glyph text using gemma3:legal-latest
-   */;
+   */
   async generateEmbedding(text: string): Promise<Float32Array> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
@@ -561,7 +561,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Synthesize glyph combinations with LLM suggestions
-   */;
+   */
   async synthesizeGlyphCombinations(inputGlyphs: string[]): Promise<SynthesizedGlyph[]> {
     const combinations = this.generateCombinations(inputGlyphs);
     const synthesized: SynthesizedGlyph[] = [];
@@ -570,7 +570,7 @@ export class GlyphCacheSystem {
       const embedding = await this.generateEmbedding(combo);
       synthesized.push({
         original: inputGlyphs.join(''),
-        synthesized: combo
+        synthesized: combo,
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
         llmGenerated: true;
@@ -582,7 +582,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Generate combinations from input glyphs
-   */;
+   */
   private generateCombinations(glyphs: string[]): string[] {
     const combinations: string[] = [];
     const text = glyphs.join('');
@@ -605,7 +605,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Calculate confidence score for synthesized text
-   */;
+   */
   private calculateConfidence(synthesized: string, originalGlyphs: string[]): number {
     const original = originalGlyphs.join('');
     // Basic similarity metrics
@@ -615,7 +615,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Calculate Levenshtein similarity
-   */;
+   */
   private calculateLevenshteinSimilarity(a: string, b: string): number {
     const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null);
     for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
@@ -636,7 +636,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Stream glyphs to CHR-ROM with quantization
-   */;
+   */
   async streamToTexture(glyphs: GlyphTexture[]): Promise<void> {
     try {
       const textureData = glyphs.map(glyph => ({
@@ -653,7 +653,7 @@ export class GlyphCacheSystem {
   }
   /**
    * Dispose resources
-   */;
+   */
   dispose(): void {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);

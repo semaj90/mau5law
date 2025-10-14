@@ -17,7 +17,7 @@ export interface PresignResponse {
     caseId: string;
     uploadId: string;
     expiresAt: Date;
-  }
+  };
 }
 // MinIO/S3 compatible presigned URL generation
 function generatePresignedUrl(bucket: string, key: string, expires: number = 3600): string {
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       status: 'pending',
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 3600 * 1000), // 1 hour
-    }
+    };
     // TODO: Store in PostgreSQL using Drizzle
     // await db.insert(uploads).values(metadata)
     console.log(`📤 Created presigned URLs for ${filename} (${chunkCount} chunks)`);
@@ -75,13 +75,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         uploadId,
         expiresAt: metadata.expiresAt,
       },
-    }
+    };
     return json(response);
   } catch (error: any) {
     console.error('❌ Presign error:', error);
     return json({ error: 'Failed to generate presigned URLs' }, { status: 500 });
   }
-}
+};
 // Complete multipart upload
 export const PUT: RequestHandler = async ({ request }) => {
   try {
@@ -104,7 +104,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('❌ Complete upload error:', error);
     return json({ error: 'Failed to complete upload' }, { status: 500 });
   }
-}
+};
 async function triggerProcessingPipeline(uploadId: string): Promise<any> {
   try {
     // Push job to message queue for processing
@@ -112,7 +112,7 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
       uploadId,
       timestamp: new Date().toISOString(),
       priority: 'normal',
-    }
+    };
     // TODO: Send to Redis/BullMQ
     // await jobQueue.add('process-document', jobData)
     console.log(`🚀 Triggered processing for upload ${uploadId}`);

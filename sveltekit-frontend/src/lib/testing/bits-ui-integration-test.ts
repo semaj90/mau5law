@@ -1,7 +1,7 @@
 /**
  * Bits-UI Integration Test
  * Validates that all bits-ui components are working correctly
- */;
+ */
 }
 export interface BitsUITestResult {
   component: string;

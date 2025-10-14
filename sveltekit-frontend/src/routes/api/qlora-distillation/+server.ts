@@ -322,8 +322,8 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       progress: 100,
       currentPhase: 'Distillation completed successfully',
       estimatedTimeRemaining: 0,
-      modelPath: deploymentPath
-      deploymentReady: true
+      modelPath: deploymentPath,
+      deploymentReady: true,
       metrics: {
         trainingExamples:
           feedbackAnalysis.distillationPlan.trainingData.positive_examples +
@@ -352,9 +352,9 @@ async function processDistillationJob(jobId: string, request: DistillationReques
  * Run validation tests on distilled model
  */
 async function runValidationTests(
-  modelKey: string
-  domain: string
-  qualityThreshold: number
+  modelKey: string,
+  domain: string,
+  qualityThreshold: number,
 ): Promise<any> {
   console.log(`🧪 Running validation tests for domain: ${domain}`)
   try {
@@ -378,14 +378,14 @@ async function runValidationTests(
     const passed = avgAccuracy >= qualityThreshold
     return {
       passed,
-      accuracy: avgAccuracy
-      reason: passed
+      accuracy: avgAccuracy,
+      reason: passed,
         ? undefined
         : `Accuracy ${avgAccuracy.toFixed(2)} below threshold ${qualityThreshold}`
     }
   } catch (error) {
     return {
-      passed: false
+      passed: false,
       accuracy: 0,
       reason: `Validation error: ${error instanceof Error ? error.message: 'Unknown error'}`
     }
@@ -395,9 +395,9 @@ async function runValidationTests(
  * Prepare model for deployment
  */
 async function prepareModelDeployment(
-  modelPath: string
-  plan: any
-  domain: string
+  modelPath: string,
+  plan: any,
+  domain: string,
 ): Promise<string> {
   // Copy model to deployment directory
   const deploymentPath = `~/.ollama/models/distilled-qlora/deployed/${domain}/${plan.studentModel}`
@@ -508,9 +508,9 @@ async function simulateFileOperations(operations: string[], delayMs: number): Pr
  * Notify user of distillation completion
  */
 async function notifyDistillationCompletion(
-  userId: string
-  jobId: string
-  modelPath: string
+  userId: string,
+  jobId: string,
+  modelPath: string,
 ): Promise<void> {
   console.log(`📧 Notifying user ${userId} of completed distillation: ${jobId}`)
   // Would implement actual notification system

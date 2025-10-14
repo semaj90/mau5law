@@ -19,7 +19,7 @@
     { name: 'Legal Research', slug: 'legal-research', icon: '⚖️' },
     { name: 'Vector Search', slug: 'vector-search', icon: '🔍' },
     { name: 'Gaming UI', slug: 'gaming-ui', icon: '🎮' },
-    { name: 'Performance', slug: 'performance', icon: '📊' }
+    { name: 'Performance', slug: 'performance', icon: '📊' },
   ];
 
   // Get current demo from URL
@@ -38,11 +38,7 @@
     <!-- Demo Navigation -->
     <nav class="demo-nav">
       {#each demoRoutes as route}
-        <a
-          href="/demo/{route.slug}"
-          class="demo-nav-item"
-          class:active={currentDemo === route.slug}
-        >
+        <a href="/demo/{route.slug}" class="demo-nav-item" class:active={currentDemo === route.slug}>
           <span class="demo-nav-icon">{route.icon}</span>
           <span class="demo-nav-text">{route.name}</span>
         </a>

@@ -14,7 +14,7 @@ const EMBEDDING_CONFIG = {
 // If you later install '@langchain/nomic', replace the stub in embedWithNomic with real client calls.
 /**
  * Get embeddings from local Gemma3 service
- */;
+ */
 async function embedWithLocal(text: string): Promise<number[]> {
   try {
     const response = await fetch(EMBEDDING_CONFIG.localUrl, {
@@ -39,7 +39,7 @@ async function embedWithLocal(text: string): Promise<number[]> {
 }
 /**
  * Get embeddings from Nomic API
- */;
+ */
 async function embedWithNomic(text: string): Promise<number[]> {
   if (!EMBEDDING_CONFIG.nomicApiKey) {
     throw new Error('Nomic API key not configured');
@@ -84,7 +84,7 @@ async function embedWithNomic(text: string): Promise<number[]> {
  * @param text - Text to embed
  * @param model - Optional model override
  * @returns Promise<number[]> - Embedding vector
- */;
+ */
 export async function embedText(text: string, model?: string): Promise<number[]> {
   if (!text || text.trim().length === 0) {
     throw new Error('Text is required for embedding');
@@ -129,7 +129,7 @@ export async function embedText(text: string, model?: string): Promise<number[]>
  * @param texts - Array of texts to embed
  * @param model - Optional model override
  * @returns Promise<number[][]> - Array of embedding vectors
- */;
+ */
 export async function embedTexts(texts: string[], model?: string): Promise<number[][]> {
   if (!texts || texts.length === 0) {
     return [];
@@ -171,7 +171,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
 }
 /**
  * Get embedding service status
- */;
+ */
 export async function getEmbeddingServiceStatus(): Promise<any> {
   let localAvailable = false;
   let nomicAvailable = false;
@@ -200,13 +200,13 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
   }
   return {
     local: localAvailable;
-    nomic: nomicAvailable
+    nomic: nomicAvailable,
     activeService
   }
 }
 /**
  * Utility to calculate cosine similarity between two vectors
- */;
+ */
 export function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same length');

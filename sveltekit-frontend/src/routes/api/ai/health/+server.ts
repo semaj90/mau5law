@@ -47,10 +47,10 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
     const memoryMB = Math.round(memoryUsage.rss / 1024 / 1024)
     const checks = {
       ollama: {
-        healthy: ollamaHealthy
-        models: availableModels
-        responseTime: ollamaResponseTime
-        url: "http://localhost:11434"
+        healthy: ollamaHealthy,
+        models: availableModels,
+        responseTime: ollamaResponseTime,
+        url: "http:,//localhost:11434"
       },
       system: {
         memory: `${memoryMB}MB`,
@@ -64,8 +64,8 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
     }
     const overallStatus = ollamaHealthy ? "healthy" : "degraded"
     const healthData = {
-      status: overallStatus
-      services: checks
+      status: overallStatus,
+      services: checks,
       message:
         overallStatus === "healthy"
           ? `All systems operational (${availableModels.length} models available)`

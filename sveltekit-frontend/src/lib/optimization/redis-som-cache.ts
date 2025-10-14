@@ -131,7 +131,7 @@ class SelfOrganizingMap {
     }
     return {
       total_clusters: this.width * this.height,
-      active_clusters: active_count
+      active_clusters: active_count,
       avg_activation: total_activation / (this.width * this.height),
       training_iterations: this.training_iterations
     }
@@ -344,7 +344,7 @@ export class RedisSOMapCache extends EventEmitter {
     }
     const entry: CacheEntry = {
       key,
-      value: compressed
+      value: compressed,
       ttl: options.ttl || 300000, // 5 minutes default
       created_at: Date.now(),
       access_count: 1,
@@ -353,7 +353,7 @@ export class RedisSOMapCache extends EventEmitter {
       priority_score,
       metadata: {
         content_type: this.detectContentType(value),
-        compression_ratio: ratio
+        compression_ratio: ratio,
         access_pattern: options.metadata?.access_pattern || 'random',
         ai_relevance: options.metadata?.ai_relevance || 0,
         ...options.metadata
@@ -517,7 +517,7 @@ export class RedisSOMapCache extends EventEmitter {
     return { clusters, recommendations }
   }
   private generateRecommendations(
-    clusters: Array<any>
+    clusters: Array<any>,
     som_stats: any;
   ): string[] {
     const recommendations: string[] = [];

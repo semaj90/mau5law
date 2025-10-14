@@ -112,7 +112,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const borderColor = resolveColorToken(role.border, YORHA_COLORS.primary.black);
   const textColor = resolveColorToken(role.text, YORHA_COLORS.primary.black);
   const glow = options?.enableGlow ? {
-    enabled: true
+    enabled: true,
     color: backgroundColor;
     intensity: 0.35
   } : undefined;

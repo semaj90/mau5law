@@ -2,7 +2,7 @@
  * UTF-8 to FP32 Text Converter for SvelteKit
  * Converts UTF-8 encoded text to 32-bit floating point arrays
  * Optimized for GPU processing and neural network inputs
- */;
+ */
 }
 export interface TextConversionOptions {
   normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid';
@@ -96,14 +96,14 @@ export class UTF8ToFP32Converter {
   }
   /**
    * Convert UTF-8 text to FP32 array with various normalization options
-   */;
+   */
   convertToFP32(text: string, options?: Partial<TextConversionOptions>): ConversionResult {
     const startTime = performance.now();
     const config: TextConversionOptions = {
       normalizationMethod: 'range',
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
-      maxLength: undefined
+      maxLength: undefined,
       preserveSpecialChars: true;
       encoding: 'utf8',
       ...options
@@ -125,7 +125,7 @@ export class UTF8ToFP32Converter {
       const metadata = this.calculateMetadata(finalArray, text, bytes);
       const conversionTime = performance.now() - startTime;
       const result: ConversionResult = {
-        fp32Array: finalArray
+        fp32Array: finalArray,
         originalLength: text.length,
         paddedLength: finalArray.length,
         specialCharsCount: this.countSpecialCharacters(text),
@@ -181,8 +181,8 @@ export class UTF8ToFP32Converter {
     return fp32Array;
   }
   private mapSpecialCharacters(
-    originalText: string
-    fp32Values: Float32Array
+    originalText: string,
+    fp32Values: Float32Array,
     config: TextConversionOptions;
   ): Float32Array {
     const result = new Float32Array(fp32Values);
@@ -297,7 +297,7 @@ export class UTF8ToFP32Converter {
   }
   /**
    * Batch convert multiple texts to FP32 arrays
-   */;
+   */
   batchConvert(texts: string[], options?: Partial<TextConversionOptions>): ConversionResult[] {
     const startTime = performance.now();
     const results: ConversionResult[] = [];
@@ -315,7 +315,7 @@ export class UTF8ToFP32Converter {
   }
   /**
    * Convert FP32 array back to text (approximate reconstruction)
-   */;
+   */
   reconstructFromFP32(fp32Array: Float32Array, options?: Partial<TextConversionOptions>): string {
     const config: TextConversionOptions = {
       normalizationMethod: 'range',
@@ -380,27 +380,27 @@ export class UTF8ToFP32Converter {
   }
   /**
    * Add custom special character mappings
-   */;
+   */
   addSpecialCharacter(char: string, fp32Value: number): void {
     this.specialCharMap[char] = fp32Value;
     console.log(`➕ Added special character: '${char}' → ${fp32Value}`);
   }
   /**
    * Get current special character mappings
-   */;
+   */
   getSpecialCharacterMap(): SpecialCharacterMap {
     return { ...this.specialCharMap }
   }
   /**
    * Clear all special character mappings
-   */;
+   */
   clearSpecialCharacters(): void {
     this.specialCharMap = {}
     console.log('🧹 Cleared all special character mappings');
   }
   /**
    * Export conversion settings for reproducibility
-   */;
+   */
   exportSettings(_options: TextConversionOptions): string {
     return JSON.stringify({
       options,
@@ -410,7 +410,7 @@ export class UTF8ToFP32Converter {
   }
   /**
    * Import conversion settings
-   */;
+   */
   importSettings(settingsJson: string): void {
     try {
       const settings = JSON.parse(settingsJson);

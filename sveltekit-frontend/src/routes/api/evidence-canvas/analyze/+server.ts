@@ -41,11 +41,11 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
       analysis,
       summary,
       confidence: Number(confidence.toFixed(3)),
-      processing_time_ms: processingTime
+      processing_time_ms: processingTime,
       metadata: {
-        object_count: objectCount
-        text_objects: textObjects
-        shape_objects: shapeObjects
+        object_count: objectCount,
+        text_objects: textObjects,
+        shape_objects: shapeObjects,
         canvas_size,
         options: options || {}
       }

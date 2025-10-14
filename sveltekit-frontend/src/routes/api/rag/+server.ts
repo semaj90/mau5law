@@ -202,8 +202,8 @@ async function handleSearch(request: Request): Promise<any> {
         analytics: localResult.analytics,
         total: localResult.analytics?.totalResults || 0,
         source: 'local-search',
-        fallback: true
-        warning: 'Used local search due to backend unavailability'
+        fallback: true,
+        warning: 'Used local search due to backend unavailability',
       })
     }
   } catch (err: any) {
@@ -300,9 +300,9 @@ async function handleStatus(): Promise<any> {
     return json({
       success: true,
       backend: {
-        url: RAG_BACKEND_URL
-        healthy: isHealthy
-        status: health?.status || "unknown"
+        url: RAG_BACKEND_URL,
+        healthy: isHealthy,
+        status: health?.status || "unknown",
       },
       services: metrics?.health?.components || {},
       ragStats: stats?.stats || {},
@@ -315,9 +315,9 @@ async function handleStatus(): Promise<any> {
     return json({
       success: false,
       backend: {
-        url: RAG_BACKEND_URL
-        healthy: false
-        status: "unreachable"
+        url: RAG_BACKEND_URL,
+        healthy: false,
+        status: "unreachable",
       },
       error: err.message,
       timestamp: new Date().toISOString()

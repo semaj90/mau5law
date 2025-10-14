@@ -6,12 +6,12 @@ export interface LocalLegalDoc {
   content?: string;
   type?: string;
   status?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 let fuse: Fuse<LocalLegalDoc> | null = null;
 let documents: LocalLegalDoc[] = [];
 let loadedFromCache = false;
-let cacheKey = 'yorha-local-doc-index-v1';
+const cacheKey = 'yorha-local-doc-index-v1';
 const options: any = {
   keys: [
     { name: 'title', weight: 0.4 },
@@ -113,7 +113,7 @@ export function mergeResults(local: any[], remote: any[], localWeight = 0.6, rem
   for (const r of remote) {
     if (!r) continue;
     const existing = byId.get(r.id);
-    const remoteRel = r.relevance ?? Math.round((r.score ? (1 - r.score) : Math.random()) * 100);
+    const remoteRel = r.relevance ?? Math.round((r.score ? 1 - r.score : Math.random()) * 100);
     if (existing) {
       const combined = Math.round(existing.relevance * localWeight + remoteRel * remoteWeight);
       byId.set(r.id, { ...existing, ...r, relevance: combined, source: 'hybrid' });

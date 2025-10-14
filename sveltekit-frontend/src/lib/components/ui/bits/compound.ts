@@ -12,4 +12,4 @@ export {
   CompoundDialog as DialogCompound,
   CompoundCard as CardCompound,
   CompoundSelect as SelectCompound,
-}
+};

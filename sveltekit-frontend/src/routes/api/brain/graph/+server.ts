@@ -33,4 +33,4 @@ export const GET: RequestHandler = async () => {
     { source: 'autosolve', target: 'embedding_cache', kind: 'updates' },
   ];
   return json({ nodes, links, generatedAt: new Date().toISOString() });
-}
+};

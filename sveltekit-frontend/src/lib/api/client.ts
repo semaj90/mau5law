@@ -31,7 +31,7 @@ export class ApiClientError extends Error {
     statusCode: number,
     code: string = 'API_ERROR',
     details?: Record<string, unknown>,
-    requestId?: string,
+    requestId?: string
   ) {
     super(message);
     this.name = 'ApiClientError';
@@ -68,7 +68,7 @@ class EnhancedApiClient {
         'Content-Type': 'application/json',
         ...config.defaultHeaders,
       },
-    }
+    };
   }
 
   // Generic request method with retry logic
@@ -81,7 +81,7 @@ class EnhancedApiClient {
       timeout?: number;
       retries?: number;
       requestId?: string;
-    } = {},
+    } = {}
   ): Promise<StandardApiResponse<TResponse>> {
     const requestId = options.requestId || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const timeout = options.timeout || this.config.timeout;
@@ -105,7 +105,7 @@ class EnhancedApiClient {
             ...options.headers,
           },
           signal: abortController.signal,
-        }
+        };
 
         if (data) {
           if (method === 'GET') {
@@ -138,7 +138,7 @@ class EnhancedApiClient {
             response.status,
             errorData.code || 'HTTP_ERROR',
             errorData.details,
-            errorData.requestId || requestId,
+            errorData.requestId || requestId
           );
         }
 
@@ -149,7 +149,7 @@ class EnhancedApiClient {
             response.status,
             result?.error?.code || 'API_ERROR',
             result?.error?.details,
-            result?.meta?.requestId || requestId,
+            result?.meta?.requestId || requestId
           );
         }
 
@@ -186,7 +186,7 @@ class EnhancedApiClient {
   private async get<TResponse = any>(
     path: string,
     params?: { [key: string]: any },
-    options?: { headers?: Record<string, string>; timeout?: number },
+    options?: { headers?: Record<string, string>; timeout?: number }
   ): Promise<StandardApiResponse<TResponse>> {
     const url = params ? `${path}?${new URLSearchParams(params).toString()}` : path;
     return this.request<TResponse>('GET', url, undefined, options);
@@ -196,7 +196,7 @@ class EnhancedApiClient {
   private async post<TResponse = any>(
     path: string,
     data?: any,
-    options?: { headers?: Record<string, string>; timeout?: number },
+    options?: { headers?: Record<string, string>; timeout?: number }
   ): Promise<StandardApiResponse<TResponse>> {
     return this.request<TResponse>('POST', path, data, options);
   }
@@ -205,7 +205,7 @@ class EnhancedApiClient {
   private async put<TResponse = any>(
     path: string,
     data?: any,
-    options?: { headers?: Record<string, string>; timeout?: number },
+    options?: { headers?: Record<string, string>; timeout?: number }
   ): Promise<StandardApiResponse<TResponse>> {
     return this.request<TResponse>('PUT', path, data, options);
   }
@@ -214,7 +214,7 @@ class EnhancedApiClient {
   private async delete<TResponse = any>(
     path: string,
     params?: { [key: string]: any },
-    options?: { headers?: Record<string, string>; timeout?: number },
+    options?: { headers?: Record<string, string>; timeout?: number }
   ): Promise<StandardApiResponse<TResponse>> {
     const url = params ? `${path}?${new URLSearchParams(params).toString()}` : path;
     return this.request<TResponse>('DELETE', url, undefined, options);
@@ -266,7 +266,7 @@ class EnhancedApiClient {
   public async updateEvidence(
     id: string,
     data: RequestOf<EvidenceAPI.Update>,
-    custodyNotes?: string,
+    custodyNotes?: string
   ): Promise<StandardApiResponse<EvidenceAPI.Update>> {
     const url = custodyNotes
       ? `/api/evidence?id=${id}&custodyNotes=${encodeURIComponent(custodyNotes)}`
@@ -275,7 +275,7 @@ class EnhancedApiClient {
   }
 
   public async deleteEvidence(id: string, reason?: string): Promise<StandardApiResponse<EvidenceAPI.Delete>> {
-    const params: any = { id }
+    const params: any = { id };
     if (reason) params.reason = reason;
     return this.delete('/api/evidence', params);
   }
@@ -287,7 +287,7 @@ class EnhancedApiClient {
 
   // ===================== VECTOR SEARCH API METHODS =====================
   public async vectorSearch(
-    data: RequestOf<VectorSearchAPI.Search>,
+    data: RequestOf<VectorSearchAPI.Search>
   ): Promise<StandardApiResponse<VectorSearchAPI.Search>> {
     return this.post('/api/vector-search', data);
   }
@@ -298,7 +298,7 @@ class EnhancedApiClient {
   }
 
   public async performMaintenance(
-    action: RequestOf<HealthAPI.Maintenance>['action'],
+    action: RequestOf<HealthAPI.Maintenance>['action']
   ): Promise<StandardApiResponse<HealthAPI.Maintenance>> {
     return this.post('/api/health', { action });
   }
@@ -340,5 +340,5 @@ export const api = {
     check: (detailed = false) => apiClient.healthCheck(detailed),
     maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) => apiClient.performMaintenance(action),
   },
-}
+};
 // Error classes already exported above

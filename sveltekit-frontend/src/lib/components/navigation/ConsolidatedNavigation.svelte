@@ -28,11 +28,7 @@
 
 <nav class="consolidated-navigation" class:expanded={isExpanded}>
   <div class="nav-header">
-    <button
-      onclick={() => isExpanded = !isExpanded}
-      class="nav-toggle"
-      aria-label="Toggle Navigation"
-    >
+    <button onclick={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
       <span class="nav-icon">{isExpanded ? '✕' : '☰'}</span>
       <span class="nav-title">Legal AI Platform</span>
     </button>
@@ -243,19 +239,19 @@
   }
 
   /* Theme-specific styling */
-  .route-group[data-theme="matrix"] .group-header {
+  .route-group[data-theme='matrix'] .group-header {
     color: #00ff00;
   }
 
-  .route-group[data-theme="cyberpunk"] .group-header {
+  .route-group[data-theme='cyberpunk'] .group-header {
     color: #00ccff;
   }
 
-  .route-group[data-theme="amber"] .group-header {
+  .route-group[data-theme='amber'] .group-header {
     color: #ffaa00;
   }
 
-  .route-group[data-theme="retro"] .group-header {
+  .route-group[data-theme='retro'] .group-header {
     color: #ff6600;
   }
 

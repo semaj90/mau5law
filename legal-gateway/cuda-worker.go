@@ -1,4 +1,4 @@
-package main
+package worker
 
 import (
 	"context"
@@ -127,7 +127,7 @@ func (w *CUDAWorker) processBatchSimilarity(job CUDAJob) error {
 	}
 
 	var results []map[string]interface{}
-	
+
 	// Use CUDA-accelerated similarity if available
 	if w.checkCUDA() {
 		results = w.cudaSimilaritySearch(query, threshold, int(limit))
@@ -138,7 +138,7 @@ func (w *CUDAWorker) processBatchSimilarity(job CUDAJob) error {
 	// Store results in Redis
 	resultKey := fmt.Sprintf("cuda:results:%s", job.JobID)
 	resultJSON, _ := json.Marshal(results)
-	
+
 	err := w.redis.Set(w.ctx, resultKey, resultJSON, time.Hour).Err()
 	if err != nil {
 		return fmt.Errorf("failed to store results: %v", err)
@@ -163,7 +163,7 @@ func (w *CUDAWorker) processBatchSimilarity(job CUDAJob) error {
 // CUDA-accelerated vector similarity search
 func (w *CUDAWorker) cudaSimilaritySearch(queryVector []float32, threshold float64, limit int) []map[string]interface{} {
 	log.Printf("🚀 Using CUDA acceleration for vector similarity")
-	
+
 	// For now, fall back to optimized CPU with CUDA context
 	// In production, this would use cuBLAS or custom CUDA kernels
 	return w.optimizedSimilaritySearch(queryVector, threshold, limit, true)
@@ -178,7 +178,7 @@ func (w *CUDAWorker) cpuSimilaritySearch(queryVector []float32, threshold float6
 // Optimized similarity search with optional CUDA context
 func (w *CUDAWorker) optimizedSimilaritySearch(queryVector []float32, threshold float64, limit int, useCUDA bool) []map[string]interface{} {
 	results := []map[string]interface{}{}
-	
+
 	// Build query vector string for pgvector
 	vectorStr := "["
 	for i, v := range queryVector {
@@ -191,7 +191,7 @@ func (w *CUDAWorker) optimizedSimilaritySearch(queryVector []float32, threshold 
 
 	// Optimized SQL query with proper vector operations
 	query := `
-		SELECT 
+		SELECT
 			m.id,
 			m.case_id,
 			m.content,
@@ -307,9 +307,9 @@ func (w *CUDAWorker) fetchMessageContents(messageIDs []int) ([]string, error) {
 		args[i] = id
 	}
 
-	query := fmt.Sprintf("SELECT id, content FROM messages WHERE id IN (%s) ORDER BY id", 
+	query := fmt.Sprintf("SELECT id, content FROM messages WHERE id IN (%s) ORDER BY id",
 		strings.Join(placeholders, ","))
-	
+
 	rows, err := w.db.Query(query, args...)
 	if err != nil {
 		return nil, err
@@ -335,16 +335,16 @@ func (w *CUDAWorker) generateCUDAEmbeddings(contents []string) [][]float32 {
 	// - cuDNN for neural network acceleration
 	// - Custom CUDA kernels for batch processing
 	// - GPU memory management for large batches
-	
+
 	// For now, use optimized CPU with CUDA context
 	return w.generateCPUEmbeddings(contents)
 }
 
 func (w *CUDAWorker) generateCPUEmbeddings(contents []string) [][]float32 {
 	log.Printf("💻 Generating embeddings with CPU")
-	
+
 	embeddings := make([][]float32, len(contents))
-	
+
 	// Simulate embedding generation (in production, call Ollama or other model)
 	for i, content := range contents {
 		// Simple hash-based pseudo-embedding for demonstration
@@ -363,10 +363,10 @@ func (w *CUDAWorker) generateCPUEmbeddings(contents []string) [][]float32 {
 			seed = (seed*1103515245 + 12345) & 0x7fffffff
 			embedding[j] = float32(seed%10000) / 10000.0
 		}
-		
+
 		embeddings[i] = embedding
 	}
-	
+
 	return embeddings
 }
 
@@ -512,13 +512,25 @@ func (w *CUDAWorker) start() {
 	}
 }
 
-func main() {
+// Replace the package main's top-level main with an exported Run function.
+// Run returns an error instead of exiting the process so callers can manage lifecycle.
+func Run() error {
 	worker, err := NewCUDAWorker()
 	if err != nil {
-		log.Fatalf("❌ Failed to create CUDA worker: %v", err)
+		return fmt.Errorf("failed to create CUDA worker: %w", err)
 	}
-	defer worker.db.Close()
-	defer worker.redis.Close()
+	// Ensure resources are closed when Run returns (if it ever does)
+	defer func() {
+		if worker.db != nil {
+			_ = worker.db.Close()
+		}
+		if worker.redis != nil {
+			_ = worker.redis.Close()
+		}
+	}()
 
+	// start() blocks and listens for jobs; it may never return under normal operation.
+	// If you need to run this as an executable, create a simple cmd/main that calls worker.Run()
 	worker.start()
+	return nil
 }

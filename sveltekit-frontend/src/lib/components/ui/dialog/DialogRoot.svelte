@@ -7,7 +7,11 @@
     onOpenChange?: ((open: boolean) => void) | undefined;
   }
 
-  let { open = $bindable(false), onOpenChange = undefined, children = undefined }: Props & { children?: Snippet | undefined } = $props();
+  let {
+    open = $bindable(false),
+    onOpenChange = undefined,
+    children = undefined,
+  }: Props & { children?: Snippet | undefined } = $props();
 
   // Track changes to `open` and call the callback when it changes.
   let _lastOpen = open;
@@ -30,6 +34,6 @@
 
 <!-- Use Dialog component directly and render children or the default slot via {@render};
      rely on bind:open + the $effect above to notify the consumer instead of listening to a custom event. -->
-<Dialog bind:open={open}>
+<Dialog bind:open>
   {@render renderer()}
 </Dialog>

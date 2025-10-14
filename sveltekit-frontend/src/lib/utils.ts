@@ -1,24 +1,24 @@
-import { clsx, type ClassValue } from "clsx";
+import { clsx, type ClassValue } from 'clsx';
 /**
  * Utility function to merge CSS classes
  * Now using UnoCSS instead of Tailwind
- */;
+ */
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 // Type helpers for Svelte 5 and component props
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type WithoutChild<T> = T extends { child?: any } ? Omit<T, "child"> : T;
+export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, "children"> : T;
+export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'children'> : T;
 // Combined type helper that removes both children and child props
 export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
   ref?: U | null;
-}
+};
 /**
  * Format file size in human readable format
- */;
+ */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -28,7 +28,7 @@ export function formatFileSize(bytes: number): string {
 }
 /**
  * Format date in a user-friendly way
- */;
+ */
 export function formatDate(date: string | Date): string {
   const d = new Date(date);
   const now = new Date();
@@ -41,30 +41,24 @@ export function formatDate(date: string | Date): string {
 }
 /**
  * Generate a unique ID
- */;
+ */
 export function generateId(): string {
   return Math.random().toString(36).substr(2, 9);
 }
 /**
  * Debounce function
  */
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
-  }
+  };
 }
 /**
  * Throttle function
  */
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): (...args: Parameters<T>) => void {
+export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let lastCall = 0;
   return (...args: Parameters<T>) => {
     const now = Date.now();
@@ -72,122 +66,122 @@ export function throttle<T extends (...args: any[]) => any>(
       lastCall = now;
       func(...args);
     }
-  }
+  };
 }
 /**
  * Get confidence level styling based on score
- */;
+ */
 export function getConfidenceLevel(confidence: number) {
   if (confidence >= 0.9) {
     return {
       label: 'Very High',
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
-      borderColor: 'border-legal-success'
-    }
+      borderColor: 'border-legal-success',
+    };
   } else if (confidence >= 0.8) {
     return {
       label: 'High',
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
-      borderColor: 'border-legal-info'
-    }
+      borderColor: 'border-legal-info',
+    };
   } else if (confidence >= 0.7) {
     return {
       label: 'Good',
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10',
-      borderColor: 'border-legal-warning'
-    }
+      borderColor: 'border-legal-warning',
+    };
   } else if (confidence >= 0.6) {
     return {
       label: 'Fair',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
-      borderColor: 'border-harvard-crimson'
-    }
+      borderColor: 'border-harvard-crimson',
+    };
   } else {
     return {
       label: 'Low',
       color: 'text-legal-error',
       bgColor: 'bg-legal-error/10',
-      borderColor: 'border-legal-error'
-    }
+      borderColor: 'border-legal-error',
+    };
   }
 }
 /**
  * Get case status styling
- */;
+ */
 export function getCaseStatusStyling(status: string) {
   const statusMap: { [key: string]: any } = {
     'active': {
       label: 'Active',
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
-      borderColor: 'border-legal-success'
+      borderColor: 'border-legal-success',
     },
     'pending': {
       label: 'Pending',
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10',
-      borderColor: 'border-legal-warning'
+      borderColor: 'border-legal-warning',
     },
     'closed': {
       label: 'Closed',
       color: 'text-muted-foreground',
       bgColor: 'bg-muted/10',
-      borderColor: 'border-muted'
+      borderColor: 'border-muted',
     },
     'archived': {
       label: 'Archived',
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
-      borderColor: 'border-legal-document'
-    }
-  }
+      borderColor: 'border-legal-document',
+    },
+  };
   return statusMap[status.toLowerCase()] || statusMap['pending'];
 }
 /**
  * Get evidence type styling
- */;
+ */
 export function getEvidenceTypeStyling(type: string) {
   const typeMap: { [key: string]: any } = {
     'document': {
       label: 'Document',
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
-      borderColor: 'border-legal-document'
+      borderColor: 'border-legal-document',
     },
     'image': {
       label: 'Image',
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
-      borderColor: 'border-legal-info'
+      borderColor: 'border-legal-info',
     },
     'video': {
       label: 'Video',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
-      borderColor: 'border-harvard-crimson'
+      borderColor: 'border-harvard-crimson',
     },
     'audio': {
       label: 'Audio',
       color: 'text-harvard-gold',
       bgColor: 'bg-harvard-gold/10',
-      borderColor: 'border-harvard-gold'
+      borderColor: 'border-harvard-gold',
     },
     'physical': {
       label: 'Physical',
       color: 'text-legal-evidence',
       bgColor: 'bg-legal-evidence/10',
-      borderColor: 'border-legal-evidence'
-    }
-  }
+      borderColor: 'border-legal-evidence',
+    },
+  };
   return typeMap[type.toLowerCase()] || typeMap['document'];
 }
 /**
  * Format processing time
- */;
+ */
 export function formatProcessingTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
   if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
@@ -195,7 +189,7 @@ export function formatProcessingTime(ms: number): string {
 }
 /**
  * Extract initials from name
- */;
+ */
 export function getInitials(name: string): string {
   return name
     .split(' ')
@@ -206,14 +200,14 @@ export function getInitials(name: string): string {
 }
 /**
  * Validate email format
- */;
+ */
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 /**
  * Copy text to clipboard
- */;
+ */
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
@@ -225,7 +219,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 /**
  * Download content as file
- */;
+ */
 export function downloadFile(content: string, filename: string, mimeType: string = 'text/plain') {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
@@ -239,13 +233,13 @@ export function downloadFile(content: string, filename: string, mimeType: string
 }
 /**
  * Check if code is running in browser
- */;
+ */
 export function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }
 /**
  * Local storage utilities
- */;
+ */
 export const storage = {
   get: (_key: string) => {
     if (!isBrowser()) return null;
@@ -271,11 +265,11 @@ export const storage = {
   clear: () => {
     if (!isBrowser()) return;
     localStorage.clear();
-  }
-}
+  },
+};
 /**
  * Color theme utilities
- */;
+ */
 export const theme = {
   colors: {
     nier: {
@@ -284,14 +278,14 @@ export const theme = {
       gray: '#2A2A2A',
       lightGray: '#3A3A3A',
       offWhite: '#F5F5F5',
-      white: '#FFFFFF'
+      white: '#FFFFFF',
     },
     harvard: {
       crimson: '#A51C30',
       darkCrimson: '#8B1521',
       lightCrimson: '#C42847',
       gold: '#C9A96E',
-      darkGold: '#B8965A'
+      darkGold: '#B8965A',
     },
     legal: {
       success: '#2D5F3F',
@@ -300,13 +294,13 @@ export const theme = {
       info: '#2A4A5A',
       evidence: '#3A4A5A',
       case: '#A51C30',
-      document: '#6A7A8A'
-    }
+      document: '#6A7A8A',
+    },
   },
   gradients: {
     crimson: 'linear-gradient(135deg, #A51C30 0%, #C42847 100%)',
     gold: 'linear-gradient(135deg, #C9A96E 0%, #B8965A 100%)',
     nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',
-    hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)'
-  }
-}
+    hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)',
+  },
+};

@@ -65,9 +65,9 @@ async function testHealthCheck(): Promise<any> {
       status: 'passed',
       duration: Date.now() - startTime,
       result: {
-        synthesizer: health
-        cache: cacheHealth
-        ollama: ollamaHealth
+        synthesizer: health,
+        cache: cacheHealth,
+        ollama: ollamaHealth,
       }
     }
   } catch (error: any) {
@@ -84,17 +84,17 @@ async function testBasicSynthesis(): Promise<any> {
   try {
     const testQuery = 'What are the key elements of a valid contract under common law?'
     const result = await aiAssistantSynthesizer.synthesizeInput({
-      query: testQuery
+      query: testQuery,
       context: {
         userId: 'test_user',
         sessionId: 'test_session'
       },
       options: {
-        enableMMR: true
-        enableCrossEncoder: true
-        enableLegalBERT: true
-        enableRAG: true
-        maxSources: 5
+        enableMMR: true,
+        enableCrossEncoder: true,
+        enableLegalBERT: true,
+        enableRAG: true,
+        maxSources: 5,
       }
     })
     const passed = result &&
@@ -141,7 +141,7 @@ async function testCaching(): Promise<any> {
       status: passed ? 'passed' : 'failed',
       duration: Date.now() - startTime,
       result: {
-        cacheWorking: passed
+        cacheWorking: passed,
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage,
         redisConnected: stats.redisConnected
@@ -387,10 +387,10 @@ export const POST: RequestHandler = async ({ request }) => {
         sessionId: 'test_session_' + Date.now()
       },
       options: {
-        enableMMR: true
-        enableCrossEncoder: true
-        enableLegalBERT: true
-        enableRAG: true
+        enableMMR: true,
+        enableCrossEncoder: true,
+        enableLegalBERT: true,
+        enableRAG: true,
         maxSources: 10,
         ...options
       }
@@ -406,8 +406,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true,
-      synthesis: result
-      ollama: ollamaResult
+      synthesis: result,
+      ollama: ollamaResult,
       stats: {
         cache: await cachingLayer.getStats(),
         monitoring: monitoringService.getStats(),

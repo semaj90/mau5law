@@ -103,17 +103,17 @@ export {
  *
  * Default settings for rapid prototyping with N64 components.
  * These can be overridden on a per-component basis.
- */;
+ */
 export const N64_QUICK_START_CONFIG = {
   defaultRenderOptions: N64_TEXTURE_PRESETS.balanced,
   defaultMaterialType: 'phong' as const,
   defaultMeshComplexity: 'medium' as const,
   defaultVariant: 'primary' as const,
   defaultSize: 'medium' as const,
-  enableSpatialAudio: true
-  enableLighting: true
-  enableFog: true
-  enableTextureFiltering: true
+  enableSpatialAudio: true,
+  enableLighting: true,
+  enableFog: true,
+  enableTextureFiltering: true,
   animationStyle: 'smooth' as const,
   perspective: 1000,
   glowIntensity: 0.4
@@ -122,17 +122,17 @@ export const N64_QUICK_START_CONFIG = {
  * Performance Presets
  *
  * Pre-configured settings for different performance targets.
- */;
+ */
 export const N64_PERFORMANCE_PRESETS = {
   // Maximum quality for high-end devices
   ultra: {
     renderOptions: N64_TEXTURE_PRESETS.ultraEnhanced,
     materialType: 'pbr' as const,
     meshComplexity: 'ultra' as const,
-    enableLighting: true
-    enableReflections: true
-    enableParticles: true
-    enableSpatialAudio: true
+    enableLighting: true,
+    enableReflections: true,
+    enableParticles: true,
+    enableSpatialAudio: true,
     glowIntensity: 0.8,
     perspective: 1200
   },
@@ -141,10 +141,10 @@ export const N64_PERFORMANCE_PRESETS = {
     renderOptions: N64_TEXTURE_PRESETS.balanced,
     materialType: 'phong' as const,
     meshComplexity: 'medium' as const,
-    enableLighting: true
-    enableReflections: false
-    enableParticles: false
-    enableSpatialAudio: true
+    enableLighting: true,
+    enableReflections: false,
+    enableParticles: false,
+    enableSpatialAudio: true,
     glowIntensity: 0.4,
     perspective: 1000
   },
@@ -153,10 +153,10 @@ export const N64_PERFORMANCE_PRESETS = {
     renderOptions: N64_TEXTURE_PRESETS.lowPoly,
     materialType: 'basic' as const,
     meshComplexity: 'low' as const,
-    enableLighting: false
-    enableReflections: false
-    enableParticles: false
-    enableSpatialAudio: false
+    enableLighting: false,
+    enableReflections: false,
+    enableParticles: false,
+    enableSpatialAudio: false,
     glowIntensity: 0.2,
     perspective: 800
   }
@@ -165,7 +165,7 @@ export const N64_PERFORMANCE_PRESETS = {
  * Theme Variants
  *
  * Pre-configured color schemes for different use cases.
- */;
+ */
 export const N64_THEME_VARIANTS = {
   // Classic N64 controller inspired
   classic: {
@@ -196,7 +196,7 @@ export const N64_THEME_VARIANTS = {
  * Accessibility Helpers
  *
  * Utilities for ensuring components meet accessibility standards.
- */;
+ */
 export const N64_A11Y_HELPERS = {
   // ARIA label generators
   generateProgressLabel: (_value: number, max: number) =>
@@ -225,7 +225,7 @@ export const N64_A11Y_HELPERS = {
  * Utility Functions
  *
  * Helper functions for working with N64 components.
- */;
+ */
 export const N64_UTILS = {
   // Color manipulation
   hexToRgb: (hex: string) => {
@@ -269,7 +269,7 @@ export const N64_UTILS = {
  * CSS Class Generators
  *
  * Utility functions for generating CSS classes based on component state.
- */;
+ */
 export const N64_CSS_GENERATORS = {
   // Generate texture filtering classes
   getTextureClasses: (_options: Partial<N64RenderingOptions>) => {
@@ -327,10 +327,10 @@ export default {
     N64Toaster,
     N64Toggle
   },
-  config: N64_QUICK_START_CONFIG
-  presets: N64_PERFORMANCE_PRESETS
-  themes: N64_THEME_VARIANTS
-  utils: N64_UTILS
-  a11y: N64_A11Y_HELPERS
-  css: N64_CSS_GENERATORS
+  config: N64_QUICK_START_CONFIG,
+  presets: N64_PERFORMANCE_PRESETS,
+  themes: N64_THEME_VARIANTS,
+  utils: N64_UTILS,
+  a11y: N64_A11Y_HELPERS,
+  css: N64_CSS_GENERATORS,
 }

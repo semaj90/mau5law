@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         const nlpData = await nlpResponse.json()
         const caseEmbedding = nlpData.embedding
         const searchResult = await qdrantClient.search("prosecutor_cases", {
-          vector: caseEmbedding
+          vector: caseEmbedding,
           limit: 5,
           filter: { must_not: [{ key: "id", match: { value: caseId } }] }, // Exclude self
           with_payload: true

@@ -138,7 +138,7 @@ export const legalPlatformMachine = createMachine(
     initial: 'idle',
     context: {
       allCases: [],
-      crossSystemInsights: null
+      crossSystemInsights: null,
       activeCitations: [],
       activeReports: [],
       activePOIs: [],
@@ -149,8 +149,8 @@ export const legalPlatformMachine = createMachine(
         documents: 'synced'
       },
       aiQueue: [],
-      loading: false
-      error: null
+      loading: false,
+      error: null,
     },
     states: {
       idle: {
@@ -447,12 +447,12 @@ export const legalPlatformStore = createLegalPlatformStore();
 export const dashboardStore = derived(
   [legalPlatformStore, citationsStore, reportsStore, poiStore],
   ([$platform, $citations, $reports, $poi]) => ({
-    platform: $platform
-    citations: $citations
-    reports: $reports
-    poi: $poi
+    platform: $platform,
+    citations: $citations,
+    reports: $reports,
+    poi: $poi,
     // Combined metrics
-    totalEntities: ($citations.context.searchResults?.length || 0) +
+    totalEntities: ($citations.context.searchResults?.length || 0) +,
                   ($reports.context.searchResults?.length || 0) +
                   ($poi.context.searchResults?.length || 0),
     // Active case summary

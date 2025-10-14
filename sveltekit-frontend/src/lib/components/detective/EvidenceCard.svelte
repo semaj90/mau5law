@@ -16,10 +16,10 @@
     aiSummary?: string;
     analysis?: {
       aiSummary?: string;
-    }
+    };
     timeline?: {
       createdAt?: string | Date;
-    }
+    };
     hash?: string;
   }
   // --- SVELTE 5 PROPS ---
@@ -90,7 +90,7 @@
       <div class="flex items-center gap-3">
         <div
           class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center {getTypeColor(
-            item.evidenceType || item.type || 'document',
+            item.evidenceType || item.type || 'document'
           )}"
         >
           <i class="{getEvidenceIcon(item.evidenceType || item.type || 'document')} w-5 h-5" aria-hidden="true"></i>
@@ -140,7 +140,7 @@
         <div class="text-center">
           <i
             class="{getEvidenceIcon(
-              item.evidenceType || item.type || 'document',
+              item.evidenceType || item.type || 'document'
             )} w-8 h-8 mx-auto mb-2 text-muted-foreground"
             aria-hidden="true"
           ></i>

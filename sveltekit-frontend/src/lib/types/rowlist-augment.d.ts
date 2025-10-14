@@ -12,4 +12,4 @@ declare global {
     [key: string]: any;
   }
 }
-export {}
+export {};

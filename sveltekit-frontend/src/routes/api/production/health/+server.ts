@@ -36,7 +36,7 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
     return {
       name,
       status: response.ok ? 'healthy' : 'warning',
-      response_time: responseTime
+      response_time: responseTime,
       details: {
         http_status: response.status,
         url
@@ -101,9 +101,9 @@ export const GET: RequestHandler = async ({ url }) => {
       overallStatus = 'warning'
     }
     const response: HealthResponse = {
-      overall_status: overallStatus
+      overall_status: overallStatus,
       timestamp: new Date().toISOString(),
-      services: serviceChecks
+      services: serviceChecks,
       system_info: {
         nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const statusCode = overallStatus === 'healthy' ? 200 :
                       overallStatus === 'warning' ? 200 : 503
     return json(response, {
-      status: statusCode
+      status: statusCode,
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',

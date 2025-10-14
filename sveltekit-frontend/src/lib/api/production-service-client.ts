@@ -185,4 +185,4 @@ class ProductionServiceClient {
 // Export singleton instance for tests
 export const productionServiceClient = new ProductionServiceClient();
 // Export class for custom instances
-export { ProductionServiceClient }
+export { ProductionServiceClient };

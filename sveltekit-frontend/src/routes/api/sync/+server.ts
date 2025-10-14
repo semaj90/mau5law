@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const fullSync = await syncOrchestrator.performFullSync()
         return json({
           action: 'full_sync',
-          result: fullSync
+          result: fullSync,
           message: 'Neural topology mock data synchronized successfully',
           timestamp: new Date().toISOString()
         })
@@ -43,22 +43,22 @@ export const GET: RequestHandler = async ({ url }) => {
         const docSync = await databaseSync.syncMockLegalDocuments()
         return json({
           action: 'legal_documents_sync',
-          result: docSync
-          timestamp: new Date().toISOString()
+          result: docSync,
+          timestamp: new Date().toISOString(),
         })
       case 'qlora':
         const qloraSync = await databaseSync.syncQLoRATrainingData()
         return json({
           action: 'qlora_sync',
-          result: qloraSync
-          timestamp: new Date().toISOString()
+          result: qloraSync,
+          timestamp: new Date().toISOString(),
         })
       case 'cache':
         const cacheSync = await databaseSync.syncPredictiveAssetCache()
         return json({
           action: 'predictive_cache_sync',
-          result: cacheSync
-          timestamp: new Date().toISOString()
+          result: cacheSync,
+          timestamp: new Date().toISOString(),
         })
       default:
         return json({,
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         )
         return json({
           action: 'vector_search',
-          results: searchResults
+          results: searchResults,
           count: searchResults.length,
           params: { limit, threshold },
           timestamp: new Date().toISOString()
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           action: 'generate_mock_data',
           type,
-          data: mockData
+          data: mockData,
           count: mockData.length,
           timestamp: new Date().toISOString()
         })
@@ -146,8 +146,8 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           action: 'bulk_sync',
-          results: bulkResults
-          timestamp: new Date().toISOString()
+          results: bulkResults,
+          timestamp: new Date().toISOString(),
         })
       default:
         return json({,

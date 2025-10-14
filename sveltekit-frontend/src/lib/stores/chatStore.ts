@@ -87,25 +87,25 @@ const randomId = (): string => {
 const initialState: ChatContext = {
   messages: [],
   conversations: [],
-  currentConversation: null
-  error: null
+  currentConversation: null,
+  error: null,
   settings: {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
-    streaming: true
+    streaming: true,
     contextWindow: 8192,
-    proactiveMode: true
-    emotionalMode: false
-    legalMode: true
-    citationMode: true
+    proactiveMode: true,
+    emotionalMode: false,
+    legalMode: true,
+    citationMode: true,
   },
-  isLoading: false
-  isTyping: false
-  isStreaming: false
+  isLoading: false,
+  isTyping: false,
+  isStreaming: false,
   modelStatus: "unknown",
   contextInjection: {
-    enabled: false
+    enabled: false,
     documents: [],
     vectorResults: [],
     precedents: [],
@@ -171,7 +171,7 @@ export const chatActions = {
       const conversation = state.conversations.find((c) => c.id === conversationId);
       return {
         ...state,
-        currentConversation: conversation || null
+        currentConversation: conversation || null,
         messages: conversation?.messages || []
       }
     });
@@ -226,16 +226,16 @@ export const chatActions = {
     chatActions.addMessage(content, "user");
     chatStore.update((state) => ({
       ...state,
-      isLoading: true
-      isTyping: true
-      error: null
+      isLoading: true,
+      isTyping: true,
+      error: null,
     }));
     try {
       const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          message: content
+          message: content,
           conversationId: getCurrentConversationId(),
           settings: getSettings(),
           contextInjection: getContextInjection()
@@ -267,9 +267,9 @@ export const chatActions = {
     } finally {
       chatStore.update((state) => ({
         ...state,
-        isLoading: false
-        isTyping: false
-        isStreaming: false
+        isLoading: false,
+        isTyping: false,
+        isStreaming: false,
       }));
     }
   },
@@ -299,10 +299,10 @@ export const chatActions = {
       ...state,
       contextInjection: {
         ...state.contextInjection,
-        enabled: true
+        enabled: true,
         documents,
-        precedents: precedents || []
-        caseContext: caseContext ?? null
+        precedents: precedents || [],
+        caseContext: caseContext ?? null,
       }
     }));
   },
@@ -312,7 +312,7 @@ export const chatActions = {
       ...state,
       contextInjection: {
         ...state.contextInjection,
-        enabled: true
+        enabled: true,
         documents
       }
     }));
@@ -321,7 +321,7 @@ export const chatActions = {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
-        enabled: false
+        enabled: false,
         documents: [],
         vectorResults: [],
         precedents: [],
@@ -470,7 +470,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
         } else {
           messages.push({
             id: randomId(),
-            content: assistantMessage
+            content: assistantMessage,
             role: "assistant",
             timestamp: new Date(),
             conversationId: state.currentConversation?.id
@@ -545,7 +545,7 @@ export const persistenceHelpers = {
         return {
           id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
           content: typeof u["content"] === "string" ? (u["content"] as string) : "",
-          role: roleVal
+          role: roleVal,
           timestamp: asDate(u["timestamp"]),
           conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
@@ -566,7 +566,7 @@ export const persistenceHelpers = {
         return {
           id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
           title: typeof u["title"] === "string" ? (u["title"] as string) : "Conversation",
-          messages: msgs
+          messages: msgs,
           created: asDate(u["created"]),
           updated: asDate(u["updated"]),
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined

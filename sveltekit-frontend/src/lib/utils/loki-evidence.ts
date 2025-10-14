@@ -36,15 +36,15 @@ export class LokiEvidenceService {
       try {
         this.db = new Loki('evidence_db.json', {
           adapter: new LokiIndexedAdapter('evidence_db'),
-          autoload: true
+          autoload: true,
           autoloadCallback: () => {
             this.setupCollections();
             this.isInitialized = true;
             console.log('✅ Loki database initialized');
             resolve();
           },
-          autosave: true
-          autosaveInterval: 4000
+          autosave: true,
+          autosaveInterval: 4000,
         });
       } catch (error: any) {
         console.error('❌ Loki database initialization failed:', error);
@@ -90,10 +90,10 @@ export class LokiEvidenceService {
         type: 'CREATE',
         collectionName: 'evidence',
         recordId: evidence.id,
-        data: evidence
+        data: evidence,
         timestamp: new Date().toISOString(),
-        synced: false
-        retryCount: 0
+        synced: false,
+        retryCount: 0,
       });
       // Trigger sync if online
       if (navigator.onLine) {
@@ -130,11 +130,11 @@ export class LokiEvidenceService {
         id: crypto.randomUUID(),
         type: 'UPDATE',
         collectionName: 'evidence',
-        recordId: evidenceId
-        data: changes
+        recordId: evidenceId,
+        data: changes,
         timestamp: new Date().toISOString(),
-        synced: false
-        retryCount: 0
+        synced: false,
+        retryCount: 0,
       });
       // Trigger sync if online
       if (navigator.onLine) {
@@ -163,10 +163,10 @@ export class LokiEvidenceService {
         id: crypto.randomUUID(),
         type: 'DELETE',
         collectionName: 'evidence',
-        recordId: evidenceId
+        recordId: evidenceId,
         timestamp: new Date().toISOString(),
-        synced: false
-        retryCount: 0
+        synced: false,
+        retryCount: 0,
       });
       // Trigger sync if online
       if (navigator.onLine) {

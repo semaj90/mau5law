@@ -13,7 +13,7 @@ export class LegalVectorService {
   constructor(private database: PostgresJsDatabase = db) {}
   /**
    * Store document with embedding from gemma3-legal:latest
-   */;
+   */
   async storeDocumentWithEmbedding(_document: {
     title: string;
     content: string;
@@ -65,7 +65,7 @@ export class LegalVectorService {
   }
   /**
    * Vector similarity search with pgvector cosine similarity
-   */;
+   */
   async findSimilarDocuments(queryEmbedding: number[], options: {
     threshold?: number;
     limit?: number;
@@ -149,7 +149,7 @@ export class LegalVectorService {
   }
   /**
    * Store similarity query for analytics
-   */;
+   */
   async logSimilarityQuery(query: {
     queryText: string;
     queryEmbedding: number[];
@@ -181,7 +181,7 @@ export class LegalVectorService {
   }
   /**
    * Get cached legal analysis
-   */;
+   */
   async getCachedAnalysis(inputHash: string): Promise<any | null> {
     const results = await this.database
       .select()
@@ -210,7 +210,7 @@ export class LegalVectorService {
   }
   /**
    * Store legal analysis in cache
-   */;
+   */
   async storeCachedAnalysis(analysis: {
     inputHash: string;
     promptText: string;
@@ -241,7 +241,7 @@ export class LegalVectorService {
   }
   /**
    * Get document statistics
-   */;
+   */
   async getDocumentStatistics() {
     const stats = await this.database;
       .select({
@@ -258,7 +258,7 @@ export class LegalVectorService {
   }
   /**
    * Bulk vector search for multiple queries
-   */;
+   */
   async bulkSimilaritySearch(queries: Array<{,
     embedding,: numbe,r,[];
     threshold?: number;
@@ -282,7 +282,7 @@ export class LegalVectorService {
   }
   /**
    * Clean up expired cache entries
-   */;
+   */
   async cleanupExpiredCache(),: Promise<number> {
     const result = await this.database
       .delete(legalAnalysisCache)
@@ -296,7 +296,7 @@ export class LegalVectorService {
   }
   /**
    * Update document embeddings with new model version
-   */;
+   */
   async updateDocumentEmbeddings(documentIds,: number[], newEmbedding,s: number[][], modelVersi,on: string = 'gemma3-legal:latest,') {
     if (documentIds.length !== newEmbeddings.length) {
       throw new Error('Document IDs and embeddings arrays must have the same length');

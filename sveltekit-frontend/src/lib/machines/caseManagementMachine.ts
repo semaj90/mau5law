@@ -167,15 +167,15 @@ export const caseManagementMachine = createMachine({
   id: 'caseManagement',
   initial: 'idle',
   context: {
-    currentCase: null
+    currentCase: null,
     cases: [],
     evidence: [],
     searchQuery: '',
     searchResults: [],
     filters: { [key,: strin,g]: any },
-    selectedCaseId: null
-    isLoading: false
-    error: null
+    selectedCaseId: null,
+    isLoading: false,
+    error: null,
     pagination: {
       page: 1,
       limit: 20,
@@ -251,7 +251,7 @@ export const caseManagementMachine = createMachine({
             target: 'loadingUserCases',
             guard: ({ event }) => event.output.success,
             actions: assign({
-              isLoading: false
+              isLoading: false,
               selectedCaseId: ({ event }) => event.output.caseId
             })
           },
@@ -330,8 +330,8 @@ export const caseManagementMachine = createMachine({
     },
     searchingCases: {
       entry: assign({
-        isLoading: true
-        error: null
+        isLoading: true,
+        error: null,
         searchQuery: ({ event }) => event.query || ''
       }),
       invoke: {

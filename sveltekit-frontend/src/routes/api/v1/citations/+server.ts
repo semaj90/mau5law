@@ -5,20 +5,44 @@
  * GET    /api/v1/citations - Get citations for a case
  * POST   /api/v1/citations - Add citation
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Citation schemas
 const CitationsQuerySchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
-  citationType: z.enum(['case_law', 'statute', 'regulation', 'secondary_authority', 'legal_brief', 'court_document', 'expert_report', 'news_article', 'academic_paper', 'other']).optional(),
+  citationType: z
+    .enum([
+      'case_law',
+      'statute',
+      'regulation',
+      'secondary_authority',
+      'legal_brief',
+      'court_document',
+      'expert_report',
+      'news_article',
+      'academic_paper',
+      'other',
+    ])
+    .optional(),
   verified: z.coerce.boolean().optional(),
   minRelevance: z.coerce.number().min(1).max(10).default(1),
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20)
-})
+  limit: z.coerce.number().min(1).max(100).default(20),
+});
 const CreateCitationSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
-  citationType: z.enum(['case_law', 'statute', 'regulation', 'secondary_authority', 'legal_brief', 'court_document', 'expert_report', 'news_article', 'academic_paper', 'other']),
+  citationType: z.enum([
+    'case_law',
+    'statute',
+    'regulation',
+    'secondary_authority',
+    'legal_brief',
+    'court_document',
+    'expert_report',
+    'news_article',
+    'academic_paper',
+    'other',
+  ]),
   title: z.string().min(1, 'Title is required'),
   author: z.string().optional(),
   source: z.string().optional(),
@@ -33,8 +57,8 @@ const CreateCitationSchema = z.object({
   publicationDate: z.string().datetime().optional(),
   jurisdiction: z.string().optional(),
   court: z.string().optional(),
-  tags: z.array(z.string()).default([])
-})
+  tags: z.array(z.string()).default([]),
+});
 /**
  * Citations Service
  */

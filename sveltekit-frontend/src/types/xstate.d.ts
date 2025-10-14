@@ -82,8 +82,8 @@ export interface JobDefinition {
     backoff?: {
       type: 'exponential' | 'fixed';
       delay: number;
-    }
-  }
+    };
+  };
 }
 export interface JobStatus {
   id: string;

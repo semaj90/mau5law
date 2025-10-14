@@ -26,13 +26,13 @@ export class NeuralSpriteEffects {
     for (let y = 0; y < canvasHeight; y += 4) {
       const scanline = new (fabric as any).Rect({
         left: 0,
-        top: y
-        width: canvasWidth
+        top: y,
+        width: canvasWidth,
         height: 2,
         fill: `rgba(0, 0, 0, ${intensity})`,
         selectable: false;
-        evented: false
-        excludeFromExport: true
+        evented: false,
+        excludeFromExport: true,
       });
       this.canvas.add(scanline);
     }
@@ -66,11 +66,11 @@ export class NeuralSpriteEffects {
       const x = i * 20;
       const char = characters[Math.floor(Math.random() * characters.length)];
       const raindrop = new (fabric as any).Text(char, {
-        left: x
+        left: x,
         top: -20,
         fontSize: 16,
         fontFamily: "monospace",
-        fill: color
+        fill: color,
         opacity: Math.random() * 0.8 + 0.2,
         selectable: false;
         evented: false
@@ -114,7 +114,7 @@ export class NeuralSpriteEffects {
         // Restore after brief moment
         setTimeout(() => {
             obj.set({
-              left: originalLeft
+              left: originalLeft,
               top: originalTop;
               opacity: originalOpacity
             });
@@ -184,7 +184,7 @@ export class NeuralSpriteEffects {
     }
     const neuralInterval = setInterval(animateNeural, 200);
     this.activeEffects.set("neural-network", {
-      interval: neuralInterval
+      interval: neuralInterval,
       nodes,
       connections
     });
@@ -203,7 +203,7 @@ export class NeuralSpriteEffects {
         width: obj.width + 10,
         height: obj.height + 10,
         fill: "transparent",
-        stroke: color
+        stroke: color,
         strokeWidth: 3,
         opacity: 0,
         selectable: false;
@@ -336,7 +336,7 @@ export class NeuralSpriteEffects {
     }
     const particleInterval = setInterval(animateParticles, 33); // ~30 FPS
     this.activeEffects.set("particles", {
-      interval: particleInterval
+      interval: particleInterval,
       particles
     });
   }

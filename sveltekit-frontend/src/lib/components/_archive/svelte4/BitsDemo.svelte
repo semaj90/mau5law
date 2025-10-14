@@ -28,7 +28,7 @@
     { value: 'criminal', label: 'Criminal Cases' },
     { value: 'civil', label: 'Civil Cases' },
     { value: 'family', label: 'Family Law' },
-    { value: 'corporate', label: 'Corporate Law' }
+    { value: 'corporate', label: 'Corporate Law' },
   ];
   // Apply default for caseTypes, which might be more complex than a simple literal
   let caseTypes = $derived(propCaseTypes ?? _defaultCaseTypes);
@@ -76,8 +76,8 @@
           title: 'Demo Case ' + Date.now(),
           description: 'Demonstration case created from BitsDemo component',
           priority: 'medium',
-          status: 'open'
-        })
+          status: 'open',
+        }),
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -104,7 +104,7 @@
   async function showWarningNotification() {
     try {
       const response = await fetch('/api/comprehensive-integration', {
-        method: 'GET'
+        method: 'GET',
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -156,7 +156,7 @@
   async function showInfoNotification() {
     try {
       const response = await fetch('/api/v1/quic/metrics', {
-        method: 'GET'
+        method: 'GET',
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -187,12 +187,8 @@
     }
   }
 </script>
-<div
-  class={"mx-auto px-4 max-w-7xl " + className}
-  id={id}
-  data-testid={testId}
-  data-use-library={useLibrary}
->
+
+<div class={'mx-auto px-4 max-w-7xl ' + className} {id} data-testid={testId} data-use-library={useLibrary}>
   <h2 class="mx-auto px-4 max-w-7xl">Bits UI Components Demo</h2>
   <!-- Bits-UI Notification Demo Section -->
   <div class="mx-auto px-4 max-w-7xl">
@@ -204,12 +200,8 @@
       <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showWarningNotification}>
         Warning Notification
       </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}>
-        Error Notification
-      </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showInfoNotification}>
-        Info Notification
-      </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}> Error Notification </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showInfoNotification}> Info Notification </button>
     </div>
   </div>
   <!-- Bits UI Button (replaced Button.Root with native button) -->
@@ -219,7 +211,12 @@
   <!-- Bits UI Select (replaced Select.* with native select/options) -->
   <div class="mx-auto px-4 max-w-7xl">
     <label class="mx-auto px-4 max-w-7xl" for="practice-area-select">Legal Practice Area</label>
-    <select id="practice-area-select" class="mx-auto px-4 max-w-7xl" bind:value={selectedPracticeArea} aria-label="Select practice area">
+    <select
+      id="practice-area-select"
+      class="mx-auto px-4 max-w-7xl"
+      bind:value={selectedPracticeArea}
+      aria-label="Select practice area"
+    >
       <option value="" disabled>Select practice area...</option>
       {#each caseTypes as type}
         <option value={type.value}>{type.label}</option>
@@ -235,8 +232,8 @@
       <div class="dialog-content">
         <h3 id="case-management-title" class="dialog-title">Case Management System</h3>
         <p class="dialog-description">
-          Manage your legal cases with our comprehensive case management system.
-          Track evidence, deadlines, and case progress all in one place.
+          Manage your legal cases with our comprehensive case management system. Track evidence, deadlines, and case
+          progress all in one place.
         </p>
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
@@ -254,7 +251,9 @@
         </div>
         <div class="dialog-actions mx-auto px-4 max-w-7xl">
           <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = false)}>Close</button>
-          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={() => (dialogOpen = false)}>Get Started</button>
+          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={() => (dialogOpen = false)}
+            >Get Started</button
+          >
         </div>
       </div>
     </div>
@@ -266,11 +265,19 @@
       <div class="dialog-content">
         <h3 id="delete-case-title" class="dialog-title">Delete Case Confirmation</h3>
         <p class="dialog-description">
-          Are you sure you want to delete this case? This action cannot be undone and will permanently remove all case data, evidence, and related documents.
+          Are you sure you want to delete this case? This action cannot be undone and will permanently remove all case
+          data, evidence, and related documents.
         </p>
         <div class="alert-actions">
           <button type="button" onclick={() => (alertOpen = false)}>Cancel</button>
-          <button type="button" class="text-danger" onclick={() => { showErrorNotification(); alertOpen = false; }}>
+          <button
+            type="button"
+            class="text-danger"
+            onclick={() => {
+              showErrorNotification();
+              alertOpen = false;
+            }}
+          >
             Delete Permanently
           </button>
         </div>
@@ -279,8 +286,8 @@
   {/if}
   <div class="mx-auto px-4 max-w-7xl">
     <p class="mx-auto px-4 max-w-7xl">
-      <strong>Demo:</strong> Bits UI components provide accessible, unstyled components.
-      Bits-UI notifications provide toast/alert functionality.
+      <strong>Demo:</strong> Bits UI components provide accessible, unstyled components. Bits-UI notifications provide toast/alert
+      functionality.
     </p>
   </div>
 </div>
@@ -288,33 +295,30 @@
 <div class="toast-container">
   {#each toasts as { id, data } (id)}
     <div
-      class="toast toast-{(data as { color?: any; title?: any, description?: any }).color}"
+      class="toast toast-{(data as { color?: any; title?: any; description?: any }).color}"
       animate:flip={{ duration: 500 }}
       in:fly={{ duration: 150, x: '100%' }}
       out:fly={{ duration: 150, x: '100%' }}
     >
       <div class="toast-header">
-        {#if (data as { color?: any; title?: any, description?: any }).title}
+        {#if (data as { color?: any; title?: any; description?: any }).title}
           <div class="toast-title">
-            {(data as { color?: any, title?: any, description?: any }).title}
+            {(data as { color?: any; title?: any; description?: any }).title}
           </div>
         {/if}
-        <button
-          class="toast-close"
-          onclick={() => removeToast(id)}
-          aria-label="Close notification"
-        >
-          ✕
-        </button>
+        <button class="toast-close" onclick={() => removeToast(id)} aria-label="Close notification"> ✕ </button>
       </div>
-      {#if (data as { color?: any; title?: any, description?: any }).description}
+      {#if (data as { color?: any; title?: any; description?: any }).description}
         <div class="toast-description">
-          {(data as { color?: any, title?: any, description?: any }).description}
+          {(data as { color?: any; title?: any; description?: any }).description}
         </div>
       {/if}
     </div>
   {/each}
 </div>
+
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .bits-demo {
     max-width: 600px;
@@ -546,4 +550,3 @@
     border-radius: var(--radius-md);
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

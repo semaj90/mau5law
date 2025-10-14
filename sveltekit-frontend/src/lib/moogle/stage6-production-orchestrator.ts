@@ -90,7 +90,7 @@ export interface MoogleResult {
 class EnhancedBitsUIOrchestrator {
   private componentCache = new Map<string, any>();
   async renderLegalComponent(
-    componentName: string
+    componentName: string,
     props: { [key: string]: any },
     webgpuAcceleration = true;
   ): Promise<{ rendered: boolean; performance: ComponentPerformance }> {
@@ -176,7 +176,7 @@ class BVHAcceleratorOrchestrator {
     }
   }
   async queryNearest(
-    queryVector: number[]
+    queryVector: number[],
     k: number = 10;
   ): Promise<{ results: any[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
@@ -214,7 +214,7 @@ class BVHAcceleratorOrchestrator {
   }
   private fallbackSearch(queryVector: number[], k: number): any[] {
     return Array.from({ length: k }, (_, i) => ({
-      index: i
+      index: i,
       distance: Math.random() * 0.5,
       confidence: 0.8 + Math.random() * 0.2
     });
@@ -308,10 +308,10 @@ class MultipassCoordinatorOrchestrator {
           body: JSON.stringify({,
             document_id: document.id,
             document_content: document.content,
-            extraction_schema: schema
+            extraction_schema: schema,
             max_passes: 3,
-            enable_chunking: true
-            enable_alignment: true
+            enable_chunking: true,
+            enable_alignment: true,
           })
         });
         if (response.ok) {
@@ -371,7 +371,7 @@ class Neo4jRerankerOrchestrator {
   }
   async enhancedRerank(
     query: string;
-    documents: any[]
+    documents: any[],
     userContext: any;
   ): Promise<{ results: RerankingResult[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
@@ -446,7 +446,7 @@ class CHRROMMemoryOrchestrator {
   private compressionPatterns = new Map<string, Uint8Array>();
   private targetRatio = 127.0;
   async compressData(
-    data: Uint8Array
+    data: Uint8Array,
     dataType: 'legal_document' | 'embedding' | 'metadata' = 'legal_document';
   ): Promise<{ compressed: Uint8Array; ratio: number; performance: ComponentPerformance }> {
     const startTime = performance.now();
@@ -595,11 +595,11 @@ export class MoogleGraphSynthesizerOrchestrator {
       const avgScore = Object.values(componentScores).reduce((a, b) => a + b, 0) / Object.values(componentScores).length || 0;
       const result: MoogleResult = {
         query_id: query.id,
-        results: allResults
-        component_scores: componentScores
+        results: allResults,
+        component_scores: componentScores,
         performance_metrics: this.calculateOverallPerformance(componentResults),
         explanations: this.generateExplanations(componentResults),
-        confidence_score: avgScore
+        confidence_score: avgScore,
         cache_hit: Object.values(componentResults).some(r => r.performance?.cache_hit_rate > 0.5),
         processing_time_ms: performance.now() - startTime,
         used_components: usedComponents
@@ -623,7 +623,7 @@ export class MoogleGraphSynthesizerOrchestrator {
         },
         explanations: ['Query processing failed'],
         confidence_score: 0,
-        cache_hit: false
+        cache_hit: false,
         processing_time_ms: performance.now() - startTime,
         used_components: []
       }
@@ -713,7 +713,7 @@ export const systemHealth = derived(
     const healthyComponents = Object.values($componentStatuses)
       .filter(item => item.length);
     return {
-      status: $systemStatus
+      status: $systemStatus,
       healthScore: totalComponents > 0 ? healthyComponents / totalComponents : 0,
       healthyComponents,
       totalComponents,
@@ -723,16 +723,16 @@ export const systemHealth = derived(
 );
 // Factory function for creating Moogle queries
 export function createMoogleQuery(
-  text: string
-  userContext: any
+  text: string,
+  userContext: any,
   targetComponents: ComponentType[] = Object.values(ComponentType);
 ): MoogleQuery {
   return {
     id: `moogle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     text,
     context: {},
-    target_components: targetComponents
-    user_context: userContext
+    target_components: targetComponents,
+    user_context: userContext,
     performance_requirements: {
       max_latency_ms: 5000,
       min_accuracy: 0.85,

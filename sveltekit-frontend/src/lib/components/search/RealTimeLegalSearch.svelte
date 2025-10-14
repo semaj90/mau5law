@@ -11,22 +11,12 @@
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons
-  import {
-    Search,
-    Loader2,
-    Zap,
-    AlertCircle,
-    TrendingUp,
-    Filter,
-    Settings,
-    Wifi,
-    WifiOff
-  } from 'lucide-svelte';
+  import { Search, Loader2, Zap, AlertCircle, TrendingUp, Filter, Settings, Wifi, WifiOff } from 'lucide-svelte';
 
   // Export the event payload type so parents can import/use it
   export type SearchResultEventDetail = {
     id: string;
-    title: string;           // required so parent can access .title
+    title: string; // required so parent can access .title
     snippet?: string;
     category?: string;
     score?: number;
@@ -56,7 +46,7 @@
     maxResults = 20,
     autoSearch = true,
     class: className = '', // Renamed 'class' to 'className' to avoid conflict with Svelte's reserved keyword
-    onselect
+    onselect,
   }: Props = $props();
 
   // Real-time search hooks
@@ -70,9 +60,11 @@
 
   // Reactive computations (fixed: derive from the actual variables via functions)
   let filteredResults = $derived(() => (searchState?.results ?? []).slice(0, maxResults));
-  let isStreaming = $derived(() => (searchStatus === 'searching') && enableRealTime);
+  let isStreaming = $derived(() => searchStatus === 'searching' && enableRealTime);
   let connectionStatus = $derived(() => searchState?.connectionStatus ?? 'disconnected');
-  let searchMetrics = $derived(() => searchState?.searchMetrics ?? { totalQueries: 0, averageResponseTime: 0, lastQueryTime: 0 });
+  let searchMetrics = $derived(
+    () => searchState?.searchMetrics ?? { totalQueries: 0, averageResponseTime: 0, lastQueryTime: 0 }
+  );
 
   // Enhanced debounced search
   const debouncedSearch = debounce(async (query: string) => {
@@ -82,7 +74,7 @@
         categories,
         vectorSearch: enableVectorSearch,
         streamResults: enableRealTime,
-        includeAI: enableAI
+        includeAI: enableAI,
       });
       // Add to search history
       if (!searchHistory.includes(query)) {
@@ -117,13 +109,20 @@
   // Get result type icon
   function getResultTypeIcon(type: string) {
     switch (type) {
-      case 'case': return '⚖️';
-      case 'evidence': return '🔍';
-      case 'precedent': return '📚';
-      case 'statute': return '📜';
-      case 'criminal': return '👤';
-      case 'document': return '📄';
-      default: return '📋';
+      case 'case':
+        return '⚖️';
+      case 'evidence':
+        return '🔍';
+      case 'precedent':
+        return '📚';
+      case 'statute':
+        return '📜';
+      case 'criminal':
+        return '👤';
+      case 'document':
+        return '📄';
+      default:
+        return '📋';
     }
   }
   // Component lifecycle
@@ -209,202 +208,215 @@
   {#if browser && CommandRoot}
     <CommandRoot bind:open>
       <div class="relative">
-      <!-- Search Input with Enhanced Styling -->
-      {#if CommandInput}
-        <CommandInput
-          class={`
+        <!-- Search Input with Enhanced Styling -->
+        {#if CommandInput}
+          <CommandInput
+            class={`
             flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
             placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2
             focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
             ${isStreaming ? 'pr-12' : 'pr-10'}
           `}
-          placeholder={placeholder}
-          autocomplete="off"
-          spellcheck="false"
-          bind:value={inputValue}
-          onvaluechange={(e: any) => {
-            const val = (e && (e.detail ?? (e.target && e.target.value))) ?? '';
-            handleInputChange(String(val));
-          }}
-        />
-      {/if}
-      <!-- Search Button & Status Indicators -->
-      <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-        {#if isStreaming}
-          <Loader2 class="h-4 w-4 animate-spin text-blue-500" />
-        {:else if enableRealTime && connectionStatus === 'connected'}
-          <Zap class="h-4 w-4 text-green-500" />
-        {:else}
-          <button
-            type="button"
-            class="p-1 hover:bg-gray-100 rounded"
-            onclick={handleSearch}
-            disabled={!inputValue.trim()}
-          >
-            <Search class="h-4 w-4 text-gray-500" />
-          </button>
+            {placeholder}
+            autocomplete="off"
+            spellcheck="false"
+            bind:value={inputValue}
+            onvaluechange={(e: any) => {
+              const val = (e && (e.detail ?? (e.target && e.target.value))) ?? '';
+              handleInputChange(String(val));
+            }}
+          />
         {/if}
+        <!-- Search Button & Status Indicators -->
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+          {#if isStreaming}
+            <Loader2 class="h-4 w-4 animate-spin text-blue-500" />
+          {:else if enableRealTime && connectionStatus === 'connected'}
+            <Zap class="h-4 w-4 text-green-500" />
+          {:else}
+            <button
+              type="button"
+              class="p-1 hover:bg-gray-100 rounded"
+              onclick={handleSearch}
+              disabled={!inputValue.trim()}
+            >
+              <Search class="h-4 w-4 text-gray-500" />
+            </button>
+          {/if}
+        </div>
       </div>
-    </div>
-    <!-- Enhanced Search Results -->
+      <!-- Enhanced Search Results -->
       {#if CommandContent}
         <CommandContent
           class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
                  bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
                  data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
         >
-      {#if $searchState?.error}
-        <!-- Error State -->
-        <div class="flex items-center gap-2 p-4 text-red-600">
-          <AlertCircle class="h-4 w-4" />
-          <span class="text-sm">{$searchState?.error}</span>
-        </div>
-      {:else if isStreaming}
-        <!-- Streaming State -->
-        <div class="flex items-center gap-2 p-4 text-blue-600">
-          <Loader2 class="h-4 w-4 animate-spin" />
-          <span class="text-sm">Searching with AI enhancement...</span>
-        </div>
-        <!-- Streaming Results -->
-        {#each filteredResults as result ((result as { title?: unknown; id?: unknown }).id)}
-          {#if CommandItem}
-            <CommandItem
-              value={(result as any).id}
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
-              onselect={() => handleSelect(result)}
-            >
-              <!-- Result Type Icon -->
-              <div class="mt-1 text-lg">
-                {getResultTypeIcon((result as any).type)}
-              </div>
-              <!-- Result Content -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
-                  <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
-                    {#if (result as any).realTime}
-                      <TrendingUp class="w-3 h-3 text-blue-500" />
+          {#if $searchState?.error}
+            <!-- Error State -->
+            <div class="flex items-center gap-2 p-4 text-red-600">
+              <AlertCircle class="h-4 w-4" />
+              <span class="text-sm">{$searchState?.error}</span>
+            </div>
+          {:else if isStreaming}
+            <!-- Streaming State -->
+            <div class="flex items-center gap-2 p-4 text-blue-600">
+              <Loader2 class="h-4 w-4 animate-spin" />
+              <span class="text-sm">Searching with AI enhancement...</span>
+            </div>
+            <!-- Streaming Results -->
+            {#each filteredResults as result ((result as { title?: unknown; id?: unknown }).id)}
+              {#if CommandItem}
+                <CommandItem
+                  value={(result as any).id}
+                  class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
+                  onselect={() => handleSelect(result)}
+                >
+                  <!-- Result Type Icon -->
+                  <div class="mt-1 text-lg">
+                    {getResultTypeIcon((result as any).type)}
+                  </div>
+                  <!-- Result Content -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                      <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                        {#if (result as any).realTime}
+                          <TrendingUp class="w-3 h-3 text-blue-500" />
+                        {/if}
+                        <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
+                      </div>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-1 line-clamp-2">
+                      {(result as any).content?.substring(0, 120)}...
+                    </div>
+                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                      <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
+                      {#if (result as any).metadata?.jurisdiction}
+                        <span>{(result as any).metadata.jurisdiction}</span>
+                      {/if}
+                      {#if (result as any).metadata?.status}
+                        <span class="capitalize">{(result as any).metadata.status}</span>
+                      {/if}
+                      {#if (result as any).realTime}
+                        <span class="text-blue-500 font-medium">Live</span>
+                      {/if}
+                    </div>
+                  </div>
+                </CommandItem>
+              {:else}
+                <!-- Fallback plain interactive element when CommandItem primitive isn't available -->
+                <button
+                  type="button"
+                  class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
+                  onclick={() => handleSelect(result)}
+                >
+                  <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                      <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                        {#if (result as any).realTime}
+                          <TrendingUp class="w-3 h-3 text-blue-500" />
+                        {/if}
+                        <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
+                      </div>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-1 line-clamp-2">
+                      {(result as any).content?.substring(0, 120)}...
+                    </div>
+                  </div>
+                </button>
+              {/if}
+            {/each}
+          {:else if filteredResults.length > 0}
+            <!-- Standard Results -->
+            {#each filteredResults as result ((result as any).id)}
+              {#if CommandItem}
+                <CommandItem
+                  value={(result as any).id}
+                  class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
+                  onselect={() => handleSelect(result)}
+                >
+                  <!-- Result Type Icon -->
+                  <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+                  <!-- Result Content -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                      <div class="text-xs text-gray-500 shrink-0">
+                        {(((result as any).score ?? 0) * 100).toFixed(0)}%
+                      </div>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-1 line-clamp-2">
+                      {(result as any).content?.substring(0, 120)}...
+                    </div>
+                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                      <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
+                      {#if (result as any).metadata?.jurisdiction}
+                        <span>{(result as any).metadata.jurisdiction}</span>
+                      {/if}
+                      {#if (result as any).metadata?.date}
+                        <span>{new Date((result as any).metadata.date).toLocaleDateString()}</span>
+                      {/if}
+                    </div>
+                    {#if (result as any).highlights && (result as any).highlights.length > 0}
+                      <div class="mt-2 text-xs text-blue-600">
+                        <span class="font-medium">Highlights:</span>
+                        {(result as any).highlights[0]?.substring(0, 80)}...
+                      </div>
                     {/if}
-                    <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
                   </div>
-                </div>
-                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
-                <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                  <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
-                  {#if (result as any).metadata?.jurisdiction}
-                    <span>{(result as any).metadata.jurisdiction}</span>
-                  {/if}
-                  {#if (result as any).metadata?.status}
-                    <span class="capitalize">{(result as any).metadata.status}</span>
-                  {/if}
-                  {#if (result as any).realTime}
-                    <span class="text-blue-500 font-medium">Live</span>
-                  {/if}
-                </div>
-              </div>
-            </CommandItem>
-          {:else}
-            <!-- Fallback plain interactive element when CommandItem primitive isn't available -->
-            <button
-              type="button"
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-              onclick={() => handleSelect(result)}
-            >
-              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
-                  <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
-                    {#if (result as any).realTime}
-                      <TrendingUp class="w-3 h-3 text-blue-500" />
-                    {/if}
-                    <span>{(((result as any).score ?? 0) * 100).toFixed(0)}%</span>
+                </CommandItem>
+              {:else}
+                <button
+                  type="button"
+                  class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
+                  onclick={() => handleSelect(result)}
+                >
+                  <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
+                      <div class="text-xs text-gray-500 shrink-0">
+                        {(((result as any).score ?? 0) * 100).toFixed(0)}%
+                      </div>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-1 line-clamp-2">
+                      {(result as any).content?.substring(0, 120)}...
+                    </div>
                   </div>
-                </div>
-                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
-              </div>
-            </button>
+                </button>
+              {/if}
+            {/each}
+            <!-- Search Statistics -->
+            <div class="border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
+              {filteredResults.length} results •
+              {searchMetrics.lastQueryTime}ms •
+              {enableVectorSearch ? 'Vector' : 'Text'} + {enableAI ? 'AI' : 'Standard'} search
+            </div>
+          {:else if inputValue.trim().length >= 2}
+            <!-- No Results -->
+            <div class="p-4 text-center text-sm text-gray-500">
+              <Search class="h-8 w-8 mx-auto mb-2 text-gray-300" />
+              <p>No results found for "{inputValue}"</p>
+              <p class="text-xs mt-1">Try adjusting your search terms or categories</p>
+            </div>
+          {:else if searchHistory.length > 0}
+            <!-- Search History -->
+            <div class="p-3">
+              <div class="text-xs font-medium text-gray-700 mb-2">Recent Searches</div>
+              {#each searchHistory.slice(0, 5) as query}
+                <button
+                  type="button"
+                  class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
+                  onclick={() => handleInputChange(query)}
+                >
+                  {query}
+                </button>
+              {/each}
+            </div>
           {/if}
-        {/each}
-      {:else if filteredResults.length > 0}
-        <!-- Standard Results -->
-        {#each filteredResults as result ((result as any).id)}
-          {#if CommandItem}
-            <CommandItem
-              value={(result as any).id}
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-              onselect={() => handleSelect(result)}
-            >
-              <!-- Result Type Icon -->
-              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
-              <!-- Result Content -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
-                  <div class="text-xs text-gray-500 shrink-0">{(((result as any).score ?? 0) * 100).toFixed(0)}%</div>
-                </div>
-                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
-                <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                  <span class="capitalize bg-gray-100 px-2 py-1 rounded">{(result as any).type}</span>
-                  {#if (result as any).metadata?.jurisdiction}
-                    <span>{(result as any).metadata.jurisdiction}</span>
-                  {/if}
-                  {#if (result as any).metadata?.date}
-                    <span>{new Date((result as any).metadata.date).toLocaleDateString()}</span>
-                  {/if}
-                </div>
-                {#if (result as any).highlights && (result as any).highlights.length > 0}
-                  <div class="mt-2 text-xs text-blue-600">
-                    <span class="font-medium">Highlights:</span> {(result as any).highlights[0]?.substring(0,80)}...
-                  </div>
-                {/if}
-              </div>
-            </CommandItem>
-          {:else}
-            <button
-              type="button"
-              class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-              onclick={() => handleSelect(result)}
-            >
-              <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
-                  <div class="text-xs text-gray-500 shrink-0">{(((result as any).score ?? 0) * 100).toFixed(0)}%</div>
-                </div>
-                <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0,120)}...</div>
-              </div>
-            </button>
-          {/if}
-        {/each}
-        <!-- Search Statistics -->
-        <div class="border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
-          {filteredResults.length} results •
-          {searchMetrics.lastQueryTime}ms •
-          {enableVectorSearch ? 'Vector' : 'Text'} + {enableAI ? 'AI' : 'Standard'} search
-        </div>
-      {:else if inputValue.trim().length >= 2}
-        <!-- No Results -->
-        <div class="p-4 text-center text-sm text-gray-500">
-          <Search class="h-8 w-8 mx-auto mb-2 text-gray-300" />
-          <p>No results found for "{inputValue}"</p>
-          <p class="text-xs mt-1">Try adjusting your search terms or categories</p>
-        </div>
-      {:else if searchHistory.length > 0}
-        <!-- Search History -->
-        <div class="p-3">
-          <div class="text-xs font-medium text-gray-700 mb-2">Recent Searches</div>
-          {#each searchHistory.slice(0, 5) as query}
-            <button
-              type="button"
-              class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
-              onclick={() => handleInputChange(query)}
-            >
-              {query}
-            </button>
-          {/each}
-        </div>
-      {/if}
         </CommandContent>
       {/if}
     </CommandRoot>
@@ -413,11 +425,11 @@
     <div class="relative">
       <input
         class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50"
-        placeholder={placeholder}
+        {placeholder}
         autocomplete="off"
         spellcheck="false"
         bind:value={inputValue}
-        oninput={(e) => handleInputChange((e.target as HTMLInputElement).value)}
+        oninput={e => handleInputChange((e.target as HTMLInputElement).value)}
       />
       <!-- Basic static results rendering for SSR previews -->
       {#if filteredResults && filteredResults.length > 0}
@@ -438,7 +450,9 @@
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
       <div class="flex items-center gap-4">
         <span class="flex items-center gap-1">
-          <div class={"w-2 h-2 rounded-full " + (connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400')}></div>
+          <div
+            class={'w-2 h-2 rounded-full ' + (connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400')}
+          ></div>
           Real-time {connectionStatus}
         </span>
         {#if enableVectorSearch}
@@ -488,5 +502,3 @@
     word-wrap: break-word;
   }
 </style>
-
-

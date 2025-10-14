@@ -43,7 +43,7 @@ export interface AsyncCommandResult<T = any> {
 }
 /**
  * Neural Memory Manager for predictive memory allocation
- */;
+ */
 export class NeuralMemoryManager extends EventEmitter {
   private memoryPool: Map<string, any> = new Map();
   private predictions: Map<string, MemoryPrediction> = new Map();
@@ -65,15 +65,15 @@ export class NeuralMemoryManager extends EventEmitter {
 }
 /**
  * Enhanced VS Code Extension Manager
- */;
+ */
 export class EnhancedVSCodeExtensionManager extends EventEmitter {
   private memoryManager: NeuralMemoryManager;
   private config: ExtensionConfig;
   private metrics: Map<string, CommandMetrics[]> = new Map();
   constructor(config: ExtensionConfig = {
     maxMemoryMB: 512,
-    enableWebAssembly: true
-    enableNeuralOptimization: false
+    enableWebAssembly: true,
+    enableNeuralOptimization: false,
     cacheStrategy: "balanced",
     lodLevel: "auto"
   }) {
@@ -94,8 +94,8 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         executionTime: endTime - startTime,
         memoryUsed: 0, // TODO: Implement memory tracking
         timestamp: Date.now(),
-        success: true
-        resourceType: "json"
+        success: true,
+        resourceType: "json",
       }
       this.recordMetrics(commandId, metrics);
       return { success: true, result, metrics }
@@ -106,8 +106,8 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         executionTime: endTime - startTime,
         memoryUsed: 0,
         timestamp: Date.now(),
-        success: false
-        resourceType: "json"
+        success: false,
+        resourceType: "json",
       }
       this.recordMetrics(commandId, metrics);
       return { success: false, error: error as Error, metrics }

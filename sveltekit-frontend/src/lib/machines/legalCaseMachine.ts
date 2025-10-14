@@ -322,23 +322,23 @@ export const legalCaseMachine = createMachine({
   id: 'legalCase',
   initial: 'idle',
   context: {
-    currentCase: null
-    caseId: null
-    isLoading: false
-    lastUpdated: null
+    currentCase: null,
+    caseId: null,
+    isLoading: false,
+    lastUpdated: null,
     evidence: [],
     documents: [],
     timeline: [],
     assignedUsers: [],
-    aiAnalysis: null
-    isAnalyzing: false
+    aiAnalysis: null,
+    isAnalyzing: false,
     analysisProgress: 0,
     analysisQueue: [],
-    legalContext: null
-    jurisdiction: null
+    legalContext: null,
+    jurisdiction: null,
     applicableLaws: [],
     precedents: [],
-    caseMetrics: null
+    caseMetrics: null,
     performanceData: {
       loadTime: 0,
       queryTime: 0,
@@ -352,25 +352,25 @@ export const legalCaseMachine = createMachine({
     selectedItems: [],
     filters: { [key,: strin,g]: any },
     sortBy: { field: 'dateCreated', direction: 'desc' },
-    error: null
+    error: null,
     retryCount: 0,
-    lastError: null
-    currentUser: null
+    lastError: null,
+    currentUser: null,
     permissions: {
-      canView: false
-      canEdit: false
-      canDelete: false
-      canAddEvidence: false
-      canAddDocuments: false
-      canAssignUsers: false
-      canExport: false
-      canArchive: false
+      canView: false,
+      canEdit: false,
+      canDelete: false,
+      canAddEvidence: false,
+      canAddDocuments: false,
+      canAssignUsers: false,
+      canExport: false,
+      canArchive: false,
     },
     accessLevel: 'read_only',
     collaborators: [],
     notifications: [],
     conflictResolution: {
-      hasConflicts: false
+      hasConflicts: false,
       conflicts: [],
       resolutionStrategy: 'auto'
     }
@@ -382,15 +382,15 @@ export const legalCaseMachine = createMachine({
           target: 'loading',
           actions: assign({
             caseId: ({ event }) => event.caseId,
-            isLoading: true
-            error: null
+            isLoading: true,
+            error: null,
           })
         },
         CREATE_CASE: {
           target: 'creating',
           actions: assign({
-            isLoading: true
-            error: null
+            isLoading: true,
+            error: null,
           })
         }
       }
@@ -410,22 +410,22 @@ export const legalCaseMachine = createMachine({
           target: 'loaded',
           actions: assign({
             currentCase: ({ event }) => event.output,
-            isLoading: false
+            isLoading: false,
             lastUpdated: new Date(),
-            error: null
-            retryCount: 0
+            error: null,
+            retryCount: 0,
           })
         },
         onError: {
           target: 'error',
           actions: assign({
-            isLoading: false
+            isLoading: false,
             error: ({ event, context }) => ({
               code: 'LOAD_FAILED',
               message: (event.error as any)?.message || 'Failed to load case',
               timestamp: new Date(),
-              recoverable: true
-              context: { caseId: context.caseId }
+              recoverable: true,
+              context: { caseId: context.caseId },
             }),
             lastError: new Date()
           })
@@ -452,7 +452,7 @@ export const legalCaseMachine = createMachine({
           actions: assign({
             currentCase: ({ event }) => event.output,
             caseId: ({ event }) => event.output.id,
-            isLoading: false
+            isLoading: false,
             lastUpdated: new Date(),
             error: null
           })
@@ -460,7 +460,7 @@ export const legalCaseMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            isLoading: false
+            isLoading: false,
             error: ({ event }) => ({
               code: 'CREATE_FAILED',
               message: (event.error as any)?.message || 'Failed to create case',
@@ -516,8 +516,8 @@ export const legalCaseMachine = createMachine({
         START_AI_ANALYSIS: {
           target: 'analyzing',
           actions: assign({
-            isAnalyzing: true
-            analysisProgress: 0
+            isAnalyzing: true,
+            analysisProgress: 0,
           })
         },
         SET_STATUS: {
@@ -562,14 +562,14 @@ export const legalCaseMachine = createMachine({
           target: 'loaded',
           actions: assign({
             currentCase: ({ event }) => event.output,
-            isLoading: false
-            lastUpdated: new Date()
+            isLoading: false,
+            lastUpdated: new Date(),
           })
         },
         onError: {
           target: 'loaded',
           actions: assign({
-            isLoading: false
+            isLoading: false,
             error: ({ event }) => ({
               code: 'UPDATE_FAILED',
               message: (event.error as any)?.message || 'Failed to update case',
@@ -606,14 +606,14 @@ export const legalCaseMachine = createMachine({
           target: 'loaded',
           actions: assign({
             aiAnalysis: ({ event }) => event.output,
-            isAnalyzing: false
-            analysisProgress: 100
+            isAnalyzing: false,
+            analysisProgress: 100,
           })
         },
         onError: {
           target: 'loaded',
           actions: assign({
-            isAnalyzing: false
+            isAnalyzing: false,
             analysisProgress: 0,
             error: ({ event }) => ({
               code: 'ANALYSIS_FAILED',
@@ -628,8 +628,8 @@ export const legalCaseMachine = createMachine({
         CANCEL_AI_ANALYSIS: {
           target: 'loaded',
           actions: assign({
-            isAnalyzing: false
-            analysisProgress: 0
+            isAnalyzing: false,
+            analysisProgress: 0,
           })
         }
       }
@@ -650,8 +650,8 @@ export const legalCaseMachine = createMachine({
         onDone: {
           target: 'idle',
           actions: assign({
-            currentCase: null
-            caseId: null
+            currentCase: null,
+            caseId: null,
             evidence: [],
             documents: [],
             timeline: [],
@@ -696,9 +696,9 @@ export const legalCaseMachine = createMachine({
         RESET: {
           target: 'idle',
           actions: assign({
-            currentCase: null
+            currentCase: null,
             caseId: null;
-            error: null
+            error: null,
             retryCount: 0,
             isLoading: false
           })

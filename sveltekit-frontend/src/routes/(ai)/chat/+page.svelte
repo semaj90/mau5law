@@ -9,7 +9,9 @@
   import { chatStore, chatActions } from '$lib/stores/chatStore';
 
   // Svelte 5 runes - production state management
-  let messages = $state<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date; metadata?: any }>>([]);
+  let messages = $state<
+    Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date; metadata?: any }>
+  >([]);
   let currentMessage = $state('');
   let isLoading = $state(false);
   let chatContainer: HTMLElement;
@@ -30,7 +32,7 @@
     ollama: false,
     integrated: false,
     redis: false,
-    qdrant: false
+    qdrant: false,
   });
 
   // Check TensorRT service health
@@ -48,8 +50,8 @@
       modelInfo = {
         name: 'TensorRT Bridge - Gemma3-Legal',
         status: String(data.status || 'Running'),
-        backend: 'tensorrt'
-      }
+        backend: 'tensorrt',
+      };
     } catch (error) {
       connectionStatus = 'disconnected';
       console.error('Service health check failed:', error);
@@ -65,8 +67,8 @@
       modelInfo = {
         name: 'Mock Legal AI - Offline',
         status: 'Simulated',
-        backend: 'mock'
-      }
+        backend: 'mock',
+      };
     }
   }
   // Send message to TensorRT service
@@ -77,7 +79,7 @@
       role: 'user' as const,
       content: currentMessage.trim(),
       timestamp: new Date(),
-    }
+    };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
     currentMessage = '';
@@ -112,7 +114,7 @@
         role: 'assistant' as const,
         content: data.response || data.text || 'No response received',
         timestamp: new Date(),
-      }
+      };
       messages = [...messages, assistantMessage];
     } catch (error) {
       console.error('Error sending message:', error);
@@ -136,7 +138,7 @@
         role: 'assistant' as const,
         content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
         timestamp: new Date(),
-      }
+      };
       messages = [...messages, mockMessage];
     } finally {
       isLoading = false;
@@ -253,7 +255,7 @@
       <label for="chat_input">ENTER LEGAL QUERY:</label>
       <textarea
         id="chat_input"
-  class="nes-textarea"
+        class="nes-textarea"
         bind:value={currentMessage}
         onkeydown={handleKeydown}
         placeholder="Type your legal question here..."

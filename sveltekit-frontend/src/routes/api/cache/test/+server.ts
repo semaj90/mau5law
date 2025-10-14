@@ -20,8 +20,8 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         action: 'cache_info',
-        data: cacheInfo
-        timestamp: new Date().toISOString()
+        data: cacheInfo,
+        timestamp: new Date().toISOString(),
       })
     }
     if (action === 'test') {
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
         action: 'basic_test',
         data: {
           testPassed,
-          original: testData
+          original: testData,
           retrieved,
           cacheInfo: await cacheService.getCacheInfo()
         },
@@ -85,9 +85,9 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'embedding_test',
         data: {
           testPassed,
-          original: embedding
-          cached: cachedEmbedding
-          compressionInfo: 'Embedding cached with gzip compression'
+          original: embedding,
+          cached: cachedEmbedding,
+          compressionInfo: 'Embedding cached with gzip compression',
         }
       })
     }
@@ -110,16 +110,16 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'search_test',
         data: {
           testPassed,
-          original: results
-          cached: cachedResults
-          compressionInfo: 'Search results cached with gzip compression'
+          original: results,
+          cached: cachedResults,
+          compressionInfo: 'Search results cached with gzip compression',
         }
       })
     }
     if (action === 'large_payload') {
       // Test compression with large payload
       const largeArray = Array.from({ length: 1000 }, (_, i) => ({
-        id: i
+        id: i,
         data: `This is test data item ${i}`,
         metadata: {
           created: new Date().toISOString(),
@@ -141,8 +141,8 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'large_payload_test',
         data: {
           arraySize: largeArray.length,
-          compressedTest: compressedPassed
-          uncompressedTest: uncompressedPassed
+          compressedTest: compressedPassed,
+          uncompressedTest: uncompressedPassed,
           processingTime: endTime - startTime,
           compressionBenefit: 'Large arrays benefit significantly from gzip compression'
         }

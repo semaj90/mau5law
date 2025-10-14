@@ -967,7 +967,8 @@ const fabricModule = await import("fabric");
     <span class="spacer"></span>
     <small class="config-input" class:n64-input={enableN64Style}>
       Ctx: <input
-        type="number";
+        type="number"
+        ;
         bind:value={options.context_window}
         min={512}
         max={16384}

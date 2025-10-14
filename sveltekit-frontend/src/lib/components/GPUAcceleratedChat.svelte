@@ -10,7 +10,10 @@
   let wsPort = $state(PRIMARY_PORT + 2); // WebSocket on +2 offset
   // Dev override: allow forcing a dev WS URL (useful when QUIC/Caddy isn't running)
   const DEV_WS_URL = (import.meta.env && (import.meta.env.VITE_DEV_WS_URL as string)) || undefined;
-  const DEV_WS_PORT = (import.meta.env && (import.meta.env.VITE_DEV_WS_PORT as string)) ? Number(import.meta.env.VITE_DEV_WS_PORT) : undefined;
+  const DEV_WS_PORT =
+    import.meta.env && (import.meta.env.VITE_DEV_WS_PORT as string)
+      ? Number(import.meta.env.VITE_DEV_WS_PORT)
+      : undefined;
   // State management
   let messages = $state<GPUChatMessage[]>([]);
   let inputMessage = $state('');
@@ -49,7 +52,9 @@
 
     // Try WebTransport first (requires HTTP/3 + TLS)
     if (typeof (window as any).WebTransport !== 'undefined') {
-      const wtHost = DEV_WS_URL ? DEV_WS_URL.replace(/^ws:\/\//, 'https://').replace(/^http:\/\//, 'https://') : `https://localhost:${wsPort}`;
+      const wtHost = DEV_WS_URL
+        ? DEV_WS_URL.replace(/^ws:\/\//, 'https://').replace(/^http:\/\//, 'https://')
+        : `https://localhost:${wsPort}`;
       const wtUrl = `${wtHost}/webtransport`;
       try {
         console.log(`Attempting WebTransport connection to ${wtUrl}...`);
@@ -59,8 +64,8 @@
         isConnected = true;
         console.log('✅ WebTransport ready', wtUrl);
 
-  // Send handshake over WebTransport
-  await sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
+        // Send handshake over WebTransport
+        await sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
 
         // Read incoming unidirectional streams (safe best-effort)
         (async () => {
@@ -79,9 +84,16 @@
                 for (const c of chunks) length += c.length;
                 const joined = new Uint8Array(length);
                 let offset = 0;
-                for (const c of chunks) { joined.set(c, offset); offset += c.length; }
+                for (const c of chunks) {
+                  joined.set(c, offset);
+                  offset += c.length;
+                }
                 const text = new TextDecoder().decode(joined);
-                try { handleWebSocketMessage(JSON.parse(text)); } catch (e) { console.warn('Failed to parse WT message', e); }
+                try {
+                  handleWebSocketMessage(JSON.parse(text));
+                } catch (e) {
+                  console.warn('Failed to parse WT message', e);
+                }
               } catch (err) {
                 console.warn('Error reading WT stream', err);
               }
@@ -92,20 +104,22 @@
         })();
 
         // Monitor closed state
-        wt.closed.then(() => {
-          console.log('WebTransport closed');
-          isConnected = false;
-          isWebTransport = false;
-          wt = null;
-          // Attempt reconnect
-          reconnectTimeout = setTimeout(connectRealtime, 3000);
-        }).catch((err: any) => {
-          console.warn('WebTransport closed with error', err);
-          isConnected = false;
-          isWebTransport = false;
-          wt = null;
-          reconnectTimeout = setTimeout(connectRealtime, 3000);
-        });
+        wt.closed
+          .then(() => {
+            console.log('WebTransport closed');
+            isConnected = false;
+            isWebTransport = false;
+            wt = null;
+            // Attempt reconnect
+            reconnectTimeout = setTimeout(connectRealtime, 3000);
+          })
+          .catch((err: any) => {
+            console.warn('WebTransport closed with error', err);
+            isConnected = false;
+            isWebTransport = false;
+            wt = null;
+            reconnectTimeout = setTimeout(connectRealtime, 3000);
+          });
 
         return; // we are connected via WebTransport
       } catch (err) {
@@ -115,9 +129,9 @@
       }
     }
 
-  // Fallback to WebSocket (respect DEV overrides)
-  const wsHost = DEV_WS_URL ? DEV_WS_URL : (DEV_WS_PORT ? `ws://localhost:${DEV_WS_PORT}` : `ws://localhost:${wsPort}`);
-  const wsUrl = wsHost;
+    // Fallback to WebSocket (respect DEV overrides)
+    const wsHost = DEV_WS_URL ? DEV_WS_URL : DEV_WS_PORT ? `ws://localhost:${DEV_WS_PORT}` : `ws://localhost:${wsPort}`;
+    const wsUrl = wsHost;
     try {
       console.log(`Connecting to WebSocket at ${wsUrl}...`);
       ws = new WebSocket(wsUrl);
@@ -125,20 +139,20 @@
         console.log('✅ WebSocket connected on port', wsPort);
         isConnected = true;
         clearTimeout(reconnectTimeout);
-  // Send handshake
-  sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
-      }
-      ws.onmessage = (event) => {
+        // Send handshake
+        sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
+      };
+      ws.onmessage = event => {
         try {
           const data = JSON.parse(event.data);
           handleWebSocketMessage(data);
         } catch (error) {
           console.error('Failed to parse WebSocket message:', error);
         }
-      }
-      ws.onerror = (error) => {
+      };
+      ws.onerror = error => {
         console.error('WebSocket error:', error);
-      }
+      };
       ws.onclose = () => {
         console.log('WebSocket disconnected');
         isConnected = false;
@@ -147,7 +161,7 @@
           console.log('Attempting to reconnect...');
           connectRealtime();
         }, 3000);
-      }
+      };
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
       isConnected = false;
@@ -172,7 +186,12 @@
     }
     // WebSocket
     if (ws && ws.readyState === WebSocket.OPEN) {
-      try { ws.send(data); return true; } catch (err) { console.warn('WebSocket send failed', err); }
+      try {
+        ws.send(data);
+        return true;
+      } catch (err) {
+        console.warn('WebSocket send failed', err);
+      }
     }
     // Final fallback: HTTP POST to API endpoint
     try {
@@ -229,8 +248,8 @@
     const payload = data as any;
     switch (payload.type) {
       case 'connected':
-        clientId = payload.clientId as string ?? clientId;
-        gpuStatus = payload.gpuConfig as any ?? gpuStatus;
+        clientId = (payload.clientId as string) ?? clientId;
+        gpuStatus = (payload.gpuConfig as any) ?? gpuStatus;
         // update derived GPU fields
         gpuCudaVersion = (gpuStatus as any)?.cuda?.version ?? null;
         tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
@@ -244,8 +263,8 @@
             role: 'assistant',
             content: content,
             timestamp: new Date(),
-            metadata: payload.metadata as any
-          }
+            metadata: payload.metadata as any,
+          };
           messages = [...messages, message];
           isTyping = false;
           if (voiceEnabled && content) {
@@ -286,43 +305,51 @@
       role: 'user',
       content: inputMessage,
       timestamp: new Date(),
-    }
+    };
     messages = [...messages, userMessage];
     const messageContent = inputMessage;
     inputMessage = '';
     isTyping = true;
     // Send via WebSocket if connected
-      // Try the preferred realtime transport (WebTransport -> WebSocket -> HTTP POST)
-      try {
-        const sent = await sendRealtimeMessage({ type: 'chat', content: messageContent, room: currentRoom, sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() });
-        if (!sent) {
-          // Fall back to HTTP API if realtime send failed
-          const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: messageContent, sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() })
-          });
-          if (!response.ok) throw new Error('API request failed');
-          const dataAny = await response.json() as any;
-          const aiMessage: GPUChatMessage = {
-            id: crypto.randomUUID(),
-            role: 'assistant',
-            content: dataAny.response as string,
-            timestamp: new Date(),
-            metadata: dataAny.metadata as any
-          }
-          messages = [...messages, aiMessage];
-          if (voiceEnabled && dataAny.response) {
-            speakText(dataAny.response as string);
-          }
+    // Try the preferred realtime transport (WebTransport -> WebSocket -> HTTP POST)
+    try {
+      const sent = await sendRealtimeMessage({
+        type: 'chat',
+        content: messageContent,
+        room: currentRoom,
+        sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
+      });
+      if (!sent) {
+        // Fall back to HTTP API if realtime send failed
+        const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: messageContent,
+            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
+          }),
+        });
+        if (!response.ok) throw new Error('API request failed');
+        const dataAny = (await response.json()) as any;
+        const aiMessage: GPUChatMessage = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: dataAny.response as string,
+          timestamp: new Date(),
+          metadata: dataAny.metadata as any,
+        };
+        messages = [...messages, aiMessage];
+        if (voiceEnabled && dataAny.response) {
+          speakText(dataAny.response as string);
         }
-      } catch (error) {
-        console.error('Failed to send message via realtime transport or HTTP fallback:', error);
-        showNotification('Failed to send message', 'error');
-      } finally {
-        isTyping = false;
       }
+    } catch (error) {
+      console.error('Failed to send message via realtime transport or HTTP fallback:', error);
+      showNotification('Failed to send message', 'error');
+    } finally {
+      isTyping = false;
     }
+  }
   // Handle document upload
   async function handleFileUpload(_event: Event) {
     const input = (event?.target ?? _event?.target) as HTMLInputElement;
@@ -335,23 +362,26 @@
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/document/upload`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       if (response.ok) {
-        const result = await response.json() as any;
+        const result = (await response.json()) as any;
         // Add system message about upload
-        messages = [...messages, {
-          id: crypto.randomUUID(),
-          role: 'system',
-          content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
-          timestamp: new Date(),
-        }];
-          // Send to realtime transport for processing (WebTransport -> WebSocket -> HTTP)
-          await sendRealtimeMessage({
-            type: 'document_upload',
-            content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
-            embeddings: result.embeddings
-          });
+        messages = [
+          ...messages,
+          {
+            id: crypto.randomUUID(),
+            role: 'system',
+            content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
+            timestamp: new Date(),
+          },
+        ];
+        // Send to realtime transport for processing (WebTransport -> WebSocket -> HTTP)
+        await sendRealtimeMessage({
+          type: 'document_upload',
+          content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
+          embeddings: result.embeddings,
+        });
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -369,7 +399,7 @@
       utterance.pitch = 1.0;
       utterance.onend = () => {
         isSpeaking = false;
-      }
+      };
       speechSynthesis.speak(utterance);
     } else {
       // Request TTS from server via realtime transport
@@ -408,23 +438,26 @@
   // Handle document processing result
   function handleDocumentResult(data: unknown) {
     const d = data as any;
-    messages = [...messages, {
-      id: crypto.randomUUID(),
-      role: 'system',
-      content: `Document analysis complete:\n${d.summary || 'Processing complete'}`,
-      timestamp: new Date(),
-      metadata: {
-        // keep primary metadata fields compatible with GPUChatMessage
-        ...(d.model ? { model: d.model } : {}),
-        ...(typeof d.processingTime === 'number' ? { processingTime: d.processingTime } : {}),
-        ...(typeof d.gpuUsed === 'boolean' ? { gpuUsed: d.gpuUsed } : {}),
-        // place document-specific extras under extra to avoid type conflicts
-        extra: {
-          documentId: d.documentId,
-          embeddingsCount: Array.isArray(d.embeddings) ? d.embeddings.length : undefined
-        }
-      }
-    } as unknown as GPUChatMessage];
+    messages = [
+      ...messages,
+      {
+        id: crypto.randomUUID(),
+        role: 'system',
+        content: `Document analysis complete:\n${d.summary || 'Processing complete'}`,
+        timestamp: new Date(),
+        metadata: {
+          // keep primary metadata fields compatible with GPUChatMessage
+          ...(d.model ? { model: d.model } : {}),
+          ...(typeof d.processingTime === 'number' ? { processingTime: d.processingTime } : {}),
+          ...(typeof d.gpuUsed === 'boolean' ? { gpuUsed: d.gpuUsed } : {}),
+          // place document-specific extras under extra to avoid type conflicts
+          extra: {
+            documentId: d.documentId,
+            embeddingsCount: Array.isArray(d.embeddings) ? d.embeddings.length : undefined,
+          },
+        },
+      } as unknown as GPUChatMessage,
+    ];
   }
   // Handle batch results
   function handleBatchResults(results: unknown[]) {
@@ -440,24 +473,28 @@
     const summary = `Batch processing complete:\n${lines.join('\n')}\n\nBatch size: ${results.length}`;
 
     // Build metadata only from known fields to satisfy GPUChatMessage.metadata shape
-    const first = (results && results.length > 0) ? (results[0] as any) : null;
-    const metadata = first && typeof first === 'object'
-      ? {
-          ...(first.model ? { model: first.model } : {}),
-          ...(typeof first.processingTime === 'number' ? { processingTime: first.processingTime } : {}),
-          ...(typeof first.gpuUsed === 'boolean' ? { gpuUsed: first.gpuUsed } : {}),
-          ...(typeof first.tokenCount === 'number' ? { tokenCount: first.tokenCount } : {})
-        }
-      : undefined;
+    const first = results && results.length > 0 ? (results[0] as any) : null;
+    const metadata =
+      first && typeof first === 'object'
+        ? {
+            ...(first.model ? { model: first.model } : {}),
+            ...(typeof first.processingTime === 'number' ? { processingTime: first.processingTime } : {}),
+            ...(typeof first.gpuUsed === 'boolean' ? { gpuUsed: first.gpuUsed } : {}),
+            ...(typeof first.tokenCount === 'number' ? { tokenCount: first.tokenCount } : {}),
+          }
+        : undefined;
 
-    messages = [...messages, {
-      id: crypto.randomUUID(),
-      role: 'system',
-      content: summary,
-      timestamp: new Date(),
-      // only attach metadata if we found compatible fields
-      ...(metadata ? { metadata } : {})
-    } as unknown as GPUChatMessage];
+    messages = [
+      ...messages,
+      {
+        id: crypto.randomUUID(),
+        role: 'system',
+        content: summary,
+        timestamp: new Date(),
+        // only attach metadata if we found compatible fields
+        ...(metadata ? { metadata } : {}),
+      } as unknown as GPUChatMessage,
+    ];
   }
 
   // Resume a previous request from Redis Streams (token replay)
@@ -469,9 +506,11 @@
     }
     try {
       const from = sessionStorage.getItem(`lastStreamId:${id}`) || '0-0';
-      const resp = await fetch(`/api/realtime/resume?requestId=${encodeURIComponent(id)}&from=${encodeURIComponent(from)}`);
+      const resp = await fetch(
+        `/api/realtime/resume?requestId=${encodeURIComponent(id)}&from=${encodeURIComponent(from)}`
+      );
       if (!resp.ok) throw new Error('Resume API failed');
-      const body = await resp.json() as any;
+      const body = (await resp.json()) as any;
       if (!body.ok || !Array.isArray(body.entries)) {
         showNotification('No entries to resume', 'info');
         return;
@@ -482,14 +521,14 @@
         role: 'assistant',
         content: '',
         timestamp: new Date(),
-      }
+      };
       messages = [...messages, streamingMessage];
       // Append tokens progressively
       for (const e of body.entries) {
-        const chunk = e.chunk as string || '';
+        const chunk = (e.chunk as string) || '';
         streamingMessage.content += chunk;
         // update messages array reference so Svelte re-renders
-        messages = messages.map(m => m.id === streamingMessage.id ? streamingMessage : m);
+        messages = messages.map(m => (m.id === streamingMessage.id ? streamingMessage : m));
         await new Promise(r => setTimeout(r, 10)); // small yield to allow UI update
       }
       // persist last seen stream id for incremental resume
@@ -505,9 +544,9 @@
   // Check GPU status
   async function checkGPUStatus() {
     try {
-      const response = await fetch(`http://localhost:${currentPort}/api/gpu-status`)
+      const response = await fetch(`http://localhost:${currentPort}/api/gpu-status`);
       if (response.ok) {
-        gpuStatus = await response.json() as GPUProcessingStatus;
+        gpuStatus = (await response.json()) as GPUProcessingStatus;
         gpuCudaVersion = (gpuStatus as any)?.cuda?.version ?? null;
         tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
       }
@@ -518,8 +557,8 @@
   // Health check
   async function performHealthCheck() {
     try {
-      const response = await fetch(`http://localhost:${currentPort}/api/health`)
-      const health = await response.json() as any;
+      const response = await fetch(`http://localhost:${currentPort}/api/health`);
+      const health = (await response.json()) as any;
       if (!health?.healthy) {
         showNotification('System health check failed', 'warning');
       }
@@ -536,7 +575,7 @@
       message,
       type,
       timestamp: new Date(),
-    }
+    };
     // You could store notifications in state and display them
   }
   // Handle keyboard shortcuts
@@ -555,17 +594,18 @@
     if (!sessionStorage.getItem('sessionId')) {
       sessionStorage.setItem('sessionId', crypto.randomUUID());
     }
-  // Connect realtime transport (WebTransport preferred)
-  connectRealtime();
+    // Connect realtime transport (WebTransport preferred)
+    connectRealtime();
     // Check GPU status
     checkGPUStatus();
     // Set up health check interval
     healthCheckInterval = setInterval(performHealthCheck, 30000);
     // Add welcome message
-    messages = [{
-      id: crypto.randomUUID(),
-      role: 'system',
-      content: `🚀 GPU-Accelerated Legal AI Chat
+    messages = [
+      {
+        id: crypto.randomUUID(),
+        role: 'system',
+        content: `🚀 GPU-Accelerated Legal AI Chat
   • CUDA acceleration enabled
   • TensorRT optimization active
   • Multi-user support ready
@@ -573,8 +613,9 @@
   • Batch processing supported
   • Document upload enabled
   Type your legal question or upload a document to begin!`,
-      timestamp: new Date(),
-    }];
+        timestamp: new Date(),
+      },
+    ];
   });
   onDestroy(() => {
     if (ws) {
@@ -607,7 +648,9 @@
             class="process-batch-btn"
             style="padding:0.25rem 0.5rem;font-size:0.75rem;"
             disabled={!sessionStorage.getItem('lastRequestId') && !sessionStorage.getItem('sessionId')}
-            title={sessionStorage.getItem(`lastStreamId:${sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId')}`) ?? 'Resume last request'}
+            title={sessionStorage.getItem(
+              `lastStreamId:${sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId')}`
+            ) ?? 'Resume last request'}
           >
             Resume
           </button>

@@ -1,4 +1,3 @@
-
 // YoRHa Table and Grid Components
 export { default as YoRHaTable } from './YoRHaTable.svelte.js';
 export { default as YoRHaDataGrid } from './YoRHaDataGrid.svelte.js';
@@ -10,7 +9,7 @@ export {
   exportTableData,
   legalAITableConfigs,
   type TableState,
-  type TableNotification
+  type TableNotification,
 } from '$lib/stores/tables';
 // Table-related types for components
 export interface YoRHaTableColumn {
@@ -23,8 +22,8 @@ export interface YoRHaTableColumn {
 }
 export interface YoRHaTableRow {
   id: string;
-    [key: string]: unknown;
-  }
+  [key: string]: unknown;
+}
 export interface YoRHaGridColumn {
   key: string;
   title: string;
@@ -36,32 +35,29 @@ export interface YoRHaGridColumn {
   filterable?: boolean;
   editable?: boolean;
   type?: 'text' | 'number' | 'date' | 'boolean' | 'select' | 'action';
-    options?: Array<any>;
-    formatter?: (_value: any, row: any) => string;
-    validator?: (_value: any) => boolean | string;
-  }
+  options?: Array<any>;
+  formatter?: (_value: any, row: any) => string;
+  validator?: (_value: any) => boolean | string;
+}
 // (presets and utilities omitted for brevity in this quick fix)
 export const yorhaTablePresets = {} as const;
 export const yorhaGridPresets = {} as const;
 // Status formatters for legal AI
 export const statusFormatters = {
-    caseStatus: (status: string) => status?.toUpperCase() || 'UNKNOWN',
-    priority: (p: string) => p?.toUpperCase() || 'NORMAL',
-    evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
-    userRole: (r: string) => r?.toUpperCase() || 'USER'
-  }
+  caseStatus: (status: string) => status?.toUpperCase() || 'UNKNOWN',
+  priority: (p: string) => p?.toUpperCase() || 'NORMAL',
+  evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
+  userRole: (r: string) => r?.toUpperCase() || 'USER',
+};
 // Import stores used in convenience object
-import {
-  tableManager as importedTableManager,
-  createTableStats as importedCreateTableStats
-} from '$lib/stores/tables';
+import { tableManager as importedTableManager, createTableStats as importedCreateTableStats } from '$lib/stores/tables';
 // Export convenience object as named export only
 export const YoRHa = {
   YoRHaTable: () => import('./YoRHaTable.svelte'),
   YoRHaDataGrid: () => import('./YoRHaDataGrid.svelte'),
-  tableManager: importedTableManager
-  createTableStats: importedCreateTableStats
+  tableManager: importedTableManager,
+  createTableStats: importedCreateTableStats,
   yorhaTablePresets,
   yorhaGridPresets,
-  statusFormatters
-}
+  statusFormatters,
+};

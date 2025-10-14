@@ -2,7 +2,7 @@
 /**
  * WebGL2 Shader Cache with NVIDIA Optimizations
  * Optimized for legal AI canvas operations with sprite-based rendering
- */;
+ */
 }
 export interface ShaderCacheConfig {
   enableNVIDIAOptimizations: boolean;
@@ -138,9 +138,9 @@ export class ShaderCache {
     );
   }
   public createProgram(
-    id: string
-    vertexSource: string
-    fragmentSource: string
+    id: string,
+    vertexSource: string,
+    fragmentSource: string,
   ): WebGLProgram | null {
     // Check cache first
     if (this.programs.has(id)) {
@@ -294,15 +294,15 @@ export class ShaderCache {
     return null;
   }
   private generateCacheKey(
-    vertexSource: string
-    fragmentSource: string
+    vertexSource: string,
+    fragmentSource: string,
   ): string {
     // Simple hash for cache key
     return btoa(vertexSource + fragmentSource).substring(0, 16);
   }
   private calculateComplexity(
-    vertexSource: string
-    fragmentSource: string
+    vertexSource: string,
+    fragmentSource: string,
   ): number {
     // Simple complexity calculation based on shader operations
     const operations = (vertexSource + fragmentSource).match(

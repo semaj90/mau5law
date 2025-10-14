@@ -1,12 +1,12 @@
-import { json } from "@sveltejs/kit"
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import { databaseOrchestrator } from '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator
 // Context7 MCP Server endpoints
 const MCP_ENDPOINTS = {
   wrapper: 'http://localhost:4000', // mcp-context7-wrapper.js
   legal: 'http://localhost:4001', // mcp-legal-server.mjs;
   extension: 'http://localhost:4002', // VS Code extension MCP
-}
+};
 // GET /api/context7 - Get Context7 system status
 export const GET: RequestHandler = async () => {
   try {

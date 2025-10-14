@@ -7,7 +7,7 @@
   let dialogOpen = false;
   let isGenerating = false;
 
-  const unsubscribe = aiStore.subscribe((state) => {
+  const unsubscribe = aiStore.subscribe(state => {
     dialogOpen = !!state?.dialogOpen;
     isGenerating = !!state?.isGenerating;
   });
@@ -15,14 +15,14 @@
   onDestroy(unsubscribe);
 
   function toggleDialog() {
-    aiStore.update((state) => ({ ...state, dialogOpen: !state.dialogOpen }));
+    aiStore.update(state => ({ ...state, dialogOpen: !state.dialogOpen }));
   }
 
   function handleAIRequest(event: CustomEvent<any>) {
     // e(vent as CustomEvent).detail contains the payload from the Dialog custom event
     const payload = e(vent as CustomEvent).detail;
     // forward or handle payload via the store
-    aiStore.update((state) => ({ ...state, lastRequest: payload }));
+    aiStore.update(state => ({ ...state, lastRequest: payload }));
   }
 </script>
 
@@ -38,7 +38,15 @@
   <span class="fab-icon" aria-hidden="true">
     {#if isGenerating}
       <!-- simple spinner that uses the existing @keyframes spin -->
-      <svg class="spinner" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        class="spinner"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
         <path d="M22 12a10 10 0 00-10-10" stroke-linecap="round"></path>
       </svg>

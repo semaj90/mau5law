@@ -9,9 +9,9 @@
  * - JSON parsing with simdjson-wasm
  * - Direct database insertion with pgvector
  */
-import { Worker } from "worker_threads";
-import path from "path";
-import os from "os";
+import { Worker } from 'worker_threads';
+import path from 'path';
+import os from 'os';
 
 // Define the expected successful result structure from a worker job
 interface JobResult {

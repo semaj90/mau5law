@@ -25,7 +25,7 @@ https://svelte.dev/e/expected_token -->
       characters: editorValue.length,
       charactersNoSpaces: editorValue.replace(/\s+/g, '').length,
       paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0,
-    }
+    };
   });
   function handleEditorChange(_value: string) {
     editorValue = value;

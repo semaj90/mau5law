@@ -8,13 +8,13 @@
   const handleSearchResults = (results: any[]) => {
     searchResults = result;
     selectedDocument = null;
-  }
+  };
   const viewDocument = (_document: any) => {
     selectedDocument = document;
-  }
+  };
   const closeDocument = () => {
     selectedDocument = null;
-  }
+  };
   const analyzeDocument = async (_document: any) => {
     isAnalyzing = true;
     try {
@@ -27,7 +27,7 @@
     } finally {
       isAnalyzing = false;
     }
-  }
+  };
   $effect(() => {
     // Set page title
     document.title = 'Legal AI Search - Deeds Platform';

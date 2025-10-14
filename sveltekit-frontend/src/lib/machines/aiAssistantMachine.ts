@@ -892,7 +892,7 @@ export const aiAssistantMachine = createMachine({
     conversationHistory: [],
     sessionId: `session_${Date.now()}_${Math.random().toString(36).substring(2)}`,
     // Enhanced AI Configuration with multi-model support
-    isProcessing: false
+    isProcessing: false,
     model: "gemma3-legal",
     temperature: 0.7,
     maxTokens: 2048,
@@ -903,8 +903,8 @@ export const aiAssistantMachine = createMachine({
     ],
     modelLoadBalancing: true
     // Enhanced Database Integration
-    databaseConnected: false
-    vectorSearchEnabled: false
+    databaseConnected: false,
+    vectorSearchEnabled: false,
     databasePerformance: {
       queryLatency: 0,
       connectionPool: { active: 0, idle: 0, waiting: 0 },
@@ -918,7 +918,7 @@ export const aiAssistantMachine = createMachine({
       rebuildProgress: 0
     },
     // Context7 Integration with enhanced caching
-    context7Available: false
+    context7Available: false,
     context7Cache: new Map(),
     // Multi-modal Processing with Web Workers and GPU
     currentDocuments: [],
@@ -944,8 +944,8 @@ export const aiAssistantMachine = createMachine({
     },
     circuitBreakers: new Map(),
     // Real-time Features with enhanced capabilities
-    natsConnected: false
-    activeStreaming: false
+    natsConnected: false,
+    activeStreaming: false,
     streamBuffer: "",
     collaborationUsers: [],
     liveDocumentSessions: new Map(),
@@ -983,19 +983,19 @@ export const aiAssistantMachine = createMachine({
       sampleCount: 0
     },
     cache: {
-      enabled: true
+      enabled: true,
       hitRate: 0,
       size: 0,
       maxSize: 1000,
       ttl: 3600,
-      vectorCacheEnabled: true
+      vectorCacheEnabled: true,
       l1Cache: { hits: 0, misses: 0, size: 0, maxSize: 100 * 1024 * 1024 }, // 100MB
       l2Cache: { hits: 0, misses: 0, size: 0, maxSize: 500 * 1024 * 1024 }, // 500MB
       l3Cache: { hits: 0, misses: 0, size: 0, maxSize: 2 * 1024 * 1024 * 1024 }, // 2GB Redis
       l4Cache: { hits: 0, misses: 0, size: 0, maxSize: 10 * 1024 * 1024 * 1024 }, // 10GB DB
       l5Cache: { hits: 0, misses: 0, size: 0, maxSize: 8 * 1024 * 1024 * 1024 }, // 8GB GPU
-      predictivePreloading: true
-      compressionEnabled: true
+      predictivePreloading: true,
+      compressionEnabled: true,
       compressionRatio: 0.3,
       evictionPolicy: 'ARC' as const,
       averageRetrievalTime: 0,
@@ -1006,13 +1006,13 @@ export const aiAssistantMachine = createMachine({
       missesPerSecond: 0,
       evictionsPerSecond: 0
     },
-    error: null
+    error: null,
     resourceMonitoring: {
       memoryPressure: 'low',
-      cpuThrottle: false
-      diskSpaceWarning: false
-      networkCongestion: false
-      thermalState: 'nominal'
+      cpuThrottle: false,
+      diskSpaceWarning: false,
+      networkCongestion: false,
+      thermalState: 'nominal',
     },
     benchmarkResults: {
       lastRun: new Date(),
@@ -1035,8 +1035,8 @@ export const aiAssistantMachine = createMachine({
     aiInteractions: [],
     multiModalAnalysis: [],
     realtimeInference: {
-      active: false
-      streamId: null
+      active: false,
+      streamId: null,
       tokensPerSecond: 0,
       currentModel: null
     },
@@ -1061,7 +1061,7 @@ export const aiAssistantMachine = createMachine({
     },
     // Security and Audit
     securityContext: {
-      userId: null
+      userId: null,
       permissions: [],
       securityLevel: 'standard',
       encryptionEnabled: true
@@ -1211,10 +1211,10 @@ export const aiAssistantMachine = createMachine({
           // Initialize performance monitoring
           const resourceMetrics: ResourceMetrics = {
             memoryPressure: memoryManager.getMemoryUsage() > 0.8 ? 'high' : 'low',
-            cpuThrottle: false
-            diskSpaceWarning: false
-            networkCongestion: false
-            thermalState: 'nominal'
+            cpuThrottle: false,
+            diskSpaceWarning: false,
+            networkCongestion: false,
+            thermalState: 'nominal',
           }
           // Setup circuit breakers for critical services
           const circuitBreakers = new Map<string, CircuitBreakerState>();
@@ -1311,7 +1311,7 @@ export const aiAssistantMachine = createMachine({
               message: `Initialization failed: ${(event as any).error}`,
               code: 'INIT_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -1482,8 +1482,8 @@ export const aiAssistantMachine = createMachine({
               const userEntry: ConversationEntry = {
                 id: `user_${Date.now()}`,
                 type: 'user',
-                content: query
-                timestamp: new Date()
+                content: query,
+                timestamp: new Date(),
               }
               let enhancedQuery = query;
               let context7Analysis: Context7Analysis | undefined;
@@ -1571,7 +1571,7 @@ export const aiAssistantMachine = createMachine({
                   message: `Query preparation failed: ${(event as any).error}`,
                   code: 'QUERY_PREP_FAILED',
                   type: 'processing',
-                  recoverable: true
+                  recoverable: true,
                   retryCount: 0,
                   timestamp: new Date()
                 })
@@ -1616,9 +1616,9 @@ export const aiAssistantMachine = createMachine({
               // Get service URL
               const serviceUrl = getServiceUrl(selectedService, selectedProtocol);
               return {
-                service: selectedService
-                protocol: selectedProtocol
-                url: serviceUrl
+                service: selectedService,
+                protocol: selectedProtocol,
+                url: serviceUrl,
                 isLegalQuery
               }
             }),
@@ -1639,7 +1639,7 @@ export const aiAssistantMachine = createMachine({
                   message: `Service selection failed: ${(event as any).error}`,
                   code: 'SERVICE_SELECTION_FAILED',
                   type: 'processing',
-                  recoverable: true
+                  recoverable: true,
                   retryCount: 0,
                   timestamp: new Date()
                 })
@@ -1661,8 +1661,8 @@ export const aiAssistantMachine = createMachine({
                   temperature,
                   maxTokens,
                   conversationHistory: conversationHistory.slice(-10),
-                  caseContext: caseContext || undefined
-                  protocol_hint: protocol
+                  caseContext: caseContext || undefined,
+                  protocol_hint: protocol,
                 }
                 let response;
                 // Use appropriate client based on protocol
@@ -1709,7 +1709,7 @@ export const aiAssistantMachine = createMachine({
                     tokenCount: responseData.tokenCount || 0,
                     context7Used: !!input.context7Analysis,
                     protocol,
-                    serviceEndpoint: service
+                    serviceEndpoint: service,
                     semanticScore: responseData.semanticScore || 0,
                     legalRelevance: responseData.legalRelevance || 0
                   }
@@ -1717,7 +1717,7 @@ export const aiAssistantMachine = createMachine({
                 // Store interaction in database if connected
                 const aiInteraction: Partial<AIInteraction> = {
                   sessionId: input.sessionId,
-                  prompt: query
+                  prompt: query,
                   response: assistantEntry.content,
                   model,
                   tokensUsed: responseData.tokenCount || 0,
@@ -1797,7 +1797,7 @@ export const aiAssistantMachine = createMachine({
                   message: `Response generation failed: ${(event as any).error}`,
                   code: 'RESPONSE_GENERATION_FAILED',
                   type: 'ai',
-                  recoverable: true
+                  recoverable: true,
                   retryCount: 0,
                   timestamp: new Date()
                 }),
@@ -1880,7 +1880,7 @@ export const aiAssistantMachine = createMachine({
               message: `Document processing failed: ${(event as any).error}`,
               code: 'DOCUMENT_PROCESSING_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             }),
@@ -1963,7 +1963,7 @@ export const aiAssistantMachine = createMachine({
               message: `Image processing failed: ${(event as any).error}`,
               code: 'IMAGE_PROCESSING_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             }),
@@ -2015,16 +2015,16 @@ export const aiAssistantMachine = createMachine({
                 }).then(r => r.ok ? r.json() : null)
               ]);
               analysisResult = {
-                semantic: semantic.status === 'fulfilled' ? semantic.value: null
-                legal: legal.status === 'fulfilled' ? legal.value : null
+                semantic: semantic.status === 'fulfilled' ? semantic.value: null,
+                legal: legal.status === 'fulfilled' ? legal.value : null,
               }
               break;
           }
           return {
             documentId,
             analysisType,
-            result: analysisResult
-            timestamp: new Date()
+            result: analysisResult,
+            timestamp: new Date(),
           }
         }),
         input,: ({ event }) => ({
@@ -2053,7 +2053,7 @@ export const aiAssistantMachine = createMachine({
               message: `Document analysis failed: ${(event as any).error}`,
               code: 'DOCUMENT_ANALYSIS_FAILED',
               type: 'ai',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2070,9 +2070,9 @@ export const aiAssistantMachine = createMachine({
             query,
             filters,
             semantic: {
-              useEmbeddings: true
-              expandConcepts: true
-              includeRelated: true
+              useEmbeddings: true,
+              expandConcepts: true,
+              includeRelated: true,
             }
           }
           const result = await semanticAnalyzer.enhancedQuery(ragQuery);
@@ -2099,7 +2099,7 @@ export const aiAssistantMachine = createMachine({
               message: `Semantic search failed: ${(event as any).error}`,
               code: 'SEMANTIC_SEARCH_FAILED',
               type: 'ai',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2114,10 +2114,10 @@ export const aiAssistantMachine = createMachine({
           const { embedding, filters } = input;
           // Direct vector search in Qdrant
           const searchPayload = {
-            vector: embedding
+            vector: embedding,
             limit: 20,
-            with_payload: true
-            score_threshold: filters?.confidenceThreshold || 0.7
+            with_payload: true,
+            score_threshold: filters?.confidenceThreshold || 0.7,
           }
           const response = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
             method: 'POST',
@@ -2153,7 +2153,7 @@ export const aiAssistantMachine = createMachine({
               message: `Vector search failed: ${(event as any).error}`,
               code: 'VECTOR_SEARCH_FAILED',
               type: 'database',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2171,8 +2171,8 @@ export const aiAssistantMachine = createMachine({
             query,
             jurisdiction: jurisdiction || 'federal',
             category: category || 'general',
-            includePrecedents: true
-            includeStatutes: true
+            includePrecedents: true,
+            includeStatutes: true,
           }
           const response = await fetch('http://localhost:8202/api/search/legal', {
             method: 'POST',
@@ -2210,7 +2210,7 @@ export const aiAssistantMachine = createMachine({
               message: `Legal search failed: ${(event as any).error}`,
               code: 'LEGAL_SEARCH_FAILED',
               type: 'ai',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2279,7 +2279,7 @@ export const aiAssistantMachine = createMachine({
               message: `Case context loading failed: ${(event as any).error}`,
               code: 'CASE_CONTEXT_FAILED',
               type: 'database',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2307,15 +2307,15 @@ export const aiAssistantMachine = createMachine({
           return {
             overall: healthStatus.overall,
             database: {
-              postgres: databaseHealth[0].status === 'fulfilled' ? databaseHealth[0].value: false
-              qdrant: databaseHealth[1].status === 'fulfilled' ? databaseHealth[1].value : false
-              neo4j: databaseHealth[2].status === 'fulfilled' ? databaseHealth[2].value : false
-              redis: databaseHealth[3].status === 'fulfilled' ? databaseHealth[3].value : false
+              postgres: databaseHealth[0].status === 'fulfilled' ? databaseHealth[0].value: false,
+              qdrant: databaseHealth[1].status === 'fulfilled' ? databaseHealth[1].value : false,
+              neo4j: databaseHealth[2].status === 'fulfilled' ? databaseHealth[2].value : false,
+              redis: databaseHealth[3].status === 'fulfilled' ? databaseHealth[3].value : false,
             },
             ai: {
-              ollama: aiHealth[0].status === 'fulfilled' ? aiHealth[0].value : false
-              enhanced_rag: aiHealth[1].status === 'fulfilled' ? aiHealth[1].value : false
-              context7: aiHealth[2].status === 'fulfilled' ? aiHealth[2].value : false
+              ollama: aiHealth[0].status === 'fulfilled' ? aiHealth[0].value : false,
+              enhanced_rag: aiHealth[1].status === 'fulfilled' ? aiHealth[1].value : false,
+              context7: aiHealth[2].status === 'fulfilled' ? aiHealth[2].value : false,
             },
             microservices: {
               available: Object.values(healthStatus.services).filter(item => item.length),
@@ -2404,7 +2404,7 @@ export const aiAssistantMachine = createMachine({
               message: `Context7 analysis failed: ${(event as any).error}`,
               code: 'CONTEXT7_ANALYSIS_FAILED',
               type: 'ai',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2446,7 +2446,7 @@ export const aiAssistantMachine = createMachine({
               message: `NATS connection failed: ${(event as any).error}`,
               code: 'NATS_CONNECTION_FAILED',
               type: 'network',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2482,7 +2482,7 @@ export const aiAssistantMachine = createMachine({
               message: `NATS disconnection failed: ${(event as any).error}`,
               code: 'NATS_DISCONNECTION_FAILED',
               type: 'network',
-              recoverable: false
+              recoverable: false,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2503,8 +2503,8 @@ export const aiAssistantMachine = createMachine({
               query,
               model,
               temperature,
-              stream: true
-              session_id: input.sessionId
+              stream: true,
+              session_id: input.sessionId,
             });
           }
           ws.onmessage = (_event: any) => {
@@ -2569,7 +2569,7 @@ export const aiAssistantMachine = createMachine({
                     temperature: context.temperature,
                     responseTime: 0,
                     tokenCount: context.streamBuffer.length / 4, // rough estimate
-                    context7Used: false
+                    context7Used: false,
                     protocol: 'websocket',
                     serviceEndpoint: 'enhanced-rag'
                   }
@@ -2684,7 +2684,7 @@ export const aiAssistantMachine = createMachine({
               message: `Benchmark failed: ${(event as any).error}`,
               code: 'BENCHMARK_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2716,8 +2716,8 @@ export const aiAssistantMachine = createMachine({
           return {
             optimizationTime,
             memoryFreed: 50000000, // Estimate 50MB freed
-            cacheOptimized: true
-            gpuOptimized: gpuProcessor.isAvailable()
+            cacheOptimized: true,
+            gpuOptimized: gpuProcessor.isAvailable(),
           }
         }),
         onDone,: {
@@ -2745,7 +2745,7 @@ export const aiAssistantMachine = createMachine({
               message: `Resource optimization failed: ${(event as any).error}`,
               code: 'OPTIMIZATION_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2815,7 +2815,7 @@ export const aiAssistantMachine = createMachine({
               message: `Batch analysis failed: ${(event as any).error}`,
               code: 'BATCH_ANALYSIS_FAILED',
               type: 'processing',
-              recoverable: true
+              recoverable: true,
               retryCount: 0,
               timestamp: new Date()
             })
@@ -2879,7 +2879,7 @@ export const aiAssistantMachine = createMachine({
               message: `Memory cleanup failed: ${(event as any).error}`,
               code: 'MEMORY_CLEANUP_FAILED',
               type: 'processing',
-              recoverable: false
+              recoverable: false,
               retryCount: 0,
               timestamp: new Date()
             })

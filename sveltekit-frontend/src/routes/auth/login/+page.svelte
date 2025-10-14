@@ -18,9 +18,10 @@
   // Make formError reactive so assignments inside $effect trigger updates
   let formError = $state<string | null>(null);
   $effect(() => {
-    formError = isFormWithError(form) && typeof (form as any).error === 'string' && (form as any).error.length > 0
-      ? (form as any).error
-      : null;
+    formError =
+      isFormWithError(form) && typeof (form as any).error === 'string' && (form as any).error.length > 0
+        ? (form as any).error
+        : null;
   });
 
   let isLoading = $state(false);
@@ -59,7 +60,7 @@
             if ((result as { type?: unknown }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
-          }
+          };
         }}
         class="space-y-4"
       >

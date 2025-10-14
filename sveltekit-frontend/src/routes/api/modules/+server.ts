@@ -131,10 +131,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           status: 'switched',
-          newModule: toModule
+          newModule: toModule,
           capabilities: targetModule.capabilities,
           switchTime: `${switchTime.toFixed(1)}ms`,
-          preservedSession: preserveSession
+          preservedSession: preserveSession,
           metadata: {
             userId,
             switchedAt: Date.now(),
@@ -180,8 +180,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'module-manager',
       status: 'operational',
-      active: activeModules
-      available: allModules
+      active: activeModules,
+      available: allModules,
       stats: {
         totalModules: allModules.length,
         activeModules: activeModules.length,

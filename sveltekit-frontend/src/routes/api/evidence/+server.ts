@@ -59,7 +59,7 @@ export interface EvidenceData {
  */
 const createFallbackAnalysis = (
   evidence: EvidenceData,
-  options: { useGPUAcceleration?: boolean } = {},
+  options: { useGPUAcceleration?: boolean } = {}
 ): AIAnalysis => ({
   id: randomUUID(),
   model: options.useGPUAcceleration ? 'fallback-gpu' : 'fallback',
@@ -76,18 +76,18 @@ const createFallbackAnalysis = (
 });
 const ollamaService = {
   async generateCompletion(_: any) {
-    return { response: JSON.stringify({ confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) }
+    return { response: JSON.stringify({ confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) };
   },
   async generateEmbedding(_: any) {
-    return { embedding: [] as number[] }
+    return { embedding: [] as number[] };
   },
-}
+};
 function getEmbeddingRepository() {
   return {
     async enqueueIngestion(_: any) {
-      return { jobId: `job_${Date.now()}` }
+      return { jobId: `job_${Date.now()}` };
     },
-  }
+  };
 }
 class EvidenceAIService {
   private static instance: EvidenceAIService;
@@ -108,7 +108,7 @@ class EvidenceAIService {
       fileType: evidenceData.fileType,
       location: evidenceData.location,
       collectedBy: evidenceData.collectedBy,
-    }
+    };
     try {
       let analysisResult: any = null;
       // Try GPU-accelerated external service first if requested
@@ -162,7 +162,7 @@ class EvidenceAIService {
               keywords: context.tags,
               relationships: [],
               classification: 'evidence_analysis',
-            }
+            };
           }
         } catch (err: any) {
           console.warn('Fallback completion failed:', err);
@@ -173,7 +173,7 @@ class EvidenceAIService {
             keywords: context.tags,
             relationships: [],
             classification: 'fallback_analysis',
-          }
+          };
         }
       }
       const processingTime = Date.now() - startTime;
@@ -190,7 +190,7 @@ class EvidenceAIService {
         timestamp: new Date(),
         processingTime,
         gpuAccelerated: Boolean(options.useGPUAcceleration),
-      }
+      };
     } catch (error: any) {
       console.error('Evidence AI analysis failed:', error);
       return {
@@ -206,7 +206,7 @@ class EvidenceAIService {
         timestamp: new Date(),
         processingTime: Date.now() - startTime,
         gpuAccelerated: false,
-      }
+      };
     }
   }
   // Generate an embedding for a piece of text (stub-safe implementation)
@@ -251,11 +251,11 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: 'caseId parameter is required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     // Use the case management service for fetching evidence
-    const filters: any = { caseId }
+    const filters: any = { caseId };
     if (evidenceType) filters.evidenceType = evidenceType;
     if (analyzed !== null) filters.analyzed = analyzed === 'true';
     if (search) filters.search = search;
@@ -332,12 +332,12 @@ export const GET: RequestHandler = async ({ url }) => {
           search: url.searchParams.get('search'),
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
-  let evidenceData: any = {}
+  let evidenceData: any = {};
   try {
     evidenceData = await request.json();
     // Validate required fields
@@ -348,7 +348,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'caseId, title, and evidenceType are required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     // Create evidence record using case management service
@@ -380,7 +380,7 @@ export const POST: RequestHandler = async ({ request }) => {
           notify: false,
           saveIntermediateResults: true,
           overrideExisting: false,
-        }
+        };
         aiAnalysisResult = await evidenceAI.analyzeEvidence(newEvidence as any, analysisOptions);
         // Trigger detective analysis in the background
         setTimeout(async () => {
@@ -404,7 +404,7 @@ export const POST: RequestHandler = async ({ request }) => {
             aiAnalysis: aiAnalysisResult,
           },
         },
-        { status: 201 },
+        { status: 201 }
       );
     }
     return json(
@@ -416,7 +416,7 @@ export const POST: RequestHandler = async ({ request }) => {
           detectiveMode: false,
         },
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error: any) {
     console.error('Error creating evidence:', error);
@@ -448,10 +448,10 @@ export const POST: RequestHandler = async ({ request }) => {
           mockData: true,
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 // Enhanced evidence processing endpoint
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
@@ -462,7 +462,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Evidence ID is required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     switch (action) {
@@ -500,7 +500,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
               success: false,
               error: 'Analysis failed',
             },
-            { status: 500 },
+            { status: 500 }
           );
         }
       }
@@ -513,7 +513,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
                 success: false,
                 error: 'Update data is required',
               },
-              { status: 400 },
+              { status: 400 }
             );
           }
           const updatedEvidence = await caseManagementService.updateEvidence(evidenceId, updateData);
@@ -528,7 +528,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
               success: false,
               error: 'Update failed',
             },
-            { status: 500 },
+            { status: 500 }
           );
         }
       }
@@ -538,7 +538,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             success: false,
             error: `Unknown action: ${action}`,
           },
-          { status: 400 },
+          { status: 400 }
         );
     }
   } catch (error: any) {
@@ -566,18 +566,18 @@ export const PATCH: RequestHandler = async ({ request }) => {
           mockData: true,
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 // Add PUT and DELETE handlers for individual evidence items
 export const PUT: RequestHandler = async ({ request }) => {
   let id: string = '';
-  let updateData: any = {}
+  let updateData: any = {};
   try {
     const requestData = await request.json();
     id = requestData.id;
-    updateData = { ...requestData }
+    updateData = { ...requestData };
     delete updateData.id;
     if (!id) {
       return json(
@@ -585,7 +585,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Evidence ID is required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const evidence = await caseManagementService.updateEvidence(id, updateData);
@@ -610,10 +610,10 @@ export const PUT: RequestHandler = async ({ request }) => {
           mockData: true,
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};
 export const DELETE: RequestHandler = async ({ request }) => {
   let id: string = '';
   try {
@@ -625,7 +625,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Evidence ID is required',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
     await caseManagementService.deleteEvidence(id);
@@ -643,7 +643,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         deletedId: id || 'mock-evidence-id',
         mockData: true,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
-}
+};

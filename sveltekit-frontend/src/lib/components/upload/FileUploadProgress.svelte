@@ -22,26 +22,25 @@
 
   // Simplified derived values - no need for $derived.by()
   let progressVariant = $derived(
-    status === 'completed' ? 'success' :
-    status === 'error' ? 'error' :
-    status === 'paused' ? 'warning' :
-    variant === 'yorha' ? 'yorha' :
-    variant === 'legal' ? 'legal' :
-    'info'
+    status === 'completed'
+      ? 'success'
+      : status === 'error'
+        ? 'error'
+        : status === 'paused'
+          ? 'warning'
+          : variant === 'yorha'
+            ? 'yorha'
+            : variant === 'legal'
+              ? 'legal'
+              : 'info'
   );
 
   let badgeVariant = $derived(
-    status === 'completed' ? 'success' :
-    status === 'error' ? 'destructive' :
-    status === 'paused' ? 'warning' :
-    'info'
+    status === 'completed' ? 'success' : status === 'error' ? 'destructive' : status === 'paused' ? 'warning' : 'info'
   );
 
   let statusText = $derived(
-    status === 'completed' ? 'Completed' :
-    status === 'error' ? 'Failed' :
-    status === 'paused' ? 'Paused' :
-    'Uploading'
+    status === 'completed' ? 'Completed' : status === 'error' ? 'Failed' : status === 'paused' ? 'Paused' : 'Uploading'
   );
 </script>
 
@@ -63,13 +62,7 @@
   </div>
 
   <!-- Progress Bar -->
-  <Progress
-    value={progress}
-    variant={progressVariant}
-    {showPercentage}
-    size="default"
-    class="mb-2"
-  />
+  <Progress value={progress} variant={progressVariant} {showPercentage} size="default" class="mb-2" />
 
   <!-- Additional Info -->
   {#if status === 'error'}

@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from "@sveltejs/kit"
-import { ollamaService } from "$lib/services/ollama-service"
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { ollamaService } from '$lib/services/ollama-service';
+import type { RequestHandler } from './$types.js';
 
 interface SearchResultItem {
   id: string;
@@ -153,7 +153,8 @@ try {
         const def = (mod as Record<string, unknown>)['default'];
         if (typeof def === 'function') {
           aiService = {
-            generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await (def as AnyFunction)(q, opts)),
+            generateResponse: async (q: string, opts?: Record<string, unknown>) =>
+              String(await (def as AnyFunction)(q, opts)),
           };
         } else {
           const defBound = getBoundFn(def, 'generateResponse');
@@ -198,8 +199,7 @@ try {
   };
 
   // Helper that mirrors previous hasFunc semantics but without `any`
-  const hasFunc = (obj: Record<string, unknown> | undefined, name: string) =>
-    Boolean(getBoundFunction(obj, name));
+  const hasFunc = (obj: Record<string, unknown> | undefined, name: string) => Boolean(getBoundFunction(obj, name));
 
   // 1) shape: { cache: { get, set } }
   if (hasFunc(cm, 'cache')) {

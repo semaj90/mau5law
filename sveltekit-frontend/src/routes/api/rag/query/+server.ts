@@ -75,10 +75,10 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     const ragQuery: RAGQuery = {
       query: query.trim(),
       userId,
-      caseId: caseId || undefined
-      documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined
-      jurisdiction: jurisdiction || undefined
-      practiceArea: practiceArea || undefined
+      caseId: caseId || undefined,
+      documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined,
+      jurisdiction: jurisdiction || undefined,
+      practiceArea: practiceArea || undefined,
       maxResults: Math.min(maxResults, 20), // Cap at 20 results
       useReranking,
       includeMetadata,
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     }
     return json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()

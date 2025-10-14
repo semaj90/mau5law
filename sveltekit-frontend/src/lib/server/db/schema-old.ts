@@ -4,7 +4,7 @@
 export * from '$lib/server/db/schema-postgres';
 // For any legacy imports that might be needed
 import { cases, evidence, users, sessions } from '$lib/server/db/schema-postgres';
-export { cases, evidence, users, sessions }
+export { cases, evidence, users, sessions };
 // Legacy table aliases for backward compatibility
 export const caseLawLinks = cases; // Placeholder
 export const lawParagraphs = cases; // Placeholder

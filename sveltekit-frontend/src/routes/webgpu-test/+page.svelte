@@ -45,7 +45,7 @@
       const startCPU = performance.now();
       const cpuResult = webgpuPolyfill['computeSimilarityCPU'](vector1, vector2);
       const cpuTime = performance.now() - startCPU;
-      testResults = { cpu: cpuResult }
+      testResults = { cpu: cpuResult };
       // Test WebGPU if available
       try {
         const startGPU = performance.now();
@@ -66,7 +66,7 @@
       testResults = {
         cpu: 0,
         error: error instanceof Error ? error.message : 'Test failed',
-      }
+      };
     } finally {
       isRunning = false;
     }

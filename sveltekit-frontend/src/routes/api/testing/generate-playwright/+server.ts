@@ -1,30 +1,30 @@
-import { writeFileSync } from "fs"
-import type { RequestHandler } from './$types.js'
+import { writeFileSync } from 'fs';
+import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { testResults, filename } = await request.json()
+    const { testResults, filename } = await request.json();
     if (!testResults || !filename) {
-      throw error(400, 'Missing test results or filename')
+      throw error(400, 'Missing test results or filename');
     }
-    console.log(`Generating Playwright tests for ${filename}...`)
+    console.log(`Generating Playwright tests for ${filename}...`);
     // Generate comprehensive Playwright test file
-    const playwrightTestContent = generatePlaywrightTestFile(testResults)
+    const playwrightTestContent = generatePlaywrightTestFile(testResults);
     // Generate todo file with SOM clustering analysis
-    const todoContent = generateTodoSOMFile(testResults)
+    const todoContent = generateTodoSOMFile(testResults);
     // Write the todo file
-    const todoFilePath = join(process.cwd(), filename)
-    writeFileSync(todoFilePath, todoContent)
+    const todoFilePath = join(process.cwd(), filename);
+    writeFileSync(todoFilePath, todoContent);
     // Generate additional test files
-    const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts')
-    writeFileSync(testFilePath, playwrightTestContent)
+    const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts');
+    writeFileSync(testFilePath, playwrightTestContent);
     const result = {
       success: true,
       generatedAt: new Date().toISOString(),
       files: {
-        todoFile: filename
-        todoPath: todoFilePath
+        todoFile: filename,
+        todoPath: todoFilePath,
         testFile: 'tests/generated-legal-ai-workflow.spec.ts',
-        testPath: testFilePath
+        testPath: testFilePath,
       },
       // Test generation summary
       summary: {
@@ -35,31 +35,31 @@ export const POST: RequestHandler = async ({ request }) => {
           'Enhanced RAG Processing',
           'SOM/K-means Clustering',
           'PostgreSQL pgai Integration',
-          'Performance and Load Testing'
+          'Performance and Load Testing',
         ],
         estimatedRunTime: calculateEstimatedRunTime(testResults),
-        coverage: assessTestCoverage(testResults)
+        coverage: assessTestCoverage(testResults),
       },
       // Generated content preview;
       preview: {
         todoLines: todoContent.split('\n').length,
         testLines: playwrightTestContent.split('\n').length,
         firstTodoItems: todoContent.split('\n').slice(0, 10),
-        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
-      }
-    }
-    return json(result)
+        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent),
+      },
+    };
+    return json(result);
   } catch (err: any) {
-    console.error('Playwright test generation error:', err)
-    throw error(500, `Test generation failed: ${err.message}`)
+    console.error('Playwright test generation error:', err);
+    throw error(500, `Test generation failed: ${err.message}`);
   }
-}
+};
 function generateTodoSOMFile(testResults: any): string {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-  const ocr = testResults.ocrResults || []
-  const simd = testResults.simdResults || {}
-  const clustering = testResults.clusteringResults || {}
-  const rag = testResults.ragRecommendations || []
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const ocr = testResults.ocrResults || [];
+  const simd = testResults.simdResults || {};
+  const clustering = testResults.clusteringResults || {};
+  const rag = testResults.ragRecommendations || [];
   return `# TODO SOM Analysis - Generated ${timestamp}
 # Legal AI Processing Pipeline Analysis and Action Items
 ## 📊 PROCESSING RESULTS SUMMARY
@@ -132,17 +132,17 @@ function generateTodoSOMFile(testResults: any): string {
 ## 🧠 SOM (SELF-ORGANIZING MAP) ANALYSIS
 ==========================================
 ### Cluster Analysis Results:
-${clustering.suggestions?.map((suggestion: string, index: number) =>
-  `- Cluster ${index + 1}: "${suggestion}" - Legal concept clustering`
-).join('\n') || '- No clustering data available'}
+${
+  clustering.suggestions
+    ?.map((suggestion: string, index: number) => `- Cluster ${index + 1}: "${suggestion}" - Legal concept clustering`)
+    .join('\n') || '- No clustering data available'
+}
 ### Recommendations Based on SOM Analysis:
 1. **Document Type Clustering**: Identified ${clustering.kmeansClusters || 0} distinct document categories
 2. **Semantic Similarity**: ${clustering.accuracy || 0}% accuracy in grouping similar legal concepts
 3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : 'No significant anomalies detected'}
 ### "Did You Mean" Functionality:
-${clustering.suggestions?.map((suggestion: string) =>
-  `- "${suggestion}"`
-).join('\n') || '- No suggestions generated'}
+${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated'}
 ## 🔧 TECHNICAL IMPLEMENTATION TODOS
 ====================================
 ### [ ] DATABASE & BACKEND
@@ -224,7 +224,7 @@ Completed: ${countCompletedItems()}
 In Progress: ${countInProgressItems()}
 Remaining: ${countRemainingItems()}
 🔄 This file will be automatically updated after each processing pipeline run.
-`
+`;
 }
 function generatePlaywrightTestFile(testResults: any): string {
   return `{ test, expect, Page } from "@playwright/test"
@@ -490,17 +490,17 @@ async function measureProcessingTime(page: Page, operation: () => Promise<void>)
   const startTime = Date.now()
   await operation()
   return Date.now() - startTime
-}`
+}`;
 }
 function countGeneratedTests(testContent: string): number {
-  const testMatches = testContent.match(/test\(/g)
-  return testMatches ? testMatches.length: 0
+  const testMatches = testContent.match(/test\(/g);
+  return testMatches ? testMatches.length : 0;
 }
 function calculateEstimatedRunTime(testResults: any): string {
   const testCount = 20; // Approximate number of tests
   const avgTestTime = 15; // seconds per test
-  const totalMinutes = Math.ceil(testCount * avgTestTime / 60)
-  return `${totalMinutes} minutes`
+  const totalMinutes = Math.ceil((testCount * avgTestTime) / 60);
+  return `${totalMinutes} minutes`;
 }
 function assessTestCoverage(testResults: any): unknown {
   return {
@@ -511,8 +511,8 @@ function assessTestCoverage(testResults: any): unknown {
     pgaiIntegration: '85%',
     errorHandling: '90%',
     performance: '87%',
-    overall: '89%'
-  }
+    overall: '89%',
+  };
 }
 function extractKeyTestScenarios(testContent: string): string[] {
   const scenarios = [
@@ -524,9 +524,9 @@ function extractKeyTestScenarios(testContent: string): string[] {
     'PostgreSQL pgai Integration',
     'Performance Load Testing',
     'Error Handling and Recovery',
-    'Accessibility Compliance'
-  ]
-  return scenarios
+    'Accessibility Compliance',
+  ];
+  return scenarios;
 }
 function countTodoItems(): number {
   return 15; // Approximate count

@@ -100,12 +100,7 @@
         </div>
         <nav class="header-nav">
           {#each navigationItems as item (item.href)}
-            <a
-              href={item.href}
-              class="nav-item"
-              class:active={currentPath === item.href}
-              aria-label={item.label}
-            >
+            <a href={item.href} class="nav-item" class:active={currentPath === item.href} aria-label={item.label}>
               <span class="nav-icon">{item.icon}</span>
               <span class="nav-label">{item.label}</span>
             </a>
@@ -164,14 +159,14 @@
     position: relative;
     background: var(--nes-bg-color, #fff);
   }
-  .enhanced-layout[data-variant="yorha"] {
+  .enhanced-layout[data-variant='yorha'] {
     background: #000;
     color: #f0f0f0;
   }
-  .enhanced-layout[data-variant="minimal"] {
+  .enhanced-layout[data-variant='minimal'] {
     background: #f8f9fa;
   }
-  .enhanced-layout[data-variant="admin"] {
+  .enhanced-layout[data-variant='admin'] {
     background: #f4f4f4;
   }
   .layout-header {
@@ -182,7 +177,7 @@
     top: 0;
     z-index: 100;
   }
-  .enhanced-layout[data-variant="yorha"] .layout-header {
+  .enhanced-layout[data-variant='yorha'] .layout-header {
     background: #1a1a1a;
     border-bottom-color: #ffd700;
   }
@@ -230,7 +225,7 @@
   .nav-item:hover {
     background: rgba(0, 0, 0, 0.1);
   }
-  .enhanced-layout[data-variant="yorha"] .nav-item:hover {
+  .enhanced-layout[data-variant='yorha'] .nav-item:hover {
     background: rgba(255, 215, 0, 0.2);
     color: #ffd700;
   }
@@ -238,7 +233,7 @@
     background: var(--nes-primary-color, #000);
     color: #fff;
   }
-  .enhanced-layout[data-variant="yorha"] .nav-item.active {
+  .enhanced-layout[data-variant='yorha'] .nav-item.active {
     background: #ffd700;
     color: #000;
   }

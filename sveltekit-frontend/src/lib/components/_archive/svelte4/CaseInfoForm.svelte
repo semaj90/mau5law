@@ -7,7 +7,10 @@ https://svelte.dev/e/js_parse_error -->
   import { fade } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
 
-  interface KeyDate { date: string; description: string }
+  interface KeyDate {
+    date: string;
+    description: string;
+  }
   interface FormData {
     title: string;
     client_name: string;
@@ -26,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     jurisdiction: '',
     priority: 'low',
     description: '',
-    key_dates: []
+    key_dates: [],
   };
 
   const dispatch = createEventDispatcher();
@@ -43,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
     'Employment Law',
     'Personal Injury',
     'Contract Dispute',
-    'Administrative Law'
+    'Administrative Law',
   ];
   // Jurisdiction options
   const jurisdictions = [
@@ -55,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     'Arbitration',
     'Mediation',
     'Administrative Agency',
-    'International'
+    'International',
   ];
   function validateForm() {
     validationErrors = {};
@@ -93,11 +96,16 @@ https://svelte.dev/e/js_parse_error -->
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'low': return 'bg-green-100 text-green-800 border-green-300';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'urgent': return 'bg-red-100 text-red-800 border-red-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-300';
+      case 'urgent':
+        return 'bg-red-100 text-red-800 border-red-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getPriorityLabel(priority: string) {
@@ -115,9 +123,7 @@ https://svelte.dev/e/js_parse_error -->
   <form on:submit|preventDefault={handleNext} class="space-y-6">
     <!-- Case Title -->
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-        Case Title *
-      </label>
+      <label for="title" class="block text-sm font-medium text-gray-700 mb-2"> Case Title * </label>
       <input
         id="title"
         type="text"
@@ -132,9 +138,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Client Name -->
     <div>
-      <label for="client_name" class="block text-sm font-medium text-gray-700 mb-2">
-        Client Name *
-      </label>
+      <label for="client_name" class="block text-sm font-medium text-gray-700 mb-2"> Client Name * </label>
       <input
         id="client_name"
         type="text"
@@ -150,9 +154,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Case Type and Priority Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label for="case_type" class="block text-sm font-medium text-gray-700 mb-2">
-          Case Type *
-        </label>
+        <label for="case_type" class="block text-sm font-medium text-gray-700 mb-2"> Case Type * </label>
         <select
           id="case_type"
           bind:value={formData.case_type}
@@ -169,9 +171,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div>
-        <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
-          Priority Level
-        </label>
+        <label for="priority" class="block text-sm font-medium text-gray-700 mb-2"> Priority Level </label>
         <select
           id="priority"
           bind:value={formData.priority}
@@ -184,7 +184,9 @@ https://svelte.dev/e/js_parse_error -->
         </select>
         <div class="mt-2">
           <!-- merged static classes + dynamic color classes into one class attribute -->
-          <span class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(formData.priority)}`}>
+          <span
+            class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(formData.priority)}`}
+          >
             {getPriorityLabel(formData.priority)} Priority
           </span>
         </div>
@@ -193,9 +195,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Jurisdiction -->
     <div>
-      <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2">
-        Jurisdiction *
-      </label>
+      <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2"> Jurisdiction * </label>
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
@@ -213,9 +213,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Case Description -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-        Case Description *
-      </label>
+      <label for="description" class="block text-sm font-medium text-gray-700 mb-2"> Case Description * </label>
       <textarea
         id="description"
         bind:value={formData.description}
@@ -230,9 +228,10 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Actions -->
     <div class="flex justify-end gap-2">
-      <button type="button" on:click={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 border">Save Draft</button>
+      <button type="button" on:click={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 border"
+        >Save Draft</button
+      >
       <button type="submit" class="px-4 py-2 rounded-md bg-blue-600 text-white">Next</button>
     </div>
-
   </form>
 </div>

@@ -289,6 +289,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     }
   }
 </script>
+
 <DiamondModal bind:open title="💼 Work History & Time Tracking" size="large">
   <div class="work-history-modal">
     <!-- Header Stats & Controls -->
@@ -331,9 +332,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         </select>
         <!-- Timer Control -->
         {#if activeTimer}
-          <button class="timer-btn active" onclick={stopTimer}>
-            ⏱️ Stop Timer
-          </button>
+          <button class="timer-btn active" onclick={stopTimer}> ⏱️ Stop Timer </button>
         {:else}
           <div class="timer-status">
             {isRecordingTime ? '⏱️ Timer Active' : '⏱️ Timer Ready'}
@@ -357,11 +356,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       {:else}
         {#each filteredWork as workItem (workItem.id)}
           <div
-            class="work-item";
+            class="work-item"
+            ;
             class:active={selectedWork?.id === workItem.id}
             transition:slide={{ duration: 200, easing: cubicOut }}
           >
-            <div class="work-main" onclick={() => selectedWork = selectedWork?.id === workItem.id ? null : workItem}>
+            <div class="work-main" onclick={() => (selectedWork = selectedWork?.id === workItem.id ? null : workItem)}>
               <div class="work-header">
                 <div class="work-type-icon">{getTypeIcon(workItem.type)}</div>
                 <div class="work-info">
@@ -378,7 +378,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div class="progress-bar">
                       <div
                         class="progress-fill"
-                        style="width: {workItem.progress * 100}%; background-color: {getProgressColor(workItem.progress)}"
+                        style="width: {workItem.progress * 100}%; background-color: {getProgressColor(
+                          workItem.progress
+                        )}"
                       ></div>
                     </div>
                     <span class="progress-text">{Math.round(workItem.progress * 100)}%</span>
@@ -387,7 +389,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   <div class="status-time">
                     <span
                       class="status-badge"
-                      style="background-color: {getStatusColor(workItem.status)}20; border-color: {getStatusColor(workItem.status)}"
+                      style="background-color: {getStatusColor(workItem.status)}20; border-color: {getStatusColor(
+                        workItem.status
+                      )}"
                     >
                       {workItem.status.replace('-', ' ')}
                     </span>
@@ -413,11 +417,17 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       {#each workItem.activities.slice(0, 5) as activity}
                         <div class="activity-item">
                           <div class="activity-icon">
-                            {activity.action === 'opened' ? '👁️' :
-                             activity.action === 'edited' ? '✏️' :
-                             activity.action === 'reviewed' ? '👀' :
-                             activity.action === 'commented' ? '💬' :
-                             activity.action === 'shared' ? '📤' : '✅'}
+                            {activity.action === 'opened'
+                              ? '👁️'
+                              : activity.action === 'edited'
+                                ? '✏️'
+                                : activity.action === 'reviewed'
+                                  ? '👀'
+                                  : activity.action === 'commented'
+                                    ? '💬'
+                                    : activity.action === 'shared'
+                                      ? '📤'
+                                      : '✅'}
                           </div>
                           <div class="activity-content">
                             <div class="activity-description">
@@ -444,12 +454,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   {/if}
                   <!-- Action Buttons -->
                   <div class="work-actions">
-                    <button
-                      class="action-btn primary"
-                      onclick={() => openWorkItem(workItem)}
-                    >
-                      📂 Open Item
-                    </button>
+                    <button class="action-btn primary" onclick={() => openWorkItem(workItem)}> 📂 Open Item </button>
                     <button
                       class="action-btn secondary"
                       onclick={() => startTimer(workItem.id)}
@@ -481,6 +486,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     </div>
   </div>
 </DiamondModal>
+
 <style>
   .work-history-modal {
     max-height: 85vh;

@@ -90,7 +90,7 @@ export async function getDatabaseHealth(): Promise<any> {
     `;
     const uptime = uptimeResult[0]?.uptime;
     return {
-      connected: true
+      connected: true,
       pgvectorEnabled,
       tablesCount,
       version,
@@ -99,8 +99,8 @@ export async function getDatabaseHealth(): Promise<any> {
   } catch (error) {
     console.error('Database health check failed:', error);
     return {
-      connected: false
-      pgvectorEnabled: false
+      connected: false,
+      pgvectorEnabled: false,
       tablesCount: 0,
       version: 'Unknown'
     }
@@ -110,7 +110,7 @@ export async function getDatabaseHealth(): Promise<any> {
 export class VectorOperations {
   /**
    * Calculate cosine similarity between two vectors
-   */;
+   */
   static async cosineSimilarity(vector1: number[], vector2: number[]): Promise<number> {
     try {
       const result = await client`
@@ -126,9 +126,9 @@ export class VectorOperations {
    * Find similar vectors using cosine distance
    */
   static async findSimilarVectors(
-    tableName: string
-    vectorColumn: string
-    queryVector: number[]
+    tableName: string,
+    vectorColumn: string,
+    queryVector: number[],
     limit: number = 10,
     threshold: number = 0.7;
   ): Promise<any[]> {

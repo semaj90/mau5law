@@ -29,7 +29,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   function getStageStatus(
     stageId: string,
     currentStage: string,
-    currentProgress: number,
+    currentProgress: number
   ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
     const stageIndex = getStageIndex(stageId);

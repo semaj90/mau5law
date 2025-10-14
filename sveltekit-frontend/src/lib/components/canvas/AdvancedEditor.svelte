@@ -14,12 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // destructure props (provide defaults)
-  let {
-    content = [],
-    height = '400px',
-    placeholder = 'Start writing...',
-    onchange
-  }: Props = $props();
+  let { content = [], height = '400px', placeholder = 'Start writing...', onchange }: Props = $props();
 
   let editorElement: HTMLElement;
   let editor: any;
@@ -41,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
 
       // handle children
       if ((node as any).children && Array.isArray((node as any).children)) {
-        const childText = ((node as any).children as ContentNode[]).map((c) => nodeToMd(c)).join('');
+        const childText = ((node as any).children as ContentNode[]).map(c => nodeToMd(c)).join('');
         switch ((node as any).type) {
           case 'paragraph':
             return childText + '\n\n';
@@ -70,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
       return '';
     };
 
-    return nodes.map((n) => nodeToMd(n)).join('');
+    return nodes.map(n => nodeToMd(n)).join('');
   }
 
   // Convert markdown to ContentNode array (simplified)
@@ -100,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
         nodes.push({
           type: 'heading',
           level,
-          children: [{ type: 'text', text }]
+          children: [{ type: 'text', text }],
         } as any);
         continue;
       }
@@ -110,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
         const text = line.replace(/^[-*]\s*/, '');
         nodes.push({
           type: 'list-item',
-          children: [{ type: 'text', text }]
+          children: [{ type: 'text', text }],
         } as any);
         continue;
       }
@@ -120,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
         const text = line.replace(/^>\s*/, '');
         nodes.push({
           type: 'blockquote',
-          children: [{ type: 'text', text }]
+          children: [{ type: 'text', text }],
         } as any);
         continue;
       }
@@ -129,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!currentParagraph) {
         currentParagraph = {
           type: 'paragraph',
-          children: []
+          children: [],
         } as any;
       }
 
@@ -177,18 +172,18 @@ https://svelte.dev/e/js_parse_error -->
         ['ul', 'ol', 'task', 'indent', 'outdent'],
         ['table', 'image', 'link'],
         ['code', 'codeblock'],
-        ['scrollSync']
+        ['scrollSync'],
       ],
       hooks: {
         addImageBlobHook: (blob: Blob, callback: (url: string, alt?: string) => void) => {
           // Handle image upload
           const reader = new FileReader();
-          reader.onload = (e) => {
+          reader.onload = e => {
             callback(e.target?.result as string, 'Uploaded image');
           };
           reader.readAsDataURL(blob);
-        }
-      }
+        },
+      },
     });
 
     // Listen for content changes

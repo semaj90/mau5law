@@ -32,7 +32,7 @@
         evidence: 'nes-container with-title is-dark',
         case: 'nes-container with-title',
         dark: 'nes-container with-title is-dark',
-      }
+      };
       classes.push(nesVariants[variant] || nesVariants.default);
     } else {
       // Modern styled card
@@ -100,7 +100,7 @@
     padding-top: 1rem;
     margin-top: 1rem;
   }
-/* NES.css override for better spacing */
+  /* NES.css override for better spacing */
   :global(.nes-container.with-title) {
     margin: 1rem 0;
   }

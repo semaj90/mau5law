@@ -24,8 +24,8 @@ class UserActivityDetector {
     idleTimeMs: 0,
     interactionCount: 0,
     activityScore: 0,
-    isActive: true
-    sessionStartTime: Date.now()
+    isActive: true,
+    sessionStartTime: Date.now(),
   });
   private eventHistory: ActivityEvent[] = [];
   private idleThreshold = 30000; // 30 seconds
@@ -72,7 +72,7 @@ class UserActivityDetector {
     const now = Date.now();
     // Create activity event
     const activityEvent: ActivityEvent = {
-      type: eventType
+      type: eventType,
       timestamp: now;
       target: event?.target ? (event.target as Element).tagName: undefined
     }
@@ -86,7 +86,7 @@ class UserActivityDetector {
       const timeSinceLastActivity = now - metrics.lastActivity;
       return {
         ...metrics,
-        lastActivity: now
+        lastActivity: now,
         idleTimeMs: 0,
         interactionCount: metrics.interactionCount + 1,
         activityScore: this.calculateActivityScore(),
@@ -120,7 +120,7 @@ class UserActivityDetector {
         const isActive = idleTime < this.idleThreshold;
         return {
           ...metrics,
-          idleTimeMs: idleTime
+          idleTimeMs: idleTime,
           isActive
         }
       });

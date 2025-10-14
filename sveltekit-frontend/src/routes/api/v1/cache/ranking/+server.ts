@@ -2,22 +2,18 @@
 // CANONICAL CACHE API ENDPOINT - SvelteKit Integration
 // Provides HTTP/REST interface for the canonical result cache system
 // ======================================================================
-import { json, error } from '@sveltejs/kit'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
-import type { RequestHandler } from './$types.js'
-import {
-  canonicalResultCache,
-  type CanonicalResult,
-  type RankingSet
-} from '$lib/services/canonical-result-cache.js'
+import { json, error } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import type { RequestHandler } from './$types.js';
+import { canonicalResultCache, type CanonicalResult, type RankingSet } from '$lib/services/canonical-result-cache.js';
 // Add a precise type for incoming results to avoid `any`
 type RawCanonicalResult = {
-	docId: string | number;
-	score: number;
-	flags?: number;
-	summaryHash?: string;
-	targetUrlId?: string | number | null;
-	metadata?: Record<string, unknown> | null;
+  docId: string | number;
+  score: number;
+  flags?: number;
+  summaryHash?: string;
+  targetUrlId?: string | number | null;
+  metadata?: Record<string, unknown> | null;
 };
 // GET /api/v1/cache/ranking?key=X&metadata=true&limit=10
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -211,53 +207,53 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 // DELETE /api/v1/cache/ranking - Clear cache
 export const DELETE: RequestHandler = async ({ url }) => {
-  const startTime = performance.now()
+  const startTime = performance.now();
   try {
-    const slotKey = url.searchParams.get('key')
+    const slotKey = url.searchParams.get('key');
     if (slotKey) {
       // Clear specific slot (if we implement single slot clearing)
       throw error(
         501,
         makeHttpErrorPayload({
           message: 'Single slot clearing not yet implemented',
-          code: 'NOT_IMPLEMENTED'
+          code: 'NOT_IMPLEMENTED',
         })
-      )
+      );
     } else {
       // Clear entire cache
-      await canonicalResultCache.clear()
-      const latency = performance.now() - startTime
+      await canonicalResultCache.clear();
+      const latency = performance.now() - startTime;
       return json({
         success: true,
         message: 'Cache cleared successfully',
-        latencyMs: latency
-      })
+        latencyMs: latency,
+      });
     }
   } catch (err) {
-    const latency = performance.now() - startTime
+    const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
-      throw err
+      throw err;
     }
-    console.error('Cache clear failed:', err)
+    console.error('Cache clear failed:', err);
     throw error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to clear cache',
         code: 'CLEAR_ERROR',
-        latencyMs: latency
+        latencyMs: latency,
       })
-    )
+    );
   }
-}
+};
 // Utility function to pack ranking set to binary format
 async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Array> {
   // This would use the actual packing logic from canonical-result-cache
   // For now, return a mock binary representation
-  const jsonString = JSON.stringify(rankingSet)
-  const encoder = new TextEncoder()
-  const jsonBytes = encoder.encode(jsonString)
+  const jsonString = JSON.stringify(rankingSet);
+  const encoder = new TextEncoder();
+  const jsonBytes = encoder.encode(jsonString);
   // Simple compression simulation (gzip would be used in production)
   const compressionRatio = 0.6; // Assume 40% compression
-  const mockCompressedSize = Math.floor(jsonBytes.length * compressionRatio)
-  return jsonBytes.slice(0, mockCompressedSize)
+  const mockCompressedSize = Math.floor(jsonBytes.length * compressionRatio);
+  return jsonBytes.slice(0, mockCompressedSize);
 }

@@ -72,7 +72,7 @@ export async function GET({ url }): Promise<any> {
       // Development guidelines
       guidelines: {
         svelte: {
-          runesRequired: true
+          runesRequired: true,
           stateDeclaration: "let (never const)",
           derivedFunctions: "$derived.by(() => ...)",
           errorBoundaries: "component rendering only"
@@ -80,7 +80,7 @@ export async function GET({ url }): Promise<any> {
         aiIntegration: {
           priorityIndex: "enhanced_legal_ai_index",
           contextBoost: 0.2,
-          mcpActive: true
+          mcpActive: true,
           fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"]
         }
       }
@@ -109,7 +109,7 @@ export async function GET({ url }): Promise<any> {
     }
     return json({
       success: true,
-      context: enhancedContext
+      context: enhancedContext,
       timestamp: new Date().toISOString(),
       version: "1.0.0"
     })

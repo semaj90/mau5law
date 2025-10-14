@@ -76,7 +76,7 @@
         key_facts: ['Incident occurred on company premises', 'Multiple witnesses present'],
         legal_issues: ['Liability determination', 'Damages calculation'],
         precedents: [{ case_name: 'Smith v. Company', relevance: 0.88, summary: 'Similar liability case' }],
-      }
+      };
       analysisResults.set(mockResults);
       ondispatch?.(mockResults);
     } catch (error) {

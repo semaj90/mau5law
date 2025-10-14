@@ -34,7 +34,7 @@ export interface WebGPUSOMCache {
   // Methods that were missing
   findSimilar(vector: Float32Array, k?: number): Array<any>;
   updateWithWeight(id: string, vector: Float32Array, weight: number): void;
-  getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number }
+  getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
   storeVector(id: string, vector: Float32Array): void;
 }
 // WebGPU Topology Accelerator
@@ -101,4 +101,4 @@ declare global {
   type i64 = bigint;
   type f64 = number;
 }
-export {}
+export {};

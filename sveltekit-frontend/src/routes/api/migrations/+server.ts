@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            migrations: migrationList
+            migrations: migrationList,
             total: allMigrations.length,
             applied: appliedMigrations.length,
             pending: allMigrations.length - appliedMigrations.length

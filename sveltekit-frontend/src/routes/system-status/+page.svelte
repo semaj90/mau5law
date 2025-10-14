@@ -213,7 +213,7 @@
                   {/if}
                   <p class="text-xs text-gray-500">
                     {new Date(
-                      (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp,
+                      (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp
                     ).toLocaleString()}
                   </p>
                 </div>

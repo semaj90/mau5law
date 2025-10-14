@@ -25,7 +25,7 @@
     return () => {
       clearInterval(interval);
       unsub && unsub();
-    }
+    };
   });
 </script>
 
@@ -111,7 +111,7 @@
       <pre style="max-height:200px; overflow:auto; background:#000; padding:6px;">{JSON.stringify(
           gpuVectorProcessor.dumpState(),
           null,
-          2,
+          2
         )}</pre>
     </div>
   {/if}

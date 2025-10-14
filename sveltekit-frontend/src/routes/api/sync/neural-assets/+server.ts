@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const chrManifests = mockDataGenerators.generateMockCHRManifests(count)
         return json({
           action: 'chr_manifests',
-          manifests: chrManifests
+          manifests: chrManifests,
           count: chrManifests.length,
           systemMetrics: {
             totalBanks: chrManifests.reduce((sum, m) => sum + m.bankCount, 0),
@@ -110,8 +110,8 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         return json({
           action: 'predictive_cache',
-          cache: mockCacheData
-          timestamp: new Date().toISOString()
+          cache: mockCacheData,
+          timestamp: new Date().toISOString(),
         })
       case 'vector_similarity':
         // Get vector similarity analysis for neural assets
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         return json({
           action: 'vector_similarity',
-          similarities: similarityMatrix
+          similarities: similarityMatrix,
           count: similarityMatrix.length,
           embeddingStats: {
             totalEmbeddings: recentEmbeddings.length,
@@ -191,8 +191,8 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         return json({
           action: 'cache_health',
-          health: healthMetrics
-          timestamp: new Date().toISOString()
+          health: healthMetrics,
+          timestamp: new Date().toISOString(),
         })
       default:
         return json()
@@ -259,8 +259,8 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           action: 'optimize_cache',
-          result: optimizationResult
-          timestamp: new Date().toISOString()
+          result: optimizationResult,
+          timestamp: new Date().toISOString(),
         })
       case 'generate_sprites':
         // Generate new bitmap sprites based on document patterns
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const docId = documentIds[i % documentIds.length]
           return {
             spriteId: `sprite_${Date.now()}_${i}`,
-            documentId: docId
+            documentId: docId,
             matrix: Array.from({ length: 8 }, () =>
               Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
             ),
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
         return json({
           action: 'generate_sprites',
-          sprites: generatedSprites
+          sprites: generatedSprites,
           count: generatedSprites.length,
           parameters: { documentIds, spriteCount, compressionLevel },
           timestamp: new Date().toISOString()
@@ -326,8 +326,8 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           action: 'update_chr_manifest',
-          result: updateResult
-          timestamp: new Date().toISOString()
+          result: updateResult,
+          timestamp: new Date().toISOString(),
         })
       case 'predict_asset_usage':
         // Predict future asset usage patterns

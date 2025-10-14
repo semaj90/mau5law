@@ -5,6 +5,6 @@ declare module '@sveltejs/kit' {
     locals: App.Locals;
   }
 }
-export {}
+export {};
 // Disabled: Canonical augmentation is in locals-unify.d.ts
-export {}
+export {};

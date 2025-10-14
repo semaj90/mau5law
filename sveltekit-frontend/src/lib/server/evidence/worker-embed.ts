@@ -7,7 +7,7 @@ const EMBED_QUEUE = 'evidence.embed';
 
 async function start() {
   console.log('Starting Embed worker - listening on', EMBED_QUEUE);
-  await consume(EMBED_QUEUE, async (job) => {
+  await consume(EMBED_QUEUE, async job => {
     const { evidenceId, text } = job;
     console.log('Embed job', evidenceId);
     const vector = await embedText(text || '');
@@ -15,4 +15,7 @@ async function start() {
   });
 }
 
-start().catch((err) => { console.error(err); process.exit(1); });
+start().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

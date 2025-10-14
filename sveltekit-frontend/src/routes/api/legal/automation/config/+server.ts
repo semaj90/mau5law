@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (config.autoProcessing) {
       jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       const job: ProcessingJob = {
-        id: jobId
+        id: jobId,
         configId: config.id,
         status: 'pending',
         documentsProcessed: 0,
@@ -150,8 +150,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        configurations: configs
-        jobs: filteredJobs
+        configurations: configs,
+        jobs: filteredJobs,
         summary: {
           totalConfigs: configs.length,
           activeJobs: jobs.filter(item => item.length),
@@ -195,8 +195,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        config: updatedConfig
-        message: 'Configuration updated successfully'
+        config: updatedConfig,
+        message: 'Configuration updated successfully',
       }
     })
   } catch (error) {

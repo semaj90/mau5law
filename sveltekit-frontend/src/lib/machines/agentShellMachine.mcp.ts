@@ -59,10 +59,10 @@ export const agentShellMachineMCP = createMachine({
     response: "",
     mcpResults: { [key,: strin,g]: any },
     serviceHealth: {
-      enhancedRAG: false
-      uploadService: false
-      kratosServer: false
-      mcpDatabase: false
+      enhancedRAG: false,
+      uploadService: false,
+      kratosServer: false,
+      mcpDatabase: false,
     }
   },
   types: { [key,: strin,g]: any } as {
@@ -490,8 +490,8 @@ export const agentShellServicesMCP = {
       const ragResponse = await services.queryRAG(`semantic_search: ${query}`, { userId, caseId });
       return {
         ...ragResponse,
-        mcpResults: searchResults
-        enhancedContext: true
+        mcpResults: searchResults,
+        enhancedContext: true,
       }
     } catch (error: any) {
       console.error("Enhanced semantic search failed:", error);
@@ -534,9 +534,9 @@ export const agentShellServicesMCP = {
         mcpTools.users.getUserAnalytics()
       ]);
       return {
-        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null
-        legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null
-        mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false
+        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,
+        legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null,
+        mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false,
       }
     } catch (error: any) {
       console.error("Enhanced health check failed:", error);
@@ -591,9 +591,9 @@ export const agentShellServicesMCP = {
     ];
     const [caseAnalytics, evidenceAnalytics, userAnalytics] = await Promise.allSettled(promises);
     return {
-      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null
-      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null
-      users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null
+      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null,
+      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,
+      users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null,
     }
   },
   // Legacy action implementations

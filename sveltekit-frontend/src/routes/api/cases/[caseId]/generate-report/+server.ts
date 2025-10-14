@@ -34,8 +34,8 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     }
     // Generate report content
     const reportContent = {
-      case: caseRecord
-      evidence: evidenceData
+      case: caseRecord,
+      evidence: evidenceData,
       generatedAt: new Date().toISOString(),
       generatedBy: getUserId(locals)
     }

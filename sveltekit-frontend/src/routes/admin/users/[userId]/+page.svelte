@@ -184,7 +184,7 @@
                   recentAIInteractions?: unknown;
                   activeSessions?: unknown;
                 }
-              ).user.created_at,
+              ).user.created_at
             )}
           </div>
         </div>
@@ -274,7 +274,7 @@
             <button
               onclick={() =>
                 goto(
-                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`,
+                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`
                 )}
               class="px-4 py-2 bg-blue-900 text-amber-300 border-2 border-blue-500 hover:bg-blue-800 transition-colors text-center"
             >
@@ -283,7 +283,7 @@
             <button
               onclick={() =>
                 goto(
-                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/ai-history`,
+                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/ai-history`
                 )}
               class="px-4 py-2 bg-purple-900 text-amber-300 border-2 border-purple-500 hover:bg-purple-800 transition-colors text-center"
             >
@@ -412,7 +412,8 @@
       </div>
       <form
         method="POST"
-        action="?/updateProfile";
+        action="?/updateProfile"
+        ;
         use:enhance={() => {
           formLoading = true;
           return ({ result }) => {
@@ -423,7 +424,7 @@
             ) {
               showProfileModal = false;
             }
-          }
+          };
         }}
       >
         <div class="space-y-4">
@@ -484,7 +485,8 @@
       </div>
       <form
         method="POST"
-        action="?/resetPassword";
+        action="?/resetPassword"
+        ;
         use:enhance={() => {
           if (!validatePasswordForm()) return false;
           formLoading = true;
@@ -498,7 +500,7 @@
               passwordForm.newPassword = '';
               passwordForm.confirmPassword = '';
             }
-          }
+          };
         }}
       >
         <div class="space-y-4">
@@ -564,7 +566,8 @@
         </div>
         <form
           method="POST"
-          action="?/revokeSession";
+          action="?/revokeSession"
+          ;
           use:enhance={() => {
             formLoading = true;
             return ({ result }) => {
@@ -575,7 +578,7 @@
               ) {
                 closeSessionModal();
               }
-            }
+            };
           }}
         >
           <input type="hidden" name="sessionId" value={selectedSession.id} />

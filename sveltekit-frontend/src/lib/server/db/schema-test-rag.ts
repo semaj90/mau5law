@@ -70,13 +70,15 @@ export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
   query: text('query').notNull(),
   queryEmbedding: vector('query_embedding', { dimensions: 768 }),
-  results: jsonb('results').$type<Array<{
-    documentId: string;
-    filename: string;
-    similarity: number;
-    score: number;
-    rank: number;
-  }>>(),
+  results: jsonb('results').$type<
+    Array<{
+      documentId: string;
+      filename: string;
+      similarity: number;
+      score: number;
+      rank: number;
+    }>
+  >(),
   searchType: text('search_type').notNull(), // 'semantic', 'text', 'hybrid'
   resultCount: integer('result_count').notNull(),
   metadata: jsonb('metadata').$type<{

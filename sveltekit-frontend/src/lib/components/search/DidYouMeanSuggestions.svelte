@@ -47,7 +47,7 @@
     showUserProfile = false,
     onSelect,
     onTaskSelect,
-    onSearch
+    onSearch,
   }: {
     query?: string;
     placeholder?: string;
@@ -110,8 +110,8 @@
           context: contextType,
           limit: maxSuggestions,
           includeTaskSuggestions,
-          includeAI
-        })
+          includeAI,
+        }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const data = await response.json();
@@ -152,25 +152,37 @@
     if (source === 'ai') return Brain;
     if (type === 'task') return Target;
     switch (type) {
-      case 'spelling': return Search;
-      case 'synonym': return Zap;
-      case 'contextual': return Brain;
+      case 'spelling':
+        return Search;
+      case 'synonym':
+        return Zap;
+      case 'contextual':
+        return Brain;
       default:
         switch (type) {
-          case 'PERSON': return User;
-          case 'DOCUMENT': return FileText;
-          case 'CASE': return Folder;
-          case 'TAG': return Tag;
-          default: return Search;
+          case 'PERSON':
+            return User;
+          case 'DOCUMENT':
+            return FileText;
+          case 'CASE':
+            return Folder;
+          case 'TAG':
+            return Tag;
+          default:
+            return Search;
         }
     }
   }
   function getSourceBadge(source?: string): { color: string; text: string } {
     switch (source) {
-      case 'ai': return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
-      case 'semantic': return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
-      case 'lexical': return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
-      default: return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
+      case 'ai':
+        return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
+      case 'semantic':
+        return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
+      case 'lexical':
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
+      default:
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
     }
   }
   function getConfidenceColor(confidence: number): string {
@@ -180,16 +192,26 @@
   }
   function getTypeColor(type?: string): string {
     switch (type) {
-      case 'spelling': return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
-      case 'synonym': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
-      case 'contextual': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
-      case 'task': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      case 'PERSON': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
-      case 'DOCUMENT': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      case 'CASE': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
-      case 'EVIDENCE': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
-      case 'TAG': return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
-      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+      case 'spelling':
+        return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+      case 'synonym':
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case 'contextual':
+        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case 'task':
+        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case 'PERSON':
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case 'DOCUMENT':
+        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case 'CASE':
+        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case 'EVIDENCE':
+        return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+      case 'TAG':
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+      default:
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   }
 
@@ -216,14 +238,24 @@
       {placeholder}
       autocomplete="off"
       value={query}
-      on:input={(e) => {
+      on:input={e => {
         query = (e.target as HTMLInputElement).value;
         if (query.length >= 2) scheduleSearch(query);
-        else { suggestions = []; taskSuggestions = []; userProfile = null; open = false; }
+        else {
+          suggestions = [];
+          taskSuggestions = [];
+          userProfile = null;
+          open = false;
+        }
       }}
-      on:focus={() => { if (query.length >= 2) open = true; }}
-      on:keydown={(e) => {
-        if (e.key === 'Escape') { open = false; inputEl?.blur(); }
+      on:focus={() => {
+        if (query.length >= 2) open = true;
+      }}
+      on:keydown={e => {
+        if (e.key === 'Escape') {
+          open = false;
+          inputEl?.blur();
+        }
       }}
     />
     <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -238,9 +270,13 @@
 
   <!-- Error Display -->
   {#if error}
-    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
+    <div
+      class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+      transition:fade
+    >
       <p class="text-sm text-red-800 dark:text-red-200">
-        <span class="font-medium">Error:</span> {error}
+        <span class="font-medium">Error:</span>
+        {error}
       </p>
     </div>
   {/if}
@@ -268,11 +304,10 @@
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}
         <div class="p-2">
-          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1">
-            Suggestions
-          </div>
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1">Suggestions</div>
           {#each suggestions as suggestion, index}
-            {@const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || ''}
+            {@const suggestionText =
+              suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || ''}
             {@const confidence = suggestion.confidence ?? suggestion.score ?? 0}
             <button
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
@@ -280,7 +315,7 @@
             >
               <div class="flex items-center gap-3">
                 <!-- merged classes into a single class attribute -->
-                <div class={"p-1.5 " + getTypeColor(suggestion.type)} style="border-radius: 0.375rem;">
+                <div class={'p-1.5 ' + getTypeColor(suggestion.type)} style="border-radius: 0.375rem;">
                   <svelte:component this={getIconComponent(suggestion.source, suggestion.type)} class="w-3.5 h-3.5" />
                 </div>
                 <div class="flex-1 min-w-0">
@@ -290,18 +325,20 @@
                     </span>
                     <div class="flex items-center gap-2 ml-2">
                       <!-- merged static + dynamic classes -->
-                      <span class={"text-xs " + getConfidenceColor(confidence)}>
+                      <span class={'text-xs ' + getConfidenceColor(confidence)}>
                         {Math.round(confidence * 100)}%
                       </span>
                       {#if suggestion.source}
                         {@const badge = getSourceBadge(suggestion.source)}
                         <!-- merged static + dynamic classes -->
-                        <span class={"px-1.5 py-0.5 text-xs " + badge.color} style="border-radius:999px;">
+                        <span class={'px-1.5 py-0.5 text-xs ' + badge.color} style="border-radius:999px;">
                           {badge.text}
                         </span>
                       {/if}
                       {#if suggestion.enhanced}
-                        <span class="px-1.5 py-0.5 text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded-full">
+                        <span
+                          class="px-1.5 py-0.5 text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded-full"
+                        >
                           Enhanced
                         </span>
                       {/if}
@@ -320,7 +357,9 @@
                   {#if suggestion.tags && suggestion.tags.length > 0}
                     <div class="flex gap-1 mt-1">
                       {#each suggestion.tags.slice(0, 3) as tag}
-                        <span class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                        <span
+                          class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
+                        >
                           {tag}
                         </span>
                       {/each}
@@ -356,18 +395,18 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-2 ml-2">
-                  <span class={"text-xs " + getConfidenceColor(task.confidence)}>
+                  <span class={'text-xs ' + getConfidenceColor(task.confidence)}>
                     {Math.round(task.confidence * 100)}%
                   </span>
                   <!-- merged the priority badge classes -->
-                  <span class={"px-1.5 py-0.5 text-xs rounded-full " +
-                    (task.priority === 'high'
-                      ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                      : task.priority === 'medium'
-                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
-                    )
-                  }>
+                  <span
+                    class={'px-1.5 py-0.5 text-xs rounded-full ' +
+                      (task.priority === 'high'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                        : task.priority === 'medium'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300')}
+                  >
                     {task.priority}
                   </span>
                 </div>
@@ -380,9 +419,7 @@
       <!-- User Profile -->
       {#if showUserProfile && userProfile}
         <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
-          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
-            Your Profile
-          </div>
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Your Profile</div>
           <div class="space-y-1 text-xs text-gray-600 dark:text-gray-400">
             <div class="flex justify-between">
               <span>Learning Phase:</span>
@@ -397,7 +434,9 @@
             {#if userProfile.preferredIntents.length > 0}
               <div class="flex flex-wrap gap-1 mt-1">
                 {#each userProfile.preferredIntents as intent}
-                  <span class="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full">
+                  <span
+                    class="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full"
+                  >
                     {intent}
                   </span>
                 {/each}
@@ -411,7 +450,11 @@
 
   <!-- No Results -->
   {#if open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
-    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4" style="z-index:50;" transition:fade>
+    <div
+      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4"
+      style="z-index:50;"
+      transition:fade
+    >
       <div class="text-center text-gray-500 dark:text-gray-400">
         <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p class="text-sm">No AI suggestions found for "{query}"</p>

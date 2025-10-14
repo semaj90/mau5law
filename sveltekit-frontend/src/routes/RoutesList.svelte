@@ -4,17 +4,29 @@
   // Svelte 5 runes are auto-imported
   /* Route Discovery & Enhanced UX (Svelte 5 runes) */
   // @ts-ignore Vite glob (eager for static analysis)
-  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: any }
+  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: any };
   // Collect API endpoints separately for reference (non-page server routes)
   // @ts-ignore
-  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: any }
-  interface DiscoveredRoute { path: string; label: string; dynamic: boolean; segments: string[]; group: string; kind: 'page' | 'api' }
-  interface RouteProp { path: string; label: string }
-  interface Props { routes?: RouteProp[] }
+  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: any };
+  interface DiscoveredRoute {
+    path: string;
+    label: string;
+    dynamic: boolean;
+    segments: string[];
+    group: string;
+    kind: 'page' | 'api';
+  }
+  interface RouteProp {
+    path: string;
+    label: string;
+  }
+  interface Props {
+    routes?: RouteProp[];
+  }
   function humanize(segment: string) {
-    return segment
-      .replace.replace(/-/g, ' ')
-      .split.map((s) => (s ? s[0].toUpperCase() + s.slice(1) : ''))
+    return segment.replace
+      .replace(/-/g, ' ')
+      .split.map(s => (s ? s[0].toUpperCase() + s.slice(1) : ''))
       .join(' ');
   }
   function deriveLabel(path: string, mod: unknown): string {
@@ -22,11 +34,11 @@
       mod?.routeMeta?.title ||
       mod?.metadata?.title ||
       mod?.title ||
-      (path === '/' ? 'Home' : humanize(path.split.filter-pop() || 'Index'))
+      (path === '/' ? 'Home' : humanize(path.split.filter - pop() || 'Index'))
     );
   }
   function buildDiscovered(): DiscoveredRoute[] {
-    const pages = Object.keys.map((filePath) => {
+    const pages = Object.keys.map(filePath => {
       let routePath = filePath.replace.replace(/\/\+page\.(svelte|ts)$/, '');
       if (routePath === '') routePath = '/';
       const pathForLink = routePath.replace(/\[([^\]]+)\]/g, ':$1');
@@ -40,10 +52,10 @@
         dynamic,
         segments,
         group,
-        kind: 'page' as const
-      }
+        kind: 'page' as const,
+      };
     });
-    const apis = Object.keys.map((filePath) => {
+    const apis = Object.keys.map(filePath => {
       let apiPath = filePath.replace.replace(/\/\+server\.ts$/, '');
       apiPath = apiPath || '/api';
       const pathForLink = apiPath.replace(/\[([^\]]+)\]/g, ':$1');
@@ -56,31 +68,31 @@
         dynamic,
         segments,
         group,
-        kind: 'api' as const
-      }
+        kind: 'api' as const,
+      };
     });
     // Deduplicate by path preferring page over api for same path
     const map = new Map<string, DiscoveredRoute>();
-    [...pages, ...apis].forEach((r) => {
+    [...pages, ...apis].forEach(r => {
       if (!map.has(r.path) || map.get(r.path)!.kind === 'api') map.set(r.path, r);
     });
     return [...map.values()].sort((a, b) => a.path.localeCompare(b.path));
   }
   const discovered = buildDiscovered();
-  const { routes: providedRoutes } = $props() as { routes?: RouteProp[] }
+  const { routes: providedRoutes } = $props() as { routes?: RouteProp[] };
   // Merge provided routes (e.g., from server config) — don't lose labels
   const merged: DiscoveredRoute[] = (() => {
     if (!providedRoutes || providedRoutes.length === 0) return discovered;
-    const map = new Map<string, DiscoveredRoute>(discovered.map((r) => [r.path, r]));
+    const map = new Map<string, DiscoveredRoute>(discovered.map(r => [r.path, r]));
     for (const pr of providedRoutes) {
       if (!map.has(pr.path)) {
         map.set(pr.path, {
           path: pr.path,
-            label: pr.label,
-            dynamic: /:\w+/.test(pr.path),
-            segments: pr.path.split.filter(Boolean),
-            group: pr.path.split.filter(Boolean)[0] || 'external',
-            kind: 'page'
+          label: pr.label,
+          dynamic: /:\w+/.test(pr.path),
+          segments: pr.path.split.filter(Boolean),
+          group: pr.path.split.filter(Boolean)[0] || 'external',
+          kind: 'page',
         });
       }
     }
@@ -90,7 +102,7 @@
   let search = $state('');
   let showAPI = $state(true);
   let showPages = $state(true);
-  let groupCollapse: Record<string, boolean> = $state( );
+  let groupCollapse: Record<string, boolean> = $state();
   const filtered = $derived.by(() =>
     merged.filter(r => {
       if (!showAPI && r.kind === 'api') return false;
@@ -100,16 +112,18 @@
       return r.path.toLowerCase().includes(q) || r.label.toLowerCase().includes(q);
     })
   );
-  const grouped = $derived.by(() =>
-    filtered.reduce<Record<string, DiscoveredRoute[]>((acc, r) => {
-      const g = r.group;
-      (acc[g] ||= []).push(r);
-      return acc;
-    }, )
+  const grouped = $derived.by(
+    () =>
+      filtered.reduce <
+      Record<string, DiscoveredRoute[]>((acc, r) => {
+        const g = r.group;
+        (acc[g] ||= []).push(r);
+        return acc;
+      })
   );
   function toggleGroup(g: string) {
     groupCollapse[g] = !groupCollapse[g];
-    groupCollapse = { ...groupCollapse }
+    groupCollapse = { ...groupCollapse };
   }
 </script>
 

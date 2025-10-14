@@ -6,7 +6,7 @@
  *  - Abbreviation protection (Inc., Corp., Art., etc.)
  *  - Short fragment merging & filtering
  *  - Optional streaming interface (minimal stub for now)
- */;
+ */
 }
 export interface SplitterOptions {
   minFragmentLength?: number; // Minimum length to keep a fragment standalone

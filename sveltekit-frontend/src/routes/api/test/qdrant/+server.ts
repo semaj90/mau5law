@@ -24,8 +24,8 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'qdrant_health_check',
           status: health.status === 'healthy' ? 'success' : 'warning',
-          data: health
-          duration: Date.now() - startTime
+          data: health,
+          duration: Date.now() - startTime,
         })
       } catch (error: any) {
         results.push({
@@ -65,8 +65,8 @@ export const GET: RequestHandler = async ({ url }) => {
         const searchResult = await optimizedQdrantService.searchVectors(sampleVector, {
           limit: 5,
           threshold: 0.1,
-          useCache: true
-          enableSOM: true
+          useCache: true,
+          enableSOM: true,
         })
         results.push({
           test: 'vector_search',
@@ -119,8 +119,8 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'success',
           data: {
             vectors_inserted: sampleVectors.length,
-            upsert_result: upsertResult
-            vector_dimensions: sampleVectors[0].vector.length
+            upsert_result: upsertResult,
+            vector_dimensions: sampleVectors[0].vector.length,
           },
           duration: Date.now() - startTime
         })
@@ -169,8 +169,8 @@ export const GET: RequestHandler = async ({ url }) => {
           const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
           return await optimizedQdrantService.searchVectors(vector, {
             limit: 3,
-            useCache: true
-            enableSOM: true
+            useCache: true,
+            enableSOM: true,
           })
         })
         const searchResults = await Promise.all(searchPromises)
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       timestamp: new Date().toISOString(),
       service: 'optimized_qdrant_service',
-      tests: results
+      tests: results,
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
@@ -243,8 +243,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: true,
         action: 'postgresql_sync',
-        result: syncResult
-        timestamp: new Date().toISOString()
+        result: syncResult,
+        timestamp: new Date().toISOString(),
       })
     } catch (error: any) {
       return json({

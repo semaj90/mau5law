@@ -2,16 +2,16 @@
  * RabbitMQ-Tensor Integration API Endpoint
  * Provides HTTP interface for WASM-accelerated tensor processing via RabbitMQ
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   rabbitMQTensorIntegration,
   initializeIntegration,
   submitDirectTensorJob,
   getIntegrationStatus,
   WASM_SERVICE_PORTS,
-  WASM_QUEUE_ROUTING
-} from '$lib/integrations/rabbitmq-tensor-integration.js'
+  WASM_QUEUE_ROUTING,
+} from '$lib/integrations/rabbitmq-tensor-integration.js';
 import { readBodyFastWithMetrics, getSIMDStatus, benchmarkJSONParsing } from '$lib/simd/simd-json-integration.js';
 // GET: Get integration status and health
 export const GET: RequestHandler = async ({ url }) => {

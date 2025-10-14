@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         const fileBuffer = Buffer.from(await file.arrayBuffer()
         const upload = {
-          file: fileBuffer
+          file: fileBuffer,
           fileName: file.name,
           contentType: file.type,
           caseId,

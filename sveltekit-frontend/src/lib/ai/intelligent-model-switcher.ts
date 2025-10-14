@@ -18,12 +18,12 @@ export interface ModelSwitchDecision {
     speedGain: number; // percentage,
     qualityGain: number; // percentage
     userSatisfactionGain: number; // percentage
-  }
+  };
   switchCost: {
     timeMs: number;
     memoryMB: number;
     cpuUsage: number;
-  }
+  };
 }
 export interface UserLearningProfile {
   userId: string;
@@ -37,7 +37,7 @@ export interface UserLearningProfile {
     commonIntents: string[];
     peakUsageHours: number[];
     taskComplexityPreference: number; // 0-1
-  }
+  };
   satisfactionHistory: Array<any>;
   adaptationRate: number; // How quickly to adapt to new patterns
 }

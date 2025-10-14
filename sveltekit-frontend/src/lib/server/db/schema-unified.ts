@@ -81,9 +81,9 @@ export const users = pgTable(
     // Vector similarity indexes
     profileEmbeddingIdx: index('users_profile_embedding_hnsw_idx').using(
       'hnsw',
-      table.profileEmbedding.op('vector_cosine_ops'),
+      table.profileEmbedding.op('vector_cosine_ops')
     ),
-  }),
+  })
 );
 // === LUCIA v3 AUTHENTICATION ===
 export const sessions = pgTable('sessions', {
@@ -182,13 +182,13 @@ export const evidence = pgTable(
     // Vector similarity indexes
     titleEmbeddingIdx: index('evidence_title_embedding_idx').using(
       'hnsw',
-      table.titleEmbedding.op('vector_cosine_ops'),
+      table.titleEmbedding.op('vector_cosine_ops')
     ),
     contentEmbeddingIdx: index('evidence_content_embedding_idx').using(
       'hnsw',
-      table.contentEmbedding.op('vector_cosine_ops'),
+      table.contentEmbedding.op('vector_cosine_ops')
     ),
-  }),
+  })
 );
 // === DOCUMENT METADATA TABLE (for Enhanced RAG Go service) ===
 export const documentMetadata = pgTable(
@@ -217,7 +217,7 @@ export const documentMetadata = pgTable(
     statusIdx: index('doc_metadata_status_idx').on(table.processingStatus),
     typeIdx: index('doc_metadata_type_idx').on(table.documentType),
     priorityIdx: index('doc_metadata_priority_idx').on(table.priority),
-  }),
+  })
 );
 // === VECTOR TABLES FOR ENHANCED SEARCH ===
 export const documentEmbeddings = pgTable(
@@ -246,7 +246,7 @@ export const documentEmbeddings = pgTable(
     modelIdx: index('doc_embeddings_model_idx').on(table.embeddingModel),
     similarityIdx: index('doc_embeddings_similarity_idx').on(table.similarity),
     embeddingIdx: index('doc_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
-  }),
+  })
 );
 export const caseEmbeddings = pgTable(
   'case_embeddings',
@@ -261,7 +261,7 @@ export const caseEmbeddings = pgTable(
   table => ({
     caseIdIdx: index('case_embeddings_case_id_idx').on(table.caseId),
     embeddingIdx: index('case_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
-  }),
+  })
 );
 // === CASE ACTIVITIES ===
 export const caseActivities = pgTable(
@@ -279,7 +279,7 @@ export const caseActivities = pgTable(
     caseIdIdx: index('case_activities_case_id_idx').on(table.caseId),
     userIdIdx: index('case_activities_user_id_idx').on(table.userId),
     createdAtIdx: index('case_activities_created_at_idx').on(table.createdAt),
-  }),
+  })
 );
 // === CHAT RECOMMENDATION TABLES ===
 export const chatSessions = pgTable(
@@ -295,7 +295,7 @@ export const chatSessions = pgTable(
   },
   table => ({
     userIdIdx: index('chat_sessions_user_id_idx').on(table.userId),
-  }),
+  })
 );
 export const chatMessages = pgTable(
   'chat_messages',
@@ -312,7 +312,7 @@ export const chatMessages = pgTable(
     sessionIdIdx: index('chat_messages_session_id_idx').on(table.sessionId),
     roleIdx: index('chat_messages_role_idx').on(table.role),
     embeddingIdx: index('chat_messages_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
-  }),
+  })
 );
 export const chatRecommendations = pgTable(
   'chat_recommendations',
@@ -331,7 +331,7 @@ export const chatRecommendations = pgTable(
     userIdIdx: index('chat_recommendations_user_id_idx').on(table.userId),
     messageIdIdx: index('chat_recommendations_message_id_idx').on(table.messageId),
     confidenceIdx: index('chat_recommendations_confidence_idx').on(table.confidence),
-  }),
+  })
 );
 // === RELATIONS ===
 export const usersRelations = relations(users, ({ many }) => ({
@@ -407,5 +407,5 @@ export const schema = {
   chatSessionsRelations,
   chatMessagesRelations,
   chatRecommendationsRelations,
-}
+};
 export default schema;

@@ -46,13 +46,13 @@ export const load = (async ({ locals, fetch }) => {
       id: 'dev-user-001',
       email: 'dev@localhost',
       name: 'Development Tester',
-      role: 'prosecutor'
+      role: 'prosecutor',
     };
 
     session = {
       id: 'dev-session-001',
       userId: 'dev-user-001',
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     };
   }
 
@@ -85,6 +85,6 @@ export const load = (async ({ locals, fetch }) => {
     cases,
     error,
     devMode: dev,
-    devBypassActive: devBypass
+    devBypassActive: devBypass,
   };
 }) satisfies import('./$types').PageServerLoad;

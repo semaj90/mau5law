@@ -9,7 +9,7 @@ export type TypedArrayLike = Float32Array | Uint32Array | Uint16Array | Int8Arra
 /**
  * Ensures data is compatible with WebGPU buffer operations
  * Fixes: Float32Array<ArrayBufferLike> incompatible with GPUAllowSharedBufferSource
- */;
+ */
 export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer => {
   if (data instanceof ArrayBuffer) {
     return data;
@@ -20,15 +20,20 @@ export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer =
     return typedArray.buffer.slice(typedArray.byteOffset, typedArray.byteOffset + typedArray.byteLength);
   }
   // For typed arrays, extract the underlying ArrayBuffer
-  if (data instanceof Float32Array || data instanceof Uint32Array || data instanceof Uint16Array || data instanceof Int8Array) {
+  if (
+    data instanceof Float32Array ||
+    data instanceof Uint32Array ||
+    data instanceof Uint16Array ||
+    data instanceof Int8Array
+  ) {
     return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
   }
   throw new Error(`Unsupported buffer type: ${typeof data}`);
-}
+};
 /**
  * Ensures data is a Float32Array for WebGPU operations
  * Fixes: Type 'number[]' is missing properties from Float32Array
- */;
+ */
 export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
   if (data instanceof Float32Array) {
     return data;
@@ -43,7 +48,7 @@ export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
     return new Float32Array(data);
   }
   throw new Error(`Cannot convert ${typeof data} to Float32Array`);
-}
+};
 /**
  * Type-safe WebGPU buffer creation with proper error handling
  * Fixes: GPUBuffer | null compatibility issues
@@ -87,11 +92,11 @@ export const safeWriteBuffer = (
     console.error('Buffer write failed:', error);
     return false;
   }
-}
+};
 /**
  * Buffer size calculation utility
  * Helps with proper buffer allocation
- */;
+ */
 export const calculateBufferSize = (data: BufferCompatible, alignment: number = 4): number => {
   let size: number;
   if (data instanceof ArrayBuffer) {
@@ -111,11 +116,11 @@ export const calculateBufferSize = (data: BufferCompatible, alignment: number = 
   }
   // Ensure proper alignment for WebGPU
   return Math.ceil(size / alignment) * alignment;
-}
+};
 /**
  * WebGPU-compatible vertex data structure
  * Fixes vertex streaming type issues
- */;
+ */
 export interface WebGPUVertex {
   position: [number, number, number];
   color: [number, number, number, number];
@@ -123,7 +128,7 @@ export interface WebGPUVertex {
 }
 /**
  * Convert vertex objects to WebGPU-compatible buffer
- */;
+ */
 export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
   const floatArray: number[] = [];
   for (const vertex of vertices) {
@@ -134,11 +139,11 @@ export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
     }
   }
   return new Float32Array(floatArray);
-}
+};
 /**
  * Legal document-specific buffer utilities
  * For the legal AI platform's specific needs
- */;
+ */
 export interface LegalDocumentBuffer {
   documentId: string;
   embeddings: Float32Array;
@@ -153,36 +158,36 @@ export const createLegalDocumentBuffer = (
   const buffer = createWebGPUBuffer(device, embeddingData, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   return {
     buffer,
-    byteLength: embeddingData.byteLength
-  }
-}
+    byteLength: embeddingData.byteLength,
+  };
+};
 /**
  * Risk level color mapping with proper typing
  * Fixes index signature issues for risk level colors
- */;
+ */
 export const getRiskLevelColor = (riskLevel: string): [number, number, number, number] => {
   const colors: Record<string, [number, number, number, number]> = {
     low: [0.2, 0.8, 0.2, 1.0],
     medium: [1.0, 1.0, 0.4, 1.0],
     high: [1.0, 0.6, 0.2, 1.0],
-    critical: [1.0, 0.2, 0.2, 1.0]
-  }
+    critical: [1.0, 0.2, 0.2, 1.0],
+  };
   return colors[riskLevel] || colors.low;
-}
+};
 /**
  * Document type mapping with proper typing
  * Fixes index signature issues for document types
- */;
+ */
 export const getDocumentTypeColor = (docType: string): [number, number, number] => {
   const colors: Record<string, [number, number, number]> = {
     contract: [0.2, 0.6, 1.0],
     evidence: [1.0, 0.4, 0.2],
     brief: [0.8, 0.8, 0.2],
     citation: [0.6, 0.2, 1.0],
-    'case-law': [0.4, 1.0, 0.6]
-  }
+    'case-law': [0.4, 1.0, 0.6],
+  };
   return colors[docType] || colors.contract;
-}
+};
 // Export all utilities as default for easy importing
 export default {
   ensureBufferCompatibility,
@@ -193,5 +198,5 @@ export default {
   verticesToBuffer,
   createLegalDocumentBuffer,
   getRiskLevelColor,
-  getDocumentTypeColor
-}
+  getDocumentTypeColor,
+};

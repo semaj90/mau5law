@@ -735,19 +735,7 @@ export class IntelligentModelOrchestrator {
 // Export singleton instance
 export const intelligentOrchestrator = new IntelligentModelOrchestrator();
 // Derived stores for convenient access
-export const currentModelInfo = derived(
-  intelligentOrchestrator.currentModel,
-  $model => $model
-);
-export const selfPromptingSuggestions = derived(
-  intelligentOrchestrator.suggestions,
-  $suggestions => $suggestions
-);
-export const performanceMetrics = derived(
-  intelligentOrchestrator.performance,
-  $performance => $performance
-);
-export const memoryOptimization = derived(
-  intelligentOrchestrator.memoryOptimization,
-  $memory => $memory
-);
+export const currentModelInfo = derived(intelligentOrchestrator.currentModel, $model => $model);
+export const selfPromptingSuggestions = derived(intelligentOrchestrator.suggestions, $suggestions => $suggestions);
+export const performanceMetrics = derived(intelligentOrchestrator.performance, $performance => $performance);
+export const memoryOptimization = derived(intelligentOrchestrator.memoryOptimization, $memory => $memory);

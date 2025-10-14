@@ -4,7 +4,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { Props } from "$lib/types/global";
+  import type { Props } from '$lib/types/global';
 
   // Replace the incorrect named import block with explicit default imports
   // (adjust paths if your project places these components elsewhere)
@@ -17,24 +17,13 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
-  import {
-    Bot,
-    User,
-    Send,
-    Brain,
-    Eye,
-    Zap,
-    Search,
-    FileText,
-    Scale,
-    AlertTriangle
-  } from 'lucide-svelte';
+  import { Bot, User, Send, Brain, Eye, Zap, Search, FileText, Scale, AlertTriangle } from 'lucide-svelte';
   import { onMount } from 'svelte';
   let {
     caseId,
     enableSelfPrompting = true,
     enableElementalAwareness = true,
-    enableEnhancedRAG = true
+    enableEnhancedRAG = true,
   }: Props = $props();
   // Replace generic unknown[] with a typed ChatMessage
   type ChatMessage = {
@@ -64,23 +53,25 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       generateSelfPromptSuggestions();
     }
     // Add welcome message
-    messages = [{
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: `Hello! I'm your AI legal assistant powered by Gemma3Legal. I can help you with:
+    messages = [
+      {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `Hello! I'm your AI legal assistant powered by Gemma3Legal. I can help you with:
   • Evidence analysis and correlation
   • Legal precedent research
   • Case strategy recommendations
   • Document synthesis and review
   • Timeline reconstruction
   ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get started with case-specific insights.'}`,
-      timestamp: new Date(),
-      metadata: {
-        model: 'gemma3-legal:latest',
-        confidence: 1.0,
-        capabilities: ['evidence_analysis', 'legal_research', 'case_strategy']
-      }
-    }];
+        timestamp: new Date(),
+        metadata: {
+          model: 'gemma3-legal:latest',
+          confidence: 1.0,
+          capabilities: ['evidence_analysis', 'legal_research', 'case_strategy'],
+        },
+      },
+    ];
   });
 
   // Self-prompting system
@@ -93,21 +84,21 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         body: JSON.stringify({
           caseId,
           context: 'prosecutor_workflow',
-          currentPhase: 'evidence_review'
-        })
+          currentPhase: 'evidence_review',
+        }),
       });
       if (!response.ok) throw new Error('Self-prompt API error');
       const result = await response.json();
       selfPromptSuggestions = (result?.suggestions as string[]) || [
-        "Analyze evidence strength for this case",
-        "Find similar cases with comparable evidence",
-        "Identify potential defense arguments",
-        "Review timeline for inconsistencies"
+        'Analyze evidence strength for this case',
+        'Find similar cases with comparable evidence',
+        'Identify potential defense arguments',
+        'Review timeline for inconsistencies',
       ];
     } catch (error) {
       console.error('Self-prompt generation failed:', error);
     }
-  }
+  };
 
   // Elemental awareness (YOLO-style hover analysis)
   const handleElementHover = async (ev: MouseEvent) => {
@@ -126,8 +117,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         body: JSON.stringify({
           elementType,
           content: elementText,
-          context: 'legal_analysis'
-        })
+          context: 'legal_analysis',
+        }),
       });
       if (!response.ok) throw new Error('Element analysis API error');
       const analysis = await response.json();
@@ -135,7 +126,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     } catch (error) {
       console.error('Element analysis failed:', error);
     }
-  }
+  };
 
   // Enhanced RAG chat with vector search
   const sendMessage = async () => {
@@ -144,7 +135,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     messages = [...messages, userMessage];
     const userQuery = currentMessage;
@@ -162,8 +153,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
             caseId,
             includeEvidence: true,
             includePrecedents: true,
-            vectorSearch: true
-          })
+            vectorSearch: true,
+          }),
         });
         if (!ragResponse.ok) throw new Error('RAG API error');
         const ragResult = await ragResponse.json();
@@ -183,9 +174,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           context: {
             role: 'prosecutor',
             mode: 'evidence_analysis',
-            capabilities: ['legal_research', 'evidence_correlation', 'strategy_planning']
-          }
-        })
+            capabilities: ['legal_research', 'evidence_correlation', 'strategy_planning'],
+          },
+        }),
       });
       if (!aiResponse.ok) throw new Error('AI chat API error');
       const aiResult = await aiResponse.json();
@@ -200,8 +191,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           model: 'gemma3-legal:latest',
           confidence: aiConfidence,
           ragSources: ragSources.length,
-          processingTime: aiResult.processingTime || 0
-        }
+          processingTime: aiResult.processingTime || 0,
+        },
       };
       messages = [...messages, assistantMessage];
       // Generate new self-prompt suggestions based on conversation
@@ -215,19 +206,19 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         role: 'assistant',
         content: 'I apologize, but I encountered an error processing your request. Please try again.',
         timestamp: new Date(),
-        error: true
+        error: true,
       };
       messages = [...messages, errorMessage];
     } finally {
       isTyping = false;
     }
-  }
+  };
 
   // Quick action for self-prompt suggestions
   const useSelfPrompt = (suggestion: string) => {
     currentMessage = suggestion;
     sendMessage();
-  }
+  };
 
   // Keyboard handler
   const handleKeyDown = (ev: KeyboardEvent) => {
@@ -235,7 +226,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       ev.preventDefault();
       sendMessage();
     }
-  }
+  };
 
   // Initialize WebGPU processor on mount to both prime GPU and avoid "declared but never read" lint
   onMount(() => {
@@ -265,6 +256,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   const Btn = Button as unknown as any;
   const InputComp = Input as unknown as any;
 </script>
+
 <svelte:window onmouseover={handleElementHover as any} />
 <div class="flex flex-col h-full max-w-4xl mx-auto">
   <!-- Chat Header -->
@@ -279,19 +271,25 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         <div class="flex items-center gap-2 text-sm">
           {#if enableEnhancedRAG}
             <!-- Replace Badge component (TS typing issue) with a simple span preserving layout -->
-            <span class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700">
+            <span
+              class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700"
+            >
               <Search class="w-3 h-3 mr-1" />
               Enhanced RAG
             </span>
           {/if}
           {#if enableElementalAwareness}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700">
+            <span
+              class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700"
+            >
               <Eye class="w-3 h-3 mr-1" />
               YOLO Aware
             </span>
           {/if}
           {#if enableSelfPrompting}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700">
+            <span
+              class="px-2 py-1 rounded text-xs font-medium border border-transparent bg-transparent flex items-center gap-1 text-gray-700"
+            >
               <Brain class="w-3 h-3 mr-1" />
               Self-Prompting
             </span>
@@ -311,7 +309,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         <div class="flex flex-wrap gap-2">
           {#each selfPromptSuggestions as suggestion}
             <!-- use Btn alias instead of deprecated <svelte:component> -->
-            <Btn class="bits-btn suggestion-button"
+            <Btn
+              class="bits-btn suggestion-button"
               variant="ghost"
               size="sm"
               on:click={() => useSelfPrompt(suggestion)}
@@ -333,7 +332,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       </div>
       <p class="text-sm">{elementAnalysis.relevance || 'Analyzing...'}</p>
       {#if elementAnalysis.legalContext}
-        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{elementAnalysis.legalContext}</span>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+          >{elementAnalysis.legalContext}</span
+        >
       {/if}
     </div>
   {/if}
@@ -352,9 +353,13 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
               <p class="text-sm whitespace-pre-wrap">{message.content}</p>
               {#if message.metadata?.confidence}
                 <div class="mt-2 flex items-center gap-2">
-                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.metadata.confidence * 100)}% confident</span>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                    >{Math.round(message.metadata.confidence * 100)}% confident</span
+                  >
                   {#if message.metadata.ragSources > 0}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.ragSources} sources</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                      >{message.metadata.ragSources} sources</span
+                    >
                   {/if}
                 </div>
               {/if}
@@ -366,7 +371,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
                       <div class="flex items-center gap-1">
                         <FileText class="w-3 h-3" />
                         {source.metadata?.fileName || source.id}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(source.score * 100)}% match</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                          >{Math.round(source.score * 100)}% match</span
+                        >
                       </div>
                       <p class="mt-1">{source.content.substring(0, 100)}...</p>
                     </div>
@@ -411,10 +418,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           />
         </div>
         <!-- use Btn alias for send button -->
-        <Btn class="bits-btn"
-          on:click={sendMessage}
-          disabled={isTyping || !currentMessage || !currentMessage.trim()}
-        >
+        <Btn class="bits-btn" on:click={sendMessage} disabled={isTyping || !currentMessage || !currentMessage.trim()}>
           <Send class="w-4 h-4" />
         </Btn>
       </div>
@@ -452,14 +456,21 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     </div>
   </div>
 </div>
+
 <style>
   /* Enhanced chat styling */
   :global(.chat-message) {
     animation: fadeIn 0.3s ease-in-out;
   }
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   /* Elemental awareness hover effects */
   :global(*:hover) {
@@ -471,6 +482,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   }
   :global(.suggestion-button:hover) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 </style>

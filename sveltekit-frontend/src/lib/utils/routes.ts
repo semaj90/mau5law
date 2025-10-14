@@ -12,10 +12,7 @@ export function getRoutes(): Route[] {
   const routes: Route[] = [];
   Object.keys(modules).forEach(path => {
     // Example: /src/routes/dashboard/+page.svelte => /dashboard
-    const href = path
-      .replace('/src/routes', '')
-      .replace('/+page.svelte', '')
-      .replace('/index', '') || '/';
+    const href = path.replace('/src/routes', '').replace('/+page.svelte', '').replace('/index', '') || '/';
 
     const parts = href.split('/').filter(Boolean);
     const name = parts[parts.length - 1] || 'Home';

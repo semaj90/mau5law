@@ -1,7 +1,7 @@
 
 /**
  * Type definitions for the Gemma3 Legal AI Chat System
- */;
+ */
 }
 export interface ChatMessage {
   id: string;

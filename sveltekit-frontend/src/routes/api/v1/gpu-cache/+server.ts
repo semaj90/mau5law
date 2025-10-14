@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Enhanced GPU Cache API Endpoint - Full Stack Integration
  * Provides RESTful interface with Binary Encoding + NES Cache + WebGPU + SOM Clustering

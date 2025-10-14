@@ -21,7 +21,7 @@ https://svelte.dev/e/expected_token -->
   import {
     instantSearchEngine,
     type InstantSearchResult,
-    type SearchFilters
+    type SearchFilters,
   } from '$lib/services/instant-search-engine.js';
   import { Input } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/nes-button.svelte';
@@ -37,7 +37,7 @@ https://svelte.dev/e/expected_token -->
     FileText,
     Scale,
     Shield,
-    Zap
+    Zap,
   } from 'lucide-svelte';
 
   // Props using Svelte 5 syntax
@@ -49,7 +49,7 @@ https://svelte.dev/e/expected_token -->
     maxResults = 20,
     onResultClick,
     onResultAction,
-    class: className = ''
+    class: className = '',
   }: {
     placeholder?: string;
     showFilters?: boolean;
@@ -75,7 +75,7 @@ https://svelte.dev/e/expected_token -->
     riskLevels: [],
     jurisdictions: [],
     confidenceMin: 0.5,
-    priorityMin: 50
+    priorityMin: 50,
   });
 
   // Stats
@@ -84,7 +84,7 @@ https://svelte.dev/e/expected_token -->
     averageResponseTime: 0,
     cacheHitRate: 0,
     popularQueries: [] as string[],
-    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 }
+    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 },
   });
 
   // Search options
@@ -93,19 +93,19 @@ https://svelte.dev/e/expected_token -->
     { value: 'evidence', label: 'Evidence', icon: Shield },
     { value: 'brief', label: 'Legal Briefs', icon: Scale },
     { value: 'citation', label: 'Citations', icon: TrendingUp },
-    { value: 'precedent', label: 'Precedents', icon: Clock }
+    { value: 'precedent', label: 'Precedents', icon: Clock },
   ];
   const riskLevels = [
     { value: 'low', label: 'Low Risk', color: 'bg-green-100 text-green-800' },
     { value: 'medium', label: 'Medium Risk', color: 'bg-yellow-100 text-yellow-800' },
     { value: 'high', label: 'High Risk', color: 'bg-orange-100 text-orange-800' },
-    { value: 'critical', label: 'Critical Risk', color: 'bg-red-100 text-red-800' }
+    { value: 'critical', label: 'Critical Risk', color: 'bg-red-100 text-red-800' },
   ];
   const jurisdictions = [
     { value: 'federal', label: 'Federal' },
     { value: 'state', label: 'State' },
     { value: 'local', label: 'Local' },
-    { value: 'international', label: 'International' }
+    { value: 'international', label: 'International' },
   ];
 
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -206,21 +206,31 @@ https://svelte.dev/e/expected_token -->
 
   function getResultTypeIcon(resultType: string | undefined) {
     switch (resultType) {
-      case 'cache': return Clock;
-      case 'fuzzy': return Search;
-      case 'semantic': return TrendingUp;
-      case 'hybrid': return Zap;
-      default: return FileText;
+      case 'cache':
+        return Clock;
+      case 'fuzzy':
+        return Search;
+      case 'semantic':
+        return TrendingUp;
+      case 'hybrid':
+        return Zap;
+      default:
+        return FileText;
     }
   }
 
   function getResultTypeColor(resultType: string | undefined) {
     switch (resultType) {
-      case 'cache': return 'text-blue-600';
-      case 'fuzzy': return 'text-green-600';
-      case 'semantic': return 'text-purple-600';
-      case 'hybrid': return 'text-orange-600';
-      default: return 'text-gray-600';
+      case 'cache':
+        return 'text-blue-600';
+      case 'fuzzy':
+        return 'text-green-600';
+      case 'semantic':
+        return 'text-purple-600';
+      case 'hybrid':
+        return 'text-orange-600';
+      default:
+        return 'text-gray-600';
     }
   }
 
@@ -245,12 +255,7 @@ https://svelte.dev/e/expected_token -->
     <!-- Main Search Input -->
     <div class="relative">
       <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
-      <Input
-        bind:value={searchQuery}
-        placeholder={placeholder}
-        on:keydown={handleKeydown}
-        class="pl-10 pr-20 text-base"
-      />
+      <Input bind:value={searchQuery} {placeholder} on:keydown={handleKeydown} class="pl-10 pr-20 text-base" />
       <!-- Search Status Icons -->
       <div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
         {#if isSearching}
@@ -274,7 +279,12 @@ https://svelte.dev/e/expected_token -->
             <div class="space-y-2">
               {#each documentTypes as docType}
                 <label class="flex items-center space-x-2">
-                  <input type="checkbox" bind:group={selectedFilters.documentTypes} value={docType.value} class="rounded" />
+                  <input
+                    type="checkbox"
+                    bind:group={selectedFilters.documentTypes}
+                    value={docType.value}
+                    class="rounded"
+                  />
                   <svelte:component this={docType.icon} class="h-4 w-4" />
                   <span class="text-sm">{docType.label}</span>
                 </label>
@@ -301,7 +311,12 @@ https://svelte.dev/e/expected_token -->
             <div class="space-y-2">
               {#each jurisdictions as jurisdiction}
                 <label class="flex items-center space-x-2">
-                  <input type="checkbox" bind:group={selectedFilters.jurisdictions} value={jurisdiction.value} class="rounded" />
+                  <input
+                    type="checkbox"
+                    bind:group={selectedFilters.jurisdictions}
+                    value={jurisdiction.value}
+                    class="rounded"
+                  />
                   <span class="text-sm">{jurisdiction.label}</span>
                 </label>
               {/each}
@@ -313,12 +328,32 @@ https://svelte.dev/e/expected_token -->
             <label class="text-sm font-medium mb-2 block">Minimum Scores</label>
             <div class="space-y-3">
               <div>
-                <label class="text-xs nes-text is-disabled" for="confidence-selected">Confidence: {selectedFilters.confidenceMin}</label>
-                <input id="confidence-selected" type="range" bind:value={selectedFilters.confidenceMin} min="0" max="1" step="0.1" class="w-full" />
+                <label class="text-xs nes-text is-disabled" for="confidence-selected"
+                  >Confidence: {selectedFilters.confidenceMin}</label
+                >
+                <input
+                  id="confidence-selected"
+                  type="range"
+                  bind:value={selectedFilters.confidenceMin}
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  class="w-full"
+                />
               </div>
               <div>
-                <label class="text-xs nes-text is-disabled" for="priority-selected">Priority: {selectedFilters.priorityMin}</label>
-                <input id="priority-selected" type="range" bind:value={selectedFilters.priorityMin} min="0" max="255" step="10" class="w-full" />
+                <label class="text-xs nes-text is-disabled" for="priority-selected"
+                  >Priority: {selectedFilters.priorityMin}</label
+                >
+                <input
+                  id="priority-selected"
+                  type="range"
+                  bind:value={selectedFilters.priorityMin}
+                  min="0"
+                  max="255"
+                  step="10"
+                  class="w-full"
+                />
               </div>
             </div>
           </div>
@@ -355,11 +390,17 @@ https://svelte.dev/e/expected_token -->
     {#if searchResults.length > 0}
       <div class="space-y-4">
         {#each searchResults as result (result.id)}
-          <Card.Root class="hover:shadow-md transition-shadow cursor-pointer nes-container" on:click={() => handleResultClick(result)}>
+          <Card.Root
+            class="hover:shadow-md transition-shadow cursor-pointer nes-container"
+            on:click={() => handleResultClick(result)}
+          >
             <Card.Header class="pb-3">
               <div class="flex items-start justify-between">
                 <Card.Title class="text-base leading-tight flex items-center gap-2">
-                  <svelte:component this={getResultTypeIcon(result.resultType)} class="h-4 w-4 {getResultTypeColor(result.resultType)}" />
+                  <svelte:component
+                    this={getResultTypeIcon(result.resultType)}
+                    class="h-4 w-4 {getResultTypeColor(result.resultType)}"
+                  />
                   {#if result.highlights?.title}
                     {@html result.highlights.title}
                   {:else}
@@ -370,7 +411,9 @@ https://svelte.dev/e/expected_token -->
                 <div class="flex items-center gap-2 ml-2">
                   <Badge class="text-xs capitalize {getResultTypeColor(result.resultType)}">{result.resultType}</Badge>
                   <Badge variant="ghost" class="text-xs">{formatScore(result.combinedScore)}</Badge>
-                  <Badge class={getRiskLevelColor(result.document?.riskLevel)}>{(result.document?.riskLevel || '').toUpperCase()}</Badge>
+                  <Badge class={getRiskLevelColor(result.document?.riskLevel)}
+                    >{(result.document?.riskLevel || '').toUpperCase()}</Badge
+                  >
                 </div>
               </div>
 
@@ -423,11 +466,17 @@ https://svelte.dev/e/expected_token -->
 
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'view')}>View Document</button>
-                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'analyze')}>AI Analysis</button>
+                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'view')}
+                  >View Document</button
+                >
+                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'analyze')}
+                  >AI Analysis</button
+                >
 
                 {#if result.document?.type === 'evidence'}
-                  <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'canvas')}>Open in Canvas</button>
+                  <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'canvas')}
+                    >Open in Canvas</button
+                  >
                 {/if}
 
                 {#if typeof result.fuseScore === 'number' && typeof result.semanticScore === 'number'}
@@ -440,7 +489,6 @@ https://svelte.dev/e/expected_token -->
           </Card.Root>
         {/each}
       </div>
-
     {:else if searchQuery && !isSearching}
       <!-- No Results -->
       <Card.Root>
@@ -461,16 +509,13 @@ https://svelte.dev/e/expected_token -->
           </div>
         </Card.Content>
       </Card.Root>
-
     {:else if searchQuery && isSearching}
       <!-- Loading State -->
       <Card.Root>
         <Card.Content class="py-12 text-center">
           <Loader2 class="h-12 w-12 mx-auto nes-text is-disabled animate-spin mb-4" />
           <h3 class="font-medium mb-2">Searching...</h3>
-          <p class="nes-text is-disabled text-sm">
-            Searching across legal documents, cases, and evidence...
-          </p>
+          <p class="nes-text is-disabled text-sm">Searching across legal documents, cases, and evidence...</p>
         </Card.Content>
       </Card.Root>
     {/if}

@@ -23,8 +23,8 @@
           title,
           case_number: caseNumber,
           description,
-          status
-        })
+          status,
+        }),
       });
 
       if (response.ok) {
@@ -61,33 +61,17 @@
     <form onsubmit={handleSubmit}>
       <div class="form-field">
         <label for="title">Case Title *</label>
-        <input
-          id="title"
-          type="text"
-          bind:value={title}
-          required
-          disabled={loading}
-        />
+        <input id="title" type="text" bind:value={title} required disabled={loading} />
       </div>
 
       <div class="form-field">
         <label for="caseNumber">Case Number</label>
-        <input
-          id="caseNumber"
-          type="text"
-          bind:value={caseNumber}
-          disabled={loading}
-        />
+        <input id="caseNumber" type="text" bind:value={caseNumber} disabled={loading} />
       </div>
 
       <div class="form-field">
         <label for="description">Description</label>
-        <textarea
-          id="description"
-          bind:value={description}
-          disabled={loading}
-          rows="5"
-        ></textarea>
+        <textarea id="description" bind:value={description} disabled={loading} rows="5"></textarea>
       </div>
 
       <div class="form-field">
@@ -103,9 +87,7 @@
         <Button type="submit" disabled={loading}>
           {loading ? 'Creating...' : 'Create Case'}
         </Button>
-        <Button type="button" variant="outline" onclick={() => goto('/cases')}>
-          Cancel
-        </Button>
+        <Button type="button" variant="outline" onclick={() => goto('/cases')}>Cancel</Button>
       </div>
     </form>
   </div>

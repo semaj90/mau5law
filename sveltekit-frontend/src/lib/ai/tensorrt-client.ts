@@ -50,10 +50,13 @@ export class TensorRTLegalClient {
   private timeout: number;
   private retryAttempts: number;
 
-  constructor(baseUrl: string = 'http://localhost:8100', options: {
-    timeout?: number;
-    retryAttempts?: number;
-  } = {}) {
+  constructor(
+    baseUrl: string = 'http://localhost:8100',
+    options: {
+      timeout?: number;
+      retryAttempts?: number;
+    } = {}
+  ) {
     this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
     this.timeout = options.timeout ?? 30000; // 30 second timeout
     this.retryAttempts = options.retryAttempts ?? 3;
@@ -67,8 +70,8 @@ export class TensorRTLegalClient {
         body: JSON.stringify({
           text: request.text,
           model: request.model,
-          dimensions: request.dimensions
-        })
+          dimensions: request.dimensions,
+        }),
       });
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.status} ${response.statusText}`);
@@ -92,17 +95,19 @@ export class TensorRTLegalClient {
         context: request.context,
         model: request.model,
         max_tokens: request.max_tokens ?? 1024,
-        temperature: request.temperature ?? 0.1
+        temperature: request.temperature ?? 0.1,
       };
       const response = await this.makeRequest('/v1/legal/analysis', {
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       if (!response.ok) {
         throw new Error(`Legal analysis failed: ${response.status} ${response.statusText}`);
       }
       const result: LegalAnalysisResponse = await response.json();
-      console.log(`Legal analysis completed: ${result.processing_time_ms?.toFixed(1)}ms (${result.token_count} tokens)`);
+      console.log(
+        `Legal analysis completed: ${result.processing_time_ms?.toFixed(1)}ms (${result.token_count} tokens)`
+      );
       return result;
     } catch (error) {
       const elapsedTime = performance.now() - startTime;
@@ -114,7 +119,7 @@ export class TensorRTLegalClient {
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
-        method: 'GET'
+        method: 'GET',
       });
       if (!response.ok) {
         console.warn(`TensorRT health check failed: ${response.status}`);
@@ -186,7 +191,7 @@ export class TensorRTLegalClient {
 2. Evidence requirements
 3. Procedural considerations
 4. Settlement opportunities
-5. Strategic recommendations`
+5. Strategic recommendations`,
     };
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
     return `<legal_analysis>
@@ -210,9 +215,9 @@ Provide a detailed, professional legal analysis:`;
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          ...(options && options.headers ? (options.headers as Record<string, string>) : {})
+          ...(options && options.headers ? (options.headers as Record<string, string>) : {}),
         },
-        signal: controller.signal
+        signal: controller.signal,
       };
 
       try {
@@ -257,21 +262,21 @@ Provide a detailed, professional legal analysis:`;
         return {
           connected: false,
           latency,
-          error: 'Health check failed'
+          error: 'Health check failed',
         };
       }
       return {
         connected: health.status === 'healthy',
         latency,
         modelLoaded: health.model_loaded,
-        error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined
+        error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined,
       };
     } catch (error) {
       const latency = performance.now() - startTime;
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }

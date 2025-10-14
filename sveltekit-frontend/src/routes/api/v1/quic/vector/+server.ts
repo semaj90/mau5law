@@ -88,11 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     };
 
     // Extracted fallback logic for Enhanced RAG/local vector search
-    async function handleEnhancedRagFallback(
-      searchQuery: ExtendedVectorSearchQuery,
-      protocol: string,
-      source: string
-    ) {
+    async function handleEnhancedRagFallback(searchQuery: ExtendedVectorSearchQuery, protocol: string, source: string) {
       const service = getVectorSearchService();
       const ragSearchResponse = await service.searchDocuments(searchQuery.query || 'vector search', {
         maxResults: searchQuery.limit || 10,

@@ -48,13 +48,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .where(eq(evidence.hash, hash.toLowerCase())
     if (evidenceResults.length === 0) {
       return json({
-        found: false
+        found: false,
         message: "No evidence found with the specified hash",
         hash
       })
     }
     return json({
-      found: true
+      found: true,
       message: `Found ${evidenceResults.length} evidence item(s) matching the hash`,
       hash,
       evidence: evidenceResults

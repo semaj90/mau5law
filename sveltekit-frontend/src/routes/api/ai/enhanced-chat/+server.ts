@@ -15,50 +15,50 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 /*
  * Enhanced AI Chat API Endpoint
  * Integrates AI input synthesis, LegalBERT middleware, RAG pipeline, and streaming responses
  */
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 // Enhanced request interface
 export interface EnhancedChatRequest {
-  query: string
+  query: string;
   context?: {
-    userRole?: string
-    caseId?: string
-    documentIds?: string[]
-    sessionContext?: unknown
-    enableLegalBERT?: boolean
-    enableRAG?: boolean
-    maxDocuments?: number
-  }
+    userRole?: string;
+    caseId?: string;
+    documentIds?: string[];
+    sessionContext?: unknown;
+    enableLegalBERT?: boolean;
+    enableRAG?: boolean;
+    maxDocuments?: number;
+  };
   settings?: {
-    enhancementLevel?: 'basic' | 'standard' | 'advanced' | 'comprehensive'
-    includeConfidenceScores?: boolean
-    enableStreamingResponse?: boolean
-    model?: string
-    temperature?: number
-    maxTokens?: number
-  }
+    enhancementLevel?: 'basic' | 'standard' | 'advanced' | 'comprehensive';
+    includeConfidenceScores?: boolean;
+    enableStreamingResponse?: boolean;
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+  };
 }
 export interface EnhancedChatResponse {
-  response: string
-  synthesizedInput?: unknown
-  legalAnalysis?: unknown
-  ragResults?: unknown
-  confidence: number
-  processingTime: number
+  response: string;
+  synthesizedInput?: unknown;
+  legalAnalysis?: unknown;
+  ragResults?: unknown;
+  confidence: number;
+  processingTime: number;
   metadata: {
-    model: string
-    tokensUsed?: number
-    enabledFeatures: string[]
-    fallbacksUsed?: string[]
-    cacheHits?: string[]
-  }
-  recommendations?: string[]
-  contextualPrompts?: unknown[]
+    model: string;
+    tokensUsed?: number;
+    enabledFeatures: string[];
+    fallbacksUsed?: string[];
+    cacheHits?: string[];
+  };
+  recommendations?: string[];
+  contextualPrompts?: unknown[];
 }
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -134,5 +134,5 @@ const originalGETHandler: RequestHandler = async () => {
     return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 };
-export const POST = redisOptimized.aiChat(originalPOSTHandler)
+export const POST = redisOptimized.aiChat(originalPOSTHandler);
 export const GET = redisOptimized.aiChat(originalGETHandler);

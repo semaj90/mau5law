@@ -11,7 +11,7 @@ const createEvidenceBoardSchema = z.object({
   description: z.string().optional(),
   layout: z.any().optional(),
   settings: z.any().optional(),
-  isPublic: z.boolean().default(false)
+  isPublic: z.boolean().default(false),
 });
 
 // GET /api/evidence-boards - List evidence boards
@@ -30,27 +30,21 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     let query = db
       .select({
         board: evidenceBoards,
-        case: cases
+        case: cases,
       })
       .from(evidenceBoards)
       .innerJoin(cases, eq(evidenceBoards.caseId, cases.id))
       .where(eq(evidenceBoards.isActive, true));
 
     if (caseId) {
-      query = query.where(and(
-        eq(evidenceBoards.caseId, caseId),
-        eq(evidenceBoards.isActive, true)
-      ));
+      query = query.where(and(eq(evidenceBoards.caseId, caseId), eq(evidenceBoards.isActive, true)));
     }
 
-    const boards = await query
-      .orderBy(desc(evidenceBoards.createdAt))
-      .limit(limit)
-      .offset(offset);
+    const boards = await query.orderBy(desc(evidenceBoards.createdAt)).limit(limit).offset(offset);
 
     return json({
       success: true,
-      data: boards
+      data: boards,
     });
   } catch (error) {
     console.error('Error fetching evidence boards:', error);
@@ -70,10 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const validatedData = createEvidenceBoardSchema.parse(body);
 
     // Verify case exists
-    const [caseRecord] = await db
-      .select()
-      .from(cases)
-      .where(eq(cases.id, validatedData.caseId));
+    const [caseRecord] = await db.select().from(cases).where(eq(cases.id, validatedData.caseId));
 
     if (!caseRecord) {
       return json({ error: 'Case not found' }, { status: 404 });
@@ -83,14 +74,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .insert(evidenceBoards)
       .values({
         ...validatedData,
-        createdBy: session.user.id
+        createdBy: session.user.id,
       })
       .returning();
 
-    return json({
-      success: true,
-      data: newBoard
-    }, { status: 201 });
+    return json(
+      {
+        success: true,
+        data: newBoard,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating evidence board:', error);
     if (error instanceof z.ZodError) {

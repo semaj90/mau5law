@@ -114,7 +114,8 @@
   </BitsPopover.Portal>
 </BitsPopover.Root>
 
-<style>/* Gaming theme effects */ {}
+<style>
+/* Gaming theme effects */ {}
   :global([data-bits-popover-content][data-theme='gaming']) {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 100%);
     animation: gaming-pulse 3s ease-in-out infinite alternate;

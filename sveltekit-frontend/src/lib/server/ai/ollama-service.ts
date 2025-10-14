@@ -6,7 +6,7 @@ import type {
   DocumentChunk,
   LegalDocument,
   AnalysisResult,
-  UserQuery
+  UserQuery,
 } from './types.js';
 import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
 /**

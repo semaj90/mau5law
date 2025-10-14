@@ -52,7 +52,7 @@
     Lock,
     Unlock,
     Tag,
-    Share2
+    Share2,
   } from 'lucide-svelte';
 
   // Types
@@ -97,7 +97,7 @@
     height = 900,
     readOnly = false,
     enableAutoTag = true,
-    enableCollaboration = true
+    enableCollaboration = true,
   }: {
     reportId?: string;
     evidence?: EvidenceItem[];
@@ -117,8 +117,8 @@
       canvasState: null,
       selectedObjects: [],
       history: [],
-      historyIndex: -1
-    }
+      historyIndex: -1,
+    },
   });
 
   // Svelte 5 runes
@@ -182,7 +182,7 @@
         height,
         backgroundColor: '#ffffff',
         selection: !readOnly,
-        isDrawingMode: false
+        isDrawingMode: false,
       });
 
       // Setup event handlers
@@ -316,13 +316,13 @@
         reportId,
         canvasData,
         objects,
-        version: ($state.context.canvasState?.version || 0) + 1
+        version: ($state.context.canvasState?.version || 0) + 1,
       };
 
       const response = await fetch('/api/canvas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state)
+        body: JSON.stringify(state),
       });
 
       if (response.ok) {
@@ -363,7 +363,7 @@
       data: obj.toJSON(),
       position: { x: obj.left || 0, y: obj.top || 0 },
       size: { width: obj.width || 0, height: obj.height || 0 },
-      metadata: obj.metadata || {}
+      metadata: obj.metadata || {},
     }));
   }
 
@@ -377,7 +377,7 @@
       const objectData = {
         type: obj.type,
         content: (obj as any).text || (obj as any).src || '',
-        metadata: (obj as any).metadata || {}
+        metadata: (obj as any).metadata || {},
       };
 
       // Generate tags using Qdrant semantic search
@@ -400,7 +400,7 @@
 
     (selectedObject as any).metadata = {
       ...(selectedObject as any).metadata,
-      tags
+      tags,
     };
 
     canvas?.renderAll();
@@ -415,7 +415,7 @@
     const cacheData = {
       reportId,
       canvasData: JSON.stringify(canvas.toJSON()),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     lokiCanvasCache.set(`canvas_${reportId}`, cacheData);
@@ -452,7 +452,7 @@
         type,
         object: object.toJSON(),
         userId: 'current-user', // TODO: Get from auth
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } catch (err) {
       console.error('Failed to broadcast change:', err);
@@ -535,13 +535,13 @@
     if (!canvas) return;
 
     if (item.fileUrl && item.evidenceType === 'photo') {
-      fabric.Image.fromURL(item.fileUrl, (img) => {
+      fabric.Image.fromURL(item.fileUrl, img => {
         img.set({
           left: 100,
           top: 100,
           scaleX: 0.5,
           scaleY: 0.5,
-          ...(item.canvasPosition || {})
+          ...(item.canvasPosition || {}),
         });
 
         (img as any).evidenceId = item.id;
@@ -549,7 +549,7 @@
           title: item.title,
           description: item.description,
           evidenceType: item.evidenceType,
-          tags: item.aiTags || []
+          tags: item.aiTags || [],
         };
 
         canvas?.add(img);
@@ -563,13 +563,13 @@
         left: 100,
         top: 100,
         fontSize: 16,
-        fill: '#333'
+        fill: '#333',
       });
 
       (text as any).evidenceId = item.id;
       (text as any).metadata = {
         description: item.description,
-        evidenceType: item.evidenceType
+        evidenceType: item.evidenceType,
       };
 
       canvas.add(text);
@@ -589,13 +589,25 @@
 
   function lockSelected(): void {
     if (!selectedObject) return;
-    selectedObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+    selectedObject.set({
+      lockMovementX: true,
+      lockMovementY: true,
+      lockRotation: true,
+      lockScalingX: true,
+      lockScalingY: true,
+    });
     canvas?.renderAll();
   }
 
   function unlockSelected(): void {
     if (!selectedObject) return;
-    selectedObject.set({ lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+    selectedObject.set({
+      lockMovementX: false,
+      lockMovementY: false,
+      lockRotation: false,
+      lockScalingX: false,
+      lockScalingY: false,
+    });
     canvas?.renderAll();
   }
 
@@ -605,7 +617,7 @@
 
     const dataURL = canvas.toDataURL({
       format: 'png',
-      quality: 1
+      quality: 1,
     });
 
     const link = document.createElement('a');
@@ -651,7 +663,8 @@
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
-    toast.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000; animation: slideIn 0.3s ease;';
+    toast.style.cssText =
+      'position: fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000; animation: slideIn 0.3s ease;';
 
     if (type === 'success') toast.style.background = '#10b981';
     if (type === 'error') toast.style.background = '#ef4444';
@@ -695,7 +708,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => showEvidenceDialog = true}>
+      <Toolbar.Button onclick={() => (showEvidenceDialog = true)}>
         <Image size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Evidence</Tooltip.Trigger>
@@ -752,7 +765,7 @@
       </Toolbar.Button>
 
       {#if enableAutoTag}
-        <Toolbar.Button onclick={() => showTaggingDialog = true} disabled={!selectedObject}>
+        <Toolbar.Button onclick={() => (showTaggingDialog = true)} disabled={!selectedObject}>
           <Tag size={20} />
         </Toolbar.Button>
       {/if}
@@ -776,18 +789,14 @@
         </Popover.Trigger>
         <Popover.Content>
           <div class="export-menu">
-            <Button onclick={exportAsImage} variant="ghost" class="w-full justify-start">
-              Export as PNG
-            </Button>
-            <Button onclick={exportAsJSON} variant="ghost" class="w-full justify-start">
-              Export as JSON
-            </Button>
+            <Button onclick={exportAsImage} variant="ghost" class="w-full justify-start">Export as PNG</Button>
+            <Button onclick={exportAsJSON} variant="ghost" class="w-full justify-start">Export as JSON</Button>
           </div>
         </Popover.Content>
       </Popover.Root>
 
       {#if enableCollaboration}
-        <Toolbar.Button onclick={() => showShareDialog = true}>
+        <Toolbar.Button onclick={() => (showShareDialog = true)}>
           <Share2 size={20} />
         </Toolbar.Button>
       {/if}
@@ -844,9 +853,7 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Add Evidence to Canvas</Dialog.Title>
-      <Dialog.Description>
-        Select evidence items to add to your canvas workspace
-      </Dialog.Description>
+      <Dialog.Description>Select evidence items to add to your canvas workspace</Dialog.Description>
     </Dialog.Header>
 
     <div class="evidence-list">
@@ -871,9 +878,7 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Auto-Generated Tags</Dialog.Title>
-      <Dialog.Description>
-        AI-suggested tags from Qdrant semantic analysis
-      </Dialog.Description>
+      <Dialog.Description>AI-suggested tags from Qdrant semantic analysis</Dialog.Description>
     </Dialog.Header>
 
     {#if isAutoTagging}
@@ -886,12 +891,8 @@
       </div>
 
       <div class="dialog-actions">
-        <Button variant="secondary" onclick={() => showTaggingDialog = false}>
-          Cancel
-        </Button>
-        <Button onclick={() => applyTags(suggestedTags)}>
-          Apply Tags
-        </Button>
+        <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
+        <Button onclick={() => applyTags(suggestedTags)}>Apply Tags</Button>
       </div>
     {/if}
   </Dialog.Content>
@@ -903,9 +904,7 @@
     <Dialog.Content>
       <Dialog.Header>
         <Dialog.Title>Share Canvas</Dialog.Title>
-        <Dialog.Description>
-          Collaborate in real-time with your team
-        </Dialog.Description>
+        <Dialog.Description>Collaborate in real-time with your team</Dialog.Description>
       </Dialog.Header>
 
       <div class="share-content">
@@ -914,7 +913,7 @@
           {#if $state.matches('collaboration.enabled')}
              Collaboration active
           {:else}
-            ø Collaboration paused
+            ï¿½ Collaboration paused
           {/if}
         </p>
       </div>
@@ -988,7 +987,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .evidence-panel {

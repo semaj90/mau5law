@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!requestId) return json({ ok: false, error: 'missing_requestId' }, { status: 400 });
   try {
     const entries = await readTokenStream(requestId, from, limit);
-    const lastId = (entries && entries.length > 0) ? entries[entries.length - 1].id : from;
+    const lastId = entries && entries.length > 0 ? entries[entries.length - 1].id : from;
     return json({ ok: true, entries, lastId }, { status: 200 });
   } catch (err) {
     console.error('resume handler error', err);

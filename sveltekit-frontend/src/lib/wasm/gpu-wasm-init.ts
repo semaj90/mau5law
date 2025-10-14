@@ -4,8 +4,8 @@
  * Browser-native GPU access without Node.js overhead
  * Optimized for RTX 3060 with legal AI applications
  */
-import { writable, derived, type Writable } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable, derived, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
 // WebAssembly GPU Configuration
 export interface WasmGpuConfig {
   // GPU settings
@@ -68,7 +68,7 @@ export interface WasmGpuMetrics {
 }
 /**
  * WebAssembly GPU Initialization Service
- */;
+ */
 export class WasmGpuInitService {
   private config: WasmGpuConfig;
   private context: WasmGpuContext;

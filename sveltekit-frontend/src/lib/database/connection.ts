@@ -26,18 +26,18 @@ export async function testDatabaseConnection(): Promise<any> {
     const vectorTest = await pool`SELECT extname FROM pg_extension WHERE extname = 'vector';`;
     const hasVector = Array.isArray(vectorTest) && vectorTest.length > 0;
     return {
-      success: true
+      success: true,
       message: 'Database connection successful',
       details: {
         postgresVersion: (result as any)[0]?.version,
-        pgvectorEnabled: hasVector
+        pgvectorEnabled: hasVector,
         poolSize: 'n/a',
         timestamp: new Date().toISOString()
       }
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       message: `Database connection failed: ${(error as Error).message}`,
       details: {
         error: (error as Error).stack,
@@ -49,7 +49,7 @@ export async function testDatabaseConnection(): Promise<any> {
 // Vector similarity search helper
 export async function vectorSimilaritySearch(
   table: 'documents' | 'search_index',
-  queryEmbedding: number[]
+  queryEmbedding: number[],
   limit: number = 10,
   threshold: number = 0.8;
 ): Promise<any> {
@@ -69,13 +69,13 @@ export async function vectorSimilaritySearch(
       limit
     ]);
     return {
-      success: true
-      results: result
-      count: Array.isArray(result) ? (result as { length?: any }).length: 0
+      success: true,
+      results: result,
+      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       error: (error as Error).message,
       results: [],
       count: 0
@@ -84,8 +84,8 @@ export async function vectorSimilaritySearch(
 }
 // Hybrid semantic search combining multiple tables
 export async function hybridSemanticSearch(
-  query: string
-  queryEmbedding: number[]
+  query: string,
+  queryEmbedding: number[],
   options: {
     limit?: number;
     threshold?: number;
@@ -138,15 +138,15 @@ export async function hybridSemanticSearch(
     params.push(limit);
     const result = await pool.unsafe(searchQuery, params);
     return {
-      success: true
-      results: result
+      success: true,
+      results: result,
       count: Array.isArray(result) ? (result as { length?: any }).length: 0,
       query,
       queryEmbedding: queryEmbedding.slice(0, 5)
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       error: (error as Error).message,
       results: [],
       count: 0,
@@ -175,7 +175,7 @@ export async function initializeDatabase(): Promise<any> {
   } catch (error: any) {
     console.error('❌ Database initialization error:', error);
     return {
-      success: false
+      success: false,
       message: `Initialization failed: ${(error as Error).message}`
     }
   }

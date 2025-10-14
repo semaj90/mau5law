@@ -31,7 +31,7 @@
     notesContent = '';
     selectedCaseForNotes = '';
     selectedPoiForNotes = '';
-  }
+  };
 </script>
 
 <div class="nier-bits-card">

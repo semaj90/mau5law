@@ -49,7 +49,7 @@ async function cleanupTempFile(filepath: string): Promise<void> {
 /**
  * OCR Extraction using Tesseract.js
  * Supports images and PDF pages
- */;
+ */
 export async function extractTextFromImage(buffer: Buffer, options: {
   language?: string;
   pageSegMode?: number;
@@ -85,7 +85,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
       });
       const { data } = await worker.recognize(optimizedBuffer);
       return {
-        success: true
+        success: true,
         extractedText: data.text.trim(),
         metadata: {
           confidence: data.confidence,
@@ -110,7 +110,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
 /**
  * PDF to Images and OCR extraction
  * Note: This is a simplified version. For production, consider pdf2pic or pdf-poppler
- */;
+ */
 export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResult> {
   const startTime = Date.now();
   try {
@@ -133,7 +133,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
 }
 /**
  * Audio extraction from video/audio files using ffmpeg
- */;
+ */
 export async function extractAudioFromBuffer(buffer: Buffer, filename: string): Promise<AudioExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
@@ -174,10 +174,10 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
     // Get audio info
     const audioInfo = await getAudioInfo(outputPath, ffmpegPath);
     return {
-      success: true
-      audioPath: outputPath
+      success: true,
+      audioPath: outputPath,
       metadata: {
-        originalFormat: extension
+        originalFormat: extension,
         extractedFormat: 'wav',
         sampleRate: audioInfo.sampleRate,
         duration: audioInfo.duration,
@@ -202,7 +202,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
 }
 /**
  * Video frame sampling using ffmpeg
- */;
+ */
 export async function sampleFramesFromVideo(buffer: Buffer, filename: string, frameCount = 3): Promise<FrameExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
@@ -258,14 +258,14 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
       frameBuffers.push(frameBuffer);
     }
     return {
-      success: true
-      frames: frameBuffers
+      success: true,
+      frames: frameBuffers,
       frameCount: frameBuffers.length,
       metadata: {
-        originalFormat: extension
-        videoDuration: duration
-        frameTimestamps: timestamps
-        frameResolution: '1280x720'
+        originalFormat: extension,
+        videoDuration: duration,
+        frameTimestamps: timestamps,
+        frameResolution: '1280x720',
       },
       processingTime: Date.now() - startTime
     }
@@ -285,7 +285,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
 }
 /**
  * Large JSON parsing with simdjson-wasm
- */;
+ */
 export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionResult> {
   const startTime = Date.now();
   try {
@@ -295,7 +295,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
         const simdjson = await import('simdjson');
         const parsed = simdjson.parse(jsonText);
         return {
-          success: true
+          success: true,
           extractedText: JSON.stringify(parsed, null, 2),
           metadata: {
             parser: 'simdjson-wasm',
@@ -312,7 +312,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
     // Fallback to native JSON.parse
     const parsed = JSON.parse(jsonText);
     return {
-      success: true
+      success: true,
       extractedText: JSON.stringify(parsed, null, 2),
       metadata: {
         parser: 'native',
@@ -331,7 +331,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
 }
 /**
  * Utility functions for media info
- */;
+ */
 async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const ffprobe = spawn(ffmpegPath.replace('ffmpeg', 'ffprobe'), [
@@ -400,7 +400,7 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
 }
 /**
  * Main extractor router - determines which extractor to use based on content type
- */;
+ */
 export async function extractContent(buffer: Buffer, contentType: string, filename?: string): Promise<ExtractionResult> {
   const startTime = Date.now();
   try {
@@ -413,8 +413,8 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
     if (contentType.startsWith('text/')) {
       const text = buffer.toString('utf-8');
       return {
-        success: true
-        extractedText: text
+        success: true,
+        extractedText: text,
         metadata: {
           originalSize: buffer.length,
           encoding: 'utf-8'
@@ -429,7 +429,7 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
     // For audio/video, we don't extract text but return metadata
     if (contentType.startsWith('audio/') || contentType.startsWith('video/')) {
       return {
-        success: true
+        success: true,
         extractedText: `${contentType} file: ${filename || 'unknown'}`,
         metadata: {
           contentType,

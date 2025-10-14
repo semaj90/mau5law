@@ -7,7 +7,7 @@ interface NESMemoryWithWebGPU {
   prepareForWebGPU: (
     queryEmbeddings: Float32Array[],
     documentEmbeddings: Float32Array[],
-    legalDomainWeights?: Float32Array,
+    legalDomainWeights?: Float32Array
   ) => {
     caseData: Float32Array;
     evidenceData: Float32Array;

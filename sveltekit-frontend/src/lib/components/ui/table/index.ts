@@ -21,4 +21,4 @@ export {
   Head as TableHead,
   Header as TableHeader,
   Row as TableRow,
-}
+};

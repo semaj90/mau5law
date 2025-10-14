@@ -11,19 +11,19 @@
   export let title: string | undefined = undefined;
   export let description: string | undefined = undefined;
 
-  const sizeClasses: Record<'sm'|'md'|'lg'|'xl'|'full', string> = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
-    full: "max-w-[95vw] max-h-[95vh]"
+  const sizeClasses: Record<'sm' | 'md' | 'lg' | 'xl' | 'full', string> = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+    full: 'max-w-[95vw] max-h-[95vh]',
   };
 
   // stable id used for aria-controls / referencing the dialog
-  let dialogId = `dialog-${Math.random().toString(36).slice(2,9)}`;
+  let dialogId = `dialog-${Math.random().toString(36).slice(2, 9)}`;
 
   $: dialogClasses = cn(
-    "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border bg-white p-6 shadow-lg dark:bg-slate-950",
+    'relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border bg-white p-6 shadow-lg dark:bg-slate-950',
     sizeClasses[size],
     className
   );
@@ -39,7 +39,7 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (closeOnEscape && event.key === "Escape") {
+    if (closeOnEscape && event.key === 'Escape') {
       close();
     }
   }
@@ -85,10 +85,7 @@
 {/if}
 
 {#if open}
-  <div
-    class="fixed inset-0 z-40 flex items-center justify-center"
-    role="presentation"
-  >
+  <div class="fixed inset-0 z-40 flex items-center justify-center" role="presentation">
     <!-- overlay -->
     <div
       class="fixed inset-0 bg-black/50"
@@ -106,10 +103,10 @@
       class={dialogClasses}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? "dialog-title" : undefined}
-      aria-describedby={description ? "dialog-desc" : undefined}
+      aria-labelledby={title ? 'dialog-title' : undefined}
+      aria-describedby={description ? 'dialog-desc' : undefined}
       tabindex="0"
-      onclick={(event) => event.stopPropagation()}
+      onclick={event => event.stopPropagation()}
       onkeydown={handleContentKeydown}
       transition:scale={{ duration: 180, start: 0.96 }}
     >

@@ -111,13 +111,13 @@ export class EmbeddingCacheMiddleware {
   // Store embedding in both Redis and Postgres with WebGPU optimization
   private async storeEmbedding(text: string, vector: Float32Array, cacheKey: string): Promise<void> {
     const embedding: CachedEmbedding = {
-      id: cacheKey
-      text: text
-      vector: vector
+      id: cacheKey,
+      text: text,
+      vector: vector,
       metadata: {
         model: 'nomic-embed-text-v1',
         timestamp: Date.now(),
-        gpuProcessed: true
+        gpuProcessed: true,
         threadId: 'middleware_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
       },
     }
@@ -134,8 +134,8 @@ export class EmbeddingCacheMiddleware {
     }
     try {
       await threadSafePostgres.storeJsonbDocument?.('embeddings', {
-        id: cacheKey
-        text: text
+        id: cacheKey,
+        text: text,
         vector: Array.from(vector),
         metadata: embedding.metadata,
         created_at: new Date().toISOString(),
@@ -292,10 +292,10 @@ export class EmbeddingCacheMiddleware {
       const storeOperations = newEmbeddings.map((embedding, i) => ({
         type: 'set' as const,
         key: `embed:${missingTexts[i].cacheKey}`,
-        value: embedding
+        value: embedding,
         options: {
           ttl: 3600,
-          compress: true
+          compress: true,
           parallel: true;
           priority: 'high' as const,
         },
@@ -372,7 +372,7 @@ export class EmbeddingCacheMiddleware {
 }
 // Singleton instance
 export const embeddingCache = new EmbeddingCacheMiddleware({
-  useGPUAcceleration: true
+  useGPUAcceleration: true,
   batchSize: 128, // RTX 3060 Ti optimized
   cacheTTL: 86400, // 24 hours
 });

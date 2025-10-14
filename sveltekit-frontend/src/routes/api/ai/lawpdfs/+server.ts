@@ -93,8 +93,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     const message = error instanceof Error ? error.message: String(error)
     return json({
         error: 'Document processing failed',
-        details: message
-        fallbackSuggestion: 'Try with useLocalModels: false for cloud processing'
+        details: message,
+        fallbackSuggestion: 'Try with useLocalModels: false for cloud processing',
       },)
       { status: 500 }
     )
@@ -154,11 +154,11 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: true,
-          documentId: evidenceId
+          documentId: evidenceId,
           sessionId,
           steps,
           contentLength: file.size,
-          embeddingGenerated: enableEmbedding
+          embeddingGenerated: enableEmbedding,
           processingTime: 'In progress',
           webSocketUrl: `${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}`
         })
@@ -173,12 +173,12 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
     }
     const successCount = results.filter(item => item.length)
     return json({
-      success: successCount > 0
+      success: successCount > 0,
       results,
       message: `${successCount}/${files.length} files queued for processing`,
       totalFiles: files.length,
-      successfulFiles: successCount
-      failedFiles: files.length - successCount
+      successfulFiles: successCount,
+      failedFiles: files.length - successCount,
     })
   } catch (error: any) {
     console.error('[LawPDF] File upload handling failed:', error)
@@ -193,10 +193,10 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
   }
 }
 async function processWithLocalModels(
-  content: string
-  summaryModel: string
-  embeddingModel: string
-  analysisType: string
+  content: string,
+  summaryModel: string,
+  embeddingModel: string,
+  analysisType: string,
 ): Promise<LawPdfResponse> {
   // Enhanced legal prompt for gemma3-legal
   const legalPrompt = buildLegalAnalysisPrompt(content, analysisType)
@@ -207,8 +207,8 @@ async function processWithLocalModels(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: summaryModel.replace(':latest', ''),
-        prompt: legalPrompt
-        stream: false
+        prompt: legalPrompt,
+        stream: false,
         options: {
           temperature: 0.3, // Lower temperature for legal accuracy
           top_p: 0.9,
@@ -251,10 +251,10 @@ async function processWithLocalModels(
       embedding,
       metadata: {
         processingTime: 0, // Will be set by caller
-        modelUsed: summaryModel
+        modelUsed: summaryModel,
         embeddingModel,
-        localProcessing: true
-        confidence: parsedAnalysis.confidence
+        localProcessing: true,
+        confidence: parsedAnalysis.confidence,
       }
     }
   } catch (error: any) {
@@ -264,8 +264,8 @@ async function processWithLocalModels(
   }
 }
 async function processWithCloudFallback(
-  content: string
-  analysisType: string
+  content: string,
+  analysisType: string,
 ): Promise<LawPdfResponse> {
   // Basic fallback processing without external dependencies
   const sentences = content.split(/[.!?]+/).filter((s) => s.trim().length > 10)
@@ -288,8 +288,8 @@ async function processWithCloudFallback(
       processingTime: 0,
       modelUsed: 'fallback-processor',
       embeddingModel: 'none',
-      localProcessing: false
-      confidence: 0.6
+      localProcessing: false,
+      confidence: 0.6,
     }
   }
 }
@@ -310,7 +310,7 @@ RISK ASSESSMENT:
 [Evaluate potential legal risks and provide recommendations]
 Focus on accuracy and legal precision. Use clear, professional language.`
   const enhancedPrompts = {
-    basic: basePrompt
+    basic: basePrompt,
     comprehensive:
       basePrompt +
       '\n\nProvide detailed analysis with citations and cross-references where applicable.',
@@ -428,9 +428,9 @@ function extractBasicEntities(content: string) {
     const matches = content.match(pattern) || []
     matches.slice(0, 5).forEach((match) => {
       entities.push({
-        text: match
-        type: type as any
-        confidence: 0.7
+        text: match,
+        type: type as any,
+        confidence: 0.7,
       })
     })
   }

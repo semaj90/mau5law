@@ -109,11 +109,11 @@ export const GET: RequestHandler = async ({ params, url }) => {
       metadata: {
         totalEvents: timelineData.events.length,
         dateRange: {
-          start: timelineData.events.length > 0 ? timelineData.events[0].timestamp: null
-          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null
+          start: timelineData.events.length > 0 ? timelineData.events[0].timestamp: null,
+          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null,
         },
-        filters: request
-        generatedAt: new Date().toISOString()
+        filters: request,
+        generatedAt: new Date().toISOString(),
       }
     })
   }, catch (error) {
@@ -147,9 +147,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const updatedCorrelations = await updateEventCorrelations(newEvent)
     return json({
       success: true,
-      event: newEvent
-      correlations: updatedCorrelations
-      message: 'Timeline event created successfully'
+      event: newEvent,
+      correlations: updatedCorrelations,
+      message: 'Timeline event created successfully',
     })
   }, catch (error) {
     console.error('Timeline creation error:', error)
@@ -364,7 +364,7 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
       category: categories[i % categories.length],
       subcategory: i % 3 === 0 ? 'Primary' : 'Secondary',
       timestamp: eventDate.toISOString(),
-      endTimestamp: Math.random() > 0.7 ? new Date(eventDate.getTime() + (Math.random() * 4 * 60 * 60 * 1000)).toISOString() : undefined
+      endTimestamp: Math.random() > 0.7 ? new Date(eventDate.getTime() + (Math.random() * 4 * 60 * 60 * 1000)).toISOString() : undefined,
       location: ['Crime Scene Alpha', 'Police Station', 'Court House', 'Evidence Facility', 'Witness Location'][Math.floor(Math.random() * 5)],
       participants: generateRandomParticipants(),
       evidenceIds: [`EVIDENCE-${String(Math.floor(Math.random() * 10) + 1).padStart(3, '0')}`, `EVIDENCE-${String(Math.floor(Math.random() * 10) + 11).padStart(3, '0')}`],

@@ -117,7 +117,7 @@ export class QdrantApiWrapper {
   }
   // Vector operations
   async upsert(
-    collectionName: string
+    collectionName: string,
     options: {
       wait?: boolean;
       points: Array<any>;
@@ -150,7 +150,7 @@ export class QdrantApiWrapper {
     }
   }
   async search(
-    collectionName: string
+    collectionName: string,
     options: {
       vector: number[];
       limit?: number;
@@ -191,7 +191,7 @@ export class QdrantApiWrapper {
   }
   // Retrieve points with API compatibility handling
   async retrieve(
-    collectionName: string
+    collectionName: string,
     options: {
       ids: (string | number)[];
       with_payload?: boolean;
@@ -247,7 +247,7 @@ export class QdrantApiWrapper {
     }
   }
   async delete(
-    collectionName: string
+    collectionName: string,
     options: {
       wait?: boolean;
       points?: (string | number)[];

@@ -7,5 +7,5 @@ export const load: LayoutServerLoad = async ({ fetch, url }) => {
       timestamp: new Date().toISOString(),
       path: url.pathname,
     },
-  }
-}
+  };
+};

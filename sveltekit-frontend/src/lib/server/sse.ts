@@ -7,7 +7,7 @@ export class SSE {
   private encoder = new TextEncoder();
   /**
    * Create SSE response
-   */;
+   */
   createResponse(): Response {
     const { readable, writable } = new TransformStream();
     const response = new Response(readable, {
@@ -24,7 +24,7 @@ export class SSE {
   }
   /**
    * Send event to client
-   */;
+   */
   send(_event: { type: string; data: any }): void {
     const message = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`;
     for (const [clientId, stream] of this.clients) {
@@ -40,7 +40,7 @@ export class SSE {
   }
   /**
    * Close connection
-   */;
+   */
   close(): void {
     for (const [clientId, stream] of this.clients) {
       try {

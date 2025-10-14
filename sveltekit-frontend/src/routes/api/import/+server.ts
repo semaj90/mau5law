@@ -80,9 +80,9 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 }
 async function importCases(
-  casesData: any[]
-  overwriteExisting: boolean
-  results: any
+  casesData: any[],
+  overwriteExisting: boolean,
+  results: any,
 ): Promise<any> {
   if (!Array.isArray(casesData)) {
     results.errors.push("Cases data must be an array")
@@ -147,9 +147,9 @@ async function importCases(
   }
 }
 async function importEvidence(
-  evidenceData: any[]
-  overwriteExisting: boolean
-  results: any
+  evidenceData: any[],
+  overwriteExisting: boolean,
+  results: any,
 ): Promise<any> {
   if (!Array.isArray(evidenceData)) {
     results.errors.push("Evidence data must be an array")
@@ -236,9 +236,9 @@ async function importEvidence(
   }
 }
 async function importParticipants(
-  participantsData: any[]
-  overwriteExisting: boolean
-  results: any
+  participantsData: any[],
+  overwriteExisting: boolean,
+  results: any,
 ): Promise<any> {
   if (!Array.isArray(participantsData)) {
     results.errors.push("Participants data must be an array")
@@ -290,7 +290,7 @@ async function importParticipants(
           email: participant.contact_info?.email || null,
           phone: participant.contact_info?.phone || null,
           notes: participant.role ? `Role: ${participant.role}` : null
-          createdAt: participant.created_at
+          createdAt: participant.created_at,
             ? new Date(participant.created_at)
             : new Date(),
           updatedAt: new Date()

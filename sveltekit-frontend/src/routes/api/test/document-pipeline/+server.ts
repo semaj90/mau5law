@@ -31,10 +31,10 @@ async function testStep(stepName: string, testFn: () => Promise<any>): Promise<P
     const responseTime = Date.now() - startTime
     console.log(`✅ ${stepName} - Success (${responseTime}ms)`)
     return {
-      step: stepName
+      step: stepName,
       status: 'success',
       message: `${stepName} completed successfully`,
-      data: result
+      data: result,
       responseTime,
       timestamp
     }
@@ -42,7 +42,7 @@ async function testStep(stepName: string, testFn: () => Promise<any>): Promise<P
     const responseTime = Date.now() - startTime
     console.error(`❌ ${stepName} - Failed:`, error)
     return {
-      step: stepName
+      step: stepName,
       status: 'error',
       message: `${stepName} failed: ${error.message}`,
       responseTime,
@@ -108,8 +108,8 @@ export const GET: RequestHandler = async () => {
       } else {
         return {
           status: 'OCR service not operational but health endpoint working',
-          data: ocrHealthData
-          note: 'This is expected if OCR service is not running'
+          data: ocrHealthData,
+          note: 'This is expected if OCR service is not running',
         }
       }
     })
@@ -216,7 +216,7 @@ export const GET: RequestHandler = async () => {
   console.log(`🏁 Pipeline test completed in ${totalTestTime}ms - Status: ${overallStatus}`)
   const response: DocumentPipelineTestResponse = {
     testId,
-    status: overallStatus
+    status: overallStatus,
     timestamp: new Date().toISOString(),
     summary: {
       totalSteps: testResults.length,
@@ -224,18 +224,18 @@ export const GET: RequestHandler = async () => {
       failedSteps,
       skippedSteps
     },
-    steps: testResults
+    steps: testResults,
     overallMessage
   }
   const httpStatus = overallStatus === 'completed' ? 200 : overallStatus === 'partial' ? 206 : 500
   return json(response, {
-    status: httpStatus
+    status: httpStatus,
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',
-      'X-Test-ID': testId
-      'X-Test-Status': overallStatus
-      'X-Test-Duration': totalTestTime.toString()
+      'X-Test-ID': testId,
+      'X-Test-Status': overallStatus,
+      'X-Test-Duration': totalTestTime.toString(),
     }
   })
 }
@@ -258,8 +258,8 @@ export const POST: RequestHandler = async ({ request }) => {
       )
       return json({
         scenario: 'ocr-only',
-        results: testResults
-        timestamp: new Date().toISOString()
+        results: testResults,
+        timestamp: new Date().toISOString(),
       })
     }
     if (scenario === 'health-only') {
@@ -277,8 +277,8 @@ export const POST: RequestHandler = async ({ request }) => {
       )
       return json({
         scenario: 'health-only',
-        results: testResults
-        timestamp: new Date().toISOString()
+        results: testResults,
+        timestamp: new Date().toISOString(),
       })
     }
     // Default to full test - duplicate the logic since GET doesn't use event params

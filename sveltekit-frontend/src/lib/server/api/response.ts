@@ -35,7 +35,7 @@ export class ApiErrorClass extends Error {
     message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
-    details?: Record<string, unknown>,
+    details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'ApiError';
@@ -50,7 +50,7 @@ export function apiSuccess<T>(
   data: T,
   requestId: string = generateRequestId(),
   processingTime: number = 0,
-  pagination?: StandardApiResponse<T>['meta']['pagination'],
+  pagination?: StandardApiResponse<T>['meta']['pagination']
 ): Response {
   const response: StandardApiResponse<T> = {
     success: true,
@@ -69,7 +69,7 @@ export function apiSuccess<T>(
 export function apiError(
   error: ApiErrorClass | Error | string,
   requestId: string = generateRequestId(),
-  processingTime: number = 0,
+  processingTime: number = 0
 ): Response {
   let apiErrorData: ApiError;
   let statusCode = 500;
@@ -116,7 +116,7 @@ export function apiError(
 export function validationError(
   validationResult: z.ZodError,
   requestId: string = generateRequestId(),
-  processingTime: number = 0,
+  processingTime: number = 0
 ): Response {
   const details = validationResult.errors.reduce(
     (acc, err) => {
@@ -124,7 +124,7 @@ export function validationError(
       acc[path] = err.message;
       return acc;
     },
-    {} as Record<string, string>,
+    {} as Record<string, string>
   );
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
     fields: details,
@@ -134,7 +134,7 @@ export function validationError(
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
   data: T,
-  metadata: { processingTimeMs: number; requestId: string },
+  metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: true,
@@ -145,7 +145,7 @@ export function buildSuccessResponse<T>(
 export function buildErrorResponse(
   code: string,
   message: string,
-  metadata: { processingTimeMs: number; requestId: string },
+  metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: false,
@@ -155,7 +155,7 @@ export function buildErrorResponse(
 }
 export function buildFormSubmissionResult(
   result: unknown,
-  metadata: { processingTimeMs: number; requestId: string },
+  metadata: { processingTimeMs: number; requestId: string }
 ): unknown {
   return {
     ...(result as Record<string, unknown>),
@@ -237,7 +237,7 @@ function generateMockFallbackData(errorCode: string): unknown {
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
   handler: (event: RequestEvent) => Promise<T>,
-  event: RequestEvent,
+  event: RequestEvent
 ): Promise<Response> {
   const startTime = Date.now();
   const requestId = generateRequestId();
@@ -293,37 +293,26 @@ export async function withApiHandler<T>(
 // Common API errors
 export const CommonErrors = {
   NotFound: (resource: string) => new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
-  Unauthorized: (message = 'Unauthorized access') =>
-    new ApiErrorClass(message, 'UNAUTHORIZED', 401),
+  Unauthorized: (message = 'Unauthorized access') => new ApiErrorClass(message, 'UNAUTHORIZED', 401),
   Forbidden: (message = 'Access forbidden') => new ApiErrorClass(message, 'FORBIDDEN', 403),
   BadRequest: (message: string, details?: Record<string, unknown>) =>
     new ApiErrorClass(message, 'BAD_REQUEST', 400, details),
-  InternalError: (message = 'Internal server error') =>
-    new ApiErrorClass(message, 'INTERNAL_ERROR', 500),
+  InternalError: (message = 'Internal server error') => new ApiErrorClass(message, 'INTERNAL_ERROR', 500),
   ServiceUnavailable: (service: string) =>
     new ApiErrorClass(`${service} is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
-  RateLimited: (message = 'Rate limit exceeded') =>
-    new ApiErrorClass(message, 'RATE_LIMITED', 429),
+  RateLimited: (message = 'Rate limit exceeded') => new ApiErrorClass(message, 'RATE_LIMITED', 429),
   DatabaseError: (operation: string, details?: unknown) =>
     new ApiErrorClass(
       `Database operation failed: ${operation}`,
       'DATABASE_ERROR',
       500,
-      details as Record<string, unknown>,
+      details as Record<string, unknown>
     ),
   ValidationFailed: (field: string, reason: string) =>
-    new ApiErrorClass(
-      `Validation failed for field '${field}': ${reason}`,
-      'VALIDATION_ERROR',
-      400,
-      { field, reason },
-    ),
+    new ApiErrorClass(`Validation failed for field '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason }),
 } as const;
 // Type-safe request body parser with validation
-export async function parseRequestBody<T>(
-  request: Request,
-  schema: z.ZodSchema<T>,
-): Promise<T> {
+export async function parseRequestBody<T>(request: Request, schema: z.ZodSchema<T>): Promise<T> {
   try {
     const body = await request.json();
     return schema.parse(body);

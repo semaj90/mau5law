@@ -40,13 +40,15 @@
       classes.push('disabled:opacity-50 transition-all duration-200');
       // Variant classes
       const variantClasses = {
-        default: 'border-gray-300 bg-white text-gray-900 focus-visible:ring-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100',
-        legal: 'border-legal-secondary bg-legal-primary/5 text-legal-secondary focus-visible:ring-legal-accent font-mono uppercase tracking-wider',
+        default:
+          'border-gray-300 bg-white text-gray-900 focus-visible:ring-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100',
+        legal:
+          'border-legal-secondary bg-legal-primary/5 text-legal-secondary focus-visible:ring-legal-accent font-mono uppercase tracking-wider',
         success: 'border-green-500 focus-visible:ring-green-500',
         warning: 'border-amber-500 focus-visible:ring-amber-500',
         error: 'border-red-500 focus-visible:ring-red-500 bg-red-50 dark:bg-red-950',
-      }
-      classes.push(error ? variantClasses.error: variantClasses[variant] || variantClasses.default);
+      };
+      classes.push(error ? variantClasses.error : variantClasses[variant] || variantClasses.default);
     }
     if (fullWidth) classes.push('!w-full');
     if (className) classes.push(className);
@@ -117,7 +119,7 @@
 
 <style>
   .input-wrapper {
-/* @apply space-y-1; */
+    /* @apply space-y-1; */
   }
   /* Additional NES.css enhancements */
   :global(.nes-field) {

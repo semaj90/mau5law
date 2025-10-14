@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export interface CudaHealthCheck {
   service: string;
@@ -165,27 +165,27 @@ export const GET: RequestHandler = async ({ fetch }) => {
   });
 };
 function generateRecommendations(services: ServiceHealth[]): string[] {
-	const recommendations: string[] = []
-	const cudaService = services.find(s => s.name === 'cuda-service')
-	if (!cudaService || cudaService.status !== 'online') {
-		recommendations.push('Start CUDA service: go run cmd/cuda-service/main.go')
-	} else if (cudaService.details && !cudaService.details.cuda_worker) {
-		recommendations.push('Build CUDA worker: cd cuda-worker && build-simple.bat')
-	}
-	const ragService = services.find(s => s.name === 'enhanced-rag')
-	if (!ragService || ragService.status !== 'online') {
-		recommendations.push('Start Enhanced RAG service: ./bin/enhanced-rag.exe')
-	}
-	const uploadService = services.find(s => s.name === 'upload-service')
-	if (!uploadService || uploadService.status !== 'online') {
-		recommendations.push('Start Upload service: ./bin/upload-service.exe')
-	}
-	const ollamaService = services.find(s => s.name === 'ollama')
-	if (!ollamaService || ollamaService.status !== 'online') {
-		recommendations.push('Start Ollama: ollama serve')
-	}
-	if (recommendations.length === 0) {
-		recommendations.push('All services are running optimally! 🚀')
-	}
-	return recommendations
+  const recommendations: string[] = [];
+  const cudaService = services.find(s => s.name === 'cuda-service');
+  if (!cudaService || cudaService.status !== 'online') {
+    recommendations.push('Start CUDA service: go run cmd/cuda-service/main.go');
+  } else if (cudaService.details && !cudaService.details.cuda_worker) {
+    recommendations.push('Build CUDA worker: cd cuda-worker && build-simple.bat');
+  }
+  const ragService = services.find(s => s.name === 'enhanced-rag');
+  if (!ragService || ragService.status !== 'online') {
+    recommendations.push('Start Enhanced RAG service: ./bin/enhanced-rag.exe');
+  }
+  const uploadService = services.find(s => s.name === 'upload-service');
+  if (!uploadService || uploadService.status !== 'online') {
+    recommendations.push('Start Upload service: ./bin/upload-service.exe');
+  }
+  const ollamaService = services.find(s => s.name === 'ollama');
+  if (!ollamaService || ollamaService.status !== 'online') {
+    recommendations.push('Start Ollama: ollama serve');
+  }
+  if (recommendations.length === 0) {
+    recommendations.push('All services are running optimally! 🚀');
+  }
+  return recommendations;
 }

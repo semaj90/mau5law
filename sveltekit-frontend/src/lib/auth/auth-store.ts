@@ -32,9 +32,9 @@ export interface AuthState {
 }
 // Initial auth state
 const initialState: AuthState = {
-  user: null
-  session: null
-  isLoading: true
+  user: null,
+  session: null,
+  isLoading: true,
   isAuthenticated: false;
   permissions: [],
   lastActivity: null
@@ -56,7 +56,7 @@ export class AuthStore {
   private static activityTimeout: NodeJS.Timeout | null = null;
   /**
    * Initialize the auth store and start session management
-   */;
+   */
   static async initialize(): Promise<void> {
     if (!browser) return;
     authState.update(state => ({ ...state, isLoading: true });
@@ -76,7 +76,7 @@ export class AuthStore {
   }
   /**
    * Login with email and password
-   */;
+   */
   static async login(email: string, password: string, rememberMe = false): Promise<any> {
     authState.update(state => ({ ...state, isLoading: true });
     try {
@@ -111,7 +111,7 @@ export class AuthStore {
   }
   /**
    * Register a new user account
-   */;
+   */
   static async register(userData: {
     email: string;
     password: string;
@@ -136,7 +136,7 @@ export class AuthStore {
           await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         }
         return {
-          success: true
+          success: true,
           requiresVerification: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresVerification
         }
       } else {
@@ -154,7 +154,7 @@ export class AuthStore {
   }
   /**
    * Logout and clear session
-   */;
+   */
   static async logout(): Promise<void> {
     authState.update(state => ({ ...state, isLoading: true });
     try {
@@ -175,7 +175,7 @@ export class AuthStore {
   }
   /**
    * Check current session validity
-   */;
+   */
   static async checkSession(): Promise<boolean> {
     if (!browser) return false;
     try {
@@ -198,7 +198,7 @@ export class AuthStore {
   }
   /**
    * Update user profile
-   */;
+   */
   static async updateProfile(updates: Partial<AuthUser>): Promise<any> {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
@@ -231,7 +231,7 @@ export class AuthStore {
   }
   /**
    * Change user password
-   */;
+   */
   static async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/change-password', {
@@ -254,21 +254,21 @@ export class AuthStore {
   }
   /**
    * Check if user has specific permission
-   */;
+   */
   static hasPermission(permission: Permission): boolean {
     const state = get(authState);
     return state.permissions.includes(permission);
   }
   /**
    * Check if user has any of the specified permissions
-   */;
+   */
   static hasAnyPermission(permissions: Permission[]): boolean {
     const state = get(authState);
     return permissions.some(permission => state.permissions.includes(permission);
   }
   /**
    * Check if user has all of the specified permissions
-   */;
+   */
   static hasAllPermissions(permissions: Permission[]): boolean {
     const state = get(authState);
     return permissions.every(permission => state.permissions.includes(permission);
@@ -277,7 +277,7 @@ export class AuthStore {
    * Check if user can access a resource
    */
   static canAccessResource(
-    permission: Permission
+    permission: Permission,
     resourceOwnerId?: string
     isPublic = false;
   ): boolean {
@@ -293,7 +293,7 @@ export class AuthStore {
   }
   /**
    * Get user's role hierarchy level
-   */;
+   */
   static getRoleHierarchy(): number {
     const state = get(authState);
     if (!state.user) return 0;
@@ -302,7 +302,7 @@ export class AuthStore {
   }
   /**
    * Private: Update auth state with user and session data
-   */;
+   */
   private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
     // Get user permissions based on role
     const permissions = AccessControl.getRolePermissions(user.role);
@@ -310,7 +310,7 @@ export class AuthStore {
       ...state,
       user,
       session,
-      isAuthenticated: true
+      isAuthenticated: true,
       permissions,
       lastActivity: new Date(),
       isLoading: false
@@ -318,7 +318,7 @@ export class AuthStore {
   }
   /**
    * Private: Clear authentication state
-   */;
+   */
   private static clearAuth(): void {
     authState.set({
       ...initialState,
@@ -327,7 +327,7 @@ export class AuthStore {
   }
   /**
    * Private: Start session monitoring
-   */;
+   */
   private static startSessionMonitoring(): void {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
@@ -351,7 +351,7 @@ export class AuthStore {
   }
   /**
    * Private: Stop session monitoring
-   */;
+   */
   private static stopSessionMonitoring(): void {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
@@ -364,7 +364,7 @@ export class AuthStore {
   }
   /**
    * Private: Setup activity tracking
-   */;
+   */
   private static setupActivityTracking(): void {
     if (!browser) return;
     // Track user activity
@@ -380,7 +380,7 @@ export class AuthStore {
   }
   /**
    * Private: Track user activity
-   */;
+   */
   private static trackActivity(type: string): void {
     authState.update(state => ({
       ...state,
@@ -398,7 +398,7 @@ export class AuthStore {
   }
   /**
    * Private: Reset activity timeout
-   */;
+   */
   private static resetActivityTimeout(): void {
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
@@ -410,7 +410,7 @@ export class AuthStore {
   }
   /**
    * Private: Show session expiration warning
-   */;
+   */
   private static showSessionWarning(timeRemaining: number): void {
     const minutes = Math.ceil(timeRemaining / 60000);
     // You can replace this with a proper notification system

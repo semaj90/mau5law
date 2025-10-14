@@ -88,7 +88,7 @@ export function createSession(input: {
     id: input.id,
     title: input.title ?? "New Chat",
     created: input.created ?? now,
-    updated: now
+    updated: now,
     messageCount: 0,
     status: "active",
     context: input.context

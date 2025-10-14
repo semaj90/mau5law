@@ -15,7 +15,7 @@ export interface DatabaseSyncTestData {
       isAvailable: boolean;
       models: string[];
       error: string | null;
-    }
+    };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
     serviceStatus: {
@@ -23,21 +23,21 @@ export interface DatabaseSyncTestData {
       ollama: boolean;
       redis: boolean;
       lastChecked: string;
-    }
+    };
     testingMetrics: {
       totalDocuments: number;
       totalSessions: number;
       documentsToday: number;
       averageProcessingTime: number;
       cacheHitRate: number;
-    }
-  }
+    };
+  };
   meta: {
     totalDocuments: number;
     totalSessions: number;
     serverRenderTime: number;
     testingEnvironment: boolean;
-  }
+  };
 }
 export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSyncTestData> => {
   const startTime = Date.now();
@@ -128,7 +128,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
             lastActivity:
               session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
             documentsProcessed: Number(docCount) || 0,
-          }
+          };
         } catch (error) {
           console.warn(`Failed to count documents for session ${session.id}:`, error);
           return {
@@ -137,9 +137,9 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
             messageCount: session.messageCount || 0,
             lastActivity: session.lastActivity?.toISOString() || new Date().toISOString(),
             documentsProcessed: 0,
-          }
+          };
         }
-      }),
+      })
     );
     // Calculate metrics
     const metricsData = metrics[0];
@@ -200,7 +200,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         serverRenderTime,
         testingEnvironment: true,
       },
-    }
+    };
     return pageData;
   } catch (error) {
     console.error('Failed to load database sync test data:', error);
@@ -234,6 +234,6 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         serverRenderTime: Date.now() - startTime,
         testingEnvironment: true,
       },
-    }
+    };
   }
-}
+};

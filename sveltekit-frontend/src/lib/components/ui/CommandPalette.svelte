@@ -4,8 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { User } from '$lib/types';
-  import { onMount } from "svelte";
-  import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
+  import { onMount } from 'svelte';
+  import { Search, File, Briefcase, User as UserIcon, Settings, Command } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   interface Props {
     open?: boolean;
@@ -27,12 +27,15 @@ https://svelte.dev/e/js_parse_error -->
   let searchInput: HTMLInputElement;
   let searchQuery = $state('');
   let selectedIndex = $state(0);
-  let filteredItems = $derived(searchQuery
-    ? allItems.filter(item =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : allItems);
+  let filteredItems = $derived(
+    searchQuery
+      ? allItems.filter(
+          item =>
+            item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : allItems
+  );
   const allItems: CommandItem[] = [
     // Navigation
     {
@@ -42,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Search,
       category: 'Navigation',
       href: '/',
-      shortcut: ['⌘', 'H']
+      shortcut: ['⌘', 'H'],
     },
     {
       id: 'nav-evidence',
@@ -51,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Navigation',
       href: '/evidence',
-      shortcut: ['⌘', 'E']
+      shortcut: ['⌘', 'E'],
     },
     {
       id: 'nav-cases',
@@ -60,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Navigation',
       href: '/cases',
-      shortcut: ['⌘', 'C']
+      shortcut: ['⌘', 'C'],
     },
     // Actions
     {
@@ -70,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Actions',
       action: () => console.log('Create new case'),
-      shortcut: ['⌘', 'N']
+      shortcut: ['⌘', 'N'],
     },
     {
       id: 'action-upload-evidence',
@@ -79,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Actions',
       action: () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U']
+      shortcut: ['⌘', 'U'],
     },
     // Settings
     {
@@ -88,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Manage your user profile',
       icon: UserIcon,
       category: 'Settings',
-      href: '/profile'
+      href: '/profile',
     },
     {
       id: 'settings-system',
@@ -96,8 +99,8 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Configure system preferences',
       icon: Settings,
       category: 'Settings',
-      href: '/settings'
-  }
+      href: '/settings',
+    },
   ];
   $effect(() => {
     if (open && searchInput) {
@@ -125,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           selectItem(filteredItems[selectedIndex]);
         }
         break;
-  }
+    }
   }
   function selectItem(item: CommandItem) {
     if (item.href) {
@@ -202,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
                       'w-full flex items-center justify-between px-3 py-2 text-left rounded-md transition-all duration-150',
                       globalIndex === selectedIndex
                         ? 'bg-harvard-crimson text-white shadow-nier-glow'
-                        : 'hover:bg-nier-surface-light text-foreground',
+                        : 'hover:bg-nier-surface-light text-foreground'
                     )}
                     onclick={() => selectItem(item)}
                     onmouseenter={() => (selectedIndex = globalIndex)}
@@ -212,14 +215,14 @@ https://svelte.dev/e/js_parse_error -->
                         this={item.icon}
                         class={cn(
                           'h-4 w-4 mr-3',
-                          globalIndex === selectedIndex ? 'text-white' : 'text-muted-foreground',
+                          globalIndex === selectedIndex ? 'text-white' : 'text-muted-foreground'
                         )}
                       />
                       <div>
                         <div
                           class={cn(
                             'text-sm font-medium',
-                            globalIndex === selectedIndex ? 'text-white' : 'text-foreground',
+                            globalIndex === selectedIndex ? 'text-white' : 'text-foreground'
                           )}
                         >
                           {item.title}
@@ -227,7 +230,7 @@ https://svelte.dev/e/js_parse_error -->
                         <div
                           class={cn(
                             'text-xs',
-                            globalIndex === selectedIndex ? 'text-white/70' : 'text-muted-foreground',
+                            globalIndex === selectedIndex ? 'text-white/70' : 'text-muted-foreground'
                           )}
                         >
                           {item.description}
@@ -242,7 +245,7 @@ https://svelte.dev/e/js_parse_error -->
                               'px-1.5 py-0.5 text-xs rounded border',
                               globalIndex === selectedIndex
                                 ? 'bg-white/20 text-white border-white/30'
-                                : 'bg-nier-surface-light text-muted-foreground border-nier-gray',
+                                : 'bg-nier-surface-light text-muted-foreground border-nier-gray'
                             )}
                           >
                             {key}

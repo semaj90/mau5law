@@ -380,7 +380,7 @@
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
                     <span
                       class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTheoryTypeColor(
-                        theory.type,
+                        theory.type
                       )}"
                     >
                       {theory.type}
@@ -422,7 +422,7 @@
                   <h2 class="text-xl font-semibold text-gray-900">{currentTheory.name}</h2>
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {getTheoryTypeColor(
-                      currentTheory.type,
+                      currentTheory.type
                     )}"
                   >
                     {currentTheory.type} Theory

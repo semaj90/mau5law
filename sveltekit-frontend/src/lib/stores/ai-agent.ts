@@ -82,27 +82,27 @@ export interface AIError {
 // Main AI Agent Store
 const createAIAgentStore = () => {
   const { subscribe, set, update } = writable<AIAgentState>({
-    isConnected: false
-    isProcessing: false
+    isConnected: false,
+    isProcessing: false,
     systemHealth: "healthy",
-    lastHeartbeat: null
+    lastHeartbeat: null,
     currentConversation: [],
     conversationHistory: [],
-    activeSessionId: null
+    activeSessionId: null,
     currentModel: "gemma3-legal",
     availableModels: ["gemma3-legal", "mistral-7b", "llama3.1-8b"],
     processingQueue: [],
     completedJobs: [],
     vectorStore: {
-      isIndexed: false
+      isIndexed: false,
       documentCount: 0,
       lastIndexUpdate: null
     },
     similarDocuments: [],
     citationSources: [],
     streamingResponse: "",
-    isStreaming: false
-    typingIndicator: false
+    isStreaming: false,
+    typingIndicator: false,
     errors: [],
     retryQueue: [],
     responseTimeMs: 0,
@@ -123,8 +123,8 @@ const createAIAgentStore = () => {
         }
         update((state) => ({
           ...state,
-          isConnected: true
-          isProcessing: false
+          isConnected: true,
+          isProcessing: false,
           currentModel: connectionResult?.model || "unknown" // @ts-ignore - Model property access,
           availableModels: connectionResult.availableModels,
           lastHeartbeat: new Date(),
@@ -140,16 +140,16 @@ const createAIAgentStore = () => {
         });
         update((state) => ({
           ...state,
-          isConnected: false
-          isProcessing: false
-          systemHealth: "critical"
+          isConnected: false,
+          isProcessing: false,
+          systemHealth: "critical",
         });
       }
     },
     disconnect() {
       update((state) => ({
         ...state,
-        isConnected: false
+        isConnected: false,
         systemHealth: "degraded",
         currentConversation: [],
         activeSessionId: null
@@ -163,20 +163,20 @@ const createAIAgentStore = () => {
       // Add user message
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        content: message
+        content: message,
         role: "user",
         timestamp: new Date()
       }
       update((state) => ({
         ...state,
         currentConversation: [...state.currentConversation, userMessage],
-        activeSessionId: sessionId
-        isProcessing: true
-        typingIndicator: true
+        activeSessionId: sessionId,
+        isProcessing: true,
+        typingIndicator: true,
       });
       // Add processing job
       const job: ProcessingJob = {
-        id: jobId
+        id: jobId,
         type: "chat",
         status: "pending",
         input: { message, context, sessionId },
@@ -197,8 +197,8 @@ const createAIAgentStore = () => {
             ...context
           },
           options: {
-            stream: true
-            useRAG: true
+            stream: true,
+            useRAG: true,
           }
         });
         // Complete the chat response
@@ -206,13 +206,13 @@ const createAIAgentStore = () => {
         const responseTime = Date.now() - startTime;
         update((state) => ({
           ...state,
-          responseTimeMs: responseTime
+          responseTimeMs: responseTime,
           averageResponseTime:
             (state.averageResponseTime * state.totalRequests + responseTime) /
             (state.totalRequests + 1),
           totalRequests: state.totalRequests + 1,
-          isProcessing: false
-          typingIndicator: false
+          isProcessing: false,
+          typingIndicator: false,
         });
       } catch (error: any) {
         this.addError({
@@ -223,8 +223,8 @@ const createAIAgentStore = () => {
         });
         update((state) => ({
           ...state,
-          isProcessing: false
-          typingIndicator: false
+          isProcessing: false,
+          typingIndicator: false,
           successRate:
             state.totalRequests > 0
               ? (((state.totalRequests * state.successRate) / 100 - 1) /
@@ -242,8 +242,8 @@ const createAIAgentStore = () => {
       let assistantMessage = "";
       update((state) => ({
         ...state,
-        isStreaming: true
-        streamingResponse: ""
+        isStreaming: true,
+        streamingResponse: "",
       });
       try {
         while (true) {
@@ -276,8 +276,8 @@ const createAIAgentStore = () => {
         reader.releaseLock();
         update((state) => ({
           ...state,
-          isStreaming: false
-          streamingResponse: ""
+          isStreaming: false,
+          streamingResponse: "",
         });
       }
     },
@@ -370,8 +370,8 @@ const createAIAgentStore = () => {
         }
         update((state) => ({
           ...state,
-          currentModel: modelName
-          isProcessing: false
+          currentModel: modelName,
+          isProcessing: false,
           currentConversation: [], // Clear conversation on model switch
         });
       } catch (error: any) {
@@ -388,7 +388,7 @@ const createAIAgentStore = () => {
       update((state) => ({
         ...state,
         currentConversation: [],
-        activeSessionId: null
+        activeSessionId: null,
         streamingResponse: "",
         similarDocuments: [],
         citationSources: []
@@ -422,7 +422,7 @@ const createAIAgentStore = () => {
       const newError: AIError = {
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        resolved: false
+        resolved: false,
         ...error
       }
       update((state) => ({
@@ -455,8 +455,8 @@ const createAIAgentStore = () => {
         const completedJob: ProcessingJob = {
           ...job,
           status: "completed",
-          output: result
-          endTime: new Date()
+          output: result,
+          endTime: new Date(),
         }
         return {
           ...state,

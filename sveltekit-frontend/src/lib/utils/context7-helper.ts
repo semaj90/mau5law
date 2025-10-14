@@ -3,7 +3,7 @@ import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs'
 /**
  * Legacy API compatibility for resolveLibraryId
  * Maps library names to Context7.2 compatible library IDs
- */;
+ */
 export async function resolveLibraryId(libraryName: string): Promise<string> {
   const libraryMapping: Record<string, string> = {
     'sveltekit': '/sveltejs/kit',
@@ -26,7 +26,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
  * Fetches documentation using MCP Context7.2
  */
 export async function getLibraryDocs(
-  libraryId: string
+  libraryId: string,
   topic?: string
   tokens?: number;
 ): Promise<string> {

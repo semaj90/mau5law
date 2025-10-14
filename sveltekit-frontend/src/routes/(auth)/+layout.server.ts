@@ -16,5 +16,5 @@ export const load: LayoutServerLoad = async ({ url, locals, cookies }) => {
     session: locals.session || null,
     isAuthRoute: true,
     path,
-  }
-}
+  };
+};

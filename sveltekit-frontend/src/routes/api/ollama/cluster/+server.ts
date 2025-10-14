@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const clusterStatus = await getClusterStatus(detailed)
     return json({
       success: true,
-      cluster: clusterStatus
+      cluster: clusterStatus,
       service: 'ollama-cluster-management',
       capabilities: [
         'Multi-instance load balancing',
@@ -209,7 +209,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'response-time',
         'cpu-based'
       ],
-      supportedModels: AVAILABLE_MODELS
+      supportedModels: AVAILABLE_MODELS,
       endpoints: {
         status: '/api/ollama/cluster (GET)',
         instance_status: '/api/ollama/cluster?instance={id} (GET)',
@@ -426,7 +426,7 @@ async function rebalanceCluster(strategy: string): Promise<any> {
   const sum = Object.values(distribution).reduce((s, v) => s + v, 0) || 1
   Object.keys(distribution).forEach(k => distribution[k] = Math.round((distribution[k] / sum) * 100)
   return {
-    rebalanced: true
+    rebalanced: true,
     distribution,
     improvement: Math.round(Math.random() * 15 + 5),
     strategy: useStrategy
@@ -479,9 +479,9 @@ async function scaleCluster(targetInstances: number, models: string[] = []): Pro
   const distribution: Record<string, number> = {}
   models.forEach(m => (distribution[m] = Math.ceil(targetInstances / Math.max(1, Math.floor(models.length / 1))))
   return {
-    previous: current
-    current: targetInstances
-    models: distribution
+    previous: current,
+    current: targetInstances,
+    models: distribution,
     note: 'This is a simulated scaling response. In production, an orchestrator would perform node operations.'
   }
 }
@@ -500,7 +500,7 @@ async function triggerFailover(instanceId: string, reason: string): Promise<any>
   return {
     success: true,
       failedOver: remaining.length > 0,
-      oldPrimary: instanceId
+      oldPrimary: instanceId,
       newPrimary,
     redistributed: remaining.length > 0,
     reason: reason ?? 'manual',

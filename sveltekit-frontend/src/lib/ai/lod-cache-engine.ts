@@ -1442,4 +1442,4 @@ LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function (): str
 // (Legacy in-class shader methods removed; prototype-based implementations above are authoritative.)
 // Export singleton instance
 export const lodCacheEngine = new LODCacheEngine();
-export type { LODLevel, LODCacheEntry, LODProcessingConfig }
+export type { LODLevel, LODCacheEntry, LODProcessingConfig };

@@ -21,10 +21,10 @@ const LLVM_CONFIG = {
     '-mnontrapping-fptoint' // Non-trapping float-to-int conversions
   ],
   legalSpecificOptimizations: {
-    enableTextProcessing: true
-    enableVectorSearch: true
-    enableDocumentParsing: true
-    enableCitationExtraction: true
+    enableTextProcessing: true,
+    enableVectorSearch: true,
+    enableDocumentParsing: true,
+    enableCitationExtraction: true,
   }
 } as const;
 }
@@ -121,7 +121,7 @@ export class LLVMWASMBridge {
     }
   }
   async compileLegalModule(
-    moduleId: string
+    moduleId: string,
     name: string;
     config: any;
   ): Promise<LLVMModule | null> {
@@ -144,12 +144,12 @@ export class LLVMWASMBridge {
       }
       // Create module instance
       const module: LLVMModule = {
-        id: moduleId
+        id: moduleId,
         name,
         sourceFiles: config.sources,
         compiledWasm: compilationResult.wasmBinary,
         exports: { [key,: strin,g]: any },
-        memory: null
+        memory: null,
         isLoaded: false;
         performance: {
           compileTimeMs: performance.now() - startTime,
@@ -286,7 +286,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       const wasmBinary = this.generateMockWASMBinary(sources, options);
       const compileTime = performance.now() - startTime;
       return {
-        success: true
+        success: true,
         wasmBinary,
         exports: this.extractExportsFromSources(sources),
         compileTime,
@@ -297,8 +297,8 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       }
     } catch (error: any) {
       return {
-        success: false
-        wasmBinary: null
+        success: false,
+        wasmBinary: null,
         exports: [],
         compileTime: performance.now() - startTime,
         memoryUsage: 0,

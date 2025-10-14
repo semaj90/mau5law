@@ -52,7 +52,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Initialize WebAssembly module and GPU acceleration
-   */;
+   */
   async initialize(): Promise<boolean> {
     try {
       console.log('🚀 Initializing WebASM llama.cpp engine...');
@@ -76,7 +76,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Load WebAssembly module with optimization flags
-   */;
+   */
   private async loadWasmModule(wasmUrl: string): Promise<any> {
     // removed unused response assignment
     const wasmBytes = await response.arrayBuffer();
@@ -106,7 +106,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Initialize WebGPU for tensor operations
-   */;
+   */
   private async initializeGPU(): Promise<void> {
     if (!navigator.gpu) {
       console.warn('WebGPU not available, using CPU fallback');
@@ -130,7 +130,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Load quantized model into WebASM memory
-   */;
+   */
   private async loadModel(): Promise<void> {
     console.log(`📦 Loading model: ${this.config.modelPath}`);
     // Download model if not cached
@@ -143,8 +143,8 @@ export class WebASMLlamaCppEngine {
     wasmMemory.set(new Uint8Array(modelData), modelPtr);
     // Initialize llama.cpp context
     const success = this.wasmModule.llama_init({
-      model_ptr: modelPtr
-      model_size: modelSize
+      model_ptr: modelPtr,
+      model_size: modelSize,
       context_size: this.config.contextSize,
       gpu_layers: this.config.gpuLayers,
       thread_count: this.config.threadCount,
@@ -159,7 +159,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Download and cache model file
-   */;
+   */
   private async downloadModel(modelPath: string): Promise<ArrayBuffer> {
     // Check IndexedDB cache first
     const cachedModel = await this.getCachedModel(modelPath);
@@ -183,7 +183,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Run inference with WebASM + GPU acceleration
-   */;
+   */
   async runInference(request: InferenceRequest): Promise<InferenceResult> {
     if (!this.modelLoaded) {
       throw new Error('Model not loaded. Call initialize() first.');
@@ -230,7 +230,7 @@ export class WebASMLlamaCppEngine {
    * Streaming inference with real-time token generation
    */
   private async* streamInference(
-    inputTokens: number[]
+    inputTokens: number[],
     request: InferenceRequest;
   ): AsyncGenerator<number> {
     // Set sampling parameters
@@ -256,11 +256,11 @@ export class WebASMLlamaCppEngine {
    * Batch inference for non-streaming requests
    */
   private async batchInference(
-    inputTokens: number[]
+    inputTokens: number[],
     request: InferenceRequest;
   ): Promise<number[]> {
     return this.wasmModule.llama_generate({
-      input_tokens: inputTokens
+      input_tokens: inputTokens,
       max_tokens: request.maxTokens,
       temperature: request.temperature,
       top_p: request.topP,
@@ -269,7 +269,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Tokenize text to token IDs
-   */;
+   */
   private async tokenize(text: string): Promise<number[]> {
     const encoder = new TextEncoder();
     const textBytes = encoder.encode(text);
@@ -292,7 +292,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Detokenize token IDs to text
-   */;
+   */
   private async detokenize(tokens: number[]): Promise<string> {
     const textPtr = this.wasmModule.llama_detokenize(tokens);
     const textLength = this.wasmModule.llama_text_length(textPtr);
@@ -383,7 +383,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getStats(): {
     totalInferences: number;
     totalTokens: number;
@@ -401,7 +401,7 @@ export class WebASMLlamaCppEngine {
   }
   /**
    * Cleanup resources
-   */;
+   */
   async destroy(): Promise<void> {
     if (this.wasmModule) {
       this.wasmModule.llama_cleanup();
@@ -418,8 +418,8 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
   contextSize: 2048,
   gpuLayers: 35,
   threadCount: 8,
-  useGPU: true
-  quantization: 'q4_0'
+  useGPU: true,
+  quantization: 'q4_0',
 });
 // Convenience function for quick inference
 export async function runQuickInference(

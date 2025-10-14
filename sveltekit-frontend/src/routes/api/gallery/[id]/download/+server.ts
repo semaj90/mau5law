@@ -133,7 +133,7 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
       return new Response(buffer, {
         status: 200,
         headers: {
-          'Content-Type': contentType
+          'Content-Type': contentType,
           'Content-Length': fileSize.toString(),
           'Accept-Ranges': 'bytes'
         }
@@ -147,7 +147,7 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
     return new Response(chunk, {
       status: 206,
       headers: {
-        'Content-Type': contentType
+        'Content-Type': contentType,
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
         'Accept-Ranges': 'bytes'
@@ -159,8 +159,8 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
     return new Response(buffer, {
       status: 200,
       headers: {
-        'Content-Type': contentType
-        'Content-Length': fileSize.toString()
+        'Content-Type': contentType,
+        'Content-Length': fileSize.toString(),
       }
     })
   }

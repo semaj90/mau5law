@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 import type { LegalAISession, LegalContext, SecurityLevel } from '$lib/types/yorha-interface';
 // Session storage (in production, use database)
 const activeSessions = new Map<string, LegalAISession>();
@@ -143,4 +143,4 @@ function isValidSecurityLevel(level: unknown): level is SecurityLevel {
   return isString(level) && (validLevels as readonly string[]).includes(level as string);
 }
 // Export session storage for other endpoints
-export { activeSessions }
+export { activeSessions };

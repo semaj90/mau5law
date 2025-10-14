@@ -43,8 +43,8 @@ async function getSystemHealth(): Promise<any> {
       services: {
         ollama: !!ollamaOk,
         qdrant: !!qdrantOk,
-        database: dbOk
-        redis: redisOk
+        database: dbOk,
+        redis: redisOk,
       },
       timestamp: new Date().toISOString(),
       phase: 'Phase 13 - Simplified Health Check'
@@ -53,10 +53,10 @@ async function getSystemHealth(): Promise<any> {
     console.error('Health check error:', error)
     return {
       services: {
-        ollama: false
-        qdrant: false
-        database: false
-        redis: false
+        ollama: false,
+        qdrant: false,
+        database: false,
+        redis: false,
       },
       error: 'Health check failed',
       timestamp: new Date().toISOString()
@@ -66,10 +66,10 @@ async function getSystemHealth(): Promise<any> {
 const mockIntegration = {
   getIntegrationStatus: () => ({,
     services: {
-      ollama: true
-      qdrant: true
-      database: true
-      redis: true
+      ollama: true,
+      qdrant: true,
+      database: true,
+      redis: true,
     },
     integration: 'active',
     timestamp: new Date().toISOString()
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           action: 'health-check',
-          data: health
+          data: health,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           action: 'integration-status',
-          data: status
+          data: status,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString()
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           action: 'service-detection',
-          data: services
+          data: services,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString()
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           action: 'initialize',
-          data: initResult
+          data: initResult,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: applyResult.success,
           action: 'apply-suggestion',
-          data: applyResult
+          data: applyResult,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString()
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           action: 'configure',
-          data: configResult
+          data: configResult,
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
@@ -253,7 +253,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       action: 'update-settings',
-      data: updateResult
+      data: updateResult,
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
@@ -285,7 +285,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       action: 'reset-integration',
-      data: resetResult
+      data: resetResult,
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),

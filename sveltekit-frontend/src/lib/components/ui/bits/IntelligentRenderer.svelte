@@ -24,7 +24,8 @@
 
   // Safer constructor extraction with runtime fallback & warning
   const CardComponent: any = (Card as any).Root ?? (Card as any).default;
-  if (!CardComponent) console.warn('Card component not found in $lib/components/ui/card. Check for a Root or default export.');
+  if (!CardComponent)
+    console.warn('Card component not found in $lib/components/ui/card. Check for a Root or default export.');
 
   const ButtonComponent: any = (Button && (Button as any).default) ?? Button;
   if (!ButtonComponent) console.warn('Button component not found at $lib/components/ui/bitsbutton.svelte');
@@ -45,11 +46,11 @@
       evidence: [],
       textContent: '',
       interactiveElements: 0,
-      realTimeUpdates: false
+      realTimeUpdates: false,
     },
     priority = 'medium',
     type = 'default',
-    title = 'Legal AI Analysis'
+    title = 'Legal AI Analysis',
   }: {
     data?: IntelligentRendererData;
     priority?: 'critical' | 'high' | 'medium' | 'low';
@@ -58,11 +59,13 @@
   } = $props();
 
   // Reactive intelligent rendering decision using Svelte 5
-  let useGlyphEngine = $derived(Boolean(
-    LegalAILogic &&
-      typeof (LegalAILogic as any).requiresGlyphEngine === 'function' &&
-      (LegalAILogic as any).requiresGlyphEngine(data)
-  ));
+  let useGlyphEngine = $derived(
+    Boolean(
+      LegalAILogic &&
+        typeof (LegalAILogic as any).requiresGlyphEngine === 'function' &&
+        (LegalAILogic as any).requiresGlyphEngine(data)
+    )
+  );
 
   // Process data with pure logic using Svelte 5
   let processedData = $derived.by(() => {
@@ -70,7 +73,12 @@
       if (data?.evidence && LegalAILogic && typeof (LegalAILogic as any).categorizeEvidence === 'function') {
         return { ...data, evidence: (LegalAILogic as any).categorizeEvidence(data.evidence) ?? data.evidence };
       }
-      if (data?.documents && data.documents.length > 0 && LegalAILogic && typeof (LegalAILogic as any).processDocument === 'function') {
+      if (
+        data?.documents &&
+        data.documents.length > 0 &&
+        LegalAILogic &&
+        typeof (LegalAILogic as any).processDocument === 'function'
+      ) {
         const doc = (LegalAILogic as any).processDocument(data.documents[0]) ?? data.documents[0];
         return { ...data, documents: [doc] };
       }
@@ -81,7 +89,7 @@
   });
 
   // Accept either native DOM Events (e.g. click) or CustomEvent dispatched from components.
-  function handleInteraction(event: Event & { detail?: any } | CustomEvent) {
+  function handleInteraction(event: (Event & { detail?: any }) | CustomEvent) {
     const detail = (event as any)?.detail ?? { type: (event as any)?.type ?? 'unknown' };
     // Pure event handling logic (safe logging)
     console.log('User interaction:', detail);
@@ -94,17 +102,14 @@
 {#if useGlyphEngine}
   <!-- Gaming LOD: Use canvas for glyph-heavy processes -->
   <div class="glyph-engine-container gaming-transition" role="application">
-    <GlyphEngineRenderer
-      {data}
-      {type}
-      {title}
-      {priority}
-      on:interact={handleInteraction}
-    />
+    <GlyphEngineRenderer {data} {type} {title} {priority} on:interact={handleInteraction} />
   </div>
 {:else}
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
-  <svelte:component this={CardComponent} class={`enhanced-bits-nier-bits-card legal-case-priority-${priority} gaming-transition gaming-hover nes-container`}>
+  <svelte:component
+    this={CardComponent}
+    class={`enhanced-bits-nier-bits-card legal-case-priority-${priority} gaming-transition gaming-hover nes-container`}
+  >
     <!-- Replaced CardHeader/CardTitle with semantic wrappers to avoid missing named exports -->
     <div class="card-header">
       <h3 class="card-title nes-text text-yorha-white">
@@ -119,7 +124,9 @@
             <div class="enhanced-bits-nier-bits-evidence-item p-3 border-l-4 border-n64-blue">
               <div class="flex justify-between items-center">
                 <span class="nes-text text-sm">{(item as any).title}</span>
-                <span class={`nes-badge is-${((item as any).priority ?? 'medium')}`}>{(item as any).confidence ?? 0}%</span>
+                <span class={`nes-badge is-${(item as any).priority ?? 'medium'}`}
+                  >{(item as any).confidence ?? 0}%</span
+                >
               </div>
             </div>
           {/each}
@@ -134,7 +141,11 @@
               <div class="mt-2 flex justify-between">
                 <span class="nes-text text-xs">Confidence: {(doc as any).confidence ?? 0}%</span>
 
-                <svelte:component this={ButtonComponent} class="enhanced-bits-button is-small" on:click={handleInteraction}>
+                <svelte:component
+                  this={ButtonComponent}
+                  class="enhanced-bits-button is-small"
+                  on:click={handleInteraction}
+                >
                   Analyze
                 </svelte:component>
               </div>
@@ -144,9 +155,7 @@
       {:else if type === 'chat-interface'}
         <!-- Regular DOM chat (unless real-time heavy processing) -->
         <div class="enhanced-bits-nier-bits-card p-4 bg-yorha-black">
-          <div class="nes-text text-yorha-white">
-            💬 Legal AI Assistant
-          </div>
+          <div class="nes-text text-yorha-white">💬 Legal AI Assistant</div>
           {#if data?.textContent}
             <p class="mt-2 text-sm text-yorha-white">{data.textContent}</p>
           {/if}
@@ -189,20 +198,30 @@
     </div>
   </svelte:component>
 {/if}
+
 <!-- ...existing code... -->
 <style>
   /* ...existing styles... */
   /* Minimal helper classes to align with previous Card subcomponents (if needed) */
-  .card-header { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
-  .card-title { margin: 0; font-size: 1rem; font-weight: 600; }
-  .card-content { padding: 1rem; }
+  .card-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .card-content {
+    padding: 1rem;
+  }
 
   /* Modifier class for inner evidence items to avoid nested card styling conflicts */
   .enhanced-bits-nier-bits-evidence-item {
     background: rgba(30, 34, 54, 0.85);
     border-radius: 0.5rem;
     margin-bottom: 0.25rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     padding: 0.75rem 1rem;
     border-left-width: 4px;
     border-left-style: solid;

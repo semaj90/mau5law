@@ -96,7 +96,7 @@ export class LegalDocumentBinarySerializer {
   private static CURRENT_VERSION = 1;
   /**
    * Serialize legal document to binary format (eliminating JSON)
-   */;
+   */
   static serialize(_document: any): ArrayBuffer {
     const buffer = new ArrayBuffer(LEGAL_DOCUMENT_BINARY_SIZE);
     const view = new DataView(buffer);
@@ -194,7 +194,7 @@ export class LegalDocumentBinarySerializer {
   }
   /**
    * Deserialize binary data back to legal document (ultra-fast)
-   */;
+   */
   static deserialize(buffer: ArrayBuffer): any {
     const view = new DataView(buffer);
     let offset = 0;
@@ -255,7 +255,7 @@ export class LegalDocumentBinarySerializer {
         caseId: caseId.toString(),
         userId: userId.toString(),
         position,
-        vectorEmbedding: embedding
+        vectorEmbedding: embedding,
         rankingMatrix,
         version,
         flags,
@@ -265,7 +265,7 @@ export class LegalDocumentBinarySerializer {
   }
   /**
    * Ultra-fast batch serialization for multiple documents
-   */;
+   */
   static serializeBatch(documents: any[]): ArrayBuffer {
     const batchSize = documents.length * LEGAL_DOCUMENT_BINARY_SIZE + 16; // +16 for batch header
     const buffer = new ArrayBuffer(batchSize);
@@ -285,7 +285,7 @@ export class LegalDocumentBinarySerializer {
   }
   /**
    * Ultra-fast batch deserialization
-   */;
+   */
   static deserializeBatch(buffer: ArrayBuffer): any[] {
     const view = new DataView(buffer);
     // Read batch header

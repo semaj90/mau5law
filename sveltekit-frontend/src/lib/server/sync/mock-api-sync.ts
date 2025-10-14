@@ -38,7 +38,7 @@ interface CHRManifest {
 export const mockDataGenerators = {
   /**
    * Generate mock legal documents with vector embeddings
-   */;
+   */
   async generateMockLegalDocuments(count,: number = 10), {
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
     const mockDocs: {
@@ -50,7 +50,7 @@ export const mockDataGenerators = {
       confidenceLevel: number;
       riskLevel: 'low' | 'medium' | 'high';
       priority: number;
-      metadata: { [key: string]: any }
+      metadata: { [key: string]: any },
       embedding: number[];
       createdAt: Date;
       updatedAt: Date;
@@ -104,7 +104,7 @@ export const mockDataGenerators = {
         id: `mock_doc_${Date.now()}_${i}`,
         title,
         content,
-        type: docType
+        type: docType,
         status: 'active' as const,
         confidenceLevel: 0.8 + Math.random() * 0.2,
         riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as
@@ -129,7 +129,7 @@ export const mockDataGenerators = {
   },
   /**
    * Generate mock QLoRA topology states
-   */;
+   */
   generateMockQLoRAStates(count,: number = 5): QLoRATopologyState[,] {
     const states: QLoRATopologyState[] = [];
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
@@ -137,7 +137,7 @@ export const mockDataGenerators = {
       const docType = documentTypes[i % documentTypes.length];
       const state: QLoRATopologyState = {
         id: `state_mock_${Date.now()}_${i}`,
-        documentType: docType
+        documentType: docType,
         complexity: Math.random(),
         userPattern: {
           sessionType: ['research', 'analysis', 'drafting', 'review'][
@@ -177,7 +177,7 @@ export const mockDataGenerators = {
   },
   /**
    * Generate mock HMM+SOM prediction data
-   */;
+   */
   generateMockAssetPredictions(count,: number = 8): AssetPrediction[,] {
     const predictions: AssetPrediction[] = [];
     const assetTypes = ['document', 'template', 'form', 'precedent', 'citation'];
@@ -226,7 +226,7 @@ export const mockDataGenerators = {
   },
   /**
    * Generate mock embedding shards for index cache
-   */;
+   */
   generateMockEmbeddingShards(count,: number = 15): EmbeddingShard[,] {
     const shards: EmbeddingShard[] = [];
     for (let i = 0; i < count; i++) {
@@ -242,7 +242,7 @@ export const mockDataGenerators = {
   },
   /**
    * Generate mock CHR manifests
-   */;
+   */
   generateMockCHRManifests(count,: number = 6): CHRManifest[,] {
     const manifests: CHRManifest[] = [];
     for (let i = 0; i < count; i++) {
@@ -261,7 +261,7 @@ export const mockDataGenerators = {
 export const databaseSync = {
   /**
    * Sync mock legal documents to PostgreSQL with pgvector embeddings
-   */;
+   */
   async syncMockLegalDocuments(), {
     console.log('🔄 Syncing mock legal documents to PostgreSQL...');
     const mockDocs = await mockDataGenerators.generateMockLegalDocuments(20);
@@ -308,7 +308,7 @@ export const databaseSync = {
   },
   /**
    * Sync QLoRA training jobs and topology states
-   */;
+   */
   async syncQLoRATrainingData(), {
     console.log('🔄 Syncing QLoRA training data...');
     const mockStates = mockDataGenerators.generateMockQLoRAStates(10);
@@ -328,7 +328,7 @@ export const databaseSync = {
           accuracy: 0.85 + Math.random() * 0.15,
           trainingTime: 1000 + Math.random() * 5000,
           metadata: {
-            mockData: true
+            mockData: true,
             generatedAt: new Date().toISOString(),
             predictionAccuracy: 0.9 + Math.random() * 0.1
           }
@@ -343,7 +343,7 @@ export const databaseSync = {
   },
   /**
    * Sync predictive asset cache data
-   */;
+   */
   async syncPredictiveAssetCache(), {
     console.log('🔄 Syncing predictive asset cache...');
     const mockPredictions = mockDataGenerators.generateMockAssetPredictions(15);
@@ -352,7 +352,7 @@ export const databaseSync = {
           id: `cache_${Date.now()}_${index}`,
           userId: 'mock_user',
           assetId: prediction.recommendedAssets[0]?.assetId || `asset_${index}`,
-          predictionData: prediction
+          predictionData: prediction,
           confidence: prediction.totalConfidence,
           hitCount: Math.floor(Math.random() * 50),
           lastHit: new Date(),
@@ -378,7 +378,7 @@ export const vectorSearch = {
    * Perform similarity search using pgvector
    */
   async performSimilaritySearch(
-    queryEmbedding: number[]
+    queryEmbedding: number[],
     limit: number = 5,
     threshold: number = 0.7;
   ) {
@@ -412,7 +412,7 @@ export const vectorSearch = {
   },
   /**
    * Get vector embeddings for documents
-   */;
+   */
   async getDocumentEmbeddings(documentIds,: string[]), {
     if (documentIds.length === 0) return [];
     try {
@@ -421,7 +421,7 @@ export const vectorSearch = {
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
           model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,
-          dimensions: vectorEmbeddings.dimensions
+          dimensions: vectorEmbeddings.dimensions,
         })
         .from(vectorEmbeddings)
         .where(inArray(vectorEmbeddings.documentId, documentIds);
@@ -436,7 +436,7 @@ export const vectorSearch = {
 export const syncOrchestrator = {
   /**
    * Full system sync - populates all mock data
-   */;
+   */
   async performFullSync(), {
     console.log('🚀 Starting comprehensive mock data sync...');
     const results = {
@@ -453,26 +453,26 @@ export const syncOrchestrator = {
       .reduce((sum, r) => sum + (r.count || 0), 0);
     console.log(`✅ Full sync complete: ${totalSynced} records synced`);
     return {
-      success: true
-      totalRecords: totalSynced
+      success: true,
+      totalRecords: totalSynced,
       breakdown: results;
       performance: {
         syncDuration: '~2-5 seconds',
-        cachePrewarmed: true
-        vectorIndexReady: true
+        cachePrewarmed: true,
+        vectorIndexReady: true,
       }
     }
   },
   /**
    * Health check for all integrated systems
-   */;
+   */
   async performHealthCheck(), {
     const checks = {
-      database: false
-      pgvector: false
+      database: false,
+      pgvector: false,
       drizzle: false;
-      redis: false
-      mockDataReady: false
+      redis: false,
+      mockDataReady: false,
     }
     try {
       // Test database connection

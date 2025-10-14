@@ -20,7 +20,7 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
     await new Promise<void>((resolve, reject) => {
       if (src.complete) return resolve();
       src.onload = () => resolve();
-      src.onerror = (e) => reject(e);
+      src.onerror = e => reject(e);
     });
     canvas.width = src.naturalWidth;
     canvas.height = src.naturalHeight;
@@ -57,20 +57,21 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
   }
   // Optional server OCR fallback
   try {
-    const blob = source instanceof Blob || source instanceof File
-      ? source
-      : await (async () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          if (!ctx) throw new Error('Canvas 2D context unavailable');
-          const imgData = await toImageData(source);
-          canvas.width = imgData.width;
-          canvas.height = imgData.height;
-          ctx.putImageData(imgData, 0, 0);
-          const b = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-          if (!b) throw new Error('Failed to create blob from canvas');
-          return b;
-        })();
+    const blob =
+      source instanceof Blob || source instanceof File
+        ? source
+        : await (async () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Canvas 2D context unavailable');
+            const imgData = await toImageData(source);
+            canvas.width = imgData.width;
+            canvas.height = imgData.height;
+            ctx.putImageData(imgData, 0, 0);
+            const b = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+            if (!b) throw new Error('Failed to create blob from canvas');
+            return b;
+          })();
     const form = new FormData();
     form.append('image', blob);
     form.append('lang', lang);

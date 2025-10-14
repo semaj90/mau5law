@@ -4,11 +4,14 @@
  * Used across global components: AI Assistant, Reports, Citations, Evidence
  */
 // Timestamp formatting for consistent time display across the app
-export function formatTimestamp(date: Date | string, options?: {
-  style?: 'relative' | 'absolute' | 'smart';
-  includeTime?: boolean;
-}): string {
-  const { style = 'smart', includeTime = false } = options || {}
+export function formatTimestamp(
+  date: Date | string,
+  options?: {
+    style?: 'relative' | 'absolute' | 'smart';
+    includeTime?: boolean;
+  }
+): string {
+  const { style = 'smart', includeTime = false } = options || {};
   const targetDate = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diff = now.getTime() - targetDate.getTime();
@@ -28,9 +31,7 @@ export function formatTimestamp(date: Date | string, options?: {
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
   if (style === 'absolute') {
-    return includeTime
-      ? targetDate.toLocaleString()
-      : targetDate.toLocaleDateString();
+    return includeTime ? targetDate.toLocaleString() : targetDate.toLocaleDateString();
   }
   if (style === 'relative' || style === 'smart') {
     // Smart relative formatting
@@ -50,19 +51,17 @@ export function formatTimestamp(date: Date | string, options?: {
   return targetDate.toLocaleDateString();
 }
 // Enhanced text truncation with smart word boundaries
-export function truncateText(text: string, options?: {
-  maxLength?: number;
-  wordBoundary?: boolean;
-  suffix?: string;
-  preserveWords?: boolean;
-}): string {
+export function truncateText(
+  text: string,
+  options?: {
+    maxLength?: number;
+    wordBoundary?: boolean;
+    suffix?: string;
+    preserveWords?: boolean;
+  }
+): string {
   if (!text || typeof text !== 'string') return '';
-  const {
-    maxLength = 50,
-    wordBoundary = true,
-    suffix = '...',
-    preserveWords = true
-  } = options || {}
+  const { maxLength = 50, wordBoundary = true, suffix = '...', preserveWords = true } = options || {};
   if (text.length <= maxLength) return text;
   let truncated = text.slice(0, maxLength - suffix.length);
   if (wordBoundary && preserveWords) {
@@ -82,7 +81,7 @@ export function extractTitle(content: string, fallback: string = 'Untitled'): st
   if (lines.length === 0) return fallback;
   const firstLine = lines[0];
   // If first line looks like a title (short, no periods except end)
-  if (firstLine.length < 100 && !firstLine.includes('.') || firstLine.endsWith('.')) {
+  if ((firstLine.length < 100 && !firstLine.includes('.')) || firstLine.endsWith('.')) {
     return truncateText(firstLine, { maxLength: 60, wordBoundary: true });
   }
   // Otherwise truncate first line
@@ -109,31 +108,34 @@ export function formatPriority(priority: string): {
       label: 'Low',
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
-      icon: '●'
+      icon: '●',
     },
     medium: {
       label: 'Medium',
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-100',
-      icon: '◐'
+      icon: '◐',
     },
     high: {
       label: 'High',
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
-      icon: '◑'
+      icon: '◑',
     },
     critical: {
       label: 'Critical',
       color: 'text-red-600',
       bgColor: 'bg-red-100',
-      icon: '●'
-    }
-  }
+      icon: '●',
+    },
+  };
   return priorityMap[priority as keyof typeof priorityMap] || priorityMap.low;
 }
 // Status formatting
-export function formatStatus(status: string, type: 'case' | 'evidence' | 'report' | 'citation' = 'case'): {
+export function formatStatus(
+  status: string,
+  type: 'case' | 'evidence' | 'report' | 'citation' = 'case'
+): {
   label: string;
   color: string;
   bgColor: string;
@@ -144,33 +146,35 @@ export function formatStatus(status: string, type: 'case' | 'evidence' | 'report
       open: { label: 'Open', color: 'text-green-600', bgColor: 'bg-green-100', icon: '○' },
       in_progress: { label: 'In Progress', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '◐' },
       closed: { label: 'Closed', color: 'text-gray-600', bgColor: 'bg-gray-100', icon: '●' },
-      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '□' }
+      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '□' },
     },
     evidence: {
       pending: { label: 'Pending', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: '⏳' },
       in_progress: { label: 'Processing', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '⚙️' },
       completed: { label: 'Analyzed', color: 'text-green-600', bgColor: 'bg-green-100', icon: '✓' },
-      failed: { label: 'Failed', color: 'text-red-600', bgColor: 'bg-red-100', icon: '✗' }
+      failed: { label: 'Failed', color: 'text-red-600', bgColor: 'bg-red-100', icon: '✗' },
     },
     report: {
       draft: { label: 'Draft', color: 'text-gray-500', bgColor: 'bg-gray-100', icon: '📝' },
       review: { label: 'Review', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: '👁️' },
       approved: { label: 'Approved', color: 'text-green-600', bgColor: 'bg-green-100', icon: '✓' },
-      published: { label: 'Published', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '📢' }
+      published: { label: 'Published', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '📢' },
     },
     citation: {
       relevant: { label: 'Relevant', color: 'text-green-600', bgColor: 'bg-green-100', icon: '⭐' },
       referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },
-      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' }
-    }
-  }
+      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' },
+    },
+  };
   const map = statusMaps[type];
-  return map[status as keyof typeof map] || {
-    label: status.replace('_', ' '),
-    color: 'text-gray-500',
-    bgColor: 'bg-gray-100',
-    icon: '○'
-  }
+  return (
+    map[status as keyof typeof map] || {
+      label: status.replace('_', ' '),
+      color: 'text-gray-500',
+      bgColor: 'bg-gray-100',
+      icon: '○',
+    }
+  );
 }
 // Entity type formatting
 export function formatEntityType(type: string): {
@@ -188,13 +192,15 @@ export function formatEntityType(type: string): {
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
     physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
-    digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
-  }
-  return typeMap[type as keyof typeof typeMap] || {
-    label: type.charAt(0).toUpperCase() + type.slice(1),
-    icon: '📄',
-    color: 'text-gray-600'
-  }
+    digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' },
+  };
+  return (
+    typeMap[type as keyof typeof typeMap] || {
+      label: type.charAt(0).toUpperCase() + type.slice(1),
+      icon: '📄',
+      color: 'text-gray-600',
+    }
+  );
 }
 // Search highlighting
 export function highlightSearchTerm(text: string, searchTerm: string): string {
@@ -203,12 +209,15 @@ export function highlightSearchTerm(text: string, searchTerm: string): string {
   return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5 rounded">$1</mark>');
 }
 // Progress calculation
-export function calculateProgress(completed: number, total: number): {
+export function calculateProgress(
+  completed: number,
+  total: number
+): {
   percentage: number;
   label: string;
   color: string;
 } {
-  if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' }
+  if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' };
   const percentage = Math.round((completed / total) * 100);
   let color = 'bg-gray-200';
   if (percentage >= 100) color = 'bg-green-500';
@@ -219,8 +228,8 @@ export function calculateProgress(completed: number, total: number): {
   return {
     percentage,
     label: `${percentage}%`,
-    color
-  }
+    color,
+  };
 }
 // User role formatting
 export function formatUserRole(role: string): {
@@ -234,39 +243,41 @@ export function formatUserRole(role: string): {
       label: 'Administrator',
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
-      icon: '👑'
+      icon: '👑',
     },
     prosecutor: {
       label: 'Prosecutor',
       color: 'text-red-600',
       bgColor: 'bg-red-100',
-      icon: '⚖️'
+      icon: '⚖️',
     },
     investigator: {
       label: 'Investigator',
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
-      icon: '🔍'
+      icon: '🔍',
     },
     analyst: {
       label: 'Analyst',
       color: 'text-green-600',
       bgColor: 'bg-green-100',
-      icon: '📊'
+      icon: '📊',
     },
     viewer: {
       label: 'Viewer',
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
-      icon: '👁️'
+      icon: '👁️',
+    },
+  };
+  return (
+    roleMap[role as keyof typeof roleMap] || {
+      label: role.charAt(0).toUpperCase() + role.slice(1),
+      color: 'text-gray-600',
+      bgColor: 'bg-gray-100',
+      icon: '👤',
     }
-  }
-  return roleMap[role as keyof typeof roleMap] || {
-    label: role.charAt(0).toUpperCase() + role.slice(1),
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-100',
-    icon: '👤'
-  }
+  );
 }
 // Activity type formatting
 export function formatActivityType(type: string): {
@@ -282,19 +293,21 @@ export function formatActivityType(type: string): {
     report_generated: { label: 'Report Generated', icon: '📊', color: 'text-blue-600' },
     citation_added: { label: 'Citation Added', icon: '⚖️', color: 'text-amber-600' },
     ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600' },
-    system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' }
-  }
-  return activityMap[type as keyof typeof activityMap] || {
-    label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    icon: '📝',
-    color: 'text-gray-600'
-  }
+    system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' },
+  };
+  return (
+    activityMap[type as keyof typeof activityMap] || {
+      label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      icon: '📝',
+      color: 'text-gray-600',
+    }
+  );
 }
 // Content preview extraction
 export function extractPreview(content: string, maxLength: number = 100): string {
   if (!content) return '';
   // Remove markdown, HTML, and extra whitespace
-  let preview = content
+  const preview = content
     .replace(/[#*_`]/g, '') // Remove markdown
     .replace(/<[^>]*>/g, '') // Remove HTML
     .replace(/\s+/g, ' ') // Normalize whitespace
@@ -302,7 +315,7 @@ export function extractPreview(content: string, maxLength: number = 100): string
   return truncateText(preview, {
     maxLength,
     wordBoundary: true,
-    preserveWords: true
+    preserveWords: true,
   });
 }
 // Legal jurisdiction formatting
@@ -321,10 +334,9 @@ export function formatJurisdiction(jurisdiction: string): string {
     'oh': 'Ohio',
     'ga': 'Georgia',
     'nc': 'North Carolina',
-    'mi': 'Michigan'
-  }
-  return jurisdictionMap[jurisdiction.toLowerCase()] ||
-         jurisdiction.charAt(0).toUpperCase() + jurisdiction.slice(1);
+    'mi': 'Michigan',
+  };
+  return jurisdictionMap[jurisdiction.toLowerCase()] || jurisdiction.charAt(0).toUpperCase() + jurisdiction.slice(1);
 }
 // Array chunking for pagination
 export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
@@ -335,15 +347,12 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   return chunks;
 }
 // Debounce function for search
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,  
-  wait: number
-): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
-  }
+  };
 }
 // Generate initials from name
 export function getInitials(name: string): string {
@@ -358,8 +367,14 @@ export function getInitials(name: string): string {
 // Color generation from string (for consistent user avatars)
 export function stringToColor(str: string): string {
   const colors = [
-    'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
-    'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-gray-500'
+    'bg-red-500',
+    'bg-blue-500',
+    'bg-green-500',
+    'bg-yellow-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-indigo-500',
+    'bg-gray-500',
   ];
   let hash = 0;
   for (let i = 0; i < str.length; i++) {

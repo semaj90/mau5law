@@ -144,7 +144,7 @@ export class MultiDimensionalImageCache {
         learningRate: 0.1,
         neighborhoodRadius: 2.0,
         epochs: 50,
-        enableGPU: true
+        enableGPU: true,
         inputDimension: 256,
         decayRate: 0.01, // Added missing property
       });
@@ -156,15 +156,15 @@ export class MultiDimensionalImageCache {
         learningRate: 0.001,
         batchSize: 16,
         epochs: 50,
-        enableGPU: true
-        compressionTarget: 0.1
+        enableGPU: true,
+        compressionTarget: 0.1,
       });
       await this.autoencoder.initialize();
       // Initialize multi-layer cache
       this.multiLayerCache = new MultiLayerCache({
-        enableRedisCache: true
-        enableLokiCache: true
-        enableMemoryCache: true
+        enableRedisCache: true,
+        enableLokiCache: true,
+        enableMemoryCache: true,
         memoryTTL: 300, // 5 minutes
         lokiTTL: 1800, // 30 minutes
         redisTTL: 7200, // 2 hours
@@ -191,9 +191,9 @@ export class MultiDimensionalImageCache {
     console.log('📊 Dimensional indices initialized:', dimensions);
   }
   async storeImage(
-    imageData: string
-    dimensions: CacheDimensions
-    graphData: any
+    imageData: string,
+    dimensions: CacheDimensions,
+    graphData: any,
     processingMetrics: any;
   ): Promise<string> {
     const startTime = performance.now();
@@ -230,7 +230,7 @@ export class MultiDimensionalImageCache {
       }
       // Create cache entry
       const entry: ImageCacheEntry = {
-        id: cacheKey
+        id: cacheKey,
         algorithm: dimensions.algorithm || 'dfs',
         imageData,
         dimensions: {
@@ -239,7 +239,7 @@ export class MultiDimensionalImageCache {
         },
         metadata,
         compressionData,
-        gpuTexture: gpuTexture || undefined
+        gpuTexture: gpuTexture || undefined,
         cacheStats: {
           hitCount: 0,
           missCount: 0,
@@ -318,7 +318,7 @@ export class MultiDimensionalImageCache {
     }
   }
   private async compressImageData(
-    imageData: string
+    imageData: string,
     graphData: any;
   ): Promise<any> {
     try {
@@ -376,8 +376,8 @@ export class MultiDimensionalImageCache {
     }
   }
   private async createGPUTexture(
-    cacheKey: string
-    imageData: string
+    cacheKey: string,
+    imageData: string,
     dimensions: { width: number; height: number }
   ): Promise<GPUTextureMatrix | null> {
     try {
@@ -561,12 +561,12 @@ export class MultiDimensionalImageCache {
       if (!metadata,?.imageData), retur,n n,ull;
       // Reconstruct entry
       const entr,y: ImageCacheEntry = {
-        id: cacheKey
+        id: cacheKey,
         algorithm: 'dfs', // Default
         imageData: metadata.imageData,
         dimensions: { width: 800, height: 600 }, // Default
         metadata: {
-          graphSignature: cacheKey
+          graphSignature: cacheKey,
           nodeCount: 0,
           edgeCount: 0,
           processingTime: 0,

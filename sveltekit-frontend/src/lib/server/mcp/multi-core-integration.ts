@@ -63,7 +63,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Discover available worker cores from the MCP server
-   */;
+   */
   private async discoverCores(): Promise<void> {
     try {
       // removed unused response assignment
@@ -99,7 +99,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Start periodic health checking of worker cores
-   */;
+   */
   private startHealthChecking(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
@@ -110,7 +110,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Check health of all worker cores
-   */;
+   */
   private async checkCoreHealth(): Promise<void> {
     const healthPromises = Array.from(this.cores.values()).map(async (core) => {
       try {
@@ -137,7 +137,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Submit a task to the most appropriate worker core
-   */;
+   */
   async submitTask(_task: MCPTask): Promise<MCPResponse> {
     const startTime = Date.now();
     task.startTime = startTime;
@@ -173,7 +173,7 @@ export class MCPMultiCoreClient {
       // Remove from active tasks
       this.activeTasks.delete(task.id);
       const mcpResponse: MCPResponse = {
-        success: true
+        success: true,
         taskId: task.id,
         coreId: selectedCore.id,
         result: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).data || (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).result || result,
@@ -192,10 +192,10 @@ export class MCPMultiCoreClient {
       this.activeTasks.delete(task.id);
       logger.error(`[MCP Multi-Core] Task ${task.id} failed:`, error);
       return {
-        success: false
+        success: false,
         taskId: task.id,
         coreId: task.assignedCore || 'unknown',
-        result: null
+        result: null,
         processingTime: Date.now() - startTime,
         error: error instanceof Error ? error.message: 'Unknown error'
       }
@@ -203,7 +203,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Select the optimal worker core for a given task
-   */;
+   */
   private selectOptimalCore(_task: MCPTask): MCPWorkerCore | null {
     const availableCores = Array.from(this.cores.values()).filter(
       (core) =>
@@ -238,7 +238,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Check if a core supports a given task type
-   */;
+   */
   private coreSupportsTask(core: MCPWorkerCore, task: MCPTask): boolean {
     if (core.capabilities.includes('all')) {
       return true;
@@ -247,7 +247,7 @@ export class MCPMultiCoreClient {
   }
   /**
    * Submit multiple tasks in parallel
-   */;
+   */
   async submitParallelTasks(tasks: MCPTask[]): Promise<MCPResponse[]> {
     logger.info(`[MCP Multi-Core] Submitting ${tasks.length} parallel tasks`);
     const taskPromises = tasks.map((task) => this.submitTask(task);
@@ -257,10 +257,10 @@ export class MCPMultiCoreClient {
         return (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).value;
       } else {
         return {
-          success: false
+          success: false,
           taskId: tasks[index].id,
           coreId: 'unknown',
-          result: null
+          result: null,
           processingTime: 0,
           error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed'
         }
@@ -269,19 +269,19 @@ export class MCPMultiCoreClient {
   }
   /**
    * Get status of all worker cores
-   */;
+   */
   getCoreStatus(): MCPWorkerCore[] {
     return Array.from(this.cores.values();
   }
   /**
    * Get active task count
-   */;
+   */
   getActiveTaskCount(): number {
     return this.activeTasks.size;
   }
   /**
    * Get performance metrics
-   */;
+   */
   getPerformanceMetrics() {
     const cores = Array.from(this.cores.values();
     const onlineCores = cores.filter((core) => core.status === 'online');
@@ -300,14 +300,14 @@ export class MCPMultiCoreClient {
   }
   /**
    * Set load balancing strategy
-   */;
+   */
   setLoadBalancingStrategy(strategy: 'round-robin' | 'least-loaded' | 'capability-based') {
     this.loadBalancingStrategy = strategy;
     logger.info(`[MCP Multi-Core] Load balancing strategy set to: ${strategy}`);
   }
   /**
    * Cleanup and disconnect
-   */;
+   */
   async disconnect(): Promise<void> {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);

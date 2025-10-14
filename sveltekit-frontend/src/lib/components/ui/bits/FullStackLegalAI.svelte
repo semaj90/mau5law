@@ -476,7 +476,7 @@ $effect(() => {
 
 <style>
   .full-stack-legal-ai {
-    /* Additional component-specific styles */;
+    /* Additional component-specific styles */
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
   }
   /* Custom scrollbar for result content */

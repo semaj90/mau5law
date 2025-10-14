@@ -17,11 +17,14 @@ interface ParseOptions {
 export class SIMDJSONWorkerClient {
   private worker: Worker | null = null;
   private messageId = 0;
-  private pendingRequests = new Map<string, {
-    resolve: (_value: any) => void;
-    reject: (error: Error) => void;
-    timeout?: NodeJS.Timeout;
-  }>();
+  private pendingRequests = new Map<
+    string,
+    {
+      resolve: (_value: any) => void;
+      reject: (error: Error) => void;
+      timeout?: NodeJS.Timeout;
+    }
+  >();
   private isReady = false;
   private initPromise: Promise<boolean> | null = null;
   constructor() {
@@ -31,14 +34,14 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Initialize the SIMD JSON worker
-   */;
+   */
   private async initWorker(): Promise<void> {
     try {
       this.worker = new Worker('/simd-json-worker.js');
-      this.worker.addEventListener('message', (event) => {
+      this.worker.addEventListener('message', event => {
         this.handleWorkerMessage(event.data);
       });
-      this.worker.addEventListener('error', (error) => {
+      this.worker.addEventListener('error', error => {
         console.error('SIMD JSON Worker Error:', error);
         this.rejectAllPending(new Error('Worker error occurred'));
       });
@@ -50,7 +53,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Handle messages from the worker
-   */;
+   */
   private handleWorkerMessage(message: SIMDWorkerMessage): void {
     const { type, id } = message;
     // Handle worker ready message
@@ -83,7 +86,7 @@ export class SIMDJSONWorkerClient {
         pending.resolve({
           data: message.data,
           metadata: message.metadata,
-          success: true
+          success: true,
         });
         break;
       case 'PARSE_ERROR':
@@ -96,7 +99,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Send message to worker and return promise
-   */;
+   */
   private sendMessage(type: string, data?: any, options: ParseOptions = {}): Promise<any> {
     if (!this.worker) {
       return Promise.reject(new Error('Worker not available'));
@@ -113,19 +116,19 @@ export class SIMDJSONWorkerClient {
       this.pendingRequests.set(id, {
         resolve,
         reject,
-        timeout: timeoutId
+        timeout: timeoutId,
       });
       // Send message to worker
       this.worker!.postMessage({
         type,
         id,
-        data
+        data,
       });
     });
   }
   /**
    * Initialize worker with SIMD capabilities
-   */;
+   */
   async initialize(): Promise<boolean> {
     if (this.initPromise) {
       return this.initPromise;
@@ -144,7 +147,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Parse JSON string using SIMD acceleration
-   */;
+   */
   async parseJSON(jsonString: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {
       await this.initialize();
@@ -164,7 +167,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Parse multiple JSON strings in batch
-   */;
+   */
   async parseBatch(jsonStrings: string[], options: ParseOptions = {}): Promise<any[]> {
     if (!this.isReady) {
       await this.initialize();
@@ -184,7 +187,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Parse vector/tensor data with validation
-   */;
+   */
   async parseVectorData(vectorJson: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {
       await this.initialize();
@@ -204,7 +207,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Get worker performance statistics
-   */;
+   */
   async getStats(): Promise<any> {
     if (!this.worker) {
       return {
@@ -212,8 +215,8 @@ export class SIMDJSONWorkerClient {
         totalTime: 0,
         avgTime: 0,
         errors: 0,
-        simdReady: false
-      }
+        simdReady: false,
+      };
     }
     try {
       const result = await this.sendMessage('GET_STATS');
@@ -225,7 +228,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Run performance benchmark
-   */;
+   */
   async benchmark(iterations: number = 1000, testSize: 'small' | 'medium' | 'large' = 'medium'): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available for benchmarking');
@@ -235,20 +238,20 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Reset worker statistics
-   */;
+   */
   async resetStats(): Promise<void> {
     if (!this.worker) return;
     await this.sendMessage('RESET_STATS');
   }
   /**
    * Check if worker is ready and SIMD is available
-   */;
+   */
   isWorkerReady(): boolean {
     return this.isReady && this.worker !== null;
   }
   /**
    * Reject all pending requests
-   */;
+   */
   private rejectAllPending(error: Error): void {
     for (const [id, pending] of this.pendingRequests) {
       if (pending.timeout) {
@@ -260,7 +263,7 @@ export class SIMDJSONWorkerClient {
   }
   /**
    * Terminate worker and cleanup
-   */;
+   */
   terminate(): void {
     if (this.worker) {
       this.rejectAllPending(new Error('Worker terminated'));

@@ -79,13 +79,13 @@ export const POST: RequestHandler = async ({ request }) => {
       result = await glyphDiffusionService.generateGlyph(enhancedRequest)
       // Compile GRPMO metadata
       grpmoMetadata = {
-        extended_thinking_enabled: true
+        extended_thinking_enabled: true,
         thinking_stages: grpmoContext.thinking_stages || [],
         cache_performance: grpmoContext.cache_performance || { hot: 0, warm: 0, cold: 0 },
         similar_context_used: grpmoContext.similar_results?.length || 0,
         glyph_embedding_dimensions: grpmoContext.glyph_embedding?.length || 0,
-        enhancement_applied: true
-        context_integration_time_ms: Date.now() - startTime
+        enhancement_applied: true,
+        context_integration_time_ms: Date.now() - startTime,
       }
       console.log(`🧠 GRPMO context applied: ${grpmoMetadata.similar_context_used} similar items, ${grpmoMetadata.thinking_stages.length} thinking stages`)
     } else {
@@ -274,15 +274,15 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       features: {
-        tensor_caching: true
-        png_embedding: true
-        gpu_acceleration: true
-        neural_sprite_compression: true
-        predictive_frames: true
-        portable_artifacts: true
-        grpmo_extended_thinking: true
-        reinforcement_learning: true
-        contextual_generation: true
+        tensor_caching: true,
+        png_embedding: true,
+        gpu_acceleration: true,
+        neural_sprite_compression: true,
+        predictive_frames: true,
+        portable_artifacts: true,
+        grpmo_extended_thinking: true,
+        reinforcement_learning: true,
+        contextual_generation: true,
         styles: ['detective', 'corporate', 'forensic', 'legal']
       },
       grpmo_capabilities: {

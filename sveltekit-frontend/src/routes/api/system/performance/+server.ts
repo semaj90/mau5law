@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
           duration: Math.round(Math.random() * 10 + 2)
         }
       },
-      legal_ai_platform: platformMetrics
+      legal_ai_platform: platformMetrics,
       benchmarks,
       alerts,
       processingTime: Date.now() - startTime
@@ -297,9 +297,9 @@ async function runPerformanceBenchmarks(): Promise<any> {
 }
 // Generate system alerts based on metrics
 function generateSystemAlerts(
-  memoryPercentage: number
-  eventLoopDelay: number
-  platformMetrics: any
+  memoryPercentage: number,
+  eventLoopDelay: number,
+  platformMetrics: any,
 ) {
   const warnings: string[] = []
   const critical: string[] = []

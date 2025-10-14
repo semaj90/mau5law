@@ -216,7 +216,7 @@ export interface VectorHealthStatus {
 // Error types for vector processing
 export class VectorProcessingError extends Error {
 	constructor(
-		message: string
+		message: string,
 		public jobId: string
 		public operation: string
 		public stage: string

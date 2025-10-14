@@ -8,7 +8,7 @@ export class DockerResourceOptimizer {
       maxMemory: '2g',
       maxCpus: 2,
       networkMode: 'bridge',
-      ...config
+      ...config,
     };
     this.containers = new Map();
     this.metrics = {
@@ -27,7 +27,7 @@ export class DockerResourceOptimizer {
         image,
         memory: options.memory || this.config.maxMemory,
         cpus: options.cpus || this.config.maxCpus,
-        ...options
+        ...options,
       };
       // Store container reference
       this.containers.set(name, containerConfig);

@@ -16,10 +16,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           status: 'healthy',
           services: {
-            simdProcessor: true
-            indexOptimizer: true
-            vectorEmbeddings: true
-            cache: true
+            simdProcessor: true,
+            indexOptimizer: true,
+            vectorEmbeddings: true,
+            cache: true,
           },
           performance: {
             responseTime: 5,
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'semantic_search',:
         return json({
           success: true,
-          query: content
+          query: content,
           results: [)
             {
               id: 'result_1',

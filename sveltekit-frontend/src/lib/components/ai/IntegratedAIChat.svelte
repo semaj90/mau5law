@@ -58,7 +58,7 @@
     model = 'gemma3-legal:latest',
     useRAG = true,
     maxTokens = 2048,
-    temperature = 0.7
+    temperature = 0.7,
   }: Props = $props();
 
   // State using Svelte 5 runes
@@ -73,13 +73,13 @@
     quic: false,
     redis: false,
     cuda: false,
-    rag: false
+    rag: false,
   });
 
   let systemStats = $state<SystemStats>({
     tokensPerSecond: 0,
     embeddingsCount: 0,
-    lastUpdate: 0
+    lastUpdate: 0,
   });
 
   let scrollContainer: HTMLDivElement;
@@ -107,8 +107,8 @@
         body: JSON.stringify({
           messages: [{ role: 'user', content: 'ping' }],
           model,
-          stream: false
-        })
+          stream: false,
+        }),
       });
       connectionStatus.chat = chatResponse.ok;
 
@@ -150,9 +150,9 @@
       files: attachedFiles.map(f => ({
         name: f.name,
         size: f.size,
-        type: f.type
+        type: f.type,
       })),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     messages = [...messages, userMessage];
@@ -175,14 +175,12 @@
             query: currentInput,
             type: 'content',
             limit: 5,
-            threshold: 0.7
+            threshold: 0.7,
           });
 
           if (ragResponse.success && ragResponse.data?.results) {
             ragResultCount = ragResponse.data.results.length;
-            ragContext = ragResponse.data.results
-              .map((r: any) => r.content || r.text)
-              .join('\n\n');
+            ragContext = ragResponse.data.results.map((r: any) => r.content || r.text).join('\n\n');
           }
         } catch (ragError) {
           console.warn('RAG search failed, continuing without context:', ragError);
@@ -198,12 +196,12 @@
       if (ragContext) {
         chatMessages.push({
           role: 'user',
-          content: `Context:\n${ragContext}\n\nQuery: ${currentInput}`
+          content: `Context:\n${ragContext}\n\nQuery: ${currentInput}`,
         });
       } else {
         chatMessages.push({
           role: 'user',
-          content: currentInput
+          content: currentInput,
         });
       }
 
@@ -217,8 +215,8 @@
           model,
           stream: false,
           max_tokens: maxTokens,
-          temperature
-        })
+          temperature,
+        }),
       });
 
       if (!response.ok) {
@@ -251,9 +249,9 @@
           tokensPerSecond,
           ragResults: ragResultCount,
           processingTime,
-          model: data.model || model
+          model: data.model || model,
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       messages = [...messages, assistantMessage];
@@ -268,9 +266,9 @@
           confidence: 0,
           tokensPerSecond: 0,
           ragResults: 0,
-          processingTime: 0
+          processingTime: 0,
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       messages = [...messages, errorMessage];
@@ -289,7 +287,7 @@
     try {
       const response = await fetch('/api/upload/rag-ingest', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) {
@@ -373,16 +371,16 @@
         Chat {connectionStatus.chat ? '' : ''}
       </Badge>
       <Badge variant={connectionStatus.rag ? 'success' : 'outline'} size="sm">
-        RAG {connectionStatus.rag ? '' : 'Ë'}
+        RAG {connectionStatus.rag ? '' : 'ï¿½'}
       </Badge>
       <Badge variant={connectionStatus.quic ? 'success' : 'outline'} size="sm">
-        QUIC {connectionStatus.quic ? '' : 'Ë'}
+        QUIC {connectionStatus.quic ? '' : 'ï¿½'}
       </Badge>
       <Badge variant={connectionStatus.redis ? 'success' : 'outline'} size="sm">
-        Redis {connectionStatus.redis ? '' : 'Ë'}
+        Redis {connectionStatus.redis ? '' : 'ï¿½'}
       </Badge>
       <Badge variant={connectionStatus.cuda ? 'success' : 'outline'} size="sm">
-        CUDA {connectionStatus.cuda ? '' : 'Ë'}
+        CUDA {connectionStatus.cuda ? '' : 'ï¿½'}
       </Badge>
     </div>
   </div>
@@ -469,7 +467,7 @@
           <div class="message-files mt-2 flex flex-wrap gap-2">
             {#each message.files as file}
               <Badge variant="info" size="sm">
-                =Î {file.name} ({formatFileSize(file.size)})
+                =ï¿½ {file.name} ({formatFileSize(file.size)})
               </Badge>
             {/each}
           </div>
@@ -486,15 +484,23 @@
         <div class="message-content nes-container is-rounded is-dark p-3">
           <div class="flex items-center gap-2">
             <div class="loading-pulse w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-            <div class="loading-pulse w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-            <div class="loading-pulse w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+            <div
+              class="loading-pulse w-2 h-2 bg-yellow-400 rounded-full animate-pulse"
+              style="animation-delay: 0.2s"
+            ></div>
+            <div
+              class="loading-pulse w-2 h-2 bg-yellow-400 rounded-full animate-pulse"
+              style="animation-delay: 0.4s"
+            ></div>
           </div>
         </div>
       </div>
     {/if}
 
     {#if isDragging}
-      <div class="absolute inset-0 bg-yellow-400/10 border-2 border-dashed border-yellow-400 rounded-lg flex items-center justify-center">
+      <div
+        class="absolute inset-0 bg-yellow-400/10 border-2 border-dashed border-yellow-400 rounded-lg flex items-center justify-center"
+      >
         <p class="text-yellow-400 text-lg font-bold">Drop files here to upload</p>
       </div>
     {/if}
@@ -510,14 +516,14 @@
         {#each attachedFiles as file, index}
           <Badge variant="info" size="sm">
             <span class="flex items-center gap-1">
-              =Î {file.name} ({formatFileSize(file.size)})
+              =ï¿½ {file.name} ({formatFileSize(file.size)})
               <button
                 type="button"
                 onclick={() => removeFile(index)}
                 class="ml-1 text-red-400 hover:text-red-300"
                 aria-label="Remove file"
               >
-                ×
+                ï¿½
               </button>
             </span>
           </Badge>
@@ -541,14 +547,8 @@
 
       <div class="flex items-center gap-2">
         <label class="nes-btn is-primary cursor-pointer">
-          =Î
-          <input
-            type="file"
-            multiple
-            onchange={handleFileInput}
-            class="hidden"
-            disabled={isLoading}
-          />
+          =ï¿½
+          <input type="file" multiple onchange={handleFileInput} class="hidden" disabled={isLoading} />
         </label>
 
         <Button
@@ -565,11 +565,7 @@
 
     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
       <label class="flex items-center gap-1 cursor-pointer nes-checkbox">
-        <input
-          type="checkbox"
-          bind:checked={useRAG}
-          disabled={isLoading}
-        />
+        <input type="checkbox" bind:checked={useRAG} disabled={isLoading} />
         <span class="nes-text">Use RAG Search</span>
       </label>
     </div>
@@ -648,7 +644,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {

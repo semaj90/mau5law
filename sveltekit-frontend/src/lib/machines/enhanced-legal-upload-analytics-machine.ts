@@ -256,8 +256,8 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             timing: 'before-upload',
             confidence: 0.95,
             relevance: 0.9,
-            actionable: true
-            legalSpecific: true
+            actionable: true,
+            legalSpecific: true,
           });
         }
         if (input.context.files.some(f => f.name.toLowerCase().includes('privileged'))) {
@@ -268,8 +268,8 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             timing: 'before-upload',
             confidence: 0.8,
             relevance: 0.85,
-            actionable: true
-            legalSpecific: true
+            actionable: true,
+            legalSpecific: true,
           });
         }
       }
@@ -281,8 +281,8 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
           timing: 'during-upload',
           confidence: 0.7,
           relevance: 0.6,
-          actionable: true
-          legalSpecific: true
+          actionable: true,
+          legalSpecific: true,
         });
       }
       return legalPrompts;
@@ -309,7 +309,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
         const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
         return {
           fileName: file.name,
-          success: true
+          success: true,
           documentId: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).documentId,
           aiInsights: {
             summary: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).summary,
@@ -324,7 +324,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
             hash: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).hash,
             source: 'legal_upload',
             acquisition_date: new Date().toISOString(),
-            authenticity_verified: true
+            authenticity_verified: true,
             chain_of_custody: [{,
               timestamp,: new Date().toISOString(),
               actor,: input.context.authSession?.userId || 'system',
@@ -340,7 +340,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
       // Enhanced legal fallback analysis
       return input.files.map((file, index) => ({
         fileName: file.name,
-        success: true
+        success: true,
         documentId: `doc-${Date.now()}-${index}`,
         aiInsights: {
           summary: `Legal document analysis for ${file.name}. Document contains relevant legal content.`,
@@ -358,7 +358,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
           hash: `hash-${Date.now()}-${index}`,
           source: 'legal_upload',
           acquisition_date: new Date().toISOString(),
-          authenticity_verified: false
+          authenticity_verified: false,
           chain_of_custody: [{,
             timestamp,: new Date().toISOString(),
             actor,: input.context.authSession?.userId || 'anonymous',
@@ -464,10 +464,10 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       | { type: 'AUTH_SESSION_UPDATED'; session: AuthSession }
   },
   actors: {
-    analyzeUserBehavior: analyzeUserBehaviorService
-    generateContextualPrompts: generateContextualPromptsService
-    performAIAnalysis: performAIAnalysisService
-    saveToDatabase: saveToDatabaseService
+    analyzeUserBehavior: analyzeUserBehaviorService,
+    generateContextualPrompts: generateContextualPromptsService,
+    performAIAnalysis: performAIAnalysisService,
+    saveToDatabase: saveToDatabaseService,
   }
 }).createMachine({
   id: 'enhancedLegalUploadAnalytics',

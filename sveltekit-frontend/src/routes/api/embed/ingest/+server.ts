@@ -55,11 +55,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       // Store document chunk
       const [chunkRecord] = await db.insert(document_chunks).values({
-        evidence_id: entityType === 'evidence' ? entityId : null
-        chunk_text: chunk
+        evidence_id: entityType === 'evidence' ? entityId : null,
+        chunk_text: chunk,
         embedding: JSON.stringify(embedding),
-        chunk_sequence: i
-        chunk_metadata: metadata ? JSON.stringify(metadata) : null
+        chunk_sequence: i,
+        chunk_metadata: metadata ? JSON.stringify(metadata) : null,
       }).returning()
       // Store in unified vector table for cross-entity search
       await db.insert(vectors).values({
@@ -70,14 +70,14 @@ export const POST: RequestHandler = async ({ request }) => {
       ingestedChunks.push({
         id: chunkRecord.id,
         text: chunk.substring(0, 100) + '...',
-        sequence: i
-        embeddingDimensions: embedding.length
+        sequence: i,
+        embeddingDimensions: embedding.length,
       })
     }
     return json({
       success: true,
       message: `Successfully ingested ${chunks.length} chunks`,
-      chunks: ingestedChunks
+      chunks: ingestedChunks,
       metadata: {
         totalChunks: chunks.length,
         entityType,

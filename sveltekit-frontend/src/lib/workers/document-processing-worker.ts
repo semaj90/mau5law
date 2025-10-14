@@ -415,7 +415,9 @@ class DocumentProcessingWorker {
       }
       const summaryResult = await resp.json();
       // defensive: prefer known property 'response' else stringified fallback
-      context.summary = (summaryResult && (summaryResult.response ?? summaryResult.text ?? summaryResult.summary)) ?? String(summaryResult);
+      context.summary =
+        (summaryResult && (summaryResult.response ?? summaryResult.text ?? summaryResult.summary)) ??
+        String(summaryResult);
       await db.insert(schema.document_summaries).values({
         id: uuidv4(),
         document_id: typeof job.documentId === 'string' ? Number(job.documentId) : job.documentId,

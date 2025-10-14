@@ -53,7 +53,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   }
   private normalizeVectorsSIMD(
     vectors: Float32Array;
-    dimensions: number
+    dimensions: number,
     vectorCount: number;
   ): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
@@ -81,7 +81,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   }
   private normalizeVectorsScalar(
     vectors: Float32Array;
-    dimensions: number
+    dimensions: number,
     vectorCount: number;
   ): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
@@ -155,7 +155,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     return dotProduct;
   }
   preprocessForWebGPU(
-    embeddings: Float32Array[]
+    embeddings: Float32Array[],
     targetDimensions: number;
   ): {
     normalizedVectors: Float32Array;
@@ -191,7 +191,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     const metadata: VectorMetadata = {
       vectorCount,
       dimensions,
-      isNormalized: true
+      isNormalized: true,
       processingTime,
       simdSupported: this.simdSupported
     }
@@ -206,8 +206,8 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
 export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   // Legal document similarity with domain-specific weights
   computeLegalSimilarity(
-    queryEmbedding: Float32Array
-    documentEmbeddings: Float32Array[]
+    queryEmbedding: Float32Array,
+    documentEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array;
   ): Array<{ index: number; similarity: number; confidence: number }> {
     const results: Array<{ index: number; similarity: number; confidence: number }> = [];
@@ -235,8 +235,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     return results.sort((a, b) => b.similarity - a.similarity);
   }
   private computeWeightedDotProduct(
-    vectorA: Float32Array
-    vectorB: Float32Array
+    vectorA: Float32Array,
+    vectorB: Float32Array,
     weights: Float32Array;
   ): number {
     let weightedDotProduct = 0;
@@ -261,8 +261,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     return weightedDotProduct;
   }
   private calculateConfidence(
-    similarity: number
-    queryMagnitude: number
+    similarity: number,
+    queryMagnitude: number,
     docMagnitude: number;
   ): number {
     // Confidence based on similarity strength and vector quality
@@ -272,8 +272,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   }
   // Prepare embeddings for WebGPU with legal domain optimizations
   prepareForLegalWebGPU(
-    caseEmbeddings: Float32Array[]
-    evidenceEmbeddings: Float32Array[]
+    caseEmbeddings: Float32Array[],
+    evidenceEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array;
   ): {
     caseData: Float32Array;

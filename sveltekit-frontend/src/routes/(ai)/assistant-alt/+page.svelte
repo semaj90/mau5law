@@ -48,7 +48,7 @@
     ollama: false,
     enhancedRAG: false,
     postgres: false,
-    neo4j: false
+    neo4j: false,
   });
 
   // Update userId if data is provided from server
@@ -75,7 +75,7 @@
     sessionsToday: 0,
     totalTime: 0,
     casesAnalyzed: 0,
-    evidenceReviewed: 0
+    evidenceReviewed: 0,
   });
 
   async function checkSystemStatus(): Promise<void> {
@@ -89,7 +89,10 @@
       const healthData: any = await res.json();
 
       // normalize various shapes returned by health API (boolean or strings)
-      const isUp = (val: unknown, accepted: string[] = ['healthy', 'running', 'connected', 'active', 'accelerated']) => {
+      const isUp = (
+        val: unknown,
+        accepted: string[] = ['healthy', 'running', 'connected', 'active', 'accelerated']
+      ) => {
         if (val === true) return true;
         if (typeof val === 'string') return accepted.includes(val.toLowerCase());
         return false;
@@ -100,7 +103,7 @@
         ollama: isUp(healthData?.services?.ollama),
         enhancedRAG: isUp(healthData?.services?.enhancedRAG),
         postgres: isUp(healthData?.services?.postgres),
-        neo4j: isUp(healthData?.services?.neo4j)
+        neo4j: isUp(healthData?.services?.neo4j),
       };
     } catch (e: unknown) {
       console.error('Health check error:', e);
@@ -108,7 +111,8 @@
       if (browser) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        notice.style.cssText =
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -118,7 +122,7 @@
         ollama: false,
         enhancedRAG: false,
         postgres: false,
-        neo4j: false
+        neo4j: false,
       };
       error = 'System health check failed - using mock status';
     }
@@ -130,7 +134,7 @@
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -142,15 +146,15 @@
       const initResponse = await fetch('/api/ai/chat-sse', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           message: messageToSend,
           model: 'gemma3-legal:latest',
           conversationId,
           userId,
-          useRAG: true
-        })
+          useRAG: true,
+        }),
       });
       if (!initResponse.ok) {
         throw new Error(`HTTP ${initResponse.status}`);
@@ -159,7 +163,7 @@
         id: crypto.randomUUID(),
         role: 'assistant',
         content: '',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
       messages = [...messages, aiMessage];
       // Consume the response body stream (SSE framed as "data: ...\n\n")
@@ -177,7 +181,10 @@
             while ((sepIndex = buffer.indexOf('\n\n')) !== -1) {
               const packet = buffer.slice(0, sepIndex);
               buffer = buffer.slice(sepIndex + 2);
-              const lines = packet.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+              const lines = packet
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(Boolean);
               for (const line of lines) {
                 if (!line.startsWith('data:')) continue;
                 const payload = line.replace(/^data:\s*/, '');
@@ -193,7 +200,7 @@
                       break;
                     case 'token':
                       // append token or replace with fullResponse if provided
-                      aiMessage.content = eventData.fullResponse ?? (aiMessage.content + (eventData.content ?? ''));
+                      aiMessage.content = eventData.fullResponse ?? aiMessage.content + (eventData.content ?? '');
                       messages = [...messages];
                       break;
                     case 'complete':
@@ -221,36 +228,40 @@
           console.error('SSE streaming error:', streamError);
           error = 'Stream connection failed';
         } finally {
-          try { reader.releaseLock?.(); } catch {}
+          try {
+            reader.releaseLock?.();
+          } catch {}
         }
       }
-     } catch (e: unknown) {
-       console.error('Send message error:', e);
-       // Show fallback notice only in browser (avoid DOM ops during SSR)
-       if (browser) {
-         const notice = document.createElement('div');
-         notice.innerHTML = '⚠️ failure default to mock';
-         notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-         document.body.appendChild(notice);
-         setTimeout(() => notice.remove(), 3000);
-       }
-       // Generate mock AI assistant response
-       const mockLegalAssistantResponses = [
-         "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
-         "This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.",
-         "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
-         "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
-       ];
-       const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
-       const mockAiMessage: ChatMessage = {
-         id: crypto.randomUUID(),
-         role: 'assistant',
-         content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
-         timestamp: new Date()
-       }
-       messages = [...messages, mockAiMessage];
-       error = '';
-     } finally {
+    } catch (e: unknown) {
+      console.error('Send message error:', e);
+      // Show fallback notice only in browser (avoid DOM ops during SSR)
+      if (browser) {
+        const notice = document.createElement('div');
+        notice.innerHTML = '⚠️ failure default to mock';
+        notice.style.cssText =
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+      }
+      // Generate mock AI assistant response
+      const mockLegalAssistantResponses = [
+        'Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.',
+        'This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.',
+        'For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.',
+        'In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options.',
+      ];
+      const randomMockResponse =
+        mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
+      const mockAiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
+        timestamp: new Date(),
+      };
+      messages = [...messages, mockAiMessage];
+      error = '';
+    } finally {
       isStreaming = false;
     }
   }
@@ -274,63 +285,64 @@
 
   // Semantic RAG-based POI Timeline Functions
   async function loadEvidenceReports(): Promise<void> {
-     try {
+    try {
       const resp = await fetch('/api/v1/evidence/reports');
       if (!resp.ok) throw new Error(`Evidence reports API failed: ${resp.status}`);
       evidenceReports = await resp.json();
-     } catch (e) {
-       console.error('Failed to load evidence reports:', e);
-       // Show fallback notice only in browser (avoid DOM ops during SSR)
-       if (browser) {
-         const notice = document.createElement('div');
-         notice.innerHTML = '⚠️ failure default to mock';
-         notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-         document.body.appendChild(notice);
-         setTimeout(() => notice.remove(), 3000);
-       }
-       // Set mock evidence reports
-       evidenceReports = [
-         {
-           id: 'mock-evidence-001',
-           title: 'Mock Police Report - Employment Dispute',
-           type: 'police_report',
-           date: '2024-01-15',
-           content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-           confidence: 0.85,
-         },
-         {
-           id: 'mock-evidence-002',
-           title: 'Mock Witness Statement - Contract Violation',
-           type: 'witness_statement',
-           date: '2024-01-16',
-           content: 'Mock evidence: Witness account of contract negotiation meeting.',
-           confidence: 0.92,
-         }
+    } catch (e) {
+      console.error('Failed to load evidence reports:', e);
+      // Show fallback notice only in browser (avoid DOM ops during SSR)
+      if (browser) {
+        const notice = document.createElement('div');
+        notice.innerHTML = '⚠️ failure default to mock';
+        notice.style.cssText =
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+      }
+      // Set mock evidence reports
+      evidenceReports = [
+        {
+          id: 'mock-evidence-001',
+          title: 'Mock Police Report - Employment Dispute',
+          type: 'police_report',
+          date: '2024-01-15',
+          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
+          confidence: 0.85,
+        },
+        {
+          id: 'mock-evidence-002',
+          title: 'Mock Witness Statement - Contract Violation',
+          type: 'witness_statement',
+          date: '2024-01-16',
+          content: 'Mock evidence: Witness account of contract negotiation meeting.',
+          confidence: 0.92,
+        },
       ];
     }
   }
 
   async function analyzePersonsOfInterest(): Promise<void> {
-     if (evidenceReports.length === 0) {
-       await loadEvidenceReports();
-     }
-     timelineLoading = true;
-     try {
-       // Semantic RAG analysis to extract POI from evidence reports
-       const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({
-           evidenceReports: evidenceReports,
-           analysisType: 'semantic_entity_extraction',
-           includeTimeline: true
-         })
-       });
-       if (ragResponse.ok) {
-         // Cast JSON to the expected typed shape
-         const parsed = (await ragResponse.json()) as RagAnalysisResponse;
-         // store the parsed object (typed) — not an array
-         ragAnalysisResults = parsed;
+    if (evidenceReports.length === 0) {
+      await loadEvidenceReports();
+    }
+    timelineLoading = true;
+    try {
+      // Semantic RAG analysis to extract POI from evidence reports
+      const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          evidenceReports: evidenceReports,
+          analysisType: 'semantic_entity_extraction',
+          includeTimeline: true,
+        }),
+      });
+      if (ragResponse.ok) {
+        // Cast JSON to the expected typed shape
+        const parsed = (await ragResponse.json()) as RagAnalysisResponse;
+        // store the parsed object (typed) — not an array
+        ragAnalysisResults = parsed;
         // Safely extract persons array and map to the normalized POI shape
         poiTimelineData = (parsed?.persons ?? []).map((person: Person) => {
           const poi: POI = {
@@ -340,23 +352,23 @@
             activities: person.timeline ?? [],
             confidence: person.confidence ?? 0.8,
             evidenceSources: person.sources ?? [],
-            relationships: person.relationships ?? []
+            relationships: person.relationships ?? [],
           };
           return poi;
         });
-         showTimeline = true;
-       }
-     } catch (e) {
-       error = 'Failed to analyze persons of interest';
-       console.error('POI analysis error:', e);
-     } finally {
+        showTimeline = true;
+      }
+    } catch (e) {
+      error = 'Failed to analyze persons of interest';
+      console.error('POI analysis error:', e);
+    } finally {
       timelineLoading = false;
     }
   }
 
   async function generateUserActivityTimeline(): Promise<void> {
-     activityLoading = true;
-     try {
+    activityLoading = true;
+    try {
       const resp = await fetch(`/api/v1/user/activity?userId=${encodeURIComponent(String(userId))}`);
       if (!resp.ok) throw new Error(`User activity API failed: ${resp.status}`);
       const data = await resp.json();
@@ -365,11 +377,11 @@
         sessionsToday: data.metrics?.sessionsToday || 0,
         totalTime: data.metrics?.totalTime || 0,
         casesAnalyzed: data.metrics?.casesAnalyzed || 0,
-        evidenceReviewed: data.metrics?.evidenceReviewed || 0
-      }
-     } catch (e) {
-       console.error('Failed to generate user activity timeline:', e);
-     } finally {
+        evidenceReviewed: data.metrics?.evidenceReviewed || 0,
+      };
+    } catch (e) {
+      console.error('Failed to generate user activity timeline:', e);
+    } finally {
       activityLoading = false;
     }
   }
@@ -391,15 +403,16 @@
   // --- end changed code ---
 
   $effect(() => {
-     // Only run side-effects that depend on the DOM / window in the browser.
-     if (!browser) return;
-     checkSystemStatus();
-     loadEvidenceReports();
-     // Check system status every 30 seconds (browser-only)
-     const interval = setInterval(checkSystemStatus, 30000);
-     return () => clearInterval(interval);
-   });
+    // Only run side-effects that depend on the DOM / window in the browser.
+    if (!browser) return;
+    checkSystemStatus();
+    loadEvidenceReports();
+    // Check system status every 30 seconds (browser-only)
+    const interval = setInterval(checkSystemStatus, 30000);
+    return () => clearInterval(interval);
+  });
 </script>
+
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-6">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
@@ -415,7 +428,12 @@
         <div class="mb-4">
           <h2 class="text-xl font-semibold flex items-center gap-2">
             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
             System Status
           </h2>
@@ -423,12 +441,10 @@
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
           {#each getSystemStatusEntries() as [key, status]}
             <div class="flex items-center gap-2">
-              <div class={cn(
-                "w-3 h-3 rounded-full",
-                status ? "bg-green-500" : "bg-red-500"
-              )}></div>
+              <div class={cn('w-3 h-3 rounded-full', status ? 'bg-green-500' : 'bg-red-500')}></div>
               <span class="text-sm font-medium capitalize">
-                {key}: <span class={status ? "text-green-600" : "text-red-600"}>
+                {key}:
+                <span class={status ? 'text-green-600' : 'text-red-600'}>
                   {status ? 'Active' : 'Offline'}
                 </span>
               </span>
@@ -486,14 +502,21 @@
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold">Legal AI Chat</h2>
               <div class="flex gap-2">
-                <span class={cn(
-                  "px-2 py-1 rounded text-xs font-medium",
-                  isStreaming ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
-                )}>
+                <span
+                  class={cn(
+                    'px-2 py-1 rounded text-xs font-medium',
+                    isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                  )}
+                >
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="ghost" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn"
-                  on:click={clearChat} disabled={isStreaming}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  class="bits-btn bits-nes-btn bits-btn bits-btn"
+                  on:click={clearChat}
+                  disabled={isStreaming}
+                >
                   Clear
                 </Button>
               </div>
@@ -502,31 +525,40 @@
             <div class="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 border rounded-lg p-4">
               {#if messages.length === 0}
                 <div class="text-center text-gray-500 mt-20">
-                  <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.436-.307l-3.097 1.385a.75.75 0 01-.985-.985l1.385-3.097A8.955 8.955 0 013 12a8 8 0 1118 0z"></path>
+                  <svg
+                    class="w-12 h-12 mx-auto mb-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.436-.307l-3.097 1.385a.75.75 0 01-.985-.985l1.385-3.097A8.955 8.955 0 013 12a8 8 0 1118 0z"
+                    ></path>
                   </svg>
                   <p class="font-medium mb-2">Start a conversation</p>
                   <p class="text-sm">Ask me anything about legal topics, contracts, or case law.</p>
                 </div>
               {:else}
                 {#each messages as message}
-                  <div class={cn(
-                    "flex",
-                    message.role === 'user' ? "justify-end" : "justify-start"
-                  )}>
-                    <div class={cn(
-                      "max-w-[80%] px-4 py-2 rounded-lg",
-                      message.role === 'user'
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 border"
-                    )}>
+                  <div class={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
+                    <div
+                      class={cn(
+                        'max-w-[80%] px-4 py-2 rounded-lg',
+                        message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 border'
+                      )}
+                    >
                       <div class="whitespace-pre-wrap text-sm">
                         {message.content}
                       </div>
-                      <div class={cn(
-                        "text-xs mt-1 opacity-70",
-                        message.role === 'user' ? "text-blue-100" : "text-gray-500"
-                      )}>
+                      <div
+                        class={cn(
+                          'text-xs mt-1 opacity-70',
+                          message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                        )}
+                      >
                         {typeof message.timestamp === 'string'
                           ? new Date(message.timestamp).toLocaleTimeString()
                           : message.timestamp.toLocaleTimeString()}
@@ -558,7 +590,12 @@
                 >
                   {#if isStreaming}
                     <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      ></path>
                     </svg>
                   {:else}
                     Send
@@ -575,22 +612,23 @@
               <div class="mb-4 flex justify-between items-center">
                 <h2 class="text-xl font-semibold flex items-center gap-2">
                   <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
                   </svg>
                   Persons of Interest Timeline
                 </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  on:click={() => showTimeline = false}
-                  class="nes-btn bits-btn"
-                >
+                <Button variant="ghost" size="sm" on:click={() => (showTimeline = false)} class="nes-btn bits-btn">
                   {#snippet children()}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+                      ></path>
                     </svg>
                   {/snippet}
-</Button>
+                </Button>
               </div>
               <div class="space-y-4">
                 {#each poiTimelineData as poi (poi.id)}
@@ -607,12 +645,7 @@
                           </span>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        on:click={() => selectPOI(poi)}
-                        class="nes-btn bits-btn"
-                      >
+                      <Button variant="ghost" size="sm" on:click={() => selectPOI(poi)} class="nes-btn bits-btn">
                         {#snippet children()}
                           View Details
                         {/snippet}
@@ -670,7 +703,12 @@
             {#snippet children()}
               <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
                 </svg>
                 Your Activity Timeline - Stay Focused
               </h2>
@@ -702,9 +740,7 @@
             {#snippet children()}
               <h3 class="font-semibold mb-3">AI Model</h3>
               <div class="space-y-2">
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
-                  Gemma3-Legal
-                </span>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"> Gemma3-Legal </span>
                 <p class="text-xs text-gray-500">
                   Specialized legal language model with contract analysis capabilities
                 </p>
@@ -757,11 +793,16 @@
                 >
                   {#snippet children()}
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      ></path>
                     </svg>
                     Refresh Status
                   {/snippet}
-</Button>
+                </Button>
                 <Button
                   class="bits-btn w-full justify-start"
                   variant="ghost"
@@ -771,11 +812,16 @@
                 >
                   {#snippet children()}
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                      ></path>
                     </svg>
                     Health Report
                   {/snippet}
-</Button>
+                </Button>
               </div>
             {/snippet}
           </div>
@@ -784,33 +830,49 @@
             {#snippet children()}
               <h3 class="font-semibold mb-3 flex items-center gap-2">
                 <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
                 </svg>
                 POI Timeline
               </h3>
               <div class="space-y-2">
-                <Button class="nes-btn is-primary w-full justify-start bits-btn"
-                 on:click={analyzePersonsOfInterest}
+                <Button
+                  class="nes-btn is-primary w-full justify-start bits-btn"
+                  on:click={analyzePersonsOfInterest}
                   disabled={timelineLoading}
                   fullWidth={true}
                 >
                   {#snippet children()}
                     {#if timelineLoading}
                       <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        ></path>
                       </svg>
                     {:else}
                       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                        ></path>
                       </svg>
                     {/if}
                     Analyze Evidence
                   {/snippet}
-</Button>
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                 on:click={generateUserActivityTimeline}
+                  on:click={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
@@ -818,16 +880,26 @@
                   {#snippet children()}
                     {#if activityLoading}
                       <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        ></path>
                       </svg>
                     {:else}
                       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        ></path>
                       </svg>
                     {/if}
                     User Activity
                   {/snippet}
-</Button>
+                </Button>
               </div>
             {/snippet}
           </div>
@@ -864,7 +936,14 @@
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" on:openChange={(e: CustomEvent<boolean>) => { if (!e.detail) closePOIDetails(); }}>
+  <Dialog
+    bind:open={showPOIDialog}
+    legal={true}
+    size="lg"
+    on:openChange={(e: CustomEvent<boolean>) => {
+      if (!e.detail) closePOIDetails();
+    }}
+  >
     {#snippet content()}
       <div class="p-6 max-h-[80vh] overflow-y-auto">
         <!-- Modal Header -->
@@ -872,7 +951,12 @@
           <div>
             <h2 class="text-2xl font-bold text-nier-text-primary flex items-center gap-2">
               <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
               </svg>
               {selectedPOI.name}
             </h2>
@@ -885,25 +969,25 @@
               </span>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            on:click={closePOIDetails}
-            class="bits-btn"
-          >
+          <Button variant="ghost" size="sm" on:click={closePOIDetails} class="bits-btn">
             {#snippet children()}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             {/snippet}
-</Button>
+          </Button>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Activity Timeline -->
           <div>
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
               </svg>
               Activity Timeline
             </h3>
@@ -923,9 +1007,7 @@
                 </div>
               {/each}
               {#if !selectedPOI.activities || selectedPOI.activities.length === 0}
-                <div class="text-gray-500 italic text-center py-4">
-                  No activity data available
-                </div>
+                <div class="text-gray-500 italic text-center py-4">No activity data available</div>
               {/if}
             </div>
           </div>
@@ -933,7 +1015,12 @@
           <div>
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                ></path>
               </svg>
               Evidence Sources
             </h3>
@@ -957,9 +1044,7 @@
                 </div>
               {/each}
               {#if !selectedPOI.evidenceSources || selectedPOI.evidenceSources.length === 0}
-                <div class="text-gray-500 italic text-center py-4">
-                  No evidence sources available
-                </div>
+                <div class="text-gray-500 italic text-center py-4">No evidence sources available</div>
               {/if}
             </div>
           </div>
@@ -969,7 +1054,12 @@
           <div class="mt-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                ></path>
               </svg>
               Relationships
             </h3>
@@ -990,14 +1080,7 @@
         {/if}
         <!-- Actions -->
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-          <Button
-            variant="ghost"
-            size="sm"
-            on:click={closePOIDetails}
-            class="bits-btn"
-          >
-            Close
-          </Button>
+          <Button variant="ghost" size="sm" on:click={closePOIDetails} class="bits-btn">Close</Button>
           <Button
             on:click={() => {
               handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);

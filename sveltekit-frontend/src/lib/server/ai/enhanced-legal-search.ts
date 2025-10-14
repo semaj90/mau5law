@@ -80,8 +80,8 @@ export interface LegalSearchConfig {
   }
 }
 const defaultConfig: LegalSearchConfig = {
-  useVector: true
-  useFallback: true
+  useVector: true,
+  useFallback: true,
   maxResults: 10,
   similarityThreshold: 0.7,
   boostFactors: {
@@ -308,7 +308,7 @@ export class EnhancedLegalSearchService {
             searchType: 'vector',
             confidence: this.calculateConfidence(score, 'vector'),
             relevanceFactors: {
-              semantic: score
+              semantic: score,
               exact_match: this.calculateExactMatch(query, doc.pageContent),
               jurisdiction_match: this.calculateJurisdictionMatch(
                 options.jurisdiction,
@@ -369,7 +369,7 @@ export class EnhancedLegalSearchService {
             code: doc.code,
             sections: doc.sections,
             url: doc.url,
-            score: score
+            score: score,
             searchType: 'hybrid',
             confidence: this.calculateConfidence(score, 'fuzzy'),
             relevanceFactors: {
@@ -484,7 +484,7 @@ export class EnhancedLegalSearchService {
     return Math.max(0, Math.min(1, 1 - score); // For similarity distance scores
   }
   private deduplicateAndRankResults(
-    results: LegalSearchResult[]
+    results: LegalSearchResult[],
     query: string;
     options: any;
   ): LegalSearchResult[] {

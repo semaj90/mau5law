@@ -18,7 +18,7 @@
     ariaLabel = undefined as string | undefined,
     onclick,
     // content slot
-    children
+    children,
   }: {
     variant?: ButtonVariantProps['variant'];
     size?: ButtonVariantProps['size'];
@@ -66,13 +66,7 @@
 {#if useBits && BitsComponent && !href}
   {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
     {@const Bits = BitsComponent as ComponentType}
-    <Bits
-      class={buttonClass}
-      disabled={isDisabled}
-      {type}
-      aria-label={ariaLabel}
-      onclick={handleClick}
-    >
+    <Bits class={buttonClass} disabled={isDisabled} {type} aria-label={ariaLabel} onclick={handleClick}>
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
@@ -81,13 +75,7 @@
     </Bits>
   {:else}
     <!-- Fallback: render native button if BitsComponent is unusable -->
-    <button
-      {type}
-      class={buttonClass}
-      disabled={isDisabled}
-      aria-label={ariaLabel}
-      onclick={handleClick}
-    >
+    <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
@@ -96,14 +84,7 @@
     </button>
   {/if}
 {:else if href}
-  <a
-    {href}
-    {target}
-    class={buttonClass}
-    role="button"
-    aria-disabled={isDisabled}
-    onclick={handleClick}
-  >
+  <a {href} {target} class={buttonClass} role="button" aria-disabled={isDisabled} onclick={handleClick}>
     {#if loading}
       <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
     {:else}
@@ -111,16 +92,10 @@
     {/if}
   </a>
 {:else}
-  <button
-    {type}
-    class={buttonClass}
-    disabled={isDisabled}
-    aria-label={ariaLabel}
-    onclick={handleClick}
-  >
-      {#if loading}
-        <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
-      {:else}
+  <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
+    {#if loading}
+      <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
+    {:else}
       {@render children?.()}
     {/if}
   </button>
@@ -137,6 +112,13 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  :global([data-variant="yorha"]) { position: relative; overflow: hidden; }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  :global([data-variant='yorha']) {
+    position: relative;
+    overflow: hidden;
+  }
 </style>

@@ -52,7 +52,7 @@ export class SessionManager {
   }
   /**
    * Initialize Redis connection and session management
-   */;
+   */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
@@ -98,14 +98,14 @@ export class SessionManager {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + this.config.maxAge);
     const sessionData: SessionData = {
-      id: sessionId
+      id: sessionId,
       userId: user.id,
       email: user.email,
       role: user.role,
       isActive: user.isActive,
-      createdAt: now
+      createdAt: now,
       expiresAt,
-      lastActivity: now
+      lastActivity: now,
       ipAddress: request.ipAddress,
       userAgent: request.userAgent,
       deviceFingerprint: request.deviceFingerprint,
@@ -134,7 +134,7 @@ export class SessionManager {
   }
   /**
    * Get session data
-   */;
+   */
   async getSession(sessionId: string): Promise<SessionData | null> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -165,7 +165,7 @@ export class SessionManager {
    * Update session activity
    */
   async updateSessionActivity(
-    sessionId: string
+    sessionId: string,
     metadata?: { [key: string]: any }
   ): Promise<boolean> {
     if (!this.redisClient) {
@@ -204,7 +204,7 @@ export class SessionManager {
   }
   /**
    * Destroy a session
-   */;
+   */
   async destroySession(sessionId: string): Promise<boolean> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -232,7 +232,7 @@ export class SessionManager {
   }
   /**
    * Destroy all sessions for a user
-   */;
+   */
   async destroyUserSessions(userId: string, exceptSessionId?: string): Promise<number> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -268,7 +268,7 @@ export class SessionManager {
   }
   /**
    * Get all active sessions for a user
-   */;
+   */
   async getUserSessions(userId: string): Promise<SessionData[]> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -293,7 +293,7 @@ export class SessionManager {
   }
   /**
    * Get session statistics
-   */;
+   */
   async getSessionStats(): Promise<any> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -333,7 +333,7 @@ export class SessionManager {
   }
   /**
    * Cleanup expired sessions
-   */;
+   */
   async cleanupExpiredSessions(): Promise<number> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -360,7 +360,7 @@ export class SessionManager {
   }
   /**
    * Shutdown session manager
-   */;
+   */
   async shutdown(): Promise<void> {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);

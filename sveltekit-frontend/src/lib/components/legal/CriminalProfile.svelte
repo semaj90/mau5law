@@ -149,7 +149,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   className={cn(
     'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
     profile.currentStatus === 'at_large' && 'border-red-500/30',
-    className,
+    className
   )}
 >
   <!-- Profile Header -->
@@ -384,7 +384,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                   <span
                     className={cn(
                       'px-2 py-1 text-xs font-mono rounded border',
-                      dispositionConfig[record.disposition].className,
+                      dispositionConfig[record.disposition].className
                     )}
                   >
                     {dispositionConfig[record.disposition].label}

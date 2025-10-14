@@ -73,7 +73,7 @@ class EvidenceProcessingService {
       currentStep: request.steps.length > 0 ? request.steps[0] : null
       stepProgress: 0,
       results: { [key,: strin,g]: any },
-      error: null
+      error: null,
       startTime: new Date(),
       processingTime: 0,
       gpuAccelerated: !!request.options?.useGPUAcceleration
@@ -253,7 +253,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const processingRequest: ProcessingRequest = {
       evidenceId,
-      steps: steps as StepName[]
+      steps: steps as StepName[],
       options: {
         useGPUAcceleration: !!options.useGPUAcceleration,
         priority: options.priority ?? 'normal',

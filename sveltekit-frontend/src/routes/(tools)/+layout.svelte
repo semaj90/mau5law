@@ -19,7 +19,7 @@
     { name: 'Upload Tools', href: '/tools/upload', icon: '⬆️' },
     { name: 'Cache Manager', href: '/tools/cache', icon: '💾' },
     { name: 'Brain Interface', href: '/tools/brain', icon: '🧠' },
-    { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' }
+    { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' },
   ];
 
   // Get current route

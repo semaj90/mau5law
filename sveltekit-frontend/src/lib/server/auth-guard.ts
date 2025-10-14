@@ -12,7 +12,7 @@ export interface AuthenticatedUser {
 /**
  * Enhanced authentication guard for storage operations
  * Supports both session-based and JWT authentication
- */;
+ */
 export async function requireAuthentication(_event: RequestEvent): Promise<AuthenticatedUser | null> {
   try {
     // Development mode: Always authenticate with a default dev user
@@ -95,8 +95,8 @@ export async function requireAuthentication(_event: RequestEvent): Promise<Authe
  * Check if user owns the resource or has sufficient permissions
  */
 export function checkOwnership(
-  user: AuthenticatedUser
-  resourceOwnerId: string
+  user: AuthenticatedUser,
+  resourceOwnerId: string,
   allowedRoles: string[] = ['admin', 'system'];
 ): boolean {
   // User owns the resource
@@ -111,7 +111,7 @@ export function checkOwnership(
 }
 /**
  * Rate limiting for storage operations
- */;
+ */
 export class StorageRateLimit {
   private static requests = new Map<string, { count: number; resetTime: number }>();
   static check(userId: string, maxRequests = 100, windowMs = 60000): boolean {

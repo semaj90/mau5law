@@ -4,8 +4,7 @@ import { json } from '@sveltejs/kit';
 export const GET: RequestHandler = async () => {
   try {
     // Check for CUDA/GPU availability via environment or existing service
-    const gpuAvailable = process.env.CUDA_VISIBLE_DEVICES !== undefined ||
-                         process.env.GPU_ENABLED === 'true';
+    const gpuAvailable = process.env.CUDA_VISIBLE_DEVICES !== undefined || process.env.GPU_ENABLED === 'true';
 
     if (gpuAvailable) {
       return json({
@@ -14,28 +13,34 @@ export const GET: RequestHandler = async () => {
         message: 'GPU acceleration available',
         details: {
           cudaVisible: process.env.CUDA_VISIBLE_DEVICES || 'all',
-          enabled: true
+          enabled: true,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } else {
-      return json({
-        status: 'unavailable',
-        service: 'gpu',
-        message: 'GPU acceleration not configured',
-        details: {
-          enabled: false,
-          fallback: 'CPU processing'
+      return json(
+        {
+          status: 'unavailable',
+          service: 'gpu',
+          message: 'GPU acceleration not configured',
+          details: {
+            enabled: false,
+            fallback: 'CPU processing',
+          },
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
-      }, { status: 503 });
+        { status: 503 }
+      );
     }
   } catch (error: any) {
-    return json({
-      status: 'error',
-      service: 'gpu',
-      error: error.message || 'Health check failed',
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+    return json(
+      {
+        status: 'error',
+        service: 'gpu',
+        error: error.message || 'Health check failed',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 };

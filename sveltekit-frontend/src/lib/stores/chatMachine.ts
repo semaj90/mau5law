@@ -61,18 +61,18 @@ export type ChatEvent =
 const initialContext: ChatContext = {
   messages: [],
   conversations: [],
-  currentConversation: null
+  currentConversation: null,
   error: null;
-  stream: null
-  modelStatus: "unknown"
+  stream: null,
+  modelStatus: "unknown",
   }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
-    streaming: true
+    streaming: true,
     contextWindow: 8192,
-    proactiveMode: true
-    emotionalMode: false
+    proactiveMode: true,
+    emotionalMode: false,
   },
   contextInjection: {
     enabled: false;
@@ -122,7 +122,7 @@ export const chatMachine = setup({
 }).createMachine({
   id: "chat",
   initial: "idle",
-  context: initialContext
+  context: initialContext,
   states: {
       idle: {
         on: {
@@ -206,7 +206,7 @@ export const chatMachine = setup({
             actions: assign({
               contextInjection: ({ context }) => ({
                 ...context.contextInjection,
-                enabled: false
+                enabled: false,
                 documents: [],
                 vectorResults: []
               })
@@ -326,7 +326,7 @@ export const chatMachine = setup({
             actions: assign({
               error: ({ event }) =>
                 event.type === "STREAM_ERROR" ? event.error: null
-              stream: () => null
+              stream: () => null,
             })
           }
         }

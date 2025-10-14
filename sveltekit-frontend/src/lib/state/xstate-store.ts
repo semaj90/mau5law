@@ -47,11 +47,11 @@ class XStateStoreManager {
   private syncChannel: BroadcastChannel | null = null;
   private constructor(config: XStateStoreConfig = {}) {
     this.config = {
-      persist: true
+      persist: true,
       persistKey: 'legal-ai-state',
       devtools: browser && import.meta.env.NODE_ENV === 'development',
       logTransitions: browser && import.meta.env.NODE_ENV === 'development',
-      syncAcrossTabs: true
+      syncAcrossTabs: true,
       ...config
     }
     if (browser) {
@@ -66,7 +66,7 @@ class XStateStoreManager {
   }
   /**
    * Initialize browser-specific features
-   */;
+   */
   private initializeBrowserFeatures(): void {
     // Set up cross-tab synchronization
     if (this.config.syncAcrossTabs) {
@@ -97,7 +97,7 @@ class XStateStoreManager {
   }
   /**
    * Initialize the application machine and store
-   */;
+   */
   public initializeApp(): {
     appStore: Readable<any>;
     appActor: ActorRef<any>;
@@ -154,7 +154,7 @@ class XStateStoreManager {
   }
   /**
    * Initialize the legal case machine and store
-   */;
+   */
   public initializeLegalCase(): {
     legalCaseStore: Readable<any>;
     legalCaseActor: ActorRef<any>;
@@ -210,7 +210,7 @@ class XStateStoreManager {
   }
   /**
    * Create derived stores for specific state slices
-   */;
+   */
   public createDerivedStores(appStore: Readable<any>) {
     return {
       // User and authentication
@@ -239,7 +239,7 @@ class XStateStoreManager {
   }
   /**
    * Create utility functions for state management
-   */;
+   */
   public createUtilities(appSend: (_event: AppEvents) => void) {
     return {
       // Notification helpers
@@ -383,7 +383,7 @@ class XStateStoreManager {
   }
   /**
    * Clean up resources
-   */;
+   */
   public destroy(),: void {
     this.appActor?.stop();
     this.legalCaseActor?.stop();

@@ -72,4 +72,4 @@ export const systemHealthStore = {
     await new Promise(resolve => setTimeout(resolve, 500));
     healthState.lastUpdate = new Date();
   },
-}
+};

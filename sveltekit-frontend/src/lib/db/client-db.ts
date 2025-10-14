@@ -216,7 +216,7 @@ export const legalDB = new LegalAIClientDB();
 export class LegalDBUtils {
   /**
    * Clean up expired cache entries
-   */;
+   */
   static async cleanupExpiredCache(): Promise<void> {
     const now = new Date();
     // Remove expired vector search cache
@@ -233,7 +233,7 @@ export class LegalDBUtils {
   }
   /**
    * Manage document cache size (LRU eviction)
-   */;
+   */
   static async manageDocumentCacheSize(maxDocuments = 1000): Promise<void> {
     const count = await legalDB.documentCache.count();
     if (count > maxDocuments) {
@@ -249,7 +249,7 @@ export class LegalDBUtils {
   }
   /**
    * Get database statistics
-   */;
+   */
   static async getStorageStats(): Promise<any> {
     const stats = {
       totalRecords: 0,
@@ -284,7 +284,7 @@ export class LegalDBUtils {
   }
   /**
    * Create content hash for caching
-   */;
+   */
   static createHash(content: string): string {
     let hash = 0;
     if (content.length === 0) return hash.toString();
@@ -297,7 +297,7 @@ export class LegalDBUtils {
   }
   /**
    * Intelligent cache cleanup based on usage patterns
-   */;
+   */
   static async intelligentCleanup(): Promise<void> {
     console.log('[ClientDB] Starting intelligent cleanup...');
     // 1. Remove expired entries
@@ -329,7 +329,7 @@ import { writable, derived } from 'svelte/store';
 import { liveQuery } from 'dexie';
 /**
  * Reactive store for recent chat messages
- */;
+ */
 export const recentChatMessages = liveQuery(async () => {
   return await legalDB.chatHistory
     .orderBy('timestamp')
@@ -339,7 +339,7 @@ export const recentChatMessages = liveQuery(async () => {
 });
 /**
  * Reactive store for search history
- */;
+ */
 export const searchHistory = liveQuery(async () => {
   return await legalDB.searchHistory
     .orderBy('timestamp')
@@ -349,13 +349,13 @@ export const searchHistory = liveQuery(async () => {
 });
 /**
  * Reactive store for cached documents count
- */;
+ */
 export const cachedDocumentsCount = liveQuery(async () => {
   return await legalDB.documentCache.count();
 });
 /**
  * Reactive store for user annotations count
- */;
+ */
 export const annotationsCount = liveQuery(async () => {
   return await legalDB.userAnnotations.count();
 });

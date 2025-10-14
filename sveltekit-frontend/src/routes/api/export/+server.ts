@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return new Response(responseData, {
       status: 200,
       headers: {
-        "Content-Type": contentType
+        "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${fileName}"`,
         "Content-Length": responseData.length.toString()
       }

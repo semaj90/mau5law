@@ -284,7 +284,7 @@ await loadCases();
               <span
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'priority',
-                  caseData.priority || 'medium',
+                  caseData.priority || 'medium'
                 )}"
               >
                 {priorityConfig[caseData.priority || 'medium']?.label}
@@ -292,7 +292,7 @@ await loadCases();
               <span
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'status',
-                  caseData.status || 'open',
+                  caseData.status || 'open'
                 )}"
               >
                 {statusConfig[caseData.status || 'open']?.label}
@@ -411,7 +411,8 @@ await loadCases();
             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input
               type="text"
-              id="title";
+              id="title"
+              ;
               bind:value={$formData.title}
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -461,7 +462,8 @@ await loadCases();
               <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
               <input
                 type="text"
-                id="location";
+                id="location"
+                ;
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"
@@ -516,7 +518,8 @@ await loadCases();
             <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input
               type="text"
-              id="edit-title";
+              id="edit-title"
+              ;
               bind:value={$formData.title}
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -566,7 +569,8 @@ await loadCases();
               <label for="edit-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
               <input
                 type="text"
-                id="edit-location";
+                id="edit-location"
+                ;
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"

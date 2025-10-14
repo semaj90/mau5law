@@ -24,8 +24,8 @@ Response:`
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'legal:latest',
-        prompt: prompt
-        stream: false
+        prompt: prompt,
+        stream: false,
         options: {
           temperature: 0.7,
           top_p: 0.9,
@@ -74,8 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
         id: row.conversation_id,
         chunk_text: row.chunk_text,
         chunk_sequence: 1,
-        evidence_id: null
-        embedding: null
+        evidence_id: null,
+        embedding: null,
         similarity: parseFloat(row.similarity),
         role: row.role,
         metadata: row.metadata ? JSON.parse(row.metadata) : { [key,: strin,g]: any }
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         id: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).conversationId,
         chunk_text: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).content,
         chunk_sequence: 1,
-        evidence_id: null
+        evidence_id: null,
         embedding: null,;
         similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
         role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
@@ -115,14 +115,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       query,
-      results: enhancedResults
+      results: enhancedResults,
       ragResponse,
       metadata: {
         resultCount: similarChunks.length,
         threshold,
         embeddingModel: 'nomic-embed-text',
-        ragModel: includeRAGResponse ? 'legal:latest' : null
-        searchTime: Date.now()
+        ragModel: includeRAGResponse ? 'legal:latest' : null,
+        searchTime: Date.now(),
       }
     })
   } catch (err) {

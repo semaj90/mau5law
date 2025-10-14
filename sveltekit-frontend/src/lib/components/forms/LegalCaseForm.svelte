@@ -27,7 +27,7 @@
   let activeTab = $state('basic');
   // Form validation
   function validateForm(): boolean {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
     if (!formData.caseTitle.trim()) {
       errors.caseTitle = 'Case title is required';
     }
@@ -70,7 +70,7 @@
         estimatedHours: '',
         budget: '',
         deadline: '',
-      }
+      };
       alert('✅ Legal case created successfully!');
     } catch (error) {
       console.error('Form submission error:', error);
@@ -146,8 +146,11 @@
 
   // Correct constructor typing for Svelte components to satisfy TypeScript
   import type { SvelteComponentTyped } from 'svelte';
-  type ComponentConstructor<Props = Record<string, any>, Events = Record<string, any>, Slots = Record<string, any>> =
-    new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
+  type ComponentConstructor<
+    Props = Record<string, any>,
+    Events = Record<string, any>,
+    Slots = Record<string, any>,
+  > = new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
 
   // Cast the raw imports to constructor types (keeps runtime import the same)
   const CardBits = CardBitsRaw as unknown as ComponentConstructor;
@@ -321,7 +324,9 @@
                 </div>
                 <div class="review-item">
                   <strong>Practice Area:</strong>
-                  <span>{practiceAreas.find(area => area.value === formData.practiceArea)?.label || 'Not selected'}</span>
+                  <span
+                    >{practiceAreas.find(area => area.value === formData.practiceArea)?.label || 'Not selected'}</span
+                  >
                 </div>
                 <div class="review-item">
                   <strong>Jurisdiction:</strong>

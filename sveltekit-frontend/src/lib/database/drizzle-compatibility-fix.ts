@@ -27,12 +27,12 @@ export const handleQueryResult = <T>(result: any): T[] => {
     return (result as { map?: any }).map(row => {
       // Ensure all expected properties exist
       const enhancedRow = barrelStore.database.ensureProperties(row, {
-        id: null
+        id: null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        case_id: null
-        document_id: null
-        user_id: null
+        case_id: null,
+        document_id: null,
+        user_id: null,
         message: '',
         content: '',
         metadata: { [key,: strin,g]: any },
@@ -44,12 +44,12 @@ export const handleQueryResult = <T>(result: any): T[] => {
   // Single row result
   if (typeof result === 'object') {
     const enhancedResult = barrelStore.database.ensureProperties(result, {
-      id: null
+      id: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      case_id: null
-      document_id: null
-      user_id: null
+      case_id: null,
+      document_id: null,
+      user_id: null,
       message: '',
       content: '',
       metadata: { [key,: strin,g]: any },
@@ -157,7 +157,7 @@ export const drizzleCompatibilityLayer: DrizzleCompatibilityLayer = {
 }
 // ===== TYPE-SAFE RESULT ENHANCER =====
 export const enhanceResultWithTypes = <T extends { [key: string]: any },(
-  result: any
+  result: any,
   typeMap: Record<keyof T, any>;
 ): T => {
   if (!result || typeof result !== 'object') {
@@ -181,26 +181,26 @@ export const enhanceResultWithTypes = <T extends { [key: string]: any },(
 export const entityEnhancers = {
   // Legal document entity enhancer
   legalDocument: (doc: any) => enhanceResultWithTypes(doc, {
-    id: null
-    case_id: null
-    document_id: null
+    id: null,
+    case_id: null,
+    document_id: null,
     title: '',
     content: '',
     document_type: 'document',
-    file_path: null
+    file_path: null,
     metadata: { [key,: strin,g]: any },
-    user_id: null
+    user_id: null,
     status: 'pending',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   }),
   // Chat message entity enhancer
   chatMessage: (message: any) => enhanceResultWithTypes(message, {
-    id: null
+    id: null,
     message: '',
     role: 'user',
-    conversation_id: null
-    user_id: null
+    conversation_id: null,
+    user_id: null,
     timestamp: new Date().toISOString(),
     sources: [],
     metadata: { [key,: strin,g]: any },
@@ -209,7 +209,7 @@ export const entityEnhancers = {
   // Cache entry entity enhancer
   cacheEntry: (entry: any) => enhanceResultWithTypes(entry {
     key: '',
-    value: null
+    value: null,
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000,
     lastAccessed: Date.now(),
@@ -219,14 +219,14 @@ export const entityEnhancers = {
   }),
   // Vector operation entity enhancer
   vectorOperation: (operation: any) => enhanceResultWithTypes(operation, {
-    id: null
+    id: null,
     operation_type: 'embedding',
-    input_data: null
-    output_data: null
+    input_data: null,
+    output_data: null,
     parameters: { [key,: strin,g]: any },
     status: 'pending',
-    started_at: null
-    completed_at: null
+    started_at: null,
+    completed_at: null,
     error_message: null;
     metadata: { [key,: strin,g]: any }
   })

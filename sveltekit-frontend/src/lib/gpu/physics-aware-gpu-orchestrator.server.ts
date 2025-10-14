@@ -122,7 +122,7 @@ class PhysicsAwareGpuOrchestrator {
       ...taskRequest,
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       status: 'queued',
-    }
+    };
     // Immediate scheduling attempt
     const optimalDevice = this.findOptimalDevice(task);
     if (optimalDevice && this.canExecuteImmediately(task, optimalDevice)) {
@@ -132,7 +132,7 @@ class PhysicsAwareGpuOrchestrator {
         taskId: task.id,
         deviceId: optimalDevice.id,
         estimatedStartTime: Date.now(),
-      }
+      };
     } else {
       // Queue for later execution
       this.taskQueue.push(task);
@@ -140,7 +140,7 @@ class PhysicsAwareGpuOrchestrator {
       return {
         taskId: task.id,
         estimatedStartTime: Date.now() + estimatedWaitTime,
-      }
+      };
     }
   }
   private findOptimalDevice(_task: GpuTask): GpuDevice | null {
@@ -171,7 +171,7 @@ class PhysicsAwareGpuOrchestrator {
         temperatureScore * 0.2 +
         powerEfficiencyScore * 0.15 +
         taskTypeScore * 0.1;
-      return { device, score: totalScore }
+      return { device, score: totalScore };
     });
     // Sort by score and return the best device
     deviceScores.sort((a, b) => b.score - a.score);
@@ -249,7 +249,7 @@ class PhysicsAwareGpuOrchestrator {
       totalUtilization: this.totalGpuUtilization,
       averageTemperature: Math.round(averageTemperature * 10) / 10,
       totalPowerUsage: Math.round(totalPowerUsage),
-    }
+    };
   }
   /**
    * Get task information
@@ -304,10 +304,10 @@ class PhysicsAwareGpuOrchestrator {
       averageLoad: Math.round(averageLoad * 100) / 100,
       averageTemperature: Math.round(averageTemperature * 10) / 10,
       issues,
-    }
+    };
   }
 }
 // Export a singleton instance for use across the server
 export const physicsAwareGPUOrchestrator = new PhysicsAwareGpuOrchestrator();
 // Also export the class type if needed for dependency injection
-export { PhysicsAwareGpuOrchestrator }
+export { PhysicsAwareGpuOrchestrator };

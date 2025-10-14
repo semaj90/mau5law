@@ -278,7 +278,8 @@
   {@render children()}
 {/if}
 
-<style>/* CSS-only animations for better performance */ {}
+<style>
+/* CSS-only animations for better performance */ {}
   :global(.enhanced-bits-animate-in) {
 animation: enhanced-fade-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;

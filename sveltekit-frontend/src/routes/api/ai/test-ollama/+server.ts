@@ -21,10 +21,10 @@ export const GET = (async (): Promise<any> => {
       status: "success",
       timestamp: new Date().toISOString(),
       ollama: {
-        available: isAvailable
+        available: isAvailable,
         version: ollamaDetails?.version || "unknown",
-        models: models
-        gemma3Model: currentModel
+        models: models,
+        gemma3Model: currentModel,
         modelCount: models.length,
         serviceUrl: "http://localhost:11434"
       },
@@ -83,7 +83,7 @@ export const POST = (async ({ request }): Promise<any> => {
         response,
         model: ollamaService.getGemma3Model(),
         execution: {
-          timeMs: executionTime
+          timeMs: executionTime,
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
           provider: "ollama"
         },

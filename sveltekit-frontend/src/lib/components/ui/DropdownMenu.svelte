@@ -39,7 +39,9 @@
   </DropdownMenuTrigger>
 
   <!-- pass a sensible default collisionBoundary -->
-  <DropdownMenuContent collisionBoundary={typeof document !== 'undefined' ? document.body : undefined as unknown as Element}>
+  <DropdownMenuContent
+    collisionBoundary={typeof document !== 'undefined' ? document.body : (undefined as unknown as Element)}
+  >
     {#each items as item}
       {#if item.separator}
         <DropdownMenuSeparator />

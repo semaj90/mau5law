@@ -123,11 +123,11 @@ export async function runEmbeddingBenchmark(
       mode,
       runs,
       samples: segments * dim,
-      meanMs: mean
+      meanMs: mean,
       p95Ms: percentile(durations, 95),
       bestMs: Math.min(...durations),
       worstMs: Math.max(...durations),
-      dimension: dim
+      dimension: dim,
       segments,
       backend,
       statsUsed
@@ -144,7 +144,7 @@ export async function runEmbeddingBenchmark(
   }
   const summary: EmbeddingBenchmarkSummary = {
     label,
-    dimension: dim
+    dimension: dim,
     segments,
     entries,
     timestamp: Date.now()

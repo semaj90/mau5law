@@ -45,15 +45,15 @@ export class N64TextureLODSystem {
         return false;
       }
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
       if (!adapter) return false;
       this.device = await adapter.requestDevice({
         requiredLimits: {
           maxBufferSize: this.TEXTURE_CACHE_SIZE,
           maxTextureDimension2D: 2048,
-          maxTextureArrayLayers: 256
-        }
+          maxTextureArrayLayers: 256,
+        },
       });
       // Initialize mipmap shader system
       await yorhaMipmapShaders.initialize(this.device);
@@ -70,11 +70,7 @@ export class N64TextureLODSystem {
   /**
    * Load texture with LOD levels (N64-style progressive loading)
    */
-  async loadTextureWithLOD(
-    textureId: string
-    basePath: string
-    priority: number = 128
-  ): Promise<TextureAsset> {
+  async loadTextureWithLOD(textureId: string, basePath: string, priority: number = 128): Promise<TextureAsset> {
     if (this.textureCache.has(textureId)) {
       const cached = this.textureCache.get(textureId)!;
       cached.lastAccessed = Date.now();
@@ -85,16 +81,16 @@ export class N64TextureLODSystem {
       { level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
       { level: 1, width: 128, height: 128, data: new ArrayBuffer(0), compressed: false, sizeKB: 64 },
       { level: 2, width: 64, height: 64, data: new ArrayBuffer(0), compressed: true, sizeKB: 16 },
-      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 }
+      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 },
     ];
     const asset: TextureAsset = {
-      id: textureId
+      id: textureId,
       basePath,
       lodLevels,
       currentLOD: 3, // Start with lowest quality
       priority,
-      lastAccessed: Date.now()
-    }
+      lastAccessed: Date.now(),
+    };
     // Load lowest LOD immediately (4KB)
     await this.loadLODLevel(asset, 3);
     this.textureCache.set(textureId, asset);
@@ -135,20 +131,16 @@ export class N64TextureLODSystem {
   /**
    * Simulate N64-style texture page loading
    */
-  private async loadTexturePage(
-    basePath: string
-    lodLevel: number
-    pageIndex: number
-  ): Promise<ArrayBuffer> {
+  private async loadTexturePage(basePath: string, lodLevel: number, pageIndex: number): Promise<ArrayBuffer> {
     // Generate procedural texture data for demo
     const pageData = new Uint8Array(this.PAGE_SIZE);
     // Create pattern based on LOD level and page index
     for (let i = 0; i < pageData.length; i += 4) {
-      const pattern = (lodLevel * 64 + pageIndex * 16 + i / 4) & 0xFF;
-      pageData[i] = pattern;     // R
+      const pattern = (lodLevel * 64 + pageIndex * 16 + i / 4) & 0xff;
+      pageData[i] = pattern; // R
       pageData[i + 1] = pattern * 0.7; // G
       pageData[i + 2] = pattern * 0.5; // B
-      pageData[i + 3] = 255;      // A
+      pageData[i + 3] = 255; // A
     }
     return pageData.buffer;
   }
@@ -174,19 +166,12 @@ export class N64TextureLODSystem {
     const texture = this.device.createTexture({
       size: [lod.width, lod.height, 1],
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING |
-             GPUTextureUsage.COPY_DST |
-             GPUTextureUsage.RENDER_ATTACHMENT,
-      mipLevelCount: 1
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+      mipLevelCount: 1,
     });
     // Upload texture data
     if (lod.data.byteLength > 0) {
-      this.device.queue.writeTexture(
-        { texture },
-        lod.data,
-        { bytesPerRow: lod.width * 4 },
-        [lod.width, lod.height, 1]
-      );
+      this.device.queue.writeTexture({ texture }, lod.data, { bytesPerRow: lod.width * 4 }, [lod.width, lod.height, 1]);
     }
     return texture;
   }
@@ -280,8 +265,7 @@ export class N64TextureLODSystem {
    * Evict least recently used textures
    */
   private async evictLRUTextures(bytesNeeded: number): Promise<void> {
-    const sorted = Array.from(this.textureCache.entries())
-      .sort((a, b) => a[1].lastAccessed - b[1].lastAccessed);
+    const sorted = Array.from(this.textureCache.entries()).sort((a, b) => a[1].lastAccessed - b[1].lastAccessed);
     let freedBytes = 0;
     for (const [id, asset] of sorted) {
       if (freedBytes >= bytesNeeded) break;
@@ -324,8 +308,8 @@ export class N64TextureLODSystem {
       usedKB: Math.round(this.currentMemoryUsage / 1024),
       totalKB: this.TEXTURE_CACHE_SIZE / 1024,
       textureCount: this.textureCache.size,
-      activeTextureCount: this.activeTextures.size
-    }
+      activeTextureCount: this.activeTextures.size,
+    };
   }
   /**
    * Clean up resources

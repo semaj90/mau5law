@@ -58,8 +58,8 @@ class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
     evidence: [],
     isLoading: false;
-    error: null
-    isConnected: false
+    error: null,
+    isConnected: false,
   });
   private websocket: WebSocket | null = null;
   private eventSource: EventSource | null = null;
@@ -171,15 +171,15 @@ class UnifiedEvidenceStore {
       const evidenceList: Evidence[] = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
-        evidence: evidenceList
-        isLoading: false
+        evidence: evidenceList,
+        isLoading: false,
       });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
-        isLoading: false
-        error: error.message
+        isLoading: false,
+        error: error.message,
       });
       console.error("Failed to fetch evidence:", error);
     }
@@ -211,8 +211,8 @@ class UnifiedEvidenceStore {
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
-        isLoading: false
-        error: error.message
+        isLoading: false,
+        error: error.message,
       });
       throw error;
     }
@@ -306,9 +306,9 @@ class UnifiedEvidenceStore {
         if (hoursDiff < 24) {
           this.store.set({
             evidence: (data as { id?: any; lastUpdated?: any; evidence?: any }).evidence || [],
-            isLoading: false
-            error: null
-            isConnected: false
+            isLoading: false,
+            error: null,
+            isConnected: false,
           });
         }
       }

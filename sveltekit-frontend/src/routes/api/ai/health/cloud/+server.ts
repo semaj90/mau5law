@@ -14,15 +14,15 @@ export const GET: RequestHandler = async () => {
     } catch (error: any) {
       return json({
         success: false,
-        available: false
-        error: "Cloud AI service not available"
+        available: false,
+        error: "Cloud AI service not available",
       })
     }
     if (!aiService || typeof aiService.generateResponse !== "function") {
       return json({
         success: false,
-        available: false
-        error: "Cloud AI service not properly configured"
+        available: false,
+        error: "Cloud AI service not properly configured",
       })
     }
     // Try a simple test request
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async () => {
       })
       return json({
         success: true,
-        available: true
+        available: true,
         model: "cloud-llm",
         testResponse:
           typeof testResponse === "string"
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async () => {
       console.error("Cloud AI test failed:", testError)
       return json({
         success: false,
-        available: false
+        available: false,
         error:
           "Cloud AI test failed: " +
           (testError instanceof Error ? testError.message: "Unknown error")
@@ -56,8 +56,8 @@ export const GET: RequestHandler = async () => {
     console.error("Cloud AI health check failed:", error)
     return json({
         success: false,
-        available: false
-        error: error instanceof Error ? error.message: "Health check failed"
+        available: false,
+        error: error instanceof Error ? error.message: "Health check failed",
       },)
       { status: 500 },
     )

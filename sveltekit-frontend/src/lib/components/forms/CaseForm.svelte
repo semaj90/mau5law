@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { caseFormSchema } from "$lib/schemas/forms";
+  import { caseFormSchema } from '$lib/schemas/forms';
   import { z } from 'zod';
   // infer a concrete TS type from the Zod schema to avoid namespace collisions
   type CaseFormType = z.infer<typeof caseFormSchema>;
-  import { getAuthContext } from "$lib/stores/auth";
+  import { getAuthContext } from '$lib/stores/auth';
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
 
@@ -17,13 +17,7 @@
   }
 
   // Provide a valid default for initialData
-  let {
-    initialData = undefined,
-    isEditing = false,
-    formApi = $bindable(),
-    onsuccess,
-    onerror
-  }: Props = $props();
+  let { initialData = undefined, isEditing = false, formApi = $bindable(), onsuccess, onerror }: Props = $props();
 
   const auth = getAuthContext();
 
@@ -31,7 +25,7 @@
   let availableUsers = $state([
     { id: '1', name: 'John Smith', role: 'prosecutor' },
     { id: '2', name: 'Jane Doe', role: 'investigator' },
-    { id: '3', name: 'Mike Johnson', role: 'legal_assistant' }
+    { id: '3', name: 'Mike Johnson', role: 'legal_assistant' },
   ]);
 
   // Initialize superForm (fixed commas & signatures)
@@ -50,7 +44,7 @@
       } else if (r.type === 'error') {
         onerror?.(r.error);
       }
-    }
+    },
   });
 
   // Update formApi when form changes using $effect
@@ -63,7 +57,7 @@
         submitting,
         delayed,
         message,
-        enhance
+        enhance,
       };
     }
   });
@@ -71,7 +65,7 @@
   // Tag management
   let tagInput = $state('');
   function addTag() {
-    if (tagInput.trim() && (!($form.tags) || !$form.tags.includes(tagInput.trim()))) {
+    if (tagInput.trim() && (!$form.tags || !$form.tags.includes(tagInput.trim()))) {
       $form.tags = [...($form.tags || []), tagInput.trim()];
       tagInput = '';
     }
@@ -105,13 +99,7 @@
       </p>
     </div>
     {#if !isEditing}
-      <button
-        type="button"
-        on:click={generateCaseNumber}
-        class="space-y-4"
-      >
-        Generate Case #
-      </button>
+      <button type="button" on:click={generateCaseNumber} class="space-y-4"> Generate Case # </button>
     {/if}
   </div>
 
@@ -119,17 +107,15 @@
     <!-- Case Number and Title -->
     <div>
       <div>
-        <label for="caseNumber">
-          Case Number *
-        </label>
+        <label for="caseNumber"> Case Number * </label>
         <input
           type="text"
           id="caseNumber"
           name="caseNumber"
           bind:value={$form.caseNumber}
           placeholder="e.g., CAS-2024-123456"
-          aria-invalid={$errors.caseNumber ? "true" : "false"}
-          aria-describedby={$errors.caseNumber ? "caseNumber-error" : undefined}
+          aria-invalid={$errors.caseNumber ? 'true' : 'false'}
+          aria-describedby={$errors.caseNumber ? 'caseNumber-error' : undefined}
           {...$constraints.caseNumber}
         />
         {#if $errors.caseNumber}
@@ -137,15 +123,8 @@
         {/if}
       </div>
       <div>
-        <label for="priority">
-          Priority *
-        </label>
-        <select
-          id="priority"
-          name="priority"
-          bind:value={$form.priority}
-          {...$constraints.priority}
-        >
+        <label for="priority"> Priority * </label>
+        <select id="priority" name="priority" bind:value={$form.priority} {...$constraints.priority}>
           <option value="">Select priority</option>
           <option value="low">Low Priority</option>
           <option value="medium">Medium Priority</option>
@@ -158,17 +137,15 @@
     </div>
     <!-- Title -->
     <div>
-      <label for="title">
-        Case Title *
-      </label>
+      <label for="title"> Case Title * </label>
       <input
         type="text"
         id="title"
         name="title"
         bind:value={$form.title}
         placeholder="e.g., State vs. Johnson - Financial Fraud Investigation"
-        aria-invalid={$errors.title ? "true" : "false"}
-        aria-describedby={$errors.title ? "title-error" : undefined}
+        aria-invalid={$errors.title ? 'true' : 'false'}
+        aria-describedby={$errors.title ? 'title-error' : undefined}
         {...$constraints.title}
       />
       {#if $errors.title}
@@ -177,17 +154,15 @@
     </div>
     <!-- Description -->
     <div>
-      <label for="description">
-        Case Description
-      </label>
+      <label for="description"> Case Description </label>
       <textarea
         id="description"
         name="description"
         rows="4"
         bind:value={$form.description}
         placeholder="Provide a detailed description of the case..."
-        aria-invalid={$errors.description ? "true" : "false"}
-        aria-describedby={$errors.description ? "description-error" : undefined}
+        aria-invalid={$errors.description ? 'true' : 'false'}
+        aria-describedby={$errors.description ? 'description-error' : undefined}
         {...$constraints.description}
       ></textarea>
       {#if $errors.description}
@@ -198,12 +173,7 @@
     <div>
       <div>
         <label for="status">Status</label>
-        <select
-          id="status"
-          name="status"
-          bind:value={$form.status}
-          {...$constraints.status}
-        >
+        <select id="status" name="status" bind:value={$form.status} {...$constraints.status}>
           <option value="draft">Draft</option>
           <option value="active">Active Investigation</option>
           <option value="pending">Pending Review</option>
@@ -212,12 +182,7 @@
       </div>
       <div>
         <label for="assignedTo">Assigned To</label>
-        <select
-          id="assignedTo"
-          name="assignedTo"
-          bind:value={$form.assignedTo}
-          {...$constraints.assignedTo}
-        >
+        <select id="assignedTo" name="assignedTo" bind:value={$form.assignedTo} {...$constraints.assignedTo}>
           <option value="">Unassigned</option>
           {#each availableUsers as user}
             <option value={user.id}>{user.name} ({user.role})</option>
@@ -233,8 +198,8 @@
         id="dueDate"
         name="dueDate"
         bind:value={$form.dueDate}
-        aria-invalid={$errors.dueDate ? "true" : "false"}
-        aria-describedby={$errors.dueDate ? "dueDate-error" : undefined}
+        aria-invalid={$errors.dueDate ? 'true' : 'false'}
+        aria-describedby={$errors.dueDate ? 'dueDate-error' : undefined}
         {...$constraints.dueDate}
       />
       {#if $errors.dueDate}
@@ -248,12 +213,7 @@
         {#each $form.tags || [] as tag}
           <span>
             {tag}
-            <button
-              type="button"
-              on:click={() => removeTag(tag)}
-            >
-              ×
-            </button>
+            <button type="button" on:click={() => removeTag(tag)}> × </button>
           </span>
         {/each}
       </div>
@@ -266,12 +226,7 @@
           placeholder="Add a tag..."
           aria-label="Add tag"
         />
-        <button
-          type="button"
-          on:click={addTag}
-        >
-          Add Tag
-        </button>
+        <button type="button" on:click={addTag}> Add Tag </button>
       </div>
       {#if $errors.tags}
         <p id="tags-error">{$errors.tags}</p>
@@ -280,17 +235,11 @@
     <!-- Checkboxes -->
     <div>
       <label>
-        <input
-          type="checkbox"
-          bind:checked={$form.isConfidential}
-        />
+        <input type="checkbox" bind:checked={$form.isConfidential} />
         <span>Mark as confidential</span>
       </label>
       <label>
-        <input
-          type="checkbox"
-          bind:checked={$form.notifyAssignee}
-        />
+        <input type="checkbox" bind:checked={$form.notifyAssignee} />
         <span>Notify assignee via email</span>
       </label>
     </div>
@@ -298,15 +247,14 @@
     <div>
       <button
         type="button"
-        on:click={() => { /* Cancelled by user */ }}
+        on:click={() => {
+          /* Cancelled by user */
+        }}
         disabled={$submitting}
       >
         Cancel
       </button>
-      <button
-        type="submit"
-        disabled={$submitting}
-      >
+      <button type="submit" disabled={$submitting}>
         {#if $submitting}
           <span class="inline-flex items-center gap-2">
             <span class="spinner" aria-hidden="true"></span>
@@ -325,9 +273,7 @@
     {/if}
     <!-- Loading Indicator -->
     {#if $delayed}
-      <div>
-        Processing your request...
-      </div>
+      <div>Processing your request...</div>
     {/if}
   </form>
 </div>

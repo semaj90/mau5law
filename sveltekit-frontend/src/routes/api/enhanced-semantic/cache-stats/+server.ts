@@ -21,8 +21,8 @@ export const GET: RequestHandler = async () => {
 				last_update: data.data.last_update || new Date().toISOString(),
 				max_size: data.data.max_size || 10000,
 				hit_ratio: 0.95, // Mock high hit ratio
-				webgpu_enabled: true
-				technologies: [
+				webgpu_enabled: true,
+				technologies: [,
 					'WebGPU Acceleration',
 					'IndexDB Storage',
 					'LRU Eviction',
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async () => {
 		}
 		return json({
 			success: true,
-			data: mockStats
+			data: mockStats,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
 			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.'

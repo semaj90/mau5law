@@ -47,11 +47,11 @@ export const GET: RequestHandler = async ({ url }) => {
       const absPctChange = Math.abs(percentageChange)
       diffs.push({
         metric: 'p99_latency_ms',
-        current_value: currentP99
-        baseline_value: baseline
+        current_value: currentP99,
+        baseline_value: baseline,
         difference,
-        percentage_change: percentageChange
-        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
+        percentage_change: percentageChange,
+        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :,
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
         threshold_breach: currentP99 > baseline * 1.5 // 50% threshold breach
       })
@@ -64,11 +64,11 @@ export const GET: RequestHandler = async ({ url }) => {
       const absPctChange = Math.abs(percentageChange)
       diffs.push({
         metric: 'error_rate_percent',
-        current_value: currentErrorRate
-        baseline_value: baseline
+        current_value: currentErrorRate,
+        baseline_value: baseline,
         difference,
-        percentage_change: percentageChange
-        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
+        percentage_change: percentageChange,
+        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :,
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
         threshold_breach: currentErrorRate > baseline * 2 // 100% threshold breach for errors
       })
@@ -81,11 +81,11 @@ export const GET: RequestHandler = async ({ url }) => {
       const absPctChange = Math.abs(percentageChange)
       diffs.push({
         metric: 'connection_count',
-        current_value: currentConnections
-        baseline_value: baseline
+        current_value: currentConnections,
+        baseline_value: baseline,
         difference,
-        percentage_change: percentageChange
-        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
+        percentage_change: percentageChange,
+        status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :,
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
         threshold_breach: Math.abs(difference) > baseline * 0.3 // 30% threshold breach
       })
@@ -141,8 +141,8 @@ export const POST: RequestHandler = async ({ request }) => {
     await saveObservabilityState(updatedState)
     return json({
       success: true,
-      updated_baselines: updatedBaselines
-      timestamp: new Date().toISOString()
+      updated_baselines: updatedBaselines,
+      timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
     console.error('[baseline-diff] Update error:', error)

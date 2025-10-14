@@ -13,8 +13,8 @@ const analyticsMachine = createMachine({
   initial: 'idle',
   states: {
     idle: { on: { CLICK: 'engaged' } },
-    engaged: { on: { NAVIGATE: 'idle' } }
-  }
+    engaged: { on: { NAVIGATE: 'idle' } },
+  },
 });
 
 export const analyticsService = interpret(analyticsMachine).start();
@@ -25,7 +25,10 @@ export async function logUserEvent(event: UserEvent) {
     const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: event.payload.userId || 'anonymous', message: event.payload.text || event.payload.message || '' })
+      body: JSON.stringify({
+        user_id: event.payload.userId || 'anonymous',
+        message: event.payload.text || event.payload.message || '',
+      }),
     });
     if (!response.ok) {
       console.warn('Analytics backend returned non-ok:', response.status);

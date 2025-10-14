@@ -1,19 +1,19 @@
 // Enhanced database client for embeddings with pgvector
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from "pg";
-import { embeddings, legalDocumentEmbeddings, searchQueries } from "./schema-embeddings";
-import { sql, eq, desc, asc } from "drizzle-orm";
-import type { NewEmbedding, Embedding, NewSearchQuery } from "./schema-embeddings";
+import { Pool } from 'pg';
+import { embeddings, legalDocumentEmbeddings, searchQueries } from './schema-embeddings';
+import { sql, eq, desc, asc } from 'drizzle-orm';
+import type { NewEmbedding, Embedding, NewSearchQuery } from './schema-embeddings';
 // Database connection pool
 const pool = new Pool({
-  host: "localhost",
+  host: 'localhost',
   port: 5433, // Your PostgreSQL port
-  user: "legal_admin",
-  password: "123456",
-  database: "legal_ai_db",
+  user: 'legal_admin',
+  password: '123456',
+  database: 'legal_ai_db',
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  connectionTimeoutMillis: 2000,
 });
 // Initialize drizzle db using postgres-js client
 const db = drizzle(pool);

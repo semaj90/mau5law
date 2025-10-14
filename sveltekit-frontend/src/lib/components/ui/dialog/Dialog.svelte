@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { X } from "lucide-svelte";
-  import { quadOut } from "svelte/easing";
+  import { X } from 'lucide-svelte';
+  import { quadOut } from 'svelte/easing';
   import { cn } from '$lib/utils';
   import type { Snippet } from 'svelte';
 
@@ -16,7 +16,7 @@
     closeOnEscape = true,
     children,
     footer,
-    trigger
+    trigger,
   }: {
     open?: boolean;
     title?: string;
@@ -31,11 +31,11 @@
   } = $props();
 
   const sizeClasses: Record<Size, string> = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
-    full: "max-w-[95vw] max-h-[95vh]"
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+    full: 'max-w-[95vw] max-h-[95vh]',
   };
 
   function close() {
@@ -43,7 +43,7 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (closeOnEscape && event.key === "Escape") {
+    if (closeOnEscape && event.key === 'Escape') {
       close();
     }
   }
@@ -54,6 +54,7 @@
     }
   }
 </script>
+
 <!-- keyboard handling on window for accessibility -->
 <svelte:window onkeydown={handleKeydown} />
 <!-- optional trigger -->
@@ -69,16 +70,16 @@
     <!-- dialog content -->
     <div
       class={cn(
-        "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+        'relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
         sizeClasses[size]
       )}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? "dialog-title" : undefined}
-      aria-describedby={description ? "dialog-description" : undefined}
+      aria-labelledby={title ? 'dialog-title' : undefined}
+      aria-describedby={description ? 'dialog-description' : undefined}
       tabindex={0}
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.key === 'Escape' ? close() : null}
+      onclick={e => e.stopPropagation()}
+      onkeydown={e => (e.key === 'Escape' ? close() : null)}
     >
       <!-- header -->
       <div class="flex items-start justify-between gap-4">

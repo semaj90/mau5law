@@ -649,8 +649,8 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     </div>
   {/if}
 </div>
+;
 
 <style>
   /* @unocss-include */
 </style>
-;

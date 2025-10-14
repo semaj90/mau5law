@@ -51,7 +51,7 @@ export interface RiskAssessment {
 }
 /**
  * Process document through Go Legal AI Server
- */;
+ */
 async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoServerResponse> {
   const requestPayload = {
     document_id: jobData.documentId,
@@ -87,7 +87,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
  * Update evidence record with AI processing results
  */
 async function updateEvidenceWithResults(
-  documentId: string
+  documentId: string,
   results: GoServerResponse;
 ): Promise<void> {
   try {
@@ -123,7 +123,7 @@ async function updateEvidenceWithResults(
 }
 /**
  * Create and start the Legal AI worker
- */;
+ */
 export function createLegalAIWorker(): Worker {
   const worker = new Worker(
     'legal-ai-processing',
@@ -147,7 +147,7 @@ export function createLegalAIWorker(): Worker {
         console.log(`✅ Legal AI job completed: ${job.id} in ${processingTime}ms`);
         // Return comprehensive results
         const jobResult = {
-          success: true
+          success: true,
           documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
           goServerResults: results;
@@ -223,7 +223,7 @@ export function createLegalAIWorker(): Worker {
  * Add a document processing job to the queue
  */
 export async function addLegalAIJob(
-  jobData: LegalAIJobData
+  jobData: LegalAIJobData,
   options?: {
     priority?: number;
     delay?: number;
@@ -257,7 +257,7 @@ export async function addLegalAIJob(
 }
 /**
  * Get job status
- */;
+ */
 export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   const { Queue } = await import('bullmq');
   const queue = new Queue('legal-ai-processing', {
@@ -277,7 +277,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   const state = await job.getState();
   const progress = job.progress || 0;
   return {
-    status: state
+    status: state,
     progress: typeof progress === 'number' ? progress : 0,
     result: job.returnvalue,
     error: job.failedReason

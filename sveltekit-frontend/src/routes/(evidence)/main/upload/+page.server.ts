@@ -36,15 +36,15 @@ export const load: PageServerLoad = async ({ locals }) => {
     return {
       form,
       cases: userCases,
-    }
+    };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
       cases: [],
-    }
+    };
   }
-}
+};
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
@@ -158,7 +158,7 @@ export const actions: Actions = {
           enableEmbeddings: form.data.enableEmbeddings,
           enableSummarization: form.data.enableSummarization,
         },
-      }
+      };
       switch (evidenceType) {
         case 'PDF':
           metadata = {
@@ -171,7 +171,7 @@ export const actions: Actions = {
             legalConcepts: ocrResult?.legalConcepts || [],
             citations: ocrResult?.citations || [],
             ocrConfidence: ocrResult?.averageConfidence,
-          }
+          };
           break;
         case 'IMAGE':
           metadata = {
@@ -182,7 +182,7 @@ export const actions: Actions = {
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
             ocrConfidence: ocrResult?.averageConfidence,
-          }
+          };
           break;
         case 'VIDEO':
           metadata = {
@@ -193,7 +193,7 @@ export const actions: Actions = {
             frameRate: 0,
             fileSize: file.size,
             uploadedAt: new Date().toISOString(),
-          }
+          };
           break;
         case 'AUDIO':
           metadata = {
@@ -204,7 +204,7 @@ export const actions: Actions = {
             channels: 2,
             fileSize: file.size,
             uploadedAt: new Date().toISOString(),
-          }
+          };
           break;
         case 'TEXT':
           // For text files, we can read the content
@@ -216,14 +216,14 @@ export const actions: Actions = {
             language: 'unknown', // Could detect with a language detection library,
             fileSize: file.size,
             uploadedAt: new Date().toISOString(),
-          }
+          };
           break;
         default:
           metadata = {
             kind: 'UNKNOWN',
             fileSize: file.size,
             uploadedAt: new Date().toISOString(),
-          }
+          };
       }
       // Insert evidence record into database with unified schema
       const evidenceRecord = await db
@@ -292,7 +292,7 @@ export const actions: Actions = {
                 analysis: goResult.analysis,
                 processedAt: new Date().toISOString(),
               },
-            }
+            };
           }
         } else {
           console.warn('⚠️ Go upload service processing failed:', goServiceResponse.statusText);
@@ -315,4 +315,4 @@ export const actions: Actions = {
     // Redirect to evidence list or case details
     throw redirect(302, `/cases/${form.data.case_id}/evidence`);
   },
-}
+};

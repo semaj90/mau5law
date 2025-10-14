@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 interface NarrativeSection {
   id: string;
@@ -57,17 +57,17 @@ interface CaseNarrative {
 }
 
 interface NarrativeRequest {
-  narrativeType?: CaseNarrative['narrativeType']
-  sections?: string[]
-  tone?: NarrativeSection['metadata']['tone']
-  audience?: NarrativeSection['metadata']['audience']
-  includeEvidence?: boolean
-  includeTimeline?: boolean
-  includeWitnesses?: boolean
-  aiAssistance?: boolean
-  template?: string
-  maxWordCount?: number
-  focusAreas?: string[]
+  narrativeType?: CaseNarrative['narrativeType'];
+  sections?: string[];
+  tone?: NarrativeSection['metadata']['tone'];
+  audience?: NarrativeSection['metadata']['audience'];
+  includeEvidence?: boolean;
+  includeTimeline?: boolean;
+  includeWitnesses?: boolean;
+  aiAssistance?: boolean;
+  template?: string;
+  maxWordCount?: number;
+  focusAreas?: string[];
 }
 
 interface AIWritingAssistance {
@@ -84,39 +84,39 @@ interface AIWritingAssistance {
 
 export const GET: RequestHandler = async ({ params, url }) => {
   try {
-    const caseId = params.caseId
+    const caseId = params.caseId;
     if (!caseId) {
       return json({ success: false, error: 'Case ID required' }, { status: 400 });
     }
-    const narrativeId = url.searchParams.get('narrativeId')
-    const includeAI = url.searchParams.get('includeAI') === 'true'
-    const includeRevisions = url.searchParams.get('includeRevisions') === 'true'
+    const narrativeId = url.searchParams.get('narrativeId');
+    const includeAI = url.searchParams.get('includeAI') === 'true';
+    const includeRevisions = url.searchParams.get('includeRevisions') === 'true';
     if (narrativeId) {
       // Get specific narrative
-      const narrative = await getCaseNarrative(caseId, narrativeId, includeRevisions)
+      const narrative = await getCaseNarrative(caseId, narrativeId, includeRevisions);
       let aiAssistance: AIWritingAssistance | null = null;
       if (includeAI && narrative) {
-        aiAssistance = await generateAIWritingAssistance(narrative)
+        aiAssistance = await generateAIWritingAssistance(narrative);
       }
       return json({
         success: true,
         narrative,
-        aiAssistance
-      })
+        aiAssistance,
+      });
     } else {
       // Get all narratives for case
-      const narratives = await getAllCaseNarratives(caseId)
+      const narratives = await getAllCaseNarratives(caseId);
       return json({
         success: true,
         narratives,
-        totalCount: narratives.length
-      })
+        totalCount: narratives.length,
+      });
     }
   } catch (error) {
-    console.error('Narrative API error:', error)
+    console.error('Narrative API error:', error);
     return json({ success: false, error: 'Failed to retrieve narrative data' }, { status: 500 });
   }
-}
+};
 
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
@@ -146,19 +146,19 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   try {
-    const caseId = params.caseId
-    const updates = await request.json()
+    const caseId = params.caseId;
+    const updates = await request.json();
     if (!caseId) {
       return json({ success: false, error: 'Case ID required' }, { status: 400 });
     }
-    const narrativeId = updates.narrativeId
+    const narrativeId = updates.narrativeId;
     if (!narrativeId) {
       return json({ success: false, error: 'Narrative ID required for updates' }, { status: 400 });
     }
     // Update narrative
-    const updatedNarrative = await updateCaseNarrative(caseId, narrativeId, updates)
+    const updatedNarrative = await updateCaseNarrative(caseId, narrativeId, updates);
     // Generate fresh AI assistance
-    const aiAssistance = await generateAIWritingAssistance(updatedNarrative)
+    const aiAssistance = await generateAIWritingAssistance(updatedNarrative);
     return json({
       success: true,
       narrative: updatedNarrative,
@@ -166,16 +166,20 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       message: 'Narrative updated successfully',
     });
   } catch (error) {
-    console.error('Narrative update error:', error)
+    console.error('Narrative update error:', error);
     return json({ success: false, error: 'Failed to update narrative' }, { status: 500 });
   }
-}
+};
 
 // Helper implementations (mocked for now)
-async function getCaseNarrative(caseId: string, narrativeId: string, includeRevisions: boolean = false): Promise<CaseNarrative | null> {
+async function getCaseNarrative(
+  caseId: string,
+  narrativeId: string,
+  includeRevisions: boolean = false
+): Promise<CaseNarrative | null> {
   // In production, query database
   // For now, generate mock narrative
-  return generateMockNarrative(caseId, narrativeId, includeRevisions)
+  return generateMockNarrative(caseId, narrativeId, includeRevisions);
 }
 
 async function getAllCaseNarratives(caseId: string): Promise<CaseNarrative[]> {
@@ -183,8 +187,8 @@ async function getAllCaseNarratives(caseId: string): Promise<CaseNarrative[]> {
   return [
     generateMockNarrative(caseId, 'NARRATIVE-001', false),
     generateMockNarrative(caseId, 'NARRATIVE-002', false),
-    generateMockNarrative(caseId, 'NARRATIVE-003', false)
-  ].filter(Boolean) as CaseNarrative[]
+    generateMockNarrative(caseId, 'NARRATIVE-003', false),
+  ].filter(Boolean) as CaseNarrative[];
 }
 
 async function generateCaseNarrative(caseId: string, request: NarrativeRequest): Promise<CaseNarrative> {
@@ -316,7 +320,7 @@ async function updateCaseNarrative(caseId: string, narrativeId: string, updates:
   // Mock update implementation
   const existing = (await getCaseNarrative(caseId, narrativeId)) || generateMockNarrative(caseId, narrativeId);
   if (!existing) {
-    throw new Error('Narrative not found')
+    throw new Error('Narrative not found');
   }
   // Apply updates
   const updatedNarrative: CaseNarrative = {
@@ -341,11 +345,11 @@ async function updateCaseNarrative(caseId: string, narrativeId: string, updates:
       : existing.sections,
   };
   // Recalculate metrics
-  updatedNarrative.totalWordCount = updatedNarrative.sections.reduce((sum, section) => sum + section.wordCount, 0)
-  updatedNarrative.estimatedReadingTime = Math.ceil(updatedNarrative.totalWordCount / 250)
+  updatedNarrative.totalWordCount = updatedNarrative.sections.reduce((sum, section) => sum + section.wordCount, 0);
+  updatedNarrative.estimatedReadingTime = Math.ceil(updatedNarrative.totalWordCount / 250);
   updatedNarrative.overallConfidence =
     updatedNarrative.sections.reduce((sum, section) => sum + section.confidence, 0) / updatedNarrative.sections.length;
-  return updatedNarrative
+  return updatedNarrative;
 }
 
 async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AIWritingAssistance> {
@@ -497,9 +501,9 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
     'MOTION',
     'INVESTIGATION_REPORT',
   ];
-  const selectedType = narrativeTypes[Math.floor(Math.random() * narrativeTypes.length)]
-  const sections = generateMockSections(selectedType, includeRevisions)
-  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0)
+  const selectedType = narrativeTypes[Math.floor(Math.random() * narrativeTypes.length)];
+  const sections = generateMockSections(selectedType, includeRevisions);
+  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0);
   return {
     id: narrativeId,
     caseId,
@@ -637,8 +641,16 @@ function generateNarrativeContent(sectionType: NarrativeSection['sectionType'], 
 }
 
 function generateMockSources(): string[] {
-  const sources = ['Police Report', 'Witness Statement', 'Expert Analysis', 'Forensic Report', 'Case Law', 'Medical Records', 'Financial Documents']
-  return sources.slice(0, Math.floor(Math.random() * 3) + 1)
+  const sources = [
+    'Police Report',
+    'Witness Statement',
+    'Expert Analysis',
+    'Forensic Report',
+    'Case Law',
+    'Medical Records',
+    'Financial Documents',
+  ];
+  return sources.slice(0, Math.floor(Math.random() * 3) + 1);
 }
 
 function generateMockTags(sectionType: string): string[] {
@@ -657,8 +669,8 @@ function generateMockLegalReferences(): string[] {
     'Federal Rules of Evidence 401',
     'State v. Johnson, 567 U.S. 123 (2023)',
     'Criminal Procedure Code Section 45',
-    'Constitutional Amendment IV'
-  ].slice(0, Math.floor(Math.random() * 2) + 1)
+    'Constitutional Amendment IV',
+  ].slice(0, Math.floor(Math.random() * 2) + 1);
 }
 
 function generateMockEvidenceReferences(): string[] {
@@ -674,15 +686,15 @@ function generateMockSuggestions(): NarrativeSection['suggestions'] {
       type: 'IMPROVEMENT',
       text: 'Consider strengthening this argument with additional case law',
       rationale: 'More legal precedent would enhance persuasiveness',
-      priority: 'MEDIUM'
+      priority: 'MEDIUM',
     },
     {
       type: 'CITATION',
       text: 'Add citation to support factual claim',
       rationale: 'Unsupported claims reduce credibility',
-      priority: 'HIGH'
-    }
-  ].slice(0, Math.floor(Math.random() * 2) + 1)
+      priority: 'HIGH',
+    },
+  ].slice(0, Math.floor(Math.random() * 2) + 1);
 }
 
 function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
@@ -692,21 +704,21 @@ function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
       author: 'AI Assistant',
       changes: 'Initial creation',
       reason: 'Section generation',
-      version: 1
+      version: 1,
     },
     {
       timestamp: new Date(Date.now() - 43200000).toISOString(),
       author: 'Attorney Smith',
       changes: 'Added legal citations and refined argument structure',
       reason: 'Legal review and enhancement',
-      version: 2
+      version: 2,
     },
     {
       timestamp: new Date().toISOString(),
       author: 'Senior Partner',
       changes: 'Final review and approval',
       reason: 'Quality control',
-      version: 3
-    }
-  ]
+      version: 3,
+    },
+  ];
 }

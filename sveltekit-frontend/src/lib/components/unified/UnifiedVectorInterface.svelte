@@ -198,7 +198,7 @@
           bind:value={selectedOperation}
           class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm"
         >
-        >
+          >
           <option value="analyze">Analyze - Complete AI analysis pipeline</option>
           <option value="search">Search - Hybrid vector + semantic search</option>
           <option value="recommend">Recommend - SOM-based recommendations</option>
@@ -321,12 +321,12 @@
           {#if $results.metadata.performance && Object.keys($results.metadata.performance).length > 0}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">PERFORMANCE</div>
-                {#each Object.entries($results.metadata.performance) as [component, time]}
-                  <div class="flex justify-between">
-                    <span>{component}</span>
-                    <span>{time}ms</span>
-                  </div>
-                {/each}
+              {#each Object.entries($results.metadata.performance) as [component, time]}
+                <div class="flex justify-between">
+                  <span>{component}</span>
+                  <span>{time}ms</span>
+                </div>
+              {/each}
             </div>
           {/if}
           <!-- Results Data -->
@@ -340,9 +340,7 @@
                       {(result as any).metadata?.title || (result as any).id}
                     </div>
                     <div class="text-green-500">
-                      Score: {((result as any).score * 100).toFixed(
-                        1,
-                      )}%
+                      Score: {((result as any).score * 100).toFixed(1)}%
                     </div>
                   </div>
                 {/each}

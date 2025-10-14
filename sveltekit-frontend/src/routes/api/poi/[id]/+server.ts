@@ -15,23 +15,27 @@ const updatePoiSchema = z.object({
   status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).optional(),
-  physicalDescription: z.object({
-    height: z.string().optional(),
-    weight: z.string().optional(),
-    hair: z.string().optional(),
-    eyes: z.string().optional(),
-    distinguishingMarks: z.string().optional()
-  }).optional(),
-  profileData: z.object({
-    modusOperandi: z.string().optional(),
-    knownHabits: z.array(z.string()).optional(),
-    associates: z.array(z.string()).optional()
-  }).optional(),
+  physicalDescription: z
+    .object({
+      height: z.string().optional(),
+      weight: z.string().optional(),
+      hair: z.string().optional(),
+      eyes: z.string().optional(),
+      distinguishingMarks: z.string().optional(),
+    })
+    .optional(),
+  profileData: z
+    .object({
+      modusOperandi: z.string().optional(),
+      knownHabits: z.array(z.string()).optional(),
+      associates: z.array(z.string()).optional(),
+    })
+    .optional(),
   lastKnownLocation: z.string().optional(),
   lastSeen: z.string().optional(),
   dangerLevel: z.number().min(0).max(10).optional(),
   notes: z.string().optional(),
-  isActive: z.boolean().optional()
+  isActive: z.boolean().optional(),
 });
 
 // GET /api/poi/[id] - Get specific POI with case relationships
@@ -45,10 +49,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const poiId = params.id;
 
     // Get POI details
-    const [poi] = await db
-      .select()
-      .from(personsOfInterest)
-      .where(eq(personsOfInterest.id, poiId));
+    const [poi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId));
 
     if (!poi) {
       return json({ error: 'POI not found' }, { status: 404 });
@@ -58,21 +59,18 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const caseRelations = await db
       .select({
         relation: casePoiRelations,
-        case: cases
+        case: cases,
       })
       .from(casePoiRelations)
       .innerJoin(cases, eq(casePoiRelations.caseId, cases.id))
-      .where(and(
-        eq(casePoiRelations.poiId, poiId),
-        eq(casePoiRelations.isActive, true)
-      ));
+      .where(and(eq(casePoiRelations.poiId, poiId), eq(casePoiRelations.isActive, true)));
 
     return json({
       success: true,
       data: {
         ...poi,
-        caseRelations
-      }
+        caseRelations,
+      },
     });
   } catch (error) {
     console.error('Error fetching POI:', error);
@@ -93,10 +91,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const validatedData = updatePoiSchema.parse(body);
 
     // Check if POI exists
-    const [existingPoi] = await db
-      .select()
-      .from(personsOfInterest)
-      .where(eq(personsOfInterest.id, poiId));
+    const [existingPoi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId));
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
@@ -120,7 +115,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     return json({
       success: true,
-      data: updatedPoi
+      data: updatedPoi,
     });
   } catch (error) {
     console.error('Error updating POI:', error);
@@ -142,10 +137,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const poiId = params.id;
 
     // Check if POI exists
-    const [existingPoi] = await db
-      .select()
-      .from(personsOfInterest)
-      .where(eq(personsOfInterest.id, poiId));
+    const [existingPoi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId));
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
@@ -154,15 +146,15 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Soft delete by setting isActive to false
     await db
       .update(personsOfInterest)
-      .set({ 
+      .set({
         isActive: false,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(personsOfInterest.id, poiId));
 
     return json({
       success: true,
-      message: 'POI deleted successfully'
+      message: 'POI deleted successfully',
     });
   } catch (error) {
     console.error('Error deleting POI:', error);

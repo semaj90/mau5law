@@ -31,8 +31,8 @@ export const GET: RequestHandler = async ({ url }) => {
         ])
         return json({
           success: true,
-          health: healthStatus
-          stats: databaseStats
+          health: healthStatus,
+          stats: databaseStats,
           ready: Object.values(healthStatus).every(Boolean),
           timestamp: new Date().toISOString()
         })
@@ -71,8 +71,8 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Database is already set up. Use force: true to reinitialize.',
           health,
-          alreadySetup: true
-          timestamp: new Date().toISOString()
+          alreadySetup: true,
+          timestamp: new Date().toISOString(),
         })
       }
     }

@@ -99,11 +99,14 @@ export class DetectiveAnalysisEngine {
   /**
    * Analyze evidence item with complete pipeline
    */
-  async analyzeEvidence(evidenceData: Blob | File | string, metadata: {
-    type: EvidenceItem['type'];
-    caseId?: string;
-    userId: string;
-  }): Promise<EvidenceItem> {
+  async analyzeEvidence(
+    evidenceData: Blob | File | string,
+    metadata: {
+      type: EvidenceItem['type'];
+      caseId?: string;
+      userId: string;
+    }
+  ): Promise<EvidenceItem> {
     const startTime = performance.now();
     const evidenceId = `evidence_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     console.log(`🔍 Starting evidence analysis: ${evidenceId}`);
@@ -118,33 +121,26 @@ export class DetectiveAnalysisEngine {
       // 3. Extract text using OCR with handwriting detection (enhanced with tiling if available)
       const ocrResults = await this.performAdvancedOCR(enhanced || evidenceData, tilingResults);
       // 4. Generate multi-dimensional embeddings (with tile-aware processing)
-      const embeddings = await this.generateMultiDimensionalEmbeddings(
-        ocrResults.text,
-        evidenceData,
-        tilingResults
-      );
+      const embeddings = await this.generateMultiDimensionalEmbeddings(ocrResults.text, evidenceData, tilingResults);
       // 5. Pattern matching and analysis (enhanced with SIMD processing)
-      const analysis = await this.performDetectiveAnalysis(
-        ocrResults,
-        embeddings,
-        metadata,
-        tilingResults
-      );
+      const analysis = await this.performDetectiveAnalysis(ocrResults, embeddings, metadata, tilingResults);
       // 6. Cache in NES memory architecture
       await this.cacheInNESMemory(evidenceId, {
         ocrResults,
         embeddings,
-        analysis
+        analysis,
       });
       const processingTime = performance.now() - startTime;
       const evidence: EvidenceItem = {
         id: evidenceId,
         type: metadata.type,
         originalData: evidenceData,
-        enhancedData: enhanced ? {
-          upscaled: enhanced,
-          confidence: 0.85
-        } : undefined,
+        enhancedData: enhanced
+          ? {
+              upscaled: enhanced,
+              confidence: 0.85,
+            }
+          : undefined,
         ocrResults,
         embeddings,
         analysis,
@@ -153,8 +149,8 @@ export class DetectiveAnalysisEngine {
           caseId: metadata.caseId,
           userId: metadata.userId,
           processingTime,
-          memoryFootprint: this.estimateMemoryFootprint(evidenceData, embeddings)
-        }
+          memoryFootprint: this.estimateMemoryFootprint(evidenceData, embeddings),
+        },
       };
       console.log(`✅ Evidence analysis complete: ${processingTime.toFixed(2)}ms`);
       return evidence;
@@ -166,18 +162,14 @@ export class DetectiveAnalysisEngine {
   /**
    * Enhance evidence using WebAssembly ImageMagick-style processing
    */
-  private async enhanceEvidence(
-    data: Blob | File | string,
-    type: EvidenceItem['type']
-  ): Promise<Blob | null> {
+  private async enhanceEvidence(data: Blob | File | string, type: EvidenceItem['type']): Promise<Blob | null> {
     if (type !== 'screenshot' && type !== 'image') {
       return null;
     }
     try {
       console.log('🖼️ Enhancing evidence with WASM processing...');
       // Convert to image data
-      const imageBlob = typeof data === 'string' ?
-        await this.screenshotElement(data) : data;
+      const imageBlob = typeof data === 'string' ? await this.screenshotElement(data) : data;
       if (!imageBlob) return null;
       // Create canvas for processing
       const canvas = document.createElement('canvas');
@@ -223,7 +215,7 @@ export class DetectiveAnalysisEngine {
       const sourceTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING,
       });
       // Upload canvas data to GPU
       const ctx = canvas.getContext('2d')!;
@@ -238,7 +230,7 @@ export class DetectiveAnalysisEngine {
       const outputTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
       });
       // Execute enhancement shader
       const commandEncoder = this.webGPUDevice.createCommandEncoder();
@@ -248,14 +240,11 @@ export class DetectiveAnalysisEngine {
         layout: enhancementShader.bindGroupLayout!,
         entries: [
           { binding: 0, resource: sourceTexture.createView() },
-          { binding: 1, resource: outputTexture.createView() }
-        ]
+          { binding: 1, resource: outputTexture.createView() },
+        ],
       });
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(
-        Math.ceil(canvas.width / 8),
-        Math.ceil(canvas.height / 8)
-      );
+      computePass.dispatchWorkgroups(Math.ceil(canvas.width / 8), Math.ceil(canvas.height / 8));
       computePass.end();
       // Copy result back to canvas
       const outputCanvas = document.createElement('canvas');
@@ -319,11 +308,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Perform SIMD GPU Tiling for large evidence images
    */
-  private async performSIMDGPUTiling(
-    evidenceData: Blob,
-    evidenceId: string,
-    evidenceType: string
-  ): Promise<any> {
+  private async performSIMDGPUTiling(evidenceData: Blob, evidenceId: string, evidenceType: string): Promise<any> {
     try {
       console.log(`🎯 Starting SIMD GPU tiling for evidence: ${evidenceId}`);
       // Convert blob to image data
@@ -359,7 +344,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           evidenceType: evidenceType as any,
           enableCompression: true,
           priority: 'high',
-          generateEmbeddings: true
+          generateEmbeddings: true,
         }
       );
       // Log performance metrics
@@ -371,7 +356,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         gpuTime: tilingResults.simdMetrics.totalGPUTime.toFixed(2) + 'ms',
         throughput: tilingResults.simdMetrics.throughputMBps.toFixed(2) + ' MB/s',
         compression: tilingResults.tensorCompressionRatio.toFixed(2) + 'x',
-        memoryUsage: tilingResults.memoryUsage
+        memoryUsage: tilingResults.memoryUsage,
       });
       // Store tiling metadata for use in other analysis steps
       await cache.set(
@@ -389,8 +374,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
               id: chunk.id,
               position: { x: chunk.tileX, y: chunk.tileY },
               confidence: chunk.metadata.confidence,
-              evidenceType: chunk.metadata.evidenceType
-            }))
+              evidenceType: chunk.metadata.evidenceType,
+            })),
         }),
         3600 // 1 hour TTL
       );
@@ -423,14 +408,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           text: enhancedText.text || ocrResult.text,
           confidence: enhancedText.confidence || ocrResult.confidence || 0,
           boundingBoxes: enhancedText.boundingBoxes || [],
-          handwritingDetected: true
+          handwritingDetected: true,
         };
       }
       return {
         text: ocrResult.text,
         confidence: ocrResult.confidence || 0,
         boundingBoxes: [], // Would be populated by actual OCR engine
-        handwritingDetected: false
+        handwritingDetected: false,
       };
     } catch (error) {
       console.error('Advanced OCR failed:', error);
@@ -438,7 +423,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         text: '',
         confidence: 0,
         boundingBoxes: [],
-        handwritingDetected: false
+        handwritingDetected: false,
       };
     }
   }
@@ -452,7 +437,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       const cacheKey = `handwriting_${await this.generateDataHash(data)}`;
       const cached = await cache.get(cacheKey);
       if (cached && (cached as any).detected !== undefined) {
-        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number; }[]; };
+        return cached as {
+          detected: boolean;
+          confidence: number;
+          regions: { x: number; y: number; width: number; height: number }[];
+        };
       }
       // Perform analysis (mock implementation)
       const result = {
@@ -460,8 +449,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         confidence: 0.6 + Math.random() * 0.3,
         regions: [
           { x: 10, y: 20, width: 200, height: 50 },
-          { x: 50, y: 100, width: 150, height: 40 }
-        ]
+          { x: 50, y: 100, width: 150, height: 40 },
+        ],
       };
       // Cache result
       await cache.set(cacheKey, result, 60 * 60 * 1000); // 1 hour
@@ -477,15 +466,15 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   private async processHandwriting(data: Blob | File | string): Promise<any> {
     // Mock handwriting processing - would integrate with specialized ML models
     return {
-      text: "Handwritten note detected: Meeting at 3pm tomorrow",
+      text: 'Handwritten note detected: Meeting at 3pm tomorrow',
       confidence: 0.75,
       boundingBoxes: [
         {
-          text: "Meeting at 3pm tomorrow",
+          text: 'Meeting at 3pm tomorrow',
           bbox: { x: 10, y: 20, width: 200, height: 30 },
-          confidence: 0.75
-        }
-      ]
+          confidence: 0.75,
+        },
+      ],
     };
   }
   /**
@@ -512,8 +501,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             body: JSON.stringify({
               text,
               model: 'nomic-text',
-              source: 'evidence_analysis'
-            })
+              source: 'evidence_analysis',
+            }),
           });
           if (response.ok) {
             const data = await response.json();
@@ -571,7 +560,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         emails: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2}\b/g,
         addresses: /\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct)\b/gi,
         amounts: /\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g,
-        legal_terms: /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi
+        legal_terms:
+          /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi,
       };
       for (const [patternName, regex] of Object.entries(patterns)) {
         const matches = text.match(regex);
@@ -584,12 +574,12 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       if (tilingResults && tilingResults.chunks) {
         console.log(`🎯 Enhancing analysis with ${tilingResults.chunks.length} GPU tiles`);
         // Analyze high-confidence tiles for additional patterns
-        const highConfidenceTiles = tilingResults.chunks.filter(
-          (chunk: any) => chunk.metadata.confidence > 0.8
-        );
+        const highConfidenceTiles = tilingResults.chunks.filter((chunk: any) => chunk.metadata.confidence > 0.8);
         if (highConfidenceTiles.length > 0) {
           detectedPatterns.push(`GPU Analysis: ${highConfidenceTiles.length} high-confidence regions detected`);
-          contextualClues.push(`SIMD Processing: ${tilingResults.simdMetrics.throughputMBps.toFixed(2)} MB/s throughput`);
+          contextualClues.push(
+            `SIMD Processing: ${tilingResults.simdMetrics.throughputMBps.toFixed(2)} MB/s throughput`
+          );
           // Check for SIMD-detected handwriting regions
           const handwritingTiles = highConfidenceTiles.filter(
             (chunk: any) => chunk.metadata.evidenceType === 'handwriting'
@@ -604,7 +594,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
           return acc;
         }, {});
-        contextualClues.push(`NES Memory: ${Object.entries(memoryRegions).map(([region, count]) => `${region}:${count}`).join(', ')}`);
+        contextualClues.push(
+          `NES Memory: ${Object.entries(memoryRegions)
+            .map(([region, count]) => `${region}:${count}`)
+            .join(', ')}`
+        );
         // Tensor compression analysis for quality assessment
         if (tilingResults.tensorCompressionRatio < 0.5) {
           conflictIndicators.push('High tensor compression may indicate data quality issues');
@@ -618,10 +612,16 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       const legalTermCount = (text.match(patterns.legal_terms) || []).length;
       let legalRelevance: 'high' | 'medium' | 'low' = 'low';
       // Factor in SIMD tiling confidence
-      const tilingConfidenceBonus = tilingResults?.chunks?.length > 0
-        ? Math.max(0, tilingResults.chunks.reduce((sum: number, chunk: any) => sum + chunk.metadata.confidence, 0) / tilingResults.chunks.length - 0.5)
-        : 0;
-      const adjustedLegalScore = legalTermCount + (tilingConfidenceBonus * 10);
+      const tilingConfidenceBonus =
+        tilingResults?.chunks?.length > 0
+          ? Math.max(
+              0,
+              tilingResults.chunks.reduce((sum: number, chunk: any) => sum + chunk.metadata.confidence, 0) /
+                tilingResults.chunks.length -
+                0.5
+            )
+          : 0;
+      const adjustedLegalScore = legalTermCount + tilingConfidenceBonus * 10;
       if (adjustedLegalScore > 5) legalRelevance = 'high';
       else if (adjustedLegalScore > 2) legalRelevance = 'medium';
       // Conflict detection using semantic analysis
@@ -638,7 +638,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         legalRelevance,
         conflictIndicators,
         contextualClues,
-        suggestedActions
+        suggestedActions,
       };
     } catch (error) {
       console.error('Detective analysis failed:', error);
@@ -647,7 +647,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         legalRelevance: 'low',
         conflictIndicators: [],
         contextualClues: [],
-        suggestedActions: []
+        suggestedActions: [],
       };
     }
   }
@@ -663,14 +663,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     try {
       // Check reinforcement learning cache for similar patterns
       const rlCacheKey = `rl_conflicts:${caseId}`;
-      let existingPatterns = this.reinforcementCache.get(rlCacheKey) || [];
+      const existingPatterns = this.reinforcementCache.get(rlCacheKey) || [];
       const conflicts: ConflictAnalysis[] = [];
       // Compare with existing evidence patterns
       for (const pattern of existingPatterns) {
-        const similarity = await this.calculateSimilarity(
-          embeddings.semanticEmbedding,
-          pattern.embedding
-        );
+        const similarity = await this.calculateSimilarity(embeddings.semanticEmbedding, pattern.embedding);
         if (similarity > 0.8 && this.hasConflictingInfo(text, pattern.text)) {
           const llmResponse = await this.generateLLMConflictAnalysis(text, pattern.text);
           conflicts.push({
@@ -681,7 +678,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             affectedEvidence: [pattern.evidenceId],
             suggestedResolution: 'Review both evidence items for accuracy',
             confidence: similarity,
-            llmResponse
+            llmResponse,
           });
         }
       }
@@ -690,7 +687,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         text,
         embedding: embeddings.semanticEmbedding,
         evidenceId: `evidence_${Date.now()}`,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
       this.reinforcementCache.set(rlCacheKey, existingPatterns);
       return conflicts;
@@ -719,9 +716,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       const patternSuggestions = await this.getPatternSuggestions(query);
       suggestions.push(...patternSuggestions);
       // Sort by score and return top suggestions
-      return suggestions
-        .sort((a, b) => b.score - a.score)
-        .slice(0, maxSuggestions);
+      return suggestions.sort((a, b) => b.score - a.score).slice(0, maxSuggestions);
     } catch (error) {
       console.error('Search suggestion generation failed:', error);
       return [];
@@ -781,12 +776,12 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const arrayBuffer = await data.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+    return hashArray
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')
+      .slice(0, 16);
   }
-  private estimateMemoryFootprint(
-    data: Blob | File | string,
-    embeddings: EvidenceItem['embeddings']
-  ): number {
+  private estimateMemoryFootprint(data: Blob | File | string, embeddings: EvidenceItem['embeddings']): number {
     let size = 0;
     if (typeof data === 'string') {
       size += data.length * 2;
@@ -803,10 +798,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const cacheKey = `nes_evidence:CHR_ROM:${evidenceId}`;
     await cache.set(cacheKey, data, 24 * 60 * 60 * 1000); // 24 hours
   }
-  private async calculateSimilarity(
-    embedding1?: Float32Array,
-    embedding2?: Float32Array
-  ): Promise<number> {
+  private async calculateSimilarity(embedding1?: Float32Array, embedding2?: Float32Array): Promise<number> {
     if (!embedding1 || !embedding2) return 0;
     let dotProduct = 0;
     let norm1 = 0;
@@ -825,7 +817,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       ['yes', 'no'],
       ['true', 'false'],
       ['guilty', 'innocent'],
-      ['present', 'absent']
+      ['present', 'absent'],
     ];
     for (const [word1, word2] of conflicts) {
       if (text1.includes(word1) && text2.includes(word2)) {
@@ -843,15 +835,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         'Verify the accuracy of both evidence sources',
         'Check timestamps for temporal context',
         'Interview relevant witnesses',
-        'Review supporting documentation'
-      ]
+        'Review supporting documentation',
+      ],
     };
   }
-  private generateSuggestedActions(
-    patterns: string[],
-    relevance: string,
-    hasHandwriting: boolean
-  ): string[] {
+  private generateSuggestedActions(patterns: string[], relevance: string, hasHandwriting: boolean): string[] {
     const actions: string[] = [];
     if (patterns.some(p => p.includes('dates'))) {
       actions.push('Verify timeline accuracy');
@@ -874,8 +862,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: query + 's',
         score: 0.9,
         type: 'spelling',
-        explanation: 'Plural form'
-      }
+        explanation: 'Plural form',
+      },
     ];
   }
   private async getSemanticSimilarities(query: string): Promise<SearchSuggestion[]> {
@@ -885,8 +873,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'related term',
         score: 0.8,
         type: 'semantic',
-        explanation: 'Semantically related'
-      }
+        explanation: 'Semantically related',
+      },
     ];
   }
   private async getContextualSuggestions(query: string): Promise<SearchSuggestion[]> {
@@ -896,8 +884,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'contextual match',
         score: 0.7,
         type: 'contextual',
-        explanation: 'Related to current case context'
-      }
+        explanation: 'Related to current case context',
+      },
     ];
   }
   private async getPatternSuggestions(query: string): Promise<SearchSuggestion[]> {
@@ -907,8 +895,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'pattern match',
         score: 0.6,
         type: 'pattern',
-        explanation: 'Similar pattern detected'
-      }
+        explanation: 'Similar pattern detected',
+      },
     ];
   }
 }

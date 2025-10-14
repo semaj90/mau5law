@@ -35,8 +35,8 @@
           query: query.trim(),
           type: searchType,
           threshold,
-          limit
-        })
+          limit,
+        }),
       });
 
       const data = await response.json();
@@ -110,35 +110,18 @@
 
           <div class="option-group">
             <label>Similarity Threshold:</label>
-            <input
-              type="range"
-              bind:value={threshold}
-              min="0.1"
-              max="1.0"
-              step="0.1"
-              class="threshold-slider"
-            />
+            <input type="range" bind:value={threshold} min="0.1" max="1.0" step="0.1" class="threshold-slider" />
             <span class="threshold-value">{threshold}</span>
           </div>
 
           <div class="option-group">
             <label>Results Limit:</label>
-            <input
-              type="number"
-              bind:value={limit}
-              min="1"
-              max="50"
-              class="limit-input"
-            />
+            <input type="number" bind:value={limit} min="1" max="50" class="limit-input" />
           </div>
         </div>
 
         <div class="search-actions">
-          <Button
-            onclick={performVectorSearch}
-            disabled={!query.trim() || loading}
-            class="search-button"
-          >
+          <Button onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
             {#if loading}
               🔄 Searching...
             {:else}
@@ -205,18 +188,12 @@
                 </div>
                 <div class="result-actions">
                   {#if result.caseId}
-                    <Button size="sm" href="/cases/{result.caseId}">
-                      📁 View Case
-                    </Button>
+                    <Button size="sm" href="/cases/{result.caseId}">📁 View Case</Button>
                   {/if}
                   {#if result.evidenceId}
-                    <Button size="sm" href="/evidence/{result.evidenceId}">
-                      🔍 View Evidence
-                    </Button>
+                    <Button size="sm" href="/evidence/{result.evidenceId}">🔍 View Evidence</Button>
                   {/if}
-                  <Button size="sm" class="analyze-button">
-                    🧠 AI Analysis
-                  </Button>
+                  <Button size="sm" class="analyze-button">🧠 AI Analysis</Button>
                 </div>
               </div>
             </CardContent>
@@ -264,7 +241,8 @@
     text-shadow: 0 0 15px currentColor;
   }
 
-  .search-card, .tips-card {
+  .search-card,
+  .tips-card {
     margin-bottom: 2rem;
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ccff);
@@ -307,7 +285,8 @@
     font-size: 0.9rem;
   }
 
-  .search-type-select, .limit-input {
+  .search-type-select,
+  .limit-input {
     background: var(--surface-primary, #0a0a0a);
     border: 1px solid rgba(0, 204, 255, 0.3);
     border-radius: 4px;
@@ -329,7 +308,8 @@
     text-align: center;
   }
 
-  .loading-state, .empty-state {
+  .loading-state,
+  .empty-state {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--text-secondary, #888888);
@@ -346,8 +326,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   .results-section {

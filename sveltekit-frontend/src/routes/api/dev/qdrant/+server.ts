@@ -11,10 +11,10 @@ const COLLECTION = 'legal_evidence';
 export const GET: RequestHandler = async ({ url }) => {
   if (!dev) return json({ success: false, error: 'Dev endpoint only' }, { status: 403 });
   try {
-  const limit = Number(url.searchParams.get('limit') || '5');
-  const page = Math.max(1, Number(url.searchParams.get('page') || '1'));
-  const caseId = url.searchParams.get('caseId') || null;
-  const tag = url.searchParams.get('tag') || null;
+    const limit = Number(url.searchParams.get('limit') || '5');
+    const page = Math.max(1, Number(url.searchParams.get('page') || '1'));
+    const caseId = url.searchParams.get('caseId') || null;
+    const tag = url.searchParams.get('tag') || null;
     // optional base64-encoded embedding in query
     const embB64 = url.searchParams.get('embedding') || null;
     let embedding: number[] | null = null;
@@ -39,7 +39,10 @@ export const GET: RequestHandler = async ({ url }) => {
     let qdrantResult: unknown = null;
     if (QDRANT_URL) {
       try {
-        const qdrantBody: { vector: number[]; limit: number; filter?: { must: Array<Record<string, unknown>> } } = { vector: embedding, limit };
+        const qdrantBody: { vector: number[]; limit: number; filter?: { must: Array<Record<string, unknown>> } } = {
+          vector: embedding,
+          limit,
+        };
         if (caseId || tag) {
           const must: Array<Record<string, unknown>> = [];
           if (caseId) must.push({ key: 'case_id', match: { value: caseId } });
@@ -62,7 +65,10 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const offset = (page - 1) * limit;
       let query = db
-        .select({ id: embeddingTable.id, similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)` })
+        .select({
+          id: embeddingTable.id,
+          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)`,
+        })
         .from(embeddingTable)
         .orderBy(sql`${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector`)
         .limit(limit)

@@ -122,7 +122,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         status: "success",
         timestamp: new Date().toISOString(),
         service: "sveltekit-api-gateway",
-        microservice: health
+        microservice: health,
         config: {
           baseUrl: config.baseUrl,
           timeout: config.timeout,
@@ -231,8 +231,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           query: body.query,
           limit: body.limit || 20,
           filters: body.filters || {},
-          use_rag: true
-          include_context: true
+          use_rag: true,
+          include_context: true,
         }
         const [searchResult, healthStatus] = await Promise.all([
           goClient.searchDocuments(searchRequest),
@@ -256,15 +256,15 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 embedding_model: "nomic-embed-text",
                 llm_model: "gemma3-legal:8b",
                 cuda_enabled: healthStatus.config?.enable_gpu || false,
-                vector_similarity: true
-                semantic_analysis: true
+                vector_similarity: true,
+                semantic_analysis: true,
               }
             }
           },
           metadata: {
             queryProcessingTime: searchResult.processing_time,
             resultsFound: searchResult.total_found,
-            enhancedRAG: true
+            enhancedRAG: true,
             microserviceStatus: healthStatus.status,
             processingMode: healthStatus.config?.enable_gpu
               ? "GPU-Accelerated"
@@ -289,8 +289,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           jurisdiction: body.jurisdiction || "federal",
           metadata: {
             analysis_type: "comprehensive",
-            include_risk_assessment: true
-            include_entity_extraction: true
+            include_risk_assessment: true,
+            include_entity_extraction: true,
             ...body.metadata
           }
         }
@@ -308,8 +308,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               .searchDocuments({
                 query,
                 limit: 5,
-                use_rag: true
-                include_context: true
+                use_rag: true,
+                include_context: true,
               })
               .catch(() => ({ results: [], total_found: 0 })
           )
@@ -318,10 +318,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           status: "success",
           timestamp: new Date().toISOString(),
           result: {
-            document_analysis: processResult
+            document_analysis: processResult,
             related_research: {
-              keyword_searches: relatedSearches
-              total_related_documents: relatedSearches.reduce(
+              keyword_searches: relatedSearches,
+              total_related_documents: relatedSearches.reduce(,
                 (sum, search) => sum + (search.total_found || 0),
                 0
               ),
@@ -402,8 +402,8 @@ function extractCrossReferences(searches: any[]): string[] {
   return Array.from(references)
 }
 function generateRecommendations(
-  processResult: any
-  relatedSearches: any[]
+  processResult: any,
+  relatedSearches: any[],
 ): string[] {
   const recommendations: string[] = []
   // Risk-based recommendations

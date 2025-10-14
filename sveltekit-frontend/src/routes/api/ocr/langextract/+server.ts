@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     try {
       const goReq = {
         operation: 'vectorize',
-        documentId: key
+        documentId: key,
         data: [] as number[],
         options: { timeout: 5000 }
       }

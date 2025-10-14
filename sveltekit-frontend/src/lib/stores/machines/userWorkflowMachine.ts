@@ -82,7 +82,7 @@ export const userWorkflowMachine = createMachine({
   },
   initial: 'idle',
   context: {
-    caseId: undefined
+    caseId: undefined,
     userId: '',
     currentStep: 'idle',
     progress: 0,
@@ -98,9 +98,9 @@ export const userWorkflowMachine = createMachine({
     collaborators: [],
     notifications: [],
     preferences: {
-      autoSave: true
-      notifications: true
-      collaborationMode: 'real-time'
+      autoSave: true,
+      notifications: true,
+      collaborationMode: 'real-time',
     }
   },
   states: {
@@ -304,8 +304,8 @@ export const userWorkflowMachine = createMachine({
                   ...context.workflow,
                   status: 'pending' as const,
                   currentStepIndex: 0,
-                  startedAt: undefined
-                  completedAt: undefined
+                  startedAt: undefined,
+                  completedAt: undefined,
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -344,8 +344,8 @@ export const userWorkflowMachine = createMachine({
                   ...context.workflow,
                   status: 'pending' as const,
                   currentStepIndex: 0,
-                  startedAt: undefined
-                  completedAt: undefined
+                  startedAt: undefined,
+                  completedAt: undefined,
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -394,10 +394,10 @@ export const userWorkflowMachine = createMachine({
         LOGOUT: {
           target: 'idle',
           actions: assign({
-            user: undefined
+            user: undefined,
             userId: '',
-            activeCase: undefined
-            activeEvidence: undefined
+            activeCase: undefined,
+            activeEvidence: undefined,
             workflow: {
               type: 'case_creation' as const,
               status: 'pending' as const,

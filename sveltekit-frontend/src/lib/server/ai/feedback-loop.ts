@@ -56,7 +56,7 @@ class FeedbackLoop {
   }
   /**
    * Record user interaction for learning
-   */;
+   */
   async recordInteraction(interaction: InteractionData): Promise<void> {
     try {
       // Store interaction for later analysis
@@ -79,7 +79,7 @@ class FeedbackLoop {
   }
   /**
    * Process user feedback to improve future responses
-   */;
+   */
   async processFeedback(feedback: FeedbackData): Promise<void> {
     try {
       // Add to processing queue
@@ -114,7 +114,7 @@ class FeedbackLoop {
   }
   /**
    * Get optimized weights for synthesis based on learning
-   */;
+   */
   getOptimizedWeights(query: string, userId: string): Map<string, number> {
     const weights = new Map<string, number>();
     // Base weights
@@ -160,7 +160,7 @@ class FeedbackLoop {
   }
   /**
    * Get personalized recommendations for a user
-   */;
+   */
   async getPersonalizedRecommendations(userId: string): Promise<any> {
     try {
       // Get user's interaction history
@@ -193,7 +193,7 @@ class FeedbackLoop {
   }
   /**
    * Get feedback statistics
-   */;
+   */
   getStats(): unknown {
     const totalFeedback = this.feedbackQueue.length;
     const averageRating = this.calculateAverageRating();
@@ -210,7 +210,7 @@ class FeedbackLoop {
       metrics: {
         queryPatterns: this.learningMetrics.queryPatterns.size,
         sourcePreferences: this.learningMetrics.sourcePreferences.size,
-        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries()
+        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries(),
       }
     }
   }
@@ -312,7 +312,7 @@ class FeedbackLoop {
     }
   }
   private async learnFromImprovement(
-    interaction: InteractionData
+    interaction: InteractionData,
     improvedResponse: string;
   ): Promise<void> {
     // Analyze differences between original and improved response
@@ -409,11 +409,11 @@ class FeedbackLoop {
   }
   private extractQueryFeatures(query: string): unknown {
     const features = {
-      isComplexLegal: false
-      isResearch: false
-      isProcedural: false
-      hasCase: false
-      hasStatute: false
+      isComplexLegal: false,
+      isResearch: false,
+      isProcedural: false,
+      hasCase: false,
+      hasStatute: false,
     }
     const queryLower = query.toLowerCase();
     // Check for complexity indicators
@@ -559,7 +559,7 @@ class FeedbackLoop {
   }
   /**
    * Cleanup on shutdown
-   */;
+   */
   async shutdown(): Promise<void> {
     if (this.processingInterval) {
       clearInterval(this.processingInterval);

@@ -32,8 +32,8 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       } catch (error: any) {
         results.vector = {
-          installed: false
-          error: error.message
+          installed: false,
+          error: error.message,
         }
       }
     }
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
           AND table_name IN ('users', 'cases', 'evidence', 'document_chunks')
         `)
         results.schema = {
-          tables: tables
+          tables: tables,
           tablesCount: tables.length,
           expectedTables: ['users', 'cases', 'evidence', 'document_chunks']
         }
@@ -86,8 +86,8 @@ export const GET: RequestHandler = async ({ url }) => {
         const testCase = {
           title: 'Integration Test Case',
           description: 'Test case for database integration',
-          assigned_attorney: userId
-          status: 'open'
+          assigned_attorney: userId,
+          status: 'open',
         }
         const newCase = await db.insert(cases)
           .values(testCase)
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const caseId = newCase[0]?.id
         // CREATE - Insert test evidence
         const testEvidence = {
-          case_id: caseId
+          case_id: caseId,
           title: 'Integration Test Evidence',
           description: 'Test evidence for database integration',
           evidence_type: 'document'
@@ -105,9 +105,9 @@ export const GET: RequestHandler = async ({ url }) => {
           .returning()
         // READ - Query with joins
         const caseWithDetails = await db.select({
-          case: cases
-          attorney: users
-          evidence: evidence
+          case: cases,
+          attorney: users,
+          evidence: evidence,
         })
           .from(cases)
           .leftJoin(users, eq(cases.assigned_attorney, users.id)
@@ -126,9 +126,9 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           operations: {
             create: {
-              user: newUser[0] || newUser
-              case: newCase[0]
-              evidence: newEvidence[0]
+              user: newUser[0] || newUser,
+              case: newCase[0],
+              evidence: newEvidence[0],
             },
             read: {
               caseWithDetails: caseWithDetails[0]
@@ -181,8 +181,8 @@ export const GET: RequestHandler = async ({ url }) => {
         results.vectorOps = {
           success: true,
           operations: {
-            create: newChunk[0]
-            search: similarChunks
+            create: newChunk[0],
+            search: similarChunks,
           }
         }
       } catch (error: any) {
@@ -238,8 +238,8 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-            user: testUser[0]
-            case: testCase[0]
+            user: testUser[0],
+            case: testCase[0],
           }
         })
       case 'cleanup-test-data':
@@ -253,9 +253,9 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           cleanup: {
-            evidence: deletedEvidence
-            cases: deletedCases
-            users: deletedUsers
+            evidence: deletedEvidence,
+            cases: deletedCases,
+            users: deletedUsers,
           }
         })
       default:

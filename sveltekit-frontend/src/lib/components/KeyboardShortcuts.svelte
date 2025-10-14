@@ -37,7 +37,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       return () => {
         document.removeEventListener('keydown', handleKeyboardShortcut);
         document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      }
+      };
     }
   });
   function handleKeyboardShortcut(_event: KeyboardEvent) {
@@ -95,7 +95,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   function triggerSearch() {
     // Focus search input if it exists
     const searchInput = document.querySelector(
-      'input[type="search"], input[placeholder*="search" i]',
+      'input[type="search"], input[placeholder*="search" i]'
     ) as HTMLInputElement;
     if (searchInput) {
       searchInput.focus();
@@ -142,7 +142,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     }
     console.log('⚡ Escape triggered');
   }
-  export { showShortcuts, toggleFullscreen, isFullscreen }
+  export { showShortcuts, toggleFullscreen, isFullscreen };
 </script>
 
 <!-- Keyboard Shortcuts Modal -->

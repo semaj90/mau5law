@@ -11,13 +11,15 @@ export const cases = pgTable('cases', {
   status: varchar('status', { length: 50 }).notNull().default('active'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow()
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 // Documents table with file information
 export const documents = pgTable('documents', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
-  caseId: integer('case_id').references(() => cases.id).notNull(),
+  caseId: integer('case_id')
+    .references(() => cases.id)
+    .notNull(),
   filename: varchar('filename', { length: 255 }).notNull(),
   originalName: varchar('original_name', { length: 255 }).notNull(),
   contentType: varchar('content_type', { length: 100 }).notNull(),
@@ -28,19 +30,21 @@ export const documents = pgTable('documents', {
   processingError: text('processing_error'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow()
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 // Document chunks for RAG retrieval
 export const documentChunks = pgTable('document_chunks', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
-  documentId: integer('document_id').references(() => documents.id).notNull(),
+  documentId: integer('document_id')
+    .references(() => documents.id)
+    .notNull(),
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
   wordCount: integer('word_count').notNull(),
   embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions;
   metadata: jsonb('metadata'), // Contains entities, concepts, etc.
-  createdAt: timestamp('created_at').notNull().defaultNow()
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 // Processing jobs for Redis job queue tracking
 export const processingJobs = pgTable('processing_jobs', {
@@ -55,12 +59,14 @@ export const processingJobs = pgTable('processing_jobs', {
   error: text('error'),
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
-  createdAt: timestamp('created_at').notNull().defaultNow()
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 // Entity extraction results
 export const extractedEntities = pgTable('extracted_entities', {
   id: serial('id').primaryKey(),
-  documentId: integer('document_id').references(() => documents.id).notNull(),
+  documentId: integer('document_id')
+    .references(() => documents.id)
+    .notNull(),
   chunkId: integer('chunk_id').references(() => documentChunks.id),
   entityType: varchar('entity_type', { length: 50 }).notNull(), // PERSON, ORG, DATE, etc.
   entityValue: text('entity_value').notNull(),
@@ -68,7 +74,7 @@ export const extractedEntities = pgTable('extracted_entities', {
   startOffset: integer('start_offset'),
   endOffset: integer('end_offset'),
   context: text('context'), // Surrounding text
-  createdAt: timestamp('created_at').notNull().defaultNow()
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 // RAG queries for analytics and improvement
 export const ragQueries = pgTable('rag_queries', {
@@ -84,17 +90,21 @@ export const ragQueries = pgTable('rag_queries', {
   similarityThreshold: real('similarity_threshold').notNull().default(0.7),
   resultsCount: integer('results_count'),
   userFeedback: jsonb('user_feedback'),
-  createdAt: timestamp('created_at').notNull().defaultNow()
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 // RAG query results for source tracking
 export const ragQueryResults = pgTable('rag_query_results', {
   id: serial('id').primaryKey(),
-  queryId: integer('query_id').references(() => ragQueries.id).notNull(),
-  chunkId: integer('chunk_id').references(() => documentChunks.id).notNull(),
+  queryId: integer('query_id')
+    .references(() => ragQueries.id)
+    .notNull(),
+  chunkId: integer('chunk_id')
+    .references(() => documentChunks.id)
+    .notNull(),
   similarityScore: real('similarity_score').notNull(),
   rank: integer('rank').notNull(), // 1, 2, 3... order in results;
   used: boolean('used').notNull().default(true), // Was this chunk actually used in response?
-  createdAt: timestamp('created_at').notNull().defaultNow()
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 // Zod schemas for validation - Fixed compatibility issues
 export const insertCaseSchema = createInsertSchema(cases) as any;
@@ -125,16 +135,12 @@ export type NewRAGQueryResult = typeof ragQueryResults.$inferInsert;
 // Helper functions for common operations
 export const getDocumentsByCase = (db: any, caseId: number) => {
   return db.select().from(documents).where(eq(documents.caseId, caseId));
-}
+};
 
-export const getDocumentChunksWithSimilarity = (
-  db: any,
-  queryEmbedding: number[],
-  threshold = 0.7,
-  limit = 10
-) => {
+export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[], threshold = 0.7, limit = 10) => {
   // This would be a raw SQL query using pgvector's cosine similarity
-  return db.execute(`
+  return db.execute(
+    `
     SELECT dc.*, d.filename, d.original_name,
            1 - (dc.embedding <=> $1::vector) as similarity_score
     FROM document_chunks dc
@@ -142,5 +148,7 @@ export const getDocumentChunksWithSimilarity = (
     WHERE 1 - (dc.embedding <=> $1::vector) > $2
     ORDER BY dc.embedding <=> $1::vector
     LIMIT $3
-  `, [JSON.stringify(queryEmbedding), threshold, limit]);
-}
+  `,
+    [JSON.stringify(queryEmbedding), threshold, limit]
+  );
+};

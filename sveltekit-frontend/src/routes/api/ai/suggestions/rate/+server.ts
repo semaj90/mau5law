@@ -23,9 +23,9 @@ import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 const originalPOSTHandler: RequestHandler = async () => {
   return json({ error: 'Endpoint temporarily disabled' }, { status: 503 });
-}
+};
 const originalGETHandler: RequestHandler = async () => {
   return json({ error: 'Endpoint temporarily disabled' }, { status: 503 });
-}
+};
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
 export const GET = redisOptimized.aiAnalysis(originalGETHandler);

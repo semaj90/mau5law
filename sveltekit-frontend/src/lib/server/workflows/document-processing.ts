@@ -107,17 +107,17 @@ const storageActor = fromPromise(async ({
       );
     }
     const rows = embeddings.map((vec, i) => ({
-      sourceId: documentId
-      jobId: documentId
-      chunkIndex: i
-      content: chunks[i]
+      sourceId: documentId,
+      jobId: documentId,
+      chunkIndex: i,
+      content: chunks[i],
       model,
       backend,
       metadata: {
         ...metadata,
         total_chunks: chunks.length,
-        source_document: documentId
-        processed_at: new Date().toISOString()
+        source_document: documentId,
+        processed_at: new Date().toISOString(),
       } as any,
       embedding: vec as unknown as any
     });
@@ -227,15 +227,15 @@ export const documentProcessingMachine = createMachine({
     },
     processing: {
       invoke: {
-        src: progressTracker
-        id: 'progressTracker'
+        src: progressTracker,
+        id: 'progressTracker',
       },
       initial: 'chunking',
       states: {
         chunking: {
           entry: sendTo('progressTracker', { type: 'CHUNKING_START' }),
           invoke: {
-            src: chunkingActor
+            src: chunkingActor,
             id: 'chunkingActor',
             input: ({ context }) => ({
               content: context.content,
@@ -268,7 +268,7 @@ export const documentProcessingMachine = createMachine({
         embedding: {
           entry: sendTo('progressTracker', { type: 'EMBEDDING_START' }),
           invoke: {
-            src: embeddingActor
+            src: embeddingActor,
             id: 'embeddingActor',
             input: ({ context }) => ({
               chunks: context.chunks,
@@ -309,7 +309,7 @@ export const documentProcessingMachine = createMachine({
           states: {
             database: {
               invoke: {
-                src: storageActor
+                src: storageActor,
                 id: 'storageActor',
                 input: ({ context }) => ({
                   documentId: context.documentId,
@@ -317,7 +317,7 @@ export const documentProcessingMachine = createMachine({
                   embeddings: context.embeddings,
                   metadata: context.metadata,
                   model: context.metadata?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text:latest',
-                  backend: context.metadata.backend || 'ollama'
+                  backend: context.metadata.backend || 'ollama',
                 })
               },
               initial: 'pending',
@@ -334,7 +334,7 @@ export const documentProcessingMachine = createMachine({
             },
             cache: {
               invoke: {
-                src: cachingActor
+                src: cachingActor,
                 id: 'cachingActor',
                 input: ({ context }) => ({
                   documentId: context.documentId,

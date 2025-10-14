@@ -151,7 +151,7 @@ class SIMDTextProcessor {
       const matches = text.matchAll(new RegExp(pattern.regex, 'gi');
       for (const match of matches) {
         entities.push({
-          text: match[0]
+          text: match[0],
           type: pattern.type,
           start: match.index,
           end: match.index + match[0].length,
@@ -343,7 +343,7 @@ class RAGIngestionWorker {
       }
       const processingTime = performance.now() - startTime;
       return {
-        success: true
+        success: true,
         documentId: payload.documentId,
         extractedText,
         embeddings,
@@ -352,7 +352,7 @@ class RAGIngestionWorker {
       }
     } catch (error) {
       return {
-        success: false
+        success: false,
         documentId: payload.documentId,
         processingTime: performance.now() - startTime
       }
@@ -459,7 +459,7 @@ self.addEventListener('message', async (event) => {
     const result = await ragWorker.processMessage(message);
     self.postMessage({
       id: message.id,
-      success: true
+      success: true,
       result
     });
   } catch (error) {

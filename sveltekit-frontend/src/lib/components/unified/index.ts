@@ -21,14 +21,14 @@ export type UnifiedButtonProps = {
     caseType?: 'contract' | 'evidence' | 'brief' | 'citation';
     aiSuggested?: boolean;
     riskLevel?: 'low' | 'medium' | 'high';
-  }
+  };
   gpuEffects?: boolean;
   glowIntensity?: number;
   pixelated?: boolean;
   nesStyle?: boolean;
   onclick?: (_event: MouseEvent) => void;
   class?: string;
-}
+};
 export type UnifiedDialogProps = {
   open?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
@@ -40,7 +40,7 @@ export type UnifiedDialogProps = {
     enabled: boolean;
     users?: Array<any>;
     sessionId?: string;
-  }
+  };
   legalContext?: {
     caseId?: string;
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
@@ -48,9 +48,9 @@ export type UnifiedDialogProps = {
       riskLevel: 'low' | 'medium' | 'high';
       confidence: number;
       suggestions: string[];
-    }
-  }
+    };
+  };
   onOpenChange?: (open: boolean) => void;
   onClose?: () => void;
   class?: string;
-}
+};

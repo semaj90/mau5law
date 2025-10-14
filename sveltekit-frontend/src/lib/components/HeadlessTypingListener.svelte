@@ -12,8 +12,12 @@
 <script lang="ts">
   // Svelte 5 runes are available
   import { createActor } from 'xstate';
-  import { onMount, onDestroy, createEventDispatcher } from "svelte";
-  import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import {
+    userTypingStateMachine,
+    type TypingContext,
+    type TypingState,
+  } from '$lib/machines/userTypingStateMachine.js';
 
   const dispatch = createEventDispatcher();
 
@@ -33,7 +37,7 @@
     debounceMs = 300,
     enableAnalytics = true,
     enableContextualPrompts = true,
-    mcpEndpoint = 'http://localhost:3002'
+    mcpEndpoint = 'http://localhost:3002',
   }: Props = $props();
 
   // XState actor
@@ -116,7 +120,7 @@
     typingActor.send({
       type: 'USER_STARTED_TYPING',
       text: newText,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as any);
 
     isTyping = true;
@@ -137,13 +141,13 @@
       typingActor.send({
         type: 'USER_SUBMITTED',
         text,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       } as any);
     } else if (event.key === 'Escape') {
       // Escape - clear
       typingActor.send({
         type: 'USER_CLEARED',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       } as any);
     }
   }
@@ -158,7 +162,7 @@
       typingActor.send({
         type: 'USER_STARTED_TYPING',
         text: newText,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       } as any);
       text = newText;
     }, 0);
@@ -167,7 +171,7 @@
   function handleFocus() {
     typingActor.send({
       type: 'USER_RETURNED',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as any);
   }
 
@@ -186,14 +190,14 @@
     typingActor.send({
       type: 'USER_STOPPED_TYPING',
       text: currentText,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as any);
 
     if (currentText.length > 50 && enableContextualPrompts) {
       window.setTimeout(() => {
         typingActor.send({
           type: 'PROCESS_CONTEXT',
-          text: currentText
+          text: currentText,
         } as any);
       }, 1000);
     }

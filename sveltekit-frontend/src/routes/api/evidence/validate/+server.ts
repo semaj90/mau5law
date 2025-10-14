@@ -35,12 +35,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Create validation record
     const validation = {
       evidenceId,
-      eventId: eventId || null
+      eventId: eventId || null,
       userId: user.id,
       valid: Boolean(valid),
-      feedback: feedback || null
-      corrections: corrections || null
-      timestamp: new Date().toISOString()
+      feedback: feedback || null,
+      corrections: corrections || null,
+      timestamp: new Date().toISOString(),
     }
     // Update AI analysis with validation feedback
     if (!aiAnalysis.validations) {
@@ -93,8 +93,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const response = {
       success: true,
       validation,
-      updatedAnalysis: aiAnalysis
-      message: valid
+      updatedAnalysis: aiAnalysis,
+      message: valid,
         ? "Validation recorded successfully"
         : "Correction recorded successfully"
     }

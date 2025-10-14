@@ -6,10 +6,7 @@
     children?: Snippet;
   }
 
-  let {
-    class: className = '',
-    children
-  }: Props = $props();
+  let { class: className = '', children }: Props = $props();
 
   let classes = $derived(className);
 </script>

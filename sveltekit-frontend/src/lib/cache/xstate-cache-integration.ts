@@ -29,7 +29,7 @@ export type CacheEvent =
   | { type: 'COMPUTE_REQUIRED'; cost: number }
 /**
  * XState Cache Actor - manages caching operations
- */;
+ */
 export const cacheActor = fromPromise(async ({
     input
   }: {
@@ -51,9 +51,9 @@ export const cacheActor = fromPromise(async ({
           const responseTime = performance.now() - startTime;
           if (cachedData) {
             return {
-              success: true
-              hit: true
-              data: cachedData
+              success: true,
+              hit: true,
+              data: cachedData,
               metadata: {
                 timestamp: Date.now(),
                 source: 'cache' as const,
@@ -63,9 +63,9 @@ export const cacheActor = fromPromise(async ({
             }
           } else {
             return {
-              success: false
-              hit: false
-              data: null
+              success: false,
+              hit: false,
+              data: null,
               metadata: {
                 timestamp: Date.now(),
                 source: 'none' as const,
@@ -87,7 +87,7 @@ export const cacheActor = fromPromise(async ({
             input.semanticText
           );
           return {
-            success: true
+            success: true,
             stored: true;
             key: input.key,
             responseTime: performance.now() - startTime
@@ -106,8 +106,8 @@ export const cacheActor = fromPromise(async ({
           }
           return {
             success: true;
-            invalidated: true
-            responseTime: performance.now() - startTime
+            invalidated: true,
+            responseTime: performance.now() - startTime,
           }
         }
         case 'sync': {
@@ -115,8 +115,8 @@ export const cacheActor = fromPromise(async ({
           console.log('[Cache] Syncing with server...');
           return {
             success: true;
-            synced: true
-            responseTime: performance.now() - startTime
+            synced: true,
+            responseTime: performance.now() - startTime,
           }
         }
         default:
@@ -136,27 +136,27 @@ export const cacheActor = fromPromise(async ({
  * Adds caching capabilities to any XState machine
  */
 export function withCache<TContext extends { [key: string]: any },(
-  baseContext: TContext
+  baseContext: TContext,
   cacheKeyGenerator?: (context: TContext) => string;
 ) {
   return {
     ...baseContext,
     cache: {
-      cacheKey: null
-      cachedData: null
-      cacheHit: false
-      cacheMetadata: null
-      computationCost: 0
+      cacheKey: null,
+      cachedData: null,
+      cacheHit: false,
+      cacheMetadata: null,
+      computationCost: 0,
     } as CacheContext
   }
 }
 /**
  * Cache actions for XState machines
- */;
+ */
 export const cacheActions = {
   /**
    * Assign cache lookup result to context
-   */;
+   */
   assignCacheResult: assign<any, any, any, any, any>(({ context, event }) => {
     if (event.type === 'CACHE_HIT') {
       return {
@@ -164,8 +164,8 @@ export const cacheActions = {
         cache: {
           ...context.cache,
           cachedData: event.data,
-          cacheHit: true
-          cacheMetadata: event.metadata
+          cacheHit: true,
+          cacheMetadata: event.metadata,
         }
       }
     } else if (event.type === 'CACHE_MISS') {
@@ -173,9 +173,9 @@ export const cacheActions = {
         ...context,
         cache: {
           ...context.cache,
-          cachedData: null
-          cacheHit: false
-          cacheMetadata: null
+          cachedData: null,
+          cacheHit: false,
+          cacheMetadata: null,
         }
       }
     }
@@ -183,7 +183,7 @@ export const cacheActions = {
   }),
   /**
    * Set cache key for current operation
-   */;
+   */
   setCacheKey: assign<any, any, any, any, any>(({ context, event }) => {
     if (event.type === 'CACHE_LOOKUP') {
       return {
@@ -199,7 +199,7 @@ export const cacheActions = {
   }),
   /**
    * Track computation cost for caching priority
-   */;
+   */
   trackComputationCost: assign<any, any, any, any, any>(({ context, event }) => {
     if (event.type === 'COMPUTE_REQUIRED') {
       return {
@@ -214,37 +214,37 @@ export const cacheActions = {
   }),
   /**
    * Clear cache state
-   */;
+   */
   clearCacheState: assign<any, any, any, any, any>(({ context }) => ({
     ...context,
     cache: {
-      cacheKey: null
-      cachedData: null
-      cacheHit: false
-      cacheMetadata: null
-      computationCost: 0
+      cacheKey: null,
+      cachedData: null,
+      cacheHit: false,
+      cacheMetadata: null,
+      computationCost: 0,
     }
   }))
 }
 /**
  * Cache guards for XState machines
- */;
+ */
 export const cacheGuards = {
   /**
    * Check if cache hit occurred
-   */;
+   */
   hasCacheHit: ({ context }: { context: any }) => {
     return context.cache?.cacheHit === true;
   },
   /**
    * Check if computation cost is high enough to warrant caching
-   */;
+   */
   shouldCache: ({ context }: { context: any }) => {
     return context.cache?.computationCost > 5; // Threshold for caching
   },
   /**
    * Check if cached data is recent enough
-   */;
+   */
   isCacheRecent: ({ context }: { context: any }) => {
     if (!context.cache?.cacheMetadata?.timestamp) return false;
     const ageMs = Date.now() - context.cache.cacheMetadata.timestamp;
@@ -253,7 +253,7 @@ export const cacheGuards = {
 }
 /**
  * Example cached machine state definition
- */;
+ */
 export const createCachedMachineStates = () => ({
   initial: 'idle',
   states: {
@@ -280,8 +280,8 @@ export const createCachedMachineStates = () => ({
               cache: {
                 ...context.cache,
                 cachedData: event.output.data,
-                cacheHit: true
-                cacheMetadata: event.output.metadata
+                cacheHit: true,
+                cacheMetadata: event.output.metadata,
               }
             }))
           },
@@ -320,7 +320,7 @@ export const createCachedMachineStates = () => ({
     },
     cachingResult: {
       invoke: {
-        src: cacheActor
+        src: cacheActor,
         input: ({ context }: { context: any }) => ({
           operation: 'set' as const,
           key: context.cache.cacheKey,
@@ -344,12 +344,12 @@ export const createCachedMachineStates = () => ({
 /**
  * Neural Sprite specific cache decorator
  * Enhances Neural Sprite components with intelligent caching
- */;
+ */
 export function withNeuralSpriteCache(spriteConfig: any) {
   return {
     ...spriteConfig,
     cache: {
-      enabled: true
+      enabled: true,
       strategy: 'semantic',
       ttl: 30 * 60 * 1000, // 30 minutes;
       priority: 'high'

@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js'
-import { minioService, BUCKETS } from '$lib/server/storage/minio-service'
+import type { RequestHandler } from './$types.js';
+import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
 
 // Add a minimal typed shape for files returned by minioService.listFiles
 type MinioFile = {
-	name: string;
-	size?: number | null;
-	// include index signature only if other dynamic props are expected:
-	// [key: string]: unknown;
-}
+  name: string;
+  size?: number | null;
+  // include index signature only if other dynamic props are expected:
+  // [key: string]: unknown;
+};
 
 /**
  * MinIO Bucket Management API
@@ -184,51 +184,63 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { bucketName, force = false } = await request.json()
+    const { bucketName, force = false } = await request.json();
     if (!bucketName) {
-      return new Response(JSON.stringify({
-        error: 'bucketName is required'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'bucketName is required',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     // Prevent deletion of standard buckets unless forced
-    const standardBuckets = Object.values(BUCKETS)
+    const standardBuckets = Object.values(BUCKETS);
     if (standardBuckets.includes(bucketName) && !force) {
-      return new Response(JSON.stringify({
-        error: 'Cannot delete standard bucket without force=true',
-        bucketName,
-        isStandardBucket: true
-      }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Cannot delete standard bucket without force=true',
+          bucketName,
+          isStandardBucket: true,
+        }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     // Initialize MinIO service
-    const initialized = await minioService.initialize()
+    const initialized = await minioService.initialize();
     if (!initialized) {
-      return new Response(JSON.stringify({
-        error: 'MinIO service unavailable'
-      }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'MinIO service unavailable',
+        }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     // Check if bucket is empty before deletion
     const files = (await minioService.listFiles(bucketName, undefined, 1)) as MinioFile[];
     if (files.length > 0 && !force) {
-      return new Response(JSON.stringify({
-        error: 'Bucket is not empty. Use force=true to delete non-empty bucket',
-        bucketName,
-        fileCount: files.length
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Bucket is not empty. Use force=true to delete non-empty bucket',
+          bucketName,
+          fileCount: files.length,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     // Delete bucket (implementation needed in MinIO service)
-    const deleted = await minioService.deleteBucket(bucketName, force)
+    const deleted = await minioService.deleteBucket(bucketName, force);
     return new Response(
       JSON.stringify({
         success: deleted,
@@ -243,13 +255,16 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }
     );
   } catch (error) {
-    console.error('Bucket deletion error:', error)
-    return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message: 'Failed to delete bucket',
-      timestamp: new Date().toISOString()
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    console.error('Bucket deletion error:', error);
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Failed to delete bucket',
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
-}
+};

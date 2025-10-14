@@ -2,7 +2,7 @@
   import { dev } from '$app/environment';
   interface Props {
     status?: number;
-    error?: { message?: string }
+    error?: { message?: string };
   }
   let { status = 500, error }: Props = $props();
 </script>

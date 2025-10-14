@@ -1,162 +1,167 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import { onMount } from 'svelte';
-	import { fly, fade } from 'svelte/transition';
-	import { cubicOut } from 'svelte/easing';
-	// Mock user data (as if signed in)
-	const mockUser = {
-		id: '550e8400-e29b-41d4-a716-446655440000',
-		name: 'Sarah Chen',
-		email: 'sarah.chen@prosecutor.gov',
-		role: 'Senior Prosecutor',
-		avatar: '👩‍⚖️',
-		cases: 47,
-		evidenceAnalyzed: 1284,
-		convictionRate: 94.2
-	}
-	// Demo state
-	let activeView = $state('dashboard');
-	let isAIActive = $state(true);
-	let currentPrompt = $state('');
-	let isTyping = $state(false);
-	let typewriterIndex = $state(0);
-	let showQuickInput = $state(false);
-	let quickInput = $state('');
-	let workflowStep = $state(0);
-	let timestamp = $state('');
-	// Demo data
-	let cases = $state([
-		{
-			id: '1',
-			title: 'State v. Johnson - Armed Robbery',
-			status: 'active',
-			priority: 'high',
-			evidence: 23,
-			aiConfidence: 87,
-			lastActivity: '2 hours ago',
-      deadline: '3 days'
-		},
-		{
-			id: '2',
-			title: 'Commonwealth v. Smith - Fraud',
-			status: 'review',
-			priority: 'medium',
-			evidence: 156,
-			aiConfidence: 94,
-			lastActivity: '1 day ago',
-      deadline: '1 week'
-		},
-		{
-			id: '3',
-			title: 'People v. Davis - Assault',
-			status: 'preparation',
-			priority: 'urgent',
-			evidence: 8,
-			aiConfidence: 76,
-			lastActivity: '5 mins ago',
-      deadline: 'Tomorrow'
-		}
-	]);
-	const prosecutionWorkflow = [
-		{ step: 'what', question: "What happened? Tell me about the incident.", icon: '🔍' },
-		{ step: 'who', question: "Who was involved? Identify all parties.", icon: '👥' },
-		{ step: 'when', question: "When did this occur? Timeline details.", icon: '⏰' },
-		{ step: 'where', question: "Where did it happen? Location specifics.", icon: '📍' },
-		{ step: 'why', question: "Why did this happen? What's the motive?", icon: '💭' },
-		{ step: 'how', question: "How was it carried out? Method of operation.", icon: '⚙️' }
-	];
+  import { onMount } from 'svelte';
+  import { fly, fade } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
+  // Mock user data (as if signed in)
+  const mockUser = {
+    id: '550e8400-e29b-41d4-a716-446655440000',
+    name: 'Sarah Chen',
+    email: 'sarah.chen@prosecutor.gov',
+    role: 'Senior Prosecutor',
+    avatar: '👩‍⚖️',
+    cases: 47,
+    evidenceAnalyzed: 1284,
+    convictionRate: 94.2,
+  };
+  // Demo state
+  let activeView = $state('dashboard');
+  let isAIActive = $state(true);
+  let currentPrompt = $state('');
+  let isTyping = $state(false);
+  let typewriterIndex = $state(0);
+  let showQuickInput = $state(false);
+  let quickInput = $state('');
+  let workflowStep = $state(0);
+  let timestamp = $state('');
+  // Demo data
+  let cases = $state([
+    {
+      id: '1',
+      title: 'State v. Johnson - Armed Robbery',
+      status: 'active',
+      priority: 'high',
+      evidence: 23,
+      aiConfidence: 87,
+      lastActivity: '2 hours ago',
+      deadline: '3 days',
+    },
+    {
+      id: '2',
+      title: 'Commonwealth v. Smith - Fraud',
+      status: 'review',
+      priority: 'medium',
+      evidence: 156,
+      aiConfidence: 94,
+      lastActivity: '1 day ago',
+      deadline: '1 week',
+    },
+    {
+      id: '3',
+      title: 'People v. Davis - Assault',
+      status: 'preparation',
+      priority: 'urgent',
+      evidence: 8,
+      aiConfidence: 76,
+      lastActivity: '5 mins ago',
+      deadline: 'Tomorrow',
+    },
+  ]);
+  const prosecutionWorkflow = [
+    { step: 'what', question: 'What happened? Tell me about the incident.', icon: '🔍' },
+    { step: 'who', question: 'Who was involved? Identify all parties.', icon: '👥' },
+    { step: 'when', question: 'When did this occur? Timeline details.', icon: '⏰' },
+    { step: 'where', question: 'Where did it happen? Location specifics.', icon: '📍' },
+    { step: 'why', question: "Why did this happen? What's the motive?", icon: '💭' },
+    { step: 'how', question: 'How was it carried out? Method of operation.', icon: '⚙️' },
+  ];
   let workflowAnswers = $state({
     what: '',
     who: '',
     when: '',
     where: '',
     why: '',
-    how: ''
+    how: '',
   });
-	const aiPrompts = [
-		"👋 Hello Sarah! What's wrong? I'm here to help with your cases.",
-		"🔍 I noticed unusual patterns in your evidence. Want me to investigate?",
-		"⚖️ Ready to build a strong prosecution case. What legal challenge are you facing?",
-		"🧠 Detective mode activated. I can analyze connections across your 47 active cases.",
-		"⚡ What's the situation? I can create a case instantly or analyze existing evidence.",
-		"📊 I've identified potential case correlations. Should I prioritize urgent matters?",
-		"🎯 What's troubling you today? I can suggest optimal prosecution strategies.",
-		"🚨 Something seems urgent. What case needs immediate AI analysis?",
-		"💡 Ready to assist with legal research, evidence analysis, or case preparation.",
-		"🔥 What's the emergency? I can mobilize all AI resources for critical cases."
-	];
-	// AI Typewriter Effect
-	function startTypewriter(text: string) {
-		isTyping = true;
-		currentPrompt = '';
-		typewriterIndex = 0;
-		const typeInterval = setInterval(() => {
-			if (typewriterIndex < text.length) {
-				currentPrompt += text[typewriterIndex];
-				typewriterIndex++;
-			} else {
-				clearInterval(typeInterval);
-				isTyping = false;
-			}
-		}, 30 + Math.random() * 20);
-	}
-	// Auto-fill form from natural language
-	function processQuickInput() {
-		if (!quickInput.trim()) return;
-		// Simple NLP to extract case details
-		const input = quickInput.toLowerCase();
-		// Auto-detect priority
-		let autoPriority = 'medium';
-		if (input.includes('urgent') || input.includes('emergency') || input.includes('asap')) {
-			autoPriority = 'urgent';
-		} else if (input.includes('high priority') || input.includes('serious') || input.includes('critical')) {
-			autoPriority = 'high';
-		}
-		// Auto-detect category
-		let autoCategory = 'criminal';
-		if (input.includes('fraud') || input.includes('embezzlement') || input.includes('financial')) {
-			autoCategory = 'financial';
-		} else if (input.includes('civil') || input.includes('lawsuit') || input.includes('tort')) {
-			autoCategory = 'civil';
-		} else if (input.includes('corporate') || input.includes('compliance') || input.includes('regulatory')) {
-			autoCategory = 'corporate';
-		}
-		// Start workflow
-		workflowAnswers.what = quickInput;
-		workflowStep = 1;
-		showQuickInput = false;
-		startTypewriter(`I understand: "${quickInput}". Let me help you build this case systematically. ${prosecutionWorkflow[1].question}`);
-	}
-	// Generate timestamp
-	function updateTimestamp() {
-		const now = new Date();
-		timestamp = now.toLocaleString('en-US', {
-			weekday: 'short',
+  const aiPrompts = [
+    "👋 Hello Sarah! What's wrong? I'm here to help with your cases.",
+    '🔍 I noticed unusual patterns in your evidence. Want me to investigate?',
+    '⚖️ Ready to build a strong prosecution case. What legal challenge are you facing?',
+    '🧠 Detective mode activated. I can analyze connections across your 47 active cases.',
+    "⚡ What's the situation? I can create a case instantly or analyze existing evidence.",
+    "📊 I've identified potential case correlations. Should I prioritize urgent matters?",
+    "🎯 What's troubling you today? I can suggest optimal prosecution strategies.",
+    '🚨 Something seems urgent. What case needs immediate AI analysis?',
+    '💡 Ready to assist with legal research, evidence analysis, or case preparation.',
+    "🔥 What's the emergency? I can mobilize all AI resources for critical cases.",
+  ];
+  // AI Typewriter Effect
+  function startTypewriter(text: string) {
+    isTyping = true;
+    currentPrompt = '';
+    typewriterIndex = 0;
+    const typeInterval = setInterval(
+      () => {
+        if (typewriterIndex < text.length) {
+          currentPrompt += text[typewriterIndex];
+          typewriterIndex++;
+        } else {
+          clearInterval(typeInterval);
+          isTyping = false;
+        }
+      },
+      30 + Math.random() * 20
+    );
+  }
+  // Auto-fill form from natural language
+  function processQuickInput() {
+    if (!quickInput.trim()) return;
+    // Simple NLP to extract case details
+    const input = quickInput.toLowerCase();
+    // Auto-detect priority
+    let autoPriority = 'medium';
+    if (input.includes('urgent') || input.includes('emergency') || input.includes('asap')) {
+      autoPriority = 'urgent';
+    } else if (input.includes('high priority') || input.includes('serious') || input.includes('critical')) {
+      autoPriority = 'high';
+    }
+    // Auto-detect category
+    let autoCategory = 'criminal';
+    if (input.includes('fraud') || input.includes('embezzlement') || input.includes('financial')) {
+      autoCategory = 'financial';
+    } else if (input.includes('civil') || input.includes('lawsuit') || input.includes('tort')) {
+      autoCategory = 'civil';
+    } else if (input.includes('corporate') || input.includes('compliance') || input.includes('regulatory')) {
+      autoCategory = 'corporate';
+    }
+    // Start workflow
+    workflowAnswers.what = quickInput;
+    workflowStep = 1;
+    showQuickInput = false;
+    startTypewriter(
+      `I understand: "${quickInput}". Let me help you build this case systematically. ${prosecutionWorkflow[1].question}`
+    );
+  }
+  // Generate timestamp
+  function updateTimestamp() {
+    const now = new Date();
+    timestamp = now.toLocaleString('en-US', {
+      weekday: 'short',
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
-		});
-	}
-	// Auto-prompting cycle
-	function startAIPrompting() {
-		let promptIndex = 0;
-		const cyclePrompts = () => {
-			if (!isAIActive || showQuickInput) return;
-			startTypewriter(aiPrompts[promptIndex]);
-			promptIndex = (promptIndex + 1) % aiPrompts.length;
-		}
-		// Initial prompt
-		setTimeout(cyclePrompts, 2000);
-		// Continue cycling
-		setInterval(() => {
-			if (isAIActive && !isTyping && !showQuickInput) {
-				cyclePrompts();
-			}
-		}, 8000);
-	}
+      second: '2-digit',
+    });
+  }
+  // Auto-prompting cycle
+  function startAIPrompting() {
+    let promptIndex = 0;
+    const cyclePrompts = () => {
+      if (!isAIActive || showQuickInput) return;
+      startTypewriter(aiPrompts[promptIndex]);
+      promptIndex = (promptIndex + 1) % aiPrompts.length;
+    };
+    // Initial prompt
+    setTimeout(cyclePrompts, 2000);
+    // Continue cycling
+    setInterval(() => {
+      if (isAIActive && !isTyping && !showQuickInput) {
+        cyclePrompts();
+      }
+    }, 8000);
+  }
   $effect(() => {
     updateTimestamp();
     const tsInterval = setInterval(updateTimestamp, 1000);
@@ -402,7 +407,7 @@
           class="nes-btn"
           onclick={() =>
             startTypewriter(
-              'Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?',
+              'Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?'
             )}
         >
           Analyze Evidence
@@ -411,7 +416,7 @@
     {/if}
     {#if showQuickInput}
       <div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
-  <textarea
+        <textarea
           bind:value={quickInput}
           placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
           class="quick-input"
@@ -449,7 +454,7 @@
   .platform-header {
     display: flex;
     align-items: center;
-  justify-content: space-between;
+    justify-content: space-between;
     padding: 1rem 2rem;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(10px);

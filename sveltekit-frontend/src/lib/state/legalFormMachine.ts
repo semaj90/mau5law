@@ -305,7 +305,7 @@ export const legalFormMachine = setup({
             recommendations.push({
               nextAction: "Attach witness statement document",
               reasoning: "Testimony cases benefit from written statements",
-              confidence: 85
+              confidence: 85,
             });
           }
           return recommendations;

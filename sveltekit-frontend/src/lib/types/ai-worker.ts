@@ -1,7 +1,7 @@
 
 /**
  * TypeScript types for AI Service Worker system
- */;
+ */
 }
 export interface LLMModel {
   id: string;

@@ -3,8 +3,8 @@
  * Routes: /api/ai/analyze → QUIC /legal/analyze → Go GPU /inference
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import { z } from 'zod'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Legal analysis schema per architecture docs
 const LegalAnalysisSchema = z.object({
   content: z.string().min(1),
@@ -21,15 +21,15 @@ const LegalAnalysisSchema = z.object({
     })
     .optional(),
 });
-const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
+const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    const sessionId = cookies.get('session_id')
+    const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      throw error(401, 'Authentication required for legal AI analysis')
+      throw error(401, 'Authentication required for legal AI analysis');
     }
-    const body = await request.json()
-    const validatedData = LegalAnalysisSchema.safeParse(body)
+    const body = await request.json();
+    const validatedData = LegalAnalysisSchema.safeParse(body);
     if (!validatedData.success) {
       // Return structured JSON with validation errors (avoid passing an object to `error()`)
       return json(
@@ -48,16 +48,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown'
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown',
       },
-      body: JSON.stringify(validatedData.data)
-    })
+      body: JSON.stringify(validatedData.data),
+    });
     if (!response.ok) {
-      const errorData = await response.text()
-      console.error('QUIC server legal analysis error:', errorData)
-      throw error(response.status, `Legal analysis failed: ${errorData}`)
+      const errorData = await response.text();
+      console.error('QUIC server legal analysis error:', errorData);
+      throw error(response.status, `Legal analysis failed: ${errorData}`);
     }
-    const result = await response.json()
+    const result = await response.json();
     return json({
       success: true,
       data: {
@@ -69,49 +69,49 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         legal_citations: result.legal_citations,
         precedents: result.precedents,
         recommendations: result.recommendations,
-        risk_assessment: result.risk_assessment
-      }
-    })
+        risk_assessment: result.risk_assessment,
+      },
+    });
   } catch (err) {
-    console.error('Legal AI analysis error:', err)
+    console.error('Legal AI analysis error:', err);
     if (err instanceof Error && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, 'Internal server error during legal analysis')
+    throw error(500, 'Internal server error during legal analysis');
   }
-}
+};
 export const GET: RequestHandler = async ({ url, cookies }) => {
   try {
-    const sessionId = cookies.get('session_id')
+    const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      throw error(401, 'Authentication required')
+      throw error(401, 'Authentication required');
     }
-    const jobId = url.searchParams.get('job_id')
+    const jobId = url.searchParams.get('job_id');
     if (!jobId) {
-      throw error(400, 'job_id parameter required')
+      throw error(400, 'job_id parameter required');
     }
     // Get analysis result from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/legal/result?job_id=${jobId}`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}`
-      }
-    })
+        'Authorization': `Bearer ${sessionId}`,
+      },
+    });
     if (!response.ok) {
-      throw error(response.status, 'Failed to retrieve analysis result')
+      throw error(response.status, 'Failed to retrieve analysis result');
     }
-    const result = await response.json()
+    const result = await response.json();
     return json({
       success: true,
       job_id: result.job_id,
       status: result.status,
       result: result.result,
-      completed_at: result.completed_at
-    })
+      completed_at: result.completed_at,
+    });
   } catch (err) {
-    console.error('Analysis result retrieval error:', err)
+    console.error('Analysis result retrieval error:', err);
     if (err instanceof Error && 'status' in err) {
-      throw err
+      throw err;
     }
-    throw error(500, 'Failed to retrieve analysis result')
+    throw error(500, 'Failed to retrieve analysis result');
   }
-}
+};

@@ -15,7 +15,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     getAISuggestions,
     calculateProgressPercentage,
     getNextPossibleActions,
-    type LegalFormContext
+    type LegalFormContext,
   } from '$lib/state/legalFormMachine';
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { LegalAIReranker, enhancedSearch, type UserContext } from '$lib/ai/custom-reranker';
@@ -68,7 +68,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   });
 
   function updateMatrixUINodes(): void {
-    const currentState = (((get(machineState) as any)?.value) as string) || 'unknown';
+    const currentState = ((get(machineState) as any)?.value as string) || 'unknown';
     const ctx = (get(machineContext) as any) || {};
     matrixUINodes = [
       {
@@ -162,7 +162,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Update matrix UI based on file types
     updateMatrixUINodes();
     // Trigger AI reranking for file suggestions
-    performAIReranking('file_upload', files.map(f => f.name));
+    performAIReranking(
+      'file_upload',
+      files.map(f => f.name)
+    );
   }
 
   function handleCaseDetailsUpdate(): void {
@@ -249,7 +252,8 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     aiRecommendations = $machineContext.aiRecommendations ?? aiRecommendations;
   });
 </script>
-<div class={"xstate-phase8-integration " + className}>
+
+<div class={'xstate-phase8-integration ' + className}>
   <!-- Progress Header -->
   <div class="progress-header yorha-panel p-6 mb-6">
     <!-- Progress Bar -->
@@ -355,9 +359,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
           <div data-accordion-content class="accordion-content p-4 border-l-4 border-yellow-400">
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-title-">
-                  Case Title
-                </label>
+                <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-title-"> Case Title </label>
                 <input
                   id="-case-title-"
                   bind:value={caseTitle}
@@ -407,9 +409,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
               {#if $machineState.matches('caseDetails')}
                 <div class="flex gap-3">
-                  <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white">
-                    Back
-                  </button>
+                  <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
                   <button
                     onclick={handleNextStep}
                     disabled={!caseTitle.trim() || !caseDescription.trim()}
@@ -477,6 +477,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     </div>
   </div>
 </div>
+
 <style>
   /* Converted Tailwind @apply rules to plain CSS to avoid unknown at-rule errors */
   .xstate-phase8-integration {
@@ -488,7 +489,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   .step-number {
     width: 1.5rem;
     height: 1.5rem;
-    background-color: #FBBF24;
+    background-color: #fbbf24;
     color: #000;
     border-radius: 9999px;
     display: flex;
@@ -503,13 +504,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   .loading-spinner {
     width: 2rem;
     height: 2rem;
-    border: 2px solid #FBBF24;
+    border: 2px solid #fbbf24;
     border-top-color: transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   .accordion-trigger[data-accordion-trigger] {
-    background-color: rgba(255,255,255,0.03);
+    background-color: rgba(255, 255, 255, 0.03);
   }
   .accordion-content {
     animation: slideDown 0.3s ease-out;
@@ -525,7 +526,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     }
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .suggestion-item {
     border-left: 3px solid rgb(59 130 246);

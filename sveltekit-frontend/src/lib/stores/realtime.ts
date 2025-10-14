@@ -161,7 +161,7 @@ if (typeof window !== 'undefined') {
 }
 export default {
 	connect: connectRealtime;
-	disconnect: disconnectRealtime
+	disconnect: disconnectRealtime,
 	connectionStatus,
 	stages,
 	finalResults,

@@ -7,7 +7,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { Props } from "$lib/types/global";
+  import type { Props } from '$lib/types/global';
   // Use concrete component modules used elsewhere in the project
   import { Input } from '$lib/components/ui/input';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
@@ -27,7 +27,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     X,
     Eye,
     Brain,
-    Zap
+    Zap,
   } from 'lucide-svelte';
   let {
     caseId,
@@ -35,7 +35,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     maxFiles = 10,
     enableAI = true,
     enableWebGPU = true,
-    onUploadComplete
+    onUploadComplete,
   }: Props = $props();
   // State management
   let selectedFiles: File[] = $state([]);
@@ -67,28 +67,28 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     if (m.includes('pdf') || m.startsWith('text/')) return FileText;
     if (m.includes('zip') || m.includes('rar')) return Archive;
     return FileText;
-  }
+  };
   // Drag and drop handlers
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     dragActive = true;
-  }
+  };
   const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
     dragActive = false;
-  }
+  };
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     dragActive = false;
     const files = Array.from(e.dataTransfer?.files || []).filter(Boolean) as File[];
     addFiles(files);
-  }
+  };
   // File selection handlers
   const handleFileSelect = (e: Event) => {
     const input = e.currentTarget as HTMLInputElement | null;
     const files = Array.from(input?.files || []).filter(Boolean) as File[];
     addFiles(files);
-  }
+  };
   const addFiles = (files: File[]) => {
     // defensive: remove any undefined / null entries
     const validFiles = files.filter(Boolean).map(f => f as File);
@@ -97,9 +97,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     const allowedTypesArr: string[] = normalizeAllowedTypes(allowedTypes);
 
     // Ensure maxFiles is a number
-    const maxFilesNum: number = typeof maxFiles === 'number'
-      ? maxFiles
-      : Number(maxFiles) || 10;
+    const maxFilesNum: number = typeof maxFiles === 'number' ? maxFiles : Number(maxFiles) || 10;
 
     const newFiles = validFiles.filter(file => {
       // Normalize MIME to empty-string safe value
@@ -122,10 +120,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       return;
     }
     selectedFiles = [...selectedFiles, ...newFiles];
-  }
+  };
   const removeFile = (index: number) => {
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
-  }
+  };
 
   // Upload file to MinIO and get S3 key
   // accept unknown caseId and coerce to string to avoid TS 'unknown' -> string errors
@@ -138,7 +136,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
 
     const response = await fetch('/api/storage/upload', {
       method: 'POST',
-      body: formData
+      body: formData,
     });
 
     if (!response.ok) {
@@ -148,9 +146,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     const result = await response.json();
     return {
       s3Key: result.key || `documents/${caseId}/${Date.now()}_${file.name}`,
-      s3Bucket: result.bucket || 'legal-documents'
+      s3Bucket: result.bucket || 'legal-documents',
     };
-  }
+  };
 
   // Upload process with RabbitMQ async queue
   const uploadEvidence = async () => {
@@ -195,10 +193,15 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
               type: evidenceType,
               collectedBy,
               location,
-              tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [], // ensure array
-              isAdmissible
-            }
-          })
+              tags: tags
+                ? tags
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(Boolean)
+                : [], // ensure array
+              isAdmissible,
+            },
+          }),
         });
 
         if (!queueResponse.ok) {
@@ -211,12 +214,15 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         const jobId = String(queueResult.jobId ?? `job_${Date.now()}`);
 
         // Track queued job
-        queuedJobs = [...queuedJobs, {
-          jobId,
-          fileName: file.name,
-          status: 'queued',
-          estimatedTime: queueResult.estimatedProcessingTime || '2-5 minutes'
-        }];
+        queuedJobs = [
+          ...queuedJobs,
+          {
+            jobId,
+            fileName: file.name,
+            status: 'queued',
+            estimatedTime: queueResult.estimatedProcessingTime || '2-5 minutes',
+          },
+        ];
 
         uploadResults.push({
           fileName: file.name,
@@ -224,7 +230,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           s3Key: s3Key ?? null,
           s3Bucket: s3Bucket ?? null,
           status: 'queued',
-          message: queueResult.message
+          message: queueResult.message,
         });
 
         uploadProgress = ((i + 1) / selectedFiles.length) * 100;
@@ -248,7 +254,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     } finally {
       uploading = false;
     }
-  }
+  };
   // YOLO object detection preview (placeholder)
   // Rename param to _file to avoid "declared but its value is never read" warnings,
   // then attach the function to window in onMount so it's considered used at runtime.
@@ -258,9 +264,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     return {
       objects: ['person', 'document', 'weapon'],
       confidence: 0.92,
-      boundingBoxes: []
-    }
-  }
+      boundingBoxes: [],
+    };
+  };
 
   // WebSocket lifecycle management
   onMount(() => {
@@ -293,7 +299,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         return {
           ...job,
           status: state,
-          progress: context?.progress
+          progress: context?.progress,
         };
       }
       return job;
@@ -322,7 +328,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     }
     const s = String(atype ?? '');
     if (!s) return [];
-    return s.split(',').map(t => t.trim()).filter(Boolean);
+    return s
+      .split(',')
+      .map(t => t.trim())
+      .filter(Boolean);
   }
 
   // Defensive accept attribute for file inputs (use helper, avoid referencing a local variable)
@@ -430,10 +439,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="space-y-2">
         <label for="tags" class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
-  <Input id="tags" bind:value={tags} placeholder="contract, fraud, witness, DNA" />
+        <Input id="tags" bind:value={tags} placeholder="contract, fraud, witness, DNA" />
       </div>
       <div class="flex items-center space-x-2">
-  <input type="checkbox" id="admissible" bind:checked={isAdmissible} class="w-4 h-4" />
+        <input type="checkbox" id="admissible" bind:checked={isAdmissible} class="w-4 h-4" />
         <label for="admissible" class="text-sm text-gray-700">Evidence is admissible in court</label>
       </div>
     </div>
@@ -453,15 +462,12 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <p class="text-sm text-gray-500 mb-4">
           Supports PDFs, images, videos, documents ({maxFiles} files max)
         </p>
-        <input
-          type="file"
-          multiple
-          accept={acceptAttr}
-          onchange={handleFileSelect}
-          class="hidden"
-          id="file-input"
-        />
-        <button type="button" class="bits-btn px-4 py-2 rounded bg-gray-100 text-gray-800" onclick={() => clickFileInput('file-input')}>
+        <input type="file" multiple accept={acceptAttr} onchange={handleFileSelect} class="hidden" id="file-input" />
+        <button
+          type="button"
+          class="bits-btn px-4 py-2 rounded bg-gray-100 text-gray-800"
+          onclick={() => clickFileInput('file-input')}
+        >
           Select Files
         </button>
       {:else}
@@ -487,19 +493,28 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                 <div>
                   <p class="font-medium text-sm">{file?.name}</p>
                   <p class="text-xs text-gray-500">
-                    {(file?.size ?? 0) / 1024 / 1024 ? ((file?.size ?? 0) / 1024 / 1024).toFixed(2) + ' MB' : 'Unknown size'} • {file?.type || 'unknown'}
+                    {(file?.size ?? 0) / 1024 / 1024
+                      ? ((file?.size ?? 0) / 1024 / 1024).toFixed(2) + ' MB'
+                      : 'Unknown size'} • {file?.type || 'unknown'}
                   </p>
                 </div>
               </div>
               <div class="flex items-center space-x-2">
                 {#if enableAI}
                   <!-- Replaced Badge with inline span to avoid Svelte typing error -->
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                  >
                     <Brain class="w-3 h-3 mr-1" />
                     AI Analysis
                   </span>
                 {/if}
-                <button type="button" class="bits-btn px-2 py-1 text-sm rounded bg-gray-100 text-gray-800" onclick={() => removeFile(index)} aria-label="Remove file">
+                <button
+                  type="button"
+                  class="bits-btn px-2 py-1 text-sm rounded bg-gray-100 text-gray-800"
+                  onclick={() => removeFile(index)}
+                  aria-label="Remove file"
+                >
                   <X class="w-4 h-4" />
                 </button>
               </div>
@@ -582,7 +597,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                     </p>
                     <div class="flex items-center gap-2 mt-2">
                       <!-- Replaced Badge with inline span to avoid Svelte typing error -->
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                      <span
+                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                      >
                         {job.status}
                       </span>
                       <span class="text-xs text-gray-500">
@@ -590,7 +607,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                       </span>
                     </div>
                   </div>
-                  <button type="button" class="bits-btn px-2 py-1 text-sm rounded bg-gray-100 text-gray-800" title="View job details">
+                  <button
+                    type="button"
+                    class="bits-btn px-2 py-1 text-sm rounded bg-gray-100 text-gray-800"
+                    title="View job details"
+                  >
                     <Eye class="w-4 h-4" />
                   </button>
                 </div>
@@ -599,8 +620,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           </div>
           <div class="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-lg">
             <p class="text-xs text-blue-800">
-              <strong>💡 Real-time Updates:</strong> You'll receive WebSocket notifications when processing completes.
-              Check the Evidence Timeline for real-time progress.
+              <strong>💡 Real-time Updates:</strong> You'll receive WebSocket notifications when processing completes. Check
+              the Evidence Timeline for real-time progress.
             </p>
           </div>
         </div>
@@ -633,7 +654,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                     {#if result.aiAnalysis.prosecutionRelevance}
                       <!-- Use a simple span instead of Badge to avoid Svelte component constructor typing issues -->
                       <span
-                        class={"inline-flex items-center px-2 py-0.5 rounded text-xs font-medium " +
+                        class={'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ' +
                           (result.aiAnalysis.prosecutionRelevance === 'high'
                             ? 'bg-red-100 text-red-800'
                             : 'bg-gray-100 text-gray-800')}
@@ -696,22 +717,22 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   </div>
 </div>
 
-        <div class="flex items-start gap-3">
-          <Brain class="w-5 h-5 text-blue-500 mt-0.5" />
-          <div>
-            <h4 class="font-medium text-blue-900">AI-Powered Evidence Processing</h4>
-            <ul class="text-sm text-blue-700 mt-1 space-y-1">
-              <li>• Automatic text extraction and OCR</li>
-              <li>• Legal relevance analysis with Gemma3Legal</li>
-              <li>• Vector embeddings for semantic search</li>
-              <li>• YOLO object detection for images/videos</li>
-              <li>• Qdrant storage with payload filters</li>
-              {#if enableWebGPU}
-                <li>• WebGPU acceleration for vector operations</li>
-              {/if}
-            </ul>
-          </div>
-        </div>
+<div class="flex items-start gap-3">
+  <Brain class="w-5 h-5 text-blue-500 mt-0.5" />
+  <div>
+    <h4 class="font-medium text-blue-900">AI-Powered Evidence Processing</h4>
+    <ul class="text-sm text-blue-700 mt-1 space-y-1">
+      <li>• Automatic text extraction and OCR</li>
+      <li>• Legal relevance analysis with Gemma3Legal</li>
+      <li>• Vector embeddings for semantic search</li>
+      <li>• YOLO object detection for images/videos</li>
+      <li>• Qdrant storage with payload filters</li>
+      {#if enableWebGPU}
+        <li>• WebGPU acceleration for vector operations</li>
+      {/if}
+    </ul>
+  </div>
+</div>
 
 <style>
   .drag-active {
@@ -719,4 +740,3 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     background-color: #eff6ff;
   }
 </style>
-

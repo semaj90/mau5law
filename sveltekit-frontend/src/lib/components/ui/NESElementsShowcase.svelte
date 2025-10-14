@@ -12,12 +12,13 @@
     select: '',
     textarea: '',
     checkbox: false,
-    radio: ''
+    radio: '',
   });
   function handleSubmit() {
     console.log('Form submitted:', formData);
   }
 </script>
+
 <!-- HTML5 Semantic Elements -->
 <article class="nes-container with-title" style="display: {visible ? 'block' : 'none'}">
   <p class="title">NES.css Elements Showcase</p>
@@ -41,16 +42,17 @@
       <h2>Typography Elements</h2>
       <p>Regular paragraph text with <strong>strong text</strong>, <b>bold text</b>, and <small>small text</small>.</p>
       <p>Text with <sub>subscript</sub> and <sup>superscript</sup> elements.</p>
-      <blockquote>
-        This is a blockquote element for quoted content.
-      </blockquote>
+      <blockquote>This is a blockquote element for quoted content.</blockquote>
       <address>
-        Contact information:<br>
-        123 Legal Street<br>
+        Contact information:<br />
+        123 Legal Street<br />
         Law City, LC 12345
       </address>
-      <p>Abbreviation: <abbr title="World Health Organization">WHO</abbr> and <abbr data-original-title="HyperText Markup Language">HTML</abbr></p>
-      <hr>
+      <p>
+        Abbreviation: <abbr title="World Health Organization">WHO</abbr> and
+        <abbr data-original-title="HyperText Markup Language">HTML</abbr>
+      </p>
+      <hr />
       <dl>
         <dt>Definition Term</dt>
         <dd>Definition description for the term above.</dd>
@@ -63,7 +65,8 @@
       <h3>Ordered List</h3>
       <ol>
         <li>First item</li>
-        <li>Second item
+        <li>
+          Second item
           <ol>
             <li>Nested item</li>
             <li>Another nested item</li>
@@ -74,7 +77,8 @@
       <h3>Unordered List</h3>
       <ul>
         <li>First item</li>
-        <li>Second item
+        <li>
+          Second item
           <ul>
             <li>Nested item</li>
             <li>Another nested item</li>
@@ -95,22 +99,27 @@
     <section id="section3">
       <h2>Code Elements</h2>
       <p>Inline <code>code element</code> and <kbd>keyboard input</kbd> and <samp>sample output</samp>.</p>
-      <pre><code>{`// Preformatted code block
+      <pre><code
+          >{`// Preformatted code block
 function example() {
   return "Hello World";
-}`}</code></pre>
+}`}</code
+        ></pre>
     </section>
     <section>
       <h2>Media Elements</h2>
       <figure>
         <svg width="100" height="50" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="50" fill="#333"/>
+          <rect width="100" height="50" fill="#333" />
           <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white">SVG</text>
         </svg>
         <figcaption>SVG element example</figcaption>
       </figure>
       <figure>
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Crect width='100' height='50' fill='%23666'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white'%3EIMG%3C/text%3E%3C/svg%3E" alt="Example image">
+        <img
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Crect width='100' height='50' fill='%23666'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white'%3EIMG%3C/text%3E%3C/svg%3E"
+          alt="Example image"
+        />
         <figcaption>Image element example</figcaption>
       </figure>
     </section>
@@ -146,7 +155,7 @@ function example() {
           <legend>Form Controls</legend>
           <div class="nes-field">
             <label for="text-input">Text Input:</label>
-            <input type="text" id="text-input" class="nes-input" bind:value={formData.text}>
+            <input type="text" id="text-input" class="nes-input" bind:value={formData.text} />
           </div>
           <div class="nes-field">
             <label for="textarea">Textarea:</label>
@@ -166,17 +175,17 @@ function example() {
           </div>
           <div class="nes-field">
             <label>
-              <input type="checkbox" class="nes-checkbox" bind:checked={formData.checkbox}>
+              <input type="checkbox" class="nes-checkbox" bind:checked={formData.checkbox} />
               <span>Checkbox option</span>
             </label>
           </div>
           <div class="nes-field">
             <label>
-              <input type="radio" class="nes-radio" name="radio-group" value="radio1" bind:group={formData.radio}>
+              <input type="radio" class="nes-radio" name="radio-group" value="radio1" bind:group={formData.radio} />
               <span>Radio option 1</span>
             </label>
             <label>
-              <input type="radio" class="nes-radio" name="radio-group" value="radio2" bind:group={formData.radio}>
+              <input type="radio" class="nes-radio" name="radio-group" value="radio2" bind:group={formData.radio} />
               <span>Radio option 2</span>
             </label>
           </div>
@@ -247,7 +256,9 @@ function example() {
     {@render children()}
   {/if}
 </article>
-<style>/* Component-specific styles */ {}
+
+<style>
+/* Component-specific styles */ {}
   article {
     margin: 1rem;
     max-width: 800px;

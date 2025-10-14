@@ -1,9 +1,9 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 // TODO: Replace with proper import once types file is restored.
 // Temporary minimal Evidence shape to satisfy references below.
 export interface Evidence {
-	id: string;
-	[key: string]: any;
+  id: string;
+  [key: string]: any;
 }
 // ======================================================================
 // ENHANCED STATE MACHINES FOR LEGAL AI SYSTEM - FIXED VERSION
@@ -57,7 +57,7 @@ export interface VectorMatch {
   evidenceId: string;
   similarity: number;
   content: string;
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any };
   rank: number;
 }
 export interface AIAnalysis {
@@ -72,7 +72,7 @@ export interface GraphNode {
   id: string;
   type: 'evidence' | 'person' | 'location' | 'event' | 'concept';
   label: string;
-  properties: { [key: string]: any }
+  properties: { [key: string]: any };
   connections: GraphConnection[];
 }
 export interface GraphConnection {
@@ -80,7 +80,7 @@ export interface GraphConnection {
   type: string;
   strength: number;
   bidirectional: boolean;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
 export interface StreamingUpdate {
   id: string;
@@ -111,7 +111,7 @@ type EvidenceEvent =
   | { type: 'RETRY_FAILED'; evidenceId: string }
   | { type: 'CLEAR_ERRORS' }
   | { type: 'HEALTH_CHECK' }
-  | { type: 'SYNC_CACHE' }
+  | { type: 'SYNC_CACHE' };
 // ======================================================================
 // EVIDENCE PROCESSING STATE MACHINE
 // ======================================================================

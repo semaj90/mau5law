@@ -42,7 +42,7 @@ class SIMDBodyParser {
   }
   /**
    * Fast body reader with SIMD acceleration for hot endpoints
-   */;
+   */
   async readBodyFast<T = any>(_event: RequestEvent): Promise<T | null> {
     const startTime = performance.now();
     const endpoint = event.url.pathname;
@@ -72,8 +72,8 @@ class SIMDBodyParser {
         endpoint,
         contentLength: body.length,
         parseTime,
-        simdUsed: shouldUseSIMD
-        timestamp: Date.now()
+        simdUsed: shouldUseSIMD,
+        timestamp: Date.now(),
       });
       return parsed;
     } catch (error) {
@@ -86,8 +86,8 @@ class SIMDBodyParser {
           endpoint,
           contentLength: body.length,
           parseTime,
-          simdUsed: false
-          timestamp: Date.now()
+          simdUsed: false,
+          timestamp: Date.now(),
         });
         return fallbackResult;
       } catch (fallbackError) {
@@ -98,7 +98,7 @@ class SIMDBodyParser {
   }
   /**
    * Batch body parser for multiple documents
-   */;
+   */
   async readBatchBodyFast<T = any>(_event: RequestEvent): Promise<T[]> {
     const startTime = performance.now();
     const endpoint = event.url.pathname;
@@ -126,8 +126,8 @@ class SIMDBodyParser {
         endpoint,
         contentLength: body.length,
         parseTime,
-        simdUsed: shouldUseSIMD
-        timestamp: Date.now()
+        simdUsed: shouldUseSIMD,
+        timestamp: Date.now(),
       });
       return results;
     } catch (error) {
@@ -137,7 +137,7 @@ class SIMDBodyParser {
   }
   /**
    * Streaming body parser for large legal documents
-   */;
+   */
   async readStreamingBodyFast<T = any>(_event: RequestEvent): Promise<AsyncGenerator<T, void, unknown>, {
     const endpoint = event.url.pathname;
     const shouldUseSIMD = this.simdEnabled && this.isHotEndpoint(endpoint);
@@ -147,7 +147,7 @@ class SIMDBodyParser {
    * Create async generator for streaming JSON parsing
    */
   private async* createStreamingParser<T>(
-    body: ReadableStream<Uint8Array> | null
+    body: ReadableStream<Uint8Array> | null,
     useSIMD: boolean;
   ): AsyncGenerator<T, void, unknown> {
     if (!body) return;
@@ -216,7 +216,7 @@ class SIMDBodyParser {
   }
   /**
    * Legal document-specific body parser with entity extraction
-   */;
+   */
   async readLegalDocumentFast(_event: RequestEvent): Promise<{,
     document,: any;
     entities: Array<any>;
@@ -232,7 +232,7 @@ class SIMDBodyParser {
       const citations = this.extractCitations(body.content || '');
       const parseTime = performance.now() - startTim,e;
       return {
-        document: body
+        document: body,
         entities,
         citations,
         parseTime
@@ -244,7 +244,7 @@ class SIMDBodyParser {
   }
   /**
    * Extract legal entities with optimized regex
-   */;
+   */
   private extractLegalEntities(content,: string): Array< {
     const entitie,s: Array<any,> =, [];
     const patterns = [
@@ -260,7 +260,7 @@ class SIMDBodyParser {
       while ((match = pattern.exec(content)) !== null) {
         entities.push({
           type,
-          text: match[0]
+          text: match[0],
           confidence
         });
       }
@@ -269,7 +269,7 @@ class SIMDBodyParser {
   }
   /**
    * Extract legal citations with court identification
-   */;
+   */
   private extractCitations(content,: string): Array< {
     const citation,s: Array<any,> =, [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/,g;
@@ -277,7 +277,7 @@ class SIMDBodyParser {
     while ((match = citationPattern.exec(content)) !== null) {
       const court = this.identifyCourt(match[2]);
       citations.push({
-        citation: match[0]
+        citation: match[0],
         court
       });
     }
@@ -285,7 +285,7 @@ class SIMDBodyParser {
   }
   /**
    * Identify court from citation reporter
-   */;
+   */
   private identifyCourt(reporter,: string): string {
     switch (reporter) {
       case 'U.S.': return 'Supreme Court';
@@ -297,7 +297,7 @@ class SIMDBodyParser {
   }
   /**
    * Check if endpoint is hot (frequently accessed)
-   */;
+   */
   private isHotEndpoint(pathname,: string): boolean {
     return this.hotEndpoints.has(pathname) ||
            pathname.startsWith('/api/ai/') ||
@@ -306,7 +306,7 @@ class SIMDBodyParser {
   }
   /**
    * Extract JSON strings from concatenated format
-   */;
+   */
   private extractJSONStrings(body,: string): string[,] {
     // Handle both array format and newline-delimited JSON
     if (body.trim().startsWith('[')) {
@@ -320,7 +320,7 @@ class SIMDBodyParser {
   }
   /**
    * Record performance metrics
-   */;
+   */
   private recordMetrics(metric,: BodyParseMetrics): void {
     this.metrics.push(metric);
     // Keep only last 1000 metrics
@@ -330,7 +330,7 @@ class SIMDBodyParser {
   }
   /**
    * Get performance statistics
-   */;
+   */
   getPerformanceStats(),: {
     totalRequests: number;
     simdRequests: number;
@@ -352,16 +352,16 @@ class SIMDBodyParser {
       endpointUsage[m.endpoint] = (endpointUsage[m.endpoint] || 0) + 1;
     });
     return {
-      totalRequests: total
+      totalRequests: total,
       simdRequests: simdMetrics.length,
       averageParseTime: total > 0 ? this.metrics.reduce((sum, m) => sum + m.parseTime, 0) / total : 0,
-      simdSpeedup: speedup
-      hotEndpointUsage: endpointUsage
+      simdSpeedup: speedup,
+      hotEndpointUsage: endpointUsage,
     }
   }
   /**
    * Toggle SIMD on/off at runtime
-   */;
+   */
   toggleSIMD(enabled,: boolean): void {
     this.simdEnabled = enable,d;
     if (dev) {
@@ -370,7 +370,7 @@ class SIMDBodyParser {
   }
   /**
    * Add/remove hot endpoints at runtime
-   */;
+   */
   configureHotEndpoint(endpoint,: string, isHo,t: boolea,n): void {
     if (isHot) {
       this.hotEndpoints.add(endpoint);

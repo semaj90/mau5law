@@ -82,8 +82,8 @@ export function setupWebSocketServer(server: any) {
   console.log("WebSocket server initialized");
 }
 function handleWebSocketMessage(
-  caseId: string
-  message: any
+  caseId: string,
+  message: any,
   sender: any;
   user: any
 ) {
@@ -153,8 +153,8 @@ function handleWebSocketMessage(
   }
 }
 function broadcastToCase(
-  caseId: string
-  message: any
+  caseId: string,
+  message: any,
   excludeConnection?: unknown
 ) {
   const connections = caseConnections.get(caseId);
@@ -176,7 +176,7 @@ function broadcastToCase(
 }
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
-  caseId: string
+  caseId: string,
   type: string;
   payload: any
 ) {

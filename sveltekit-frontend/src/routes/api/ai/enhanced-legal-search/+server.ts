@@ -15,30 +15,36 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
-import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js'
+import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js';
 
-import redisOptimized from '$lib/middleware/redis-orchestrator-middleware'
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
 const rateLimiter = {
   check: (_ip: string | undefined) => Promise.resolve({ allowed: true, retryAfter: null }),
   windowMs: 60 * 1000,
   max: 30,
-  message: 'Too many search requests, please try again later.'
-}
+  message: 'Too many search requests, please try again later.',
+};
 const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => {
   const clientAddress = typeof getClientAddress === 'function' ? getClientAddress() : 'unknown';
   const rateLimitResult = await rateLimiter.check(clientAddress);
   if (!rateLimitResult.allowed) {
-    return json({ success: false, error: 'Rate limit exceeded', retryAfter: rateLimitResult.retryAfter }, { status: 429 });
+    return json(
+      { success: false, error: 'Rate limit exceeded', retryAfter: rateLimitResult.retryAfter },
+      { status: 429 }
+    );
   }
   const query = url.searchParams.get('q') || url.searchParams.get('query') || '';
   if (!query || query.trim().length < 2) {
-    return json({ success: false, error: 'Query parameter "q" is required and must be at least 2 characters' }, { status: 400 });
+    return json(
+      { success: false, error: 'Query parameter "q" is required and must be at least 2 characters' },
+      { status: 400 }
+    );
   }
   const parsedLimit = Number.parseInt(url.searchParams.get('limit') || '10', 10);
   const params = {
@@ -46,7 +52,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     jurisdiction: url.searchParams.get('jurisdiction') || 'all',
     category: url.searchParams.get('category') || 'all',
     maxResults: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 10,
-    useAI: url.searchParams.get('useAI') !== 'false'
+    useAI: url.searchParams.get('useAI') !== 'false',
   };
   try {
     const { results, analytics, aiEnhancement, searchTime, total } = await handleSearch(params);
@@ -73,7 +79,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       { status: 500 }
     );
   }
-}
+};
 const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }) => {
   const clientAddress = typeof getClientAddress === 'function' ? getClientAddress() : 'unknown';
   const rateLimitResult = await rateLimiter.check(clientAddress);
@@ -135,7 +141,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       { status: 500 }
     );
   }
-}
+};
 // Analytics calculation functions
 function calculateSearchAnalytics(results: LegalSearchResult[], query: string, searchTime: number) {
   if (results.length === 0) {
@@ -146,23 +152,32 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
       jurisdictions: {},
       categories: {},
       searchTime,
-      resultCount: 0
-    }
+      resultCount: 0,
+    };
   }
-  const totalScore = results.reduce((sum, r) => sum + r.score, 0)
-  const totalConfidence = results.reduce((sum, r) => sum + r.confidence, 0)
-  const searchTypes = results.reduce((acc, r) => {
-    acc[r.searchType] = (acc[r.searchType] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-  const jurisdictions = results.reduce((acc, r) => {
-    acc[r.jurisdiction] = (acc[r.jurisdiction] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-  const categories = results.reduce((acc, r) => {
-    acc[r.category] = (acc[r.category] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
+  const totalScore = results.reduce((sum, r) => sum + r.score, 0);
+  const totalConfidence = results.reduce((sum, r) => sum + r.confidence, 0);
+  const searchTypes = results.reduce(
+    (acc, r) => {
+      acc[r.searchType] = (acc[r.searchType] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+  const jurisdictions = results.reduce(
+    (acc, r) => {
+      acc[r.jurisdiction] = (acc[r.jurisdiction] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+  const categories = results.reduce(
+    (acc, r) => {
+      acc[r.category] = (acc[r.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
   return {
     avgScore: totalScore / results.length,
     avgConfidence: totalConfidence / results.length,
@@ -173,8 +188,8 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     resultCount: results.length,
     topScore: Math.max(...results.map(r => r.score)),
     queryLength: query.length,
-    queryTerms: query.split(' ').length
-  }
+    queryTerms: query.split(' ').length,
+  };
 }
 interface AdvancedSearchRequestBody {
   query: string;
@@ -185,26 +200,34 @@ interface AdvancedSearchRequestBody {
   advancedOptions?: Record<string, unknown>;
 }
 
-function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string, searchTime: number, requestBody: AdvancedSearchRequestBody) {
-  const basicAnalytics = calculateSearchAnalytics(results, query, searchTime)
+function calculateAdvancedAnalytics(
+  results: LegalSearchResult[],
+  query: string,
+  searchTime: number,
+  requestBody: AdvancedSearchRequestBody
+) {
+  const basicAnalytics = calculateSearchAnalytics(results, query, searchTime);
   // Add advanced metrics
-  const relevanceFactors = results.reduce((acc, r) => {
-    acc.semantic += r.relevanceFactors.semantic
-    acc.exact_match += r.relevanceFactors.exact_match
-    acc.jurisdiction_match += r.relevanceFactors.jurisdiction_match
-    acc.category_match += r.relevanceFactors.category_match
-    return acc
-  }, {
-    semantic: 0,
-    exact_match: 0,
-    jurisdiction_match: 0,
-    category_match: 0
-  })
-  const count = results.length
+  const relevanceFactors = results.reduce(
+    (acc, r) => {
+      acc.semantic += r.relevanceFactors.semantic;
+      acc.exact_match += r.relevanceFactors.exact_match;
+      acc.jurisdiction_match += r.relevanceFactors.jurisdiction_match;
+      acc.category_match += r.relevanceFactors.category_match;
+      return acc;
+    },
+    {
+      semantic: 0,
+      exact_match: 0,
+      jurisdiction_match: 0,
+      category_match: 0,
+    }
+  );
+  const count = results.length;
   if (count > 0) {
     Object.keys(relevanceFactors).forEach(key => {
-      relevanceFactors[key] = relevanceFactors[key] / count
-    })
+      relevanceFactors[key] = relevanceFactors[key] / count;
+    });
   }
   return {
     ...basicAnalytics,
@@ -212,8 +235,8 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     vectorSearchUsed: results.some(r => r.searchType === 'vector'),
     hybridSearchUsed: results.some(r => r.searchType === 'hybrid'),
     fallbackUsed: results.some(r => r.searchType === 'fallback'),
-    requestSize: JSON.stringify(requestBody).length
-  }
+    requestSize: JSON.stringify(requestBody).length,
+  };
 }
 interface AIEnhancementResult {
   summary: string;
@@ -224,9 +247,12 @@ interface AIEnhancementResult {
   recommendedNextSearch: string | null;
 }
 
-async function generateAIEnhancement(query: string, topResults: LegalSearchResult[]): Promise<AIEnhancementResult | null> {
+async function generateAIEnhancement(
+  query: string,
+  topResults: LegalSearchResult[]
+): Promise<AIEnhancementResult | null> {
   try {
-    const resultsSummary = topResults.map(r => `${r.title} (${r.category}, ${r.jurisdiction})`).join('; ')
+    const resultsSummary = topResults.map(r => `${r.title} (${r.category}, ${r.jurisdiction})`).join('; ');
     return {
       summary: `Found ${topResults.length} highly relevant legal documents related to "${query}". Top results: ${resultsSummary}`,
       topCategories: Array.from(new Set(topResults.map(r => r.category))),
@@ -234,14 +260,14 @@ async function generateAIEnhancement(query: string, topResults: LegalSearchResul
       suggestions: [
         `Try refining your search with terms from: ${topResults[0]?.category}`,
         `Consider exploring related ${topResults[0]?.jurisdiction} laws`,
-        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A'}`
+        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A'}`,
       ].filter(s => !s.includes('N/A')),
       confidence: topResults.reduce((sum, r) => sum + r.confidence, 0) / topResults.length,
-      recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null
-    }
+      recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null,
+    };
   } catch (error: unknown) {
-    console.warn('AI enhancement generation failed:', error)
-    return null
+    console.warn('AI enhancement generation failed:', error);
+    return null;
   }
 }
 // Health check endpoint
@@ -257,11 +283,11 @@ export const OPTIONS: RequestHandler = async () => {
       'langchain-integration',
       'nomic-embeddings',
       'pgvector-support',
-      'ai-enhancement'
+      'ai-enhancement',
     ],
-    timestamp: new Date().toISOString()
-  })
-}
+    timestamp: new Date().toISOString(),
+  });
+};
 
 // NEW: common handler used by GET and POST
 async function handleSearch(options: {
@@ -279,16 +305,23 @@ async function handleSearch(options: {
     category: category !== 'all' ? category : undefined,
     maxResults: Math.min(maxResults, 50),
     useAI,
-    ...advancedOptions
+    ...advancedOptions,
   });
   const searchTime = Date.now() - startTime;
-  const analytics = Object.keys(advancedOptions).length ?
-    calculateAdvancedAnalytics(results, query, searchTime, { query, jurisdiction, category, maxResults, useAI, advancedOptions }) :
-    calculateSearchAnalytics(results, query, searchTime);
-  const aiEnhancement = (useAI && results.length > 0) ? await generateAIEnhancement(query, results.slice(0,5)) : null;
+  const analytics = Object.keys(advancedOptions).length
+    ? calculateAdvancedAnalytics(results, query, searchTime, {
+        query,
+        jurisdiction,
+        category,
+        maxResults,
+        useAI,
+        advancedOptions,
+      })
+    : calculateSearchAnalytics(results, query, searchTime);
+  const aiEnhancement = useAI && results.length > 0 ? await generateAIEnhancement(query, results.slice(0, 5)) : null;
   return { results, analytics, aiEnhancement, searchTime, total: results.length };
 }
 
 // preserve existing Redis wrapper usage
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

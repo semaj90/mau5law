@@ -14,4 +14,4 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
-}
+};

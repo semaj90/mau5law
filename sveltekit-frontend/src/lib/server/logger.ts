@@ -1,10 +1,10 @@
 // Simple in-memory metric counters (can be replaced by Prometheus client later)
-const counters: Record<string, number> = {}
+const counters: Record<string, number> = {};
 export function incrementMetric(name: string, value = 1) {
   counters[name] = (counters[name] || 0) + value;
 }
 export function getMetricsSnapshot() {
-  return { ...counters }
+  return { ...counters };
 }
 /**
  * Server-side logger utility

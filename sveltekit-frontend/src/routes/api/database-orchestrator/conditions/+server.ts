@@ -85,8 +85,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       message: 'Condition removed successfully',
-      conditionId: id
-      timestamp: new Date().toISOString()
+      conditionId: id,
+      timestamp: new Date().toISOString(),
     })
   }, catch (error: any) {
     return json()

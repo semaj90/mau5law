@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit'
-import { db, sql } from '$lib/server/db'
-import { cases, evidence, legalDocuments, users } from '$lib/server/db'
-import { helpers } from '$lib/server/db'
-import { vectorOps } from '$lib/server/db/enhanced-vector-operations'
-import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { cases, evidence, legalDocuments, users } from '$lib/server/db';
+import { helpers } from '$lib/server/db';
+import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
+import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
+import type { RequestHandler } from './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
 type EvidenceResult = typeof evidence.$inferSelect & {
@@ -247,28 +247,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       { status: 500 }
     );
   }
-}
+};
 // Simple similarity calculation (can be enhanced with more sophisticated algorithms)
 function calculateSimilarity(query: string, text: string): number {
-  const queryLower = query.toLowerCase()
-  const textLower = text.toLowerCase()
+  const queryLower = query.toLowerCase();
+  const textLower = text.toLowerCase();
   // Exact match gets highest score
   if (textLower.includes(queryLower)) {
-    const position = textLower.indexOf(queryLower)
+    const position = textLower.indexOf(queryLower);
     // Earlier matches get higher scores
     return Math.max(0.8, 1 - (position / text.length) * 0.2);
   }
   // Word-based matching
-  const queryWords = queryLower.split(/\s+/)
-  const textWords = textLower.split(/\s+/)
-  let matchCount = 0
+  const queryWords = queryLower.split(/\s+/);
+  const textWords = textLower.split(/\s+/);
+  let matchCount = 0;
   for (const queryWord of queryWords) {
     for (const textWord of textWords) {
       if (textWord.includes(queryWord) || queryWord.includes(textWord)) {
-        matchCount++
-        break
+        matchCount++;
+        break;
       }
     }
   }
-  return Math.min(0.7, matchCount / queryWords.length * 0.7)
+  return Math.min(0.7, (matchCount / queryWords.length) * 0.7);
 }
