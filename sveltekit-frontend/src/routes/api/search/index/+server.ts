@@ -88,11 +88,11 @@ async function buildPostgreSQLIndex() {
         uploadDate: legalDocuments.createdAt,
         metadata: legalDocuments.metadata,
         // pgvector similarity (would be calculated dynamically)
-  embedding: sql<number[]>`NULL`.as('embedding')
+        embedding: sql<number[]>`NULL`.as('embedding'),
       })
       .from(legalDocuments)
-      .orderBy(desc(legalDocuments.createdAt)
-      .limit(1000)
+      .orderBy(desc(legalDocuments.createdAt))
+      .limit(1000);
     return documents.map(doc => ({
       id: doc.id,
       title: doc.title || 'Untitled Document',
@@ -105,9 +105,9 @@ async function buildPostgreSQLIndex() {
         uploadDate: doc.uploadDate?.toISOString(),
         source: 'postgresql',
         hasEmbedding: doc.embedding !== null,
-        ...parseJsonMetadata(doc.metadata)
-      }
-    })
+        ...parseJsonMetadata(doc.metadata),
+      },
+    }));
   } catch (error) {
     console.error('PostgreSQL index failed:', error)
     // Fallback mock data
@@ -184,8 +184,8 @@ async function buildVectorIndex() {
         vectorId: point.id,
         hasVector: true,
         vectorDimensions: point.vector.length,
-      }
-    })
+      },
+    }));
   } catch (error) {
     console.error('Qdrant index failed:', error)
     return []
@@ -313,9 +313,9 @@ async function buildLokiIndex() {
         logLevel: entry.level,
         service: entry.labels.service,
         job: entry.labels.job,
-        ...entry.metadata
-      }
-    })
+        ...entry.metadata,
+      },
+    }));
   } catch (error) {
     console.error('Loki index failed:', error)
     return []
@@ -331,10 +331,8 @@ function extractEntitiesFromContent(content: string): string[] {
     'jurisdiction', 'precedent', 'statute', 'regulation', 'compliance'
   ]
   const words = content.toLowerCase().split(/\W+/)
-  const entities = legalTerms.filter(term =>
-    words.some(word => word.includes(term) || term.includes(word)
-  )
-  return Array.from(new Set(entities)
+  const entities = legalTerms.filter(term => words.some(word => word.includes(term) || term.includes(word)));
+  return Array.from(new Set(entities));
 }
 function parseJsonMetadata(metadata: any): { [key: string]: any } {
   if (typeof metadata === 'string') {
@@ -350,6 +348,6 @@ function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k)
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }

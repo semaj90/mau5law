@@ -279,3 +279,11 @@ function determineImportance(content: string): "low" | "medium" | "high" {
   }
   return "low"
 }
+
+export const GET = async () => {
+  return new Response(JSON.stringify({ ok: true, message: 'cases summary stub' }), { status: 200, headers: { 'content-type': 'application/json' } });
+};
+
+export const POST = async (event: any) => {
+  return new Response(JSON.stringify({ ok: false, message: 'cases summary POST stub' }), { status: 501, headers: { 'content-type': 'application/json' } });
+};

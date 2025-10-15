@@ -1,0 +1,97 @@
+{
+  "mcpServers": {
+    "context7-multicore": {
+      "command": "node",
+      "args": ["scripts/mcp-multicore-server.mjs"],
+      "env": {
+        "MCP_PORT": "3002",
+        "CONTEXT7_GPU_ENABLED": "true",
+        "CONTEXT7_MULTICORE": "true",
+        "NODE_OPTIONS": "--max-old-space-size=4096"
+      },
+      "capabilities": [
+        "file_operations",
+        "code_analysis",
+        "type_checking",
+        "prettier_formatting",
+        "eslint_fixing",
+        "context7_integration"
+      ],
+      "autoStart": true,
+      "restart": "onFailure",
+      "timeout": 30000
+    },
+    "legal-ai-context": {
+      "command": "node",
+      "args": ["../scripts/mcp-multicore-server.mjs"],
+      "env": {
+        "MCP_PORT": "3003",
+        "LEGAL_AI_MODE": "true",
+        "CONTEXT7_LEGAL_DOCS": "true",
+        "GPU_ACCELERATION": "true"
+      },
+      "capabilities": [
+        "legal_document_analysis",
+        "embedding_generation",
+        "vector_operations",
+        "case_similarity",
+        "evidence_processing"
+      ],
+      "autoStart": false,
+      "restart": "onFailure"
+    }
+  },
+  "tools": {
+    "prettier": {
+      "server": "context7-multicore",
+      "multicore": true,
+      "cache": true,
+      "options": {
+        "parser": "typescript",
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "tabWidth": 2,
+        "semi": true
+      }
+    },
+    "eslint": {
+      "server": "context7-multicore",
+      "multicore": true,
+      "cache": ".eslintcache",
+      "options": {
+        "fix": true,
+        "maxWarnings": 0
+      }
+    },
+    "typecheck": {
+      "server": "context7-multicore",
+      "multicore": true,
+      "options": {
+        "project": "tsconfig.json",
+        "skipLibCheck": true,
+        "incremental": true
+      }
+    }
+  },
+  "performance": {
+    "maxConcurrentTasks": 16,
+    "taskTimeout": 30000,
+    "memoryLimit": "28GB",
+    "gpuAcceleration": true,
+    "cacheEnabled": true,
+    "webWorkers": {
+      "enabled": true,
+      "maxWorkers": 8,
+      "concurrency": "zx"
+    },
+    "serviceWorkers": {
+      "enabled": true,
+      "maxInstances": 4
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "mcp-context7.log",
+    "rotation": true
+  }
+}

@@ -1,3 +1,7 @@
+// TODO(autofix-skip): This file is extremely large and contains complex/generated code that
+// caused ts-morph replacement failures and many parse-like TypeScript errors (TS1005/TS1128/TS1434).
+// Manual review/cleanup is required. For now, automated preview/fix tools should skip this file.
+
 /**
  * Ultimate Unified Neural Topology Orchestrator
  * Revolutionary AI system integrating ALL advanced technologies:

@@ -1,6 +1,9 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui'; // Import Button from bits-ui for consistency, though not directly used for <a> tags here
+  import { derived } from 'svelte/store';
+  import { recommendations, partialRecommendations, engineState, errorMessage, runQuery } from '$stores/aiRecommendations';
+  import { onMount } from 'svelte';
 
   // Svelte 5 runes for reactive state
   let loading = $state(true);
@@ -23,6 +26,17 @@
     embedding: { status: 'offline', healthy: false, queueDepth: 0 },
     autotag: { status: 'offline', healthy: false, queueDepth: 0 },
   });
+
+  let userQuery = '';
+
+  const displayRecommendations = derived(
+    [recommendations, partialRecommendations, engineState],
+    ([$recommendations, $partialRecommendations, $engineState]) => {
+      // show streaming partials while processing, otherwise final recommendations
+      if ($engineState === 'processing' && $partialRecommendations.length) return $partialRecommendations;
+      return $recommendations.length ? $recommendations : $partialRecommendations;
+    }
+  );
 
   // Check system health on mount
   $effect(() => {
@@ -135,6 +149,21 @@
       default:
         return '⏳';
     }
+  }
+
+  const handleSubmit = async () => {
+    if (userQuery.trim()) await runQuery(userQuery.trim());
+  };
+
+  // nice keyboard shortcut
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') handleSubmit();
+  };
+
+  // lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
+  function escapeHtml(str: string) {
+    const s = String(str || '');
+    return s.replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
   }
 </script>
 
@@ -386,6 +415,56 @@
       <a href="/evidence/upload" class="nes-btn is-warning quick-button-legal">📤 Upload Evidence</a>
       <a href="/ai/chat" class="nes-btn is-error quick-button-neural">💬 Ask AI</a>
     </div>
+  </div>
+
+  <!-- AI Query Section -->
+  <div class="nes-container is-dark with-title ai-query-section-custom">
+    <p class="title">🧠 AI Query Interface</p>
+    <div class="query-box">
+      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} on:keydown={onKey} />
+      <button on:click={handleSubmit}>Run</button>
+    </div>
+
+    {#if $engineState === 'processing'}
+      <div class="status">Generating recommendations... 🔄</div>
+    {:else if $engineState === 'success'}
+      <div class="status">Results ready ✅</div>
+    {:else if $engineState === 'failure'}
+      <div class="status" style="color:#c53030">Failed to generate recommendations</div>
+    {/if}
+
+    {#if $errorMessage}
+      <div style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
+    {/if}
+
+    {#if $displayRecommendations.length > 0}
+      <div class="recommendation-cards" aria-live="polite">
+        {#each $displayRecommendations as rec (rec.id)}
+          <div class="card {rec.type === 'suggestion' ? 'dym' : ($engineState === 'processing' ? 'streaming' : '')}">
+            <div>
+              <strong>{(rec.type || '').toUpperCase()}</strong>
+              <div style="margin-top:.35rem;">
+                {#if rec.content}
+                  {@html escapeHtml(rec.content)}
+                {:else if rec.suggestedQuery}
+                  {rec.suggestedQuery}
+                {:else if rec.title}
+                  {rec.title}
+                {:else}
+                  {rec.description || rec.text || 'Recommendation'}
+                {/if}
+              </div>
+            </div>
+            <div class="meta">
+              <span>Confidence: {Math.round((rec.confidence ?? rec.relevance ?? 0) * 100)}%</span>
+              {#if rec.estimatedTime}
+                <span>ETA: {rec.estimatedTime}</span>
+              {/if}
+            </div>
+          </div>
+        {/each}
+      </div>
+    {/if}
   </div>
 </div>
 
@@ -736,6 +815,84 @@
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
     box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
     transform: scale(1.05);
+  }
+
+  /* AI Query Section */
+  .ai-query-section-custom {
+    margin-top: 3rem;
+  }
+
+  .query-box {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  input[type='text'] {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    border: 1px solid #e6e6ea;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.6rem;
+    background: #2b6cb0;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .status {
+    margin-top: 0.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+
+  .recommendation-cards {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
+    transition: transform 200ms ease, opacity 200ms ease;
+    overflow: hidden;
+  }
+
+  .card.streaming {
+    opacity: 0.95;
+    animation: pulse 1.2s infinite alternate;
+    border: 1px dashed rgba(43, 108, 176, 0.12);
+  }
+
+  .card.dym {
+    color: #ff6600;
+    border-left: 4px solid #ff9a3c;
+    background: linear-gradient(90deg, #fffaf5, #fff);
+  }
+
+  @keyframes pulse {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-3px);
+    }
+  }
+
+  .meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
 
   /* Responsive Design */

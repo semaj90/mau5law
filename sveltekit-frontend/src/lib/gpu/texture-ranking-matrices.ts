@@ -3,7 +3,7 @@
  *
  * High-performance legal document similarity ranking using WebGPU compute shaders
  * Features:
- * - 2048x2048 R32F textures for high-precision similarity matrices
+ * - 2048x2048 rgba32float textures for high-precision similarity matrices
  * - Multi-dimensional ranking algorithms (semantic, temporal, authority)
  * - Real-time GPU compute with sub-5ms latency
  * - NES memory bank integration for optimal allocation
@@ -133,19 +133,27 @@ export class TextureRankingMatrices {
   public async initialize(options?: { powerPreference?: GPUPowerPreference; maxTextureSize?: number }): Promise<void> {
     if (this.device && this.computePipelines.size > 0) return; // already initialized
     try {
-      const adapter = await navigator.gpu?.requestAdapter({
+      // navigator.gpu.requestAdapter's typed signature may not accept options in some lib defs.
+      // Use a narrow cast to an overload that accepts an optional options object so we can pass powerPreference.
+      const gpuWithAdapter = navigator.gpu as unknown as {
+        requestAdapter?: (opts?: { powerPreference?: GPUPowerPreference }) => Promise<GPUAdapter | null>;
+      };
+      const adapter = await gpuWithAdapter.requestAdapter?.({
         powerPreference: options?.powerPreference ?? 'high-performance',
       });
       if (!adapter) {
         console.warn('⚠️ WebGPU not available for ranking matrices');
         return;
       }
+      // Build requiredLimits with a safe, narrow type and avoid `any`.
+      const requiredLimits: Record<string, number> = {
+        // allow caller to override max texture size, but keep safe default
+        maxTextureDimension2D: options?.maxTextureSize ?? 2048,
+      };
       this.device = await adapter.requestDevice({
         requiredFeatures: [] as GPUFeatureName[],
-        requiredLimits: {
-          // allow caller to override max texture size, but keep safe default
-          maxTextureDimension2D: options?.maxTextureSize ?? 2048,
-        } as any,
+        // Cast through `unknown` into GPURequiredLimits to satisfy differing DOM lib typings
+        requiredLimits: requiredLimits as unknown as GPURequiredLimits,
       });
       await this.createComputePipelines();
       console.log('🎯 GPU Texture Ranking Matrices initialized (lazy)');
@@ -258,10 +266,6 @@ export class TextureRankingMatrices {
     if (!pipeline) return null;
 
     try {
-      // Determine a padded texture size (square)
-      const textureSize = Math.ceil(Math.sqrt(nodeCount));
-      const paddedSize = Math.min(2048, Math.pow(2, Math.ceil(Math.log2(Math.max(1, textureSize)))));
-
       // Create a simple mock result: zeros (this keeps runtime safety; real implementation fills GPU code)
       const scores = new Float32Array(nodeCount);
       // If gpuNodeData contains precomputed scores we can use them; otherwise keep zeros
@@ -321,6 +325,18 @@ export class TextureRankingMatrices {
     return texture;
   }
 
+  // NEW helper: produce a minimal fallback layout and cast via `unknown` to avoid the direct-conversion type error
+  private minimalBinaryLayout(partial?: Record<string, unknown>): LegalDocumentBinaryLayout {
+    const defaultEmbedding = new Float32Array(384);
+    const base = {
+      id: 0,
+      embedding: defaultEmbedding,
+      // keep minimal safe defaults; additional fields from partial will be merged
+      ...partial,
+    };
+    return base as unknown as LegalDocumentBinaryLayout;
+  }
+
   /**
    * Normalize a variety of input document representations into
    * a permissive LegalDocumentBinaryLayout[] so callers don't fail
@@ -337,7 +353,7 @@ export class TextureRankingMatrices {
       try {
         // If falsy, return a minimal safe layout rather than passing null/undefined through pipeline
         if (!doc) {
-          return { id: 0, embedding: new Float32Array(384) } as LegalDocumentBinaryLayout;
+          return this.minimalBinaryLayout();
         }
 
         // Accept raw ArrayBuffer or Uint8Array (flatbuffer blobs)
@@ -381,16 +397,17 @@ export class TextureRankingMatrices {
             : new Float32Array(d['embedding'] as number[])
           : new Float32Array(384);
 
-        return {
+        // Merge fields into a minimal object and cast safely through helper
+        return this.minimalBinaryLayout({
           id: (d['id'] as number) ?? 0,
           embedding: embeddingArray,
           sourceType: d['sourceType'] as string | undefined,
           createdAt: d['createdAt'] as string | undefined,
           citationCount: d['citationCount'] as number | undefined,
-        } as LegalDocumentBinaryLayout;
+        });
       } catch (e) {
         // On any error, return a minimal safe layout
-        return { id: 0, embedding: new Float32Array(384) } as LegalDocumentBinaryLayout;
+        return this.minimalBinaryLayout();
       }
     });
   }
@@ -850,7 +867,7 @@ export class TextureRankingMatrices {
  * This implementation delegates ranking work to TextureRankingMatrices and
  * provides safe CPU fallback when WebGPU is unavailable.
  */
-class NESSGPUBinaryRankingPipeline {
+export class NESSGPUBinaryRankingPipeline {
   private static instance: NESSGPUBinaryRankingPipeline | null = null;
   private textureRanking: TextureRankingMatrices;
 
@@ -945,10 +962,15 @@ class NESSGPUBinaryRankingPipeline {
   }
 } // end class NESSGPUBinaryRankingPipeline
 
+// Exported convenience accessor for external modules
+export function getNesGPUBinaryPipeline() {
+  return NESSGPUBinaryRankingPipeline.getNesGPUBinaryPipeline();
+}
+
 // Top-level helper: easily fetch pipeline metrics (exported)
 export async function getNesGPUPipelineMetrics() {
   try {
-    const pipeline = NESSGPUBinaryRankingPipeline.getNesGPUBinaryPipeline();
+    const pipeline = getNesGPUBinaryPipeline();
     return pipeline.getPerformanceMetrics();
   } catch (e: unknown) {
     console.warn('getNesGPUPipelineMetrics failed:', e);

@@ -12,23 +12,32 @@ type WASMLLMService = {
   initialize(): Promise<boolean>;
   loadModel(config?: Partial<WASMLLMConfig>): Promise<void>;
   generateText(prompt: string, config?: Partial<WASMLLMConfig>): Promise<WASMLLMResponse>;
-  getStats?(): any;
-  dispose?(): void;
+  getStats?(): unknown;
+  // allow async or sync disposers
+  dispose?(): Promise<void> | void;
 };
 
 type LangChainOllamaService = {
   testConnection(): Promise<boolean>;
   queryDocuments(query: string, opts: { maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
-  processDocument(content: string, meta?: { documentId?: string; title?: string; type?: string }): Promise<ProcessingResult>;
-  getStats?(): any;
-  reset?(): void;
+  processDocument(
+    content: string,
+    meta?: { documentId?: string; title?: string; type?: string }
+  ): Promise<ProcessingResult>;
+  getStats?(): unknown;
+  // allow async or sync reset
+  reset?(): Promise<void> | void;
 };
 
 type NESGPUIntegration = {
-  searchLegalDocumentsGPU(query: string, opts: { limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }): Promise<LegalDocument[]>;
+  searchLegalDocumentsGPU(
+    query: string,
+    opts: { limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
+  ): Promise<LegalDocument[]>;
   ingestLegalDocumentsBinary(docs: LegalDocument[]): Promise<void>;
-  getPerformanceStats?(): Promise<any>;
-  dispose?(): void;
+  getPerformanceStats?(): Promise<unknown>;
+  // allow async or sync dispose
+  dispose?(): Promise<void> | void;
 };
 
 type VectorOps = {
@@ -63,13 +72,12 @@ let nesGPUIntegration: NESGPUIntegration | null = null;
 let vectorOps: VectorOps | null = null;
 // Load services dynamically - works both server and client side
 const loadServices = async () => {
-  // Try to import only the services appropriate for this runtime to avoid SSR import errors.
-  // Browser-only: WASM LLM, NES GPU integration
+  // Attempt browser-only modules if running in browser
   if (browser) {
     try {
       if (!wasmLLMService) {
         const wasmModule = await import('$lib/wasm/wasm-llm-service.js');
-        wasmLLMService = wasmModule.wasmLLMService as WASMLLMService;
+        wasmLLMService = (wasmModule.wasmLLMService as WASMLLMService) ?? null;
       }
     } catch (error) {
       console.warn('WASM LLM service not available (browser import):', error);
@@ -77,29 +85,66 @@ const loadServices = async () => {
     try {
       if (!nesGPUIntegration) {
         const gpuModule = await import('$lib/gpu/nes-gpu-integration.js');
-        nesGPUIntegration = gpuModule.nesGPUIntegration as NESGPUIntegration;
+        nesGPUIntegration = (gpuModule.nesGPUIntegration as NESGPUIntegration) ?? null;
       }
     } catch (error) {
       console.warn('GPU integration not available (browser import):', error);
     }
-  } else {
-    // Server-only: LangChain/Ollama and vector ops
+
+    // Best-effort: try server modules too (some adapters expose http clients usable from browser)
     try {
       if (!langChainOllamaService) {
         const langChainModule = await import('$lib/ai/langchain-ollama-service.js');
-        langChainOllamaService = langChainModule.langChainOllamaService as LangChainOllamaService;
+        langChainOllamaService = (langChainModule.langChainOllamaService as LangChainOllamaService) ?? null;
       }
-    } catch (error) {
-      console.warn('LangChain service not available (server import):', error);
+    } catch {
+      // silent - server module may not be usable in browser
     }
     try {
       if (!vectorOps) {
         const dbModule = await import('$lib/server/db/enhanced-vector-operations.js');
-        vectorOps = dbModule.vectorOps as VectorOps;
+        vectorOps = (dbModule.vectorOps as VectorOps) ?? null;
       }
-    } catch (error) {
-      console.warn('Vector operations not available (server import):', error);
+    } catch {
+      // silent - not required in browser
     }
+    return;
+  }
+
+  // Server runtime: try server modules first, but also attempt WASM stubs (best-effort)
+  try {
+    if (!langChainOllamaService) {
+      const langChainModule = await import('$lib/ai/langchain-ollama-service.js');
+      langChainOllamaService = langChainModule.langChainOllamaService as LangChainOllamaService;
+    }
+  } catch (error) {
+    console.warn('LangChain service not available (server import):', error);
+  }
+  try {
+    if (!vectorOps) {
+      const dbModule = await import('$lib/server/db/enhanced-vector-operations.js');
+      vectorOps = dbModule.vectorOps as VectorOps;
+    }
+  } catch (error) {
+    console.warn('Vector operations not available (server import):', error);
+  }
+
+  // Best-effort: try to import browser-only modules (may fail silently on server, that's okay)
+  try {
+    if (!wasmLLMService) {
+      const wasmModule = await import('$lib/wasm/wasm-llm-service.js');
+      wasmLLMService = (wasmModule.wasmLLMService as WASMLLMService) ?? null;
+    }
+  } catch {
+    // ignore - wasm module generally not available on server
+  }
+  try {
+    if (!nesGPUIntegration) {
+      const gpuModule = await import('$lib/gpu/nes-gpu-integration.js');
+      nesGPUIntegration = (gpuModule.nesGPUIntegration as NESGPUIntegration) ?? null;
+    }
+  } catch {
+    // ignore - gpu integration generally not available on server
   }
 };
 
@@ -649,18 +694,30 @@ export const unifiedAIService = new UnifiedAIService();
  */
 export async function disposeUnifiedAIService() {
   try {
-    // use explicit method to avoid proto-check complaints
     unifiedAIService.clearCache();
 
-    // Try to call service disposers if present (best-effort, avoid throwing).
+    // Try to call service disposers if present (await if they return a promise).
+    // Catch errors per-service to avoid one failing disposer blocking others.
     if (wasmLLMService && typeof wasmLLMService.dispose === 'function') {
-      wasmLLMService.dispose();
+      try {
+        await (wasmLLMService.dispose() as Promise<void> | void);
+      } catch (e) {
+        console.warn('wasmLLMService.dispose() failed:', e);
+      }
     }
     if (langChainOllamaService && typeof langChainOllamaService.reset === 'function') {
-      langChainOllamaService.reset();
+      try {
+        await (langChainOllamaService.reset() as Promise<void> | void);
+      } catch (e) {
+        console.warn('langChainOllamaService.reset() failed:', e);
+      }
     }
     if (nesGPUIntegration && typeof nesGPUIntegration.dispose === 'function') {
-      nesGPUIntegration.dispose();
+      try {
+        await (nesGPUIntegration.dispose() as Promise<void> | void);
+      } catch (e) {
+        console.warn('nesGPUIntegration.dispose() failed:', e);
+      }
     }
   } catch (e) {
     console.warn('disposeUnifiedAIService encountered errors while disposing underlying services:', e);

@@ -1,4 +1,4 @@
-import { createMachine, assign, createActor, type StateFrom, fromPromise } from 'xstate';
+import { createMachine, assign, interpret, type StateFrom, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext {
@@ -82,17 +82,38 @@ export interface RiskRecommendation {
   impact: string;
   mitigation: string[];
 }
+// Helper payload types to avoid `any`
+type RecommendationRequestPayload = {
+  sessionId?: string;
+  userId?: string;
+  caseId?: string;
+  documentId?: string;
+  // include any small subset fields that callers may provide
+};
+
+type CacheHitData = {
+  cachedData: RecommendationContext['recommendations'];
+  hitRate: number;
+  keys: string[];
+  cacheHit: true;
+};
+
+type ProcessingResult = {
+  recommendations: RecommendationContext['recommendations'];
+  metrics: { latency: number; throughput: number; errorRate?: number };
+};
+
 // Events for recommendation routing
 type RecommendationEvent =
   | { type: 'START_SESSION'; userId: string; caseId?: string }
   | { type: 'ANALYZE_DOCUMENT'; documentId: string; documentType: string }
-  | { type: 'REQUEST_RECOMMENDATIONS'; context: any }
+  | { type: 'REQUEST_RECOMMENDATIONS'; context: RecommendationRequestPayload }
   | { type: 'ROUTE_TO_QUEUE'; priority: 'high' | 'standard' | 'background'; taskType: string }
-  | { type: 'RECOMMENDATIONS_RECEIVED'; recommendations: any }
+  | { type: 'RECOMMENDATIONS_RECEIVED'; recommendations: RecommendationContext['recommendations'] }
   | { type: 'MODEL_SWITCHED'; newModel: string }
-  | { type: 'CACHE_HIT'; data: any }
+  | { type: 'CACHE_HIT'; data: CacheHitData }
   | { type: 'CACHE_MISS'; key: string }
-  | { type: 'PROCESSING_COMPLETE'; result: any }
+  | { type: 'PROCESSING_COMPLETE'; result: ProcessingResult }
   | { type: 'ERROR_OCCURRED'; error: string }
   | { type: 'RETRY' }
   | { type: 'RESET' };
@@ -149,7 +170,8 @@ export const recommendationRoutingMachine = createMachine(
           START_SESSION: {
             target: 'session_active',
             actions: assign({
-              sessionId: ({ event }) => `session_${Date.now()}`,
+              // removed unused `{ event }` param to avoid lint error
+              sessionId: () => `session_${Date.now()}`,
               userId: ({ event }) => event.userId,
               caseId: ({ event }) => event.caseId,
             }),
@@ -610,19 +632,41 @@ function generateCacheKeys(context: RecommendationContext): string[] {
 }
 // Types
 export type RecommendationState = StateFrom<typeof recommendationRoutingMachine>;
-export type RecommendationActor = ReturnType<typeof createActor<typeof recommendationRoutingMachine>>;
-// Store integration
+// Changed: Use interpret-based actor type
+export type RecommendationActor = ReturnType<typeof interpret>;
+
+// Store integration (migrated to actor-based API with compatibility helpers)
+import { createActor } from 'xstate';
+import { readActorSnapshot, safeStart, safeStop } from '$lib/utils/xstate-compat';
+
 function createRecommendationStore() {
-  const actor = createActor(recommendationRoutingMachine);
-  const { subscribe } = writable(actor.getSnapshot(), set => {
-    actor.subscribe(set);
-    actor.start();
-    return () => actor.stop();
+  // Create an actor for the machine (works with XState v5).
+  // If the project still uses v4, the compat helpers will gracefully fallback.
+  const actor = createActor(recommendationRoutingMachine as unknown as any);
+
+  const { subscribe } = writable(readActorSnapshot(actor), set => {
+    // subscribe to actor updates and start the actor when the store gets its first subscriber
+    const sub =
+      typeof actor.subscribe === 'function' ? actor.subscribe((snapshot: unknown) => set(snapshot as any)) : undefined;
+    safeStart(actor as unknown as any);
+
+    return () => {
+      // cleanup: unsubscribe and stop the actor when no subscribers remain
+      try {
+        sub?.unsubscribe?.();
+      } catch (e) {
+        /* ignore */
+      }
+      safeStop(actor as unknown as any);
+    };
   });
+
   return {
     subscribe,
-    send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor),
+    send: (event: unknown) => (actor as any).send(event),
+    getSnapshot: () => readActorSnapshot(actor),
+    stop: () => safeStop(actor as unknown as any),
   };
 }
+
 export const recommendationStore = createRecommendationStore();

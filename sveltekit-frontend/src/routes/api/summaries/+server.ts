@@ -67,7 +67,13 @@ export interface SynthesizedOutput {
   warnings?: string[];
 }
 // XState Machine Service for orchestrating AI mix workflow
-const summaryService = interpret(aiSummaryMachine).start();
+// Create actor for the summary machine and start it defensively to support XState v4/v5.
+const summaryService = interpret(aiSummaryMachine);
+try {
+  summaryService.start?.();
+} catch (err) {
+  console.warn('summaryService.start() failed or is not required in this environment', err);
+}
 
 // small helper to extract user id from locals (stable for tests/dev)
 function getUserId(locals: any): string {

@@ -1,16 +1,17 @@
 // XState v5 Workflow Orchestrator - Manages multiple workflows and coordinates between them
-import { createActor, interpret, type StateFrom, type EventFrom } from 'xstate';
+import { createActor, type Actor, type SnapshotFrom } from 'xstate';
 import { documentProcessingMachine, type DocumentProcessingContext } from './document-processing.js';
 import { legalCaseManagementMachine, type LegalCaseContext } from './legal-case-management.js';
 import { cache } from '$lib/server/cache/redis';
-import { workflowQueue } from '$lib/server/message-queue';
+import type { WorkflowActor, WorkflowSnapshot } from './shared-types.js';
+
 // Types for workflow orchestration
 export interface WorkflowInstance {
   id: string;
   type: 'document-processing' | 'legal-case-management' | 'evidence-analysis' | 'research';
   status: 'pending' | 'running' | 'completed' | 'failed' | 'paused';
-  actor: any;
-  context: any;
+  actor: WorkflowActor;
+  context: DocumentProcessingContext | LegalCaseContext | Record<string, unknown>;
   createdAt: number;
   updatedAt: number;
   progress: number;
@@ -18,12 +19,13 @@ export interface WorkflowInstance {
   childWorkflows: string[];
   dependencies: string[];
   tags: string[];
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
+
 export interface OrchestrationEvent {
   type: string;
   workflowId: string;
-  payload: any;
+  payload: Record<string, unknown>;
   timestamp: number;
   correlationId?: string;
 }
@@ -38,25 +40,29 @@ class WorkflowOrchestrator {
   // Start a new document processing workflow
   async startDocumentProcessing(
     documentId: string,
-    content: string;
-    metadata: { [key: string]: any } = {},
-    parentWorkflow?: string;
+    content: string,
+    metadata: Record<string, unknown> = {},
+    parentWorkflow?: string
   ): Promise<string> {
     const workflowId = `doc_${documentId}_${Date.now()}`;
     console.log(`📄 Starting document processing workflow: ${workflowId}`);
+
     const actor = createActor(documentProcessingMachine, {
       input: {
         documentId,
         content,
-        metadata
-      }
+        metadata,
+      },
     });
+
+    const startSnapshot = actor.getSnapshot();
+
     const workflow: WorkflowInstance = {
       id: workflowId,
       type: 'document-processing',
       status: 'pending',
       actor,
-      context: actor.getSnapshot().context,
+      context: startSnapshot?.context ?? {},
       createdAt: Date.now(),
       updatedAt: Date.now(),
       progress: 0,
@@ -66,12 +72,12 @@ class WorkflowOrchestrator {
       tags: ['document', 'processing', 'embeddings'],
       metadata: {
         documentId,
-        ...metadata
-      }
-    }
+        ...metadata,
+      },
+    };
     this.workflows.set(workflowId, workflow);
     // Set up event listeners
-    actor.subscribe((snapshot) => {
+    actor.subscribe((snapshot: any) => {
       this.onWorkflowStateChange(workflowId, snapshot);
     });
     // Start the workflow
@@ -80,7 +86,7 @@ class WorkflowOrchestrator {
       type: 'START_PROCESSING',
       documentId,
       content,
-      metadata
+      metadata,
     });
     workflow.status = 'running';
     // Cache workflow state
@@ -90,7 +96,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_STARTED',
       workflowId,
       payload: { type: 'document-processing', documentId },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     return workflowId;
   }
@@ -98,20 +104,22 @@ class WorkflowOrchestrator {
   async startLegalCaseManagement(
     title: string,
     description: string,
-    caseType: string;
+    caseType: string, // changed: semicolon -> comma
     jurisdiction: string,
     createdBy: string,
-    parentWorkflow?: string;
+    parentWorkflow?: string
   ): Promise<string> {
     const workflowId = `case_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     console.log(`⚖️ Starting legal case workflow: ${workflowId}`);
+
     const actor = createActor(legalCaseManagementMachine);
+
     const workflow: WorkflowInstance = {
       id: workflowId,
       type: 'legal-case-management',
       status: 'pending',
       actor,
-      context: actor.getSnapshot().context,
+      context: actor.getSnapshot ? (actor.getSnapshot() as any).context : {},
       createdAt: Date.now(),
       updatedAt: Date.now(),
       progress: 0,
@@ -123,12 +131,12 @@ class WorkflowOrchestrator {
         title,
         caseType,
         jurisdiction,
-        createdBy
-      }
-    }
+        createdBy,
+      },
+    };
     this.workflows.set(workflowId, workflow);
     // Set up event listeners
-    actor.subscribe((snapshot) => {
+    actor.subscribe((snapshot: any) => {
       this.onWorkflowStateChange(workflowId, snapshot);
     });
     // Start the workflow
@@ -139,7 +147,7 @@ class WorkflowOrchestrator {
       description,
       caseType,
       jurisdiction,
-      createdBy
+      createdBy,
     });
     workflow.status = 'running';
     // Cache workflow state
@@ -149,7 +157,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_STARTED',
       workflowId,
       payload: { type: 'legal-case-management', title, caseType },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     return workflowId;
   }
@@ -168,8 +176,8 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'EVENT_SENT',
         workflowId,
-        payload: event;
-        timestamp: Date.now()
+        payload: event, // changed: remove stray semicolon
+        timestamp: Date.now(),
       });
       return true;
     } catch (error) {
@@ -218,8 +226,8 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_PAUSED',
       workflowId,
-      payload: { [key,: strin,g]: any },
-      timestamp: Date.now()
+      payload: {}, // changed: replace malformed placeholder with valid object
+      timestamp: Date.now(),
     });
     return true;
   }
@@ -233,8 +241,8 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_RESUMED',
       workflowId,
-      payload: { [key,: strin,g]: any },
-      timestamp: Date.now()
+      payload: {}, // changed
+      timestamp: Date.now(),
     });
     return true;
   }
@@ -251,8 +259,8 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_CANCELLED',
       workflowId,
-      payload: { [key,: strin,g]: any },
-      timestamp: Date.now()
+      payload: {}, // changed
+      timestamp: Date.now(),
     });
     return true;
   }
@@ -298,7 +306,7 @@ class WorkflowOrchestrator {
           subscribers.splice(index, 1);
         }
       }
-    }
+    };
   }
   // Event handling
   private onWorkflowStateChange(workflowId: string, snapshot: any): void {
@@ -314,15 +322,20 @@ class WorkflowOrchestrator {
         type: 'WORKFLOW_COMPLETED',
         workflowId,
         payload: { finalContext: snapshot.context },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
-    } else if (snapshot.matches('error') || snapshot.matches('failed') || snapshot.matches('validationError') || snapshot.matches('creationError')) {
+    } else if (
+      snapshot.matches('error') ||
+      snapshot.matches('failed') ||
+      snapshot.matches('validationError') ||
+      snapshot.matches('creationError')
+    ) {
       workflow.status = 'failed';
       this.emitEvent({
         type: 'WORKFLOW_FAILED',
         workflowId,
         payload: { error: snapshot.context.errors },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } else if (workflow.status === 'paused') {
       // Keep paused status
@@ -336,14 +349,15 @@ class WorkflowOrchestrator {
       payload: {
         progress: workflow.progress,
         stage: snapshot.context.processingStage || snapshot.context.workflowStage,
-        state: snapshot.value
+        state: snapshot.value,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     // Auto-persist on significant changes
     this.persistWorkflow(workflowId);
   }
-  private emitEvent(_event: OrchestrationEvent): void {
+  private emitEvent(event: OrchestrationEvent): void {
+    // changed: use event parameter name and correct type
     console.log(`📡 Orchestrator event: ${event.type} (${event.workflowId})`);
     // Add to event queue
     this.eventQueue.push(event);
@@ -371,7 +385,7 @@ class WorkflowOrchestrator {
       const serializable = {
         ...workflow,
         actor: null, // Don't serialize the actor
-      }
+      };
       await cache.set(`workflow:${workflowId}`, serializable, 86400); // 24h TTL
     } catch (error) {
       console.error(`❌ Failed to persist workflow ${workflowId}:`, error);
@@ -380,29 +394,35 @@ class WorkflowOrchestrator {
   // Load workflow from cache
   async loadWorkflow(workflowId: string): Promise<WorkflowInstance | null> {
     try {
-      const cached = await cache.get<WorkflowInstance>(`workflow:${workflowId}`);
+      const cached = await cache.get(`workflow:${workflowId}`);
       if (!cached) return null;
+
       // Restore actor based on type
       let actor;
       switch (cached.type) {
-        case 'document-processing':
+        case 'document-processing': {
           actor = createActor(documentProcessingMachine);
           break;
-        case 'legal-case-management':
+        }
+        case 'legal-case-management': {
           actor = createActor(legalCaseManagementMachine);
           break;
+        }
         default:
           console.warn(`⚠️ Unknown workflow type: ${cached.type}`);
           return null;
       }
+
       // Restore workflow
       const workflow: WorkflowInstance = {
         ...cached,
-        actor
-      }
+        actor,
+      };
+
       this.workflows.set(workflowId, workflow);
+
       // Set up event listeners
-      actor.subscribe((snapshot) => {
+      actor.subscribe(snapshot => {
         this.onWorkflowStateChange(workflowId, snapshot);
       });
       return workflow;
@@ -420,8 +440,8 @@ class WorkflowOrchestrator {
     totalEvents: number;
   } {
     const workflows = this.getAllWorkflows();
-    const byType: Record<string, number> = {}
-    const byStatus: Record<string, number> = {}
+    const byType: Record<string, number> = {};
+    const byStatus: Record<string, number> = {};
     let totalProgress = 0;
     workflows.forEach(workflow => {
       byType[workflow.type] = (byType[workflow.type] || 0) + 1;
@@ -432,9 +452,9 @@ class WorkflowOrchestrator {
       total: workflows.length,
       byType,
       byStatus,
-      averageProgress: workflows.length > 0 ? totalProgress / workflows.length: 0,
-      totalEvents: this.eventQueue.length
-    }
+      averageProgress: workflows.length > 0 ? totalProgress / workflows.length : 0,
+      totalEvents: this.eventQueue.length,
+    };
   }
   // Cleanup completed workflows
   async cleanup(olderThanMs: number = 24 * 60 * 60 * 1000): Promise<number> {
@@ -443,7 +463,7 @@ class WorkflowOrchestrator {
     for (const [workflowId, workflow] of this.workflows) {
       if (
         workflow.status === 'completed' &&
-        workflow.updatedAt < cutoff;
+        workflow.updatedAt < cutoff // changed: removed stray semicolon
       ) {
         if (workflow.actor) {
           workflow.actor.stop();

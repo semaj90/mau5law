@@ -45,7 +45,7 @@ Extends `ThinkingProcessor` with:
 
 **Scoring Formula:**
 ```typescript
-final_score = 
+final_score =
   semantic_similarity * 0.35 +
   temporal_score * 0.20 +
   context_relevance * 0.25 +
@@ -257,7 +257,7 @@ await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
 ## Performance Considerations
 
 1. **Vector Indexing**: Use HNSW indexes for pgvector columns
-2. **Caching**: Similarity calculations are cached in `similarity_cache` table  
+2. **Caching**: Similarity calculations are cached in `similarity_cache` table
 3. **Batch Processing**: Recommendation scores can be pre-computed for popular queries
 4. **Temporal Optimization**: Recent content (< 24 hours) gets boosted scoring
 

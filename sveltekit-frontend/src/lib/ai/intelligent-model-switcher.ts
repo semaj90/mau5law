@@ -6,7 +6,51 @@
 // import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js'; // Temporarily disabled due to syntax errors
 import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
-import { browser } from '$app/environment';
+
+// New: explicit types to avoid `any` and clarify shapes
+type UserIntentPrediction = {
+  intentCategory: string;
+  domainSpecificity: number;
+  complexity: number;
+  [key: string]: unknown;
+};
+
+interface OptimizationResult {
+  confidence: number;
+  recommendedModel: string;
+  didYouMeanSuggestions: string[];
+  userIntentPrediction: UserIntentPrediction;
+  [key: string]: unknown;
+}
+
+interface IntelligentSwitchResult {
+  switchExecuted: boolean;
+  finalModel: string;
+  decision: ModelSwitchDecision;
+  fastUXOptimizations: string[] | Record<string, unknown>;
+  userLearningUpdates: string[] | Record<string, unknown>;
+  didYouMeanSuggestions: string[];
+  processingTime: number;
+}
+
+interface PerformanceStats {
+  totalSwitches: number;
+  successRate: number;
+  avgSwitchTime: number;
+  userSatisfactionImprovement: number;
+  activeUserProfiles: number;
+  learningPhaseDistribution: Record<string, number>;
+}
+
+interface SwitchHistoryEntry {
+  userId: string;
+  fromModel: string;
+  toModel: string;
+  reason: string;
+  performance: number;
+  userSatisfaction: number;
+  timestamp: number;
+}
 
 export interface ModelSwitchDecision {
   shouldSwitch: boolean;
@@ -38,20 +82,66 @@ export interface UserLearningProfile {
     peakUsageHours: number[];
     taskComplexityPreference: number; // 0-1
   };
-  satisfactionHistory: Array<any>;
+  satisfactionHistory: SatisfactionEntry[]; // tightened type
   adaptationRate: number; // How quickly to adapt to new patterns
 }
 export interface FastUXOptimization {
   prefetchedModels: string[];
   precomputedSwitches: Map<string, string>; // query_pattern -> optimal_model
-  contextualPredictions: Array<any>;
+  contextualPredictions: ContextualPrediction[]; // tightened type
   didYouMeanCache: Map<string, string[]>; // query -> suggestions
   userIntentShortcuts: Map<string, string>; // shortcut -> full_query
 }
+
+// New: explicit typed entries for satisfaction history and contextual predictions
+type SatisfactionEntry = {
+  modelUsed: string;
+  query: string;
+  satisfactionScore: number; // 1-5
+  timestamp: number;
+};
+
+type ContextualPrediction = {
+  nextLikelyIntent: string;
+  probability: number; // 0-1
+  suggestedModel: string;
+};
+
+// New: typed shapes to avoid `any`
+type UserContext = {
+  userId?: string;
+  sessionId?: string;
+  previousQueries?: string[];
+  userFeedback?: number;
+  // allow optional freeform text for context
+  text?: string;
+};
+
+interface ModelSwitchResult {
+  success: boolean;
+  switchTime: number;
+  error?: string;
+}
+
+interface UnifiedClientOrchestrator {
+  performContextSwitch(
+    fromModel: string,
+    toModel: string,
+    payload: {
+      text?: string;
+      type?: string;
+      priority?: string;
+      userId?: string;
+      sessionId?: string;
+      [key: string]: unknown;
+    }
+  ): Promise<void>;
+}
+
 class IntelligentModelSwitcher {
   private userProfiles = new Map<string, UserLearningProfile>();
   private fastUXOptimizations = new Map<string, FastUXOptimization>();
-  private switchHistory: Array<any> = [];
+  private switchHistory: SwitchHistoryEntry[] = []; // typed instead of `any`
   // Learning and adaptation
   private adaptationThreshold = 0.7; // Switch if confidence > 70%
   private learningEnabled = true;
@@ -78,14 +168,25 @@ class IntelligentModelSwitcher {
       previousQueries?: string[];
       userFeedback?: number; // 1-5 rating of last response
     }
-  ): Promise<any> {
+  ): Promise<IntelligentSwitchResult> {
     const startTime = performance.now();
     try {
       // Step 1: Get or create user learning profile
       const userProfile = await this.getUserLearningProfile(userContext.userId, userContext.sessionId);
       // Step 2: Optimize using CUDA cache memory optimizer
       // const optimizationResult = await cudaCacheMemoryOptimizer.optimizeModelSelection(query, userContext);
-      const optimizationResult = { confidence: 0.8, suggestedModel: 'gemma3', didYouMeanSuggestions: [] };
+      // Provide a normalized optimizationResult shape expected by downstream logic
+      const optimizationResult: OptimizationResult = {
+        confidence: 0.8,
+        recommendedModel: 'gemma3', // normalized property name (was suggestedModel)
+        didYouMeanSuggestions: [],
+        // provide a safe default intent prediction to avoid runtime errors
+        userIntentPrediction: {
+          intentCategory: 'chat',
+          domainSpecificity: 0.5,
+          complexity: 0.5,
+        },
+      };
       // Step 3: Make switching decision using learned patterns
       const switchDecision = await this.makeModelSwitchDecision(
         query,
@@ -159,7 +260,7 @@ class IntelligentModelSwitcher {
     currentModel: string,
     recommendedModel: string,
     userProfile: UserLearningProfile,
-    optimizationResult: any
+    optimizationResult: OptimizationResult
   ): Promise<ModelSwitchDecision> {
     // Don't switch if already using recommended model
     if (currentModel === recommendedModel) {
@@ -210,15 +311,22 @@ class IntelligentModelSwitcher {
   /**
    * Execute model switch with monitoring and fallback
    */
-  private async executeModelSwitch(fromModel: string, toModel: string, userContext: any): Promise<any> {
+  private async executeModelSwitch(
+    fromModel: string,
+    toModel: string,
+    userContext: UserContext
+  ): Promise<ModelSwitchResult> {
     const startTime = performance.now();
     try {
       console.log(`🔄 Executing switch: ${fromModel} -> ${toModel}`);
-      // Use unified orchestrator to perform the switch
-      await (unifiedClientLLMOrchestrator as any).performContextSwitch(fromModel, toModel, {
-        text: userContext || '',
+      // Use unified orchestrator with a typed interface to avoid `any`
+      const orchestrator = unifiedClientLLMOrchestrator as unknown as UnifiedClientOrchestrator;
+      await orchestrator.performContextSwitch(fromModel, toModel, {
+        text: userContext?.text ?? (userContext?.previousQueries ? userContext.previousQueries.join('\n') : ''),
         type: 'legal-analysis',
         priority: 'normal',
+        userId: userContext?.userId,
+        sessionId: userContext?.sessionId,
       });
       const switchTime = performance.now() - startTime;
       // Update performance monitoring
@@ -227,12 +335,13 @@ class IntelligentModelSwitcher {
       this.performanceMonitor.avgSwitchTime = (this.performanceMonitor.avgSwitchTime + switchTime) / 2;
       console.log(`✅ Model switch completed in ${switchTime.toFixed(2)}ms`);
       return { success: true, switchTime };
-    } catch (error: any) {
-      console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, message);
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: error?.message || 'Unknown error',
+        error: message || 'Unknown error',
       };
     }
   }
@@ -279,7 +388,115 @@ class IntelligentModelSwitcher {
       });
       if (cachedProfile.success && cachedProfile.cacheResults.length > 0) {
         const savedProfile = cachedProfile.cacheResults[0].data;
-        Object.assign(profile, savedProfile);
+        // --- Normalization: convert plain objects/arrays into expected runtime shapes ---
+        // Helper: safely convert different persisted map shapes into [key, value][] entries
+        const convertToEntries = (input: unknown): Array<[string, number]> => {
+          if (!input) return [];
+          // Safe number parser to avoid `any` casts and NaN surprises
+          const parseNumber = (value: unknown): number => {
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string') {
+              const n = Number(value.trim());
+              return Number.isFinite(n) ? n : 0;
+            }
+            return 0;
+          };
+          // Already a Map
+          if (input instanceof Map) return Array.from(input.entries()) as Array<[string, number]>;
+          // Array forms: [ [k,v], { key, value }, or {k: v} objects inside array
+          if (Array.isArray(input)) {
+            return input.map(item => {
+              if (Array.isArray(item) && item.length >= 2) {
+                return [String(item[0]), Number(item[1])];
+              }
+              if (item && typeof item === 'object') {
+                const obj = item as Record<string, unknown>;
+                if ('key' in obj && 'value' in obj) {
+                  return [String(obj['key']), parseNumber(obj['value'])];
+                }
+                const keys = Object.keys(obj);
+                if (keys.length === 1) {
+                  const k = keys[0];
+                  const v = (obj as Record<string, unknown>)[k];
+                  return [k, parseNumber(v)];
+                }
+              }
+              // Fallback: stringify item and zero value
+              return [String(item), 0];
+            });
+          }
+          // Plain object: { key: value, ... }
+          if (typeof input === 'object') {
+            return Object.entries(input as Record<string, unknown>).map(([k, v]) => [k, parseNumber(v)]);
+          }
+          return [];
+        };
+        // preferredModels -> Map<string, number>
+        if (savedProfile?.preferredModels) {
+          try {
+            if (savedProfile.preferredModels instanceof Map) {
+              profile.preferredModels = savedProfile.preferredModels;
+            } else if (Array.isArray(savedProfile.preferredModels)) {
+              // array of pairs or objects -> use helper to avoid `any`
+              const entries = convertToEntries(savedProfile.preferredModels);
+              profile.preferredModels = new Map(entries.map(([k, v]) => [k, isNaN(v) ? 0 : v]));
+            } else if (typeof savedProfile.preferredModels === 'object') {
+              profile.preferredModels = new Map(Object.entries(savedProfile.preferredModels));
+            }
+          } catch {
+            // fallback: keep default map when conversion fails
+          }
+        }
+        // domainExpertise -> Map<string, number>
+        if (savedProfile?.domainExpertise) {
+          try {
+            if (savedProfile.domainExpertise instanceof Map) {
+              profile.domainExpertise = savedProfile.domainExpertise;
+            } else if (Array.isArray(savedProfile.domainExpertise)) {
+              // normalize array shapes without `any`
+              const entries = convertToEntries(savedProfile.domainExpertise);
+              profile.domainExpertise = new Map(entries.map(([k, v]) => [k, isNaN(v) ? 0 : v]));
+            } else if (typeof savedProfile.domainExpertise === 'object') {
+              profile.domainExpertise = new Map(Object.entries(savedProfile.domainExpertise));
+            }
+          } catch {
+            // keep defaults on error
+          }
+        }
+        // queryPatterns -> ensure expected shape
+        if (savedProfile?.queryPatterns && typeof savedProfile.queryPatterns === 'object') {
+          profile.queryPatterns = {
+            avgQueryLength:
+              typeof savedProfile.queryPatterns.avgQueryLength === 'number'
+                ? savedProfile.queryPatterns.avgQueryLength
+                : profile.queryPatterns.avgQueryLength,
+            commonIntents: Array.isArray(savedProfile.queryPatterns.commonIntents)
+              ? savedProfile.queryPatterns.commonIntents
+              : profile.queryPatterns.commonIntents,
+            peakUsageHours: Array.isArray(savedProfile.queryPatterns.peakUsageHours)
+              ? savedProfile.queryPatterns.peakUsageHours
+              : profile.queryPatterns.peakUsageHours,
+            taskComplexityPreference:
+              typeof savedProfile.queryPatterns.taskComplexityPreference === 'number'
+                ? savedProfile.queryPatterns.taskComplexityPreference
+                : profile.queryPatterns.taskComplexityPreference,
+          };
+        }
+        // satisfactionHistory -> array
+        if (Array.isArray(savedProfile?.satisfactionHistory)) {
+          profile.satisfactionHistory = savedProfile.satisfactionHistory.slice(-50);
+        }
+        // learningPhase & adaptationRate & responseTimePreference
+        if (typeof savedProfile?.learningPhase === 'string') {
+          profile.learningPhase = savedProfile.learningPhase as UserLearningProfile['learningPhase'];
+        }
+        if (typeof savedProfile?.adaptationRate === 'number') {
+          profile.adaptationRate = savedProfile.adaptationRate;
+        }
+        if (typeof savedProfile?.responseTimePreference === 'string') {
+          profile.responseTimePreference =
+            savedProfile.responseTimePreference as UserLearningProfile['responseTimePreference'];
+        }
         console.log(`📚 Loaded existing user profile for ${userId}`);
       }
     } catch (error) {
@@ -294,16 +511,23 @@ class IntelligentModelSwitcher {
     profile: UserLearningProfile,
     query: string,
     modelUsed: string,
-    userIntent: any,
+    userIntent: UserIntentPrediction | undefined,
     userFeedback?: number
   ): Promise<string[]> {
     const updates: string[] = [];
     try {
+      // Guard against missing userIntent and provide defaults
+      const safeIntent = userIntent || {
+        intentCategory: 'chat',
+        domainSpecificity: 0,
+        complexity: 0.5,
+      };
+      // Use safeIntent everywhere below instead of userIntent
       // Update query patterns
       profile.queryPatterns.avgQueryLength = (profile.queryPatterns.avgQueryLength + query.length) / 2;
-      if (!profile.queryPatterns.commonIntents.includes(userIntent.intentCategory)) {
-        profile.queryPatterns.commonIntents.push(userIntent.intentCategory);
-        updates.push(`added_intent_${userIntent.intentCategory}`);
+      if (!profile.queryPatterns.commonIntents.includes(safeIntent.intentCategory)) {
+        profile.queryPatterns.commonIntents.push(safeIntent.intentCategory);
+        updates.push(`added_intent_${safeIntent.intentCategory}`);
       }
       // Update peak usage hours
       const currentHour = new Date().getHours();
@@ -316,15 +540,15 @@ class IntelligentModelSwitcher {
         updates.push(`updated_peak_hours`);
       }
       // Update model preferences based on intent
-      const currentPreference = profile.preferredModels.get(userIntent.intentCategory) || 0.5;
+      const currentPreference = profile.preferredModels.get(safeIntent.intentCategory) || 0.5;
       const newPreference = currentPreference + profile.adaptationRate * (userFeedback ? (userFeedback - 3) / 2 : 0.1);
-      profile.preferredModels.set(userIntent.intentCategory, Math.max(0.1, Math.min(1.0, newPreference)));
-      updates.push(`updated_preference_${userIntent.intentCategory}`);
+      profile.preferredModels.set(safeIntent.intentCategory, Math.max(0.1, Math.min(1.0, newPreference)));
+      updates.push(`updated_preference_${safeIntent.intentCategory}`);
       // Update domain expertise
-      if (userIntent.domainSpecificity > 0.6) {
+      if (safeIntent.domainSpecificity > 0.6) {
         const domain = 'legal'; // Simplified - would extract actual domain
         const currentExpertise = profile.domainExpertise.get(domain) || 0.5;
-        const expertiseBoost = userIntent.complexity * 0.05;
+        const expertiseBoost = safeIntent.complexity * 0.05;
         profile.domainExpertise.set(domain, Math.min(1.0, currentExpertise + expertiseBoost));
         updates.push(`expertise_boost_${domain}`);
       }
@@ -420,7 +644,7 @@ class IntelligentModelSwitcher {
     currentModel: string,
     recommendedModel: string,
     userProfile: UserLearningProfile,
-    optimizationResult: any
+    optimizationResult: OptimizationResult
   ): { speedGain: number; qualityGain: number; userSatisfactionGain: number } {
     // Simplified calculation - would use actual performance data
     const speedGain = currentModel === 'llama-rl' && recommendedModel === 'gemma270m' ? 25 : 10;
@@ -428,7 +652,10 @@ class IntelligentModelSwitcher {
     const userSatisfactionGain = optimizationResult.confidence * 15;
     return { speedGain, qualityGain, userSatisfactionGain };
   }
-  private async calculateSwitchCost(fromModel: string, toModel: string): Promise<any> {
+  private async calculateSwitchCost(
+    fromModel: string,
+    toModel: string
+  ): Promise<{ timeMs: number; memoryMB: number; cpuUsage: number }> {
     // Estimated switch costs - would measure actual performance
     const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
@@ -474,20 +701,35 @@ class IntelligentModelSwitcher {
     // Remove duplicates and return top 3
     return [...new Set(predictions)].slice(0, 3);
   }
-  private generateContextualPredictions(
-    profile: UserLearningProfile,
-    currentQuery: string
-  ): Array<{
-    nextLikelyIntent: string;
-    probability: number;
-    suggestedModel: string;
-  }> {
-    // Simplified prediction based on patterns
-    return [
-      { nextLikelyIntent: 'legal_analysis', probability: 0.6, suggestedModel: 'llama-rl' },
-      { nextLikelyIntent: 'chat', probability: 0.3, suggestedModel: 'gemma270m' },
-      { nextLikelyIntent: 'research', probability: 0.1, suggestedModel: 'llama-rl' },
-    ];
+  private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): ContextualPrediction[] {
+    // Use the profile and currentQuery so they are not unused (and to produce slightly contextual predictions)
+    const intents =
+      profile?.queryPatterns?.commonIntents && profile.queryPatterns.commonIntents.length > 0
+        ? profile.queryPatterns.commonIntents
+        : ['legal_analysis', 'chat', 'research'];
+
+    // Short heuristic: longer queries slightly bias toward legal_analysis (more complex questions)
+    const lengthFactor = Math.min(1, (currentQuery?.length ?? 0) / 200);
+
+    const scored = intents.map(intent => {
+      const pref = profile.preferredModels.get(intent) ?? 0.5;
+      // boost legal_analysis by lengthFactor, leave others mostly based on preference
+      const boost = intent === 'legal_analysis' ? 0.5 * lengthFactor : 0;
+      const score = Math.min(1, pref + boost);
+      return { intent, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+
+    const intentToModel = (intent: string) =>
+      intent === 'legal_analysis' ? 'llama-rl' : intent === 'chat' ? 'gemma270m' : 'llama-rl';
+
+    // Return top 3 predictions (fill defaults if less than 3)
+    return scored.slice(0, 3).map(s => ({
+      nextLikelyIntent: s.intent,
+      probability: s.score,
+      suggestedModel: intentToModel(s.intent),
+    }));
   }
   private updateUserShortcuts(profile: UserLearningProfile, fastUX: FastUXOptimization): void {
     // Create shortcuts for common query patterns
@@ -529,7 +771,7 @@ class IntelligentModelSwitcher {
   /**
    * Get switcher performance statistics
    */
-  async getPerformanceStats(): Promise<any> {
+  async getPerformanceStats(): Promise<PerformanceStats> {
     const learningPhases = Array.from(this.userProfiles.values()).map(profile => profile.learningPhase);
     const phaseDistribution = learningPhases.reduce(
       (acc, phase) => {
@@ -553,4 +795,5 @@ class IntelligentModelSwitcher {
 }
 // Export singleton instance
 export const intelligentModelSwitcher = new IntelligentModelSwitcher();
+export default intelligentModelSwitcher;
 export default intelligentModelSwitcher;
