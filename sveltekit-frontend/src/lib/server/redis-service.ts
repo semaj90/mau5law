@@ -41,15 +41,19 @@ class RedisService {
     lazyConnect: true,
     keepAlive: 30000,
     family: 4,
-    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
-  }
+    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
+  };
   /**
    * Initialize Redis connection pool
    */
   async initialize(): Promise<boolean> {
     try {
       // Prevent multiple initialization attempts
-      if (this.initialized || (this.pool?.primary && ((this.pool.primary as any).status === 'connecting' || (this.pool.primary as any).status === 'connected'))) {
+      if (
+        this.initialized ||
+        (this.pool?.primary &&
+          ((this.pool.primary as any).status === 'connecting' || (this.pool.primary as any).status === 'connected'))
+      ) {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
       }
@@ -71,8 +75,8 @@ class RedisService {
           ...this.config,
           lazyConnect: false,
           connectionName: 'legal-ai-publisher',
-        })
-      }
+        }),
+      };
       // Set up event handlers
       this.setupEventHandlers(this.pool.primary, 'primary');
       this.setupEventHandlers(this.pool.subscriber, 'subscriber');
@@ -106,7 +110,7 @@ class RedisService {
       this.isConnected = true;
       this.reconnectAttempts = 0;
     });
-    redis.on('error', (error) => {
+    redis.on('error', error => {
       console.error(`❌ [RedisService] ${name} error:`, error);
       this.isConnected = false;
     });
@@ -115,7 +119,7 @@ class RedisService {
       this.isConnected = false;
       this.handleReconnection();
     });
-    redis.on('reconnecting', (delay) => {
+    redis.on('reconnecting', delay => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
       this.reconnectAttempts++;
     });
@@ -125,9 +129,7 @@ class RedisService {
    */
   private async handleReconnection(): Promise<void> {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error(
-        `❌ [RedisService] Max reconnection attempts (${this.maxReconnectAttempts}) reached`
-      );
+      console.error(`❌ [RedisService] Max reconnection attempts (${this.maxReconnectAttempts}) reached`);
       return;
     }
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
@@ -147,12 +149,7 @@ class RedisService {
     if (!this.pool?.primary) return;
     try {
       // Test JSON module
-      await (this.pool.primary as any).sendCommand([
-        'JSON.SET',
-        'test:json',
-        '$',
-        '{"legal-ai": "ready"}'
-      ]);
+      await (this.pool.primary as any).sendCommand(['JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}']);
       await (this.pool.primary as any).sendCommand(['JSON.GET', 'test:json']);
       await this.pool.primary.del('test:json');
       console.log('✅ [RedisService] JSON module available');
@@ -209,9 +206,9 @@ class RedisService {
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
-        password: this.config.password ? '[REDACTED]' : undefined
-      }
-    }
+        password: this.config.password ? '[REDACTED]' : undefined,
+      },
+    };
   }
   /**
    * Get Redis memory and keyspace info
@@ -222,16 +219,18 @@ class RedisService {
     }
     try {
       const info = await (this.pool.primary as any).info();
-      // removed unused lines assignment
-      const result: any = {}
+      // Parse INFO response into structured sections
+      const result: any = {};
       let section = 'general';
+      const lines = String(info).split(/\r?\n/);
       for (const line of lines) {
+        if (!line) continue;
         if (line.startsWith('#')) {
           section = line.substring(2).toLowerCase();
-          result[section] = {}
+          result[section] = {};
         } else if (line.includes(':')) {
-          const [key, value] = line.split(':', 2);
-          result[section][key] = isNaN(Number(value)) ? value : Number(value);
+          const [k, v] = line.split(':', 2);
+          result[section][k] = isNaN(Number(v)) ? v : Number(v);
         }
       }
       return result;
@@ -243,7 +242,7 @@ class RedisService {
   /**
    * Cache operations with intelligent TTL for legal AI workloads
    */
-  async set(_key: string, value: any, ttlSeconds?: number): Promise<boolean> {
+  async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -282,7 +281,7 @@ class RedisService {
       return false;
     }
   }
-  async get<T = any>(_key: string): Promise<T | null> {
+  async get<T = any>(key: string): Promise<T | null> {
     const client = this.getClient();
     if (!client) return null;
     try {
@@ -298,7 +297,7 @@ class RedisService {
       return null;
     }
   }
-  async del(_key: string): Promise<boolean> {
+  async del(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -309,7 +308,7 @@ class RedisService {
       return false;
     }
   }
-  async exists(_key: string): Promise<boolean> {
+  async exists(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -333,7 +332,7 @@ class RedisService {
   /**
    * Hash operations
    */
-  async hget(_key: string, field: string): Promise<string | null> {
+  async hget(key: string, field: string): Promise<string | null> {
     const client = this.getClient();
     if (!client) return null;
     try {
@@ -343,7 +342,7 @@ class RedisService {
       return null;
     }
   }
-  async hset(_key: string, field: string, value: string): Promise<boolean> {
+  async hset(key: string, field: string, value: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -354,17 +353,17 @@ class RedisService {
       return false;
     }
   }
-  async hgetall(_key: string): Promise<any> {
+  async hgetall(key: string): Promise<any> {
     const client = this.getClient();
-    if (!client) return {}
+    if (!client) return {};
     try {
-      return (await (client as any).hgetall(key)) || {}
+      return (await (client as any).hgetall(key)) || {};
     } catch (error) {
       console.error(`[RedisService] Failed to hgetall ${key}:`, error);
-      return {}
+      return {};
     }
   }
-  async hincrby(_key: string, field: string, increment: number): Promise<number> {
+  async hincrby(key: string, field: string, increment: number): Promise<number> {
     const client = this.getClient();
     if (!client) return 0;
     try {
@@ -374,7 +373,7 @@ class RedisService {
       return 0;
     }
   }
-  async expire(_key: string, seconds: number): Promise<boolean> {
+  async expire(key: string, seconds: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -404,8 +403,8 @@ class RedisService {
       embedding,
       metadata,
       cached_at: new Date().toISOString(),
-      dimension: embedding.length
-    }
+      dimension: embedding.length,
+    };
     return await this.set(key, data);
   }
   async getCachedEmbedding(documentId: string): Promise<any> {
@@ -419,8 +418,8 @@ class RedisService {
       query,
       results,
       cached_at: new Date().toISOString(),
-      result_count: results.length
-    }
+      result_count: results.length,
+    };
     return await this.set(key, data, ttl);
   }
   async getCachedSearch(query: string): Promise<any> {
@@ -435,8 +434,8 @@ class RedisService {
       operation,
       input_size: input.byteLength,
       result: Buffer.from(result).toString('base64'),
-      cached_at: new Date().toISOString()
-    }
+      cached_at: new Date().toISOString(),
+    };
     return await this.set(key, data);
   }
   async getCachedWasmTensor(operation: string, input: ArrayBuffer): Promise<ArrayBuffer | null> {
@@ -455,8 +454,8 @@ class RedisService {
       quantized_size: quantized.byteLength,
       compression_ratio: vectors.byteLength / quantized.byteLength,
       quantized: Buffer.from(quantized).toString('base64'),
-      cached_at: new Date().toISOString()
-    }
+      cached_at: new Date().toISOString(),
+    };
     return await this.set(key, data);
   }
   async getQuantizedVectors(batchId: string): Promise<Int8Array | null> {
@@ -468,7 +467,7 @@ class RedisService {
     return null;
   }
   // Redis Streams methods
-  async xAdd(_key: string, id: string, fields: { [key: string]: any }): Promise<string> {
+  async xAdd(key: string, id: string, fields: { [key: string]: any }): Promise<string> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
     try {
@@ -479,7 +478,8 @@ class RedisService {
       throw error;
     }
   }
-  async xInfoStream(_key: string): Promise<any> {
+
+  async xInfoStream(key: string): Promise<any> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
     try {
@@ -489,15 +489,12 @@ class RedisService {
       throw error;
     }
   }
-  async xRevRange(_key: string
-    end: string;
-    start: string,
-    options?: { COUNT: number }
-  ): Promise<any[]> {
+
+  async xRevRange(key: string, end: string, start: string, options?: { COUNT: number }): Promise<any[]> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
     try {
-      const args = [key, end, start];
+      const args: any[] = [key, end, start];
       if (options?.COUNT) {
         args.push('COUNT', options.COUNT.toString());
       }
@@ -513,11 +510,7 @@ class RedisService {
   async shutdown(): Promise<void> {
     console.log('[RedisService] Shutting down Redis connections...');
     if (this.pool) {
-      await Promise.all([
-        this.pool.primary.quit(),
-        this.pool.subscriber.quit(),
-        this.pool.publisher.quit()
-      ]);
+      await Promise.all([this.pool.primary.quit(), this.pool.subscriber.quit(), this.pool.publisher.quit()]);
       this.pool = null;
     }
     this.isConnected = false;

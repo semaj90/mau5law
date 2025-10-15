@@ -201,6 +201,11 @@ const evidenceProcessingMachine = createMachine({
 } as any);
 // Svelte Stores for State Management
 export const evidenceService = interpret(evidenceProcessingMachine);
+try {
+  evidenceService.start?.();
+} catch (e) {
+  console.warn('evidenceService.start() failed or is not required in this environment', e);
+}
 export const currentState = writable(evidenceService.getSnapshot() as any);
 export const isProcessing = derived(currentState, function deriveIsProcessing($state: any) {
   const v = $state?.value as string;
@@ -212,10 +217,14 @@ export const processingProgress = derived(currentState, $state => {
   return Math.round((steps / totalSteps) * 100);
 });
 // Start the service
-evidenceService.start();
-evidenceService.onTransition(state => {
-  currentState.set(state);
-});
+// If the actor supports onTransition, subscribe to transitions; fallback to no-op otherwise.
+try {
+  evidenceService.onTransition?.(state => {
+    currentState.set(state as any);
+  });
+} catch (e) {
+  console.warn('evidenceService.onTransition failed or is unavailable in this environment', e);
+}
 // Evidence Processing Functions
 export const processEvidence = (file: File, evidenceId: string, caseId: string) => {
   evidenceService.send({

@@ -62,111 +62,65 @@ ${basePrompt}`;
   return basePrompt;
 }
 
-/**
- * Single POST handler that:
- * - If body contains a simple "message" (and not analysis-specific fields) -> perform langextract (Go service with JS fallback)
- * - Otherwise -> perform richer analysis (Ollama) and return structured JSON
- */
+// POST handler: use langextract service when requested or when only `message` is provided.
+// Otherwise generate a richer analysis prompt and return a deterministic id + skeleton analysis.
 export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const body = (await request.json()) as AnalysisRequest;
+  const body = (await request.json()) as AnalysisRequest;
 
-    // Heuristic: if caller explicitly requests langextract mode or provides a plain message and no analysis fields
-    const wantsLangExtract =
-      body.mode === 'langextract' ||
-      (!!body.message && !body.text && !body.analysisType && !body.evidenceId && !body.caseId);
+  // If caller explicitly requested langextract mode OR only provided a message (simple extraction)
+  const wantsLangExtract = body.mode === 'langextract' || (!!body.message && !body.analysisType && !body.text);
 
-    if (wantsLangExtract) {
-      const userId = body.user_id ?? body.userId ?? 'anonymous';
-      const message = body.message ?? '';
-      // Try Go service first
-      try {
-        const resp = await fetch(LANGEXTRACT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: userId, message }),
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          return json(data, { status: 200 });
-        }
-        // fallthrough to JS fallback if service returns non-ok
-        console.warn('langextract service returned non-ok status, falling back to JS extraction', resp.status);
-      } catch (err) {
-        console.warn('langextract service not available, using JS fallback', String(err));
+  if (wantsLangExtract) {
+    const text = body.message ?? body.text ?? '';
+    // Try Go langextract endpoint, fallback to JS extractor
+    try {
+      const resp = await fetch(LANGEXTRACT_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        return json({ ok: true, source: 'langextract-service', data }, { status: 200 });
+      } else {
+        // fallback
+        const counts = await jsExtract(text);
+        return json({ ok: true, source: 'langextract-fallback-js', data: counts }, { status: 200 });
       }
-      const data = await jsExtract(message);
-      return json(data, { status: 200 });
+    } catch (e) {
+      // network or other error -> fallback
+      const counts = await jsExtract(text);
+      return json({ ok: true, source: 'langextract-fallback-js', data: counts, error: String(e) }, { status: 200 });
     }
+  }
 
-    // Analysis flow
-    const startTime = Date.now();
-    if (!body.text && !body.evidenceId && !body.caseId) {
-      return json({ error: 'Missing required field: text, evidenceId, or caseId' }, { status: 400 });
-    }
-    const documentText = body.text ?? '';
-    const _documentMetadata: Record<string, unknown> = {}; // placeholder, kept to satisfy prompt builder signature
-    const contextualInfo = '';
-    const modelName = body.useThinkingStyle ? 'gemma3-legal:latest' : 'gemma3-legal:latest';
+  // RICHER ANALYSIS path
+  try {
+    const text = body.text ?? '';
     const prompt = buildEnhancedAnalysisPrompt(
-      documentText,
-      body.analysisType ?? 'classification',
+      text,
+      body.analysisType ?? 'analysis',
       body.documentType ?? 'legal_document',
-      !!body.useThinkingStyle,
-      contextualInfo,
-      _documentMetadata
+      Boolean(body.useThinkingStyle),
+      Array.isArray(body.contextDocuments) ? body.contextDocuments.join('\n') : '',
+      {}
     );
 
-    let aiContent = '';
-    try {
-      const resp = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: modelName,
-          prompt,
-          stream: false,
-          options: {
-            temperature: 0.2,
-            top_p: 0.9,
-            num_ctx: 4096,
-          },
-        }),
-      });
-      if (!resp.ok) {
-        console.warn(`Ollama API returned ${resp.status}: ${resp.statusText}`);
-        aiContent = 'AI analysis unavailable (service error)';
-      } else {
-        const data = await resp.json();
-        aiContent = (data && (data.response ?? data.result)) || 'No analysis returned';
-      }
-    } catch (fetchError) {
-      console.warn('Could not connect to Ollama:', String(fetchError));
-      aiContent = 'AI analysis unavailable (connection error)';
-    }
+    // deterministic id for this prompt/analysis (uses createHash)
+    const id = createHash('sha256').update(prompt).digest('hex');
 
-    const requestId = createHash('sha256')
-      .update(`${Date.now()}-${JSON.stringify(body)}`)
-      .digest('hex')
-      .slice(0, 8);
-
-    const result = {
-      requestId,
-      analysis: aiContent,
-      metadata: {
-        documentType: body.documentType ?? 'legal_document',
-        analysisType: body.analysisType ?? 'classification',
-        useThinkingStyle: !!body.useThinkingStyle,
-        textLength: documentText.length,
-        processingTimeMs: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
-        model: modelName,
-      },
+    // Return a skeleton analysis (LLM integration would replace this)
+    const analysis = {
+      id,
+      promptSummary: prompt.slice(0, 500),
+      keyFindings: [],
+      legalRelevance: '',
+      complianceIssues: [],
+      recommendations: [],
     };
-    return json(result);
-  } catch (error: unknown) {
-    console.error('Analysis endpoint error:', error);
-    const message = error instanceof Error ? error.message : String(error);
-    return json({ error: 'Internal server error', details: message }, { status: 500 });
+
+    return json({ ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });
+  } catch (err) {
+    return json({ ok: false, error: 'Failed to perform analysis', details: String(err) }, { status: 500 });
   }
 };

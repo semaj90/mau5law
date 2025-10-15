@@ -468,9 +468,9 @@ export class NESGPUMemoryBridge {
     if (!this.device) return;
     // Create 128x64 texture for legal document patterns
     const patternData = new Float32Array(128 * 64);
-    // Fill with simulated pattern data based on CHR-ROM bank
+    // Fill with simulated pattern data based on CHR-ROM bank, seeded by start address
     for (let i = 0; i < patternData.length; i++) {
-      patternData[i] = Math.sin(i * 0.01) * 0.5 + 0.5;
+      patternData[i] = Math.sin((i + cudaRegion.startAddr) * 0.01) * 0.5 + 0.5;
     }
     await this.createRankingTexture('pattern_matching', patternData, {
       width: 128,
@@ -487,7 +487,7 @@ export class NESGPUMemoryBridge {
     if (nesStats.usedPRG > 0) this.activeBankMappings.set('PRG_ROM', nesStats.usedPRG);
   }
   private startSyncLoop(): void {
-    if (this.gpuSyncInterval) return;
+    if this.gpuSyncInterval) return;
     // No cast required — TypeScript will infer the correct ReturnType<typeof setInterval>
     this.gpuSyncInterval = setInterval(() => {
       this.synchronizeNESGPUMemory();

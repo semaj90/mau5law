@@ -17,7 +17,18 @@ const analyticsMachine = createMachine({
   },
 });
 
-export const analyticsService = interpret(analyticsMachine).start();
+// Create an actor from the machine and start it safely.
+// In XState v5 the actor returned by `interpret` exposes `start`() as an optional method
+// so call it defensively to remain compatible with both v4 and v5 patterns.
+export const analyticsService = interpret(analyticsMachine);
+try {
+  analyticsService.start?.();
+} catch (e) {
+  // If starting the interpreter fails for any reason, log and continue; runtime code may call start later.
+  // Do not rethrow to avoid breaking simple server-side imports.
+  // eslint-disable-next-line no-console
+  console.warn('analyticsService.start() failed or is not required in this environment', e);
+}
 
 export async function logUserEvent(event: UserEvent) {
   userEvents.update(e => [...e, event]);

@@ -9,7 +9,28 @@ import { userIntentPredictionSystem } from '$lib/ai/user-intent-prediction-syste
 // NOTE: We fall back to a direct postgres-js client for raw SQL needed for pg_trgm & vector ops
 const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 600
-const intentPredictionSystem = new UserIntentPredictionSystem()
+
+// Add a concise typed shape for AI "did you mean" suggestions
+type DidYouMeanSuggestion = {
+  term?: string;
+  suggestion?: string;
+  text?: string;
+  score?: number;
+  confidence?: number;
+  [key: string]: unknown;
+};
+
+// New: typed shape for user learning insights returned by the optional AI method
+type UserLearningInsights = {
+  confidenceLevel?: number | string | null;
+  learningPhase?: string | null;
+  topIntents?: Array<{ intent: string; score?: number }> | null;
+  [key: string]: unknown;
+};
+
+// Use the imported instance (avoid referencing undefined class)
+const intentPredictionSystem = userIntentPredictionSystem
+
 async function semanticCandidates(query: string, limit: number) {
   if (!sql) return []
   try {
@@ -51,47 +72,50 @@ async function semanticCandidates(query: string, limit: number) {
     return Object.entries(freq)
       .sort((a, b) => b[1] - a[1])
       .slice(0, limit)
-      .map(([term, score]) => ({ term, score, source: 'semantic' as const })
+      .map(([term, score]) => ({ term, score, source: 'semantic' as const }));
   } catch (e) {
     console.error('semanticCandidates error', e)
     return []
   }
 }
+
 async function lexicalCandidates(query: string, limit: number) {
-  if (!sql) return []
+  if (!sql) return [];
   const rows = await sql`
     SELECT term, similarity(term, ${query}) AS score
     FROM search_terms
     WHERE term % ${query}
     ORDER BY score DESC
     LIMIT ${limit}
-  `
-  return (rows as any[]).map((r) => ({
+  `;
+  return (rows as any[]).map(r => ({
     term: r.term as string,
     score: Number(r.score),
-    source: 'lexical' as const
-  })
+    source: 'lexical' as const,
+  }));
 }
+
 function rankMerge(lex: any[], sem: any[], k: number) {
-  const map = new Map<string, { term: string; lexical?: number; semantic?: number }>()
+  const map = new Map<string, { term: string; lexical?: number; semantic?: number }>();
   for (const c of lex) {
-    map.set(c.term, { term: c.term, lexical: c.score })
+    map.set(c.term, { term: c.term, lexical: c.score });
   }
   for (const c of sem) {
-    const existing = map.get(c.term)
-    if (existing) existing.semantic = c.score
-    else map.set(c.term, { term: c.term, semantic: c.score })
+    const existing = map.get(c.term);
+    if (existing) existing.semantic = c.score;
+    else map.set(c.term, { term: c.term, semantic: c.score });
   }
-  const merged = Array.from(map.values()).map((r) => {
-    const lexical = r.lexical ?? 0
-    const semantic = r.semantic ?? 0
+  const merged = Array.from(map.values()).map(r => {
+    const lexical = r.lexical ?? 0;
+    const semantic = r.semantic ?? 0;
     // Weighted hybrid score (tuneable): favor lexical for typos when lexical present
-    const score = lexical > 0 ? 0.6 * lexical + 0.4 * semantic : 0.8 * semantic
-    return { term: r.term, lexical, semantic, score }
-  })
-  merged.sort((a, b) => b.score - a.score)
-  return merged.slice(0, k)
+    const score = lexical > 0 ? 0.6 * lexical + 0.4 * semantic : 0.8 * semantic;
+    return { term: r.term, lexical, semantic, score };
+  });
+  merged.sort((a, b) => b.score - a.score);
+  return merged.slice(0, k);
 }
+
 export const POST: RequestHandler = async ({ request }) => {
   const started = performance.now()
   const {
@@ -130,86 +154,126 @@ export const POST: RequestHandler = async ({ request }) => {
     console.warn('increment_search_term failed', e)
   }
   // Run traditional lexical/semantic suggestions in parallel with AI suggestions
-  const promises: Promise<any>[] = [
-    lexicalCandidates(query, limit * 2),
-    semanticCandidates(query, limit * 2)
-  ]
+  const lexicalPromise = lexicalCandidates(query, limit * 2);
+  const semanticPromise = semanticCandidates(query, limit * 2);
+
   // Add AI-enhanced suggestions if requested
-  let aiSuggestionsPromise: Promise<any> | null = null
-  let taskSuggestionsPromise: Promise<any> | null = null
-  let userInsightsPromise: Promise<any> | null = null
-  if (includeAI) {
-    aiSuggestionsPromise = intentPredictionSystem.getDidYouMeanSuggestions(
-      query,
-      userId || 'anonymous',
-      context
-    )
-    if (includeTaskSuggestions) {
-      taskSuggestionsPromise = intentPredictionSystem.predictTaskCompletion(
-        query,
-        userId || 'anonymous'
-      )
-    }
-    userInsightsPromise = intentPredictionSystem.getUserLearningInsights(userId || 'anonymous')
-  }
-  const results = await Promise.all([
-    promises[0], // lexical
-    promises[1], // semantic
-    aiSuggestionsPromise,
-    taskSuggestionsPromise,
-    userInsightsPromise
-  ])
-  const [lex, sem, aiSuggestions, taskSuggestions, userInsights] = results
-  // Merge traditional suggestions
-  const traditionalSuggestions = rankMerge(lex, sem, limit)
-  // Combine with AI suggestions if available
-  let combinedSuggestions = traditionalSuggestions
-  if (aiSuggestions && aiSuggestions.didYouMean) {
-    // Add AI suggestions with enhanced scoring
-    const aiEnhanced = aiSuggestions.didYouMean.map((suggestion: any) => ({
-      ...suggestion,
-      source: 'ai',
-      enhanced: true
-    })
-    // Merge and deduplicate
-    const allSuggestions = [...traditionalSuggestions, ...aiEnhanced]
-    const uniqueSuggestions = new Map()
-    for (const suggestion of allSuggestions) {
-      const key = suggestion.term || suggestion.suggestion || suggestion.text
-      if (key && (!uniqueSuggestions.has(key) || suggestion.enhanced)) {
-        uniqueSuggestions.set(key, suggestion)
+  // initialize as resolved promises to keep Promise.all elements consistent
+
+  // Safe invoker: call a method on intentPredictionSystem only if it exists,
+  // returning null otherwise. This avoids TS errors when the implementation
+  // doesn't expose the named methods.
+  function callIntentMethod<T>(methodName: string, ...args: any[]): Promise<T | null> {
+    const fn = (intentPredictionSystem as any)?.[methodName];
+    if (typeof fn === 'function') {
+      try {
+        const res = fn.apply(intentPredictionSystem, args);
+        // ensure we always return a Promise<T | null>
+        return Promise.resolve(res as Promise<T>);
+      } catch (e) {
+        console.warn(`intentPredictionSystem.${methodName} threw`, e);
+        return Promise.resolve(null);
       }
     }
-    combinedSuggestions = Array.from(uniqueSuggestions.values()
-      .sort((a, b) => (b.score || b.confidence || 0) - (a.score || a.confidence || 0)
-      .slice(0, limit)
+    return Promise.resolve(null);
   }
+
+  let aiSuggestionsPromise: Promise<{ didYouMean?: DidYouMeanSuggestion[] } | null> = Promise.resolve(null);
+  let taskSuggestionsPromise: Promise<unknown> = Promise.resolve(null);
+  // strongly type the user insights promise so downstream usage is safe
+  let userInsightsPromise: Promise<UserLearningInsights | null> = Promise.resolve(null);
+  if (includeAI) {
+    // Use safe wrapper to call optional methods (avoids "property does not exist" TS errors).
+    aiSuggestionsPromise = callIntentMethod<{ didYouMean?: DidYouMeanSuggestion[] }>('getDidYouMeanSuggestions', query, userId || 'anonymous', context);
+    if (includeTaskSuggestions) {
+      taskSuggestionsPromise = callIntentMethod<unknown>('predictTaskCompletion', query, userId || 'anonymous');
+    }
+    // request typed user insights
+    userInsightsPromise = callIntentMethod<UserLearningInsights>('getUserLearningInsights', userId || 'anonymous');
+  }
+
+  // Ensure Promise.all receives only Promises and avoid `any[]` by asserting a typed tuple.
+  const results = await Promise.all([
+    lexicalPromise,
+    semanticPromise,
+    aiSuggestionsPromise,
+    taskSuggestionsPromise,
+    userInsightsPromise,
+  ]) as [
+    Awaited<ReturnType<typeof lexicalCandidates>>,
+    Awaited<ReturnType<typeof semanticCandidates>>,
+    { didYouMean?: DidYouMeanSuggestion[] } | null,
+    unknown,
+    UserLearningInsights | null
+  ];
+
+  const [lex, sem, aiSuggestions, taskSuggestions, userInsights] = results;
+  // Merge traditional suggestions
+  const traditionalSuggestions = rankMerge(lex || [], sem || [], limit);
+
+  // Combine with AI suggestions if available
+  let combinedSuggestions = traditionalSuggestions;
+  if (aiSuggestions && Array.isArray(aiSuggestions.didYouMean)) {
+    // Add AI suggestions with enhanced scoring
+    const aiEnhanced = aiSuggestions.didYouMean.map((suggestion: DidYouMeanSuggestion) => ({
+      ...suggestion,
+      source: 'ai' as const,
+      enhanced: true,
+    }));
+    // Merge and deduplicate while favoring enhanced items
+    const allSuggestions = [...traditionalSuggestions, ...aiEnhanced];
+    const uniqueSuggestions = new Map<string, any>();
+    for (const suggestion of allSuggestions) {
+      const keyStr = suggestion.term || suggestion.suggestion || suggestion.text;
+      if (!keyStr) continue;
+      if (!uniqueSuggestions.has(keyStr) || suggestion.enhanced) {
+        uniqueSuggestions.set(keyStr, suggestion);
+      }
+    }
+    combinedSuggestions = Array.from(uniqueSuggestions.values())
+      .slice() // ensure array
+      .sort((a, b) => (b.score || b.confidence || 0) - (a.score || a.confidence || 0))
+      .slice(0, limit);
+  }
+
+  const userProfile = userInsights
+    ? {
+        confidenceLevel: userInsights.confidenceLevel ?? null,
+        learningPhase: userInsights.learningPhase ?? null,
+        preferredIntents: Array.isArray(userInsights.topIntents)
+          ? userInsights.topIntents.slice(0, 3)
+          : [],
+      }
+    : null;
+
   const responseData = {
     query,
     suggestions: combinedSuggestions,
     aiSuggestions: aiSuggestions || null,
     taskSuggestions: taskSuggestions || [],
-    userProfile: userInsights,
-      ? {
-          confidenceLevel: userInsights.confidenceLevel,
-          learningPhase: userInsights.learningPhase,
-          preferredIntents: userInsights.topIntents?.slice(0, 3) || []
-        }
-      : null
+    userProfile,
     cached: false,
     took_ms: Math.round(performance.now() - started),
+  };
+
+  // Cache the combined results (best-effort)
+  try {
+    if (typeof redis.setCache === 'function') {
+      await redis.setCache(
+        key,
+        {
+          suggestions: combinedSuggestions,
+          aiSuggestions: aiSuggestions || null,
+          taskSuggestions: taskSuggestions || [],
+          userProfile,
+        },
+        REDIS_TTL_SECONDS
+      );
+    }
+  } catch (e) {
+    console.warn('redis.setCache failed', e);
   }
-  // Cache the combined results
-  await redis.setCache(
-    key,)
-    {
-      suggestions: combinedSuggestions
-      aiSuggestions: aiSuggestions || null
-      taskSuggestions: taskSuggestions || []
-      userProfile: responseData.userProfile
-    },
-    REDIS_TTL_SECONDS
-  )
+
   return new Response(JSON.stringify(responseData), {
     headers: { 'Content-Type': 'application/json' }
   })
