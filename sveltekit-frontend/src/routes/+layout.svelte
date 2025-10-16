@@ -15,27 +15,70 @@
   // Define the machine ID for the RAG Sync Agent. This ID must be consistent with its registration in xstate-integration.ts.
   const RAG_SYNC_AGENT_MACHINE_ID = 'ragSyncAgentMachine';
 
-  onMount(() => {
-    loadSession();
+  // track whether we actually started the agent so we only attempt to stop it if needed
+  let agentStarted = false;
 
-    // Start the background sync agent by sending an event to the central XState coordinator.
-    // This aligns with the event-driven architecture and central XState integration pattern.
+  onMount(async () => {
+    // Safely load session and avoid unhandled promise rejections
     try {
-      xstateIntegration.sendEvent(RAG_SYNC_AGENT_MACHINE_ID, { type: 'START_AGENT' });
+      // Support multiple possible exports:
+      // - a callable initializer (old default export function)
+      // - a store object with common initializer names: load, initialize, loadSession
+      if (typeof loadSession === 'function') {
+        await (loadSession as unknown as () => Promise<void>)();
+      } else if (typeof (loadSession as any).load === 'function') {
+        await (loadSession as any).load();
+      } else if (typeof (loadSession as any).initialize === 'function') {
+        await (loadSession as any).initialize();
+      } else if (typeof (loadSession as any).loadSession === 'function') {
+        await (loadSession as any).loadSession();
+      } else {
+        // No initializer found; skip quietly.
+        console.debug('loadSession: no callable initializer found on import; skipping.');
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('loadSession failed:', err);
+    }
+
+    // Start background sync agent via central XState coordinator if available
+    try {
+      // Use runtime lookup to avoid TypeScript errors when the property does not exist.
+      const sendFn =
+        (xstateIntegration as any)?.['sendEvent'] ??
+        (xstateIntegration as any)?.['send'] ??
+        (xstateIntegration as any)?.['sendToMachine'];
+
+      if (typeof sendFn === 'function') {
+        sendFn.call(xstateIntegration, RAG_SYNC_AGENT_MACHINE_ID, { type: 'START_AGENT' });
+        agentStarted = true;
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('xstateIntegration: no send function available; cannot start RAG sync agent.');
+      }
     } catch (e) {
-      // Log a warning if the event dispatch fails, but don't break the app.
-      // The xstateIntegration service should handle internal machine errors.
       // eslint-disable-next-line no-console
       console.warn('Failed to send START_AGENT event to xstateIntegration for RAG Sync Agent:', e);
     }
   });
 
   onDestroy(() => {
-    // Stop the background sync agent by sending an event to the central XState coordinator.
+    if (!agentStarted) return;
+
     try {
-      xstateIntegration.sendEvent(RAG_SYNC_AGENT_MACHINE_ID, { type: 'STOP_AGENT' });
+      const sendFn =
+        (xstateIntegration as any)?.['sendEvent'] ??
+        (xstateIntegration as any)?.['send'] ??
+        (xstateIntegration as any)?.['sendToMachine'];
+
+      if (typeof sendFn === 'function') {
+        sendFn.call(xstateIntegration, RAG_SYNC_AGENT_MACHINE_ID, { type: 'STOP_AGENT' });
+        agentStarted = false;
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('xstateIntegration: no send function available; cannot stop RAG sync agent.');
+      }
     } catch (e) {
-      // Log a warning if the event dispatch fails.
       // eslint-disable-next-line no-console
       console.warn('Failed to send STOP_AGENT event to xstateIntegration for RAG Sync Agent:', e);
     }
@@ -45,7 +88,8 @@
 <div class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
   <Navigation />
   <main class="container mx-auto p-4">
-    {@render children()}
+    <!-- render child routes correctly -->
+    <slot />
   </main>
   <GlobalAIAssistantButton />
 </div>
