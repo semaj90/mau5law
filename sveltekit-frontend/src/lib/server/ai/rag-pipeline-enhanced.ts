@@ -21,7 +21,7 @@
  */
 import crypto from 'crypto';
 import Redis from 'ioredis';
-import postgres from 'postgres';
+import postgres, { type Notice } from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { sql, eq } from 'drizzle-orm';
 import { PromptTemplate } from '@langchain/core/prompts';
@@ -320,6 +320,7 @@ function getLLMText(response: unknown): string {
     const obj = response as Record<string, unknown>;
     if (typeof obj.parse === 'string') return obj.parse;
     if (typeof obj.content === 'string') return obj.content;
+    if (typeof obj.response === 'string') return obj.response; // Added for Ollama /api/generate
   }
   try {
     return String(response);
@@ -328,55 +329,17 @@ function getLLMText(response: unknown): string {
   }
 }
 
-// ===== NEW: Lightweight adapters & types to replace deprecated Ollama classes =====
+// ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
+
+/**
+ * Interface for embedding providers.
+ */
 interface EmbeddingsProvider {
   embedQuery(input: string): Promise<number[]>;
 }
 
-type RunnableInvokeInput = Record<string, unknown>;
-type RunnableInvokeOutput = unknown;
-
-// Modified: SimpleRunnable no longer extends Runnable, making it truly minimal
-interface SimpleRunnable {
-  invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput>;
-  // Add other properties expected by RunnableSequence if needed, or rely on casting
-  readonly lc_namespace?: string[];
-  readonly lc_id?: string[];
-  readonly lc_kwargs?: Record<string, unknown>;
-  // Minimal stubs for other Runnable methods if they are called
-  
-    if (typeof data.content === 'string') return data.content;
-    return JSON.stringify(data);
-  }
-  // stub for other Runnable methods - no-op implementations to satisfy interface
-  async produce(): Promise<RunnableInvokeOutput> {
-    throw new Error('Not implemented');
-  }
-  // Minimal stubs for other Runnable methods to satisfy SimpleRunnable (if it were to extend Runnable)
-  // These are not strictly necessary if SimpleRunnable doesn't extend Runnable,
-  // but provide a more complete Runnable-like object if needed for future extensions.
-  bind = (...args: any[]) => this;
-  map = (...args: any[]) => this;
-  batch = (...args: any[]) => this;
-  pipe = (...args: any[]) => this;
-  withConfig = (...args: any[]) => this;
-  withListeners = (...args: any[]) => this;
-  withRetry = (...args: any[]) => this;
-  withFallbacks = (...args: any[]) => this;
-  pick = (...args: any[]) => this;
-  passthrough = (...args: any[]) => this;
-  assign = (...args: any[]) => this;
-  withType = (...args: any[]) => this;
-  getName = () => this.lc_id?.[0] || 'OllamaHTTPLLM';
-  getGraph = (...args: any[]) => ({ nodes: [], edges: [] });
-  get = (...args: any[]) => undefined;
-  set = (...args: any[]) => undefined;
-}
-
-// ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
-
 /**
- * Minimal InputValidator for basic input validation and sanitization.
+ * Minimal InputValidator class.
  */
 class InputValidator {
   constructor(private securityConfig: SecuritySettings) {}
@@ -385,23 +348,23 @@ class InputValidator {
     if (input.length > maxLength) {
       throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
     }
-    let sanitized = input.trim();
+    let sanitized = input;
     if (this.securityConfig.sanitization.removeHtmlTags) {
       sanitized = sanitized.replace(/<[^>]*>?/gm, '');
     }
     if (this.securityConfig.sanitization.removeSqlChars) {
-      sanitized = sanitized.replace(/['";`]/g, ''); // Basic SQL char removal
+      sanitized = sanitized.replace(/['";`]/g, '');
     }
-    return sanitized;
+    return sanitized.trim();
   }
 
   validateUUID(uuid: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
   }
 
-  validateDocumentType(docType: string): boolean {
-    return this.securityConfig.validation.allowedDocumentTypes.includes(docType);
+  validateDocumentType(type: string): boolean {
+    return this.securityConfig.validation.allowedDocumentTypes.includes(type);
   }
 
   validateConfidentialityLevel(level: string): boolean {
@@ -411,135 +374,245 @@ class InputValidator {
 }
 
 /**
- * Minimal RateLimiter for basic request rate limiting.
+ * Minimal RateLimiter class.
  */
 class RateLimiter {
-  private requestCounts: Map<string, { count: number; lastReset: number }> = new Map();
+  private requests: Map<string, number[]> = new Map(); // userId -> timestamps
+  private windowMs: number;
+  private perMinute: number;
 
-  constructor(private rateLimitConfig: SecuritySettings['rateLimit']) {}
+  constructor(config: SecuritySettings['rateLimit']) {
+    this.windowMs = config.windowMs;
+    this.perMinute = config.perMinute;
+  }
 
   isAllowed(userId: string): boolean {
     const now = Date.now();
-    let userEntry = this.requestCounts.get(userId);
+    const userRequests = this.requests.get(userId) || [];
 
-    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
-      userEntry = { count: 0, lastReset: now };
-      this.requestCounts.set(userId, userEntry);
+    // Filter out requests older than the window
+    const recentRequests = userRequests.filter(timestamp => now - timestamp < this.windowMs);
+
+    if (recentRequests.length >= this.perMinute) {
+      return false;
     }
 
-    if (userEntry.count < this.rateLimitConfig.perMinute) {
-      userEntry.count++;
-      return true;
-    }
-    return false;
+    recentRequests.push(now);
+    this.requests.set(userId, recentRequests);
+    return true;
   }
 
   getRemainingRequests(userId: string): number {
     const now = Date.now();
-    const userEntry = this.requestCounts.get(userId);
-    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
-      return this.rateLimitConfig.perMinute;
-    }
-    return Math.max(0, this.rateLimitConfig.perMinute - userEntry.count);
+    const userRequests = this.requests.get(userId) || [];
+    const recentRequests = userRequests.filter(timestamp => now - timestamp < this.windowMs);
+    return Math.max(0, this.perMinute - recentRequests.length);
   }
 
   getTimeUntilReset(userId: string): number {
-    const now = Date.now();
-    const userEntry = this.requestCounts.get(userId);
-    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
-      return 0;
-    }
-    return this.rateLimitConfig.windowMs - (now - userEntry.lastReset);
+    const userRequests = this.requests.get(userId) || [];
+    if (userRequests.length === 0) return 0;
+    const oldestRequest = userRequests[0];
+    const resetTime = oldestRequest + this.windowMs;
+    return Math.max(0, resetTime - Date.now());
   }
 }
 
 /**
- * Minimal MetricsCollector for basic performance monitoring.
+ * Minimal MetricsCollector class.
  */
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
-  private timings: Map<string, { sum: number; count: number; last: number }> = new Map();
+  private timings: Map<string, { total: number; count: number; last: number }> = new Map();
 
   incrementCounter(name: string, value = 1): void {
     this.counters.set(name, (this.counters.get(name) || 0) + value);
   }
 
   recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
-    const entry = this.timings.get(name) || { sum: 0, count: 0, last: 0 };
-    entry.sum += duration;
-    entry.count++;
-    entry.last = duration;
-    this.timings.set(name, entry);
-    // In a real system, tags would be used for more granular metrics (e.g., Prometheus labels)
-    // For this minimal implementation, we just store them if provided.
+    const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
+    current.total += duration;
+    current.count++;
+    current.last = duration;
+    this.timings.set(name, current);
+    // In a real system, tags would be used for more granular metrics
     if (tags) {
-      // Potentially store tagged metrics separately or aggregate
+      // console.debug(`Metric: ${name}, Duration: ${duration}ms, Tags: ${JSON.stringify(tags)}`);
     }
   }
 
   getMetrics(): Record<string, unknown> {
     const metrics: Record<string, unknown> = {};
-    this.counters.forEach((value, key) => {
-      metrics[`counter_${key}`] = value;
-    });
+    this.counters.forEach((value, key) => (metrics[`counter_${key}`] = value));
     this.timings.forEach((value, key) => {
-      metrics[`timing_${key}_sum`] = value.sum;
+      metrics[`timing_${key}_total`] = value.total;
       metrics[`timing_${key}_count`] = value.count;
-      metrics[`timing_${key}_avg`] = value.count > 0 ? value.sum / value.count : 0;
       metrics[`timing_${key}_last`] = value.last;
+      metrics[`timing_${key}_avg`] = value.count > 0 ? value.total / value.count : 0;
     });
     return metrics;
   }
 }
 
 /**
- * Minimal LegalChunker for document chunking and section extraction.
+ * Minimal LegalChunker class.
  */
 class LegalChunker {
   constructor(private ragConfig: RAGSettings) {}
 
-  async chunkDocument(content: string, documentType: string): Promise<string[]> {
-    // This is a simplified chunking logic. A real legal chunker would be more sophisticated.
+  async chunkDocument(content: string, _documentType: string): Promise<string[]> {
+    // Simple chunking for now, can be enhanced with legal-specific logic
     const sentences = content.split(/(?<=[.?!])\s+/);
     const chunks: string[] = [];
     let currentChunk = '';
 
     for (const sentence of sentences) {
       if ((currentChunk + sentence).length <= this.ragConfig.chunkSize) {
-        currentChunk += (currentChunk ? ' ' : '') + sentence;
+        currentChunk += (currentChunk.length > 0 ? ' ' : '') + sentence;
       } else {
-        if (currentChunk) {
+        if (currentChunk.length > 0) {
           chunks.push(currentChunk);
         }
         currentChunk = sentence;
       }
     }
-    if (currentChunk) {
+    if (currentChunk.length > 0) {
       chunks.push(currentChunk);
     }
     return chunks;
   }
 
   extractLegalSections(content: string, documentType: string): Record<string, string> {
-    // This is a placeholder. A real implementation would use NLP or regex for legal sectioning.
+    // Placeholder for advanced legal section extraction
     const sections: Record<string, string> = {};
     if (documentType === 'contract') {
-      const clausesMatch = content.match(
-        /(\b(?:Clause|Article)\s+\d+\.?\s*.*?\n[\s\S]*?)(?=\b(?:Clause|Article)\s+\d+\.?|\Z)/gi
-      );
+      const clausesMatch = content.match(/(\d+\.\d+\s+[A-Z][a-zA-Z\s]+)/g);
       if (clausesMatch) {
-        clausesMatch.forEach((match, index) => {
-          const headerMatch = match.match(/(\b(?:Clause|Article)\s+\d+\.?\s*.*?\n)/i);
-          const header = headerMatch ? headerMatch[0].trim() : `Section ${index + 1}`;
-          sections[header] = match.trim();
-        });
-      } else {
-        sections['Full Document'] = content.substring(0, 1000); // Fallback
+        sections['clauses'] = clausesMatch.join(', ');
       }
-    } else {
-      sections['Full Document'] = content.substring(0, 1000); // Fallback
     }
     return sections;
+  }
+}
+
+/**
+ * Type for the input object expected by Runnable.invoke.
+ * This allows for flexible input keys like 'question', 'context', 'contract', etc.
+ */
+type RunnableInvokeInput = {
+  question?: string;
+  context?: string;
+  contract?: string;
+  message?: string;
+  query?: string;
+  documentType?: string;
+  content?: string;
+  [key: string]: unknown; // Allow other arbitrary properties
+};
+
+/**
+ * Type for the output of Runnable.invoke.
+ * Can be a string or a more complex object (e.g., from Ollama's /api/generate).
+ */
+type RunnableInvokeOutput = string | { response: string; [key: string]: unknown };
+
+/**
+ * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API.
+ * Implements EmbeddingsProvider interface.
+ */
+class OllamaHTTPEmbeddings implements EmbeddingsProvider {
+  constructor(
+    private baseUrl: string,
+    private model: string
+  ) {}
+
+  async embedQuery(input: string): Promise<number[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/embeddings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          prompt: input,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      if (!Array.isArray(data.embedding) || !data.embedding.every((num: unknown) => typeof num === 'number')) {
+        throw new Error('Invalid embedding response from Ollama API');
+      }
+      return data.embedding;
+    } catch (error) {
+      console.error('Error generating Ollama embedding:', error);
+      throw error;
+    }
+  }
+}
+
+/**
+ * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.
+ * Provides an 'invoke' method compatible with LangChain's Runnable interface.
+ */
+class OllamaHTTPLLM {
+  constructor(
+    private baseUrl: string,
+    private model: string,
+    private temperature: number,
+    private numCtx: number,
+    private numPredict: number
+  ) {}
+
+  async invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput> {
+    // Determine the primary prompt from the input object
+    const prompt = (input.question || input.context || input.contract || input.message || input.query || '') as string;
+    if (typeof prompt !== 'string' || prompt.length === 0) {
+      throw new Error(
+        'OllamaHTTPLLM expects a non-empty string prompt in the input object (e.g., question, context, contract, message, or query).'
+      );
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          prompt: prompt,
+          options: {
+            temperature: this.temperature,
+            num_ctx: this.numCtx,
+            num_predict: this.numPredict,
+          },
+          stream: false, // Request non-streaming response for invoke
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Ollama generate API error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      // Ollama's /api/generate with stream: false returns { model, created_at, response, done, ... }
+      if (typeof data.response === 'string') {
+        return data.response;
+      }
+      // Return the full data object if 'response' field is not a string,
+      // allowing getLLMText to handle other potential structures.
+      return data;
+    } catch (error) {
+      console.error('Error generating Ollama LLM response:', error);
+      throw error;
+    }
   }
 }
 
@@ -617,9 +690,9 @@ export class EnhancedLegalRAGPipeline {
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
         // use unknown instead of any for callbacks
-        onnotice: (notice: unknown) => console.debug('[DB] Notice:', notice),
+        onnotice: (notice: Notice) => console.debug('[DB] Notice:', notice),
         onparameter: (key: string, value: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
-      } as any); // cast to any to avoid overload mismatch while keeping strong typing above
+      });
       this.db = drizzle(this.sql, { schema });
       // Test connection
       const testResult = await this.sql`SELECT 1 as test`;
@@ -666,7 +739,13 @@ export class EnhancedLegalRAGPipeline {
 
       // Initialize LLM adapter (HTTP) instead of deprecated SDK class
       // cast to Runnable for use in RunnableSequence (adapter implements invoke)
-      this.llm = new OllamaHTTPLLM(OLLAMA_CONFIG.baseUrl, this.config.ollama.llmModel, this.config.ollama.temperature) as unknown as Runnable;
+      this.llm = new OllamaHTTPLLM(
+        OLLAMA_CONFIG.baseUrl,
+        this.config.ollama.llmModel,
+        this.config.ollama.temperature,
+        this.config.ollama.numCtx, // Pass numCtx
+        this.config.ollama.numPredict // Pass numPredict
+      ) as unknown as Runnable;
 
       // Note: callbacks used previously are now handled around the RunnableSequence calls.
       console.log('[RAG] Ollama adapters initialized successfully');
@@ -686,7 +765,9 @@ export class EnhancedLegalRAGPipeline {
       // Test embeddings adapter
       const testEmbedding = await this.embeddings!.embedQuery('test');
       if (testEmbedding.length !== this.config.ollama.embeddingDimensions) {
-        console.warn(`[RAG] Warning: expected ${this.config.ollama.embeddingDimensions} dims, got ${testEmbedding.length}`);
+        console.warn(
+          `[RAG] Warning: expected ${this.config.ollama.embeddingDimensions} dims, got ${testEmbedding.length}`
+        );
       }
       console.log('[RAG] All connections verified successfully');
     } catch (err: unknown) {
@@ -731,7 +812,7 @@ export class EnhancedLegalRAGPipeline {
       await this.ensureInitialized();
       const { caseId, metadata = {}, confidentialityLevel = 'public', jurisdiction, clientId } = params;
       // Start transaction for document creation
-      const [document] = await this.db!.transaction(async (tx) => {
+      const [document] = await this.db!.transaction(async tx => {
         const [doc] = await tx
           .insert(schema.legal_documents)
           .values({
@@ -809,7 +890,8 @@ export class EnhancedLegalRAGPipeline {
             embedding: string;
             metadata: Record<string, unknown>;
           };
-          const isDocumentChunkInsert = (r: unknown): r is DocumentChunkInsert => r !== null && typeof r === 'object' && 'documentId' in (r as object);
+          const isDocumentChunkInsert = (r: unknown): r is DocumentChunkInsert =>
+            r !== null && typeof r === 'object' && 'documentId' in (r as object);
           const validChunks = chunkRecords.filter(isDocumentChunkInsert);
           if (validChunks.length > 0) {
             await this.db!.insert(schema.documentChunks).values(validChunks);
@@ -1585,9 +1667,9 @@ Provide specific clause references and line numbers where applicable. Focus on p
     const services = ['Database', 'Redis', 'Ollama'];
     return checks.map((result, index) => ({
       service: services[index],
-      status: (result as PromiseSettledResult<any>).status === 'fulfilled' ? 'healthy' : 'unhealthy',
+      status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' : 'unhealthy',
       error:
-        (result as PromiseSettledResult<any>).status === 'rejected'
+        (result as PromiseSettledResult<unknown>).status === 'rejected'
           ? (result as PromiseRejectedResult).reason?.message
           : undefined,
       timestamp: new Date().toISOString(),
@@ -1611,7 +1693,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
   }
   /**
    * Get comprehensive metrics
-   */ getMetrics(): { [key: string]: any } {
+   */ getMetrics(): Record<string, unknown> {
     return {
       ...this.metrics.getMetrics(),
       config: {
@@ -1640,10 +1722,12 @@ Provide specific clause references and line numbers where applicable. Focus on p
    * Clean shutdown of all connections
    */ async close(): Promise<void> {
     try {
-      await Promise.allSettled([
-        this.redis?.quit(), // Simplified Redis quit
-        this.sql?.end(),
-      ]);
+      const redisClosePromise = this.redis
+        ? (this.redis as unknown as { quit?: () => Promise<void>; disconnect?: () => void }).quit?.() ||
+          Promise.resolve((this.redis as unknown as { disconnect?: () => void }).disconnect?.())
+        : Promise.resolve();
+
+      await Promise.allSettled([redisClosePromise, this.sql?.end()]);
       this.initialized = false;
       console.log('[RAG] Pipeline closed successfully');
     } catch (err: unknown) {

@@ -129,4 +129,3 @@ export function getRedis(): Redis {
   // and consistent configuration across the application.
   return redis;
 }
-}
