@@ -19,13 +19,11 @@
  * @version 4.2.0
  * @lastModified 2025-01-20
  */
-import fs from 'fs';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { sql, eq, and, gte, desc } from 'drizzle-orm';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { sql, eq } from 'drizzle-orm';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
@@ -338,82 +336,210 @@ interface EmbeddingsProvider {
 type RunnableInvokeInput = Record<string, unknown>;
 type RunnableInvokeOutput = unknown;
 
-interface SimpleRunnable extends Runnable {
+// Modified: SimpleRunnable no longer extends Runnable, making it truly minimal
+interface SimpleRunnable {
   invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput>;
-}
-
-/**
- * Minimal Ollama HTTP Embeddings adapter.
- * Uses the Ollama HTTP API to request embeddings; this avoids importing deprecated SDK types.
- */
-class OllamaHTTPEmbeddings implements EmbeddingsProvider {
-  constructor(private baseUrl: string, private model: string, private timeout = 30000) {}
-  async embedQuery(input: string): Promise<number[]> {
-    const url = `${this.baseUrl.replace(/\/$/, '')}/embeddings`;
-    const body = { model: this.model, input };
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      // @ts-ignore - Node fetch may require different options in some runtimes
-    });
-    if (!resp.ok) {
-      const text = await resp.text().catch(() => '');
-      throw new Error(`Embeddings request failed: ${resp.status} ${text}`);
-    }
-    const data = (await resp.json()) as { data?: { embedding?: number[] }[] } | { embeddings?: number[] };
-    // Normalize response shapes that Ollama-like endpoints return
-    if ('data' in data && Array.isArray(data.data) && Array.isArray(data.data[0]?.embedding)) {
-      return data.data[0].embedding as number[];
-    }
-    if ('embeddings' in data && Array.isArray(data.embeddings)) {
-      return data.embeddings as number[];
-    }
-    // fallback: try to find first numeric array in response
-    const firstArr = Object.values(data).find(v => Array.isArray(v) && typeof v[0] === 'number') as number[] | undefined;
-    if (firstArr) return firstArr;
-    throw new Error('Unexpected embeddings response format');
-  }
-}
-
-/**
- * Minimal Ollama HTTP LLM adapter implementing a simple `invoke` method so it can be used in RunnableSequence.
- */
-class OllamaHTTPLLM implements SimpleRunnable {
-  readonly lc_namespace: string[] = ['ollama-http-adapter'];
-  constructor(private baseUrl: string, private model: string, private temperature = 0.2) {}
-  // Minimal invoke-compatible implementation expected by RunnableSequence
-  async invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput> {
-    // Build prompt from input - consume common keys if present
-    const prompt = (input['question'] as string) || (input['contract'] as string) || (input['context'] as string) || JSON.stringify(input);
-    const url = `${this.baseUrl.replace(/\/$/, '')}/completions`;
-    const body = {
-      model: this.model,
-      prompt,
-      temperature: this.temperature,
-      max_tokens: 1024,
-    };
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!resp.ok) {
-      const text = await resp.text().catch(() => '');
-      throw new Error(`LLM request failed: ${resp.status} ${text}`);
-    }
-    const data = await resp.json().catch(() => null);
-    // Try to extract text from common fields
-    if (!data) return '';
-    if (typeof data === 'string') return data;
-    if (Array.isArray(data.choices) && typeof data.choices[0]?.text === 'string') return data.choices[0].text;
-    if (typeof data.output === 'string') return data.output;
+  // Add other properties expected by RunnableSequence if needed, or rely on casting
+  readonly lc_namespace?: string[];
+  readonly lc_id?: string[];
+  readonly lc_kwargs?: Record<string, unknown>;
+  // Minimal stubs for other Runnable methods if they are called
+  
     if (typeof data.content === 'string') return data.content;
     return JSON.stringify(data);
   }
   // stub for other Runnable methods - no-op implementations to satisfy interface
   async produce(): Promise<RunnableInvokeOutput> {
     throw new Error('Not implemented');
+  }
+  // Minimal stubs for other Runnable methods to satisfy SimpleRunnable (if it were to extend Runnable)
+  // These are not strictly necessary if SimpleRunnable doesn't extend Runnable,
+  // but provide a more complete Runnable-like object if needed for future extensions.
+  bind = (...args: any[]) => this;
+  map = (...args: any[]) => this;
+  batch = (...args: any[]) => this;
+  pipe = (...args: any[]) => this;
+  withConfig = (...args: any[]) => this;
+  withListeners = (...args: any[]) => this;
+  withRetry = (...args: any[]) => this;
+  withFallbacks = (...args: any[]) => this;
+  pick = (...args: any[]) => this;
+  passthrough = (...args: any[]) => this;
+  assign = (...args: any[]) => this;
+  withType = (...args: any[]) => this;
+  getName = () => this.lc_id?.[0] || 'OllamaHTTPLLM';
+  getGraph = (...args: any[]) => ({ nodes: [], edges: [] });
+  get = (...args: any[]) => undefined;
+  set = (...args: any[]) => undefined;
+}
+
+// ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
+
+/**
+ * Minimal InputValidator for basic input validation and sanitization.
+ */
+class InputValidator {
+  constructor(private securityConfig: SecuritySettings) {}
+
+  validateAndSanitize(input: string, maxLength: number): string {
+    if (input.length > maxLength) {
+      throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
+    }
+    let sanitized = input.trim();
+    if (this.securityConfig.sanitization.removeHtmlTags) {
+      sanitized = sanitized.replace(/<[^>]*>?/gm, '');
+    }
+    if (this.securityConfig.sanitization.removeSqlChars) {
+      sanitized = sanitized.replace(/['";`]/g, ''); // Basic SQL char removal
+    }
+    return sanitized;
+  }
+
+  validateUUID(uuid: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+  }
+
+  validateDocumentType(docType: string): boolean {
+    return this.securityConfig.validation.allowedDocumentTypes.includes(docType);
+  }
+
+  validateConfidentialityLevel(level: string): boolean {
+    const allowedLevels = ['public', 'confidential', 'privileged', 'attorney_client'];
+    return allowedLevels.includes(level);
+  }
+}
+
+/**
+ * Minimal RateLimiter for basic request rate limiting.
+ */
+class RateLimiter {
+  private requestCounts: Map<string, { count: number; lastReset: number }> = new Map();
+
+  constructor(private rateLimitConfig: SecuritySettings['rateLimit']) {}
+
+  isAllowed(userId: string): boolean {
+    const now = Date.now();
+    let userEntry = this.requestCounts.get(userId);
+
+    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
+      userEntry = { count: 0, lastReset: now };
+      this.requestCounts.set(userId, userEntry);
+    }
+
+    if (userEntry.count < this.rateLimitConfig.perMinute) {
+      userEntry.count++;
+      return true;
+    }
+    return false;
+  }
+
+  getRemainingRequests(userId: string): number {
+    const now = Date.now();
+    const userEntry = this.requestCounts.get(userId);
+    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
+      return this.rateLimitConfig.perMinute;
+    }
+    return Math.max(0, this.rateLimitConfig.perMinute - userEntry.count);
+  }
+
+  getTimeUntilReset(userId: string): number {
+    const now = Date.now();
+    const userEntry = this.requestCounts.get(userId);
+    if (!userEntry || now - userEntry.lastReset > this.rateLimitConfig.windowMs) {
+      return 0;
+    }
+    return this.rateLimitConfig.windowMs - (now - userEntry.lastReset);
+  }
+}
+
+/**
+ * Minimal MetricsCollector for basic performance monitoring.
+ */
+class MetricsCollector {
+  private counters: Map<string, number> = new Map();
+  private timings: Map<string, { sum: number; count: number; last: number }> = new Map();
+
+  incrementCounter(name: string, value = 1): void {
+    this.counters.set(name, (this.counters.get(name) || 0) + value);
+  }
+
+  recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
+    const entry = this.timings.get(name) || { sum: 0, count: 0, last: 0 };
+    entry.sum += duration;
+    entry.count++;
+    entry.last = duration;
+    this.timings.set(name, entry);
+    // In a real system, tags would be used for more granular metrics (e.g., Prometheus labels)
+    // For this minimal implementation, we just store them if provided.
+    if (tags) {
+      // Potentially store tagged metrics separately or aggregate
+    }
+  }
+
+  getMetrics(): Record<string, unknown> {
+    const metrics: Record<string, unknown> = {};
+    this.counters.forEach((value, key) => {
+      metrics[`counter_${key}`] = value;
+    });
+    this.timings.forEach((value, key) => {
+      metrics[`timing_${key}_sum`] = value.sum;
+      metrics[`timing_${key}_count`] = value.count;
+      metrics[`timing_${key}_avg`] = value.count > 0 ? value.sum / value.count : 0;
+      metrics[`timing_${key}_last`] = value.last;
+    });
+    return metrics;
+  }
+}
+
+/**
+ * Minimal LegalChunker for document chunking and section extraction.
+ */
+class LegalChunker {
+  constructor(private ragConfig: RAGSettings) {}
+
+  async chunkDocument(content: string, documentType: string): Promise<string[]> {
+    // This is a simplified chunking logic. A real legal chunker would be more sophisticated.
+    const sentences = content.split(/(?<=[.?!])\s+/);
+    const chunks: string[] = [];
+    let currentChunk = '';
+
+    for (const sentence of sentences) {
+      if ((currentChunk + sentence).length <= this.ragConfig.chunkSize) {
+        currentChunk += (currentChunk ? ' ' : '') + sentence;
+      } else {
+        if (currentChunk) {
+          chunks.push(currentChunk);
+        }
+        currentChunk = sentence;
+      }
+    }
+    if (currentChunk) {
+      chunks.push(currentChunk);
+    }
+    return chunks;
+  }
+
+  extractLegalSections(content: string, documentType: string): Record<string, string> {
+    // This is a placeholder. A real implementation would use NLP or regex for legal sectioning.
+    const sections: Record<string, string> = {};
+    if (documentType === 'contract') {
+      const clausesMatch = content.match(
+        /(\b(?:Clause|Article)\s+\d+\.?\s*.*?\n[\s\S]*?)(?=\b(?:Clause|Article)\s+\d+\.?|\Z)/gi
+      );
+      if (clausesMatch) {
+        clausesMatch.forEach((match, index) => {
+          const headerMatch = match.match(/(\b(?:Clause|Article)\s+\d+\.?\s*.*?\n)/i);
+          const header = headerMatch ? headerMatch[0].trim() : `Section ${index + 1}`;
+          sections[header] = match.trim();
+        });
+      } else {
+        sections['Full Document'] = content.substring(0, 1000); // Fallback
+      }
+    } else {
+      sections['Full Document'] = content.substring(0, 1000); // Fallback
+    }
+    return sections;
   }
 }
 

@@ -1,7 +1,8 @@
 // Multi-Modal Search API: Fuzzy + Vector + Redis Cache
 // Combines Fuse.js, Qdrant vector search, Redis top-k, and XState orchestration
 
-import Fuse from 'fuse.js'; // Only default import
+import * as FuseModule from 'fuse.js'; // Robust import for Fuse.js class
+const Fuse = FuseModule.default || FuseModule; // Ensure Fuse is the class constructor
 import { createActor, createMachine, fromPromise, assign, type ActorRefFrom } from 'xstate';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';

@@ -4,6 +4,9 @@
  */
 import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
+import { REDIS_CONFIG } from '$lib/server/config'; // Import the centralized Redis configuration
+
+let redisClient: Redis | null = null;
 
 // --- Connection config -------------------------------------------------
 const url = env.REDIS_URL ?? 'redis://127.0.0.1:6379';
@@ -117,4 +120,33 @@ export function createRedisClientSet(): RedisClientSet {
       );
     },
   };
+}
+
+/**
+ * Returns a singleton instance of the Redis client.
+ * Ensures only one connection is established and reused across the application.
+ */
+export function getRedis(): Redis {
+  if (!redisClient) {
+    redisClient = new Redis(REDIS_CONFIG.url);
+
+    redisClient.on('error', err => {
+      console.error('Redis Client Error:', err);
+      // Implement robust error handling, e.g., attempt reconnection, log to external service
+    });
+
+    redisClient.on('connect', () => {
+      console.log('Redis Client Connected successfully.');
+    });
+
+    redisClient.on('ready', () => {
+      console.log('Redis Client is ready.');
+    });
+
+    redisClient.on('end', () => {
+      console.warn('Redis Client connection ended.');
+      redisClient = null; // Allow re-initialization on next getRedis call
+    });
+  }
+  return redisClient;
 }
