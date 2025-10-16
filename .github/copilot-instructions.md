@@ -11,7 +11,7 @@ This is a sophisticated legal AI platform with microservices architecture featur
 ### Service Ecosystem
 - **Frontend**: SvelteKit 2 + Svelte 5 runes on port 5173
 - **Go Services**: Ports 8080-8136 (37 microservices with health checks)
-- **Context7 MCP**: Port 8777 (AI documentation server)
+- **Context7 MCP**: Port 8777 (AI documentation server, official endpoint: `http://localhost:8777`)
 - **Databases**: PostgreSQL:5432 (pgvector), Redis:6379 (cache)
 - **AI**: Ollama:11434 (local LLMs), gpu cuda, rtx 3060Ti, WebAssembly inference
 

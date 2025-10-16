@@ -1,14 +1,29 @@
-import type { RequestHandler } from "@sveltejs/kit";
-// MCP Context7.2 Get Library Docs utility
-// Enhanced for Svelte 5 + Bits UI v2 integration
-// Ensures #mcp_context72_get-library-docs is available in the codebase
+/**
+ * MCP Context7.2 Get Library Docs Integration
+ * Enhanced for Svelte 5 + SvelteKit 2 + TypeScript + Full Tech Stack
+ *
+ * Provides utilities for retrieving documentation from Context7 MCP server
+ * Supports all major framework dependencies for the Legal AI platform:
+ * - Frontend: Svelte 5, SvelteKit 2, Bits UI, Melt UI, XState, UnoCSS
+ * - Backend: TypeScript, Drizzle ORM
+ * - Database: PostgreSQL with pgvector, Redis, Qdrant
+ * - AI/Performance: WebGPU, WebAssembly
+ */
+
+export interface CodeSnippet {
+  title: string;
+  code: string;
+  description: string;
+  language?: string;
 }
+
 export interface LibraryDocsRequest {
   context7CompatibleLibraryID: string;
   topic?: string;
   tokens?: number;
   format?: 'markdown' | 'json' | 'typescript';
 }
+
 export interface LibraryDocsResponse {
   content: string;
   metadata: {
@@ -16,114 +31,284 @@ export interface LibraryDocsResponse {
     version?: string;
     topic?: string;
     tokenCount: number;
-  }
-  snippets?: {
-    title: string;
-    code: string;
-    description: string;
-  }[];
+  };
+  snippets?: CodeSnippet[];
 }
+
+/**
+ * Main function to fetch library documentation from Context7.2 MCP server
+ * @param libraryId - The context7-compatible library ID (e.g., '/svelte/svelte')
+ * @param topic - Optional topic to focus documentation on
+ * @param options - Additional options for the request
+ * @param fetchFn - Optional custom fetch function for testing
+ * @returns Promise resolving to LibraryDocsResponse
+ */
 export async function mcpContext72GetLibraryDocs(
   libraryId: string,
-  topic?: string
+  topic?: string,
   options: Partial<LibraryDocsRequest> = {},
-  fetchFn: typeof fetch = fetch;
+  fetchFn: typeof fetch = fetch
 ): Promise<LibraryDocsResponse> {
-  // Enhanced MCP context7.2 get-library-docs endpoint
   const response = await fetchFn('/api/mcp/context72/get-library-docs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       context7CompatibleLibraryID: libraryId,
       topic,
       tokens: options.tokens || 10000,
       format: options.format || 'markdown',
-      ...options
-    })
+      ...options,
+    }),
   });
+
   if (!response.ok) {
-    const error = await response.json().catch(() => ({});
+    const error = await response.json().catch(() => ({}));
     throw new Error(
       `Failed to get library docs from Context7.2: ${error.message || response.statusText}`
     );
   }
+
   return response.json();
 }
-// Specialized helpers for common libraries
-export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+
+// ============================================================================
+// Specialized helpers for frontend framework libraries
+// ============================================================================
+
+export async function getSvelte5Docs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/svelte/svelte',
-    topic);
-    {
-      format: 'typescript',
-      tokens,: 15000
-    },
+    topic,
+    { format: 'typescript', tokens: 15000 },
     fetchFn
   );
 }
-export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+
+export async function getSvelteKitV2Docs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/sveltejs/kit',
+    topic,
+    { format: 'typescript', tokens: 12000 },
+    fetchFn
+  );
+}
+
+export async function getBitsUIv2Docs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/bits-ui/bits-ui',
-    topic);
-    {
-      format: 'typescript',
-      tokens,: 12000
-    },
+    topic,
+    { format: 'typescript', tokens: 12000 },
     fetchFn
   );
 }
-export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+
+export async function getMeltUIDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/melt-ui/melt-ui',
-    topic);
-    {
-      format: 'typescript',
-      tokens,: 10000
-    },
+    topic,
+    { format: 'typescript', tokens: 10000 },
     fetchFn
   );
 }
-export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+
+export async function getXStateDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/xstate/xstate',
-    topic);
-    {
-      format: 'typescript',
-      tokens,: 8000
-    },
+    topic,
+    { format: 'typescript', tokens: 8000 },
     fetchFn
   );
 }
-// Additional specialized helpers
-/**
- * WebGPU documentation helper (TypeScript snippets preferred).
- * Useful for WebGPU / WebAssembly integration guidance.
- */
-export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
-  return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, {
-    format: 'typescript',
-    tokens: 10000
-  }, fetchFn);
+
+export async function getUnoCssDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/unocss/unocss',
+    topic,
+    { format: 'markdown', tokens: 8000 },
+    fetchFn
+  );
 }
-/**
- * WebAssembly (wasm) documentation helper.
- * Returns practical guides and TS/markdown examples for wasm + JS interop.
- */
-export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
-  return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, {
-    format: 'markdown',
-    tokens: 8000
-  }, fetchFn);
+
+// ============================================================================
+// Specialized helpers for backend and database libraries
+// ============================================================================
+
+export async function getDrizzleOrmDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/drizzle-team/drizzle-orm',
+    topic,
+    { format: 'typescript', tokens: 12000 },
+    fetchFn
+  );
 }
-/**
- * SvelteKit v2 documentation helper.
- * Targets SvelteKit-specific APIs, routing and adapter guidance.
- */
-export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
-  return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, {
-    format: 'typescript',
-    tokens: 12000
-  }, fetchFn);
+
+export async function getPostgreSQLDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/postgres/postgres',
+    topic,
+    { format: 'markdown', tokens: 10000 },
+    fetchFn
+  );
 }
-// Tag: #mcp_context72_get-library-docs
-// Keywords: #context7 #get-library-docs #svelte5 #bitsui #meltui #xstate
+
+export async function getRedisDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/redis/redis',
+    topic,
+    { format: 'markdown', tokens: 8000 },
+    fetchFn
+  );
+}
+
+export async function getQdrantDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/qdrant/qdrant',
+    topic,
+    { format: 'markdown', tokens: 10000 },
+    fetchFn
+  );
+}
+
+// ============================================================================
+// Specialized helpers for AI and performance libraries
+// ============================================================================
+
+export async function getWebGPUDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/webgpu/webgpu',
+    topic,
+    { format: 'typescript', tokens: 10000 },
+    fetchFn
+  );
+}
+
+export async function getWebAssemblyDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/webassembly/wasm',
+    topic,
+    { format: 'markdown', tokens: 8000 },
+    fetchFn
+  );
+}
+
+export async function getTypeScriptDocs(
+  topic?: string,
+  fetchFn?: typeof fetch
+): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs(
+    '/microsoft/typescript',
+    topic,
+    { format: 'typescript', tokens: 10000 },
+    fetchFn
+  );
+}
+
+// ============================================================================
+// Tech Stack Integration Helpers
+// ============================================================================
+
+/**
+ * Get combined documentation for the complete Legal AI tech stack
+ */
+export async function getTechStackDocs(
+  component: 'frontend' | 'backend' | 'database' | 'ai' | 'full' = 'full',
+  fetchFn?: typeof fetch
+): Promise<Record<string, LibraryDocsResponse>> {
+  const fetchFn_ = fetchFn || fetch;
+
+  const frontendDocs = {
+    svelte5: getSvelte5Docs(undefined, fetchFn_),
+    sveltekit2: getSvelteKitV2Docs(undefined, fetchFn_),
+    bitsui: getBitsUIv2Docs(undefined, fetchFn_),
+    meltui: getMeltUIDocs(undefined, fetchFn_),
+    xstate: getXStateDocs(undefined, fetchFn_),
+    unocss: getUnoCssDocs(undefined, fetchFn_),
+  };
+
+  const backendDocs = {
+    drizzle: getDrizzleOrmDocs(undefined, fetchFn_),
+    typescript: getTypeScriptDocs(undefined, fetchFn_),
+  };
+
+  const databaseDocs = {
+    postgresql: getPostgreSQLDocs(undefined, fetchFn_),
+    redis: getRedisDocs(undefined, fetchFn_),
+    qdrant: getQdrantDocs(undefined, fetchFn_),
+  };
+
+  const aiDocs = {
+    webgpu: getWebGPUDocs(undefined, fetchFn_),
+    webassembly: getWebAssemblyDocs(undefined, fetchFn_),
+  };
+
+  const allDocs = { ...frontendDocs, ...backendDocs, ...databaseDocs, ...aiDocs };
+
+  switch (component) {
+    case 'frontend': {
+      const results = await Promise.all(
+        Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const)
+      );
+      return Object.fromEntries(results);
+    }
+    case 'backend': {
+      const results = await Promise.all(
+        Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const)
+      );
+      return Object.fromEntries(results);
+    }
+    case 'database': {
+      const results = await Promise.all(
+        Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const)
+      );
+      return Object.fromEntries(results);
+    }
+    case 'ai': {
+      const results = await Promise.all(
+        Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const)
+      );
+      return Object.fromEntries(results);
+    }
+    case 'full': {
+      const results = await Promise.all(
+        Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const)
+      );
+      return Object.fromEntries(results);
+    }
+  }
+}
