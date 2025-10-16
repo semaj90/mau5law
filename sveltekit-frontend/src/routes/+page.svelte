@@ -2,7 +2,7 @@
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui'; // Import Button from bits-ui for consistency, though not directly used for <a> tags here
   import { derived } from 'svelte/store';
-  import { recommendations, partialRecommendations, engineState, errorMessage, runQuery } from '$stores/aiRecommendations';
+  import { recommendations, partialRecommendations, engineState, errorMessage, runQuery } from '$lib/stores/aiRecommendations';
   import { onMount } from 'svelte';
 
   // Svelte 5 runes for reactive state
