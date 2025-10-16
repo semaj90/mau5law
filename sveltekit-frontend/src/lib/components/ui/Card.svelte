@@ -34,5 +34,9 @@
 </script>
 
 <div class={cardClass} {...restProps}>
-  {@render children?.()}
+  <slot />
 </div>
+
+<style>
+  .card { padding: 1rem; border-radius: 0.5rem; background: transparent; }
+</style>

@@ -1,24 +1,85 @@
+import { $state, $derived } from 'svelte'; // Import Svelte 5 runes
+
 /**
- * Global AI Assistant Store - Svelte 5 with Multi-Backend Support
- * Implements intelligent backend routing, persistent chat history, and smart client-side optimization
+ * Unified AI Assistant Global Store - SvelteKit 2 + Svelte 5 Runes
+ * Replaces both ai-assistant.ts and ai-assistant.svelte.ts with proper Svelte 5 implementation
  */
-import { writable } from 'svelte/store';
-import type { ChatMessage, Backend, AssistantConfig, ChatSession, SearchResult } from '$lib/types/ai-assistant';
-// Svelte 5 Runes-based Store State
-export class AIAssistantStore {
-  // Core state using Svelte 5 runes
-  messages = $state<ChatMessage[]>([]);
+// Core types
+export interface AIMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: number;
+  evidenceIds?: string[];
+  metadata?: {
+    confidence?: number;
+    source?: string;
+    reasoning?: string;
+    suggestions?: string[];
+    backend?: Backend;
+    model?: string;
+    tokenCount?: number;
+    processingTime?: number;
+    legalContext?: string;
+  };
+}
+export interface CaseAIContext {
+  caseId: string;
+  title?: string;
+  messages: AIMessage[];
+  evidenceMap: Record<
+    string,
+    {
+      id: string;
+      title: string;
+      annotations: string[];
+      connections: string[];
+      aiSummary?: string;
+    }
+  >;
+  currentSession: {
+    isActive: boolean;
+    lastActivity: number;
+    activeEvidenceId?: string;
+  };
+  insights: Array<{
+    id: string;
+    type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
+    description: string;
+    confidence: number;
+    evidenceIds: string[];
+    timestamp: number;
+  }>;
+}
+export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
+
+export interface AssistantConfig {
+  temperature: number;
+  maxTokens: number;
+  model: string;
+  systemPrompt: string;
+  autoSwitchBackend: boolean;
+  persistHistory: boolean;
+  enableAcceleration: boolean;
+}
+// Global AI Assistant Store using Svelte 5 Runes
+class AIAssistantGlobalStore {
+  // Core state (now using Svelte 5 runes for reactivity)
+  cases = $state<Record<string, CaseAIContext>>({});
+  currentCaseId = $state<string | undefined>(undefined);
+  isLoading = $state<boolean>(false);
+  error = $state<string | undefined>(undefined);
+
+  // Multi-backend support
   currentBackend = $state<Backend>('ollama');
-  isProcessing = $state<boolean>(false);
-  sessionId = $state<string>('');
   availableBackends = $state<Backend[]>(['vllm', 'ollama', 'webasm', 'go-micro']);
-  // Performance metrics
-  backendLatency = $state<Record<Backend, number>({
-    vllm: 0,
-    ollama: 0,
-    webasm: 0,
-    'go-micro': 0
+  backendHealth = $state<Record<Backend, number>>({
+    vllm: 0.8,
+    ollama: 0.9,
+    webasm: 0.7,
+    'go-micro': 0.6,
   });
+
   // Configuration
   config = $state<AssistantConfig>({
     temperature: 0.2,
@@ -27,284 +88,429 @@ export class AIAssistantStore {
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
     persistHistory: true,
+    enableAcceleration: false,
   });
-  // Client-side caching and search (simplified)
-  private messagesCache = new Map<string, ChatMessage>();
-  private contextCache = new Map<string, ChatMessage[]>();
-  constructor() {
-    this.loadPersistedSession();
-    this.startHealthMonitoring();
+
+  // Performance metrics
+  metrics = $state<{
+    totalQueries: number;
+    averageResponseTime: number;
+    backendLatency: Record<Backend, number>;
+  }>({
+    totalQueries: 0,
+    averageResponseTime: 0,
+    backendLatency: {
+      vllm: 0,
+      ollama: 0,
+      webasm: 0,
+      'go-micro': 0,
+    },
+  });
+
+  // Global insights
+  globalInsights = $state<
+    Array<{
+      id: string;
+      type: 'trend' | 'pattern' | 'recommendation';
+      description: string;
+      affectedCases: string[];
+      timestamp: number;
+    }>
+  >([]);
+
+  // Derived-like getters (now using $derived)
+  get currentCase(): CaseAIContext | undefined {
+    return $derived(this.currentCaseId ? this.cases[this.currentCaseId] : undefined);
   }
-  /**
-   * Intelligent Backend Selection with Health-based Routing
-   */
-  async selectOptimalBackend(message: string, context?: string): Promise<Backend> {
+  get currentMessages(): AIMessage[] {
+    return $derived(this.currentCase?.messages || []);
+  }
+  get hasActiveCases(): boolean {
+    return $derived(Object.keys(this.cases).length > 0);
+  }
+  get isProcessing(): boolean {
+    return $derived(this.isLoading);
+  }
+
+  // Cache for performance
+  private messageCache = new Map<string, AIMessage>();
+  private contextCache = new Map<string, AIMessage[]>();
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.loadPersistedState();
+      this.startHealthMonitoring();
+    }
+  }
+
+  // === Core Case Management Methods ===
+  initializeCase(caseId: string, title?: string) {
+    if (!this.cases[caseId]) {
+      this.cases = {
+        ...this.cases,
+        [caseId]: {
+          caseId,
+          title,
+          messages: [],
+          evidenceMap: {},
+          currentSession: {
+            isActive: false,
+            lastActivity: Date.now(),
+          },
+          insights: [],
+        },
+      };
+    }
+  }
+  setCurrentCase(caseId: string) {
+    this.initializeCase(caseId);
+    this.currentCaseId = caseId;
+    if (this.cases[caseId]) {
+      this.cases = {
+        ...this.cases,
+        [caseId]: {
+          ...this.cases[caseId],
+          currentSession: {
+            ...this.cases[caseId].currentSession,
+            isActive: true,
+            lastActivity: Date.now(),
+          },
+        },
+      };
+    }
+  }
+  async addMessage(caseId: string, message: Omit<AIMessage, 'id' | 'timestamp'>) {
+    this.initializeCase(caseId);
+    const newMessage: AIMessage = {
+      ...message,
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: Date.now(),
+    };
+    this.cases = {
+      ...this.cases,
+      [caseId]: {
+        ...this.cases[caseId],
+        messages: [...this.cases[caseId].messages, newMessage],
+        currentSession: {
+          ...this.cases[caseId].currentSession,
+          lastActivity: Date.now(),
+        },
+      },
+    };
+    this.messageCache.set(newMessage.id, newMessage);
+    if (this.config.persistHistory) {
+      this.persistState();
+    }
+  }
+
+  // === Enhanced AI Communication Methods ===
+  async sendMessage(
+    caseId: string,
+    content: string,
+    evidenceIds?: string[],
+    options?: {
+      backend?: Backend;
+      includeHistory?: boolean;
+      legalContext?: string;
+      useAcceleration?: boolean;
+    }
+  ): Promise<AIMessage> {
+    this.isLoading = true;
+    this.error = undefined;
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    try {
+      await this.addMessage(caseId, {
+        role: 'user',
+        content,
+        evidenceIds,
+        metadata: {
+          legalContext: options?.legalContext,
+        },
+      });
+      const backend = options?.backend || (await this.selectOptimalBackend(content, options?.legalContext));
+      this.currentBackend = backend;
+      const contextMessages =
+        options?.includeHistory !== false ? await this.buildSmartContext(caseId, content, options?.legalContext) : [];
+      let response: any;
+      if (options?.useAcceleration && this.config.enableAcceleration) {
+        response = await this.sendWithAcceleration(content, contextMessages, backend);
+      } else {
+        response = await this.sendToBackend(backend, contextMessages);
+      }
+      const assistantMessage: AIMessage = {
+        id:
+          typeof crypto !== 'undefined' && 'randomUUID' in crypto
+            ? (crypto as any).randomUUID()
+            : `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        role: 'assistant',
+        content: response.text || response.response || '',
+        timestamp: Date.now(),
+        metadata: {
+          backend,
+          model: response.model || this.config.model,
+          tokenCount: response.tokenCount,
+          processingTime: typeof performance !== 'undefined' ? performance.now() - startTime : Date.now() - startTime,
+          confidence: response.confidence,
+        },
+      };
+      await this.addMessage(caseId, assistantMessage);
+      this.updateMetrics(
+        backend,
+        typeof performance !== 'undefined' ? performance.now() - startTime : Date.now() - startTime
+      );
+      return assistantMessage;
+    } catch (error) {
+      console.error('❌ AI message failed:', error);
+      this.error = error instanceof Error ? error.message : String(error);
+      if (!options?.backend && this.config.autoSwitchBackend) {
+        const fallbackBackends = this.availableBackends.filter(b => b !== this.currentBackend);
+        for (const fallbackBackend of fallbackBackends) {
+          try {
+            return await this.sendMessage(caseId, content, evidenceIds, {
+              ...options,
+              backend: fallbackBackend,
+            });
+          } catch (fallbackError) {
+            console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
+          }
+        }
+      }
+      throw error;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  // === Backend Selection and Management ===
+  private async selectOptimalBackend(message: string, context?: string): Promise<Backend> {
     if (!this.config.autoSwitchBackend) return this.currentBackend;
-    // Analyze message complexity and requirements
     const complexity = this.analyzeMessageComplexity(message);
     const hasLegalContext = this.hasLegalContext(message, context);
     const requiresSpeed = this.requiresSpeedOptimization(message);
-    // Get backend health scores
-    const healthScores = await this.getBackendHealthScores();
-    // Scoring algorithm for backend selection
-    const backendScores: Record<Backend, number> = {
-      'vllm': this.calculateBackendScore('vllm', complexity, hasLegalContext, requiresSpeed, healthScores.vllm),
-      'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed, healthScores.ollama),
-      'webasm': this.calculateBackendScore('webasm', complexity, hasLegalContext, requiresSpeed, healthScores.webasm),
-      'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed, healthScores['go-micro'])
-    }
-    // Select backend with highest score
-    const optimalBackend = Object.entries(backendScores).reduce((a, b) =>
-      backendScores[a[0] as Backend] > backendScores[b[0] as Backend] ? a : b
-    )[0] as Backend;
-    console.log(`🧠 Backend selection scores:`, backendScores);
-    console.log(`✅ Selected backend: ${optimalBackend}`);
-    return optimalBackend;
+    const scores: Record<Backend, number> = {
+      'vllm': this.calculateBackendScore('vllm', complexity, hasLegalContext, requiresSpeed),
+      'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed),
+      'webasm': this.calculateBackendScore('webasm', complexity, hasLegalContext, requiresSpeed),
+      'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed),
+    };
+    const optimal = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as Backend;
+    console.log(`🧠 Backend selection:`, scores, `Selected: ${optimal}`);
+    return optimal;
   }
-  /**
-   * Send message with intelligent routing and context building
-   */
-  async sendMessage(content: string, options?: {
-    backend?: Backend;
-    includeHistory?: boolean;
-    legalContext?: string;
-  }): Promise<ChatMessage> {
-    const startTime = performance.now();
-    this.isProcessing = true;
-    try {
-      // Build smart context from conversation history
-      const contextMessages = options?.includeHistory !== false
-        ? await this.buildSmartContext(content, options?.legalContext)
-        : [];
-      // Select optimal backend
-      const backend = options?.backend || await this.selectOptimalBackend(content, options?.legalContext);
-      this.currentBackend = backend;
-      // Create user message
-      const userMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'user',
-        content,
-        timestamp: Date.now(),
-        sessionId: this.sessionId,
-        metadata: {
-          backend,
-          legalContext: options?.legalContext
-        }
-      }
-      // Add to messages and cache
-      this.messages.push(userMessage);
-      this.cacheMessage(userMessage);
-      // Send to backend
-      // removed unused response assignment
-      // Create assistant message
-      const assistantMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).text,
-        timestamp: Date.now(),
-        sessionId: this.sessionId,
-        metadata: {
-          backend,
-          model: response?.model || "unknown" // @ts-ignore - Model property access,
-          tokenCount: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).tokenCount,
-          processingTime: performance.now() - startTime,
-          confidence: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).confidence
-        }
-      }
-      // Add to messages and cache
-      this.messages.push(assistantMessage);
-      this.cacheMessage(assistantMessage);
-      // Update performance metrics
-      this.updateBackendMetrics(backend, performance.now() - startTime);
-      return assistantMessage;
-    } catch (error) {
-      console.error(`❌ Error with backend ${this.currentBackend}:`, error);
-      // Try fallback backends
-      if (options?.backend) throw error; // Don't fallback if specific backend requested
-      const fallbackBackends = this.availableBackends.filter(b => b !== this.currentBackend);
-      for (const fallbackBackend of fallbackBackends) {
-        try {
-          console.log(`🔄 Trying fallback backend: ${fallbackBackend}`);
-          return await this.sendMessage(content, {
-            ...options,
-            backend: fallbackBackend
-          });
-        } catch (fallbackError) {
-          console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
-        }
-      }
-      throw new Error('All AI backends unavailable');
-    } finally {
-      this.isProcessing = false;
+
+  private calculateBackendScore(
+    backend: Backend,
+    complexity: 'simple' | 'medium' | 'complex',
+    hasLegalContext: boolean,
+    requiresSpeed: boolean
+  ): number {
+    let score = (this.backendHealth[backend] || 0) * 0.4;
+    const complexityScores: Record<Backend, Record<'simple' | 'medium' | 'complex', number>> = {
+      'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
+      'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
+      'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
+      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 },
+    };
+    score += (complexityScores[backend][complexity] || 0) * 0.3;
+    if (hasLegalContext) {
+      const legalBonuses: Record<Backend, number> = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
+      score += legalBonuses[backend] || 0;
+    }
+    if (requiresSpeed) {
+      const speedScores: Record<Backend, number> = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
+      score += (speedScores[backend] || 0) * 0.2;
+    }
+    const latencyPenalty = Math.min((this.metrics.backendLatency[backend] || 0) / 5000, 0.3);
+    score -= latencyPenalty;
+    return Math.max(0, Math.min(1, score));
+  }
+
+  // === Enhanced Acceleration Integration ===
+  private async sendWithAcceleration(content: string, contextMessages: AIMessage[], backend: Backend) {
+    const complexity = this.analyzeMessageComplexity(content);
+    const useLocalAI = complexity === 'simple' && content.length < 200;
+    const useCUDAService = complexity === 'complex' || backend === 'go-micro';
+    if (useLocalAI) {
+      return await this.sendWithLocalBrowserAI(content, contextMessages);
+    } else if (useCUDAService) {
+      return await this.sendWithCUDAService(content, contextMessages);
+    } else {
+      return await this.sendWithSIMDWebGPU(content, contextMessages);
     }
   }
-  /**
-   * Build smart context from conversation history using semantic similarity
-   */
-  private async buildSmartContext(query: string, legalContext?: string): Promise<ChatMessage[]> {
-    const cacheKey = `${query}-${legalContext || ''}`;
+  private async sendWithLocalBrowserAI(content: string, contextMessages: AIMessage[]) {
+    const { browserLocalAI } = await import('$lib/ai/browser-local-ai.js');
+    if (!browserLocalAI.isInitialized()) {
+      const initialized = await browserLocalAI.initialize();
+      if (!initialized) {
+        throw new Error('Browser-local AI initialization failed');
+      }
+    }
+    const conversationContext = contextMessages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+    const result = await browserLocalAI.generateText({
+      prompt: content,
+      maxTokens: 512,
+      temperature: 0.3,
+      systemPrompt: `You are a legal AI assistant. Context:\n${conversationContext}`,
+    });
+    return {
+      text: result.text,
+      model: 'gemma3-270m-local',
+      confidence: result.confidence,
+      tokenCount: result.tokensGenerated,
+      accelerationMetrics: {
+        totalProcessingTime: result.processingTime,
+        accelerationUsed: 'browser-local',
+        device: result.device,
+        fromCache: result.fromCache,
+      },
+    };
+  }
+  private async sendWithCUDAService(content: string, contextMessages: AIMessage[]) {
+    const { cudaServiceWorker } = await import('$lib/ai/cuda-service-worker.js');
+    const recentContext = contextMessages
+      .slice(-5)
+      .map(msg => `${msg.role}: ${msg.content}`)
+      .join('\n');
+    const systemPrompt = `You are a specialized legal AI assistant. Recent conversation context:\n${recentContext}`;
+    const result = await cudaServiceWorker.generateText({
+      model: 'gemma3-legal-latest',
+      prompt: content,
+      maxTokens: 2048,
+      temperature: 0.2,
+      systemPrompt,
+      priority: 'normal',
+      legalContext: {
+        jurisdiction: 'general',
+        practiceArea: 'legal_assistance',
+        documentType: 'conversation',
+        confidentiality: 'attorney-client',
+      },
+    });
+    return {
+      text: result.text,
+      model: result.modelUsed,
+      confidence: result.confidence,
+      tokenCount: result.tokensGenerated,
+      accelerationMetrics: {
+        totalProcessingTime: result.processingTime,
+        queueTime: result.queueTime,
+        accelerationUsed: 'cuda-tensorrt',
+        gpuUtilization: result.gpuUtilization,
+        precision: result.precision,
+        tensorrtVersion: result.metadata?.tensorrtVersion,
+      },
+    };
+  }
+  private async sendWithSIMDWebGPU(content: string, contextMessages: AIMessage[]) {
+    const { enhanceAIResponse } = await import('$lib/ai/accelerated-legal-assistant.js');
+    const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
+      id: `case_${i}`,
+      title: `Case Document ${i + 1}`,
+      content: `Mock case content`,
+      embedding: Float32Array.from({ length: 768 }, () => Math.random()),
+    }));
+    const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
+      id: `evidence_${i}`,
+      title: `Evidence Document ${i + 1}`,
+      content: `Mock evidence content`,
+      embedding: Float32Array.from({ length: 768 }, () => Math.random()),
+    }));
+    const acceleratedResult = await enhanceAIResponse(content, mockCaseDocuments, mockEvidenceDocuments, {
+      maxResults: 10,
+      similarityThreshold: 0.3,
+      enableGPUAcceleration: true,
+      enableSIMDPreprocessing: true,
+    });
+    return {
+      text: acceleratedResult.enhancedResponse,
+      model: 'simd-webgpu-accelerated',
+      confidence: acceleratedResult.confidence ?? 0.9,
+      tokenCount: acceleratedResult.enhancedResponse.length / 4,
+      accelerationMetrics: acceleratedResult.acceleratedResults?.processingMetrics ?? {},
+    };
+  }
+
+  // === Context and History Management ===
+  private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
+    const cacheKey = `${caseId}-${query}-${legalContext || ''}`;
     if (this.contextCache.has(cacheKey)) {
       return this.contextCache.get(cacheKey)!;
     }
-    // Get recent messages
-    const recentMessages = this.messages.slice(-10);
-    // Semantic search through history for relevant context
-    const searchResults = await this.searchConversationHistory(query);
-    const relevantMessages = searchResults
-      .filter(item => item.score) && (result as { score?: any; item?: any }).score < 0.5) // Lower score = better match in Fuse.js
-      .slice(0, 5)
-      .map(result => (result as { score?: any; item?: any }).item);
-    // Combine and deduplicate
-    const contextMessages = [...new Map(
-      [...recentMessages, ...relevantMessages]
-        .map(msg => [msg.id, msg])
-    ).values()].sort((a, b) => a.timestamp - b.timestamp);
-    // Cache the result
+    const caseMessages = this.cases[caseId]?.messages || [];
+    const recentMessages = caseMessages.slice(-10);
+    const relevantMessages = caseMessages
+      .filter(msg => {
+        const queryLower = query.toLowerCase();
+        return (
+          msg.content.toLowerCase().includes(queryLower) ||
+          (legalContext && msg.content.toLowerCase().includes(legalContext.toLowerCase()))
+        );
+      })
+      .slice(0, 5);
+    const contextMessages = [
+      ...new Map([...recentMessages, ...relevantMessages].map(msg => [msg.id, msg])).values(),
+    ].sort((a, b) => a.timestamp - b.timestamp);
     this.contextCache.set(cacheKey, contextMessages);
-    // Cleanup old cache entries
     if (this.contextCache.size > 100) {
-      const keys = Array.from(this.contextCache.keys();
-      keys.slice(0, 50).forEach(key => this.contextCache.delete(key);
+      const keys = Array.from(this.contextCache.keys());
+      keys.slice(0, 50).forEach(key => this.contextCache.delete(key));
     }
     return contextMessages;
   }
-  /**
-   * Search conversation history using simple text matching
-   */
-  async searchConversationHistory(query: string, limit = 20): Promise<SearchResult[]> {
-    const queryLower = query.toLowerCase();
-    const results: SearchResult[] = [];
-    for (const message of this.messages) {
-      if (message.content.toLowerCase().includes(queryLower)) {
-        results.push({
-          item: message,
-          score: 0.5, // Simple scoring;
-          matches: []
-        });
-      }
-    }
-    return results.slice(0, limit);
-  }
-  /**
-   * Send request to specific backend with unified API
-   */
-  private async sendToBackend(backend: Backend, messages: ChatMessage[]) {
+
+  // === Backend Communication ===
+  private async sendToBackend(backend: Backend, messages: AIMessage[]) {
     const endpoint = this.getBackendEndpoint(backend);
     const payload = this.formatBackendPayload(backend, messages);
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
-    if (!(response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Backend ${backend} responded with ${(response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).status}`);
+    if (!response.ok) {
+      throw new Error(`Backend ${backend} responded with ${response.status}`);
     }
-    const data = await (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).json();
+    const data = await response.json();
     return this.parseBackendResponse(backend, data);
   }
-  /**
-   * Get appropriate endpoint for each backend
-   */
   private getBackendEndpoint(backend: Backend): string {
-    const endpoints = {
+    const endpoints: Record<Backend, string> = {
       'vllm': '/api/ai/chat',
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
-      'go-micro': '/api/ai/go-micro-chat'
-    }
+      'go-micro': '/api/ai/go-micro-chat',
+    };
     return endpoints[backend];
   }
-  /**
-   * Format payload for specific backend requirements
-   */
-  private formatBackendPayload(backend: Backend, messages: ChatMessage[]) {
+  private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
-      model: this.config?.model || "unknown" // @ts-ignore - Model property access
-    }
+      model: this.config.model,
+    };
     switch (backend) {
       case 'vllm':
-        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' }
+        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' };
       case 'webasm':
-        return { ...basePayload, useWASM: true, enableGPU: true }
+        return { ...basePayload, useWASM: true, enableGPU: true };
       case 'go-micro':
-        return { ...basePayload, service: 'legal-analysis', priority: 'high' }
+        return { ...basePayload, service: 'legal-analysis', priority: 'high' };
       default:
         return basePayload;
     }
   }
-  /**
-   * Parse response from different backends into unified format
-   */
   private parseBackendResponse(backend: Backend, data: any) {
-    const baseResponse = {
-      text: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).text || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).response || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).choices?.[0]?.message?.content || '',
-      model: data?.model || "unknown" // @ts-ignore - Model property access || this.config?.model || "unknown" // @ts-ignore - Model property access,
-      backend
-    }
-    switch (backend) {
-      case 'vllm':
-        return {
-          ...baseResponse,
-          tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).usage?.total_tokens,
-          confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence
-        }
-      case 'webasm':
-        return {
-          ...baseResponse,
-          tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokensGenerated,
-          confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence,
-          processingPath: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingPath
-        }
-      case 'go-micro':
-        return {
-          ...baseResponse,
-          tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokens,
-          confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence,
-          processingNodes: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingNodes
-        }
-      default:
-        return baseResponse;
-    }
+    return {
+      text: data.text || data.response || data.choices?.[0]?.message?.content || '',
+      model: data.model || this.config.model,
+      tokenCount: data.tokenCount || data.usage?.total_tokens,
+      confidence: data.confidence,
+      backend,
+    };
   }
-  /**
-   * Cache message to simple Map-based cache and persist to localStorage
-   */
-  private cacheMessage(message: ChatMessage) {
-    this.messagesCache.set(message.id, message);
-    // Persist to localStorage
-    if (this.config.persistHistory) {
-      try {
-        localStorage.setItem('ai-assistant-messages', JSON.stringify(this.messages);
-      } catch (error) {
-        console.error('Error persisting messages:', error);
-      }
-    }
-  }
-  /**
-   * Load persisted session from localStorage
-   */
-  private loadPersistedSession() {
-    if (!this.config.persistHistory) return;
-    // Load session ID
-    const savedSessionId = localStorage.getItem('ai-assistant-session-id');
-    this.sessionId = savedSessionId || crypto.randomUUID();
-    localStorage.setItem('ai-assistant-session-id', this.sessionId);
-    // Load messages from localStorage
-    try {
-      const savedMessages = localStorage.getItem('ai-assistant-messages');
-      if (savedMessages) {
-        const parsedMessages = JSON.parse(savedMessages);
-        this.messages = parsedMessages.filter((msg: ChatMessage) => msg.sessionId === this.sessionId);
-      }
-    } catch (error) {
-      console.error('Error loading persisted messages:', error);
-    }
-  }
-  /**
-   * Analyze message complexity for backend selection
-   */
+
+  // === Analysis Methods ===
   private analyzeMessageComplexity(message: string): 'simple' | 'medium' | 'complex' {
     const length = message.length;
     const hasLegalTerms = /\b(contract|deed|liability|statute|precedent|jurisdiction)\b/i.test(message);
@@ -313,121 +519,120 @@ export class AIAssistantStore {
     if (length > 100 || hasLegalTerms || hasComplexQuery) return 'medium';
     return 'simple';
   }
-  /**
-   * Check if message has legal context
-   */
   private hasLegalContext(message: string, context?: string): boolean {
     const legalTerms = /\b(legal|law|contract|deed|court|judge|attorney|liability|statute|regulation|compliance)\b/i;
     return legalTerms.test(message) || legalTerms.test(context || '');
   }
-  /**
-   * Check if message requires speed optimization
-   */
   private requiresSpeedOptimization(message: string): boolean {
     const speedIndicators = /\b(quick|fast|urgent|immediately|asap|now)\b/i;
     return speedIndicators.test(message) || message.length < 50;
   }
-  /**
-   * Calculate backend score for selection algorithm
-   */
-  private calculateBackendScore(
-    backend: Backend;
-    complexity: string,
-    hasLegalContext: boolean,
-    requiresSpeed: boolean,
-    healthScore: number;
-  ): number {
-    let score = healthScore * 0.4; // Base health score (40% weight)
-    // Complexity scoring
-    const complexityScores = {
-      'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
-      'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
-      'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
-      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 }
-    }
-    score += complexityScores[backend][complexity as keyof typeof complexityScores[Backend]] * 0.3;
-    // Legal context bonus
-    if (hasLegalContext) {
-      const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 }
-      score += legalBonuses[backend];
-    }
-    // Speed requirement scoring
-    if (requiresSpeed) {
-      const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 }
-      score += speedScores[backend] * 0.2;
-    }
-    // Latency penalty
-    const latencyPenalty = Math.min(this.backendLatency[backend] / 5000, 0.3); // Max 30% penalty for 5s+ latency
-    score -= latencyPenalty;
-    return Math.max(0, Math.min(1, score); // Normalize to 0-1
+
+  // === Performance and Health Monitoring ===
+  private updateMetrics(backend: Backend, processingTime: number) {
+    this.metrics = {
+      ...this.metrics,
+      totalQueries: this.metrics.totalQueries + 1,
+      backendLatency: {
+        ...this.metrics.backendLatency,
+        [backend]: (this.metrics.backendLatency[backend] || 0) * 0.7 + processingTime * 0.3,
+      },
+      averageResponseTime: this.metrics.averageResponseTime * 0.9 + processingTime * 0.1,
+    };
   }
-  /**
-   * Get health scores for all backends
-   */
-  private async getBackendHealthScores(): Promise<Record<Backend, number>, {
-    try {
-      const healthResponse = await fetch('/api/ai/health');
-      const healthData = await healthResponse.json();
-      return {
-        'vllm': healthData.backends?.vllm?.reachable ? 1.0 : 0.0,
-        'ollama': healthData.backends?.ollama?.version ? 1.0 : 0.0,
-        'webasm': healthData.backends?.webasm?.loaded ? 1.0 : 0.0,
-        'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0
-      }
-    } catch {
-      // Default scores if health check fails
-      return { 'vllm': 0.8, 'ollama': 0.9, 'webasm': 0.7, 'go-micro': 0.6 }
-    }
-  }
-  /**
-   * Update backend performance metrics
-   */
-  private updateBackendMetrics(backend: Backend, latency: number) {
-    // Exponential moving average for latency
-    this.backendLatency[backend] = this.backendLatency[backend] * 0.7 + latency * 0.3;
-  }
-  /**
-   * Start periodic health monitoring
-   */
   private startHealthMonitoring() {
+    if (typeof window === 'undefined') return;
     setInterval(async () => {
-      const healthScores = await this.getBackendHealthScores();
-      this.availableBackends = Object.entries(healthScores)
-        .filter(([_, score]) => score > 0.1)
-        .map(([backend]) => backend as Backend);
-    }, 30000); // Check every 30 seconds
+      try {
+        const response = await fetch('/api/ai/backends/health');
+        const healthData = await response.json();
+        this.backendHealth = {
+          'vllm': healthData.backends?.vllm?.reachable ? 1.0 : 0.0,
+          'ollama': healthData.backends?.ollama?.version ? 1.0 : 0.0,
+          'webasm': healthData.backends?.webasm?.loaded ? 1.0 : 0.0,
+          'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0,
+        };
+        this.availableBackends = Object.entries(this.backendHealth)
+          .filter(([_, score]) => score > 0.1)
+          .map(([backend]) => backend as Backend);
+      } catch (error) {
+        console.warn('Health check failed:', error);
+      }
+    }, 30000);
   }
-  /**
-   * Export conversation history
-   */
-  exportConversation(format: 'json' | 'markdown' | 'pdf' = 'json') {
+
+  // === Persistence ===
+  private persistState() {
+    if (typeof window === 'undefined') return;
+    try {
+      const stateToSave = {
+        cases: this.cases,
+        currentCaseId: this.currentCaseId,
+        config: this.config,
+        metrics: this.metrics,
+      };
+      localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave));
+    } catch (error) {
+      console.error('Failed to persist AI assistant state:', error);
+    }
+  }
+  private loadPersistedState() {
+    try {
+      const saved = localStorage.getItem('ai-assistant-unified-state');
+      if (saved) {
+        const state = JSON.parse(saved);
+        this.cases = state.cases || {};
+        this.currentCaseId = state.currentCaseId;
+        this.config = { ...this.config, ...state.config };
+        this.metrics = { ...this.metrics, ...state.metrics };
+      }
+    } catch (error) {
+      console.error('Failed to load persisted AI assistant state:', error);
+    }
+  }
+
+  // === Utility Methods ===
+  clearCase(caseId: string) {
+    const newCases = { ...this.cases };
+    delete newCases[caseId];
+    this.cases = newCases;
+    if (this.currentCaseId === caseId) {
+      this.currentCaseId = undefined;
+    }
+    this.persistState();
+  }
+  clearAllHistory() {
+    this.cases = {};
+    this.currentCaseId = undefined;
+    this.messageCache.clear();
+    this.contextCache.clear();
+    this.persistState();
+  }
+  updateConfig(newConfig: Partial<AssistantConfig>) {
+    this.config = { ...this.config, ...newConfig };
+    this.persistState();
+  }
+  exportConversation(caseId: string, format: 'json' | 'markdown' = 'json') {
+    const caseData = this.cases[caseId];
+    if (!caseData) return null;
     const conversation = {
-      sessionId: this.sessionId,
-      messages: this.messages,
+      caseId,
+      title: caseData.title,
+      messages: caseData.messages,
+      insights: caseData.insights,
       exportedAt: new Date().toISOString(),
-      totalMessages: this.messages.length,
-      backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))]
+      totalMessages: caseData.messages.length,
+    };
+    if (format === 'markdown') {
+      return this.convertToMarkdown(conversation);
     }
-    switch (format) {
-      case 'json':
-        return JSON.stringify(conversation, null, 2);
-      case 'markdown':
-        return this.convertToMarkdown(conversation);
-      case 'pdf':
-        return this.generatePDF(conversation);
-      default:
-        return conversation;
-    }
+    return JSON.stringify(conversation, null, 2);
   }
-  /**
-   * Convert conversation to markdown format
-   */
   private convertToMarkdown(conversation: any): string {
-    let markdown = `# Legal AI Assistant Conversation\n\n`;
-    markdown += `**Session ID**: ${conversation.sessionId}\n`;
-    markdown += `**Exported**: ${conversation.exportedAt}\n`;
+    let markdown = `# Legal AI Assistant - ${conversation.title || conversation.caseId}\n\n`;
+    markdown += `**Exported**: ${conversation.exportedAt}\n\n`;
     markdown += `**Total Messages**: ${conversation.totalMessages}\n\n`;
-    conversation.messages.forEach((msg: ChatMessage) => {
+    conversation.messages.forEach((msg: AIMessage) => {
       const timestamp = new Date(msg.timestamp).toLocaleString();
       const backend = msg.metadata?.backend ? ` (${msg.metadata.backend})` : '';
       markdown += `## ${msg.role.toUpperCase()}${backend} - ${timestamp}\n\n`;
@@ -438,30 +643,6 @@ export class AIAssistantStore {
     });
     return markdown;
   }
-  /**
-   * Generate PDF (placeholder - would need PDF library)
-   */
-  private generatePDF(conversation: any): string {
-    // This would integrate with a PDF generation library like jsPDF
-    return `PDF generation would be implemented here using conversation data: ${JSON.stringify(conversation, null, 2)}`;
-  }
-  /**
-   * Clear conversation history
-   */
-  clearHistory() {
-    this.messages = [];
-    this.messagesCache.clear();
-    this.contextCache.clear();
-    localStorage.removeItem('ai-assistant-session-id');
-    localStorage.removeItem('ai-assistant-messages');
-    this.sessionId = crypto.randomUUID();
-  }
-  /**
-   * Update configuration
-   */
-  updateConfig(newConfig: Partial<AssistantConfig>) {
-    this.config = { ...this.config, ...newConfig }
-  }
 }
 // Create singleton instance
-export const aiAssistant = new AIAssistantStore();
+export const aiAssistant = new AIAssistantGlobalStore();

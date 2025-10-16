@@ -11,7 +11,7 @@
     {@render children()}
   {/if}
 </div>
-    {@render children()}
-  {/if}
-</div>
 </script>
+<style>
+  .card-header { font-weight: 600; margin-bottom: 0.5rem; }
+</style>

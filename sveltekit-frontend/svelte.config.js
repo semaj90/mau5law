@@ -1,23 +1,15 @@
+import preprocess from 'svelte-preprocess';
 import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: vitePreprocess(),
+  preprocess: preprocess({
+    typescript: true,
+    postcss: true, // Needed for UnoCSS / custom PostCSS pipelines
+  }),
 
   kit: {
     adapter: adapter(),
-    alias: {
-      '$lib': 'src/lib',
-      '$lib/*': 'src/lib/*',
-      '$components': 'src/lib/components',
-      '$components/*': 'src/lib/components/*',
-      '$utils': 'src/lib/utils',
-      '$utils/*': 'src/lib/utils/*',
-      '$stores': 'src/lib/stores',
-      '$stores/*': 'src/lib/stores/*',
-      // Removed drizzle-orm/node-postgres alias - using native adapter
-    },
     serviceWorker: {
       register: false,
     },

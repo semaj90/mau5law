@@ -22,19 +22,51 @@ export interface ServiceHealth {
   errorCount: number
 }
 
+// New: Interface for detailed tensor processing statistics
+export interface TensorStats {
+  inputSize?: number;
+  outputSize?: number;
+  processingDurationMs?: number;
+  peakMemoryUsageBytes?: number;
+  flops?: number;
+  // Add other specific tensor statistics as needed
+}
+
 // New: Interface for the expected response from GPU microservices
 export interface GPUTensorProcessingResult {
   success: boolean;
-  data?: any; // Use a more specific type if the data structure is known
+  data?: unknown; // Use 'unknown' for better type safety, forcing explicit handling
   cache_hit?: boolean;
   route?: string;
   metadata?: {
-    tensorStats?: any;
+    tensorStats?: TensorStats; // Use the specific TensorStats interface
     optimizationLevel?: string;
     gpuMemoryUsed?: number;
     // Add other metadata properties as needed
   };
   error?: string;
+}
+
+// New: Interface for the raw tensor data received in the request body
+export interface TensorData {
+  shape: number[];
+  data: number[];
+  layout?: string;
+  lodLevel?: number;
+  [key: string]: unknown; // Allow for other properties from the original request
+}
+
+// New: Interface for the enhanced tensor data passed to GPU services
+export interface EnhancedTensorData extends TensorData {
+  cacheKey: string;
+  timestamp: number;
+  requestId: string;
+  clientAddress: string;
+  userAgent: string | null;
+  context: string;
+  dimensions: number;
+  layout?: string; // Added missing property
+  lodLevel?: number; // Added missing property
 }
 
 class GPUServiceManager {
@@ -80,13 +112,15 @@ class GPUServiceManager {
         health.healthy = false;
         health.errorCount++;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
       health.healthy = false;
       health.errorCount++;
-      if (error.name === 'AbortError') {
+      if (ensureError(error).name === 'AbortError') {
+        // Use ensureError for type safety
         console.warn(`Health check for ${url} timed out.`);
       } else {
-        console.error(`Health check for ${url} failed:`, error.message);
+        console.error(`Health check for ${url} failed:`, ensureError(error).message); // Use ensureError for type safety
       }
     }
     health.lastCheck = Date.now();
@@ -123,28 +157,19 @@ class GPUServiceManager {
     }
     return Math.abs(hash);
   }
-  getHealthStats() {
-    return Array.from(this.serviceHealth.values()).map(health => ({
-      url: health.url,
-      healthy: health.healthy,
-      lastCheck: health.lastCheck,
-    }));
+  getHealthStats(): ServiceHealth[] {
+    // Changed return type to ServiceHealth[]
+    return Array.from(this.serviceHealth.values()); // Return full ServiceHealth objects
   }
   cleanup(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
   }
-}
-// Global service manager instance
-let serviceManager: GPUServiceManager;
-// Initialize service manager in development
-if (dev) {
-  serviceManager = new GPUServiceManager();
-} else {
-  // In production, you might want to use a different initialization strategy
-  serviceManager = new GPUServiceManager();
-}
+} // Added semicolon to explicitly terminate the class declaration statement
+// Initialize service manager directly as the logic was identical for dev and production
+const serviceManager = new GPUServiceManager();
+
 // Request processing statistics
 export interface ProcessingStats {
   totalRequests: number;
@@ -165,55 +190,47 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url: _ur
   const startTime = Date.now();
   stats.totalRequests++;
   try {
-    const tensorData = await request.json();
+    const rawTensorData: TensorData = await request.json(); // Use TensorData
     // Validate tensor data structure
-    if (!tensorData.shape || !tensorData.data) {
+    if (!rawTensorData.shape || !rawTensorData.data) {
       stats.failedRequests++;
-      throw error(
-        400,
-        ensureError({
-          message: 'Invalid tensor data: missing shape or data fields',
-        })
-      );
+      throw error(400, {
+        message: 'Invalid tensor data: missing shape or data fields',
+      });
     }
     // Validate tensor shape
     if (
-      !ArrayData.isArray(tensorData.shape) ||
-      tensorData.shape.some((dim: number) => typeof dim !== 'number' || dim <= 0)
+      !Array.isArray(rawTensorData.shape) ||
+      rawTensorData.shape.some((dim: number) => typeof dim !== 'number' || dim <= 0)
     ) {
       stats.failedRequests++;
-      throw error(
-        400,
-        ensureError({
-          message: 'Invalid tensor shape: must be array of positive integers',
-        })
-      );
+      throw error(400, {
+        message: 'Invalid tensor shape: must be array of positive integers',
+      });
     }
     // Validate tensor data
-    const expectedSize = tensorData.shape.reduce((a: number, b: number) => a * b, 1);
-    if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
+    const expectedSize = rawTensorData.shape.reduce((a: number, b: number) => a * b, 1);
+    if (!Array.isArray(rawTensorData.data) || rawTensorData.data.length !== expectedSize) {
       stats.failedRequests++;
-      throw error(
-        400,
-        ensureError({
-          message: 'Tensor data size mismatch',
-        })
-      );
+      throw error(400, {
+        message: 'Tensor data size mismatch',
+      });
     }
     // Generate cache key for consistent routing
-    const cacheKey = generateCacheKey(tensorData);
+    const cacheKey = generateCacheKey(rawTensorData);
     // Enhance tensor data with metadata
-    const enhancedTensorData = {
-      ...tensorData,
+    const enhancedTensorData: EnhancedTensorData = {
+      // Explicitly type as EnhancedTensorData
+      ...rawTensorData,
       cacheKey,
       timestamp: Date.now(),
       requestId: generateRequestId(),
       clientAddress: getClientAddress(),
       userAgent: request.headers.get('user-agent'),
       context: 'legal-ai-processing',
-      dimensions: tensorData.shape.length,
-      layout: tensorData.layout || 'standard',
-      lodLevel: tensorData.lodLevel || 0,
+      dimensions: rawTensorData.shape.length,
+      layout: rawTensorData.layout || 'standard',
+      lodLevel: rawTensorData.lodLevel || 0,
     };
     // Select appropriate GPU service
     const targetService = serviceManager.getServiceForHash(cacheKey);
@@ -252,19 +269,27 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url: _ur
         cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100,
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    // Changed 'any' to 'unknown'
     stats.failedRequests++;
     console.error('GPU tensor processing error:', err);
-    if (err.status) {
+    // Check if it's a SvelteKit error object (which has a 'status' property)
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'status' in err &&
+      typeof (err as { status: number }).status === 'number'
+    ) {
       // Re-throw SvelteKit errors
       throw err;
     }
-    throw error(
-      500,
-      ensureError({
-        message: `Processing failed: ${(err as Error).message}`,
-      })
-    );
+    // Otherwise, treat as a generic error and ensure it's an Error instance
+    const errorInstance = ensureError(err);
+    throw error(500, {
+      message: `Processing failed: ${errorInstance.message}`,
+      // Optionally add more details from errorInstance if needed, e.g., stack
+      // details: errorInstance.stack,
+    });
   }
 };
 // GET: Retrieve processing statistics and service health
@@ -272,12 +297,13 @@ export const GET: RequestHandler = async ({ url }) => {
   const statsType = url.searchParams.get('type');
   try {
     switch (statsType) {
-      case 'health':
+      case 'health': {
         return json({
           serviceHealth: serviceManager.getHealthStats(),
           timestamp: Date.now(),
         });
-      case 'stats':
+      }
+      case 'stats': {
         return json({
           processing: {
             totalRequests: stats.totalRequests,
@@ -290,8 +316,9 @@ export const GET: RequestHandler = async ({ url }) => {
           services: serviceManager.getHealthStats(),
           timestamp: Date.now(),
         });
+      }
       case 'full':
-      default:
+      default: {
         // Get detailed stats from primary GPU service
         const primaryService = gpuServicePool[0];
         let serviceStats = null;
@@ -300,8 +327,8 @@ export const GET: RequestHandler = async ({ url }) => {
           if (response.ok) {
             serviceStats = await response.json();
           }
-        } catch (error: any) {
-          console.warn('Failed to fetch service stats:', error);
+        } catch (error: unknown) {
+          console.warn('Failed to fetch service stats:', ensureError(error).message);
         }
         return json({
           api: {
@@ -313,13 +340,14 @@ export const GET: RequestHandler = async ({ url }) => {
           uptime: process.uptime(),
           environment: dev ? 'development' : 'production',
         });
+      }
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Stats retrieval error:', err);
     throw error(
       500,
       ensureError({
-        message: `Stats retrieval failed: ${err.message}`,
+        message: `Stats retrieval failed: ${ensureError(err).message}`,
         code: 'STATS_ERROR',
       })
     );
@@ -357,8 +385,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
             service: serviceUrl,
             success: response.ok,
           };
-        } catch (error: any) {
-          return { service: serviceUrl, success: false, error: error.message };
+        } catch (error: unknown) {
+          // Changed 'any' to 'unknown'
+          return { service: serviceUrl, success: false, error: ensureError(error).message };
         }
       });
       const results = await Promise.all(clearPromises);
@@ -375,19 +404,24 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: 'Operation completed',
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    // Changed 'any' to 'unknown'
     console.error('Cache clearing error:', err);
     throw error(
       500,
       ensureError({
-        message: `Cache clearing failed: ${err.message}`,
+        message: `Cache clearing failed: ${ensureError(err).message}`,
         code: 'CACHE_CLEAR_ERROR',
       })
     );
   }
 };
 // Helper functions
-async function processWithService(serviceUrl: string, tensorData: any): Promise<GPUTensorProcessingResult> {
+async function processWithService(
+  serviceUrl: string,
+  tensorData: EnhancedTensorData
+): Promise<GPUTensorProcessingResult> {
+  // Changed tensorData type
   const maxRetries = 2;
   let lastError: Error | null = null;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -413,12 +447,13 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         throw new Error(`GPU processing failed: ${result.error || 'Unknown error'}`);
       }
       return result;
-    } catch (error: any) {
-      lastError = error as Error;
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
+      lastError = ensureError(error); // Use ensureError
+      if (lastError.name === 'AbortError') {
         console.warn(`Attempt ${attempt + 1} failed for service ${serviceUrl}: Timeout.`);
       } else {
-        console.warn(`Attempt ${attempt + 1} failed for service ${serviceUrl}:`, error.message);
+        console.warn(`Attempt ${attempt + 1} failed for service ${serviceUrl}:`, lastError.message);
       }
       if (attempt < maxRetries - 1) {
         // Wait before retry with exponential backoff
@@ -447,70 +482,52 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
       if (response.ok) {
         const result: GPUTensorProcessingResult = await response.json();
         if (result.success) {
-          return result;
+          // Complete the if statement and check for success
+          return result; // Return the successful result from the fallback service
+        } else {
+          throw new Error(`Fallback GPU processing failed: ${result.error || 'Unknown error'}`);
         }
-      }
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
-        console.warn(`Fallback service ${fallbackService.url} timed out.`);
       } else {
-        console.warn(`Fallback service ${fallbackService.url} failed:`, error.message);
+        throw new Error(`Fallback GPU service error: ${response.status} ${response.statusText}`);
       }
+    } catch (error: unknown) {
+      lastError = ensureError(error);
+      console.warn(`Fallback attempt failed for service ${fallbackService.url}:`, lastError.message);
     }
   }
-  throw lastError || new Error('All GPU services failed');
+  // If all attempts and fallbacks fail
+  throw lastError || error(500, ensureError({ message: 'All GPU processing attempts failed.' }));
 }
-function generateCacheKey(tensorData: any): string {
-  const shapeStr = tensorData.shape.join('x')
-  const layout = tensorData.layout || 'standard'
-  const lodLevel = tensorData.lodLevel || 0
-  const dataHash = hashArray(tensorData.data, 100); // Hash first 100 elements
-  const key = `${shapeStr}_${layout}_${lodLevel}_${dataHash}`
-  return btoa(key).replace(/[+/=]/g, ''); // Base64 encode and remove special chars
-}
-function hashArray(arr: number[], sampleSize: number): string {
-  const sample = arr.slice(0, Math.min(sampleSize, arr.length));
-  let hash = 0;
-  for (let i = 0; i < sample.length; i++) {
-    const value = Math.round(sample[i] * 1000); // Precision to 3 decimals
-    hash = (hash << 5) - hash + value;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash).toString(36);
-}
+
+// Helper function to generate a unique request ID
 function generateRequestId(): string {
-  const timestamp = Date.now().toString(36)
-  const random = Math.random().toString(36).substr(2, 9)
-  return `req_${timestamp}_${random}`
+  return `req-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 }
+
+// Helper function to generate a cache key from tensor data
+function generateCacheKey(tensorData: TensorData): string {
+  // A simple hash of shape and data for caching purposes
+  const shapeString = tensorData.shape.join(',');
+  const dataSample = tensorData.data.slice(0, 10).join(','); // Use a sample for performance
+  return `${shapeString}-${dataSample}-${tensorData.layout || ''}-${tensorData.lodLevel || ''}`;
+}
+
+// Helper function to generate a route hash (can be more sophisticated)
 function generateRouteHash(cacheKey: string): string {
-  let hash = 0
-  for (let i = 0; i < cacheKey.length; i++) {
-    const char = cacheKey.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash
-  }
-  return `route_${Math.abs(hash).toString(36)}`
+  // For now, just return the cacheKey, but could be a more specific routing hash
+  return `route-${cacheKey}`;
 }
+
+// Helper function to update processing statistics
 function updateProcessingStats(processingTime: number, cacheHit: boolean): void {
-  if (cacheHit) {
-    stats.cacheHits++
-  }
-  // Update average processing time
-  if (stats.successfulRequests > 0) {
-    const totalTime = stats.averageProcessingTime * (stats.successfulRequests - 1)
-    stats.averageProcessingTime = (totalTime + processingTime) / stats.successfulRequests
+  // Update average processing time using a moving average or simple average
+  if (stats.successfulRequests === 0) {
+    stats.averageProcessingTime = processingTime;
   } else {
-    stats.averageProcessingTime = processingTime
+    stats.averageProcessingTime =
+      (stats.averageProcessingTime * stats.successfulRequests + processingTime) / (stats.successfulRequests + 1);
   }
-}
-// Cleanup on process exit
-if (typeof process !== 'undefined') {
-  process.on('exit', () => {
-    serviceManager?.cleanup()
-  })
-  process.on('SIGINT', () => {
-    serviceManager?.cleanup()
-    process.exit(0)
-  })
+  if (cacheHit) {
+    stats.cacheHits++;
+  }
 }

@@ -6,7 +6,7 @@
    */
   import { onMount } from 'svelte';
   import NesTypewriterStream from '$lib/components/chat/nes-typewriter-stream.svelte';
-  import { chatStore, chatActions } from '$lib/stores/chatStore';
+  import { chatStore, chatActions } from '\/stores/chat.svelte';
 
   // Svelte 5 runes - production state management
   let messages = $state<

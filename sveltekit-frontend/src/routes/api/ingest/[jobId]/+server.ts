@@ -10,7 +10,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
 import { db, userDocuments } from '$lib/server/index.js';
-import { eq } from 'drizzle-orm'; // Only 'eq' is needed now for the database query
+import { eq, sql } from 'drizzle-orm'; // Import eq and sql for type-safe Drizzle queries
 
 // Define the structure of an active job in the worker pool
 interface WorkerJob {
@@ -20,17 +20,34 @@ interface WorkerJob {
   // Add other properties if known, e.g., payload, startTime
 }
 
-// Extend the inferred WorkerStats type to include activeJobs.
-// This assumes the sharedWorkerPool.getStats() method *does* return activeJobs at runtime,
-// but its TypeScript definition is incomplete.
-interface WorkerPoolStatsExtended {
+// Define the structure for worker pool statistics.
+// This type should ideally come from the worker-pool-simple.js definition.
+interface WorkerPoolStats {
   totalWorkers: number;
-  busyWorkers: boolean[];
-  freeWorkers: boolean[];
-  queuedJobs: number; // This is the count of jobs in the queue, not a list of IDs
+  busyWorkers: number;
+  freeWorkers: number;
+  queuedJobs: number;
   pendingCallbacks: number;
-  activeJobs: WorkerJob[]; // Add the missing property
+  activeJobs?: WorkerJob[];
 }
+
+// Define an interface for the sharedWorkerPool to provide type safety for its methods.
+interface SharedWorkerPoolInterface {
+  getStats(): WorkerPoolStats;
+  getQueuedJobIds?(): string[]; // Make it optional if not always present
+}
+
+// Define a type for the userDocuments table rows using Drizzle's inferSelect.
+// This assumes `userDocuments` is a Drizzle table definition imported from `$lib/server/index.js`.
+// The actual columns and their types will be inferred from the Drizzle schema.
+// Augment the inferred type to explicitly include 'jobId', 'metadata', 'contentType', and 'completedAt'
+// as they are used in the code but might not be fully inferred by Drizzle's $inferSelect for JSONB or nullable columns.
+type UserDocument = typeof userDocuments.$inferSelect & {
+  jobId?: string | null; // Assuming jobId might be stored directly or null
+  metadata?: DocumentMetadata | null; // Explicitly add metadata
+  contentType?: string | null; // Explicitly add contentType
+  completedAt?: Date | null; // Explicitly add completedAt
+};
 
 /**
  * Defines the structure for document metadata, allowing for arbitrary key-value pairs.
@@ -40,7 +57,7 @@ type DocumentMetadata = Record<string, unknown>;
 
 interface JobStatusResponse {
   success: boolean;
-  jobId: string;
+  jobId: string; // jobId is always present in the response
   status: 'queued' | 'processing' | 'completed' | 'failed' | 'not-found';
   documentId?: number;
   progress?: {
@@ -55,42 +72,43 @@ interface JobStatusResponse {
   };
   error?: string;
   createdAt?: string;
-  completedAt?: string; // This remains string as it's an ISO string representation
+  completedAt?: string;
 }
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params }: { params: { jobId?: string } }) => {
   try {
-    const { jobId } = params;
+    const jobId = params.jobId;
     if (!jobId) {
       throw error(400, 'Job ID is required');
     }
 
     // First check worker pool for active/queued jobs
-    const workerStats = sharedWorkerPool.getStats() as WorkerPoolStatsExtended;
-    const activeJobs = workerStats.activeJobs || [];
+    // Cast to SharedWorkerPoolInterface to ensure type safety for method calls.
+    const typedSharedWorkerPool: SharedWorkerPoolInterface = sharedWorkerPool;
+    const workerStats: WorkerPoolStats = typedSharedWorkerPool.getStats();
+    const activeJobs = workerStats.activeJobs ?? [];
 
-    // Fix: Assume sharedWorkerPool now exposes a method to get specific queued job IDs.
-    // This requires modification to '$lib/server/ingest/worker-pool-simple.js'
-    // to add a method like `getQueuedJobIds(): string[]`.
-    const queuedJobIds = sharedWorkerPool.getQueuedJobIds();
+    const queuedJobIds: string[] =
+      typeof typedSharedWorkerPool.getQueuedJobIds === 'function' ? typedSharedWorkerPool.getQueuedJobIds() : [];
 
     // Check if job is currently active
     const activeJob = activeJobs.find((job: WorkerJob) => job.id === jobId);
     if (activeJob) {
-      return json({
+      const responseData: JobStatusResponse = {
         success: true,
         jobId,
         status: 'processing',
         progress: {
           stage: activeJob.stage || 'processing',
-          percentage: activeJob.progress || 0,
+          percentage: activeJob.progress ?? 0,
         },
-      } as JobStatusResponse);
+      };
+      return json(responseData);
     }
 
-    // Fix: Check if the specific jobId is in the queue.
+    // Check if the specific jobId is in the queue.
     if (queuedJobIds.includes(jobId)) {
-      return json({
+      const responseData: JobStatusResponse = {
         success: true,
         jobId,
         status: 'queued',
@@ -98,70 +116,105 @@ export const GET: RequestHandler = async ({ params }) => {
           stage: 'queued',
           percentage: 0,
         },
-      } as JobStatusResponse);
+      };
+      return json(responseData);
     }
 
     // Check database for completed jobs
-    // Fix: Jobs are now stored with a dedicated 'jobId' column for efficient lookup.
-    // This requires modification to the 'userDocuments' Drizzle schema in '$lib/server/index.js'
-    // to add `jobId: text('job_id').unique(),` and `completedAt: timestamp('completed_at'),`.
-    const documents = await db
-      .select({
-        id: userDocuments.id,
-        source: userDocuments.source,
-        content: userDocuments.content,
-        contentType: userDocuments.contentType,
-        embedding: userDocuments.embedding,
-        metadata: userDocuments.metadata,
-        createdAt: userDocuments.createdAt,
-        completedAt: userDocuments.completedAt, // Fix: Include the new 'completedAt' column from the schema
-      })
-      .from(userDocuments)
-      .where(eq(userDocuments.jobId, jobId)) // Fix: Use eq() for a fast, exact match on the dedicated 'jobId' column
-      .limit(1);
+    let foundDocument: UserDocument | undefined;
 
-    if (documents.length > 0) {
-      const doc = documents[0];
-      let metadata: DocumentMetadata = {};
-      try {
-        metadata = JSON.parse((doc.metadata as string) || '{}') as DocumentMetadata;
-      } catch {
-        // Ignore JSON parse errors
+    // The 'jobId' column does not exist directly on the userDocuments table.
+    // We will rely on searching by 'id' or within the 'metadata' JSONB column.
+
+    // 1. Try to find by 'id' column (if jobId could be a numeric ID).
+    // This assumes `userDocuments.id` is a numeric type in the schema.
+    const numericId = parseInt(jobId, 10);
+    if (!isNaN(numericId)) {
+      const byIdColumn = await db.select().from(userDocuments).where(eq(userDocuments.id, numericId)).limit(1);
+      if (byIdColumn.length > 0) {
+        foundDocument = byIdColumn[0];
       }
-      return json({
+    }
+
+    // 2. If still not found, try querying within metadata for 'jobId' or 'job_id'.
+    // This requires `userDocuments.metadata` to be a JSONB column in Drizzle.
+    // The `'metadata' in userDocuments` check ensures this only runs if the column exists in the schema.
+    if (!foundDocument && 'metadata' in userDocuments) {
+      const byMetadata = await db
+        .select()
+        .from(userDocuments)
+        .where(
+          sql`${userDocuments.metadata} ->> 'jobId' = ${jobId} OR ${userDocuments.metadata} ->> 'job_id' = ${jobId}`
+        )
+        .limit(1);
+      if (byMetadata.length > 0) {
+        foundDocument = byMetadata[0];
+      }
+    }
+
+    if (foundDocument) {
+      const doc: UserDocument = foundDocument;
+
+      let parsedMetadata: DocumentMetadata = {};
+      // Drizzle typically handles JSONB columns as objects directly.
+      // If `doc.metadata` is already an object, use it. Otherwise, try parsing if it's a string.
+      if (typeof doc.metadata === 'string') {
+        try {
+          parsedMetadata = JSON.parse(doc.metadata);
+        } catch {
+          parsedMetadata = { raw: doc.metadata };
+        }
+      } else if (doc.metadata && typeof doc.metadata === 'object') {
+        parsedMetadata = doc.metadata as DocumentMetadata;
+      }
+
+      // Access properties directly from the typed `doc` object.
+      // Drizzle returns Date objects for timestamp columns.
+      const createdAt = doc.createdAt instanceof Date ? doc.createdAt.toISOString() : undefined;
+      const completedAt = doc.completedAt instanceof Date ? doc.completedAt.toISOString() : createdAt;
+
+      const contentRaw = doc.content ?? '';
+      const content =
+        typeof contentRaw === 'string' ? contentRaw.substring(0, 1000) : String(contentRaw).substring(0, 1000);
+
+      const contentType = doc.contentType ?? 'text/plain';
+
+      // Assuming `embedding` column exists and its non-null value indicates 'generated'.
+      const embeddingStatus = doc.embedding != null ? 'generated' : 'none';
+
+      const responseData: JobStatusResponse = {
         success: true,
         jobId,
         status: 'completed',
-        documentId: doc.id,
+        documentId: doc.id as number, // Cast to number, assuming 'id' is numeric in the schema
         result: {
-          content: (doc.content as string)?.substring(0, 1000),
-          contentType: doc.contentType,
-          embeddingStatus: doc.embedding ? 'generated' : 'none',
-          metadata,
+          content,
+          contentType,
+          embeddingStatus,
+          metadata: parsedMetadata,
         },
-        createdAt: (doc.createdAt as Date)?.toISOString(),
-        // Fix: Prioritize the dedicated 'completedAt' column, fall back to 'createdAt' if not available.
-        completedAt: (doc.completedAt as Date)?.toISOString() || (doc.createdAt as Date)?.toISOString(),
-      } as JobStatusResponse);
+        createdAt,
+        completedAt,
+      };
+      return json(responseData);
     }
 
     // Job not found in active, queued, or completed states
-    return json({
+    const responseData: JobStatusResponse = {
       success: true,
       jobId,
       status: 'not-found',
       error: 'Job not found in queue or database',
-    } as JobStatusResponse);
+    };
+    return json(responseData);
   } catch (err) {
     console.error('Job status check error:', err);
-    return json(
-      {
-        success: false,
-        jobId: params.jobId || 'unknown',
-        status: 'failed',
-        error: err instanceof Error ? err.message : String(err),
-      } as JobStatusResponse,
-      { status: 500 }
-    );
+    const errorResponseData: JobStatusResponse = {
+      success: false,
+      jobId: params.jobId || 'unknown',
+      status: 'failed',
+      error: err instanceof Error ? err.message : String(err),
+    };
+    return json(errorResponseData, { status: 500 });
   }
 };

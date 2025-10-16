@@ -1,9 +1,7 @@
-
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
 import { logger } from './logger.js';
-import { streamingService } from './streaming-service.js';
-}
+
 export interface OllamaModel {
   name: string;
   size: string;
@@ -28,7 +26,7 @@ export interface OllamaGenerateOptions {
     stop?: string[];
     seed?: number;
     repeat_penalty?: number;
-  }
+  };
 }
 export interface OllamaResponse {
   model: string;
@@ -43,6 +41,26 @@ export interface OllamaResponse {
   eval_count?: number;
   eval_duration?: number;
 }
+
+// Define specific interfaces for chat messages and responses
+export interface OllamaChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface OllamaChatResponse {
+  model: string;
+  created_at: string;
+  message: OllamaChatMessage;
+  done: boolean;
+  total_duration?: number;
+  load_duration?: number;
+  prompt_eval_count?: number;
+  prompt_eval_duration?: number;
+  eval_count?: number;
+  eval_duration?: number;
+}
+
 class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
@@ -66,7 +84,7 @@ class OllamaLocalLLM {
       // Try to pull legal-specific models if not present
       await this.ensureLegalModels();
       logger.info('[OllamaLLM] Ollama service initialized successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Initialization failed:', error);
     }
   }
@@ -75,9 +93,10 @@ class OllamaLocalLLM {
    */
   async checkAvailability(): Promise<boolean> {
     try {
-      // removed unused response assignment
-      return (response as { ok?: any; json?: any; statusText?: any; body?: any }).ok;
-    } catch (error: any) {
+      const response = await fetch(`${this.baseUrl}/api/tags`);
+      return response.ok;
+    } catch (error: unknown) {
+      logger.error('[OllamaLLM] Check availability failed:', error); // Added logging for clarity
       return false;
     }
   }
@@ -86,17 +105,17 @@ class OllamaLocalLLM {
    */
   async loadAvailableModels(): Promise<void> {
     try {
-      // removed unused response assignment
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
+      const response = await fetch(`${this.baseUrl}/api/tags`);
+      if (!response.ok) {
         throw new Error('Failed to fetch models');
       }
-      const data = await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
+      const data = await response.json();
       this.availableModels.clear();
-      for (const model of (data as { models?: any; response?: any; done?: any; status?: any }).models || []) {
+      for (const model of data.models || []) {
         this.availableModels.set(model.name, model);
         logger.info(`[OllamaLLM] Available model: ${model.name} (${model.size})`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Failed to load models:', error);
     }
   }
@@ -104,11 +123,7 @@ class OllamaLocalLLM {
    * Ensure legal-specific models are available
    */
   async ensureLegalModels(): Promise<void> {
-    const legalModels = [
-      'gemma3-legal:latest',
-      'llama2:legal-7b',
-      'mistral:legal-instruct'
-    ];
+    const legalModels = ['gemma3-legal:latest', 'llama2:legal-7b', 'mistral:legal-instruct'];
     for (const modelName of legalModels) {
       if (!this.availableModels.has(modelName)) {
         logger.info(`[OllamaLLM] Legal model ${modelName} not found, attempting to pull...`);
@@ -149,26 +164,29 @@ TEMPLATE """{{ if .System }}<|system|>
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          name: targetName;
-          modelfile: modelfile
-        })
+        body: JSON.stringify({
+          name: targetName,
+          modelfile: modelfile,
+        }),
       });
-      if ((response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
+      if (response.ok) {
         logger.info(`[OllamaLLM] Created legal model variant: ${targetName}`);
         await this.loadAvailableModels();
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Failed to create model: ${response.statusText} - ${errorText}`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(`[OllamaLLM] Failed to create legal model ${targetName}:`, error);
     }
   }
   /**
    * Generate completion using local LLM
    */
-  async generate(_options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
+  async generate(options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
     try {
       // Use legal model if available
-      const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access)
+      const model = this.selectBestModel(options.model);
       logger.info(`[OllamaLLM] Generating with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
@@ -176,20 +194,21 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: false
-        })
+          stream: false,
+        }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Generation failed: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Generation failed: ${response.statusText} - ${errorText}`);
       }
-      const result = await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
+      const result: OllamaResponse = await response.json(); // Type assertion for result
       // Update model cache
       this.modelCache.set(model, {
         loaded: true,
         lastUsed: Date.now(),
       });
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Generation failed:', error);
       return null;
     }
@@ -197,12 +216,13 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Stream generation with progressive updates
    */
-  async generateStream(_options: OllamaGenerateOptions
+  async generateStream(
+    options: OllamaGenerateOptions,
     onToken: (token: string) => void,
-    onComplete: (response: string) => void;
+    onComplete: (response: string) => void
   ): Promise<void> {
     try {
-      const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access)
+      const model = this.selectBestModel(options.model);
       logger.info(`[OllamaLLM] Streaming generation with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
@@ -210,36 +230,44 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: true
-        })
+          stream: true,
+        }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Stream generation failed: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Stream generation failed: ${response.statusText} - ${errorText}`);
       }
-      const reader = (response as { ok?: any; json?: any; statusText?: any; body?: any }).body.getReader();
+      const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      let done = false; // Initialize done flag
+      // Loop until the stream is done, as indicated by `reader.read()`
+      while (!done) {
+        // Use the done flag in the loop condition
+        const result = await reader.read();
+        done = result.done; // Update done flag
+        const value = result.value;
+        if (done) break; // Break if done, though the while condition should handle it
         const chunk = decoder.decode(value);
-        // removed unused lines assignment
+        const lines = chunk.split('\n'); // Split chunk into lines
         for (const line of lines) {
+          if (line.trim() === '') continue; // Skip empty lines
           try {
-            const data = JSON.parse(line);
-            if ((data as { models?: any; response?: any; done?: any; status?: any }).response) {
-              fullResponse += (data as { models?: any; response?: any; done?: any; status?: any }).response;
-              onToken((data as { models?: any; response?: any; done?: any; status?: any }).response);
+            const data: OllamaResponse = JSON.parse(line); // Type assertion for streamed data
+            if (data.response) {
+              fullResponse += data.response;
+              onToken(data.response);
             }
-            if ((data as { models?: any; response?: any; done?: any; status?: any }).done) {
+            if (data.done) {
               onComplete(fullResponse);
             }
-          } catch (e: any) {
-            // Ignore parsing errors
+          } catch (e: unknown) {
+            // Ignore parsing errors, as partial lines might occur
+            logger.debug('[OllamaLLM] Error parsing stream chunk:', e);
           }
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Stream generation failed:', error);
       throw error;
     }
@@ -253,17 +281,18 @@ TEMPLATE """{{ if .System }}<|system|>
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: embeddingModel;
-          prompt: text
-        })
+        body: JSON.stringify({
+          model: embeddingModel,
+          prompt: text,
+        }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Embedding generation failed: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Embedding generation failed: ${response.statusText} - ${errorText}`);
       }
-      const result = await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
-      return (result as { embedding?: any; message?: any; response?: any }).embedding;
-    } catch (error: any) {
+      const result: { embedding: number[] } = await response.json(); // Type assertion for result
+      return result.embedding;
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Embedding generation failed:', error);
       return null;
     }
@@ -271,24 +300,24 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Chat completion with conversation history
    */
-  async chat(messages: Array<any>, model?: string): Promise<string | null> {
+  async chat(messages: Array<{ role: 'user' | 'assistant'; content: string }>, model?: string): Promise<string | null> {
     try {
       const selectedModel = this.selectBestModel(model);
       const response = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: selectedModel,
           messages,
-          stream: false
-        })
+          stream: false,
+        }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Chat completion failed: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Chat completion failed: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
-      return (result as { embedding?: any; message?: any; response?: any }).message?.content || null;
-    } catch (error: any) {
+      const result = await response.json();
+      return result.message?.content || null;
+    } catch (error: Error) {
       logger.error('[OllamaLLM] Chat completion failed:', error);
       return null;
     }
@@ -296,10 +325,11 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Process legal document with specialized prompting
    */
-  async processLegalDocument(_document: string
+  async processLegalDocument(
+    document: string,
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: unknown;
-  ): Promise<any> {
+    options?: { format?: 'json' }
+  ): Promise<string | JsonObject | null> {
     try {
       let prompt = '';
       let systemPrompt = 'You are a legal document analysis expert.';
@@ -308,32 +338,14 @@ TEMPLATE """{{ if .System }}<|system|>
           prompt = `Provide a comprehensive legal summary of the following document, highlighting key legal points, parties involved, and conclusions:\n\n${document}`;
           break;
         case 'extract':
-          prompt = `Extract the following information from this legal document:
-- Case citations
-- Statute references
-- Legal entities and parties
-- Key dates
-- Monetary amounts
-- Legal holdings or decisions
-Document:\n${document}`;
+          prompt = `Extract the following information from this legal document:\n- Case citations\n- Statute references\n- Legal entities and parties\n- Key dates\n- Monetary amounts\n- Legal holdings or decisions\nDocument:\n${document}`;
           break;
         case 'analyze':
-          prompt = `Perform a detailed legal analysis of this document, including:
-- Legal issues presented
-- Arguments from each party
-- Court's reasoning
-- Precedents cited
-- Legal implications
-Document:\n${document}`;
+          prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;
           systemPrompt += ' Focus on legal reasoning and precedential value.';
           break;
         case 'classify':
-          prompt = `Classify this legal document:
-- Document type (contract, pleading, opinion, statute, etc.)
-- Area of law (criminal, civil, contract, tort, etc.)
-- Jurisdiction
-- Key legal concepts
-Document:\n${document}`;
+          prompt = `Classify this legal document:\n- Document type (contract, pleading, opinion, statute, etc.)\n- Area of law (criminal, civil, contract, tort, etc.)\n- Jurisdiction\n- Key legal concepts\nDocument:\n${document}`;
           break;
       }
       const result = await this.generate({
@@ -343,158 +355,25 @@ Document:\n${document}`;
         options: {
           temperature: 0.3,
           top_p: 0.9,
-          num_predict: 2000
-        }
+          num_predict: 2000,
+        },
       });
-      if (result) {
+      if (result && result.response) {
         // Parse structured output if needed
-        if ((options as any)?.format === 'json') {
+        if (options?.format === 'json') {
           try {
-            return JSON.parse((result as { embedding?: any; message?: any; response?: any }).response);
+            return JSON.parse(result.response);
           } catch {
-            return { text: (result as { embedding?: any; message?: any; response?: any }).response }
+            return { text: result.response };
           }
         }
-        return (result as { embedding?: any; message?: any; response?: any }).response;
+        return result.response;
       }
-      return null;
-    } catch (error: any) {
+    } catch (error: Error) {
       logger.error('[OllamaLLM] Legal document processing failed:', error);
-      return null;
     }
-  }
-  /**
-   * Select best available model for the task
-   */
-  private selectBestModel(requestedModel?: string): string {
-    // If specific model requested and available, use it
-    if (requestedModel && this.availableModels.has(requestedModel)) {
-      return requestedModel;
-    }
-    // Try legal-specific models first
-    const legalModels = [
-      'gemma3-legal:latest',
-      'llama2:legal-7b',
-      'mistral:legal-instruct'
-    ];
-    for (const model of legalModels) {
-      if (this.availableModels.has(model)) {
-        return model;
-      }
-    }
-    // Fall back to general models
-    const fallbackModels = [
-      'llama2:13b',
-      'mistral:7b-instruct',
-      'gemma:7b',
-      'llama2:7b'
-    ];
-    for (const model of fallbackModels) {
-      if (this.availableModels.has(model)) {
-        return model;
-      }
-    }
-    // Use first available model
-    if (this.availableModels.size > 0) {
-      return Array.from(this.availableModels.keys())[0];
-    }
-    // Default fallback
-    return requestedModel || 'llama2';
-  }
-  /**
-   * Unload model from memory
-   */
-  async unloadModel(model: string): Promise<void> {
-    try {
-      await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          prompt: '',
-          keep_alive: 0
-        })
-      });
-      this.modelCache.delete(model);
-      logger.info(`[OllamaLLM] Unloaded model ${model}`);
-    } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error);
-    }
-  }
-  /**
-   * Get model information
-   */
-  async getModelInfo(model: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/show`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: model })
-      });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Failed to get model info: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
-      }
-      return await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
-    } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to get model info for ${model}:`, error);
-      return null;
-    }
-  }
-  /**
-   * Pull a model from Ollama library
-   */
-  async pullModel(model: string): Promise<boolean> {
-    try {
-      logger.info(`[OllamaLLM] Pulling model ${model}...`);
-      const response = await fetch(`${this.baseUrl}/api/pull`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: model })
-      });
-      if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
-        throw new Error(`Failed to pull model: ${(response as { ok?: any; json?: any; statusText?: any; body?: any }).statusText}`);
-      }
-      // Stream the pull progress
-      const reader = (response as { ok?: any; json?: any; statusText?: any; body?: any }).body.getReader();
-      const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        // removed unused lines assignment
-        for (const line of lines) {
-          try {
-            const data = JSON.parse(line);
-            if ((data as { models?: any; response?: any; done?: any; status?: any }).status) {
-              logger.info(`[OllamaLLM] Pull progress: ${(data as { models?: any; response?: any; done?: any; status?: any }).status}`);
-            }
-          } catch (e: any) {
-            // Ignore parsing errors
-          }
-        }
-      }
-      await this.loadAvailableModels();
-      return true;
-    } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error);
-      return false;
-    }
-  }
-  /**
-   * Health check for Ollama service
-   */
-  async healthCheck(): Promise<any> {
-    const available = await this.checkAvailability();
-    return {
-      status: available ? 'healthy' : 'unavailable',
-      available,
-      models: Array.from(this.availableModels.keys()),
-      loaded: Array.from(this.modelCache.keys()).filter(
-        model => this.modelCache.get(model)?.loaded
-      )
-    }
+    return null;
   }
 }
-// Export singleton instance
-export const ollamaLLM = new OllamaLocalLLM();
-// Types are already exported as interfaces above
+
+export default OllamaLocalLLM;

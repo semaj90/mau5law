@@ -10,10 +10,8 @@
   let classes = $derived(`card-content-ssr ${className}`.trim());
 </script>
 
-<div class="{classes} space-y-4">
-  {#if children}
-    {@render children()}
-  {/if}
+<div class="card-content">
+  <slot />
 </div>
 
 <style>
@@ -67,5 +65,7 @@
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
     border-radius: 0.5rem;
+  }
+</style>
   }
 </style>

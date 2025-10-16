@@ -2,7 +2,6 @@
  * Evidence Management Global Store - SvelteKit 2 + Svelte 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration
  */
-}
 export interface EvidenceNode {
   id: string;
   title: string;
@@ -33,8 +32,8 @@ export interface LegalCase {
   jurisdiction: string;
   practiceArea: string;
   nodes: EvidenceNode[];
-  connections: Array<{,
-    id,: string;
+  connections: Array<{
+    id: string;
     fromNodeId: string;
     toNodeId: string;
     relationship: string;
@@ -46,7 +45,7 @@ export interface LegalCase {
     lastModified: number;
     status: 'active' | 'archived' | 'completed';
     priority: 'low' | 'medium' | 'high' | 'urgent';
-  }
+  };
 }
 export interface UIState {
   selectedNodeIds: string[];
@@ -59,14 +58,14 @@ export interface UIState {
     type?: string;
     status?: string;
     tags?: string[];
-  }
+  };
   viewMode: 'grid' | 'timeline' | 'network';
   aiProcessing: boolean;
 }
 // Global Evidence Store using Svelte 5 Runes
 class EvidenceGlobalStore {
   // Core data using $state
-  cases = $state<Record<string, LegalCase>({});
+  cases = $state < Record<string, LegalCase>({});
   currentCaseId = $state<string | null>(null);
   // UI state
   ui = $state<UIState>({
@@ -78,23 +77,21 @@ class EvidenceGlobalStore {
     showAISuggestions: true,
     filterBy: {},
     viewMode: 'network',
-    aiProcessing: false
+    aiProcessing: false,
   });
   // Performance tracking
   stats = $state({
     totalNodes: 0,
     totalConnections: 0,
     aiSuggestionsGenerated: 0,
-    lastSync: 0
+    lastSync: 0,
   });
   // Derived state using $derived
   currentCase = $derived(this.currentCaseId ? this.cases[this.currentCaseId] : null);
   currentNodes = $derived(this.currentCase?.nodes || []);
-  selectedNodes = $derived(
-    this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)
-  );
-  filteredNodes = $derived(this.applyFilters(this.currentNodes);
-  hasUnsavedChanges = $derived(this.checkUnsavedChanges();
+  selectedNodes = $derived(this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)));
+  filteredNodes = $derived(this.applyFilters(this.currentNodes));
+  hasUnsavedChanges = $derived(this.checkUnsavedChanges());
   // Web Worker for background AI processing
   private aiWorker: Worker | null = null;
   constructor() {
@@ -117,9 +114,9 @@ class EvidenceGlobalStore {
         dateCreated: Date.now(),
         lastModified: Date.now(),
         status: 'active',
-        priority: 'medium'
-      }
-    }
+        priority: 'medium',
+      },
+    };
     this.cases[caseId] = newCase;
     this.currentCaseId = caseId;
     this.persistState();
@@ -141,9 +138,9 @@ class EvidenceGlobalStore {
         ...updates,
         metadata: {
           ...this.cases[caseId].metadata,
-          lastModified: Date.now()
-        }
-      }
+          lastModified: Date.now(),
+        },
+      };
       this.persistState();
     }
   }
@@ -159,9 +156,9 @@ class EvidenceGlobalStore {
       connections: [],
       metadata: {
         dateCreated: Date.now(),
-        lastModified: Date.now()
-      }
-    }
+        lastModified: Date.now(),
+      },
+    };
     this.currentCase.nodes.push(newNode);
     this.updateCaseMetadata();
     this.stats.totalNodes++;
@@ -179,9 +176,9 @@ class EvidenceGlobalStore {
       ...updates,
       metadata: {
         ...this.currentCase.nodes[nodeIndex].metadata,
-        lastModified: Date.now()
-      }
-    }
+        lastModified: Date.now(),
+      },
+    };
     this.updateCaseMetadata();
     // Re-analyze if content changed
     if (updates.content || updates.title) {
@@ -238,8 +235,8 @@ class EvidenceGlobalStore {
       toNodeId,
       relationship,
       strength: aiGenerated ? 0.7 : 1.0,
-      aiGenerated
-    }
+      aiGenerated,
+    };
     this.currentCase.connections.push(connection);
     // Update node connections arrays
     const fromNode = this.currentCase.nodes.find(n => n.id === fromNodeId);
@@ -320,9 +317,9 @@ class EvidenceGlobalStore {
               caseContext: {
                 title: this.currentCase.title,
                 jurisdiction: this.currentCase.jurisdiction,
-                practiceArea: this.currentCase.practiceArea
-              }
-            }
+                practiceArea: this.currentCase.practiceArea,
+              },
+            },
           });
         }
       }
@@ -341,11 +338,12 @@ class EvidenceGlobalStore {
     try {
       // Import AI services dynamically
       const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
-      const suggestions = await legalLocalAI.suggestEvidenceLinks(this.currentNodes.map(node => ({
+      const suggestions = await legalLocalAI.suggestEvidenceLinks(
+        this.currentNodes.map(node => ({
           id: node.id,
           title: node.title,
-          content: node.content
-        })
+          content: node.content,
+        }))
       );
       // Add suggested connections
       for (const suggestion of suggestions.slice(0, 5)) {
@@ -369,7 +367,7 @@ class EvidenceGlobalStore {
   private initializeAIWorker() {
     if (typeof Worker !== 'undefined') {
       this.aiWorker = new Worker('/ai-worker.js');
-      this.aiWorker.onmessage = (event) => {
+      this.aiWorker.onmessage = event => {
         const { type, nodeId, analysis } = event.data;
         if (type === 'analysisComplete' && this.currentCase) {
           const node = this.currentCase.nodes.find(n => n.id === nodeId);
@@ -379,10 +377,10 @@ class EvidenceGlobalStore {
             console.log(`🧠 AI analysis completed for node: ${nodeId}`);
           }
         }
-      }
-      this.aiWorker.onerror = (error) => {
+      };
+      this.aiWorker.onerror = error => {
         console.error('AI Worker error:', error);
-      }
+      };
     }
   }
   // === Filtering and Search ===
@@ -395,20 +393,18 @@ class EvidenceGlobalStore {
       filtered = filtered.filter(node => node.status === this.ui.filterBy.status);
     }
     if (this.ui.filterBy.tags && this.ui.filterBy.tags.length > 0) {
-      filtered = filtered.filter(node =>
-        this.ui.filterBy.tags!.some(tag => node.tags.includes(tag)
-      );
+      filtered = filtered.filter(node => this.ui.filterBy.tags!.some(tag => node.tags.includes(tag)));
     }
     return filtered;
   }
   setFilter(filterType: keyof UIState['filterBy'], value: any) {
     this.ui.filterBy = {
       ...this.ui.filterBy,
-      [filterType]: value
-    }
+      [filterType]: value,
+    };
   }
   clearFilters() {
-    this.ui.filterBy = {}
+    this.ui.filterBy = {};
   }
   setViewMode(mode: UIState['viewMode']) {
     this.ui.viewMode = mode;
@@ -434,9 +430,9 @@ class EvidenceGlobalStore {
       const stateToSave = {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
-        stats: this.stats
-      }
-      localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave);
+        stats: this.stats,
+      };
+      localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
       this.stats.lastSync = Date.now();
     } catch (error) {
       console.error('Failed to persist evidence store state:', error);
@@ -447,9 +443,9 @@ class EvidenceGlobalStore {
       const saved = localStorage.getItem('evidence-global-store');
       if (saved) {
         const state = JSON.parse(saved);
-        this.cases = state.cases || {}
+        this.cases = state.cases || {};
         this.currentCaseId = state.currentCaseId || null;
-        this.stats = { ...this.stats, ...state.stats }
+        this.stats = { ...this.stats, ...state.stats };
       }
     } catch (error) {
       console.error('Failed to load persisted evidence store state:', error);
@@ -476,11 +472,15 @@ class EvidenceGlobalStore {
   exportCase(caseId: string): string {
     const caseData = this.cases[caseId];
     if (!caseData) throw new Error('Case not found');
-    return JSON.stringify({
-      case: caseData,
-      exportedAt: new Date().toISOString(),
-      version: '1.0'
-    }, null, 2);
+    return JSON.stringify(
+      {
+        case: caseData,
+        exportedAt: new Date().toISOString(),
+        version: '1.0',
+      },
+      null,
+      2
+    );
   }
   importCase(jsonData: string): string {
     try {
@@ -530,5 +530,5 @@ export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
 export function getConnectedNodes(nodeId: string): EvidenceNode[] {
   const node = evidenceStore.currentNodes.find(n => n.id === nodeId);
   if (!node) return [];
-  return evidenceStore.currentNodes.filter(n => node.connections.includes(n.id);
+  return evidenceStore.currentNodes.filter(n => node.connections.includes(n.id));
 }

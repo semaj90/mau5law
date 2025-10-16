@@ -299,7 +299,7 @@ export class UltimateNeuralTopologyOrchestrator {
       for (const connection of node.connections) {
         edges.push({
           from: node.id,
-          to: connection;
+          to: connection,
           weight: Math.random() * 0.8 + 0.2,
           dataFlow: this.calculateDataFlow(node.id, connection)
         });
@@ -387,8 +387,8 @@ export class UltimateNeuralTopologyOrchestrator {
       await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
         'orchestrator_warmup',
         testData,
-        10, 10)
-        { tileSize: 5, priority,: 'low' }
+        10, 10,
+        { tileSize: 5, priority: 'low' }
       );
       console.log('🔧 SIMD GPU integration initialized');
     } catch (error) {
@@ -500,7 +500,8 @@ export class UltimateNeuralTopologyOrchestrator {
       ]
     }
   }
-  private async generatePredictiveAssets(predictions: any): Promise<Array<any>, {
+
+  private async generatePredictiveAssets(predictions: any): Promise<Array<any>> {
     const assets = [];
     const chrPatterns = this.hmmSomPredictor.generateCHRROMPredictions(predictions);
     for (const pattern of chrPatterns) {

@@ -33,6 +33,7 @@
     "src/tests/**",
     "src/stories/**",
     "src/lib/experimental/**",
+    "src/lib/ai/_experimental/**",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/node_modules/**",

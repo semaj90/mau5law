@@ -2,75 +2,148 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-</script>
-  /**
-   * Neural Topology 3D Prediction Demo
-   * Comprehensive integration of all four neural topologies:
-   * 1. Transformer (LangChain/Ollama) - Language processing
-   * 2. Autoencoder (CHR-ROM) - Pattern compression
-   * 3. CNN (WebGPU) - Visual pattern recognition
-   * 4. RNN (RL Cache) - Sequence prediction
-   *
-   * Features 3D asset prediction from leftovers.txt: animations, 3D components, AI search
-   */
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import { chrRomPrecomputationService } from '$lib/services/chr-rom-precomputation-service';
-  // Demo state management
-  let demoStage = $state('initializing');
-  let predictions = $state([]);
-  let animations = $state([]);
-  let searchResults = $state([]);
-  let performanceMetrics = $state( );
-  let neuralTopologyStatus = $state({
+  // import entire modules to be robust against named vs default exports
+  import * as nesGPUBridgeModule from '$lib/gpu/nes-gpu-memory-bridge';
+  import * as chrRomModule from '$lib/services/chr-rom-precomputation-service';
+
+  // Normalize exports: prefer named export, then default, then the module itself.
+  // This preserves existing usage in the file: nesGPUBridge.storeCHRROMPattern(...), nesGPUBridge.getCHRROMPattern(...)
+  const nesGPUBridge: any =
+    (nesGPUBridgeModule as any).nesGPUBridge ??
+    (nesGPUBridgeModule as any).NESGPUBridge ??
+    (nesGPUBridgeModule as any).default ??
+    nesGPUBridgeModule;
+
+  // The service may be exported as chrRomPrecomputationService, CHRROMPrecomputationService, or default.
+  const chrRomPrecomputationService: any =
+    (chrRomModule as any).chrRomPrecomputationService ??
+    (chrRomModule as any).CHRROMPrecomputationService ??
+    (chrRomModule as any).default ??
+    chrRomModule;
+
+  // Add typed shapes to avoid 'never' errors in template
+  type Prediction = {
+    step: number;
+    action: string;
+    prediction: {
+      geometryComplexity?: string;
+      animationType?: string;
+      predictedUsage?: number;
+      [key: string]: any;
+    };
+    confidence: number;
+  };
+
+  type AnimationItem = {
+    step: number;
+    componentId: string;
+    animationType: string;
+    compressed?: boolean;
+  };
+
+  type SearchResultItem = {
+    step: number;
+    query: string;
+    results: any[];
+    count: number;
+  };
+
+  type PerformanceSummary = {
+    totalPredictions: number;
+    totalAnimations: number;
+    totalSearches: number;
+    averageCacheHitRatio: number;
+    neuralTopologiesActive: number;
+    avgProcessingTime: number;
+  };
+
+  type PerformanceMetrics = {
+    summary?: PerformanceSummary;
+    [key: string]: any;
+  };
+
+  type Asset3DMetrics = {
+    predictedComponents: number;
+    prerenderedAnimations: number;
+    chrRomPatterns: number;
+    cacheHitRatio: number;
+  };
+
+  type NeuralTopologyStatus = {
+    transformer: string;
+    autoencoder: string;
+    cnn: string;
+    rnn: string;
+  };
+
+  // Component props and state (Svelte 5 runes)
+  // replace `export let` with $props() destructure and add a typed dispatcher
+  let { width = 800, height = 480 } = $props() as { width?: number; height?: number };
+  // replace dispatcher type so `device` can be null/undefined safely
+  const dispatch = createEventDispatcher<{
+    ready: { supported: boolean; device?: GPUDevice | null; error?: string };
+  }>();
+
+  // Svelte 5 runes state - add explicit types and typed initializers
+  let demoStage: string = $state('initializing');
+  let predictions: Prediction[] = $state([] as Prediction[]);
+  let animations: AnimationItem[] = $state([] as AnimationItem[]);
+  let searchResults: SearchResultItem[] = $state([] as SearchResultItem[]);
+  let performanceMetrics: PerformanceMetrics = $state({} as PerformanceMetrics);
+  let neuralTopologyStatus: NeuralTopologyStatus = $state({
     transformer: 'idle',
     autoencoder: 'idle',
     cnn: 'idle',
-    rnn: 'idle';
-  });
-  // User interaction simulation
-  let userActions = $state(['hover_contract', 'click_evidence', 'scroll_documents', 'drag_asset']);
-  let currentActionIndex = $state(0);
-  let isRunningDemo = $state(false);
-  // 3D Asset visualization data
-  let asset3DMetrics = $state({
+    rnn: 'idle'
+  } as NeuralTopologyStatus);
+  let userActions: string[] = $state(['hover_contract', 'click_evidence', 'scroll_documents', 'drag_asset']);
+  let currentActionIndex: number = $state(0);
+  let isRunningDemo: boolean = $state(false);
+  let asset3DMetrics: Asset3DMetrics = $state({
     predictedComponents: 0,
     prerenderedAnimations: 0,
     chrRomPatterns: 0,
     cacheHitRatio: 0
-  });
+  } as Asset3DMetrics);
+
+  // WebGPU related
+  let canvas: HTMLCanvasElement | null = $state(null as HTMLCanvasElement | null);
+  let webgpuSupported: boolean = $state(typeof navigator !== 'undefined' && 'gpu' in navigator);
+  let initError: string | null = $state(null as string | null);
+  // use undefined to match requestDevice possibly returning undefined
+  let device: GPUDevice | undefined = undefined;
+
   $effect(() => {
     (async () => {
-console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
-    // Initialize all systems
-    await initializeNeuralTopologies();
-    await setupDemoEnvironment();
-    demoStage = 'ready';
-    console.log('✅ Neural Topology Demo ready!');
+      console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
+      await initializeNeuralTopologies();
+      await setupDemoEnvironment();
+      demoStage = 'ready';
+      console.log('✅ Neural Topology Demo ready!');
     })();
   });
+
   async function initializeNeuralTopologies() {
     console.log('🧠 Initializing neural topology systems...');
-    // 1. Transformer topology (already running via Ollama)
     neuralTopologyStatus.transformer = 'active';
     console.log('🔤 Transformer: Ollama gemma3-legal model active');
-    // 2. Autoencoder topology (CHR-ROM compression)
+
     await chrRomPrecomputationService.startPrecomputation();
     neuralTopologyStatus.autoencoder = 'active';
     console.log('🗜️ Autoencoder: CHR-ROM pattern compression active');
-    // 3. CNN topology (WebGPU visual processing)
-    const webgpuSupported = await checkWebGPUSupport();
-    neuralTopologyStatus.cnn = webgpuSupported ? 'active' : 'fallback';
-    console.log(`👁️ CNN: WebGPU ${webgpuSupported ? 'active' : 'fallback to CPU'}`);
-    // 4. RNN topology (Sequence prediction via RL cache)
-    const rlStats = reinforcementLearningCache.getLearningState();
+
+    const webgpuOk = await checkWebGPUSupport();
+    neuralTopologyStatus.cnn = webgpuOk ? 'active' : 'fallback';
+    console.log(`👁️ CNN: WebGPU ${webgpuOk ? 'active' : 'fallback to CPU'}`);
+
+    const rlStats = reinforcementLearningCache.getLearningState?.() || { cacheSize: 0 };
     neuralTopologyStatus.rnn = 'active';
     console.log(`🔄 RNN: Sequence prediction active (${rlStats.cacheSize} patterns)`);
   }
+
   async function setupDemoEnvironment() {
-    // Pre-populate some realistic legal 3D assets for demonstration
     const legalAssets = [
       { id: 'contract_3d', type: 'document_stack', complexity: 'medium', context: 'contract' },
       { id: 'evidence_3d', type: 'container', complexity: 'high', context: 'evidence' },
@@ -78,107 +151,125 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
       { id: 'scales_3d', type: 'balance', complexity: 'high', context: 'justice' },
       { id: 'text_particles_3d', type: 'particle_system', complexity: 'low', context: 'visualization' }
     ];
-    // Pre-cache some assets using CHR-ROM system
+
     for (const asset of legalAssets) {
       const patternId = `demo_${asset.id}`;
-      await nesGPUBridge.storeCHRROMPattern(patternId, {/* JSX syntax converted to Svelte */}`,
-        priority: asset.complexity === 'high' ? 10 : 5;
+      // store pattern metadata in CHR-ROM bridge
+      await nesGPUBridge.storeCHRROMPattern(patternId, {
+        priority: asset.complexity === 'high' ? 10 : 5
       });
     }
     console.log(`📦 Pre-cached ${legalAssets.length} 3D assets in CHR-ROM`);
   }
+
   async function runNeuralTopologyDemo() {
     if (isRunningDemo) return;
     isRunningDemo = true;
     demoStage = 'running';
     currentActionIndex = 0;
     console.log('🎬 Starting Neural Topology 3D Prediction Demo...');
+
     for (let i = 0; i < userActions.length; i++) {
       currentActionIndex = i;
       const action = userActions[i];
       await demonstrateTopologyIntegration(action, i);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 2s between demos
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
-    // Final performance summary
+
     await generatePerformanceSummary();
     demoStage = 'completed';
     isRunningDemo = false;
     console.log('🏁 Neural Topology Demo completed!');
   }
+
   async function demonstrateTopologyIntegration(userAction: string, step: number) {
     const startTime = performance.now();
     console.log(`\n🎯 Step ${step + 1}: Demonstrating "${userAction}"`);
-    // STEP 1: RNN Topology - Predict next 3D component based on sequence
-    console.log('🔄 RNN: Analyzing user action sequence...');
-    const predicted3D = await reinforcementLearningCache.predict3DComponent(
+
+    // RNN prediction
+    const predicted3D = await reinforcementLearningCache.predict3DComponent?.(
       `legal_document_${step}`,
       userAction
     );
+
     if (predicted3D) {
-      predictions = [...predictions, {
-        step: step + 1,
-        action: userAction;
-        prediction: predicted3D;
-        confidence: predicted3D.predictedUsag;
-      }];
+      predictions = [
+        ...predictions,
+        {
+          step: step + 1,
+          action: userAction,
+          prediction: predicted3D,
+          confidence: predicted3D.predictedUsage ?? 0
+        }
+      ];
       asset3DMetrics.predictedComponents++;
     }
-    // STEP 2: Autoencoder Topology - Pre-render animations with compression
-    console.log('🗜️ Autoencoder: Pre-rendering compressed animations...');
+
+    // Autoencoder pre-render
     if (userAction.includes('click') || userAction.includes('drag')) {
-      await reinforcementLearningCache.preRenderAnimations(
+      await reinforcementLearningCache.preRenderAnimations?.(
         `component_${step}`,
         predicted3D?.animationType || 'transform'
       );
-      animations = [...animations, {
-        step: step + 1,
-        componentId: `component_${step}`,
-        animationType: predicted3D?.animationType || 'transform',
-        compressed: true;
-      }];
+      animations = [
+        ...animations,
+        {
+          step: step + 1,
+          componentId: `component_${step}`,
+          animationType: predicted3D?.animationType || 'transform',
+          compressed: true
+        }
+      ];
       asset3DMetrics.prerenderedAnimations++;
     }
-    // STEP 3: Transformer Topology - Semantic 3D asset search
-    console.log('🔤 Transformer: Performing semantic 3D asset search...');
-    const searchQuery = userAction.replace.replace-toLowerCase();
+
+    // Transformer search
+    const searchQuery = userAction.replace(/_/g, ' ').toLowerCase();
     const assetSearchResults = await searchPredictive3DAssets(searchQuery, {
       documentType: step % 2 === 0 ? 'contract' : 'evidence',
       complexity: predicted3D?.geometryComplexity || 'medium',
-      interactionType: userAction.split('_')[0];
+      interactionType: userAction.split('_')[0]
     });
-    searchResults = [...searchResults, {
-      step: step + 1,
-      query: searchQuery;
-      results: assetSearchResults;
-      count: assetSearchResults.length;
-    }];
-    // STEP 4: CNN Topology - Visual pattern recognition and WebGPU processing
-    console.log('👁️ CNN: Processing visual patterns with WebGPU...');
+    searchResults = [
+      ...searchResults,
+      {
+        step: step + 1,
+        query: searchQuery,
+        results: assetSearchResults,
+        count: assetSearchResults.length
+      }
+    ];
+
+    // CNN processing (simulated)
     const visualPatterns = await processVisualPatterns(predicted3D, userAction);
-    // STEP 5: CHR-ROM Integration - Store patterns for 0ms retrieval
-    const chrRomPattern = await nesGPUBridge.getCHRROMPattern(`demo_component_${step}`);
+
+    // CHR-ROM retrieval
+    const chrRomPattern = await nesGPUBridge.getCHRROMPattern?.(`demo_component_${step}`);
     if (chrRomPattern) {
       asset3DMetrics.chrRomPatterns++;
       console.log(`📦 CHR-ROM: Retrieved pattern with 0ms latency`);
     }
-    // Update performance metrics
+
+    // metrics update
     const processingTime = performance.now() - startTime;
-    const cacheStats = reinforcementLearningCache.getLearningState();
-    asset3DMetrics.cacheHitRatio = Math.round(cacheStats.hitRate * 100);
+    const cacheStats = reinforcementLearningCache.getLearningState?.() || { hitRate: 0 };
+    asset3DMetrics.cacheHitRatio = Math.round((cacheStats.hitRate ?? 0) * 100);
+
     performanceMetrics = {
       ...performanceMetrics,
       [`step_${step + 1}`]: {
         processingTime: Math.round(processingTime),
         prediction: !!predicted3D,
-        animation: animations.length > asset3DMetrics.prerenderedAnimations - 1,
+        animation: animations.some((a: any) => a.step === step + 1),
         searchResults: assetSearchResults.length,
-        chrRomHit: !!chrRomPatter;
+        chrRomHit: !!chrRomPattern
       }
-    }
+    };
+
     console.log(`⚡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
   }
+
   async function searchPredictive3DAssets(query: string, context: any) {
-    // Simulate calling our 3D asset search API
     try {
       const response = await fetch('/api/brain/3d-assets/search', {
         method: 'POST',
@@ -186,7 +277,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
         body: JSON.stringify({
           query,
           context,
-          predictiveMode: true
+          predictiveMode: true,
           precomputeAnimations: true
         })
       });
@@ -197,46 +288,103 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     } catch (error) {
       console.warn('3D Asset search API not available, using mock results');
     }
-    // Mock results for demo
+
     return [
-      { assetId: `mock_${query.replace(' ', '_')}`, predictedUsage: 0.8, assetType: '3d_model' },
+      { assetId: `mock_${query.replace(/ /g, '_')}`, predictedUsage: 0.8, assetType: '3d_model' },
       { assetId: `${context.documentType}_visualization`, predictedUsage: 0.7, assetType: 'animation' }
     ];
   }
+
   async function processVisualPatterns(predicted3D: any, userAction: string) {
-    // CNN-like visual pattern processing simulation
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6,
       textural: userAction.includes('hover') ? 0.8 : 0.5,
       motion: userAction.includes('drag') ? 0.9 : 0.3,
-      lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4;
-    }
+      lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4
+    };
     console.log('👁️ Visual patterns processed:', patterns);
-    return pattern;
+    return patterns;
   }
+
   async function generatePerformanceSummary() {
+    const totalPredictions = predictions.length;
+    const totalAnimations = animations.length;
+    const totalSearches = searchResults.reduce((sum: number, s: any) => sum + (s.count || 0), 0);
+    const averageCacheHitRatio = asset3DMetrics.cacheHitRatio;
+    const neuralTopologiesActive = Object.values(neuralTopologyStatus).filter(v => v === 'active')
+      .length;
+
+    const stepTimes = Object.keys(performanceMetrics)
+      .filter(k => k.startsWith('step_'))
+      .map(k => (performanceMetrics as any)[k].processingTime || 0);
+    const avgProcessingTime = stepTimes.length ? stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length : 0;
+
     const summary = {
-      totalPredictions: predictions.length,
-      totalAnimations: animations.length,
-      totalSearches: searchResults.reduce((sum, s) => sum + s.count, 0),
-      averageCacheHitRatio: asset3DMetrics.cacheHitRatio,
-      neuralTopologiesActive: Object.values.filter-length,
-      avgProcessingTime: Object.values.map((m: any) => m.processingTime)
-        .reduce((sum: number, time: number) => sum + time, 0) / Object.keys(errors).length;
-    }
-    performanceMetrics = { ...performanceMetrics, summary }
+      totalPredictions,
+      totalAnimations,
+      totalSearches,
+      averageCacheHitRatio,
+      neuralTopologiesActive,
+      avgProcessingTime
+    };
+
+    performanceMetrics = { ...performanceMetrics, summary };
     console.log('📊 Final Performance Summary:', summary);
   }
+
+  // Reset demo state cleanly (avoid inline complex handler in template)
+  function resetDemo() {
+    demoStage = 'ready';
+    predictions = [];
+    animations = [];
+    searchResults = [];
+    performanceMetrics = {};
+    asset3DMetrics = {
+      predictedComponents: 0,
+      prerenderedAnimations: 0,
+      chrRomPatterns: 0,
+      cacheHitRatio: 0
+    };
+    currentActionIndex = 0;
+    isRunningDemo = false;
+  }
+
   async function checkWebGPUSupport(): Promise<boolean> {
     if (!('gpu' in navigator)) return false;
     try {
-      const adapter = await (navigator as any).gpu.requestAdapter();
+      // @ts-ignore
+      const adapter = await (navigator as any).gpu.requestAdapter?.();
       return !!adapter;
     } catch {
       return false;
     }
   }
+
+  // WebGPU init and lifecycle
+  onMount(async () => {
+    if (!webgpuSupported || !canvas) return;
+
+    try {
+      // @ts-ignore
+      const adapter = await (navigator as any).gpu.requestAdapter?.();
+      if (!adapter) throw new Error('No GPU adapter found');
+      // @ts-ignore
+      device = await adapter.requestDevice?.();
+      dispatch('ready', { supported: true, device });
+    } catch (err: any) {
+      console.warn('NeuralTopology3DDemo: WebGPU init failed', err);
+      initError = String(err?.message ?? err);
+      webgpuSupported = false;
+      dispatch('ready', { supported: false, error: initError });
+    }
+  });
+
+  onDestroy(() => {
+    // clear device reference in a type-safe way
+    device = undefined;
+  });
 </script>
+
 <div class="neural-topology-demo">
   <div class="demo-header">
     <h2>🧠 Neural Topology 3D Prediction System</h2>
@@ -247,22 +395,22 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
   </div>
   <!-- Neural Topology Status Grid -->
   <div class="topology-status-grid">
-    <div class="topology-nier-bits-card transformer {neuralTopologyStatus.transformer}">
+    <div class="{`topology-nier-bits-card transformer ${neuralTopologyStatus.transformer}`}">
       <h3>🔤 Transformer</h3>
       <p>Language Processing</p>
       <div class="status">Ollama gemma3-legal</div>
     </div>
-    <div class="topology-nier-bits-card autoencoder {neuralTopologyStatus.autoencoder}">
+    <div class="{`topology-nier-bits-card autoencoder ${neuralTopologyStatus.autoencoder}`}">
       <h3>🗜️ Autoencoder</h3>
       <p>Pattern Compression</p>
       <div class="status">CHR-ROM Active</div>
     </div>
-    <div class="topology-nier-bits-card cnn {neuralTopologyStatus.cnn}">
+    <div class="{`topology-nier-bits-card cnn ${neuralTopologyStatus.cnn}`}">
       <h3>👁️ CNN</h3>
       <p>Visual Recognition</p>
       <div class="status">WebGPU/RTX 3060 Ti</div>
     </div>
-    <div class="topology-nier-bits-card rnn {neuralTopologyStatus.rnn}">
+    <div class="{`topology-nier-bits-card rnn ${neuralTopologyStatus.rnn}`}">
       <h3>🔄 RNN</h3>
       <p>Sequence Prediction</p>
       <div class="status">RL Cache Active</div>
@@ -271,7 +419,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
   <!-- Demo Controls -->
   <div class="demo-controls">
     {#if demoStage === 'ready'}
-      <button class="demo-btn primary" onclick={runNeuralTopologyDemo}>
+      <button class="demo-btn primary" on:click={runNeuralTopologyDemo}>
         🎬 Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
@@ -285,7 +433,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     {:else if demoStage === 'completed'}
       <div class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button class="demo-btn secondary" onclick={() => { demoStage = 'ready'; predictions = []; animations = []; searchResults = [], }}>
+        <button class="demo-btn secondary" on:click={resetDemo}>
           🔄 Run Again
         </button>
       </div>
@@ -605,5 +753,34 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     .metrics-dashboard {
       grid-template-columns: repeat(2, 1fr);
     }
+    .neural-demo { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+  .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220; }
+  .fallback { text-align: center; color: #334155; }
+  .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }
+  .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
   }
+
 </style>
+
+<div class="neural-demo">
+  {#if webgpuSupported}
+    <canvas bind:this={canvas} width={width} height={height} class="neural-canvas" aria-label="Neural Topology 3D demo canvas" />
+  {:else}
+    <div class="fallback">
+      <p>WebGPU not available in this environment. Showing lightweight fallback preview.</p>
+      {#if initError}
+        <p class="error">Init error: {initError}</p>
+      {/if}
+      <div class="placeholder" style="width:{Math.min(width,600)}px;height:{Math.min(height,300)}px">
+        <svg width="100%" height="100%" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+          <rect width="100%" height="100%" rx="8" fill="#eef2ff" />
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#4b5563" font-size="14">
+            NeuralTopology3DDemo placeholder
+          </text>
+        </svg>
+      </div>
+    </div>
+  {/if}
+</div>
+
+

@@ -4,7 +4,6 @@ import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { User } from '../server/db/schema-postgres.js';
 import { AccessControl, type UserRole, type Permission } from './roles.js';
-}
 export interface AuthUser extends Partial<User> {
   id: string;
   email: string;
@@ -15,12 +14,10 @@ export interface AuthUser extends Partial<User> {
   isActive: boolean;
   avatarUrl?: string;
   emailVerified?: boolean;
-}
 export interface AuthSession {
   id: string;
   userId: string;
   expiresAt: Date;
-}
 export interface AuthState {
   user: AuthUser | null;
   session: AuthSession | null;

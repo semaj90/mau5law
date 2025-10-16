@@ -652,7 +652,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 }
 
 /** Apply a minimal subset of JSON Patch operations */
-function applyJsonPatch(target: any, patch: JsonPatchOp[]): boolean {
+function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): boolean {
   if (!Array.isArray(patch)) return false;
   let changed = false;
 
@@ -660,13 +660,13 @@ function applyJsonPatch(target: any, patch: JsonPatchOp[]): boolean {
     if (!op || typeof op.path !== 'string' || typeof op.op !== 'string') continue;
     const pathParts = op.path.split('/').slice(1).map(decodePointerToken);
 
-    let parent: any = target;
+    let parent: Record<string, unknown> | unknown[] = target;
     for (let i = 0; i < pathParts.length - 1; i++) {
       const key = pathParts[i];
-      if (parent[key] == null || typeof parent[key] !== 'object') {
-        parent[key] = Number.isFinite(+pathParts[i + 1]) ? [] : {};
+      if (parent[key as keyof typeof parent] == null || typeof parent[key as keyof typeof parent] !== 'object') {
+        (parent as Record<string, unknown>)[key] = Number.isFinite(+pathParts[i + 1]) ? [] : {};
       }
-      parent = parent[key];
+      parent = parent[key as keyof typeof parent] as Record<string, unknown> | unknown[];
     }
     const key = pathParts[pathParts.length - 1];
 
@@ -715,53 +715,3 @@ function deepMerge(target: Record<string, unknown>, src: Record<string, unknown>
     }
   }
 }
-              if (Number.isFinite(idx) && idx >= 0 && idx <= parent.length) {
-                parent.splice(idx, 0, value);
-                changed = true;
-              }
-            }
-          } else if (type === 'remove') {
-            const idx = Number(key);
-            if (Number.isFinite(idx) && idx >= 0 && idx < parent.length) {
-              parent.splice(idx, 1);
-              changed = true;
-            }
-          } else if (type === 'replace') {
-            const idx = Number(key);
-            if (Number.isFinite(idx) && idx >= 0 && idx < parent.length) {
-              parent[idx] = value;
-              changed = true;
-            }
-          }
-        } else {
-          // object parent
-          if (type === 'remove') {
-            if (Object.prototype.hasOwnProperty.call(parent, key)) {
-              delete parent[key];
-              changed = true;
-            }
-          } else if (type === 'add' || type === 'replace') {
-            parent[key] = value;
-            changed = true;
-          }
-        }
-      } catch {
-        // ignore malformed operation
-      }
-    }
-    return changed;
-  }
-
-  function deepMerge(target: any, src: any) {
-    if (src == null || typeof src !== 'object') return;
-    if (typeof target !== 'object' || target === null) return;
-    for (const k of Object.keys(src)) {
-      const sv = src[k];
-      if (sv && typeof sv === 'object' && !Array.isArray(sv)) {
-        if (!target[k] || typeof target[k] !== 'object') target[k] = {};
-        deepMerge(target[k], sv);
-      } else {
-        target[k] = sv;
-      }
-    }
-  }

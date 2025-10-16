@@ -1,6 +1,6 @@
 <script lang="ts">
   // LoginButton component - Enhanced login/logout button - Svelte 5 compatible
-  import { authStore } from '$lib/stores/auth-store.svelte';
+  import { auth } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/enhanced-bits';
   interface Props {

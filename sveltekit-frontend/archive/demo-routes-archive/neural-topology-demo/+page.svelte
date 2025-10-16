@@ -3,12 +3,11 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-</script>
   import NeuralTopology3DDemo from '$lib/components/ai/NeuralTopology3DDemo.svelte';
   import { onMount } from 'svelte';
 
   let pageTitle = '🧠 Neural Topology 3D Prediction Demo';
-  
+
   onMount(() => {
     console.log('🎯 Neural Topology Demo page loaded');
   });
@@ -24,7 +23,7 @@ https://svelte.dev/e/expected_token -->
     <h1>{pageTitle}</h1>
     <p class="page-description">
       Experience the complete integration of four neural topologies working in harmony:
-      <strong>Transformer</strong> (language processing), <strong>Autoencoder</strong> (pattern compression), 
+      <strong>Transformer</strong> (language processing), <strong>Autoencoder</strong> (pattern compression),
       <strong>CNN</strong> (visual recognition), and <strong>RNN</strong> (sequence prediction).
     </p>
     <div class="architecture-overview">
@@ -54,7 +53,7 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
     </div>
-    
+
     <div class="key-features">
       <div class="feature-badge">3D Asset Prediction</div>
       <div class="feature-badge">Animation Pre-rendering</div>
@@ -63,9 +62,9 @@ https://svelte.dev/e/expected_token -->
       <div class="feature-badge">Neural Learning</div>
     </div>
   </div>
-  
+
   <NeuralTopology3DDemo />
-  
+
   <div class="technical-details">
     <h2>🔧 Technical Implementation</h2>
     <div class="details-grid">
@@ -78,7 +77,7 @@ https://svelte.dev/e/expected_token -->
           <li>Transformer attention mechanism for context relationships</li>
         </ul>
       </div>
-      
+
       <div class="detail-nier-bits-card">
         <h3>🗜️ Autoencoder Topology</h3>
         <ul>
@@ -88,7 +87,7 @@ https://svelte.dev/e/expected_token -->
           <li>Zero-latency pattern reconstruction</li>
         </ul>
       </div>
-      
+
       <div class="detail-nier-bits-card">
         <h3>👁️ CNN Topology</h3>
         <ul>
@@ -98,7 +97,7 @@ https://svelte.dev/e/expected_token -->
           <li>Texture and material classification</li>
         </ul>
       </div>
-      
+
       <div class="detail-nier-bits-card">
         <h3>🔄 RNN Topology</h3>
         <ul>
@@ -255,12 +254,12 @@ https://svelte.dev/e/expected_token -->
 
   .details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     margin-bottom: 40px;
   }
 
-  .detail-card {
+  .detail-nier-bits-card {
     background: white;
     border-radius: 8px;
     padding: 25px;
@@ -268,20 +267,20 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
 
-  .detail-card h3 {
+  .detail-nier-bits-card h3 {
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 15px;
     color: #1f2937;
   }
 
-  .detail-card ul {
+  .detail-nier-bits-card ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
-  .detail-card li {
+  .detail-nier-bits-card li {
     padding: 6px 0;
     color: #4b5563;
     font-size: 0.95rem;
@@ -290,7 +289,7 @@ https://svelte.dev/e/expected_token -->
     padding-left: 20px;
   }
 
-  .detail-card li::before {
+  .detail-nier-bits-card li::before {
     content: '→';
     position: absolute;
     left: 0;
@@ -314,7 +313,7 @@ https://svelte.dev/e/expected_token -->
 
   .insights-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
     max-width: 800px;
     margin: 0 auto;
@@ -344,33 +343,33 @@ https://svelte.dev/e/expected_token -->
     .page-header h1 {
       font-size: 2.5rem;
     }
-    
+
     .page-description {
       font-size: 1rem;
       padding: 0 10px;
     }
-    
+
     .architecture-flow {
       flex-direction: column;
     }
-    
+
     .flow-arrow {
       transform: rotate(90deg);
     }
-    
+
     .key-features {
       gap: 8px;
     }
-    
+
     .feature-badge {
       font-size: 12px;
       padding: 6px 12px;
     }
-    
+
     .details-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .insights-grid {
       grid-template-columns: repeat(2, 1fr);
     }

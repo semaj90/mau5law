@@ -1,5 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
+import * as os from 'os'; // Import the 'os' module
+
 export const GET: RequestHandler = async () => {
   try {
     // Comprehensive system health check
@@ -34,7 +36,7 @@ export const GET: RequestHandler = async () => {
       performance: {
         memoryUsage: process.memoryUsage(),
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)',
+        loadAverage: process.platform !== 'win32' ? os.loadavg() : 'N/A (Windows)',
       },
     };
     // Basic service availability checks
@@ -44,7 +46,8 @@ export const GET: RequestHandler = async () => {
       healthStatus.services.database.message = 'Database connection assumed healthy';
       healthStatus.services.redis.status = 'healthy';
       healthStatus.services.redis.message = 'Redis connection assumed healthy';
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
       console.error('Health check error:', error);
       healthStatus.status = 'degraded';
     }
@@ -56,7 +59,8 @@ export const GET: RequestHandler = async () => {
         'X-Health-Check': 'true',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
     console.error('System health check failed:', error);
     return json(
       {

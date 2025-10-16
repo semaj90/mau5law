@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   // AuthGuard component - Svelte 5 compatible
-  import { authStore } from '$lib/stores/auth-store.svelte';
+  import { auth } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   interface Props {

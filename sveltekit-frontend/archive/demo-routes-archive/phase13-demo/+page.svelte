@@ -7,44 +7,62 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { createPhase13Integration } from '$lib/state/phase13StateMachine';
   import { createStatelessAPICoordinator } from '$lib/services/stateless-api-coordinator';
   import { createEnhancedRAGEngine, RAGHelpers } from '$lib/services/enhanced-rag-pagerank';
   import { createContext7Phase13Integration } from '$lib/services/context7-phase13-integration';
-  import { CheckCircle, AlertCircle, Cpu, Database, Zap, Activity } from 'lucide-svelte';
+  import { Cpu, Database, Zap, Activity } from 'lucide-svelte';
 
   // Phase 13 system instances
-  let canvas = $state<HTMLCanvasElementlet phase13System: unknown  | null>(null); const data = null);
-  let apiCoordinator = $state<any >(null);
-  let ragEngine = $state<any >(null);
-  let context7Integration = $state<any >(null);
+  let canvas: HTMLCanvasElement | null = null;
+  let phase13System: any = null;
+  let apiCoordinator: any = null;
+  let ragEngine: any = null;
+  let context7Integration: any = null;
 
   // Demo state
-  let systemInitialized = $state(false);
-  let webglReady = $state(false);
-  let apiActive = $state(false);
-  let ragActive = $state(false);
-  let context7Active = $state(false);
+  let systemInitialized = false;
+  let webglReady = false;
+  let apiActive = false;
+  let ragActive = false;
+  let context7Active = false;
+
+  // Health metric (fixed: was missing)
+  let systemHealth: number = 0;
 
   // Performance metrics
-  let frameRate = $state(0);
-  let apiThroughput = $state(0);
-  let ragQueryTime = $state(0);
-  let pageRankScore = $state(0);
-  let feedbackCount = $state(0);
+  let frameRate = 0;
+  let apiThroughput = 0;
+  let ragQueryTime = 0;
+  let pageRankScore = 0;
+  let feedbackCount = 0;
+
+  // Add a concrete type for search results coming from the RAG engine
+  type SearchResult = {
+    document: {
+      id: string;
+      title: string;
+      content: string;
+    };
+    finalScore: number;
+    pageRankBoost?: number;
+  };
+
+  // New: typed recommendation shape
+  type Recommendation = {
+    agent: string;
+    priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | string;
+    recommendation: string;
+    reasoning?: string;
+    confidence?: number; // 0..1
+    estimatedImpact?: number; // 0..1
+  };
 
   // Demo data
-  let searchQuery = $state('contract liability clauses');
-  let searchResults = $state<unknown[]>([]);
-  let recommendations = $state<unknown[]>([]);
-  let systemHealth = $state(0);
+  let searchQuery = 'contract liability clauses';
+  let searchResults: SearchResult[] = [];
+  let recommendations: Recommendation[] = [];
 
   // Initialize Phase 13 system
   onMount(async () => {
@@ -78,49 +96,59 @@ https://svelte.dev/e/js_parse_error -->
       if (canvas) {
         phase13System = createPhase13Integration(canvas);
 
-        // Subscribe to system stores
+        // Subscribe to system stores (guarded access)
         phase13System.stores.webglStatus.subscribe((status: unknown) => {
-          webglReady = status.initialized && status.streaming;
+          if (isWebGLStatus(status)) {
+            webglReady = Boolean(status.initialized && status.streaming);
+            // optionally update frameRate if provided by webglStatus
+            if (typeof status.frameRate === 'number') frameRate = status.frameRate;
+          } else {
+            webglReady = false;
+          }
         });
 
         phase13System.stores.apiCoordination.subscribe((coordination: unknown) => {
-          apiActive = coordination.active;
+          apiActive = isAPICoordination(coordination) ? Boolean(coordination.active) : false;
         });
 
         phase13System.stores.performanceMetrics.subscribe((metrics: unknown) => {
-          frameRate = metrics.frameRate;
+          frameRate = isPerformanceMetrics(metrics) && typeof metrics.frameRate === 'number' ? metrics.frameRate : frameRate;
         });
       }
 
       // Subscribe to API coordinator stores
-      apiCoordinator.stores.systemHealth.subscribe((health: unknown) => {
-        systemHealth = health.overall;
+      apiCoordinator.stores.systemHealth.subscribe((health: any) => {
+        // guard and coerce to number to avoid TS errors when shape is unexpected
+        systemHealth = typeof health?.overall === 'number' ? health.overall : systemHealth ?? 0;
       });
 
       apiCoordinator.stores.throughputMetrics.subscribe((metrics: unknown) => {
-        apiThroughput = metrics.tasksPerSecond;
+        apiThroughput = isThroughputMetrics(metrics) && typeof metrics.tasksPerSecond === 'number' ? metrics.tasksPerSecond : apiThroughput;
       });
 
       // Subscribe to RAG engine stores
       ragEngine.stores.queryResults.subscribe((results: unknown) => {
-        if (results.size > 0) {
-          const latestResults = Array.from(results.values()).pop() || [];
-          searchResults = Array.isArray(latestResults) ? latestResults.slice(0, 5) : [];
+        if ((results as any)?.size > 0) {
+          const latestResults = Array.from((results as any).values()).pop() || [];
+          // Cast the incoming array to the typed SearchResult[] so template and code can access .document safely
+          searchResults = Array.isArray(latestResults) ? (latestResults.slice(0, 5) as SearchResult[]) : [];
         }
       });
 
       ragEngine.stores.feedbackMetrics.subscribe((metrics: unknown) => {
-        feedbackCount = metrics.totalVotes;
-        pageRankScore = metrics.averageRelevance;
+        if (isFeedbackMetrics(metrics)) {
+          feedbackCount = typeof metrics.totalVotes === 'number' ? metrics.totalVotes : feedbackCount;
+          pageRankScore = typeof metrics.averageRelevance === 'number' ? metrics.averageRelevance : pageRankScore;
+        }
       });
 
       // Subscribe to Context7 integration stores
       context7Integration.stores.activeRecommendations.subscribe((recs: unknown) => {
-        recommendations = Array.isArray(recs) ? recs.slice(0, 3) : [];
+        recommendations = Array.isArray(recs) ? (recs.slice(0, 3) as Recommendation[]) : recommendations;
       });
 
       context7Integration.stores.integrationStatus.subscribe((status: unknown) => {
-        context7Active = status.overall === 'HEALTHY';
+        context7Active = isIntegrationStatus(status) ? status.overall === 'HEALTHY' : context7Active;
       });
 
       // Add sample documents to RAG
@@ -235,7 +263,8 @@ https://svelte.dev/e/js_parse_error -->
       });
 
       ragQueryTime = Date.now() - startTime;
-      searchResults = results.slice(0, 5);
+      // Ensure the external results are treated as SearchResult[]
+      searchResults = (results.slice(0, 5) as SearchResult[]);
 
       console.log('🔍 Enhanced RAG search completed:', results.length, 'results');
     } catch (error) {
@@ -266,7 +295,8 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   async function submitPositiveFeedback(resultIndex: number) {
-    if (!ragEngine || !searchResults[resultIndex]) return;
+    // guard for existence and proper shape
+    if (!ragEngine || !searchResults[resultIndex] || !searchResults[resultIndex].document?.id) return;
 
     try {
       await ragEngine.submitFeedback({
@@ -274,11 +304,12 @@ https://svelte.dev/e/js_parse_error -->
         documentId: searchResults[resultIndex].document.id,
         vote: 'POSITIVE',
         relevanceScore: 0.9,
-        context: {
-          queryText: searchQuery,
-          resultPosition: resultIndex,
-          timeSpentViewing: 5000,
-        },
+        context:
+          {
+            queryText: searchQuery,
+            resultPosition: resultIndex,
+            timeSpentViewing: 5000,
+          },
       });
 
       // Update PageRank
@@ -307,6 +338,31 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Full demo failed:', error);
     }
   }
+
+  // --- Add these type definitions and guards ---
+  type WebGLStatus = { initialized?: boolean; streaming?: boolean; frameRate?: number };
+  const isWebGLStatus = (v: unknown): v is WebGLStatus =>
+    !!v && typeof v === 'object' && ('initialized' in (v as object) || 'streaming' in (v as object) || 'frameRate' in (v as object));
+
+  type APICoordination = { active?: boolean };
+  const isAPICoordination = (v: unknown): v is APICoordination =>
+    !!v && typeof v === 'object' && 'active' in (v as object);
+
+  type PerformanceMetrics = { frameRate?: number };
+  const isPerformanceMetrics = (v: unknown): v is PerformanceMetrics =>
+    !!v && typeof v === 'object' && 'frameRate' in (v as object);
+
+  type ThroughputMetrics = { tasksPerSecond?: number };
+  const isThroughputMetrics = (v: unknown): v is ThroughputMetrics =>
+    !!v && typeof v === 'object' && 'tasksPerSecond' in (v as object);
+
+  type FeedbackMetrics = { totalVotes?: number; averageRelevance?: number };
+  const isFeedbackMetrics = (v: unknown): v is FeedbackMetrics =>
+    !!v && typeof v === 'object' && ('totalVotes' in (v as object) || 'averageRelevance' in (v as object));
+
+  type IntegrationStatus = { overall?: string };
+  const isIntegrationStatus = (v: unknown): v is IntegrationStatus =>
+    !!v && typeof v === 'object' && 'overall' in (v as object);
 </script>
 
 <svelte:head>
@@ -481,25 +537,24 @@ Run Full Demo
           {#each searchResults as result, index}
             <div class="p-3 rounded border border-slate-600 bg-slate-700/50">
               <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium text-white">{(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).document.title}</h4>
+                <h4 class="font-medium text-white">{result.document?.title ?? 'Untitled'}</h4>
                 <span class="text-xs px-2 py-1 rounded bg-blue-600 text-white">
-                  {((result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).finalScore * 100).toFixed(1)}%
+                  {(((result.finalScore ?? 0) * 100) as number).toFixed(1)}%
                 </span>
               </div>
               <p class="text-sm text-gray-300 mb-2">
-                {(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).document.content.substring(0, 150)}...
+                {result.document?.content ? result.document.content.substring(0, 150) : ''}...
               </p>
               <div class="flex justify-between items-center">
                 <span class="text-xs text-gray-400">
-                  PageRank: {(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).pageRankBoost?.toFixed(3) || '0.000'}
+                  PageRank: {((result.pageRankBoost ?? 0) as number).toFixed(3)}
                 </span>
-                <Button class="bits-btn"
+                <Button
                   size="sm"
-                  onclick={() =>
-submitPositiveFeedback(index)}
-                  class="text-xs bg-green-600 hover:bg-green-700">
+                  onclick={() => submitPositiveFeedback(index)}
+                  class="bits-btn text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant
-</Button>
+                </Button>
               </div>
             </div>
           {:else}
@@ -518,7 +573,7 @@ submitPositiveFeedback(index)}
             <div class="p-3 rounded border border-slate-600 bg-slate-700/50">
               <div class="flex justify-between items-start mb-2">
                 <span class="text-xs px-2 py-1 rounded bg-purple-600 text-white capitalize">
-                  {rec.agent}
+                  {rec.agent ?? 'agent'}
                 </span>
                 <span
                   class="text-xs px-2 py-1 rounded text-white"
@@ -526,17 +581,17 @@ submitPositiveFeedback(index)}
                   class:bg-orange-600={rec.priority === 'HIGH'}
                   class:bg-yellow-600={rec.priority === 'MEDIUM'}
                   class:bg-green-600={rec.priority === 'LOW'}>
-                  {rec.priority}
+                  {rec.priority ?? 'UNKNOWN'}
                 </span>
               </div>
-              <p class="text-sm text-white font-medium mb-1">{rec.recommendation}</p>
-              <p class="text-xs text-gray-300 mb-2">{rec.reasoning}</p>
+              <p class="text-sm text-white font-medium mb-1">{rec.recommendation ?? ''}</p>
+              <p class="text-xs text-gray-300 mb-2">{rec.reasoning ?? ''}</p>
               <div class="flex justify-between items-center">
                 <span class="text-xs text-gray-400">
-                  Confidence: {(rec.confidence * 100).toFixed(1)}%
+                  Confidence: {(((rec.confidence ?? 0) * 100) as number).toFixed(1)}%
                 </span>
                 <span class="text-xs text-gray-400">
-                  Impact: {(rec.estimatedImpact * 100).toFixed(1)}%
+                  Impact: {(((rec.estimatedImpact ?? 0) * 100) as number).toFixed(1)}%
                 </span>
               </div>
             </div>
@@ -573,4 +628,5 @@ submitPositiveFeedback(index)}
       sans-serif;
   }
 </style>
+
 

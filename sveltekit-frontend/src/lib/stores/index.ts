@@ -7,11 +7,14 @@ export { contextMenuStore, contextMenuActions } from './ui';
 export { uiStore } from './ui';
 export { default as modalStore } from './modal';
 export { notifications as notificationStore } from './notification';
-// Authentication & User stores
-export { default as authStore } from './auth';
-export { authService } from './auth.svelte';
+// Authentication & User stores (Consolidated)
+export { authService as auth, type User, type AuthState } from './auth.svelte';
 export { default as userStore } from './user';
 export { avatarStore } from './avatarStore';
+
+// Legacy auth compatibility (gradual migration)
+export { default as authStore } from './auth';
+export { authService } from './auth.svelte';
 // Session Management with XState
 export {
   sessionManager,
@@ -34,7 +37,16 @@ export { aiStore, parseAICommand, applyAIClasses, aiCommandService, recentComman
 export { aiHistory as aiHistoryStore } from './aiHistoryStore';
 export { chatStore } from './chatStore';
 export { enhancedRAGStore } from './enhanced-rag-store';
-// AI Assistant with Ollama Cluster + Context7
+// AI Assistant with Ollama Cluster + Context7 (Consolidated)
+export {
+  aiAssistant,
+  type AIMessage,
+  type Backend,
+  type CaseAIContext,
+  type AssistantConfig,
+} from './ai-assistant.svelte';
+
+// Legacy compatibility (for gradual migration)
 export {
   aiAssistantManager,
   isAIActive as isAIAssistantActive,
@@ -65,7 +77,7 @@ export { autoTaggingMachine } from './autoTaggingMachine';
 export { evidenceProcessingMachine, evidenceProcessingStore, streamingStore } from './enhancedStateMachines';
 export { aiCommandMachine } from './ai-command-machine';
 // Production XState Machines
-export { sessionMachine, sessionServices, sessionActions } from '../machines/sessionMachine';
+export { sessionMachine, sessionActions } from '../machines/sessionMachine';
 export { agentShellMachine, agentShellServices, agentShellActions } from '../machines/agentShellMachine';
 export { aiAssistantMachine, aiAssistantActions } from '../machines/aiAssistantMachine';
 // New XState + Go microservice integration

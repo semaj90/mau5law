@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { OLLAMA_CONFIG, isLegalTask } from './ollama-config';
+import { OLLAMA_CONFIG, isLegalTask } from '../services/providers/ollama/config.js';
 import type {
   OllamaGenerateRequest,
   OllamaResponse,
