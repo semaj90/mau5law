@@ -297,7 +297,7 @@ function createGPUSummaryStore() {
     memoryUsageMB: number,
     avgSearchTime: number,
     cacheHitRate: number,
-    effectsCount: number // Changed semicolon to comma
+    effectsCount: number
   ): { healthScore: number; bottlenecks: string[]; recommendations: string[] } {
     let healthScore = 100;
     const bottlenecks: string[] = [];
@@ -549,7 +549,7 @@ export function trackWebASMInference(
   memoryUsage: number,
   wasmPages: number,
   simdSupported: boolean,
-  threadCount: number // Changed semicolon to comma
+  threadCount: number
 ) {
   const inferenceTime = endTime - startTime;
   const tokensPerSecond = tokenCount / (inferenceTime / 1000);
@@ -575,7 +575,7 @@ export function trackVectorSearch(
   resultCount: number,
   indexType: 'ivf' | 'hnsw' | 'flat',
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product',
-  cacheHitRate: number // Changed semicolon to comma
+  cacheHitRate: number
 ) {
   gpuSummaryStore.addVectorSearchMetric({
     queryId,
@@ -595,11 +595,11 @@ export function trackVectorSearch(
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
   bucketName: string,
-  transferSize: number, // Changed semicolon to comma
+  transferSize: number,
   duration: number,
   cacheHit: boolean,
   objectKey?: string,
-  compressionRatio?: number // Changed semicolon to comma
+  compressionRatio?: number
 ) {
   gpuSummaryStore.addMinIOMetric({
     operation,
@@ -620,7 +620,7 @@ export function trackGPUBridgeOperation(
   computeTime: number,
   memoryBandwidth: number,
   utilization: number,
-  powerEfficiency: number // Changed semicolon to comma
+  powerEfficiency: number
 ) {
   gpuSummaryStore.updateGPUBridge({
     transferTime,
