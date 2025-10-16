@@ -48,7 +48,8 @@ const createUserStore = () => {
     subscribe,
     // Set the user data (e.g., on login)
     setUser: (userData: Partial<UserType>) => {
-      const user = new User({ ...userData, isAuthenticated: true });
+      const user = new User(userData);
+      user.isAuthenticated = true;
       set(user);
     },
     // Clear user data (e.g., on logout)
@@ -56,8 +57,17 @@ const createUserStore = () => {
       set(new User()); // Reset to Guest user
     },
     // Update a specific property of the user
-    updateUser: (props: Partial<UserType>) => {
-      update(user => ({ ...user, ...props }));
+    updateUser: (
+      props: Partial<UserType> & {
+        isAuthenticated?: boolean;
+        isLoggedIn?: boolean;
+        displayName?: string;
+        caseId?: string | null;
+      }
+    ) => {
+      update(user => {
+        return Object.assign(user, props);
+      });
     },
     // Select a case for the user
     selectCase: (caseId: string | null) => {

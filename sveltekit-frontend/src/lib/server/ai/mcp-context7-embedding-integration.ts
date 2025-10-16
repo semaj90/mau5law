@@ -341,7 +341,7 @@ export class MCPContext7EmbeddingIntegration {
   private async localParallelEmbedding(
     request: ParallelEmbeddingRequest
   ): Promise<ParallelEmbeddingResponse> {
-    const startTime = Date.now();
+    // const $startTime = Date.now(); // Performance timing for future optimization
 
     if (!this.embeddingService) {
       throw new Error('Embedding service not available');
@@ -350,7 +350,7 @@ export class MCPContext7EmbeddingIntegration {
     const embeddingRequests = request.texts.map((text, idx) => ({
       text,
       type: request.embeddingType,
-      cacheKey: request.cacheKeys?.[idx]
+      cacheKey: request.cacheKeys?.[idx],
     }));
 
     const response = await this.embeddingService.embedBatch(embeddingRequests);
@@ -360,7 +360,7 @@ export class MCPContext7EmbeddingIntegration {
       processingTime: response.totalProcessingTime,
       workersUsed: 1,
       cacheHitCount: response.cacheHitCount,
-      successRate: 1.0
+      successRate: 1.0,
     };
   }
 

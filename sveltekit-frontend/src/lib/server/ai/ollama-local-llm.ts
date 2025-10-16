@@ -2,6 +2,8 @@
 // Ollama integration for local LLM inference with legal models
 import { logger } from './logger.js';
 
+export type JsonObject = Record<string, unknown>;
+
 export interface OllamaModel {
   name: string;
   size: string;
@@ -180,6 +182,23 @@ TEMPLATE """{{ if .System }}<|system|>
       logger.error(`[OllamaLLM] Failed to create legal model ${targetName}:`, error);
     }
   }
+
+  /**
+   * Select the best model from available options
+   */
+  private selectBestModel(preferredModel?: string): string {
+    if (preferredModel && this.availableModels.has(preferredModel)) {
+      return preferredModel;
+    }
+    // Default to legal model if available
+    if (this.availableModels.has('gemma3-legal')) {
+      return 'gemma3-legal';
+    }
+    // Fallback to first available model
+    const firstModel = this.availableModels.keys().next().value;
+    return firstModel || 'gemma3-legal';
+  }
+
   /**
    * Generate completion using local LLM
    */
@@ -317,7 +336,7 @@ TEMPLATE """{{ if .System }}<|system|>
       }
       const result = await response.json();
       return result.message?.content || null;
-    } catch (error: Error) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Chat completion failed:', error);
       return null;
     }
@@ -369,7 +388,7 @@ TEMPLATE """{{ if .System }}<|system|>
         }
         return result.response;
       }
-    } catch (error: Error) {
+    } catch (error: unknown) {
       logger.error('[OllamaLLM] Legal document processing failed:', error);
     }
     return null;
