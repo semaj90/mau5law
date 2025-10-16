@@ -40,7 +40,6 @@ const FLATBUFFER_SCHEMA = {
     TOTAL_SIZE: 48      // Total node header size
   }
 } as const;
-}
 export interface FlatBufferNode {
   readonly id: number;
   readonly type: number;
@@ -52,14 +51,12 @@ export interface FlatBufferNode {
   readonly position: { x: number; y: number; z: number }
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
-}
 export interface BinaryGraphData {
   readonly nodeCount: number;
   readonly timestamp: number;
   readonly checksum: number;
   readonly nodes: FlatBufferNode[];
   readonly totalSize: number;
-}
 export class FlatBufferNodeSerializer {
   private static readonly MAGIC_NUMBER = 0x444E4246; // "FBND" in little-endian
   private static readonly CURRENT_VERSION = 1;

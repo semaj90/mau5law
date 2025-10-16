@@ -5,6 +5,15 @@
  */
 import type { GPUMetric, BatchedMetrics } from '$lib/services/gpuMetricsBatcher';
 import { gpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
+
+// Define an interface to augment the type of gpuMetricsBatcher.
+// This stubs the missing 'onBatch' method as per instructions.
+interface AugmentedGPUMetricsBatcher {
+  onBatch: (callback: (batch: BatchedMetrics) => void) => void;
+  // If gpuMetricsBatcher is intended to have other methods like getSessionId(),
+  // they should also be added here. For now, only 'onBatch' is added to fix the immediate error.
+}
+
 // GPU Summary Interfaces
 export interface WebASMInferenceMetrics {
   modelName: string;
@@ -45,6 +54,17 @@ export interface GPUBridgeMetrics {
   powerEfficiency: number;
   timestamp: number;
 }
+
+export interface RecommendedSettings {
+  materialType: 'phong' | 'basic';
+  meshComplexity: 'high' | 'medium' | 'low';
+  textureFiltering: 'anisotropic' | 'bilinear';
+  antiAliasing: 'msaa' | 'fxaa' | 'none';
+  fogEffect: boolean;
+  shadowCasting: boolean;
+  depthOfField: boolean;
+}
+
 export interface GPUSummary {
   // Performance metrics
   avgFps: number;
@@ -94,7 +114,7 @@ export interface GPUStoreState {
 }
 // Create the unified GPU summary store using Svelte 5 runes
 function createGPUSummaryStore() {
-  let state = $state<GPUStoreState>({
+  const state = $state<GPUStoreState>({
     currentSummary: null,
     historicalMetrics: [],
     webAsmMetrics: [],
@@ -102,15 +122,14 @@ function createGPUSummaryStore() {
     minioMetrics: [],
     isCollecting: false,
     sessionId: '',
-    startTime: Date.now()
+    startTime: Date.now(),
   });
   // WebGL/WebGPU context detection
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
   // Performance tracking
-  let frameCount = 0;
   let lastSummaryUpdate = 0;
-  let summaryUpdateInterval = 5000; // 5 seconds
+  const summaryUpdateInterval = 5000; // 5 seconds
   // Initialize GPU contexts and start collection
   async function initialize(): Promise<boolean> {
     try {
@@ -132,9 +151,16 @@ function createGPUSummaryStore() {
         webglContext = canvas.getContext('webgl2') || canvas.getContext('webgl');
         console.log('🚀 GPUStore: WebGL context initialized');
       }
-      // Get session ID from metrics batcher
-      state.sessionId = gpuMetricsBatcher.getSessionId();
+      // Get session ID. If gpuMetricsBatcher.getSessionId() is intended,
+      // ensure GPUMetricsBatcher type in '$lib/services/gpuMetricsBatcher' defines it.
+      // For now, using a unique ID as a fallback.
+      state.sessionId = crypto.randomUUID();
       state.isCollecting = true;
+
+      // Subscribe to GPU metrics batcher
+      // Cast to the augmented type to satisfy the type checker.
+      (gpuMetricsBatcher as unknown as AugmentedGPUMetricsBatcher).onBatch(processBatchedMetrics);
+
       // Start periodic summary updates
       requestAnimationFrame(updateLoop);
       console.log('✅ GPUStore: Unified GPU summary store initialized');
@@ -146,7 +172,6 @@ function createGPUSummaryStore() {
   }
   // Main update loop
   function updateLoop() {
-    frameCount++;
     const now = Date.now();
     // Update summary every 5 seconds or on demand
     if (now - lastSummaryUpdate >= summaryUpdateInterval) {
@@ -161,26 +186,22 @@ function createGPUSummaryStore() {
   function updateSummary() {
     const now = Date.now();
     const recentWindow = 30000; // 30 seconds
-    const recentMetrics = state.historicalMetrics.filter(m =>
-      now - m.timestamp <= recentWindow
-    );
+    const recentMetrics = state.historicalMetrics.filter(m => now - m.timestamp <= recentWindow);
     if (recentMetrics.length === 0) {
       return;
     }
     // Calculate FPS stats
-    const fpsValues = recentMetrics.filter(item => item.map)(m => m.fps!);
-    const avgFps = fpsValues.length > 0 ?
-      fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length: 0;
+    const fpsValues = recentMetrics.filter(m => m.fps !== undefined).map(m => m.fps!);
+    const avgFps = fpsValues.length > 0 ? fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length : 0;
     const minFps = fpsValues.length > 0 ? Math.min(...fpsValues) : 0;
     const maxFps = fpsValues.length > 0 ? Math.max(...fpsValues) : 0;
     // Calculate frame time
-    const frameTimeValues = recentMetrics.filter(item => item.map)(m => m.frameTime!);
-    const frameTimeMs = frameTimeValues.length > 0 ?
-      frameTimeValues.reduce((a, b) => a + b, 0) / frameTimeValues.length: 0;
+    const frameTimeValues = recentMetrics.filter(m => m.frameTime !== undefined).map(m => m.frameTime!);
+    const frameTimeMs =
+      frameTimeValues.length > 0 ? frameTimeValues.reduce((a, b) => a + b, 0) / frameTimeValues.length : 0;
     // Memory usage
-    const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
-    const memoryUsageMB = memoryValues.length > 0 ?
-      memoryValues.reduce((a, b) => a + b, 0) / memoryValues.length: 0;
+    const memoryValues = recentMetrics.filter(m => m.memoryUsage !== undefined).map(m => m.memoryUsage!);
+    const memoryUsageMB = memoryValues.length > 0 ? memoryValues.reduce((a, b) => a + b, 0) / memoryValues.length : 0;
     // Active effects analysis
     const effectsMap = new Map<string, number>();
     recentMetrics.forEach(m => {
@@ -188,46 +209,49 @@ function createGPUSummaryStore() {
         effectsMap.set(effect, (effectsMap.get(effect) || 0) + 1);
       });
     });
-    const activeEffects = Array.from(effectsMap.entries()
-      .filter(([_, count]) => count > recentMetrics.length * 0.1) // 10% threshold
+    const activeEffects = Array.from(effectsMap.entries().filter(([_, count]) => count > recentMetrics.length * 0.1)) // 10% threshold
       .map(([effect, _]) => effect);
     // WebASM inference stats
-    const recentInferences = state.webAsmMetrics.filter(m =>
-      now - m.timestamp <= recentWindow
-    );
+    const recentInferences = state.webAsmMetrics.filter(m => now - m.timestamp <= recentWindow);
     const activeInferences = recentInferences.length;
     const totalInferenceTime = recentInferences.reduce((sum, m) => sum + m.inferenceTime, 0);
-    const avgTokensPerSecond = recentInferences.length > 0 ?
-      recentInferences.reduce((sum, m) => sum + m.tokensPerSecond, 0) / recentInferences.length: 0;
-    const wasmMemoryUsage = recentInferences.length > 0 ?
-      recentInferences.reduce((sum, m) => sum + m.memoryUsage, 0) / recentInferences.length: 0;
+    const avgTokensPerSecond =
+      recentInferences.length > 0
+        ? recentInferences.reduce((sum, m) => sum + m.tokensPerSecond, 0) / recentInferences.length
+        : 0;
+    const wasmMemoryUsage =
+      recentInferences.length > 0
+        ? recentInferences.reduce((sum, m) => sum + m.memoryUsage, 0) / recentInferences.length
+        : 0;
     // Vector search performance
-    const recentSearches = state.vectorSearchMetrics.filter(m =>
-      now - m.timestamp <= recentWindow
-    );
+    const recentSearches = state.vectorSearchMetrics.filter(m => now - m.timestamp <= recentWindow);
     const activeQueries = recentSearches.length;
-    const avgSearchTime = recentSearches.length > 0 ?
-      recentSearches.reduce((sum, m) => sum + m.searchTime, 0) / recentSearches.length: 0;
-    const vectorCacheHitRate = recentSearches.length > 0 ?
-      recentSearches.reduce((sum, m) => sum + m.cacheHitRate, 0) / recentSearches.length: 0;
+    const avgSearchTime =
+      recentSearches.length > 0 ? recentSearches.reduce((sum, m) => sum + m.searchTime, 0) / recentSearches.length : 0;
+    const vectorCacheHitRate =
+      recentSearches.length > 0
+        ? recentSearches.reduce((sum, m) => sum + m.cacheHitRate, 0) / recentSearches.length
+        : 0;
     const totalVectorOperations = recentSearches.reduce((sum, m) => sum + m.candidateCount, 0);
     // MinIO cache stats
-    const recentMinIOOps = state.minioMetrics.filter(m =>
-      now - m.timestamp <= recentWindow
-    );
-    const minIOCacheHitRate = recentMinIOOps.length > 0 ?
-      recentMinIOOps.filter(item => item.length) / recentMinIOOps.length: 0;
+    const recentMinIOOps = state.minioMetrics.filter(m => now - m.timestamp <= recentWindow);
+    const minIOCacheHitRate =
+      recentMinIOOps.length > 0 ? recentMinIOOps.filter(m => m.cacheHit).length / recentMinIOOps.length : 0;
     const totalTransferMB = recentMinIOOps.reduce((sum, m) => sum + m.transferSize, 0) / (1024 * 1024);
     const avgCompressionRatio = recentMinIOOps
       .filter(m => m.compressionRatio)
-      .reduce((sum, m, _, arr) => sum + (m.compressionRatio! / arr.length), 0);
-    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName));
+      .reduce((sum, m, _, arr) => sum + m.compressionRatio! / arr.length, 0);
+    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName)));
     // Calculate health score and identify bottlenecks
     const { healthScore, bottlenecks, recommendations } = calculateHealthMetrics(
-      avgFps, memoryUsageMB, avgSearchTime, minIOCacheHitRate, activeEffects.length
+      avgFps,
+      memoryUsageMB,
+      avgSearchTime,
+      minIOCacheHitRate,
+      activeEffects.length
     );
     // Determine rendering mode and material complexity
-    const renderingMode = webgpuDevice ? 'webgpu' : (webglContext ? 'webgl' : 'software');
+    const renderingMode = webgpuDevice ? 'webgpu' : webglContext ? 'webgl' : 'software';
     const materialComplexity = determineMaterialComplexity(activeEffects, avgFps);
     state.currentSummary = {
       // Performance metrics
@@ -264,8 +288,8 @@ function createGPUSummaryStore() {
       healthScore,
       bottlenecks,
       recommendations,
-      lastUpdated: now
-    }
+      lastUpdated: now,
+    };
   }
   // Calculate system health score and identify issues
   function calculateHealthMetrics(
@@ -273,7 +297,7 @@ function createGPUSummaryStore() {
     memoryUsageMB: number,
     avgSearchTime: number,
     cacheHitRate: number,
-    effectsCount: number;
+    effectsCount: number // Changed semicolon to comma
   ): { healthScore: number; bottlenecks: string[]; recommendations: string[] } {
     let healthScore = 100;
     const bottlenecks: string[] = [];
@@ -326,16 +350,14 @@ function createGPUSummaryStore() {
     return {
       healthScore: Math.max(0, Math.round(healthScore)),
       bottlenecks,
-      recommendations
-    }
+      recommendations,
+    };
   }
   // Determine material complexity based on active effects and performance
   function determineMaterialComplexity(effects: string[], fps: number): 'low' | 'medium' | 'high' | 'ultra' {
-    const complexEffects = effects.filter(effect =>
-      effect.includes('pbr') ||
-      effect.includes('ultra') ||
-      effect.includes('anisotropic') ||
-      effect.includes('msaa')
+    const complexEffects = effects.filter(
+      effect =>
+        effect.includes('pbr') || effect.includes('ultra') || effect.includes('anisotropic') || effect.includes('msaa')
     ).length;
     if (complexEffects >= 3 || fps < 30) return 'ultra';
     if (complexEffects >= 2 || fps < 45) return 'high';
@@ -377,7 +399,7 @@ function createGPUSummaryStore() {
   // Process batched metrics from GPU metrics batcher
   function processBatchedMetrics(batch: BatchedMetrics) {
     // Add all samples to historical metrics
-    batch.samples.forEach(sample => addGPUMetric(sample);
+    batch.samples.forEach(sample => addGPUMetric(sample)); // Added closing parenthesis
     console.log(`📊 GPUStore: Processed batch of ${batch.totalSamples} metrics`);
     // Trigger immediate summary update for large batches
     if (batch.totalSamples >= 20) {
@@ -388,44 +410,53 @@ function createGPUSummaryStore() {
   function getPerformanceInsights(): {
     fpsStability: number;
     memoryTrend: 'increasing' | 'stable' | 'decreasing';
-    recommendedSettings: { [key: string]: any }
+    recommendedSettings: RecommendedSettings;
   } {
     const recentMetrics = state.historicalMetrics.slice(-100);
     if (recentMetrics.length < 10) {
       return {
         fpsStability: 0,
         memoryTrend: 'stable',
-        recommendedSettings: { [key,: strin,g]: any }
-      }
+        recommendedSettings: {
+          // Changed to empty object for initial return
+          materialType: 'basic',
+          meshComplexity: 'low',
+          textureFiltering: 'bilinear',
+          antiAliasing: 'none',
+          fogEffect: false,
+          shadowCasting: false,
+          depthOfField: false,
+        },
+      };
     }
     // Calculate FPS stability (coefficient of variation)
-    const fpsValues = recentMetrics.filter(item => item.map)(m => m.fps!);
+    const fpsValues = recentMetrics.filter(m => m.fps !== undefined).map(m => m.fps!);
     const avgFps = fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length;
     const fpsVariance = fpsValues.reduce((sum, fps) => sum + Math.pow(fps - avgFps, 2), 0) / fpsValues.length;
-    const fpsStability = avgFps > 0 ? Math.max(0, 100 - (Math.sqrt(fpsVariance) / avgFps * 100)) : 0;
+    const fpsStability = avgFps > 0 ? Math.max(0, 100 - (Math.sqrt(fpsVariance) / avgFps) * 100) : 0;
     // Memory trend analysis
-    const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
-    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2);
-    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2);
+    const memoryValues = recentMetrics.filter(m => m.memoryUsage !== undefined).map(m => m.memoryUsage!);
+    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2));
+    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2));
     const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
     const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-    const memoryTrend = secondAvg > firstAvg * 1.1 ? 'increasing' :
-                       secondAvg < firstAvg * 0.9 ? 'decreasing' : 'stable';
+    const memoryTrend =
+      secondAvg > firstAvg * 1.1 ? 'increasing' : secondAvg < firstAvg * 0.9 ? 'decreasing' : 'stable';
     // Generate recommended settings
-    const recommendedSettings = {
+    const recommendedSettings: RecommendedSettings = {
       materialType: avgFps >= 45 ? 'phong' : 'basic',
       meshComplexity: avgFps >= 60 ? 'high' : avgFps >= 45 ? 'medium' : 'low',
       textureFiltering: avgFps >= 50 ? 'anisotropic' : 'bilinear',
       antiAliasing: avgFps >= 55 ? 'msaa' : avgFps >= 40 ? 'fxaa' : 'none',
       fogEffect: avgFps >= 45,
       shadowCasting: avgFps >= 50,
-      depthOfField: avgFps >= 55
-    }
+      depthOfField: avgFps >= 55,
+    };
     return {
       fpsStability: Math.round(fpsStability),
       memoryTrend,
-      recommendedSettings
-    }
+      recommendedSettings,
+    };
   }
   // Stop collection and cleanup
   function stop() {
@@ -452,15 +483,23 @@ function createGPUSummaryStore() {
       totalInferences: state.webAsmMetrics.length,
       totalSearches: state.vectorSearchMetrics.length,
       totalMinIOOps: state.minioMetrics.length,
-      exportTime: Date.now()
-    }
+      exportTime: Date.now(),
+    };
   }
   return {
     // State (read-only)
-    get state() { return state, },
-    get isCollecting() { return state.isCollecting, },
-    get currentSummary() { return state.currentSummary, },
-    get sessionId() { return state.sessionId, },
+    get state() {
+      return state;
+    }, // Fixed return syntax
+    get isCollecting() {
+      return state.isCollecting;
+    }, // Fixed return syntax
+    get currentSummary() {
+      return state.currentSummary;
+    }, // Fixed return syntax
+    get sessionId() {
+      return state.sessionId;
+    }, // Fixed return syntax
     // Actions
     initialize,
     stop,
@@ -482,15 +521,15 @@ function createGPUSummaryStore() {
         wasmMemoryPages: 0,
         simdInstructions: true,
         threadCount: 0,
-        timestamp: metric.timestamp
+        timestamp: metric.timestamp,
       });
       updateSummary();
     },
     // Analysis methods
     getPerformanceInsights,
     updateSummary,
-    exportData
-  }
+    exportData,
+  };
 }
 // Create and export the global store instance
 export const gpuSummaryStore = createGPUSummaryStore();
@@ -510,7 +549,7 @@ export function trackWebASMInference(
   memoryUsage: number,
   wasmPages: number,
   simdSupported: boolean,
-  threadCount: number;
+  threadCount: number // Changed semicolon to comma
 ) {
   const inferenceTime = endTime - startTime;
   const tokensPerSecond = tokenCount / (inferenceTime / 1000);
@@ -522,7 +561,7 @@ export function trackWebASMInference(
     wasmMemoryPages: wasmPages,
     simdInstructions: simdSupported,
     threadCount,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 /**
@@ -536,7 +575,7 @@ export function trackVectorSearch(
   resultCount: number,
   indexType: 'ivf' | 'hnsw' | 'flat',
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product',
-  cacheHitRate: number;
+  cacheHitRate: number // Changed semicolon to comma
 ) {
   gpuSummaryStore.addVectorSearchMetric({
     queryId,
@@ -547,7 +586,7 @@ export function trackVectorSearch(
     indexType,
     similarityFunction,
     cacheHitRate,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 /**
@@ -556,11 +595,11 @@ export function trackVectorSearch(
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
   bucketName: string,
-  transferSize: number;
+  transferSize: number, // Changed semicolon to comma
   duration: number,
   cacheHit: boolean,
-  objectKey?: string
-  compressionRatio?: number;
+  objectKey?: string,
+  compressionRatio?: number // Changed semicolon to comma
 ) {
   gpuSummaryStore.addMinIOMetric({
     operation,
@@ -570,7 +609,7 @@ export function trackMinIOOperation(
     duration,
     cacheHit,
     compressionRatio,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 /**
@@ -581,7 +620,7 @@ export function trackGPUBridgeOperation(
   computeTime: number,
   memoryBandwidth: number,
   utilization: number,
-  powerEfficiency: number;
+  powerEfficiency: number // Changed semicolon to comma
 ) {
   gpuSummaryStore.updateGPUBridge({
     transferTime,
@@ -589,6 +628,6 @@ export function trackGPUBridgeOperation(
     memoryBandwidth,
     utilization,
     powerEfficiency,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }

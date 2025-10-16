@@ -3,9 +3,14 @@ import DropdownTrigger from './BitsDropdown/Trigger.svelte';
 import DropdownContent from './BitsDropdown/Content.svelte';
 import DropdownItem from './BitsDropdown/Item.svelte';
 import DropdownSeparator from './BitsDropdown/Separator.svelte';
+import Button from './Button.svelte';
+import Card from './Card.svelte';
+import CardHeader from './CardHeader.svelte';
+import CardTitle from './CardTitle.svelte';
+import CardContent from './CardContent.svelte';
 
 // Named exports for new code
-export { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator };
+export { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator, Button, Card, CardHeader, CardTitle, CardContent };
 
 // Compatibility namespace for legacy "bits.DropdownMenu.*" usage
 export const DropdownMenu = {
@@ -23,5 +28,10 @@ export default {
   DropdownContent,
   DropdownItem,
   DropdownSeparator,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
   DropdownMenu,
 };

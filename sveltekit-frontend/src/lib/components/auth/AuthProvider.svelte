@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // AuthProvider component - Global authentication context - Svelte 5 compatible
-  import { authStore } from '$lib/stores/auth-store.svelte';
+  import { auth } from '$lib/stores/auth-store.svelte';
   import { browser } from '$app/environment';
   interface Props {
     children?: import('svelte').Snippet;

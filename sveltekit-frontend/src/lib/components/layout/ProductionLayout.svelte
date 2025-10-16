@@ -24,7 +24,7 @@
     BarChart3, // Add BarChart3 here
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { authStore } from '$lib/stores/auth-store.svelte.js';
+  import { auth } from '$lib/stores/auth-store.svelte.js';
   // Client-side AI assistant chat widget
   import { ClientSideAIChat } from '$lib/components/ai/ClientSideAIChat.svelte'; // Changed to named import
   interface Props {

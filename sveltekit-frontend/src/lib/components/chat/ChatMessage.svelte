@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { ChatMessage } from '$lib/stores/chatStore';
+  import type { ChatMessage } from '\/stores/chat.svelte';
   import DOMPurify from 'dompurify';
   import { Bot, User } from 'lucide-svelte';
   import './chat-message.css';

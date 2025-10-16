@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     isLoading,
     isTyping,
     showProactivePrompt,
-  } from "$lib/stores/chatStore";
+  } from "$lib/stores/chat.svelte";
   import { notifications } from "$lib/stores/notification";
   import type { ApiResponse, ChatRequest, ChatResponse } from "$lib/types/api";
   import { Bot, Loader2, Send } from "lucide-svelte";

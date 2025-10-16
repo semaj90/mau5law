@@ -54,21 +54,21 @@ export interface LegalCase {
 }
 export interface CrossSystemInsights {
   // Citation-Report connections
-  citationReportLinks: Array<{,
-    citationId,: string;
+  citationReportLinks: Array<{
+    citationId: string;
     reportId: string;
     relevance: number;
     context: string;
   }>;
   // POI-Citation connections
-  poiCitationLinks: Array<{,
+  poiCitationLinks: Array<{
     poiId: string;
     citationId: string;
     involvement: 'author' | 'referenced' | 'opposing' | 'supporting';
     frequency: number;
   }>;
   // POI-Report connections
-  poiReportLinks: Array<{,
+  poiReportLinks: Array<{
     poiId: string;
     reportId: string;
     role: 'subject' | 'contributor' | 'reviewer' | 'mentioned';
@@ -79,13 +79,13 @@ export interface CrossSystemInsights {
     keyInfluencers: Array<{ poiId: string; influence: number }>;
     citationClusters: Array<{ caseIds: string[]; commonCitations: string[] }>;
     reportThemes: Array<{ theme: string; reportIds: string[]; frequency: number }>;
-  }
+  };
   // Temporal analysis
   temporalInsights: {
     citationTrends: Array<{ period: string; count: number; types: Record<string, number> }>;
     reportGeneration: Array<{ period: string; count: number; templates: Record<string, number> }>;
     poiActivity: Array<{ period: string; interactions: number; newPOIs: number }>;
-  }
+  };
 }
 // Integration Context
 interface PlatformContext {
@@ -102,10 +102,10 @@ interface PlatformContext {
     reports: 'synced' | 'syncing' | 'error';
     poi: 'synced' | 'syncing' | 'error';
     documents: 'synced' | 'syncing' | 'error';
-  }
+  };
   // AI processing queue
-  aiQueue: Array<{,
-    id,: string;
+  aiQueue: Array<{
+    id: string;
     type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
     entityIds: string[];
     priority: number;
@@ -361,10 +361,10 @@ export const legalPlatformMachine = createMachine(
           const response = await fetch(`/api/cases/${input.caseId}/link`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               entityType: input.entityType,
-              entityId: input.entityId
-            })
+              entityId: input.entityId,
+            }),
           });
           if (!response.ok) {
             throw new Error(`Failed to link entity: ${response.statusText}`);
@@ -404,10 +404,10 @@ export const legalPlatformMachine = createMachine(
           const response = await fetch('/api/ai/process', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               taskType: input.type,
-              entityIds: input.entityIds
-            })
+              entityIds: input.entityIds,
+            }),
           });
           if (!response.ok) {
             throw new Error(`AI processing failed: ${response.statusText}`);
@@ -452,25 +452,28 @@ export const dashboardStore = derived(
     reports: $reports,
     poi: $poi,
     // Combined metrics
-    totalEntities: ($citations.context.searchResults?.length || 0) +,
-                  ($reports.context.searchResults?.length || 0) +
-                  ($poi.context.searchResults?.length || 0),
+    totalEntities:
+      ($citations.context.searchResults?.length || 0) +
+      ($reports.context.searchResults?.length || 0) +
+      ($poi.context.searchResults?.length || 0),
     // Active case summary
-    currentCaseSummary: $platform.context.currentCase ? {,
-      caseId: $platform.context.currentCase.id,
-      title: $platform.context.currentCase.title,
-      linkedCitations: $platform.context.activeCitations.length,
-      linkedReports: $platform.context.activeReports.length,
-      linkedPOIs: $platform.context.activePOIs.length,
-      riskScore: $platform.context.currentCase.aiInsights.riskScore,
-      status: $platform.context.currentCase.status
-    } : null
+    currentCaseSummary: $platform.context.currentCase
+      ? {
+          caseId: $platform.context.currentCase.id,
+          title: $platform.context.currentCase.title,
+          linkedCitations: $platform.context.activeCitations.length,
+          linkedReports: $platform.context.activeReports.length,
+          linkedPOIs: $platform.context.activePOIs.length,
+          riskScore: $platform.context.currentCase.aiInsights.riskScore,
+          status: $platform.context.currentCase.status,
+        }
+      : null,
     // System health
     systemHealth: {
       allSystemsOnline: Object.values($platform.context.syncStatus).every(status => status === 'synced'),
       pendingAITasks: $platform.context.aiQueue.length,
-      lastSync: new Date().toISOString()
-    }
+      lastSync: new Date().toISOString(),
+    },
   })
 );
 // Cross-System Search

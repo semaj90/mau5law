@@ -1,140 +1,120 @@
 /**
  * Centralized Redis Client for Legal AI Platform
- * Follows the integration guide pattern with enhanced error handling
+ * Unified ioredis implementation (Docker-ready)
  */
 import Redis from 'ioredis';
-import { getRedisConfig } from '$lib/config/redis-config';
-// Get optimized Redis configuration
-const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
-const baseConfig = getRedisConfig();
-function buildRedisOptions() {
-  const password = process.env.REDIS_PASSWORD || baseConfig.password;
-  // Only set password if it's a non-empty string
-  const finalPassword = password && password.trim() ? password : undefined;
-  return {
-    ...baseConfig,
-    password: finalPassword,
-    lazyConnect: true, // Changed to true to prevent immediate connection
-    maxRetriesPerRequest: 1, // Limit retries to prevent flooding
-  } as any;
-}
-// ioredis supports (url) or (options). We pass url via options for consistency.
-const redisOptions = buildRedisOptions();
-(redisOptions as any).url = url; // modern ioredis supports url in options
-export const redis = new Redis(redisOptions as any);
-export const REDIS_CONNECTION = redis;
-redis.on('connect', () => {
-  console.log('[redis] ✅ Connected successfully');
+import { env } from '$env/dynamic/private';
+
+// --- Connection config -------------------------------------------------
+const url = env.REDIS_URL ?? 'redis://127.0.0.1:6379';
+const password = env.REDIS_PASSWORD?.trim() || undefined;
+
+// Create the Redis instance (no brittle type assertions)
+const redis = new Redis({
+  url,
+  password,
+  lazyConnect: true,
+  maxRetriesPerRequest: 1,
+  enableOfflineQueue: false,
 });
-redis.on('ready', () => {
-  const masked = redisOptions.password ? redisOptions.password.replace(/.(?=.{2})/g, '*') : '(none)';
-  console.log('[redis] 🚀 Client ready for operations');
-  console.log(
-    `[redis] config host=${baseConfig.host || 'in-url'} port=${baseConfig.port} db=${baseConfig.db ?? 0} password=${masked}`
-  );
-});
-redis.on('error', error => {
-  console.error('[redis] ❌ Connection error:', error.message);
-  if (error.message.includes('ECONNREFUSED')) {
-    console.error('[redis] 💡 Tip: Start Redis server with: npm run redis:start');
-  } else if (error.message.includes('NOAUTH')) {
-    console.error('[redis] 💡 Tip: Check REDIS_PASSWORD environment variable');
+
+// --- Event listeners ---------------------------------------------------
+// Safer EventEmitter 'on' signature to avoid `any`
+type EventOnSignature = (event: string | symbol, listener: (...args: unknown[]) => void) => void;
+
+// Cast to EventEmitter for typing so .on is available without changing runtime behavior
+const redisEmitter = redis as unknown as NodeJS.EventEmitter & { on: EventOnSignature };
+redisEmitter.on('connect', () => console.log('[redis] ✅ Connected successfully'));
+redisEmitter.on('ready', () => console.log('[redis] 🚀 Client ready for operations'));
+redisEmitter.on('error', (err: Error) => console.error('[redis] ❌ Error:', err.message));
+redisEmitter.on('close', () => console.log('[redis] 🔌 Connection closed'));
+redisEmitter.on('reconnecting', (delay: number) => console.log(`[redis] 🔄 Reconnecting in ${delay}ms...`));
+
+// --- Convenience helpers -----------------------------------------------
+export async function getFromCache(key: string): Promise<string | null> {
+  try {
+    return await redis.get(key);
+  } catch (err) {
+    console.warn('[redis] get error:', (err as Error).message);
+    return null;
   }
-});
-redis.on('reconnecting', delay => {
-  console.log(`[redis] 🔄 Reconnecting in ${delay}ms...`);
-});
-redis.on('close', () => {
-  console.log('[redis] 🔌 Connection closed');
-});
-export const createRedisInstance = () => {
-  const opts = buildRedisOptions();
-  (opts as any).url = url;
-  return new Redis(opts as any);
-};
-// Thin interface describing only commands we actually use broadly
-export interface RedisBasicCommands {
-  get(_key: string): Promise<string | null>;
-  set(_key: string, value: string): Promise<'OK' | null>;
-  del(_key: string | string[]): Promise<number>;
-  setex?(_key: string, seconds: number, value: string): Promise<'OK'>;
-  expire?(_key: string, seconds: number): Promise<number>;
-  ping?(): Promise<string>;
-  publish?(channel: string, message: string): Promise<number>;
-  psubscribe?(...patterns: string[]): Promise<number>;
-  subscribe?(...channels: string[]): Promise<number>;
-  on(_event: string, listener: (...args: any[]) => void): any;
-  quit(): Promise<'OK'>;
 }
-// Multi-client factory for pub/sub correctness
-export interface RedisClientSet {
-  primary: RedisBasicCommands & any;
-  subscriber: RedisBasicCommands & any;
-  publisher: RedisBasicCommands & any;
+
+export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
+  try {
+    if (typeof ttl === 'number') {
+      // use options-style signature compatible with newer ioredis versions
+      await redis.set(key, value, { EX: ttl });
+    } else {
+      await redis.set(key, value);
+    }
+    return true;
+  } catch (err) {
+    console.warn('[redis] set error:', (err as Error).message);
+    return false;
+  }
+}
+
+export async function deleteFromCache(key: string): Promise<boolean> {
+  try {
+    await redis.del(key);
+    return true;
+  } catch (err) {
+    console.warn('[redis] del error:', (err as Error).message);
+    return false;
+  }
+}
+
+export async function closeRedis(): Promise<void> {
+  // support both ioredis versions: prefer quit() if available, otherwise disconnect()
+  const clientWithLifecycle = redis as unknown as { quit?: () => Promise<void>; disconnect?: () => void };
+  if (typeof clientWithLifecycle.quit === 'function') {
+    await clientWithLifecycle.quit();
+  } else {
+    clientWithLifecycle.disconnect?.();
+  }
+}
+
+export { redis };
+
+// Optional — Multi-client Set (if you need Pub/Sub)
+type RedisClientSet = {
+  primary: typeof redis;
+  subscriber: typeof redis;
+  publisher: typeof redis;
   closeAll(): Promise<void>;
-}
+};
+
 export function createRedisClientSet(): RedisClientSet {
-  const primary = createRedisInstance();
-  const subscriber = createRedisInstance();
-  const publisher = createRedisInstance();
-  // Basic wiring of error logging
-  [primary, subscriber, publisher].forEach((client, idx) => {
-    client.on('error', (err: any) => {
-      console.error(`[redis-set] client${idx} error:`, err?.message || err);
-    });
-  });
+  const connectionOptions = { url, password, lazyConnect: true, maxRetriesPerRequest: 1, enableOfflineQueue: false };
+  const primary = new Redis(connectionOptions);
+  const subscriber = new Redis(connectionOptions);
+  const publisher = new Redis(connectionOptions);
+
+  // use EventEmitter cast to access .on without changing runtime behavior
+  [primary, subscriber, publisher].forEach((client, i) =>
+    (client as unknown as NodeJS.EventEmitter & { on: EventOnSignature }).on('error', (err: Error) => {
+      console.error(`[redis-set:${i}] ❌`, err);
+      if (err.stack) {
+        console.error(`[redis-set:${i}] ❌ Stack trace:`, err.stack);
+      }
+    })
+  );
+
   return {
     primary,
     subscriber,
     publisher,
     async closeAll() {
-      await Promise.all([primary.quit(), subscriber.quit(), publisher.quit()].map(p => p.catch(() => {})));
+      const quitOrDisconnect = (c: unknown) => {
+        const lifecycled = c as { quit?: () => Promise<void>; disconnect?: () => void };
+        return typeof lifecycled.quit === 'function' ? lifecycled.quit() : Promise.resolve(lifecycled.disconnect?.());
+      };
+      await Promise.all(
+        [quitOrDisconnect(primary), quitOrDisconnect(subscriber), quitOrDisconnect(publisher)].map(
+          (p: Promise<unknown>) => p.catch(() => {})
+        )
+      );
     },
   };
-}
-let legacyClient: Redis | null = null;
-export async function createRedisClient(): Promise<Redis> {
-  if (legacyClient) return legacyClient;
-  legacyClient = redis;
-  return legacyClient;
-}
-export async function getFromCache(_key: string): Promise<string | null> {
-  try {
-    const client = await createRedisClient();
-    return await client.get(key);
-  } catch (error: any) {
-    console.warn('Redis get error:', error);
-    return null;
-  }
-}
-export async function setCache(_key: string, value: string, expireInSeconds?: number): Promise<boolean> {
-  try {
-    const client = await createRedisClient();
-    if (expireInSeconds) {
-      // Use classic setex for compatibility with current type definitions
-      await (client as any).setex(key, expireInSeconds, value);
-    } else {
-      await client.set(key, value);
-    }
-    return true;
-  } catch (error: any) {
-    console.warn('Redis set error:', error);
-    return false;
-  }
-}
-export async function deleteFromCache(_key: string): Promise<boolean> {
-  try {
-    const client = await createRedisClient();
-    await client.del(key);
-    return true;
-  } catch (error: any) {
-    console.warn('Redis delete error:', error);
-    return false;
-  }
-}
-export async function closeRedisConnection(): Promise<any> {
-  if (legacyClient) {
-    await legacyClient.quit();
-    legacyClient = null;
-  }
 }

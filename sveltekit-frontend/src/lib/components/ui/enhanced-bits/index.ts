@@ -1,12 +1,12 @@
-export { default as Button } from '../button/Button.svelte';
+import Button from './Button.svelte';
+import Card from './Card.svelte';
+import CardHeader from './Card.svelte';
+import CardTitle from './Card.svelte';
+import CardContent from './Card.svelte';
 
-export { default as Card } from '../card/Card.svelte';
-export { default as CardHeader } from '../card/CardHeader.svelte';
-export { default as CardContent } from '../card/CardContent.svelte';
-export { default as CardDescription } from '../card/CardDescription.svelte';
-export { default as CardTitle } from '../card/CardTitle.svelte';
-
-// Dialogs
+// Export defaults/named to match existing import patterns
+export default Button;
+export { Button, Card, CardHeader, CardTitle, CardContent };
 export { default as Dialog } from '../dialog/Dialog.svelte';
 export { default as DialogCompound } from '../dialog/Dialog.svelte';
 

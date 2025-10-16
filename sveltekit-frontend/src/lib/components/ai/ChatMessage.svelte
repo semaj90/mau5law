@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   let { message }: Props = $props();
   import Button from '$lib/components/ui/enhanced-bits';
-  import { chatActions } from '$lib/stores/chatStore';
+  import { chatActions } from '\/stores/chat.svelte';
   import { notifications } from '$lib/stores/notification';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from 'lucide-svelte';
   import '../chat/chat-message.css';

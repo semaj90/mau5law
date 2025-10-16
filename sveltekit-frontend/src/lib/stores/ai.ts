@@ -18,65 +18,65 @@ export interface AIContext {
   cacheKey: string;
   sources: any[];
 }
-type AIEvent =;
+type AIEvent =
   | {
-    type: "SUMMARIZE";
-    caseId: string;
-    evidence: any[];
-    userId: string;
-    model: string;
-  }
-  | { type: "SAVE_SUMMARY" }
-  | { type: "RETRY" }
-  | { type: "RESET" }
+      type: 'SUMMARIZE';
+      caseId: string;
+      evidence: any[];
+      userId: string;
+      model: string;
+    }
+  | { type: 'SAVE_SUMMARY' }
+  | { type: 'RETRY' }
+  | { type: 'RESET' };
 export const aiGlobalMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as AIContext,
-    events: { [key,: strin,g]: any } as AIEvent
+  types: {} as {
+    context: AIContext;
+    events: AIEvent;
   },
   actions: {
     setContext: assign(({ event }) => {
-      if (event.type !== "SUMMARIZE") return {}
-      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || "unknown" // @ts-ignore - Model property access}`
+      if (event.type !== 'SUMMARIZE') return {};
+      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || 'unknown'}`; // @ts-ignore - Model property access
       return {
         caseId: event.caseId,
         evidence: event.evidence,
         userId: event.userId,
-        model: event?.model || "unknown" // @ts-ignore - Model property access,
+        model: event?.model || 'unknown', // @ts-ignore - Model property access
         cacheKey,
         loading: true,
-        error: "",
-        stream: ""
-      }
+        error: '',
+        stream: '',
+      };
     }),
     setSuccess: assign(({ event }) => {
-      if ((event as any).type === "xstate.done.actor.summarizeEvidence") {
+      if ((event as any).type === 'xstate.done.actor.summarizeEvidence') {
         const data = (event as any).output;
         return {
-          summary: data?.summary || "",
+          summary: data?.summary || '',
           sources: data?.sources || [],
           loading: false,
-          stream: "",
-          error: ""
-        }
+          stream: '',
+          error: '',
+        };
       }
-      return {}
+      return {};
     }),
     setError: assign(({ event }) => {
-      if ((event as any).type === "xstate.error.actor.summarizeEvidence") {
+      if ((event as any).type === 'xstate.error.actor.summarizeEvidence') {
         return {
-          error: ((event as any).error as Error)?.message || "Error generating summary.",
-          loading: false
-        }
+          error: ((event as any).error as Error)?.message || 'Error generating summary.',
+          loading: false,
+        };
       }
-      return {}
+      return {};
     }),
-    setSaving: assign({ saving: true, error: "" }),
+    setSaving: assign({ saving: true, error: '' }),
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
       saving: false,
-      error: ((event as any).error as Error)?.message || "Failed to save summary.",
-    }))
+      error: ((event as any).error as Error)?.message || 'Failed to save summary.',
+    })),
   },
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
@@ -85,123 +85,123 @@ export const aiGlobalMachine = setup({
         return summaryCache.get(input.cacheKey)!;
       }
       // Backend endpoint from component documentation
-      const res = await fetch("/api/ai/process-evidence", {
-        method: "POST",
-        body: JSON.stringify({,
+      const res = await fetch('/api/ai/process-evidence', {
+        method: 'POST',
+        body: JSON.stringify({
           caseId: input.caseId,
           evidence: input.evidence,
           userId: input.userId,
-          model: input?.model || "unknown" // @ts-ignore - Model property access
+          model: input?.model || 'unknown', // @ts-ignore - Model property access
         }),
-        headers: { "Content-Type": "application/json" }
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`API request failed: ${res.statusText} - ${errorText}`);
       }
       const data = await res.json();
-      if (!data.summary) throw new Error("No summary returned from API");
+      if (!data.summary) throw new Error('No summary returned from API');
       // Cache the result
       const result = {
         summary: data.summary,
-        sources: data.sources || []
-      }
+        sources: data.sources || [],
+      };
       summaryCache.set(input.cacheKey, result);
       return result;
     }),
     saveSummary: fromPromise(async ({ input }: { input: AIContext }) => {
       if (!input.summary || !input.caseId) {
-        throw new Error("No summary or caseId to save.");
+        throw new Error('No summary or caseId to save.');
       }
-      const res = await fetch("/api/summary/save", {
-        method: "POST",
+      const res = await fetch('/api/summary/save', {
+        method: 'POST',
         body: JSON.stringify({ caseId: input.caseId, summary: input.summary }),
-        headers: { "Content-Type": "application/json" }
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`API request failed: ${res.statusText} - ${errorText}`);
       }
       return await res.json();
-    })
-  }
+    }),
+  },
 }).createMachine({
-  id: "aiGlobalSummary",
-  initial: "idle",
+  id: 'aiGlobalSummary',
+  initial: 'idle',
   context: {
-    summary: "",
-    error: "",
+    summary: '',
+    error: '',
     loading: false,
     saving: false,
-    caseId: "",
+    caseId: '',
     evidence: [],
-    userId: "",
-    model: "gemma3-legal:latest",
-    stream: "",
-    cacheKey: "",
-    sources: []
+    userId: '',
+    model: 'gemma3-legal:latest',
+    stream: '',
+    cacheKey: '',
+    sources: [],
   },
   states: {
     idle: {
       on: {
         SUMMARIZE: {
-          target: "summarizing",
-          actions: "setContext"
-        }
-      }
+          target: 'summarizing',
+          actions: 'setContext',
+        },
+      },
     },
     summarizing: {
       invoke: {
-        src: "summarizeEvidence",
+        src: 'summarizeEvidence',
         input: ({ context }) => context,
         onDone: {
-          target: "success",
-          actions: "setSuccess"
+          target: 'success',
+          actions: 'setSuccess',
         },
         onError: {
-          target: "failure",
-          actions: "setError"
-        }
-      }
+          target: 'failure',
+          actions: 'setError',
+        },
+      },
     },
     success: {
       on: {
         SUMMARIZE: {
-          target: "summarizing",
-          actions: "setContext"
+          target: 'summarizing',
+          actions: 'setContext',
         },
-        RESET: "idle",
+        RESET: 'idle',
         SAVE_SUMMARY: {
-          target: "saving",
-          actions: "setSaving"
-        }
-      }
+          target: 'saving',
+          actions: 'setSaving',
+        },
+      },
     },
     failure: {
       on: {
         SUMMARIZE: {
-          target: "summarizing",
-          actions: "setContext"
+          target: 'summarizing',
+          actions: 'setContext',
         },
-        RETRY: "summarizing",
-        RESET: "idle"
-      }
+        RETRY: 'summarizing',
+        RESET: 'idle',
+      },
     },
     saving: {
       invoke: {
-        src: "saveSummary",
+        src: 'saveSummary',
         input: ({ context }) => context,
         onDone: {
-          target: "success",
-          actions: "setSaveSuccess"
+          target: 'success',
+          actions: 'setSaveSuccess',
         },
         onError: {
-          target: "success",
-          actions: "setSaveError"
-        }
-      }
-    }
-  }
+          target: 'success',
+          actions: 'setSaveError',
+        },
+      },
+    },
+  },
 });
 // Utility: hash evidence array for cache key
 function hashEvidence(evidence: any[]): string {
@@ -226,7 +226,7 @@ function hashEvidence(evidence: any[]): string {
 // Create and export the actor
 export const aiGlobalActor = createActor(aiGlobalMachine);
 // Svelte store wrapper for reactivity
-export const aiGlobalStore = writable(aiGlobalActor.getSnapshot();
+export const aiGlobalStore = writable(aiGlobalActor.getSnapshot());
 // Subscribe to actor state changes
 aiGlobalActor.subscribe((snapshot) => {
   aiGlobalStore.set(snapshot);
@@ -235,28 +235,23 @@ aiGlobalActor.subscribe((snapshot) => {
 aiGlobalActor.start();
 // Export convenience functions
 export const aiGlobalActions = {
-  summarize: (,
-    caseId,: string
-    evidence: any[],
-    userId: string;
-    model: string = "gemma3-legal:latest";
-  ) => {
+  summarize: (caseId: string, evidence: any[], userId: string, model: string = 'gemma3-legal:latest') => {
     aiGlobalActor.send({
-      type: "SUMMARIZE",
+      type: 'SUMMARIZE',
       caseId,
       evidence,
       userId,
-      model
+      model,
     });
   },
   saveSummary: () => {
-    aiGlobalActor.send({ type: "SAVE_SUMMARY" });
+    aiGlobalActor.send({ type: 'SAVE_SUMMARY' });
   },
-  retry,: () => {
-    aiGlobalActor.send({ type: "RETRY" });
+  retry: () => {
+    aiGlobalActor.send({ type: 'RETRY' });
   },
-  reset,: () => {
-    aiGlobalActor.send({ type: "RESET" });
-  }
-}
+  reset: () => {
+    aiGlobalActor.send({ type: 'RESET' });
+  },
+};
 export default aiGlobalStore;

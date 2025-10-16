@@ -6,7 +6,7 @@
   import Card from '$lib/components/ui/enhanced-bits/Card.svelte'; // Corrected import
   import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
   import { submitWithProgress } from '$lib/api/submitWithProgress';
-  import { isAuthenticated, currentUser } from '$lib/stores/authStore';
+  import { isAuthenticated, currentUser } from '\/stores/auth.svelte';
   import { get } from 'svelte/store';
   import unsyncedUploads from '$lib/services/unsynced-uploads';
   import type { ComponentType } from 'svelte';
