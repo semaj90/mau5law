@@ -1,44 +1,49 @@
 // src/lib/server/auth.ts - Lucia v3 Authentication Setup for SvelteKit 2
-import { Lucia, TimeSpan } from 'lucia';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { dev } from '$app/environment';
-import { db } from '$lib/server/db';
-import { users, sessions } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { Argon2id } from 'oslo/password';
+import { lucia } from "lucia";
+import { sveltekit } from "lucia/middleware";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { pg } from "@lucia-auth/adapter-drizzle";
+import { Argon2id } from "oslo/password";
+import { eq } from "drizzle-orm";
+import { users } from "$lib/server/db/schema";
 import type { RequestEvent } from '@sveltejs/kit';
-// Create Drizzle adapter for Lucia v3
-const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
-// Initialize Lucia with proper configuration
-export const lucia = new Lucia(adapter, {
-  sessionExpiresIn: new TimeSpan(30, 'd'), // 30 days
-  sessionCookie: {
-    name: 'legal_ai_session',
-    expires: false, // session cookies have very long lifespan (2 years)
-    attributes: {
-      secure: !dev, // set `Secure` flag in HTTPS
-      sameSite: 'lax',
-    },
-  },
-  getUserAttributes: attributes => {
-    return {
-      email: attributes.email,
-      firstName: attributes.firstName,
-      lastName: attributes.lastName,
-      role: attributes.role,
-      isActive: attributes.isActive,
-      avatarUrl: attributes.avatarUrl,
-      name: attributes.name,
-    };
-  },
+import type { Session, User } from "lucia";
+import xstateIntegration from '$lib/services/xstate-integration';
+
+// Database connection with connection pooling for production
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
-// Type definitions for Lucia v3
+
+const db = drizzle(pool);
+
+export const auth = lucia({
+  adapter: pg(db),
+  env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
+  middleware: sveltekit(),
+  sessionCookie: {
+    expires: false,
+    attributes: {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      httpOnly: true,
+    }
+  }
+});
+
+export type Auth = typeof auth;
+
 declare module 'lucia' {
   interface Register {
-    Lucia: typeof lucia;
+    Lucia: typeof auth;
     DatabaseUserAttributes: DatabaseUserAttributes;
   }
 }
+
 interface DatabaseUserAttributes {
   email: string;
   firstName: string | null;
@@ -47,445 +52,424 @@ interface DatabaseUserAttributes {
   isActive: boolean;
   avatarUrl: string | null;
   name: string | null;
+  hashedPassword: string | null;
 }
-// Authentication utilities
+
+/**
+ * AuthService - Production-ready authentication with XState integration
+ * Integrates with Lucia v3, Drizzle ORM, PostgreSQL, and XState v5
+ */
 export class AuthService {
   private argon2id = new Argon2id();
+
   /**
-   * Register a new user with enhanced profile data
+   * Register a new user with validation and XState session management
    */
   async register(data: {
     email: string;
     password: string;
-    firstName?: string;
-    lastName?: string;
-    displayName?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    displayName?: string | null;
   }) {
-    // Check if user already exists
-    const existingUser = await db
-      .select()
-      .from(users)
-      .where(
-        eq(
-          users.email,
-          (
-            data as {
-              email?: any;
-              password?: any;
-              firstName?: any;
-              lastName?: any;
-              displayName?: any;
-              avatarUrl?: any;
-              legalSpecialties?: any;
-              preferences?: any;
-            }
-          ).email
-        )
-      )
-      .limit(1);
-    if (existingUser.length > 0) {
-      throw new Error('User already exists');
+    try {
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, data.email))
+        .limit(1);
+
+      if (existingUser.length > 0) {
+        throw new Error('User already exists');
+      }
+
+      const passwordHash = await this.argon2id.hash(data.password);
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          email: data.email,
+          hashedPassword: passwordHash,
+          firstName: data.firstName ?? null,
+          lastName: data.lastName ?? null,
+          name: data.displayName ?? `${data.firstName || ''} ${data.lastName || ''}`.trim() || null,
+          isActive: true,
+          role: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      // Wire to XState auth machine
+      xstateIntegration.sendEvent('auth-machine', {
+        type: 'USER_REGISTERED',
+        userId: newUser.id,
+        email: newUser.email,
+      });
+
+      return newUser;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      throw error;
     }
-    // Hash password
-    const passwordHash = await this.argon2id.hash(
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).password
-    );
-    // Create user
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        email: (
-          data as {
-            email?: any;
-            password?: any;
-            firstName?: any;
-            lastName?: any;
-            displayName?: any;
-            avatarUrl?: any;
-            legalSpecialties?: any;
-            preferences?: any;
-          }
-        ).email,
-        hashedPassword: passwordHash,
-        firstName:
-          (
-            data as {
-              email?: any;
-              password?: any;
-              firstName?: any;
-              lastName?: any;
-              displayName?: any;
-              avatarUrl?: any;
-              legalSpecialties?: any;
-              preferences?: any;
-            }
-          ).firstName || null,
-        lastName:
-          (
-            data as {
-              email?: any;
-              password?: any;
-              firstName?: any;
-              lastName?: any;
-              displayName?: any;
-              avatarUrl?: any;
-              legalSpecialties?: any;
-              preferences?: any;
-            }
-          ).lastName || null,
-        name:
-          (
-            data as {
-              email?: any;
-              password?: any;
-              firstName?: any;
-              lastName?: any;
-              displayName?: any;
-              avatarUrl?: any;
-              legalSpecialties?: any;
-              preferences?: any;
-            }
-          ).displayName ||
-          `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() ||
-          null,
-        isActive: true,
-      })
-      .returning();
-    return newUser;
   }
+
   /**
-   * Login user with email and password
-   */ async login(email: string, password: string) {
-    // Find user by email
-    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    if (!user || !user.hashedPassword) {
-      throw new Error('Invalid email or password');
+   * Login user with credentials and session creation
+   */
+  async login(email: string, password: string) {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email))
+        .limit(1);
+
+      if (!user || !user.hashedPassword) {
+        throw new Error('Invalid email or password');
+      }
+
+      if (!user.isActive) {
+        throw new Error('Account is deactivated');
+      }
+
+      const validPassword = await this.argon2id.verify(user.hashedPassword, password);
+      if (!validPassword) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Update last login
+      await db
+        .update(users)
+        .set({ updatedAt: new Date() })
+        .where(eq(users.id, user.id));
+
+      // Notify XState session machine
+      xstateIntegration.sendEvent('session-machine', {
+        type: 'LOGIN_SUCCESS',
+        userId: user.id,
+        email: user.email,
+      });
+
+      return user;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
     }
-    // Check if user is active
-    if (!user.isActive) {
-      throw new Error('Account is deactivated');
-    }
-    // Verify password
-    const validPassword = await this.argon2id.verify(user.hashedPassword, password);
-    if (!validPassword) {
-      throw new Error('Invalid email or password');
-    }
-    return user;
   }
-  /**
-   * Handle failed login attempts (simplified - no account locking)
-   */ private async handleFailedLogin(userId: string) {
-    console.log(`Failed login attempt for user: ${userId}`);
-    // TODO: Implement proper failed login tracking when schema supports it
-  }
+
   /**
    * Create session for user
-   */ async createSession(userId: string) {
-    const session = await lucia.createSession(userId, {});
-    return session;
+   */
+  async createSession(userId: string) {
+    try {
+      const session = await auth.createSession(userId, {});
+      return session;
+    } catch (error) {
+      console.error('Session creation failed:', error);
+      throw error;
+    }
   }
+
   /**
    * Validate session
-   */ async validateSession(sessionId: string) {
-    const result = await lucia.validateSession(sessionId);
-    return result;
+   */
+  async validateSession(sessionId: string) {
+    try {
+      const result = await auth.validateSession(sessionId);
+      return result;
+    } catch (error) {
+      console.error('Session validation failed:', error);
+      throw error;
+    }
   }
+
   /**
    * Invalidate session (logout)
    */
   async invalidateSession(sessionId: string) {
-    await lucia.invalidateSession(sessionId);
+    try {
+      await auth.invalidateSession(sessionId);
+      xstateIntegration.sendEvent('session-machine', {
+        type: 'LOGOUT',
+        sessionId,
+      });
+    } catch (error) {
+      console.error('Session invalidation failed:', error);
+      throw error;
+    }
   }
+
   /**
    * Invalidate all user sessions
    */
   async invalidateUserSessions(userId: string) {
-    await lucia.invalidateUserSessions(userId);
-  }
-  /**
-   * Logout user by invalidating session
-   */
-  async logout(sessionId?: string) {
-    if (sessionId) {
-      await this.invalidateSession(sessionId);
-    }
-  }
-  /**
-   * Request password reset (placeholder for email integration)
-   */ async requestPasswordReset(email: string) {
-    // Find user by email
-    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    if (!user) {
-      // Don't reveal if email exists or not for security
-      return { success: true };
-    }
-    // TODO: Implement email sending service
-    // For now, just log the reset request
-    console.log(`Password reset requested for user: ${email}`);
-    return { success: true };
-  }
-  /**
-   * Update user profile
-   */ async updateProfile(userId: string, data: Partial<any>) {
-    // Map camelCase input to snake_case database columns
-    const updateData: any = {};
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).firstName !== undefined
-    )
-      updateData.first_name = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).firstName;
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).lastName !== undefined
-    )
-      updateData.last_name = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).lastName;
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).displayName !== undefined
-    )
-      updateData.username = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).displayName;
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).avatarUrl !== undefined
-    )
-      updateData.avatar_url = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).avatarUrl;
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).legalSpecialties !== undefined
-    )
-      updateData.practice_areas = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).legalSpecialties;
-    if (
-      (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).preferences !== undefined
-    )
-      updateData.metadata = (
-        data as {
-          email?: any;
-          password?: any;
-          firstName?: any;
-          lastName?: any;
-          displayName?: any;
-          avatarUrl?: any;
-          legalSpecialties?: any;
-          preferences?: any;
-        }
-      ).preferences;
-    // Add timestamp
-    updateData.updated_at = new Date();
-    const [updatedUser] = await db.update(users).set(updateData).where(eq(users.id, userId)).returning();
-    return updatedUser;
-  }
-  /**
-   * Change user password
-   */ async changePassword(userId: string, currentPassword: string, newPassword: string) {
-    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-    if (!user || !user.hashed_password) {
-      throw new Error('User not found');
-    }
-    // Verify current password
-    const validPassword = await this.argon2id.verify(user.hashed_password, currentPassword);
-    if (!validPassword) {
-      throw new Error('Current password is incorrect');
-    }
-    // Hash new password
-    const newPasswordHash = await this.argon2id.hash(newPassword);
-    // Update password
-    await db
-      .update(users)
-      .set({
-        hashed_password: newPasswordHash,
-        updated_at: new Date(),
-      })
-      .where(eq(users.id, userId));
-    // Invalidate all existing sessions to force re-login
-    await this.invalidateUserSessions(userId);
-  }
-  /**
-   * Get case by ID (for RAG pages)
-   */ async getCaseById(caseId: string) {
     try {
-      // This would fetch from cases table in production
-      // For now, return mock data
-      return {
-        id: caseId,
-        title: `Case ${caseId}`,
-        description: 'Mock case description',
-        status: 'active',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      await auth.invalidateUserSessions(userId);
+    } catch (error) {
+      console.error('Invalidating user sessions failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update user profile with CRUD persistence
+   */
+  async updateProfile(userId: string, data: Partial<{
+    firstName: string | null;
+    lastName: string | null;
+    displayName: string | null;
+    avatarUrl: string | null;
+    legalSpecialties: string | null;
+    preferences: Record<string, any> | null;
+  }>) {
+    try {
+      const updateData: Record<string, any> = { updatedAt: new Date() };
+
+      if (data.firstName !== undefined) updateData.firstName = data.firstName;
+      if (data.lastName !== undefined) updateData.lastName = data.lastName;
+      if (data.displayName !== undefined) updateData.name = data.displayName;
+      if (data.avatarUrl !== undefined) updateData.avatarUrl = data.avatarUrl;
+      if (data.legalSpecialties !== undefined) updateData.practiceAreas = data.legalSpecialties;
+      if (data.preferences !== undefined) updateData.metadata = data.preferences;
+
+      const [updatedUser] = await db
+        .update(users)
+        .set(updateData)
+        .where(eq(users.id, userId))
+        .returning();
+
+      // Sync with XState AI assistant machine
+      xstateIntegration.sendEvent('ai-assistant-machine', {
+        type: 'PROFILE_UPDATED',
+        userId,
+        profile: updatedUser,
+      });
+
+      return updatedUser;
+    } catch (error) {
+      console.error('Profile update failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Change user password with session invalidation
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1);
+
+      if (!user || !user.hashedPassword) {
+        throw new Error('User not found');
+      }
+
+      const validPassword = await this.argon2id.verify(user.hashedPassword, currentPassword);
+      if (!validPassword) {
+        throw new Error('Current password is incorrect');
+      }
+
+      const newPasswordHash = await this.argon2id.hash(newPassword);
+
+      await db
+        .update(users)
+        .set({
+          hashedPassword: newPasswordHash,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+
+      // Force re-login by invalidating all sessions
+      await this.invalidateUserSessions(userId);
+
+      xstateIntegration.sendEvent('auth-machine', {
+        type: 'PASSWORD_CHANGED',
+        userId,
+      });
+    } catch (error) {
+      console.error('Password change failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get case by ID via Go microservice
+   */
+  async getCaseById(caseId: string) {
+    try {
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}`, {
+        headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Failed to get case by ID:', error);
       return null;
     }
   }
+
   /**
-   * Get documents for a case
-   */ async getCaseDocuments(caseId: string) {
+   * Get documents for a case via Go microservice
+   */
+  async getCaseDocuments(caseId: string) {
     try {
-      // This would fetch from documents table in production
-      // For now, return mock data
-      return [
+      const response = await fetch(
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}/documents`,
         {
-          id: `doc_${caseId}_1`,
-          title: 'Sample Document 1',
-          type: 'pdf',
-          uploaded_at: new Date(),
-          processed: true,
-        },
-        {
-          id: `doc_${caseId}_2`,
-          title: 'Sample Document 2',
-          type: 'docx',
-          uploaded_at: new Date(),
-          processed: true,
-        },
-      ];
+          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+        }
+      );
+
+      if (!response.ok) {
+        return [];
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Failed to get case documents:', error);
       return [];
     }
   }
+
   /**
    * Get total number of cases
-   */ async getTotalCases(): Promise<number> {
+   */
+  async getTotalCases(): Promise<number> {
     try {
-      // This would count from cases table in production
-      return 42; // Mock data
+      const response = await fetch(
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/count`,
+        {
+          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+        }
+      );
+
+      if (!response.ok) {
+        return 0;
+      }
+
+      const data = await response.json();
+      return data.count || 0;
     } catch (error) {
       console.error('Failed to get total cases:', error);
       return 0;
     }
   }
+
   /**
    * Get total number of documents
-   */ async getTotalDocuments(): Promise<number> {
+   */
+  async getTotalDocuments(): Promise<number> {
+    try {
+      const response = await fetch(
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/documents/count`,
+        {
+          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+        }
+      );
+
+      if (!response.ok) {
+        return 0;
+      }
+
+      const data = await response.json();
+      return data.count || 0;
+    } catch (error) {
+      console.error('Failed to get total documents:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Get sample cases for demo page
+   */
+  async getSampleCases(limit: number = 5) {
+    try {
+      const response = await fetch(
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases?limit=${limit}`,
+        {
+          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+        }
+      );
+
+      if (!response.ok) {
+        return [];
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to get sample cases:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Health check for auth service
+   */
+  async health() {
+    try {
+      await pool.query('SELECT 1');
+      return { status: 'healthy', timestamp: new Date() };
+    } catch (error) {
+      console.error('Auth service health check failed:', error);
+      return { status: 'unhealthy', error: String(error) };
+    }
+  }
+}
+
+export const authService = new AuthService();
+
+/**
+ * Helper function to get user from request event with session validation
+ */
+export async function getUser(event: RequestEvent): Promise<{ user: User | null; session: Session | null }> {
+  try {
+    const sessionId = event.cookies.get(auth.sessionCookieName);
+    if (!sessionId) {
+      return { user: null, session: null };
+    }
+
+    const { user, session } = await auth.validateSession(sessionId);
+
+    if (session && session.fresh) {
+      const sessionCookie = auth.createSessionCookie(session.id);
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        ...sessionCookie.attributes,
+        path: '/',
+      });
+    }
+
+    if (!session) {
+      const sessionCookie = auth.createBlankSessionCookie();
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        ...sessionCookie.attributes,
+        path: '/',
+      });
+    }
+
+    return { user, session };
+  } catch (error) {
+    console.error('User retrieval failed:', error);
+    return { user: null, session: null };
+  }
+}
+
+/**
+ * Require authenticated user middleware
+ */
+export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
+  const { user, session } = await getUser(event);
+  if (!user || !session) {
+    throw new Error('Authentication required');
+  }
+  return { user, session };
+}
     try {
       // This would count from documents table in production
       return 156; // Mock data
@@ -533,6 +517,22 @@ export const authService = new AuthService();
   }
   if (!(result as { session?: any }).session) {
     const sessionCookie = lucia.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      ...sessionCookie.attributes,
+      path: '/',
+    });
+  }
+  return result;
+}
+/**
+ * Require authenticated user middleware
+ */ export async function requireAuth(event: RequestEvent): Promise<any> {
+  const { user, session } = await getUser(event);
+  if (!user || !session) {
+    throw new Error('Authentication required');
+  }
+  return { user, session };
+}
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
       path: '/',

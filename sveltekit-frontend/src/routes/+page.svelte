@@ -1,9 +1,10 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui'; // Import Button from bits-ui for consistency, though not directly used for <a> tags here
-  import { derived } from 'svelte/store';
+  import { derived, writable } from 'svelte/store';
   import { recommendations, partialRecommendations, engineState, errorMessage, runQuery  } from '$lib/stores/unified';
   import { onMount } from 'svelte';
+  import { createFileUploader } from "bits-ui";
 
   // Svelte 5 runes for reactive state
   let loading = $state(true);
@@ -27,16 +28,18 @@
     autotag: { status: 'offline', healthy: false, queueDepth: 0 },
   });
 
-  let userQuery = '';
+  let userQuery = $state('');
 
-  const displayRecommendations = derived(
-    [recommendations, partialRecommendations, engineState],
-    ([$recommendations, $partialRecommendations, $engineState]) => {
-      // show streaming partials while processing, otherwise final recommendations
-      if ($engineState === 'processing' && $partialRecommendations.length) return $partialRecommendations;
-      return $recommendations.length ? $recommendations : $partialRecommendations;
-    }
-  );
+  // Use $derived to compute display recommendations reactively in Svelte 5
+  let displayRecommendations = $derived.by(() => {
+    const recs = $recommendations || [];
+    const partial = $partialRecommendations || [];
+    const state = $engineState;
+
+    // show streaming partials while processing, otherwise final recommendations
+    if (state === 'processing' && partial.length) return partial;
+    return recs.length ? recs : partial;
+  });
 
   // Check system health on mount
   $effect(() => {
@@ -165,6 +168,12 @@
     const s = String(str || '');
     return s.replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
   }
+
+  const uploader = createFileUploader("/api/upload");
+
+	uploader.on("success", (res) => {
+		console.log("Uploaded:", res.url);
+	});
 </script>
 
 <svelte:head>
@@ -421,8 +430,8 @@
   <div class="nes-container is-dark with-title ai-query-section-custom">
     <p class="title">🧠 AI Query Interface</p>
     <div class="query-box">
-      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} on:keydown={onKey} />
-      <button on:click={handleSubmit}>Run</button>
+      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} onkeydown={onKey} />
+      <button onclick={handleSubmit}>Run</button>
     </div>
 
     {#if $engineState === 'processing'}
@@ -437,9 +446,9 @@
       <div style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
     {/if}
 
-    {#if $displayRecommendations.length > 0}
+    {#if displayRecommendations && displayRecommendations.length > 0}
       <div class="recommendation-cards" aria-live="polite">
-        {#each $displayRecommendations as rec (rec.id)}
+        {#each displayRecommendations as rec (rec.id)}
           <div class="card {rec.type === 'suggestion' ? 'dym' : ($engineState === 'processing' ? 'streaming' : '')}">
             <div>
               <strong>{(rec.type || '').toUpperCase()}</strong>
@@ -466,6 +475,14 @@
       </div>
     {/if}
   </div>
+
+  <!-- File Uploader Section -->
+  <div class="p-6 bg-white rounded-2xl shadow">
+	<input type="file" multiple on:change={(e) => uploader.addFiles(e.target.files)} />
+	{#each uploader.files as file (file.id)}
+		<p class="text-sm mt-2">{file.name} – {file.progress}%</p>
+	{/each}
+</div>
 </div>
 
 <style>

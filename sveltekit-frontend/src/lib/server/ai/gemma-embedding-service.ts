@@ -7,7 +7,7 @@
  * - Streaming embeddings from Ollama embeddinggemma:latest
  * - Redis caching with TTL for cost optimization
  * - Batch processing for multiple documents
- * - Dimension optimization (768D for legal documents)
+ * - Dimension optimization (384D for embeddinggemma:latest)
  * - Error handling and fallback strategies
  *
  * @author Legal AI Platform Team
@@ -366,7 +366,7 @@ export async function createGemmaEmbeddingService(
 export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = {
   ollamaBaseUrl: 'http://localhost:11434',
   model: 'embeddinggemma:latest',
-  dimensions: 768,
+  dimensions: 384,  // embeddinggemma:latest outputs 384 dimensions
   timeout: 30000,
   cacheTtl: 86400, // 24 hours
   batchSize: 10

@@ -13,28 +13,29 @@
   		padding = 'md',
   		class: className = '',
   		children,
-  		...restProp
+  		...restProps
   	}: Props = $props();
   	const baseClasses = 'rounded-lg border bg-card text-card-foreground shadow-sm transition-all';
   	const variantClasses = {
   		default: '',
   		interactive: 'hover:shadow-md hover:-translate-y-0.5 cursor-pointer',
-  		outline: 'border-2 bg-transparent';
-  	}
+  		outline: 'border-2 bg-transparent',
+  	};
   	const paddingClasses = {
   		none: '',
   		sm: 'p-3',
   		md: 'p-4',
-  		lg: 'p-6';
-  	}
-  	let cardClass = $derived(cn(
-  		baseClasses,
-  		variantClasses[variant],
-  		paddingClasses[padding], className));
+  		lg: 'p-6',
+  	};
+  	let cardClass = $derived(
+  		cn(baseClasses, variantClasses[variant], paddingClasses[padding], className)
+  	);
 </script>
 
 <div class={cardClass} {...restProps}>
-  <slot />
+	{#if children}
+		{@render children()}
+	{/if}
 </div>
 
 <style>
