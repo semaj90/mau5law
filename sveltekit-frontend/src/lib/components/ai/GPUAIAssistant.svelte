@@ -3,8 +3,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { gpuAIService } from '$lib/services/gpu-ai-service';
-  import { evidenceStore } from '$lib/stores/evidence';
-  import { showSuccess, showError } from '$lib/stores/alerts';
+  import { evidenceStore  } from '$lib/stores/unified';
+  import { showSuccess, showError  } from '$lib/stores/unified';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
   import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
   interface ChatMessage {

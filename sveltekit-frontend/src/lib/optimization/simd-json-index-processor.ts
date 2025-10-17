@@ -5,7 +5,7 @@
  */
 import { createActor } from "xstate";
 import type { RAGDocument, RAGSearchResult, TextChunk } from '$lib/types/rag';
-import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store';
+import { enhancedRAGStore  } from '$lib/stores/unified';
 // SIMD JSON Parser using structured cloning for performance
 export interface SIMDJSONParser {
   parse: (buffer: ArrayBuffer) => Promise<any>;

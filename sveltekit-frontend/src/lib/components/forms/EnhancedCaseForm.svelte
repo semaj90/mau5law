@@ -4,7 +4,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import type { User } from "$lib/types/user";
   import type { Case } from "$lib/types/index";
   let {

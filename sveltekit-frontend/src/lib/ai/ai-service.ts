@@ -1,4 +1,4 @@
-import { aiAssistant, type AIMessage, type CaseAIContext } from '$lib/stores/ai-assistant';
+import { aiAssistant, type AIMessage, type CaseAIContext  } from '$lib/stores/unified';
 import { get } from 'svelte/store';
 
 export interface SendToAIOptions {

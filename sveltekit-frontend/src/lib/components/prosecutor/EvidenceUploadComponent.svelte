@@ -13,7 +13,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
-  import { websocketStore } from '$lib/stores/websocket-store.svelte';
+  import { websocketStore  } from '$lib/stores/unified';
   import { onMount, onDestroy } from 'svelte';
   import {
     Upload,

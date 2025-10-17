@@ -19,7 +19,7 @@
     Upload,
   } from 'lucide-svelte';
   import { slide } from 'svelte/transition';
-  import { editorState, report, reportActions, reportUI } from '$lib/stores/report';
+  import { editorState, report, reportActions, reportUI  } from '$lib/stores/unified';
 
   // Actions
   const handleSave = () => {

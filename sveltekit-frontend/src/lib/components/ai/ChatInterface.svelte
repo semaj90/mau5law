@@ -5,15 +5,14 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from "$lib/components/ui/textarea/index";
-  import {
-    aiPersonality,
+  import { aiPersonality,
     chatActions,
     currentConversation,
     isLoading,
     isTyping,
     showProactivePrompt,
-  } from "$lib/stores/chat.svelte";
-  import { notifications } from "$lib/stores/notification";
+   } from '$lib/stores/unified";
+  import { notifications  } from '$lib/stores/unified";
   import type { ApiResponse, ChatRequest, ChatResponse } from "$lib/types/api";
   import { Bot, Loader2, Send } from "lucide-svelte";
   import { onDestroy, onMount, tick } from "svelte";

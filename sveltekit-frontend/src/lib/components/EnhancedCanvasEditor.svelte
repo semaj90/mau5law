@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from "svelte";
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
-  import { evidenceStore } from "$lib/stores/evidenceStore";
+  import { evidenceStore  } from '$lib/stores/unified";
   import * as fabric from "fabric";
   type TEvent = any;
   import Fuse from "fuse.js";

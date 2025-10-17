@@ -3,7 +3,7 @@
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
   import { browser } from '$app/environment';
-  import { userAnalyticsStore } from '$lib/stores/analytics';
+  import { userAnalyticsStore  } from '$lib/stores/unified';
   import { lokiButtonCache } from '$lib/services/loki-cache';
   import { searchableButtonIndex } from '$lib/services/fuse-search';
   import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';

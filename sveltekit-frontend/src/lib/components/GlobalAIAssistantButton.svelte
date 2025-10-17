@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte'; // Adjusted import path
-  import { user } from '$lib/stores/user';
+  import { aiAssistant  } from '$lib/stores/unified'; // Adjusted import path
+  import { user  } from '$lib/stores/unified';
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
 

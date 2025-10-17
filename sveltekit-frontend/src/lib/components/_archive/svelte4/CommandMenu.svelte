@@ -4,7 +4,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { goto } from "$app/navigation";
-  import { citationStore } from "$lib/stores/citations";
+  import { citationStore  } from '$lib/stores/unified";
   // // Replaced melt with bits-ui components // Removed melt dependency
   import {
     Calendar,

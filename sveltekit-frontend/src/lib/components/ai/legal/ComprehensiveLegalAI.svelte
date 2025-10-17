@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { enhancedUploadStore } from '$lib/stores/enhanced-upload-machine';
+  import { enhancedUploadStore  } from '$lib/stores/unified';
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';

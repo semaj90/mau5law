@@ -1,7 +1,7 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import { Activity, Camera, CheckCircle, Clock, FileText, Plus, RefreshCw, Search, TrendingUp } from 'lucide-svelte';
   import { onMount } from 'svelte';
   // Data stores for all entities

@@ -5,8 +5,8 @@
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
   import { createActor } from 'xstate';
-  import { aiProcessingMachine, aiTaskCreators, createAITask } from '$lib/stores/machines';
-  import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store';
+  import { aiProcessingMachine, aiTaskCreators, createAITask  } from '$lib/stores/unified';
+  import { enhancedRAGStore  } from '$lib/stores/unified';
   import { debounce } from 'lodash-es';
   // Props using Svelte 5 $props()
   let {

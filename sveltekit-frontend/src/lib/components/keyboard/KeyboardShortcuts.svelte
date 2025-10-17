@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import Button from "$lib/components/ui/button/Button.svelte";
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
     Command,

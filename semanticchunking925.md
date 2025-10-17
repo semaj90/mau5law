@@ -117,7 +117,7 @@ Creates understanding of your project's purpose and structure:
 ## The Semantic Search Engine
 
 ### Vector Embeddings with Gemma
-Each chunk gets converted to a 768-dimensional vector using `embeddinggemma:latest`:
+Each chunk gets converted to a 384-dimensional vector using `embeddinggemma:latest`:
 
 ```javascript
 const embedding = await generateEmbedding(`

@@ -5,7 +5,7 @@
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import Button from '$lib/components/ui/enhanced-bits';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
-  import { evidenceStore } from "$lib/stores/evidenceStore";
+  import { evidenceStore  } from '$lib/stores/unified";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
   import {
     Activity,

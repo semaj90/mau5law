@@ -13,7 +13,7 @@
   import { onMount, tick } from 'svelte';
   import type { Case, Evidence, Report, CanvasState } from '$lib/data/types';
   import type { ChatMessage } from '$lib/types/chat';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import { aiService } from '$lib/services/aiService';
   // Import client-safe vector search - use API endpoints instead
   // import { vectorService } from '$lib/server/vector/EnhancedVectorService'

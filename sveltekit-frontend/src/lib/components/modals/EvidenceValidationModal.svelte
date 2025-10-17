@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
     Tag,
     XCircle,
   } from "lucide-svelte";
-    import type { Evidence } from '$lib/stores/evidence-store';
+    import type { Evidence  } from '$lib/stores/unified';
   let validationChoice = $state<"approve" | "reject" | null >(null);
   let feedback = $state<string >("");
   let corrections = $state({

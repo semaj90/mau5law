@@ -5,7 +5,7 @@
   // Removed direct import of ragSyncAgent as its lifecycle will be managed by xstateIntegration
   // import { ragSyncAgent } from '$lib/agents/rag-sync-agent';
   import GlobalAIAssistantButton from '$lib/components/GlobalAIAssistantButton.svelte';
-  import loadSession from '$lib/stores/user';
+  import { loadSession } from '$lib/stores/unified';
   import 'nes.css/css/nes.min.css';
   // Assuming bits.css is available or you're using UnoCSS for Bits-UI components
   // If Bits-UI has a global CSS file, include it

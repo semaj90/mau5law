@@ -4,14 +4,13 @@
  */
 import { onMount, onDestroy } from 'svelte';
 import { get } from 'svelte/store';
-import {
-  redisOrchestratorClient,
+import { redisOrchestratorClient,
   redisStats,
   isRedisHealthy,
   queuedTasks,
   type RedisOptimizationResult,
   type QueuedTask
-} from '$lib/stores/redis-orchestrator-store';
+ } from '$lib/stores/unified';
 /**
  * Hook for Redis-optimized AI queries
  */

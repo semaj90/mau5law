@@ -4,7 +4,7 @@
   import { z } from 'zod';
   // infer a concrete TS type from the Zod schema to avoid namespace collisions
   type CaseFormType = z.infer<typeof caseFormSchema>;
-  import { getAuthContext } from '$lib/stores/auth';
+  import { getAuthContext  } from '$lib/stores/unified';
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
 

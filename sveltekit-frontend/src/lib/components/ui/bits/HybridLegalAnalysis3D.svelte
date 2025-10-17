@@ -8,7 +8,7 @@ https://svelte.dev/e/expected_token -->
 </script>
   import { onMount, tick } from "svelte";
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import {
     NESYoRHaHybrid3D,

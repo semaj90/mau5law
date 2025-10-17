@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   let { message }: Props = $props();
   import Button from '$lib/components/ui/enhanced-bits';
   import { chatActions } from '\/stores/chat.svelte';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from 'lucide-svelte';
   import '../chat/chat-message.css';
   // Type-safe fallback for message.role

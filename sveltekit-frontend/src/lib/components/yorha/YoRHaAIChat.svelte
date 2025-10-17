@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { aiChatStore } from '$lib/stores/ai-chat-store';
+  import { aiChatStore  } from '$lib/stores/unified';
 
   // Stores / state
   const messages = writable<any[]>([]);

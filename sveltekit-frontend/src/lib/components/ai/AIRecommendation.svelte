@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { aiHistory } from '$lib/stores/aiHistoryStore';
+  import { aiHistory  } from '$lib/stores/unified';
   import Fuse from 'fuse.js';
   let recommendations = $state<any[]>([]);
   let fuse: Fuse<any>;

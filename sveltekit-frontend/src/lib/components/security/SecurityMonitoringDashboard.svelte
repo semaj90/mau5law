@@ -5,7 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
   import {
     Activity,

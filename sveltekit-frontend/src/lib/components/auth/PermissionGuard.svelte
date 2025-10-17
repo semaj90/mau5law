@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // PermissionGuard component - Permission-based access control - Svelte 5 compatible
-  import { auth } from '$lib/stores/auth-store.svelte';
+  import { auth  } from '$lib/stores/unified';
   interface Props {
     children?: import('svelte').Snippet;
     permissions: string | string[];

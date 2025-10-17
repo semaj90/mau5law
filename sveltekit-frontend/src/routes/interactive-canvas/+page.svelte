@@ -15,8 +15,8 @@ https://svelte.dev/e/js_parse_error -->
   	import NierHeader from '$lib/components/NierHeader.svelte';
   	import Sidebar from "$lib/components/Sidebar.svelte";
   	import Toolbar from "$lib/components/Toolbar.svelte";
-  	import { sidebarStore } from "$lib/stores/canvas";
-  	import { loki } from "$lib/stores/lokiStore";
+  	import { sidebarStore  } from '$lib/stores/unified";
+  	import { loki  } from '$lib/stores/unified";
   	import { onDestroy, onMount } from 'svelte';
   	import type { PageData } from "./$types";
   	// Case ID - extract from data or generate

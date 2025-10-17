@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits';
   import { createFormStore, type FormOptions } from '$lib/stores/form';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   interface Props {
     options?: FormOption;
     class?: string;

@@ -11,7 +11,7 @@
 // Svelte 5 runes are auto-imported
 <script lang="ts">
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
-  import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
+  import { legalCaseStore  } from '$lib/stores/unified';
   import type { LegalCase } from '$lib/types/legal';
   interface Props {
     open: boolean;

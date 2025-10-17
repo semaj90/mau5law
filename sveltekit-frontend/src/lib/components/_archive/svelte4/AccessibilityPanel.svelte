@@ -8,7 +8,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import {
     AlertTriangle,
     CheckCircle,

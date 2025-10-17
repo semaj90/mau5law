@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { getFeedbackStore } from '$lib/stores/feedback-store.svelte';
+  import { getFeedbackStore  } from '$lib/stores/unified';
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
   // Props
   let { interactionType = $bindable(),

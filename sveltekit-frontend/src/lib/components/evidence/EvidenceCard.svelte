@@ -38,7 +38,7 @@ https: //svelte.dev/e/block_unexpected_character -->
   import { quintOut } from "svelte/easing";
   import { fly, scale } from "svelte/transition";
   // import { createTooltip, melt } from '@melt-ui/svelte'; // Using bits-ui patterns
-  import type { Evidence } from '$lib/stores/report';
+  import type { Evidence  } from '$lib/stores/unified';
   type ExtendedEvidence = Evidence & { evidenceType?: string;
     fileSize?: number;
     createdAt?: Date | string;

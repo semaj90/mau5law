@@ -16,8 +16,8 @@ https://svelte.dev/e/js_parse_error -->
   // UI components (Svelte 5 + melt v0.39.0 compatible)
   import Button from '$lib/components/ui/Button.svelte';
   // Remove unused Card imports
-  import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
-  import { legalCaseStore, legalCaseActions } from '$lib/stores/legal-case';
+  import { aiGlobalStore, aiGlobalActions  } from '$lib/stores/unified';
+  import { legalCaseStore, legalCaseActions  } from '$lib/stores/unified';
   // Since legalCaseStore uses $state, we access it directly without $ prefix
   // aiGlobalStore is a writable store, so we use $ prefix
   // Type definition for AI store context

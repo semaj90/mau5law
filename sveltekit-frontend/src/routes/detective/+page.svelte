@@ -3,7 +3,7 @@
   // Minimal hub that links to evidence board, evidence canvas, cases, and chat
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
-  import { getAuthContext } from '$lib/stores/auth';
+  import { getAuthContext  } from '$lib/stores/unified';
   import { onMount } from 'svelte';
   const auth = getAuthContext();
   let currentView = $state('board'); // 'board' | 'create-case' | 'auth-demo'

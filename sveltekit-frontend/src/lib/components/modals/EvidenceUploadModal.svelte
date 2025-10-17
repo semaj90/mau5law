@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
-  import { uploadActions, uploadModal } from '$lib/stores/evidence-store';
+  import { uploadActions, uploadModal  } from '$lib/stores/unified';
   import { formatFileSize } from '$lib/utils/file-utils';
   import { AlertCircle, CheckCircle, File, Loader2, Upload, X } from 'lucide-svelte';
   let fileInput: HTMLInputElement;

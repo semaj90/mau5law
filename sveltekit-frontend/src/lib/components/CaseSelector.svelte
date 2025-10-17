@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { user } from "$lib/stores/user";
+  import { user  } from '$lib/stores/unified";
   import Button from '$lib/components/ui/enhanced-bits';
   import Modal from "$lib/components/ui/Modal.svelte";
   let cases = $state([
