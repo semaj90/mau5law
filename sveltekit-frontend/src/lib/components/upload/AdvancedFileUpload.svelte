@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/Button.svelte';
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
     AlertTriangle,

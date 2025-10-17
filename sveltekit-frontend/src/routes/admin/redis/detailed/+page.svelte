@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
+  import { redisOrchestratorClient  } from '$lib/stores/unified';
   let endpointMetrics = $state([]);
   let isLoading = $state(true);
   const endpoints = [

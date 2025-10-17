@@ -16,8 +16,8 @@
 	import { dndzone } from 'svelte-dnd-action';
 
 	// App stores & AI
-	import { evidenceStore } from '$lib/stores/evidence-unified';
-	import { aiAssistant } from '$lib/stores/ai-assistant';
+	import { evidenceStore  } from '$lib/stores/unified';
+	import { aiAssistant  } from '$lib/stores/unified';
 	import AIAssistantPanel from '../ai/AIAssistantPanel.svelte';
 	import EvidenceCard from './EvidenceCard.svelte';
 	import UploadZone from './UploadZone.svelte';

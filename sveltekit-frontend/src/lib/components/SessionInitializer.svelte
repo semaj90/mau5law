@@ -4,7 +4,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
 -->
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { userDataStore } from '$lib/stores/userDataStore.svelte';
+  import { userDataStore  } from '$lib/stores/unified';
 
   // Props from the layout with session data from server
   interface Props {

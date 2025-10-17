@@ -10,14 +10,13 @@
     useRedisTaskQueue,
     useRedisInit
   } from '$lib/hooks/useRedisOrchestrator';
-  import {
-    redisStats,
+  import { redisStats,
     isRedisHealthy,
     averageProcessingTime,
     totalQueuedTasks,
     memoryPressure,
     processingTimes
-  } from '$lib/stores/redis-orchestrator-store';
+   } from '$lib/stores/unified';
   // Initialize hooks
   const { isInitialized, initError, initialize } = useRedisInit({ autoStart: true });
   const { healthData, isLoading, stats, isHealthy, refresh, clearCache } = useRedisMonitoring();

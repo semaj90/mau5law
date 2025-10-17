@@ -6,7 +6,7 @@
   import { createMachine, assign } from 'xstate';
   import Button from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils/cn';
-  import { chat } from '$lib/stores/chat';
+  import { chat  } from '$lib/stores/unified';
   import type { ChatMessage, ChatSession } from '$lib/types/chat';
   // Local state
   let messageInput: string = '';

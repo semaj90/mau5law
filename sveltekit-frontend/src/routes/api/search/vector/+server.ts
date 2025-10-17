@@ -8,6 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { semanticSearchService, type SemanticSearchOptions } from '$lib/services/semantic-search.js';
 import { performanceOptimizer } from '$lib/services/performance-optimizer.js';
 import { securityService } from '$lib/services/security.js';
+import { vectorSearchCache } from '$lib/server/optimize/query-cache';
 
 // Helper function to ensure the error is an Error object
 function ensureError(err: unknown): Error {
@@ -218,9 +219,26 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         },
       },
     };
-    // Perform enhanced semantic search with AI-powered query understanding
-    const searchResult: SemanticSearchResult = await semanticSearchService.search(query.trim(), searchOptions);
+
+    // Use vector search cache for improved performance (30 min TTL)
+    // Note: This wraps semanticSearchService which generates embeddings internally
+    const { data: searchResult, cacheHit } = await vectorSearchCache.getOrQuery(
+      {
+        query: query.trim(),
+        options: searchOptions,
+        type: 'vector-search',
+      },
+      async () => {
+        return await semanticSearchService.search(query.trim(), searchOptions);
+      },
+      { ttl: 1800, namespace: 'vector-search' }
+    );
+
     const responseTime = Date.now() - startTime;
+
+    console.log(
+      `🔍 Vector search ${cacheHit.hit ? 'HIT' : 'MISS'} (${cacheHit.source}) - Latency: ${cacheHit.latency.toFixed(2)}ms`
+    );
 
     // Ensure analytics object exists before updating
     if (!searchResult.analytics) {
@@ -233,10 +251,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       };
     }
 
-    // Update analytics with actual response time
+    // Update analytics with actual response time and cache status
     searchResult.analytics.processingTime = responseTime;
+    searchResult.analytics.cacheHit = cacheHit.hit; // Update with our cache status
+
     // Log successful search with detailed metrics
-    performanceOptimizer.recordQuery(query, responseTime, searchResult.analytics.cacheHit);
+    performanceOptimizer.recordQuery(query, responseTime, cacheHit.hit);
     securityService.logAuditEvent({
       action: 'semantic_search_success',
       resource: '/api/search/vector',

@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { io, type Socket } from 'socket.io-client';
-  import { uploadStore } from '$lib/stores/upload-machine';
+  import { uploadStore  } from '$lib/stores/unified';
   import { writable } from 'svelte/store';
   // Props
   interface Props {

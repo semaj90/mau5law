@@ -8,7 +8,7 @@ https://svelte.dev/e/attribute_duplicate -->
     errorHandler,
     type UserFriendlyError,
   } from "$lib/stores/error-handler";
-  import { notifications } from "$lib/stores/notification";
+  import { notifications  } from '$lib/stores/unified";
   import {
     AlertCircle,
     AlertTriangle,

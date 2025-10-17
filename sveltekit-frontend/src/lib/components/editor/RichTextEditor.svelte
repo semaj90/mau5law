@@ -3,7 +3,7 @@
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
   import Editor from '@tinymce/tinymce-svelte';
-  import { report, reportActions, editorState } from '$lib/stores/report';
+  import { report, reportActions, editorState  } from '$lib/stores/unified';
   import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
   import { browser } from '$app/environment';
   interface Props {

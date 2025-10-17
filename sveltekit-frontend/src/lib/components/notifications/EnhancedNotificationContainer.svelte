@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 mcp<script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications, type Notification } from "$lib/stores/notification";
+  import { notifications, type Notification  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
   import { onMount  } from "svelte";

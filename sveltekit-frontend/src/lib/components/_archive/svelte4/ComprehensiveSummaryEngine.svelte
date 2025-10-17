@@ -10,7 +10,7 @@ https://svelte.dev/e/props_duplicate -->
   import { useMachine } from '@xstate/svelte';
   import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
   import { fuzzySearch } from '$lib/utils/fuzzy';
-  import { enhancedLokiStore } from '$lib/stores/enhancedLokiStore';
+  import { enhancedLokiStore  } from '$lib/stores/unified';
   import {
     Brain,
     Cpu,

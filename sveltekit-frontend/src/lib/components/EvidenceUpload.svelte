@@ -6,8 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024  }: { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 : unknown } = $props();
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import {
-    evidenceService,
+  import { evidenceService,
     currentState,
     isProcessing,
     processingProgress,
@@ -15,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     retryProcessing,
     resetProcessor,
     type EvidenceUploadProps
-  } from '$lib/stores/evidence-workflow';
+   } from '$lib/stores/unified';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Progress } from '$lib/components/ui/progress';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';

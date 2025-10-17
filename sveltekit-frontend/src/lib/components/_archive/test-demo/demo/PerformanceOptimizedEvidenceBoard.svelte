@@ -4,14 +4,14 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { createRedisBackedState, getCacheStats } from '$lib/stores/redis-component-store';
+  import { createRedisBackedState, getCacheStats  } from '$lib/stores/unified';
   import {
     componentLoader,
     loadLegalComponent,
     preloadEssentialComponents,
   } from '$lib/components/ui/enhanced-bits/index.optimized';
-  import { componentMetadataCache } from '$lib/stores/component-metadata-cache';
-  import { evidenceAnalysisCacheService, getCachedAnalysis, cacheAnalysis } from '$lib/stores/evidence-cache-service';
+  import { componentMetadataCache  } from '$lib/stores/unified';
+  import { evidenceAnalysisCacheService, getCachedAnalysis, cacheAnalysis  } from '$lib/stores/unified';
   // Performance-optimized state with Redis backing
   let evidenceList = createRedisBackedState('evidence:board:list', [], 3600);
   let searchQuery = createRedisBackedState('evidence:board:search', '', 300);

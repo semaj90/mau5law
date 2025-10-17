@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   // User analytics and tracking
-  import { userAnalyticsStore } from '$lib/stores/analytics';
+  import { userAnalyticsStore  } from '$lib/stores/unified';
   import { lokiButtonCache } from '$lib/services/loki-cache';
   import { searchableButtonIndex } from '$lib/services/fuse-search';
   // JSON SSR rendering support

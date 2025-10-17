@@ -5,7 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { auth } from '$lib/stores/auth-store';
+  import { auth  } from '$lib/stores/unified';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';

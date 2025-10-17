@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state';
   import Avatar from '$lib/components/Avatar.svelte';
-  import { avatarStore } from '$lib/stores/avatarStore';
+  import { avatarStore  } from '$lib/stores/unified';
   import { onMount } from 'svelte';
   import DocumentUpload from '$lib/components/rag/DocumentUpload.svelte';
 

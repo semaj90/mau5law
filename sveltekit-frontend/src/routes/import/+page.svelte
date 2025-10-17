@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import { browser } from '$app/environment';
   import { UiTooltip as Tooltip } from '$lib/components/ui';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import { AlertCircle, CheckCircle, Database, Download, Eye, FileText, Upload, Users, X } from 'lucide-svelte';
   import { onMount } from 'svelte';
   // Import state

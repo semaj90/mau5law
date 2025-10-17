@@ -2,10 +2,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { draggable } from '$lib/actions/draggable';
-  import { evidenceStore } from '$lib/stores/evidence';
+  import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-  import { showSuccess, showError } from '$lib/stores/alerts';
+  import { showSuccess, showError  } from '$lib/stores/unified';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
     id: string;

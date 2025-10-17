@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import { page } from '$app/state';
   import Button from '$lib/components/ui/button/Button.svelte';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
-  import { notifications } from '$lib/stores/notification';
+  import { notifications  } from '$lib/stores/unified';
   import {
     AlertCircle,
     Archive,

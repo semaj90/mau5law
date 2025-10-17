@@ -2,9 +2,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { evidenceStore } from '$lib/stores/evidence';
+  import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
-  import { showSuccess, showError } from '$lib/stores/alerts';
+  import { showSuccess, showError  } from '$lib/stores/unified';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
   import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
   interface Evidence {

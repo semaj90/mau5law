@@ -10,7 +10,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, tick } from 'svelte';
-  import { report, reportActions } from '$lib/stores/report';
+  import { report, reportActions  } from '$lib/stores/unified';
   import { browser } from '$app/environment';
   import { fade, fly } from 'svelte/transition';
   import { writable, derived } from 'svelte/store';

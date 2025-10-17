@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   let { caseId, searchQuery = "", selectedTypes = [] }: Props = $props();
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
   import Button from '$lib/components/ui/Button.svelte';
-  import { evidenceStore, type Evidence } from "$lib/stores/evidenceStore";
+  import { evidenceStore, type Evidence  } from '$lib/stores/unified";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
   import {
     Archive,

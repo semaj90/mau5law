@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     import LoadingSpinner from './LoadingSpinner.svelte';
     // Import enhanced services
     import { ocrProcessor } from '$lib/services/enhanced-ocr-processor';
-    import { caseStore, type CaseData } from '$lib/stores/caseStore';
+    import { caseStore, type CaseData  } from '$lib/stores/unified';
     // Extended case data interface for the form
     interface ExtendedCaseData extends Partial<CaseData> {
         clientInfo?: {
@@ -31,8 +31,8 @@ https://svelte.dev/e/js_parse_error -->
         aiAnalysis?: unknown;
         [key: string]: unknown; // Allow additional properties
     }
-    import { notifications } from '$lib/stores/notification';
-    import { analyticsStore } from '$lib/stores/analyticsStore';
+    import { notifications  } from '$lib/stores/unified';
+    import { analyticsStore  } from '$lib/stores/unified';
     // Types
     interface StepConfig {
         id: string;

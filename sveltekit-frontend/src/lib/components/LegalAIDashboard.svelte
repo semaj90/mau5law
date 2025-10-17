@@ -6,7 +6,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { websocketStore, isEvidenceBeingEdited, getActiveEditorsForEvidence, formatRecentActivity } from '$lib/stores/websocket-store';
+  import { websocketStore, isEvidenceBeingEdited, getActiveEditorsForEvidence, formatRecentActivity  } from '$lib/stores/unified';
   import { getLegalAIApiClient } from '$lib/api/enhanced-api-client';
   // Svelte 5 runes for reactive state
   let loading = $state(true);

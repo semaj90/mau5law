@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte.js';
+  import { aiAssistant  } from '$lib/stores/unified';
   import { webAssemblyLangChainBridge } from '$lib/services/webasm-langchain-bridge.js';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter.js';
   import { acceleratedLegalAssistant, enhanceAIResponse } from '$lib/ai/accelerated-legal-assistant.js';

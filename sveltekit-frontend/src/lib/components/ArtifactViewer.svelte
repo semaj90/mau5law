@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
   import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
-  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
+  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
   import Button from '$lib/components/ui/enhanced-bits';
   import {

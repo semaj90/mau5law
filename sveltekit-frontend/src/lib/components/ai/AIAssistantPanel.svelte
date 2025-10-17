@@ -8,7 +8,7 @@
   import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
   import AIChatMessage from '$lib/components/ai/AIChatMessage.svelte';
   import AISearchBar from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
-  import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte';
+  import { aiAssistant  } from '$lib/stores/unified';
   import { acceleratedLegalAssistant } from '$lib/ai/accelerated-legal-assistant';
   import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
   // lightweight message type to help TypeScript infer ids and timestamps

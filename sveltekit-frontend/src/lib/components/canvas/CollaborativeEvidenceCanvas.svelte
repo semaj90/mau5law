@@ -6,7 +6,7 @@
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import { websocketStore } from '$lib/stores/websocket-store';
+  import { websocketStore  } from '$lib/stores/unified';
   import { createPubSubHelper } from '$lib/server/redisPubSub';
   import { KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';

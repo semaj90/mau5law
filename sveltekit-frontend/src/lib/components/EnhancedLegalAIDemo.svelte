@@ -22,12 +22,11 @@ https://svelte.dev/e/attribute_duplicate -->
   // Create local store for vector similarity since it's not exported
   import { writable } from 'svelte/store';
   const vectorSimilarityStore = writable([]);
-  import {
-    enhancedLoki,
+  import { enhancedLoki,
     enhancedLokiStore,
     cacheStatsStore,
     cacheHealthStore
-  } from '$lib/stores/enhancedLokiStore';
+   } from '$lib/stores/unified';
   // UI Components
   import {
     Card,

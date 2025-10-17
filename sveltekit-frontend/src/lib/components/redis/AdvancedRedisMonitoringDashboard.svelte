@@ -6,7 +6,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import { redisStats, redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
+  import { redisStats, redisOrchestratorClient  } from '$lib/stores/unified';
   // Create unified SIMD parser instance
   let unifiedSIMDParser: unknown;
   // Real-time metrics stores
