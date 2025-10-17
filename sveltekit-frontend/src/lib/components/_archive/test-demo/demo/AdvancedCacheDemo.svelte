@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
  	import { fade, fly, scale } from 'svelte/transition';
  	// Import our advanced services
- 	import { advancedCache } from '$lib/services/advanced-cache-manager';
+ 	import { advancedCache } from '$lib/services/advanced_cache_manager';
  	import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
  	import { context7MCPIntegration } from '$lib/services/context7-mcp-integration';
  	import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte';

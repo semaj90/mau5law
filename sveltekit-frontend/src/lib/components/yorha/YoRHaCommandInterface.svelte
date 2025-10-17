@@ -4,9 +4,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData } from '$lib/types/yorha-interface';
+  import { onMount } from 'svelte'; // createEventDispatcher is replaced by $event rune
+  import { writable, get } from 'svelte/store'; // Import 'get' for store access in functions
+  import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData, LegalAISession } from '$lib/types/yorha-interface';
 
   // Define a new interface for command responses
   interface CommandResponse {
@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Route command to appropriate system
       const response: CommandResponse = await routeCommand(command); // Use CommandResponse interface
-      result.status = 'SUCCESS';
+      result.status = 'SUCCESS'; // Changed 'success' to 'SUCCESS'
       result.output = response.output || 'Command executed successfully.'; // Ensure output is string, with fallback
       result.data = response.data;
     } catch (error) {
@@ -276,9 +276,9 @@ https://svelte.dev/e/js_parse_error -->
     } else if (cmd.startsWith('system')) {
       return executeSystemCommand(cmd);
     } else if (cmd.startsWith('neural')) {
-      return await executeNeuralCommand(cmd);
+      return await executeNeuralCommand(); // Removed unused 'cmd' parameter
     } else {
-      return executeHelpCommand(cmd);
+      return executeHelpCommand(); // Removed unused 'cmd' parameter
     }
   }
   async function executeLegalCommand(cmd: string): Promise<CommandResponse> {
@@ -300,29 +300,29 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error('Legal AI system unavailable');
     }
   }
-  async function executeAnalysisCommand(cmd: string): Promise<any> {
+  async function executeAnalysisCommand(cmd: string): Promise<CommandResponse> { // Changed return type to CommandResponse
     return {
       output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
       data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' },
     };
   }
-  async function executeSearchCommand(cmd: string): Promise<any> {
+  async function executeSearchCommand(cmd: string): Promise<CommandResponse> { // Changed return type to CommandResponse
     const query = cmd.replace('search ', '');
     return {
       output: `Searching database for: "${query}"`,
       data: { query, results_count: Math.floor(Math.random() * 50) + 1 },
     };
   }
-  function executeSystemCommand(cmd: string) {
+  function executeSystemCommand(cmd: string): CommandResponse { // Changed return type to CommandResponse
     if (cmd.includes('status')) {
       return {
         output: 'All systems operational. YoRHa interface running at optimal parameters.',
-        data: $metrics, // Changed '$metric' to '$metrics'
+        data: get(metrics), // Changed '$metrics' to 'get(metrics)'
       };
     } else if (cmd.includes('modules')) {
       return {
-        output: `${$activeModules.length} modules active`,
-        data: $activeModules, // Changed '$activeModule' to '$activeModules'
+        output: `${get(activeModules).length} modules active`, // Changed '$activeModules' to 'get(activeModules)'
+        data: get(activeModules), // Changed '$activeModules' to 'get(activeModules)'
       };
     } else {
       return {
@@ -331,13 +331,13 @@ https://svelte.dev/e/js_parse_error -->
       };
     }
   }
-  async function executeNeuralCommand(cmd: string): Promise<any> {
+  async function executeNeuralCommand(): Promise<CommandResponse> { // Removed unused 'cmd' parameter, changed return type
     return {
       output: 'Neural network processing initiated',
-      data: { neural_activity: $metrics.neural_activity },
+      data: { neural_activity: get(metrics).neural_activity }, // Changed '$metrics.neural_activity' to 'get(metrics).neural_activity'
     };
   }
-  function executeHelpCommand(cmd: string) {
+  function executeHelpCommand(): CommandResponse { // Removed unused 'cmd' parameter, changed return type
     return {
       output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] },
@@ -370,6 +370,25 @@ https://svelte.dev/e/js_parse_error -->
         return '#00ff88';
     }
   }
+
+  // Define props using Svelte 5 runes
+  // Removed unused props: systemData, legalSession, holographicMode
+  let {} = $props<{
+    systemData?: SystemMetrics; // Made optional as it's not used internally
+    legalSession?: LegalAISession | null; // Made optional as it's not used internally
+    holographicMode?: boolean; // Made optional as it's not used internally
+  }>();
+
+  // Define the event types that this component can dispatch
+  type YoRHaEvents = {
+    command: CommandResult;
+  };
+
+  // No event dispatching needed: removed unused $event rune and dispatch variable.
+  // Removed unused function
+  // Removed unused function: handleExecuteCommand and its references to dispatch (Svelte 5 migration)
+  // Removed unused variable
+  // let currentCommandInput = $state('');
 </script>
 
 <!-- YoRHa Command Interface -->
@@ -387,7 +406,6 @@ https://svelte.dev/e/js_parse_error -->
     height="600"
     style="filter: {hologramFlicker ? 'brightness(1.5) hue-rotate(180deg)' : 'brightness(1)'}"
   ></canvas>
-  <!-- Removed extraneous semicolon -->
   <!-- Animated data streams -->
   {#each Array(12) as _, i}
     <div class="data-stream" style="left: {5 + i * 8}%; animation-delay: {i * 0.3}s"></div>
@@ -508,8 +526,8 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- YoRHa Interface Styles -->
 <style>
+  /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */
   .yorha-container {
-    /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */
     font-family: 'Courier New', 'Monaco', monospace;
     overflow: hidden;
     position: relative;
@@ -529,10 +547,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes scanline-scroll {
     0% {
       transform: translateY(0);
-    } /* Removed trailing comma */
+    }
     100% {
       transform: translateY(2px);
-    } /* Removed trailing comma */
+    }
   }
   .glitch-effect {
     animation: glitch 0.2s ease-in-out;
@@ -541,27 +559,27 @@ https://svelte.dev/e/js_parse_error -->
     0% {
       transform: translateX(0);
       filter: hue-rotate(0deg);
-    } /* Removed trailing comma */
+    }
     20% {
       transform: translateX(-2px);
       filter: hue-rotate(90deg);
-    } /* Removed trailing comma */
+    }
     40% {
       transform: translateX(2px);
       filter: hue-rotate(180deg);
-    } /* Removed trailing comma */
+    }
     60% {
       transform: translateX(-1px);
       filter: hue-rotate(270deg);
-    } /* Removed trailing comma */
+    }
     80% {
       transform: translateX(1px);
       filter: hue-rotate(360deg);
-    } /* Removed trailing comma */
+    }
     100% {
       transform: translateX(0);
       filter: hue-rotate(0deg);
-    } /* Removed trailing comma */
+    }
   }
   .cyber-border {
     border: 1px solid #00ff88;
@@ -577,13 +595,13 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes hologram-flicker {
     0% {
       opacity: 0.8;
-    } /* Removed trailing comma */
+    }
     50% {
       opacity: 1;
-    } /* Removed trailing comma */
+    }
     100% {
       opacity: 0.9;
-    } /* Removed trailing comma */
+    }
   }
   .module-panel {
     background: rgba(0, 20, 40, 0.8);
@@ -621,13 +639,13 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes status-pulse {
     0% {
       opacity: 1;
-    } /* Removed trailing comma */
+    }
     50% {
       opacity: 0.5;
-    } /* Removed trailing comma */
+    }
     100% {
       opacity: 1;
-    } /* Removed trailing comma */
+    }
   }
   .data-stream {
     /* Changed selector from .holographic-canv.data-stream to .data-stream */
@@ -641,13 +659,41 @@ https://svelte.dev/e/js_parse_error -->
     0% {
       transform: translateY(-100%);
       opacity: 0;
-    } /* Removed trailing comma */
+    }
     50% {
       opacity: 1;
-    } /* Removed trailing comma */
+    }
     100% {
       transform: translateY(100vh);
       opacity: 0;
-    } /* Removed trailing comma */
+    }
+  }
+  .yorha-command-interface-container {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #00ffff;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #00ffff;
+    font-family: 'monospace';
+  }
+  input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    color: #00ffff;
+  }
+  button {
+    background: #00ffff;
+    color: #000;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>

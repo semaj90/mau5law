@@ -22,11 +22,12 @@ export const GET: RequestHandler = async ({ params }) => {
     if (error instanceof Error && error.message.includes('not found')) {
       return json({ error: 'Document not found' }, { status: 404 })
     }
-    return json({
+    return json(
+      {
         error: 'Failed to get document',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, )
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
 }

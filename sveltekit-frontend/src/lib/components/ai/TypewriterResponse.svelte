@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
-  import { advancedCache } from '$lib/services/advanced-cache-manager';
+  import { advancedCache } from '$lib/services/advanced_cache_manager';
 
   // Types
   interface UserActivity {

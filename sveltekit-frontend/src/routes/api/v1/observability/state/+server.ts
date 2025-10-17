@@ -17,19 +17,21 @@ export const GET: RequestHandler = async () => {
     const file = path.join(runtimeDir, 'observability-state.json')
     let legacyPersisted: any = null
     if(fs.existsSync(file)){
-      try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'), } catch (error) {}
+      try {
+        legacyPersisted = JSON.parse(fs.readFileSync(file, 'utf8'));
+      } catch (error) {}
     }
     return json({
       ok: true,
       // Enhanced structured state
-      state: persistedState
+      state: persistedState,
       // Legacy compatibility
       budgets: getBudgetCounters(),
       sustained: getSustainedP99Info(),
-      persisted: legacyPersisted
+      persisted: legacyPersisted,
       // Additional metadata
       timestamp: new Date().toISOString(),
-    })
+    });
   } catch(error: any){
     console.error('[observability-state] GET error:', error)
     return json({ ok: false, error: error.message }, { status: 500 })
