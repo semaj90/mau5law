@@ -3,15 +3,15 @@
  * Unified ioredis implementation (Docker-ready)
  */
 import Redis from 'ioredis';
-import { env } from '$env/dynamic/private';
 
 // --- Connection config -------------------------------------------------
-const url = env.REDIS_URL ?? 'redis://127.0.0.1:6379';
-const password = env.REDIS_PASSWORD?.trim() || undefined;
+// Safe environment variable access (works in both SvelteKit and standalone scripts)
+// Use process.env directly - it works in both contexts
+const redisUrl = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
+const password = process.env.REDIS_PASSWORD?.trim() || undefined;
 
-// Create the Redis instance (no brittle type assertions)
-const redis = new Redis({
-  url,
+// Create the Redis instance (ioredis accepts URL string directly)
+const redis = new Redis(redisUrl, {
   password,
   lazyConnect: true,
   maxRetriesPerRequest: 1,
@@ -43,8 +43,8 @@ export async function getFromCache(key: string): Promise<string | null> {
 export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
   try {
     if (typeof ttl === 'number') {
-      // use options-style signature compatible with newer ioredis versions
-      await redis.set(key, value, { EX: ttl });
+      // use EX flag for expiration time in seconds
+      await redis.set(key, value, 'EX', ttl);
     } else {
       await redis.set(key, value);
     }
@@ -86,10 +86,10 @@ type RedisClientSet = {
 };
 
 export function createRedisClientSet(): RedisClientSet {
-  const connectionOptions = { url, password, lazyConnect: true, maxRetriesPerRequest: 1, enableOfflineQueue: false };
-  const primary = new Redis(connectionOptions);
-  const subscriber = new Redis(connectionOptions);
-  const publisher = new Redis(connectionOptions);
+  const connectionOptions = { password, lazyConnect: true, maxRetriesPerRequest: 1, enableOfflineQueue: false };
+  const primary = new Redis(redisUrl, connectionOptions);
+  const subscriber = new Redis(redisUrl, connectionOptions);
+  const publisher = new Redis(redisUrl, connectionOptions);
 
   // use EventEmitter cast to access .on without changing runtime behavior
   [primary, subscriber, publisher].forEach((client, i) =>

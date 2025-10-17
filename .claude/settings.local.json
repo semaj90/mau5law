@@ -393,7 +393,8 @@
       "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic:simple)",
       "Bash(REDIS_PASSWORD=\"redis\" timeout 15 npm run dev:quic)",
       "Bash(./run-smoke-test.bat)",
-      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" psql:*)"
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" psql:*)",
+      "Bash(bash:*)"
     ],
     "deny": [],
     "ask": []

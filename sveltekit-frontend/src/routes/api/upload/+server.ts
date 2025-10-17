@@ -1,9 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
-import { existsSync } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
-import * as path from 'path';
-import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { uploadMinioObject } from '$lib/server/services/minio';
 
 // Ensure upload directory exists
 const UPLOAD_DIR = './uploads';
@@ -46,3 +43,15 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: 'Upload failed' }, { status: 500 });
   }
 };
+
+// Authenticated upload handler
+export const POST_AUTHENTICATED = auth.handle(async ({ locals, request }) => {
+  if (!locals.user) throw error(401, 'Unauthorized');
+
+  const form = await request.formData();
+  const file = form.get('file') as File;
+  if (!file) throw error(400, 'Missing file');
+
+  const minioUrl = await uploadMinioObject('uploads', file.name, file, locals.user.id);
+  return json({ success: true, url: minioUrl });
+});

@@ -185,7 +185,7 @@ const qdrantClient = new QdrantClient({
 // Auto-creates collections with proper schema
 await qdrantClient.createCollection(collectionName, {
   vectors: {
-    size: 768,  // Gemma embedding dimensions
+    size: 384,  // embeddinggemma:latest dimensions (standardized)
     distance: 'Cosine'
   }
 });

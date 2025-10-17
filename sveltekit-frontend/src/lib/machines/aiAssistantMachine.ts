@@ -47,7 +47,9 @@ import { createMachine, assign, fromPromise } from 'xstate';
 import { browser } from '$app/environment';
 import type * as amqplib from 'amqplib';
 
-type Connection = amqplib.Connection;
+// Define a type for the Connection object returned by amqplib.connect
+// This uses Awaited to get the resolved type of the Promise returned by amqplib.connect
+type AmqplibConnection = Awaited<ReturnType<typeof amqplib.connect>>;
 
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
@@ -380,18 +382,28 @@ class $WebWorkerPool {
 
 // lightweight RabbitMQ stub for XState integration
 class RabbitMQService {
-  private connection: Connection | null = null; // In a real scenario, this would be an amqplib connection
+  private connection: AmqplibConnection | null = null; // In a real scenario, this would be an amqplib connection
   private connectionUrl = 'amqp://localhost:5672'; // Default Docker Desktop URL
+  private connectionPromise: Promise<boolean> | null = null;
 
-  async connect(config?: { url?: string }): Promise<boolean> {
-    if (this.connection) return true;
-    if (BROWSER) {
+  connect(config?: { url?: string }): Promise<boolean> {
+    if (this.connection) return Promise.resolve(true);
+    if (this.connectionPromise) return this.connectionPromise;
+
+    this.connectionPromise = this._doConnect(config).finally(() => {
+      this.connectionPromise = null;
+    });
+    return this.connectionPromise;
+  }
+
+  private async _doConnect(config?: { url?: string }): Promise<boolean> {
+    if (browser) {
       console.warn('[RabbitMQ] RabbitMQ connection is not available in the browser.');
       return false;
     }
 
     let urlToUse = config?.url;
-    if (!urlToUse && !BROWSER) {
+    if (!urlToUse) {
       try {
         const { env } = await import('$env/dynamic/private');
         urlToUse = env.RABBITMQ_URL;

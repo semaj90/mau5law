@@ -11,11 +11,11 @@ import { json } from '@sveltejs/kit';
  * 5. Qdrant sync → Search index mirroring
  */
 import { db } from '$lib/server/db/index.js'
-import { evidence, documentMetadata, documentEmbeddings } from '$lib/server/db/schema-unified.js'
-import { eq, sql } from 'drizzle-orm'
-import { v4 as uuidv4 } from 'uuid'
-import { createClient } from 'redis'
-import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js'
+import { evidence, documentMetadata } from '$lib/server/db/schema-unified.js';
+import { eq, sql } from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
+import { createClient } from 'redis';
+import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js';
 
 // Test data for demonstration
 const SAMPLE_EVIDENCE = {
@@ -40,33 +40,54 @@ const SAMPLE_EVIDENCE = {
   `,
 };
 export interface TestWorkflowRequest {
-  userId?: string
-  caseId?: string
-  enableIngestService?: boolean
-  enableQdrantSync?: boolean
-  testType?: 'full' | 'evidence_only' | 'ingest_only' | 'sync_only'
+  userId?: string;
+  caseId?: string;
+  enableIngestService?: boolean;
+  enableQdrantSync?: boolean;
+  testType?: 'full' | 'evidence_only' | 'ingest_only' | 'sync_only';
+}
+
+export interface TestWorkflowResult {
+  correlationId: string;
+  testType: string;
+  timestamp: string;
+  steps: Array<{
+    step: string;
+    status: string;
+    timestamp: string;
+    details: unknown;
+  }>;
+  postgresql: { status: string; [key: string]: unknown };
+  redis: { status: string; [key: string]: unknown };
+  ingestService: { status: string; [key: string]: unknown };
+  qdrantSync: { status: string; [key: string]: unknown };
+  summary: { success: boolean; errors: string[] };
 }
 
 // helper: safe error-to-string
 function getErrorMessage(err: unknown): string {
-		if (err instanceof Error) return err.message;
-		try { return String(err); } catch { return 'Unknown error'; }
-	}
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unknown error';
+  }
+}
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const testType = String(url.searchParams.get('type') ?? 'full') // ensure a plain string for comparisons
-  const correlationId = uuidv4()
+  const testType = String(url.searchParams.get('type') ?? 'full'); // ensure a plain string for comparisons
+  const correlationId = uuidv4();
   try {
-    const body = (await request.json()) as Partial<TestWorkflowRequest>
+    const body = (await request.json()) as Partial<TestWorkflowRequest>;
     const {
       userId = 'test-user-' + Date.now(),
       caseId = 'test-case-' + Date.now(),
       enableIngestService = true,
-      enableQdrantSync = true
-    } = body
-    console.log(`🧪 Starting PostgreSQL-first workflow test (${testType})`)
-    console.log(`📋 Correlation ID: ${correlationId}`)
-    const results: any = {
+      enableQdrantSync = true,
+    } = body;
+    console.log(`🧪 Starting PostgreSQL-first workflow test (${testType})`);
+    console.log(`📋 Correlation ID: ${correlationId}`);
+    const results: TestWorkflowResult = {
       correlationId,
       testType,
       timestamp: new Date().toISOString(),
@@ -75,48 +96,53 @@ export const POST: RequestHandler = async ({ request, url }) => {
       redis: { status: 'pending' },
       ingestService: { status: 'pending' },
       qdrantSync: { status: 'pending' },
-      summary: { success: false, errors: [] }
-    }
+      summary: { success: false, errors: [] },
+    };
     // Step 1: Test PostgreSQL Evidence Creation
-    if (testType === 'full' || testType === 'evidence_only') {
+    if (testType === 'full' || testType === 'evidence_only' || testType === 'ingest_only' || testType === 'sync_only') {
       try {
-        const evidenceId = uuidv4()
+        const evidenceId = uuidv4();
         // Insert test evidence into PostgreSQL
-        const [createdEvidence] = await db.insert(evidence).values({
-          id: evidenceId,
-          userId: userId,
-          caseId: caseId,
-          title: SAMPLE_EVIDENCE.title,
-          description: SAMPLE_EVIDENCE.description,
-          evidenceType: SAMPLE_EVIDENCE.evidenceType,
-          mimeType: SAMPLE_EVIDENCE.mimeType,
-          fileSize: SAMPLE_EVIDENCE.fileSize,
-          hash: SAMPLE_EVIDENCE.hash,
-          processingStatus: 'completed',
-          ingestStatus: 'pending',
-          tags: ['contract', 'legal-agreement'],
-          isAdmissible: true,
-          confidentialityLevel: 'internal',
-        }).returning()
+        const [createdEvidence] = await db
+          .insert(evidence)
+          .values({
+            id: evidenceId,
+            userId: userId,
+            caseId: caseId,
+            title: SAMPLE_EVIDENCE.title,
+            description: SAMPLE_EVIDENCE.description,
+            evidenceType: SAMPLE_EVIDENCE.evidenceType,
+            mimeType: SAMPLE_EVIDENCE.mimeType,
+            fileSize: SAMPLE_EVIDENCE.fileSize,
+            hash: SAMPLE_EVIDENCE.hash,
+            ingestStatus: 'pending',
+            tags: ['contract', 'legal-agreement'],
+            isAdmissible: true,
+            confidentialityLevel: 'internal',
+          })
+          .returning();
         results.postgresql = {
           status: 'success',
           evidenceId: evidenceId,
           createdAt: createdEvidence.createdAt,
-        }
+        };
         results.steps.push({
           step: 'postgresql_evidence_creation',
           status: 'success',
           timestamp: new Date().toISOString(),
-          details: { evidenceId, userId, caseId }
-        })
-        console.log(`✅ Step 1: Created evidence ${evidenceId} in PostgreSQL`)
+          details: { evidenceId, userId, caseId },
+        });
+        console.log(`✅ Step 1: Created evidence ${evidenceId} in PostgreSQL`);
         // Step 2: Test Redis Event Publishing
         if (testType === 'full') {
           try {
+            if (typeof createClient !== 'function') {
+              throw new Error('Redis createClient is not a function');
+            }
             const redisClient = createClient({
-              url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
-            })
-            await redisClient.connect()
+              url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+            });
+            await redisClient.connect();
             const eventData = {
               type: 'evidence',
               id: evidenceId,
@@ -125,29 +151,30 @@ export const POST: RequestHandler = async ({ request, url }) => {
               userId: userId,
               correlationId: correlationId,
               priority: 'high',
-              timestamp: new Date().toISOString()
-            }
-            await redisClient.xAdd('autotag:requests', '*', eventData)
-            await redisClient.disconnect()
+              timestamp: new Date().toISOString(),
+            };
+            await redisClient.xAdd('autotag:requests', '*', eventData);
+            await redisClient.disconnect();
             results.redis = {
               status: 'success',
               streamName: 'autotag:requests',
-              eventId: 'published'
-            }
+              eventId: 'published',
+            };
             results.steps.push({
               step: 'redis_event_publishing',
               status: 'success',
               timestamp: new Date().toISOString(),
-              details: { streamName: 'autotag:requests', eventData }
-            })
-            console.log(`✅ Step 2: Published Redis event for evidence ${evidenceId}`)
-          } catch (error: any) {
+              details: { streamName: 'autotag:requests', eventData },
+            });
+            console.log(`✅ Step 2: Published Redis event for evidence ${evidenceId}`);
+          } catch (error: unknown) {
+            const msg = getErrorMessage(error);
             results.redis = {
               status: 'error',
-              error: error.message
-            }
-            results.summary.errors.push(`Redis event publishing failed: ${error.message}`)
-            console.error(`❌ Step 2 failed:`, error)
+              error: msg,
+            };
+            results.summary.errors.push(`Redis event publishing failed: ${msg}`);
+            console.error(`❌ Step 2 failed:`, error);
           }
         }
         // Step 3: Test Go Ingest Service Integration
@@ -160,48 +187,48 @@ export const POST: RequestHandler = async ({ request, url }) => {
               metadata: {
                 evidence_id: evidenceId,
                 source: 'test_workflow',
-                correlation_id: correlationId
-              }
-            }
+                correlation_id: correlationId,
+              },
+            };
             const ingestResponse = await fetch('http://localhost:8227/api/ingest', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'X-Correlation-ID': correlationId
+                'X-Correlation-ID': correlationId,
               },
-              body: JSON.stringify(ingestPayload)
-            })
+              body: JSON.stringify(ingestPayload),
+            });
             if (ingestResponse.ok) {
-              const ingestResult = await ingestResponse.json()
+              const ingestResult = await ingestResponse.json();
               results.ingestService = {
                 status: 'success',
                 documentId: ingestResult.document_id,
                 embeddingId: ingestResult.embedding_id,
-                processTime: ingestResult.process_time_ms
-              }
+                processTime: ingestResult.process_time_ms,
+              };
               // Link document to evidence
               if (ingestResult.document_id) {
-                // schema uses snake_case column name - set evidence_id
+                // Drizzle uses camelCase properties for snake_case column names
                 await db
                   .update(documentMetadata)
-                  .set({ evidence_id: evidenceId } as any) // cast only to satisfy Drizzle shape if needed
+                  .set({ evidenceId: evidenceId } as any)
                   .where(eq(documentMetadata.id, ingestResult.document_id));
               }
               results.steps.push({
                 step: 'go_ingest_service',
                 status: 'success',
                 timestamp: new Date().toISOString(),
-                details: ingestResult
-              })
-              console.log(`✅ Step 3: Go ingest service processed document ${ingestResult.document_id}`)
+                details: ingestResult,
+              });
+              console.log(`✅ Step 3: Go ingest service processed document ${ingestResult.document_id}`);
             } else {
-              throw new Error(`Ingest service responded with ${ingestResponse.status}`)
+              throw new Error(`Ingest service responded with ${ingestResponse.status}`);
             }
           } catch (error: unknown) {
-            const msg = getErrorMessage(error)
-            results.ingestService = { status: 'error', error: msg }
-            results.summary.errors.push(`Ingest service failed: ${msg}`)
-            console.error(`❌ Step 3 failed:`, msg)
+            const msg = getErrorMessage(error);
+            results.ingestService = { status: 'error', error: msg };
+            results.summary.errors.push(`Ingest service failed: ${msg}`);
+            console.error(`❌ Step 3 failed:`, msg);
           }
         }
         // Step 4: Test Qdrant Sync Service
@@ -209,83 +236,87 @@ export const POST: RequestHandler = async ({ request, url }) => {
           try {
             // Wait a moment for ingest service to complete
             await new Promise(resolve => setTimeout(resolve, 2000));
-            const syncFn = (postgresqlQdrantSync as unknown as { syncEvidenceById?: (id: string) => Promise<boolean> }).syncEvidenceById
-            const syncResult = syncFn ? await syncFn(evidenceId) : false
+            const syncFn = (postgresqlQdrantSync as unknown as { syncEvidenceById?: (id: string) => Promise<boolean> })
+              .syncEvidenceById;
+            const syncResult = syncFn ? await syncFn(evidenceId) : false;
             if (syncResult) {
               results.qdrantSync = {
                 status: 'success',
                 synced: true,
                 evidenceId: evidenceId,
-              }
+              };
               results.steps.push({
                 step: 'qdrant_sync',
                 status: 'success',
                 timestamp: new Date().toISOString(),
-                details: { evidenceId, synced: true }
-              })
-              console.log(`✅ Step 4: Evidence ${evidenceId} synced to Qdrant`)
+                details: { evidenceId, synced: true },
+              });
+              console.log(`✅ Step 4: Evidence ${evidenceId} synced to Qdrant`);
             } else {
-              throw new Error('Sync returned false - no embedding available')
+              throw new Error('Sync returned false - no embedding available');
             }
           } catch (error: unknown) {
-            const msg = getErrorMessage(error)
-            results.qdrantSync = { status: 'error', error: msg }
-            results.summary.errors.push(`Qdrant sync failed: ${msg}`)
-            console.error(`❌ Step 4 failed:`, msg)
+            const msg = getErrorMessage(error);
+            results.qdrantSync = { status: 'error', error: msg };
+            results.summary.errors.push(`Qdrant sync failed: ${msg}`);
+            console.error(`❌ Step 4 failed:`, msg);
           }
         }
       } catch (error: unknown) {
-        const msg = getErrorMessage(error)
-        results.postgresql = { status: 'error', error: msg }
-        results.summary.errors.push(`PostgreSQL operation failed: ${msg}`)
-        console.error(`❌ PostgreSQL step failed:`, msg)
+        const msg = getErrorMessage(error);
+        results.postgresql = { status: 'error', error: msg };
+        results.summary.errors.push(`PostgreSQL operation failed: ${msg}`);
+        console.error(`❌ PostgreSQL step failed:`, msg);
       }
     }
     // Determine overall success
-    const hasErrors = results.summary.errors.length > 0
-    results.summary.success = !hasErrors
+    const hasErrors = results.summary.errors.length > 0;
+    results.summary.success = !hasErrors;
     if (results.summary.success) {
-      console.log(`🎉 PostgreSQL-first workflow test completed successfully!`)
+      console.log(`🎉 PostgreSQL-first workflow test completed successfully!`);
     } else {
-      console.log(`⚠️  PostgreSQL-first workflow test completed with errors:`, results.summary.errors)
+      console.log(`⚠️  PostgreSQL-first workflow test completed with errors:`, results.summary.errors);
     }
     return json({
       success: results.summary.success,
       message: results.summary.success
         ? 'PostgreSQL-first workflow test completed successfully'
         : 'PostgreSQL-first workflow test completed with errors',
-      data: results
-    })
+      data: results,
+    });
   } catch (error: unknown) {
-    const msg = getErrorMessage(error)
-    console.error('❌ Test endpoint error:', msg)
-    return json({
-      success: false,
-      message: 'Test workflow failed',
-      error: msg,
-      correlationId
-    }, { status: 500 })
+    const msg = getErrorMessage(error);
+    console.error('❌ Test endpoint error:', msg);
+    return json(
+      {
+        success: false,
+        message: 'Test workflow failed',
+        error: msg,
+        correlationId,
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'status'
+    const action = url.searchParams.get('action') || 'status';
     switch (action) {
       case 'health': {
         // Check health of all services
-        const health = await checkSystemHealth()
-        return json({ success: true, message: 'System health check completed', data: health })
+        const health = await checkSystemHealth();
+        return json({ success: true, message: 'System health check completed', data: health });
       }
       case 'stats': {
         // Get PostgreSQL statistics
-        const stats = await getPostgreSQLStats()
-        return json({ success: true, message: 'PostgreSQL statistics retrieved', data: stats })
+        const stats = await getPostgreSQLStats();
+        return json({ success: true, message: 'PostgreSQL statistics retrieved', data: stats });
       }
       case 'sync-stats': {
         // Get Qdrant sync statistics (guard optional method)
-        const statsFn = (postgresqlQdrantSync as unknown as { getStats?: () => Promise<unknown> }).getStats
-        const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync' }
-        return json({ success: true, message: 'Qdrant sync statistics retrieved', data: syncStats })
+        const statsFn = (postgresqlQdrantSync as unknown as { getStats?: () => Promise<unknown> }).getStats;
+        const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync' };
+        return json({ success: true, message: 'Qdrant sync statistics retrieved', data: syncStats });
       }
       default:
         return json({
@@ -308,96 +339,93 @@ export const GET: RequestHandler = async ({ url }) => {
         });
     }
   } catch (error: unknown) {
-    const msg = getErrorMessage(error)
-    return json({ success: false, message: 'Failed to process request', error: msg }, { status: 500 })
+    const msg = getErrorMessage(error);
+    return json({ success: false, message: 'Failed to process request', error: msg }, { status: 500 });
   }
-}
+};
 async function checkSystemHealth(): Promise<Record<string, unknown>> {
-  type ServiceStatus = { status: 'unknown'|'healthy'|'unhealthy'|'degraded'; details: unknown | null }
-  const health: { postgresql: ServiceStatus; redis: ServiceStatus; ingestService: ServiceStatus; qdrant: ServiceStatus; overall: string } = {
+  type ServiceStatus = { status: 'unknown' | 'healthy' | 'unhealthy' | 'degraded'; details: unknown | null };
+  const health: {
+    postgresql: ServiceStatus;
+    redis: ServiceStatus;
+    ingestService: ServiceStatus;
+    qdrant: ServiceStatus;
+    overall: string;
+  } = {
     postgresql: { status: 'unknown', details: null },
     redis: { status: 'unknown', details: null },
     ingestService: { status: 'unknown', details: null },
     qdrant: { status: 'unknown', details: null },
     overall: 'unknown',
   };
-   // Check PostgreSQL
-   try {
-     await db.execute(sql`SELECT 1`);
-     const [evidenceCount] = await db.execute(sql`SELECT COUNT(*) as count FROM evidence`);
-     health.postgresql = {
-       status: 'healthy',
--      details: { connected: true, evidenceCount: evidenceCount.count },
-+      details: { connected: true, evidenceCount: (evidenceCount as any)?.count ?? null },
-     };
-   } catch (error: any) {
--    health.postgresql = { status: 'unhealthy', details: { error: error.message } };
-+    const msg = getErrorMessage(error)
-+    health.postgresql = { status: 'unhealthy', details: { error: msg } };
-   }
-   // Check Redis
-   try {
--    const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' });
--    await redisClient.connect();
--    await redisClient.ping();
--    await redisClient.disconnect();
--    health.redis = { status: 'healthy', details: { connected: true } };
-+    if (typeof createClient === 'function') {
-+      const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' });
-+      await redisClient.connect();
-+      await redisClient.ping();
-+      await redisClient.disconnect();
-+      health.redis = { status: 'healthy', details: { connected: true } };
-+    } else {
-+      health.redis = { status: 'unhealthy', details: { error: 'redis.createClient is not available in this environment' } };
-+    }
-   } catch (error: any) {
--    health.redis = { status: 'unhealthy', details: { error: error.message } };
-+    const msg = getErrorMessage(error)
-+    health.redis = { status: 'unhealthy', details: { error: msg } };
-   }
-   // Check Go Ingest Service
-   try {
-     const response = await fetch('http://localhost:8227/api/health');
-     if (response.ok) {
-       const healthData = await response.json();
-       health.ingestService = { status: 'healthy', details: healthData };
-     } else {
--      health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } };
-+      health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } };
-     }
-   } catch (error: any) {
--    health.ingestService = { status: 'unhealthy', details: { error: error.message } };
-+    const msg = getErrorMessage(error)
-+    health.ingestService = { status: 'unhealthy', details: { error: msg } };
-   }
-   // Check Qdrant via sync service
-   try {
--    const qdrantHealth = await postgresqlQdrantSync.healthCheck();
--    health.qdrant = {
--      status: qdrantHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
--      details: qdrantHealth,
--    };
-+    const healthCheckFn = (postgresqlQdrantSync as unknown as { healthCheck?: () => Promise<unknown> }).healthCheck
-+    const qdrantHealth = healthCheckFn ? await healthCheckFn() : { message: 'healthCheck not available' }
-+    health.qdrant = { status: (qdrantHealth as any)?.status === 'healthy' ? 'healthy' : 'unhealthy', details: qdrantHealth };
-   } catch (error: any) {
--    health.qdrant = { status: 'unhealthy', details: { error: error.message } };
-+    const msg = getErrorMessage(error)
-+    health.qdrant = { status: 'unhealthy', details: { error: msg } };
-   }
-   // Determine overall health (count services with status === 'healthy')
--  const healthyServices = Object.values(health).filter((item: any) => item && item.status === 'healthy').length;
-+  const healthyServices = [health.postgresql, health.redis, health.ingestService, health.qdrant].filter(s => s.status === 'healthy').length;
-   const totalServices = 4;
-   if (healthyServices === totalServices) {
-     health.overall = 'healthy';
-   } else if (healthyServices >= totalServices / 2) {
-     health.overall = 'degraded';
-   } else {
-     health.overall = 'unhealthy';
-   }
-   return health;
+  // Check PostgreSQL
+  try {
+    await db.execute(sql`SELECT 1`);
+    const [evidenceCount] = await db.execute(sql`SELECT COUNT(*) as count FROM evidence`);
+    health.postgresql = {
+      status: 'healthy',
+      details: { connected: true, evidenceCount: (evidenceCount as { count: string | number })?.count ?? null },
+    };
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    health.postgresql = { status: 'unhealthy', details: { error: msg } };
+  }
+  // Check Redis
+  try {
+    if (typeof createClient === 'function') {
+      const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' });
+      await redisClient.connect();
+      await redisClient.ping();
+      await redisClient.disconnect();
+      health.redis = { status: 'healthy', details: { connected: true } };
+    } else {
+      health.redis = {
+        status: 'unhealthy',
+        details: { error: 'redis.createClient is not available in this environment' },
+      };
+    }
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    health.redis = { status: 'unhealthy', details: { error: msg } };
+  }
+  // Check Go Ingest Service
+  try {
+    const response = await fetch('http://localhost:8227/api/health');
+    if (response.ok) {
+      const healthData = await response.json();
+      health.ingestService = { status: 'healthy', details: healthData };
+    } else {
+      health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } };
+    }
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    health.ingestService = { status: 'unhealthy', details: { error: msg } };
+  }
+  // Check Qdrant via sync service
+  try {
+    const healthCheckFn = (postgresqlQdrantSync as unknown as { healthCheck?: () => Promise<unknown> }).healthCheck;
+    const qdrantHealth = healthCheckFn ? await healthCheckFn() : { message: 'healthCheck not available' };
+    health.qdrant = {
+      status: (qdrantHealth as { status?: string })?.status === 'healthy' ? 'healthy' : 'unhealthy',
+      details: qdrantHealth,
+    };
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    health.qdrant = { status: 'unhealthy', details: { error: msg } };
+  }
+  // Determine overall health (count services with status === 'healthy')
+  const healthyServices = [health.postgresql, health.redis, health.ingestService, health.qdrant].filter(
+    s => s.status === 'healthy'
+  ).length;
+  const totalServices = 4;
+  if (healthyServices === totalServices) {
+    health.overall = 'healthy';
+  } else if (healthyServices >= totalServices / 2) {
+    health.overall = 'degraded';
+  } else {
+    health.overall = 'unhealthy';
+  }
+  return health;
 }
 async function getPostgreSQLStats(): Promise<Record<string, unknown>> {
   try {
@@ -409,28 +437,27 @@ async function getPostgreSQLStats(): Promise<Record<string, unknown>> {
         COUNT(CASE WHEN title_embedding IS NOT NULL THEN 1 END) as evidence_with_title_embeddings,
         COUNT(CASE WHEN content_embedding IS NOT NULL THEN 1 END) as evidence_with_content_embeddings
       FROM evidence
-    `)
+    `);
     const [documentStats] = await db.execute(sql`
       SELECT
         COUNT(*) as total_documents,
         COUNT(CASE WHEN processing_status = 'completed' THEN 1 END) as completed_documents
       FROM document_metadata
-    `)
+    `);
     const [embeddingStats] = await db.execute(sql`
       SELECT
         COUNT(*) as total_embeddings,
         COUNT(DISTINCT embedding_model) as unique_models,
         AVG(chunk_size) as avg_chunk_size
       FROM document_embeddings
-    `)
+    `);
     return {
       evidence: evidenceStats,
       documents: documentStats,
       embeddings: embeddingStats,
       timestamp: new Date().toISOString(),
-    }
+    };
   } catch (error: unknown) {
--    throw new Error(`Failed to get PostgreSQL stats: ${error.message}`)
-+    throw new Error(`Failed to get PostgreSQL stats: ${getErrorMessage(error)}`)
+    throw new Error(`Failed to get PostgreSQL stats: ${getErrorMessage(error)}`);
   }
 }

@@ -2,6 +2,8 @@ import type { Handle } from '@sveltejs/kit';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import Redis from 'ioredis';
+import { handleHooks } from '@lucia-auth/sveltekit';
+import { auth } from '$lib/server/auth';
 
 // Lazy singletons initialized at module load so endpoints can reuse them
 type PgConnection = ReturnType<typeof postgres> | null;
@@ -189,7 +191,7 @@ interface DatabaseUser {
   name?: string | null;
 }
 
-export const handle: Handle = async ({ event, resolve }) => {
+const handle: Handle = async ({ event, resolve }) => {
   // Ensure all systems are initialized
   try {
     await ensureInitialized();
@@ -338,4 +340,4 @@ export const handle: Handle = async ({ event, resolve }) => {
   return resolve(event);
 };
 
-export { _db as db, _pgConnection as pgConnection, _redis as redis };
+export { _db as db, _pgConnection as pgConnection, _redis as redis, handle };
