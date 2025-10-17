@@ -43,9 +43,11 @@
  * - Security and audit logging
  * - Resource management and throttling
  */
-import { createMachine, assign, fromPromise, fromCallback } from 'xstate';
-// TODO: Integrate with centralized types from ../types/xstate.js
-// import type { AIAssistantEvent, AIAssistantContext, ConversationEntry } from '../types/xstate.js'
+import { createMachine, assign, fromPromise } from 'xstate';
+import { browser } from '$app/environment';
+import type * as amqplib from 'amqplib';
+
+type Connection = amqplib.Connection;
 
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
@@ -73,14 +75,86 @@ export interface AIAssistantContext {
   model: string;
   temperature: number;
   maxTokens: number;
-  availableModels: any[];
+  availableModels: unknown[];
   // minimal placeholders for previously used properties
   context7Available?: boolean;
-  natsConnected?: boolean;
+  rabbitmqConnected?: boolean;
   gpuProcessingEnabled?: boolean;
   currentDocuments?: DocumentType[];
-  error?: any;
+  error: { message: string } | null;
 }
+
+// --- Types for AI Assistant Events ---
+
+/** Context for semantic search, e.g., document IDs or case files. */
+type SemanticSearchContext = Record<string, unknown>;
+
+/** Options for vector search operations. */
+interface VectorSearchOptions {
+  topK?: number;
+  threshold?: number;
+  indexType?: 'HNSW' | 'IVF';
+}
+
+/** Filters for legal-specific searches. */
+type LegalSearchFilters = Record<string, string | number | boolean>;
+
+/** Payload for setting the context of a legal case. */
+interface CaseContextPayload {
+  documents?: Array<{ id: string; title: string }>;
+  keyFacts?: string[];
+  timeline?: Array<{ date: string; event: string }>;
+}
+
+/** Options for analysis using the Context7 service. */
+interface Context7Options {
+  depth?: 'shallow' | 'deep';
+  sources?: string[];
+}
+
+/** Configuration for performance benchmarking. */
+interface BenchmarkOptions {
+  iterations?: number;
+  targetService?: string;
+  type: 'cpu' | 'gpu' | 'network' | 'e2e';
+}
+
+/** Configuration for scaling microservices. */
+interface ServiceScaleConfig {
+  serviceName: string;
+  replicas: number;
+  cpuLimit?: string;
+  memoryLimit?: string;
+}
+
+/** A reference to a document for batch processing. */
+interface DocumentReference {
+  id: string;
+  source: 'minio' | 'local';
+}
+
+/** Configuration for training a custom AI model. */
+interface ModelTrainingConfig {
+  modelName: string;
+  baseModel: string;
+  datasetId: string;
+  epochs: number;
+  learningRate: number;
+}
+
+/** Defines a workflow to be executed. */
+interface WorkflowPayload {
+  workflowId: string;
+  parameters: Record<string, unknown>;
+}
+
+/** Represents a user in a collaboration session. */
+interface Collaborator {
+  userId: string;
+  name: string;
+  role: 'attorney' | 'paralegal' | 'viewer';
+}
+
 // Strongly typed events for the AI Assistant machine
 type AIAssistantEvent =
   | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean; caseId?: string }
@@ -96,26 +170,39 @@ type AIAssistantEvent =
   | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_END'; summary?: string }
   | { type: 'PERFORM_OCR'; imageId: string }
-  | { type: 'SEARCH_SEMANTIC'; query: string; context?: any }
-  | { type: 'SEARCH_VECTOR'; query: string; options?: any }
-  | { type: 'SEARCH_LEGAL'; query: string; filters?: any }
+  | { type: 'SEARCH_SEMANTIC'; query: string; context?: SemanticSearchContext }
+  | { type: 'SEARCH_VECTOR'; query: string; options?: VectorSearchOptions }
+  | { type: 'SEARCH_LEGAL'; query: string; filters?: LegalSearchFilters }
   | { type: 'SET_PROTOCOL'; protocol: string }
-  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: any }
-  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: any }
-  | { type: 'CONNECT_NATS'; config?: any }
-  | { type: 'DISCONNECT_NATS' }
-  | { type: 'BENCHMARK_PERFORMANCE'; options?: any }
+  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: CaseContextPayload }
+  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: Context7Options }
+  | { type: 'CONNECT_RABBITMQ'; config?: { url?: string } }
+  | { type: 'DISCONNECT_RABBITMQ' }
+  | { type: 'BENCHMARK_PERFORMANCE'; options?: BenchmarkOptions }
   | { type: 'OPTIMIZE_RESOURCES' }
-  | { type: 'SCALE_SERVICES'; scaleConfig?: any }
+  | { type: 'SCALE_SERVICES'; scaleConfig?: ServiceScaleConfig }
   | { type: 'MEMORY_CLEANUP' }
-  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: any[] }
-  | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: any }
-  | { type: 'EXECUTE_WORKFLOW'; workflow?: any }
-  | { type: 'COLLABORATION_USER_JOINED'; user: any }
-  | { type: 'COLLABORATION_USER_LEFT'; user: any }
+  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: DocumentReference[] }
+  | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: ModelTrainingConfig }
+  | { type: 'EXECUTE_WORKFLOW'; workflow?: WorkflowPayload }
+  | { type: 'COLLABORATION_USER_JOINED'; user: Collaborator }
+  | { type: 'COLLABORATION_USER_LEFT'; user: Collaborator }
   | { type: 'CACHE_CLEAR' }
   | { type: 'PERFORMANCE_RESET' }
   | { type: 'ERROR_RECOVER'; errorId?: string };
+
+// --- Type for the output of the processing query promise ---
+type ProcessQueryOutput = {
+  response: string;
+};
+
+// --- Add a narrow navigator type that models the subset we use (WebGPU + hardwareConcurrency) ---
+type NavWithGPU = Navigator & {
+  gpu?: {
+    // requestAdapter may return an adapter with optional requestDevice
+    requestAdapter?: () => Promise<{ requestDevice?: () => Promise<unknown> } | null> | null;
+  };
+};
 
 // --- Minimal, correct GPU processor ---
 class GPUProcessor {
@@ -127,11 +214,15 @@ class GPUProcessor {
   }
   async initialize(): Promise<boolean> {
     try {
-      const nav: any = typeof navigator !== 'undefined' ? navigator : {};
-      if (!nav.gpu) {
+      // Use a properly typed navigator alias instead of `any`
+      const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU) : undefined;
+
+      // Guard against missing WebGPU support
+      if (!nav?.gpu) {
         this.initialized = false;
         return false;
       }
+
       const adapter = await nav.gpu.requestAdapter?.();
       if (!adapter) {
         this.initialized = false;
@@ -154,15 +245,15 @@ class GPUProcessor {
 // --- Minimal multi-layer cache (safe, no DOM assumptions) ---
 class MultiLayerCache {
   private static instance: MultiLayerCache;
-  private l1Cache = new Map<string, any>();
+  private l1Cache = new Map<string, unknown>();
   static getInstance(): MultiLayerCache {
     if (!MultiLayerCache.instance) MultiLayerCache.instance = new MultiLayerCache();
     return MultiLayerCache.instance;
   }
-  async get(key: string): Promise<any> {
+  async get(key: string): Promise<unknown> {
     return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
   }
-  async set(key: string, value: any, _ttl = 3600000): Promise<void> {
+  async set(key: string, value: unknown, _ttl = 3600000): Promise<void> {
     this.l1Cache.set(key, value);
     if (this.l1Cache.size > 2000) {
       // simple eviction
@@ -187,29 +278,45 @@ class MemoryManager {
   }
   getMemoryUsage(): number {
     try {
-      const perf: any = typeof performance !== 'undefined' ? performance : undefined;
-      if (perf && perf.memory) {
-        return perf.memory.usedJSHeapSize / perf.memory.jsHeapSizeLimit;
+      const perf = typeof performance !== 'undefined' ? performance : undefined;
+      if (perf && 'memory' in perf) {
+        const memoryInfo = (perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+        if (memoryInfo) {
+          return memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit;
+        }
       }
-    } catch {}
+    } catch {
+      // performance.memory is not available, return default
+    }
     return 0.5;
   }
   forceGC(): void {
     // best-effort no-op in browsers unless explicit GC exposed
     try {
-      (globalThis as any).gc?.();
-    } catch {}
+      (globalThis as typeof globalThis & { gc?: () => void }).gc?.();
+    } catch {
+      // gc is not available or failed, do nothing
+    }
   }
 }
 
 // --- Minimal worker pool (uses blobs safely) ---
-class WebWorkerPool {
-  private workers: Worker[] = [];
-  private nextWorker = 0;
+type Task = { type: 'processDocument'; data: { content: string } } | { type: string; data?: Record<string, unknown> };
+
+type TaskResult = { ok: true; result: unknown } | { ok: false; error: string };
+
+class $WebWorkerPool {
+  private _workers: Worker[] = [];
+  private _nextWorker = 0;
   constructor(
-    private maxWorkers = Math.max(1, typeof navigator !== 'undefined' ? (navigator as any).hardwareConcurrency || 4 : 1)
+    private _maxWorkers = Math.max(
+      1,
+      typeof navigator !== 'undefined'
+        ? (navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency || 4
+        : 1
+    )
   ) {}
-  async executeTask(task: any): Promise<any> {
+  async executeTask(task: Task): Promise<TaskResult> {
     // create a short-lived worker for simplicity (safe and predictable)
     const code = `
       self.onmessage = function(e) {
@@ -229,76 +336,151 @@ class WebWorkerPool {
     `;
     const blob = new Blob([code], { type: 'application/javascript' });
     const worker = new Worker(URL.createObjectURL(blob));
-    return new Promise((resolve, reject) => {
+    return new Promise<TaskResult>((resolve, reject) => {
       const timeout = setTimeout(() => {
         try {
           worker.terminate();
-        } catch {}
+        } catch {
+          // worker might already be terminated
+        }
         reject(new Error('Worker timeout'));
       }, 30_000);
       worker.onmessage = ev => {
         clearTimeout(timeout);
         try {
           worker.terminate();
-        } catch {}
-        resolve(ev.data);
+        } catch {
+          // worker might already be terminated
+        }
+        resolve(ev.data as TaskResult);
       };
       worker.onerror = err => {
         clearTimeout(timeout);
         try {
           worker.terminate();
-        } catch {}
+        } catch {
+          // worker might already be terminated
+        }
         reject(err);
       };
       worker.postMessage(task);
     });
   }
   terminate() {
-    this.workers.forEach(w => {
+    this._workers.forEach(w => {
       try {
         w.terminate();
-      } catch {}
+      } catch {
+        // worker might already be terminated
+      }
     });
-    this.workers = [];
+    this._workers = [];
   }
 }
 
-// --- Minimal productionServiceRegistry / NATS placeholders to avoid runtime errors ---
-// ...existing code...
-const productionServiceRegistry = {
-  async getClusterHealth() {
-    return { overall: 'ok', services: {} as Record<string, boolean> };
-  },
-  getServiceByName(_name: string) {
-    return { port: 8094 };
-  },
-  async checkServiceHealth(_name: string) {
-    return true;
-  },
-};
-// lightweight NATS stub
-class NATSMessagingService {
-  async connect() {
-    return false;
+// lightweight RabbitMQ stub for XState integration
+class RabbitMQService {
+  private connection: Connection | null = null; // In a real scenario, this would be an amqplib connection
+  private connectionUrl = 'amqp://localhost:5672'; // Default Docker Desktop URL
+
+  async connect(config?: { url?: string }): Promise<boolean> {
+    if (this.connection) return true;
+    if (BROWSER) {
+      console.warn('[RabbitMQ] RabbitMQ connection is not available in the browser.');
+      return false;
+    }
+
+    let urlToUse = config?.url;
+    if (!urlToUse && !BROWSER) {
+      try {
+        const { env } = await import('$env/dynamic/private');
+        urlToUse = env.RABBITMQ_URL;
+      } catch (e) {
+        /* server-only import, ignore client-side error */
+      }
+    }
+
+    this.connectionUrl = urlToUse || this.connectionUrl;
+
+    try {
+      // Dynamically import amqplib for server-side use
+      const amqplib = await import('amqplib');
+      this.connection = await amqplib.connect(this.connectionUrl);
+      console.log(`[RabbitMQ] Connected to ${this.connectionUrl}`);
+
+      this.connection.on('error', (err: Error) => {
+        console.error('[RabbitMQ] Connection error:', err.message);
+        this.connection = null;
+      });
+
+      this.connection.on('close', () => {
+        console.log('[RabbitMQ] Connection closed.');
+        this.connection = null;
+      });
+
+      return true;
+    } catch (error) {
+      console.error('[RabbitMQ] Failed to connect:', error);
+      this.connection = null;
+      return false;
+    }
   }
-  isConnected() {
-    return false;
+
+  isConnected(): boolean {
+    return this.connection !== null;
   }
-  async disconnect() {}
-  publishSystemHealth(_payload: any) {
-    return Promise.resolve();
+
+  async disconnect(): Promise<void> {
+    if (this.connection) {
+      await this.connection.close();
+      this.connection = null;
+      console.log('[RabbitMQ] Disconnected.');
+    }
   }
-  subscribeToSystemEvents(_cb: any) {}
-  subscribeToCase(_caseId: string, _cb: any) {}
-  subscribeToAIAnalysis(_cb: any) {}
-  notifyAIAnalysisCompleted(_id: string, _payload: any) {
-    return Promise.resolve();
+
+  private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
+    if (!this.isConnected() || !this.connection) {
+      console.warn('[RabbitMQ] Not connected. Cannot publish message.');
+      return;
+    }
+    try {
+      const channel = await this.connection.createChannel();
+      await channel.assertExchange(exchange, 'topic', { durable: false });
+      // Buffer is a Node.js global, available on the server
+      channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(payload)));
+      await channel.close();
+      console.log(`[RabbitMQ] Publishing to exchange '${exchange}', routing key '${routingKey}'`, payload);
+    } catch (error) {
+      console.error('[RabbitMQ] Failed to publish message:', error);
+    }
+  }
+
+  publishSystemHealth(payload: unknown): Promise<void> {
+    return this.publish('system_events', 'health.log', payload);
+  }
+
+  // Stubbing out other subscription methods to match the previous interface
+  subscribeToSystemEvents(_cb: (msg: unknown) => void): void {
+    console.log('[RabbitMQ] Subscribing to system events (stubbed)');
+  }
+  subscribeToCase(_caseId: string, _cb: (msg: unknown) => void): void {
+    console.log(`[RabbitMQ] Subscribing to case ${_caseId} events (stubbed)`);
+  }
+  subscribeToAIAnalysis(_cb: (msg: unknown) => void): void {
+    console.log('[RabbitMQ] Subscribing to AI analysis events (stubbed)');
+  }
+  notifyAIAnalysisCompleted(_id: string, payload: unknown): Promise<void> {
+    return this.publish('ai_events', `analysis.completed.${_id}`, payload);
   }
 }
-const natsMessaging = new NATSMessagingService();
+const rabbitmqService = new RabbitMQService();
 
 // --- Simplified machine that is syntactically correct and provides the same export name ---
-export const aiAssistantMachine = createMachine<AIAssistantContext>({
+export const aiAssistantMachine = createMachine({
+  types: {
+    context: {} as AIAssistantContext,
+    events: {} as AIAssistantEvent,
+  },
   id: 'enhancedAiAssistant',
   initial: 'initializing',
   context: {
@@ -312,7 +494,7 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
     maxTokens: 2048,
     availableModels: [],
     context7Available: false,
-    natsConnected: false,
+    rabbitmqConnected: false,
     gpuProcessingEnabled: false,
     currentDocuments: [],
     error: null,
@@ -321,7 +503,7 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
     initializing: {
       invoke: {
         id: 'init',
-        src: fromPromise(async context => {
+        src: fromPromise(async () => {
           // Initialize core pieces (best-effort)
           const gpu = GPUProcessor.getInstance();
           const gpuReady = await gpu.initialize().catch(() => false);
@@ -337,12 +519,12 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
         onDone: {
           target: 'idle',
           actions: assign({
-            gpuProcessingEnabled: (_, e) => Boolean((e as any).data?.gpuReady),
+            gpuProcessingEnabled: ({ event }) => Boolean(event.output?.gpuReady),
           }),
         },
         onError: {
           target: 'idle',
-          actions: assign({ error: (_, e) => ({ message: String((e as any).data || (e as any).error) }) }),
+          actions: assign({ error: ({ event }) => ({ message: String(event.error) }) }),
         },
       },
     },
@@ -351,7 +533,7 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
         SEND_MESSAGE: {
           target: 'processing',
           actions: assign({
-            currentQuery: (_, e: any) => e.message,
+            currentQuery: ({ event }) => event.message,
             isProcessing: () => true,
           }),
         },
@@ -363,24 +545,28 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
     processing: {
       invoke: {
         id: 'processQuery',
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => ({ currentQuery: context.currentQuery }),
+        src: fromPromise<ProcessQueryOutput>(async ({ input }) => {
           // simple echo behavior for now; replace with real implementation later
           await new Promise(r => setTimeout(r, 10));
-          return { response: `Echo: ${context.currentQuery}` };
+          return { response: `Echo: ${input.currentQuery}` };
         }),
         onDone: {
           target: 'idle',
           actions: assign({
-            response: (_, e) => (e as any).data.response,
-            conversationHistory: (ctx, e) => [
-              ...ctx.conversationHistory,
-              {
-                id: `assistant_${Date.now()}`,
-                type: 'assistant',
-                content: (e as any).data.response,
-                timestamp: new Date(),
-              },
-            ],
+            // Ensure response is always a string to avoid widened any/unknown
+            response: ({ event }) => String((event as { output?: ProcessQueryOutput }).output?.response ?? ''),
+            // Build a properly-typed ConversationEntry and cast the resulting array
+            conversationHistory: ({ context, event }) =>
+              [
+                ...context.conversationHistory,
+                {
+                  id: `assistant_${Date.now()}`,
+                  type: 'assistant' as const,
+                  content: String((event as { output?: ProcessQueryOutput }).output?.response ?? ''),
+                  timestamp: new Date(),
+                } as ConversationEntry,
+              ] as ConversationEntry[],
             isProcessing: () => false,
             currentQuery: () => '',
           }),
@@ -388,7 +574,7 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
         onError: {
           target: 'error',
           actions: assign({
-            error: (_, e) => ({ message: String((e as any).data || (e as any).error) }),
+            error: ({ event }) => ({ message: String(event.error) }),
             isProcessing: () => false,
           }),
         },
@@ -403,19 +589,40 @@ export const aiAssistantMachine = createMachine<AIAssistantContext>({
   },
 });
 
-// --- Minimal actions used by the machine; safe and side-effect free ---
-export const aiAssistantActions = {
-  clearError: assign({ error: () => null }),
-  logError: (ctx: any) => {
-    if (ctx.error) {
-      console.error('[aiAssistant] error', ctx.error);
-      // best-effort NATS publish (swallow errors)
-      try {
-        natsMessaging.publishSystemHealth({ type: 'error', error: ctx.error });
-      } catch {}
-    }
+/**
+ * Machine provider configuration
+ * Pass to createActor() as the second parameter to inject custom actions
+ *
+ * Usage:
+ * ```typescript
+ * import { createActor } from 'xstate';
+ * import { aiAssistantMachine, aiAssistantProvider } from './aiAssistantMachine';
+ *
+ * const actor = createActor(aiAssistantMachine, {
+ *   ...aiAssistantProvider
+ * });
+ * actor.start();
+ * ```
+ */
+export const aiAssistantProvider = {
+  actions: {
+    clearError: assign({ error: () => null }),
+    logError: (ctx: Record<string, unknown>) => {
+      if (ctx.error) {
+        console.error('[aiAssistant] error', ctx.error);
+        // best-effort RabbitMQ publish (swallow errors)
+        try {
+          rabbitmqService.publishSystemHealth({ type: 'error', error: ctx.error });
+        } catch (logError) {
+          // Suppress logging errors to prevent infinite recursion
+          console.debug('[aiAssistant] RabbitMQ publish failed', logError);
+        }
+      }
+    },
   },
+  actors: {},
+  delays: {},
+  guards: {},
 };
 
-// Minimal services export so other modules can import it
-export const aiAssistantServices = {} as const;
+export default aiAssistantMachine;

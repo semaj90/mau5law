@@ -5,6 +5,17 @@
 import { createMachine, assign, fromPromise } from 'xstate';
 import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine.js';
 
+// Add a concrete type for computation results
+export type ComputationResult = {
+  computation?: string | number;
+  computationId?: string;
+  result?: DimensionalArray | unknown;
+  processed: boolean;
+  timestamp: number;
+  background?: boolean;
+  // extend with other fields as needed
+};
+
 export interface AIComputationContext {
   userId: string;
   sessionId: string;
@@ -19,14 +30,16 @@ export interface AIComputationContext {
     didYouMean: string[];
     othersSearched: string[];
   };
-  computationResults: any[];
+  computationResults: ComputationResult[]; // <-- replaced any[] with ComputationResult[]
   errorMessage?: string;
 }
+
+// Replace `any` with the concrete ComputationResult type
 export type AIComputationEvent =
   | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[]; attentionWeights: number[] } }
   | { type: 'USER_ACTIVE' }
   | { type: 'USER_IDLE' }
-  | { type: 'COMPUTATION_COMPLETE'; result: any }
+  | { type: 'COMPUTATION_COMPLETE'; result: ComputationResult } // <-- typed result
   | { type: 'COMPUTATION_ERROR'; error: string }
   | { type: 'NETWORK_ONLINE' }
   | { type: 'NETWORK_OFFLINE' }
@@ -37,9 +50,14 @@ export type AIComputationEvent =
   | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray }
   | { type: 'RESUME_FROM_IDLE' }
   | { type: 'PICK_UP_WHERE_LEFT_OFF' };
+
 // Async services for computations
 const perform3DComputation = fromPromise(
-  async ({ input }: { input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string } }) => {
+  async ({
+    input,
+  }: {
+    input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string };
+  }): Promise<ComputationResult> => {
     const { data, shape, attentionWeights, userId } = input;
     // Create dimensional array with kernel attention splicing
     const dimensionalArray = await dimensionalCache.createDimensionalArray(data, shape, attentionWeights);
@@ -58,33 +76,59 @@ const perform3DComputation = fromPromise(
     };
   }
 );
+
 const getRecommendations = fromPromise(async ({ input }: { input: { userId: string; context: string } }) => {
   const { userId, context } = input;
   return await dimensionalCache.getRecommendations(userId, context);
 });
-const processRabbitMQQueue = fromPromise(async ({ input }: { input: { queuedComputations: string[] } }) => {
-  const { queuedComputations } = input;
-  // Process all queued computations
-  const results = [];
-  for (const computation of queuedComputations) {
-    try {
-      // Simulate processing queued computation
-      const result = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({
-            computation,
-            processed: true,
-            timestamp: Date.now(),
-          });
-        }, 500);
-      });
-      results.push(result);
-    } catch (error: any) {
-      console.error('Failed to process queued computation:', error);
+
+const processRabbitMQQueue = fromPromise(
+  async ({ input }: { input: { queuedComputations: string[] } }): Promise<ComputationResult[]> => {
+    const { queuedComputations } = input;
+    // Process all queued computations
+    const results: ComputationResult[] = [];
+    for (const computation of queuedComputations) {
+      try {
+        // Simulate processing queued computation
+        const result = await new Promise<ComputationResult>(resolve => {
+          setTimeout(() => {
+            resolve({
+              computation,
+              processed: true,
+              timestamp: Date.now(),
+            });
+          }, 500);
+        });
+        results.push(result);
+      } catch (error: unknown) {
+        // safer error handling: narrow unknown to string message
+        console.error('Failed to process queued computation:', error instanceof Error ? error.message : String(error));
+      }
     }
+    return results;
   }
-  return results;
-});
+);
+
+// Minimal helper to extract a safe error message from XState error events (no `any`)
+function extractErrorMessageFromEvent(event: unknown): string {
+  // XState onError events commonly provide { data: <error> } or a plain Error
+  if (!event || typeof event !== 'object') return 'Computation failed';
+  const evt = event as { data?: unknown; error?: unknown };
+  const payload = evt.data ?? evt.error ?? undefined;
+
+  if (payload instanceof Error) return payload.message;
+  if (typeof payload === 'string') return payload;
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'message' in payload &&
+    typeof (payload as Record<string, unknown>).message === 'string'
+  ) {
+    return (payload as Record<string, string>).message;
+  }
+  return 'Computation failed';
+}
+
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
   types: {} as {
@@ -202,7 +246,8 @@ export const aiComputationMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            errorMessage: ({ event }) => (event as any).error?.message || 'Computation failed',
+            // Use the helper to avoid `any` and robustly handle different error shapes
+            errorMessage: ({ event }) => extractErrorMessageFromEvent(event),
           }),
         },
       },

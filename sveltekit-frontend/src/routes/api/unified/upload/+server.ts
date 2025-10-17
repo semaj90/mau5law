@@ -1,6 +1,15 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { legalAI } from '$lib/server/unified/legal-ai-service'
+
+// Define a type for the upload result to avoid using 'any'
+type LegalAIUploadResult = {
+  id?: string;
+  fileUrl?: string;
+  embeddingId?: string;
+  cached?: boolean;
+};
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
@@ -23,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const results = []
     for (const file of files) {
       try {
-        const fileBuffer = Buffer.from(await file.arrayBuffer()
+        const fileBuffer = Buffer.from(await file.arrayBuffer());
         const upload = {
           file: fileBuffer,
           fileName: file.name,
@@ -37,16 +46,16 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
         // Use unified service for complete pipeline
-        const result = await legalAI.uploadDocument(upload)
+        const result = (await legalAI.uploadDocument(upload)) as LegalAIUploadResult;
         results.push({
-          id: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).id,
+          id: result.id,
           fileName: file.name,
-          fileUrl: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).fileUrl,
-          embeddingId: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).embeddingId,
-          cached: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).cached,
+          fileUrl: result.fileUrl,
+          embeddingId: result.embeddingId,
+          cached: result.cached,
           size: file.size,
-          type: file.type
-        })
+          type: file.type,
+        });
       } catch (fileError) {
         console.error(`Error processing file ${file.name}:`, fileError)
         results.push({
@@ -58,16 +67,17 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results,
-      processed: results.filter(item => item.length),
-      failed: results.filter(item => item.length)
-    })
+      processed: results.filter(item => !item.error),
+      failed: results.filter(item => item.error),
+    });
   } catch (error) {
     console.error('Unified upload error:', error)
-    return json({
+    return json(
+      {
         error: 'Upload failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, )
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
 }

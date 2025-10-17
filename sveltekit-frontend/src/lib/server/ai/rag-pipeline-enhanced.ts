@@ -435,9 +435,20 @@ class MetricsCollector {
     current.count++;
     current.last = duration;
     this.timings.set(name, current);
-    // In a real system, tags would be used for more granular metrics
-    if (tags) {
-      // console.debug(`Metric: ${name}, Duration: ${duration}ms, Tags: ${JSON.stringify(tags)}`);
+    // Record granular metrics with tags
+    if (tags && Object.keys(tags).length > 0) {
+      // Create a unique metric name for each combination of tags to store granular data
+      const sortedTagKeys = Object.keys(tags).sort();
+      const taggedMetricName = sortedTagKeys.reduce(
+        (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g, '_')}`,
+        name
+      );
+
+      const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0, last: 0 };
+      taggedCurrent.total += duration;
+      taggedCurrent.count++;
+      taggedCurrent.last = duration;
+      this.timings.set(taggedMetricName, taggedCurrent);
     }
   }
 

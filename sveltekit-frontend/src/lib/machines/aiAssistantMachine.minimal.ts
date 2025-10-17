@@ -24,88 +24,95 @@ export type AIAssistantEvent =
   | { type: 'CLEAR_CONVERSATION' }
   | { type: 'done.invoke.checkHealth'; output: unknown };
 
-export const aiAssistantMachine = createMachine(
-  {
-    id: 'aiAssistant',
-    initial: 'idle',
-    context: {
-      response: '',
-      conversation: [],
-      model: 'gemma3-legal',
-      isProcessing: false,
-      error: null
-    } as AIAssistantContext,
-    states: {
-      idle: {
-        on: {
-          SEND_MESSAGE: {
-            target: 'processing',
-            actions: assign({
-              isProcessing: true,
-              error: null
-            })
-          },
-          SET_MODEL: {
-            actions: assign({
-              model: (_, event) => (event as { model: string }).model
-            })
-          },
-          CHECK_SERVICE_HEALTH: {
-            target: 'checkingHealth'
-          },
-          ANALYZE_WITH_CONTEXT7: {
-            target: 'processing'
-          },
-          CLEAR_CONVERSATION: {
-            actions: assign({
-              conversation: [],
-              response: ''
-            })
-          }
-        }
-      },
-      processing: {
-        invoke: {
-          src: fromPromise(async () => {
-            // Simulate processing
-            await new Promise(resolve => setTimeout(resolve, 100));
-            return { success: true };
+// Use generics so XState knows the context and event types
+export const aiAssistantMachine = createMachine({
+  id: 'aiAssistant',
+  initial: 'idle',
+  context: {
+    response: '',
+    conversation: [],
+    model: 'gemma3-legal:latest',
+    isProcessing: false,
+    error: null,
+  } as AIAssistantContext,
+  states: {
+    idle: {
+      on: {
+        SEND_MESSAGE: {
+          target: 'processing',
+          actions: assign({
+            isProcessing: true,
+            error: null,
           }),
-          onDone: {
-            target: 'idle',
-            actions: assign({
-              isProcessing: false,
-              response: 'Processing complete'
-            })
-          },
-          onError: {
-            target: 'idle',
-            actions: assign({
-              isProcessing: false,
-              error: 'Processing failed'
-            })
-          }
-        }
-      },
-      checkingHealth: {
-        invoke: {
-          src: fromPromise(async () => {
-            return { healthy: true };
+        },
+        SET_MODEL: {
+          // Use a non-generic assign and cast the event locally.
+          // Runtime guard ensures only SET_MODEL updates the model property.
+          actions: assign((_ctx, event) => {
+            // Cast via `unknown` first to avoid converting `undefined` directly to a stricter union
+            const e = event as unknown as AIAssistantEvent | { type?: string };
+            if (e && e.type === 'SET_MODEL' && 'model' in e) {
+              return { model: (e as { model: string }).model };
+            }
+            return {};
           }),
-          onDone: {
-            target: 'idle',
-            actions: assign({
-              ollamaClusterHealth: { primary: true }
-            })
-          },
-          onError: {
-            target: 'idle',
-            actions: assign({
-              ollamaClusterHealth: { primary: false }
-            })
-          }
-        }
-      }
-    }
-  }
-);
+        },
+        CHECK_SERVICE_HEALTH: {
+          target: 'checkingHealth',
+        },
+        ANALYZE_WITH_CONTEXT7: {
+          target: 'processing',
+        },
+        CLEAR_CONVERSATION: {
+          actions: assign({
+            conversation: [],
+            response: '',
+          }),
+        },
+      },
+    },
+    processing: {
+      invoke: {
+        src: fromPromise(async () => {
+          // Simulate processing
+          await new Promise(resolve => setTimeout(resolve, 100));
+          return { success: true };
+        }),
+        onDone: {
+          target: 'idle',
+          actions: assign({
+            isProcessing: false,
+            response: 'Processing complete',
+          }),
+        },
+        onError: {
+          target: 'idle',
+          actions: assign({
+            isProcessing: false,
+            error: 'Processing failed',
+          }),
+        },
+      },
+    },
+    checkingHealth: {
+      invoke: {
+        src: fromPromise(async () => {
+          return { healthy: true };
+        }),
+        onDone: {
+          target: 'idle',
+          actions: assign({
+            ollamaClusterHealth: { primary: true },
+          }),
+        },
+        onError: {
+          target: 'idle',
+          actions: assign({
+            ollamaClusterHealth: { primary: false },
+          }),
+        },
+      },
+    },
+  },
+});
+
