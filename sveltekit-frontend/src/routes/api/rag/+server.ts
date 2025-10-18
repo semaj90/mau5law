@@ -12,108 +12,181 @@ import type { RequestHandler } from './$types.js'
  * /api/rag/status - Service health check
  */
 import { summarizeWithQueue } from "$lib/server/pgai"
-import { error, json } from "@sveltejs/kit"
-import crypto from "crypto"
-import { URL } from "url"
+import { error, json } from '@sveltejs/kit';
+import { URL } from 'url';
 // Enhanced RAG Backend Configuration
-const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000"
-const RAG_TIMEOUT = 30000
+const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';
+const RAG_TIMEOUT = 30000;
+
+// New interfaces for RAG Backend responses
+interface RagSearchResult {
+  results?: unknown[]; // Consider defining a more specific type for search results if possible
+  metadata?: Record<string, unknown>;
+  total?: number;
+  analysis?: unknown;
+  summary?: unknown;
+  message?: string;
+}
+
+interface RagAnalysisResult {
+  analysis?: unknown; // Consider defining a more specific type for analysis if possible
+  metadata?: Record<string, unknown>;
+  message?: string;
+}
+
+interface RagSummarizeResult {
+  summary?: string;
+  metadata?: Record<string, unknown>;
+  message?: string;
+}
+
+interface RagHealthStatus {
+  status: string;
+  message?: string;
+}
+
+interface RagDetailedHealthMetrics {
+  health: {
+    status: string;
+    components: {
+      system?: {
+        details?: Record<string, unknown>;
+      };
+      [key: string]: unknown;
+    };
+  };
+  responseTime?: number;
+}
+
+interface RagStatsResult {
+  stats: Record<string, unknown>;
+}
+
+interface RagCacheResult {
+  message?: string;
+  pattern?: string;
+  result?: unknown; // For refresh operation
+  stats?: Record<string, unknown>; // For cache stats operation
+}
+
 /*
  * Forward request to Enhanced RAG Backend with error handling and logging
  */
-async function forwardToRAGBackend(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<any> {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT)
-  const startTime = Date.now()
+async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  // Use generic type T
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT);
+  const startTime = Date.now();
   try {
     const response = await fetch(`${RAG_BACKEND_URL}${endpoint}`, {
       ...options,
       signal: controller.signal,
       headers: {
-        "User-Agent": "SvelteKit-Frontend/1.0.0",
-        ...options.headers
-      }
-    })
-    clearTimeout(timeoutId)
-    const duration = Date.now() - startTime
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
-      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error")
+        'User-Agent': 'SvelteKit-Frontend/1.0.0',
+        ...options.headers,
+      },
+    });
+    clearTimeout(timeoutId);
+    const duration = Date.now() - startTime;
+    if (!response.ok) {
+      // Removed 'any' type assertion
+      const errorText = await response.text().catch(() => 'Unknown error');
       // Log failed API call
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
-        status: (response as { ok?: any; text?: any; status?: any; json?: any }).status,
-        error: errorText
-      })
-      throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`)
+        status: response.status,
+        error: errorText,
+      });
+      throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
     }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
+    const result: T = await response.json(); // Cast to generic type T
     // Log successful API call
     console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
       endpoint,
-      resultKeys: Object.keys(result)
-    })
-    return result
-  } catch (err: any) {
-    clearTimeout(timeoutId)
-    const duration = Date.now() - startTime
+      resultKeys: Object.keys(result as object), // Cast to object for Object.keys
+    });
+    return result;
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    clearTimeout(timeoutId);
+    const duration = Date.now() - startTime;
     // Log error
-    console.error(`RAG Backend API call error [${duration}ms]:`, {
-      endpoint,
-      error: err.message
-    })
-    if (err.name === "AbortError") {
-      throw new Error("RAG Backend request timed out")
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      console.error(`RAG Backend API call error [${duration}ms]:`, {
+        endpoint,
+        error: err.message,
+      });
+      if (err.name === 'AbortError') {
+        throw new Error('RAG Backend request timed out');
+      }
+      throw err;
+    } else {
+      console.error(`RAG Backend API call unknown error [${duration}ms]:`, {
+        endpoint,
+        error: String(err),
+      });
+      throw new Error(`An unknown error occurred: ${String(err)}`);
     }
-    throw err
   }
 }
 export const POST: RequestHandler = async ({ request, url }) => {
-  const action = url.searchParams.get("action") || "search"
+  const action = url.searchParams.get('action') || 'search';
   try {
     switch (action) {
-      case "search":
-        return await handleSearch(request)
-      case "analyze":
-        return await handleAnalyze(request)
-      case "summarize":
-        return await handleSummarize(request)
-      case "status":
-        return await handleStatus()
-      case "queue-summarize":
-        return await handleQueueSummarize(request)
+      case 'search':
+        return await handleSearch(request);
+      case 'analyze':
+        return await handleAnalyze(request);
+      case 'summarize':
+        return await handleSummarize(request);
+      case 'status':
+        return await handleStatus();
+      case 'queue-summarize':
+        return await handleQueueSummarize(request);
       default:
-        return json({ error: "Invalid action" }, { status: 400 })
+        return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (err: any) {
-    console.error("Enhanced RAG API Error:", err)
-    return json()
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('Enhanced RAG API Error:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    return json(
       {
-        error: err.message || "Unknown error",
+        error: errorMessage,
         action,
-        timestamp,: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 /*
  * Handle document upload via Enhanced RAG Backend
  */
 // Archived: handleUpload moved to archived-handlers.ts
-async function handleQueueSummarize(request: Request): Promise<any> {
+async function handleQueueSummarize(request: Request): Promise<Response> {
+  // Specify return type
   try {
-    const { content, documentId } = await request.json()
+    const { content, documentId } = await request.json();
     if (!content || !documentId) {
-      throw error(400, "content and documentId are required")
+      throw error(400, 'content and documentId are required');
     }
-    const result = await summarizeWithQueue(content, documentId)
-    return json({ success: true, data: result })
-  } catch (err: any) {
-    console.error("queue-summarize error:", err)
-    throw error(500, `Queue summarize failed: ${err.message}`)
+    const result = await summarizeWithQueue(content, documentId);
+    return json({ success: true, data: result });
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('queue-summarize error:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `Queue summarize failed: ${errorMessage}`);
   }
 }
 /*
@@ -123,11 +196,12 @@ async function handleQueueSummarize(request: Request): Promise<any> {
 /*
  * Handle enhanced search (vector/hybrid/chunk) with local fallback
  */
-async function handleSearch(request: Request): Promise<any> {
+async function handleSearch(request: Request): Promise<Response> {
+  // Specify return type
   try {
     const {
       query,
-      searchType = "hybrid",
+      searchType = 'hybrid',
       caseId,
       documentTypes,
       limit = 10,
@@ -136,17 +210,18 @@ async function handleSearch(request: Request): Promise<any> {
       dateRange,
       confidenceMin,
       model,
-      includeMetadata = true
-    } = await request.json()
+      includeMetadata = true,
+    } = await request.json();
     if (!query) {
-      throw error(400, "Query is required")
+      throw error(400, 'Query is required');
     }
     // Try Enhanced RAG Backend first
     try {
-      console.log('Attempting search via Enhanced RAG Backend...')
-      const result = await forwardToRAGBackend("/api/v1/rag/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      console.log('Attempting search via Enhanced RAG Backend...');
+      const result = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
+        // Use specific type
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
           searchType,
@@ -158,20 +233,26 @@ async function handleSearch(request: Request): Promise<any> {
           dateRange,
           confidenceMin,
           model,
-          includeMetadata
-        })
-      })
+          includeMetadata,
+        }),
+      });
       return json({
         success: true,
         query,
         searchType,
-        results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
-        metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
-        total: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).total || (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results?.length || 0,
-        source: 'rag-backend'
-      })
-    } catch (backendError: any) {
-      console.warn('RAG Backend search failed, falling back to local search:', backendError.message)
+        results: result.results, // Use typed result
+        metadata: result.metadata, // Use typed result
+        total: result.total || result.results?.length || 0, // Use typed result
+        source: 'rag-backend',
+      });
+    } catch (backendError: unknown) {
+      // Use unknown for catch block
+      let backendErrorMessage = 'Unknown backend error';
+      if (backendError instanceof Error) {
+        // Type narrowing for Error
+        backendErrorMessage = backendError.message;
+      }
+      console.warn('RAG Backend search failed, falling back to local search:', backendErrorMessage);
       // Fallback to local search API
       const localSearchResponse = await fetch(new URL('/api/rag/search', request.url), {
         method: 'POST',
@@ -187,13 +268,13 @@ async function handleSearch(request: Request): Promise<any> {
           confidenceMin,
           model,
           includeMetadata,
-          includeContent
-        })
-      })
+          includeContent,
+        }),
+      });
       if (!localSearchResponse.ok) {
-        throw new Error(`Local search also failed: ${localSearchResponse.status}`)
+        throw new Error(`Local search also failed: ${localSearchResponse.status}`);
       }
-      const localResult = await localSearchResponse.json()
+      const localResult = await localSearchResponse.json();
       return json({
         success: true,
         query,
@@ -204,71 +285,89 @@ async function handleSearch(request: Request): Promise<any> {
         source: 'local-search',
         fallback: true,
         warning: 'Used local search due to backend unavailability',
-      })
+      });
     }
-  } catch (err: any) {
-    console.error("All search methods failed:", err)
-    throw error(500, `Search failed: ${err.message}`)
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('All search methods failed:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `Search failed: ${errorMessage}`);
   }
 }
 /*
  * Handle AI text analysis
  */
-async function handleAnalyze(request: Request): Promise<any> {
+async function handleAnalyze(request: Request): Promise<Response> {
+  // Specify return type
   try {
-    const {
-      text,
-      analysisType = "general",
-      options = {}
-    } = await request.json()
+    const { text, analysisType = 'general', options = {} } = await request.json();
     if (!text) {
-      throw error(400, "Text is required for analysis")
+      throw error(400, 'Text is required for analysis');
     }
-    const result = await forwardToRAGBackend("/api/v1/rag/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const result = await forwardToRAGBackend<RagAnalysisResult>('/api/v1/rag/analyze', {
+      // Use specific type
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
         analysisType,
-        options
-      })
-    })
+        options,
+      }),
+    });
     return json({
-      success: true,;
-      analysis: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).analysis,
-      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
-    })
-  } catch (err: any) {
-    console.error("Analysis error:", err)
-    throw error(500, `Text analysis failed: ${err.message}`)
+      success: true,
+      analysis: result.analysis, // Use typed result
+      metadata: result.metadata, // Use typed result
+    });
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('Analysis error:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `Text analysis failed: ${errorMessage}`);
   }
 }
 /*
  * Handle AI text summarization
  */
-async function handleSummarize(request: Request): Promise<any> {
+async function handleSummarize(request: Request): Promise<Response> {
+  // Specify return type
   try {
-    const { text, length = "medium", options = {} } = await request.json()
+    const { text, length = 'medium', options = {} } = await request.json();
     if (!text) {
-      throw error(400, "Text is required for summarization")
+      throw error(400, 'Text is required for summarization');
     }
-    const result = await forwardToRAGBackend("/api/v1/rag/summarize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const result = await forwardToRAGBackend<RagSummarizeResult>('/api/v1/rag/summarize', {
+      // Use specific type
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
         length,
-        options
-      })
-    })
+        options,
+      }),
+    });
     return json({
-      success: true,;
-      summary: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).summary,
-      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
-    })
-  } catch (err: any) {
-    console.error("Summarization error:", err)
-    throw error(500, `Text summarization failed: ${err.message}`)
+      success: true,
+      summary: result.summary, // Use typed result
+      metadata: result.metadata, // Use typed result
+    });
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('Summarization error:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `Text summarization failed: ${errorMessage}`);
   }
 }
 /*
@@ -282,185 +381,224 @@ async function handleSummarize(request: Request): Promise<any> {
 /*
  * Handle Enhanced RAG Backend health check
  */
-async function handleStatus(): Promise<any> {
+async function handleStatus(): Promise<Response> {
+  // Specify return type
   try {
-    const [healthResult, metricsResult, statsResult] = await Promise.allSettled(
-      [
-        forwardToRAGBackend("/health"),
-        forwardToRAGBackend("/health/detailed"),
-        forwardToRAGBackend("/api/v1/rag/stats")
-      ]
-    )
-    const health =
-      healthResult.status === "fulfilled" ? healthResult.value: null
-    const metrics =
-      metricsResult.status === "fulfilled" ? metricsResult.value: null
-    const stats = statsResult.status === "fulfilled" ? statsResult.value: null
-    const isHealthy = health?.status === "healthy"
+    const [healthResult, metricsResult, statsResult] = await Promise.allSettled([
+      forwardToRAGBackend<RagHealthStatus>('/health'), // Use specific type
+      forwardToRAGBackend<RagDetailedHealthMetrics>('/health/detailed'), // Use specific type
+      forwardToRAGBackend<RagStatsResult>('/api/v1/rag/stats'), // Use specific type
+    ]);
+    const health = healthResult.status === 'fulfilled' ? healthResult.value : null;
+    const metrics = metricsResult.status === 'fulfilled' ? metricsResult.value : null;
+    const stats = statsResult.status === 'fulfilled' ? statsResult.value : null;
+    const isHealthy = health?.status === 'healthy' && !!metrics;
+
+    let status = health?.status || 'unknown';
+    if (!isHealthy && status === 'healthy') {
+      status = 'degraded';
+    }
+
     return json({
       success: true,
       backend: {
         url: RAG_BACKEND_URL,
         healthy: isHealthy,
-        status: health?.status || "unknown",
+        status: status,
       },
       services: metrics?.health?.components || {},
       ragStats: stats?.stats || {},
       systemMetrics: metrics?.health?.components?.system?.details || {},
       timestamp: new Date().toISOString(),
-      responseTime: metrics?.responseTime || null
-    })
-  } catch (err: any) {
-    console.error("Status check error:", err)
+      responseTime: metrics?.responseTime || null,
+    });
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('Status check error:', err);
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
     return json({
       success: false,
       backend: {
         url: RAG_BACKEND_URL,
         healthy: false,
-        status: "unreachable",
+        status: 'unreachable',
       },
-      error: err.message,
-      timestamp: new Date().toISOString()
-    })
+      error: errorMessage,
+      timestamp: new Date().toISOString(),
+    });
   }
 }
 /*
  * GET handler for status and stats
  */
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get("action")
+  const action = url.searchParams.get('action');
   // const endpoint = url.searchParams.get("endpoint"); // unused
   try {
     switch (action) {
-      case "status":
-        return await handleStatus()
-      case "stats": {
-        const stats = await forwardToRAGBackend("/api/v1/rag/stats")
-        return json({ success: true, stats: stats.stats })
+      case 'status':
+        return await handleStatus();
+      case 'stats': {
+        const stats = await forwardToRAGBackend<RagStatsResult>('/api/v1/rag/stats'); // Use specific type
+        return json({ success: true, stats: stats.stats });
       }
-      case "health": {
-        const health = await forwardToRAGBackend("/health")
-        return json({ success: true, health })
+      case 'health': {
+        const health = await forwardToRAGBackend<RagHealthStatus>('/health'); // Use specific type
+        return json({ success: true, health });
       }
-      case "metrics": {
-        const metrics = await forwardToRAGBackend("/health/detailed")
-        return json({ success: true, metrics })
+      case 'metrics': {
+        const metrics = await forwardToRAGBackend<RagDetailedHealthMetrics>('/health/detailed'); // Use specific type
+        return json({ success: true, metrics });
       }
-      case "search": {
-        const query = url.searchParams.get("query")
-        const searchType = url.searchParams.get("searchType") || "hybrid"
-        const limit = parseInt(url.searchParams.get("limit") || "10")
-        const threshold = parseFloat(url.searchParams.get("threshold") || "0.7")
+      case 'search': {
+        const query = url.searchParams.get('query');
+        const searchType = url.searchParams.get('searchType') || 'hybrid';
+        const limit = parseInt(url.searchParams.get('limit') || '10');
+        const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
         if (!query) {
-          throw error(400, "Query parameter is required")
+          throw error(400, 'Query parameter is required');
         }
         // Try Enhanced RAG Backend first, fallback to local search
         try {
-          const searchResult = await forwardToRAGBackend("/api/v1/rag/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const searchResult = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
+            // Use specific type
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               query,
               searchType,
               limit,
               threshold,
-              includeContent: true
-            })
-          })
+              includeContent: true,
+            }),
+          });
           return json({
             success: true,
             query,
             results: searchResult.results,
             total: searchResult.total,
-            source: 'rag-backend'
-          })
-        } catch (backendError: any) {
-          console.warn('RAG Backend GET search failed, using local search:', backendError.message)
-          // Fallback to local search API
-          const localSearchUrl = new URL('/api/rag/search', url.origin)
-          localSearchUrl.searchParams.set('action', 'search')
-          localSearchUrl.searchParams.set('query', query)
-          localSearchUrl.searchParams.set('searchType', searchType)
-          localSearchUrl.searchParams.set('limit', limit.toString()
-          const localResponse = await fetch(localSearchUrl, { method: 'GET' })
-          if (!localResponse.ok) {
-            throw new Error(`Local search failed: ${localResponse.status}`)
+            source: 'rag-backend',
+          });
+        } catch (backendError: unknown) {
+          // Use unknown for catch block
+          let backendErrorMessage = 'Unknown backend error';
+          if (backendError instanceof Error) {
+            // Type narrowing for Error
+            backendErrorMessage = backendError.message;
           }
-          const localResult = await localResponse.json()
+          console.warn('RAG Backend GET search failed, using local search:', backendErrorMessage);
+          // Fallback to local search API
+          const localSearchUrl = new URL('/api/rag/search', url.origin);
+          localSearchUrl.searchParams.set('action', 'search');
+          localSearchUrl.searchParams.set('query', query);
+          localSearchUrl.searchParams.set('searchType', searchType);
+          localSearchUrl.searchParams.set('limit', limit.toString());
+          const localResponse = await fetch(localSearchUrl, { method: 'GET' });
+          if (!localResponse.ok) {
+            throw new Error(`Local search failed: ${localResponse.status}`);
+          }
+          const localResult = await localResponse.json();
           return json({
             success: true,
             query,
             results: localResult.results,
             total: localResult.results?.length || 0,
             source: 'local-search',
-            fallback: true
-          })
+            fallback: true,
+          });
         }
       }
       default:
-        throw error(400, `Invalid action: ${action || "none"}`)
+        throw error(400, `Invalid action: ${action || 'none'}`);
     }
-  } catch (err: any) {
-    console.error(`GET /${action} error:`, err)
-    if (err.status) {
-      throw err
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error(`GET /${action} error:`, err);
+    // Check if err is an instance of HttpError from SvelteKit or has a status property
+    if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
+      throw err; // Re-throw SvelteKit HttpError
     }
-    throw error(500, `GET operation failed: ${err.message}`)
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `GET operation failed: ${errorMessage}`);
   }
-}
+};
 /*
  * PATCH handler for cache operations
  */
 export const PATCH: RequestHandler = async ({ url }) => {
   try {
-    const operation = url.searchParams.get("operation") || "refresh"
+    const operation = url.searchParams.get('operation') || 'refresh';
     switch (operation) {
-      case "refresh": {
-        const refreshResult = await forwardToRAGBackend("/api/v1/rag/cache", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "refresh" })
-        })
-        return json({ success: true, result: refreshResult })
+      case 'refresh': {
+        const refreshResult = await forwardToRAGBackend<RagCacheResult>('/api/v1/rag/cache', {
+          // Use specific type
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'refresh' }),
+        });
+        return json({ success: true, result: refreshResult.result }); // Use typed result
       }
-      case "stats": {
-        const cacheStats = await forwardToRAGBackend("/api/v1/rag/stats")
-        return json({ success: true, stats: cacheStats.stats })
+      case 'stats': {
+        const cacheStats = await forwardToRAGBackend<RagCacheResult>('/api/v1/rag/stats'); // Use specific type
+        return json({ success: true, stats: cacheStats.stats }); // Use typed result
       }
       default:
-        throw error(400, `Invalid operation: ${operation}`)
+        throw error(400, `Invalid operation: ${operation}`);
     }
-  } catch (err: any) {
-    console.error("PATCH operation error:", err)
-    if (err.status) {
-      throw err
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('PATCH operation error:', err);
+    // Check if err is an instance of HttpError from SvelteKit or has a status property
+    if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
+      throw err; // Re-throw SvelteKit HttpError
     }
-    throw error(500, `PATCH operation failed: ${err.message}`)
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `PATCH operation failed: ${errorMessage}`);
   }
-}
+};
 /*
  * DELETE handler for cache clearing
  */
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const pattern = url.searchParams.get("pattern")
-    const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : ""}`
-    const result = await forwardToRAGBackend(cacheUrl, {
-      method: "DELETE"
-    })
+    const pattern = url.searchParams.get('pattern');
+    const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : ''}`;
+    const result = await forwardToRAGBackend<RagCacheResult>(cacheUrl, {
+      // Use specific type
+      method: 'DELETE',
+    });
     return json({
-      success: true,;
-      message: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).message || "Cache cleared successfully",
-      pattern: pattern || "all"
-    })
-  } catch (err: any) {
-    console.error("Cache clear error:", err)
-    if (err.status) {
-      throw err
+      success: true,
+      message: result.message || 'Cache cleared successfully', // Use typed result
+      pattern: pattern || 'all',
+    });
+  } catch (err: unknown) {
+    // Use unknown for catch block
+    console.error('Cache clear error:', err);
+    // Check if err is an instance of HttpError from SvelteKit or has a status property
+    if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
+      throw err; // Re-throw SvelteKit HttpError
     }
-    throw error(500, `Cache clear failed: ${err.message}`)
+    let errorMessage = 'Unknown error';
+    if (err instanceof Error) {
+      // Type narrowing for Error
+      errorMessage = err.message;
+    }
+    throw error(500, `Cache clear failed: ${errorMessage}`);
   }
-}
+};
 /*
  * Handle pgai document processing using local Gemma3 models
  */
@@ -476,4 +614,4 @@ export const DELETE: RequestHandler = async ({ url }) => {
 /*
  * Handle pgai information extraction
  */
-// Archived: handlePgaiExtraction moved to archived-handlers.ts;
+// Archived: handlePgaiExtraction moved to archived-handlers.ts

@@ -1,5 +1,5 @@
 // Move/import Drizzle pg-core symbols near the top of the file
-import { pgTable, text, uuid, timestamp, vector } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, timestamp, text, boolean } from 'drizzle-orm/pg-core';
 
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
@@ -56,4 +56,15 @@ export const documents = pgTable('documents', {
   content: text('content'),
   embedding: vector('embedding', { dimensions: 1536 }),
   createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const sessions = pgTable('sessions', {
+  id: uuid('id').primaryKey(), // Remove .default(sql`gen_random_uuid()`) or similar
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date',
+  }).notNull(),
 });

@@ -5,7 +5,7 @@
   // Removed direct import of ragSyncAgent as its lifecycle will be managed by xstateIntegration
   // import { ragSyncAgent } from '$lib/agents/rag-sync-agent';
   import GlobalAIAssistantButton from '$lib/components/GlobalAIAssistantButton.svelte';
-  import { loadSession } from '$lib/stores/unified';
+  import * as unified from '$lib/stores/unified';
   // Global error handler (toast UI) - displays structured API errors
   import ErrorHandler from '$lib/components/ErrorHandler.svelte';
   import 'nes.css/css/nes.min.css';
@@ -26,37 +26,31 @@
       // Support multiple possible exports:
       // - a callable initializer (old default export function)
       // - a store object with common initializer names: load, initialize, loadSession
-      if (typeof loadSession === 'function') {
-        await (loadSession as unknown as () => Promise<void>)();
-      } else if (typeof (loadSession as any).load === 'function') {
-        await (loadSession as any).load();
-      } else if (typeof (loadSession as any).initialize === 'function') {
-        await (loadSession as any).initialize();
-      } else if (typeof (loadSession as any).loadSession === 'function') {
-        await (loadSession as any).loadSession();
+      if (typeof unified === 'function') {
+        await (unified as unknown as () => Promise<void>)();
+      } else if (typeof (unified as any).load === 'function') {
+        await (unified as any).load();
+      } else if (typeof (unified as any).initialize === 'function') {
+        await (unified as any).initialize();
+      } else if (typeof (unified as any).loadSession === 'function') {
+        await (unified as any).loadSession();
       } else {
         // No initializer found; skip quietly.
-        console.debug('loadSession: no callable initializer found on import; skipping.');
+        console.debug('unified store: no callable initializer found on import; skipping.');
       }
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.warn('loadSession failed:', err);
+      console.warn('unified store initialization failed:', err);
     }
 
     // Start background sync agent via central XState coordinator if available
     try {
-      // Use runtime lookup to avoid TypeScript errors when the property does not exist.
-      const sendFn =
-        (xstateIntegration as any)?.['sendEvent'] ??
-        (xstateIntegration as any)?.['send'] ??
-        (xstateIntegration as any)?.['sendToMachine'];
-
-      if (typeof sendFn === 'function') {
-        sendFn.call(xstateIntegration, RAG_SYNC_AGENT_MACHINE_ID, { type: 'START_AGENT' });
+      if (typeof (xstateIntegration as any).sendEvent === 'function') {
+        (xstateIntegration as any).sendEvent(RAG_SYNC_AGENT_MACHINE_ID, { type: 'START_AGENT' });
         agentStarted = true;
       } else {
         // eslint-disable-next-line no-console
-        console.warn('xstateIntegration: no send function available; cannot start RAG sync agent.');
+        console.warn('xstateIntegration: sendEvent function not available; cannot start RAG sync agent.');
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -68,17 +62,12 @@
     if (!agentStarted) return;
 
     try {
-      const sendFn =
-        (xstateIntegration as any)?.['sendEvent'] ??
-        (xstateIntegration as any)?.['send'] ??
-        (xstateIntegration as any)?.['sendToMachine'];
-
-      if (typeof sendFn === 'function') {
-        sendFn.call(xstateIntegration, RAG_SYNC_AGENT_MACHINE_ID, { type: 'STOP_AGENT' });
+      if (typeof (xstateIntegration as any).sendEvent === 'function') {
+        (xstateIntegration as any).sendEvent(RAG_SYNC_AGENT_MACHINE_ID, { type: 'STOP_AGENT' });
         agentStarted = false;
       } else {
         // eslint-disable-next-line no-console
-        console.warn('xstateIntegration: no send function available; cannot stop RAG sync agent.');
+        console.warn('xstateIntegration: sendEvent function not available; cannot stop RAG sync agent.');
       }
     } catch (e) {
       // eslint-disable-next-line no-console
