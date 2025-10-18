@@ -167,8 +167,9 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Search -->
         <div>
-          <label class="block text-sm font-medium mb-2">Search Services</label>
+          <label for="service-search" class="block text-sm font-medium mb-2">Search Services</label>
           <input
+            id="service-search"
             type="text"
             placeholder="Filter services..."
             bind:value={searchQuery}
@@ -178,8 +179,9 @@
 
         <!-- Type Filter -->
         <div>
-          <label class="block text-sm font-medium mb-2">Service Type</label>
+          <label for="service-type" class="block text-sm font-medium mb-2">Service Type</label>
           <select
+            id="service-type"
             bind:value={filterType}
             class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
           >

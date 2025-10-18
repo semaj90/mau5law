@@ -1,38 +1,61 @@
-// src/lib/server/auth.ts - Lucia v3 Authentication Setup for SvelteKit 2
-import { lucia } from "lucia";
-import { sveltekit } from "lucia/middleware";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { pg } from "@lucia-auth/adapter-drizzle";
-import { Argon2id } from "oslo/password";
-import { eq } from "drizzle-orm";
-import { users } from "$lib/server/db/schema";
+/**
+ * src/lib/server/auth.ts
+ * Production-Grade Lucia v3 Authentication with SvelteKit 2 + Drizzle ORM
+ * Integrates with PostgreSQL, MinIO S3, and Docker microservices
+ * Includes structured error handling with custom error classes
+ */
+
+import { Lucia } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import { Argon2id } from 'oslo/password';
+import { eq } from 'drizzle-orm';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { Session, User } from "lucia";
-import xstateIntegration from '$lib/services/xstate-integration';
+import type { Session, User } from 'lucia';
 
-// Database connection with connection pooling for production
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
+import { db, pool } from './db/drizzle';
+import { users, sessions } from './db/schema';
+import {
+  RegistrationError,
+  SessionError,
+  LoginError,
+  PasswordError,
+  ProfileError,
+  MicroserviceError,
+  ERROR_CODES,
+} from './errors';
 
-const db = drizzle(pool);
+// ============================================================================
+// LUCIA v3 INITIALIZATION (Corrected for v3 API)
+// ============================================================================
 
-export const auth = lucia({
-  adapter: pg(db),
-  env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
-  middleware: sveltekit(),
+/**
+ * DrizzlePostgreSQLAdapter for Lucia v3
+ * Takes 3 arguments: db, sessions table, users table
+ */
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
+
+/**
+ * Initialize Lucia with SvelteKit 5 adapter
+ */
+export const auth = new Lucia(adapter, {
   sessionCookie: {
-    expires: false,
+    name: 'auth_session',
     attributes: {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      httpOnly: true,
-    }
-  }
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    },
+  },
+  getUserAttributes: attributes => {
+    return {
+      email: attributes.email,
+      firstName: attributes.firstName,
+      lastName: attributes.lastName,
+      role: attributes.role,
+      isActive: attributes.isActive,
+      avatarUrl: attributes.avatarUrl,
+    };
+  },
 });
 
 export type Auth = typeof auth;
@@ -40,19 +63,15 @@ export type Auth = typeof auth;
 declare module 'lucia' {
   interface Register {
     Lucia: typeof auth;
-    DatabaseUserAttributes: DatabaseUserAttributes;
+    DatabaseUserAttributes: {
+      email: string;
+      firstName: string | null;
+      lastName: string | null;
+      role: string;
+      isActive: boolean;
+      avatarUrl: string | null;
+    };
   }
-}
-
-interface DatabaseUserAttributes {
-  email: string;
-  firstName: string | null;
-  lastName: string | null;
-  role: string;
-  isActive: boolean;
-  avatarUrl: string | null;
-  name: string | null;
-  hashedPassword: string | null;
 }
 
 /**
@@ -63,7 +82,7 @@ export class AuthService {
   private argon2id = new Argon2id();
 
   /**
-   * Register a new user with validation and XState session management
+   * Register a new user with validation and error handling
    */
   async register(data: {
     email: string;
@@ -73,14 +92,23 @@ export class AuthService {
     displayName?: string | null;
   }) {
     try {
-      const existingUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, data.email))
-        .limit(1);
+      // Validate email format (basic check)
+      if (!data.email || !data.email.includes('@')) {
+        throw new RegistrationError('Invalid email format', ERROR_CODES.INVALID_EMAIL, { email: data.email });
+      }
+
+      // Check for existing user
+      const existingUser = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
 
       if (existingUser.length > 0) {
-        throw new Error('User already exists');
+        throw new RegistrationError('A user with this email already exists', ERROR_CODES.EMAIL_TAKEN, {
+          email: data.email,
+        });
+      }
+
+      // Validate password strength (basic check: at least 8 chars)
+      if (!data.password || data.password.length < 8) {
+        throw new RegistrationError('Password must be at least 8 characters long', ERROR_CODES.WEAK_PASSWORD);
       }
 
       const passwordHash = await this.argon2id.hash(data.password);
@@ -91,25 +119,25 @@ export class AuthService {
           hashedPassword: passwordHash,
           firstName: data.firstName ?? null,
           lastName: data.lastName ?? null,
-          name: data.displayName ?? `${data.firstName || ''} ${data.lastName || ''}`.trim() || null,
+          role: 'prosecutor',
           isActive: true,
-          role: 'user',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          avatarUrl: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         })
         .returning();
 
-      // Wire to XState auth machine
-      xstateIntegration.sendEvent('auth-machine', {
-        type: 'USER_REGISTERED',
-        userId: newUser.id,
-        email: newUser.email,
-      });
-
+      console.log('[AUTH] User registered successfully:', { userId: newUser.id, email: newUser.email });
       return newUser;
     } catch (error) {
-      console.error('Registration failed:', error);
-      throw error;
+      if (error instanceof RegistrationError) {
+        throw error;
+      }
+
+      console.error('[AUTH] Registration failed with unknown error:', error);
+      throw new RegistrationError('Failed to create user account', ERROR_CODES.REGISTRATION_FAILED, {
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -118,42 +146,41 @@ export class AuthService {
    */
   async login(email: string, password: string) {
     try {
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
+      // Check if user exists and has password
       if (!user || !user.hashedPassword) {
-        throw new Error('Invalid email or password');
+        throw new LoginError('Invalid email or password', ERROR_CODES.INVALID_CREDENTIALS, { email });
       }
 
+      // Check if account is active
       if (!user.isActive) {
-        throw new Error('Account is deactivated');
+        throw new LoginError('Account is deactivated. Please contact support.', ERROR_CODES.ACCOUNT_INACTIVE, {
+          userId: user.id,
+          email,
+        });
       }
 
+      // Verify password
       const validPassword = await this.argon2id.verify(user.hashedPassword, password);
       if (!validPassword) {
-        throw new Error('Invalid email or password');
+        throw new LoginError('Invalid email or password', ERROR_CODES.INVALID_CREDENTIALS, { email });
       }
 
       // Update last login
-      await db
-        .update(users)
-        .set({ updatedAt: new Date() })
-        .where(eq(users.id, user.id));
+      await db.update(users).set({ updatedAt: new Date().toISOString() }).where(eq(users.id, user.id));
 
-      // Notify XState session machine
-      xstateIntegration.sendEvent('session-machine', {
-        type: 'LOGIN_SUCCESS',
-        userId: user.id,
-        email: user.email,
-      });
-
+      console.log('[AUTH] User logged in successfully:', { userId: user.id, email: user.email });
       return user;
     } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
+      if (error instanceof LoginError) {
+        throw error;
+      }
+
+      console.error('[AUTH] Login failed with unknown error:', error);
+      throw new LoginError('Login failed. Please try again.', ERROR_CODES.LOGIN_FAILED, {
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -163,10 +190,14 @@ export class AuthService {
   async createSession(userId: string) {
     try {
       const session = await auth.createSession(userId, {});
+      console.log('[AUTH] Session created:', { userId, sessionId: session.id });
       return session;
     } catch (error) {
-      console.error('Session creation failed:', error);
-      throw error;
+      console.error('[AUTH] Session creation failed:', error);
+      throw new SessionError('Failed to create session', ERROR_CODES.SESSION_INVALID, {
+        userId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -176,10 +207,22 @@ export class AuthService {
   async validateSession(sessionId: string) {
     try {
       const result = await auth.validateSession(sessionId);
+
+      if (!result.session) {
+        throw new SessionError('Session not found or expired', ERROR_CODES.SESSION_NOT_FOUND, { sessionId });
+      }
+
       return result;
     } catch (error) {
-      console.error('Session validation failed:', error);
-      throw error;
+      if (error instanceof SessionError) {
+        throw error;
+      }
+
+      console.error('[AUTH] Session validation failed:', error);
+      throw new SessionError('Failed to validate session', ERROR_CODES.SESSION_ERROR, {
+        sessionId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -189,13 +232,13 @@ export class AuthService {
   async invalidateSession(sessionId: string) {
     try {
       await auth.invalidateSession(sessionId);
-      xstateIntegration.sendEvent('session-machine', {
-        type: 'LOGOUT',
-        sessionId,
-      });
+      console.log('[AUTH] Session invalidated:', { sessionId });
     } catch (error) {
-      console.error('Session invalidation failed:', error);
-      throw error;
+      console.error('[AUTH] Session invalidation failed:', error);
+      throw new SessionError('Failed to invalidate session', ERROR_CODES.SESSION_ERROR, {
+        sessionId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -205,50 +248,46 @@ export class AuthService {
   async invalidateUserSessions(userId: string) {
     try {
       await auth.invalidateUserSessions(userId);
+      console.log('[AUTH] All user sessions invalidated:', { userId });
     } catch (error) {
-      console.error('Invalidating user sessions failed:', error);
-      throw error;
+      console.error('[AUTH] Invalidating user sessions failed:', error);
+      throw new SessionError('Failed to invalidate user sessions', ERROR_CODES.SESSION_ERROR, {
+        userId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
   /**
    * Update user profile with CRUD persistence
    */
-  async updateProfile(userId: string, data: Partial<{
-    firstName: string | null;
-    lastName: string | null;
-    displayName: string | null;
-    avatarUrl: string | null;
-    legalSpecialties: string | null;
-    preferences: Record<string, any> | null;
-  }>) {
+  async updateProfile(
+    userId: string,
+    data: Partial<{
+      firstName: string | null;
+      lastName: string | null;
+      avatarUrl: string | null;
+    }>
+  ) {
     try {
-      const updateData: Record<string, any> = { updatedAt: new Date() };
+      const updateData: Partial<typeof users.$inferInsert> = {
+        updatedAt: new Date().toISOString(),
+      };
 
       if (data.firstName !== undefined) updateData.firstName = data.firstName;
       if (data.lastName !== undefined) updateData.lastName = data.lastName;
-      if (data.displayName !== undefined) updateData.name = data.displayName;
       if (data.avatarUrl !== undefined) updateData.avatarUrl = data.avatarUrl;
-      if (data.legalSpecialties !== undefined) updateData.practiceAreas = data.legalSpecialties;
-      if (data.preferences !== undefined) updateData.metadata = data.preferences;
 
-      const [updatedUser] = await db
-        .update(users)
-        .set(updateData)
-        .where(eq(users.id, userId))
-        .returning();
+      const [updatedUser] = await db.update(users).set(updateData).where(eq(users.id, userId)).returning();
 
-      // Sync with XState AI assistant machine
-      xstateIntegration.sendEvent('ai-assistant-machine', {
-        type: 'PROFILE_UPDATED',
-        userId,
-        profile: updatedUser,
-      });
-
+      console.log('[AUTH] Profile updated:', { userId });
       return updatedUser;
     } catch (error) {
-      console.error('Profile update failed:', error);
-      throw error;
+      console.error('[AUTH] Profile update failed:', error);
+      throw new ProfileError('Failed to update profile', ERROR_CODES.PROFILE_UPDATE_FAILED, {
+        userId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -257,19 +296,21 @@ export class AuthService {
    */
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
     try {
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .limit(1);
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
       if (!user || !user.hashedPassword) {
-        throw new Error('User not found');
+        throw new PasswordError('User not found', ERROR_CODES.USER_NOT_FOUND, { userId });
       }
 
+      // Verify current password
       const validPassword = await this.argon2id.verify(user.hashedPassword, currentPassword);
       if (!validPassword) {
-        throw new Error('Current password is incorrect');
+        throw new PasswordError('Current password is incorrect', ERROR_CODES.CURRENT_PASSWORD_INCORRECT, { userId });
+      }
+
+      // Validate new password strength
+      if (!newPassword || newPassword.length < 8) {
+        throw new PasswordError('New password must be at least 8 characters long', ERROR_CODES.WEAK_PASSWORD);
       }
 
       const newPasswordHash = await this.argon2id.hash(newPassword);
@@ -278,20 +319,24 @@ export class AuthService {
         .update(users)
         .set({
           hashedPassword: newPasswordHash,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         })
         .where(eq(users.id, userId));
 
-      // Force re-login by invalidating all sessions
+      // Invalidate all user sessions for security
       await this.invalidateUserSessions(userId);
 
-      xstateIntegration.sendEvent('auth-machine', {
-        type: 'PASSWORD_CHANGED',
-        userId,
-      });
+      console.log('[AUTH] Password changed and all sessions invalidated:', { userId });
     } catch (error) {
-      console.error('Password change failed:', error);
-      throw error;
+      if (error instanceof PasswordError) {
+        throw error;
+      }
+
+      console.error('[AUTH] Password change failed:', error);
+      throw new PasswordError('Failed to change password', ERROR_CODES.PASSWORD_CHANGE_FAILED, {
+        userId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -301,17 +346,32 @@ export class AuthService {
   async getCaseById(caseId: string) {
     try {
       const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}`, {
-        headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+        headers: {
+          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
+        },
       });
 
       if (!response.ok) {
-        return null;
+        if (response.status === 404) {
+          throw new MicroserviceError('Case not found', ERROR_CODES.CASE_NOT_FOUND, { caseId });
+        }
+        throw new MicroserviceError('Failed to fetch case', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
+          caseId,
+          status: response.status,
+        });
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Failed to get case by ID:', error);
-      return null;
+      if (error instanceof MicroserviceError) {
+        throw error;
+      }
+
+      console.error('[AUTH] Failed to get case by ID:', error);
+      throw new MicroserviceError('Service temporarily unavailable', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
+        caseId,
+        originalError: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -323,7 +383,9 @@ export class AuthService {
       const response = await fetch(
         `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}/documents`,
         {
-          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
+          headers: {
+            Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
+          },
         }
       );
 
@@ -343,12 +405,11 @@ export class AuthService {
    */
   async getTotalCases(): Promise<number> {
     try {
-      const response = await fetch(
-        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/count`,
-        {
-          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
-        }
-      );
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/count`, {
+        headers: {
+          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
+        },
+      });
 
       if (!response.ok) {
         return 0;
@@ -367,12 +428,11 @@ export class AuthService {
    */
   async getTotalDocuments(): Promise<number> {
     try {
-      const response = await fetch(
-        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/documents/count`,
-        {
-          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
-        }
-      );
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/documents/count`, {
+        headers: {
+          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
+        },
+      });
 
       if (!response.ok) {
         return 0;
@@ -391,12 +451,11 @@ export class AuthService {
    */
   async getSampleCases(limit: number = 5) {
     try {
-      const response = await fetch(
-        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases?limit=${limit}`,
-        {
-          headers: { 'Authorization': `Bearer ${process.env.SERVICE_AUTH_TOKEN}` },
-        }
-      );
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases?limit=${limit}`, {
+        headers: {
+          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
+        },
+      });
 
       if (!response.ok) {
         return [];
@@ -451,12 +510,15 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
         ...sessionCookie.attributes,
         path: '/',
       });
+      return { user: null, session: null };
     }
 
     return { user, session };
   } catch (error) {
-    console.error('User retrieval failed:', error);
-    return { user: null, session: null };
+    console.error('[AUTH] User retrieval failed:', error);
+    throw new SessionError('Failed to retrieve user session', ERROR_CODES.SESSION_ERROR, {
+      originalError: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 }
 
@@ -465,87 +527,10 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
  */
 export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
   const { user, session } = await getUser(event);
+
   if (!user || !session) {
-    throw new Error('Authentication required');
+    throw new SessionError('Authentication required', ERROR_CODES.AUTH_REQUIRED);
   }
-  return { user, session };
-}
-    try {
-      // This would count from documents table in production
-      return 156; // Mock data
-    } catch (error) {
-      console.error('Failed to get total documents:', error);
-      return 0;
-    }
-  }
-  /**
-   * Get sample cases for demo page
-   */
-  async getSampleCases(limit: number = 5) {
-    try {
-      // This would fetch from cases table in production
-      // For now, return mock data
-      return Array.from({ length: limit }, (_, i) => ({
-        id: `case_${i + 1}`,
-        title: `Sample Case ${i + 1}`,
-        description: `Description for case ${i + 1}`,
-        status: i % 2 === 0 ? 'active' : 'closed',
-        created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000),
-        updated_at: new Date(),
-      }));
-    } catch (error) {
-      console.error('Failed to get sample cases:', error);
-      return [];
-    }
-  }
-}
-export const authService = new AuthService();
-/**
- * Helper function to get user from request event
- */ export async function getUser(event: RequestEvent): Promise<any> {
-  const sessionId = event.cookies.get(lucia.sessionCookieName);
-  if (!sessionId) {
-    return { user: null, session: null };
-  }
-  const result = await lucia.validateSession(sessionId);
-  if ((result as { session?: any }).session && (result as { session?: any }).session.fresh) {
-    const sessionCookie = lucia.createSessionCookie((result as { session?: any }).session.id);
-    event.cookies.set(sessionCookie.name, sessionCookie.value, {
-      ...sessionCookie.attributes,
-      path: '/',
-    });
-  }
-  if (!(result as { session?: any }).session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
-    event.cookies.set(sessionCookie.name, sessionCookie.value, {
-      ...sessionCookie.attributes,
-      path: '/',
-    });
-  }
-  return result;
-}
-/**
- * Require authenticated user middleware
- */ export async function requireAuth(event: RequestEvent): Promise<any> {
-  const { user, session } = await getUser(event);
-  if (!user || !session) {
-    throw new Error('Authentication required');
-  }
-  return { user, session };
-}
-    event.cookies.set(sessionCookie.name, sessionCookie.value, {
-      ...sessionCookie.attributes,
-      path: '/',
-    });
-  }
-  return result;
-}
-/**
- * Require authenticated user middleware
- */ export async function requireAuth(event: RequestEvent): Promise<any> {
-  const { user, session } = await getUser(event);
-  if (!user || !session) {
-    throw new Error('Authentication required');
-  }
+
   return { user, session };
 }

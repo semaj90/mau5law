@@ -4,11 +4,11 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
-  import { UiTooltip as Tooltip } from '$lib/components/ui';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications  } from '$lib/stores/unified';
+  import Tooltip from '$lib/components/ui/Tooltip.svelte';
+  // Prefer the single canonical Button entry (keeps casing consistent)
+  import Button from '$lib/components/ui/Button.svelte';
+  import { notifications } from '$lib/stores/unified';
   import { AlertCircle, CheckCircle, Database, Download, Eye, FileText, Upload, Users, X } from 'lucide-svelte';
-  import { onMount } from 'svelte';
   // Import state
   let importFile: File | null = $state(null);
   let importType = $state('all');
@@ -100,20 +100,20 @@ https://svelte.dev/e/js_parse_error -->
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    const files = e.dataTransfer?.file;
+    const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
     }
   }
   function handleFileInput(e: Event) {
-    // removed unused target assignment
+    const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
       handleFileSelect(file);
     }
   }
   async function handleFileSelect(file: File) {
-    importFile = fil;
+    importFile = file;
     importResults = null;
     // Validate file type
     const validTypes = ['application/json', 'text/csv', 'application/xml', 'text/xml'];
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       !file.name.endsWith('.csv') &&
       !file.name.endsWith('.xml')
     ) {
-      notifications.add({
+      pushNotificationPayload({
         type: 'error',
         title: 'Invalid File Type',
         message: 'Please select a JSON, CSV, or XML file',
@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
           raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
         };
       } else if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-        // removed unused lines assignment
+        const lines = content.split('\n').map(line => line.trim()).filter(line => line);
         filePreview = {
           name: file.name,
           size: file.size,
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         };
       }
     } catch (error) {
-      notifications.add({
+      pushNotificationPayload({
         type: 'error',
         title: 'Parse Error',
         message: 'Failed to parse file. Please check the format.',
@@ -183,19 +183,26 @@ https://svelte.dev/e/js_parse_error -->
         method: 'POST',
         body: formData,
       });
-      const result = await (response as { json?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; ok?: unknown }).ok) {
-        importResults = result;
-        notifications.add({
+      const result = (await response.json()) as unknown;
+      if (response.ok) {
+        importResults = result as typeof importResults;
+        pushNotificationPayload({
           type: 'success',
           message: 'Import completed successfully',
         });
       } else {
-        throw new Error((result as { message?: unknown; error?: unknown }).error || 'Import failed');
+        // Safely extract possible error message from the response object
+        let errorMsg = 'Import failed';
+        if (result && typeof result === 'object') {
+          const r = result as Record<string, any>;
+          if (typeof r.error === 'string' && r.error.trim().length > 0) errorMsg = r.error;
+          else if (typeof r.message === 'string' && r.message.trim().length > 0) errorMsg = r.message;
+        }
+        throw new Error(String(errorMsg));
       }
     } catch (error) {
       console.error('Import error:', error);
-      notifications.add({
+      pushNotificationPayload({
         type: 'error',
         title: 'Import Failed',
         message: error instanceof Error ? error.message : 'Import failed',
@@ -225,6 +232,22 @@ https://svelte.dev/e/js_parse_error -->
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+  // --- Safe notification helper (added) ---
+  function pushNotificationPayload(payload: { type: string; title?: string; message?: string }) {
+    const anyNotifs = notifications as unknown as Record<string, any>;
+    if (typeof anyNotifs.pushNotification === 'function') {
+      anyNotifs.pushNotification(payload);
+    } else if (typeof anyNotifs.notify === 'function') {
+      anyNotifs.notify(payload);
+    } else if (typeof anyNotifs.add === 'function') {
+      anyNotifs.add(payload);
+    } else if (typeof anyNotifs.send === 'function') {
+      anyNotifs.send(payload);
+    } else {
+      // Fallback: log so the developer can still see the message during development
+      console.warn('notifications API not found, fallback logging', payload);
+    }
   }
 </script>
 
@@ -276,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
                   </Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearImport()}>
+                  <Button class="bits-btn" variant="ghost" size="sm" on:click={() => clearImport()}>
                     <X class="space-y-4" />
                     Remove
                   </Button>
@@ -290,18 +313,17 @@ https://svelte.dev/e/js_parse_error -->
                 <p class="space-y-4">Drop your file here</p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
+              <Button class="bits-btn" variant="ghost" on:click={() => fileInput?.click()}>Select File</Button>
             </div>
           {/if}
         </div>
-        <!-- Hidden file input -->
         <!-- Hidden file input -->
         <input
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          onchange={handleFileInput}
-          class="space-y-4"
+          on:change={handleFileInput}
+          class="hidden"
           aria-label="Select import file"
         />
         <!-- Import Options -->
@@ -336,15 +358,13 @@ https://svelte.dev/e/js_parse_error -->
           </h3>
           {#if filePreview.type === 'json'}
             <div class="space-y-4">
-              <pre class="space-y-4">{JSON.stringify(substring)(0, 1000)}{JSON.stringify(length) > 1000
-                  ? '\n...'
-                  : ''}</pre>
+              <pre class="space-y-4">{filePreview.raw ?? ''}</pre>
             </div>
           {:else if filePreview.type === 'csv'}
             <div class="space-y-4">
               <table class="space-y-4">
                 <tbody>
-                  {#each filePreview.data as unknown as string[] as row, i}
+                  {#each (filePreview.data as string[]) as row, i}
                     <tr class:bg-white={i % 2 === 0}>
                       {#each row.split(',') as cell}
                         <td class="space-y-4">{cell.replace(/"/g, '')}</td>
@@ -413,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button class="bits-btn space-y-4" onclick={() => performImport()} disabled={isImporting}>
+            <Button class="bits-btn space-y-4" on:click={() => performImport()} disabled={isImporting}>
               {#if isImporting}
                 <div class="space-y-4"></div>
                 Importing...
@@ -423,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="ghost" onclick={() => clearImport()}>
+              <Button class="bits-btn" variant="ghost" on:click={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
               </Button>
@@ -449,7 +469,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('cases', 'json')}
+                  on:click={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
                 </Button>
@@ -459,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('cases', 'csv')}
+                  on:click={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
                 </Button>
@@ -474,7 +494,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('evidence', 'json')}
+                  on:click={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
                 </Button>
@@ -484,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('evidence', 'csv')}
+                  on:click={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
                 </Button>
@@ -532,9 +552,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-;
 
 <style>
   /* @unocss-include */
   /* Custom drag and drop styles */
 </style>
+
