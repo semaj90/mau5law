@@ -2,8 +2,9 @@ version: '3.8'
 
 # Environment variables shared across services
 x-common-env: &common-env
-  RUST_BACKTRACE: "1"
-  RUST_LOG: info
+  environment:
+    RUST_BACKTRACE: "1"
+    RUST_LOG: info
 
 x-postgres-env: &postgres-env
   POSTGRES_DB: ${DB_NAME:-legal_ai_db}

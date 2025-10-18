@@ -1,17 +1,25 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  import type { Snippet } from 'svelte';
+
   interface Props {
     class?: string;
+    children?: Snippet;
   }
+
   let {
     class: className = '',
-    childre;
-  }: Props & { children?: unknown } = $props();
+    children
+  }: Props = $props();
+
   let classes = $derived(`card-content-ssr ${className}`.trim());
 </script>
 
-<div class="card-content">
-  <slot />
+<div class={classes}>
+  {#if children}
+    {@render children()}
+  {:else}
+    <slot />
+  {/if}
 </div>
 
 <style>

@@ -1093,6 +1093,203 @@ export const documentChunks = pgTable('document_chunks', {
   metadata: jsonb('metadata').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
+
+// === CONTEXTUAL UNDERSTANDING TABLES ===
+
+// Conversation sessions for contextual chat
+export const conversationSessions = pgTable(
+  'conversation_sessions',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: varchar('session_id', { length: 255 }).notNull(),
+    userId: uuid('user_id').notNull(),
+    caseId: uuid('case_id'),
+    startedAt: timestamp('started_at', { mode: 'string' }).defaultNow().notNull(),
+    lastActiveAt: timestamp('last_active_at', { mode: 'string' }).defaultNow().notNull(),
+    turnCount: integer('turn_count').default(0).notNull(),
+    currentHmmState: integer('current_hmm_state').default(0).notNull(),
+    confidence: numeric('confidence', { precision: 5, scale: 4 }).default('0.0').notNull(),
+    metadata: jsonb('metadata').default({}).notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+  },
+  table => [
+    unique('conversation_sessions_session_id_unique').on(table.sessionId),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: 'conversation_sessions_user_id_users_id_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [table.caseId],
+      foreignColumns: [cases.id],
+      name: 'conversation_sessions_case_id_cases_id_fk',
+    }).onDelete('set null'),
+    index('conversation_sessions_user_id_idx').on(table.userId),
+    index('conversation_sessions_session_id_idx').on(table.sessionId),
+    index('conversation_sessions_last_active_idx').on(table.lastActiveAt),
+  ]
+);
+
+// Conversation turns for detailed history
+export const conversationTurns = pgTable(
+  'conversation_turns',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: uuid('session_id').notNull(),
+    turnIndex: integer('turn_index').notNull(),
+    userMessage: text('user_message').notNull(),
+    agentResponse: text('agent_response').notNull(),
+    intent: varchar('intent', { length: 100 }).notNull(),
+    hmmState: integer('hmm_state').notNull(),
+    confidence: numeric('confidence', { precision: 5, scale: 4 }).notNull(),
+    entities: jsonb('entities').default([]).notNull(),
+    functionCalls: jsonb('function_calls').default([]),
+    embedding: text('embedding'), // pgvector stored as text, will be converted
+    metadata: jsonb('metadata').default({}).notNull(),
+    timestamp: timestamp('timestamp', { mode: 'string' }).defaultNow().notNull(),
+  },
+  table => [
+    foreignKey({
+      columns: [table.sessionId],
+      foreignColumns: [conversationSessions.id],
+      name: 'conversation_turns_session_id_sessions_id_fk',
+    }).onDelete('cascade'),
+    index('conversation_turns_session_id_idx').on(table.sessionId),
+    index('conversation_turns_timestamp_idx').on(table.timestamp),
+  ]
+);
+
+// Legal entities extracted from conversations
+export const extractedEntities = pgTable(
+  'extracted_entities',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: uuid('session_id').notNull(),
+    turnId: uuid('turn_id'),
+    entityType: varchar('entity_type', { length: 100 }).notNull(),
+    entityValue: text('entity_value').notNull(),
+    confidence: numeric('confidence', { precision: 5, scale: 4 }).notNull(),
+    startPos: integer('start_pos'),
+    endPos: integer('end_pos'),
+    context: text('context'),
+    metadata: jsonb('metadata').default({}).notNull(),
+    extractedAt: timestamp('extracted_at', { mode: 'string' }).defaultNow().notNull(),
+  },
+  table => [
+    foreignKey({
+      columns: [table.sessionId],
+      foreignColumns: [conversationSessions.id],
+      name: 'extracted_entities_session_id_sessions_id_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [table.turnId],
+      foreignColumns: [conversationTurns.id],
+      name: 'extracted_entities_turn_id_turns_id_fk',
+    }).onDelete('cascade'),
+    index('extracted_entities_session_id_idx').on(table.sessionId),
+    index('extracted_entities_type_idx').on(table.entityType),
+  ]
+);
+
+// HMM state transitions for pattern analysis
+export const hmmStateTransitions = pgTable(
+  'hmm_state_transitions',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: uuid('session_id').notNull(),
+    fromState: integer('from_state').notNull(),
+    toState: integer('to_state').notNull(),
+    transitionProb: numeric('transition_prob', { precision: 10, scale: 8 }).notNull(),
+    emissionProb: numeric('emission_prob', { precision: 10, scale: 8 }).notNull(),
+    turnIndex: integer('turn_index').notNull(),
+    timestamp: timestamp('timestamp', { mode: 'string' }).defaultNow().notNull(),
+  },
+  table => [
+    foreignKey({
+      columns: [table.sessionId],
+      foreignColumns: [conversationSessions.id],
+      name: 'hmm_state_transitions_session_id_sessions_id_fk',
+    }).onDelete('cascade'),
+    index('hmm_state_transitions_session_id_idx').on(table.sessionId),
+  ]
+);
+
+// Next-step predictions cache
+export const nextStepPredictions = pgTable(
+  'next_step_predictions',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: uuid('session_id').notNull(),
+    action: varchar('action', { length: 255 }).notNull(),
+    description: text('description').notNull(),
+    confidence: numeric('confidence', { precision: 5, scale: 4 }).notNull(),
+    predictedState: integer('predicted_state').notNull(),
+    metadata: jsonb('metadata').default({}).notNull(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { mode: 'string' }).notNull(),
+  },
+  table => [
+    foreignKey({
+      columns: [table.sessionId],
+      foreignColumns: [conversationSessions.id],
+      name: 'next_step_predictions_session_id_sessions_id_fk',
+    }).onDelete('cascade'),
+    index('next_step_predictions_session_id_idx').on(table.sessionId),
+    index('next_step_predictions_expires_at_idx').on(table.expiresAt),
+  ]
+);
+
+// Embeddings cache with pgvector for similarity search
+export const contextualEmbeddings = pgTable(
+  'contextual_embeddings',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    sessionId: uuid('session_id'),
+    turnId: uuid('turn_id'),
+    embeddingType: varchar('embedding_type', { length: 50 }).notNull(), // 'message', 'entity', 'summary'
+    text: text('text').notNull(),
+    textHash: text('text_hash').notNull(),
+    model: varchar('model', { length: 100 }).default('embeddinggemma:latest').notNull(),
+    embedding: text('embedding').notNull(), // pgvector 768-dim stored as text
+    dimensions: integer('dimensions').default(768).notNull(),
+    metadata: jsonb('metadata').default({}).notNull(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  },
+  table => [
+    foreignKey({
+      columns: [table.sessionId],
+      foreignColumns: [conversationSessions.id],
+      name: 'contextual_embeddings_session_id_sessions_id_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [table.turnId],
+      foreignColumns: [conversationTurns.id],
+      name: 'contextual_embeddings_turn_id_turns_id_fk',
+    }).onDelete('cascade'),
+    unique('contextual_embeddings_text_hash_model_unique').on(table.textHash, table.model),
+    index('contextual_embeddings_session_id_idx').on(table.sessionId),
+    index('contextual_embeddings_type_idx').on(table.embeddingType),
+  ]
+);
+
 // Add a tiny local type to annotate relation helpers and avoid implicit 'any'
 type RelationHelpers = {
   one: <T = unknown>(table: T, opts?: Record<string, unknown>) => unknown;

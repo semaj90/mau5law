@@ -106,12 +106,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
       },
     };
     return json(integrationStatus);
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
     console.error('Integration status check failed:', error);
     return json(
       {
         success: false,
-        error: error.message || 'Integration status check failed',
+        error: error instanceof Error ? error.message : 'Integration status check failed', // Safely access error message
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

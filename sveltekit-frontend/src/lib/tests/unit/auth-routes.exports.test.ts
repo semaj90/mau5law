@@ -9,12 +9,12 @@ vi.mock('vite', () => ({ test: () => {} }))
 
 describe('auth route module exports', () => {
   it('exports GET handler from /api/auth/me', async () => {
-    const mod = await import('../../../routes/api/auth/me/+server.ts')
-    expect(typeof mod.GET).toBe('function')
-  })
+    const mod = await import('../../../routes/api/auth/me/+server');
+    expect(typeof mod.GET).toBe('function');
+  });
 
   it('exports POST handler from /api/auth/logout', async () => {
-    const mod = await import('../../../routes/api/auth/logout/+server.ts')
-    expect(typeof mod.POST).toBe('function')
-  })
+    const mod = await import('../../../routes/api/auth/logout/+server');
+    expect(typeof mod.POST).toBe('function');
+  });
 })

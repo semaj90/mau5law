@@ -52,25 +52,28 @@ declare global {
   declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
 }
 
-// See https://kit.svelte.dev/docs/types#app for information about these interfaces
-// and how to augment them.
-declare namespace App {
-  // interface Locals {}
-  // interface PageData {}
-  // interface Error {}
-  // interface Platform {}
-}
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
+import type { User, Session } from 'lucia';
 
-// Interface for the detail of the CustomEvent emitted by RealTimeLegalSearch's onselect
-interface SearchResultEventDetail {
-  title: string;
-  // Add other properties if known, e.g., id, type, url
-}
-
-// Augment RealTimeLegalSearch component's events for type checking
-declare module '$lib/components/search/RealTimeLegalSearch.svelte' {
-  interface $$Events {
-    select: CustomEvent<SearchResultEventDetail>;
+declare global {
+	namespace App {
+    interface Locals {
+      user: User | null;
+      session: Session | null;
+      // Add any other properties that are set on event.locals throughout the application,
+      // e.g., from XState integration, microservice clients, etc.
+      // Example: xstateGlobalState: import('$lib/services/xstate-integration').GlobalState;
+      // Example: productionServiceClient: import('$lib/api/production-service-client').ProductionServiceClient;
+    }
+    interface PageData {
+      // Add properties to page data as needed
+    }
+    interface Error {
+      // Add properties to error as needed
+    }
+    // interface Platform {} // If you're using a platform adapter like Cloudflare Workers
   }
 }
-export {}
+
+export {};

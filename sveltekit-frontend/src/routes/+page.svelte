@@ -478,7 +478,14 @@
 
   <!-- File Uploader Section -->
   <div class="p-6 bg-white rounded-2xl shadow">
-	<input type="file" multiple on:change={(e) => uploader.addFiles(e.target.files)} />
+	<input
+		type="file"
+		multiple
+		onchange={(e) => {
+			const target = e.currentTarget as HTMLInputElement;
+			if (target.files) uploader.addFiles(target.files);
+		}}
+	/>
 	{#each uploader.files as file (file.id)}
 		<p class="text-sm mt-2">{file.name} – {file.progress}%</p>
 	{/each}

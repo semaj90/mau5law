@@ -10,6 +10,7 @@ export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
 export const memoryCache = new Map<string, { value: unknown; expires: number }>();
 
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
 let redisClient: RedisClientType | null = null;
 let redisConnected = false;
 
@@ -57,7 +58,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
     if (!redisClient) {
       // cast to a typed factory to satisfy environments where default export shapes differ
       const createClientFn = createClient as unknown as (opts?: RedisClientOptions) => RedisClientType;
-      redisClient = createClientFn({
+      const redisConfig: RedisClientOptions = {
         url: REDIS_URL,
         socket: {
           // Use an unused-arg name that matches the linter rule (start with _).
@@ -67,7 +68,14 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
             return 1000;
           },
         },
-      });
+      };
+
+      // Add password if provided
+      if (REDIS_PASSWORD) {
+        redisConfig.password = REDIS_PASSWORD;
+      }
+
+      redisClient = createClientFn(redisConfig);
       redisClient.on('error', (err: unknown) => console.error('Redis client error:', err));
     }
     if (!redisConnected && redisClient) {
@@ -203,3 +211,46 @@ export async function redisRateLimit(
     return checkRateLimit(key);
   }
 }
+
+// Backwards-compatible cognitiveCache wrapper expected by newer modules
+export const cognitiveCache = {
+  async getJsonbDocument<T>(key: string): Promise<T | null> {
+    // Try in-memory cache first
+    try {
+      const mem = getFromMemoryCache(key);
+      if (mem.found) return mem.value as T;
+    } catch (e) {
+      // ignore memory cache errors
+    }
+
+    // Try Redis if available
+    try {
+      const client = await getRedisClient();
+      if (client) {
+        const v = await withBackoff(async () => client.get(key));
+        if (v) return JSON.parse(v) as T;
+      }
+    } catch (err) {
+      // ignore redis read errors
+    }
+
+    return null;
+  },
+
+  async storeJsonbDocument(key: string, value: any, ttlSec: number) {
+    try {
+      // Store in memory cache (ms)
+      await setCache(key, value, ttlSec * 1000);
+    } catch (e) {
+      console.warn('cognitiveCache.storeJsonbDocument memory store failed', e);
+    }
+    try {
+      const client = await getRedisClient();
+      if (client) {
+        await withBackoff(() => client.set(key, JSON.stringify(value), { EX: Math.max(1, ttlSec) }));
+      }
+    } catch (err) {
+      console.warn('cognitiveCache.storeJsonbDocument redis store failed', err);
+    }
+  },
+};

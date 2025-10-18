@@ -1,9 +1,9 @@
-import { json } from "@sveltejs/kit"
-import { qdrantOptimized } from "$lib/server/vector/qdrant-optimized"
-import { redisRateLimit, createRateLimitConfig } from "$lib/server/redisRateLimit"
-import logger from '$lib/server/production-logger'
-import { dev } from '$app/environment'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { qdrantOptimized } from '$lib/server/vector/qdrant-optimized';
+import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimit';
+import logger from '$lib/server/production-logger';
+import { dev } from '$app/environment';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Optimized Qdrant API Endpoints
@@ -15,55 +15,112 @@ import type { RequestHandler } from './$types.js'
  * POST /api/qdrant/optimized { action: "batch_upsert" } - Memory-efficient batch operations
  * POST /api/qdrant/optimized { action: "clear_cache" }  - Cache management
  */
+
+// Define a type for Qdrant point payload
+type QdrantPayload = Record<string, unknown>;
+
+// Define a type for Qdrant vector (can be a single vector or named vectors)
+type QdrantVector = number[] | Record<string, number[]>;
+
+// Define a type for a Qdrant point structure for upsert operations
+export interface QdrantPointStruct {
+  id?: string | number; // Point ID is optional, Qdrant can generate it
+  vector: QdrantVector;
+  payload?: QdrantPayload;
+}
+
 // Enhanced interfaces for optimized operations
 export interface OptimizedSearchRequest {
-  collection: string
-  query: string | number[]
-  limit?: number
-  offset?: number
-  threshold?: number
-  useCache?: boolean
-  filter?: { [key: string]: any }
+  collection: string;
+  query: string | number[];
+  limit?: number;
+  offset?: number;
+  threshold?: number;
+  useCache?: boolean;
+  filter?: Record<string, unknown>; // Replaced 'any' with 'unknown' for better type safety
 }
 export interface BatchUpsertRequest {
-  collection: string
-  points: Array<any>
+  collection: string;
+  points: QdrantPointStruct[]; // Replaced 'Array<any>' with 'QdrantPointStruct[]'
 }
 export interface CacheManagementRequest {
-  action: 'clear_cache' | 'get_stats' | 'optimize_memory'
-  cacheType?: 'vector' | 'search' | 'query_history' | 'all'
+  action: 'clear_cache' | 'get_stats' | 'optimize_memory';
+  cacheType?: 'vector' | 'search' | 'query_history' | 'all';
 }
+
+// Define a specific type for Qdrant's internal cache memory metrics
+interface QdrantCacheMemoryMetrics {
+  vectorCache: number;
+  searchCache: number;
+  queryHistory: number;
+  total: number;
+}
+
+// Define a specific type for the context object passed to the logger, including all custom properties
+interface ExtendedLogContext {
+  component: 'QdrantOptimizedAPI';
+  service: 'qdrant';
+  action?: string;
+  clientIP?: string;
+  collection?: string;
+  queryType?: string;
+  resultsCount?: number;
+  processingTime?: number;
+  cacheHit?: boolean;
+  pointsCount?: number;
+  memoryUsage?: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
+  cacheType?: 'vector' | 'search' | 'query_history' | 'all';
+  memoryFreed?: number;
+  memoryOptimization?: {
+    before: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
+    after: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
+    freed: number;
+  };
+}
+
+// Define a type for the POST request body
+type QdrantPostBody =
+  | ({ action: 'batch_upsert' } & BatchUpsertRequest)
+  | ({ action: 'clear_cache' | 'get_stats' | 'optimize_memory' } & CacheManagementRequest)
+  | { action: string; [key: string]: unknown }; // Fallback for unknown actions or extra properties, enforcing safer type handling
+
+// Helper to get user ID from locals
+function getUserId(locals: App.Locals): string | undefined {
+  return locals.user?.id || locals.session?.userId;
+}
+
 export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => {
-  const clientIP = getClientAddress()
-  const action = url.searchParams.get('action') || 'health'
+  const clientIP = getClientAddress();
+  const action = url.searchParams.get('action') || 'health';
   try {
     // Enhanced rate limiting for GET requests based on user role
-    const isAuthenticated = !!locals.user
+    const isAuthenticated = !!locals.user;
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_optimized_get:${clientIP}:${getUserId(locals) || 'anonymous'}`,
       limit: isAuthenticated ? 200 : 100, // Higher limit for authenticated users
-      windowSec: 60
-    })
+      windowSec: 60,
+    });
     if (!rateLimitResult.allowed) {
-      return json({
+      return json(
+        {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },)
+          retryAfter: rateLimitResult.retryAfter,
+        },
         {
           status: 429,
-          headers,: {
-            'Retry-After',: rateLimitResult.retryAfter.toString()
-          }
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter.toString(),
+          },
         }
-      )
+      );
     }
     switch (action) {
       case 'health': {
-        const startTime = Date.now()
-        const isHealthy = await qdrantOptimized.isHealthy()
-        const memoryUsage = qdrantOptimized.getMemoryUsage()
-        const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
+        const startTime = Date.now();
+        const isHealthy = await qdrantOptimized.isHealthy();
+        const memoryUsage = qdrantOptimized.getMemoryUsage();
+        const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
           success: true,
           data: {
@@ -74,130 +131,117 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               performanceMetrics,
               cacheEfficiency:
                 performanceMetrics.totalQueries > 0
-                  ? (
-                      (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
-                      100
-                    ).toFixed(1) + '%'
+                  ? ((performanceMetrics.cacheHits / performanceMetrics.totalQueries) * 100).toFixed(1) + '%'
                   : 'N/A',
               platform: process.platform,
-              memoryBudget: process.platform === 'win32' ? '4MB' : '2MB'
-            }
+              memoryBudget: process.platform === 'win32' ? '4MB' : '2MB',
+            },
           },
           meta: {
             endpoint: 'optimized_health',
             timestamp: new Date().toISOString(),
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime
-            }
-          }
-        })
+              resetTime: rateLimitResult.resetTime,
+            },
+          },
+        });
       }
       case 'metrics': {
-        const memoryUsage = qdrantOptimized.getMemoryUsage()
-        const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
-        const queryHistory = qdrantOptimized.getQueryHistory()
+        const memoryUsage = qdrantOptimized.getMemoryUsage();
+        const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
+        const queryHistory = qdrantOptimized.getQueryHistory();
         return json({
           success: true,
           data: {
             memory: {
               usage: memoryUsage,
-              efficiency:
-                ((memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) * 100).toFixed(
-                  1
-                ) + '%',
-              budget: process.platform === 'win32' ? '4MB' : '2MB'
+              efficiency: ((memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) * 100).toFixed(1) + '%',
+              budget: process.platform === 'win32' ? '4MB' : '2MB',
             },
             performance: {
               ...performanceMetrics,
               cacheHitRatio:
                 performanceMetrics.totalQueries > 0
-                  ? (
-                      (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
-                      100
-                    ).toFixed(1) + '%'
-                  : 'N/A'
+                  ? ((performanceMetrics.cacheHits / performanceMetrics.totalQueries) * 100).toFixed(1) + '%'
+                  : 'N/A',
             },
             queryHistory: {
               totalQueries: queryHistory.length,
-              recentQueries: queryHistory.slice(-5).map((q) => ({,
+              recentQueries: queryHistory.slice(-5).map(q => ({
                 timestamp: q.timestamp,
                 operation: q.operation,
                 collection: q.collection,
                 processingTime: q.processingTime,
                 cacheHit: q.cacheHit,
-                resultCount: q.resultCount
-              }))
+                resultCount: q.resultCount,
+              })),
             },
             system: {
               platform: process.platform,
               arch: process.arch,
               nodeVersion: process.version,
-              windowsOptimized: process.platform === 'win32'
-            }
+              windowsOptimized: process.platform === 'win32',
+            },
           },
           meta: {
             endpoint: 'optimized_metrics',
             timestamp: new Date().toISOString(),
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime
-            }
-          }
-        })
+              resetTime: rateLimitResult.resetTime,
+            },
+          },
+        });
       }
       case 'search': {
-        const collection = url.searchParams.get('collection') || 'legal_documents'
-        const query = url.searchParams.get('query')
-        const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50)
-        const offset = parseInt(url.searchParams.get('offset') || '0')
-        const threshold = parseFloat(url.searchParams.get('threshold') || '0.7')
-        const useCache = url.searchParams.get('cache') !== 'false'
+        const collection = url.searchParams.get('collection') || 'legal_documents';
+        const query = url.searchParams.get('query');
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
+        const offset = parseInt(url.searchParams.get('offset') || '0');
+        const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
+        const useCache = url.searchParams.get('cache') !== 'false';
         if (!query) {
-          return json({
+          return json(
+            {
               success: false,
-              error: 'Query parameter required for search'
-            },)
+              error: 'Query parameter required for search',
+            },
             { status: 400 }
-          )
+          );
         }
-        const startTime = Date.now()
+        const startTime = Date.now();
         try {
           // Parse query as vector or use as text
-          let queryInput: string | number[]
+          let queryInput: string | number[];
           try {
-            const vectorQuery = JSON.parse(query)
-            if (Array.isArray(vectorQuery) && vectorQuery.every((n) => typeof n === 'number')) {
-              queryInput = vectorQuery
+            const vectorQuery = JSON.parse(query);
+            if (Array.isArray(vectorQuery) && vectorQuery.every(n => typeof n === 'number')) {
+              queryInput = vectorQuery;
             } else {
-              queryInput = query
+              queryInput = query;
             }
           } catch {
-            queryInput = query
+            queryInput = query;
           }
           const results = await qdrantOptimized.search(collection, queryInput, {
             limit,
             offset,
             threshold,
-            useCache
-          })
-          const processingTime = Date.now() - startTime
-          const memoryUsage = qdrantOptimized.getMemoryUsage()
-          const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
-          logger.info(
-            'Optimized vector search completed',
-            {
-              component: 'QdrantOptimizedAPI',
-              service: 'qdrant'
-            },)
-            {
-              collection,
-              queryType,: typeof queryInput
-              resultsCount: results.length,
-              processingTime,
-              cacheHit,: performanceMetrics.cacheHits > 0
-            }
-          )
+            useCache,
+          });
+          const processingTime = Date.now() - startTime;
+          const memoryUsage = qdrantOptimized.getMemoryUsage();
+          const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
+          logger.info('Optimized vector search completed', {
+            component: 'QdrantOptimizedAPI',
+            service: 'qdrant',
+            collection,
+            queryType: typeof queryInput,
+            resultsCount: results.length,
+            processingTime,
+            cacheHit: performanceMetrics.cacheHits > 0,
+          } as ExtendedLogContext);
           return json({
             success: true,
             data: {
@@ -207,7 +251,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                 limit,
                 offset,
                 threshold,
-                useCache
+                useCache,
               },
               results,
               optimization: {
@@ -216,42 +260,33 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                 cacheHit: useCache && performanceMetrics.cacheHits > 0,
                 cacheEfficiency:
                   performanceMetrics.totalQueries > 0
-                    ? (
-                        (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
-                        100
-                      ).toFixed(1) + '%'
-                    : 'N/A'
-              }
+                    ? ((performanceMetrics.cacheHits / performanceMetrics.totalQueries) * 100).toFixed(1) + '%'
+                    : 'N/A',
+              },
             },
             meta: {
               endpoint: 'optimized_search',
               timestamp: new Date().toISOString(),
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime
-              }
-            }
-          })
+                resetTime: rateLimitResult.resetTime,
+              },
+            },
+          });
         } catch (searchError) {
-          logger.error(
-            'Optimized search failed',
-            searchError instanceof Error ? searchError : undefined
-            {
-              component: 'QdrantOptimizedAPI',
-              service: 'qdrant'
-            },)
-            {
-              collection,
-              queryType,: typeof query
-              processingTime: Date.now() - startTime
-            }
-          )
-          throw searchError
+          logger.error('Optimized search failed', searchError instanceof Error ? searchError : undefined, {
+            component: 'QdrantOptimizedAPI',
+            service: 'qdrant',
+            collection,
+            queryType: typeof query,
+            processingTime: Date.now() - startTime,
+          } as ExtendedLogContext);
+          throw searchError;
         }
       }
       case 'cache_stats': {
-        const memoryUsage = qdrantOptimized.getMemoryUsage()
-        const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
+        const memoryUsage = qdrantOptimized.getMemoryUsage();
+        const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
           success: true,
           data: {
@@ -261,126 +296,170 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               efficiency: {
                 hitRatio:
                   performanceMetrics.totalQueries > 0
-                    ? (
-                        (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
-                        100
-                      ).toFixed(1) + '%'
+                    ? ((performanceMetrics.cacheHits / performanceMetrics.totalQueries) * 100).toFixed(1) + '%'
                     : 'N/A',
                 memoryEfficiency:
-                  (
-                    (memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) *
-                    100
-                  ).toFixed(1) + '%'
-              }
-            }
-          }
-        })
+                  ((memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) * 100).toFixed(1) + '%',
+              },
+            },
+          },
+        });
       }
       default:
-        return json({,
+        return json(
+          {
             success: false,
             error: 'Invalid action',
-            availableActions: ['health', 'metrics', 'search', 'cache_stats']
-          },)
+            availableActions: ['health', 'metrics', 'search', 'cache_stats'],
+          },
           { status: 400 }
-        )
+        );
     }
-  }, catch (error: any) {
-    logger.error(
-      'Optimized Qdrant GET operation failed',
-      error instanceof Error ? error : undefined
-      {
-        component: 'QdrantOptimizedAPI',
-        service: 'qdrant'
-      },)
-      {
-        action,
-        clientIP
-      }
-    )
-    return json()
+  } catch (error: unknown) {
+    // Changed from any to unknown
+    logger.error('Optimized Qdrant GET operation failed', error instanceof Error ? error : undefined, {
+      action,
+      clientIP,
+    } as ExtendedLogContext);
+    return json(
       {
         success: false,
-        error,: 'Internal server error',
-        details,: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
+        error: 'Internal server error',
+        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request, locals, getClientAddress }) => {
-  const clientIP = getClientAddress()
-  let body: any = null
+  const clientIP = getClientAddress();
+  let body: QdrantPostBody | null = null; // Changed from any to QdrantPostBody | null
   try {
     // Parse body early for error handling
-    body = await request.json()
+    body = await request.json();
+
+    // --- FIX START ---
+    // Ensure body is not null before proceeding
+    if (!body) {
+      return json(
+        {
+          success: false,
+          error: 'Request body is empty or invalid JSON',
+        },
+        { status: 400 }
+      );
+    }
+    // --- FIX END ---
+
     // Enhanced rate limiting based on user role
-    const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api')
+    const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api');
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_optimized_post:${clientIP}:${getUserId(locals) || 'anonymous'}`,
-      ...rateLimitConfig
-    })
+      ...rateLimitConfig,
+    });
     if (!rateLimitResult.allowed) {
-      return json({
+      return json(
+        {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },)
+          retryAfter: rateLimitResult.retryAfter,
+        },
         {
           status: 429,
-          headers,: {
-            'Retry-After',: rateLimitResult.retryAfter.toString()
-          }
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter.toString(),
+          },
         }
-      )
+      );
     }
-    const { action } = body
+    const { action } = body; // Now safe because body is guaranteed not null
     if (!action) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Action parameter required'
-        },)
+          error: 'Action parameter required',
+        },
         { status: 400 }
-      )
+      );
     }
     switch (action) {
       case 'batch_upsert': {
         // Admin only for batch operations
         if (!locals.user || locals.user.role !== 'admin') {
-          return json({
+          return json(
+            {
               success: false,
-              error: 'Admin privileges required for batch operations'
-            },)
+              error: 'Admin privileges required for batch operations',
+            },
             { status: 403 }
-          )
+          );
         }
-        const { collection, points }: BatchUpsertRequest = body
+        // --- FIX START ---
+        // Explicitly assert the type of 'body' to 'BatchUpsertRequest' to ensure
+        // 'collection' and 'points' are correctly typed as per the interface.
+        const { collection, points } = body as BatchUpsertRequest;
+        // --- FIX END ---
         if (!collection || !points || !Array.isArray(points)) {
-          return json({
+          return json(
+            {
               success: false,
-              error: 'Collection and points array required'
-            },)
+              error: 'Collection and points array required',
+            },
             { status: 400 }
-          )
+          );
         }
-        const startTime = Date.now()
+        const startTime = Date.now();
         try {
-          await qdrantOptimized.upsertBatch(collection, points)
-          const processingTime = Date.now() - startTime
-          const memoryUsage = qdrantOptimized.getMemoryUsage()
-          logger.info(
-            'Batch upsert completed',
-            {
-              component: 'QdrantOptimizedAPI',
-              service: 'qdrant'
-            },)
-            {
-              collection,
-              pointsCount,: points.length,
-              processingTime,
-              memoryUsage
+          // Transform points to strictly conform to the expected type for qdrantOptimized.upsertBatch.
+          // This involves ensuring 'id' is a string and 'vector' is a number array.
+          const pointsForUpsert = points.map(point => {
+            let id: string;
+            if (typeof point.id === 'string') {
+              id = point.id;
+            } else if (typeof point.id === 'number') {
+              id = String(point.id);
+            } else {
+              // If id is undefined, generate a UUID. This assumes qdrantOptimized.upsertBatch requires a string ID.
+              // If Qdrant itself can generate IDs when 'id' is omitted, then the type definition for upsertBatch
+              // in qdrantOptimized might be overly strict. For this fix, we conform to the strict type.
+              id = crypto.randomUUID(); // crypto.randomUUID() is available in Node.js environments.
             }
-          )
+
+            let vector: number[];
+            if (Array.isArray(point.vector)) {
+              vector = point.vector;
+            } else if (typeof point.vector === 'object' && point.vector !== null) {
+              // If it's a named vector, extract the first vector found.
+              // This assumes the upsertBatch expects a single vector array, not named vectors.
+              const vectorKeys = Object.keys(point.vector);
+              if (vectorKeys.length > 0 && Array.isArray(point.vector[vectorKeys[0]])) {
+                vector = point.vector[vectorKeys[0]];
+              } else {
+                // Handle cases where named vector object is empty or contains non-array values.
+                throw new Error(`Point with ID ${id} has an invalid named vector format.`);
+              }
+            } else {
+              throw new Error(`Point with ID ${id} has an invalid vector format.`);
+            }
+
+            return {
+              id,
+              vector,
+              payload: point.payload,
+            };
+          });
+
+          await qdrantOptimized.upsertBatch(collection, pointsForUpsert);
+          const processingTime = Date.now() - startTime;
+          const memoryUsage = qdrantOptimized.getMemoryUsage();
+          logger.info('Batch upsert completed', {
+            component: 'QdrantOptimizedAPI',
+            service: 'qdrant',
+            collection,
+            pointsCount: points.length,
+            processingTime,
+            memoryUsage,
+          } as ExtendedLogContext);
           return json({
             success: true,
             data: {
@@ -390,56 +469,46 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               processingTime,
               optimization: {
                 memoryUsage,
-                batchOptimized: true
+                batchOptimized: true,
               },
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime
-              }
-            }
-          })
+                resetTime: rateLimitResult.resetTime,
+              },
+            },
+          });
         } catch (upsertError) {
-          logger.error(
-            'Batch upsert failed',
-            upsertError instanceof Error ? upsertError : undefined
-            {
-              component: 'QdrantOptimizedAPI',
-              service: 'qdrant'
-            },)
-            {
-              collection,
-              pointsCount,: points.length
-            }
-          )
-          throw upsertError
+          logger.error('Batch upsert failed', upsertError instanceof Error ? upsertError : undefined, {
+            component: 'QdrantOptimizedAPI',
+            service: 'qdrant',
+            collection,
+            pointsCount: points.length,
+          } as ExtendedLogContext);
+          throw upsertError;
         }
       }
       case 'clear_cache': {
         // Admin only for cache management
         if (!locals.user || locals.user.role !== 'admin') {
-          return json({
+          return json(
+            {
               success: false,
-              error: 'Admin privileges required for cache operations'
-            },)
+              error: 'Admin privileges required for cache operations',
+            },
             { status: 403 }
-          )
+          );
         }
-        const { cacheType = 'all' }: CacheManagementRequest = body
-        const beforeMemory = qdrantOptimized.getMemoryUsage()
+        const { cacheType = 'all' }: CacheManagementRequest = body as CacheManagementRequest;
+        const beforeMemory = qdrantOptimized.getMemoryUsage();
         // Clear caches
-        qdrantOptimized.clearCaches()
-        const afterMemory = qdrantOptimized.getMemoryUsage()
-        logger.info(
-          'Cache cleared',
-          {
-            component: 'QdrantOptimizedAPI',
-            service: 'qdrant'
-          },)
-          {
-            cacheType,
-            memoryFreed,: beforeMemory.total - afterMemory.total
-          }
-        )
+        qdrantOptimized.clearCaches();
+        const afterMemory = qdrantOptimized.getMemoryUsage();
+        logger.info('Cache cleared', {
+          component: 'QdrantOptimizedAPI',
+          service: 'qdrant',
+          cacheType,
+          memoryFreed: beforeMemory.total - afterMemory.total,
+        } as ExtendedLogContext);
         return json({
           success: true,
           data: {
@@ -449,41 +518,37 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               before: beforeMemory,
               after: afterMemory,
               freedKB: beforeMemory.total - afterMemory.total,
-            }
-          }
-        })
+            },
+          },
+        });
       }
       case 'optimize_memory': {
         // Admin only for memory optimization
         if (!locals.user || locals.user.role !== 'admin') {
-          return json({
+          return json(
+            {
               success: false,
-              error: 'Admin privileges required for memory optimization'
-            },)
+              error: 'Admin privileges required for memory optimization',
+            },
             { status: 403 }
-          )
+          );
         }
-        const beforeMemory = qdrantOptimized.getMemoryUsage()
+        const beforeMemory = qdrantOptimized.getMemoryUsage();
         // Clear caches and trigger garbage collection
-        qdrantOptimized.clearCaches()
+        qdrantOptimized.clearCaches();
         if (global.gc) {
-          global.gc()
+          global.gc();
         }
-        const afterMemory = qdrantOptimized.getMemoryUsage()
-        logger.info(
-          'Memory optimization completed',
-          {
-            component: 'QdrantOptimizedAPI',
-            service: 'qdrant'
-          },)
-          {
-            memoryOptimization: {
-              before: beforeMemory
-              after: afterMemory
-              freed: beforeMemory.total - afterMemory.total
-            }
-          }
-        )
+        const afterMemory = qdrantOptimized.getMemoryUsage();
+        logger.info('Memory optimization completed', {
+          component: 'QdrantOptimizedAPI',
+          service: 'qdrant',
+          memoryOptimization: {
+            before: beforeMemory,
+            after: afterMemory,
+            freed: beforeMemory.total - afterMemory.total,
+          },
+        } as ExtendedLogContext);
         return json({
           success: true,
           data: {
@@ -494,43 +559,35 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               memoryFreed: beforeMemory.total - afterMemory.total,
               efficiencyGain:
                 beforeMemory.total > 0
-                  ? (((beforeMemory.total - afterMemory.total) / beforeMemory.total) * 100).toFixed(
-                      1
-                    ) + '%'
-                  : '0%'
-            }
-          }
-        })
+                  ? (((beforeMemory.total - afterMemory.total) / beforeMemory.total) * 100).toFixed(1) + '%'
+                  : '0%',
+            },
+          },
+        });
       }
       default:
-        return json({,
+        return json(
+          {
             success: false,
             error: 'Invalid action',
-            availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory']
-          },)
+            availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory'],
+          },
           { status: 400 }
-        )
+        );
     }
-  }, catch (error: any) {
-    logger.error(
-      'Optimized Qdrant POST operation failed',
-      error instanceof Error ? error : undefined
-      {
-        component: 'QdrantOptimizedAPI',
-        service: 'qdrant'
-      },)
-      {
-        clientIP,
-        action,: body?.action || 'unknown'
-      }
-    )
-    return json()
+  } catch (error: unknown) {
+    // Changed from any to unknown
+    logger.error('Optimized Qdrant POST operation failed', error instanceof Error ? error : undefined, {
+      clientIP,
+      action: body?.action || 'unknown',
+    } as ExtendedLogContext);
+    return json(
       {
         success: false,
-        error,: 'Internal server error',
-        details,: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
+        error: 'Internal server error',
+        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

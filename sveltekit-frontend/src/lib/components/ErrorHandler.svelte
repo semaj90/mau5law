@@ -1,9 +1,8 @@
 <script lang="ts">
   import { toasts, removeToast } from '$lib/stores/errorStore';
-  import { onDestroy } from 'svelte';
-  let $toasts: any[] = [];
-  const unsub = toasts.subscribe((v) => ($toasts = v));
-  onDestroy(() => unsub());
+
+  // Svelte 5: Use $state() and $derived() instead of manual subscription
+  let toastList = $derived($toasts);
 </script>
 
 <style>
@@ -18,7 +17,7 @@
 </style>
 
 <div class="toast-container">
-  {#each $toasts as t (t.id)}
+  {#each toastList as t (t.id)}
     <div class="toast {t.level}">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
@@ -26,7 +25,7 @@
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
-          <button on:click={() => removeToast(t.id)} style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✕</button>
+          <button onclick={() => removeToast(t.id)} style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✕</button>
         </div>
       </div>
     </div>
