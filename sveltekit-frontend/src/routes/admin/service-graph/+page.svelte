@@ -1,15 +1,12 @@
-/**
- * Service Dependency Graph Interactive Dashboard
- * Real-time visualization with health status, performance metrics, and dependency analysis
- *
- * Usage: Add to src/routes/admin/service-graph/+page.svelte
- */
+<!--
+  Service Dependency Graph Interactive Dashboard
+  Real-time visualization with health status, performance metrics, and dependency analysis
 
+  Usage: Add to src/routes/admin/service-graph/+page.svelte
+-->
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
-
-  export let data: PageData;
 
   interface Service {
     id: string;
@@ -305,7 +302,7 @@
                   {/if}
                 </div>
                 <button
-                  on:click={() => checkServiceHealth(selectedService.id)}
+                  on:click={() => selectedService && checkServiceHealth(selectedService.id)}
                   class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs"
                 >
                   Check Now
@@ -398,3 +395,4 @@
     background-color: #111827;
   }
 </style>
+

@@ -5,7 +5,7 @@
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import Button from '$lib/components/ui/enhanced-bits';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
-  import { evidenceStore  } from '$lib/stores/unified";
+  import { evidenceStore } from '$lib/stores/unified';
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
   import {
     Activity,
@@ -24,9 +24,14 @@
   let showAdvancedFilters = $state(false);
   let demoMode = $state(false);
   // Store values - Access individual store properties correctly
-  const { isConnected, evidence, isLoading, error } = evidenceStor;
+  const { isConnected, evidence, isLoading, error } = evidenceStore;
   // Analytics data
-  let stats = $state({ total: 0, byType: , byCase: , recentCount: 0 });
+  let stats = $state<{ total: number; byType: Record<string, number>; byCase: Record<string, number>; recentCount: number }>({
+    total: 0,
+    byType: {},
+    byCase: {},
+    recentCount: 0
+  });
   let syncStatus: {
     pending: number;
     failed: number;
@@ -36,7 +41,7 @@
     pending: 0,
     failed: 0,
     total: 0,
-    inProgress: false;
+    inProgress: false
   });
   $effect(() => {
     // Update stats when evidence changes
