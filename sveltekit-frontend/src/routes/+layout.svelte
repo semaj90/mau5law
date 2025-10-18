@@ -6,6 +6,8 @@
   // import { ragSyncAgent } from '$lib/agents/rag-sync-agent';
   import GlobalAIAssistantButton from '$lib/components/GlobalAIAssistantButton.svelte';
   import { loadSession } from '$lib/stores/unified';
+  // Global error handler (toast UI) - displays structured API errors
+  import ErrorHandler from '$lib/components/ErrorHandler.svelte';
   import 'nes.css/css/nes.min.css';
   // Assuming bits.css is available or you're using UnoCSS for Bits-UI components
   // If Bits-UI has a global CSS file, include it
@@ -92,6 +94,8 @@
     <slot />
   </main>
   <GlobalAIAssistantButton />
+  <!-- Global error handler inserted at the app root so toasts are visible across routes -->
+  <ErrorHandler />
 </div>
 
 <style>

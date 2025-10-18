@@ -1,65 +1,73 @@
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler, type RequestEvent } from '@sveltejs/kit';
+import { authService, auth, lucia } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from '$lib/server/errors';
+import { logStructuredError, captureAndFormat } from '$lib/server/logger';
 import { dev } from '$app/environment';
-import { lucia } from '$lib/server/auth';
 import { getTypedLocals } from '$lib/types/locals-unify';
-import type { RequestEvent } from '@sveltejs/kit';
-/*
- * PostgreSQL + Drizzle + Lucia Logout Endpoint
- * Properly invalidates sessions in the database
- */
-export const POST = async ({ cookies, locals }: RequestEvent) => {
-  // Use typed locals for consistent session/user access
-  const typedLocals = getTypedLocals(locals);
-  // Check if user has an active session
-  if (!typedLocals.session) {
-    return json(
-      {
-        success: false,
-        message: 'No active session to logout',
-      },
-      { status: 400 }
-    );
-  }
+
+// Primary POST handler: invalidate session (via authService or lucia) and clear cookie
+export const POST: RequestHandler = async ({ cookies, locals }: RequestEvent) => {
   try {
-    // Invalidate the session in PostgreSQL database via Lucia
-    await lucia.deleteSession(typedLocals.session.id);
-    // Create and set blank session cookie
-    const sessionCookie = lucia.createBlankSessionCookie();
-    cookies.set(sessionCookie.name, sessionCookie.value, {
-      path: '.',
-      ...sessionCookie.attributes,
-    });
-    // Log successful logout
-    console.log('User logged out successfully:', {
-      sessionId: typedLocals.session.id,
-      userId: typedgetUserId(locals),
-      timestamp: new Date().toISOString(),
-    });
-    return json({
-      success: true,
-      message: 'Successfully logged out',
-      sessionInvalidated: true,
-    });
+    // Narrow the locals typing as best-effort; avoid broad 'any' at top-level
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const typedLocals = getTypedLocals(locals as any);
+    const sessionId = cookies.get('session_id') || typedLocals?.session?.id;
+
+    if (sessionId) {
+      // prefer authService when available
+      try {
+        if (authService?.invalidateSession) await authService.invalidateSession(sessionId);
+      } catch (innerErr) {
+        // fallback to lucia if available
+        try {
+          if (lucia?.deleteSession) await lucia.deleteSession(sessionId);
+        } catch (e) {
+          // swallow; we'll still clear cookie
+          console.warn('session invalidation fallback failed', e);
+        }
+      }
+
+      // clear cookie using auth helper if present
+      try {
+        const blank = auth?.createBlankSessionCookie
+          ? auth.createBlankSessionCookie()
+          : { name: 'session_id', value: '', attributes: { path: '/' } };
+        cookies.set(blank.name, blank.value, { path: '/', ...(blank.attributes || {}) });
+      } catch (e) {
+        // best-effort
+        cookies.set('session_id', '', { path: '/' });
+      }
+    }
+
+    return json({ success: true, message: 'Logged out' }, { status: 200 });
   } catch (error) {
-    console.error('Logout error:', error);
-    // Even if database logout fails, clear the cookie
-    const sessionCookie = lucia.createBlankSessionCookie();
-    cookies.set(sessionCookie.name, sessionCookie.value, {
-      path: '.',
-      ...sessionCookie.attributes,
+    await logStructuredError({
+      source: 'api.auth.logout',
+      level: 'error',
+      event: 'logout_failed',
+      message: 'Logout failed',
+      error,
     });
-    return json({
-      success: true,
-      message: 'Logged out (with errors)',
-      error: 'Session cleanup encountered issues',
-    });
+
+    if (isAuthError(error)) {
+      const err = formatErrorResponse(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return json(err, { status: (error as any).status || 400 });
+    }
+    const err = await captureAndFormat(error);
+    return json(err, { status: 500 });
   }
 };
-export const GET = async (ctx: any) => {
+
+// Dev-only GET wrapper for convenience
+export const GET = async (event: RequestEvent) => {
   if (!dev) return json({ error: 'GET not allowed in production' }, { status: 405 });
-  return POST(ctx as any);
+  // forward to POST handler; cast only the event param where required
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return POST(event as any);
 };
-export const OPTIONS = async () =>
+
+export const OPTIONS = () =>
   new Response(null, {
     status: 200,
     headers: {

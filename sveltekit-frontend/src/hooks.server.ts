@@ -2,11 +2,13 @@ import type { Handle } from '@sveltejs/kit';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import Redis from 'ioredis';
-import { handleHooks } from '@lucia-auth/sveltekit';
-import { auth } from '$lib/server/auth';
+// Avoid static import of lucia/sveltekit integration at top-level to prevent
+// module resolution errors during Vite SSR/hot reload. We'll lazy-import when needed.
 
-// Lazy singletons initialized at module load so endpoints can reuse them
-type PgConnection = ReturnType<typeof postgres> | null;
+// Replace the earlier PgConnection/DrizzleDB definitions with properly typed aliases
+type PostgresClient = ReturnType<typeof postgres>;
+type PostgresOptions = Parameters<typeof postgres>[1];
+type PgConnection = PostgresClient | null;
 type DrizzleDB = ReturnType<typeof drizzle> | null;
 let _pgConnection: PgConnection = null;
 let _db: DrizzleDB = null;
@@ -20,13 +22,17 @@ function initPostgres() {
   const user = process.env.POSTGRES_USER || 'legal_admin';
   const password = process.env.POSTGRES_PASSWORD || '123456';
   const connStr = process.env.DATABASE_URL || `postgres://${user}:${password}@${host}:${port}/${database}`;
-  // postgres() returns a client factory; cast via unknown to avoid blanket `any`
-  _pgConnection = postgres(connStr, { max: 10 } as unknown) as unknown as PgConnection;
+
+  // Use the proper inferred options type instead of casting to `unknown`
+  _pgConnection = postgres(connStr, { max: 10 } as PostgresOptions);
+
   try {
-    // drizzle accepts the postgres connection; keep the value typed as unknown and
-    // only assign if drizzle returns a truthy object. This avoids using `any`.
-    const maybeDb = drizzle(_pgConnection as unknown as any);
-    _db = maybeDb ?? null;
+    // Null-check the client and pass it directly to drizzle (no `any` cast)
+    if (_pgConnection) {
+      _db = drizzle(_pgConnection);
+    } else {
+      _db = null;
+    }
   } catch (e: unknown) {
     // drizzle can be optional depending on environment; swallow and allow direct pg usage
     _db = null;
@@ -62,10 +68,11 @@ declare global {
     user?: { id: string; email?: string; role?: string } | null;
     session?: { id: string; fresh?: boolean } | null;
   }
-  // Provide typed alias for SvelteKit; some projects prefer App.Locals - keep both minimal
-  namespace App {
-    interface Locals extends AppLocals {}
-  }
+}
+
+// Add module augmentation using ES2015 module syntax
+declare module '@sveltejs/kit' {
+  interface Locals extends AppLocals {}
 }
 
 // Minimal Lucia auth surface used by this file
@@ -90,18 +97,24 @@ let legacyRouteMapping: Record<string, string> = {};
 // RabbitMQ service initialization
 let rabbitMQInitialized = false;
 async function initializeRabbitMQ() {
+  // Keep this function lazy and resilient. Do not allow RabbitMQ failures to
+  // crash the Vite dev server; callers should handle the initialized=false case.
   if (rabbitMQInitialized) return { initialized: true };
 
   try {
-    console.log('🐰 [hooks.server] Initializing RabbitMQ connection...');
+    console.log('🐰 [hooks.server] Attempting lazy RabbitMQ initialization...');
     const { rabbitmqService } = await import('$lib/server/messaging/rabbitmq-service');
-    await rabbitmqService.connect();
-    rabbitMQInitialized = true;
-    console.log('✅ [hooks.server] RabbitMQ connected successfully');
-    return { initialized: true };
+    // Only attempt connect if the service exposes a connect() function
+    if (rabbitmqService && typeof rabbitmqService.connect === 'function') {
+      await rabbitmqService.connect();
+      rabbitMQInitialized = true;
+      console.log('✅ [hooks.server] RabbitMQ connected successfully');
+      return { initialized: true };
+    }
+    console.warn('📝 [hooks.server] RabbitMQ service module loaded but connect() not available');
+    return { initialized: false };
   } catch (error) {
-    console.error('⚠️  [hooks.server] RabbitMQ failed to initialize:', error);
-    console.warn('📝 [hooks.server] RabbitMQ will auto-connect on first use');
+    console.warn('⚠️ [hooks.server] Lazy RabbitMQ initialization failed (ignored during dev):', error);
     return { initialized: false };
   }
 }
@@ -113,10 +126,15 @@ async function initializeAuth() {
   try {
     console.log('[hooks.server] Loading auth module...');
     const authModule = await import('$lib/server/auth');
-    // authModule may be ESM; narrow unknown via basic checks instead of `any`
+    // authModule may be ESM; narrow unknown via safe checks instead of `any`
     const maybeAuthModule = authModule as unknown;
-    if (maybeAuthModule && typeof (maybeAuthModule as any).lucia === 'object') {
-      lucia = (maybeAuthModule as any).lucia as unknown as LuciaAuth;
+    if (maybeAuthModule && typeof maybeAuthModule === 'object' && maybeAuthModule !== null) {
+      const candidate = (maybeAuthModule as { lucia?: unknown }).lucia;
+      if (candidate && typeof candidate === 'object' && candidate !== null) {
+        lucia = candidate as LuciaAuth;
+      } else {
+        lucia = null;
+      }
     } else {
       lucia = null;
     }
@@ -124,19 +142,18 @@ async function initializeAuth() {
     console.log('[hooks.server] Auth module loaded');
     return { lucia, enabled: true };
   } catch (error) {
-    // Try to log the error to Redis, but don't let logging failure break auth fallback
+    // Try to log the error via structured logger, but don't let logging failure break auth fallback
     try {
-      const { logErrorToRedis } = await import('$lib/server/logging/redis-logger');
-      await logErrorToRedis({
+      const { logStructuredError } = await import('$lib/server/logger');
+      await logStructuredError({
         source: 'hooks.server',
         level: 'error',
         event: 'auth_load_failed',
         message: 'Auth module failed to load',
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
       });
     } catch (logErr: unknown) {
-      console.error('[hooks.server] Failed to log error to Redis:', logErr);
+      console.error('[hooks.server] Failed to log error to logger:', logErr);
     }
 
     console.error('❌ [hooks.server] Auth module failed to load:', error);
@@ -151,8 +168,17 @@ async function loadRouteConfig() {
     console.log('🔍 [hooks.server] Attempting to load route config...');
     const routeConfig = await import('$lib/data/route-groups-config');
     const maybeRC = routeConfig as unknown;
-    if (maybeRC && typeof (maybeRC as any).legacyRouteMapping === 'object') {
-      legacyRouteMapping = (maybeRC as any).legacyRouteMapping as Record<string, string>;
+
+    // Narrow unknown -> object and check for property existence without using `any`
+    if (maybeRC && typeof maybeRC === 'object' && 'legacyRouteMapping' in maybeRC) {
+      const mapping = (maybeRC as { legacyRouteMapping?: unknown }).legacyRouteMapping;
+      if (mapping && typeof mapping === 'object') {
+        // Coerce all keys/values to strings to safely satisfy Record<string, string>
+        const entries = Object.entries(mapping as Record<PropertyKey, unknown>).map(([k, v]) => [String(k), String(v)]);
+        legacyRouteMapping = Object.fromEntries(entries) as Record<string, string>;
+      } else {
+        legacyRouteMapping = {};
+      }
     } else {
       legacyRouteMapping = {};
     }
@@ -168,11 +194,20 @@ async function loadRouteConfig() {
 let initialized = false;
 async function ensureInitialized() {
   if (!initialized) {
-    console.log('🚀 [hooks.server] Starting initialization...');
+    console.log('🚀 [hooks.server] Starting initialization (auth + routes) ...');
     try {
-      await Promise.all([initializeAuth(), loadRouteConfig(), initializeRabbitMQ()]);
+      // Initialize auth and route config eagerly. RabbitMQ is expensive and
+      // may not be present during local dev; initialize it lazily on demand.
+      await Promise.all([initializeAuth(), loadRouteConfig()]);
+
+      // Optionally initialize RabbitMQ at startup when explicitly requested
+      if (process.env.INIT_RABBITMQ_ON_START === 'true') {
+        // This keeps the original lazy behaviour unless the env var is set.
+        await initializeRabbitMQ();
+      }
+
       initialized = true;
-      console.log('✅ [hooks.server] All systems initialized successfully');
+      console.log('✅ [hooks.server] Core systems initialized successfully');
     } catch (error) {
       console.error('❌ [hooks.server] CRITICAL: Initialization failed:', error);
       throw error; // Re-throw to see full stack trace
@@ -331,6 +366,18 @@ const handle: Handle = async ({ event, resolve }) => {
       : null;
     event.locals.session = session;
   } catch (authError) {
+    try {
+      const { logStructuredError } = await import('$lib/server/logger');
+      await logStructuredError({
+        source: 'hooks.server',
+        level: 'error',
+        event: 'auth_system_error',
+        message: 'Auth system error, proceeding without authentication',
+        error: authError instanceof Error ? authError.message : String(authError),
+      });
+    } catch (logErr: unknown) {
+      console.error('[hooks.server] Failed to log auth error to logger:', logErr);
+    }
     // Global auth error fallback - allow request to proceed
     console.error('❌ Auth system error, proceeding without authentication:', authError);
     event.locals.user = null;

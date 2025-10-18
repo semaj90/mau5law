@@ -1,21 +1,90 @@
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/drizzle';
-import { users } from '$lib/server/db/schema-postgres';
-import { authService, lucia } from '$lib/server/auth';
-import { eq } from 'drizzle-orm';
+/**
+ * Login endpoint with structured error handling
+ * Returns JSON with error codes for front-end messaging
+ * Integrates with Lucia v3 authentication
+ */
+
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { authService, auth } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from '$lib/server/errors';
+
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
 export const POST: RequestHandler = async ({ request, cookies }) => {
-  const { email, password } = await request.json();
   try {
-    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    if (!user || !user.hashed_password) return new Response('Invalid credentials', { status: 401 });
-    // Delegate password verification to AuthService (argon2id)
-    const valid = await authService.login(email, password).catch(() => null);
-    if (!valid) return new Response('Invalid credentials', { status: 401 });
-    const session = await lucia.createSession(user.id, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies.set(sessionCookie.name, sessionCookie.value, { ...sessionCookie.attributes, path: '/' });
-    return new Response(JSON.stringify({ user: { id: user.id, email: user.email } }), { status: 200 });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: 'Login failed', detail: e.message }), { status: 500 });
+    // Parse request body
+    const data = (await request.json()) as LoginRequest;
+
+    // Validate input
+    if (!data.email || !data.password) {
+      return json(
+        {
+          success: false,
+          error: {
+            message: 'Email and password are required',
+            code: 'INVALID_REQUEST',
+            status: 400,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Attempt login with structured error handling
+    const user = await authService.login(data.email, data.password);
+
+    // Create session
+    const session = await authService.createSession(user.id);
+
+    // Set session cookie
+    const sessionCookie = auth.createSessionCookie(session.id);
+    cookies.set(sessionCookie.name, sessionCookie.value, {
+      ...sessionCookie.attributes,
+      path: '/',
+    });
+
+    // Return success with user data
+    return json(
+      {
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          avatarUrl: user.avatarUrl,
+        },
+        session: {
+          id: session.id,
+          expiresAt: session.expiresAt,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (isAuthError(error)) {
+      // Structured auth error with proper status code for front-end handling
+      const errorResponse = formatErrorResponse(error);
+      console.error('[API] Auth error in /api/auth/login:', errorResponse);
+      return json(errorResponse, { status: error.status });
+    }
+
+    // Unknown error - log and return generic message
+    console.error('[API] Unexpected error in /api/auth/login:', error);
+    return json(
+      {
+        success: false,
+        error: {
+          message: 'An unexpected error occurred',
+          code: 'UNKNOWN_ERROR',
+          status: 500,
+        },
+      },
+      { status: 500 }
+    );
   }
 };
