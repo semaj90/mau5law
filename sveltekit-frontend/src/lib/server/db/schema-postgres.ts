@@ -1,6 +1,6 @@
 // Updated PostgreSQL schema based on database introspection
 // This schema matches the actual database structure (drizzle/schema.ts)
-import { relations, eq } from 'drizzle-orm';
+import { relations, eq, and, or, sql } from 'drizzle-orm';
 import {
   boolean,
   integer,
@@ -18,7 +18,6 @@ import {
   index,
 } from 'drizzle-orm/pg-core';
 // Note: vector type is handled via sql`` template in table definitions
-import { sql } from 'drizzle-orm';
 // === ENUMS FOR LEGAL AI APPLICATION ===
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
 export const caseStatusEnum = pgEnum('case_status', ['open', 'in_progress', 'pending_review', 'closed', 'archived']);
@@ -98,9 +97,13 @@ export const users = pgTable(
 export const sessions = pgTable(
   'sessions',
   {
-    id: text('id').primaryKey().notNull(),
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
     userId: uuid('user_id').notNull(),
-    expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
+    // changed: use Date-backed timestamp so Drizzle/Lucia expects Date (not string)
+    expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
   },
   table => ({
     foreignKeys: [
@@ -1090,37 +1093,14 @@ export const documentChunks = pgTable('document_chunks', {
   metadata: jsonb('metadata').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
-// === TYPE EXPORTS ===
-export type Case = typeof cases.$inferSelect;
-export type NewCase = typeof cases.$inferInsert;
-export type Evidence = typeof evidence.$inferSelect;
-export type NewEvidence = typeof evidence.$inferInsert;
-export type Report = typeof reports.$inferSelect;
-export type NewReport = typeof reports.$inferInsert;
-export type Criminal = typeof criminals.$inferSelect;
-export type NewCriminal = typeof criminals.$inferInsert;
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type RagSession = typeof ragSessions.$inferSelect;
-export type NewRagSession = typeof ragSessions.$inferInsert;
-export type RagMessage = typeof ragMessages.$inferSelect;
-export type NewRagMessage = typeof ragMessages.$inferInsert;
-export type LegalDocument = typeof legalDocuments.$inferSelect;
-export type NewLegalDocument = typeof legalDocuments.$inferInsert;
-export type CaseActivity = typeof caseActivities.$inferSelect;
-export type NewCaseActivity = typeof caseActivities.$inferInsert;
-export type CanvasAnnotation = typeof canvasAnnotations.$inferSelect;
-export type NewCanvasAnnotation = typeof canvasAnnotations.$inferInsert;
-export type PersonOfInterest = typeof personsOfInterest.$inferSelect;
-export type NewPersonOfInterest = typeof personsOfInterest.$inferInsert;
-export type UserAiQuery = typeof userAiQueries.$inferSelect;
-export type NewUserAiQuery = typeof userAiQueries.$inferInsert;
-export type AutoTag = typeof autoTags.$inferSelect;
-export type NewAutoTag = typeof autoTags.$inferInsert;
-export type DocumentChunk = typeof documentChunks.$inferSelect;
-export type NewDocumentChunk = typeof documentChunks.$inferInsert;
+// Add a tiny local type to annotate relation helpers and avoid implicit 'any'
+type RelationHelpers = {
+  one: <T = unknown>(table: T, opts?: Record<string, unknown>) => unknown;
+  many: <T = unknown>(table: T, opts?: Record<string, unknown>) => unknown;
+};
+
 // === RELATIONS ===
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }: RelationHelpers) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
   casesCreated: many(cases, { relationName: 'createdBy' }),
   evidenceUploaded: many(evidence),
@@ -1129,13 +1109,13 @@ export const usersRelations = relations(users, ({ many }) => ({
   criminalsCreated: many(criminals),
   sessions: many(sessions),
 }));
-export const sessionsRelations = relations(sessions, ({ one }) => ({
+export const sessionsRelations = relations(sessions, ({ one }: RelationHelpers) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }));
-export const casesRelations = relations(cases, ({ one, many }) => ({
+export const casesRelations = relations(cases, ({ one, many }: RelationHelpers) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
@@ -1149,14 +1129,14 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   evidence: many(evidence),
   activities: many(caseActivities),
 }));
-export const criminalsRelations = relations(criminals, ({ one, many }) => ({
+export const criminalsRelations = relations(criminals, ({ one, many }: RelationHelpers) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id],
   }),
   evidence: many(evidence),
 }));
-export const evidenceRelations = relations(evidence, ({ one }) => ({
+export const evidenceRelations = relations(evidence, ({ one }: RelationHelpers) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
     references: [users.id],
@@ -1166,7 +1146,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [cases.id],
   }),
 }));
-export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
+export const caseActivitiesRelations = relations(caseActivities, ({ one }: RelationHelpers) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
     references: [cases.id],
@@ -1182,7 +1162,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     relationName: 'createdBy',
   }),
 }));
-export const aiReportsRelations = relations(aiReports, ({ one }) => ({
+export const aiReportsRelations = relations(aiReports, ({ one }: RelationHelpers) => ({
   case: one(cases, {
     fields: [aiReports.caseId],
     references: [cases.id],
@@ -1192,7 +1172,7 @@ export const aiReportsRelations = relations(aiReports, ({ one }) => ({
     references: [users.id],
   }),
 }));
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one }: RelationHelpers) => ({
   case: one(cases, {
     fields: [personsOfInterest.caseId],
     references: [cases.id],
@@ -1202,7 +1182,7 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one })
     references: [users.id],
   }),
 }));
-export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
+export const legalDocumentsRelations = relations(legalDocuments, ({ one }: RelationHelpers) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
     references: [cases.id],
@@ -1212,13 +1192,13 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     references: [evidence.id],
   }),
 }));
-export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
+export const ragSessionsRelations = relations(ragSessions, ({ one }: RelationHelpers) => ({
   user: one(users, {
     fields: [ragSessions.userId],
     references: [users.id],
   }),
 }));
-export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
+export const userAiQueriesRelations = relations(userAiQueries, ({ one }: RelationHelpers) => ({
   user: one(users, {
     fields: [userAiQueries.userId],
     references: [users.id],
@@ -1228,14 +1208,18 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
     references: [cases.id],
   }),
 }));
-export const autoTagsRelations = relations(autoTags, ({ one }) => ({
-  confirmedBy: one(users, {
-    fields: [autoTags.confirmedBy],
-    references: [users.id],
-  }),
-}));
 // === DATABASE CONNECTION & HELPERS ===
-// Export helpers for query building
-export const helpers = { eq };
+// Export commonly used query helpers for consistency
+// Note: 'not' is not exported from 'drizzle-orm' in this environment, so omit it here.
+export const helpers = { eq, and, or, sql };
+
 // Export all tables for easy access
 // Note: do not re-export tables collectively to avoid redeclaration conflicts
+
+// Removed duplicated import and helpers redeclaration that caused TypeScript errors.
+// If you later need `not` and it's available in your environment, import it once at the top:
+// import { not } from 'drizzle-orm';
+// and then update the helpers export accordingly, e.g.
+// export const helpers = { eq, and, or, not, sql };
+// If you only want eq, document why:
+// export const helpers = { eq }; // Only eq is used for most queries in this codebase

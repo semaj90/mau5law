@@ -4,8 +4,8 @@ import { logger } from './logger.js';
 import { enhancedRAGPipeline } from './rag-pipeline-enhanced.js';
 // Simple metrics stub for missing metrics dependency
 const metrics = {
-  incrementCounter: (name: string) => {},
-  recordTiming: (name: string, time: number) => {},
+  incrementCounter: (_name: string) => {},
+  recordTiming: (_name: string, _time: number) => {},
   contextRelevance: 0.8,
   sourceAuthority: 0.8,
   conceptCoverage: 0.8,
@@ -15,8 +15,8 @@ const metrics = {
 };
 // Simple stubs for missing dependencies
 const legalBERT = {
-  analyze: (text: string) => Promise.resolve({ confidence: 0.8, categories: [], summary: '' }),
-  analyzeLegalText: (text: string) =>
+  analyze: (_text: string) => Promise.resolve({ confidence: 0.8, categories: [], summary: '' }),
+  analyzeLegalText: (_text: string) =>
     Promise.resolve({
       confidence: 0.8,
       categories: [],
@@ -33,14 +33,14 @@ const legalBERT = {
       practiceAreas: [],
     }),
   healthCheck: () => Promise.resolve({ status: 'healthy', uptime: 100 }),
-  calculateLegalSimilarity: (text1: string, text2: string) =>
+  calculateLegalSimilarity: (_text1: string, _text2: string) =>
     Promise.resolve({
       similarity: 0.8,
       confidence: 0.8,
     }),
 };
 const enhancedLegalSearch = {
-  search: (query: string, options: any) => Promise.resolve([]),
+  search: (_query: string, _options: any) => Promise.resolve([]),
 };
 // Utility function for timeout handling
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
