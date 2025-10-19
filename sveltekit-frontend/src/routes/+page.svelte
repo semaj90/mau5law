@@ -4,7 +4,40 @@
   import { derived, writable } from 'svelte/store';
   import { recommendations, partialRecommendations, engineState, errorMessage, runQuery  } from '$lib/stores/unified';
   import { onMount } from 'svelte';
-  import { createFileUploader } from "bits-ui";
+
+  // Simple file uploader utility (bits-ui doesn't have createFileUploader)
+  function createFileUploader(url: string) {
+    const events: Record<string, Function[]> = {};
+
+    return {
+      upload: async (file: File) => {
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          events['success']?.forEach(fn => fn(result));
+          return result;
+        } catch (error) {
+          events['error']?.forEach(fn => fn(error));
+          throw error;
+        }
+      },
+      on: (event: string, callback: Function) => {
+        if (!events[event]) events[event] = [];
+        events[event].push(callback);
+      }
+    };
+  }
 
   // Svelte 5 runes for reactive state
   let loading = $state(true);

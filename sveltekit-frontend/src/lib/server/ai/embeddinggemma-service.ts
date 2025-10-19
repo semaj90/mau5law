@@ -14,6 +14,7 @@ import { contextualEmbeddings } from '../db/schema-postgres';
 import { eq, and } from 'drizzle-orm';
 import { qdrantVectorStore } from './qdrant-vector-store';
 import { cognitiveCache } from '../cache';
+import type { LegalEntity } from '$lib/types/sharedTypes';
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
@@ -86,7 +87,7 @@ export class EmbeddingGemmaService {
           dimensions: cached.length,
           model,
           cached: true,
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
       }
     }
@@ -109,13 +110,7 @@ export class EmbeddingGemmaService {
 
     // Store in Qdrant if requested
     if (options.storeInQdrant && options.sessionId) {
-      await this.storeInQdrant(
-        text,
-        embedding,
-        options.sessionId,
-        options.turnId,
-        options.embeddingType
-      );
+      await this.storeInQdrant(text, embedding, options.sessionId, options.turnId, options.embeddingType);
     }
 
     return {
@@ -123,17 +118,14 @@ export class EmbeddingGemmaService {
       dimensions: embedding.length,
       model,
       cached: false,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   }
 
   /**
    * Generate embeddings for multiple texts (batch)
    */
-  async embedBatch(
-    texts: string[],
-    options: EmbeddingOptions = {}
-  ): Promise<BatchEmbeddingResult> {
+  async embedBatch(texts: string[], options: EmbeddingOptions = {}): Promise<BatchEmbeddingResult> {
     const startTime = Date.now();
     const model = options.model || this.model;
     const useCache = options.useCache !== false;
@@ -146,7 +138,7 @@ export class EmbeddingGemmaService {
       const result = await this.embed(text, {
         ...options,
         model,
-        useCache
+        useCache,
       });
 
       embeddings.push(result.embedding);
@@ -158,7 +150,7 @@ export class EmbeddingGemmaService {
       dimensions: embeddings[0]?.length || EMBEDDING_DIM,
       model,
       cachedCount,
-      totalProcessingTime: Date.now() - startTime
+      totalProcessingTime: Date.now() - startTime,
     };
   }
 
@@ -167,17 +159,13 @@ export class EmbeddingGemmaService {
    *
    * Adds entity type context for better semantic representation
    */
-  async embedEntity(
-    entityValue: string,
-    entityType: string,
-    options: EmbeddingOptions = {}
-  ): Promise<EmbeddingResult> {
+  async embedEntity(entityValue: string, entityType: string, options: EmbeddingOptions = {}): Promise<EmbeddingResult> {
     // Add entity type as context for better semantic representation
     const contextualText = `[${entityType.toUpperCase()}] ${entityValue}`;
 
     return this.embed(contextualText, {
       ...options,
-      embeddingType: 'entity'
+      embeddingType: 'entity',
     });
   }
 
@@ -197,7 +185,7 @@ export class EmbeddingGemmaService {
       ...options,
       sessionId: metadata.sessionId,
       embeddingType: 'summary',
-      storeInQdrant: true
+      storeInQdrant: true,
     });
   }
 
@@ -238,13 +226,11 @@ export class EmbeddingGemmaService {
     const similarities = candidateResults.embeddings.map((embedding, index) => ({
       text: candidateTexts[index],
       score: this.cosineSimilarity(queryResult.embedding, embedding),
-      index
+      index,
     }));
 
     // Sort by score and return top K
-    return similarities
-      .sort((a, b) => b.score - a.score)
-      .slice(0, topK);
+    return similarities.sort((a, b) => b.score - a.score).slice(0, topK);
   }
 
   /**
@@ -257,8 +243,8 @@ export class EmbeddingGemmaService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model,
-          prompt: text
-        })
+          prompt: text,
+        }),
       });
 
       if (!response.ok) {
@@ -281,36 +267,28 @@ export class EmbeddingGemmaService {
   /**
    * Get cached embedding from PostgreSQL
    */
-  private async getCachedEmbedding(
-    textHash: string,
-    model: string
-  ): Promise<number[] | null> {
+  private async getCachedEmbedding(textHash: string, model: string): Promise<number[] | null> {
     try {
       // Try Redis cache first
       const redisKey = `embedding:${textHash}:${model}`;
-      const cached = await cognitiveCache.get<string>(redisKey);
+      const cached = await cognitiveCache.getJsonbDocument<number[]>(redisKey);
 
       if (cached) {
-        return JSON.parse(cached);
+        return cached;
       }
 
       // Try PostgreSQL
       const rows = await db
         .select()
         .from(contextualEmbeddings)
-        .where(
-          and(
-            eq(contextualEmbeddings.textHash, textHash),
-            eq(contextualEmbeddings.model, model)
-          )
-        )
+        .where(and(eq(contextualEmbeddings.textHash, textHash), eq(contextualEmbeddings.model, model)))
         .limit(1);
 
       if (rows.length > 0) {
         const embedding = JSON.parse(rows[0].embedding);
 
         // Store in Redis for faster access next time
-        await cognitiveCache.set(redisKey, JSON.stringify(embedding), CACHE_TTL);
+        await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
 
         return embedding;
       }
@@ -336,21 +314,24 @@ export class EmbeddingGemmaService {
   ): Promise<void> {
     try {
       // Store in PostgreSQL
-      await db.insert(contextualEmbeddings).values({
-        sessionId: sessionId || null,
-        turnId: turnId || null,
-        embeddingType: embeddingType || 'message',
-        text: text.substring(0, 5000), // Limit text storage
-        textHash,
-        model,
-        embedding: JSON.stringify(embedding),
-        dimensions: embedding.length,
-        metadata: {}
-      }).onConflictDoNothing();
+      await db
+        .insert(contextualEmbeddings)
+        .values({
+          sessionId: sessionId || null,
+          turnId: turnId || null,
+          embeddingType: embeddingType || 'message',
+          text: text.substring(0, 5000), // Limit text storage
+          textHash,
+          model,
+          embedding: JSON.stringify(embedding),
+          dimensions: embedding.length,
+          metadata: {},
+        })
+        .onConflictDoNothing();
 
       // Store in Redis
       const redisKey = `embedding:${textHash}:${model}`;
-      await cognitiveCache.set(redisKey, JSON.stringify(embedding), CACHE_TTL);
+      await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
     } catch (error) {
       console.error('Error caching embedding:', error);
       // Don't throw - caching failure shouldn't break the flow
@@ -376,11 +357,13 @@ export class EmbeddingGemmaService {
           await qdrantVectorStore.storeEntity(
             sessionId,
             {
-              type: entityType.toLowerCase(),
+              type: entityType.toLowerCase() as LegalEntity['type'],
               value: entityValue,
               confidence: 1.0,
-              startPos: 0,
-              endPos: entityValue.length
+              span: {
+                start: 0,
+                end: entityValue.length,
+              },
             },
             embedding
           );
@@ -389,24 +372,17 @@ export class EmbeddingGemmaService {
         await qdrantVectorStore.storeSummary(sessionId, text, embedding, {
           turnCount: 0,
           currentState: 0,
-          confidence: 1.0
+          confidence: 1.0,
         });
       } else if (turnId) {
         // Conversation turn - would need more metadata
         // This is a placeholder - full implementation would fetch turn data
-        await qdrantVectorStore.storeConversationTurn(
-          sessionId,
-          0,
-          text,
-          '',
-          embedding,
-          {
-            intent: 'general_query',
-            hmmState: 0,
-            confidence: 1.0,
-            entities: []
-          }
-        );
+        await qdrantVectorStore.storeConversationTurn(sessionId, 0, text, '', embedding, {
+          intent: 'general_query',
+          hmmState: 0,
+          confidence: 1.0,
+          entities: [],
+        });
       }
     } catch (error) {
       console.error('Error storing in Qdrant:', error);
@@ -418,9 +394,7 @@ export class EmbeddingGemmaService {
    * Generate text hash for caching
    */
   private generateTextHash(text: string, model: string): string {
-    return createHash('sha256')
-      .update(`${model}:${text}`)
-      .digest('hex');
+    return createHash('sha256').update(`${model}:${text}`).digest('hex');
   }
 
   /**
@@ -448,14 +422,14 @@ export class EmbeddingGemmaService {
       return {
         totalEmbeddings: allEmbeddings.length,
         byModel,
-        byType
+        byType,
       };
     } catch (error) {
       console.error('Error getting embedding statistics:', error);
       return {
         totalEmbeddings: 0,
         byModel: {},
-        byType: {}
+        byType: {},
       };
     }
   }

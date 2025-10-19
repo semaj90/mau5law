@@ -668,32 +668,5 @@ https://svelte.dev/e/js_parse_error -->
       opacity: 0;
     }
   }
-  .yorha-command-interface-container {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #00ffff;
-    padding: 1rem;
-    margin-top: 1rem;
-    color: #00ffff;
-    font-family: 'monospace';
-  }
-  input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid #00ffff;
-    color: #00ffff;
-  }
-  button {
-    background: #00ffff;
-    color: #000;
-    padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
-    margin-top: 0.5rem;
-  }
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  /* Unused CSS classes removed - using Tailwind/UnoCSS classes in template instead */
 </style>

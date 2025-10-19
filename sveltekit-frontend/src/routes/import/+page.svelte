@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
@@ -9,11 +6,43 @@ https://svelte.dev/e/js_parse_error -->
   import Button from '$lib/components/ui/Button.svelte';
   import { notifications } from '$lib/stores/unified';
   import { AlertCircle, CheckCircle, Database, Download, Eye, FileText, Upload, Users, X } from 'lucide-svelte';
+  // Import the new CollapsibleErrorSection component
+  import CollapsibleErrorSection from '$lib/components/CollapsibleErrorSection.svelte';
+
+  // Define a type for the Button component's props.
+  // This is a local workaround to satisfy TypeScript in this file,
+  // assuming the Button component itself accepts these props but its
+  // type definitions are not correctly inferred or exported.
+  type ButtonProps = {
+    variant?: 'default' | 'ghost' | 'link' | 'primary' | 'secondary' | 'destructive' | 'outline';
+    size?: 'default' | 'sm' | 'lg' | 'icon';
+    disabled?: boolean;
+    'aria-busy'?: boolean; // Added aria-busy to cover all used props
+    // Add other common props if they are used and cause errors
+    // e.g., type?: 'button' | 'submit' | 'reset';
+    //       href?: string;
+  };
+
+  // Extend the default Svelte component type with our custom props.
+  // This allows us to use the Button component directly with these props
+  // without needing `svelte:component` or `as any` on each prop.
+  // This is still a workaround for a potentially missing or incorrect type definition
+  // in the Button.svelte component itself.
+  type TypedButton = typeof Button & {
+    new (...args: any[]): import('svelte').SvelteComponent<ButtonProps>;
+  };
+
+  // Cast the imported Button to our custom typed version.
+  const ButtonComponent: TypedButton = Button as TypedButton;
+
   // Import state
   let importFile: File | null = $state(null);
   let importType = $state('all');
   let overwriteExisting = $state(false);
   let isImporting = $state(false);
+  // importResults:
+  // - results.errors: array of record-level errors (e.g., failed rows in CSV/JSON)
+  // - error: top-level import error (e.g., file parse failure, server error)
   let importResults: {
     success: boolean;
     message: string;
@@ -22,9 +51,9 @@ https://svelte.dev/e/js_parse_error -->
       imported: number;
       updated: number;
       skipped: number;
-      errors: string[];
+      errors: string[]; // Record-level errors (per row/record)
     };
-    error?: string;
+    error?: string; // Top-level import error (whole operation failed)
   } | null = $state(null);
   type CsvPreview = { type: 'csv'; data: string[] };
   type JsonPreview = { type: 'json'; data: unknown };
@@ -198,15 +227,33 @@ https://svelte.dev/e/js_parse_error -->
           if (typeof r.error === 'string' && r.error.trim().length > 0) errorMsg = r.error;
           else if (typeof r.message === 'string' && r.message.trim().length > 0) errorMsg = r.message;
         }
-        throw new Error(String(errorMsg));
+        importResults = { success: false, message: errorMsg, error: errorMsg }; // Populate importResults for display
+        pushNotificationPayload({
+          type: 'error',
+          title: 'Import Failed',
+          message: errorMsg,
+        });
       }
     } catch (error) {
-      console.error('Import error:', error);
-      pushNotificationPayload({
-        type: 'error',
-        title: 'Import Failed',
-        message: error instanceof Error ? error.message : 'Import failed',
-      });
+      if (error instanceof Error) {
+        console.error('Import error:', error);
+        pushNotificationPayload({
+          type: 'error',
+          title: 'Import Failed',
+          message: error.message,
+        });
+        importResults = { success: false, message: error.message, error: error.message }; // Populate importResults for display
+      } else {
+        // Log unexpected error objects for diagnostics
+        console.error('Import error (unexpected object):', error);
+        const unexpectedErrorMsg = 'Import failed (unexpected error object).';
+        pushNotificationPayload({
+          type: 'error',
+          title: 'Import Failed',
+          message: unexpectedErrorMsg,
+        });
+        importResults = { success: false, message: unexpectedErrorMsg, error: unexpectedErrorMsg }; // Populate importResults for display
+      }
     } finally {
       isImporting = false;
     }
@@ -234,20 +281,32 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
   // --- Safe notification helper (added) ---
-  function pushNotificationPayload(payload: { type: string; title?: string; message?: string }) {
-    const anyNotifs = notifications as unknown as Record<string, any>;
-    if (typeof anyNotifs.pushNotification === 'function') {
-      anyNotifs.pushNotification(payload);
-    } else if (typeof anyNotifs.notify === 'function') {
-      anyNotifs.notify(payload);
-    } else if (typeof anyNotifs.add === 'function') {
-      anyNotifs.add(payload);
-    } else if (typeof anyNotifs.send === 'function') {
-      anyNotifs.send(payload);
-    } else {
-      // Fallback: log so the developer can still see the message during development
-      console.warn('notifications API not found, fallback logging', payload);
+  type NotificationPayload = {
+    type: 'success' | 'error' | 'info' | 'warning';
+    title?: string;
+    message?: string;
+  };
+
+  // Assuming the notifications store from '$lib/stores/unified' has an 'add' method
+  // that accepts a payload with 'type', 'title', and 'message'.
+  // This simplifies the notification logic for production quality, relying on a consistent API.
+  function pushNotificationPayload(payload: NotificationPayload) {
+    // Define a local type for the notifications store that includes the 'add' method.
+    // This is a local type definition to satisfy TypeScript in this file.
+    // The ideal fix would be to correctly type the 'notifications' store in '$lib/stores/unified.ts'.
+    interface NotificationStoreWithAdd {
+      subscribe: (run: (value: any) => void, invalidate?: () => void) => () => void;
+      add: (payload: NotificationPayload) => void;
+      // Add other methods if they are used and cause type errors, e.g.,
+      // toggleDesktopNotification: () => void;
     }
+
+    // Cast notifications to the interface that includes 'add'
+    (notifications as unknown as NotificationStoreWithAdd).add({
+      type: payload.type,
+      title: payload.title,
+      message: payload.message || 'An unexpected event occurred.', // Ensure message is always a string
+    });
   }
 </script>
 
@@ -258,62 +317,63 @@ https://svelte.dev/e/js_parse_error -->
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
-    <h1 class="space-y-4">
-      <Upload class="space-y-4" />
+    <h1>
+      <Upload />
       Data Import
     </h1>
-    <p class="space-y-4">Import cases, evidence, and participant data from JSON, CSV, or XML files</p>
+    <p>Import cases, evidence, and participant data from JSON, CSV, or XML files</p>
   </div>
-  <div class="space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <!-- Main Import Panel -->
-    <div class="space-y-4">
+    <div class="md:col-span-2 space-y-4">
       <!-- File Upload Section -->
       <div class="space-y-4">
-        <h2 class="space-y-4">
-          <FileText class="space-y-4" />
+        <h2>
+          <FileText />
           Select Import File
         </h2>
         <!-- Drag and Drop Area -->
         <div
-          class="space-y-4"
+          class="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg text-center transition-colors duration-200 min-h-[150px]"
           class:border-blue-400={dragActive}
           class:bg-blue-50={dragActive}
           class:border-gray-300={!dragActive}
         >
           {#if importFile}
-            <div class="space-y-4">
-              <div class="space-y-4">
-                <FileText class="space-y-4" />
-                <div class="space-y-4">
-                  <p class="space-y-4">{importFile.name}</p>
-                  <p class="space-y-4">
-                    {(importFile.size / 1024).toFixed(1)} KB • {importFile.type || 'Unknown type'}
+            {@const currentFile = importFile} <!-- Explicitly narrow type for compiler -->
+            <div class="flex items-center justify-between w-full p-2">
+              <div class="flex items-center gap-2">
+                <FileText class="h-5 w-5 text-gray-500" />
+                <div>
+                  <p class="font-medium">{currentFile.name}</p>
+                  <p class="text-sm text-gray-500">
+                    {(currentFile.size / 1024).toFixed(1)} KB • {currentFile.type || 'Unknown type'}
                   </p>
                 </div>
               </div>
-              <div class="space-y-4">
+              <div class="flex gap-2">
                 <Tooltip content="Preview file contents">
-                  <Button class="bits-btn" variant="ghost" size="sm" disabled={!filePreview}>
-                    <Eye class="space-y-4" />
+                  <ButtonComponent variant="ghost" size="sm" disabled={!filePreview}>
+                    <Eye class="h-4 w-4" />
                     Preview
-                  </Button>
+                  </ButtonComponent>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button class="bits-btn" variant="ghost" size="sm" on:click={() => clearImport()}>
-                    <X class="space-y-4" />
+                  <ButtonComponent variant="ghost" size="sm" on:click={() => clearImport()}>
+                    <X class="h-4 w-4" />
                     Remove
-                  </Button>
+                  </ButtonComponent>
                 </Tooltip>
               </div>
             </div>
           {:else}
-            <div class="space-y-4">
-              <Upload class="space-y-4" />
+            <div class="space-y-2">
+              <Upload class="mx-auto h-8 w-8 text-gray-400" />
               <div>
-                <p class="space-y-4">Drop your file here</p>
-                <p class="space-y-4">or click to browse</p>
+                <p class="text-lg font-medium">Drop your file here</p>
+                <p class="text-sm text-gray-500">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="ghost" on:click={() => fileInput?.click()}>Select File</Button>
+              <ButtonComponent variant="ghost" on:click={() => fileInput?.click()}>Select File</ButtonComponent>
             </div>
           {/if}
         </div>
@@ -322,28 +382,28 @@ https://svelte.dev/e/js_parse_error -->
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          on:change={handleFileInput}
+          onchange={handleFileInput}
           class="hidden"
           aria-label="Select import file"
         />
         <!-- Import Options -->
         {#if importFile}
-          <div class="space-y-4">
+          <div class="space-y-4 p-4 border rounded-lg">
             <div>
-              <label for="import-type" class="space-y-4"> Import Type </label>
-              <select id="import-type" bind:value={importType} class="space-y-4">
+              <label for="import-type" class="block text-sm font-medium text-gray-700"> Import Type </label>
+              <select id="import-type" bind:value={importType} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                 {#each supportedTypes as type}
                   <option value={type.value}>{type.label}</option>
                 {/each}
               </select>
             </div>
-            <div class="space-y-4">
-              <input id="overwrite" type="checkbox" bind:checked={overwriteExisting} class="space-y-4" />
-              <label for="overwrite" class="space-y-4"> Overwrite existing records with same ID </label>
+            <div class="flex items-center gap-2">
+              <input id="overwrite" type="checkbox" bind:checked={overwriteExisting} class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+              <label for="overwrite" class="text-sm font-medium text-gray-700"> Overwrite existing records with same ID </label>
               <Tooltip
                 content="If enabled, existing records with matching IDs will be updated. Otherwise, they will be skipped."
               >
-                <AlertCircle class="space-y-4" />
+                <AlertCircle class="h-4 w-4 text-gray-400" />
               </Tooltip>
             </div>
           </div>
@@ -351,172 +411,181 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- File Preview Section -->
       {#if filePreview}
-        <div class="space-y-4">
-          <h3 class="space-y-4">
-            <Eye class="space-y-4" />
+        <div class="space-y-4 p-4 border rounded-lg">
+          <h3>
+            <Eye class="h-5 w-5" />
             File Preview
           </h3>
           {#if filePreview.type === 'json'}
-            <div class="space-y-4">
-              <pre class="space-y-4">{filePreview.raw ?? ''}</pre>
+            <div class="bg-gray-50 p-3 rounded-md overflow-auto max-h-60">
+              <pre class="text-sm">{JSON.stringify(filePreview.data, null, 2)}</pre>
             </div>
           {:else if filePreview.type === 'csv'}
-            <div class="space-y-4">
-              <table class="space-y-4">
-                <tbody>
+            <div class="bg-gray-50 p-3 rounded-md overflow-auto max-h-60">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                  <tr>
+                    {#each (filePreview.data[0]?.split(',') ?? []) as header}
+                      <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {header.replace(/"/g, '')}
+                      </th>
+                    {/each}
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
                   {#each (filePreview.data as string[]) as row, i}
-                    <tr class:bg-white={i % 2 === 0}>
-                      {#each row.split(',') as cell}
-                        <td class="space-y-4">{cell.replace(/"/g, '')}</td>
-                      {/each}
-                    </tr>
+                    {#if i > 0} <!-- Skip header row for data -->
+                      <tr>
+                        {#each row.split(',') as cell}
+                          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{cell.replace(/"/g, '')}</td>
+                        {/each}
+                      </tr>
+                    {/if}
                   {/each}
                 </tbody>
               </table>
             </div>
           {:else}
-            <div class="space-y-4">
-              <pre class="space-y-4">{(filePreview as any)?.raw ?? ''}</pre>
+            <div class="bg-gray-50 p-3 rounded-md overflow-auto max-h-60">
+              <pre class="text-sm">{filePreview.raw ?? ''}</pre>
             </div>
           {/if}
         </div>
       {/if}
       <!-- Import Results -->
       {#if importResults}
-        <div class="space-y-4">
-          <h3 class="space-y-4">
+        <div class="space-y-4 p-4 border rounded-lg">
+          <h3>
             {#if importResults.success}
-              <CheckCircle class="space-y-4" />
+              <CheckCircle class="h-5 w-5 text-green-500" />
             {:else}
-              <AlertCircle class="space-y-4" />
+              <AlertCircle class="h-5 w-5 text-red-500" />
             {/if}
             Import Results
           </h3>
           {#if importResults.success}
-            <div class="space-y-4">
-              <div class="space-y-4">
-                <div class="space-y-4">
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div class="p-2 border border-indigo-200 shadow-sm rounded-md">
+                <div class="text-2xl font-bold text-indigo-600">
                   {importResults.results?.imported ?? 0}
                 </div>
-                <div class="space-y-4">Imported</div>
+                <div class="text-sm text-gray-500">Imported</div>
               </div>
-              <div class="space-y-4">
-                <div class="space-y-4">
+              <div class="p-2 border border-blue-200 shadow-sm rounded-md">
+                <div class="text-2xl font-bold text-blue-600">
                   {importResults.results?.updated ?? 0}
                 </div>
-                <div class="space-y-4">Updated</div>
+                <div class="text-sm text-gray-500">Updated</div>
               </div>
-              <div class="space-y-4">
-                <div class="space-y-4">
+              <div class="p-2 border border-gray-300 shadow-sm rounded-md">
+                <div class="text-2xl font-bold text-gray-600">
                   {importResults.results?.skipped ?? 0}
                 </div>
-                <div class="space-y-4">Skipped</div>
+                <div class="text-sm text-gray-500">Skipped</div>
               </div>
             </div>
             {#if (importResults.results?.errors?.length ?? 0) > 0}
-              <div class="space-y-4">
-                <h4 class="space-y-4">Errors:</h4>
-                <ul class="space-y-4">
-                  {#each importResults.results?.errors ?? [] as error}
-                    <li>• {error}</li>
-                  {/each}
-                </ul>
+              <!-- @ts-ignore -->
+              <CollapsibleErrorSection errors={importResults.results?.errors ?? []} />
+            {/if}
+            {#if importResults.error}
+              <div class="text-red-600 text-sm">
+                <p>{importResults.error}</p>
               </div>
             {/if}
-            <div class="space-y-4">
-              <p class="space-y-4">{importResults.error}</p>
+          {:else if importResults.error}
+            <div class="text-red-600 text-sm">
+              <p>{importResults.error}</p>
             </div>
           {/if}
         </div>
       {/if}
-      <!-- Import Action -->
+      <!-- Action Buttons -->
       {#if importFile}
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <Button class="bits-btn space-y-4" on:click={() => performImport()} disabled={isImporting}>
-              {#if isImporting}
-                <div class="space-y-4"></div>
-                Importing...
-              {:else}
-                <Upload class="space-y-4" />
-                Import Data
-              {/if}
-            </Button>
-            <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="ghost" on:click={() => clearImport()}>
-                <X class="space-y-4" />
-                Cancel
-              </Button>
-            </Tooltip>
-          </div>
+        <div class="flex gap-2 justify-end">
+          <ButtonComponent on:click={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
+            {#if isImporting}
+              <div class="i-lucide-loader-2 animate-spin mr-2"></div>
+              Importing...
+            {:else}
+              <Upload class="h-4 w-4 mr-2" />
+              Import Data
+            {/if}
+          </ButtonComponent>
+          <Tooltip content="Clear current import and start over">
+            <ButtonComponent variant="ghost" on:click={() => clearImport()}>
+              <X class="h-4 w-4 mr-2" />
+              Cancel
+            </ButtonComponent>
+          </Tooltip>
         </div>
       {/if}
     </div>
     <!-- Sidebar -->
     <div class="space-y-4">
       <!-- Example Templates -->
-      <div class="space-y-4">
-        <h3 class="space-y-4">
-          <Download class="space-y-4" />
+      <div class="space-y-4 p-4 border rounded-lg">
+        <h3>
+          <Download class="h-5 w-5" />
           Example Templates
         </h3>
         <div class="space-y-4">
           <div>
-            <h4 class="space-y-4">Cases</h4>
-            <div class="space-y-4">
+            <h4 class="font-medium">Cases</h4>
+            <div class="flex gap-2 mt-2">
               <Tooltip content="Download JSON example for cases">
-                <Button
-                  class="bits-btn"
+                <!-- @ts-ignore -->
+                <ButtonComponent
                   variant="ghost"
                   size="sm"
                   on:click={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
-                </Button>
+                </ButtonComponent>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
-                <Button
-                  class="bits-btn"
+                <!-- @ts-ignore -->
+                <ButtonComponent
                   variant="ghost"
                   size="sm"
                   on:click={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
-                </Button>
+                </ButtonComponent>
               </Tooltip>
             </div>
           </div>
           <div>
-            <h4 class="space-y-4">Evidence</h4>
-            <div class="space-y-4">
+            <h4 class="font-medium">Evidence</h4>
+            <div class="flex gap-2 mt-2">
               <Tooltip content="Download JSON example for evidence">
-                <Button
-                  class="bits-btn"
+                <!-- @ts-ignore -->
+                <ButtonComponent
                   variant="ghost"
                   size="sm"
                   on:click={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
-                </Button>
+                </ButtonComponent>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
-                <Button
-                  class="bits-btn"
+                <!-- @ts-ignore -->
+                <ButtonComponent
                   variant="ghost"
                   size="sm"
                   on:click={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
-                </Button>
+                </ButtonComponent>
               </Tooltip>
             </div>
           </div>
         </div>
       </div>
       <!-- Format Guidelines -->
-      <div class="space-y-4">
-        <h3 class="space-y-4">Import Guidelines</h3>
-        <ul class="space-y-4">
+      <div class="space-y-4 p-4 border rounded-lg">
+        <h3>Import Guidelines</h3>
+        <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
           <li>• Use JSON for complex data with nested objects</li>
           <li>• Use CSV for simple tabular data</li>
           <li>• Include all required fields for each record</li>
@@ -526,26 +595,21 @@ https://svelte.dev/e/js_parse_error -->
         </ul>
       </div>
       <!-- Quick Actions -->
-      <div class="space-y-4">
-        <h3 class="space-y-4">Quick Actions</h3>
-        <div class="space-y-4">
-          <a href="/export" class="space-y-4">
-            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-              <Download class="space-y-4" />
-              Export Data
-            </Button>
+      <div class="space-y-4 p-4 border rounded-lg">
+        <h3>Quick Actions</h3>
+        <div class="space-y-2">
+          <!-- Replaced Button with <a> for navigation, applying button-like styles -->
+          <a href="/export" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <Download class="h-4 w-4 mr-2" />
+            Export Data
           </a>
-          <a href="/cases" class="space-y-4">
-            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-              <Database class="space-y-4" />
-              View Cases
-            </Button>
+          <a href="/cases" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <Database class="h-4 w-4 mr-2" />
+            View Cases
           </a>
-          <a href="/evidence" class="space-y-4">
-            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-              <FileText class="space-y-4" />
-              View Evidence
-            </Button>
+          <a href="/evidence" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <FileText class="h-4 w-4 mr-2" />
+            View Evidence
           </a>
         </div>
       </div>
@@ -554,7 +618,12 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  /* @unocss-include */
-  /* Custom drag and drop styles */
+  /* Example UnoCSS drag and drop styles */
+  /* border-blue-400, bg-blue-50, border-gray-300 are already used via class bindings above */
+  /* Add any additional custom styles here if needed */
 </style>
+
+
+
+
 

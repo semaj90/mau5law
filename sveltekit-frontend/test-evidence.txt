@@ -1,1 +1,25 @@
-Test evidence file content
+
+LEGAL EVIDENCE DOCUMENT - TEST
+===============================
+
+Case ID: TEST-2025-001
+Document Type: Forensic Analysis
+Date: 2025-10-19T00:59:28.400Z
+
+Summary:
+This is a test evidence document for the Legal AI platform upload pipeline.
+It contains sample legal content to test embedding generation and vector search.
+
+Key Points:
+- Evidence collected at crime scene
+- DNA analysis performed
+- Fingerprint matching completed
+- Chain of custody maintained
+
+Conclusion:
+This test document verifies the complete integration of:
+1. MinIO file storage
+2. PostgreSQL database
+3. Qdrant vector search
+4. RAG pipeline
+5. Evidence management system

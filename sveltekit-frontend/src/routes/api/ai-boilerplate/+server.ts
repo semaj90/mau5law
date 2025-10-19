@@ -1,4 +1,6 @@
 import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
 /*
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
@@ -10,7 +12,7 @@ const CONFIG = {
   database: {
     connectionString: `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test'}`,
   },
-  ollama: {
+  olloma: {
     url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
     model: import.meta.env.LLM_MODEL || 'gemma3-legal',
   },
@@ -45,6 +47,20 @@ const BoilerplateRequestSchema = z.object({
   tone: z.enum(['formal', 'aggressive', 'neutral', 'persuasive']).optional(),
   length: z.enum(['brief', 'standard', 'detailed']).optional(),
 });
+
+type BoilerplateRequest = z.infer<typeof BoilerplateRequestSchema>;
+type BoilerplateRequestContext = BoilerplateRequest['context'];
+type BoilerplateType = BoilerplateRequest['type'];
+type Tone = NonNullable<BoilerplateRequest['tone']>;
+
+interface HighPerformingPhrase {
+  phrase: string;
+  avg_prosecution_score: number;
+  frequency: number;
+  correlation_strength: number;
+  usage_count: string;
+}
+
 const BoilerplateResponseSchema = z.object({
   boilerplate_text: z.string(),
   source_phrases: z.array(z.string()),
@@ -85,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const suggestedEdits = await generateSuggestedEdits(boilerplateResult.text, validatedRequest.type);
     const response = {
       boilerplate_text: boilerplateResult.text,
-      source_phrases: sourcePhrases.map((p: any) => p.phrase),
+      source_phrases: sourcePhrases.map((p: HighPerformingPhrase) => p.phrase),
       confidence_score: boilerplateResult.confidence,
       prosecution_strength: boilerplateResult.prosecutionStrength,
       suggested_edits: suggestedEdits,
@@ -98,8 +114,9 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate response
     const validatedResponse = BoilerplateResponseSchema.parse(response);
     return json(validatedResponse);
-  } catch (err: any) {
-    console.error('❌ AI Boilerplate generation error:', err);
+  } catch (err: unknown) {
+    const errorId = crypto.randomUUID();
+    console.error(`❌ AI Boilerplate generation error [${errorId}]:`, err);
     if (err instanceof z.ZodError) {
       return json(
         {
@@ -111,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json(
       {
-        message: 'AI Boilerplate service temporarily unavailable',
+        message: `AI Boilerplate service temporarily unavailable. Error ID: ${errorId}`,
         details: err instanceof Error ? err.message : 'Unknown error',
       },
       { status: 500 }
@@ -119,52 +136,65 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 async function getHighPerformingPhrases(
-  type: string,
+  type: BoilerplateType,
   jurisdiction?: string,
-  context?: { case_type?: string; [key: string]: any }
-): Promise<any> {
+  context?: BoilerplateRequestContext
+): Promise<HighPerformingPhrase[]> {
+  const cacheKeyInput = { type, jurisdiction, context: context ?? {} };
+  const cacheKey = await legalAIResultCache.generateCacheKey(cacheKeyInput);
+  const cachedResult = await legalAIResultCache.getCachedLegalResults<HighPerformingPhrase[]>(cacheKey);
+  if (cachedResult) {
+    console.log(`CACHE HIT for high performing phrases: ${type}`);
+    return cachedResult;
+  }
+  console.log(`CACHE MISS for high performing phrases: ${type}`);
+
   const db = getDB();
-  // Build query based on request parameters
-  let sql = `
-        SELECT DISTINCT
-            spr.phrase,
-            spr.avg_prosecution_score,
-            spr.frequency,
-            spr.correlation_strength,
-            COUNT(ldp.id) as usage_count
-        FROM semantic_phrases_ranking spr
-        JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE '%' || spr.phrase || '%'
-        WHERE spr.avg_prosecution_score >= $1
-    `;
-  const params: any[] = [CONFIG.boilerplate.minProsecutionScore];
-  let paramIndex = 2;
-  // Filter by jurisdiction if specified
-  if (jurisdiction) {
-    sql += ` AND ldp.jurisdiction = $${paramIndex}`;
-    params.push(jurisdiction);
-    paramIndex++;
-  }
-  // Filter by case type if specified
-  if (context?.case_type) {
-    sql += ` AND ldp.case_type = $${paramIndex}`;
-    params.push(context.case_type);
-    paramIndex++;
-  }
-  // Add type-specific filtering
-  sql += getTypeSpecificFilter(type, paramIndex, params);
-  sql += `
-        GROUP BY spr.phrase, spr.avg_prosecution_score, spr.frequency, spr.correlation_strength
-        ORDER BY
-            spr.avg_prosecution_score DESC,
-            usage_count DESC,
-            spr.correlation_strength DESC
-        LIMIT 20
-    `;
-  const result = await db.query(sql, params);
-  return (result as { rows?: any }).rows;
+
+  // Performance note: The join condition `... ILIKE '%' || spr.phrase || '%'` is inefficient
+  // and can cause slow queries. Consider using Full-Text Search or a trigram index (pg_trgm)
+  // on `legal_documents_processed.semantic_phrases` for better performance.
+  const result = await db`
+    SELECT DISTINCT
+      spr.phrase,
+      spr.avg_prosecution_score,
+      spr.frequency,
+      spr.correlation_strength,
+      COUNT(ldp.id) AS usage_count
+    FROM semantic_phrases_ranking spr
+    JOIN legal_documents_processed ldp
+      ON ldp.semantic_phrases::text ILIKE '%' || spr.phrase || '%'
+    WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore}
+    ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``}
+    ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db``}
+    ${db.unsafe(getTypeSpecificFilter(type))}
+    GROUP BY
+      spr.phrase,
+      spr.avg_prosecution_score,
+      spr.frequency,
+      spr.correlation_strength
+    ORDER BY
+      spr.avg_prosecution_score DESC,
+      usage_count DESC,
+      spr.correlation_strength DESC
+    LIMIT ${CONFIG.boilerplate.maxTemplates}
+  `;
+
+  const phrases = result.map((row: any) => ({
+    phrase: String(row.phrase),
+    avg_prosecution_score: Number(row.avg_prosecution_score),
+    frequency: Number(row.frequency),
+    correlation_strength: Number(row.correlation_strength),
+    usage_count: String(row.usage_count),
+  }));
+
+  await legalAIResultCache.cacheLegalResults(cacheKey, phrases, 60 * 60 * 1000); // 1 hour cache
+
+  return phrases;
 }
-function getTypeSpecificFilter(type: string, paramIndex: number, params: any[]): string {
-  const typeFilters = {
+
+function getTypeSpecificFilter(type: BoilerplateType): string {
+  const typeFilters: Record<BoilerplateType, string> = {
     'prosecution_argument':
       " AND (ldp.semantic_phrases::text ILIKE '%prosecution%' OR ldp.semantic_phrases::text ILIKE '%argument%' OR ldp.semantic_phrases::text ILIKE '%evidence%')",
     'evidence_summary':
@@ -182,11 +212,23 @@ function getTypeSpecificFilter(type: string, paramIndex: number, params: any[]):
   };
   return typeFilters[type] || '';
 }
-async function generateBoilerplate(request: any, sourcePhrases: any[]): Promise<any> {
-  const phraseText = sourcePhrases.map((p: any) => p.phrase).join(', ');
-  const avgProsecutionScore = sourcePhrases.reduce((sum, p) => sum + p.avg_prosecution_score, 0) / sourcePhrases.length;
+
+/**
+ * Generates legal boilerplate text using an LLM based on the provided request and high-performing phrases.
+ * Falls back to a template-based approach if LLM generation fails.
+ * @param request - The boilerplate generation request containing type, tone, context, and length.
+ * @param sourcePhrases - Array of high-performing legal phrases to incorporate.
+ * @returns An object containing the generated text, confidence score, and prosecution strength.
+ */
+async function generateBoilerplate(
+  request: BoilerplateRequest,
+  sourcePhrases: HighPerformingPhrase[]
+): Promise<{ text: string; confidence: number; prosecutionStrength: number }> {
+  const avgProsecutionScore =
+    sourcePhrases.reduce((sum, p) => sum + p.avg_prosecution_score, 0) / (sourcePhrases.length || 1);
   const systemPrompt = buildSystemPrompt(request.type, request.tone || 'formal');
   const contextPrompt = buildContextPrompt(request.context);
+  const phraseText = sourcePhrases.map(p => `- "${p.phrase}"`).join('\n');
   const fullPrompt = `${systemPrompt}
 ${contextPrompt}
 Based on these high-performing legal phrases that have shown strong prosecution correlation:
@@ -200,11 +242,11 @@ Requirements:
 - Length: ${getLengthGuidance(request.length)}
 Generate the boilerplate text:`;
   try {
-    const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
+    const response = await fetch(`${CONFIG.olloma.url}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama?.model || 'unknown', // @ts-ignore - Model property access
+        model: CONFIG.olloma.model || 'unknown',
         prompt: fullPrompt,
         stream: false,
         options: {
@@ -215,30 +257,30 @@ Generate the boilerplate text:`;
         },
       }),
     });
-    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`LLM request failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+    if (!response.ok) {
+      throw new Error(`LLM request failed: ${response.status}`);
     }
-    const data = await (response as { ok?: any; status?: any; json?: any }).json();
-    const generatedText = (data as { response?: any }).response.trim();
+    const data = (await response.json()) as { response: string };
+    const generatedText = data.response.trim();
     // Calculate confidence based on phrase usage
-    const phrasesUsed = sourcePhrases.filter((p: any) =>
+    const phrasesUsed = sourcePhrases.filter((p: HighPerformingPhrase) =>
       generatedText.toLowerCase().includes(p.phrase.toLowerCase())
     ).length;
-    const confidence = Math.min((phrasesUsed / sourcePhrases.length) * 0.8 + 0.2, 1.0);
+    const confidence = Math.min((phrasesUsed / (sourcePhrases.length || 1)) * 0.8 + 0.2, 1.0);
     return {
       text: generatedText,
       confidence,
       prosecutionStrength: avgProsecutionScore,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('LLM generation failed:', error);
     // Fallback to template-based generation
     return generateFallbackBoilerplate(request.type, sourcePhrases);
   }
 }
-function buildSystemPrompt(type: string, tone: string): string {
+function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
   const basePrompt = 'You are an expert legal writer specializing in prosecution documents. ';
-  const typePrompts = {
+  const typePrompts: Record<BoilerplateType, string> = {
     'prosecution_argument':
       "Generate a compelling prosecution argument that clearly establishes the defendant's guilt and the strength of the evidence.",
     'evidence_summary':
@@ -252,7 +294,7 @@ function buildSystemPrompt(type: string, tone: string): string {
     'discovery_request':
       'Create a comprehensive discovery request that will uncover all relevant evidence for the prosecution.',
   };
-  const toneAdjustments = {
+  const toneAdjustments: Record<Tone, string> = {
     'formal': 'Use formal legal language and maintain a professional, authoritative tone.',
     'aggressive': "Use strong, assertive language that emphasizes the strength of the prosecution's case.",
     'neutral': 'Use objective, fact-based language that presents information clearly and impartially.',
@@ -260,26 +302,19 @@ function buildSystemPrompt(type: string, tone: string): string {
   };
   return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
 }
-function buildContextPrompt(context?: {
-  defendant_name?: string;
-  charges?: string[];
-  evidence_types?: string[];
-  precedents?: string[];
-  custom_context?: string;
-  [key: string]: any;
-}): string {
+function buildContextPrompt(context?: BoilerplateRequestContext): string {
   if (!context) return '';
   let contextPrompt = 'Context for this document:\n';
   if (context.defendant_name) {
     contextPrompt += `- Defendant: ${context.defendant_name}\n`;
   }
-  if (context.charges?.length > 0) {
+  if (context.charges && context.charges.length > 0) {
     contextPrompt += `- Charges: ${context.charges.join(', ')}\n`;
   }
-  if (context.evidence_types?.length > 0) {
+  if (context.evidence_types && context.evidence_types.length > 0) {
     contextPrompt += `- Evidence Types: ${context.evidence_types.join(', ')}\n`;
   }
-  if (context.precedents?.length > 0) {
+  if (context.precedents && context.precedents.length > 0) {
     contextPrompt += `- Relevant Precedents: ${context.precedents.join(', ')}\n`;
   }
   if (context.custom_context) {
@@ -307,28 +342,28 @@ function getLengthTokens(length?: string): number {
       return 500;
   }
 }
-function generateFallbackBoilerplate(type: string, sourcePhrases: any[]) {
-  const templates = {
+function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighPerformingPhrase[]) {
+  const templates: Partial<Record<BoilerplateType, string>> = {
     'prosecution_argument': `Based on the compelling evidence presented, the prosecution has demonstrated beyond a reasonable doubt that the defendant is guilty of the charges. The evidence includes ${sourcePhrases
       .slice(0, 3)
-      .map((p: any) => p.phrase)
+      .map((p: HighPerformingPhrase) => p.phrase)
       .join(', ')}, which clearly establishes the defendant's culpability.`,
     'evidence_summary': `The following evidence strongly supports the prosecution's case: ${sourcePhrases
       .slice(0, 5)
-      .map((p: any) => p.phrase)
+      .map((p: HighPerformingPhrase) => p.phrase)
       .join(
         ', '
       )}. This evidence demonstrates a clear pattern of behavior and establishes the necessary elements of the charges.`,
     'legal_motion': `The prosecution respectfully moves the court for relief based on the following grounds: ${sourcePhrases
       .slice(0, 3)
-      .map((p: any) => p.phrase)
+      .map((p: HighPerformingPhrase) => p.phrase)
       .join(', ')}. The motion is supported by applicable law and compelling evidence.`,
   };
   const fallbackText =
     templates[type] ||
     `The prosecution presents the following legal argument incorporating proven effective elements: ${sourcePhrases
       .slice(0, 5)
-      .map((p: any) => p.phrase)
+      .map((p: HighPerformingPhrase) => p.phrase)
       .join(', ')}.`;
   return {
     text: fallbackText,
@@ -336,7 +371,7 @@ function generateFallbackBoilerplate(type: string, sourcePhrases: any[]) {
     prosecutionStrength: 75,
   };
 }
-async function generateSuggestedEdits(text: string, type: string): Promise<string[]> {
+async function generateSuggestedEdits(text: string, type: BoilerplateType): Promise<string[]> {
   const suggestions = [];
   // Basic suggestions based on text analysis
   if (!text.includes('evidence')) {
@@ -352,7 +387,7 @@ async function generateSuggestedEdits(text: string, type: string): Promise<strin
     suggestions.push('Make sure to clearly identify the defendant');
   }
   // Type-specific suggestions
-  const typeSpecificSuggestions = {
+  const typeSpecificSuggestions: Partial<Record<BoilerplateType, string[]>> = {
     'prosecution_argument': ['Add specific statutory citations', 'Include burden of proof language'],
     'evidence_summary': ['Organize evidence chronologically', 'Highlight most compelling evidence first'],
     'sentencing_memo': ['Include sentencing guidelines reference', 'Address mitigating factors'],
@@ -366,55 +401,62 @@ async function generateSuggestedEdits(text: string, type: string): Promise<strin
 export const GET: RequestHandler = async () => {
   try {
     const db = getDB();
+
+    interface DbStats {
+      total_phrases: string;
+      avg_score: string;
+      high_performing_phrases: string;
+    }
+
     // Get statistics about available templates
-    const stats = await db.query(`
+    const stats = await db<DbStats[]>`
             SELECT
                 COUNT(*) as total_phrases,
                 AVG(avg_prosecution_score) as avg_score,
                 COUNT(DISTINCT CASE WHEN avg_prosecution_score >= 80 THEN phrase END) as high_performing_phrases
             FROM semantic_phrases_ranking
-        `);
+        `;
     const templates = [
       {
         type: 'prosecution_argument',
         name: 'Prosecution Argument',
         description: 'Compelling arguments for establishing guilt',
-        available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
       {
         type: 'evidence_summary',
         name: 'Evidence Summary',
         description: 'Comprehensive overview of case evidence',
-        available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
       {
         type: 'legal_motion',
         name: 'Legal Motion',
         description: 'Professional legal motions and requests',
-        available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
       {
         type: 'case_analysis',
         name: 'Case Analysis',
         description: 'Detailed legal case analysis',
-        available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
       {
         type: 'sentencing_memo',
         name: 'Sentencing Memorandum',
         description: 'Arguments for appropriate sentencing',
-        available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
     ];
     return json({
       templates,
       statistics: {
-        total_phrases: parseInt(String(stats.rows[0]?.total_phrases || '0')),
-        average_score: parseFloat(String(stats.rows[0]?.avg_score || '0')),
-        high_performing_count: parseInt(String(stats.rows[0]?.high_performing_phrases || '0')),
+        total_phrases: parseInt(stats[0]?.total_phrases || '0'),
+        average_score: parseFloat(stats[0]?.avg_score || '0'),
+        high_performing_count: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Template listing error:', err);
     throw error(500, 'Unable to fetch template information');
   }

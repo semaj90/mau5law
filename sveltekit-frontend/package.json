@@ -14,6 +14,8 @@
     "dev:gpu:quic": "cross-env NODE_OPTIONS=--max-old-space-size=3072 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev --port 5174 --strictPort --host 127.0.0.1",
     "dev:gpu:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
     "dev:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite dev",
+    "dev:auto": "node scripts/start-dev-with-ollama.mjs",
+    "dev:auto:quic": "node scripts/start-dev-with-ollama.mjs --quic",
     "dev:quic": "node scripts/start-full-stack.js",
     "dev:quic:old": "node scripts/start-dev-realtime-full.js",
     "dev:quic:legacy": "node scripts/start-dev-quic-working.js",
